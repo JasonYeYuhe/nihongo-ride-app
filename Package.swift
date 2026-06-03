@@ -10,6 +10,7 @@ let package = Package(
         // Pure-Swift logic libraries (UI-independent, fully testable).
         .library(name: "RomajiKana", targets: ["RomajiKana"]),
         .library(name: "VocabKit", targets: ["VocabKit"]),
+        .library(name: "ReviewKit", targets: ["ReviewKit"]),
     ],
     targets: [
         // MARK: Engine — romaji→kana typing matcher.
@@ -31,5 +32,9 @@ let package = Package(
             ]
         ),
         .testTarget(name: "VocabKitTests", dependencies: ["VocabKit"]),
+
+        // MARK: Spaced repetition — simplified SM-2 over typing performance.
+        .target(name: "ReviewKit"),
+        .testTarget(name: "ReviewKitTests", dependencies: ["ReviewKit"]),
     ]
 )
