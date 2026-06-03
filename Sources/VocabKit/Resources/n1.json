@@ -2800,5 +2800,2012 @@
         "逃脱"
       ]
     }
+  },
+  {
+    "id": "n1-g144",
+    "surface": "圧迫",
+    "kana": "あっぱく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "pressure",
+        "coercion",
+        "oppression"
+      ],
+      "zh": [
+        "压迫",
+        "压制"
+      ]
+    }
+  },
+  {
+    "id": "n1-g145",
+    "surface": "隠居",
+    "kana": "いんきょ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "retirement",
+        "retired person"
+      ],
+      "zh": [
+        "隐居",
+        "退休"
+      ]
+    }
+  },
+  {
+    "id": "n1-g146",
+    "surface": "運営",
+    "kana": "うんえい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "management",
+        "administration",
+        "operation"
+      ],
+      "zh": [
+        "运营",
+        "管理"
+      ]
+    }
+  },
+  {
+    "id": "n1-g147",
+    "surface": "閲覧",
+    "kana": "えつらん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "inspection",
+        "reading"
+      ],
+      "zh": [
+        "阅览",
+        "查阅"
+      ]
+    }
+  },
+  {
+    "id": "n1-g148",
+    "surface": "汚染",
+    "kana": "おせん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "pollution",
+        "contamination"
+      ],
+      "zh": [
+        "污染"
+      ]
+    }
+  },
+  {
+    "id": "n1-g149",
+    "surface": "該当",
+    "kana": "がいとう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "corresponding",
+        "applicable"
+      ],
+      "zh": [
+        "符合",
+        "相当"
+      ]
+    }
+  },
+  {
+    "id": "n1-g150",
+    "surface": "獲得",
+    "kana": "かくとく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "acquisition",
+        "possession"
+      ],
+      "zh": [
+        "获得",
+        "取得"
+      ]
+    }
+  },
+  {
+    "id": "n1-g151",
+    "surface": "概要",
+    "kana": "がいよう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "outline",
+        "summary"
+      ],
+      "zh": [
+        "概要",
+        "概况"
+      ]
+    }
+  },
+  {
+    "id": "n1-g152",
+    "surface": "格差",
+    "kana": "かくさ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "qualitative difference",
+        "disparity"
+      ],
+      "zh": [
+        "差距",
+        "差别"
+      ]
+    }
+  },
+  {
+    "id": "n1-g153",
+    "surface": "頑丈",
+    "kana": "がんじょう",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "sturdy",
+        "solid",
+        "firm"
+      ],
+      "zh": [
+        "结实",
+        "强壮"
+      ]
+    }
+  },
+  {
+    "id": "n1-g154",
+    "surface": "飢餓",
+    "kana": "きが",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "starvation",
+        "hunger"
+      ],
+      "zh": [
+        "饥饿"
+      ]
+    }
+  },
+  {
+    "id": "n1-g155",
+    "surface": "偽造",
+    "kana": "ぎぞう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "forgery",
+        "falsification",
+        "fabrication"
+      ],
+      "zh": [
+        "伪造",
+        "假冒"
+      ]
+    }
+  },
+  {
+    "id": "n1-g156",
+    "surface": "丘陵",
+    "kana": "きゅうりょう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "hill",
+        "hillock"
+      ],
+      "zh": [
+        "丘陵",
+        "山丘"
+      ]
+    }
+  },
+  {
+    "id": "n1-g157",
+    "surface": "脅迫",
+    "kana": "きょうはく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "threat",
+        "menace",
+        "coercion"
+      ],
+      "zh": [
+        "威胁",
+        "恐吓"
+      ]
+    }
+  },
+  {
+    "id": "n1-g158",
+    "surface": "強硬",
+    "kana": "きょうこう",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "firm",
+        "vigorous",
+        "unbending"
+      ],
+      "zh": [
+        "强硬"
+      ]
+    }
+  },
+  {
+    "id": "n1-g159",
+    "surface": "郷愁",
+    "kana": "きょうしゅう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "nostalgia",
+        "homesickness"
+      ],
+      "zh": [
+        "乡愁",
+        "思乡"
+      ]
+    }
+  },
+  {
+    "id": "n1-g160",
+    "surface": "極限",
+    "kana": "きょくげん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "limit",
+        "extremity"
+      ],
+      "zh": [
+        "极限"
+      ]
+    }
+  },
+  {
+    "id": "n1-g161",
+    "surface": "権威",
+    "kana": "けんい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "authority",
+        "power",
+        "influence"
+      ],
+      "zh": [
+        "权威"
+      ]
+    }
+  },
+  {
+    "id": "n1-g162",
+    "surface": "根底",
+    "kana": "こんてい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "root",
+        "bottom",
+        "foundation"
+      ],
+      "zh": [
+        "根底",
+        "基础"
+      ]
+    }
+  },
+  {
+    "id": "n1-g163",
+    "surface": "懇願",
+    "kana": "こんがん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "entreaty",
+        "supplication",
+        "petition"
+      ],
+      "zh": [
+        "恳求"
+      ]
+    }
+  },
+  {
+    "id": "n1-g164",
+    "surface": "拘束",
+    "kana": "こうそく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "restriction",
+        "restraint"
+      ],
+      "zh": [
+        "拘束",
+        "限制"
+      ]
+    }
+  },
+  {
+    "id": "n1-g165",
+    "surface": "高尚",
+    "kana": "こうしょう",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "high",
+        "noble",
+        "refined"
+      ],
+      "zh": [
+        "高尚"
+      ]
+    }
+  },
+  {
+    "id": "n1-g166",
+    "surface": "削減",
+    "kana": "さくげん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "cut",
+        "reduction"
+      ],
+      "zh": [
+        "削减",
+        "减少"
+      ]
+    }
+  },
+  {
+    "id": "n1-g167",
+    "surface": "察する",
+    "kana": "さっする",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "to guess",
+        "to sense",
+        "to presume"
+      ],
+      "zh": [
+        "察觉",
+        "推测"
+      ]
+    }
+  },
+  {
+    "id": "n1-g168",
+    "surface": "山腹",
+    "kana": "さんぷく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "hillside",
+        "mountainside"
+      ],
+      "zh": [
+        "山腰",
+        "山腹"
+      ]
+    }
+  },
+  {
+    "id": "n1-g169",
+    "surface": "支援",
+    "kana": "しえん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "support",
+        "backing",
+        "aid"
+      ],
+      "zh": [
+        "支援",
+        "援助"
+      ]
+    }
+  },
+  {
+    "id": "n1-g170",
+    "surface": "指摘",
+    "kana": "してき",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "pointing out",
+        "identification"
+      ],
+      "zh": [
+        "指出",
+        "指明"
+      ]
+    }
+  },
+  {
+    "id": "n1-g171",
+    "surface": "執念",
+    "kana": "しゅうねん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "tenacity",
+        "vindictiveness"
+      ],
+      "zh": [
+        "执念",
+        "怨恨"
+      ]
+    }
+  },
+  {
+    "id": "n1-g172",
+    "surface": "修行",
+    "kana": "しゅぎょう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "training",
+        "ascetic practices"
+      ],
+      "zh": [
+        "修行",
+        "修炼"
+      ]
+    }
+  },
+  {
+    "id": "n1-g173",
+    "surface": "奨励",
+    "kana": "しょうれい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "encouragement",
+        "promotion"
+      ],
+      "zh": [
+        "奖励",
+        "鼓励"
+      ]
+    }
+  },
+  {
+    "id": "n1-g174",
+    "surface": "除外",
+    "kana": "じょがい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "exception",
+        "exclusion"
+      ],
+      "zh": [
+        "除外",
+        "排除"
+      ]
+    }
+  },
+  {
+    "id": "n1-g175",
+    "surface": "所有",
+    "kana": "しょゆう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "ownership",
+        "possession"
+      ],
+      "zh": [
+        "所有",
+        "拥有"
+      ]
+    }
+  },
+  {
+    "id": "n1-g176",
+    "surface": "制裁",
+    "kana": "せいさい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "sanctions",
+        "punishment"
+      ],
+      "zh": [
+        "制裁",
+        "惩罚"
+      ]
+    }
+  },
+  {
+    "id": "n1-g177",
+    "surface": "脱出",
+    "kana": "だっしゅつ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "escape",
+        "breakout"
+      ],
+      "zh": [
+        "逃脱",
+        "摆脱"
+      ]
+    }
+  },
+  {
+    "id": "n1-g178",
+    "surface": "多様",
+    "kana": "たよう",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "diverse",
+        "varied"
+      ],
+      "zh": [
+        "多种多样",
+        "各种各样"
+      ]
+    }
+  },
+  {
+    "id": "n1-g179",
+    "surface": "秩序",
+    "kana": "ちつじょ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "order",
+        "regularity",
+        "system"
+      ],
+      "zh": [
+        "秩序",
+        "条理"
+      ]
+    }
+  },
+  {
+    "id": "n1-g180",
+    "surface": "著書",
+    "kana": "ちょしょ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "literary work",
+        "book"
+      ],
+      "zh": [
+        "著作",
+        "作品"
+      ]
+    }
+  },
+  {
+    "id": "n1-g181",
+    "surface": "定義",
+    "kana": "ていぎ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "definition"
+      ],
+      "zh": [
+        "定义"
+      ]
+    }
+  },
+  {
+    "id": "n1-g182",
+    "surface": "提示",
+    "kana": "ていじ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "presentation",
+        "exhibit",
+        "suggesting"
+      ],
+      "zh": [
+        "提示",
+        "出示"
+      ]
+    }
+  },
+  {
+    "id": "n1-g183",
+    "surface": "撤廃",
+    "kana": "てっぱい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "abolition",
+        "repeal"
+      ],
+      "zh": [
+        "废除",
+        "撤销"
+      ]
+    }
+  },
+  {
+    "id": "n1-g184",
+    "surface": "同調",
+    "kana": "どうちょう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "sympathy",
+        "alignment",
+        "tuning"
+      ],
+      "zh": [
+        "同调",
+        "赞同"
+      ]
+    }
+  },
+  {
+    "id": "n1-g185",
+    "surface": "途絶える",
+    "kana": "とだえる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "to stop",
+        "to cease",
+        "to come to an end"
+      ],
+      "zh": [
+        "断绝",
+        "中断"
+      ]
+    }
+  },
+  {
+    "id": "n1-g186",
+    "surface": "内閣",
+    "kana": "ないかく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "cabinet",
+        "ministry"
+      ],
+      "zh": [
+        "内阁"
+      ]
+    }
+  },
+  {
+    "id": "n1-g187",
+    "surface": "名残",
+    "kana": "なごり",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "remains",
+        "traces",
+        "memory"
+      ],
+      "zh": [
+        "遗迹",
+        "依依不舍"
+      ]
+    }
+  },
+  {
+    "id": "n1-g188",
+    "surface": "偽る",
+    "kana": "いつわる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "to lie",
+        "to deceive",
+        "to pretend"
+      ],
+      "zh": [
+        "欺骗",
+        "伪装"
+      ]
+    }
+  },
+  {
+    "id": "n1-g189",
+    "surface": "抜け出す",
+    "kana": "ぬけだす",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "to slip out",
+        "to sneak away",
+        "to break free"
+      ],
+      "zh": [
+        "摆脱",
+        "溜走"
+      ]
+    }
+  },
+  {
+    "id": "n1-g190",
+    "surface": "念願",
+    "kana": "ねんがん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "one's heart's desire",
+        "earnest wish"
+      ],
+      "zh": [
+        "心愿",
+        "夙愿"
+      ]
+    }
+  },
+  {
+    "id": "n1-g191",
+    "surface": "濃縮",
+    "kana": "のうしゅく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "concentration",
+        "enrichment"
+      ],
+      "zh": [
+        "浓缩"
+      ]
+    }
+  },
+  {
+    "id": "n1-g192",
+    "surface": "把握",
+    "kana": "はあく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "grasp",
+        "catch",
+        "understanding"
+      ],
+      "zh": [
+        "把握",
+        "掌握"
+      ]
+    }
+  },
+  {
+    "id": "n1-g193",
+    "surface": "派遣",
+    "kana": "はけん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "dispatch",
+        "deployment"
+      ],
+      "zh": [
+        "派遣",
+        "打发"
+      ]
+    }
+  },
+  {
+    "id": "n1-g194",
+    "surface": "破綻",
+    "kana": "はたん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "failure",
+        "bankruptcy"
+      ],
+      "zh": [
+        "破绽",
+        "破产"
+      ]
+    }
+  },
+  {
+    "id": "n1-g195",
+    "surface": "反発",
+    "kana": "はんぱつ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "repulsion",
+        "opposition",
+        "rebound"
+      ],
+      "zh": [
+        "反弹",
+        "反抗"
+      ]
+    }
+  },
+  {
+    "id": "n1-g196",
+    "surface": "貧困",
+    "kana": "ひんこん",
+    "pos": [
+      "n",
+      "adj-na"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "poverty",
+        "destitution"
+      ],
+      "zh": [
+        "贫困",
+        "缺乏"
+      ]
+    }
+  },
+  {
+    "id": "n1-g197",
+    "surface": "負債",
+    "kana": "ふさい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "debt",
+        "liabilities"
+      ],
+      "zh": [
+        "负债",
+        "债务"
+      ]
+    }
+  },
+  {
+    "id": "n1-g198",
+    "surface": "付属",
+    "kana": "ふぞく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "attached",
+        "affiliated"
+      ],
+      "zh": [
+        "附属",
+        "附带"
+      ]
+    }
+  },
+  {
+    "id": "n1-g199",
+    "surface": "腐敗",
+    "kana": "ふはい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "decay",
+        "corruption",
+        "spoilage"
+      ],
+      "zh": [
+        "腐败",
+        "腐烂"
+      ]
+    }
+  },
+  {
+    "id": "n1-g200",
+    "surface": "弁解",
+    "kana": "べんかい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "explanation",
+        "justification",
+        "excuse"
+      ],
+      "zh": [
+        "辩解",
+        "分辩"
+      ]
+    }
+  },
+  {
+    "id": "n1-g201",
+    "surface": "便宜",
+    "kana": "べんぎ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "convenience",
+        "accommodation",
+        "advantage"
+      ],
+      "zh": [
+        "方便",
+        "便利"
+      ]
+    }
+  },
+  {
+    "id": "n1-g202",
+    "surface": "包括",
+    "kana": "ほうかつ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "inclusion",
+        "comprehension"
+      ],
+      "zh": [
+        "包括",
+        "统括"
+      ]
+    }
+  },
+  {
+    "id": "n1-g203",
+    "surface": "放棄",
+    "kana": "ほうき",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "abandonment",
+        "renunciation",
+        "giving up"
+      ],
+      "zh": [
+        "放弃",
+        "废弃"
+      ]
+    }
+  },
+  {
+    "id": "n1-g204",
+    "surface": "発足",
+    "kana": "ほっそく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "starting",
+        "inauguration",
+        "launch"
+      ],
+      "zh": [
+        "成立",
+        "出发"
+      ]
+    }
+  },
+  {
+    "id": "n1-g205",
+    "surface": "交える",
+    "kana": "まじえる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "to mix",
+        "to combine",
+        "to exchange"
+      ],
+      "zh": [
+        "交织",
+        "夹杂"
+      ]
+    }
+  },
+  {
+    "id": "n1-g206",
+    "surface": "麻痺",
+    "kana": "まひ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "paralysis",
+        "palsy",
+        "numbness"
+      ],
+      "zh": [
+        "麻痹",
+        "瘫痪"
+      ]
+    }
+  },
+  {
+    "id": "n1-g207",
+    "surface": "慢性",
+    "kana": "まんせい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "chronic"
+      ],
+      "zh": [
+        "慢性"
+      ]
+    }
+  },
+  {
+    "id": "n1-g208",
+    "surface": "見落とす",
+    "kana": "みおとす",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "to overlook",
+        "to fail to notice"
+      ],
+      "zh": [
+        "看漏",
+        "忽略"
+      ]
+    }
+  },
+  {
+    "id": "n1-g209",
+    "surface": "密集",
+    "kana": "みっしゅう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "crowd",
+        "close formation",
+        "dense"
+      ],
+      "zh": [
+        "密集",
+        "集中"
+      ]
+    }
+  },
+  {
+    "id": "n1-g210",
+    "surface": "無謀",
+    "kana": "むぼう",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "reckless",
+        "thoughtless"
+      ],
+      "zh": [
+        "鲁莽",
+        "草率"
+      ]
+    }
+  },
+  {
+    "id": "n1-g211",
+    "surface": "免除",
+    "kana": "めんじょ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "exemption",
+        "exoneration"
+      ],
+      "zh": [
+        "免除",
+        "豁免"
+      ]
+    }
+  },
+  {
+    "id": "n1-g212",
+    "surface": "躍進",
+    "kana": "やくしん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "rapid progress",
+        "strides"
+      ],
+      "zh": [
+        "跃进",
+        "突飞猛进"
+      ]
+    }
+  },
+  {
+    "id": "n1-g213",
+    "surface": "躍起",
+    "kana": "やっき",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "desperate",
+        "eager",
+        "frantic"
+      ],
+      "zh": [
+        "拼命",
+        "起劲"
+      ]
+    }
+  },
+  {
+    "id": "n1-g214",
+    "surface": "養う",
+    "kana": "やしなう",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "to rear",
+        "to maintain",
+        "to cultivate"
+      ],
+      "zh": [
+        "养育",
+        "培养"
+      ]
+    }
+  },
+  {
+    "id": "n1-g215",
+    "surface": "宿る",
+    "kana": "やどる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "to dwell",
+        "to lodge",
+        "to be pregnant"
+      ],
+      "zh": [
+        "寄宿",
+        "留宿"
+      ]
+    }
+  },
+  {
+    "id": "n1-g216",
+    "surface": "有望",
+    "kana": "ゆうぼう",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "promising",
+        "full of hope"
+      ],
+      "zh": [
+        "有希望",
+        "有前途"
+      ]
+    }
+  },
+  {
+    "id": "n1-g217",
+    "surface": "融通",
+    "kana": "ゆうずう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "lending",
+        "accommodation",
+        "adaptability"
+      ],
+      "zh": [
+        "通融",
+        "变通"
+      ]
+    }
+  },
+  {
+    "id": "n1-g218",
+    "surface": "誘致",
+    "kana": "ゆうち",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "attraction",
+        "luring",
+        "inviting"
+      ],
+      "zh": [
+        "招致",
+        "吸引"
+      ]
+    }
+  },
+  {
+    "id": "n1-g219",
+    "surface": "ゆがむ",
+    "kana": "ゆがむ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "to warp",
+        "to swerve",
+        "to be distorted"
+      ],
+      "zh": [
+        "歪斜",
+        "扭曲"
+      ]
+    }
+  },
+  {
+    "id": "n1-g220",
+    "surface": "余地",
+    "kana": "よち",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "place",
+        "room",
+        "margin"
+      ],
+      "zh": [
+        "余地",
+        "空地"
+      ]
+    }
+  },
+  {
+    "id": "n1-g221",
+    "surface": "余波",
+    "kana": "よは",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "aftermath",
+        "secondary effect"
+      ],
+      "zh": [
+        "余波",
+        "影响"
+      ]
+    }
+  },
+  {
+    "id": "n1-g222",
+    "surface": "落下",
+    "kana": "らっか",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "fall",
+        "drop"
+      ],
+      "zh": [
+        "落下",
+        "降落"
+      ]
+    }
+  },
+  {
+    "id": "n1-g223",
+    "surface": "潔い",
+    "kana": "いさぎよい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "manly",
+        "sportsmanlike",
+        "gracious"
+      ],
+      "zh": [
+        "干脆",
+        "光明磊落"
+      ]
+    }
+  },
+  {
+    "id": "n1-g224",
+    "surface": "履歴",
+    "kana": "りれき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "personal history",
+        "background",
+        "record"
+      ],
+      "zh": [
+        "履历",
+        "历史记录"
+      ]
+    }
+  },
+  {
+    "id": "n1-g225",
+    "surface": "輪郭",
+    "kana": "りんかく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "contour",
+        "outline",
+        "silhouette"
+      ],
+      "zh": [
+        "轮廓",
+        "外形"
+      ]
+    }
+  },
+  {
+    "id": "n1-g226",
+    "surface": "冷酷",
+    "kana": "れいこく",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "cruelty",
+        "coldheartedness"
+      ],
+      "zh": [
+        "冷酷",
+        "无情"
+      ]
+    }
+  },
+  {
+    "id": "n1-g227",
+    "surface": "連帯",
+    "kana": "れんたい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "solidarity",
+        "joint"
+      ],
+      "zh": [
+        "连带",
+        "团结"
+      ]
+    }
+  },
+  {
+    "id": "n1-g228",
+    "surface": "漏洩",
+    "kana": "ろうえい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "disclosure",
+        "leakage"
+      ],
+      "zh": [
+        "泄露",
+        "泄漏"
+      ]
+    }
+  },
+  {
+    "id": "n1-g229",
+    "surface": "惑星",
+    "kana": "わくせい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "planet"
+      ],
+      "zh": [
+        "行星",
+        "星球"
+      ]
+    }
+  },
+  {
+    "id": "n1-g230",
+    "surface": "湾岸",
+    "kana": "わんがん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "gulf coast",
+        "bay coast"
+      ],
+      "zh": [
+        "湾岸",
+        "海湾沿岸"
+      ]
+    }
+  },
+  {
+    "id": "n1-g231",
+    "surface": "暗黙",
+    "kana": "あんもく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "tacit",
+        "implicit"
+      ],
+      "zh": [
+        "暗含",
+        "默认"
+      ]
+    }
+  },
+  {
+    "id": "n1-g232",
+    "surface": "異動",
+    "kana": "いどう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "change",
+        "reshuffle",
+        "personnel change"
+      ],
+      "zh": [
+        "调动",
+        "变动"
+      ]
+    }
+  },
+  {
+    "id": "n1-g233",
+    "surface": "隠蔽",
+    "kana": "いんぺい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "concealment",
+        "suppression",
+        "hiding"
+      ],
+      "zh": [
+        "隐蔽",
+        "掩盖"
+      ]
+    }
+  },
+  {
+    "id": "n1-g234",
+    "surface": "有機",
+    "kana": "ゆうき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "organic"
+      ],
+      "zh": [
+        "有机"
+      ]
+    }
+  },
+  {
+    "id": "n1-g235",
+    "surface": "潤沢",
+    "kana": "じゅんたく",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "abundant",
+        "ample"
+      ],
+      "zh": [
+        "润泽",
+        "丰厚"
+      ]
+    }
+  },
+  {
+    "id": "n1-g236",
+    "surface": "表明",
+    "kana": "ひょうめい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "declaration",
+        "indication",
+        "representation"
+      ],
+      "zh": [
+        "表明",
+        "表态"
+      ]
+    }
+  },
+  {
+    "id": "n1-g237",
+    "surface": "復興",
+    "kana": "ふっこう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "revival",
+        "renaissance",
+        "reconstruction"
+      ],
+      "zh": [
+        "复兴",
+        "重建"
+      ]
+    }
+  },
+  {
+    "id": "n1-g238",
+    "surface": "奮闘",
+    "kana": "ふんとう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "hard struggle",
+        "strenuous effort"
+      ],
+      "zh": [
+        "奋斗",
+        "奋战"
+      ]
+    }
+  },
+  {
+    "id": "n1-g239",
+    "surface": "閉鎖",
+    "kana": "へいさ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "closing",
+        "closure",
+        "lockout"
+      ],
+      "zh": [
+        "封闭",
+        "关闭"
+      ]
+    }
+  },
+  {
+    "id": "n1-g240",
+    "surface": "没収",
+    "kana": "ぼっしゅう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "confiscation",
+        "forfeiture"
+      ],
+      "zh": [
+        "没收",
+        "充公"
+      ]
+    }
+  },
+  {
+    "id": "n1-g241",
+    "surface": "網羅",
+    "kana": "もうら",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "comprising",
+        "including",
+        "covering"
+      ],
+      "zh": [
+        "网罗",
+        "包罗"
+      ]
+    }
+  },
+  {
+    "id": "n1-g242",
+    "surface": "抑制",
+    "kana": "よくせい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "control",
+        "restraint",
+        "suppression"
+      ],
+      "zh": [
+        "抑制",
+        "控制"
+      ]
+    }
+  },
+  {
+    "id": "n1-g243",
+    "surface": "劣等",
+    "kana": "れっとう",
+    "pos": [
+      "n",
+      "adj-na"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "inferiority",
+        "inferior"
+      ],
+      "zh": [
+        "劣等",
+        "低劣"
+      ]
+    }
+  },
+  {
+    "id": "n1-g244",
+    "surface": "相応",
+    "kana": "そうおう",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 1,
+    "meanings": {
+      "en": [
+        "suitable",
+        "appropriate",
+        "befitting"
+      ],
+      "zh": [
+        "相称",
+        "适合"
+      ]
+    }
   }
 ]

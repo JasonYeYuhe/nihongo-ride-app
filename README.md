@@ -41,10 +41,10 @@ swift run NihongoDashApp  # 启动游戏窗口（会抢占焦点以打开窗口,
 
 ## 路线图
 
-- **已完成(MVP 纵切):** 引擎、**N5–N1 词库(770 词,跨 5 级,中英双语)**、SM-2 复习、游戏循环、骑行 UI。
+- **已完成(MVP 纵切):** 引擎、**N5–N1 词库(1249 词,跨 5 级,中英双语)**、SM-2 复习、游戏循环、骑行 UI。
 - **下一步:** 继续扩充各级词库到全量(同一套 LLM 起草→校验→引擎校验流水线)、补足覆盖均衡度、例句(Tatoeba)、骑行视觉打磨、音效。
 - **以后:** 片假名(读音含片假名/ー的词目前被过滤掉)、动词变位、长句、排名、云同步、传送带皮肤。
 
 ## 数据与许可
 
-引擎罗马字表源自 **Google Mozc**(BSD-3)。当前 770 词(N5–N1,`Resources/n{5..1}.json`)为**原创/LLM 起草的中英释义**:N5(202)我已逐条审过;**N4–N1(568)由 Gemini 3.1 Pro 生成,已机器校验「读音为纯平假名且引擎可打、全局去重」,但尚未逐条人工/母语核对**——⚠️ 正式发布前必须请母语者过一遍读音与释义。选这条路是因为**不存在干净可商用的「日→中」开放词典**(JMdict 几乎无中文、Wiktionary/JMdict-zh 为 CC BY-SA copyleft;LLM 原创短释义可商用且无 copyleft,见 RESEARCH §4)。读音含片假名/ー 的词目前被过滤(待片假名支持)。见 [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) 与 [`docs/RESEARCH.md`](docs/RESEARCH.md) §4。
+引擎罗马字表源自 **Google Mozc**(BSD-3)。当前 **1249 词**(N5–N1,`Resources/n{5..1}.json`;分别 202/285/272/246/244)为**原创/LLM 起草的中英释义**:N5(202)我已逐条审过;**N4–N1(1047)由 Gemini 3.1 Pro 分批生成,已机器校验「读音为纯平假名且引擎可打、全局去重」,但尚未逐条人工/母语核对**——⚠️ 正式发布前必须请母语者过一遍读音与释义。选这条路是因为**不存在干净可商用的「日→中」开放词典**(JMdict 几乎无中文、Wiktionary/JMdict-zh 为 CC BY-SA copyleft;LLM 原创短释义可商用且无 copyleft,见 RESEARCH §4)。读音含片假名/ー 的词目前被过滤(待片假名支持)。见 [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) 与 [`docs/RESEARCH.md`](docs/RESEARCH.md) §4。
