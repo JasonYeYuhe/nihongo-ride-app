@@ -15604,5 +15604,1822 @@
         "分配"
       ]
     }
+  },
+  {
+    "id": "n3-k001",
+    "surface": "アイスクリーム",
+    "kana": "アイスクリーム",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "ice cream"
+      ],
+      "zh": [
+        "冰淇淋"
+      ]
+    }
+  },
+  {
+    "id": "n3-k002",
+    "surface": "アイロン",
+    "kana": "アイロン",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "iron"
+      ],
+      "zh": [
+        "熨斗"
+      ]
+    }
+  },
+  {
+    "id": "n3-k003",
+    "surface": "アウト",
+    "kana": "アウト",
+    "pos": [
+      "n",
+      "adj-na"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "out"
+      ],
+      "zh": [
+        "出局",
+        "外"
+      ]
+    }
+  },
+  {
+    "id": "n3-k004",
+    "surface": "アルバム",
+    "kana": "アルバム",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "album"
+      ],
+      "zh": [
+        "相册",
+        "专辑"
+      ]
+    }
+  },
+  {
+    "id": "n3-k005",
+    "surface": "インク",
+    "kana": "インク",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "ink"
+      ],
+      "zh": [
+        "墨水"
+      ]
+    }
+  },
+  {
+    "id": "n3-k006",
+    "surface": "ウイスキー",
+    "kana": "ウイスキー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "whiskey"
+      ],
+      "zh": [
+        "威士忌"
+      ]
+    }
+  },
+  {
+    "id": "n3-k007",
+    "surface": "エネルギー",
+    "kana": "エネルギー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "energy"
+      ],
+      "zh": [
+        "能量",
+        "能源"
+      ]
+    }
+  },
+  {
+    "id": "n3-k008",
+    "surface": "エンジン",
+    "kana": "エンジン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "engine"
+      ],
+      "zh": [
+        "引擎"
+      ]
+    }
+  },
+  {
+    "id": "n3-k009",
+    "surface": "オーバー",
+    "kana": "オーバー",
+    "pos": [
+      "n",
+      "v",
+      "adj-na"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "over",
+        "overcoat",
+        "exaggerate"
+      ],
+      "zh": [
+        "超过",
+        "大衣"
+      ]
+    }
+  },
+  {
+    "id": "n3-k010",
+    "surface": "オフィス",
+    "kana": "オフィス",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "office"
+      ],
+      "zh": [
+        "办公室"
+      ]
+    }
+  },
+  {
+    "id": "n3-k011",
+    "surface": "カー",
+    "kana": "カー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "car"
+      ],
+      "zh": [
+        "汽车"
+      ]
+    }
+  },
+  {
+    "id": "n3-k012",
+    "surface": "カード",
+    "kana": "カード",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "card"
+      ],
+      "zh": [
+        "卡片"
+      ]
+    }
+  },
+  {
+    "id": "n3-k013",
+    "surface": "キャプテン",
+    "kana": "キャプテン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "captain"
+      ],
+      "zh": [
+        "队长",
+        "船长"
+      ]
+    }
+  },
+  {
+    "id": "n3-k014",
+    "surface": "キャンプ",
+    "kana": "キャンプ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "camp",
+        "camping"
+      ],
+      "zh": [
+        "露营",
+        "营地"
+      ]
+    }
+  },
+  {
+    "id": "n3-k015",
+    "surface": "クラシック",
+    "kana": "クラシック",
+    "pos": [
+      "n",
+      "adj-na"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "classic",
+        "classical music"
+      ],
+      "zh": [
+        "古典",
+        "古典音乐"
+      ]
+    }
+  },
+  {
+    "id": "n3-k016",
+    "surface": "グラス",
+    "kana": "グラス",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "glass"
+      ],
+      "zh": [
+        "玻璃杯"
+      ]
+    }
+  },
+  {
+    "id": "n3-k017",
+    "surface": "グランド",
+    "kana": "グランド",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "ground",
+        "grand"
+      ],
+      "zh": [
+        "操场",
+        "宏伟的"
+      ]
+    }
+  },
+  {
+    "id": "n3-k018",
+    "surface": "クリーム",
+    "kana": "クリーム",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "cream"
+      ],
+      "zh": [
+        "奶油",
+        "乳霜"
+      ]
+    }
+  },
+  {
+    "id": "n3-k019",
+    "surface": "クリスマス",
+    "kana": "クリスマス",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "Christmas"
+      ],
+      "zh": [
+        "圣诞节"
+      ]
+    }
+  },
+  {
+    "id": "n3-k020",
+    "surface": "グループ",
+    "kana": "グループ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "group"
+      ],
+      "zh": [
+        "团体",
+        "群组"
+      ]
+    }
+  },
+  {
+    "id": "n3-k021",
+    "surface": "ケース",
+    "kana": "ケース",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "case"
+      ],
+      "zh": [
+        "盒子",
+        "案例"
+      ]
+    }
+  },
+  {
+    "id": "n3-k022",
+    "surface": "ゲーム",
+    "kana": "ゲーム",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "game"
+      ],
+      "zh": [
+        "游戏",
+        "比赛"
+      ]
+    }
+  },
+  {
+    "id": "n3-k023",
+    "surface": "コーチ",
+    "kana": "コーチ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "coach"
+      ],
+      "zh": [
+        "教练",
+        "指导"
+      ]
+    }
+  },
+  {
+    "id": "n3-k024",
+    "surface": "コード",
+    "kana": "コード",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "code",
+        "cord"
+      ],
+      "zh": [
+        "代码",
+        "绳索"
+      ]
+    }
+  },
+  {
+    "id": "n3-k025",
+    "surface": "ゴール",
+    "kana": "ゴール",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "goal"
+      ],
+      "zh": [
+        "目标",
+        "终点"
+      ]
+    }
+  },
+  {
+    "id": "n3-k026",
+    "surface": "コピー",
+    "kana": "コピー",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "copy",
+        "photocopy"
+      ],
+      "zh": [
+        "复制",
+        "复印"
+      ]
+    }
+  },
+  {
+    "id": "n3-k027",
+    "surface": "サービス",
+    "kana": "サービス",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "service",
+        "discount"
+      ],
+      "zh": [
+        "服务",
+        "附赠"
+      ]
+    }
+  },
+  {
+    "id": "n3-k028",
+    "surface": "サイン",
+    "kana": "サイン",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "sign",
+        "autograph"
+      ],
+      "zh": [
+        "签名",
+        "记号"
+      ]
+    }
+  },
+  {
+    "id": "n3-k029",
+    "surface": "ジーンズ",
+    "kana": "ジーンズ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "jeans"
+      ],
+      "zh": [
+        "牛仔裤"
+      ]
+    }
+  },
+  {
+    "id": "n3-k030",
+    "surface": "ジェット",
+    "kana": "ジェットき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "jet plane"
+      ],
+      "zh": [
+        "喷气式飞机"
+      ]
+    }
+  },
+  {
+    "id": "n3-k031",
+    "surface": "ジュース",
+    "kana": "ジュース",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "juice"
+      ],
+      "zh": [
+        "果汁"
+      ]
+    }
+  },
+  {
+    "id": "n3-k032",
+    "surface": "スイッチ",
+    "kana": "スイッチ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "switch"
+      ],
+      "zh": [
+        "开关"
+      ]
+    }
+  },
+  {
+    "id": "n3-k033",
+    "surface": "スープ",
+    "kana": "スープ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "soup"
+      ],
+      "zh": [
+        "汤"
+      ]
+    }
+  },
+  {
+    "id": "n3-k034",
+    "surface": "スキー",
+    "kana": "スキー",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "skiing",
+        "skis"
+      ],
+      "zh": [
+        "滑雪"
+      ]
+    }
+  },
+  {
+    "id": "n3-k035",
+    "surface": "スケート",
+    "kana": "スケート",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "skate",
+        "skating"
+      ],
+      "zh": [
+        "溜冰"
+      ]
+    }
+  },
+  {
+    "id": "n3-k036",
+    "surface": "スター",
+    "kana": "スター",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "star"
+      ],
+      "zh": [
+        "明星",
+        "星星"
+      ]
+    }
+  },
+  {
+    "id": "n3-k037",
+    "surface": "スタイル",
+    "kana": "スタイル",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "style",
+        "figure"
+      ],
+      "zh": [
+        "风格",
+        "身材"
+      ]
+    }
+  },
+  {
+    "id": "n3-k038",
+    "surface": "スタンド",
+    "kana": "スタンド",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "stand",
+        "bleachers"
+      ],
+      "zh": [
+        "看台",
+        "台灯"
+      ]
+    }
+  },
+  {
+    "id": "n3-k039",
+    "surface": "スピーチ",
+    "kana": "スピーチ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "speech"
+      ],
+      "zh": [
+        "演讲"
+      ]
+    }
+  },
+  {
+    "id": "n3-k040",
+    "surface": "セット",
+    "kana": "セット",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "set"
+      ],
+      "zh": [
+        "套餐",
+        "设定"
+      ]
+    }
+  },
+  {
+    "id": "n3-k041",
+    "surface": "センター",
+    "kana": "センター",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "center"
+      ],
+      "zh": [
+        "中心"
+      ]
+    }
+  },
+  {
+    "id": "n3-k042",
+    "surface": "ソファー",
+    "kana": "ソファー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "sofa"
+      ],
+      "zh": [
+        "沙发"
+      ]
+    }
+  },
+  {
+    "id": "n3-k043",
+    "surface": "タイプライター",
+    "kana": "タイプライター",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "typewriter"
+      ],
+      "zh": [
+        "打字机"
+      ]
+    }
+  },
+  {
+    "id": "n3-k044",
+    "surface": "ダイヤ",
+    "kana": "ダイヤ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "diamond",
+        "railway schedule"
+      ],
+      "zh": [
+        "钻石",
+        "列车时刻表"
+      ]
+    }
+  },
+  {
+    "id": "n3-k045",
+    "surface": "タオル",
+    "kana": "タオル",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "towel"
+      ],
+      "zh": [
+        "毛巾"
+      ]
+    }
+  },
+  {
+    "id": "n3-k046",
+    "surface": "ダンス",
+    "kana": "ダンス",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "dance"
+      ],
+      "zh": [
+        "舞蹈"
+      ]
+    }
+  },
+  {
+    "id": "n3-k047",
+    "surface": "チーズ",
+    "kana": "チーズ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "cheese"
+      ],
+      "zh": [
+        "奶酪",
+        "芝士"
+      ]
+    }
+  },
+  {
+    "id": "n3-k048",
+    "surface": "チーム",
+    "kana": "チーム",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "team"
+      ],
+      "zh": [
+        "队伍",
+        "团队"
+      ]
+    }
+  },
+  {
+    "id": "n3-k049",
+    "surface": "チャンス",
+    "kana": "チャンス",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "chance",
+        "opportunity"
+      ],
+      "zh": [
+        "机会"
+      ]
+    }
+  },
+  {
+    "id": "n3-k050",
+    "surface": "デート",
+    "kana": "デート",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "date"
+      ],
+      "zh": [
+        "约会"
+      ]
+    }
+  },
+  {
+    "id": "n3-k051",
+    "surface": "デモ",
+    "kana": "デモ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "demo",
+        "demonstration"
+      ],
+      "zh": [
+        "演示",
+        "示威"
+      ]
+    }
+  },
+  {
+    "id": "n3-k052",
+    "surface": "テント",
+    "kana": "テント",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "tent"
+      ],
+      "zh": [
+        "帐篷"
+      ]
+    }
+  },
+  {
+    "id": "n3-k053",
+    "surface": "トップ",
+    "kana": "トップ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "top"
+      ],
+      "zh": [
+        "顶部",
+        "首位"
+      ]
+    }
+  },
+  {
+    "id": "n3-k054",
+    "surface": "ドライブ",
+    "kana": "ドライブ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "drive",
+        "driving"
+      ],
+      "zh": [
+        "兜风",
+        "驾驶"
+      ]
+    }
+  },
+  {
+    "id": "n3-k055",
+    "surface": "トラック",
+    "kana": "トラック",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "truck",
+        "track"
+      ],
+      "zh": [
+        "卡车",
+        "跑道"
+      ]
+    }
+  },
+  {
+    "id": "n3-k056",
+    "surface": "ドラマ",
+    "kana": "ドラマ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "drama"
+      ],
+      "zh": [
+        "剧",
+        "连续剧"
+      ]
+    }
+  },
+  {
+    "id": "n3-k057",
+    "surface": "トランプ",
+    "kana": "トランプ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "playing cards"
+      ],
+      "zh": [
+        "扑克牌"
+      ]
+    }
+  },
+  {
+    "id": "n3-k058",
+    "surface": "ドレス",
+    "kana": "ドレス",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "dress"
+      ],
+      "zh": [
+        "连衣裙",
+        "礼服"
+      ]
+    }
+  },
+  {
+    "id": "n3-k059",
+    "surface": "トンネル",
+    "kana": "トンネル",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "tunnel"
+      ],
+      "zh": [
+        "隧道"
+      ]
+    }
+  },
+  {
+    "id": "n3-k060",
+    "surface": "ノック",
+    "kana": "ノック",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "knock"
+      ],
+      "zh": [
+        "敲门",
+        "击打"
+      ]
+    }
+  },
+  {
+    "id": "n3-k061",
+    "surface": "パーセント",
+    "kana": "パーセント",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "percent"
+      ],
+      "zh": [
+        "百分比"
+      ]
+    }
+  },
+  {
+    "id": "n3-k062",
+    "surface": "バイオリン",
+    "kana": "バイオリン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "violin"
+      ],
+      "zh": [
+        "小提琴"
+      ]
+    }
+  },
+  {
+    "id": "n3-k063",
+    "surface": "ハイキング",
+    "kana": "ハイキング",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "hiking"
+      ],
+      "zh": [
+        "远足",
+        "徒步"
+      ]
+    }
+  },
+  {
+    "id": "n3-k064",
+    "surface": "パイプ",
+    "kana": "パイプ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "pipe",
+        "tube"
+      ],
+      "zh": [
+        "管子",
+        "烟斗"
+      ]
+    }
+  },
+  {
+    "id": "n3-k065",
+    "surface": "パイロット",
+    "kana": "パイロット",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "pilot"
+      ],
+      "zh": [
+        "飞行员"
+      ]
+    }
+  },
+  {
+    "id": "n3-k066",
+    "surface": "パス",
+    "kana": "パス",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "pass",
+        "path"
+      ],
+      "zh": [
+        "通过",
+        "传球"
+      ]
+    }
+  },
+  {
+    "id": "n3-k067",
+    "surface": "パスポート",
+    "kana": "パスポート",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "passport"
+      ],
+      "zh": [
+        "护照"
+      ]
+    }
+  },
+  {
+    "id": "n3-k068",
+    "surface": "バッグ",
+    "kana": "バッグ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "bag"
+      ],
+      "zh": [
+        "包",
+        "袋子"
+      ]
+    }
+  },
+  {
+    "id": "n3-k069",
+    "surface": "バン",
+    "kana": "バン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "van",
+        "bun"
+      ],
+      "zh": [
+        "面包车",
+        "小圆面包"
+      ]
+    }
+  },
+  {
+    "id": "n3-k070",
+    "surface": "ハンサム",
+    "kana": "ハンサム",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "handsome"
+      ],
+      "zh": [
+        "英俊的",
+        "帅气的"
+      ]
+    }
+  },
+  {
+    "id": "n3-k071",
+    "surface": "ビール",
+    "kana": "ビール",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "beer"
+      ],
+      "zh": [
+        "啤酒"
+      ]
+    }
+  },
+  {
+    "id": "n3-k072",
+    "surface": "ピクニック",
+    "kana": "ピクニック",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "picnic"
+      ],
+      "zh": [
+        "野餐"
+      ]
+    }
+  },
+  {
+    "id": "n3-k073",
+    "surface": "ビデオ",
+    "kana": "ビデオ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "video"
+      ],
+      "zh": [
+        "视频",
+        "录像"
+      ]
+    }
+  },
+  {
+    "id": "n3-k074",
+    "surface": "ピン",
+    "kana": "ピン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "pin"
+      ],
+      "zh": [
+        "别针",
+        "大头针"
+      ]
+    }
+  },
+  {
+    "id": "n3-k075",
+    "surface": "プラス",
+    "kana": "プラス",
+    "pos": [
+      "n",
+      "v",
+      "adj-na"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "plus",
+        "addition"
+      ],
+      "zh": [
+        "加",
+        "正数"
+      ]
+    }
+  },
+  {
+    "id": "n3-k076",
+    "surface": "プラン",
+    "kana": "プラン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "plan"
+      ],
+      "zh": [
+        "计划",
+        "方案"
+      ]
+    }
+  },
+  {
+    "id": "n3-k077",
+    "surface": "ブレーキ",
+    "kana": "ブレーキ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "brake"
+      ],
+      "zh": [
+        "刹车",
+        "制动器"
+      ]
+    }
+  },
+  {
+    "id": "n3-k078",
+    "surface": "プロ",
+    "kana": "プロ",
+    "pos": [
+      "n",
+      "adj-na"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "professional"
+      ],
+      "zh": [
+        "专业的",
+        "职业的"
+      ]
+    }
+  },
+  {
+    "id": "n3-k079",
+    "surface": "ベルト",
+    "kana": "ベルト",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "belt"
+      ],
+      "zh": [
+        "带子",
+        "皮带"
+      ]
+    }
+  },
+  {
+    "id": "n3-k080",
+    "surface": "ペンキ",
+    "kana": "ペンキ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "paint"
+      ],
+      "zh": [
+        "油漆",
+        "涂料"
+      ]
+    }
+  },
+  {
+    "id": "n3-k081",
+    "surface": "ベンチ",
+    "kana": "ベンチ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "bench"
+      ],
+      "zh": [
+        "长凳",
+        "长椅"
+      ]
+    }
+  },
+  {
+    "id": "n3-k082",
+    "surface": "ボーイ",
+    "kana": "ボーイ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "boy",
+        "bellboy"
+      ],
+      "zh": [
+        "男孩",
+        "男服务员"
+      ]
+    }
+  },
+  {
+    "id": "n3-k083",
+    "surface": "ボート",
+    "kana": "ボート",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "boat"
+      ],
+      "zh": [
+        "小船"
+      ]
+    }
+  },
+  {
+    "id": "n3-k084",
+    "surface": "ホーム",
+    "kana": "ホーム",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "home",
+        "platform"
+      ],
+      "zh": [
+        "家",
+        "站台"
+      ]
+    }
+  },
+  {
+    "id": "n3-k085",
+    "surface": "ボール",
+    "kana": "ボール",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "ball",
+        "bowl"
+      ],
+      "zh": [
+        "球",
+        "碗"
+      ]
+    }
+  },
+  {
+    "id": "n3-k086",
+    "surface": "マーケット",
+    "kana": "マーケット",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "market"
+      ],
+      "zh": [
+        "市场"
+      ]
+    }
+  },
+  {
+    "id": "n3-k087",
+    "surface": "マイク",
+    "kana": "マイク",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "microphone"
+      ],
+      "zh": [
+        "麦克风",
+        "话筒"
+      ]
+    }
+  },
+  {
+    "id": "n3-k088",
+    "surface": "マスター",
+    "kana": "マスター",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "master"
+      ],
+      "zh": [
+        "掌握",
+        "主人"
+      ]
+    }
+  },
+  {
+    "id": "n3-k089",
+    "surface": "ママ",
+    "kana": "ママ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "mama",
+        "mom"
+      ],
+      "zh": [
+        "妈妈"
+      ]
+    }
+  },
+  {
+    "id": "n3-k090",
+    "surface": "ミス",
+    "kana": "ミス",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "miss",
+        "mistake"
+      ],
+      "zh": [
+        "失误",
+        "错误"
+      ]
+    }
+  },
+  {
+    "id": "n3-k091",
+    "surface": "ミルク",
+    "kana": "ミルク",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "milk"
+      ],
+      "zh": [
+        "牛奶"
+      ]
+    }
+  },
+  {
+    "id": "n3-k092",
+    "surface": "メモ",
+    "kana": "メモ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "memo",
+        "note"
+      ],
+      "zh": [
+        "备忘录",
+        "便签"
+      ]
+    }
+  },
+  {
+    "id": "n3-k093",
+    "surface": "メンバー",
+    "kana": "メンバー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "member"
+      ],
+      "zh": [
+        "成员",
+        "会员"
+      ]
+    }
+  },
+  {
+    "id": "n3-k094",
+    "surface": "ユーモア",
+    "kana": "ユーモア",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "humor"
+      ],
+      "zh": [
+        "幽默"
+      ]
+    }
+  },
+  {
+    "id": "n3-k095",
+    "surface": "ヨーロッパ",
+    "kana": "ヨーロッパ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "Europe"
+      ],
+      "zh": [
+        "欧洲"
+      ]
+    }
+  },
+  {
+    "id": "n3-k096",
+    "surface": "ヨット",
+    "kana": "ヨット",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "yacht"
+      ],
+      "zh": [
+        "游艇",
+        "帆船"
+      ]
+    }
+  },
+  {
+    "id": "n3-k097",
+    "surface": "ライター",
+    "kana": "ライター",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "lighter",
+        "writer"
+      ],
+      "zh": [
+        "打火机",
+        "作家"
+      ]
+    }
+  },
+  {
+    "id": "n3-k098",
+    "surface": "ラケット",
+    "kana": "ラケット",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "racket"
+      ],
+      "zh": [
+        "球拍"
+      ]
+    }
+  },
+  {
+    "id": "n3-k099",
+    "surface": "ロケット",
+    "kana": "ロケット",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "rocket"
+      ],
+      "zh": [
+        "火箭",
+        "吊坠盒"
+      ]
+    }
+  },
+  {
+    "id": "n3-k100",
+    "surface": "ワイン",
+    "kana": "ワイン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 3,
+    "meanings": {
+      "en": [
+        "wine"
+      ],
+      "zh": [
+        "葡萄酒",
+        "红酒"
+      ]
+    }
   }
 ]

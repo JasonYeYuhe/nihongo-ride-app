@@ -17,6 +17,17 @@ struct KatakanaTests {
         #expect(typesOut(c.input, as: c.target), "‘\(c.input)’ should type ‘\(c.target)’")
     }
 
+    @Test("foreign-sound digraphs in loanwords", arguments: [
+        ("famikon", "ファミコン"),
+        ("chekku", "チェック"),
+        ("jetto", "ジェット"),
+        ("pa-thi-", "パーティー"),
+        ("dhizuni-", "ディズニー"),
+    ])
+    func foreignDigraphs(_ c: (input: String, target: String)) {
+        #expect(typesOut(c.input, as: c.target), "‘\(c.input)’ should type ‘\(c.target)’")
+    }
+
     @Test("romanizer hint for katakana (ー → '-')", arguments: [
         ("テレビ", "terebi"),
         ("ラーメン", "ra-men"),

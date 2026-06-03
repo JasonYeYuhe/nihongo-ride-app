@@ -33,6 +33,12 @@ public enum KanaRomanizer {
             return (cluster, 2)
         }
 
+        // Foreign-sound digraph (katakana loanwords): base kana + small vowel.
+        if index + 1 < characters.count,
+           let cluster = foreign[String(kana) + String(characters[index + 1])] {
+            return (cluster, 2)
+        }
+
         switch kana {
         case "っ":   // sokuon — geminate the following consonant
             let next = peek(characters, at: index + 1)
@@ -77,10 +83,23 @@ public enum KanaRomanizer {
         "ま": "ma", "み": "mi", "む": "mu", "め": "me", "も": "mo",
         "や": "ya", "ゆ": "yu", "よ": "yo",
         "ら": "ra", "り": "ri", "る": "ru", "れ": "re", "ろ": "ro",
-        "わ": "wa", "ゐ": "wi", "ゑ": "we", "を": "wo",
-        // small kana (when standing alone)
-        "ぁ": "a", "ぃ": "i", "ぅ": "u", "ぇ": "e", "ぉ": "o",
-        "ゃ": "ya", "ゅ": "yu", "ょ": "yo", "ゎ": "wa",
+        "わ": "wa", "ゐ": "wi", "ゑ": "we", "を": "wo", "ゔ": "vu",
+        // small kana standing alone — typeable x-forms
+        "ぁ": "xa", "ぃ": "xi", "ぅ": "xu", "ぇ": "xe", "ぉ": "xo",
+        "ゃ": "xya", "ゅ": "xyu", "ょ": "xyo", "ゎ": "xwa",
+    ]
+
+    /// Foreign-sound digraphs in katakana loanwords, with engine-typeable romaji.
+    private static let foreign: [String: String] = [
+        "ふぁ": "fa", "ふぃ": "fi", "ふぇ": "fe", "ふぉ": "fo", "ふゅ": "fyu",
+        "ゔぁ": "va", "ゔぃ": "vi", "ゔぇ": "ve", "ゔぉ": "vo", "ゔゅ": "vyu",
+        "てぃ": "thi", "でぃ": "dhi", "とぅ": "twu", "どぅ": "dwu", "てゅ": "thu", "でゅ": "dhu",
+        "うぃ": "wi", "うぇ": "we", "うぉ": "who",
+        "しぇ": "she", "じぇ": "je", "ちぇ": "che", "ぢぇ": "dye",
+        "つぁ": "tsa", "つぃ": "tsi", "つぇ": "tse", "つぉ": "tso",
+        "きぇ": "kye", "にぇ": "nye", "ひぇ": "hye", "みぇ": "mye", "りぇ": "rye",
+        "びぇ": "bye", "ぴぇ": "pye", "いぇ": "ye",
+        "くぁ": "qa", "くぃ": "qi", "くぇ": "qe", "くぉ": "qo", "ぐぁ": "gwa",
     ]
 
     private static let youon: [String: String] = [

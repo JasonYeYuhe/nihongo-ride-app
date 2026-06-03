@@ -10835,5 +10835,1153 @@
         "方"
       ]
     }
+  },
+  {
+    "id": "n5-k001",
+    "surface": "アパート",
+    "kana": "アパート",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "apartment"
+      ],
+      "zh": [
+        "公寓"
+      ]
+    }
+  },
+  {
+    "id": "n5-k002",
+    "surface": "エレベーター",
+    "kana": "エレベーター",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "elevator",
+        "lift"
+      ],
+      "zh": [
+        "电梯"
+      ]
+    }
+  },
+  {
+    "id": "n5-k003",
+    "surface": "カップ",
+    "kana": "カップ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "cup",
+        "mug"
+      ],
+      "zh": [
+        "杯子",
+        "奖杯"
+      ]
+    }
+  },
+  {
+    "id": "n5-k004",
+    "surface": "カメラ",
+    "kana": "カメラ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "camera"
+      ],
+      "zh": [
+        "相机",
+        "照相机"
+      ]
+    }
+  },
+  {
+    "id": "n5-k005",
+    "surface": "カレー",
+    "kana": "カレー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "curry"
+      ],
+      "zh": [
+        "咖喱"
+      ]
+    }
+  },
+  {
+    "id": "n5-k006",
+    "surface": "カレンダー",
+    "kana": "カレンダー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "calendar"
+      ],
+      "zh": [
+        "日历",
+        "挂历"
+      ]
+    }
+  },
+  {
+    "id": "n5-k007",
+    "surface": "ギター",
+    "kana": "ギター",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "guitar"
+      ],
+      "zh": [
+        "吉他"
+      ]
+    }
+  },
+  {
+    "id": "n5-k008",
+    "surface": "キロ",
+    "kana": "キロ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "kilo",
+        "kilogram",
+        "kilometer"
+      ],
+      "zh": [
+        "千",
+        "千克",
+        "千米"
+      ]
+    }
+  },
+  {
+    "id": "n5-k009",
+    "surface": "キロ",
+    "kana": "キログラム",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "kilogram"
+      ],
+      "zh": [
+        "千克",
+        "公斤"
+      ]
+    }
+  },
+  {
+    "id": "n5-k010",
+    "surface": "キロ",
+    "kana": "キロメートル",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "kilometer"
+      ],
+      "zh": [
+        "千米",
+        "公里"
+      ]
+    }
+  },
+  {
+    "id": "n5-k011",
+    "surface": "クラス",
+    "kana": "クラス",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "class"
+      ],
+      "zh": [
+        "班级",
+        "阶级"
+      ]
+    }
+  },
+  {
+    "id": "n5-k012",
+    "surface": "グラム",
+    "kana": "グラム",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "gram"
+      ],
+      "zh": [
+        "克"
+      ]
+    }
+  },
+  {
+    "id": "n5-k013",
+    "surface": "コート",
+    "kana": "コート",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "coat",
+        "tennis court"
+      ],
+      "zh": [
+        "外套",
+        "球场"
+      ]
+    }
+  },
+  {
+    "id": "n5-k014",
+    "surface": "コーヒー",
+    "kana": "コーヒー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "coffee"
+      ],
+      "zh": [
+        "咖啡"
+      ]
+    }
+  },
+  {
+    "id": "n5-k015",
+    "surface": "コップ",
+    "kana": "コップ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "glass",
+        "tumbler"
+      ],
+      "zh": [
+        "玻璃杯",
+        "杯子"
+      ]
+    }
+  },
+  {
+    "id": "n5-k016",
+    "surface": "コピーする",
+    "kana": "コピーする",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to copy",
+        "to photocopy"
+      ],
+      "zh": [
+        "复印",
+        "复制"
+      ]
+    }
+  },
+  {
+    "id": "n5-k017",
+    "surface": "シャツ",
+    "kana": "シャツ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "shirt",
+        "undershirt"
+      ],
+      "zh": [
+        "衬衫",
+        "汗衫"
+      ]
+    }
+  },
+  {
+    "id": "n5-k018",
+    "surface": "シャワー",
+    "kana": "シャワー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "shower"
+      ],
+      "zh": [
+        "淋浴",
+        "莲蓬头"
+      ]
+    }
+  },
+  {
+    "id": "n5-k019",
+    "surface": "スカート",
+    "kana": "スカート",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "skirt"
+      ],
+      "zh": [
+        "裙子"
+      ]
+    }
+  },
+  {
+    "id": "n5-k020",
+    "surface": "ストーブ",
+    "kana": "ストーブ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "heater",
+        "stove"
+      ],
+      "zh": [
+        "火炉",
+        "暖炉"
+      ]
+    }
+  },
+  {
+    "id": "n5-k021",
+    "surface": "スプーン",
+    "kana": "スプーン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "spoon"
+      ],
+      "zh": [
+        "勺子",
+        "汤匙"
+      ]
+    }
+  },
+  {
+    "id": "n5-k022",
+    "surface": "スポーツ",
+    "kana": "スポーツ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "sport",
+        "sports"
+      ],
+      "zh": [
+        "运动",
+        "体育"
+      ]
+    }
+  },
+  {
+    "id": "n5-k023",
+    "surface": "ズボン",
+    "kana": "ズボン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "trousers",
+        "pants"
+      ],
+      "zh": [
+        "裤子"
+      ]
+    }
+  },
+  {
+    "id": "n5-k024",
+    "surface": "スリッパ",
+    "kana": "スリッパ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "slippers"
+      ],
+      "zh": [
+        "拖鞋"
+      ]
+    }
+  },
+  {
+    "id": "n5-k025",
+    "surface": "セーター",
+    "kana": "セーター",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "sweater",
+        "jumper"
+      ],
+      "zh": [
+        "毛衣"
+      ]
+    }
+  },
+  {
+    "id": "n5-k026",
+    "surface": "ゼロ",
+    "kana": "ゼロ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "zero"
+      ],
+      "zh": [
+        "零"
+      ]
+    }
+  },
+  {
+    "id": "n5-k027",
+    "surface": "タクシー",
+    "kana": "タクシー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "taxi",
+        "cab"
+      ],
+      "zh": [
+        "出租车",
+        "计程车"
+      ]
+    }
+  },
+  {
+    "id": "n5-k028",
+    "surface": "テープ",
+    "kana": "テープ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "tape",
+        "cassette tape"
+      ],
+      "zh": [
+        "磁带",
+        "胶带"
+      ]
+    }
+  },
+  {
+    "id": "n5-k029",
+    "surface": "テーブル",
+    "kana": "テーブル",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "table"
+      ],
+      "zh": [
+        "桌子",
+        "餐桌"
+      ]
+    }
+  },
+  {
+    "id": "n5-k030",
+    "surface": "テープレコーダー",
+    "kana": "テープレコーダー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "tape recorder"
+      ],
+      "zh": [
+        "录音机"
+      ]
+    }
+  },
+  {
+    "id": "n5-k031",
+    "surface": "テスト",
+    "kana": "テスト",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "test",
+        "exam"
+      ],
+      "zh": [
+        "考试",
+        "测试"
+      ]
+    }
+  },
+  {
+    "id": "n5-k032",
+    "surface": "デパート",
+    "kana": "デパート",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "department store"
+      ],
+      "zh": [
+        "百货公司"
+      ]
+    }
+  },
+  {
+    "id": "n5-k033",
+    "surface": "テレビ",
+    "kana": "テレビ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "television",
+        "TV"
+      ],
+      "zh": [
+        "电视"
+      ]
+    }
+  },
+  {
+    "id": "n5-k034",
+    "surface": "ドア",
+    "kana": "ドア",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "door"
+      ],
+      "zh": [
+        "门"
+      ]
+    }
+  },
+  {
+    "id": "n5-k035",
+    "surface": "トイレ",
+    "kana": "トイレ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "toilet",
+        "restroom"
+      ],
+      "zh": [
+        "厕所",
+        "洗手间"
+      ]
+    }
+  },
+  {
+    "id": "n5-k036",
+    "surface": "ナイフ",
+    "kana": "ナイフ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "knife"
+      ],
+      "zh": [
+        "小刀",
+        "餐刀"
+      ]
+    }
+  },
+  {
+    "id": "n5-k037",
+    "surface": "ニュース",
+    "kana": "ニュース",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "news"
+      ],
+      "zh": [
+        "新闻",
+        "消息"
+      ]
+    }
+  },
+  {
+    "id": "n5-k038",
+    "surface": "ネクタイ",
+    "kana": "ネクタイ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "tie",
+        "necktie"
+      ],
+      "zh": [
+        "领带"
+      ]
+    }
+  },
+  {
+    "id": "n5-k039",
+    "surface": "ノート",
+    "kana": "ノート",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "notebook"
+      ],
+      "zh": [
+        "笔记本"
+      ]
+    }
+  },
+  {
+    "id": "n5-k040",
+    "surface": "パーティー",
+    "kana": "パーティー",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "party"
+      ],
+      "zh": [
+        "派对",
+        "聚会"
+      ]
+    }
+  },
+  {
+    "id": "n5-k041",
+    "surface": "バス",
+    "kana": "バス",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "bus",
+        "bath"
+      ],
+      "zh": [
+        "公交车",
+        "浴缸"
+      ]
+    }
+  },
+  {
+    "id": "n5-k042",
+    "surface": "バター",
+    "kana": "バター",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "butter"
+      ],
+      "zh": [
+        "黄油",
+        "牛油"
+      ]
+    }
+  },
+  {
+    "id": "n5-k043",
+    "surface": "パン",
+    "kana": "パン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "bread",
+        "pastry"
+      ],
+      "zh": [
+        "面包"
+      ]
+    }
+  },
+  {
+    "id": "n5-k044",
+    "surface": "ハンカチ",
+    "kana": "ハンカチ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "handkerchief"
+      ],
+      "zh": [
+        "手帕"
+      ]
+    }
+  },
+  {
+    "id": "n5-k045",
+    "surface": "フィルム",
+    "kana": "フィルム",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "film"
+      ],
+      "zh": [
+        "胶卷",
+        "薄膜"
+      ]
+    }
+  },
+  {
+    "id": "n5-k046",
+    "surface": "プール",
+    "kana": "プール",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "pool",
+        "swimming pool"
+      ],
+      "zh": [
+        "游泳池"
+      ]
+    }
+  },
+  {
+    "id": "n5-k047",
+    "surface": "フォーク",
+    "kana": "フォーク",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "fork"
+      ],
+      "zh": [
+        "叉子"
+      ]
+    }
+  },
+  {
+    "id": "n5-k048",
+    "surface": "ページ",
+    "kana": "ページ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "page"
+      ],
+      "zh": [
+        "页"
+      ]
+    }
+  },
+  {
+    "id": "n5-k049",
+    "surface": "ベッド",
+    "kana": "ベッド",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "bed"
+      ],
+      "zh": [
+        "床"
+      ]
+    }
+  },
+  {
+    "id": "n5-k050",
+    "surface": "ペット",
+    "kana": "ペット",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "pet"
+      ],
+      "zh": [
+        "宠物"
+      ]
+    }
+  },
+  {
+    "id": "n5-k051",
+    "surface": "ペン",
+    "kana": "ペン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "pen"
+      ],
+      "zh": [
+        "钢笔",
+        "笔"
+      ]
+    }
+  },
+  {
+    "id": "n5-k052",
+    "surface": "ボールペン",
+    "kana": "ボールペン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "ballpoint pen"
+      ],
+      "zh": [
+        "圆珠笔"
+      ]
+    }
+  },
+  {
+    "id": "n5-k053",
+    "surface": "ポケット",
+    "kana": "ポケット",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "pocket"
+      ],
+      "zh": [
+        "口袋",
+        "衣袋"
+      ]
+    }
+  },
+  {
+    "id": "n5-k054",
+    "surface": "ポスト",
+    "kana": "ポスト",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "mailbox",
+        "postbox"
+      ],
+      "zh": [
+        "邮筒",
+        "信箱"
+      ]
+    }
+  },
+  {
+    "id": "n5-k055",
+    "surface": "ボタン",
+    "kana": "ボタン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "button"
+      ],
+      "zh": [
+        "按钮",
+        "纽扣"
+      ]
+    }
+  },
+  {
+    "id": "n5-k056",
+    "surface": "ホテル",
+    "kana": "ホテル",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "hotel"
+      ],
+      "zh": [
+        "酒店",
+        "旅馆"
+      ]
+    }
+  },
+  {
+    "id": "n5-k057",
+    "surface": "マッチ",
+    "kana": "マッチ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "match"
+      ],
+      "zh": [
+        "火柴",
+        "比赛"
+      ]
+    }
+  },
+  {
+    "id": "n5-k058",
+    "surface": "メートル",
+    "kana": "メートル",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "meter"
+      ],
+      "zh": [
+        "米",
+        "公尺"
+      ]
+    }
+  },
+  {
+    "id": "n5-k059",
+    "surface": "ラジオ",
+    "kana": "ラジオ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "radio"
+      ],
+      "zh": [
+        "收音机"
+      ]
+    }
+  },
+  {
+    "id": "n5-k060",
+    "surface": "ラジカセ",
+    "kana": "ラジカセ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "radio cassette player"
+      ],
+      "zh": [
+        "收录机"
+      ]
+    }
+  },
+  {
+    "id": "n5-k061",
+    "surface": "ラジオカセット",
+    "kana": "ラジオカセット",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "radio cassette player"
+      ],
+      "zh": [
+        "收录机"
+      ]
+    }
+  },
+  {
+    "id": "n5-k062",
+    "surface": "レコード",
+    "kana": "レコード",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "record",
+        "vinyl"
+      ],
+      "zh": [
+        "唱片",
+        "记录"
+      ]
+    }
+  },
+  {
+    "id": "n5-k063",
+    "surface": "レストラン",
+    "kana": "レストラン",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "restaurant"
+      ],
+      "zh": [
+        "餐厅",
+        "饭店"
+      ]
+    }
+  },
+  {
+    "id": "n5-k064",
+    "surface": "ワイシャツ",
+    "kana": "ワイシャツ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "dress shirt"
+      ],
+      "zh": [
+        "白衬衫",
+        "衬衣"
+      ]
+    }
   }
 ]
