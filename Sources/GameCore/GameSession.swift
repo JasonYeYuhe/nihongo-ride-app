@@ -23,19 +23,23 @@ public final class GameSession {
         public var reviewWordCount: Int
         /// Baseline seconds per kana, used to derive the speed grade.
         public var secondsPerKanaBaseline: Double
+        /// JLPT level to draw new words from; `nil` mixes all levels.
+        public var level: JLPTLevel?
 
         public init(
             languageCode: String = "en",
             showRomajiHint: Bool = true,
             newWordCount: Int = 12,
             reviewWordCount: Int = 8,
-            secondsPerKanaBaseline: Double = 0.8
+            secondsPerKanaBaseline: Double = 0.8,
+            level: JLPTLevel? = nil
         ) {
             self.languageCode = languageCode
             self.showRomajiHint = showRomajiHint
             self.newWordCount = newWordCount
             self.reviewWordCount = reviewWordCount
             self.secondsPerKanaBaseline = secondsPerKanaBaseline
+            self.level = level
         }
     }
 
@@ -95,7 +99,7 @@ public final class GameSession {
         let dueWords = review.dueCards(on: now(), limit: config.reviewWordCount)
             .compactMap { vocab.entry(id: $0.id) }
         let seen = Set(review.cards.keys)
-        let newWords = vocab.ordered()
+        let newWords = vocab.ordered(level: config.level)
             .filter { !seen.contains($0.id) }
             .prefix(config.newWordCount)
         var words = dueWords + Array(newWords)

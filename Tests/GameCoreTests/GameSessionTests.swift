@@ -97,4 +97,12 @@ struct GameSessionTests {
         #expect(session.isFinished)
         #expect(session.currentKana == nil)
     }
+
+    @Test("config.level restricts new words to the chosen level")
+    func levelFilter() {
+        let session = GameSession.make(
+            config: .init(newWordCount: 30, reviewWordCount: 0, level: .n4)
+        )
+        #expect(session.current?.jlpt == .n4)   // drawn only from N4
+    }
 }

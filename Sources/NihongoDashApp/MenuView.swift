@@ -1,4 +1,5 @@
 import SwiftUI
+import VocabKit
 
 struct MenuView: View {
     @Environment(AppModel.self) private var model
@@ -37,6 +38,17 @@ struct MenuView: View {
                     }
                     .pickerStyle(.segmented)
                     .frame(width: 220)
+                }
+                HStack(spacing: 12) {
+                    Image(systemName: "graduationcap")
+                    Picker("", selection: $model.selectedLevel) {
+                        ForEach(JLPTLevel.allCases, id: \.self) { level in
+                            Text(level.label).tag(JLPTLevel?.some(level))
+                        }
+                        Text(model.languageCode == "zh" ? "混合" : "All").tag(JLPTLevel?.none)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(width: 300)
                 }
                 Toggle(isOn: $model.showRomajiHint) {
                     Label(model.languageCode == "zh" ? "显示罗马字提示" : "Show romaji hints",

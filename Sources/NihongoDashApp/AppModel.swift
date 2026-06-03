@@ -34,6 +34,8 @@ final class AppModel {
     // Settings
     var languageCode: String = "en"      // "en" or "zh"
     var showRomajiHint: Bool = true
+    /// Chosen JLPT level for new words; `nil` mixes all levels.
+    var selectedLevel: JLPTLevel? = .n5
 
     private(set) var session: GameSession?
     private(set) var lastSummary: GameSummary?
@@ -55,6 +57,7 @@ final class AppModel {
         var config = GameSession.Config()
         config.languageCode = languageCode
         config.showRomajiHint = showRomajiHint
+        config.level = selectedLevel
         session = GameSession.make(config: config, vocab: .shared, review: reviewStore)
         screen = .playing
     }
