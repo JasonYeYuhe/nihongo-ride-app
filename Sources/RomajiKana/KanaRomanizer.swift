@@ -10,7 +10,8 @@
 /// so the hint always round-trips through the matcher.
 public enum KanaRomanizer {
     public static func romaji(for kana: String) -> String {
-        let characters = Array(kana)
+        // Normalize katakana → hiragana so loanword readings romanize too.
+        let characters = Array(KanaScript.katakanaToHiragana(kana))
         var result = ""
         var index = 0
         while index < characters.count {
@@ -43,6 +44,9 @@ public enum KanaRomanizer {
             let next = peek(characters, at: index + 1)
             if let first = next.first, "aiueoy".contains(first) { return ("n'", 1) }
             return ("n", 1)
+
+        case "ー":   // prolonged-sound mark (katakana) — typed with the '-' key
+            return ("-", 1)
 
         default:
             return (base[String(kana)] ?? String(kana), 1)

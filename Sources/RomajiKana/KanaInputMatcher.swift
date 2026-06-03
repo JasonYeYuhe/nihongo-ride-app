@@ -39,7 +39,8 @@ public struct KanaInputMatcher {
 
     public init(target: String, table: RomajiKanaTable = .shared) {
         self.target = target
-        var builder = NFABuilder(target: Array(target), table: table)
+        // Match katakana targets by normalizing to hiragana (ー keeps its own producer).
+        var builder = NFABuilder(target: Array(KanaScript.katakanaToHiragana(target)), table: table)
         builder.build()
         transitions = builder.transitions
         committedKana = builder.committedKana
