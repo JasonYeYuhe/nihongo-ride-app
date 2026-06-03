@@ -2,16 +2,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "TypingApp",
+    name: "Tabikana",
     platforms: [
-        .macOS(.v13)
+        .macOS(.v14)
     ],
     products: [
-        // The romaji→kana typing engine. Pure Swift, zero UI dependencies,
-        // reusable by the (future) SwiftUI app, CLI tools, and tests.
+        // Pure-Swift logic libraries (UI-independent, fully testable).
         .library(name: "RomajiKana", targets: ["RomajiKana"]),
+        .library(name: "VocabKit", targets: ["VocabKit"]),
     ],
     targets: [
+        // MARK: Engine — romaji→kana typing matcher.
         .target(
             name: "RomajiKana",
             resources: [
@@ -19,9 +20,16 @@ let package = Package(
                 .copy("Resources/romaji-hiragana.tsv")
             ]
         ),
-        .testTarget(
-            name: "RomajiKanaTests",
-            dependencies: ["RomajiKana"]
+        .testTarget(name: "RomajiKanaTests", dependencies: ["RomajiKana"]),
+
+        // MARK: Vocabulary — entries, multi-language meanings, JLPT levels, difficulty.
+        .target(
+            name: "VocabKit",
+            dependencies: ["RomajiKana"],
+            resources: [
+                .copy("Resources/n5_starter.json")
+            ]
         ),
+        .testTarget(name: "VocabKitTests", dependencies: ["VocabKit"]),
     ]
 )
