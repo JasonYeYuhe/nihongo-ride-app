@@ -6,10 +6,13 @@ import RomajiKana
 struct VocabKitTests {
     let store = VocabStore.shared
 
-    @Test("starter pack loads a reasonable number of entries")
+    @Test("packs load across all five JLPT levels")
     func loads() {
         #expect(!store.isEmpty)
-        #expect(store.entries.count >= 50)
+        #expect(store.entries.count >= 500)
+        for level in JLPTLevel.allCases {
+            #expect(!store.entries(level: level).isEmpty, "no entries for \(level.label)")
+        }
     }
 
     @Test("every entry has English and Chinese meanings")
@@ -70,8 +73,16 @@ struct VocabKitTests {
 
     @Test("level filtering and id lookup")
     func levelFilter() {
-        #expect(store.entries(level: .n5).count == store.entries.count)  // starter pack is all N5
+        let n5Count = store.entries(level: .n5).count
+        #expect(n5Count >= 100)
+        #expect(n5Count < store.entries.count)            // higher levels exist too
         #expect(store.entry(id: "n5-mizu")?.kana == "みず")
         #expect(store.entry(id: "does-not-exist") == nil)
+    }
+
+    @Test("readings are globally unique across levels")
+    func globallyUnique() {
+        let kana = store.entries.map(\.kana)
+        #expect(Set(kana).count == kana.count)
     }
 }

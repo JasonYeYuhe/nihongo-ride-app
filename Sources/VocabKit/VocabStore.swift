@@ -29,19 +29,24 @@ public struct VocabStore: Sendable {
 
     // MARK: Loading
 
+    /// Bundled word-pack files, one per JLPT level (easiest first).
+    static let levelFiles = ["n5", "n4", "n3", "n2", "n1"]
+
     static func loadBundled() -> VocabStore {
-        guard let url = Bundle.module.url(forResource: "n5_starter", withExtension: "json"),
-              let data = try? Data(contentsOf: url)
-        else {
-            assertionFailure("VocabKit: n5_starter.json is missing")
-            return VocabStore(entries: [])
+        let decoder = JSONDecoder()
+        var all: [VocabEntry] = []
+        for name in levelFiles {
+            guard let url = Bundle.module.url(forResource: name, withExtension: "json"),
+                  let data = try? Data(contentsOf: url) else {
+                assertionFailure("VocabKit: \(name).json is missing")
+                continue
+            }
+            do {
+                all.append(contentsOf: try decoder.decode([VocabEntry].self, from: data))
+            } catch {
+                assertionFailure("VocabKit: failed to decode \(name).json: \(error)")
+            }
         }
-        do {
-            let entries = try JSONDecoder().decode([VocabEntry].self, from: data)
-            return VocabStore(entries: entries)
-        } catch {
-            assertionFailure("VocabKit: failed to decode n5_starter.json: \(error)")
-            return VocabStore(entries: [])
-        }
+        return VocabStore(entries: all)
     }
 }

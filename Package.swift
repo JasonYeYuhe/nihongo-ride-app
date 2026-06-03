@@ -31,7 +31,11 @@ let package = Package(
             name: "VocabKit",
             dependencies: ["RomajiKana"],
             resources: [
-                .copy("Resources/n5_starter.json")
+                .copy("Resources/n5.json"),
+                .copy("Resources/n4.json"),
+                .copy("Resources/n3.json"),
+                .copy("Resources/n2.json"),
+                .copy("Resources/n1.json"),
             ]
         ),
         .testTarget(name: "VocabKitTests", dependencies: ["VocabKit"]),
