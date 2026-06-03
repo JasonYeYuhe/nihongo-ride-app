@@ -41,10 +41,10 @@ swift run NihongoDashApp  # 启动游戏窗口（会抢占焦点以打开窗口,
 
 ## 路线图
 
-- **已完成(MVP 纵切):** 引擎、N5 起步词库(75 词,中英释义)、SM-2 复习、游戏循环、骑行 UI。
+- **已完成(MVP 纵切):** 引擎、N5 词库(**202 词**,中英双语)、SM-2 复习、游戏循环、骑行 UI。
 - **下一步:** N5 全量词库导入管线(JMdict_e + Tanos,见 RESEARCH §4)、例句(Tatoeba)、设置/复习专屏、骑行视觉打磨、音效。
 - **以后:** 片假名、动词变位、长句、排名、N4–N1、云同步、传送带皮肤。
 
 ## 数据与许可
 
-引擎罗马字表源自 **Google Mozc**(BSD-3)。MVP 起步词库为**自编读音 + 原创中英简释**(合法、无抄录)。全量词库将用 JMdict(CC BY-SA 4.0)+ Tanos JLPT(CC BY)+ Tatoeba(CC BY 2.0 FR),均可商用、义务为署名。见 [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) 与 [`docs/RESEARCH.md`](docs/RESEARCH.md) §4。
+引擎罗马字表源自 **Google Mozc**(BSD-3)。当前 202 词的 N5 词库为**原创/LLM 起草并经人工校验的中英释义**(读音逐条经引擎校验为可打)——选这条路是因为**不存在干净可商用的「日→中」开放词典**(JMdict 几乎无中文、Wiktionary/JMdict-zh 为 CC BY-SA copyleft;LLM 原创短释义可商用且无 copyleft,见 RESEARCH §4)。全量词库的读音/英文/分级仍可用 JMdict(CC BY-SA 4.0)+ Tanos JLPT(CC BY),中文维持原创/校验路线。商用前建议请母语者过一遍。见 [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) 与 [`docs/RESEARCH.md`](docs/RESEARCH.md) §4。

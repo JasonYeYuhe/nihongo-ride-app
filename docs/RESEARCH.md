@@ -95,6 +95,8 @@ Apple 文档原文:文本输入管理系统「allows key events to be interprete
 
 **MVP 数据计划:** 取 N5 子集——以 Tanos N5 词头为种子,join JMdict_e 取读音+英文释义,可选挂 1 条 Tatoeba 例句。可商用、署名即可。
 
+**中文释义(补充结论,2026-06-03 经 Gemini 3.1 Pro 联网核实):** **不存在干净、可商用的「日→中」开放词典**——JMdict 几乎无中文词义;社区 JMdict-zh 分支授权来路不清;Wiktionary 的日中数据是 **CC BY-SA**(copyleft,会传染到派生数据)。最干净的路线是**用 LLM 起草 + 人工校验的原创短释义**:主流 LLM 服务条款授予输出的商用权,且 AI 生成内容不带 copyleft / 无署名义务(代价是这部分数据本身难以主张版权)。**决策:中文(及英文)释义走原创/LLM 校验路线**(当前 202 词即如此),与英文可选的 JMdict 路线并行;商用前请母语者校对。
+
 **致谢区文案(可直接用):**
 - *Dictionary data: JMdict / KANJIDIC2, © James William Breen & EDRDG, CC BY-SA 4.0 — edrdg.org*
 - *JLPT level data: based on Jonathan Waller's JLPT Resources (tanos.co.uk), CC BY*
