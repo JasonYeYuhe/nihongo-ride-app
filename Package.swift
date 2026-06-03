@@ -11,6 +11,7 @@ let package = Package(
         .library(name: "RomajiKana", targets: ["RomajiKana"]),
         .library(name: "VocabKit", targets: ["VocabKit"]),
         .library(name: "ReviewKit", targets: ["ReviewKit"]),
+        .library(name: "GameCore", targets: ["GameCore"]),
     ],
     targets: [
         // MARK: Engine — romaji→kana typing matcher.
@@ -36,5 +37,9 @@ let package = Package(
         // MARK: Spaced repetition — simplified SM-2 over typing performance.
         .target(name: "ReviewKit"),
         .testTarget(name: "ReviewKitTests", dependencies: ["ReviewKit"]),
+
+        // MARK: Game loop — word queue, scoring, SRS recording (UI-independent).
+        .target(name: "GameCore", dependencies: ["RomajiKana", "VocabKit", "ReviewKit"]),
+        .testTarget(name: "GameCoreTests", dependencies: ["GameCore"]),
     ]
 )
