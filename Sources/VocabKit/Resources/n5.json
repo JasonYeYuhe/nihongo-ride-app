@@ -7592,5 +7592,3248 @@
         "从"
       ]
     }
+  },
+  {
+    "id": "n5-b201",
+    "surface": "明い",
+    "kana": "あかるい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "bright",
+        "cheerful"
+      ],
+      "zh": [
+        "明亮的",
+        "开朗的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b202",
+    "surface": "朝御飯",
+    "kana": "あさごはん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "breakfast"
+      ],
+      "zh": [
+        "早餐"
+      ]
+    }
+  },
+  {
+    "id": "n5-b203",
+    "surface": "あそこ",
+    "kana": "あそこ",
+    "pos": [
+      "pron"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "over there",
+        "that place"
+      ],
+      "zh": [
+        "那里",
+        "那个地方"
+      ]
+    }
+  },
+  {
+    "id": "n5-b204",
+    "surface": "あちら",
+    "kana": "あちら",
+    "pos": [
+      "pron"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "over there",
+        "that direction"
+      ],
+      "zh": [
+        "那里",
+        "那个方向"
+      ]
+    }
+  },
+  {
+    "id": "n5-b205",
+    "surface": "後",
+    "kana": "あと",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "after",
+        "later"
+      ],
+      "zh": [
+        "之后",
+        "后面"
+      ]
+    }
+  },
+  {
+    "id": "n5-b206",
+    "surface": "姉",
+    "kana": "あね",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "older sister"
+      ],
+      "zh": [
+        "姐姐"
+      ]
+    }
+  },
+  {
+    "id": "n5-b207",
+    "surface": "あびる",
+    "kana": "あびる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to bathe",
+        "to shower"
+      ],
+      "zh": [
+        "淋浴",
+        "浇"
+      ]
+    }
+  },
+  {
+    "id": "n5-b208",
+    "surface": "甘い",
+    "kana": "あまい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "sweet"
+      ],
+      "zh": [
+        "甜的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b209",
+    "surface": "洗う",
+    "kana": "あらう",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to wash"
+      ],
+      "zh": [
+        "洗"
+      ]
+    }
+  },
+  {
+    "id": "n5-b210",
+    "surface": "歩く",
+    "kana": "あるく",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to walk"
+      ],
+      "zh": [
+        "走",
+        "步行"
+      ]
+    }
+  },
+  {
+    "id": "n5-b211",
+    "surface": "いいえ",
+    "kana": "いいえ",
+    "pos": [
+      "exp"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "no"
+      ],
+      "zh": [
+        "不",
+        "不是"
+      ]
+    }
+  },
+  {
+    "id": "n5-b212",
+    "surface": "いかが",
+    "kana": "いかが",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "how",
+        "in what way"
+      ],
+      "zh": [
+        "怎么样"
+      ]
+    }
+  },
+  {
+    "id": "n5-b213",
+    "surface": "いくら",
+    "kana": "いくら",
+    "pos": [
+      "adv",
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "how much"
+      ],
+      "zh": [
+        "多少（钱）"
+      ]
+    }
+  },
+  {
+    "id": "n5-b214",
+    "surface": "医者",
+    "kana": "いしゃ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "doctor"
+      ],
+      "zh": [
+        "医生"
+      ]
+    }
+  },
+  {
+    "id": "n5-b215",
+    "surface": "痛い",
+    "kana": "いたい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "painful",
+        "sore"
+      ],
+      "zh": [
+        "痛的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b216",
+    "surface": "いちばん",
+    "kana": "いちばん",
+    "pos": [
+      "adv",
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "best",
+        "number one"
+      ],
+      "zh": [
+        "第一",
+        "最"
+      ]
+    }
+  },
+  {
+    "id": "n5-b217",
+    "surface": "五日",
+    "kana": "いつか",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "fifth day of the month",
+        "five days"
+      ],
+      "zh": [
+        "五日",
+        "五天"
+      ]
+    }
+  },
+  {
+    "id": "n5-b218",
+    "surface": "五つ",
+    "kana": "いつつ",
+    "pos": [
+      "num"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "five"
+      ],
+      "zh": [
+        "五个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b219",
+    "surface": "嫌",
+    "kana": "いや",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "disagreeable",
+        "unpleasant"
+      ],
+      "zh": [
+        "讨厌的",
+        "不愿意的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b220",
+    "surface": "居る",
+    "kana": "いる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to be (animate)",
+        "to exist"
+      ],
+      "zh": [
+        "在（人、动物）"
+      ]
+    }
+  },
+  {
+    "id": "n5-b221",
+    "surface": "色",
+    "kana": "いろ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "color"
+      ],
+      "zh": [
+        "颜色"
+      ]
+    }
+  },
+  {
+    "id": "n5-b222",
+    "surface": "上",
+    "kana": "うえ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "above",
+        "up"
+      ],
+      "zh": [
+        "上",
+        "上面"
+      ]
+    }
+  },
+  {
+    "id": "n5-b223",
+    "surface": "薄い",
+    "kana": "うすい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "thin",
+        "pale"
+      ],
+      "zh": [
+        "薄的",
+        "淡的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b224",
+    "surface": "歌う",
+    "kana": "うたう",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to sing"
+      ],
+      "zh": [
+        "唱"
+      ]
+    }
+  },
+  {
+    "id": "n5-b225",
+    "surface": "売る",
+    "kana": "うる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to sell"
+      ],
+      "zh": [
+        "卖"
+      ]
+    }
+  },
+  {
+    "id": "n5-b226",
+    "surface": "上着",
+    "kana": "うわぎ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "coat",
+        "jacket"
+      ],
+      "zh": [
+        "上衣",
+        "外套"
+      ]
+    }
+  },
+  {
+    "id": "n5-b227",
+    "surface": "映画",
+    "kana": "えいが",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "movie",
+        "film"
+      ],
+      "zh": [
+        "电影"
+      ]
+    }
+  },
+  {
+    "id": "n5-b228",
+    "surface": "英語",
+    "kana": "えいご",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "English language"
+      ],
+      "zh": [
+        "英语"
+      ]
+    }
+  },
+  {
+    "id": "n5-b229",
+    "surface": "多い",
+    "kana": "おおい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "many",
+        "numerous"
+      ],
+      "zh": [
+        "多的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b230",
+    "surface": "大勢",
+    "kana": "おおぜい",
+    "pos": [
+      "n",
+      "adv"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "many people",
+        "large numbers"
+      ],
+      "zh": [
+        "很多人"
+      ]
+    }
+  },
+  {
+    "id": "n5-b231",
+    "surface": "お菓子",
+    "kana": "おかし",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "sweets",
+        "candy"
+      ],
+      "zh": [
+        "点心",
+        "糖果"
+      ]
+    }
+  },
+  {
+    "id": "n5-b232",
+    "surface": "お酒",
+    "kana": "おさけ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "alcohol",
+        "sake"
+      ],
+      "zh": [
+        "酒"
+      ]
+    }
+  },
+  {
+    "id": "n5-b233",
+    "surface": "伯父",
+    "kana": "おじいさん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "grandfather",
+        "old man"
+      ],
+      "zh": [
+        "爷爷",
+        "老爷爷"
+      ]
+    }
+  },
+  {
+    "id": "n5-b234",
+    "surface": "押す",
+    "kana": "おす",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to push",
+        "to press"
+      ],
+      "zh": [
+        "推",
+        "按"
+      ]
+    }
+  },
+  {
+    "id": "n5-b235",
+    "surface": "お父さん",
+    "kana": "おとうさん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "father"
+      ],
+      "zh": [
+        "父亲",
+        "爸爸"
+      ]
+    }
+  },
+  {
+    "id": "n5-b236",
+    "surface": "男の子",
+    "kana": "おとこのこ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "boy"
+      ],
+      "zh": [
+        "男孩"
+      ]
+    }
+  },
+  {
+    "id": "n5-b237",
+    "surface": "一昨年",
+    "kana": "おととし",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "the year before last"
+      ],
+      "zh": [
+        "前年"
+      ]
+    }
+  },
+  {
+    "id": "n5-b238",
+    "surface": "お姉さん",
+    "kana": "おねえさん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "older sister"
+      ],
+      "zh": [
+        "姐姐"
+      ]
+    }
+  },
+  {
+    "id": "n5-b239",
+    "surface": "伯母さん",
+    "kana": "おばさん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "aunt",
+        "middle-aged woman"
+      ],
+      "zh": [
+        "阿姨",
+        "大妈"
+      ]
+    }
+  },
+  {
+    "id": "n5-b240",
+    "surface": "お弁当",
+    "kana": "おべんとう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "boxed lunch",
+        "bento"
+      ],
+      "zh": [
+        "便当",
+        "盒饭"
+      ]
+    }
+  },
+  {
+    "id": "n5-b241",
+    "surface": "おまわりさん",
+    "kana": "おまわりさん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "police officer"
+      ],
+      "zh": [
+        "巡警",
+        "警察"
+      ]
+    }
+  },
+  {
+    "id": "n5-b242",
+    "surface": "女の子",
+    "kana": "おんなのこ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "girl"
+      ],
+      "zh": [
+        "女孩"
+      ]
+    }
+  },
+  {
+    "id": "n5-b243",
+    "surface": "外国人",
+    "kana": "がいこくじん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "foreigner"
+      ],
+      "zh": [
+        "外国人"
+      ]
+    }
+  },
+  {
+    "id": "n5-b244",
+    "surface": "買い物",
+    "kana": "かいもの",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "shopping"
+      ],
+      "zh": [
+        "购物",
+        "买东西"
+      ]
+    }
+  },
+  {
+    "id": "n5-b245",
+    "surface": "かかる",
+    "kana": "かかる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to take (time, money)"
+      ],
+      "zh": [
+        "花费（时间、金钱）"
+      ]
+    }
+  },
+  {
+    "id": "n5-b246",
+    "surface": "角",
+    "kana": "かど",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "corner"
+      ],
+      "zh": [
+        "拐角",
+        "角落"
+      ]
+    }
+  },
+  {
+    "id": "n5-b247",
+    "surface": "辛い",
+    "kana": "からい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "spicy",
+        "hot"
+      ],
+      "zh": [
+        "辣的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b248",
+    "surface": "かわいい",
+    "kana": "かわいい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "cute",
+        "adorable"
+      ],
+      "zh": [
+        "可爱的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b249",
+    "surface": "黄色",
+    "kana": "きいろ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "yellow"
+      ],
+      "zh": [
+        "黄色"
+      ]
+    }
+  },
+  {
+    "id": "n5-b250",
+    "surface": "消える",
+    "kana": "きえる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to go out",
+        "to vanish"
+      ],
+      "zh": [
+        "熄灭",
+        "消失"
+      ]
+    }
+  },
+  {
+    "id": "n5-b251",
+    "surface": "汚い",
+    "kana": "きたない",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "dirty",
+        "messy"
+      ],
+      "zh": [
+        "脏的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b252",
+    "surface": "切手",
+    "kana": "きって",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "postage stamp"
+      ],
+      "zh": [
+        "邮票"
+      ]
+    }
+  },
+  {
+    "id": "n5-b253",
+    "surface": "牛肉",
+    "kana": "ぎゅうにく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "beef"
+      ],
+      "zh": [
+        "牛肉"
+      ]
+    }
+  },
+  {
+    "id": "n5-b254",
+    "surface": "兄弟",
+    "kana": "きょうだい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "siblings",
+        "brothers"
+      ],
+      "zh": [
+        "兄弟姐妹"
+      ]
+    }
+  },
+  {
+    "id": "n5-b255",
+    "surface": "薬",
+    "kana": "くすり",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "medicine"
+      ],
+      "zh": [
+        "药"
+      ]
+    }
+  },
+  {
+    "id": "n5-b256",
+    "surface": "靴下",
+    "kana": "くつした",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "socks"
+      ],
+      "zh": [
+        "袜子"
+      ]
+    }
+  },
+  {
+    "id": "n5-b257",
+    "surface": "暗い",
+    "kana": "くらい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "dark",
+        "gloomy"
+      ],
+      "zh": [
+        "暗的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b258",
+    "surface": "警官",
+    "kana": "けいかん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "police officer"
+      ],
+      "zh": [
+        "警察"
+      ]
+    }
+  },
+  {
+    "id": "n5-b259",
+    "surface": "消す",
+    "kana": "けす",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to erase",
+        "to turn off"
+      ],
+      "zh": [
+        "擦掉",
+        "关（电器）"
+      ]
+    }
+  },
+  {
+    "id": "n5-b260",
+    "surface": "結婚",
+    "kana": "けっこん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "marriage"
+      ],
+      "zh": [
+        "结婚"
+      ]
+    }
+  },
+  {
+    "id": "n5-b261",
+    "surface": "公園",
+    "kana": "こうえん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "park"
+      ],
+      "zh": [
+        "公园"
+      ]
+    }
+  },
+  {
+    "id": "n5-b262",
+    "surface": "紅茶",
+    "kana": "こうちゃ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "black tea"
+      ],
+      "zh": [
+        "红茶"
+      ]
+    }
+  },
+  {
+    "id": "n5-b263",
+    "surface": "声",
+    "kana": "こえ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "voice"
+      ],
+      "zh": [
+        "声音"
+      ]
+    }
+  },
+  {
+    "id": "n5-b264",
+    "surface": "午後",
+    "kana": "ごご",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "afternoon",
+        "p.m."
+      ],
+      "zh": [
+        "下午"
+      ]
+    }
+  },
+  {
+    "id": "n5-b265",
+    "surface": "九つ",
+    "kana": "ここのつ",
+    "pos": [
+      "num"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "nine"
+      ],
+      "zh": [
+        "九个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b266",
+    "surface": "こちら",
+    "kana": "こちら",
+    "pos": [
+      "pron"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "this way",
+        "this direction"
+      ],
+      "zh": [
+        "这边"
+      ]
+    }
+  },
+  {
+    "id": "n5-b267",
+    "surface": "言葉",
+    "kana": "ことば",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "word",
+        "language"
+      ],
+      "zh": [
+        "词语",
+        "语言"
+      ]
+    }
+  },
+  {
+    "id": "n5-b268",
+    "surface": "困る",
+    "kana": "こまる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to be troubled",
+        "to have difficulty"
+      ],
+      "zh": [
+        "困扰",
+        "为难"
+      ]
+    }
+  },
+  {
+    "id": "n5-b269",
+    "surface": "今晩",
+    "kana": "こんばん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "tonight",
+        "this evening"
+      ],
+      "zh": [
+        "今晚"
+      ]
+    }
+  },
+  {
+    "id": "n5-b270",
+    "surface": "先",
+    "kana": "さき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "ahead",
+        "previous"
+      ],
+      "zh": [
+        "前面",
+        "先前"
+      ]
+    }
+  },
+  {
+    "id": "n5-b271",
+    "surface": "雑誌",
+    "kana": "ざっし",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "magazine"
+      ],
+      "zh": [
+        "杂志"
+      ]
+    }
+  },
+  {
+    "id": "n5-b272",
+    "surface": "さ来年",
+    "kana": "さらいねん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "the year after next"
+      ],
+      "zh": [
+        "后年"
+      ]
+    }
+  },
+  {
+    "id": "n5-b273",
+    "surface": "塩",
+    "kana": "しお",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "salt"
+      ],
+      "zh": [
+        "盐"
+      ]
+    }
+  },
+  {
+    "id": "n5-b274",
+    "surface": "仕事",
+    "kana": "しごと",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "work",
+        "job"
+      ],
+      "zh": [
+        "工作"
+      ]
+    }
+  },
+  {
+    "id": "n5-b275",
+    "surface": "七",
+    "kana": "しち",
+    "pos": [
+      "num"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "seven"
+      ],
+      "zh": [
+        "七"
+      ]
+    }
+  },
+  {
+    "id": "n5-b276",
+    "surface": "自動車",
+    "kana": "じどうしゃ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "automobile",
+        "car"
+      ],
+      "zh": [
+        "汽车"
+      ]
+    }
+  },
+  {
+    "id": "n5-b277",
+    "surface": "字引",
+    "kana": "じびき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "dictionary"
+      ],
+      "zh": [
+        "字典"
+      ]
+    }
+  },
+  {
+    "id": "n5-b278",
+    "surface": "閉まる",
+    "kana": "しまる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to close",
+        "to be closed"
+      ],
+      "zh": [
+        "关闭"
+      ]
+    }
+  },
+  {
+    "id": "n5-b279",
+    "surface": "じゃ",
+    "kana": "じゃあ",
+    "pos": [
+      "conj",
+      "exp"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "well then"
+      ],
+      "zh": [
+        "那么"
+      ]
+    }
+  },
+  {
+    "id": "n5-b280",
+    "surface": "宿題",
+    "kana": "しゅくだい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "homework"
+      ],
+      "zh": [
+        "作业"
+      ]
+    }
+  },
+  {
+    "id": "n5-b281",
+    "surface": "しょうゆ",
+    "kana": "しょうゆ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "soy sauce"
+      ],
+      "zh": [
+        "酱油"
+      ]
+    }
+  },
+  {
+    "id": "n5-b282",
+    "surface": "少ない",
+    "kana": "すくない",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "few",
+        "little"
+      ],
+      "zh": [
+        "少的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b283",
+    "surface": "涼しい",
+    "kana": "すずしい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "cool",
+        "refreshing"
+      ],
+      "zh": [
+        "凉爽的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b284",
+    "surface": "背",
+    "kana": "せ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "height",
+        "stature"
+      ],
+      "zh": [
+        "个子",
+        "背"
+      ]
+    }
+  },
+  {
+    "id": "n5-b285",
+    "surface": "せっけん",
+    "kana": "せっけん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "soap"
+      ],
+      "zh": [
+        "肥皂"
+      ]
+    }
+  },
+  {
+    "id": "n5-b286",
+    "surface": "狭い",
+    "kana": "せまい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "narrow",
+        "small"
+      ],
+      "zh": [
+        "狭窄的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b287",
+    "surface": "全部",
+    "kana": "ぜんぶ",
+    "pos": [
+      "n",
+      "adv"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "all",
+        "whole"
+      ],
+      "zh": [
+        "全部"
+      ]
+    }
+  },
+  {
+    "id": "n5-b288",
+    "surface": "そうして",
+    "kana": "そうして",
+    "pos": [
+      "conj"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "and",
+        "like that"
+      ],
+      "zh": [
+        "然后"
+      ]
+    }
+  },
+  {
+    "id": "n5-b289",
+    "surface": "そっち",
+    "kana": "そっち",
+    "pos": [
+      "pron"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "over there",
+        "that way"
+      ],
+      "zh": [
+        "那边"
+      ]
+    }
+  },
+  {
+    "id": "n5-b290",
+    "surface": "その",
+    "kana": "その",
+    "pos": [
+      "pron"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "that"
+      ],
+      "zh": [
+        "那个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b291",
+    "surface": "大使館",
+    "kana": "たいしかん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "embassy"
+      ],
+      "zh": [
+        "大使馆"
+      ]
+    }
+  },
+  {
+    "id": "n5-b292",
+    "surface": "大切",
+    "kana": "たいせつ",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "important",
+        "precious"
+      ],
+      "zh": [
+        "重要的",
+        "珍惜的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b293",
+    "surface": "たいへん",
+    "kana": "たいへん",
+    "pos": [
+      "adv",
+      "adj-na"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "very",
+        "extremely"
+      ],
+      "zh": [
+        "非常",
+        "够受的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b294",
+    "surface": "出す",
+    "kana": "だす",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to take out",
+        "to submit"
+      ],
+      "zh": [
+        "拿出",
+        "交出"
+      ]
+    }
+  },
+  {
+    "id": "n5-b295",
+    "surface": "たばこ",
+    "kana": "たばこ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "tobacco",
+        "cigarette"
+      ],
+      "zh": [
+        "烟草",
+        "香烟"
+      ]
+    }
+  },
+  {
+    "id": "n5-b296",
+    "surface": "卵",
+    "kana": "たまご",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "egg"
+      ],
+      "zh": [
+        "鸡蛋"
+      ]
+    }
+  },
+  {
+    "id": "n5-b297",
+    "surface": "誕生日",
+    "kana": "たんじょうび",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "birthday"
+      ],
+      "zh": [
+        "生日"
+      ]
+    }
+  },
+  {
+    "id": "n5-b298",
+    "surface": "小さな",
+    "kana": "ちいさな",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "small",
+        "little"
+      ],
+      "zh": [
+        "小的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b299",
+    "surface": "違う",
+    "kana": "ちがう",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to differ",
+        "to be wrong"
+      ],
+      "zh": [
+        "不同",
+        "错"
+      ]
+    }
+  },
+  {
+    "id": "n5-b300",
+    "surface": "地下鉄",
+    "kana": "ちかてつ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "subway"
+      ],
+      "zh": [
+        "地铁"
+      ]
+    }
+  },
+  {
+    "id": "n5-b301",
+    "surface": "茶色",
+    "kana": "ちゃいろ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "brown"
+      ],
+      "zh": [
+        "茶色",
+        "褐色"
+      ]
+    }
+  },
+  {
+    "id": "n5-b302",
+    "surface": "ちょうど",
+    "kana": "ちょうど",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "exactly",
+        "just"
+      ],
+      "zh": [
+        "恰好",
+        "正好"
+      ]
+    }
+  },
+  {
+    "id": "n5-b303",
+    "surface": "一日",
+    "kana": "ついたち",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "first day of the month"
+      ],
+      "zh": [
+        "一号",
+        "一日"
+      ]
+    }
+  },
+  {
+    "id": "n5-b304",
+    "surface": "次",
+    "kana": "つぎ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "next",
+        "following"
+      ],
+      "zh": [
+        "下次",
+        "下一个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b305",
+    "surface": "冷たい",
+    "kana": "つめたい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "cold (to the touch)"
+      ],
+      "zh": [
+        "冷的",
+        "冰凉的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b306",
+    "surface": "出かける",
+    "kana": "でかける",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to go out",
+        "to depart"
+      ],
+      "zh": [
+        "出门",
+        "外出"
+      ]
+    }
+  },
+  {
+    "id": "n5-b307",
+    "surface": "出口",
+    "kana": "でぐち",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "exit"
+      ],
+      "zh": [
+        "出口"
+      ]
+    }
+  },
+  {
+    "id": "n5-b308",
+    "surface": "でも",
+    "kana": "でも",
+    "pos": [
+      "conj"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "but",
+        "however"
+      ],
+      "zh": [
+        "但是"
+      ]
+    }
+  },
+  {
+    "id": "n5-b309",
+    "surface": "電話",
+    "kana": "でんわ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "telephone",
+        "phone call"
+      ],
+      "zh": [
+        "电话"
+      ]
+    }
+  },
+  {
+    "id": "n5-b310",
+    "surface": "どうして",
+    "kana": "どうして",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "why",
+        "for what reason"
+      ],
+      "zh": [
+        "为什么"
+      ]
+    }
+  },
+  {
+    "id": "n5-b311",
+    "surface": "どうも",
+    "kana": "どうも",
+    "pos": [
+      "adv",
+      "exp"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "thank you",
+        "somewhat"
+      ],
+      "zh": [
+        "谢谢",
+        "总觉得"
+      ]
+    }
+  },
+  {
+    "id": "n5-b312",
+    "surface": "十日",
+    "kana": "とおか",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "tenth day of the month",
+        "ten days"
+      ],
+      "zh": [
+        "十日",
+        "十天"
+      ]
+    }
+  },
+  {
+    "id": "n5-b313",
+    "surface": "所",
+    "kana": "ところ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "place",
+        "spot"
+      ],
+      "zh": [
+        "地方",
+        "场所"
+      ]
+    }
+  },
+  {
+    "id": "n5-b314",
+    "surface": "どちら",
+    "kana": "どちら",
+    "pos": [
+      "pron"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "which",
+        "which way"
+      ],
+      "zh": [
+        "哪边",
+        "哪个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b315",
+    "surface": "どなた",
+    "kana": "どなた",
+    "pos": [
+      "pron"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "who"
+      ],
+      "zh": [
+        "哪位",
+        "谁"
+      ]
+    }
+  },
+  {
+    "id": "n5-b316",
+    "surface": "どの",
+    "kana": "どの",
+    "pos": [
+      "pron"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "which"
+      ],
+      "zh": [
+        "哪个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b317",
+    "surface": "とり肉",
+    "kana": "とりにく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "chicken meat"
+      ],
+      "zh": [
+        "鸡肉"
+      ]
+    }
+  },
+  {
+    "id": "n5-b318",
+    "surface": "どれ",
+    "kana": "どれ",
+    "pos": [
+      "pron"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "which"
+      ],
+      "zh": [
+        "哪个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b319",
+    "surface": "なぜ",
+    "kana": "なぜ",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "why"
+      ],
+      "zh": [
+        "为什么"
+      ]
+    }
+  },
+  {
+    "id": "n5-b320",
+    "surface": "夏休み",
+    "kana": "なつやすみ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "summer vacation"
+      ],
+      "zh": [
+        "暑假"
+      ]
+    }
+  },
+  {
+    "id": "n5-b321",
+    "surface": "七つ",
+    "kana": "ななつ",
+    "pos": [
+      "num"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "seven"
+      ],
+      "zh": [
+        "七个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b322",
+    "surface": "並ぶ",
+    "kana": "ならぶ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to line up",
+        "to stand in a line"
+      ],
+      "zh": [
+        "排队",
+        "并排"
+      ]
+    }
+  },
+  {
+    "id": "n5-b323",
+    "surface": "賑やか",
+    "kana": "にぎやか",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "lively",
+        "bustling"
+      ],
+      "zh": [
+        "热闹的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b324",
+    "surface": "荷物",
+    "kana": "にもつ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "luggage",
+        "baggage"
+      ],
+      "zh": [
+        "行李",
+        "包裹"
+      ]
+    }
+  },
+  {
+    "id": "n5-b325",
+    "surface": "脱ぐ",
+    "kana": "ぬぐ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to take off (clothes)"
+      ],
+      "zh": [
+        "脱（衣服）"
+      ]
+    }
+  },
+  {
+    "id": "n5-b326",
+    "surface": "登る",
+    "kana": "のぼる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to climb",
+        "to go up"
+      ],
+      "zh": [
+        "攀登"
+      ]
+    }
+  },
+  {
+    "id": "n5-b327",
+    "surface": "灰皿",
+    "kana": "はいざら",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "ashtray"
+      ],
+      "zh": [
+        "烟灰缸"
+      ]
+    }
+  },
+  {
+    "id": "n5-b328",
+    "surface": "はく",
+    "kana": "はく",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to put on (lower body)"
+      ],
+      "zh": [
+        "穿（下半身衣服）"
+      ]
+    }
+  },
+  {
+    "id": "n5-b329",
+    "surface": "橋",
+    "kana": "はし",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "bridge"
+      ],
+      "zh": [
+        "桥"
+      ]
+    }
+  },
+  {
+    "id": "n5-b330",
+    "surface": "初めて",
+    "kana": "はじめて",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "for the first time"
+      ],
+      "zh": [
+        "第一次"
+      ]
+    }
+  },
+  {
+    "id": "n5-b331",
+    "surface": "二十歳",
+    "kana": "はたち",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "twenty years old"
+      ],
+      "zh": [
+        "二十岁"
+      ]
+    }
+  },
+  {
+    "id": "n5-b332",
+    "surface": "話",
+    "kana": "はなし",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "talk",
+        "story"
+      ],
+      "zh": [
+        "话",
+        "故事"
+      ]
+    }
+  },
+  {
+    "id": "n5-b333",
+    "surface": "晴れ",
+    "kana": "はれ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "clear weather",
+        "sunny"
+      ],
+      "zh": [
+        "晴天"
+      ]
+    }
+  },
+  {
+    "id": "n5-b334",
+    "surface": "半",
+    "kana": "はん",
+    "pos": [
+      "n",
+      "pref"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "half",
+        "half past"
+      ],
+      "zh": [
+        "半"
+      ]
+    }
+  },
+  {
+    "id": "n5-b335",
+    "surface": "番号",
+    "kana": "ばんごう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "number"
+      ],
+      "zh": [
+        "号码"
+      ]
+    }
+  },
+  {
+    "id": "n5-b336",
+    "surface": "半分",
+    "kana": "はんぶん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "half"
+      ],
+      "zh": [
+        "一半"
+      ]
+    }
+  },
+  {
+    "id": "n5-b337",
+    "surface": "引く",
+    "kana": "ひく",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to pull",
+        "to draw"
+      ],
+      "zh": [
+        "拉",
+        "抽"
+      ]
+    }
+  },
+  {
+    "id": "n5-b338",
+    "surface": "飛行機",
+    "kana": "ひこうき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "airplane"
+      ],
+      "zh": [
+        "飞机"
+      ]
+    }
+  },
+  {
+    "id": "n5-b339",
+    "surface": "一つ",
+    "kana": "ひとつ",
+    "pos": [
+      "num"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "one"
+      ],
+      "zh": [
+        "一个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b340",
+    "surface": "昼",
+    "kana": "ひる",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "noon",
+        "daytime"
+      ],
+      "zh": [
+        "白天",
+        "中午"
+      ]
+    }
+  },
+  {
+    "id": "n5-b341",
+    "surface": "広い",
+    "kana": "ひろい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "wide",
+        "spacious"
+      ],
+      "zh": [
+        "宽广的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b342",
+    "surface": "二つ",
+    "kana": "ふたつ",
+    "pos": [
+      "num"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "two"
+      ],
+      "zh": [
+        "两个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b343",
+    "surface": "二人",
+    "kana": "ふたり",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "two people"
+      ],
+      "zh": [
+        "两个人"
+      ]
+    }
+  },
+  {
+    "id": "n5-b344",
+    "surface": "太い",
+    "kana": "ふとい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "fat",
+        "thick"
+      ],
+      "zh": [
+        "粗的",
+        "胖的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b345",
+    "surface": "ふろ",
+    "kana": "ふろ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "bath"
+      ],
+      "zh": [
+        "洗澡",
+        "浴缸"
+      ]
+    }
+  },
+  {
+    "id": "n5-b346",
+    "surface": "ほか",
+    "kana": "ほか",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "other",
+        "another"
+      ],
+      "zh": [
+        "其他",
+        "另外"
+      ]
+    }
+  },
+  {
+    "id": "n5-b347",
+    "surface": "細い",
+    "kana": "ほそい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "thin",
+        "slender"
+      ],
+      "zh": [
+        "细的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b348",
+    "surface": "ほんとう",
+    "kana": "ほんとう",
+    "pos": [
+      "n",
+      "adj-na"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "truth",
+        "reality"
+      ],
+      "zh": [
+        "真的",
+        "真实"
+      ]
+    }
+  },
+  {
+    "id": "n5-b349",
+    "surface": "毎年",
+    "kana": "まいねん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "every year"
+      ],
+      "zh": [
+        "每年"
+      ]
+    }
+  },
+  {
+    "id": "n5-b350",
+    "surface": "前",
+    "kana": "まえ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "before",
+        "in front"
+      ],
+      "zh": [
+        "前面",
+        "以前"
+      ]
+    }
+  },
+  {
+    "id": "n5-b351",
+    "surface": "まずい",
+    "kana": "まずい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "bad tasting",
+        "unappetizing"
+      ],
+      "zh": [
+        "难吃的",
+        "糟糕的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b352",
+    "surface": "まだ",
+    "kana": "まだ",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "not yet",
+        "still"
+      ],
+      "zh": [
+        "还没",
+        "仍然"
+      ]
+    }
+  },
+  {
+    "id": "n5-b353",
+    "surface": "窓",
+    "kana": "まど",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "window"
+      ],
+      "zh": [
+        "窗户"
+      ]
+    }
+  },
+  {
+    "id": "n5-b354",
+    "surface": "万",
+    "kana": "まん",
+    "pos": [
+      "num"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "ten thousand"
+      ],
+      "zh": [
+        "万"
+      ]
+    }
+  },
+  {
+    "id": "n5-b355",
+    "surface": "磨く",
+    "kana": "みがく",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to polish",
+        "to brush"
+      ],
+      "zh": [
+        "刷",
+        "擦"
+      ]
+    }
+  },
+  {
+    "id": "n5-b356",
+    "surface": "見せる",
+    "kana": "みせる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to show",
+        "to display"
+      ],
+      "zh": [
+        "给...看",
+        "展示"
+      ]
+    }
+  },
+  {
+    "id": "n5-b357",
+    "surface": "三つ",
+    "kana": "みっつ",
+    "pos": [
+      "num"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "three"
+      ],
+      "zh": [
+        "三个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b358",
+    "surface": "皆さん",
+    "kana": "みなさん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "everyone"
+      ],
+      "zh": [
+        "大家",
+        "各位"
+      ]
+    }
+  },
+  {
+    "id": "n5-b359",
+    "surface": "みんな",
+    "kana": "みんな",
+    "pos": [
+      "n",
+      "adv"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "everyone",
+        "all"
+      ],
+      "zh": [
+        "所有人",
+        "全部"
+      ]
+    }
+  },
+  {
+    "id": "n5-b360",
+    "surface": "六つ",
+    "kana": "むっつ",
+    "pos": [
+      "num"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "six"
+      ],
+      "zh": [
+        "六个"
+      ]
+    }
+  },
+  {
+    "id": "n5-b361",
+    "surface": "眼鏡",
+    "kana": "めがね",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "glasses"
+      ],
+      "zh": [
+        "眼镜"
+      ]
+    }
+  },
+  {
+    "id": "n5-b362",
+    "surface": "持つ",
+    "kana": "もつ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to hold",
+        "to have"
+      ],
+      "zh": [
+        "拿",
+        "拥有"
+      ]
+    }
+  },
+  {
+    "id": "n5-b363",
+    "surface": "門",
+    "kana": "もん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "gate"
+      ],
+      "zh": [
+        "门",
+        "大门"
+      ]
+    }
+  },
+  {
+    "id": "n5-b364",
+    "surface": "八百屋",
+    "kana": "やおや",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "greengrocer"
+      ],
+      "zh": [
+        "蔬菜店"
+      ]
+    }
+  },
+  {
+    "id": "n5-b365",
+    "surface": "休み",
+    "kana": "やすみ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "rest",
+        "vacation"
+      ],
+      "zh": [
+        "休息",
+        "假期"
+      ]
+    }
+  },
+  {
+    "id": "n5-b366",
+    "surface": "やる",
+    "kana": "やる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to do",
+        "to give"
+      ],
+      "zh": [
+        "做",
+        "给"
+      ]
+    }
+  },
+  {
+    "id": "n5-b367",
+    "surface": "夕飯",
+    "kana": "ゆうはん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "evening meal",
+        "dinner"
+      ],
+      "zh": [
+        "晚饭"
+      ]
+    }
+  },
+  {
+    "id": "n5-b368",
+    "surface": "行く",
+    "kana": "ゆく",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to go"
+      ],
+      "zh": [
+        "去"
+      ]
+    }
+  },
+  {
+    "id": "n5-b369",
+    "surface": "八日",
+    "kana": "ようか",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "eighth day of the month",
+        "eight days"
+      ],
+      "zh": [
+        "八日",
+        "八天"
+      ]
+    }
+  },
+  {
+    "id": "n5-b370",
+    "surface": "よく",
+    "kana": "よく",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "often",
+        "well"
+      ],
+      "zh": [
+        "经常",
+        "好"
+      ]
+    }
+  },
+  {
+    "id": "n5-b371",
+    "surface": "四日",
+    "kana": "よっか",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "fourth day of the month",
+        "four days"
+      ],
+      "zh": [
+        "四日",
+        "四天"
+      ]
+    }
+  },
+  {
+    "id": "n5-b372",
+    "surface": "呼ぶ",
+    "kana": "よぶ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to call out",
+        "to invite"
+      ],
+      "zh": [
+        "呼叫",
+        "叫"
+      ]
+    }
+  },
+  {
+    "id": "n5-b373",
+    "surface": "りっぱ",
+    "kana": "りっぱ",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "splendid",
+        "magnificent"
+      ],
+      "zh": [
+        "气派的",
+        "优秀的"
+      ]
+    }
+  },
+  {
+    "id": "n5-b374",
+    "surface": "両親",
+    "kana": "りょうしん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "parents"
+      ],
+      "zh": [
+        "父母"
+      ]
+    }
+  },
+  {
+    "id": "n5-b375",
+    "surface": "旅行",
+    "kana": "りょこう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "travel",
+        "trip"
+      ],
+      "zh": [
+        "旅行"
+      ]
+    }
+  },
+  {
+    "id": "n5-b376",
+    "surface": "冷蔵庫",
+    "kana": "れいぞうこ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "refrigerator"
+      ],
+      "zh": [
+        "冰箱"
+      ]
+    }
+  },
+  {
+    "id": "n5-b377",
+    "surface": "廊下",
+    "kana": "ろうか",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "corridor",
+        "hallway"
+      ],
+      "zh": [
+        "走廊"
+      ]
+    }
+  },
+  {
+    "id": "n5-b378",
+    "surface": "私",
+    "kana": "わたくし",
+    "pos": [
+      "pron"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "I",
+        "myself"
+      ],
+      "zh": [
+        "我"
+      ]
+    }
+  },
+  {
+    "id": "n5-b379",
+    "surface": "渡る",
+    "kana": "わたる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "to cross",
+        "to go across"
+      ],
+      "zh": [
+        "渡",
+        "过"
+      ]
+    }
+  },
+  {
+    "id": "n5-b380",
+    "surface": "より",
+    "kana": "ほう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 5,
+    "meanings": {
+      "en": [
+        "direction",
+        "side"
+      ],
+      "zh": [
+        "方面",
+        "方"
+      ]
+    }
   }
 ]

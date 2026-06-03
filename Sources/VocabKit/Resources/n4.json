@@ -10996,5 +10996,42 @@
         "裂开"
       ]
     }
+  },
+  {
+    "id": "n4-b198",
+    "surface": "美術館",
+    "kana": "びじゅつかん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 4,
+    "meanings": {
+      "en": [
+        "art museum",
+        "art gallery"
+      ],
+      "zh": [
+        "美术馆"
+      ]
+    }
+  },
+  {
+    "id": "n4-b199",
+    "surface": "泳ぎ方",
+    "kana": "およぎかた",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 4,
+    "meanings": {
+      "en": [
+        "how to swim",
+        "way of swimming"
+      ],
+      "zh": [
+        "游泳方法",
+        "游法"
+      ]
+    }
   }
 ]
