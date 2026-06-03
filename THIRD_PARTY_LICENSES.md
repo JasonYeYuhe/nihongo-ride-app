@@ -37,9 +37,16 @@ POSSIBILITY OF SUCH DAMAGE.
 
 设计上还参考了 **WanaKana**(<https://github.com/WaniKani/WanaKana>,MIT)的 trie / 促音生成思路。
 
-## 计划中(词库阶段引入,届时在此补全署名)
+## JLPT 词表读音/等级(已使用)
+
+部分词条的**词形、假名读音与 JLPT 等级**取自 **Bluskyo/JLPT_Vocabulary**
+(<https://github.com/Bluskyo/JLPT_Vocabulary>,MIT),其数据转换自 **Jonathan Waller's
+JLPT Resources**(<https://www.tanos.co.uk/jlpt/>,**CC BY**)。释义(中/英)为本项目
+原创 / LLM 起草并校验,非取自上述来源。按 CC BY 要求,应在 App「关于/致谢」页署名:
+*"JLPT vocabulary readings & levels based on Jonathan Waller's JLPT Resources (tanos.co.uk), CC BY."*
+
+## 计划中(后续引入,届时在此补全署名)
 
 - **JMdict / KANJIDIC2** —— © James William Breen & EDRDG,CC BY-SA 4.0 —— <https://www.edrdg.org/edrdg/licence.html>
-- **JLPT 分级** —— 基于 Jonathan Waller's JLPT Resources(<https://www.tanos.co.uk/jlpt/>),CC BY
-- **例句** —— Tatoeba(<https://tatoeba.org>),CC BY 2.0 FR
+- **例句** —— Tatoeba(<https://tatoeba.org>),CC BY 2.0 FR(目前例句为 LLM 原创,未取自 Tatoeba)
 - **词频(可选)** —— wordfreq,CC BY-SA 4.0
