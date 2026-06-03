@@ -17,7 +17,10 @@
         "哀愁",
         "悲哀"
       ]
-    }
+    },
+    "exJP": "哀愁を感じる。",
+    "exEN": "I feel sorrow.",
+    "exZH": "感到哀愁。"
   },
   {
     "id": "n1-g002",
@@ -36,7 +39,10 @@
         "恶习",
         "坏习惯"
       ]
-    }
+    },
+    "exJP": "悪癖を直す。",
+    "exEN": "I fix a bad habit.",
+    "exZH": "改掉坏习惯。"
   },
   {
     "id": "n1-g003",
@@ -56,7 +62,10 @@
         "卑鄙的",
         "可耻的"
       ]
-    }
+    },
+    "exJP": "浅ましい行いだ。",
+    "exEN": "It is a wretched act.",
+    "exZH": "卑鄙的行为。"
   },
   {
     "id": "n1-g004",
@@ -75,7 +84,10 @@
         "欺骗",
         "瞒哄"
       ]
-    }
+    },
+    "exJP": "人を欺くのはよくない。",
+    "exEN": "Deceiving people is bad.",
+    "exZH": "欺骗别人是不好的。"
   },
   {
     "id": "n1-g005",
@@ -94,7 +106,10 @@
         "嘲笑",
         "冷笑"
       ]
-    }
+    },
+    "exJP": "彼を嘲笑うな。",
+    "exEN": "Do not sneer at him.",
+    "exZH": "别嘲笑他。"
   },
   {
     "id": "n1-g006",
@@ -113,7 +128,10 @@
         "焦躁",
         "着急"
       ]
-    }
+    },
+    "exJP": "焦る必要はない。",
+    "exEN": "There is no need to be in a hurry.",
+    "exZH": "没必要着急。"
   },
   {
     "id": "n1-g007",
@@ -132,7 +150,10 @@
         "寄给",
         "发给"
       ]
-    }
+    },
+    "exJP": "彼に手紙を宛てる。",
+    "exEN": "I address a letter to him.",
+    "exZH": "把信寄给他。"
   },
   {
     "id": "n1-g008",
@@ -151,7 +172,10 @@
         "继承人",
         "接班人"
       ]
-    }
+    },
+    "exJP": "後継ぎがいない。",
+    "exEN": "There is no heir.",
+    "exZH": "没有继承人。"
   },
   {
     "id": "n1-g009",
@@ -171,7 +195,10 @@
         "粗暴的",
         "粗野的"
       ]
-    }
+    },
+    "exJP": "荒っぽい言葉を使う。",
+    "exEN": "Use rough language.",
+    "exZH": "使用粗鲁的语言。"
   },
   {
     "id": "n1-g010",
@@ -191,7 +218,10 @@
         "状态",
         "情况"
       ]
-    }
+    },
+    "exJP": "ひどい有様だ。",
+    "exEN": "It is in a terrible state.",
+    "exZH": "情况很糟糕。"
   },
   {
     "id": "n1-g011",
@@ -209,7 +239,10 @@
       "zh": [
         "暗杀"
       ]
-    }
+    },
+    "exJP": "大統領が暗殺された。",
+    "exEN": "The president suffered an assassination.",
+    "exZH": "总统被暗杀了。"
   },
   {
     "id": "n1-g012",
@@ -228,7 +261,10 @@
         "果然",
         "果真"
       ]
-    }
+    },
+    "exJP": "案の定、雨が降った。",
+    "exEN": "Just as one thought, it rained.",
+    "exZH": "果然下雨了。"
   },
   {
     "id": "n1-g013",
@@ -249,7 +285,10 @@
         "漂亮",
         "潇洒"
       ]
-    }
+    },
+    "exJP": "粋な計らいだ。",
+    "exEN": "That is a chic arrangement.",
+    "exZH": "很别致的安排。"
   },
   {
     "id": "n1-g014",
@@ -268,7 +307,10 @@
         "愤怒",
         "愤慨"
       ]
-    }
+    },
+    "exJP": "強い憤りを感じる。",
+    "exEN": "I feel strong resentment.",
+    "exZH": "感到强烈的愤慨。"
   },
   {
     "id": "n1-g015",
@@ -288,7 +330,10 @@
         "许多",
         "很多"
       ]
-    }
+    },
+    "exJP": "幾多の困難を乗り越える。",
+    "exEN": "Overcome many difficulties.",
+    "exZH": "克服许多困难。"
   },
   {
     "id": "n1-g016",
@@ -307,7 +352,10 @@
         "摆弄",
         "玩弄"
       ]
-    }
+    },
+    "exJP": "髪を弄る癖がある。",
+    "exEN": "I have a habit to touch my hair.",
+    "exZH": "有摆弄头发的习惯。"
   },
   {
     "id": "n1-g017",
@@ -327,7 +375,10 @@
         "依赖",
         "依存"
       ]
-    }
+    },
+    "exJP": "スマホに依存する。",
+    "exEN": "Dependence on smartphones.",
+    "exZH": "对智能手机的依赖。"
   },
   {
     "id": "n1-g018",
@@ -347,7 +398,10 @@
         "委托",
         "托付"
       ]
-    }
+    },
+    "exJP": "業務を委託する。",
+    "exEN": "I entrust the work.",
+    "exZH": "委托业务。"
   },
   {
     "id": "n1-g019",
@@ -369,7 +423,10 @@
         "恶作剧",
         "淘气"
       ]
-    }
+    },
+    "exJP": "悪戯をしてはいけない。",
+    "exEN": "Do not tease or play pranks.",
+    "exZH": "不要恶作剧。"
   },
   {
     "id": "n1-g020",
@@ -389,7 +446,10 @@
         "顶端",
         "巅峰"
       ]
-    }
+    },
+    "exJP": "山の頂に立つ。",
+    "exEN": "Stand on the top of the mountain.",
+    "exZH": "站在山顶。"
   },
   {
     "id": "n1-g021",
@@ -408,7 +468,10 @@
         "显著的",
         "明显的"
       ]
-    }
+    },
+    "exJP": "著しい進歩だ。",
+    "exEN": "It is remarkable progress.",
+    "exZH": "显著的进步。"
   },
   {
     "id": "n1-g022",
@@ -427,7 +490,10 @@
         "全体",
         "大家"
       ]
-    }
+    },
+    "exJP": "家族一同が揃う。",
+    "exEN": "All present family members gather.",
+    "exZH": "全家聚齐。"
   },
   {
     "id": "n1-g023",
@@ -445,7 +511,10 @@
         "分别",
         "离别"
       ]
-    }
+    },
+    "exJP": "一別以来、元気ですか。",
+    "exEN": "How are you since our parting?",
+    "exZH": "一别之后，你好吗？"
   },
   {
     "id": "n1-g024",
@@ -464,7 +533,10 @@
         "全权委托",
         "委任"
       ]
-    }
+    },
+    "exJP": "社長に一任する。",
+    "exEN": "Entrusting everything to the president.",
+    "exZH": "全权委托给社长。"
   },
   {
     "id": "n1-g025",
@@ -484,7 +556,10 @@
         "偏离",
         "脱轨"
       ]
-    }
+    },
+    "exJP": "常軌を逸脱する。",
+    "exEN": "Deviation from the norm.",
+    "exZH": "偏离常轨。"
   },
   {
     "id": "n1-g026",
@@ -503,7 +578,10 @@
         "经营",
         "营建"
       ]
-    }
+    },
+    "exJP": "店を営む。",
+    "exEN": "To run a business or shop.",
+    "exZH": "经营店铺。"
   },
   {
     "id": "n1-g027",
@@ -522,7 +600,10 @@
         "否认",
         "拒绝"
       ]
-    }
+    },
+    "exJP": "その事実は否めない。",
+    "exEN": "To deny the fact is impossible.",
+    "exZH": "这个事实不可否认。"
   },
   {
     "id": "n1-g028",
@@ -542,7 +623,10 @@
         "祈愿",
         "祈祷"
       ]
-    }
+    },
+    "exJP": "合格を祈願する。",
+    "exEN": "A prayer for passing the exam.",
+    "exZH": "祈祷及格。"
   },
   {
     "id": "n1-g029",
@@ -561,7 +645,10 @@
         "告诫",
         "惩戒"
       ]
-    }
+    },
+    "exJP": "自分を戒める。",
+    "exEN": "To admonish oneself.",
+    "exZH": "告诫自己。"
   },
   {
     "id": "n1-g030",
@@ -581,7 +668,10 @@
         "卑贱的",
         "贪婪的"
       ]
-    }
+    },
+    "exJP": "意地が卑しい。",
+    "exEN": "Greedy by nature.",
+    "exZH": "贪婪的本性。"
   },
   {
     "id": "n1-g031",
@@ -601,7 +691,10 @@
         "意愿",
         "欲望"
       ]
-    }
+    },
+    "exJP": "働く意欲がある。",
+    "exEN": "I have the will to work.",
+    "exZH": "有工作的意愿。"
   },
   {
     "id": "n1-g032",
@@ -620,7 +713,10 @@
         "湿润",
         "获益"
       ]
-    }
+    },
+    "exJP": "肌が潤う。",
+    "exEN": "To be moist on the skin.",
+    "exZH": "皮肤变得湿润。"
   },
   {
     "id": "n1-g033",
@@ -639,7 +735,10 @@
         "怨恨",
         "记恨"
       ]
-    }
+    },
+    "exJP": "人を恨むな。",
+    "exEN": "Do not resent people.",
+    "exZH": "别怨恨别人。"
   },
   {
     "id": "n1-g034",
@@ -658,7 +757,10 @@
         "美丽的",
         "动人的"
       ]
-    }
+    },
+    "exJP": "麗しい女性だ。",
+    "exEN": "She is a beautiful woman.",
+    "exZH": "一位美丽的女性。"
   },
   {
     "id": "n1-g035",
@@ -677,7 +779,10 @@
         "促使",
         "催促"
       ]
-    }
+    },
+    "exJP": "注意を促す。",
+    "exEN": "To urge caution.",
+    "exZH": "促请注意。"
   },
   {
     "id": "n1-g036",
@@ -696,7 +801,10 @@
         "埋入",
         "嵌入"
       ]
-    }
+    },
+    "exJP": "壁に埋め込む。",
+    "exEN": "To bury into the wall.",
+    "exZH": "嵌入墙中。"
   },
   {
     "id": "n1-g037",
@@ -717,7 +825,10 @@
         "运用",
         "应用"
       ]
-    }
+    },
+    "exJP": "資金を運用する。",
+    "exEN": "Operation of the funds.",
+    "exZH": "运用资金。"
   },
   {
     "id": "n1-g038",
@@ -737,7 +848,10 @@
         "顺利的",
         "圆滑的"
       ]
-    }
+    },
+    "exJP": "会議が円滑に進む。",
+    "exEN": "The meeting proceeds in a smooth way.",
+    "exZH": "会议顺利进行。"
   },
   {
     "id": "n1-g039",
@@ -756,7 +870,10 @@
         "走廊",
         "外廊"
       ]
-    }
+    },
+    "exJP": "縁側でお茶を飲む。",
+    "exEN": "Drink tea on the veranda.",
+    "exZH": "在走廊喝茶。"
   },
   {
     "id": "n1-g040",
@@ -776,7 +893,10 @@
         "委婉",
         "婉转"
       ]
-    }
+    },
+    "exJP": "婉曲に断る。",
+    "exEN": "Refuse in a euphemistic way.",
+    "exZH": "委婉地拒绝。"
   },
   {
     "id": "n1-g041",
@@ -796,7 +916,10 @@
         "演习",
         "练习"
       ]
-    }
+    },
+    "exJP": "軍事演習を行う。",
+    "exEN": "Conduct military practice.",
+    "exZH": "进行军事演习。"
   },
   {
     "id": "n1-g042",
@@ -816,7 +939,10 @@
         "导演",
         "演出"
       ]
-    }
+    },
+    "exJP": "劇を演出する。",
+    "exEN": "Production of a play.",
+    "exZH": "导演一出戏。"
   },
   {
     "id": "n1-g043",
@@ -834,7 +960,10 @@
         "黄金",
         "金子"
       ]
-    }
+    },
+    "exJP": "黄金の仏像を見る。",
+    "exEN": "I see a gold Buddha statue.",
+    "exZH": "看到金佛像。"
   },
   {
     "id": "n1-g044",
@@ -853,7 +982,10 @@
         "往往",
         "常常"
       ]
-    }
+    },
+    "exJP": "そういうことは往々にしてある。",
+    "exEN": "Such things happen occasionally.",
+    "exZH": "那种事往往会发生。"
   },
   {
     "id": "n1-g045",
@@ -872,7 +1004,10 @@
         "大致的",
         "粗略的"
       ]
-    }
+    },
+    "exJP": "大まかな計画を立てる。",
+    "exEN": "I make a rough plan.",
+    "exZH": "制定粗略的计划。"
   },
   {
     "id": "n1-g046",
@@ -891,7 +1026,10 @@
         "骄傲",
         "傲慢"
       ]
-    }
+    },
+    "exJP": "奢ることなく努力する。",
+    "exEN": "Work hard without being proud.",
+    "exZH": "不骄傲地努力。"
   },
   {
     "id": "n1-g047",
@@ -910,7 +1048,10 @@
         "坚持到底",
         "贯彻始终"
       ]
-    }
+    },
+    "exJP": "自説を押し通す。",
+    "exEN": "To persist in one's theory.",
+    "exZH": "坚持自己的主张。"
   },
   {
     "id": "n1-g048",
@@ -929,7 +1070,10 @@
         "奉承",
         "煽动"
       ]
-    }
+    },
+    "exJP": "彼をおだてる。",
+    "exEN": "To flatter him.",
+    "exZH": "奉承他。"
   },
   {
     "id": "n1-g049",
@@ -949,7 +1093,10 @@
         "佩戴",
         "带有"
       ]
-    }
+    },
+    "exJP": "赤みを帯びる。",
+    "exEN": "To wear a reddish tinge.",
+    "exZH": "带有红色。"
   },
   {
     "id": "n1-g050",
@@ -969,7 +1116,10 @@
         "面貌",
         "痕迹"
       ]
-    }
+    },
+    "exJP": "昔の面影がない。",
+    "exEN": "No trace of the past face.",
+    "exZH": "没有过去的容貌。"
   },
   {
     "id": "n1-g051",
@@ -988,7 +1138,10 @@
         "重视",
         "尊重"
       ]
-    }
+    },
+    "exJP": "伝統を重んじる。",
+    "exEN": "To respect tradition.",
+    "exZH": "尊重传统。"
   },
   {
     "id": "n1-g052",
@@ -1007,7 +1160,10 @@
         "达到",
         "涉及"
       ]
-    }
+    },
+    "exJP": "被害が全国に及ぶ。",
+    "exEN": "Damage happens to reach nationwide.",
+    "exZH": "灾害波及全国。"
   },
   {
     "id": "n1-g053",
@@ -1026,7 +1182,10 @@
         "折回",
         "返回"
       ]
-    }
+    },
+    "exJP": "袖を折り返す。",
+    "exEN": "To turn up the sleeves.",
+    "exZH": "卷起袖子。"
   },
   {
     "id": "n1-g054",
@@ -1045,7 +1204,10 @@
         "愚蠢的",
         "糊涂的"
       ]
-    }
+    },
+    "exJP": "愚かな行動だ。",
+    "exEN": "It is a foolish action.",
+    "exZH": "愚蠢的行为。"
   },
   {
     "id": "n1-g055",
@@ -1064,7 +1226,10 @@
         "疏忽",
         "草率"
       ]
-    }
+    },
+    "exJP": "勉強を疎かにする。",
+    "exEN": "Neglect one's studies.",
+    "exZH": "荒废学业。"
   },
   {
     "id": "n1-g056",
@@ -1084,7 +1249,10 @@
       "zh": [
         "温和的"
       ]
-    }
+    },
+    "exJP": "温和な気候だ。",
+    "exEN": "It is a gentle climate.",
+    "exZH": "气候温和。"
   },
   {
     "id": "n1-g057",
@@ -1104,7 +1272,10 @@
         "修订",
         "修改"
       ]
-    }
+    },
+    "exJP": "教科書を改定する。",
+    "exEN": "A revision of the textbook.",
+    "exZH": "修订教科书。"
   },
   {
     "id": "n1-g058",
@@ -1123,7 +1294,10 @@
         "介入",
         "干涉"
       ]
-    }
+    },
+    "exJP": "市場に介入する。",
+    "exEN": "Intervention in the market.",
+    "exZH": "干预市场。"
   },
   {
     "id": "n1-g059",
@@ -1142,7 +1316,10 @@
         "反复地",
         "实在"
       ]
-    }
+    },
+    "exJP": "返す返すも残念だ。",
+    "exEN": "I repeatedly regret it.",
+    "exZH": "非常遗憾。"
   },
   {
     "id": "n1-g060",
@@ -1161,7 +1338,10 @@
         "回顾",
         "反省"
       ]
-    }
+    },
+    "exJP": "過去を顧みる。",
+    "exEN": "To look back at the past.",
+    "exZH": "回顾过去。"
   },
   {
     "id": "n1-g061",
@@ -1180,7 +1360,10 @@
         "悬挂",
         "提出"
       ]
-    }
+    },
+    "exJP": "国旗を掲げる。",
+    "exEN": "To put up the national flag.",
+    "exZH": "升起国旗。"
   },
   {
     "id": "n1-g062",
@@ -1199,7 +1382,10 @@
         "缺少",
         "遗漏"
       ]
-    }
+    },
+    "exJP": "毎日の運動を欠かす。",
+    "exEN": "To miss daily exercise.",
+    "exZH": "缺席每天的运动。"
   },
   {
     "id": "n1-g063",
@@ -1218,7 +1404,10 @@
         "搅拌",
         "扰乱"
       ]
-    }
+    },
+    "exJP": "スープをかき回す。",
+    "exEN": "To stir up the soup.",
+    "exZH": "搅拌汤。"
   },
   {
     "id": "n1-g064",
@@ -1237,7 +1426,10 @@
         "划时代的",
         "突破性的"
       ]
-    }
+    },
+    "exJP": "画期的な発明だ。",
+    "exEN": "It is an epoch-making invention.",
+    "exZH": "划时代的发明。"
   },
   {
     "id": "n1-g065",
@@ -1256,7 +1448,10 @@
         "袒护",
         "庇护"
       ]
-    }
+    },
+    "exJP": "彼を庇う。",
+    "exEN": "To protect him.",
+    "exZH": "庇护他。"
   },
   {
     "id": "n1-g066",
@@ -1276,7 +1471,10 @@
         "华丽",
         "奢华"
       ]
-    }
+    },
+    "exJP": "華美な服装を避ける。",
+    "exEN": "Avoid clothes of pomp.",
+    "exZH": "避免华丽的服装。"
   },
   {
     "id": "n1-g067",
@@ -1295,7 +1493,10 @@
         "缠绕",
         "牵涉"
       ]
-    }
+    },
+    "exJP": "糸が絡む。",
+    "exEN": "Thread tends to entangle.",
+    "exZH": "线缠在一起。"
   },
   {
     "id": "n1-g068",
@@ -1314,7 +1515,10 @@
         "威严",
         "气派"
       ]
-    }
+    },
+    "exJP": "貫禄がある。",
+    "exEN": "He has a strong presence.",
+    "exZH": "有威严。"
   },
   {
     "id": "n1-g069",
@@ -1333,7 +1537,10 @@
         "酿造",
         "产生"
       ]
-    }
+    },
+    "exJP": "良い雰囲気を醸し出す。",
+    "exEN": "To bring about a good atmosphere.",
+    "exZH": "营造良好的气氛。"
   },
   {
     "id": "n1-g070",
@@ -1352,7 +1559,10 @@
         "嘲笑",
         "戏弄"
       ]
-    }
+    },
+    "exJP": "友達をからかう。",
+    "exEN": "To ridicule a friend.",
+    "exZH": "嘲弄朋友。"
   },
   {
     "id": "n1-g071",
@@ -1372,7 +1582,10 @@
         "干涸",
         "枯竭"
       ]
-    }
+    },
+    "exJP": "資源が枯渇する。",
+    "exEN": "A drying up of resources.",
+    "exZH": "资源枯竭。"
   },
   {
     "id": "n1-g072",
@@ -1391,7 +1604,10 @@
         "华丽的",
         "辉煌的"
       ]
-    }
+    },
+    "exJP": "華々しい活躍だ。",
+    "exEN": "It is a brilliant performance.",
+    "exZH": "辉煌的活跃。"
   },
   {
     "id": "n1-g073",
@@ -1411,7 +1627,10 @@
         "关键",
         "重要"
       ]
-    }
+    },
+    "exJP": "ここが肝心だ。",
+    "exEN": "This part is essential.",
+    "exZH": "这里是关键。"
   },
   {
     "id": "n1-g074",
@@ -1432,7 +1651,10 @@
         "还原",
         "返回"
       ]
-    }
+    },
+    "exJP": "問題を還元する。",
+    "exEN": "Bring the problem to a resolution.",
+    "exZH": "解决并还原问题。"
   },
   {
     "id": "n1-g075",
@@ -1452,7 +1674,10 @@
         "顽固的",
         "固执的"
       ]
-    }
+    },
+    "exJP": "頑固な性格だ。",
+    "exEN": "His stubbornness is obvious.",
+    "exZH": "顽固的性格。"
   },
   {
     "id": "n1-g076",
@@ -1473,7 +1698,10 @@
         "愿望",
         "心愿"
       ]
-    }
+    },
+    "exJP": "願望が叶う。",
+    "exEN": "My desire comes true.",
+    "exZH": "愿望实现。"
   },
   {
     "id": "n1-g077",
@@ -1493,7 +1721,10 @@
         "气质",
         "品格"
       ]
-    }
+    },
+    "exJP": "気品がある。",
+    "exEN": "She has elegance.",
+    "exZH": "有气质。"
   },
   {
     "id": "n1-g078",
@@ -1514,7 +1745,10 @@
         "狭窄的",
         "拘束的"
       ]
-    }
+    },
+    "exJP": "窮屈な靴を履く。",
+    "exEN": "Wear narrow shoes.",
+    "exZH": "穿挤脚的鞋子。"
   },
   {
     "id": "n1-g079",
@@ -1533,7 +1767,10 @@
         "惊异",
         "奇迹"
       ]
-    }
+    },
+    "exJP": "自然の驚異だ。",
+    "exEN": "It is a wonder of nature.",
+    "exZH": "大自然的奇迹。"
   },
   {
     "id": "n1-g080",
@@ -1554,7 +1791,10 @@
         "享受",
         "享有"
       ]
-    }
+    },
+    "exJP": "恩恵を享受する。",
+    "exEN": "Reception of the benefits.",
+    "exZH": "享受恩惠。"
   },
   {
     "id": "n1-g081",
@@ -1574,7 +1814,10 @@
         "极端的",
         "偏激的"
       ]
-    }
+    },
+    "exJP": "極端な意見だ。",
+    "exEN": "It is an extreme opinion.",
+    "exZH": "极端的意见。"
   },
   {
     "id": "n1-g082",
@@ -1594,7 +1837,10 @@
         "拒绝",
         "谢绝"
       ]
-    }
+    },
+    "exJP": "要求を拒絶する。",
+    "exEN": "Refusal of the demand.",
+    "exZH": "拒绝要求。"
   },
   {
     "id": "n1-g083",
@@ -1613,7 +1859,10 @@
         "切换",
         "转换"
       ]
-    }
+    },
+    "exJP": "気持ちを切り替える。",
+    "exEN": "To change one's mindset.",
+    "exZH": "转换心情。"
   },
   {
     "id": "n1-g084",
@@ -1632,7 +1881,10 @@
         "极其",
         "非常"
       ]
-    }
+    },
+    "exJP": "極めて重要だ。",
+    "exEN": "It is exceedingly important.",
+    "exZH": "极其重要。"
   },
   {
     "id": "n1-g085",
@@ -1652,7 +1904,10 @@
         "仔细审查",
         "斟酌"
       ]
-    }
+    },
+    "exJP": "素材を吟味する。",
+    "exEN": "Careful scrutiny of the materials.",
+    "exZH": "仔细审查材料。"
   },
   {
     "id": "n1-g086",
@@ -1671,7 +1926,10 @@
         "分歧",
         "不一致"
       ]
-    }
+    },
+    "exJP": "意見が食い違う。",
+    "exEN": "Opinions run counter to each other.",
+    "exZH": "意见产生分歧。"
   },
   {
     "id": "n1-g087",
@@ -1691,7 +1949,10 @@
         "空虚的",
         "空洞的"
       ]
-    }
+    },
+    "exJP": "空虚な毎日を送る。",
+    "exEN": "Feel emptiness every day.",
+    "exZH": "过着空虚的每一天。"
   },
   {
     "id": "n1-g088",
@@ -1711,7 +1972,10 @@
         "推翻",
         "颠覆"
       ]
-    }
+    },
+    "exJP": "常識を覆す。",
+    "exEN": "To overturn common sense.",
+    "exZH": "颠覆常识。"
   },
   {
     "id": "n1-g089",
@@ -1730,7 +1994,10 @@
         "牢骚",
         "抱怨"
       ]
-    }
+    },
+    "exJP": "愚痴をこぼす。",
+    "exEN": "To make an idle complaint.",
+    "exZH": "发牢骚。"
   },
   {
     "id": "n1-g090",
@@ -1751,7 +2018,10 @@
         "屈折",
         "曲折"
       ]
-    }
+    },
+    "exJP": "光が屈折する。",
+    "exEN": "Bending of the light.",
+    "exZH": "光线折射。"
   },
   {
     "id": "n1-g091",
@@ -1770,7 +2040,10 @@
         "企图",
         "策划"
       ]
-    }
+    },
+    "exJP": "新しい事業を企てる。",
+    "exEN": "To plan a new project.",
+    "exZH": "计划新事业。"
   },
   {
     "id": "n1-g092",
@@ -1790,7 +2063,10 @@
         "缺陷",
         "缺点"
       ]
-    }
+    },
+    "exJP": "製品に欠陥がある。",
+    "exEN": "There is a defect in the product.",
+    "exZH": "产品有缺陷。"
   },
   {
     "id": "n1-g093",
@@ -1810,7 +2086,10 @@
         "团结",
         "结合"
       ]
-    }
+    },
+    "exJP": "チームの結束を固める。",
+    "exEN": "Strengthen the union of the team.",
+    "exZH": "巩固团队的团结。"
   },
   {
     "id": "n1-g094",
@@ -1829,7 +2108,10 @@
         "贬低",
         "诋毁"
       ]
-    }
+    },
+    "exJP": "他人を貶すな。",
+    "exEN": "Do not speak ill of others.",
+    "exZH": "不要贬低别人。"
   },
   {
     "id": "n1-g095",
@@ -1848,7 +2130,10 @@
         "呛人的",
         "难受的"
       ]
-    }
+    },
+    "exJP": "部屋が煙たい。",
+    "exEN": "The room is smoky.",
+    "exZH": "房间里烟雾弥漫。"
   },
   {
     "id": "n1-g096",
@@ -1869,7 +2154,10 @@
         "坚实的",
         "稳健的"
       ]
-    }
+    },
+    "exJP": "堅実な方法を選ぶ。",
+    "exEN": "Choose a steady method.",
+    "exZH": "选择稳健的方法。"
   },
   {
     "id": "n1-g097",
@@ -1890,7 +2178,10 @@
         "厌恶",
         "憎恶"
       ]
-    }
+    },
+    "exJP": "彼に嫌悪を抱く。",
+    "exEN": "Feel hate towards him.",
+    "exZH": "对他感到厌恶。"
   },
   {
     "id": "n1-g098",
@@ -1911,7 +2202,10 @@
         "巧妙的",
         "精巧的"
       ]
-    }
+    },
+    "exJP": "巧妙な手口だ。",
+    "exEN": "It is an ingenious trick.",
+    "exZH": "巧妙的手法。"
   },
   {
     "id": "n1-g099",
@@ -1930,7 +2224,10 @@
         "根据",
         "依据"
       ]
-    }
+    },
+    "exJP": "その話の根拠は何ですか。",
+    "exEN": "What is the basis for that?",
+    "exZH": "那个说法的根据是什么？"
   },
   {
     "id": "n1-g100",
@@ -1951,7 +2248,10 @@
         "混同",
         "混淆"
       ]
-    }
+    },
+    "exJP": "公私を混同するな。",
+    "exEN": "Avoid confusion of public and private.",
+    "exZH": "不要公私混同。"
   },
   {
     "id": "n1-g101",
@@ -1971,7 +2271,10 @@
         "遮挡",
         "阻挡"
       ]
-    }
+    },
+    "exJP": "話を遮る。",
+    "exEN": "To interrupt the conversation.",
+    "exZH": "打断谈话。"
   },
   {
     "id": "n1-g102",
@@ -1991,7 +2294,10 @@
         "鸣叫",
         "叽叽喳喳"
       ]
-    }
+    },
+    "exJP": "小鳥が囀る。",
+    "exEN": "The little birds sing.",
+    "exZH": "小鸟鸣叫。"
   },
   {
     "id": "n1-g103",
@@ -2010,7 +2316,10 @@
         "繁荣",
         "兴旺"
       ]
-    }
+    },
+    "exJP": "町が栄える。",
+    "exEN": "The town continues to prosper.",
+    "exZH": "城镇繁荣。"
   },
   {
     "id": "n1-g104",
@@ -2029,7 +2338,10 @@
         "追溯",
         "逆流而上"
       ]
-    }
+    },
+    "exJP": "過去に遡る。",
+    "exEN": "To go back to the past.",
+    "exZH": "追溯到过去。"
   },
   {
     "id": "n1-g105",
@@ -2049,7 +2361,10 @@
         "错觉",
         "幻觉"
       ]
-    }
+    },
+    "exJP": "錯覚を起こす。",
+    "exEN": "Experience an optical illusion.",
+    "exZH": "产生错觉。"
   },
   {
     "id": "n1-g106",
@@ -2068,7 +2383,10 @@
         "领悟",
         "觉察"
       ]
-    }
+    },
+    "exJP": "自分の過ちを悟る。",
+    "exEN": "To realize one's own mistake.",
+    "exZH": "认识到自己的错误。"
   },
   {
     "id": "n1-g107",
@@ -2088,7 +2406,10 @@
         "裁决",
         "审判"
       ]
-    }
+    },
+    "exJP": "神の裁きを受ける。",
+    "exEN": "Receive the judgment of God.",
+    "exZH": "接受神的审判。"
   },
   {
     "id": "n1-g108",
@@ -2107,7 +2428,10 @@
         "妨碍",
         "有害于"
       ]
-    }
+    },
+    "exJP": "気に障る。",
+    "exEN": "To hinder or offend someone's feelings.",
+    "exZH": "惹人生气。"
   },
   {
     "id": "n1-g109",
@@ -2127,7 +2451,10 @@
         "崇拜",
         "敬仰"
       ]
-    }
+    },
+    "exJP": "偶像を崇拝する。",
+    "exEN": "To worship an idol.",
+    "exZH": "崇拜偶像。"
   },
   {
     "id": "n1-g110",
@@ -2146,7 +2473,10 @@
         "设置",
         "发起"
       ]
-    }
+    },
+    "exJP": "罠を仕掛ける。",
+    "exEN": "To commence setting a trap.",
+    "exZH": "设置陷阱。"
   },
   {
     "id": "n1-g111",
@@ -2165,7 +2495,10 @@
         "紧紧抓住",
         "依附"
       ]
-    }
+    },
+    "exJP": "母親に縋り付く。",
+    "exEN": "To cling to the mother.",
+    "exZH": "紧紧抱住母亲。"
   },
   {
     "id": "n1-g112",
@@ -2184,7 +2517,10 @@
         "爱慕",
         "怀念"
       ]
-    }
+    },
+    "exJP": "故郷を慕う。",
+    "exEN": "To yearn for the hometown.",
+    "exZH": "思念故乡。"
   },
   {
     "id": "n1-g113",
@@ -2204,7 +2540,10 @@
         "嫉妒",
         "眼红"
       ]
-    }
+    },
+    "exJP": "嫉妬を感じる。",
+    "exEN": "To feel deep jealousy.",
+    "exZH": "感到嫉妒。"
   },
   {
     "id": "n1-g114",
@@ -2224,7 +2563,10 @@
         "柔软的",
         "优美的"
       ]
-    }
+    },
+    "exJP": "しなやかな体だ。",
+    "exEN": "It is a supple body.",
+    "exZH": "柔软的身体。"
   },
   {
     "id": "n1-g115",
@@ -2244,7 +2586,10 @@
         "凌驾",
         "忍受"
       ]
-    }
+    },
+    "exJP": "寒さを凌ぐ。",
+    "exEN": "To outdo the harsh cold.",
+    "exZH": "御寒。"
   },
   {
     "id": "n1-g116",
@@ -2265,7 +2610,10 @@
         "处理",
         "结果"
       ]
-    }
+    },
+    "exJP": "事の始末を書く。",
+    "exEN": "Document the management of the affair.",
+    "exZH": "写下事情的始末。"
   },
   {
     "id": "n1-g117",
@@ -2285,7 +2633,10 @@
         "辩解",
         "说明"
       ]
-    }
+    },
+    "exJP": "釈明の余地がない。",
+    "exEN": "No room for explanation.",
+    "exZH": "没有辩解的余地。"
   },
   {
     "id": "n1-g118",
@@ -2306,7 +2657,10 @@
         "执着",
         "留恋"
       ]
-    }
+    },
+    "exJP": "お金に執着する。",
+    "exEN": "Attachment to money.",
+    "exZH": "对金钱的执着。"
   },
   {
     "id": "n1-g119",
@@ -2327,7 +2681,10 @@
         "以往",
         "从前"
       ]
-    }
+    },
+    "exJP": "従来の方法に従う。",
+    "exEN": "Follow the method up to now.",
+    "exZH": "遵循以往的方法。"
   },
   {
     "id": "n1-g120",
@@ -2347,7 +2704,10 @@
         "端庄的",
         "优雅的"
       ]
-    }
+    },
+    "exJP": "淑やかな女性だ。",
+    "exEN": "She is a graceful woman.",
+    "exZH": "端庄的女性。"
   },
   {
     "id": "n1-g121",

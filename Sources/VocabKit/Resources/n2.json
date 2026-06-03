@@ -18,7 +18,10 @@
         "负担",
         "承担"
       ]
-    }
+    },
+    "exJP": "費用は私が負担します。",
+    "exEN": "I will bear the cost.",
+    "exZH": "费用由我承担。"
   },
   {
     "id": "n2-g002",
@@ -37,7 +40,10 @@
       "zh": [
         "贡献"
       ]
-    }
+    },
+    "exJP": "社会に貢献したい。",
+    "exEN": "I want to contribute to society.",
+    "exZH": "我想为社会做贡献。"
   },
   {
     "id": "n2-g003",
@@ -57,7 +63,10 @@
         "供应",
         "供给"
       ]
-    }
+    },
+    "exJP": "水の供給が止まる。",
+    "exEN": "The water supply will stop.",
+    "exZH": "供水停止。"
   },
   {
     "id": "n2-g004",
@@ -77,7 +86,10 @@
         "态势",
         "姿态"
       ]
-    }
+    },
+    "exJP": "新しい態勢で臨む。",
+    "exEN": "Face it with a new attitude.",
+    "exZH": "以新姿态面对。"
   },
   {
     "id": "n2-g005",
@@ -97,7 +109,10 @@
         "局势",
         "形势"
       ]
-    }
+    },
+    "exJP": "世界の情勢が変わる。",
+    "exEN": "The state of the world changes.",
+    "exZH": "世界局势改变。"
   },
   {
     "id": "n2-g006",
@@ -117,7 +132,10 @@
         "领域",
         "范围"
       ]
-    }
+    },
+    "exJP": "専門の領域を超える。",
+    "exEN": "Exceed one's area of expertise.",
+    "exZH": "超出专业领域。"
   },
   {
     "id": "n2-g007",
@@ -136,7 +154,10 @@
         "规格",
         "标准"
       ]
-    }
+    },
+    "exJP": "新しい規格を作る。",
+    "exEN": "Create a new standard.",
+    "exZH": "制定新标准。"
   },
   {
     "id": "n2-g008",
@@ -156,7 +177,10 @@
         "基础",
         "基石"
       ]
-    }
+    },
+    "exJP": "生活の基盤を築く。",
+    "exEN": "Build a foundation for life.",
+    "exZH": "建立生活基础。"
   },
   {
     "id": "n2-g009",
@@ -176,7 +200,10 @@
       "zh": [
         "渴望"
       ]
-    }
+    },
+    "exJP": "世界平和を渇望する。",
+    "exEN": "Crave for world peace.",
+    "exZH": "渴望世界和平。"
   },
   {
     "id": "n2-g010",
@@ -197,7 +224,10 @@
         "审查",
         "评定"
       ]
-    }
+    },
+    "exJP": "書類審査を通る。",
+    "exEN": "Pass the document judging.",
+    "exZH": "通过文件审查。"
   },
   {
     "id": "n2-g011",
@@ -217,7 +247,10 @@
         "登记",
         "注册"
       ]
-    }
+    },
+    "exJP": "会員登録をする。",
+    "exEN": "Do member registration.",
+    "exZH": "进行会员注册。"
   },
   {
     "id": "n2-g012",
@@ -238,7 +271,10 @@
         "监督",
         "导演"
       ]
-    }
+    },
+    "exJP": "映画の監督になる。",
+    "exEN": "Become a movie supervisor.",
+    "exZH": "成为电影导演。"
   },
   {
     "id": "n2-g013",
@@ -258,7 +294,10 @@
         "查明",
         "探究"
       ]
-    }
+    },
+    "exJP": "原因の究明を急ぐ。",
+    "exEN": "Hurry the investigation of the cause.",
+    "exZH": "加紧查明原因。"
   },
   {
     "id": "n2-g014",
@@ -278,7 +317,10 @@
         "现代",
         "当代"
       ]
-    }
+    },
+    "exJP": "現代の若者は忙しい。",
+    "exEN": "Nowadays youth are busy.",
+    "exZH": "现代的年轻人很忙。"
   },
   {
     "id": "n2-g015",
@@ -299,7 +341,10 @@
         "认识",
         "认知"
       ]
-    }
+    },
+    "exJP": "問題の認識が甘い。",
+    "exEN": "The recognition of the problem is naive.",
+    "exZH": "对问题的认识不足。"
   },
   {
     "id": "n2-g016",
@@ -318,7 +363,10 @@
         "知性",
         "智力"
       ]
-    }
+    },
+    "exJP": "知性を感じる文章だ。",
+    "exEN": "It's a text where you feel intelligence.",
+    "exZH": "能感受到智慧的文章。"
   },
   {
     "id": "n2-g017",
@@ -337,7 +385,10 @@
         "伦理",
         "道德"
       ]
-    }
+    },
+    "exJP": "職業倫理を守る。",
+    "exEN": "Protect professional ethics.",
+    "exZH": "遵守职业道德。"
   },
   {
     "id": "n2-g018",
@@ -358,7 +409,10 @@
         "同样",
         "一样"
       ]
-    }
+    },
+    "exJP": "結果は前回と同様だ。",
+    "exEN": "The result is identical to last time.",
+    "exZH": "结果和上次一样。"
   },
   {
     "id": "n2-g019",
@@ -377,7 +431,10 @@
       "zh": [
         "企业"
       ]
-    }
+    },
+    "exJP": "大企業に就職する。",
+    "exEN": "Get a job at a large enterprise.",
+    "exZH": "在大企业就职。"
   },
   {
     "id": "n2-g020",
@@ -395,7 +452,10 @@
         "产业",
         "工业"
       ]
-    }
+    },
+    "exJP": "自動車産業が発展する。",
+    "exEN": "The automobile industry develops.",
+    "exZH": "汽车产业发展。"
   },
   {
     "id": "n2-g021",
@@ -414,7 +474,10 @@
       "zh": [
         "商业"
       ]
-    }
+    },
+    "exJP": "商業の盛んな町だ。",
+    "exEN": "It's a town with thriving commerce.",
+    "exZH": "是一个商业繁荣的城镇。"
   },
   {
     "id": "n2-g022",
@@ -432,7 +495,10 @@
       "zh": [
         "经济"
       ]
-    }
+    },
+    "exJP": "国の経済が成長する。",
+    "exEN": "The country's economy grows.",
+    "exZH": "国家经济增长。"
   },
   {
     "id": "n2-g023",
@@ -450,7 +516,10 @@
       "zh": [
         "政治"
       ]
-    }
+    },
+    "exJP": "彼は政治に興味がある。",
+    "exEN": "He is interested in politics.",
+    "exZH": "他对政治感兴趣。"
   },
   {
     "id": "n2-g024",
@@ -468,7 +537,10 @@
       "zh": [
         "政策"
       ]
-    }
+    },
+    "exJP": "新しい政策を発表する。",
+    "exEN": "Announce new political measures.",
+    "exZH": "发表新政策。"
   },
   {
     "id": "n2-g025",
@@ -487,7 +559,10 @@
       "zh": [
         "制度"
       ]
-    }
+    },
+    "exJP": "教育制度を見直す。",
+    "exEN": "Review the education system.",
+    "exZH": "重新审视教育制度。"
   },
   {
     "id": "n2-g026",
@@ -508,7 +583,10 @@
         "组织",
         "结构"
       ]
-    }
+    },
+    "exJP": "大きな組織に属する。",
+    "exEN": "Belong to a large organization.",
+    "exZH": "属于大组织。"
   },
   {
     "id": "n2-g027",
@@ -527,7 +605,10 @@
         "构造",
         "结构"
       ]
-    }
+    },
+    "exJP": "建物の構造を調べる。",
+    "exEN": "Examine the building's structure.",
+    "exZH": "调查建筑物的结构。"
   },
   {
     "id": "n2-g028",
@@ -547,7 +628,10 @@
         "比率",
         "比例"
       ]
-    }
+    },
+    "exJP": "男女の比率が同じだ。",
+    "exEN": "The ratio of men and women is the same.",
+    "exZH": "男女比例相同。"
   },
   {
     "id": "n2-g029",
@@ -565,7 +649,10 @@
       "zh": [
         "利润"
       ]
-    }
+    },
+    "exJP": "会社の利潤を追求する。",
+    "exEN": "Pursue the company's profit.",
+    "exZH": "追求公司利润。"
   },
   {
     "id": "n2-g030",
@@ -583,7 +670,10 @@
       "zh": [
         "特权"
       ]
-    }
+    },
+    "exJP": "会員の特権を利用する。",
+    "exEN": "Use member privileges.",
+    "exZH": "利用会员特权。"
   },
   {
     "id": "n2-g031",
@@ -602,7 +692,10 @@
       "zh": [
         "义务"
       ]
-    }
+    },
+    "exJP": "納税は国民の義務だ。",
+    "exEN": "Paying taxes is a citizen's duty.",
+    "exZH": "纳税是国民的义务。"
   },
   {
     "id": "n2-g032",
@@ -621,7 +714,10 @@
       "zh": [
         "任务"
       ]
-    }
+    },
+    "exJP": "任務を無事に終える。",
+    "exEN": "Finish the duty safely.",
+    "exZH": "顺利完成任务。"
   },
   {
     "id": "n2-g033",
@@ -641,7 +737,10 @@
         "姿势",
         "态度"
       ]
-    }
+    },
+    "exJP": "正しい姿勢を保つ。",
+    "exEN": "Maintain a correct posture.",
+    "exZH": "保持正确的姿势。"
   },
   {
     "id": "n2-g034",
@@ -661,7 +760,10 @@
         "情绪",
         "情趣"
       ]
-    }
+    },
+    "exJP": "子供の情緒が不安定だ。",
+    "exEN": "The child's emotion is unstable.",
+    "exZH": "孩子的情绪不稳定。"
   },
   {
     "id": "n2-g035",
@@ -679,7 +781,10 @@
       "zh": [
         "人脉"
       ]
-    }
+    },
+    "exJP": "広い人脈を持つ。",
+    "exEN": "Have wide personal connections.",
+    "exZH": "拥有广阔的人脉。"
   },
   {
     "id": "n2-g036",
@@ -698,7 +803,10 @@
         "事态",
         "形势"
       ]
-    }
+    },
+    "exJP": "事態が悪化する。",
+    "exEN": "The situation worsens.",
+    "exZH": "事态恶化。"
   },
   {
     "id": "n2-g037",
@@ -718,7 +826,10 @@
         "评价",
         "名声"
       ]
-    }
+    },
+    "exJP": "あの店は評判が良い。",
+    "exEN": "That shop has a good reputation.",
+    "exZH": "那家店评价很好。"
   },
   {
     "id": "n2-g038",
@@ -739,7 +850,10 @@
         "描写",
         "刻画"
       ]
-    }
+    },
+    "exJP": "心理の描写が細かい。",
+    "exEN": "The psychological depiction is detailed.",
+    "exZH": "心理描写很细腻。"
   },
   {
     "id": "n2-g039",
@@ -758,7 +872,10 @@
       "zh": [
         "侧面"
       ]
-    }
+    },
+    "exJP": "別の側面から見る。",
+    "exEN": "Look from another side.",
+    "exZH": "从另一个侧面看。"
   },
   {
     "id": "n2-g040",
@@ -779,7 +896,10 @@
         "宣布",
         "披露"
       ]
-    }
+    },
+    "exJP": "結婚を披露する。",
+    "exEN": "Make a marriage announcement.",
+    "exZH": "宣布结婚。"
   },
   {
     "id": "n2-g041",
@@ -800,7 +920,10 @@
         "探求",
         "探索"
       ]
-    }
+    },
+    "exJP": "宇宙の真理を探求する。",
+    "exEN": "Search for the truth of the universe.",
+    "exZH": "探求宇宙的真理。"
   },
   {
     "id": "n2-g042",
@@ -821,7 +944,10 @@
         "飞跃",
         "突飞猛进"
       ]
-    }
+    },
+    "exJP": "売上が飛躍的に伸びる。",
+    "exEN": "Sales increase leaping.",
+    "exZH": "销售额飞跃性增长。"
   },
   {
     "id": "n2-g043",
@@ -840,7 +966,10 @@
         "派生",
         "衍生"
       ]
-    }
+    },
+    "exJP": "派生した問題が生じる。",
+    "exEN": "A derivation problem arises.",
+    "exZH": "产生了派生问题。"
   },
   {
     "id": "n2-g044",
@@ -861,7 +990,10 @@
         "培育",
         "培养"
       ]
-    }
+    },
+    "exJP": "人材の育成に努める。",
+    "exEN": "Strive for rearing human resources.",
+    "exZH": "努力培养人才。"
   },
   {
     "id": "n2-g045",
@@ -882,7 +1014,10 @@
         "成就",
         "完成"
       ]
-    }
+    },
+    "exJP": "彼女の願いが成就した。",
+    "exEN": "Her wish reached fulfillment.",
+    "exZH": "她的愿望实现了。"
   },
   {
     "id": "n2-g046",
@@ -903,7 +1038,10 @@
         "挫折",
         "受挫"
       ]
-    }
+    },
+    "exJP": "計画が途中で挫折する。",
+    "exEN": "The plan suffers a setback midway.",
+    "exZH": "计划中途受挫。"
   },
   {
     "id": "n2-g047",
@@ -923,7 +1061,10 @@
         "经历",
         "履历"
       ]
-    }
+    },
+    "exJP": "彼の経歴を調べる。",
+    "exEN": "Check his personal history.",
+    "exZH": "调查他的经历。"
   },
   {
     "id": "n2-g048",
@@ -941,7 +1082,10 @@
       "zh": [
         "体验"
       ]
-    }
+    },
+    "exJP": "貴重な体験をした。",
+    "exEN": "Had a precious personal experience.",
+    "exZH": "拥有了宝贵的体验。"
   },
   {
     "id": "n2-g049",
@@ -959,7 +1103,10 @@
       "zh": [
         "实验"
       ]
-    }
+    },
+    "exJP": "理科の実験をする。",
+    "exEN": "Do a science experiment.",
+    "exZH": "做理科实验。"
   },
   {
     "id": "n2-g050",
@@ -980,7 +1127,10 @@
         "运转",
         "运作"
       ]
-    }
+    },
+    "exJP": "工場が稼働する。",
+    "exEN": "The factory begins operation.",
+    "exZH": "工厂开始运转。"
   },
   {
     "id": "n2-g051",
@@ -999,7 +1149,10 @@
       "zh": [
         "过程"
       ]
-    }
+    },
+    "exJP": "成長の過程を記録する。",
+    "exEN": "Record the process of growth.",
+    "exZH": "记录成长的过程。"
   },
   {
     "id": "n2-g052",
@@ -1018,7 +1171,10 @@
       "zh": [
         "实践"
       ]
-    }
+    },
+    "exJP": "理論を実践に移す。",
+    "exEN": "Put theory into practice.",
+    "exZH": "将理论付诸实践。"
   },
   {
     "id": "n2-g053",
@@ -1039,7 +1195,10 @@
         "施行",
         "实施"
       ]
-    }
+    },
+    "exJP": "新しい法律が施行される。",
+    "exEN": "A new law is put into execution.",
+    "exZH": "新法律实施。"
   },
   {
     "id": "n2-g054",
@@ -1058,7 +1217,10 @@
       "zh": [
         "现实"
       ]
-    }
+    },
+    "exJP": "現実は非常に厳しい。",
+    "exEN": "Reality is very harsh.",
+    "exZH": "现实非常严酷。"
   },
   {
     "id": "n2-g055",
@@ -1079,7 +1241,10 @@
         "诚实",
         "真诚"
       ]
-    }
+    },
+    "exJP": "彼は誠実な人だ。",
+    "exEN": "He is a sincere person.",
+    "exZH": "他是个诚实的人。"
   },
   {
     "id": "n2-g056",
@@ -1096,7 +1261,10 @@
       "zh": [
         "哲学"
       ]
-    }
+    },
+    "exJP": "大学で哲学を学ぶ。",
+    "exEN": "Study philosophy at university.",
+    "exZH": "在大学学习哲学。"
   },
   {
     "id": "n2-g057",
@@ -1115,7 +1283,10 @@
       "zh": [
         "思想"
       ]
-    }
+    },
+    "exJP": "西洋の思想を研究する。",
+    "exEN": "Study Western thought.",
+    "exZH": "研究西方思想。"
   },
   {
     "id": "n2-g058",
@@ -1136,7 +1307,10 @@
         "预料",
         "预计"
       ]
-    }
+    },
+    "exJP": "私の予想が外れた。",
+    "exEN": "My expectation was wrong.",
+    "exZH": "我的预想落空了。"
   },
   {
     "id": "n2-g059",
@@ -1155,7 +1329,10 @@
       "zh": [
         "预感"
       ]
-    }
+    },
+    "exJP": "嫌な予感がする。",
+    "exEN": "I have a bad presentiment.",
+    "exZH": "有种不祥的预感。"
   },
   {
     "id": "n2-g060",
@@ -1174,7 +1351,10 @@
       "zh": [
         "推测"
       ]
-    }
+    },
+    "exJP": "彼の推測は正しい。",
+    "exEN": "His guess is correct.",
+    "exZH": "他的推测是正确的。"
   },
   {
     "id": "n2-g061",
@@ -1194,7 +1374,10 @@
       "zh": [
         "预防"
       ]
-    }
+    },
+    "exJP": "手洗いで風邪を予防する。",
+    "exEN": "Prevent a cold by washing hands.",
+    "exZH": "通过洗手预防感冒。"
   },
   {
     "id": "n2-g062",
@@ -1212,7 +1395,10 @@
       "zh": [
         "预算"
       ]
-    }
+    },
+    "exJP": "旅行の予算が足りない。",
+    "exEN": "The travel estimate is insufficient.",
+    "exZH": "旅行的预算不足。"
   },
   {
     "id": "n2-g063",
@@ -1232,7 +1418,10 @@
         "决算",
         "结账"
       ]
-    }
+    },
+    "exJP": "会社の決算を行う。",
+    "exEN": "Do the company's settlement of accounts.",
+    "exZH": "进行公司结算。"
   },
   {
     "id": "n2-g064",
@@ -1253,7 +1442,10 @@
         "构想",
         "设想"
       ]
-    }
+    },
+    "exJP": "新しいビルの構想を練る。",
+    "exEN": "Work on the plan for a new building.",
+    "exZH": "构思新大楼的计划。"
   },
   {
     "id": "n2-g065",
@@ -1271,7 +1463,10 @@
       "zh": [
         "战略"
       ]
-    }
+    },
+    "exJP": "販売の戦略を立てる。",
+    "exEN": "Make a sales strategy.",
+    "exZH": "制定销售战略。"
   },
   {
     "id": "n2-g066",
@@ -1289,7 +1484,10 @@
       "zh": [
         "效率"
       ]
-    }
+    },
+    "exJP": "作業の効率を上げる。",
+    "exEN": "Increase the efficiency of work.",
+    "exZH": "提高工作效率。"
   },
   {
     "id": "n2-g067",
@@ -1308,7 +1506,10 @@
       "zh": [
         "独立"
       ]
-    }
+    },
+    "exJP": "親から独立する。",
+    "exEN": "Establish independence from parents.",
+    "exZH": "从父母那里独立。"
   },
   {
     "id": "n2-g068",
@@ -1327,7 +1528,10 @@
       "zh": [
         "孤立"
       ]
-    }
+    },
+    "exJP": "孤立した村を救う。",
+    "exEN": "Save a village in isolation.",
+    "exZH": "拯救孤立的村庄。"
   },
   {
     "id": "n2-g069",
@@ -1348,7 +1552,10 @@
         "树立",
         "确立"
       ]
-    }
+    },
+    "exJP": "世界新記録を樹立する。",
+    "exEN": "Establish a new world record.",
+    "exZH": "创造新的世界纪录。"
   },
   {
     "id": "n2-g070",
@@ -1365,7 +1572,10 @@
       "zh": [
         "抽象"
       ]
-    }
+    },
+    "exJP": "抽象的な表現を避ける。",
+    "exEN": "Avoid abstraction in expression.",
+    "exZH": "避免抽象的表达。"
   },
   {
     "id": "n2-g071",
@@ -1385,7 +1595,10 @@
         "稳定",
         "安定"
       ]
-    }
+    },
+    "exJP": "患者の精神が安定している。",
+    "exEN": "The patient's mind is in stability.",
+    "exZH": "病人的精神稳定。"
   },
   {
     "id": "n2-g072",
@@ -1405,7 +1618,10 @@
         "典型",
         "模范"
       ]
-    }
+    },
+    "exJP": "典型的な日本の家だ。",
+    "exEN": "It's a typical type of Japanese house.",
+    "exZH": "这是典型的日本房子。"
   },
   {
     "id": "n2-g073",
@@ -1426,7 +1642,10 @@
         "担忧",
         "悬念"
       ]
-    }
+    },
+    "exJP": "経済への影響を懸念する。",
+    "exEN": "Worry about the impact on the economy.",
+    "exZH": "担忧对经济的影响。"
   },
   {
     "id": "n2-g074",
@@ -1446,7 +1665,10 @@
         "苦情",
         "抱怨"
       ]
-    }
+    },
+    "exJP": "客から苦情が来る。",
+    "exEN": "A complaint comes from a customer.",
+    "exZH": "收到客人的投诉。"
   },
   {
     "id": "n2-g075",
@@ -1467,7 +1689,10 @@
         "缺乏",
         "匮乏"
       ]
-    }
+    },
+    "exJP": "食糧が欠乏している。",
+    "exEN": "Food is in want.",
+    "exZH": "粮食缺乏。"
   },
   {
     "id": "n2-g076",
@@ -1487,7 +1712,10 @@
         "庞大",
         "巨大的"
       ]
-    }
+    },
+    "exJP": "膨大なデータを集める。",
+    "exEN": "Collect a huge amount of data.",
+    "exZH": "收集庞大的数据。"
   },
   {
     "id": "n2-g077",
@@ -1506,7 +1734,10 @@
         "贫穷的",
         "贫乏的"
       ]
-    }
+    },
+    "exJP": "貧しい生活を送る。",
+    "exEN": "Live a poor life.",
+    "exZH": "过着贫穷的生活。"
   },
   {
     "id": "n2-g078",
@@ -1526,7 +1757,10 @@
         "单纯",
         "简单的"
       ]
-    }
+    },
+    "exJP": "単純なミスをした。",
+    "exEN": "Made a mistake out of simplicity.",
+    "exZH": "犯了单纯的错误。"
   },
   {
     "id": "n2-g079",
@@ -1546,7 +1780,10 @@
         "明白的",
         "明显的"
       ]
-    }
+    },
+    "exJP": "失敗の理由は明白だ。",
+    "exEN": "The reason for failure is obvious.",
+    "exZH": "失败的理由很明显。"
   },
   {
     "id": "n2-g080",
@@ -1565,7 +1802,10 @@
       "zh": [
         "困难"
       ]
-    }
+    },
+    "exJP": "困難を乗り越える。",
+    "exEN": "Overcome difficulty.",
+    "exZH": "克服困难。"
   },
   {
     "id": "n2-g081",
@@ -1585,7 +1825,10 @@
         "难解的",
         "难懂的"
       ]
-    }
+    },
+    "exJP": "この本は難解だ。",
+    "exEN": "This book is difficult to understand.",
+    "exZH": "这本书很难懂。"
   },
   {
     "id": "n2-g082",
@@ -1606,7 +1849,10 @@
         "容易",
         "简单的"
       ]
-    }
+    },
+    "exJP": "容易に解決できない。",
+    "exEN": "Cannot be easy to resolve.",
+    "exZH": "无法轻易解决。"
   },
   {
     "id": "n2-g083",
@@ -1625,7 +1871,10 @@
         "贵重的",
         "宝贵的"
       ]
-    }
+    },
+    "exJP": "貴重な時間を過ごす。",
+    "exEN": "Spend precious time.",
+    "exZH": "度过宝贵的时间。"
   },
   {
     "id": "n2-g084",
@@ -1645,7 +1894,10 @@
         "深刻的",
         "严重的"
       ]
-    }
+    },
+    "exJP": "深刻な問題だ。",
+    "exEN": "It's a serious problem.",
+    "exZH": "这是个严重的问题。"
   },
   {
     "id": "n2-g085",
@@ -1663,7 +1915,10 @@
       "zh": [
         "认真的"
       ]
-    }
+    },
+    "exJP": "真剣に話を聞く。",
+    "exEN": "Listen to the story in a serious manner.",
+    "exZH": "认真听讲。"
   },
   {
     "id": "n2-g086",
@@ -1682,7 +1937,10 @@
         "劣",
         "次于"
       ]
-    }
+    },
+    "exJP": "彼は体力で劣る。",
+    "exEN": "He falls behind in physical strength.",
+    "exZH": "他在体力上逊色。"
   },
   {
     "id": "n2-g087",
@@ -1702,7 +1960,10 @@
         "胜过",
         "优于"
       ]
-    }
+    },
+    "exJP": "彼は兄より勝る。",
+    "exEN": "He excels his older brother.",
+    "exZH": "他比哥哥更胜一筹。"
   },
   {
     "id": "n2-g088",
@@ -1722,7 +1983,10 @@
         "不同",
         "有异"
       ]
-    }
+    },
+    "exJP": "事実と異なる。",
+    "exEN": "It differs from the fact.",
+    "exZH": "与事实不符。"
   },
   {
     "id": "n2-g089",
@@ -1742,7 +2006,10 @@
       "zh": [
         "类似"
       ]
-    }
+    },
+    "exJP": "類似した商品が多い。",
+    "exEN": "There are many resemblance products.",
+    "exZH": "类似商品很多。"
   },
   {
     "id": "n2-g090",
@@ -1762,7 +2029,10 @@
         "恰当",
         "适当的"
       ]
-    }
+    },
+    "exJP": "適切な指示を出す。",
+    "exEN": "Give pertinent instructions.",
+    "exZH": "给出适当的指示。"
   },
   {
     "id": "n2-g091",
@@ -1782,7 +2052,10 @@
         "适当",
         "敷衍的"
       ]
-    }
+    },
+    "exJP": "適当な服を選ぶ。",
+    "exEN": "Choose suitable clothes.",
+    "exZH": "挑选合适的衣服。"
   },
   {
     "id": "n2-g092",
@@ -1801,7 +2074,10 @@
       "zh": [
         "愉快的"
       ]
-    }
+    },
+    "exJP": "愉快な仲間たちだ。",
+    "exEN": "They are pleasant companions.",
+    "exZH": "是一群愉快的伙伴。"
   },
   {
     "id": "n2-g093",
@@ -1821,7 +2097,10 @@
         "清爽的",
         "爽朗的"
       ]
-    }
+    },
+    "exJP": "爽やかな風が吹く。",
+    "exEN": "A fresh breeze blows.",
+    "exZH": "吹拂着清爽的风。"
   },
   {
     "id": "n2-g094",
@@ -1841,7 +2120,10 @@
         "平稳的",
         "温和的"
       ]
-    }
+    },
+    "exJP": "穏やかな海を見る。",
+    "exEN": "Look at the calm sea.",
+    "exZH": "看着平静的大海。"
   },
   {
     "id": "n2-g095",
@@ -1861,7 +2143,10 @@
         "鲜艳的",
         "生动的"
       ]
-    }
+    },
+    "exJP": "鮮やかな色が好きだ。",
+    "exEN": "I like vivid colors.",
+    "exZH": "喜欢鲜艳的颜色。"
   },
   {
     "id": "n2-g096",
@@ -1881,7 +2166,10 @@
         "暧昧",
         "含糊"
       ]
-    }
+    },
+    "exJP": "曖昧な返事をする。",
+    "exEN": "Give a vague reply.",
+    "exZH": "做出含糊的回答。"
   },
   {
     "id": "n2-g097",
@@ -1900,7 +2188,10 @@
       "zh": [
         "明确的"
       ]
-    }
+    },
+    "exJP": "目的を明確にする。",
+    "exEN": "Make the purpose clear.",
+    "exZH": "明确目的。"
   },
   {
     "id": "n2-g098",
@@ -1920,7 +2211,10 @@
         "正确的",
         "准确的"
       ]
-    }
+    },
+    "exJP": "正確な時間を計る。",
+    "exEN": "Measure accurate time.",
+    "exZH": "测量准确的时间。"
   },
   {
     "id": "n2-g099",
@@ -1941,7 +2235,10 @@
         "妥当的",
         "合适的"
       ]
-    }
+    },
+    "exJP": "妥当な判断だと思う。",
+    "exEN": "I think it's a valid judgment.",
+    "exZH": "我认为是妥当的判断。"
   },
   {
     "id": "n2-g100",
@@ -1961,7 +2258,10 @@
         "占",
         "占据"
       ]
-    }
+    },
+    "exJP": "部屋の半分を占める。",
+    "exEN": "It occupies half of the room.",
+    "exZH": "占据了房间的一半。"
   },
   {
     "id": "n2-g101",
@@ -1981,7 +2281,10 @@
         "包含",
         "注入"
       ]
-    }
+    },
+    "exJP": "心を込めて歌う。",
+    "exEN": "Sing to include heart.",
+    "exZH": "用心歌唱。"
   },
   {
     "id": "n2-g102",
@@ -2001,7 +2304,10 @@
         "安慰",
         "抚慰"
       ]
-    }
+    },
+    "exJP": "泣く子供を慰める。",
+    "exEN": "To comfort a crying child.",
+    "exZH": "安慰哭泣的孩子。"
   },
   {
     "id": "n2-g103",
@@ -2021,7 +2327,10 @@
         "责备",
         "指责"
       ]
-    }
+    },
+    "exJP": "自分の失敗を責める。",
+    "exEN": "To condemn my own failure.",
+    "exZH": "责备自己的失败。"
   },
   {
     "id": "n2-g104",
@@ -2040,7 +2349,10 @@
         "眺望",
         "注视"
       ]
-    }
+    },
+    "exJP": "遠くの山を眺める。",
+    "exEN": "To view the distant mountains.",
+    "exZH": "眺望远处的山。"
   },
   {
     "id": "n2-g105",
@@ -2060,7 +2372,10 @@
         "缴纳",
         "收纳"
       ]
-    }
+    },
+    "exJP": "大きな成功を収める。",
+    "exEN": "To obtain great success.",
+    "exZH": "获得巨大的成功。"
   },
   {
     "id": "n2-g106",
@@ -2080,7 +2395,10 @@
         "包含",
         "含有"
       ]
-    }
+    },
+    "exJP": "税金を含む価格だ。",
+    "exEN": "It's a price to include tax.",
+    "exZH": "是包含税金的价格。"
   },
   {
     "id": "n2-g107",
@@ -2100,7 +2418,10 @@
         "包括在内",
         "叮嘱"
       ]
-    }
+    },
+    "exJP": "私を含めて五人です。",
+    "exEN": "There are five people to include me.",
+    "exZH": "包括我在内一共五个人。"
   },
   {
     "id": "n2-g108",
@@ -2120,7 +2441,10 @@
         "推荐",
         "劝告"
       ]
-    }
+    },
+    "exJP": "友達に本を勧める。",
+    "exEN": "To recommend a book to a friend.",
+    "exZH": "向朋友推荐书。"
   },
   {
     "id": "n2-g109",
@@ -2140,7 +2464,10 @@
         "避开",
         "躲避"
       ]
-    }
+    },
+    "exJP": "危険を避ける。",
+    "exEN": "To avoid danger.",
+    "exZH": "避开危险。"
   },
   {
     "id": "n2-g110",
@@ -2160,7 +2487,10 @@
         "违背",
         "反抗"
       ]
-    }
+    },
+    "exJP": "親の意見に逆らう。",
+    "exEN": "To go against parents' opinions.",
+    "exZH": "违抗父母的意见。"
   },
   {
     "id": "n2-g111",
@@ -2180,7 +2510,10 @@
         "遵从",
         "跟随"
       ]
-    }
+    },
+    "exJP": "先生の指示に従う。",
+    "exEN": "To abide by the teacher's instructions.",
+    "exZH": "遵从老师的指示。"
   },
   {
     "id": "n2-g112",
@@ -2200,7 +2533,10 @@
         "伴随",
         "相伴"
       ]
-    }
+    },
+    "exJP": "危険を伴う仕事だ。",
+    "exEN": "It's a job to accompany danger.",
+    "exZH": "是伴随危险的工作。"
   },
   {
     "id": "n2-g113",
@@ -2220,7 +2556,10 @@
         "发狂",
         "出故障"
       ]
-    }
+    },
+    "exJP": "予定が狂う。",
+    "exEN": "The schedule is to go mad.",
+    "exZH": "计划被打乱。"
   },
   {
     "id": "n2-g114",
@@ -2240,7 +2579,10 @@
         "发誓",
         "起誓"
       ]
-    }
+    },
+    "exJP": "永遠の愛を誓う。",
+    "exEN": "To swear eternal love.",
+    "exZH": "誓言永恒的爱。"
   },
   {
     "id": "n2-g115",
@@ -2259,7 +2601,10 @@
         "夺取",
         "剥夺"
       ]
-    }
+    },
+    "exJP": "命を奪う。",
+    "exEN": "To snatch away a life.",
+    "exZH": "夺走生命。"
   },
   {
     "id": "n2-g116",
@@ -2278,7 +2623,10 @@
         "补充",
         "弥补"
       ]
-    }
+    },
+    "exJP": "栄養を補う。",
+    "exEN": "To compensate for nutrition.",
+    "exZH": "补充营养。"
   },
   {
     "id": "n2-g117",
@@ -2298,7 +2646,10 @@
         "操作",
         "对待"
       ]
-    }
+    },
+    "exJP": "壊れやすい品を扱う。",
+    "exEN": "To handle fragile goods.",
+    "exZH": "处理易碎物品。"
   },
   {
     "id": "n2-g118",
@@ -2316,7 +2667,10 @@
       "zh": [
         "雇佣"
       ]
-    }
+    },
+    "exJP": "新しい社員を雇う。",
+    "exEN": "To employ a new employee.",
+    "exZH": "雇佣新员工。"
   },
   {
     "id": "n2-g119",
@@ -2336,7 +2690,10 @@
         "怀疑",
         "猜疑"
       ]
-    }
+    },
+    "exJP": "彼の言葉を疑う。",
+    "exEN": "To doubt his words.",
+    "exZH": "怀疑他的话。"
   },
   {
     "id": "n2-g120",
@@ -2356,7 +2713,10 @@
         "削",
         "削减"
       ]
-    }
+    },
+    "exJP": "鉛筆を削る。",
+    "exEN": "To shave a pencil.",
+    "exZH": "削铅笔。"
   },
   {
     "id": "n2-g121",

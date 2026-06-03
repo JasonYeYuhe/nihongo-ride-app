@@ -86,11 +86,13 @@ struct VocabKitTests {
         #expect(Set(kana).count == kana.count)
     }
 
-    @Test("N5 entries carry example sentences with translations")
+    @Test("every level carries example sentences with translations")
     func exampleSentences() {
-        let withExamples = store.entries(level: .n5).filter { $0.exampleJP != nil }
-        #expect(withExamples.count >= 50)
-        let sample = try! #require(withExamples.first)
+        for level in JLPTLevel.allCases {
+            let withExamples = store.entries(level: level).filter { $0.exampleJP != nil }
+            #expect(withExamples.count >= 50, "\(level.label) has too few example sentences")
+        }
+        let sample = try! #require(store.entries.first { $0.exampleJP != nil })
         #expect(sample.exampleTranslation(for: "en") != nil)
         #expect(sample.exampleTranslation(for: "zh") != nil)
     }
