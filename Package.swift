@@ -12,6 +12,8 @@ let package = Package(
         .library(name: "VocabKit", targets: ["VocabKit"]),
         .library(name: "ReviewKit", targets: ["ReviewKit"]),
         .library(name: "GameCore", targets: ["GameCore"]),
+        // The macOS SwiftUI app. Run with `swift run TabikanaApp`.
+        .executable(name: "TabikanaApp", targets: ["TabikanaApp"]),
     ],
     targets: [
         // MARK: Engine — romaji→kana typing matcher.
@@ -41,5 +43,11 @@ let package = Package(
         // MARK: Game loop — word queue, scoring, SRS recording (UI-independent).
         .target(name: "GameCore", dependencies: ["RomajiKana", "VocabKit", "ReviewKit"]),
         .testTarget(name: "GameCoreTests", dependencies: ["GameCore"]),
+
+        // MARK: SwiftUI app — bike-journey typing game + IME-bypassing key capture.
+        .executableTarget(
+            name: "TabikanaApp",
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore"]
+        ),
     ]
 )
