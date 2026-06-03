@@ -10,12 +10,12 @@ struct MenuView: View {
             Spacer()
 
             VStack(spacing: 10) {
-                Text("旅かな")
-                    .font(.system(size: 68, weight: .heavy, design: .rounded))
+                Text("Nihongo Dash")
+                    .font(.system(size: 60, weight: .heavy, design: .rounded))
                     .foregroundStyle(.white)
-                Text("Tabikana")
+                Text("にほんご ダッシュ")
                     .font(.system(size: 22, weight: .semibold, design: .rounded))
-                    .tracking(8)
+                    .tracking(4)
                     .foregroundStyle(Theme.accent)
                 Text(model.languageCode == "zh"
                      ? "打字环游日本 · 边骑边学"

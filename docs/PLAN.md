@@ -313,4 +313,4 @@ typing_app/
 
 1. **释义默认语言:** ✅ 多语言——`meanings` 按语言码存(`en`/`zh`/…),菜单可切 English / 中文,默认英文带回退。
 2. **App 最低 macOS:** ✅ **macOS 14**(引擎不受影响)。
-3. **产品/包名:** ✅ 工作名 **Tabikana(旅かな)**;正式名 + App 图标由产品方定,商用前做商标检索。包名 `Tabikana`,引擎模块 `RomajiKana`。
+3. **产品/包名:** ✅ 定名 **Nihongo Dash**(「Dash」系列日语版;App 图标由产品方提供,见 `design/`)。SPM 包名 `NihongoDash`,App target `NihongoDashApp`,引擎模块 `RomajiKana`。商用前做一次商标检索。

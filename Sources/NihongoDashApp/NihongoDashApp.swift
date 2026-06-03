@@ -2,12 +2,12 @@ import SwiftUI
 import AppKit
 
 @main
-struct TabikanaApp: App {
+struct NihongoDashApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var model = AppModel()
 
     var body: some Scene {
-        WindowGroup("Tabikana") {
+        WindowGroup("Nihongo Dash") {
             RootView()
                 .environment(model)
                 .frame(minWidth: 880, minHeight: 600)
@@ -22,6 +22,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
+        // SwiftPM doesn't compile an asset catalog, so set the Dock icon at runtime.
+        if let url = Bundle.module.url(forResource: "AppIcon", withExtension: "png"),
+           let icon = NSImage(contentsOf: url) {
+            NSApp.applicationIconImage = icon
+        }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }

@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "Tabikana",
+    name: "NihongoDash",
     platforms: [
         .macOS(.v14)
     ],
@@ -12,8 +12,8 @@ let package = Package(
         .library(name: "VocabKit", targets: ["VocabKit"]),
         .library(name: "ReviewKit", targets: ["ReviewKit"]),
         .library(name: "GameCore", targets: ["GameCore"]),
-        // The macOS SwiftUI app. Run with `swift run TabikanaApp`.
-        .executable(name: "TabikanaApp", targets: ["TabikanaApp"]),
+        // The macOS SwiftUI app (Nihongo Dash). Run with `swift run NihongoDashApp`.
+        .executable(name: "NihongoDashApp", targets: ["NihongoDashApp"]),
     ],
     targets: [
         // MARK: Engine — romaji→kana typing matcher.
@@ -44,10 +44,13 @@ let package = Package(
         .target(name: "GameCore", dependencies: ["RomajiKana", "VocabKit", "ReviewKit"]),
         .testTarget(name: "GameCoreTests", dependencies: ["GameCore"]),
 
-        // MARK: SwiftUI app — bike-journey typing game + IME-bypassing key capture.
+        // MARK: SwiftUI app (Nihongo Dash) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
-            name: "TabikanaApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore"]
+            name: "NihongoDashApp",
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore"],
+            resources: [
+                .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
+            ]
         ),
     ]
 )

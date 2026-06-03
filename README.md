@@ -1,10 +1,11 @@
-# 旅かな / Tabikana
+# Nihongo Dash(にほんご ダッシュ)
 
-> 工作名 **Tabikana(旅かな)**:旅 + かな。给**外国日语学习者**(JLPT N5–N1)用的 macOS 打字练习 App——「像寿司打一样好玩,但真正帮你学会」。
-> 边打边给**假名 + 罗马字提示(可关)+ 词义(中/英,可扩展)**,打错的词进 **SRS 复习队列**;MVP 主玩法「**打字环游日本**」:打对就前进、解锁经典景点。
+> 「**Dash**」系列打字学习游戏的日语版:给**外国日语学习者**(JLPT N5–N1)用的 macOS 打字练习 App——「像寿司打一样好玩,但真正帮你学会」。
+> 边打边给**假名 + 罗马字提示(可关)+ 词义(中/英,可扩展)**,打错的词进 **SRS 复习队列**;主玩法「**打字环游日本**」:打对就前进、解锁经典景点。
 > macOS / SwiftUI 原生,物理键盘。我们自己当**迷你 IME**:逐键、多路径匹配,不走系统 IME。
+> App 图标(系列:日/中/法/西/韩,本作用日本 え)见 [`design/`](design/)。
 
-> ⚠️ 产品正式名待定;商用前请做商标检索。`Tabikana` 仅为当前工作名。
+> ⚠️ 商用前就「Nihongo Dash」做一次商标检索。
 
 ## 当前状态(MVP 纵切已打通)
 
@@ -16,7 +17,7 @@
 
 ```sh
 swift test            # 43 tests / 12 suites（引擎/词库/SM-2/游戏循环）
-swift run TabikanaApp  # 启动游戏窗口（会抢占焦点以打开窗口,SPM 运行的 GUI 特性)
+swift run NihongoDashApp  # 启动游戏窗口（会抢占焦点以打开窗口,SPM 运行的 GUI 特性)
 ```
 
 需要 Swift 6 工具链(开发于 Swift 6.3 / Xcode 26,最低 macOS 14)。
@@ -30,7 +31,7 @@ swift run TabikanaApp  # 启动游戏窗口（会抢占焦点以打开窗口,SPM
 | **VocabKit** | 词条模型(多语言释义 / JLPT / 难度)+ N5 词库加载 | RomajiKana | 8 |
 | **ReviewKit** | 简化版 SM-2 间隔复习 + 错词队列 + 持久化 | — | 11 |
 | **GameCore** | 游戏循环:出词(新词+到期复习)、计分/连击、骑行进度、记录 SRS | 上面三个 | 8 |
-| **TabikanaApp** | SwiftUI App:`KeyCaptureView`(绕过 IME)+ 骑行/词卡/HUD/结算 | 全部 | — |
+| **NihongoDashApp** | SwiftUI App:`KeyCaptureView`(绕过 IME)+ 骑行/词卡/HUD/结算 + App 图标 | 全部 | — |
 
 数据流:`KeyCaptureView` 抓原始按键 → `GameSession.input(_:)` → `KanaInputMatcher` 判定 → 完成时 `ReviewStore` 按 SM-2 记账 → UI 观察 `@Observable` 状态刷新。
 
