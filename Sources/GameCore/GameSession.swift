@@ -109,6 +109,8 @@ public final class GameSession {
     public var currentSurface: String? { current?.surface }
     public var currentRomaji: String? { current?.romaji }
     public var currentGloss: String? { current?.gloss(for: config.languageCode) }
+    public var currentExampleJP: String? { current?.exampleJP }
+    public var currentExampleTranslation: String? { current?.exampleTranslation(for: config.languageCode) }
     public var typedRomaji: String { matcher?.typedRomaji ?? "" }
     public var expectedNextCharacters: Set<Character> { matcher?.expectedNextCharacters ?? [] }
     public var completedKanaCount: Int { matcher?.completedKanaCount ?? 0 }

@@ -36,6 +36,8 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
     /// Optional example sentence (Japanese) and its translation.
     public let exampleJP: String?
     public let exampleEN: String?
+    /// Optional example-sentence translation in Chinese.
+    public let exampleZH: String?
 
     private enum CodingKeys: String, CodingKey {
         case id, surface, kana
@@ -43,6 +45,7 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
         case jlpt, meanings
         case exampleJP = "exJP"
         case exampleEN = "exEN"
+        case exampleZH = "exZH"
     }
 
     public init(
@@ -53,7 +56,8 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
         jlpt: JLPTLevel,
         meanings: [String: [String]],
         exampleJP: String? = nil,
-        exampleEN: String? = nil
+        exampleEN: String? = nil,
+        exampleZH: String? = nil
     ) {
         self.id = id
         self.surface = surface
@@ -63,6 +67,7 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
         self.meanings = meanings
         self.exampleJP = exampleJP
         self.exampleEN = exampleEN
+        self.exampleZH = exampleZH
     }
 
     /// A canonical, always-typeable romaji hint, derived from ``kana`` by the engine.
@@ -79,6 +84,11 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
     /// A short joined gloss for `languageCode`, e.g. "to eat".
     public func gloss(for languageCode: String, fallback: String = "en") -> String {
         meanings(for: languageCode, fallback: fallback).joined(separator: ", ")
+    }
+
+    /// The example-sentence translation for `languageCode` (Chinese when "zh", else English).
+    public func exampleTranslation(for languageCode: String) -> String? {
+        languageCode == "zh" ? (exampleZH ?? exampleEN) : (exampleEN ?? exampleZH)
     }
 
     static func difficulty(kana: String, jlpt: JLPTLevel) -> Double {

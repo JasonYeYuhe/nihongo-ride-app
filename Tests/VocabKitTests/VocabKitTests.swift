@@ -85,4 +85,13 @@ struct VocabKitTests {
         let kana = store.entries.map(\.kana)
         #expect(Set(kana).count == kana.count)
     }
+
+    @Test("N5 entries carry example sentences with translations")
+    func exampleSentences() {
+        let withExamples = store.entries(level: .n5).filter { $0.exampleJP != nil }
+        #expect(withExamples.count >= 50)
+        let sample = try! #require(withExamples.first)
+        #expect(sample.exampleTranslation(for: "en") != nil)
+        #expect(sample.exampleTranslation(for: "zh") != nil)
+    }
 }

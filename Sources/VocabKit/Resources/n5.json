@@ -14,7 +14,10 @@
       "zh": [
         "水"
       ]
-    }
+    },
+    "exJP": "水を飲みます。",
+    "exEN": "I drink water.",
+    "exZH": "喝水。"
   },
   {
     "id": "n5-gakkou",
@@ -31,7 +34,10 @@
       "zh": [
         "学校"
       ]
-    }
+    },
+    "exJP": "学校へ行きます。",
+    "exEN": "I go to school.",
+    "exZH": "去学校。"
   },
   {
     "id": "n5-sensei",
@@ -48,7 +54,10 @@
       "zh": [
         "老师"
       ]
-    }
+    },
+    "exJP": "先生は優しいです。",
+    "exEN": "The teacher is kind.",
+    "exZH": "老师很温柔。"
   },
   {
     "id": "n5-gakusei",
@@ -65,7 +74,10 @@
       "zh": [
         "学生"
       ]
-    }
+    },
+    "exJP": "私は学生です。",
+    "exEN": "I am a student.",
+    "exZH": "我是学生。"
   },
   {
     "id": "n5-hon",
@@ -82,7 +94,10 @@
       "zh": [
         "书"
       ]
-    }
+    },
+    "exJP": "本を読みます。",
+    "exEN": "I read a book.",
+    "exZH": "读书。"
   },
   {
     "id": "n5-kuruma",
@@ -99,7 +114,10 @@
       "zh": [
         "车"
       ]
-    }
+    },
+    "exJP": "車を買います。",
+    "exEN": "I buy a car.",
+    "exZH": "买车。"
   },
   {
     "id": "n5-densha",
@@ -116,7 +134,10 @@
       "zh": [
         "电车"
       ]
-    }
+    },
+    "exJP": "電車に乗ります。",
+    "exEN": "I ride the train.",
+    "exZH": "坐电车。"
   },
   {
     "id": "n5-shinbun",
@@ -133,7 +154,10 @@
       "zh": [
         "报纸"
       ]
-    }
+    },
+    "exJP": "新聞を読みます。",
+    "exEN": "I read the newspaper.",
+    "exZH": "看报纸。"
   },
   {
     "id": "n5-jikan",
@@ -151,7 +175,10 @@
       "zh": [
         "时间"
       ]
-    }
+    },
+    "exJP": "時間がありません。",
+    "exEN": "I have no time.",
+    "exZH": "没有时间。"
   },
   {
     "id": "n5-okane",
@@ -168,7 +195,10 @@
       "zh": [
         "钱"
       ]
-    }
+    },
+    "exJP": "お金がありません。",
+    "exEN": "I have no money.",
+    "exZH": "没有钱。"
   },
   {
     "id": "n5-kyou",
@@ -185,7 +215,10 @@
       "zh": [
         "今天"
       ]
-    }
+    },
+    "exJP": "今日は休みです。",
+    "exEN": "Today is a day off.",
+    "exZH": "今天休息。"
   },
   {
     "id": "n5-ashita",
@@ -202,7 +235,10 @@
       "zh": [
         "明天"
       ]
-    }
+    },
+    "exJP": "明日行きます。",
+    "exEN": "I will go tomorrow.",
+    "exZH": "明天去。"
   },
   {
     "id": "n5-kinou",
@@ -219,7 +255,10 @@
       "zh": [
         "昨天"
       ]
-    }
+    },
+    "exJP": "昨日、雨でした。",
+    "exEN": "Yesterday was rainy.",
+    "exZH": "昨天是雨天。"
   },
   {
     "id": "n5-asa",
@@ -236,7 +275,10 @@
       "zh": [
         "早晨"
       ]
-    }
+    },
+    "exJP": "朝、起きます。",
+    "exEN": "I wake up in the morning.",
+    "exZH": "早上起床。"
   },
   {
     "id": "n5-yoru",
@@ -253,7 +295,10 @@
       "zh": [
         "夜晚"
       ]
-    }
+    },
+    "exJP": "夜、寝ます。",
+    "exEN": "I sleep at night.",
+    "exZH": "晚上睡觉。"
   },
   {
     "id": "n5-ie",
@@ -271,7 +316,10 @@
       "zh": [
         "家"
       ]
-    }
+    },
+    "exJP": "家へ帰ります。",
+    "exEN": "I go back home.",
+    "exZH": "回家。"
   },
   {
     "id": "n5-heya",
@@ -288,7 +336,10 @@
       "zh": [
         "房间"
       ]
-    }
+    },
+    "exJP": "部屋はきれいです。",
+    "exEN": "The room is clean.",
+    "exZH": "房间很干净。"
   },
   {
     "id": "n5-kaisha",
@@ -305,7 +356,10 @@
       "zh": [
         "公司"
       ]
-    }
+    },
+    "exJP": "会社へ行きます。",
+    "exEN": "I go to the company.",
+    "exZH": "去公司。"
   },
   {
     "id": "n5-eki",
@@ -322,7 +376,10 @@
       "zh": [
         "车站"
       ]
-    }
+    },
+    "exJP": "駅は近いです。",
+    "exEN": "The station is close.",
+    "exZH": "车站很近。"
   },
   {
     "id": "n5-michi",
@@ -340,7 +397,10 @@
       "zh": [
         "路"
       ]
-    }
+    },
+    "exJP": "道を歩きます。",
+    "exEN": "I walk on the road.",
+    "exZH": "在路上走。"
   },
   {
     "id": "n5-yama",
@@ -357,7 +417,10 @@
       "zh": [
         "山"
       ]
-    }
+    },
+    "exJP": "山は高いです。",
+    "exEN": "The mountain is high.",
+    "exZH": "山很高。"
   },
   {
     "id": "n5-kawa",
@@ -374,7 +437,10 @@
       "zh": [
         "河"
       ]
-    }
+    },
+    "exJP": "川で泳ぎます。",
+    "exEN": "I swim in the river.",
+    "exZH": "在河里游泳。"
   },
   {
     "id": "n5-umi",
@@ -392,7 +458,10 @@
       "zh": [
         "海"
       ]
-    }
+    },
+    "exJP": "海が好きです。",
+    "exEN": "I like the sea.",
+    "exZH": "我喜欢大海。"
   },
   {
     "id": "n5-sora",
@@ -409,7 +478,10 @@
       "zh": [
         "天空"
       ]
-    }
+    },
+    "exJP": "空は青いです。",
+    "exEN": "The sky is blue.",
+    "exZH": "天空是蓝色的。"
   },
   {
     "id": "n5-tenki",
@@ -426,7 +498,10 @@
       "zh": [
         "天气"
       ]
-    }
+    },
+    "exJP": "天気がいいです。",
+    "exEN": "The weather is good.",
+    "exZH": "天气很好。"
   },
   {
     "id": "n5-ame",
@@ -443,7 +518,10 @@
       "zh": [
         "雨"
       ]
-    }
+    },
+    "exJP": "雨が降ります。",
+    "exEN": "It rains.",
+    "exZH": "下雨。"
   },
   {
     "id": "n5-yuki",
@@ -460,7 +538,10 @@
       "zh": [
         "雪"
       ]
-    }
+    },
+    "exJP": "雪が白いです。",
+    "exEN": "The snow is white.",
+    "exZH": "雪是白的。"
   },
   {
     "id": "n5-hana",
@@ -477,7 +558,10 @@
       "zh": [
         "花"
       ]
-    }
+    },
+    "exJP": "花が咲きます。",
+    "exEN": "Flowers bloom.",
+    "exZH": "花开了。"
   },
   {
     "id": "n5-ki",
@@ -495,7 +579,10 @@
       "zh": [
         "树"
       ]
-    }
+    },
+    "exJP": "木が大きいです。",
+    "exEN": "The tree is big.",
+    "exZH": "树很大。"
   },
   {
     "id": "n5-inu",
@@ -512,7 +599,10 @@
       "zh": [
         "狗"
       ]
-    }
+    },
+    "exJP": "犬が好きです。",
+    "exEN": "I like dogs.",
+    "exZH": "我喜欢狗。"
   },
   {
     "id": "n5-neko",
@@ -529,7 +619,10 @@
       "zh": [
         "猫"
       ]
-    }
+    },
+    "exJP": "猫がいます。",
+    "exEN": "There is a cat.",
+    "exZH": "有一只猫。"
   },
   {
     "id": "n5-sakana",
@@ -546,7 +639,10 @@
       "zh": [
         "鱼"
       ]
-    }
+    },
+    "exJP": "魚を食べます。",
+    "exEN": "I eat fish.",
+    "exZH": "吃鱼。"
   },
   {
     "id": "n5-tori",
@@ -563,7 +659,10 @@
       "zh": [
         "鸟"
       ]
-    }
+    },
+    "exJP": "鳥が飛びます。",
+    "exEN": "The bird flies.",
+    "exZH": "鸟在飞。"
   },
   {
     "id": "n5-niku",
@@ -580,7 +679,10 @@
       "zh": [
         "肉"
       ]
-    }
+    },
+    "exJP": "肉を食べます。",
+    "exEN": "I eat meat.",
+    "exZH": "吃肉。"
   },
   {
     "id": "n5-yasai",
@@ -597,7 +699,10 @@
       "zh": [
         "蔬菜"
       ]
-    }
+    },
+    "exJP": "野菜はおいしいです。",
+    "exEN": "Vegetables are delicious.",
+    "exZH": "蔬菜很好吃。"
   },
   {
     "id": "n5-kudamono",
@@ -614,7 +719,10 @@
       "zh": [
         "水果"
       ]
-    }
+    },
+    "exJP": "果物を買います。",
+    "exEN": "I buy fruit.",
+    "exZH": "买水果。"
   },
   {
     "id": "n5-gohan",
@@ -633,7 +741,10 @@
         "米饭",
         "饭"
       ]
-    }
+    },
+    "exJP": "ごはんを食べます。",
+    "exEN": "I eat rice.",
+    "exZH": "吃饭。"
   },
   {
     "id": "n5-ocha",
@@ -650,7 +761,10 @@
       "zh": [
         "茶"
       ]
-    }
+    },
+    "exJP": "お茶を飲みます。",
+    "exEN": "I drink tea.",
+    "exZH": "喝茶。"
   },
   {
     "id": "n5-gyuunyuu",
@@ -667,7 +781,10 @@
       "zh": [
         "牛奶"
       ]
-    }
+    },
+    "exJP": "牛乳を飲みます。",
+    "exEN": "I drink milk.",
+    "exZH": "喝牛奶。"
   },
   {
     "id": "n5-namae",
@@ -684,7 +801,10 @@
       "zh": [
         "名字"
       ]
-    }
+    },
+    "exJP": "名前は何ですか。",
+    "exEN": "What is your name?",
+    "exZH": "你叫什么名字？"
   },
   {
     "id": "n5-tomodachi",
@@ -701,7 +821,10 @@
       "zh": [
         "朋友"
       ]
-    }
+    },
+    "exJP": "友達と遊びます。",
+    "exEN": "I play with my friend.",
+    "exZH": "和朋友玩。"
   },
   {
     "id": "n5-kazoku",
@@ -719,7 +842,10 @@
         "家人",
         "家庭"
       ]
-    }
+    },
+    "exJP": "家族は四人です。",
+    "exEN": "My family has four people.",
+    "exZH": "我家有四口人。"
   },
   {
     "id": "n5-te",
@@ -736,7 +862,10 @@
       "zh": [
         "手"
       ]
-    }
+    },
+    "exJP": "手を洗います。",
+    "exEN": "I wash my hands.",
+    "exZH": "洗手。"
   },
   {
     "id": "n5-me",
@@ -753,7 +882,10 @@
       "zh": [
         "眼睛"
       ]
-    }
+    },
+    "exJP": "目が大きいです。",
+    "exEN": "My eyes are big.",
+    "exZH": "眼睛很大。"
   },
   {
     "id": "n5-kuchi",
@@ -770,7 +902,10 @@
       "zh": [
         "嘴"
       ]
-    }
+    },
+    "exJP": "口を開けます。",
+    "exEN": "I open my mouth.",
+    "exZH": "张开嘴。"
   },
   {
     "id": "n5-mimi",
@@ -787,7 +922,10 @@
       "zh": [
         "耳朵"
       ]
-    }
+    },
+    "exJP": "耳が痛いです。",
+    "exEN": "My ear hurts.",
+    "exZH": "耳朵疼。"
   },
   {
     "id": "n5-ashi",
@@ -805,7 +943,10 @@
       "zh": [
         "脚"
       ]
-    }
+    },
+    "exJP": "足が長いです。",
+    "exEN": "My legs are long.",
+    "exZH": "腿很长。"
   },
   {
     "id": "n5-atama",
@@ -822,7 +963,10 @@
       "zh": [
         "头"
       ]
-    }
+    },
+    "exJP": "頭がいいです。",
+    "exEN": "He is smart.",
+    "exZH": "头脑很聪明。"
   },
   {
     "id": "n5-taberu",
@@ -839,7 +983,10 @@
       "zh": [
         "吃"
       ]
-    }
+    },
+    "exJP": "りんごを食べます。",
+    "exEN": "I eat an apple.",
+    "exZH": "吃苹果。"
   },
   {
     "id": "n5-nomu",
@@ -856,7 +1003,10 @@
       "zh": [
         "喝"
       ]
-    }
+    },
+    "exJP": "水を飲みます。",
+    "exEN": "I drink water.",
+    "exZH": "喝水。"
   },
   {
     "id": "n5-iku",
@@ -873,7 +1023,10 @@
       "zh": [
         "去"
       ]
-    }
+    },
+    "exJP": "日本へ行きます。",
+    "exEN": "I go to Japan.",
+    "exZH": "去日本。"
   },
   {
     "id": "n5-kuru",
@@ -890,7 +1043,10 @@
       "zh": [
         "来"
       ]
-    }
+    },
+    "exJP": "友達が来ます。",
+    "exEN": "My friend comes.",
+    "exZH": "朋友来了。"
   },
   {
     "id": "n5-miru",
@@ -908,7 +1064,10 @@
       "zh": [
         "看"
       ]
-    }
+    },
+    "exJP": "映画を見ます。",
+    "exEN": "I watch a movie.",
+    "exZH": "看电影。"
   },
   {
     "id": "n5-kiku",
@@ -927,7 +1086,10 @@
         "听",
         "问"
       ]
-    }
+    },
+    "exJP": "音楽を聞きます。",
+    "exEN": "I listen to music.",
+    "exZH": "听音乐。"
   },
   {
     "id": "n5-yomu",
@@ -944,7 +1106,10 @@
       "zh": [
         "读"
       ]
-    }
+    },
+    "exJP": "本を読みます。",
+    "exEN": "I read a book.",
+    "exZH": "读书。"
   },
   {
     "id": "n5-kaku",
@@ -961,7 +1126,10 @@
       "zh": [
         "写"
       ]
-    }
+    },
+    "exJP": "手紙を書きます。",
+    "exEN": "I write a letter.",
+    "exZH": "写信。"
   },
   {
     "id": "n5-hanasu",
@@ -979,7 +1147,10 @@
       "zh": [
         "说"
       ]
-    }
+    },
+    "exJP": "英語を話します。",
+    "exEN": "I speak English.",
+    "exZH": "说英语。"
   },
   {
     "id": "n5-kau",
@@ -996,7 +1167,10 @@
       "zh": [
         "买"
       ]
-    }
+    },
+    "exJP": "靴を買います。",
+    "exEN": "I buy shoes.",
+    "exZH": "买鞋。"
   },
   {
     "id": "n5-matsu",
@@ -1013,7 +1187,10 @@
       "zh": [
         "等"
       ]
-    }
+    },
+    "exJP": "バスを待ちます。",
+    "exEN": "I wait for the bus.",
+    "exZH": "等公交车。"
   },
   {
     "id": "n5-tatsu",
@@ -1030,7 +1207,10 @@
       "zh": [
         "站"
       ]
-    }
+    },
+    "exJP": "ここに立ちます。",
+    "exEN": "I stand here.",
+    "exZH": "站在这里。"
   },
   {
     "id": "n5-oyogu",
@@ -1047,7 +1227,10 @@
       "zh": [
         "游泳"
       ]
-    }
+    },
+    "exJP": "プールで泳ぎます。",
+    "exEN": "I swim in the pool.",
+    "exZH": "在游泳池游泳。"
   },
   {
     "id": "n5-benkyou",
@@ -1065,7 +1248,10 @@
       "zh": [
         "学习"
       ]
-    }
+    },
+    "exJP": "日本語を勉強します。",
+    "exEN": "I study Japanese.",
+    "exZH": "学习日语。"
   },
   {
     "id": "n5-ookii",
@@ -1083,7 +1269,10 @@
       "zh": [
         "大"
       ]
-    }
+    },
+    "exJP": "大きい犬です。",
+    "exEN": "It is a big dog.",
+    "exZH": "是一只大狗。"
   },
   {
     "id": "n5-chiisai",
@@ -1100,7 +1289,10 @@
       "zh": [
         "小"
       ]
-    }
+    },
+    "exJP": "小さい猫です。",
+    "exEN": "It is a small cat.",
+    "exZH": "是一只小猫。"
   },
   {
     "id": "n5-takai",
@@ -1119,7 +1311,10 @@
         "高",
         "贵"
       ]
-    }
+    },
+    "exJP": "この本は高いです。",
+    "exEN": "This book is expensive.",
+    "exZH": "这本书很贵。"
   },
   {
     "id": "n5-yasui",
@@ -1136,7 +1331,10 @@
       "zh": [
         "便宜"
       ]
-    }
+    },
+    "exJP": "この服は安いです。",
+    "exEN": "These clothes are cheap.",
+    "exZH": "这件衣服很便宜。"
   },
   {
     "id": "n5-atarashii",
@@ -1153,7 +1351,10 @@
       "zh": [
         "新"
       ]
-    }
+    },
+    "exJP": "新しい車です。",
+    "exEN": "It is a new car.",
+    "exZH": "是一辆新车。"
   },
   {
     "id": "n5-furui",
@@ -1170,7 +1371,10 @@
       "zh": [
         "旧"
       ]
-    }
+    },
+    "exJP": "古い家です。",
+    "exEN": "It is an old house.",
+    "exZH": "是一座老房子。"
   },
   {
     "id": "n5-atsui",
@@ -1187,7 +1391,10 @@
       "zh": [
         "热"
       ]
-    }
+    },
+    "exJP": "今日は暑いです。",
+    "exEN": "Today is hot.",
+    "exZH": "今天很热。"
   },
   {
     "id": "n5-samui",
@@ -1204,7 +1411,10 @@
       "zh": [
         "冷"
       ]
-    }
+    },
+    "exJP": "今日は寒いです。",
+    "exEN": "Today is cold.",
+    "exZH": "今天很冷。"
   },
   {
     "id": "n5-oishii",
@@ -1221,7 +1431,10 @@
       "zh": [
         "好吃"
       ]
-    }
+    },
+    "exJP": "ケーキはおいしいです。",
+    "exEN": "The cake is delicious.",
+    "exZH": "蛋糕很好吃。"
   },
   {
     "id": "n5-tanoshii",
@@ -1240,7 +1453,10 @@
         "快乐",
         "开心"
       ]
-    }
+    },
+    "exJP": "毎日楽しいです。",
+    "exEN": "Every day is fun.",
+    "exZH": "每天都很开心。"
   },
   {
     "id": "n5-totemo",
@@ -1257,7 +1473,10 @@
       "zh": [
         "非常"
       ]
-    }
+    },
+    "exJP": "とてもいいです。",
+    "exEN": "It is very good.",
+    "exZH": "非常好。"
   },
   {
     "id": "n5-sukoshi",
@@ -1274,7 +1493,10 @@
       "zh": [
         "一点"
       ]
-    }
+    },
+    "exJP": "少し食べます。",
+    "exEN": "I eat a little.",
+    "exZH": "吃一点。"
   },
   {
     "id": "n5-yukkuri",
@@ -1291,7 +1513,10 @@
       "zh": [
         "慢慢地"
       ]
-    }
+    },
+    "exJP": "ゆっくり話してください。",
+    "exEN": "Please speak slowly.",
+    "exZH": "请慢点说。"
   },
   {
     "id": "n5-arigatou",
@@ -1308,7 +1533,10 @@
       "zh": [
         "谢谢"
       ]
-    }
+    },
+    "exJP": "ありがとうございます。",
+    "exEN": "Thank you very much.",
+    "exZH": "非常感谢。"
   },
   {
     "id": "n5-konnichiwa",
@@ -1326,7 +1554,10 @@
       "zh": [
         "你好"
       ]
-    }
+    },
+    "exJP": "こんにちは。",
+    "exEN": "Hello.",
+    "exZH": "你好。"
   },
   {
     "id": "n5-g001",
@@ -1343,7 +1574,10 @@
       "zh": [
         "一"
       ]
-    }
+    },
+    "exJP": "一ページを開けて。",
+    "exEN": "Open page one.",
+    "exZH": "打开第一页。"
   },
   {
     "id": "n5-g002",
@@ -1360,7 +1594,10 @@
       "zh": [
         "二"
       ]
-    }
+    },
+    "exJP": "二ページを読んで。",
+    "exEN": "Read page two.",
+    "exZH": "读第二页。"
   },
   {
     "id": "n5-g003",
@@ -1377,7 +1614,10 @@
       "zh": [
         "三"
       ]
-    }
+    },
+    "exJP": "三ページを見て。",
+    "exEN": "Look at page three.",
+    "exZH": "看第三页。"
   },
   {
     "id": "n5-g004",
@@ -1394,7 +1634,10 @@
       "zh": [
         "四"
       ]
-    }
+    },
+    "exJP": "四ページです。",
+    "exEN": "It is page four.",
+    "exZH": "是第四页。"
   },
   {
     "id": "n5-g005",
@@ -1411,7 +1654,10 @@
       "zh": [
         "五"
       ]
-    }
+    },
+    "exJP": "五ページです。",
+    "exEN": "It is page five.",
+    "exZH": "是第五页。"
   },
   {
     "id": "n5-g006",
@@ -1428,7 +1674,10 @@
       "zh": [
         "六"
       ]
-    }
+    },
+    "exJP": "六ページです。",
+    "exEN": "It is page six.",
+    "exZH": "是第六页。"
   },
   {
     "id": "n5-g007",
@@ -1445,7 +1694,10 @@
       "zh": [
         "七"
       ]
-    }
+    },
+    "exJP": "七ページです。",
+    "exEN": "It is page seven.",
+    "exZH": "是第七页。"
   },
   {
     "id": "n5-g008",
@@ -1462,7 +1714,10 @@
       "zh": [
         "八"
       ]
-    }
+    },
+    "exJP": "八ページです。",
+    "exEN": "It is page eight.",
+    "exZH": "是第八页。"
   },
   {
     "id": "n5-g009",
@@ -1479,7 +1734,10 @@
       "zh": [
         "九"
       ]
-    }
+    },
+    "exJP": "九ページです。",
+    "exEN": "It is page nine.",
+    "exZH": "是第九页。"
   },
   {
     "id": "n5-g010",
@@ -1496,7 +1754,10 @@
       "zh": [
         "十"
       ]
-    }
+    },
+    "exJP": "十ページです。",
+    "exEN": "It is page ten.",
+    "exZH": "是第十页。"
   },
   {
     "id": "n5-g011",
@@ -1513,7 +1774,10 @@
       "zh": [
         "百"
       ]
-    }
+    },
+    "exJP": "百ページです。",
+    "exEN": "It is page one hundred.",
+    "exZH": "是第一百页。"
   },
   {
     "id": "n5-g012",
@@ -1531,7 +1795,10 @@
       "zh": [
         "我"
       ]
-    }
+    },
+    "exJP": "私は学生です。",
+    "exEN": "I am a student.",
+    "exZH": "我是学生。"
   },
   {
     "id": "n5-g013",
@@ -1548,7 +1815,10 @@
       "zh": [
         "你"
       ]
-    }
+    },
+    "exJP": "あなたは誰ですか。",
+    "exEN": "Who are you?",
+    "exZH": "你是谁？"
   },
   {
     "id": "n5-g014",
@@ -1566,7 +1836,10 @@
       "zh": [
         "他"
       ]
-    }
+    },
+    "exJP": "彼は優しいです。",
+    "exEN": "He is kind.",
+    "exZH": "他很温柔。"
   },
   {
     "id": "n5-g015",
@@ -1584,7 +1857,10 @@
       "zh": [
         "她"
       ]
-    }
+    },
+    "exJP": "彼女はきれいです。",
+    "exEN": "She is beautiful.",
+    "exZH": "她很漂亮。"
   },
   {
     "id": "n5-g016",
@@ -1601,7 +1877,10 @@
       "zh": [
         "这个"
       ]
-    }
+    },
+    "exJP": "これは本です。",
+    "exEN": "This is a book.",
+    "exZH": "这是书。"
   },
   {
     "id": "n5-g017",
@@ -1618,7 +1897,10 @@
       "zh": [
         "那个"
       ]
-    }
+    },
+    "exJP": "それはペンです。",
+    "exEN": "That is a pen.",
+    "exZH": "那是笔。"
   },
   {
     "id": "n5-g018",
@@ -1635,7 +1917,10 @@
       "zh": [
         "那个（远处）"
       ]
-    }
+    },
+    "exJP": "あれは犬です。",
+    "exEN": "That is a dog over there.",
+    "exZH": "那是一只狗。"
   },
   {
     "id": "n5-g019",
@@ -1652,7 +1937,10 @@
       "zh": [
         "哪里"
       ]
-    }
+    },
+    "exJP": "トイレはどこですか。",
+    "exEN": "Where is the toilet?",
+    "exZH": "厕所在哪里？"
   },
   {
     "id": "n5-g020",
@@ -1669,7 +1957,10 @@
       "zh": [
         "谁"
       ]
-    }
+    },
+    "exJP": "誰が来ますか。",
+    "exEN": "Who will come?",
+    "exZH": "谁会来？"
   },
   {
     "id": "n5-g021",
@@ -1686,7 +1977,10 @@
       "zh": [
         "什么"
       ]
-    }
+    },
+    "exJP": "何を食べますか。",
+    "exEN": "What will you eat?",
+    "exZH": "你吃什么？"
   },
   {
     "id": "n5-g022",
@@ -1703,7 +1997,10 @@
       "zh": [
         "现在"
       ]
-    }
+    },
+    "exJP": "今、何時ですか。",
+    "exEN": "What time is it now?",
+    "exZH": "现在几点？"
   },
   {
     "id": "n5-g023",
@@ -1720,7 +2017,10 @@
       "zh": [
         "今年"
       ]
-    }
+    },
+    "exJP": "今年は暑いです。",
+    "exEN": "This year is hot.",
+    "exZH": "今年很热。"
   },
   {
     "id": "n5-g024",
@@ -1737,7 +2037,10 @@
       "zh": [
         "明年"
       ]
-    }
+    },
+    "exJP": "来年、日本へ行きます。",
+    "exEN": "Next year, I go to Japan.",
+    "exZH": "明年去日本。"
   },
   {
     "id": "n5-g025",
@@ -1754,7 +2057,10 @@
       "zh": [
         "去年"
       ]
-    }
+    },
+    "exJP": "去年、日本へ行きました。",
+    "exEN": "Last year, I went to Japan.",
+    "exZH": "去年去了日本。"
   },
   {
     "id": "n5-g026",
@@ -1771,7 +2077,10 @@
       "zh": [
         "本月"
       ]
-    }
+    },
+    "exJP": "今月は忙しいです。",
+    "exEN": "This month is busy.",
+    "exZH": "这个月很忙。"
   },
   {
     "id": "n5-g027",
@@ -1788,7 +2097,10 @@
       "zh": [
         "下个月"
       ]
-    }
+    },
+    "exJP": "来月、帰ります。",
+    "exEN": "Next month, I go home.",
+    "exZH": "下个月回家。"
   },
   {
     "id": "n5-g028",
@@ -1805,7 +2117,10 @@
       "zh": [
         "上个月"
       ]
-    }
+    },
+    "exJP": "先月、本を買いました。",
+    "exEN": "Last month, I bought a book.",
+    "exZH": "上个月买了书。"
   },
   {
     "id": "n5-g029",
@@ -1822,7 +2137,10 @@
       "zh": [
         "本周"
       ]
-    }
+    },
+    "exJP": "今週は休みです。",
+    "exEN": "This week is a holiday.",
+    "exZH": "这周休息。"
   },
   {
     "id": "n5-g030",
@@ -1839,7 +2157,10 @@
       "zh": [
         "下周"
       ]
-    }
+    },
+    "exJP": "来週、会いましょう。",
+    "exEN": "Let's meet next week.",
+    "exZH": "下周见吧。"
   },
   {
     "id": "n5-g031",
@@ -1856,7 +2177,10 @@
       "zh": [
         "上周"
       ]
-    }
+    },
+    "exJP": "先週、映画を見ました。",
+    "exEN": "Last week, I watched a movie.",
+    "exZH": "上周看了电影。"
   },
   {
     "id": "n5-g032",
@@ -1874,7 +2198,10 @@
       "zh": [
         "每天"
       ]
-    }
+    },
+    "exJP": "毎日、勉強します。",
+    "exEN": "I study every day.",
+    "exZH": "每天学习。"
   },
   {
     "id": "n5-g033",
@@ -1892,7 +2219,10 @@
       "zh": [
         "每天早上"
       ]
-    }
+    },
+    "exJP": "毎朝、パンを食べます。",
+    "exEN": "I eat bread every morning.",
+    "exZH": "每天早上吃面包。"
   },
   {
     "id": "n5-g034",
@@ -1910,7 +2240,10 @@
       "zh": [
         "每天晚上"
       ]
-    }
+    },
+    "exJP": "毎晩、テレビを見ます。",
+    "exEN": "I watch TV every night.",
+    "exZH": "每天晚上看电视。"
   },
   {
     "id": "n5-g035",
@@ -1928,7 +2261,10 @@
       "zh": [
         "每周"
       ]
-    }
+    },
+    "exJP": "毎週、テニスをします。",
+    "exEN": "I play tennis every week.",
+    "exZH": "每周打网球。"
   },
   {
     "id": "n5-g036",
@@ -1946,7 +2282,10 @@
       "zh": [
         "每月"
       ]
-    }
+    },
+    "exJP": "毎月、旅行します。",
+    "exEN": "I travel every month.",
+    "exZH": "每个月去旅行。"
   },
   {
     "id": "n5-g037",
@@ -1963,7 +2302,10 @@
       "zh": [
         "星期一"
       ]
-    }
+    },
+    "exJP": "月曜日に学校へ行きます。",
+    "exEN": "I go to school on Monday.",
+    "exZH": "星期一去学校。"
   },
   {
     "id": "n5-g038",
@@ -1980,7 +2322,10 @@
       "zh": [
         "星期二"
       ]
-    }
+    },
+    "exJP": "火曜日は暇です。",
+    "exEN": "I am free on Tuesday.",
+    "exZH": "星期二有空。"
   },
   {
     "id": "n5-g039",
@@ -1997,7 +2342,10 @@
       "zh": [
         "星期三"
       ]
-    }
+    },
+    "exJP": "水曜日に映画を見ます。",
+    "exEN": "I watch a movie on Wednesday.",
+    "exZH": "星期三看电影。"
   },
   {
     "id": "n5-g040",
@@ -2014,7 +2362,10 @@
       "zh": [
         "星期四"
       ]
-    }
+    },
+    "exJP": "木曜日は忙しいです。",
+    "exEN": "I am busy on Thursday.",
+    "exZH": "星期四很忙。"
   },
   {
     "id": "n5-g041",
@@ -2031,7 +2382,10 @@
       "zh": [
         "星期五"
       ]
-    }
+    },
+    "exJP": "金曜日に友達と会います。",
+    "exEN": "I meet a friend on Friday.",
+    "exZH": "星期五和朋友见面。"
   },
   {
     "id": "n5-g042",
@@ -2048,7 +2402,10 @@
       "zh": [
         "星期六"
       ]
-    }
+    },
+    "exJP": "土曜日は休みです。",
+    "exEN": "Saturday is a day off.",
+    "exZH": "星期六休息。"
   },
   {
     "id": "n5-g043",
@@ -2065,7 +2422,10 @@
       "zh": [
         "星期日"
       ]
-    }
+    },
+    "exJP": "日曜日に買い物をします。",
+    "exEN": "I go shopping on Sunday.",
+    "exZH": "星期天去购物。"
   },
   {
     "id": "n5-g044",

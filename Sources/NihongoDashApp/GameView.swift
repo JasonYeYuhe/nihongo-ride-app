@@ -142,6 +142,21 @@ private struct WordCard: View {
             Divider().background(Theme.cardStroke).frame(maxWidth: 360)
 
             romaji
+
+            if let example = session.currentExampleJP {
+                VStack(spacing: 3) {
+                    Text(example)
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.7))
+                    if let translation = session.currentExampleTranslation {
+                        Text(translation)
+                            .font(.system(size: 13))
+                            .foregroundStyle(Theme.dim)
+                    }
+                }
+                .multilineTextAlignment(.center)
+                .padding(.top, 4)
+            }
         }
         .frame(maxWidth: 560)
         .panel(28)
