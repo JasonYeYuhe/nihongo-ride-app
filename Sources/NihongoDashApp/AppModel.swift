@@ -11,7 +11,8 @@ struct GameSummary: Equatable {
     var wordsCompleted: Int
     var accuracy: Double
     var distanceMeters: Double
-    var reviewDeckSize: Int
+    /// Distinct words that lapsed this run (skipped / hinted / many typos).
+    var reviewWords: [VocabEntry]
 
     init(from session: GameSession) {
         score = session.score
@@ -19,7 +20,8 @@ struct GameSummary: Equatable {
         wordsCompleted = session.wordsCompleted
         accuracy = session.accuracy
         distanceMeters = session.distanceMeters
-        reviewDeckSize = session.review.count
+        var seen = Set<String>()
+        reviewWords = session.lapsedEntries.filter { seen.insert($0.id).inserted }
     }
 }
 

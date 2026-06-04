@@ -1,4 +1,5 @@
 import SwiftUI
+import VocabKit
 
 struct ResultsView: View {
     @Environment(AppModel.self) private var model
@@ -32,7 +33,11 @@ struct ResultsView: View {
                     scoreCard(icon: "scope", tint: .white,
                               value: "\(Int(summary.accuracy * 100))%", label: zh ? "准确率" : "Accuracy")
                     scoreCard(icon: "brain.head.profile", tint: Theme.accent,
-                              value: "\(model.dueReviewCount)", label: zh ? "待复习" : "To review")
+                              value: "\(summary.reviewWords.count)", label: zh ? "待复习" : "To review")
+                }
+
+                if !summary.reviewWords.isEmpty {
+                    reviewList(summary.reviewWords)
                 }
             }
 
@@ -87,5 +92,29 @@ struct ResultsView: View {
         }
         .frame(width: 150, height: 120)
         .panel(20)
+    }
+
+    private func reviewList(_ words: [VocabEntry]) -> some View {
+        VStack(spacing: 8) {
+            Text(zh ? "复习这些词:" : "Review these:")
+                .font(.caption).foregroundStyle(Theme.dim)
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 116), spacing: 8)], spacing: 8) {
+                ForEach(words.prefix(12)) { word in
+                    VStack(spacing: 2) {
+                        Text(word.surface)
+                            .font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                        Text(word.gloss(for: model.languageCode))
+                            .font(.caption2).foregroundStyle(Theme.dim).lineLimit(1)
+                    }
+                    .padding(.horizontal, 10).padding(.vertical, 6)
+                    .background(Theme.card, in: RoundedRectangle(cornerRadius: 8))
+                }
+            }
+            if words.count > 12 {
+                Text(zh ? "还有 \(words.count - 12) 个…" : "+\(words.count - 12) more…")
+                    .font(.caption2).foregroundStyle(Theme.dim)
+            }
+        }
+        .frame(maxWidth: 540)
     }
 }

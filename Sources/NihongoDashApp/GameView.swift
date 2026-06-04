@@ -4,6 +4,7 @@ import RomajiKana
 
 struct GameView: View {
     @Environment(AppModel.self) private var model
+    @State private var isPaused = false
 
     var body: some View {
         if let session = model.session {
@@ -15,19 +16,25 @@ struct GameView: View {
 
     @ViewBuilder
     private func play(_ session: GameSession) -> some View {
-        VStack(spacing: 22) {
-            HUDBar(session: session, language: model.languageCode)
-            JourneyBar(session: session)
-            Spacer(minLength: 0)
-            WordCard(session: session, language: model.languageCode)
-            Spacer(minLength: 0)
-            controls
+        ZStack {
+            VStack(spacing: 22) {
+                HUDBar(session: session, language: model.languageCode)
+                JourneyBar(session: session)
+                Spacer(minLength: 0)
+                WordCard(session: session, language: model.languageCode)
+                Spacer(minLength: 0)
+                controls
+            }
+            .padding(32)
+            .blur(radius: isPaused ? 8 : 0)
+
+            if isPaused { pauseOverlay }
         }
-        .padding(32)
         .background {
             if !Screenshotter.isCapturing {
                 KeyCaptureView(
                     onKey: { character in
+                        guard !isPaused else { return }
                         switch session.input(character) {
                         case .completed: Sound.wordComplete()
                         case .rejected: Sound.mistake()
@@ -36,22 +43,59 @@ struct GameView: View {
                     },
                     onCommand: { command in
                         switch command {
-                        case .escape: model.finishGame()      // end early; progress is saved
-                        case .returnKey, .space, .backspace: break
+                        case .escape: isPaused.toggle()
+                        case .returnKey: if isPaused { isPaused = false }
+                        case .space, .backspace: break
                         }
                     }
                 )
             }
         }
-        .onAppear { Sound.enabled = model.soundEnabled }
+        .onAppear { Sound.enabled = model.soundEnabled; isPaused = false }
         .onChange(of: session.isFinished) { _, finished in
             if finished { Sound.finish(); model.finishGame() }
         }
     }
 
+    private var pauseOverlay: some View {
+        let zh = model.languageCode == "zh"
+        return ZStack {
+            Color.black.opacity(0.45).ignoresSafeArea()
+            VStack(spacing: 18) {
+                Text(zh ? "暂停" : "Paused")
+                    .font(.system(size: 34, weight: .heavy, design: .rounded))
+                    .foregroundStyle(.white)
+                HStack(spacing: 14) {
+                    Button(action: { isPaused = false }) {
+                        Text(zh ? "继续 ▶" : "Resume ▶")
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
+                            .frame(width: 160, height: 46)
+                    }
+                    .buttonStyle(.plain)
+                    .background(Theme.accent, in: Capsule())
+                    .foregroundStyle(.white)
+
+                    Button(action: { isPaused = false; model.finishGame() }) {
+                        Text(zh ? "结束本程" : "End run")
+                            .font(.system(size: 17, weight: .semibold, design: .rounded))
+                            .frame(width: 140, height: 46)
+                    }
+                    .buttonStyle(.plain)
+                    .background(Theme.card, in: Capsule())
+                    .overlay(Capsule().strokeBorder(Theme.cardStroke))
+                    .foregroundStyle(.white)
+                }
+                Text(zh ? "Esc / Enter 继续" : "Esc / Enter to resume")
+                    .font(.caption).foregroundStyle(Theme.dim)
+            }
+            .padding(36)
+            .panel(26)
+        }
+    }
+
     private var controls: some View {
         HStack(spacing: 18) {
-            Label(model.languageCode == "zh" ? "Esc 结束" : "Esc to finish", systemImage: "escape")
+            Label(model.languageCode == "zh" ? "Esc 暂停" : "Esc to pause", systemImage: "escape")
             if let session = model.session, !session.showRomajiHint {
                 Label(model.languageCode == "zh" ? "提示已关" : "Hints off", systemImage: "eye.slash")
             }
@@ -69,6 +113,11 @@ private struct HUDBar: View {
 
     var body: some View {
         HStack(spacing: 14) {
+            Text(session.currentLevelLabel)
+                .font(.system(size: 14, weight: .heavy, design: .rounded))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 10).padding(.vertical, 6)
+                .background(Theme.accent2.opacity(0.85), in: Capsule())
             stat(icon: "star.fill", value: "\(session.score)", tint: Theme.gold)
             stat(icon: "flame.fill",
                  value: session.combo >= 2 ? "×\(session.combo)" : "—",

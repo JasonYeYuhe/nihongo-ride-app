@@ -55,6 +55,8 @@ public final class GameSession {
     public private(set) var correctKeystrokes = 0
     /// Bike-journey progress in (game) meters; advances on each completed word.
     public private(set) var distanceMeters = 0.0
+    /// Words that lapsed this run (skipped, hinted, or many typos) — worth reviewing.
+    public private(set) var lapsedEntries: [VocabEntry] = []
     public private(set) var isFinished = false
     /// Whether to show the romaji hint (toggleable mid-run).
     public var showRomajiHint: Bool
@@ -113,6 +115,7 @@ public final class GameSession {
     public var currentSurface: String? { current?.surface }
     public var currentRomaji: String? { current?.romaji }
     public var currentGloss: String? { current?.gloss(for: config.languageCode) }
+    public var currentLevelLabel: String { current?.jlpt.label ?? "" }
     public var currentExampleJP: String? { current?.exampleJP }
     public var currentExampleTranslation: String? { current?.exampleTranslation(for: config.languageCode) }
     public var typedRomaji: String { matcher?.typedRomaji ?? "" }
@@ -164,6 +167,7 @@ public final class GameSession {
                 outcome: TypingOutcome(completed: false, mistakes: currentMistakes),
                 on: now()
             )
+            lapsedEntries.append(entry)
         }
         combo = 0
         advance()
@@ -202,6 +206,7 @@ public final class GameSession {
             durationRatio: ratio
         )
         review.record(entryID: entry.id, outcome: outcome, on: now())
+        if SRSCard.quality(from: outcome) < 3 { lapsedEntries.append(entry) }
 
         score += currentRevealed ? 10 : wordScore(entry: entry, mistakes: currentMistakes, combo: combo)
         distanceMeters += Double(entry.kana.count) * 10

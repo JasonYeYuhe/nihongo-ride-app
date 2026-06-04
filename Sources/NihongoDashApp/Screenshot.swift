@@ -27,6 +27,7 @@ enum Screenshotter {
         // Results (play a few words so the numbers are non-zero)
         let results = AppModel()
         results.startGame()
+        results.session?.skip()   // one lapse so the review list shows
         for _ in 0 ..< 6 {
             guard let romaji = results.session?.currentRomaji else { break }
             for character in romaji { _ = results.session?.input(character) }

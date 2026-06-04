@@ -101,6 +101,14 @@ struct GameSessionTests {
         #expect(session.currentKana == nil)
     }
 
+    @Test("lapsed words (skipped / hinted) are collected for review")
+    func lapsedTracking() {
+        let session = GameSession(words: [makeEntry("a", "水", "みず"), makeEntry("b", "猫", "ねこ")])
+        session.skip()                                  // a → lapse
+        for ch in "neko" { session.input(ch) }          // b → clean, not a lapse
+        #expect(session.lapsedEntries.map(\.id) == ["a"])
+    }
+
     @Test("config.level restricts new words to the chosen level")
     func levelFilter() {
         let session = GameSession.make(
