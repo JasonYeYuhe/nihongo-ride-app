@@ -37,6 +37,7 @@ final class AppModel {
     var languageCode: String = "en"      // "en" or "zh"
     var showRomajiHint: Bool = true
     var soundEnabled: Bool = true
+    var selectedMode: GameMode = .journey
     /// Chosen JLPT level for new words; `nil` mixes all levels.
     var selectedLevel: JLPTLevel? = .n5
 
@@ -61,6 +62,12 @@ final class AppModel {
         config.languageCode = languageCode
         config.showRomajiHint = showRomajiHint
         config.level = selectedLevel
+        config.mode = selectedMode
+        if selectedMode == .timeAttack {
+            config.timeLimit = 60
+            config.newWordCount = 300   // plenty for a 60s sprint
+            config.reviewWordCount = 0
+        }
         session = GameSession.make(config: config, vocab: .shared, review: reviewStore)
         screen = .playing
     }

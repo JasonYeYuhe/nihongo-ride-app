@@ -109,6 +109,15 @@ struct GameSessionTests {
         #expect(session.lapsedEntries.map(\.id) == ["a"])
     }
 
+    @Test("time-attack mode reports its mode and draws a large queue")
+    func timeAttackMode() {
+        let session = GameSession.make(
+            config: .init(newWordCount: 300, reviewWordCount: 0, mode: .timeAttack, timeLimit: 60)
+        )
+        #expect(session.mode == .timeAttack)
+        #expect(session.wordCount > 100)   // enough words for a 60s sprint
+    }
+
     @Test("config.level restricts new words to the chosen level")
     func levelFilter() {
         let session = GameSession.make(

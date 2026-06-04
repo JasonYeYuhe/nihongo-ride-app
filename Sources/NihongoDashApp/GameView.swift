@@ -5,6 +5,8 @@ import RomajiKana
 struct GameView: View {
     @Environment(AppModel.self) private var model
     @State private var isPaused = false
+    @State private var timeRemaining = 0.0
+    private let ticker = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         if let session = model.session {
@@ -19,7 +21,11 @@ struct GameView: View {
         ZStack {
             VStack(spacing: 22) {
                 HUDBar(session: session, language: model.languageCode)
-                JourneyBar(session: session)
+                if session.mode == .timeAttack {
+                    TimerBar(remaining: timeRemaining, total: session.config.timeLimit ?? 1)
+                } else {
+                    JourneyBar(session: session)
+                }
                 Spacer(minLength: 0)
                 WordCard(session: session, language: model.languageCode)
                 Spacer(minLength: 0)
@@ -51,7 +57,16 @@ struct GameView: View {
                 )
             }
         }
-        .onAppear { Sound.enabled = model.soundEnabled; isPaused = false }
+        .onAppear {
+            Sound.enabled = model.soundEnabled
+            isPaused = false
+            timeRemaining = session.config.timeLimit ?? 0
+        }
+        .onReceive(ticker) { _ in
+            guard session.mode == .timeAttack, !isPaused, !session.isFinished else { return }
+            timeRemaining = max(0, timeRemaining - 0.1)
+            if timeRemaining <= 0 { Sound.finish(); model.finishGame() }
+        }
         .onChange(of: session.isFinished) { _, finished in
             if finished { Sound.finish(); model.finishGame() }
         }
@@ -188,6 +203,36 @@ private struct JourneyBar: View {
 
     private func clampX(_ x: CGFloat, _ width: CGFloat) -> CGFloat {
         min(max(14, x), width - 14)
+    }
+}
+
+// MARK: - Time-attack countdown
+
+private struct TimerBar: View {
+    let remaining: Double
+    let total: Double
+
+    var body: some View {
+        let fraction = total > 0 ? max(0, min(1, remaining / total)) : 0
+        let low = remaining <= 10
+        HStack(spacing: 12) {
+            Image(systemName: "timer").foregroundStyle(low ? Theme.accent : Theme.accent2)
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Theme.card)
+                    Capsule()
+                        .fill(low ? Theme.accent : Theme.accent2)
+                        .frame(width: max(0, geo.size.width * fraction))
+                        .animation(.linear(duration: 0.1), value: fraction)
+                }
+            }
+            .frame(height: 10)
+            Text("\(Int(ceil(remaining)))s")
+                .font(.system(size: 17, weight: .bold, design: .rounded).monospacedDigit())
+                .foregroundStyle(low ? Theme.accent : .white)
+                .frame(width: 46, alignment: .trailing)
+        }
+        .frame(height: 30)
     }
 }
 

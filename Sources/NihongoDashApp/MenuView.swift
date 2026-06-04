@@ -1,5 +1,6 @@
 import SwiftUI
 import VocabKit
+import GameCore
 
 struct MenuView: View {
     @Environment(AppModel.self) private var model
@@ -30,6 +31,15 @@ struct MenuView: View {
                 .padding(.vertical, 8)
 
             VStack(spacing: 18) {
+                HStack(spacing: 12) {
+                    Image(systemName: "gamecontroller")
+                    Picker("", selection: $model.selectedMode) {
+                        Text(model.languageCode == "zh" ? "环游" : "Journey").tag(GameMode.journey)
+                        Text(model.languageCode == "zh" ? "限时" : "Time Attack").tag(GameMode.timeAttack)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(width: 220)
+                }
                 HStack(spacing: 12) {
                     Image(systemName: "globe")
                     Picker("", selection: $model.languageCode) {

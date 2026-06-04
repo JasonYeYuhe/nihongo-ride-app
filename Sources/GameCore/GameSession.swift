@@ -11,6 +11,13 @@ import ReviewKit
 /// UI-independent — it imports `Observation` (so SwiftUI can observe it) but not
 /// SwiftUI. The game mode (bike journey vs. conveyor belt) lives entirely in the
 /// view layer; this type only knows "type the word, advance, score".
+/// Which game mode a run uses. The engine/loop are identical; modes differ only
+/// in word supply and how the run ends (route distance vs. a countdown).
+public enum GameMode: String, Sendable, CaseIterable {
+    case journey       // ride a route; ends when the word queue is done
+    case timeAttack    // sprint; ends when the timer (UI-driven) runs out
+}
+
 @Observable
 public final class GameSession {
     public struct Config: Sendable {
@@ -25,6 +32,9 @@ public final class GameSession {
         public var secondsPerKanaBaseline: Double
         /// JLPT level to draw new words from; `nil` mixes all levels.
         public var level: JLPTLevel?
+        public var mode: GameMode
+        /// Countdown for time-attack, in seconds (UI-driven); `nil` for journey.
+        public var timeLimit: TimeInterval?
 
         public init(
             languageCode: String = "en",
@@ -32,7 +42,9 @@ public final class GameSession {
             newWordCount: Int = 12,
             reviewWordCount: Int = 8,
             secondsPerKanaBaseline: Double = 0.8,
-            level: JLPTLevel? = nil
+            level: JLPTLevel? = nil,
+            mode: GameMode = .journey,
+            timeLimit: TimeInterval? = nil
         ) {
             self.languageCode = languageCode
             self.showRomajiHint = showRomajiHint
@@ -40,6 +52,8 @@ public final class GameSession {
             self.reviewWordCount = reviewWordCount
             self.secondsPerKanaBaseline = secondsPerKanaBaseline
             self.level = level
+            self.mode = mode
+            self.timeLimit = timeLimit
         }
     }
 
@@ -115,6 +129,7 @@ public final class GameSession {
     public var currentSurface: String? { current?.surface }
     public var currentRomaji: String? { current?.romaji }
     public var currentGloss: String? { current?.gloss(for: config.languageCode) }
+    public var mode: GameMode { config.mode }
     public var currentLevelLabel: String { current?.jlpt.label ?? "" }
     public var currentExampleJP: String? { current?.exampleJP }
     public var currentExampleTranslation: String? { current?.exampleTranslation(for: config.languageCode) }
