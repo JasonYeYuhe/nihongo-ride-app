@@ -1,0 +1,21 @@
+# Known-bad readings found in Bluskyo/JLPT_Vocabulary during reading audits.
+# Future vocab pool-building must exclude these (they otherwise get re-added,
+# since dropping from the data alone doesn't stop a later batch re-pulling them).
+# One reading per line; '#' comments ignored.
+あひら
+かづけ
+はかち
+ひとすき
+みかずき
+かしこまりまし
+アイ
+オートメーショ
+レクリェーショ
+ずれる
+かしゃ
+じょうかく
+いってらっしゃ
+しょうきょくて
+おもなる
+じんもく
+うわ
