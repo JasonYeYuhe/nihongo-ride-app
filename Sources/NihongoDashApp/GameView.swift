@@ -32,7 +32,7 @@ struct GameView: View {
                     }
                     Spacer(minLength: 0)
                     WordCard(session: session, language: model.languageCode)
-                    Spacer(minLength: 0)
+                    Spacer(minLength: 0).frame(maxHeight: 60)   // bias card lower; scene breathes above
                     controls
                 }
                 .padding(32)
