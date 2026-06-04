@@ -57,6 +57,13 @@ struct MenuView: View {
                 .toggleStyle(.switch)
                 .tint(Theme.accent2)
                 .frame(width: 320)
+                Toggle(isOn: $model.soundEnabled) {
+                    Label(model.languageCode == "zh" ? "音效" : "Sound effects",
+                          systemImage: "speaker.wave.2.fill")
+                }
+                .toggleStyle(.switch)
+                .tint(Theme.accent2)
+                .frame(width: 320)
             }
             .panel()
             .frame(maxWidth: 420)

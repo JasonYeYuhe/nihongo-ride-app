@@ -34,6 +34,7 @@ final class AppModel {
     // Settings
     var languageCode: String = "en"      // "en" or "zh"
     var showRomajiHint: Bool = true
+    var soundEnabled: Bool = true
     /// Chosen JLPT level for new words; `nil` mixes all levels.
     var selectedLevel: JLPTLevel? = .n5
 

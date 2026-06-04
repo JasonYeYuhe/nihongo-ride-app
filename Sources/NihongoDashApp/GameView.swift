@@ -17,7 +17,7 @@ struct GameView: View {
     private func play(_ session: GameSession) -> some View {
         VStack(spacing: 22) {
             HUDBar(session: session, language: model.languageCode)
-            JourneyBar(progress: session.progress)
+            JourneyBar(session: session)
             Spacer(minLength: 0)
             WordCard(session: session, language: model.languageCode)
             Spacer(minLength: 0)
@@ -26,7 +26,13 @@ struct GameView: View {
         .padding(32)
         .background(
             KeyCaptureView(
-                onKey: { session.input($0) },
+                onKey: { character in
+                    switch session.input(character) {
+                    case .completed: Sound.wordComplete()
+                    case .rejected: Sound.mistake()
+                    case .accepted: break
+                    }
+                },
                 onCommand: { command in
                     switch command {
                     case .escape: model.finishGame()      // end early; progress is saved
@@ -35,8 +41,9 @@ struct GameView: View {
                 }
             )
         )
+        .onAppear { Sound.enabled = model.soundEnabled }
         .onChange(of: session.isFinished) { _, finished in
-            if finished { model.finishGame() }
+            if finished { Sound.finish(); model.finishGame() }
         }
     }
 
@@ -87,10 +94,13 @@ private struct HUDBar: View {
 // MARK: - Journey progress
 
 private struct JourneyBar: View {
-    let progress: Double
+    let session: GameSession
     private let landmarks = ["🗼", "🗻", "🏯", "⛩️"]
+    @State private var bob = false
+    @State private var hop = false
 
     var body: some View {
+        let progress = session.progress
         GeometryReader { geo in
             let width = geo.size.width
             ZStack(alignment: .leading) {
@@ -109,11 +119,20 @@ private struct JourneyBar: View {
 
                 Text("🚲")
                     .font(.system(size: 28))
+                    .scaleEffect(hop ? 1.35 : 1.0)
+                    .offset(y: bob ? -3 : 3)
                     .position(x: clampX(width * progress, width), y: 4)
                     .animation(.smooth, value: progress)
             }
         }
         .frame(height: 30)
+        .onAppear {
+            withAnimation(.easeInOut(duration: 0.5).repeatForever(autoreverses: true)) { bob = true }
+        }
+        .onChange(of: session.wordsCompleted) { _, _ in
+            withAnimation(.spring(response: 0.18, dampingFraction: 0.5)) { hop = true }
+            withAnimation(.spring(response: 0.32, dampingFraction: 0.6).delay(0.14)) { hop = false }
+        }
     }
 
     private func clampX(_ x: CGFloat, _ width: CGFloat) -> CGFloat {
