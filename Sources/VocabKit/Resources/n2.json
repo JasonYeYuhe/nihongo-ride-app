@@ -28535,5 +28535,4797 @@
         "比较地"
       ]
     }
+  },
+  {
+    "id": "n2-b1033",
+    "surface": "暖める",
+    "kana": "あたためる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to warm",
+        "to heat"
+      ],
+      "zh": [
+        "加热",
+        "弄暖"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1034",
+    "surface": "暴れる",
+    "kana": "あばれる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to act violently",
+        "to rage"
+      ],
+      "zh": [
+        "胡闹",
+        "动粗"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1035",
+    "surface": "編物",
+    "kana": "あみもの",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "knitting",
+        "knitted material"
+      ],
+      "zh": [
+        "编织物",
+        "毛衣"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1036",
+    "surface": "改めて",
+    "kana": "あらためて",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "another time",
+        "again"
+      ],
+      "zh": [
+        "重新",
+        "再次"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1037",
+    "surface": "言い出す",
+    "kana": "いいだす",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to start talking",
+        "to bring up"
+      ],
+      "zh": [
+        "提出",
+        "开始说"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1038",
+    "surface": "幾分",
+    "kana": "いくぶん",
+    "pos": [
+      "adv",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "somewhat",
+        "partially"
+      ],
+      "zh": [
+        "稍微",
+        "多少"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1039",
+    "surface": "意地悪",
+    "kana": "いじわる",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "malicious",
+        "unkind"
+      ],
+      "zh": [
+        "坏心眼",
+        "刁难"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1040",
+    "surface": "一昨日",
+    "kana": "いっさくじつ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "day before yesterday"
+      ],
+      "zh": [
+        "前天"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1042",
+    "surface": "移転",
+    "kana": "いてん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "moving",
+        "transfer"
+      ],
+      "zh": [
+        "迁移",
+        "搬迁"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1043",
+    "surface": "植木",
+    "kana": "うえき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "potted plant",
+        "garden shrub"
+      ],
+      "zh": [
+        "盆栽",
+        "栽种的树"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1044",
+    "surface": "打合せ",
+    "kana": "うちあわせ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "advance arrangements",
+        "meeting"
+      ],
+      "zh": [
+        "碰头会",
+        "商议"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1045",
+    "surface": "売り切れ",
+    "kana": "うりきれ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "sold out"
+      ],
+      "zh": [
+        "售罄",
+        "卖光"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1046",
+    "surface": "英文",
+    "kana": "えいぶん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "English text"
+      ],
+      "zh": [
+        "英文"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1047",
+    "surface": "演劇",
+    "kana": "えんげき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "theater",
+        "play"
+      ],
+      "zh": [
+        "戏剧",
+        "演剧"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1048",
+    "surface": "応対",
+    "kana": "おうたい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "receiving callers",
+        "attending to"
+      ],
+      "zh": [
+        "接待",
+        "应酬"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1049",
+    "surface": "大通り",
+    "kana": "おおどおり",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "main street",
+        "avenue"
+      ],
+      "zh": [
+        "大街",
+        "主干道"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1050",
+    "surface": "おかげさまで",
+    "kana": "おかげさまで",
+    "pos": [
+      "exp"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "thanks to you",
+        "fortunately"
+      ],
+      "zh": [
+        "托您的福"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1051",
+    "surface": "おきのどくに",
+    "kana": "おきのどくに",
+    "pos": [
+      "exp"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "my sympathies",
+        "I am sorry to hear that"
+      ],
+      "zh": [
+        "真可怜",
+        "抱歉"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1052",
+    "surface": "御辞儀",
+    "kana": "おじぎ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "bow",
+        "bowing"
+      ],
+      "zh": [
+        "鞠躬",
+        "致意"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1054",
+    "surface": "おめでたい",
+    "kana": "おめでたい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "happy",
+        "auspicious"
+      ],
+      "zh": [
+        "可喜的",
+        "值得庆贺的"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1055",
+    "surface": "女の人",
+    "kana": "おんなのひと",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "woman"
+      ],
+      "zh": [
+        "女人",
+        "妇女"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1056",
+    "surface": "海水浴",
+    "kana": "かいすいよく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "sea bathing",
+        "going for a swim"
+      ],
+      "zh": [
+        "海水浴"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1057",
+    "surface": "解説",
+    "kana": "かいせつ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "explanation",
+        "commentary"
+      ],
+      "zh": [
+        "解说",
+        "讲解"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1058",
+    "surface": "家屋",
+    "kana": "かおく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "house",
+        "building"
+      ],
+      "zh": [
+        "房屋",
+        "住宅"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1059",
+    "surface": "学術",
+    "kana": "がくじゅつ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "science",
+        "learning"
+      ],
+      "zh": [
+        "学术"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1060",
+    "surface": "学年",
+    "kana": "がくねん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "academic year",
+        "school year"
+      ],
+      "zh": [
+        "学年"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1061",
+    "surface": "重なる",
+    "kana": "かさなる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to be piled up",
+        "to overlap"
+      ],
+      "zh": [
+        "重叠",
+        "叠加"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1062",
+    "surface": "果実",
+    "kana": "かじつ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "fruit",
+        "nut"
+      ],
+      "zh": [
+        "果实"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1063",
+    "surface": "加速",
+    "kana": "かそく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "acceleration"
+      ],
+      "zh": [
+        "加速"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1064",
+    "surface": "固まる",
+    "kana": "かたまる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to harden",
+        "to solidify"
+      ],
+      "zh": [
+        "凝固",
+        "变硬"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1065",
+    "surface": "学級",
+    "kana": "がっきゅう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "class in school"
+      ],
+      "zh": [
+        "班级"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1066",
+    "surface": "仮名",
+    "kana": "かな",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "kana",
+        "Japanese syllabary"
+      ],
+      "zh": [
+        "假名"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1067",
+    "surface": "被せる",
+    "kana": "かぶせる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to cover",
+        "to put on"
+      ],
+      "zh": [
+        "盖上",
+        "蒙上"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1068",
+    "surface": "貨物",
+    "kana": "かもつ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "cargo",
+        "freight"
+      ],
+      "zh": [
+        "货物"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1069",
+    "surface": "乾かす",
+    "kana": "かわかす",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to dry"
+      ],
+      "zh": [
+        "晒干",
+        "弄干"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1070",
+    "surface": "感激",
+    "kana": "かんげき",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "deep emotion",
+        "impression"
+      ],
+      "zh": [
+        "感激",
+        "感动"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1071",
+    "surface": "勘違い",
+    "kana": "かんちがい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "misunderstanding",
+        "wrong guess"
+      ],
+      "zh": [
+        "误会",
+        "错觉"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1072",
+    "surface": "観念",
+    "kana": "かんねん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "idea",
+        "concept"
+      ],
+      "zh": [
+        "观念",
+        "概念"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1073",
+    "surface": "気圧",
+    "kana": "きあつ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "atmospheric pressure"
+      ],
+      "zh": [
+        "气压"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1074",
+    "surface": "刻む",
+    "kana": "きざむ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to mince",
+        "to carve"
+      ],
+      "zh": [
+        "雕刻",
+        "剁碎"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1075",
+    "surface": "着せる",
+    "kana": "きせる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to put clothes on",
+        "to dress"
+      ],
+      "zh": [
+        "给穿衣",
+        "使穿上"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1076",
+    "surface": "客間",
+    "kana": "きゃくま",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "guest room",
+        "drawing room"
+      ],
+      "zh": [
+        "客厅"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1077",
+    "surface": "休養",
+    "kana": "きゅうよう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "rest",
+        "recuperation"
+      ],
+      "zh": [
+        "休养"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1078",
+    "surface": "行列",
+    "kana": "ぎょうれつ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "line",
+        "queue"
+      ],
+      "zh": [
+        "行列",
+        "排队"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1079",
+    "surface": "気を付ける",
+    "kana": "きをつける",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to be careful",
+        "to pay attention"
+      ],
+      "zh": [
+        "注意",
+        "小心"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1080",
+    "surface": "空中",
+    "kana": "くうちゅう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "sky",
+        "air"
+      ],
+      "zh": [
+        "空中"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1081",
+    "surface": "薬指",
+    "kana": "くすりゆび",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "ring finger"
+      ],
+      "zh": [
+        "无名指"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1082",
+    "surface": "下る",
+    "kana": "くだる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to go down",
+        "to descend"
+      ],
+      "zh": [
+        "下去",
+        "降下"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1083",
+    "surface": "くっつく",
+    "kana": "くっつく",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to adhere to",
+        "to keep close to"
+      ],
+      "zh": [
+        "紧贴",
+        "粘连"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1084",
+    "surface": "区分",
+    "kana": "くぶん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "division",
+        "classification"
+      ],
+      "zh": [
+        "区分",
+        "划分"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1085",
+    "surface": "くれぐれも",
+    "kana": "くれぐれも",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "repeatedly",
+        "sincerely"
+      ],
+      "zh": [
+        "务必",
+        "恳切地"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1086",
+    "surface": "継続",
+    "kana": "けいぞく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "continuation"
+      ],
+      "zh": [
+        "继续",
+        "持续"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1087",
+    "surface": "芸能",
+    "kana": "げいのう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "public entertainment",
+        "accomplishments"
+      ],
+      "zh": [
+        "演艺",
+        "娱乐"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1088",
+    "surface": "外科",
+    "kana": "げか",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "surgery"
+      ],
+      "zh": [
+        "外科"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1089",
+    "surface": "下車",
+    "kana": "げしゃ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "alighting",
+        "getting off"
+      ],
+      "zh": [
+        "下车"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1090",
+    "surface": "血圧",
+    "kana": "けつあつ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "blood pressure"
+      ],
+      "zh": [
+        "血压"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1091",
+    "surface": "煙い",
+    "kana": "けむい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "smoky"
+      ],
+      "zh": [
+        "呛人的",
+        "烟雾弥漫的"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1092",
+    "surface": "県庁",
+    "kana": "けんちょう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "prefectural office"
+      ],
+      "zh": [
+        "县政府"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1093",
+    "surface": "強引",
+    "kana": "ごういん",
+    "pos": [
+      "adj-na"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "overbearing",
+        "coercive"
+      ],
+      "zh": [
+        "强硬",
+        "强行"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1094",
+    "surface": "講師",
+    "kana": "こうし",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "lecturer"
+      ],
+      "zh": [
+        "讲师"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1095",
+    "surface": "公衆",
+    "kana": "こうしゅう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "the public"
+      ],
+      "zh": [
+        "公众",
+        "大众"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1096",
+    "surface": "合同",
+    "kana": "ごうどう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "combination",
+        "joint"
+      ],
+      "zh": [
+        "联合",
+        "合并"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1097",
+    "surface": "項目",
+    "kana": "こうもく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "item",
+        "data item"
+      ],
+      "zh": [
+        "项目",
+        "条目"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1098",
+    "surface": "合流",
+    "kana": "ごうりゅう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "confluence",
+        "joining"
+      ],
+      "zh": [
+        "汇合",
+        "合流"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1099",
+    "surface": "国立",
+    "kana": "こくりつ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "national"
+      ],
+      "zh": [
+        "国立"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1100",
+    "surface": "心当たり",
+    "kana": "こころあたり",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "having some knowledge of",
+        "idea"
+      ],
+      "zh": [
+        "线索",
+        "头绪"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1101",
+    "surface": "ごぞんじですか",
+    "kana": "ごぞんじですか",
+    "pos": [
+      "exp"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "do you know?"
+      ],
+      "zh": [
+        "您知道吗"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1102",
+    "surface": "こっそり",
+    "kana": "こっそり",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "stealthily",
+        "secretly"
+      ],
+      "zh": [
+        "偷偷地",
+        "悄悄地"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1103",
+    "surface": "こないだ",
+    "kana": "こないだ",
+    "pos": [
+      "n",
+      "adv"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "the other day",
+        "lately"
+      ],
+      "zh": [
+        "前几天",
+        "不久前"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1104",
+    "surface": "転がる",
+    "kana": "ころがる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to roll",
+        "to tumble"
+      ],
+      "zh": [
+        "滚动",
+        "倒下"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1105",
+    "surface": "在学",
+    "kana": "ざいがく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "enrolled in school"
+      ],
+      "zh": [
+        "在学"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1106",
+    "surface": "災難",
+    "kana": "さいなん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "calamity",
+        "misfortune"
+      ],
+      "zh": [
+        "灾难",
+        "灾祸"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1107",
+    "surface": "酒場",
+    "kana": "さかば",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "bar",
+        "barroom"
+      ],
+      "zh": [
+        "酒吧",
+        "酒馆"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1108",
+    "surface": "削除",
+    "kana": "さくじょ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "deletion",
+        "elimination"
+      ],
+      "zh": [
+        "删除"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1109",
+    "surface": "差し支え",
+    "kana": "さしつかえ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "hindrance",
+        "impediment"
+      ],
+      "zh": [
+        "妨碍",
+        "障碍"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1110",
+    "surface": "撮影",
+    "kana": "さつえい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "photography",
+        "filming"
+      ],
+      "zh": [
+        "摄影",
+        "拍照"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1111",
+    "surface": "妨げる",
+    "kana": "さまたげる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to disturb",
+        "to prevent"
+      ],
+      "zh": [
+        "妨碍",
+        "阻碍"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1112",
+    "surface": "産地",
+    "kana": "さんち",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "producing area"
+      ],
+      "zh": [
+        "产地"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1113",
+    "surface": "自衛",
+    "kana": "じえい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "self-defense"
+      ],
+      "zh": [
+        "自卫"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1114",
+    "surface": "敷地",
+    "kana": "しきち",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "site",
+        "plot"
+      ],
+      "zh": [
+        "用地",
+        "占地"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1115",
+    "surface": "四捨五入",
+    "kana": "ししゃごにゅう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "rounding"
+      ],
+      "zh": [
+        "四舍五入"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1116",
+    "surface": "自然科学",
+    "kana": "しぜんかがく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "natural science"
+      ],
+      "zh": [
+        "自然科学"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1117",
+    "surface": "下書き",
+    "kana": "したがき",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "rough draft"
+      ],
+      "zh": [
+        "草稿",
+        "打底稿"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1118",
+    "surface": "しつこい",
+    "kana": "しつこい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "insistent",
+        "obstinate"
+      ],
+      "zh": [
+        "执拗的",
+        "纠缠不休的"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1119",
+    "surface": "しっぽ",
+    "kana": "しっぽ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "tail"
+      ],
+      "zh": [
+        "尾巴"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1120",
+    "surface": "失恋",
+    "kana": "しつれん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "disappointed love",
+        "broken heart"
+      ],
+      "zh": [
+        "失恋"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1121",
+    "surface": "しゃがむ",
+    "kana": "しゃがむ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to squat",
+        "to crouch"
+      ],
+      "zh": [
+        "蹲下"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1122",
+    "surface": "写生",
+    "kana": "しゃせい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "sketching",
+        "drawing from nature"
+      ],
+      "zh": [
+        "写生"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1123",
+    "surface": "集会",
+    "kana": "しゅうかい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "meeting",
+        "assembly"
+      ],
+      "zh": [
+        "集会"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1124",
+    "surface": "習字",
+    "kana": "しゅうじ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "penmanship",
+        "calligraphy"
+      ],
+      "zh": [
+        "习字",
+        "书法"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1125",
+    "surface": "周辺",
+    "kana": "しゅうへん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "circumference",
+        "outskirts"
+      ],
+      "zh": [
+        "周边",
+        "边缘"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1126",
+    "surface": "受験",
+    "kana": "じゅけん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "taking an examination"
+      ],
+      "zh": [
+        "报考",
+        "应试"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1127",
+    "surface": "述語",
+    "kana": "じゅつご",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "predicate"
+      ],
+      "zh": [
+        "谓语"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1128",
+    "surface": "巡査",
+    "kana": "じゅんさ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "police officer"
+      ],
+      "zh": [
+        "巡警",
+        "警察"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1129",
+    "surface": "消化",
+    "kana": "しょうか",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "digestion",
+        "assimilation"
+      ],
+      "zh": [
+        "消化"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1130",
+    "surface": "蒸気",
+    "kana": "じょうき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "steam",
+        "vapor"
+      ],
+      "zh": [
+        "蒸汽"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1131",
+    "surface": "商社",
+    "kana": "しょうしゃ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "trading company",
+        "firm"
+      ],
+      "zh": [
+        "商社",
+        "贸易公司"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1132",
+    "surface": "消毒",
+    "kana": "しょうどく",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "disinfection",
+        "sterilization"
+      ],
+      "zh": [
+        "消毒"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1133",
+    "surface": "小便",
+    "kana": "しょうべん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "urine",
+        "pee"
+      ],
+      "zh": [
+        "小便"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1134",
+    "surface": "消耗",
+    "kana": "しょうもう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "exhaustion",
+        "consumption"
+      ],
+      "zh": [
+        "消耗"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1135",
+    "surface": "職人",
+    "kana": "しょくにん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "worker",
+        "artisan"
+      ],
+      "zh": [
+        "工匠",
+        "手艺人"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1136",
+    "surface": "書道",
+    "kana": "しょどう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "calligraphy"
+      ],
+      "zh": [
+        "书法"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1137",
+    "surface": "資料",
+    "kana": "しりょう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "materials",
+        "data"
+      ],
+      "zh": [
+        "资料"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1138",
+    "surface": "信ずる",
+    "kana": "しんずる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to believe",
+        "to trust"
+      ],
+      "zh": [
+        "相信",
+        "信任"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1139",
+    "surface": "侵入",
+    "kana": "しんにゅう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "penetration",
+        "invasion"
+      ],
+      "zh": [
+        "侵入",
+        "入侵"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1140",
+    "surface": "森林",
+    "kana": "しんりん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "forest",
+        "woods"
+      ],
+      "zh": [
+        "森林"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1141",
+    "surface": "水素",
+    "kana": "すいそ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "hydrogen"
+      ],
+      "zh": [
+        "氢"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1142",
+    "surface": "水分",
+    "kana": "すいぶん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "moisture",
+        "water"
+      ],
+      "zh": [
+        "水分"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1143",
+    "surface": "末っ子",
+    "kana": "すえっこ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "youngest child"
+      ],
+      "zh": [
+        "最小的孩子",
+        "老幺"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1144",
+    "surface": "透き通る",
+    "kana": "すきとおる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to be transparent",
+        "to be see-through"
+      ],
+      "zh": [
+        "透明",
+        "清澈"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1145",
+    "surface": "鈴",
+    "kana": "すず",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "bell"
+      ],
+      "zh": [
+        "铃铛"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1146",
+    "surface": "図表",
+    "kana": "ずひょう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "chart",
+        "diagram"
+      ],
+      "zh": [
+        "图表"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1147",
+    "surface": "ずらり",
+    "kana": "ずらり",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "in a line",
+        "in a row"
+      ],
+      "zh": [
+        "一排",
+        "一溜儿"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1148",
+    "surface": "税関",
+    "kana": "ぜいかん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "customs"
+      ],
+      "zh": [
+        "海关"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1149",
+    "surface": "整数",
+    "kana": "せいすう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "integer"
+      ],
+      "zh": [
+        "整数"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1150",
+    "surface": "成分",
+    "kana": "せいぶん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "ingredient",
+        "component"
+      ],
+      "zh": [
+        "成分"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1151",
+    "surface": "折角",
+    "kana": "せっかく",
+    "pos": [
+      "adv",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "with trouble",
+        "at great pains"
+      ],
+      "zh": [
+        "特意",
+        "好不容易"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1152",
+    "surface": "瀬戸物",
+    "kana": "せともの",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "earthenware",
+        "crockery"
+      ],
+      "zh": [
+        "陶瓷器",
+        "陶器"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1153",
+    "surface": "洗剤",
+    "kana": "せんざい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "detergent",
+        "washing material"
+      ],
+      "zh": [
+        "洗涤剂"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1154",
+    "surface": "先々月",
+    "kana": "せんせんげつ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "month before last"
+      ],
+      "zh": [
+        "上上个月"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1155",
+    "surface": "宣伝",
+    "kana": "せんでん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "propaganda",
+        "publicity"
+      ],
+      "zh": [
+        "宣传",
+        "广告"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1156",
+    "surface": "相違",
+    "kana": "そうい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "difference",
+        "discrepancy"
+      ],
+      "zh": [
+        "差异",
+        "不一致"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1157",
+    "surface": "相互",
+    "kana": "そうご",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "mutual",
+        "reciprocal"
+      ],
+      "zh": [
+        "相互",
+        "互相"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1158",
+    "surface": "造船",
+    "kana": "ぞうせん",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "shipbuilding"
+      ],
+      "zh": [
+        "造船"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1159",
+    "surface": "草履",
+    "kana": "ぞうり",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "zouri",
+        "Japanese footwear"
+      ],
+      "zh": [
+        "草履",
+        "草鞋"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1160",
+    "surface": "続々",
+    "kana": "ぞくぞく",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "successively",
+        "one after another"
+      ],
+      "zh": [
+        "源源不断地",
+        "陆续地"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1161",
+    "surface": "速力",
+    "kana": "そくりょく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "speed"
+      ],
+      "zh": [
+        "速度"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1162",
+    "surface": "揃う",
+    "kana": "そろう",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to become complete",
+        "to be equal"
+      ],
+      "zh": [
+        "凑齐",
+        "齐全"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1163",
+    "surface": "損得",
+    "kana": "そんとく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "loss and gain",
+        "advantage and disadvantage"
+      ],
+      "zh": [
+        "损益",
+        "得失"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1164",
+    "surface": "大工",
+    "kana": "だいく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "carpenter"
+      ],
+      "zh": [
+        "木匠"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1165",
+    "surface": "体積",
+    "kana": "たいせき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "capacity",
+        "volume"
+      ],
+      "zh": [
+        "体积"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1166",
+    "surface": "代名詞",
+    "kana": "だいめいし",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "pronoun"
+      ],
+      "zh": [
+        "代词"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1167",
+    "surface": "楕円",
+    "kana": "だえん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "ellipse"
+      ],
+      "zh": [
+        "椭圆"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1168",
+    "surface": "頼もしい",
+    "kana": "たのもしい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "reliable",
+        "trustworthy"
+      ],
+      "zh": [
+        "可靠的",
+        "靠得住的"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1169",
+    "surface": "ためらう",
+    "kana": "ためらう",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to hesitate"
+      ],
+      "zh": [
+        "犹豫",
+        "踌躇"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1170",
+    "surface": "たんす",
+    "kana": "たんす",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "chest of drawers",
+        "wardrobe"
+      ],
+      "zh": [
+        "衣橱",
+        "柜子"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1171",
+    "surface": "団地",
+    "kana": "だんち",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "housing complex"
+      ],
+      "zh": [
+        "小区",
+        "住宅区"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1172",
+    "surface": "近々",
+    "kana": "ちかぢか",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "soon",
+        "before long"
+      ],
+      "zh": [
+        "最近",
+        "不久"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1173",
+    "surface": "地質",
+    "kana": "ちしつ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "geological features"
+      ],
+      "zh": [
+        "地质"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1174",
+    "surface": "縮れる",
+    "kana": "ちぢれる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to be wavy",
+        "to be curled"
+      ],
+      "zh": [
+        "卷曲",
+        "缩水"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1175",
+    "surface": "中間",
+    "kana": "ちゅうかん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "middle",
+        "midway"
+      ],
+      "zh": [
+        "中间"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1176",
+    "surface": "超過",
+    "kana": "ちょうか",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "excess",
+        "being more than"
+      ],
+      "zh": [
+        "超过",
+        "超额"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1177",
+    "surface": "調整",
+    "kana": "ちょうせい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "adjustment",
+        "regulation"
+      ],
+      "zh": [
+        "调整",
+        "调节"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1178",
+    "surface": "長方形",
+    "kana": "ちょうほうけい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "rectangle"
+      ],
+      "zh": [
+        "长方形"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1179",
+    "surface": "直通",
+    "kana": "ちょくつう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "direct communication"
+      ],
+      "zh": [
+        "直达",
+        "直通"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1180",
+    "surface": "直径",
+    "kana": "ちょっけい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "diameter"
+      ],
+      "zh": [
+        "直径"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1181",
+    "surface": "追加",
+    "kana": "ついか",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "addition",
+        "supplement"
+      ],
+      "zh": [
+        "追加",
+        "补充"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1182",
+    "surface": "通帳",
+    "kana": "つうちょう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "passbook",
+        "bankbook"
+      ],
+      "zh": [
+        "存折"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1183",
+    "surface": "突き当たり",
+    "kana": "つきあたり",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "end of street"
+      ],
+      "zh": [
+        "尽头",
+        "拐角处"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1184",
+    "surface": "突っ込む",
+    "kana": "つっこむ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to thrust into",
+        "to plunge"
+      ],
+      "zh": [
+        "冲进",
+        "塞进"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1185",
+    "surface": "粒",
+    "kana": "つぶ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "grain",
+        "drop"
+      ],
+      "zh": [
+        "粒",
+        "颗粒"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1186",
+    "surface": "詰まる",
+    "kana": "つまる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to be blocked",
+        "to be packed"
+      ],
+      "zh": [
+        "堵塞",
+        "塞满"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1187",
+    "surface": "強気",
+    "kana": "つよき",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "firm",
+        "strong"
+      ],
+      "zh": [
+        "坚强",
+        "强硬"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1188",
+    "surface": "定員",
+    "kana": "ていいん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "fixed capacity"
+      ],
+      "zh": [
+        "定员",
+        "规定人数"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1189",
+    "surface": "停車",
+    "kana": "ていしゃ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "stopping"
+      ],
+      "zh": [
+        "停车"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1190",
+    "surface": "手入れ",
+    "kana": "ていれ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "repairs",
+        "maintenance"
+      ],
+      "zh": [
+        "维修",
+        "保养"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1191",
+    "surface": "手頃",
+    "kana": "てごろ",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "moderate",
+        "handy"
+      ],
+      "zh": [
+        "合适的",
+        "手头有的"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1192",
+    "surface": "鉄砲",
+    "kana": "てっぽう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "gun"
+      ],
+      "zh": [
+        "铁炮",
+        "枪支"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1193",
+    "surface": "照らす",
+    "kana": "てらす",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to shine on",
+        "to illuminate"
+      ],
+      "zh": [
+        "照亮",
+        "照射"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1194",
+    "surface": "電柱",
+    "kana": "でんちゅう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "telephone pole",
+        "telegraph pole"
+      ],
+      "zh": [
+        "电线杆"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1195",
+    "surface": "電力",
+    "kana": "でんりょく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "electric power"
+      ],
+      "zh": [
+        "电力"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1196",
+    "surface": "統計",
+    "kana": "とうけい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "statistics"
+      ],
+      "zh": [
+        "统计"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1197",
+    "surface": "登場",
+    "kana": "とうじょう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "entry on stage"
+      ],
+      "zh": [
+        "登场",
+        "出场"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1198",
+    "surface": "灯台",
+    "kana": "とうだい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "lighthouse"
+      ],
+      "zh": [
+        "灯塔"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1199",
+    "surface": "灯油",
+    "kana": "とうゆ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "lamp oil",
+        "kerosene"
+      ],
+      "zh": [
+        "灯油",
+        "煤油"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1200",
+    "surface": "尖る",
+    "kana": "とがる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to taper to a point",
+        "to become sharp"
+      ],
+      "zh": [
+        "尖锐",
+        "变尖"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1201",
+    "surface": "特殊",
+    "kana": "とくしゅ",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "special",
+        "unique"
+      ],
+      "zh": [
+        "特殊"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1202",
+    "surface": "床の間",
+    "kana": "とこのま",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "alcove"
+      ],
+      "zh": [
+        "壁龛"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1203",
+    "surface": "どっと",
+    "kana": "どっと",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "suddenly",
+        "bursting out"
+      ],
+      "zh": [
+        "哄堂",
+        "蜂拥而至"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1204",
+    "surface": "丼",
+    "kana": "どんぶり",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "porcelain bowl",
+        "bowl of rice with food"
+      ],
+      "zh": [
+        "大碗",
+        "盖饭"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1205",
+    "surface": "中身",
+    "kana": "なかみ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "contents",
+        "interior"
+      ],
+      "zh": [
+        "内容",
+        "里面"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1206",
+    "surface": "謎謎",
+    "kana": "なぞなぞ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "riddle",
+        "puzzle"
+      ],
+      "zh": [
+        "谜语"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1207",
+    "surface": "何々",
+    "kana": "なになに",
+    "pos": [
+      "pron"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "such and such",
+        "what?"
+      ],
+      "zh": [
+        "某某",
+        "怎么"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1208",
+    "surface": "南米",
+    "kana": "なんべい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "South America"
+      ],
+      "zh": [
+        "南美洲"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1209",
+    "surface": "憎む",
+    "kana": "にくむ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to hate",
+        "to detest"
+      ],
+      "zh": [
+        "憎恨",
+        "讨厌"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1210",
+    "surface": "日課",
+    "kana": "にっか",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "daily lesson",
+        "daily work"
+      ],
+      "zh": [
+        "日常工作",
+        "日课"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1211",
+    "surface": "睨む",
+    "kana": "にらむ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to glare at",
+        "to scowl at"
+      ],
+      "zh": [
+        "瞪眼",
+        "盯视"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1212",
+    "surface": "寝間着",
+    "kana": "ねまき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "sleepwear",
+        "nightclothes"
+      ],
+      "zh": [
+        "睡衣"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1213",
+    "surface": "濃度",
+    "kana": "のうど",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "concentration",
+        "density"
+      ],
+      "zh": [
+        "浓度"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1214",
+    "surface": "上り",
+    "kana": "のぼり",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "ascent",
+        "climbing"
+      ],
+      "zh": [
+        "上升",
+        "上行"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1215",
+    "surface": "のろのろ",
+    "kana": "のろのろ",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "sluggishly",
+        "slowly"
+      ],
+      "zh": [
+        "迟缓地",
+        "慢吞吞地"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1216",
+    "surface": "売買",
+    "kana": "ばいばい",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "trade",
+        "buying and selling"
+      ],
+      "zh": [
+        "买卖",
+        "交易"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1217",
+    "surface": "秤",
+    "kana": "はかり",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "scales",
+        "weighing machine"
+      ],
+      "zh": [
+        "秤",
+        "天平"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1218",
+    "surface": "挟む",
+    "kana": "はさむ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to interpose",
+        "to hold between"
+      ],
+      "zh": [
+        "夹",
+        "插入"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1219",
+    "surface": "外れる",
+    "kana": "はずれる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to be disconnected",
+        "to be off"
+      ],
+      "zh": [
+        "脱落",
+        "偏离"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1220",
+    "surface": "発想",
+    "kana": "はっそう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "expression",
+        "idea"
+      ],
+      "zh": [
+        "构思",
+        "想法"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1221",
+    "surface": "話し掛ける",
+    "kana": "はなしかける",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to accost a person",
+        "to talk to"
+      ],
+      "zh": [
+        "搭话",
+        "攀谈"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1222",
+    "surface": "歯磨き",
+    "kana": "はみがき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "dental cream",
+        "tooth brushing"
+      ],
+      "zh": [
+        "刷牙",
+        "牙膏"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1223",
+    "surface": "払い込む",
+    "kana": "はらいこむ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to deposit",
+        "to pay in"
+      ],
+      "zh": [
+        "缴纳",
+        "存入"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1224",
+    "surface": "判子",
+    "kana": "はんこ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "seal",
+        "stamp"
+      ],
+      "zh": [
+        "印章",
+        "图章"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1225",
+    "surface": "半島",
+    "kana": "はんとう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "peninsula"
+      ],
+      "zh": [
+        "半岛"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1226",
+    "surface": "日陰",
+    "kana": "ひかげ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "shadow"
+      ],
+      "zh": [
+        "阴凉处",
+        "日阴"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1227",
+    "surface": "引き止める",
+    "kana": "ひきとめる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to detain",
+        "to check"
+      ],
+      "zh": [
+        "挽留",
+        "制止"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1228",
+    "surface": "肘",
+    "kana": "ひじ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "elbow"
+      ],
+      "zh": [
+        "手肘",
+        "胳膊肘"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1229",
+    "surface": "ひっくりかえす",
+    "kana": "ひっくりかえす",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to turn over",
+        "to overturn"
+      ],
+      "zh": [
+        "打翻",
+        "弄倒"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1230",
+    "surface": "必需品",
+    "kana": "ひつじゅひん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "necessities",
+        "necessary article"
+      ],
+      "zh": [
+        "必需品"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1231",
+    "surface": "独り言",
+    "kana": "ひとりごと",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "soliloquy",
+        "monologue"
+      ],
+      "zh": [
+        "自言自语"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1232",
+    "surface": "日の入り",
+    "kana": "ひのいり",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "sunset"
+      ],
+      "zh": [
+        "日落"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1233",
+    "surface": "皮膚",
+    "kana": "ひふ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "skin"
+      ],
+      "zh": [
+        "皮肤"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1234",
+    "surface": "標識",
+    "kana": "ひょうしき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "sign",
+        "mark"
+      ],
+      "zh": [
+        "标志",
+        "记号"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1235",
+    "surface": "昼寝",
+    "kana": "ひるね",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "nap",
+        "siesta"
+      ],
+      "zh": [
+        "午睡"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1236",
+    "surface": "広々",
+    "kana": "ひろびろ",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "extensive",
+        "spacious"
+      ],
+      "zh": [
+        "宽广地",
+        "广阔地"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1237",
+    "surface": "風船",
+    "kana": "ふうせん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "balloon"
+      ],
+      "zh": [
+        "气球"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1238",
+    "surface": "複写",
+    "kana": "ふくしゃ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "copy",
+        "duplication"
+      ],
+      "zh": [
+        "复写",
+        "复制"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1239",
+    "surface": "不潔",
+    "kana": "ふけつ",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "unclean",
+        "dirty"
+      ],
+      "zh": [
+        "不洁",
+        "肮脏"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1240",
+    "surface": "ふざける",
+    "kana": "ふざける",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to romp",
+        "to fool around"
+      ],
+      "zh": [
+        "开玩笑",
+        "胡闹"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1241",
+    "surface": "蓋",
+    "kana": "ふた",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "cover",
+        "lid"
+      ],
+      "zh": [
+        "盖子"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1242",
+    "surface": "部品",
+    "kana": "ぶひん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "parts",
+        "accessories"
+      ],
+      "zh": [
+        "零件",
+        "部件"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1243",
+    "surface": "麓",
+    "kana": "ふもと",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "the foot",
+        "the bottom"
+      ],
+      "zh": [
+        "山脚"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1244",
+    "surface": "風呂敷",
+    "kana": "ふろしき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "wrapping cloth"
+      ],
+      "zh": [
+        "包袱皮"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1245",
+    "surface": "文芸",
+    "kana": "ぶんげい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "literature",
+        "art and literature"
+      ],
+      "zh": [
+        "文艺"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1246",
+    "surface": "分布",
+    "kana": "ぶんぷ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "distribution"
+      ],
+      "zh": [
+        "分布"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1247",
+    "surface": "平気",
+    "kana": "へいき",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "coolness",
+        "calmness"
+      ],
+      "zh": [
+        "平静",
+        "满不在乎"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1248",
+    "surface": "平凡",
+    "kana": "へいぼん",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "common",
+        "ordinary"
+      ],
+      "zh": [
+        "平凡",
+        "普通"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1249",
+    "surface": "別々",
+    "kana": "べつべつ",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "separately",
+        "individually"
+      ],
+      "zh": [
+        "分别",
+        "各自"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1250",
+    "surface": "方角",
+    "kana": "ほうがく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "direction",
+        "way"
+      ],
+      "zh": [
+        "方向",
+        "方位"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1251",
+    "surface": "方針",
+    "kana": "ほうしん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "objective",
+        "plan"
+      ],
+      "zh": [
+        "方针",
+        "原则"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1252",
+    "surface": "方面",
+    "kana": "ほうめん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "direction",
+        "district"
+      ],
+      "zh": [
+        "方面",
+        "地区"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1253",
+    "surface": "牧場",
+    "kana": "ぼくじょう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "farm",
+        "pasture"
+      ],
+      "zh": [
+        "牧场"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1254",
+    "surface": "北極",
+    "kana": "ほっきょく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "North Pole"
+      ],
+      "zh": [
+        "北极"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1255",
+    "surface": "まあまあ",
+    "kana": "まあまあ",
+    "pos": [
+      "adv"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "so-so",
+        "passably"
+      ],
+      "zh": [
+        "马马虎虎",
+        "还可以"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1256",
+    "surface": "曲げる",
+    "kana": "まげる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to bend",
+        "to crook"
+      ],
+      "zh": [
+        "弯曲",
+        "扭曲"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1257",
+    "surface": "混じる",
+    "kana": "まじる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to be mixed",
+        "to be blended"
+      ],
+      "zh": [
+        "混杂",
+        "夹杂"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1258",
+    "surface": "街角",
+    "kana": "まちかど",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "street corner"
+      ],
+      "zh": [
+        "街角"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1259",
+    "surface": "真っ白",
+    "kana": "まっしろ",
+    "pos": [
+      "adj-na",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "pure white"
+      ],
+      "zh": [
+        "纯白",
+        "雪白"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1260",
+    "surface": "真似る",
+    "kana": "まねる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to mimic",
+        "to imitate"
+      ],
+      "zh": [
+        "模仿",
+        "仿效"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1261",
+    "surface": "満員",
+    "kana": "まんいん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "full house",
+        "no vacancy"
+      ],
+      "zh": [
+        "满员",
+        "客满"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1262",
+    "surface": "岬",
+    "kana": "みさき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "cape (on coast)"
+      ],
+      "zh": [
+        "岬",
+        "海角"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1263",
+    "surface": "見直す",
+    "kana": "みなおす",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to look again",
+        "to get a better opinion of"
+      ],
+      "zh": [
+        "重新看",
+        "重新审视"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1264",
+    "surface": "見本",
+    "kana": "みほん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "sample"
+      ],
+      "zh": [
+        "样本",
+        "样品"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1265",
+    "surface": "民謡",
+    "kana": "みんよう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "folk song"
+      ],
+      "zh": [
+        "民谣"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1266",
+    "surface": "蒸し暑い",
+    "kana": "むしあつい",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "humid",
+        "sultry"
+      ],
+      "zh": [
+        "闷热的"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1267",
+    "surface": "姪",
+    "kana": "めい",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "niece"
+      ],
+      "zh": [
+        "侄女",
+        "外甥女"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1268",
+    "surface": "命ずる",
+    "kana": "めいずる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to command",
+        "to appoint"
+      ],
+      "zh": [
+        "命令",
+        "吩咐"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1269",
+    "surface": "目上",
+    "kana": "めうえ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "superior(s)",
+        "senior"
+      ],
+      "zh": [
+        "长辈",
+        "上司"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1270",
+    "surface": "目立つ",
+    "kana": "めだつ",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to be conspicuous",
+        "to stand out"
+      ],
+      "zh": [
+        "显眼",
+        "引人注目"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1271",
+    "surface": "面接",
+    "kana": "めんせつ",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "interview"
+      ],
+      "zh": [
+        "面试",
+        "面谈"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1272",
+    "surface": "申し訳ない",
+    "kana": "もうしわけない",
+    "pos": [
+      "adj-i"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "inexcusable",
+        "sorry"
+      ],
+      "zh": [
+        "抱歉的",
+        "对不起的"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1273",
+    "surface": "餅",
+    "kana": "もち",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "sticky rice cake"
+      ],
+      "zh": [
+        "年糕",
+        "饼"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1274",
+    "surface": "物差し",
+    "kana": "ものさし",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "ruler",
+        "measure"
+      ],
+      "zh": [
+        "尺子",
+        "衡量标准"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1275",
+    "surface": "催し",
+    "kana": "もよおし",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "event",
+        "festivities"
+      ],
+      "zh": [
+        "活动",
+        "集会"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1276",
+    "surface": "夜間",
+    "kana": "やかん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "at night",
+        "nighttime"
+      ],
+      "zh": [
+        "夜间",
+        "晚上"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1277",
+    "surface": "薬品",
+    "kana": "やくひん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "medicine",
+        "chemicals"
+      ],
+      "zh": [
+        "药品",
+        "药剂"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1278",
+    "surface": "薬局",
+    "kana": "やっきょく",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "pharmacy",
+        "drugstore"
+      ],
+      "zh": [
+        "药局",
+        "药店"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1279",
+    "surface": "遊園地",
+    "kana": "ゆうえんち",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "amusement park"
+      ],
+      "zh": [
+        "游乐园"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1280",
+    "surface": "夕立",
+    "kana": "ゆうだち",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "sudden evening shower"
+      ],
+      "zh": [
+        "阵雨",
+        "雷阵雨"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1281",
+    "surface": "湯気",
+    "kana": "ゆげ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "steam",
+        "vapour"
+      ],
+      "zh": [
+        "热气",
+        "水蒸气"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1282",
+    "surface": "湯飲み",
+    "kana": "ゆのみ",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "teacup"
+      ],
+      "zh": [
+        "茶碗",
+        "茶杯"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1283",
+    "surface": "容積",
+    "kana": "ようせき",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "capacity",
+        "volume"
+      ],
+      "zh": [
+        "容积",
+        "体积"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1284",
+    "surface": "羊毛",
+    "kana": "ようもう",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "wool"
+      ],
+      "zh": [
+        "羊毛"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1285",
+    "surface": "余計",
+    "kana": "よけい",
+    "pos": [
+      "adj-na",
+      "adv",
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "too much",
+        "unnecessary"
+      ],
+      "zh": [
+        "多余",
+        "无用"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1286",
+    "surface": "四つ角",
+    "kana": "よつかど",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "four corners",
+        "crossroads"
+      ],
+      "zh": [
+        "十字路口",
+        "四角"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1287",
+    "surface": "蘇る",
+    "kana": "よみがえる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to be resurrected",
+        "to be revived"
+      ],
+      "zh": [
+        "复苏",
+        "恢复"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1288",
+    "surface": "欄",
+    "kana": "らん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "column of text",
+        "blank"
+      ],
+      "zh": [
+        "栏",
+        "专栏"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1289",
+    "surface": "略す",
+    "kana": "りゃくす",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to abbreviate",
+        "to omit"
+      ],
+      "zh": [
+        "省略",
+        "简略"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1290",
+    "surface": "領収",
+    "kana": "りょうしゅう",
+    "pos": [
+      "n",
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "receipt",
+        "voucher"
+      ],
+      "zh": [
+        "领受",
+        "收到"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1291",
+    "surface": "零点",
+    "kana": "れいてん",
+    "pos": [
+      "n"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "zero",
+        "no marks"
+      ],
+      "zh": [
+        "零分"
+      ]
+    }
+  },
+  {
+    "id": "n2-b1292",
+    "surface": "論ずる",
+    "kana": "ろんずる",
+    "pos": [
+      "v"
+    ],
+    "jlpt": 2,
+    "meanings": {
+      "en": [
+        "to argue",
+        "to discuss"
+      ],
+      "zh": [
+        "论述",
+        "讨论"
+      ]
+    }
   }
 ]
