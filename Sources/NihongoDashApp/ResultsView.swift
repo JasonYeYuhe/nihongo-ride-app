@@ -61,18 +61,20 @@ struct ResultsView: View {
             Spacer()
         }
         .padding(40)
-        .background(
-            KeyCaptureView(
-                onKey: { _ in },
-                onCommand: { command in
-                    switch command {
-                    case .returnKey, .space: model.startGame()
-                    case .escape: model.backToMenu()
-                    case .backspace: break
+        .background {
+            if !Screenshotter.isCapturing {
+                KeyCaptureView(
+                    onKey: { _ in },
+                    onCommand: { command in
+                        switch command {
+                        case .returnKey, .space: model.startGame()
+                        case .escape: model.backToMenu()
+                        case .backspace: break
+                        }
                     }
-                }
-            )
-        )
+                )
+            }
+        }
     }
 
     private func scoreCard(icon: String, tint: Color, value: String, label: String) -> some View {

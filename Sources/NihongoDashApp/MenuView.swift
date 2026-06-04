@@ -83,14 +83,16 @@ struct MenuView: View {
             Spacer()
         }
         .padding(40)
-        .background(
-            KeyCaptureView(
-                onKey: { _ in },
-                onCommand: { command in
-                    if command == .returnKey || command == .space { model.startGame() }
-                }
-            )
-        )
+        .background {
+            if !Screenshotter.isCapturing {
+                KeyCaptureView(
+                    onKey: { _ in },
+                    onCommand: { command in
+                        if command == .returnKey || command == .space { model.startGame() }
+                    }
+                )
+            }
+        }
     }
 
     private var routePreview: some View {

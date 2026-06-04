@@ -20,6 +20,12 @@ struct NihongoDashApp: App {
 /// Activates the app when launched via `swift run` (no bundle to do it for us).
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Headless screenshot mode: render screens to PNGs and exit (no window).
+        if let dir = ProcessInfo.processInfo.environment["NIHONGO_SHOT"] {
+            Screenshotter.capture(into: dir)
+            NSApp.terminate(nil)
+            return
+        }
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
         // SwiftPM doesn't compile an asset catalog, so set the Dock icon at runtime.

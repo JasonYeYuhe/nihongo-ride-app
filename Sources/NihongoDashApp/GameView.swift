@@ -24,23 +24,25 @@ struct GameView: View {
             controls
         }
         .padding(32)
-        .background(
-            KeyCaptureView(
-                onKey: { character in
-                    switch session.input(character) {
-                    case .completed: Sound.wordComplete()
-                    case .rejected: Sound.mistake()
-                    case .accepted: break
+        .background {
+            if !Screenshotter.isCapturing {
+                KeyCaptureView(
+                    onKey: { character in
+                        switch session.input(character) {
+                        case .completed: Sound.wordComplete()
+                        case .rejected: Sound.mistake()
+                        case .accepted: break
+                        }
+                    },
+                    onCommand: { command in
+                        switch command {
+                        case .escape: model.finishGame()      // end early; progress is saved
+                        case .returnKey, .space, .backspace: break
+                        }
                     }
-                },
-                onCommand: { command in
-                    switch command {
-                    case .escape: model.finishGame()      // end early; progress is saved
-                    case .returnKey, .space, .backspace: break
-                    }
-                }
-            )
-        )
+                )
+            }
+        }
         .onAppear { Sound.enabled = model.soundEnabled }
         .onChange(of: session.isFinished) { _, finished in
             if finished { Sound.finish(); model.finishGame() }
