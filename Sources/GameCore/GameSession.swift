@@ -148,10 +148,12 @@ public final class GameSession {
         return result
     }
 
-    /// Reveals the romaji answer for the current word (counts as a hint when scored).
+    /// Reveals the romaji answer for the current word. Counts as a hint: it
+    /// breaks the combo and the word will score minimally / count as an SRS lapse.
     public func revealHint() {
         currentRevealed = true
         showRomajiHint = true
+        combo = 0
     }
 
     /// Gives up on the current word, recording it as not completed, and advances.
@@ -184,8 +186,13 @@ public final class GameSession {
     private func completeCurrentWord() {
         guard let entry = current else { return }
         wordsCompleted += 1
-        combo += 1
-        maxCombo = max(maxCombo, combo)
+        // A revealed word doesn't build the combo (and scores minimally).
+        if currentRevealed {
+            combo = 0
+        } else {
+            combo += 1
+            maxCombo = max(maxCombo, combo)
+        }
 
         let ratio = durationRatio(for: entry)
         let outcome = TypingOutcome(
@@ -196,7 +203,7 @@ public final class GameSession {
         )
         review.record(entryID: entry.id, outcome: outcome, on: now())
 
-        score += wordScore(entry: entry, mistakes: currentMistakes, combo: combo)
+        score += currentRevealed ? 10 : wordScore(entry: entry, mistakes: currentMistakes, combo: combo)
         distanceMeters += Double(entry.kana.count) * 10
 
         advance()

@@ -94,7 +94,8 @@ public struct SRSCard: Codable, Hashable, Sendable, Identifiable {
             return outcome.mistakes > 0 ? 1 : 0      // attempted-but-failed vs. blank/skip
         }
         if outcome.usedHint { return 2 }             // revealed the answer
-        if outcome.mistakes > 0 { return 3 }         // finished, but with typos
+        if outcome.mistakes > 2 { return 2 }         // many typos → treat as a lapse
+        if outcome.mistakes > 0 { return 3 }         // finished, but with a typo or two
         return outcome.durationRatio <= 1.5 ? 5 : 4  // clean: fast vs. hesitant
     }
 }

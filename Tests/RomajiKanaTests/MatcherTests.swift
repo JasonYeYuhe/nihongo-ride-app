@@ -181,4 +181,21 @@ struct RobustnessTests {
         _ = m.input("i")
         #expect(m.typedRomaji == "si")
     }
+
+    @Test("a wrong sokuon gemination consonant is rejected (no soft-lock)")
+    func sokuonNoSoftLock() {
+        // がっこう: after が, っこ accepts kk/cc/xtu… ('k','c','x','l') but not 's'.
+        #expect(firstRejection(of: "gasu", as: "がっこう", at: 2))
+        var m = KanaInputMatcher(target: "がっこう")
+        for ch in "ga" { _ = m.input(ch) }
+        #expect(m.expectedNextCharacters.contains("k"))
+        #expect(!m.expectedNextCharacters.contains("s"))
+    }
+
+    @Test("a word ending in っ is typeable via xtu/ltu, with no dead-end key")
+    func trailingSokuon() {
+        #expect(typesOut("axtu", as: "あっ"))
+        #expect(typesOut("axtsu", as: "あっ"))
+        #expect(firstRejection(of: "ak", as: "あっ", at: 1))   // kk path can't complete → rejected
+    }
 }

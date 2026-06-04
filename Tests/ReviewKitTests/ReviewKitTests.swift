@@ -84,6 +84,7 @@ struct SRSCardTests {
         (TypingOutcome(completed: true, mistakes: 0, usedHint: false, durationRatio: 1.0), 5),
         (TypingOutcome(completed: true, mistakes: 0, usedHint: false, durationRatio: 2.0), 4),
         (TypingOutcome(completed: true, mistakes: 2, usedHint: false), 3),
+        (TypingOutcome(completed: true, mistakes: 4, usedHint: false), 2),   // many typos → lapse
         (TypingOutcome(completed: true, mistakes: 0, usedHint: true), 2),
         (TypingOutcome(completed: false, mistakes: 3), 1),
         (TypingOutcome(completed: false, mistakes: 0), 0),

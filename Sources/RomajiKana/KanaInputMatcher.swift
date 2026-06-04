@@ -169,5 +169,35 @@ private struct NFABuilder {
                 }
             }
         }
+
+        pruneDeadEnds()
+    }
+
+    /// Removes states (and the edges leading into them) that can no longer reach
+    /// the accepting node — e.g. a sokuon `pending` consonant that the following
+    /// kana cannot consume (`っ` + `か` offers `kk`/`xtu` but not `ss`). Without
+    /// this the matcher would *accept* keystrokes into dead states and soft-lock
+    /// the player, since there is no backspace. [Codex/Gemini review finding]
+    private mutating func pruneDeadEnds() {
+        var reverse: [Int: [Int]] = [:]
+        for (source, edges) in transitions.enumerated() {
+            for (_, dests) in edges {
+                for dest in dests { reverse[dest, default: []].append(source) }
+            }
+        }
+        var live: Set<Int> = [acceptingNode]
+        var stack = [acceptingNode]
+        while let node = stack.popLast() {
+            for previous in reverse[node] ?? [] where live.insert(previous).inserted {
+                stack.append(previous)
+            }
+        }
+        for source in transitions.indices {
+            guard live.contains(source) else { transitions[source] = [:]; continue }
+            for (character, dests) in transitions[source] {
+                let kept = dests.filter { live.contains($0) }
+                transitions[source][character] = kept.isEmpty ? nil : kept
+            }
+        }
     }
 }

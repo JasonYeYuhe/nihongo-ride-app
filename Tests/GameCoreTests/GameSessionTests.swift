@@ -63,12 +63,15 @@ struct GameSessionTests {
         #expect(session.review.card(for: "a")?.repetitions == 0)   // lapse
     }
 
-    @Test("revealing the hint drops the recorded grade to a lapse")
+    @Test("revealing the hint drops the grade to a lapse, breaks combo, scores minimally")
     func reveal() {
         let session = GameSession(words: [makeEntry("a", "水", "みず")])
         session.revealHint()
+        #expect(session.combo == 0)                                // reveal breaks the combo
         type("mizu", into: session)
         #expect(session.wordsCompleted == 1)                       // still finished
+        #expect(session.combo == 0)                                // ...and didn't rebuild it
+        #expect(session.score == 10)                               // minimal score, no combo bonus
         #expect(session.review.card(for: "a")?.repetitions == 0)   // q2 (hinted) → lapse
     }
 
