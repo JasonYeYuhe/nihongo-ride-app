@@ -84,6 +84,7 @@ public enum KanaRomanizer {
         "や": "ya", "ゆ": "yu", "よ": "yo",
         "ら": "ra", "り": "ri", "る": "ru", "れ": "re", "ろ": "ro",
         "わ": "wa", "ゐ": "wi", "ゑ": "we", "を": "wo", "ゔ": "vu",
+        "ヵ": "xka", "ヶ": "xke",   // small katakana ka/ke (kept as katakana; see KanaScript)
         // small kana standing alone — typeable x-forms
         "ぁ": "xa", "ぃ": "xi", "ぅ": "xu", "ぇ": "xe", "ぉ": "xo",
         "ゃ": "xya", "ゅ": "xyu", "ょ": "xyo", "ゎ": "xwa",

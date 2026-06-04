@@ -37,4 +37,13 @@ struct KatakanaTests {
     func hints(_ c: (kana: String, romaji: String)) {
         #expect(KanaRomanizer.romaji(for: c.kana) == c.romaji)
     }
+
+    // Regression (Codex review): small katakana ヵ/ヶ must stay katakana so the
+    // table's xka/xke producers apply — not be normalized to producer-less ゕ/ゖ.
+    @Test("small katakana ヵ / ヶ remain typeable", arguments: [
+        ("xka", "ヵ"), ("xke", "ヶ"), ("lka", "ヵ"), ("lke", "ヶ"),
+    ])
+    func smallKatakana(_ c: (input: String, target: String)) {
+        #expect(typesOut(c.input, as: c.target), "‘\(c.input)’ should type ‘\(c.target)’")
+    }
 }
