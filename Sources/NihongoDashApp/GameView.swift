@@ -20,7 +20,7 @@ struct GameView: View {
     private func play(_ session: GameSession) -> some View {
         ZStack {
             ZStack {
-                RideBackgroundView(speed: rideSpeed(session))
+                RideBackgroundView(speed: rideSpeed(session), landmarkPhase: landmarkPhase(session))
                 Color.black.opacity(0.18).ignoresSafeArea()   // scrim for text legibility
 
                 VStack(spacing: 22) {
@@ -116,6 +116,11 @@ struct GameView: View {
     /// Pedalling speed for the ride scene — always moving, faster on a combo.
     private func rideSpeed(_ session: GameSession) -> Double {
         1.0 + Double(min(session.combo, 12)) * 0.12
+    }
+
+    /// Which horizon landmark to show (0→4 across a journey; cycles in time-attack).
+    private func landmarkPhase(_ session: GameSession) -> Double {
+        session.mode == .timeAttack ? Double(session.wordsCompleted) / 4.0 : session.progress * 4
     }
 
     private var controls: some View {

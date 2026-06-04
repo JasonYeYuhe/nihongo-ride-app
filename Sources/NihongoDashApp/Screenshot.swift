@@ -24,6 +24,16 @@ enum Screenshotter {
         }
         render(RootView().environment(game), size: size, to: directory + "/game.png")
 
+        // Mid-journey (a later landmark approaching)
+        let mid = AppModel()
+        mid.startGame()
+        for _ in 0 ..< 7 {
+            guard let romaji = mid.session?.currentRomaji else { break }
+            for character in romaji { _ = mid.session?.input(character) }
+        }
+        if let romaji = mid.session?.currentRomaji { for character in romaji.prefix(2) { _ = mid.session?.input(character) } }
+        render(RootView().environment(mid), size: size, to: directory + "/game-mid.png")
+
         // Results (play a few words so the numbers are non-zero)
         let results = AppModel()
         results.startGame()

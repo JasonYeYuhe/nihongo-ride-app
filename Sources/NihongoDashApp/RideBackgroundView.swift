@@ -1,18 +1,20 @@
 import SwiftUI
 
-/// A first-person "riding" scene rendered entirely in code — like the screen of
-/// a gym exercise bike. A red road with gold lane dashes streams toward the
-/// viewer (faster with `speed`), over teal land, a dawn sky, sun, drifting
-/// clouds, distant hills and Mt. Fuji. Palette matches the app icon.
-/// (Art can later be swapped for real sprites/layers.)
+/// A first-person "riding" scene rendered in code — like a gym exercise-bike
+/// screen. A red road with gold lane dashes streams toward the viewer (faster
+/// with `speed`), over teal land, dawn sky, sun, clouds and hills. The landmark
+/// on the horizon advances with `landmarkPhase` (Fuji → torii → castle → tower)
+/// and grows as you approach, so route progress shows in the scene.
+/// Palette matches the app icon. (Swappable for real art later.)
 struct RideBackgroundView: View {
-    /// Relative pedalling speed; ~1 idle, higher with combo. Drives the scroll.
     var speed: Double = 1
+    /// 0→4 across a journey (≈ progress × landmark count); cycles in time-attack.
+    var landmarkPhase: Double = 0
 
-    // Icon-matched palette
     private let road = Color(red: 0.82, green: 0.21, blue: 0.21)
     private let roadFar = Color(red: 0.45, green: 0.14, blue: 0.18)
     private let lane = Color(red: 0.98, green: 0.80, blue: 0.35)
+    private let silhouette = Color(red: 0.24, green: 0.28, blue: 0.50)
 
     var body: some View {
         TimelineView(.animation) { timeline in
@@ -27,7 +29,7 @@ struct RideBackgroundView: View {
         let cx = w / 2
         let horizon = h * 0.46
 
-        // Sky: deep indigo → dawn coral toward the horizon.
+        // Sky
         ctx.fill(Path(CGRect(x: 0, y: 0, width: w, height: horizon)),
                  with: .linearGradient(
                     Gradient(colors: [Color(red: 0.08, green: 0.11, blue: 0.26),
@@ -35,7 +37,7 @@ struct RideBackgroundView: View {
                                       Color(red: 0.98, green: 0.62, blue: 0.46)]),
                     startPoint: CGPoint(x: cx, y: 0), endPoint: CGPoint(x: cx, y: horizon)))
 
-        // Sun with a soft glow, low and right.
+        // Sun + glow
         let sunC = CGPoint(x: cx + w * 0.22, y: horizon - h * 0.10)
         ctx.fill(Path(ellipseIn: CGRect(x: sunC.x - w * 0.22, y: sunC.y - w * 0.22, width: w * 0.44, height: w * 0.44)),
                  with: .radialGradient(Gradient(colors: [Color(red: 1, green: 0.85, blue: 0.5).opacity(0.55), .clear]),
@@ -44,50 +46,37 @@ struct RideBackgroundView: View {
         ctx.fill(Path(ellipseIn: CGRect(x: sunC.x - sunR, y: sunC.y - sunR, width: sunR * 2, height: sunR * 2)),
                  with: .color(Color(red: 0.99, green: 0.86, blue: 0.55)))
 
-        // Drifting clouds (slow parallax).
+        // Clouds
         for c in cloudSpecs {
             let drift = (t * c.speed).truncatingRemainder(dividingBy: 1)
-            let x = (1 - drift) * (w + 240) - 120
-            drawCloud(ctx, at: CGPoint(x: x, y: horizon * c.y), scale: c.scale * w)
+            drawCloud(ctx, at: CGPoint(x: (1 - drift) * (w + 240) - 120, y: horizon * c.y), scale: c.scale * w)
         }
 
-        // Distant hills straddling the horizon (behind Fuji).
+        // Distant hills
         for hill in [(0.12, 0.10), (0.78, 0.12), (0.45, 0.08)] {
             let hw = w * 0.5
-            ctx.fill(Path(ellipseIn: CGRect(x: w * hill.0 - hw / 2, y: horizon - h * hill.1,
-                                            width: hw, height: h * hill.1 * 2)),
+            ctx.fill(Path(ellipseIn: CGRect(x: w * hill.0 - hw / 2, y: horizon - h * hill.1, width: hw, height: h * hill.1 * 2)),
                      with: .color(Color(red: 0.13, green: 0.40, blue: 0.42).opacity(0.85)))
         }
 
-        // Mt. Fuji on the horizon, left of center, with a snow cap.
-        let fx = cx - w * 0.18, fw = w * 0.38, fh = horizon * 0.62
-        var fuji = Path()
-        fuji.move(to: CGPoint(x: fx - fw / 2, y: horizon))
-        fuji.addLine(to: CGPoint(x: fx, y: horizon - fh))
-        fuji.addLine(to: CGPoint(x: fx + fw / 2, y: horizon))
-        fuji.closeSubpath()
-        ctx.fill(fuji, with: .color(Color(red: 0.26, green: 0.30, blue: 0.52).opacity(0.92)))
-        let capH = fh * 0.26, capHalf = fw * 0.5 * (capH / fh)
-        var cap = Path()
-        cap.move(to: CGPoint(x: fx - capHalf, y: horizon - fh + capH))
-        cap.addLine(to: CGPoint(x: fx, y: horizon - fh))
-        cap.addLine(to: CGPoint(x: fx + capHalf, y: horizon - fh + capH))
-        cap.closeSubpath()
-        ctx.fill(cap, with: .color(.white.opacity(0.92)))
+        // Approaching landmark
+        let count = 4
+        let idx = Int(max(0, landmarkPhase).rounded(.down)) % count
+        let frac = max(0, landmarkPhase) - max(0, landmarkPhase).rounded(.down)
+        let lmH = horizon * (0.34 + 0.42 * frac)            // far → near
+        drawLandmark(ctx, kind: idx, cx: cx - w * 0.16, horizon: horizon, height: lmH)
 
-        // Horizon haze for depth.
+        // Horizon haze
         ctx.fill(Path(CGRect(x: 0, y: horizon - h * 0.05, width: w, height: h * 0.1)),
                  with: .linearGradient(Gradient(colors: [.clear, Color(red: 1, green: 0.75, blue: 0.6).opacity(0.35), .clear]),
-                                       startPoint: CGPoint(x: cx, y: horizon - h * 0.05),
-                                       endPoint: CGPoint(x: cx, y: horizon + h * 0.05)))
+                                       startPoint: CGPoint(x: cx, y: horizon - h * 0.05), endPoint: CGPoint(x: cx, y: horizon + h * 0.05)))
 
-        // Land below the horizon.
+        // Land
         ctx.fill(Path(CGRect(x: 0, y: horizon, width: w, height: h - horizon)),
-                 with: .linearGradient(Gradient(colors: [Color(red: 0.16, green: 0.55, blue: 0.52),
-                                                         Color(red: 0.08, green: 0.32, blue: 0.35)]),
+                 with: .linearGradient(Gradient(colors: [Color(red: 0.16, green: 0.55, blue: 0.52), Color(red: 0.08, green: 0.32, blue: 0.35)]),
                                        startPoint: CGPoint(x: cx, y: horizon), endPoint: CGPoint(x: cx, y: h)))
 
-        // Road: a perspective trapezoid, dark at the horizon → vivid near you.
+        // Road
         let bottomHalf = w * 0.46, topHalf = w * 0.012
         var roadPath = Path()
         roadPath.move(to: CGPoint(x: cx - topHalf, y: horizon))
@@ -96,10 +85,7 @@ struct RideBackgroundView: View {
         roadPath.addLine(to: CGPoint(x: cx - bottomHalf, y: h))
         roadPath.closeSubpath()
         ctx.fill(roadPath, with: .linearGradient(Gradient(colors: [roadFar, road]),
-                                                 startPoint: CGPoint(x: cx, y: horizon),
-                                                 endPoint: CGPoint(x: cx, y: h)))
-
-        // Soft road edges.
+                                                 startPoint: CGPoint(x: cx, y: horizon), endPoint: CGPoint(x: cx, y: h)))
         for side in [-1.0, 1.0] {
             var edge = Path()
             edge.move(to: CGPoint(x: cx + side * topHalf, y: horizon))
@@ -107,38 +93,81 @@ struct RideBackgroundView: View {
             ctx.stroke(edge, with: .color(.white.opacity(0.35)), lineWidth: 3)
         }
 
-        // Gold lane dashes scrolling toward the viewer (perspective + growth).
+        // Lane dashes + roadside posts
         let phase = (t * (0.30 + speed * 0.30)).truncatingRemainder(dividingBy: 1)
-        let count = 8
-        for i in 0 ..< count {
-            let u = (Double(i) / Double(count) + phase).truncatingRemainder(dividingBy: 1)
-            let near = u * u
-            let far = min(1, near + 0.07)
-            let y0 = horizon + (h - horizon) * near
-            let y1 = horizon + (h - horizon) * far
+        for i in 0 ..< 8 {
+            let u = (Double(i) / 8 + phase).truncatingRemainder(dividingBy: 1)
+            let near = u * u, far = min(1, u * u + 0.07)
+            let y0 = horizon + (h - horizon) * near, y1 = horizon + (h - horizon) * far
             let half0 = (topHalf + (bottomHalf - topHalf) * near) * 0.085
             let half1 = (topHalf + (bottomHalf - topHalf) * far) * 0.085
             var dash = Path()
-            dash.move(to: CGPoint(x: cx - half0, y: y0))
-            dash.addLine(to: CGPoint(x: cx + half0, y: y0))
-            dash.addLine(to: CGPoint(x: cx + half1, y: y1))
-            dash.addLine(to: CGPoint(x: cx - half1, y: y1))
-            dash.closeSubpath()
+            dash.move(to: CGPoint(x: cx - half0, y: y0)); dash.addLine(to: CGPoint(x: cx + half0, y: y0))
+            dash.addLine(to: CGPoint(x: cx + half1, y: y1)); dash.addLine(to: CGPoint(x: cx - half1, y: y1)); dash.closeSubpath()
             ctx.fill(dash, with: .color(lane.opacity(0.45 + 0.55 * near)))
         }
-
-        // Roadside posts streaming past on both edges.
         for side in [-1.0, 1.0] {
-            for i in 0 ..< count {
-                let u = (Double(i) / Double(count) + phase + 0.04).truncatingRemainder(dividingBy: 1)
+            for i in 0 ..< 8 {
+                let u = (Double(i) / 8 + phase + 0.04).truncatingRemainder(dividingBy: 1)
                 let near = u * u
                 let y = horizon + (h - horizon) * near
-                let edgeHalf = topHalf + (bottomHalf - topHalf) * near
-                let x = cx + side * (edgeHalf + (10 + 70 * near))
-                let postH = 6 + 52 * near, postW = 1.5 + 8 * near
-                ctx.fill(Path(CGRect(x: x - postW / 2, y: y - postH, width: postW, height: postH)),
+                let x = cx + side * (topHalf + (bottomHalf - topHalf) * near + (10 + 70 * near))
+                ctx.fill(Path(CGRect(x: x - (1.5 + 8 * near) / 2, y: y - (6 + 52 * near), width: 1.5 + 8 * near, height: 6 + 52 * near)),
                          with: .color(Color(red: 0.14, green: 0.20, blue: 0.28).opacity(0.4 + 0.6 * near)))
             }
+        }
+    }
+
+    // MARK: Landmarks (silhouettes)
+
+    private func drawLandmark(_ ctx: GraphicsContext, kind: Int, cx: CGFloat, horizon: CGFloat, height h: CGFloat) {
+        let base = horizon
+        switch kind {
+        case 1:   // ⛩ torii
+            let bw = h * 0.95, postW = h * 0.11, postX = bw * 0.32
+            let vermilion = Color(red: 0.80, green: 0.22, blue: 0.18)
+            for s in [-1.0, 1.0] {
+                ctx.fill(Path(CGRect(x: cx + s * postX - postW / 2, y: base - h, width: postW, height: h)), with: .color(vermilion))
+            }
+            ctx.fill(Path(CGRect(x: cx - bw / 2, y: base - h, width: bw, height: h * 0.13)), with: .color(vermilion))            // kasagi
+            ctx.fill(Path(CGRect(x: cx - bw * 0.42, y: base - h + h * 0.28, width: bw * 0.84, height: h * 0.09)), with: .color(vermilion)) // nuki
+        case 2:   // 城 castle keep (stacked tiers)
+            let levels = 3
+            for k in 0 ..< levels {
+                let frac = CGFloat(k) / CGFloat(levels)
+                let nextFrac = CGFloat(k + 1) / CGFloat(levels)
+                let yBot = base - h * frac, yTop = base - h * nextFrac
+                let wBot = h * 0.8 * (1 - 0.24 * CGFloat(k)), wTop = h * 0.8 * (1 - 0.24 * CGFloat(k + 1))
+                var tier = Path()
+                tier.move(to: CGPoint(x: cx - wBot / 2, y: yBot)); tier.addLine(to: CGPoint(x: cx - wTop / 2, y: yTop))
+                tier.addLine(to: CGPoint(x: cx + wTop / 2, y: yTop)); tier.addLine(to: CGPoint(x: cx + wBot / 2, y: yBot)); tier.closeSubpath()
+                ctx.fill(tier, with: .color(silhouette))
+                // eave (overhanging roof line)
+                ctx.fill(Path(CGRect(x: cx - wTop * 0.62, y: yTop - h * 0.02, width: wTop * 1.24, height: h * 0.035)),
+                         with: .color(Color(red: 0.16, green: 0.18, blue: 0.34)))
+            }
+        case 3:   // 塔 tower (Tokyo-Tower-ish)
+            let orange = Color(red: 0.90, green: 0.36, blue: 0.20)
+            var tri = Path()
+            tri.move(to: CGPoint(x: cx - h * 0.26, y: base)); tri.addLine(to: CGPoint(x: cx, y: base - h))
+            tri.addLine(to: CGPoint(x: cx + h * 0.26, y: base)); tri.closeSubpath()
+            ctx.fill(tri, with: .color(orange))
+            for level in [0.35, 0.62] {                                  // crossbars
+                let y = base - h * level, half = h * 0.26 * (1 - level)
+                ctx.fill(Path(CGRect(x: cx - half, y: y, width: half * 2, height: h * 0.02)), with: .color(orange))
+            }
+            ctx.fill(Path(CGRect(x: cx - h * 0.012, y: base - h - h * 0.12, width: h * 0.024, height: h * 0.12)), with: .color(orange)) // mast
+        default:  // 富士山 Fuji
+            let bw = h * 1.15
+            var fuji = Path()
+            fuji.move(to: CGPoint(x: cx - bw / 2, y: base)); fuji.addLine(to: CGPoint(x: cx, y: base - h))
+            fuji.addLine(to: CGPoint(x: cx + bw / 2, y: base)); fuji.closeSubpath()
+            ctx.fill(fuji, with: .color(silhouette))
+            let capH = h * 0.26, capHalf = bw * 0.5 * (capH / h)
+            var cap = Path()
+            cap.move(to: CGPoint(x: cx - capHalf, y: base - h + capH)); cap.addLine(to: CGPoint(x: cx, y: base - h))
+            cap.addLine(to: CGPoint(x: cx + capHalf, y: base - h + capH)); cap.closeSubpath()
+            ctx.fill(cap, with: .color(.white.opacity(0.92)))
         }
     }
 
@@ -150,8 +179,7 @@ struct RideBackgroundView: View {
     private func drawCloud(_ ctx: GraphicsContext, at p: CGPoint, scale s: CGFloat) {
         let color = GraphicsContext.Shading.color(.white.opacity(0.5))
         for (dx, dy, r) in [(-0.5, 0.1, 0.45), (0.0, -0.1, 0.6), (0.5, 0.1, 0.45), (0.15, 0.15, 0.4)] {
-            ctx.fill(Path(ellipseIn: CGRect(x: p.x + dx * s - r * s / 2, y: p.y + dy * s - r * s / 2,
-                                            width: r * s, height: r * s * 0.7)), with: color)
+            ctx.fill(Path(ellipseIn: CGRect(x: p.x + dx * s - r * s / 2, y: p.y + dy * s - r * s / 2, width: r * s, height: r * s * 0.7)), with: color)
         }
     }
 }
