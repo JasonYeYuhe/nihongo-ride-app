@@ -19,19 +19,24 @@ struct GameView: View {
     @ViewBuilder
     private func play(_ session: GameSession) -> some View {
         ZStack {
-            VStack(spacing: 22) {
-                HUDBar(session: session, language: model.languageCode)
-                if session.mode == .timeAttack {
-                    TimerBar(remaining: timeRemaining, total: session.config.timeLimit ?? 1)
-                } else {
-                    JourneyBar(session: session)
+            ZStack {
+                RideBackgroundView(speed: rideSpeed(session))
+                Color.black.opacity(0.18).ignoresSafeArea()   // scrim for text legibility
+
+                VStack(spacing: 22) {
+                    HUDBar(session: session, language: model.languageCode)
+                    if session.mode == .timeAttack {
+                        TimerBar(remaining: timeRemaining, total: session.config.timeLimit ?? 1)
+                    } else {
+                        JourneyBar(session: session)
+                    }
+                    Spacer(minLength: 0)
+                    WordCard(session: session, language: model.languageCode)
+                    Spacer(minLength: 0)
+                    controls
                 }
-                Spacer(minLength: 0)
-                WordCard(session: session, language: model.languageCode)
-                Spacer(minLength: 0)
-                controls
+                .padding(32)
             }
-            .padding(32)
             .blur(radius: isPaused ? 8 : 0)
 
             if isPaused { pauseOverlay }
@@ -108,6 +113,11 @@ struct GameView: View {
         }
     }
 
+    /// Pedalling speed for the ride scene — always moving, faster on a combo.
+    private func rideSpeed(_ session: GameSession) -> Double {
+        1.0 + Double(min(session.combo, 12)) * 0.12
+    }
+
     private var controls: some View {
         HStack(spacing: 18) {
             Label(model.languageCode == "zh" ? "Esc 暂停" : "Esc to pause", systemImage: "escape")
@@ -153,7 +163,7 @@ private struct HUDBar: View {
             Text(value).foregroundStyle(.white).monospacedDigit()
         }
         .padding(.horizontal, 12).padding(.vertical, 7)
-        .background(Theme.card, in: Capsule())
+        .background(.black.opacity(0.42), in: Capsule())
     }
 }
 
@@ -274,7 +284,9 @@ private struct WordCard: View {
             }
         }
         .frame(maxWidth: 560)
-        .panel(28)
+        .padding(24)
+        .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: 28))
+        .overlay(RoundedRectangle(cornerRadius: 28).strokeBorder(.white.opacity(0.12)))
     }
 
     /// Kana reading with committed kana tinted, the current one emphasized.
