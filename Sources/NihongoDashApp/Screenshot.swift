@@ -44,6 +44,17 @@ enum Screenshotter {
         }
         results.finishGame()
         render(RootView().environment(results), size: size, to: directory + "/results.png")
+
+        // Practice mode (calm washi screen)
+        let practice = AppModel()
+        practice.selectedMode = .practice
+        practice.startGame()
+        for _ in 0 ..< 2 {
+            guard let romaji = practice.session?.currentRomaji else { break }
+            for character in romaji { _ = practice.session?.input(character) }
+        }
+        if let romaji = practice.session?.currentRomaji { for character in romaji.prefix(2) { _ = practice.session?.input(character) } }
+        render(RootView().environment(practice), size: size, to: directory + "/practice.png")
     }
 
     @MainActor private static func render(_ view: some View, size: CGSize, to path: String) {

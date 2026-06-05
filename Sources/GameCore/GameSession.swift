@@ -16,6 +16,7 @@ import ReviewKit
 public enum GameMode: String, Sendable, CaseIterable {
     case journey       // ride a route; ends when the word queue is done
     case timeAttack    // sprint; ends when the timer (UI-driven) runs out
+    case practice      // calm, distraction-free passage typing
 }
 
 @Observable
@@ -130,6 +131,8 @@ public final class GameSession {
     public var currentRomaji: String? { current?.romaji }
     public var currentGloss: String? { current?.gloss(for: config.languageCode) }
     public var mode: GameMode { config.mode }
+    /// The full ordered word list of this run (for passage rendering in Practice).
+    public var wordList: [VocabEntry] { queue }
     public var currentLevelLabel: String { current?.jlpt.label ?? "" }
     public var currentExampleJP: String? { current?.exampleJP }
     public var currentExampleTranslation: String? { current?.exampleTranslation(for: config.languageCode) }

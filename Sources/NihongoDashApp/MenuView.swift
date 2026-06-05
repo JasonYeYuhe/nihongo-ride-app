@@ -35,10 +35,11 @@ struct MenuView: View {
                     Image(systemName: "gamecontroller")
                     Picker("", selection: $model.selectedMode) {
                         Text(model.languageCode == "zh" ? "环游" : "Journey").tag(GameMode.journey)
-                        Text(model.languageCode == "zh" ? "限时" : "Time Attack").tag(GameMode.timeAttack)
+                        Text(model.languageCode == "zh" ? "限时" : "Time").tag(GameMode.timeAttack)
+                        Text(model.languageCode == "zh" ? "练习" : "Practice").tag(GameMode.practice)
                     }
                     .pickerStyle(.segmented)
-                    .frame(width: 220)
+                    .frame(width: 280)
                 }
                 HStack(spacing: 12) {
                     Image(systemName: "globe")

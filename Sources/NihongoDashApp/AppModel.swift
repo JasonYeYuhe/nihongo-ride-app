@@ -63,10 +63,15 @@ final class AppModel {
         config.showRomajiHint = showRomajiHint
         config.level = selectedLevel
         config.mode = selectedMode
-        if selectedMode == .timeAttack {
+        switch selectedMode {
+        case .timeAttack:
             config.timeLimit = 60
             config.newWordCount = 300   // plenty for a 60s sprint
             config.reviewWordCount = 0
+        case .practice:
+            config.newWordCount = 30    // a focused passage session
+        case .journey:
+            break
         }
         session = GameSession.make(config: config, vocab: .shared, review: reviewStore)
         screen = .playing

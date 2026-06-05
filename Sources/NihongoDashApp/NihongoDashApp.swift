@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import GameCore
 
 @main
 struct NihongoDashApp: App {
@@ -46,7 +47,8 @@ struct RootView: View {
             Theme.background.ignoresSafeArea()
             switch model.screen {
             case .menu:    MenuView()
-            case .playing: GameView()
+            case .playing:
+                if model.session?.mode == .practice { PracticeView() } else { GameView() }
             case .results: ResultsView()
             }
         }
