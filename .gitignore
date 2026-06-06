@@ -14,3 +14,6 @@ DerivedData/
 
 # Generated reviewer CSVs — regenerate via scripts/export_review_sheets.py
 /review-sheets/
+
+# Xcode archive/export output
+/build/

@@ -57,6 +57,10 @@ targets:
         NSHumanReadableCopyright: "© 2026 Jason. All rights reserved."
         NSPrincipalClass: NSApplication
         NSMainNibFile: ""
+        # No encryption beyond Apple's exempt OS-level TLS — declare it so
+        # App Store Connect skips the export-compliance question on every
+        # upload. The app is fully offline anyway.
+        ITSAppUsesNonExemptEncryption: false
 
     entitlements:
       path: xcode/NihongoRide.entitlements
