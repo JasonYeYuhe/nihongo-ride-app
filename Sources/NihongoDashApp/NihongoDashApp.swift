@@ -59,6 +59,7 @@ struct RootView: View {
         case .playing:
             if model.session?.mode == .practice { PracticeView() } else { GameView() }
         case .results: ResultsView()
+        case .about:   AboutView()
         }
     }
 }

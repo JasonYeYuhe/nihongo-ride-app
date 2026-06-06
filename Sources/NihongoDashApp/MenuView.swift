@@ -118,6 +118,14 @@ struct MenuView: View {
 
             footer
 
+            Button(action: { model.screen = .about }) {
+                Label(model.languageCode == "zh" ? "关于与致谢" : "About & Credits", systemImage: "info.circle")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(Theme.dim)
+            }
+            .buttonStyle(.plain)
+            .padding(.top, -8)
+
             Spacer()
         }
         .padding(40)

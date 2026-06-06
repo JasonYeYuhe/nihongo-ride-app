@@ -74,6 +74,15 @@ enum Screenshotter {
             for character in romaji.prefix(romaji.count / 2) { _ = blind.session?.input(character) }
         }
         render(RootView().environment(blind), size: size, to: directory + "/practice-blind.png")
+
+        // About / Credits page — render the view directly so the screen-transition
+        // animation doesn't catch it mid-flight.
+        let about = AppModel()
+        let aboutView = ZStack { Theme.background.ignoresSafeArea(); AboutView() }
+            .preferredColorScheme(.dark)
+            .environment(about)
+        render(aboutView, size: CGSize(width: 1000, height: 1100),
+               to: directory + "/about.png")
     }
 
     @MainActor private static func render(_ view: some View, size: CGSize, to path: String) {

@@ -29,7 +29,7 @@ struct GameSummary: Equatable {
 @MainActor
 @Observable
 final class AppModel {
-    enum Screen: Equatable { case menu, playing, results }
+    enum Screen: Equatable { case menu, playing, results, about }
 
     var screen: Screen = .menu
 
