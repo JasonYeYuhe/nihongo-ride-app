@@ -11,6 +11,7 @@ upload operations, and commits with an MD5 checksum. Order is preserved.
 import hashlib
 import json
 import sys
+import os
 import time
 import requests
 import jwt  # PyJWT
@@ -35,7 +36,7 @@ def hdr():
 
 def create_set(loc_id):
     body = {"data": {"type": "appScreenshotSets",
-                     "attributes": {"screenshotDisplayType": "APP_DESKTOP"},
+                     "attributes": {"screenshotDisplayType": os.environ.get("ASC_SHOT_TYPE", "APP_DESKTOP")},
                      "relationships": {"appStoreVersionLocalization": {
                          "data": {"type": "appStoreVersionLocalizations", "id": loc_id}}}}}
     r = requests.post(f"{BASE}/v1/appScreenshotSets", headers=hdr(), json=body)
