@@ -13,6 +13,7 @@ struct PracticeView: View {
     @Environment(AppModel.self) private var model
     @State private var startedAt = Date()
     @State private var now = Date()
+    @State private var passageOpacity: Double = 1.0
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     private let paper = Color(red: 0.96, green: 0.94, blue: 0.88)
@@ -33,16 +34,24 @@ struct PracticeView: View {
             VStack(spacing: 0) {
                 topBar(session)
                 Spacer()
-                if model.practicePassages {
-                    longPassage(session)
-                    translation(session).padding(.top, 18)
-                } else {
-                    passage(session)
+                Group {
+                    if model.practicePassages {
+                        longPassage(session)
+                        translation(session).padding(.top, 18)
+                    } else {
+                        passage(session)
+                    }
+                    if model.showRomajiHint {
+                        romajiGuide(session).padding(.top, 28)
+                    }
                 }
-                if model.showRomajiHint {
-                    romajiGuide(session).padding(.top, 28)
-                }
+                .opacity(passageOpacity)
+                .animation(.easeOut(duration: 0.18), value: passageOpacity)
                 Spacer()
+                if model.practicePassages, let total = session.currentKana?.count, total > 0 {
+                    passageProgress(done: session.completedKanaCount, total: total)
+                        .padding(.bottom, 14)
+                }
                 statsRow(session)
             }
             .padding(44)
@@ -63,6 +72,11 @@ struct PracticeView: View {
         }
         .onAppear { startedAt = Date(); now = Date() }
         .onReceive(ticker) { now = $0 }
+        // Brief breath between passages: dim out, then back in
+        .onChange(of: session.wordsCompleted) { _, _ in
+            passageOpacity = 0.0
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) { passageOpacity = 1.0 }
+        }
         .onChange(of: session.isFinished) { _, finished in if finished { model.finishGame() } }
     }
 
@@ -211,5 +225,21 @@ struct PracticeView: View {
             Text(value).font(.system(size: 19, weight: .semibold, design: .monospaced))
             Text(label).font(.system(size: 10, weight: .bold)).tracking(2)
         }
+    }
+
+    /// A pencil-thin progress line for the current passage. Subtle ink track,
+    /// coral fill, growing as you type.
+    private func passageProgress(done: Int, total: Int) -> some View {
+        let fraction = total > 0 ? CGFloat(done) / CGFloat(total) : 0
+        return GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Capsule().fill(ink.opacity(0.08)).frame(height: 2)
+                Capsule().fill(accent.opacity(0.85))
+                    .frame(width: max(2, geo.size.width * fraction), height: 2)
+                    .animation(.easeOut(duration: 0.12), value: done)
+            }
+        }
+        .frame(height: 2)
+        .frame(maxWidth: 760)
     }
 }
