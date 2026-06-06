@@ -878,5 +878,808 @@
       "zh": "每天早上，我都在附近的山里散步。山里的空气非常干净，味道也很好。听到小鸟的叫声就会变得精神。"
     },
     "display": "まいあさ、ちかくのやまをあるきます。やまのくうきはとてもきれいで、おいしいです。ことりのこえをきくと、げんきがでます。"
+  },
+  {
+    "id": "para021",
+    "kana": "これはなんですか",
+    "display": "これはなんですか？",
+    "topic": "object",
+    "level": "easy",
+    "meanings": {
+      "en": "What is this?",
+      "zh": "这是什么？"
+    }
+  },
+  {
+    "id": "para022",
+    "kana": "わたしはねこがすきです",
+    "display": "わたしはねこがすきです。",
+    "topic": "animal",
+    "level": "easy",
+    "meanings": {
+      "en": "I like cats.",
+      "zh": "我喜欢猫。"
+    }
+  },
+  {
+    "id": "para023",
+    "kana": "きょうはいいおてんきですね",
+    "display": "きょうはいいおてんきですね。",
+    "topic": "weather",
+    "level": "easy",
+    "meanings": {
+      "en": "The weather is nice today, isn'''t it?",
+      "zh": "今天天气真好啊。"
+    }
+  },
+  {
+    "id": "para024",
+    "kana": "りんごをください",
+    "display": "りんごをください。",
+    "topic": "food",
+    "level": "easy",
+    "meanings": {
+      "en": "Please give me an apple.",
+      "zh": "请给我一个苹果。"
+    }
+  },
+  {
+    "id": "para025",
+    "kana": "どこにいきますか",
+    "display": "どこにいきますか？",
+    "topic": "travel",
+    "level": "easy",
+    "meanings": {
+      "en": "Where are you going?",
+      "zh": "你去哪里？"
+    }
+  },
+  {
+    "id": "para026",
+    "kana": "ありがとうございます",
+    "display": "ありがとうございます。",
+    "topic": "greeting",
+    "level": "easy",
+    "meanings": {
+      "en": "Thank you very much.",
+      "zh": "非常感谢。"
+    }
+  },
+  {
+    "id": "para027",
+    "kana": "あしたはやすみです",
+    "display": "あしたはやすみです。",
+    "topic": "work",
+    "level": "easy",
+    "meanings": {
+      "en": "Tomorrow is a day off.",
+      "zh": "明天休息。"
+    }
+  },
+  {
+    "id": "para028",
+    "kana": "なにをしていますか",
+    "display": "なにをしていますか。",
+    "topic": "activity",
+    "level": "easy",
+    "meanings": {
+      "en": "What are you doing?",
+      "zh": "你在做什么？"
+    }
+  },
+  {
+    "id": "para029",
+    "kana": "ほんをよんでいます",
+    "display": "ほんをよんでいます。",
+    "topic": "hobby",
+    "level": "easy",
+    "meanings": {
+      "en": "I am reading a book.",
+      "zh": "我在看书。"
+    }
+  },
+  {
+    "id": "para030",
+    "kana": "コーヒーをのみます",
+    "display": "コーヒーをのみます。",
+    "topic": "food",
+    "level": "easy",
+    "meanings": {
+      "en": "I drink coffee.",
+      "zh": "我喝咖啡。"
+    }
+  },
+  {
+    "id": "para031",
+    "kana": "それはとてもおいしいです",
+    "display": "それはとてもおいしいです。",
+    "topic": "food",
+    "level": "easy",
+    "meanings": {
+      "en": "That is very delicious.",
+      "zh": "那个非常好吃。"
+    }
+  },
+  {
+    "id": "para032",
+    "kana": "トイレはどこですか",
+    "display": "トイレはどこですか。",
+    "topic": "travel",
+    "level": "easy",
+    "meanings": {
+      "en": "Where is the bathroom?",
+      "zh": "洗手间在哪里？"
+    }
+  },
+  {
+    "id": "para033",
+    "kana": "すこしつかれました",
+    "display": "すこしつかれました。",
+    "topic": "health",
+    "level": "easy",
+    "meanings": {
+      "en": "I'''m a little tired.",
+      "zh": "我有点累了。"
+    }
+  },
+  {
+    "id": "para034",
+    "kana": "えいがをみました",
+    "display": "えいがをみました。",
+    "topic": "hobby",
+    "level": "easy",
+    "meanings": {
+      "en": "I watched a movie.",
+      "zh": "我看了一部电影。"
+    }
+  },
+  {
+    "id": "para035",
+    "kana": "いまなんじですか",
+    "display": "いまなんじですか？",
+    "topic": "time",
+    "level": "easy",
+    "meanings": {
+      "en": "What time is it now?",
+      "zh": "现在几点了？"
+    }
+  },
+  {
+    "id": "para036",
+    "kana": "はやくねてください",
+    "display": "はやくねてください。",
+    "topic": "health",
+    "level": "easy",
+    "meanings": {
+      "en": "Please go to sleep early.",
+      "zh": "请早点睡觉。"
+    }
+  },
+  {
+    "id": "para037",
+    "kana": "きのうはあめでした",
+    "display": "きのうはあめでした。",
+    "topic": "weather",
+    "level": "easy",
+    "meanings": {
+      "en": "It rained yesterday.",
+      "zh": "昨天下了雨。"
+    }
+  },
+  {
+    "id": "para038",
+    "kana": "あなたのなまえは",
+    "display": "あなたのなまえは？",
+    "topic": "greeting",
+    "level": "easy",
+    "meanings": {
+      "en": "What is your name?",
+      "zh": "你的名字是？"
+    }
+  },
+  {
+    "id": "para039",
+    "kana": "くるまでいきますか",
+    "display": "くるまでいきますか。",
+    "topic": "travel",
+    "level": "easy",
+    "meanings": {
+      "en": "Are you going by car?",
+      "zh": "你开车去吗？"
+    }
+  },
+  {
+    "id": "para040",
+    "kana": "とてもたのしいです",
+    "display": "とてもたのしいです。",
+    "topic": "emotion",
+    "level": "easy",
+    "meanings": {
+      "en": "It'''s very fun.",
+      "zh": "非常有趣。"
+    }
+  },
+  {
+    "id": "para041",
+    "kana": "これはおおきいですね",
+    "display": "これはおおきいですね。",
+    "topic": "object",
+    "level": "easy",
+    "meanings": {
+      "en": "This is big, isn'''t it?",
+      "zh": "这个真大啊。"
+    }
+  },
+  {
+    "id": "para042",
+    "kana": "かぞくはげんきです",
+    "display": "かぞくはげんきです。",
+    "topic": "family",
+    "level": "easy",
+    "meanings": {
+      "en": "My family is doing well.",
+      "zh": "家人都很健康。"
+    }
+  },
+  {
+    "id": "para043",
+    "kana": "にほんごはむずかしい",
+    "display": "にほんごはむずかしい。",
+    "topic": "study",
+    "level": "easy",
+    "meanings": {
+      "en": "Japanese is difficult.",
+      "zh": "日语很难。"
+    }
+  },
+  {
+    "id": "para044",
+    "kana": "だれがきますか",
+    "display": "だれがきますか？",
+    "topic": "friends",
+    "level": "easy",
+    "meanings": {
+      "en": "Who is coming?",
+      "zh": "谁会来？"
+    }
+  },
+  {
+    "id": "para045",
+    "kana": "カメラをかいました",
+    "display": "カメラをかいました。",
+    "topic": "shopping",
+    "level": "easy",
+    "meanings": {
+      "en": "I bought a camera.",
+      "zh": "我买了一台相机。"
+    }
+  },
+  {
+    "id": "para046",
+    "kana": "あしたもがんばろう",
+    "display": "あしたもがんばろう。",
+    "topic": "work",
+    "level": "easy",
+    "meanings": {
+      "en": "Let'''s do our best tomorrow too.",
+      "zh": "明天也加油吧。"
+    }
+  },
+  {
+    "id": "para047",
+    "kana": "そこにありますよ",
+    "display": "そこにありますよ。",
+    "topic": "object",
+    "level": "easy",
+    "meanings": {
+      "en": "It'''s right there.",
+      "zh": "就在那里哦。"
+    }
+  },
+  {
+    "id": "para048",
+    "kana": "パンがたべたいです",
+    "display": "パンがたべたいです。",
+    "topic": "food",
+    "level": "easy",
+    "meanings": {
+      "en": "I want to eat bread.",
+      "zh": "我想吃面包。"
+    }
+  },
+  {
+    "id": "para049",
+    "kana": "きのうともだちといっしょにえいがをみました",
+    "display": "きのう、ともだちといっしょにえいがをみました。",
+    "topic": "friends",
+    "level": "med",
+    "meanings": {
+      "en": "I watched a movie with my friend yesterday.",
+      "zh": "昨天和朋友一起看了电影。"
+    }
+  },
+  {
+    "id": "para050",
+    "kana": "わたしはまいにちさんじかんべんきょうします",
+    "display": "わたしはまいにち、さんじかんべんきょうします。",
+    "topic": "study",
+    "level": "med",
+    "meanings": {
+      "en": "I study for three hours every day.",
+      "zh": "我每天学习三个小时。"
+    }
+  },
+  {
+    "id": "para051",
+    "kana": "このレストランのケーキはとてもおいしいですね",
+    "display": "このレストランのケーキはとてもおいしいですね。",
+    "topic": "food",
+    "level": "med",
+    "meanings": {
+      "en": "The cake at this restaurant is very delicious, isn'''t it?",
+      "zh": "这家餐厅的蛋糕真好吃。"
+    }
+  },
+  {
+    "id": "para052",
+    "kana": "あしたのてんきははれのちくもりだそうです",
+    "display": "あしたのてんきははれのちくもりだそうです。",
+    "topic": "weather",
+    "level": "med",
+    "meanings": {
+      "en": "I heard tomorrow'''s weather will be sunny, then cloudy.",
+      "zh": "听说明天的天气是晴转多云。"
+    }
+  },
+  {
+    "id": "para053",
+    "kana": "えきからあるいてじゅっぷんぐらいかかります",
+    "display": "えきからあるいてじゅっぷんぐらいかかります。",
+    "topic": "travel",
+    "level": "med",
+    "meanings": {
+      "en": "It takes about ten minutes on foot from the station.",
+      "zh": "从车站步行大约需要十分钟。"
+    }
+  },
+  {
+    "id": "para054",
+    "kana": "あたらしくておおきいくるまをかいたいです",
+    "display": "あたらしくておおきいくるまをかいたいです。",
+    "topic": "shopping",
+    "level": "med",
+    "meanings": {
+      "en": "I want to buy a new and big car.",
+      "zh": "我想买一辆新的大车。"
+    }
+  },
+  {
+    "id": "para055",
+    "kana": "らいしゅうはとてもいそがしいからあそべません",
+    "display": "らいしゅうはとてもいそがしいから、あそべません。",
+    "topic": "work",
+    "level": "med",
+    "meanings": {
+      "en": "I will be very busy next week, so I cannot play.",
+      "zh": "下周非常忙，所以不能去玩。"
+    }
+  },
+  {
+    "id": "para056",
+    "kana": "あさごはんをたべてからすぐにかいしゃへいきます",
+    "display": "あさごはんをたべてから、すぐにかいしゃへいきます。",
+    "topic": "morning",
+    "level": "med",
+    "meanings": {
+      "en": "I will go to the office immediately after eating breakfast.",
+      "zh": "吃完早饭后马上就去公司。"
+    }
+  },
+  {
+    "id": "para057",
+    "kana": "わたしのしゅみはうみをみながらさんぽすることです",
+    "display": "わたしのしゅみはうみをみながらさんぽすることです。",
+    "topic": "hobby",
+    "level": "med",
+    "meanings": {
+      "en": "My hobby is taking a walk while looking at the sea.",
+      "zh": "我的爱好是一边看海一边散步。"
+    }
+  },
+  {
+    "id": "para058",
+    "kana": "なつやすみはかぞくとハワイにりょこうにいきます",
+    "display": "なつやすみは、かぞくとハワイにりょこうにいきます。",
+    "topic": "family",
+    "level": "med",
+    "meanings": {
+      "en": "I will travel to Hawaii with my family during summer vacation.",
+      "zh": "暑假我要和家人去夏威夷旅行。"
+    }
+  },
+  {
+    "id": "para059",
+    "kana": "にほんのふゆはとてもさむいのでコートがいります",
+    "display": "にほんのふゆはとてもさむいので、コートがいります。",
+    "topic": "season",
+    "level": "med",
+    "meanings": {
+      "en": "Winter in Japan is very cold, so you need a coat.",
+      "zh": "日本的冬天很冷，所以需要外套。"
+    }
+  },
+  {
+    "id": "para060",
+    "kana": "こんばんはおいしいすしをたくさんたべましょう",
+    "display": "こんばんはおいしいすしをたくさんたべましょう。",
+    "topic": "evening",
+    "level": "med",
+    "meanings": {
+      "en": "Let'''s eat a lot of delicious sushi tonight.",
+      "zh": "今晚吃很多美味的寿司吧。"
+    }
+  },
+  {
+    "id": "para061",
+    "kana": "ゆうべはねられなかったのでとてもねむいです",
+    "display": "ゆうべはねられなかったので、とてもねむいです。",
+    "topic": "health",
+    "level": "med",
+    "meanings": {
+      "en": "I couldn'''t sleep last night, so I am very sleepy.",
+      "zh": "昨晚没睡好，所以现在很困。"
+    }
+  },
+  {
+    "id": "para062",
+    "kana": "パソコンのつかいかたがわからないのでおしえて",
+    "display": "パソコンのつかいかたがわからないのでおしえて。",
+    "topic": "technology",
+    "level": "med",
+    "meanings": {
+      "en": "I don'''t know how to use a computer, so please teach me.",
+      "zh": "我不知道怎么用电脑，教教我吧。"
+    }
+  },
+  {
+    "id": "para063",
+    "kana": "あのスーパーはいつもにぎやかでやすいです",
+    "display": "あのスーパーはいつもにぎやかで、やすいです。",
+    "topic": "shopping",
+    "level": "med",
+    "meanings": {
+      "en": "That supermarket is always lively and cheap.",
+      "zh": "那家超市总是很热闹，而且很便宜。"
+    }
+  },
+  {
+    "id": "para064",
+    "kana": "たんじょうびにともだちからはなをもらいました",
+    "display": "たんじょうびにともだちからはなをもらいました。",
+    "topic": "friends",
+    "level": "med",
+    "meanings": {
+      "en": "I received flowers from my friend on my birthday.",
+      "zh": "生日时收到了朋友送的花。"
+    }
+  },
+  {
+    "id": "para065",
+    "kana": "このほんはとてもおもしろいからはやくよんでみて",
+    "display": "このほんはとてもおもしろいから、はやくよんでみて。",
+    "topic": "hobby",
+    "level": "med",
+    "meanings": {
+      "en": "This book is very interesting, so please read it soon.",
+      "zh": "这本书非常有趣，你快去看看。"
+    }
+  },
+  {
+    "id": "para066",
+    "kana": "せんしゅうあたらしいとけいをかいました",
+    "display": "せんしゅう、あたらしいとけいをかいました。",
+    "topic": "shopping",
+    "level": "med",
+    "meanings": {
+      "en": "I bought a new watch last week.",
+      "zh": "上周买了一块新表。"
+    }
+  },
+  {
+    "id": "para067",
+    "kana": "どうしてきのうのパーティーにこなかったのですか",
+    "display": "どうしてきのうのパーティーにこなかったのですか？",
+    "topic": "friends",
+    "level": "med",
+    "meanings": {
+      "en": "Why didn'''t you come to the party yesterday?",
+      "zh": "为什么昨天没来派对？"
+    }
+  },
+  {
+    "id": "para068",
+    "kana": "あついおちゃをのみながらゆっくりテレビをみます",
+    "display": "あついおちゃをのみながら、ゆっくりテレビをみます。",
+    "topic": "evening",
+    "level": "med",
+    "meanings": {
+      "en": "I watch TV slowly while drinking hot tea.",
+      "zh": "喝着热茶，悠闲地看电视。"
+    }
+  },
+  {
+    "id": "para069",
+    "kana": "でんしゃのなかでおおきなこえではなさないで",
+    "display": "でんしゃのなかで、おおきなこえではなさないで。",
+    "topic": "travel",
+    "level": "med",
+    "meanings": {
+      "en": "Please do not speak in a loud voice on the train.",
+      "zh": "请不要在电车里大声说话。"
+    }
+  },
+  {
+    "id": "para070",
+    "kana": "ことしのさくらはいつもよりはやくさきそうです",
+    "display": "ことしのさくらは、いつもよりはやくさきそうです。",
+    "topic": "nature",
+    "level": "med",
+    "meanings": {
+      "en": "It seems the cherry blossoms will bloom earlier than usual this year.",
+      "zh": "今年的樱花好像会比往年开得早。"
+    }
+  },
+  {
+    "id": "para071",
+    "kana": "あしたははやおきをしてジョギングをするつもりです",
+    "display": "あしたははやおきをしてジョギングをするつもりです。",
+    "topic": "morning",
+    "level": "med",
+    "meanings": {
+      "en": "I plan to wake up early and go jogging tomorrow.",
+      "zh": "我打算明天早起去慢跑。"
+    }
+  },
+  {
+    "id": "para072",
+    "kana": "デパートでかわいいかばんとくつをみつけました",
+    "display": "デパートでかわいいかばんとくつをみつけました。",
+    "topic": "shopping",
+    "level": "med",
+    "meanings": {
+      "en": "I found a cute bag and shoes at the department store.",
+      "zh": "在百货商店找到了可爱的包和鞋子。"
+    }
+  },
+  {
+    "id": "para073",
+    "kana": "さいきんあきはばらにはがいこくじんがおおいです",
+    "display": "さいきん、あきはばらにはがいこくじんがおおいです。",
+    "topic": "travel",
+    "level": "med",
+    "meanings": {
+      "en": "Recently, there are many foreigners in Akihabara.",
+      "zh": "最近秋叶原有很多外国人。"
+    }
+  },
+  {
+    "id": "para074",
+    "kana": "かぜをひいたのできょうはがっこうをやすみます",
+    "display": "かぜをひいたので、きょうはがっこうをやすみます。",
+    "topic": "health",
+    "level": "med",
+    "meanings": {
+      "en": "I caught a cold, so I will be absent from school today.",
+      "zh": "我感冒了，所以今天不去上学。"
+    }
+  },
+  {
+    "id": "para075",
+    "kana": "このカメラはかるくてしゃしんがきれいにうつります",
+    "display": "このカメラはかるくてしゃしんがきれいにうつります。",
+    "topic": "technology",
+    "level": "med",
+    "meanings": {
+      "en": "This camera is light and takes beautiful pictures.",
+      "zh": "这台相机很轻，拍出来的照片很好看。"
+    }
+  },
+  {
+    "id": "para076",
+    "kana": "やまのうえからみたけしきはとてもきれいでした",
+    "display": "やまのうえからみたけしきは、とてもきれいでした。",
+    "topic": "nature",
+    "level": "med",
+    "meanings": {
+      "en": "The view from the top of the mountain was very beautiful.",
+      "zh": "从山顶看到的景色非常美。"
+    }
+  },
+  {
+    "id": "para077",
+    "kana": "にちようびはいつもへやのそうじとせんたくをします",
+    "display": "にちようびはいつもへやのそうじとせんたくをします。",
+    "topic": "home",
+    "level": "med",
+    "meanings": {
+      "en": "I always clean my room and do laundry on Sundays.",
+      "zh": "星期天我总是打扫房间和洗衣服。"
+    }
+  },
+  {
+    "id": "para078",
+    "kana": "あのみせのラーメンはからいけどおいしいです",
+    "display": "あのみせのラーメンはからいけど、おいしいです。",
+    "topic": "food",
+    "level": "med",
+    "meanings": {
+      "en": "The ramen at that shop is spicy, but delicious.",
+      "zh": "那家店的拉面虽然辣，但是很好吃。"
+    }
+  },
+  {
+    "id": "para079",
+    "kana": "あさおきるとまどからあかるいたいようのひかりがさしこんでいましたきょうはとてもいいおてんきになりそうですさんぽにでかけましょう",
+    "display": "あさおきると、まどからあかるいたいようのひかりがさしこんでいました。きょうはとてもいいおてんきになりそうです。さんぽにでかけましょう。",
+    "topic": "morning",
+    "level": "hard",
+    "meanings": {
+      "en": "When I woke up in the morning, bright sunlight was shining through the window. It looks like it'''s going to be a very nice day today. Let'''s go for a walk.",
+      "zh": "早上起床时，明亮的阳光从窗户照了进来。今天天气看起来会非常好。我们去散步吧。"
+    }
+  },
+  {
+    "id": "para080",
+    "kana": "せんしゅうのしゅうまつにともだちといっしょにやまのぼりにいきましたやまのうえでたべたおべんとうはとてもおいしかったですまたいきたいですね",
+    "display": "せんしゅうのしゅうまつに、ともだちといっしょにやまのぼりにいきました。やまのうえでたべたおべんとうは、とてもおいしかったです。またいきたいですね。",
+    "topic": "nature",
+    "level": "hard",
+    "meanings": {
+      "en": "Last weekend, I went mountain climbing with my friends. The lunch box we ate at the top of the mountain was very delicious. I want to go again.",
+      "zh": "上个周末，我和朋友一起去爬山了。在山顶吃的便当非常美味。真想再去一次啊。"
+    }
+  },
+  {
+    "id": "para081",
+    "kana": "わたしのしゅみはいろいろなまちをあるきながらしゃしんをとることですとくにふるいたてものがならぶみちをあるくのがだいすきです",
+    "display": "わたしのしゅみは、いろいろなまちをあるきながらしゃしんをとることです。とくに、ふるいたてものがならぶみちをあるくのがだいすきです。",
+    "topic": "hobby",
+    "level": "hard",
+    "meanings": {
+      "en": "My hobby is taking pictures while walking around various towns. Especially, I love walking down streets lined with old buildings.",
+      "zh": "我的爱好是一边在各个城市散步一边拍照。我特别喜欢走在两旁都是老建筑的街道上。"
+    }
+  },
+  {
+    "id": "para082",
+    "kana": "あたらしいパソコンをかったのではたらくのがとてもはやくそしてたのしくなりましたこれからはもっとたくさんのしごとができそうです",
+    "display": "あたらしいパソコンをかったので、はたらくのがとてもはやく、そしてたのしくなりました。これからはもっとたくさんのしごとができそうです。",
+    "topic": "technology",
+    "level": "hard",
+    "meanings": {
+      "en": "I bought a new computer, so working has become much faster and more enjoyable. I feel like I can do much more work from now on.",
+      "zh": "我买了一台新电脑，所以工作变得更快、更愉快了。接下来感觉能做更多的工作了。"
+    }
+  },
+  {
+    "id": "para083",
+    "kana": "きのうのよるからずっとあめがふっていますかぜもつよいのできょうはそとにでないでいえのなかでゆっくりほんをよむことにします",
+    "display": "きのうのよるからずっとあめがふっています。かぜもつよいので、きょうはそとにでないで、いえのなかでゆっくりほんをよむことにします。",
+    "topic": "weather",
+    "level": "hard",
+    "meanings": {
+      "en": "It has been raining continuously since last night. The wind is also strong, so I decided not to go outside today and just read a book leisurely at home.",
+      "zh": "从昨晚开始一直在下雨。风也很大，所以今天我不出门了，决定在家里悠闲地看书。"
+    }
+  },
+  {
+    "id": "para084",
+    "kana": "らいげつはじめてかいがいりょこうにいきますパスポートをつくったりホテルをよやくしたりしていまからとてもわくわくしています",
+    "display": "らいげつ、はじめてかいがいりょこうにいきます。パスポートをつくったり、ホテルをよやくしたりして、いまからとてもわくわくしています。",
+    "topic": "travel",
+    "level": "hard",
+    "meanings": {
+      "en": "I'''m going on a trip abroad for the first time next month. Getting my passport ready, booking hotels... I'''m already so excited.",
+      "zh": "下个月，我要去进行我的第一次海外旅行。办护照啦，订酒店啦，从现在开始就觉得非常激动。"
+    }
+  },
+  {
+    "id": "para085",
+    "kana": "さいきんまいにちジョギングをはじめたらからだがとてもかるくなりましたごはんもおいしくたべられるのでこれからもずっとつづけたいです",
+    "display": "さいきん、まいにちジョギングをはじめたら、からだがとてもかるくなりました。ごはんもおいしくたべられるので、これからもずっとつづけたいです。",
+    "topic": "health",
+    "level": "hard",
+    "meanings": {
+      "en": "Recently, after starting to jog every day, my body feels very light. I can also eat my meals deliciously, so I want to continue this forever.",
+      "zh": "最近，每天开始慢跑后，身体变得非常轻盈。吃饭也觉得很香，所以我希望以后能一直坚持下去。"
+    }
+  },
+  {
+    "id": "para086",
+    "kana": "おとうさんのたんじょうびにかぞくみんなでレストランへいきましたおいしいワインとステーキをたのしんですばらしいよるになりました",
+    "display": "おとうさんのたんじょうびに、かぞくみんなでレストランへいきました。おいしいワインとステーキをたのしんで、すばらしいよるになりました。",
+    "topic": "family",
+    "level": "hard",
+    "meanings": {
+      "en": "On my father'''s birthday, our whole family went to a restaurant. We enjoyed delicious wine and steak, and it became a wonderful night.",
+      "zh": "在爸爸生日那天，全家人一起去了一家餐厅。我们享受了美味的红酒和牛排，度过了一个美妙的夜晚。"
+    }
+  },
+  {
+    "id": "para087",
+    "kana": "にほんごのべんきょうをはじめてからもういちねんがたちましたはじめはむずかしかったけれどいまはすこしずつはなせるようになりました",
+    "display": "にほんごのべんきょうをはじめてから、もういちねんがたちました。はじめはむずかしかったけれど、いまはすこしずつはなせるようになりました。",
+    "topic": "study",
+    "level": "hard",
+    "meanings": {
+      "en": "A year has already passed since I started studying Japanese. It was difficult at first, but now I'''ve become able to speak little by little.",
+      "zh": "开始学习日语已经一年了。一开始觉得很难，但是现在已经能一点一点地说了。"
+    }
+  },
+  {
+    "id": "para088",
+    "kana": "ゆうがたになるとあきむしがなきはじめますすずしいかぜがふいてきてもうすぐあきがくるんだなあとすこしさびしいきもちになります",
+    "display": "ゆうがたになると、あきむしがなきはじめます。すずしいかぜがふいてきて、もうすぐあきがくるんだなあと、すこしさびしいきもちになります。",
+    "topic": "season",
+    "level": "hard",
+    "meanings": {
+      "en": "When evening comes, autumn insects start chirping. A cool breeze blows, and I feel a little lonely thinking that autumn will be coming soon.",
+      "zh": "到了傍晚，秋虫开始鸣叫。吹来凉爽的风，感觉到秋天马上就要来了，心里会有些许寂寞。"
+    }
+  },
+  {
+    "id": "para089",
+    "kana": "きょうはともだちとデパートへかいものにいきましたあきのあたらしいふくとかわいいくつをかうことができてとてもまんぞくしています",
+    "display": "きょうはともだちとデパートへかいものにいきました。あきのあたらしいふくと、かわいいくつをかうことができて、とてもまんぞくしています。",
+    "topic": "shopping",
+    "level": "hard",
+    "meanings": {
+      "en": "Today I went shopping at a department store with a friend. I was able to buy new autumn clothes and cute shoes, and I'''m very satisfied.",
+      "zh": "今天我和朋友去百货商店购物了。买到了秋天的新衣服和可爱的鞋子，我非常满意。"
+    }
+  },
+  {
+    "id": "para090",
+    "kana": "わたしのいえのちかくにはおいしいパンやさんがありますまいあさそこでやきたてのパンをかってからかいしゃにむかうのがルーティンです",
+    "display": "わたしのいえのちかくには、おいしいパンやさんがあります。まいあさ、そこでやきたてのパンをかってから、かいしゃにむかうのがルーティンです。",
+    "topic": "morning",
+    "level": "hard",
+    "meanings": {
+      "en": "There is a delicious bakery near my house. My routine is to buy freshly baked bread there every morning before heading to work.",
+      "zh": "我家附近有一家很好吃的面包店。每天早上，在那里买刚烤好的面包然后去公司，这是我的日常。"
+    }
+  },
+  {
+    "id": "para091",
+    "kana": "らいしゅうのテストにむけてとしょかんでまいにちおそくまでべんきょうしていますむずかしいもんだいがおおいですががんばってごうかくしたいです",
+    "display": "らいしゅうのテストにむけて、としょかんでまいにちおそくまでべんきょうしています。むずかしいもんだいがおおいですが、がんばってごうかくしたいです。",
+    "topic": "study",
+    "level": "hard",
+    "meanings": {
+      "en": "Preparing for next week'''s test, I am studying late every day at the library. There are many difficult problems, but I want to do my best and pass.",
+      "zh": "为了下周的考试，我每天都在图书馆学习到很晚。虽然有很多难题，但我还是想努力及格。"
+    }
+  },
+  {
+    "id": "para092",
+    "kana": "ひさしぶりにだいがくのともだちとあってカフェでたくさんおしゃべりをしましたむかしのなつかしいはなしができてとてもたのしいじかんでした",
+    "display": "ひさしぶりにだいがくのともだちとあって、カフェでたくさんおしゃべりをしました。むかしのなつかしいはなしができて、とてもたのしいじかんでした。",
+    "topic": "friends",
+    "level": "hard",
+    "meanings": {
+      "en": "I met up with college friends for the first time in a while and chatted a lot at a cafe. We were able to talk nostalgically about the old days, and it was a very fun time.",
+      "zh": "很久没和大学同学见面了，我们在咖啡馆聊了很多。能聊起过去怀旧的事情，度过了一段非常快乐的时光。"
+    }
+  },
+  {
+    "id": "para093",
+    "kana": "あしたははやおきをしてあさのしんせんなくうきをすいながらストレッチをしようとおもいますそうすればいちにちをげんきにすごせるからです",
+    "display": "あしたははやおきをして、あさのしんせんなくうきをすいながらストレッチをしようとおもいます。そうすれば、いちにちをげんきにすごせるからです。",
+    "topic": "morning",
+    "level": "hard",
+    "meanings": {
+      "en": "Tomorrow I think I will wake up early and stretch while breathing the fresh morning air. If I do that, I can spend the day energetically.",
+      "zh": "明天我打算早起，一边呼吸早晨新鲜的空气一边做伸展运动。因为那样的话，我就能精力充沛地度过一整天了。"
+    }
   }
 ]
