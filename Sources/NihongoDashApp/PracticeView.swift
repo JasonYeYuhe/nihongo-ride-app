@@ -95,26 +95,43 @@ struct PracticeView: View {
     private var space: Text { Text("　") }   // ideographic space between words
 
     /// Long-passage rendering: the current sentence as a single flowing block,
-    /// with per-character typed/upcoming styling and a coral caret.
+    /// with per-character typed/upcoming styling and a coral caret. Punctuation
+    /// (、。) shows in the display but doesn't count as a typing target.
     private func longPassage(_ s: GameSession) -> some View {
-        let kana = Array(s.currentKana ?? "")
+        let display = Array(displayText(for: s))
         let done = s.completedKanaCount
         var text = Text("")
-        for (index, character) in kana.enumerated() {
-            let run = Text(String(character))
-            if index < done {
+        var typed = 0
+        for character in display {
+            let str = String(character)
+            let run = Text(str)
+            if isPunct(character) {
+                text = text + run.foregroundStyle(ink.opacity(0.30))     // punctuation is dim, always
+            } else if typed < done {
                 text = text + run.foregroundStyle(ink.opacity(0.20))
-            } else if index == done {
+                typed += 1
+            } else if typed == done {
                 text = text + run.foregroundStyle(accent).underline(true, color: accent)
+                typed += 1
             } else {
                 text = text + run.foregroundStyle(ink.opacity(0.85))
+                typed += 1
             }
         }
         return text
-            .font(.system(size: 36, weight: .medium, design: .serif))
-            .lineSpacing(18)
+            .font(.system(size: 34, weight: .medium, design: .serif))
+            .lineSpacing(16)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: 760, alignment: .leading)
+    }
+
+    private func isPunct(_ c: Character) -> Bool { "、。？！「」『』 ".contains(c) }
+
+    /// Looks up the original (punctuated) text for the current passage; falls back to kana.
+    private func displayText(for s: GameSession) -> String {
+        guard let id = s.current?.id, id.hasPrefix("passage-") else { return s.currentKana ?? "" }
+        let pid = String(id.dropFirst("passage-".count))
+        return PassageStore.shared.passages.first { $0.id == pid }?.displayText ?? (s.currentKana ?? "")
     }
 
     private func translation(_ s: GameSession) -> some View {

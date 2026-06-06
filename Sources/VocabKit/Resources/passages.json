@@ -7,7 +7,8 @@
     "meanings": {
       "en": "Good morning.",
       "zh": "早上好。"
-    }
+    },
+    "display": "おはようございます"
   },
   {
     "id": "p002",
@@ -17,7 +18,8 @@
     "meanings": {
       "en": "Hello.",
       "zh": "你好。"
-    }
+    },
+    "display": "こんにちは"
   },
   {
     "id": "p003",
@@ -27,7 +29,8 @@
     "meanings": {
       "en": "Thank you.",
       "zh": "谢谢。"
-    }
+    },
+    "display": "ありがとう"
   },
   {
     "id": "p004",
@@ -37,7 +40,8 @@
     "meanings": {
       "en": "I am sorry.",
       "zh": "对不起。"
-    }
+    },
+    "display": "ごめんなさい"
   },
   {
     "id": "p005",
@@ -47,7 +51,8 @@
     "meanings": {
       "en": "Goodbye.",
       "zh": "再见。"
-    }
+    },
+    "display": "さようなら"
   },
   {
     "id": "p006",
@@ -57,7 +62,8 @@
     "meanings": {
       "en": "Yes, that is right.",
       "zh": "是的，没错。"
-    }
+    },
+    "display": "はい、そうです"
   },
   {
     "id": "p007",
@@ -67,7 +73,8 @@
     "meanings": {
       "en": "No, that is wrong.",
       "zh": "不，不是这样的。"
-    }
+    },
+    "display": "いいえ、ちがいます"
   },
   {
     "id": "p008",
@@ -77,7 +84,8 @@
     "meanings": {
       "en": "I don't understand.",
       "zh": "我不明白。"
-    }
+    },
+    "display": "わかりません"
   },
   {
     "id": "p009",
@@ -87,7 +95,8 @@
     "meanings": {
       "en": "I am hungry.",
       "zh": "我饿了。"
-    }
+    },
+    "display": "おなかがすきました"
   },
   {
     "id": "p010",
@@ -97,7 +106,8 @@
     "meanings": {
       "en": "I am thirsty.",
       "zh": "我渴了。"
-    }
+    },
+    "display": "のどがかわきました"
   },
   {
     "id": "p011",
@@ -107,7 +117,8 @@
     "meanings": {
       "en": "I was very busy yesterday.",
       "zh": "昨天我非常忙。"
-    }
+    },
+    "display": "きのうはとてもいそがしかったです"
   },
   {
     "id": "p012",
@@ -117,7 +128,8 @@
     "meanings": {
       "en": "It might rain tomorrow.",
       "zh": "明天可能会下雨。"
-    }
+    },
+    "display": "あしたはあめがふるかもしれません"
   },
   {
     "id": "p013",
@@ -127,7 +139,8 @@
     "meanings": {
       "en": "This book is very interesting.",
       "zh": "这本书非常有趣。"
-    }
+    },
+    "display": "このほんはとてもおもしろいですよ"
   },
   {
     "id": "p014",
@@ -137,7 +150,8 @@
     "meanings": {
       "en": "How can I get to the station?",
       "zh": "去火车站怎么走？"
-    }
+    },
+    "display": "えきまでどうやっていけばいいですか"
   },
   {
     "id": "p015",
@@ -147,7 +161,8 @@
     "meanings": {
       "en": "Excuse me, can I take a rest for a bit?",
       "zh": "不好意思，我可以休息一下吗？"
-    }
+    },
+    "display": "すみません、すこしやすんでもいいですか"
   },
   {
     "id": "p016",
@@ -157,7 +172,8 @@
     "meanings": {
       "en": "What will the weather be like tomorrow?",
       "zh": "明天天气怎么样？"
-    }
+    },
+    "display": "あしたのてんきはどうなりますか"
   },
   {
     "id": "p017",
@@ -167,7 +183,8 @@
     "meanings": {
       "en": "I am studying Japanese.",
       "zh": "我在学习日语。"
-    }
+    },
+    "display": "わたしはにほんごをべんきょうしています"
   },
   {
     "id": "p018",
@@ -177,7 +194,8 @@
     "meanings": {
       "en": "What kind of food do you like?",
       "zh": "你喜欢什么食物？"
-    }
+    },
+    "display": "どんなたべものがすきですか"
   },
   {
     "id": "p019",
@@ -187,7 +205,8 @@
     "meanings": {
       "en": "There is a large dog over there, isn't there?",
       "zh": "那边有一只大狗呢。"
-    }
+    },
+    "display": "あそこにおおきないぬがいますね"
   },
   {
     "id": "p020",
@@ -197,7 +216,8 @@
     "meanings": {
       "en": "This coffee is a bit bitter.",
       "zh": "这杯咖啡有点苦。"
-    }
+    },
+    "display": "このコーヒーはちょっとにがいです"
   },
   {
     "id": "p021",
@@ -207,7 +227,8 @@
     "meanings": {
       "en": "I would like to buy a new computer...",
       "zh": "我想买一台新电脑……"
-    }
+    },
+    "display": "あたらしいパソコンをかいたいのですが"
   },
   {
     "id": "p022",
@@ -217,7 +238,8 @@
     "meanings": {
       "en": "Next week, I am going to see a movie with a friend.",
       "zh": "下周我要和朋友去看电影。"
-    }
+    },
+    "display": "らいしゅう、ともだちとえいがをみにいきます"
   },
   {
     "id": "p023",
@@ -227,7 +249,8 @@
     "meanings": {
       "en": "The weather isn't very good today, is it?",
       "zh": "今天天气不太好呢。"
-    }
+    },
+    "display": "きょうはあまりてんきがよくないですね"
   },
   {
     "id": "p024",
@@ -237,7 +260,8 @@
     "meanings": {
       "en": "What do you usually do on Sundays?",
       "zh": "你星期天通常做什么？"
-    }
+    },
+    "display": "にちようびはいつもなにをしていますか"
   },
   {
     "id": "p025",
@@ -247,7 +271,8 @@
     "meanings": {
       "en": "The food at that restaurant is very delicious.",
       "zh": "那家餐厅的菜非常好吃。"
-    }
+    },
+    "display": "そのレストランのりょうりはとてもおいしいです"
   },
   {
     "id": "p026",
@@ -257,7 +282,8 @@
     "meanings": {
       "en": "Please speak a little more slowly.",
       "zh": "请说得再慢一点。"
-    }
+    },
+    "display": "もうすこしゆっくりはなしてください"
   },
   {
     "id": "p027",
@@ -267,7 +293,8 @@
     "meanings": {
       "en": "Where can I catch a taxi?",
       "zh": "我在哪里可以打到出租车？"
-    }
+    },
+    "display": "どこでタクシーにのることができますか"
   },
   {
     "id": "p028",
@@ -277,7 +304,8 @@
     "meanings": {
       "en": "She speaks English well.",
       "zh": "她的英语说得很好。"
-    }
+    },
+    "display": "かのじょはえいごをじょうずにはなします"
   },
   {
     "id": "p029",
@@ -287,7 +315,8 @@
     "meanings": {
       "en": "Could you show me this?",
       "zh": "能给我看看这个吗？"
-    }
+    },
+    "display": "これをみせていただけますか"
   },
   {
     "id": "p030",
@@ -297,7 +326,8 @@
     "meanings": {
       "en": "I have a headache, so I will go to bed early today.",
       "zh": "我头痛，所以今天早点睡觉。"
-    }
+    },
+    "display": "あたまがいたいので、きょうははやくねます"
   },
   {
     "id": "p031",
@@ -307,7 +337,8 @@
     "meanings": {
       "en": "Do you have a smaller size of this shirt?",
       "zh": "这件衬衫有小号的吗？"
-    }
+    },
+    "display": "このシャツのちいさいサイズはありますか"
   },
   {
     "id": "p032",
@@ -317,7 +348,8 @@
     "meanings": {
       "en": "What time does the meeting start?",
       "zh": "会议几点开始？"
-    }
+    },
+    "display": "かいぎはなんじにはじまりますか"
   },
   {
     "id": "p033",
@@ -327,7 +359,8 @@
     "meanings": {
       "en": "I get up at six every morning.",
       "zh": "我每天早上六点起床。"
-    }
+    },
+    "display": "わたしはまいあさろくじにおきます"
   },
   {
     "id": "p034",
@@ -337,7 +370,8 @@
     "meanings": {
       "en": "I bought new shoes yesterday.",
       "zh": "昨天我买了新鞋。"
-    }
+    },
+    "display": "きのう、あたらしいくつをかいました"
   },
   {
     "id": "p035",
@@ -347,7 +381,8 @@
     "meanings": {
       "en": "I borrowed a book from the library.",
       "zh": "我从图书馆借了一本书。"
-    }
+    },
+    "display": "としょかんでほんをかりました"
   },
   {
     "id": "p036",
@@ -357,7 +392,8 @@
     "meanings": {
       "en": "Where is the restroom?",
       "zh": "洗手间在哪里？"
-    }
+    },
+    "display": "おてあらいはどこにありますか"
   },
   {
     "id": "p037",
@@ -367,7 +403,8 @@
     "meanings": {
       "en": "Can I walk from the station to the hotel?",
       "zh": "我可以从车站步行到酒店吗？"
-    }
+    },
+    "display": "えきからホテルまであるいていけますか"
   },
   {
     "id": "p038",
@@ -377,7 +414,8 @@
     "meanings": {
       "en": "I forgot my wallet, so please lend me some money.",
       "zh": "我忘了带钱包，请借给我点钱。"
-    }
+    },
+    "display": "さいふをわすれてしまったので、おかねをかしてください"
   },
   {
     "id": "p039",
@@ -387,7 +425,8 @@
     "meanings": {
       "en": "The cake at that shop is sweet and delicious.",
       "zh": "那家店的蛋糕又甜又好吃。"
-    }
+    },
+    "display": "あのみせのケーキはあまくておいしいですよ"
   },
   {
     "id": "p040",
@@ -397,7 +436,8 @@
     "meanings": {
       "en": "He always wakes up late.",
       "zh": "他总是很晚才起床。"
-    }
+    },
+    "display": "かれはいつもおそくおきてきます"
   },
   {
     "id": "p041",
@@ -407,7 +447,8 @@
     "meanings": {
       "en": "I work while listening to music.",
       "zh": "我边听音乐边工作。"
-    }
+    },
+    "display": "おんがくをききながらしごとをします"
   },
   {
     "id": "p042",
@@ -417,7 +458,8 @@
     "meanings": {
       "en": "When I was a child, I used to play in this park often.",
       "zh": "小时候，我经常在这个公园玩。"
-    }
+    },
+    "display": "こどものころ、よくこのこうえんであそびました"
   },
   {
     "id": "p043",
@@ -427,7 +469,8 @@
     "meanings": {
       "en": "I want to know more about Japanese culture.",
       "zh": "我想更多地了解日本文化。"
-    }
+    },
+    "display": "にほんのぶんかについてもっとしりたいです"
   },
   {
     "id": "p044",
@@ -437,7 +480,8 @@
     "meanings": {
       "en": "The wind is strong today, so please be careful.",
       "zh": "今天风很大，请注意安全。"
-    }
+    },
+    "display": "きょうはかぜがつよいので、きをつけてください"
   },
   {
     "id": "p045",
@@ -447,7 +491,8 @@
     "meanings": {
       "en": "I want to relax by taking a hot spring bath.",
       "zh": "我想泡个温泉放松一下。"
-    }
+    },
+    "display": "おんせんにはいってリラックスしたいです"
   },
   {
     "id": "p046",
@@ -457,7 +502,8 @@
     "meanings": {
       "en": "I plan to graduate from university next year.",
       "zh": "我打算明年大学毕业。"
-    }
+    },
+    "display": "らいねん、だいがくをそつぎょうするよていです"
   },
   {
     "id": "p047",
@@ -467,7 +513,8 @@
     "meanings": {
       "en": "This computer is a bit old, but it can still be used.",
       "zh": "这台电脑有点旧，但还能用。"
-    }
+    },
+    "display": "このパソコンはすこしふるいですが、まだつかえます"
   },
   {
     "id": "p048",
@@ -477,7 +524,8 @@
     "meanings": {
       "en": "My smartphone battery is about to die.",
       "zh": "我的手机快没电了。"
-    }
+    },
+    "display": "スマホのバッテリーがもうすぐなくなります"
   },
   {
     "id": "p049",
@@ -487,7 +535,8 @@
     "meanings": {
       "en": "It is hard to learn new words.",
       "zh": "学习新单词很辛苦。"
-    }
+    },
+    "display": "あたらしいことばをおぼえるのはたいへんです"
   },
   {
     "id": "p050",
@@ -497,7 +546,8 @@
     "meanings": {
       "en": "My hobby is taking pictures.",
       "zh": "我的爱好是拍照。"
-    }
+    },
+    "display": "わたしのしゅみはしゃしんをとることです"
   },
   {
     "id": "p051",
@@ -507,7 +557,8 @@
     "meanings": {
       "en": "I go for a drive with my family on weekends.",
       "zh": "周末我会和家人去兜风。"
-    }
+    },
+    "display": "しゅうまつはかぞくとドライブにいきます"
   },
   {
     "id": "p052",
@@ -517,7 +568,8 @@
     "meanings": {
       "en": "How do you make this dish?",
       "zh": "这道菜是怎么做的？"
-    }
+    },
+    "display": "このりょうりはどうやってつくるのですか"
   },
   {
     "id": "p053",
@@ -527,7 +579,8 @@
     "meanings": {
       "en": "My room is dirty, so I'm going to clean it now.",
       "zh": "房间很脏，我得打扫一下。"
-    }
+    },
+    "display": "へやがきたないので、これからそうじをします"
   },
   {
     "id": "p054",
@@ -537,7 +590,8 @@
     "meanings": {
       "en": "I ride my bicycle to go shopping.",
       "zh": "我骑自行车去购物。"
-    }
+    },
+    "display": "じてんしゃにのってかいものにいきます"
   },
   {
     "id": "p055",
@@ -547,7 +601,8 @@
     "meanings": {
       "en": "It is cold, so I want to drink hot tea.",
       "zh": "太冷了，我想喝点热茶。"
-    }
+    },
+    "display": "さむいので、あたたかいおちゃをのみたいです"
   },
   {
     "id": "p056",
@@ -557,7 +612,8 @@
     "meanings": {
       "en": "There were many people at the airport.",
       "zh": "机场里有很多人。"
-    }
+    },
+    "display": "くうこうにはたくさんのひとがいました"
   },
   {
     "id": "p057",
@@ -567,7 +623,8 @@
     "meanings": {
       "en": "Please teach me how to use this machine.",
       "zh": "请教我如何使用这台机器。"
-    }
+    },
+    "display": "このきかいのつかいかたをおしえてください"
   },
   {
     "id": "p058",
@@ -577,7 +634,8 @@
     "meanings": {
       "en": "We don't have time, so please hurry.",
       "zh": "没时间了，请快点。"
-    }
+    },
+    "display": "じかんがないので、いそいでください"
   },
   {
     "id": "p059",
@@ -587,7 +645,8 @@
     "meanings": {
       "en": "Who is coming to tomorrow's party?",
       "zh": "谁会来明天的派对？"
-    }
+    },
+    "display": "あしたのパーティーにはだれがきますか"
   },
   {
     "id": "p060",
@@ -597,7 +656,8 @@
     "meanings": {
       "en": "The Japanese test was very difficult.",
       "zh": "日语考试非常难。"
-    }
+    },
+    "display": "にほんごのテストはとてもむずかしかったです"
   },
   {
     "id": "para001",
@@ -607,7 +667,8 @@
     "meanings": {
       "en": "I wake up at six every morning. I eat a lot of breakfast. And then I drink hot coffee.",
       "zh": "我每天早上六点起床。吃很多早餐。然后喝热咖啡。"
-    }
+    },
+    "display": "まいあさ、ろくじにおきます。あさごはんをたくさんたべます。そして、あついコーヒーをのみます。"
   },
   {
     "id": "para002",
@@ -617,7 +678,8 @@
     "meanings": {
       "en": "I am going to France with my friend next month. I have already bought the airplane tickets. I am really looking forward to it.",
       "zh": "下个月我要和朋友去法国。机票已经买好了。非常期待。"
-    }
+    },
+    "display": "らいげつ、ともだちとフランスへいきます。ひこうきのきっぷはもうかいました。とてもたのしみです。"
   },
   {
     "id": "para003",
@@ -627,7 +689,8 @@
     "meanings": {
       "en": "The weather is very nice today. There are no clouds in the sky. It is warm, so let's go for a walk.",
       "zh": "今天天气非常好。天空中没有云。因为很暖和，我们去散步吧。"
-    }
+    },
+    "display": "きょうはとてもいいおてんきです。そらにはくもがありません。あたたかいので、さんぽにいきましょう。"
   },
   {
     "id": "para004",
@@ -637,7 +700,8 @@
     "meanings": {
       "en": "A new job has started. Every day, I use a computer to create documents. I get a little tired, but it is rewarding.",
       "zh": "新工作开始了。每天用电脑制作资料。虽然有点累，但很有成就感。"
-    }
+    },
+    "display": "あたらしいしごとがはじまりました。まいにち、パソコンをつかってしりょうをつくります。すこしつかれますが、やりがいがあります。"
   },
   {
     "id": "para005",
@@ -647,7 +711,8 @@
     "meanings": {
       "en": "My father likes cooking. He always makes delicious curry for us on weekends. The whole family eats it together.",
       "zh": "我爸爸喜欢做饭。周末他总是会做美味的咖喱给我们吃。一家人一起吃。"
-    }
+    },
+    "display": "わたしのちちは、りょうりがすきです。しゅうまつはいつも、おいしいカレーをつくってくれます。かぞくみんなでいっしょにたべます。"
   },
   {
     "id": "para006",
@@ -657,7 +722,8 @@
     "meanings": {
       "en": "A new bakery opened near the station. Yesterday, I bought a chocolate bread there. It was sweet and very delicious.",
       "zh": "车站附近开了一家新面包店。昨天，我在那里买了巧克力面包。甜甜的，非常好吃。"
-    }
+    },
+    "display": "えきのちかくに、あたらしいパンやができました。きのう、そこでチョコレートのパンをかいました。あまくてとてもおいしかったです。"
   },
   {
     "id": "para007",
@@ -667,7 +733,8 @@
     "meanings": {
       "en": "I often watch movies on my days off. I especially like action movies. I plan to go to the movie theater with a friend next week too.",
       "zh": "休息日我经常看电影。特别喜欢看动作片。下周也打算和朋友去电影院。"
-    }
+    },
+    "display": "やすみのひは、よくえいがをみます。とくにアクションえいががすきです。らいしゅうも、ともだちとえいがかんへいくよていです。"
   },
   {
     "id": "para008",
@@ -677,7 +744,8 @@
     "meanings": {
       "en": "Lately, I haven't been able to sleep very well. Therefore, I try not to look at my smartphone screen at night. I also drink warm milk.",
       "zh": "最近睡眠不太好。所以，晚上我尽量不看智能手机屏幕。也会喝些温牛奶。"
-    }
+    },
+    "display": "さいきん、あまりよくねむることができません。だから、よるはスマートフォンのめんをみないようにしています。あたたかいミルクものみます。"
   },
   {
     "id": "para009",
@@ -687,7 +755,8 @@
     "meanings": {
       "en": "I studied Japanese at the library. I memorized a lot of new words. I am sure tomorrow's test will be fine.",
       "zh": "我在图书馆学习了日语。记住了很多新单词。明天的考试肯定没问题。"
-    }
+    },
+    "display": "としょかんで、にほんごのべんきょうをしました。あたらしいことばをたくさんおぼえました。あしたのテストは、きっとだいじょうぶです。"
   },
   {
     "id": "para010",
@@ -697,7 +766,8 @@
     "meanings": {
       "en": "I went to the department store and bought a red shirt and black shoes. It was ten thousand yen in total. It was a bit expensive, but I am happy.",
       "zh": "去百货商店买了一件红衬衫和一双黑鞋。总共花了一万日元。虽然有点贵，但很开心。"
-    }
+    },
+    "display": "デパートへいって、あかいシャツとくろいくつをかいました。ぜんぶでいちまんえんでした。すこしたかかったですが、うれしいです。"
   },
   {
     "id": "para011",
@@ -707,7 +777,8 @@
     "meanings": {
       "en": "Over the weekend, I cleaned my room. After that, I went shopping at the supermarket. In the evening, I took a nice, long bath.",
       "zh": "周末我打扫了房间。然后去超市买了东西。晚上舒舒服服地泡了个澡。"
-    }
+    },
+    "display": "しゅうまつは、へやのそうじをしました。それから、スーパーへかいものにいきました。よるは、ゆっくりとおふろにはいりました。"
   },
   {
     "id": "para012",
@@ -717,7 +788,8 @@
     "meanings": {
       "en": "Autumn is coming soon, isn't it? Autumn is cool and a very comfortable season. The leaves on the trees in the park also turn red and are beautiful.",
       "zh": "秋天马上就要到了呢。秋天很凉爽，是个非常舒适的季节。公园里树上的叶子也会变红，非常漂亮。"
-    }
+    },
+    "display": "もうすぐあきがきますね。あきはすずしくて、とてもすごしやすいきせつです。こうえんのきのはっぱも、あかくかわってきれいです。"
   },
   {
     "id": "para013",
@@ -727,7 +799,8 @@
     "meanings": {
       "en": "I like listening to music. Every morning, I listen to rock music on the train. It makes me feel really good.",
       "zh": "我喜欢听音乐。每天早上在电车里听摇滚乐。这让我心情变得很好。"
-    }
+    },
+    "display": "わたしは、おんがくをきくのがすきです。まいあさ、でんしゃのなかでロックをききます。きぶんがとてもよくなります。"
   },
   {
     "id": "para014",
@@ -737,7 +810,8 @@
     "meanings": {
       "en": "Yesterday, I played tennis with a friend. I ran a lot for two hours, so my legs hurt today. But it was a lot of fun.",
       "zh": "昨天和朋友去打了网球。因为跑了两个小时，今天腿很疼。但是非常开心。"
-    }
+    },
+    "display": "きのう、ともだちとテニスをしました。にじかんたくさんはしりましたから、きょうはあしがいたいです。でも、とてもたのしかったです。"
   },
   {
     "id": "para015",
@@ -747,7 +821,8 @@
     "meanings": {
       "en": "There is a white cat in my house. Its name is Tama. It is always sleeping curled up on the sofa.",
       "zh": "我家里有一只白猫。名字叫小玉。它总是蜷缩在沙发上睡觉。"
-    }
+    },
+    "display": "わたしのいえには、しろいねこがいます。なまえはたまです。いつもソファーのうえで、まるくなってねています。"
   },
   {
     "id": "para016",
@@ -757,7 +832,8 @@
     "meanings": {
       "en": "Today, I cleaned the entire inside of the house. I wiped the windows and threw away the garbage. It feels good when the room becomes clean.",
       "zh": "今天我把家里全都打扫干净了。擦了窗户，扔了垃圾。房间变干净了，心情真好啊。"
-    }
+    },
+    "display": "きょうは、いえのなかをぜんぶきれいにしました。まどをふいて、ごみをすてました。へやがきれいになると、きもちがいいですね。"
   },
   {
     "id": "para017",
@@ -767,7 +843,8 @@
     "meanings": {
       "en": "I will make dinner tonight. I bought some chicken and vegetables at the supermarket. I'm going to simmer a delicious stew right now.",
       "zh": "今晚由我来做晚饭。在超市买了鸡肉和蔬菜。现在开始炖美味的炖菜。"
-    }
+    },
+    "display": "こんばんは、わたしがばんごはんをつくります。スーパーで、とりにくとやさいをかってきました。いまから、おいしいシチューをにこみます。"
   },
   {
     "id": "para018",
@@ -777,7 +854,8 @@
     "meanings": {
       "en": "Tomorrow, I will meet a friend for the first time in a while. We plan to eat cake together at a cafe. I want to chat a lot.",
       "zh": "明天，我将和久违的朋友见面。我们打算一起在咖啡馆吃蛋糕。我想聊很多天。"
-    }
+    },
+    "display": "あした、ひさしぶりにともだちにあいます。いっしょにカフェで、ケーキをたべるつもりです。たくさんおしゃべりをしたいです。"
   },
   {
     "id": "para019",
@@ -787,7 +865,8 @@
     "meanings": {
       "en": "In the future, I want to live in a foreign country. For that purpose, I am studying languages very hard right now. Someday, I will definitely make my dream come true.",
       "zh": "将来，我想在外国生活。为此，我现在正在拼命学习外语。总有一天，我一定会实现我的梦想。"
-    }
+    },
+    "display": "しょうらい、わたしはがいこくですみたいです。そのために、いまはいっしょうけんめいことばをべんきょうしています。いつか、かならずゆめをかなえます。"
   },
   {
     "id": "para020",
@@ -797,6 +876,7 @@
     "meanings": {
       "en": "Every morning, I walk in the nearby mountains. The mountain air is very clean and tastes good. Hearing the voices of the little birds gives me energy.",
       "zh": "每天早上，我都在附近的山里散步。山里的空气非常干净，味道也很好。听到小鸟的叫声就会变得精神。"
-    }
+    },
+    "display": "まいあさ、ちかくのやまをあるきます。やまのくうきはとてもきれいで、おいしいです。ことりのこえをきくと、げんきがでます。"
   }
 ]

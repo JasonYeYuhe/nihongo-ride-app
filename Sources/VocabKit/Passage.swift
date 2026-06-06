@@ -6,14 +6,20 @@ import Foundation
 /// level are added by us. See THIRD_PARTY_LICENSES.md.
 public struct Passage: Identifiable, Codable, Hashable, Sendable {
     public let id: String
-    /// The Japanese text to type — pure kana (hiragana + optional katakana).
+    /// The Japanese text to type — pure kana (hiragana + optional katakana, no punctuation).
     public let kana: String
+    /// Original display text with sentence punctuation (、。 etc). Defaults to ``kana``
+    /// when absent in the JSON. Practice mode shows this; the engine still consumes
+    /// only the punctuation-free ``kana``.
+    public let display: String?
     /// Topic tag (English single word: "daily", "work", ...).
     public let topic: String
     /// Rough difficulty.
     public let level: Level
     /// Translations keyed by language code.
     public let meanings: [String: String]
+
+    public var displayText: String { display ?? kana }
 
     public enum Level: String, Codable, Sendable, CaseIterable { case easy, med, hard }
 

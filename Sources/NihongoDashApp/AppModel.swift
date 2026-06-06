@@ -86,13 +86,15 @@ final class AppModel {
     }
 
     /// Ends the current run, persists SRS progress, and shows results.
+    /// Practice mode skips the score screen and returns to the menu.
     func finishGame() {
         guard let session else { return }
         reviewStore = session.review
         try? reviewStore.save(to: storeURL)
+        let wasPractice = session.mode == .practice
         lastSummary = GameSummary(from: session)
         self.session = nil
-        screen = .results
+        screen = wasPractice ? .menu : .results
     }
 
     func backToMenu() {
