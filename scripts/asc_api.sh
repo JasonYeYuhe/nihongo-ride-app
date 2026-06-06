@@ -24,6 +24,10 @@ fi
 METHOD="${1:-GET}"
 ENDPOINT="${2:-/v1/apps}"
 BODY="${3:-}"
+# Allow the request body to come from a file (avoids shell escaping for big JSON).
+if [[ -n "${ASC_BODY_FILE:-}" && -f "$ASC_BODY_FILE" ]]; then
+    BODY="$(cat "$ASC_BODY_FILE")"
+fi
 
 [[ -f "$KEY_PATH" ]] || { echo "error: key not found at $KEY_PATH" >&2; exit 2; }
 

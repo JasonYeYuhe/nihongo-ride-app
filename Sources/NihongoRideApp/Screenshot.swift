@@ -16,11 +16,19 @@ enum Screenshotter {
         let storeMode = ProcessInfo.processInfo.environment["NIHONGO_SHOT_STORE"] != nil
         let size = storeMode ? CGSize(width: 1440, height: 900) : CGSize(width: 1000, height: 700)
 
+        // Optional UI language for the rendered screenshots (NIHONGO_SHOT_LANG=zh).
+        let shotLang = ProcessInfo.processInfo.environment["NIHONGO_SHOT_LANG"] ?? "en"
+        let makeModel: () -> AppModel = {
+            let m = AppModel.init()
+            m.languageCode = shotLang
+            return m
+        }
+
         // Menu
-        render(RootView().environment(AppModel()), size: size, to: directory + "/menu.png")
+        render(RootView().environment(makeModel()), size: size, to: directory + "/menu.png")
 
         // Mid-game (type a couple keys so the word card shows progress)
-        let game = AppModel()
+        let game = makeModel()
         game.startGame()
         if let romaji = game.session?.currentRomaji {
             for character in romaji.prefix(2) { _ = game.session?.input(character) }
@@ -28,7 +36,7 @@ enum Screenshotter {
         render(RootView().environment(game), size: size, to: directory + "/game.png")
 
         // Mid-journey (a later landmark approaching)
-        let mid = AppModel()
+        let mid = makeModel()
         mid.startGame()
         for _ in 0 ..< 7 {
             guard let romaji = mid.session?.currentRomaji else { break }
@@ -38,7 +46,7 @@ enum Screenshotter {
         render(RootView().environment(mid), size: size, to: directory + "/game-mid.png")
 
         // Results (play a few words so the numbers are non-zero)
-        let results = AppModel()
+        let results = makeModel()
         results.startGame()
         results.session?.skip()   // one lapse so the review list shows
         for _ in 0 ..< 6 {
@@ -49,7 +57,7 @@ enum Screenshotter {
         render(RootView().environment(results), size: size, to: directory + "/results.png")
 
         // Practice (passage) mode — washi paper, full multi-sentence paragraph
-        let practice = AppModel()
+        let practice = makeModel()
         practice.selectedMode = .practice
         practice.practicePassages = true
         practice.practicePassageLevel = .hard
@@ -64,7 +72,7 @@ enum Screenshotter {
         render(RootView().environment(practice), size: size, to: directory + "/practice.png")
 
         // Practice BLIND mode (no romaji hint)
-        let blind = AppModel()
+        let blind = makeModel()
         blind.selectedMode = .practice
         blind.practicePassages = true
         blind.practicePassageLevel = .hard
@@ -80,7 +88,7 @@ enum Screenshotter {
 
         // About / Credits page — render the view directly so the screen-transition
         // animation doesn't catch it mid-flight.
-        let about = AppModel()
+        let about = makeModel()
         let aboutView = ZStack { Theme.background.ignoresSafeArea(); AboutView() }
             .preferredColorScheme(.dark)
             .environment(about)
