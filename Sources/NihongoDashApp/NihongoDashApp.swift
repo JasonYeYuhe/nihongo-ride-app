@@ -30,10 +30,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
         // SwiftPM doesn't compile an asset catalog, so set the Dock icon at runtime.
+        // Xcode-built app gets its icon from xcode/Assets.xcassets automatically.
+        #if SWIFT_PACKAGE
         if let url = Bundle.module.url(forResource: "AppIcon", withExtension: "png"),
            let icon = NSImage(contentsOf: url) {
             NSApp.applicationIconImage = icon
         }
+        #endif
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }

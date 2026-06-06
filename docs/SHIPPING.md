@@ -39,41 +39,38 @@
 
 > SwiftPM 不签名也不打 .app bundle;Xcode 工程才能上架。
 
-### 方案 A:Xcode App 工程直接依赖本仓库的 SwiftPM 库(推荐,代码留在仓库)
+### 推荐:用 xcodegen 一键生成 Xcode 工程 ✅ 已就绪
 
-```sh
-mkdir -p ~/code/NihongoDashApp
-open -a Xcode
-# Xcode → File → New → Project → macOS → App
-#   Product Name: Nihongo Dash
-#   Team: <你的 Apple Dev Team>
-#   Organization Identifier: com.<yourname>
-#   Interface: SwiftUI
-#   Language: Swift
-#   Storage: None
-```
-
-把 `Sources/NihongoDashApp/*` 的 SwiftUI 入口替换成新工程的 `@main` 入口,然后:
-
-1. **添加 SwiftPM 依赖**:File → Add Package Dependencies → Add Local…
-   选本仓库根(含 `Package.swift`)
-   勾选 products:RomajiKana / VocabKit / ReviewKit / GameCore
-2. **App Icon**:Assets.xcassets → AppIcon → 拖入 `design/AppIcon.appiconset/` 里的所有尺寸(已就绪)
-3. **Info.plist**:
-   - Minimum Deployment Target: macOS 14.0
-   - LSApplicationCategoryType: `public.app-category.education`
-   - LSUIElement: NO(我们要主菜单/Dock 图标)
-   - **(沙盒)** App Sandbox: ON;Network: OFF;File Access: 我们只读 `~/Library/Application Support/NihongoDash/review.json`(SwiftPM 版本已用 `applicationSupportDirectory`,沙盒下自动重定向)
-   - **键盘**:不需要 Apple Events / Accessibility — 我们用 `NSView.keyDown` 不进 IME,沙盒友好(已在 RESEARCH §1 验证)
-
-### 方案 B:用 `xcodegen` 自动生成 Xcode 工程(更可重复,适合做 CI)
+仓库根的 [`project.yml`](../project.yml) 是 Xcode 工程的「源代码」,由 `xcodegen` 在本地生成出
+`NihongoDash.xcodeproj`(不入 git)。所有 Info.plist / entitlements / sources / package
+dependencies / build settings 都集中在这一个文件里。
 
 ```sh
 brew install xcodegen
-# 写一个 project.yml(待我做)然后 xcodegen generate
+cd /Users/jason/typing_app
+xcodegen generate            # writes NihongoDash.xcodeproj
+open NihongoDash.xcodeproj
+# Xcode 里 Signing & Capabilities → 选你的 Apple Dev Team(其他都已配置)
+# Product → Archive
 ```
 
-> 当前未提交 `project.yml`,后续若要走方案 B 我可以生成。
+**验证已通过**:`xcodebuild -scheme NihongoDash -configuration Debug build` 在本机出 `Nihongo Dash.app`
+(7.2 MB,Bundle ID `com.jasonye.nihongodash`,带 AppIcon、SPM 资源、教育分类)。
+
+`project.yml` 关键设置:
+- Bundle ID: `com.jasonye.nihongodash`(改前缀就改 `PRODUCT_BUNDLE_IDENTIFIER`)
+- Min deployment: macOS 14.0
+- App Sandbox: ON,不申请网络权限(本应用全离线)
+- 引擎/词库/SRS/游戏 依赖通过 SPM local package 引入(`packages.Nihongo`)
+- Sources 排除 `Sources/NihongoDashApp/Resources/AppIcon.png` — Xcode 用 Assets.xcassets,不重复打包
+- `#if SWIFT_PACKAGE` 已在 `NihongoDashApp.swift` 把 SPM 专属 Bundle.module 调用隔离
+
+每次改 `project.yml`(比如改版本号 / bump CURRENT_PROJECT_VERSION)后,**只需 `xcodegen generate`**
+就能同步;`.xcodeproj` 不入 git,无 merge 冲突烦恼。
+
+### 替代:手动创建 Xcode App 工程(若不想用 xcodegen)
+
+参见旧 commit `feat(D)` 之前的版本。手动操作和 `project.yml` 等价,但每次升级要点 GUI。
 
 ---
 

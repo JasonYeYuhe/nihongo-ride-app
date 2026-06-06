@@ -1,0 +1,105 @@
+# xcodegen spec for the Nihongo Dash Xcode App wrapper.
+#
+# This is consumed by `xcodegen generate` to (re)create NihongoDash.xcodeproj
+# at the repo root. The Xcode project lets us build a signed .app for the
+# Mac App Store (or notarized DMG) without committing the generated .xcodeproj.
+#
+# The Xcode App target shares its Sources/NihongoDashApp/* source files with
+# the SwiftPM executable target of the same name (used for `swift run`
+# development). The SPM-only Bundle.module Dock-icon hack is guarded by
+# `#if SWIFT_PACKAGE`; the Xcode app gets its icon from Assets.xcassets.
+#
+# Usage:
+#   brew install xcodegen
+#   xcodegen generate          # writes NihongoDash.xcodeproj
+#   open NihongoDash.xcodeproj # then Product → Archive
+name: NihongoDash
+
+options:
+  bundleIdPrefix: com.jasonye
+  deploymentTarget:
+    macOS: "14.0"
+  developmentLanguage: en
+  generateEmptyDirectories: true
+  groupSortPosition: top
+
+packages:
+  # Reference the local SwiftPM package at the repo root, which provides our
+  # logic libraries (RomajiKana, VocabKit, ReviewKit, GameCore).
+  Nihongo:
+    path: .
+
+targets:
+  NihongoDash:
+    type: application
+    platform: macOS
+
+    sources:
+      - path: Sources/NihongoDashApp
+        # Drop the SPM-only Dock-icon resource — Xcode uses Assets.xcassets.
+        excludes:
+          - "Resources"
+      - path: xcode/Assets.xcassets
+      # Info.plist and entitlements are referenced via build settings below,
+      # but they also need to live somewhere xcodegen can see.
+      - path: xcode/Info.plist
+        buildPhase: none
+      - path: xcode/NihongoDash.entitlements
+        buildPhase: none
+
+    info:
+      path: xcode/Info.plist
+      properties:
+        CFBundleDisplayName: Nihongo Dash
+        CFBundleName: Nihongo Dash
+        LSApplicationCategoryType: public.app-category.education
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        NSHumanReadableCopyright: "© 2026 Jason. All rights reserved."
+        NSPrincipalClass: NSApplication
+        NSMainNibFile: ""
+
+    entitlements:
+      path: xcode/NihongoDash.entitlements
+      properties:
+        # App Sandbox is required for the Mac App Store. The app is fully
+        # offline, so no network entitlement is requested. SRS persistence
+        # writes into ~/Library/Containers/<bundle-id>/Data/Library/...
+        com.apple.security.app-sandbox: true
+
+    dependencies:
+      - package: Nihongo
+        product: RomajiKana
+      - package: Nihongo
+        product: VocabKit
+      - package: Nihongo
+        product: ReviewKit
+      - package: Nihongo
+        product: GameCore
+
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongodash
+        PRODUCT_NAME: Nihongo Dash
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        CODE_SIGN_STYLE: Automatic
+        # Set DEVELOPMENT_TEAM in Xcode's "Signing & Capabilities" tab.
+        ENABLE_HARDENED_RUNTIME: YES
+        ENABLE_APP_SANDBOX: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        COMBINE_HIDPI_IMAGES: YES
+        # Don't auto-define SWIFT_PACKAGE here — Xcode only defines it for SPM
+        # source compilation, and we WANT it undefined for the App target.
+
+schemes:
+  NihongoDash:
+    build:
+      targets:
+        NihongoDash: all
+    run:
+      config: Debug
+    archive:
+      config: Release
