@@ -12,10 +12,10 @@ struct MenuView: View {
             Spacer()
 
             VStack(spacing: 10) {
-                Text("Nihongo Dash")
+                Text("Nihongo Ride")
                     .font(.system(size: 60, weight: .heavy, design: .rounded))
                     .foregroundStyle(.white)
-                Text("にほんご ダッシュ")
+                Text("にほんご ライド")
                     .font(.system(size: 22, weight: .semibold, design: .rounded))
                     .tracking(4)
                     .foregroundStyle(Theme.accent)

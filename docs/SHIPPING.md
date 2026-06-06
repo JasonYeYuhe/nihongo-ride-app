@@ -1,6 +1,6 @@
 # 上架准备 / Shipping Checklist
 
-> Nihongo Dash 当前以 SwiftPM 包形态开发,`swift run NihongoDashApp` 即可跑游戏。
+> Nihongo Ride 当前以 SwiftPM 包形态开发,`swift run NihongoRideApp` 即可跑游戏。
 > 上架 macOS App Store(或对外分发 .dmg)需要用 **Xcode 工程**包一层,做签名/公证/上架。本文给出完整清单。
 
 ---
@@ -9,7 +9,7 @@
 
 - [ ] **Apple Developer Program 会员**($99/yr) — 个人或公司均可
 - [ ] 在 [Apple Developer](https://developer.apple.com/account) 完成
-  - Bundle ID(建议 `com.<yourname>.nihongodash`)
+  - Bundle ID(建议 `com.<yourname>.nihongoride`)
   - 一个 **Distribution(Mac App Store)证书** 或 **Developer ID Application 证书**(直接分发用)
   - Provisioning Profile(App Store 上架用 Mac App Store Profile;DMG/直分发用 Developer ID Profile)
 - [ ] **Xcode 26+**(本仓库验证过 26.5)
@@ -19,7 +19,7 @@
 
 ## 1. 商标 / 命名 / 隐私文案
 
-- [ ] **「Nihongo Dash」商标检索**(USPTO + 拟上架地区)。"Dash" 后缀广泛使用,关键看是否撞日语学习类目。如冲突,提前换名;改起来便宜(`Package.swift` + UI 字符串若干处)。
+- [ ] **「Nihongo Ride」商标检索**(USPTO TESS + JPO J-PlatPat 手动查)。前序名 "Nihongo Dash" 已确认撞 prior use 改名,见 [`TRADEMARK.md`](TRADEMARK.md)。"Ride" 候选 Gemini 初筛 CLEAR,但请上架前再正式查一遍。
 - [ ] 准备 **App Store 文案**:
   - 名称(macOS Store 显示名最长 30 chars)
   - 副标题(30 chars)
@@ -33,7 +33,7 @@
   - 用 **store 模式** 一键渲染:
     ```sh
     mkdir -p /tmp/nihongo-store
-    NIHONGO_SHOT=/tmp/nihongo-store NIHONGO_SHOT_STORE=1 swift run NihongoDashApp
+    NIHONGO_SHOT=/tmp/nihongo-store NIHONGO_SHOT_STORE=1 swift run NihongoRideApp
     ```
   - 输出:menu / game / game-mid / results / practice / practice-blind 全部 2880×1800
   - 建议上架顺序:**game** → **practice** → **menu** → **results** → **practice-blind**(展示骑行 + 文章 + 选项 + 评级 + 高级模式)
@@ -48,28 +48,28 @@
 ### 推荐:用 xcodegen 一键生成 Xcode 工程 ✅ 已就绪
 
 仓库根的 [`project.yml`](../project.yml) 是 Xcode 工程的「源代码」,由 `xcodegen` 在本地生成出
-`NihongoDash.xcodeproj`(不入 git)。所有 Info.plist / entitlements / sources / package
+`NihongoRide.xcodeproj`(不入 git)。所有 Info.plist / entitlements / sources / package
 dependencies / build settings 都集中在这一个文件里。
 
 ```sh
 brew install xcodegen
 cd /Users/jason/typing_app
-xcodegen generate            # writes NihongoDash.xcodeproj
-open NihongoDash.xcodeproj
+xcodegen generate            # writes NihongoRide.xcodeproj
+open NihongoRide.xcodeproj
 # Xcode 里 Signing & Capabilities → 选你的 Apple Dev Team(其他都已配置)
 # Product → Archive
 ```
 
-**验证已通过**:`xcodebuild -scheme NihongoDash -configuration Debug build` 在本机出 `Nihongo Dash.app`
-(7.2 MB,Bundle ID `com.jasonye.nihongodash`,带 AppIcon、SPM 资源、教育分类)。
+**验证已通过**:`xcodebuild -scheme NihongoRide -configuration Debug build` 在本机出 `Nihongo Ride.app`
+(7.2 MB,Bundle ID `com.jasonye.nihongoride`,带 AppIcon、SPM 资源、教育分类)。
 
 `project.yml` 关键设置:
-- Bundle ID: `com.jasonye.nihongodash`(改前缀就改 `PRODUCT_BUNDLE_IDENTIFIER`)
+- Bundle ID: `com.jasonye.nihongoride`(改前缀就改 `PRODUCT_BUNDLE_IDENTIFIER`)
 - Min deployment: macOS 14.0
 - App Sandbox: ON,不申请网络权限(本应用全离线)
 - 引擎/词库/SRS/游戏 依赖通过 SPM local package 引入(`packages.Nihongo`)
-- Sources 排除 `Sources/NihongoDashApp/Resources/AppIcon.png` — Xcode 用 Assets.xcassets,不重复打包
-- `#if SWIFT_PACKAGE` 已在 `NihongoDashApp.swift` 把 SPM 专属 Bundle.module 调用隔离
+- Sources 排除 `Sources/NihongoRideApp/Resources/AppIcon.png` — Xcode 用 Assets.xcassets,不重复打包
+- `#if SWIFT_PACKAGE` 已在 `NihongoRideApp.swift` 把 SPM 专属 Bundle.module 调用隔离
 
 每次改 `project.yml`(比如改版本号 / bump CURRENT_PROJECT_VERSION)后,**只需 `xcodegen generate`**
 就能同步;`.xcodeproj` 不入 git,无 merge 冲突烦恼。
@@ -95,12 +95,12 @@ open NihongoDash.xcodeproj
 - [ ] Product → Archive → Distribute App → **Developer ID** → Export
 - [ ] **公证(必须!不然新 macOS 会拒绝运行):**
   ```sh
-  xcrun notarytool submit NihongoDash.app.zip \
+  xcrun notarytool submit NihongoRide.app.zip \
     --apple-id you@example.com \
     --team-id YOURTEAMID \
     --password app-specific-password \
     --wait
-  xcrun stapler staple NihongoDash.app   # 把公证票据 staple 进 app
+  xcrun stapler staple NihongoRide.app   # 把公证票据 staple 进 app
   ```
 - [ ] 用 `create-dmg`(`brew install create-dmg`)打 `.dmg`,再 `notarytool` + `stapler` 给 dmg 公证
 
@@ -126,7 +126,7 @@ open NihongoDash.xcodeproj
 
 ## 5. CI / 自动化(可选,但能省时间)
 
-- [ ] **GitHub Actions** macOS runner:`swift test` + `xcodebuild -scheme NihongoDash test`
+- [ ] **GitHub Actions** macOS runner:`swift test` + `xcodebuild -scheme NihongoRide test`
 - [ ] **Fastlane** (可选)
   - `fastlane match` 管证书
   - `fastlane gym` 自动 archive

@@ -1,19 +1,19 @@
-# xcodegen spec for the Nihongo Dash Xcode App wrapper.
+# xcodegen spec for the Nihongo Ride Xcode App wrapper.
 #
-# This is consumed by `xcodegen generate` to (re)create NihongoDash.xcodeproj
+# This is consumed by `xcodegen generate` to (re)create NihongoRide.xcodeproj
 # at the repo root. The Xcode project lets us build a signed .app for the
 # Mac App Store (or notarized DMG) without committing the generated .xcodeproj.
 #
-# The Xcode App target shares its Sources/NihongoDashApp/* source files with
+# The Xcode App target shares its Sources/NihongoRideApp/* source files with
 # the SwiftPM executable target of the same name (used for `swift run`
 # development). The SPM-only Bundle.module Dock-icon hack is guarded by
 # `#if SWIFT_PACKAGE`; the Xcode app gets its icon from Assets.xcassets.
 #
 # Usage:
 #   brew install xcodegen
-#   xcodegen generate          # writes NihongoDash.xcodeproj
-#   open NihongoDash.xcodeproj # then Product → Archive
-name: NihongoDash
+#   xcodegen generate          # writes NihongoRide.xcodeproj
+#   open NihongoRide.xcodeproj # then Product → Archive
+name: NihongoRide
 
 options:
   bundleIdPrefix: com.jasonye
@@ -30,12 +30,12 @@ packages:
     path: .
 
 targets:
-  NihongoDash:
+  NihongoRide:
     type: application
     platform: macOS
 
     sources:
-      - path: Sources/NihongoDashApp
+      - path: Sources/NihongoRideApp
         # Drop the SPM-only Dock-icon resource — Xcode uses Assets.xcassets.
         excludes:
           - "Resources"
@@ -44,14 +44,14 @@ targets:
       # but they also need to live somewhere xcodegen can see.
       - path: xcode/Info.plist
         buildPhase: none
-      - path: xcode/NihongoDash.entitlements
+      - path: xcode/NihongoRide.entitlements
         buildPhase: none
 
     info:
       path: xcode/Info.plist
       properties:
-        CFBundleDisplayName: Nihongo Dash
-        CFBundleName: Nihongo Dash
+        CFBundleDisplayName: Nihongo Ride
+        CFBundleName: Nihongo Ride
         LSApplicationCategoryType: public.app-category.education
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
         NSHumanReadableCopyright: "© 2026 Jason. All rights reserved."
@@ -59,7 +59,7 @@ targets:
         NSMainNibFile: ""
 
     entitlements:
-      path: xcode/NihongoDash.entitlements
+      path: xcode/NihongoRide.entitlements
       properties:
         # App Sandbox is required for the Mac App Store. The app is fully
         # offline, so no network entitlement is requested. SRS persistence
@@ -78,8 +78,8 @@ targets:
 
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongodash
-        PRODUCT_NAME: Nihongo Dash
+        PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride
+        PRODUCT_NAME: Nihongo Ride
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
         MACOSX_DEPLOYMENT_TARGET: "14.0"
@@ -95,10 +95,10 @@ targets:
         # source compilation, and we WANT it undefined for the App target.
 
 schemes:
-  NihongoDash:
+  NihongoRide:
     build:
       targets:
-        NihongoDash: all
+        NihongoRide: all
     run:
       config: Debug
     archive:

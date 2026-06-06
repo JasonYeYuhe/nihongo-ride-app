@@ -6,7 +6,7 @@
 
 | 文件 | 目标语言 | 地图 | 标志字符 | 对应产品 |
 |------|---------|------|---------|---------|
-| `icons/jp.png` | 日语 | 日本 | え | **Nihongo Dash**(当前) |
+| `icons/jp.png` | 日语 | 日本 | え | **Nihongo Ride**(当前) |
 | `icons/cn.png` | 中文 | 中国 | 中 | (未来) |
 | `icons/fr.png` | 法语 | 法国 | é | (未来) |
 | `icons/es.png` | 西班牙语 | 西班牙 | ñ | (未来) |
@@ -16,7 +16,7 @@
 
 ## 由日文图标生成的 macOS 资源
 
-- `AppIcon-1024.png` —— 1024 主图(运行时 Dock 图标也用它,见 `Sources/NihongoDashApp/Resources/AppIcon.png`)。
+- `AppIcon-1024.png` —— 1024 主图(运行时 Dock 图标也用它,见 `Sources/NihongoRideApp/Resources/AppIcon.png`)。
 - `AppIcon.icns` —— 直接可用的 icns。
 - `AppIcon.iconset/` —— 10 张标准尺寸(`iconutil` 源)。
 - `AppIcon.appiconset/` —— **Xcode 用**:打包正式 App 时,把它拖进 Xcode 工程的 `Assets.xcassets`,在 target 设置里选作 App Icon 即可。

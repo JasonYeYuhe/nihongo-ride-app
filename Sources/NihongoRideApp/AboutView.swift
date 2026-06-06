@@ -20,8 +20,8 @@ struct AboutView: View {
                 section(
                     title: zh ? "感谢" : "Acknowledgements",
                     body: zh
-                        ? "Nihongo Dash 借助多个开源/开放许可的语言数据,才得以做出一个真正帮你学日语的打字游戏。下方列出每一项的来源、许可与用途。"
-                        : "Nihongo Dash is built on top of several openly licensed language data sources. Below: every source, its license, and what we use it for."
+                        ? "Nihongo Ride 借助多个开源/开放许可的语言数据,才得以做出一个真正帮你学日语的打字游戏。下方列出每一项的来源、许可与用途。"
+                        : "Nihongo Ride is built on top of several openly licensed language data sources. Below: every source, its license, and what we use it for."
                 )
                 credit("Google Mozc",
                        license: "BSD-3-Clause",
@@ -102,10 +102,10 @@ struct AboutView: View {
                 }
                 .buttonStyle(.plain)
             }
-            Text("Nihongo Dash · v\(bundleVersion)")
+            Text("Nihongo Ride · v\(bundleVersion)")
                 .font(.system(size: 13, weight: .medium, design: .monospaced))
                 .foregroundStyle(Theme.accent2)
-            Text(zh ? "「Dash」系列日语版 · macOS / SwiftUI" : "Japanese edition · part of the Dash series.")
+            Text(zh ? "打字环游日本 · macOS / SwiftUI" : "Type your way across Japan · macOS / SwiftUI")
                 .font(.system(size: 14)).foregroundStyle(Theme.dim)
         }
     }

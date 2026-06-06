@@ -3,12 +3,12 @@ import AppKit
 import GameCore
 
 @main
-struct NihongoDashApp: App {
+struct NihongoRideApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var model = AppModel()
 
     var body: some Scene {
-        WindowGroup("Nihongo Dash") {
+        WindowGroup("Nihongo Ride") {
             RootView()
                 .environment(model)
                 .frame(minWidth: 880, minHeight: 600)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Export Nihongo Dash vocabulary and passages into reviewer-friendly CSVs.
+Export Nihongo Ride vocabulary and passages into reviewer-friendly CSVs.
 
 Usage:
     python3 scripts/export_review_sheets.py [output_dir]
@@ -147,7 +147,7 @@ def export_passages(outdir: Path) -> int:
 
 
 README = """\
-# Nihongo Dash — 母语者审清单 / Native-speaker Review Sheets
+# Nihongo Ride — 母语者审清单 / Native-speaker Review Sheets
 
 请用 Numbers / Excel / Google Sheets 打开这些 CSV(已为 BOM-UTF-8,中文/日文应正常显示)。
 

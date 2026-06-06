@@ -109,7 +109,7 @@ final class AppModel {
         let base = FileManager.default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory
-        let dir = base.appendingPathComponent("NihongoDash", isDirectory: true)
+        let dir = base.appendingPathComponent("NihongoRide", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir.appendingPathComponent("review.json")
     }

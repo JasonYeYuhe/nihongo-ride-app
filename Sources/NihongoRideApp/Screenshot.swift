@@ -3,7 +3,7 @@ import AppKit
 
 /// Renders the app's screens to PNGs via SwiftUI `ImageRenderer` (no window,
 /// no screen-recording permission). Triggered by `NIHONGO_SHOT=<dir>`:
-///   NIHONGO_SHOT=/tmp/shot swift run NihongoDashApp
+///   NIHONGO_SHOT=/tmp/shot swift run NihongoRideApp
 enum Screenshotter {
     /// While true, views omit their `KeyCaptureView` background (an
     /// NSViewRepresentable that ImageRenderer can't render).

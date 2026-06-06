@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "NihongoDash",
+    name: "NihongoRide",
     platforms: [
         .macOS(.v14)
     ],
@@ -12,8 +12,8 @@ let package = Package(
         .library(name: "VocabKit", targets: ["VocabKit"]),
         .library(name: "ReviewKit", targets: ["ReviewKit"]),
         .library(name: "GameCore", targets: ["GameCore"]),
-        // The macOS SwiftUI app (Nihongo Dash). Run with `swift run NihongoDashApp`.
-        .executable(name: "NihongoDashApp", targets: ["NihongoDashApp"]),
+        // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
+        .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
     targets: [
         // MARK: Engine — romaji→kana typing matcher.
@@ -49,9 +49,9 @@ let package = Package(
         .target(name: "GameCore", dependencies: ["RomajiKana", "VocabKit", "ReviewKit"]),
         .testTarget(name: "GameCoreTests", dependencies: ["GameCore"]),
 
-        // MARK: SwiftUI app (Nihongo Dash) — bike-journey typing game + IME-bypassing key capture.
+        // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
-            name: "NihongoDashApp",
+            name: "NihongoRideApp",
             dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
