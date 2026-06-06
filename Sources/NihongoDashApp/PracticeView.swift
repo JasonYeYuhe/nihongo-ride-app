@@ -49,7 +49,13 @@ struct PracticeView: View {
             if !Screenshotter.isCapturing {
                 KeyCaptureView(
                     onKey: { character in _ = session.input(character) },
-                    onCommand: { command in if command == .escape { model.finishGame() } }
+                    onCommand: { command in
+                        switch command {
+                        case .escape: model.finishGame()
+                        case .returnKey, .space: session.skip()       // skip to next passage
+                        case .backspace: break
+                        }
+                    }
                 )
             }
         }
@@ -64,7 +70,7 @@ struct PracticeView: View {
                 .font(.system(size: 12, weight: .bold)).tracking(3)
                 .foregroundStyle(ink.opacity(0.4))
             Spacer()
-            Text(model.languageCode == "zh" ? "Esc 结束" : "Esc to finish")
+            Text(model.languageCode == "zh" ? "Enter 下一段 · Esc 结束" : "Enter for next · Esc to finish")
                 .font(.system(size: 12, weight: .medium)).foregroundStyle(ink.opacity(0.35))
         }
     }
