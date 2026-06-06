@@ -71,6 +71,18 @@ struct MenuView: View {
                         .pickerStyle(.segmented)
                         .frame(width: 220)
                     }
+                    if model.practicePassages {
+                        HStack(spacing: 12) {
+                            Image(systemName: "ruler")
+                            Picker("", selection: $model.practicePassageLevel) {
+                                Text(model.languageCode == "zh" ? "短" : "Short").tag(Passage.Level.easy)
+                                Text(model.languageCode == "zh" ? "中" : "Med").tag(Passage.Level.med)
+                                Text(model.languageCode == "zh" ? "长" : "Long").tag(Passage.Level.hard)
+                            }
+                            .pickerStyle(.segmented)
+                            .frame(width: 220)
+                        }
+                    }
                 }
                 Toggle(isOn: $model.showRomajiHint) {
                     Label(model.languageCode == "zh" ? "显示罗马字提示" : "Show romaji hints",

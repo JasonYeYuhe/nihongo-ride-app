@@ -115,10 +115,8 @@ public final class GameSession {
         config: Config = .init(),
         now: @escaping () -> Date = Date.init
     ) -> GameSession {
-        let order: [Passage.Level] = [.easy, .med, .hard]
-        let cutoff = order.firstIndex(of: level) ?? order.count - 1
-        let allowed = Set(order.prefix(cutoff + 1))
-        var pool = passages.passages.filter { allowed.contains($0.level) }
+        var pool = passages.passages.filter { $0.level == level }
+        if pool.isEmpty { pool = passages.passages }   // safety net
         pool.shuffle()
         let words = pool.prefix(max(8, config.newWordCount)).map { passage -> VocabEntry in
             VocabEntry(

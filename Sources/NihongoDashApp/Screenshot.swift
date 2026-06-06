@@ -45,11 +45,16 @@ enum Screenshotter {
         results.finishGame()
         render(RootView().environment(results), size: size, to: directory + "/results.png")
 
-        // Practice (passage) mode — washi paper, full sentence
+        // Practice (passage) mode — washi paper, full multi-sentence paragraph
         let practice = AppModel()
         practice.selectedMode = .practice
         practice.practicePassages = true
-        practice.startGame()
+        practice.practicePassageLevel = .hard
+        // Re-roll until we land on one of the long multi-sentence paragraphs (kana > 40 chars)
+        for _ in 0 ..< 30 {
+            practice.startGame()
+            if let k = practice.session?.currentKana, k.count > 40 { break }
+        }
         if let romaji = practice.session?.currentRomaji {
             for character in romaji.prefix(romaji.count / 3) { _ = practice.session?.input(character) }
         }

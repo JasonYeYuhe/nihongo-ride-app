@@ -598,5 +598,205 @@
       "en": "The Japanese test was very difficult.",
       "zh": "日语考试非常难。"
     }
+  },
+  {
+    "id": "para001",
+    "kana": "まいあさろくじにおきますあさごはんをたくさんたべますそしてあついコーヒーをのみます",
+    "topic": "morning",
+    "level": "easy",
+    "meanings": {
+      "en": "I wake up at six every morning. I eat a lot of breakfast. And then I drink hot coffee.",
+      "zh": "我每天早上六点起床。吃很多早餐。然后喝热咖啡。"
+    }
+  },
+  {
+    "id": "para002",
+    "kana": "らいげつともだちとフランスへいきますひこうきのきっぷはもうかいましたとてもたのしみです",
+    "topic": "travel",
+    "level": "med",
+    "meanings": {
+      "en": "I am going to France with my friend next month. I have already bought the airplane tickets. I am really looking forward to it.",
+      "zh": "下个月我要和朋友去法国。机票已经买好了。非常期待。"
+    }
+  },
+  {
+    "id": "para003",
+    "kana": "きょうはとてもいいおてんきですそらにはくもがありませんあたたかいのでさんぽにいきましょう",
+    "topic": "weather",
+    "level": "easy",
+    "meanings": {
+      "en": "The weather is very nice today. There are no clouds in the sky. It is warm, so let's go for a walk.",
+      "zh": "今天天气非常好。天空中没有云。因为很暖和，我们去散步吧。"
+    }
+  },
+  {
+    "id": "para004",
+    "kana": "あたらしいしごとがはじまりましたまいにちパソコンをつかってしりょうをつくりますすこしつかれますがやりがいがあります",
+    "topic": "work",
+    "level": "hard",
+    "meanings": {
+      "en": "A new job has started. Every day, I use a computer to create documents. I get a little tired, but it is rewarding.",
+      "zh": "新工作开始了。每天用电脑制作资料。虽然有点累，但很有成就感。"
+    }
+  },
+  {
+    "id": "para005",
+    "kana": "わたしのちちはりょうりがすきですしゅうまつはいつもおいしいカレーをつくってくれますかぞくみんなでいっしょにたべます",
+    "topic": "family",
+    "level": "med",
+    "meanings": {
+      "en": "My father likes cooking. He always makes delicious curry for us on weekends. The whole family eats it together.",
+      "zh": "我爸爸喜欢做饭。周末他总是会做美味的咖喱给我们吃。一家人一起吃。"
+    }
+  },
+  {
+    "id": "para006",
+    "kana": "えきのちかくにあたらしいパンやができましたきのうそこでチョコレートのパンをかいましたあまくてとてもおいしかったです",
+    "topic": "food",
+    "level": "easy",
+    "meanings": {
+      "en": "A new bakery opened near the station. Yesterday, I bought a chocolate bread there. It was sweet and very delicious.",
+      "zh": "车站附近开了一家新面包店。昨天，我在那里买了巧克力面包。甜甜的，非常好吃。"
+    }
+  },
+  {
+    "id": "para007",
+    "kana": "やすみのひはよくえいがをみますとくにアクションえいががすきですらいしゅうもともだちとえいがかんへいくよていです",
+    "topic": "hobbies",
+    "level": "med",
+    "meanings": {
+      "en": "I often watch movies on my days off. I especially like action movies. I plan to go to the movie theater with a friend next week too.",
+      "zh": "休息日我经常看电影。特别喜欢看动作片。下周也打算和朋友去电影院。"
+    }
+  },
+  {
+    "id": "para008",
+    "kana": "さいきんあまりよくねむることができませんだからよるはスマートフォンのめんをみないようにしていますあたたかいミルクものみます",
+    "topic": "health",
+    "level": "hard",
+    "meanings": {
+      "en": "Lately, I haven't been able to sleep very well. Therefore, I try not to look at my smartphone screen at night. I also drink warm milk.",
+      "zh": "最近睡眠不太好。所以，晚上我尽量不看智能手机屏幕。也会喝些温牛奶。"
+    }
+  },
+  {
+    "id": "para009",
+    "kana": "としょかんでにほんごのべんきょうをしましたあたらしいことばをたくさんおぼえましたあしたのテストはきっとだいじょうぶです",
+    "topic": "study",
+    "level": "med",
+    "meanings": {
+      "en": "I studied Japanese at the library. I memorized a lot of new words. I am sure tomorrow's test will be fine.",
+      "zh": "我在图书馆学习了日语。记住了很多新单词。明天的考试肯定没问题。"
+    }
+  },
+  {
+    "id": "para010",
+    "kana": "デパートへいってあかいシャツとくろいくつをかいましたぜんぶでいちまんえんでしたすこしたかかったですがうれしいです",
+    "topic": "shopping",
+    "level": "easy",
+    "meanings": {
+      "en": "I went to the department store and bought a red shirt and black shoes. It was ten thousand yen in total. It was a bit expensive, but I am happy.",
+      "zh": "去百货商店买了一件红衬衫和一双黑鞋。总共花了一万日元。虽然有点贵，但很开心。"
+    }
+  },
+  {
+    "id": "para011",
+    "kana": "しゅうまつはへやのそうじをしましたそれからスーパーへかいものにいきましたよるはゆっくりとおふろにはいりました",
+    "topic": "weekend",
+    "level": "med",
+    "meanings": {
+      "en": "Over the weekend, I cleaned my room. After that, I went shopping at the supermarket. In the evening, I took a nice, long bath.",
+      "zh": "周末我打扫了房间。然后去超市买了东西。晚上舒舒服服地泡了个澡。"
+    }
+  },
+  {
+    "id": "para012",
+    "kana": "もうすぐあきがきますねあきはすずしくてとてもすごしやすいきせつですこうえんのきのはっぱもあかくかわってきれいです",
+    "topic": "season",
+    "level": "hard",
+    "meanings": {
+      "en": "Autumn is coming soon, isn't it? Autumn is cool and a very comfortable season. The leaves on the trees in the park also turn red and are beautiful.",
+      "zh": "秋天马上就要到了呢。秋天很凉爽，是个非常舒适的季节。公园里树上的叶子也会变红，非常漂亮。"
+    }
+  },
+  {
+    "id": "para013",
+    "kana": "わたしはおんがくをきくのがすきですまいあさでんしゃのなかでロックをききますきぶんがとてもよくなります",
+    "topic": "music",
+    "level": "easy",
+    "meanings": {
+      "en": "I like listening to music. Every morning, I listen to rock music on the train. It makes me feel really good.",
+      "zh": "我喜欢听音乐。每天早上在电车里听摇滚乐。这让我心情变得很好。"
+    }
+  },
+  {
+    "id": "para014",
+    "kana": "きのうともだちとテニスをしましたにじかんたくさんはしりましたからきょうはあしがいたいですでもとてもたのしかったです",
+    "topic": "sports",
+    "level": "med",
+    "meanings": {
+      "en": "Yesterday, I played tennis with a friend. I ran a lot for two hours, so my legs hurt today. But it was a lot of fun.",
+      "zh": "昨天和朋友去打了网球。因为跑了两个小时，今天腿很疼。但是非常开心。"
+    }
+  },
+  {
+    "id": "para015",
+    "kana": "わたしのいえにはしろいねこがいますなまえはたまですいつもソファーのうえでまるくなってねています",
+    "topic": "pets",
+    "level": "easy",
+    "meanings": {
+      "en": "There is a white cat in my house. Its name is Tama. It is always sleeping curled up on the sofa.",
+      "zh": "我家里有一只白猫。名字叫小玉。它总是蜷缩在沙发上睡觉。"
+    }
+  },
+  {
+    "id": "para016",
+    "kana": "きょうはいえのなかをぜんぶきれいにしましたまどをふいてごみをすてましたへやがきれいになるときもちがいいですね",
+    "topic": "cleaning",
+    "level": "med",
+    "meanings": {
+      "en": "Today, I cleaned the entire inside of the house. I wiped the windows and threw away the garbage. It feels good when the room becomes clean.",
+      "zh": "今天我把家里全都打扫干净了。擦了窗户，扔了垃圾。房间变干净了，心情真好啊。"
+    }
+  },
+  {
+    "id": "para017",
+    "kana": "こんばんはわたしがばんごはんをつくりますスーパーでとりにくとやさいをかってきましたいまからおいしいシチューをにこみます",
+    "topic": "cooking",
+    "level": "hard",
+    "meanings": {
+      "en": "I will make dinner tonight. I bought some chicken and vegetables at the supermarket. I'm going to simmer a delicious stew right now.",
+      "zh": "今晚由我来做晚饭。在超市买了鸡肉和蔬菜。现在开始炖美味的炖菜。"
+    }
+  },
+  {
+    "id": "para018",
+    "kana": "あしたひさしぶりにともだちにあいますいっしょにカフェでケーキをたべるつもりですたくさんおしゃべりをしたいです",
+    "topic": "friends",
+    "level": "easy",
+    "meanings": {
+      "en": "Tomorrow, I will meet a friend for the first time in a while. We plan to eat cake together at a cafe. I want to chat a lot.",
+      "zh": "明天，我将和久违的朋友见面。我们打算一起在咖啡馆吃蛋糕。我想聊很多天。"
+    }
+  },
+  {
+    "id": "para019",
+    "kana": "しょうらいわたしはがいこくですみたいですそのためにいまはいっしょうけんめいことばをべんきょうしていますいつかかならずゆめをかなえます",
+    "topic": "future",
+    "level": "hard",
+    "meanings": {
+      "en": "In the future, I want to live in a foreign country. For that purpose, I am studying languages very hard right now. Someday, I will definitely make my dream come true.",
+      "zh": "将来，我想在外国生活。为此，我现在正在拼命学习外语。总有一天，我一定会实现我的梦想。"
+    }
+  },
+  {
+    "id": "para020",
+    "kana": "まいあさちかくのやまをあるきますやまのくうきはとてもきれいでおいしいですことりのこえをきくとげんきがでます",
+    "topic": "nature",
+    "level": "med",
+    "meanings": {
+      "en": "Every morning, I walk in the nearby mountains. The mountain air is very clean and tastes good. Hearing the voices of the little birds gives me energy.",
+      "zh": "每天早上，我都在附近的山里散步。山里的空气非常干净，味道也很好。听到小鸟的叫声就会变得精神。"
+    }
   }
 ]
