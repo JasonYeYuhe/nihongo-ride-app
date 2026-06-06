@@ -45,13 +45,18 @@ JLPT Resources**(<https://www.tanos.co.uk/jlpt/>,**CC BY**)。释义(中/英)为
 原创 / LLM 起草并校验,非取自上述来源。按 CC BY 要求,应在 App「关于/致谢」页署名:
 *"JLPT vocabulary readings & levels based on Jonathan Waller's JLPT Resources (tanos.co.uk), CC BY."*
 
-## Tatoeba 文章/句子(已使用)
+## Tatoeba —— 用作灵感来源(部分句子衍生)
 
-Practice 模式的「文章/句子」资源(`Sources/VocabKit/Resources/passages.json`)中的
-**日文句子与英文翻译**取自 **Tatoeba Project**(<https://tatoeba.org>),按 **CC BY 2.0 FR**
-使用。我们仅取了纯假名句子(无汉字),并在本项目内为每条添加了中文翻译、主题标签与难度标注。
-按 CC BY 要求,「关于/致谢」页应署名:
-*"Practice sentences derived from Tatoeba Project (tatoeba.org), CC BY 2.0 FR."*
+Practice 模式的「文章/句子」语料(`Sources/VocabKit/Resources/passages.json`,共 183 篇)以
+**Tatoeba Project**(<https://tatoeba.org>,**CC BY 2.0 FR**)的日文纯假名句子库为**灵感与种子**
+构建:Gemini 3.1 Pro 在 Tatoeba 句池(我们仅取纯假名子集 ~4500 条)中精选并改写、扩展为 183 篇
+**学习者友好的中长段落**。每条的**英文/中文翻译均为本项目原创(LLM 起草 + 人工裁定)**,**主题
+标签、难度评级**亦由我们添加。
+
+实际上仅约 **9 篇**(占 5%)的日文与某条 Tatoeba 句子精确匹配;其余 **174 篇**是 LLM 原创的
+单句或多句段落,Tatoeba 是间接灵感而非逐字来源。出于安全与透明,我们仍按 CC BY 要求在「关于/
+致谢」页保留署名:
+*"Practice sentences inspired by the Tatoeba Project (tatoeba.org), CC BY 2.0 FR."*
 
 ## 计划中(后续引入,届时在此补全署名)
 
