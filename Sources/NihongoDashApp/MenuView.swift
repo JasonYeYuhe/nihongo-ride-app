@@ -50,16 +50,20 @@ struct MenuView: View {
                     .pickerStyle(.segmented)
                     .frame(width: 220)
                 }
-                HStack(spacing: 12) {
-                    Image(systemName: "graduationcap")
-                    Picker("", selection: $model.selectedLevel) {
-                        ForEach(JLPTLevel.allCases, id: \.self) { level in
-                            Text(level.label).tag(JLPTLevel?.some(level))
+                // JLPT level applies to word-stream modes; Practice Passages has its own level picker below.
+                let showJLPT = !(model.selectedMode == .practice && model.practicePassages)
+                if showJLPT {
+                    HStack(spacing: 12) {
+                        Image(systemName: "graduationcap")
+                        Picker("", selection: $model.selectedLevel) {
+                            ForEach(JLPTLevel.allCases, id: \.self) { level in
+                                Text(level.label).tag(JLPTLevel?.some(level))
+                            }
+                            Text(model.languageCode == "zh" ? "混合" : "All").tag(JLPTLevel?.none)
                         }
-                        Text(model.languageCode == "zh" ? "混合" : "All").tag(JLPTLevel?.none)
+                        .pickerStyle(.segmented)
+                        .frame(width: 300)
                     }
-                    .pickerStyle(.segmented)
-                    .frame(width: 300)
                 }
                 if model.selectedMode == .practice {
                     HStack(spacing: 12) {
