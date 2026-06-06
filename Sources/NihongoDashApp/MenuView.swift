@@ -61,6 +61,17 @@ struct MenuView: View {
                     .pickerStyle(.segmented)
                     .frame(width: 300)
                 }
+                if model.selectedMode == .practice {
+                    HStack(spacing: 12) {
+                        Image(systemName: "text.alignleft")
+                        Picker("", selection: $model.practicePassages) {
+                            Text(model.languageCode == "zh" ? "文章" : "Passages").tag(true)
+                            Text(model.languageCode == "zh" ? "词流" : "Words").tag(false)
+                        }
+                        .pickerStyle(.segmented)
+                        .frame(width: 220)
+                    }
+                }
                 Toggle(isOn: $model.showRomajiHint) {
                     Label(model.languageCode == "zh" ? "显示罗马字提示" : "Show romaji hints",
                           systemImage: "character.cursor.ibeam")

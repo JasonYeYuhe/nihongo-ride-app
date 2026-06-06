@@ -33,8 +33,13 @@ struct PracticeView: View {
             VStack(spacing: 0) {
                 topBar(session)
                 Spacer()
-                passage(session)
-                romajiGuide(session).padding(.top, 30)
+                if model.practicePassages {
+                    longPassage(session)
+                    translation(session).padding(.top, 18)
+                } else {
+                    passage(session)
+                }
+                romajiGuide(session).padding(.top, 28)
                 Spacer()
                 statsRow(session)
             }
@@ -88,6 +93,37 @@ struct PracticeView: View {
     }
 
     private var space: Text { Text("　") }   // ideographic space between words
+
+    /// Long-passage rendering: the current sentence as a single flowing block,
+    /// with per-character typed/upcoming styling and a coral caret.
+    private func longPassage(_ s: GameSession) -> some View {
+        let kana = Array(s.currentKana ?? "")
+        let done = s.completedKanaCount
+        var text = Text("")
+        for (index, character) in kana.enumerated() {
+            let run = Text(String(character))
+            if index < done {
+                text = text + run.foregroundStyle(ink.opacity(0.20))
+            } else if index == done {
+                text = text + run.foregroundStyle(accent).underline(true, color: accent)
+            } else {
+                text = text + run.foregroundStyle(ink.opacity(0.85))
+            }
+        }
+        return text
+            .font(.system(size: 36, weight: .medium, design: .serif))
+            .lineSpacing(18)
+            .multilineTextAlignment(.leading)
+            .frame(maxWidth: 760, alignment: .leading)
+    }
+
+    private func translation(_ s: GameSession) -> some View {
+        Text(s.currentGloss ?? "")
+            .font(.system(size: 15, weight: .regular, design: .serif))
+            .italic()
+            .foregroundStyle(ink.opacity(0.45))
+            .frame(maxWidth: 720, alignment: .leading)
+    }
 
     private func currentWord(_ kana: String, done: Int) -> Text {
         var text = Text("")

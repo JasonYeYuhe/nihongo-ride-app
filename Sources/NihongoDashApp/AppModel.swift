@@ -40,6 +40,9 @@ final class AppModel {
     var selectedMode: GameMode = .journey
     /// Chosen JLPT level for new words; `nil` mixes all levels.
     var selectedLevel: JLPTLevel? = .n5
+    /// In Practice mode: cycle whole passages (true) or stream individual words (false).
+    var practicePassages: Bool = true
+    var practicePassageLevel: Passage.Level = .med
 
     private(set) var session: GameSession?
     private(set) var lastSummary: GameSummary?
@@ -69,11 +72,16 @@ final class AppModel {
             config.newWordCount = 300   // plenty for a 60s sprint
             config.reviewWordCount = 0
         case .practice:
-            config.newWordCount = 30    // a focused passage session
+            config.newWordCount = practicePassages ? 12 : 30
+            config.reviewWordCount = 0
         case .journey:
             break
         }
-        session = GameSession.make(config: config, vocab: .shared, review: reviewStore)
+        if selectedMode == .practice && practicePassages {
+            session = GameSession.makePractice(level: practicePassageLevel, config: config)
+        } else {
+            session = GameSession.make(config: config, vocab: .shared, review: reviewStore)
+        }
         screen = .playing
     }
 

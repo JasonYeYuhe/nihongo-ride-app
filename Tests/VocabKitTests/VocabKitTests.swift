@@ -86,6 +86,24 @@ struct VocabKitTests {
         #expect(Set(kana).count == kana.count)
     }
 
+    @Test("practice passages load and every kana is typeable by the engine")
+    func passages() {
+        let store = PassageStore.shared
+        #expect(store.passages.count >= 30)
+        for passage in store.passages {
+            var matcher = KanaInputMatcher(target: passage.kana)
+            var allAccepted = true
+            for character in KanaRomanizer.romaji(for: passage.kana)
+                where matcher.input(character) == .rejected {
+                allAccepted = false; break
+            }
+            #expect(allAccepted && matcher.isComplete,
+                    "passage \(passage.id) ‘\(passage.kana)’ failed to type")
+            #expect(!passage.meaning(for: "en").isEmpty)
+            #expect(!passage.meaning(for: "zh").isEmpty)
+        }
+    }
+
     @Test("every level carries example sentences with translations")
     func exampleSentences() {
         for level in JLPTLevel.allCases {

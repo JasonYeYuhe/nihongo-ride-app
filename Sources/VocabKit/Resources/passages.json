@@ -1,0 +1,602 @@
+[
+  {
+    "id": "p001",
+    "kana": "おはようございます",
+    "topic": "daily",
+    "level": "easy",
+    "meanings": {
+      "en": "Good morning.",
+      "zh": "早上好。"
+    }
+  },
+  {
+    "id": "p002",
+    "kana": "こんにちは",
+    "topic": "daily",
+    "level": "easy",
+    "meanings": {
+      "en": "Hello.",
+      "zh": "你好。"
+    }
+  },
+  {
+    "id": "p003",
+    "kana": "ありがとう",
+    "topic": "daily",
+    "level": "easy",
+    "meanings": {
+      "en": "Thank you.",
+      "zh": "谢谢。"
+    }
+  },
+  {
+    "id": "p004",
+    "kana": "ごめんなさい",
+    "topic": "daily",
+    "level": "easy",
+    "meanings": {
+      "en": "I am sorry.",
+      "zh": "对不起。"
+    }
+  },
+  {
+    "id": "p005",
+    "kana": "さようなら",
+    "topic": "daily",
+    "level": "easy",
+    "meanings": {
+      "en": "Goodbye.",
+      "zh": "再见。"
+    }
+  },
+  {
+    "id": "p006",
+    "kana": "はいそうです",
+    "topic": "daily",
+    "level": "easy",
+    "meanings": {
+      "en": "Yes, that is right.",
+      "zh": "是的，没错。"
+    }
+  },
+  {
+    "id": "p007",
+    "kana": "いいえちがいます",
+    "topic": "daily",
+    "level": "easy",
+    "meanings": {
+      "en": "No, that is wrong.",
+      "zh": "不，不是这样的。"
+    }
+  },
+  {
+    "id": "p008",
+    "kana": "わかりません",
+    "topic": "daily",
+    "level": "easy",
+    "meanings": {
+      "en": "I don't understand.",
+      "zh": "我不明白。"
+    }
+  },
+  {
+    "id": "p009",
+    "kana": "おなかがすきました",
+    "topic": "food",
+    "level": "easy",
+    "meanings": {
+      "en": "I am hungry.",
+      "zh": "我饿了。"
+    }
+  },
+  {
+    "id": "p010",
+    "kana": "のどがかわきました",
+    "topic": "food",
+    "level": "easy",
+    "meanings": {
+      "en": "I am thirsty.",
+      "zh": "我渴了。"
+    }
+  },
+  {
+    "id": "p011",
+    "kana": "きのうはとてもいそがしかったです",
+    "topic": "work",
+    "level": "med",
+    "meanings": {
+      "en": "I was very busy yesterday.",
+      "zh": "昨天我非常忙。"
+    }
+  },
+  {
+    "id": "p012",
+    "kana": "あしたはあめがふるかもしれません",
+    "topic": "weather",
+    "level": "med",
+    "meanings": {
+      "en": "It might rain tomorrow.",
+      "zh": "明天可能会下雨。"
+    }
+  },
+  {
+    "id": "p013",
+    "kana": "このほんはとてもおもしろいですよ",
+    "topic": "entertainment",
+    "level": "med",
+    "meanings": {
+      "en": "This book is very interesting.",
+      "zh": "这本书非常有趣。"
+    }
+  },
+  {
+    "id": "p014",
+    "kana": "えきまでどうやっていけばいいですか",
+    "topic": "travel",
+    "level": "med",
+    "meanings": {
+      "en": "How can I get to the station?",
+      "zh": "去火车站怎么走？"
+    }
+  },
+  {
+    "id": "p015",
+    "kana": "すみませんすこしやすんでもいいですか",
+    "topic": "health",
+    "level": "med",
+    "meanings": {
+      "en": "Excuse me, can I take a rest for a bit?",
+      "zh": "不好意思，我可以休息一下吗？"
+    }
+  },
+  {
+    "id": "p016",
+    "kana": "あしたのてんきはどうなりますか",
+    "topic": "weather",
+    "level": "med",
+    "meanings": {
+      "en": "What will the weather be like tomorrow?",
+      "zh": "明天天气怎么样？"
+    }
+  },
+  {
+    "id": "p017",
+    "kana": "わたしはにほんごをべんきょうしています",
+    "topic": "education",
+    "level": "med",
+    "meanings": {
+      "en": "I am studying Japanese.",
+      "zh": "我在学习日语。"
+    }
+  },
+  {
+    "id": "p018",
+    "kana": "どんなたべものがすきですか",
+    "topic": "food",
+    "level": "easy",
+    "meanings": {
+      "en": "What kind of food do you like?",
+      "zh": "你喜欢什么食物？"
+    }
+  },
+  {
+    "id": "p019",
+    "kana": "あそこにおおきないぬがいますね",
+    "topic": "animals",
+    "level": "med",
+    "meanings": {
+      "en": "There is a large dog over there, isn't there?",
+      "zh": "那边有一只大狗呢。"
+    }
+  },
+  {
+    "id": "p020",
+    "kana": "このコーヒーはちょっとにがいです",
+    "topic": "food",
+    "level": "med",
+    "meanings": {
+      "en": "This coffee is a bit bitter.",
+      "zh": "这杯咖啡有点苦。"
+    }
+  },
+  {
+    "id": "p021",
+    "kana": "あたらしいパソコンをかいたいのですが",
+    "topic": "shopping",
+    "level": "med",
+    "meanings": {
+      "en": "I would like to buy a new computer...",
+      "zh": "我想买一台新电脑……"
+    }
+  },
+  {
+    "id": "p022",
+    "kana": "らいしゅうともだちとえいがをみにいきます",
+    "topic": "entertainment",
+    "level": "med",
+    "meanings": {
+      "en": "Next week, I am going to see a movie with a friend.",
+      "zh": "下周我要和朋友去看电影。"
+    }
+  },
+  {
+    "id": "p023",
+    "kana": "きょうはあまりてんきがよくないですね",
+    "topic": "weather",
+    "level": "med",
+    "meanings": {
+      "en": "The weather isn't very good today, is it?",
+      "zh": "今天天气不太好呢。"
+    }
+  },
+  {
+    "id": "p024",
+    "kana": "にちようびはいつもなにをしていますか",
+    "topic": "daily",
+    "level": "med",
+    "meanings": {
+      "en": "What do you usually do on Sundays?",
+      "zh": "你星期天通常做什么？"
+    }
+  },
+  {
+    "id": "p025",
+    "kana": "そのレストランのりょうりはとてもおいしいです",
+    "topic": "food",
+    "level": "med",
+    "meanings": {
+      "en": "The food at that restaurant is very delicious.",
+      "zh": "那家餐厅的菜非常好吃。"
+    }
+  },
+  {
+    "id": "p026",
+    "kana": "もうすこしゆっくりはなしてください",
+    "topic": "communication",
+    "level": "med",
+    "meanings": {
+      "en": "Please speak a little more slowly.",
+      "zh": "请说得再慢一点。"
+    }
+  },
+  {
+    "id": "p027",
+    "kana": "どこでタクシーにのることができますか",
+    "topic": "travel",
+    "level": "med",
+    "meanings": {
+      "en": "Where can I catch a taxi?",
+      "zh": "我在哪里可以打到出租车？"
+    }
+  },
+  {
+    "id": "p028",
+    "kana": "かのじょはえいごをじょうずにはなします",
+    "topic": "communication",
+    "level": "med",
+    "meanings": {
+      "en": "She speaks English well.",
+      "zh": "她的英语说得很好。"
+    }
+  },
+  {
+    "id": "p029",
+    "kana": "これをみせていただけますか",
+    "topic": "shopping",
+    "level": "med",
+    "meanings": {
+      "en": "Could you show me this?",
+      "zh": "能给我看看这个吗？"
+    }
+  },
+  {
+    "id": "p030",
+    "kana": "あたまがいたいのできょうははやくねます",
+    "topic": "health",
+    "level": "med",
+    "meanings": {
+      "en": "I have a headache, so I will go to bed early today.",
+      "zh": "我头痛，所以今天早点睡觉。"
+    }
+  },
+  {
+    "id": "p031",
+    "kana": "このシャツのちいさいサイズはありますか",
+    "topic": "shopping",
+    "level": "med",
+    "meanings": {
+      "en": "Do you have a smaller size of this shirt?",
+      "zh": "这件衬衫有小号的吗？"
+    }
+  },
+  {
+    "id": "p032",
+    "kana": "かいぎはなんじにはじまりますか",
+    "topic": "work",
+    "level": "easy",
+    "meanings": {
+      "en": "What time does the meeting start?",
+      "zh": "会议几点开始？"
+    }
+  },
+  {
+    "id": "p033",
+    "kana": "わたしはまいあさろくじにおきます",
+    "topic": "daily",
+    "level": "easy",
+    "meanings": {
+      "en": "I get up at six every morning.",
+      "zh": "我每天早上六点起床。"
+    }
+  },
+  {
+    "id": "p034",
+    "kana": "きのうあたらしいくつをかいました",
+    "topic": "shopping",
+    "level": "easy",
+    "meanings": {
+      "en": "I bought new shoes yesterday.",
+      "zh": "昨天我买了新鞋。"
+    }
+  },
+  {
+    "id": "p035",
+    "kana": "としょかんでほんをかりました",
+    "topic": "education",
+    "level": "easy",
+    "meanings": {
+      "en": "I borrowed a book from the library.",
+      "zh": "我从图书馆借了一本书。"
+    }
+  },
+  {
+    "id": "p036",
+    "kana": "おてあらいはどこにありますか",
+    "topic": "places",
+    "level": "easy",
+    "meanings": {
+      "en": "Where is the restroom?",
+      "zh": "洗手间在哪里？"
+    }
+  },
+  {
+    "id": "p037",
+    "kana": "えきからホテルまであるいていけますか",
+    "topic": "travel",
+    "level": "med",
+    "meanings": {
+      "en": "Can I walk from the station to the hotel?",
+      "zh": "我可以从车站步行到酒店吗？"
+    }
+  },
+  {
+    "id": "p038",
+    "kana": "さいふをわすれてしまったのでおかねをかしてください",
+    "topic": "finance",
+    "level": "hard",
+    "meanings": {
+      "en": "I forgot my wallet, so please lend me some money.",
+      "zh": "我忘了带钱包，请借给我点钱。"
+    }
+  },
+  {
+    "id": "p039",
+    "kana": "あのみせのケーキはあまくておいしいですよ",
+    "topic": "food",
+    "level": "med",
+    "meanings": {
+      "en": "The cake at that shop is sweet and delicious.",
+      "zh": "那家店的蛋糕又甜又好吃。"
+    }
+  },
+  {
+    "id": "p040",
+    "kana": "かれはいつもおそくおきてきます",
+    "topic": "daily",
+    "level": "med",
+    "meanings": {
+      "en": "He always wakes up late.",
+      "zh": "他总是很晚才起床。"
+    }
+  },
+  {
+    "id": "p041",
+    "kana": "おんがくをききながらしごとをします",
+    "topic": "work",
+    "level": "med",
+    "meanings": {
+      "en": "I work while listening to music.",
+      "zh": "我边听音乐边工作。"
+    }
+  },
+  {
+    "id": "p042",
+    "kana": "こどものころよくこのこうえんであそびました",
+    "topic": "places",
+    "level": "hard",
+    "meanings": {
+      "en": "When I was a child, I used to play in this park often.",
+      "zh": "小时候，我经常在这个公园玩。"
+    }
+  },
+  {
+    "id": "p043",
+    "kana": "にほんのぶんかについてもっとしりたいです",
+    "topic": "culture",
+    "level": "hard",
+    "meanings": {
+      "en": "I want to know more about Japanese culture.",
+      "zh": "我想更多地了解日本文化。"
+    }
+  },
+  {
+    "id": "p044",
+    "kana": "きょうはかぜがつよいのできをつけてください",
+    "topic": "weather",
+    "level": "med",
+    "meanings": {
+      "en": "The wind is strong today, so please be careful.",
+      "zh": "今天风很大，请注意安全。"
+    }
+  },
+  {
+    "id": "p045",
+    "kana": "おんせんにはいってリラックスしたいです",
+    "topic": "health",
+    "level": "med",
+    "meanings": {
+      "en": "I want to relax by taking a hot spring bath.",
+      "zh": "我想泡个温泉放松一下。"
+    }
+  },
+  {
+    "id": "p046",
+    "kana": "らいねんだいがくをそつぎょうするよていです",
+    "topic": "education",
+    "level": "hard",
+    "meanings": {
+      "en": "I plan to graduate from university next year.",
+      "zh": "我打算明年大学毕业。"
+    }
+  },
+  {
+    "id": "p047",
+    "kana": "このパソコンはすこしふるいですがまだつかえます",
+    "topic": "technology",
+    "level": "hard",
+    "meanings": {
+      "en": "This computer is a bit old, but it can still be used.",
+      "zh": "这台电脑有点旧，但还能用。"
+    }
+  },
+  {
+    "id": "p048",
+    "kana": "スマホのバッテリーがもうすぐなくなります",
+    "topic": "technology",
+    "level": "med",
+    "meanings": {
+      "en": "My smartphone battery is about to die.",
+      "zh": "我的手机快没电了。"
+    }
+  },
+  {
+    "id": "p049",
+    "kana": "あたらしいことばをおぼえるのはたいへんです",
+    "topic": "education",
+    "level": "hard",
+    "meanings": {
+      "en": "It is hard to learn new words.",
+      "zh": "学习新单词很辛苦。"
+    }
+  },
+  {
+    "id": "p050",
+    "kana": "わたしのしゅみはしゃしんをとることです",
+    "topic": "hobbies",
+    "level": "med",
+    "meanings": {
+      "en": "My hobby is taking pictures.",
+      "zh": "我的爱好是拍照。"
+    }
+  },
+  {
+    "id": "p051",
+    "kana": "しゅうまつはかぞくとドライブにいきます",
+    "topic": "family",
+    "level": "med",
+    "meanings": {
+      "en": "I go for a drive with my family on weekends.",
+      "zh": "周末我会和家人去兜风。"
+    }
+  },
+  {
+    "id": "p052",
+    "kana": "このりょうりはどうやってつくるのですか",
+    "topic": "food",
+    "level": "med",
+    "meanings": {
+      "en": "How do you make this dish?",
+      "zh": "这道菜是怎么做的？"
+    }
+  },
+  {
+    "id": "p053",
+    "kana": "へやがきたないのでこれからそうじをします",
+    "topic": "daily",
+    "level": "hard",
+    "meanings": {
+      "en": "My room is dirty, so I'm going to clean it now.",
+      "zh": "房间很脏，我得打扫一下。"
+    }
+  },
+  {
+    "id": "p054",
+    "kana": "じてんしゃにのってかいものにいきます",
+    "topic": "shopping",
+    "level": "med",
+    "meanings": {
+      "en": "I ride my bicycle to go shopping.",
+      "zh": "我骑自行车去购物。"
+    }
+  },
+  {
+    "id": "p055",
+    "kana": "さむいのであたたかいおちゃをのみたいです",
+    "topic": "food",
+    "level": "med",
+    "meanings": {
+      "en": "It is cold, so I want to drink hot tea.",
+      "zh": "太冷了，我想喝点热茶。"
+    }
+  },
+  {
+    "id": "p056",
+    "kana": "くうこうにはたくさんのひとがいました",
+    "topic": "travel",
+    "level": "med",
+    "meanings": {
+      "en": "There were many people at the airport.",
+      "zh": "机场里有很多人。"
+    }
+  },
+  {
+    "id": "p057",
+    "kana": "このきかいのつかいかたをおしえてください",
+    "topic": "technology",
+    "level": "med",
+    "meanings": {
+      "en": "Please teach me how to use this machine.",
+      "zh": "请教我如何使用这台机器。"
+    }
+  },
+  {
+    "id": "p058",
+    "kana": "じかんがないのでいそいでください",
+    "topic": "time",
+    "level": "med",
+    "meanings": {
+      "en": "We don't have time, so please hurry.",
+      "zh": "没时间了，请快点。"
+    }
+  },
+  {
+    "id": "p059",
+    "kana": "あしたのパーティーにはだれがきますか",
+    "topic": "entertainment",
+    "level": "med",
+    "meanings": {
+      "en": "Who is coming to tomorrow's party?",
+      "zh": "谁会来明天的派对？"
+    }
+  },
+  {
+    "id": "p060",
+    "kana": "にほんごのテストはとてもむずかしかったです",
+    "topic": "education",
+    "level": "med",
+    "meanings": {
+      "en": "The Japanese test was very difficult.",
+      "zh": "日语考试非常难。"
+    }
+  }
+]

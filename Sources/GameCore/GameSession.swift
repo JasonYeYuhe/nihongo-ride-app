@@ -106,6 +106,35 @@ public final class GameSession {
         loadCurrent()
     }
 
+    /// Builds a passage-driven session: every queue item is a full sentence
+    /// (the passage's kana) — used by Practice "long-text" mode. Uses passages
+    /// at or below `level`; difficulty rises as you progress through the run.
+    public static func makePractice(
+        passages: PassageStore = .shared,
+        level: Passage.Level = .hard,
+        config: Config = .init(),
+        now: @escaping () -> Date = Date.init
+    ) -> GameSession {
+        let order: [Passage.Level] = [.easy, .med, .hard]
+        let cutoff = order.firstIndex(of: level) ?? order.count - 1
+        let allowed = Set(order.prefix(cutoff + 1))
+        var pool = passages.passages.filter { allowed.contains($0.level) }
+        pool.shuffle()
+        let words = pool.prefix(max(8, config.newWordCount)).map { passage -> VocabEntry in
+            VocabEntry(
+                id: "passage-\(passage.id)",
+                surface: passage.kana,
+                kana: passage.kana,
+                partsOfSpeech: ["passage"],
+                jlpt: .n5,
+                meanings: passage.meanings.mapValues { [$0] }
+            )
+        }
+        var practiceConfig = config
+        practiceConfig.mode = .practice
+        return GameSession(words: Array(words), config: practiceConfig, now: now)
+    }
+
     /// Builds a session by mixing due review words with new words from the store.
     public static func make(
         config: Config = .init(),

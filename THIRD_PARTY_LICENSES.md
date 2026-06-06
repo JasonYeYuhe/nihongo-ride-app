@@ -45,8 +45,15 @@ JLPT Resources**(<https://www.tanos.co.uk/jlpt/>,**CC BY**)。释义(中/英)为
 原创 / LLM 起草并校验,非取自上述来源。按 CC BY 要求,应在 App「关于/致谢」页署名:
 *"JLPT vocabulary readings & levels based on Jonathan Waller's JLPT Resources (tanos.co.uk), CC BY."*
 
+## Tatoeba 文章/句子(已使用)
+
+Practice 模式的「文章/句子」资源(`Sources/VocabKit/Resources/passages.json`)中的
+**日文句子与英文翻译**取自 **Tatoeba Project**(<https://tatoeba.org>),按 **CC BY 2.0 FR**
+使用。我们仅取了纯假名句子(无汉字),并在本项目内为每条添加了中文翻译、主题标签与难度标注。
+按 CC BY 要求,「关于/致谢」页应署名:
+*"Practice sentences derived from Tatoeba Project (tatoeba.org), CC BY 2.0 FR."*
+
 ## 计划中(后续引入,届时在此补全署名)
 
 - **JMdict / KANJIDIC2** —— © James William Breen & EDRDG,CC BY-SA 4.0 —— <https://www.edrdg.org/edrdg/licence.html>
-- **例句** —— Tatoeba(<https://tatoeba.org>),CC BY 2.0 FR(目前例句为 LLM 原创,未取自 Tatoeba)
 - **词频(可选)** —— wordfreq,CC BY-SA 4.0
