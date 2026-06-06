@@ -4,7 +4,8 @@ import PackageDescription
 let package = Package(
     name: "NihongoRide",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v14),
+        .iOS(.v17)
     ],
     products: [
         // Pure-Swift logic libraries (UI-independent, fully testable).

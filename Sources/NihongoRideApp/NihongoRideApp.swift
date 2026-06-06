@@ -1,23 +1,36 @@
 import SwiftUI
-import AppKit
 import GameCore
+#if os(macOS)
+import AppKit
+#elseif os(iOS)
+import UIKit
+#endif
 
 @main
 struct NihongoRideApp: App {
+    #if os(macOS)
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    #elseif os(iOS)
+    @UIApplicationDelegateAdaptor(IOSAppDelegate.self) private var appDelegate
+    #endif
     @State private var model = AppModel()
 
     var body: some Scene {
         WindowGroup("Nihongo Ride") {
             RootView()
                 .environment(model)
+                #if os(macOS)
                 .frame(minWidth: 880, minHeight: 600)
+                #endif
         }
+        #if os(macOS)
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentMinSize)
+        #endif
     }
 }
 
+#if os(macOS)
 /// Activates the app when launched via `swift run` (no bundle to do it for us).
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -41,6 +54,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
 }
+#elseif os(iOS)
+/// iOS launch hook — only used for the dev-only screenshot mode (gated behind an
+/// env var that is never set in shipping builds).
+final class IOSAppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        if ProcessInfo.processInfo.environment["NIHONGO_SHOT"] != nil {
+            // iOS sandbox: write into the app's Documents container.
+            let dir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                Screenshotter.capture(into: dir)
+                exit(0)
+            }
+        }
+        return true
+    }
+}
+#endif
 
 struct RootView: View {
     @Environment(AppModel.self) private var model

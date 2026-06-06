@@ -19,6 +19,7 @@ options:
   bundleIdPrefix: com.jasonye
   deploymentTarget:
     macOS: "14.0"
+    iOS: "17.0"
   developmentLanguage: en
   generateEmptyDirectories: true
   groupSortPosition: top
@@ -98,11 +99,72 @@ targets:
         # Don't auto-define SWIFT_PACKAGE here — Xcode only defines it for SPM
         # source compilation, and we WANT it undefined for the App target.
 
+  # iOS app — same shared SwiftUI sources, platform-conditional input/sound/entry.
+  # Same bundle ID so it lives under the one App Store Connect record (universal).
+  NihongoRideiOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources/NihongoRideApp
+        excludes:
+          - "Resources"
+      - path: xcode/Assets.xcassets
+      - path: xcode/Info-iOS.plist
+        buildPhase: none
+    info:
+      path: xcode/Info-iOS.plist
+      properties:
+        CFBundleDisplayName: Nihongo Ride
+        CFBundleName: Nihongo Ride
+        LSApplicationCategoryType: public.app-category.education
+        ITSAppUsesNonExemptEncryption: false
+        UILaunchScreen: {}
+        UIRequiresFullScreen: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    dependencies:
+      - package: Nihongo
+        product: RomajiKana
+      - package: Nihongo
+        product: VocabKit
+      - package: Nihongo
+        product: ReviewKit
+      - package: Nihongo
+        product: GameCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride
+        PRODUCT_NAME: Nihongo Ride
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        # iPad-only: a landscape typing game with an immersive ride scene is a
+        # great fit for the larger screen + common hardware keyboards, and the
+        # 4:3 layout mirrors the macOS app. (iPhone landscape + on-screen
+        # keyboard is a poor fit; revisit with a portrait redesign later.)
+        TARGETED_DEVICE_FAMILY: "2"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
 schemes:
   NihongoRide:
     build:
       targets:
         NihongoRide: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+  NihongoRideiOS:
+    build:
+      targets:
+        NihongoRideiOS: all
     run:
       config: Debug
     archive:

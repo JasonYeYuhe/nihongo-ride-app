@@ -1,10 +1,12 @@
 import SwiftUI
-import AppKit
 
 /// Non-character control keys we care about.
 enum KeyCommand {
     case escape, returnKey, backspace, space
 }
+
+#if os(macOS)
+import AppKit
 
 /// A custom `NSView` that captures raw key-down events and **bypasses the system
 /// IME** by deliberately *not* adopting `NSTextInputClient` and *not* calling
@@ -19,7 +21,6 @@ final class KeyCaptureNSView: NSView {
 
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
-        // Take first responder once the window exists.
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             self.window?.makeFirstResponder(self)
@@ -27,7 +28,6 @@ final class KeyCaptureNSView: NSView {
     }
 
     override func keyDown(with event: NSEvent) {
-        // Control keys by physical key code (layout-independent).
         switch event.keyCode {
         case 53: onCommand?(.escape); return
         case 36, 76: onCommand?(.returnKey); return     // Return / keypad Enter
@@ -35,21 +35,15 @@ final class KeyCaptureNSView: NSView {
         case 49: onCommand?(.space); return             // Space (consumed → no system beep)
         default: break
         }
-
-        // Romaji letters / punctuation. Use charactersIgnoringModifiers (dead-key
-        // resistant) and normalize to lowercase; never forward to interpretKeyEvents.
         guard let characters = event.charactersIgnoringModifiers, !characters.isEmpty else { return }
         for character in characters.lowercased() {
             onKey?(character)
         }
     }
 
-    // Swallow keyUp too so nothing leaks to the responder chain / system beep.
     override func keyUp(with event: NSEvent) { }
 }
 
-/// SwiftUI wrapper. Place it in the view hierarchy (e.g. as a background) so it
-/// can become first responder and feed keystrokes to the game.
 struct KeyCaptureView: NSViewRepresentable {
     var onKey: (Character) -> Void
     var onCommand: (KeyCommand) -> Void = { _ in }
@@ -66,3 +60,77 @@ struct KeyCaptureView: NSViewRepresentable {
         nsView.onCommand = onCommand
     }
 }
+
+#elseif os(iOS)
+import UIKit
+
+/// A `UIKeyInput` view that brings up the keyboard (on-screen on iPhone, or a
+/// hardware keyboard on iPad) and feeds each typed character to the game. Both
+/// software and hardware keyboards route character keys through `insertText`, so
+/// one mechanism covers every device. Autocorrect/auto-capitalization are off so
+/// romaji is delivered verbatim — our mini-IME, not the system IME, does kana.
+final class KeyCaptureUIView: UIView, UIKeyInput {
+    var onKey: ((Character) -> Void)?
+    var onCommand: ((KeyCommand) -> Void)?
+
+    override var canBecomeFirstResponder: Bool { true }
+
+    // UITextInputTraits — keep the input raw (no smart substitutions).
+    var keyboardType: UIKeyboardType = .asciiCapable
+    var autocapitalizationType: UITextAutocapitalizationType = .none
+    var autocorrectionType: UITextAutocorrectionType = .no
+    var smartDashesType: UITextSmartDashesType = .no
+    var smartQuotesType: UITextSmartQuotesType = .no
+    var smartInsertDeleteType: UITextSmartInsertDeleteType = .no
+    var spellCheckingType: UITextSpellCheckingType = .no
+    var returnKeyType: UIReturnKeyType = .next
+
+    // UIKeyInput
+    var hasText: Bool { false }
+
+    func insertText(_ text: String) {
+        for ch in text {
+            if ch == " " {
+                onCommand?(.space)
+            } else if ch == "\n" || ch == "\r" {
+                onCommand?(.returnKey)
+            } else {
+                for c in String(ch).lowercased() { onKey?(c) }
+            }
+        }
+    }
+
+    func deleteBackward() { onCommand?(.backspace) }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window != nil {
+            DispatchQueue.main.async { [weak self] in _ = self?.becomeFirstResponder() }
+        }
+    }
+
+    // Hardware-keyboard Escape support.
+    override var keyCommands: [UIKeyCommand]? {
+        [UIKeyCommand(input: UIKeyCommand.inputEscape, modifierFlags: [], action: #selector(handleEscape))]
+    }
+
+    @objc private func handleEscape() { onCommand?(.escape) }
+}
+
+struct KeyCaptureView: UIViewRepresentable {
+    var onKey: (Character) -> Void
+    var onCommand: (KeyCommand) -> Void = { _ in }
+
+    func makeUIView(context: Context) -> KeyCaptureUIView {
+        let view = KeyCaptureUIView()
+        view.onKey = onKey
+        view.onCommand = onCommand
+        return view
+    }
+
+    func updateUIView(_ uiView: KeyCaptureUIView, context: Context) {
+        uiView.onKey = onKey
+        uiView.onCommand = onCommand
+    }
+}
+#endif

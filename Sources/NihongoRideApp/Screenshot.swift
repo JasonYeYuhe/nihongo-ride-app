@@ -1,5 +1,9 @@
 import SwiftUI
+#if os(macOS)
 import AppKit
+#elseif os(iOS)
+import UIKit
+#endif
 
 /// Renders the app's screens to PNGs via SwiftUI `ImageRenderer` (no window,
 /// no screen-recording permission). Triggered by `NIHONGO_SHOT=<dir>`:
@@ -14,7 +18,12 @@ enum Screenshotter {
         // App Store mode: 1440×900 logical × @2x scale = 2880×1800 actual PNG,
         // the preferred macOS App Store screenshot resolution.
         let storeMode = ProcessInfo.processInfo.environment["NIHONGO_SHOT_STORE"] != nil
+        #if os(iOS)
+        // iPad 13" landscape logical points (×2 scale → 2752×2064 store size).
+        let size = CGSize(width: 1376, height: 1032)
+        #else
         let size = storeMode ? CGSize(width: 1440, height: 900) : CGSize(width: 1000, height: 700)
+        #endif
 
         // Optional UI language for the rendered screenshots (NIHONGO_SHOT_LANG=zh).
         let shotLang = ProcessInfo.processInfo.environment["NIHONGO_SHOT_LANG"] ?? "en"
@@ -102,16 +111,25 @@ enum Screenshotter {
                 .frame(width: size.width, height: size.height)
                 .environment(\.colorScheme, .dark)
         )
-        renderer.scale = 2
-        guard let image = renderer.nsImage,
-              let tiff = image.tiffRepresentation,
-              let rep = NSBitmapImageRep(data: tiff),
-              let png = rep.representation(using: .png, properties: [:])
-        else {
+        renderer.scale = scale
+        var data: Data?
+        #if os(macOS)
+        if let image = renderer.nsImage,
+           let tiff = image.tiffRepresentation,
+           let rep = NSBitmapImageRep(data: tiff) {
+            data = rep.representation(using: .png, properties: [:])
+        }
+        #elseif os(iOS)
+        data = renderer.uiImage?.pngData()
+        #endif
+        guard let png = data else {
             FileHandle.standardError.write(Data("screenshot render failed: \(path)\n".utf8))
             return
         }
         try? png.write(to: URL(fileURLWithPath: path))
         FileHandle.standardError.write(Data("wrote \(path)\n".utf8))
     }
+
+    /// Render scale: 2× (macOS Retina, and iPad @2x → 2752×2064 store size).
+    private static var scale: CGFloat { 2 }
 }
