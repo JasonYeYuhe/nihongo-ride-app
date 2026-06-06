@@ -11,7 +11,10 @@ enum Screenshotter {
 
     @MainActor static func capture(into directory: String) {
         isCapturing = true
-        let size = CGSize(width: 1000, height: 700)
+        // App Store mode: 1440×900 logical × @2x scale = 2880×1800 actual PNG,
+        // the preferred macOS App Store screenshot resolution.
+        let storeMode = ProcessInfo.processInfo.environment["NIHONGO_SHOT_STORE"] != nil
+        let size = storeMode ? CGSize(width: 1440, height: 900) : CGSize(width: 1000, height: 700)
 
         // Menu
         render(RootView().environment(AppModel()), size: size, to: directory + "/menu.png")

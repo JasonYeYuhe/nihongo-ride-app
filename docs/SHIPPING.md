@@ -29,9 +29,15 @@
   - 支持网址、营销网址(可指向同一 GitHub Pages 占位)
   - **隐私政策 URL**(必填)——本 App **无网络、无追踪、无账号**,SRS 数据仅本地;隐私政策可写"本应用不收集任何用户数据"
 - [ ] 准备 **应用支持邮箱**(必填)
-- [ ] **截图**:macOS Store 需要 1280×800 或 2880×1800(2x)截图至少 1 张,推荐 3-5 张
-  - 已有自渲染脚本:`NIHONGO_SHOT=/tmp/shots swift run NihongoDashApp`(菜单 / 游戏 / 中段 / 结算 / Practice / Practice-Blind)
-  - 但脚本输出 1000×700,真上架需提高到 1280×800 或 2880×1800;改 `Screenshotter.capture` 里的 size
+- [ ] **截图**:macOS Store 需要 **2880×1800**(Retina,推荐)或 1280×800,1-10 张
+  - 用 **store 模式** 一键渲染:
+    ```sh
+    mkdir -p /tmp/nihongo-store
+    NIHONGO_SHOT=/tmp/nihongo-store NIHONGO_SHOT_STORE=1 swift run NihongoDashApp
+    ```
+  - 输出:menu / game / game-mid / results / practice / practice-blind 全部 2880×1800
+  - 建议上架顺序:**game** → **practice** → **menu** → **results** → **practice-blind**(展示骑行 + 文章 + 选项 + 评级 + 高级模式)
+  - 文案可以放 Figma 里给截图加 tagline 叠加(本仓库不重复造 Figma 工作)
 
 ---
 
