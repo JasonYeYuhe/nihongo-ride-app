@@ -11,3 +11,6 @@ DerivedData/
 
 # macOS
 .DS_Store
+
+# Generated reviewer CSVs — regenerate via scripts/export_review_sheets.py
+/review-sheets/
