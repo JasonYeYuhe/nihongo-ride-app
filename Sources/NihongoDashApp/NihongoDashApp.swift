@@ -45,15 +45,35 @@ struct RootView: View {
     var body: some View {
         ZStack {
             Theme.background.ignoresSafeArea()
-            switch model.screen {
-            case .menu:    MenuView()
-            case .playing:
-                if model.session?.mode == .practice { PracticeView() } else { GameView() }
-            case .results: ResultsView()
-            }
+            screen
+                .transition(.screenLift)
+                .id(model.screen)
         }
-        .animation(.smooth(duration: 0.35), value: model.screen)
+        .animation(.spring(response: 0.42, dampingFraction: 0.86), value: model.screen)
         .preferredColorScheme(.dark)
+    }
+
+    @ViewBuilder private var screen: some View {
+        switch model.screen {
+        case .menu:    MenuView()
+        case .playing:
+            if model.session?.mode == .practice { PracticeView() } else { GameView() }
+        case .results: ResultsView()
+        }
+    }
+}
+
+extension AnyTransition {
+    /// New screen rises ~14pt from below + scales up from 0.97 with fade.
+    /// Old screen drops slightly + fades. Gives presence without feeling slow.
+    static var screenLift: AnyTransition {
+        .asymmetric(
+            insertion: .scale(scale: 0.97, anchor: .center)
+                .combined(with: .move(edge: .bottom))
+                .combined(with: .opacity),
+            removal: .scale(scale: 1.02, anchor: .center)
+                .combined(with: .opacity)
+        )
     }
 }
 
