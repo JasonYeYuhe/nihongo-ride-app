@@ -9,16 +9,17 @@ struct ResultsView: View {
     var body: some View {
         let summary = model.lastSummary
 
-        VStack(spacing: 26) {
-            Spacer()
+        VStack(spacing: 20) {
+            Spacer(minLength: 0)
 
             Text("🏁")
-                .font(.system(size: 60))
+                .font(.system(size: 50))
             Text(zh ? "到站!" : "You've arrived!")
-                .font(.system(size: 40, weight: .heavy, design: .rounded))
+                .font(.system(size: 36, weight: .heavy, design: .rounded))
                 .foregroundStyle(.white)
 
             if let summary {
+                grade(for: summary)
                 HStack(spacing: 14) {
                     scoreCard(icon: "star.fill", tint: Theme.gold,
                               value: "\(summary.score)", label: zh ? "得分" : "Score")
@@ -92,6 +93,58 @@ struct ResultsView: View {
         }
         .frame(width: 150, height: 120)
         .panel(20)
+    }
+
+    // MARK: Grade
+
+    private enum Grade { case flawless, steady, building, lap }
+
+    private func gradeOf(_ s: GameSummary) -> Grade {
+        let clean = s.reviewWords.isEmpty
+        if s.accuracy >= 0.97 && clean && s.maxCombo >= max(5, s.wordsCompleted - 1) {
+            return .flawless
+        }
+        if s.accuracy >= 0.90 && s.reviewWords.count <= 2 { return .steady }
+        if s.accuracy >= 0.75 && s.wordsCompleted > 0 { return .building }
+        return .lap
+    }
+
+    private func grade(for s: GameSummary) -> some View {
+        let g = gradeOf(s)
+        let (title, tint): (String, Color) = {
+            switch g {
+            case .flawless: return (zh ? "完美" : "Flawless", Theme.gold)
+            case .steady:   return (zh ? "稳健" : "Steady",   Theme.done)
+            case .building: return (zh ? "有进步" : "Building", Theme.accent2)
+            case .lap:      return (zh ? "再来一程" : "Take another lap", Theme.accent)
+            }
+        }()
+        let line: String = {
+            if zh {
+                switch g {
+                case .flawless: return "几乎一个错都没有,一路飞驰。"
+                case .steady:   return "节奏稳,准确率不错。"
+                case .building: return "正在打磨手感,继续。"
+                case .lap:      return "深呼吸,再来一程会更顺。"
+                }
+            } else {
+                switch g {
+                case .flawless: return "Barely a missed key. Pure flow."
+                case .steady:   return "Solid pace, clean accuracy."
+                case .building: return "You're tuning the rhythm. Keep going."
+                case .lap:      return "Take a breath — the next lap will feel better."
+                }
+            }
+        }()
+        return VStack(spacing: 6) {
+            Text(title.uppercased())
+                .font(.system(size: 14, weight: .black, design: .rounded))
+                .tracking(4)
+                .foregroundStyle(tint)
+            Text(line)
+                .font(.system(size: 13, weight: .regular))
+                .foregroundStyle(Theme.dim)
+        }
     }
 
     private func reviewList(_ words: [VocabEntry]) -> some View {
