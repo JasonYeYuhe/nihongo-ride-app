@@ -49,7 +49,7 @@ struct GameView: View {
                         switch session.input(character) {
                         case .completed: Sound.wordComplete()
                         case .rejected: Sound.mistake()
-                        case .accepted: break
+                        case .accepted: Sound.tick()
                         }
                     },
                     onCommand: { command in
