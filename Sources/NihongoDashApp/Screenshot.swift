@@ -59,6 +59,21 @@ enum Screenshotter {
             for character in romaji.prefix(romaji.count / 3) { _ = practice.session?.input(character) }
         }
         render(RootView().environment(practice), size: size, to: directory + "/practice.png")
+
+        // Practice BLIND mode (no romaji hint)
+        let blind = AppModel()
+        blind.selectedMode = .practice
+        blind.practicePassages = true
+        blind.practicePassageLevel = .hard
+        blind.showRomajiHint = false
+        for _ in 0 ..< 30 {
+            blind.startGame()
+            if let k = blind.session?.currentKana, k.count > 40 { break }
+        }
+        if let romaji = blind.session?.currentRomaji {
+            for character in romaji.prefix(romaji.count / 2) { _ = blind.session?.input(character) }
+        }
+        render(RootView().environment(blind), size: size, to: directory + "/practice-blind.png")
     }
 
     @MainActor private static func render(_ view: some View, size: CGSize, to path: String) {

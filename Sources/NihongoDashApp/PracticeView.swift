@@ -39,7 +39,9 @@ struct PracticeView: View {
                 } else {
                     passage(session)
                 }
-                romajiGuide(session).padding(.top, 28)
+                if model.showRomajiHint {
+                    romajiGuide(session).padding(.top, 28)
+                }
                 Spacer()
                 statsRow(session)
             }
@@ -69,6 +71,13 @@ struct PracticeView: View {
             Text("PRACTICE · \(s.currentLevelLabel)")
                 .font(.system(size: 12, weight: .bold)).tracking(3)
                 .foregroundStyle(ink.opacity(0.4))
+            if !model.showRomajiHint {
+                Text("BLIND").font(.system(size: 11, weight: .heavy)).tracking(2)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 8).padding(.vertical, 2)
+                    .background(accent, in: Capsule())
+                    .padding(.leading, 6)
+            }
             Spacer()
             Text(model.languageCode == "zh" ? "Enter 下一段 · Esc 结束" : "Enter for next · Esc to finish")
                 .font(.system(size: 12, weight: .medium)).foregroundStyle(ink.opacity(0.35))
