@@ -101,6 +101,21 @@ struct GameSessionTests {
         #expect(session.currentKana == nil)
     }
 
+    @Test("makePractice queues passages and runs in practice mode")
+    func makePractice() {
+        let session = GameSession.makePractice(level: .easy, config: .init(newWordCount: 5))
+        #expect(session.mode == .practice)
+        #expect(session.wordCount > 0)
+        #expect(session.current?.id.hasPrefix("passage-") == true)
+        // The typing target is pure kana.
+        let kana = session.currentKana ?? ""
+        for scalar in kana.unicodeScalars {
+            let v = scalar.value
+            let isKana = (0x3041...0x3094).contains(v) || (0x30A1...0x30FA).contains(v) || v == 0x30FC
+            #expect(isKana, "passage target should be pure kana, got U+\(String(v, radix: 16))")
+        }
+    }
+
     @Test("lapsed words (skipped / hinted) are collected for review")
     func lapsedTracking() {
         let session = GameSession(words: [makeEntry("a", "水", "みず"), makeEntry("b", "猫", "ねこ")])

@@ -125,7 +125,17 @@ struct PracticeView: View {
             .frame(maxWidth: 760, alignment: .leading)
     }
 
-    private func isPunct(_ c: Character) -> Bool { "、。？！「」『』 ".contains(c) }
+    /// True for kana that the engine considers a typing target — hiragana
+    /// (U+3041…U+3094), katakana (U+30A1…U+30FA), or the prolonged-sound mark ー.
+    /// Allow-list (not deny) so stray punctuation/whitespace can't desync the caret.
+    private func isTypingKana(_ c: Character) -> Bool {
+        c.unicodeScalars.allSatisfy { s in
+            (0x3041...0x3094).contains(s.value) ||
+            (0x30A1...0x30FA).contains(s.value) ||
+            s.value == 0x30FC
+        }
+    }
+    private func isPunct(_ c: Character) -> Bool { !isTypingKana(c) }
 
     /// Looks up the original (punctuated) text for the current passage; falls back to kana.
     private func displayText(for s: GameSession) -> String {
