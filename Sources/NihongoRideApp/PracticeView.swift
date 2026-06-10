@@ -14,6 +14,7 @@ struct PracticeView: View {
     @State private var startedAt = Date()
     @State private var now = Date()
     @State private var passageOpacity: Double = 1.0
+    @State private var keyboardUp = false   // iOS: software keyboard visible → compact layout
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     private let paper = Color(red: 0.96, green: 0.94, blue: 0.88)
@@ -50,12 +51,14 @@ struct PracticeView: View {
                 Spacer()
                 if model.practicePassages, let total = session.currentKana?.count, total > 0 {
                     passageProgress(done: session.completedKanaCount, total: total)
-                        .padding(.bottom, 14)
+                        .padding(.bottom, keyboardUp ? 0 : 14)
                 }
-                statsRow(session)
+                if !keyboardUp { statsRow(session) }
             }
-            .padding(44)
+            .padding(keyboardUp ? 20 : 44)
         }
+        .summonKeyboardOnTap()
+        .observingKeyboard($keyboardUp)
         .background {
             if !Screenshotter.isCapturing {
                 KeyCaptureView(
@@ -93,9 +96,33 @@ struct PracticeView: View {
                     .padding(.leading, 6)
             }
             Spacer()
-            Text(model.languageCode == "zh" ? "Enter 下一段 · Esc 结束" : "Enter for next · Esc to finish")
-                .font(.system(size: 12, weight: .medium)).foregroundStyle(ink.opacity(0.35))
+            if isTouchDevice {
+                // Touch-only iPads need tappable controls — Enter/Esc shortcuts
+                // don't exist on the software keyboard.
+                HStack(spacing: 10) {
+                    topButton(model.languageCode == "zh" ? "下一段 ▸" : "Next ▸",
+                              id: "practiceNext") { s.skip() }
+                    topButton(model.languageCode == "zh" ? "完成" : "Done",
+                              id: "practiceDone") { model.finishGame() }
+                }
+            } else {
+                Text(model.languageCode == "zh" ? "Enter 下一段 · Esc 结束" : "Enter for next · Esc to finish")
+                    .font(.system(size: 12, weight: .medium)).foregroundStyle(ink.opacity(0.35))
+            }
         }
+    }
+
+    private func topButton(_ title: String, id: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 14, weight: .semibold))
+                .padding(.horizontal, 16).padding(.vertical, 8)
+                .background(ink.opacity(0.07), in: Capsule())
+                .overlay(Capsule().strokeBorder(ink.opacity(0.12)))
+                .foregroundStyle(ink.opacity(0.72))
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier(id)
     }
 
     // MARK: Flowing passage

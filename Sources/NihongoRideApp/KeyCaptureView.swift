@@ -64,14 +64,35 @@ struct KeyCaptureView: NSViewRepresentable {
 #elseif os(iOS)
 import UIKit
 
-/// A `UIKeyInput` view that brings up the keyboard (on-screen on iPhone, or a
-/// hardware keyboard on iPad) and feeds each typed character to the game. Both
-/// software and hardware keyboards route character keys through `insertText`, so
-/// one mechanism covers every device. Autocorrect/auto-capitalization are off so
-/// romaji is delivered verbatim — our mini-IME, not the system IME, does kana.
+/// Posts a request for the key-capture view to (re)claim first responder and
+/// bring the on-screen keyboard back. Game screens post this from a whole-screen
+/// tap gesture so a dismissed keyboard is never a dead end on touch-only iPads.
+enum KeyboardSummon {
+    static let notification = Notification.Name("NihongoRideSummonKeyboard")
+    @MainActor static func summon() {
+        NotificationCenter.default.post(name: notification, object: nil)
+    }
+}
+
+/// A `UIKeyInput` view that brings up the keyboard (on-screen on iPad, or a
+/// hardware keyboard when attached) and feeds each typed character to the game.
+/// Both software and hardware keyboards route character keys through
+/// `insertText`, so one mechanism covers every device. Autocorrect and
+/// auto-capitalization are off so romaji is delivered verbatim — our mini-IME,
+/// not the system IME, does the kana.
+///
+/// First-responder acquisition is deliberately persistent: a single
+/// `becomeFirstResponder()` can fail while the SwiftUI screen-change transition
+/// is still animating, and on a touch-only iPad a missing keyboard would make
+/// the game screen a dead end (App Review rejection 2.1a, 2026-06-10). So the
+/// view retries until it sticks, re-asserts when the app re-activates, and
+/// answers `KeyboardSummon` requests posted by tap-anywhere gestures.
 final class KeyCaptureUIView: UIView, UIKeyInput {
     var onKey: ((Character) -> Void)?
     var onCommand: ((KeyCommand) -> Void)?
+
+    private var retryTimer: Timer?
+    private var retriesLeft = 0
 
     override var canBecomeFirstResponder: Bool { true }
 
@@ -84,6 +105,17 @@ final class KeyCaptureUIView: UIView, UIKeyInput {
     var smartInsertDeleteType: UITextSmartInsertDeleteType = .no
     var spellCheckingType: UITextSpellCheckingType = .no
     var returnKeyType: UIReturnKeyType = .next
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(reclaimFirstResponder),
+                           name: KeyboardSummon.notification, object: nil)
+        center.addObserver(self, selector: #selector(reclaimFirstResponder),
+                           name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+
+    required init?(coder: NSCoder) { fatalError("unused") }
 
     // UIKeyInput
     var hasText: Bool { false }
@@ -105,8 +137,44 @@ final class KeyCaptureUIView: UIView, UIKeyInput {
     override func didMoveToWindow() {
         super.didMoveToWindow()
         if window != nil {
-            DispatchQueue.main.async { [weak self] in _ = self?.becomeFirstResponder() }
+            startRetryLoop()
+        } else {
+            stopRetryLoop()
+            // Leaving the game screen: hand the keyboard back so it doesn't
+            // linger over the menu/results.
+            if isFirstResponder { resignFirstResponder() }
         }
+    }
+
+    /// Try now, and keep trying on a short interval until first responder
+    /// sticks (covers the screen-change transition window).
+    private func startRetryLoop() {
+        retriesLeft = 20
+        retryTimer?.invalidate()
+        attemptBecomeFirstResponder()
+        retryTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in self?.attemptBecomeFirstResponder() }
+        }
+    }
+
+    private func stopRetryLoop() {
+        retryTimer?.invalidate()
+        retryTimer = nil
+    }
+
+    private func attemptBecomeFirstResponder() {
+        guard window != nil else { stopRetryLoop(); return }
+        if isFirstResponder || retriesLeft <= 0 {
+            stopRetryLoop()
+            return
+        }
+        retriesLeft -= 1
+        _ = becomeFirstResponder()
+    }
+
+    @objc private func reclaimFirstResponder() {
+        guard window != nil else { return }
+        startRetryLoop()
     }
 
     // Hardware-keyboard Escape support.
@@ -115,6 +183,10 @@ final class KeyCaptureUIView: UIView, UIKeyInput {
     }
 
     @objc private func handleEscape() { onCommand?(.escape) }
+
+    // No deinit needed: `didMoveToWindow(nil)` invalidates the retry timer when
+    // the view leaves the hierarchy, and selector-based NotificationCenter
+    // observers are auto-unregistered on dealloc (iOS 9+).
 }
 
 struct KeyCaptureView: UIViewRepresentable {

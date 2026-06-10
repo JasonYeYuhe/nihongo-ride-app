@@ -6,6 +6,7 @@ struct GameView: View {
     @Environment(AppModel.self) private var model
     @State private var isPaused = false
     @State private var timeRemaining = 0.0
+    @State private var keyboardUp = false   // iOS: software keyboard visible → compact layout
     private let ticker = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -23,24 +24,29 @@ struct GameView: View {
                 RideBackgroundView(speed: rideSpeed(session), landmarkPhase: landmarkPhase(session))
                 Color.black.opacity(0.18).ignoresSafeArea()   // scrim for text legibility
 
-                VStack(spacing: 22) {
-                    HUDBar(session: session, language: model.languageCode)
+                VStack(spacing: keyboardUp ? 12 : 22) {
+                    HUDBar(session: session, language: model.languageCode,
+                           onPause: isTouchDevice ? { isPaused = true } : nil)
                     if session.mode == .timeAttack {
                         TimerBar(remaining: timeRemaining, total: session.config.timeLimit ?? 1)
                     } else {
                         JourneyBar(session: session)
                     }
                     Spacer(minLength: 0)
-                    WordCard(session: session, language: model.languageCode)
-                    Spacer(minLength: 0).frame(maxHeight: 60)   // bias card lower; scene breathes above
-                    controls
+                    WordCard(session: session, language: model.languageCode, compact: keyboardUp)
+                    if !keyboardUp {
+                        Spacer(minLength: 0).frame(maxHeight: 60)   // bias card lower; scene breathes above
+                        controls
+                    }
                 }
-                .padding(32)
+                .padding(keyboardUp ? 14 : 32)
             }
             .blur(radius: isPaused ? 8 : 0)
+            .summonKeyboardOnTap()
 
             if isPaused { pauseOverlay }
         }
+        .observingKeyboard($keyboardUp)
         .background {
             if !Screenshotter.isCapturing {
                 KeyCaptureView(
@@ -94,6 +100,7 @@ struct GameView: View {
                     .buttonStyle(.plain)
                     .background(Theme.accent, in: Capsule())
                     .foregroundStyle(.white)
+                    .accessibilityIdentifier("resumeButton")
 
                     Button(action: { isPaused = false; model.finishGame() }) {
                         Text(zh ? "结束本程" : "End run")
@@ -104,9 +111,12 @@ struct GameView: View {
                     .background(Theme.card, in: Capsule())
                     .overlay(Capsule().strokeBorder(Theme.cardStroke))
                     .foregroundStyle(.white)
+                    .accessibilityIdentifier("endRunButton")
                 }
-                Text(zh ? "Esc / Enter 继续" : "Esc / Enter to resume")
-                    .font(.caption).foregroundStyle(Theme.dim)
+                if !isTouchDevice {
+                    Text(zh ? "Esc / Enter 继续" : "Esc / Enter to resume")
+                        .font(.caption).foregroundStyle(Theme.dim)
+                }
             }
             .padding(36)
             .panel(26)
@@ -124,10 +134,15 @@ struct GameView: View {
     }
 
     private var controls: some View {
-        HStack(spacing: 18) {
-            Label(model.languageCode == "zh" ? "Esc 暂停" : "Esc to pause", systemImage: "escape")
+        let zh = model.languageCode == "zh"
+        return HStack(spacing: 18) {
+            if isTouchDevice {
+                Label(zh ? "轻点屏幕呼出键盘" : "Tap screen for keyboard", systemImage: "keyboard")
+            } else {
+                Label(zh ? "Esc 暂停" : "Esc to pause", systemImage: "escape")
+            }
             if let session = model.session, !session.showRomajiHint {
-                Label(model.languageCode == "zh" ? "提示已关" : "Hints off", systemImage: "eye.slash")
+                Label(zh ? "提示已关" : "Hints off", systemImage: "eye.slash")
             }
         }
         .font(.callout)
@@ -140,6 +155,7 @@ struct GameView: View {
 private struct HUDBar: View {
     let session: GameSession
     let language: String
+    var onPause: (() -> Void)? = nil
 
     var body: some View {
         HStack(spacing: 14) {
@@ -156,8 +172,21 @@ private struct HUDBar: View {
             stat(icon: "bicycle", value: "\(Int(session.distanceMeters)) m", tint: Theme.accent2)
             stat(icon: "checkmark.circle.fill",
                  value: "\(session.wordsCompleted)/\(session.wordCount)", tint: Theme.done)
+                .accessibilityIdentifier("hudProgress")
             stat(icon: "scope",
                  value: "\(Int(session.accuracy * 100))%", tint: .white)
+            if let onPause {
+                Button(action: onPause) {
+                    Image(systemName: "pause.fill")
+                        .font(.system(size: 17, weight: .bold))
+                        .foregroundStyle(.white)
+                        .frame(width: 44, height: 34)
+                        .background(.black.opacity(0.42), in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Pause")
+                .accessibilityIdentifier("pauseButton")
+            }
         }
         .font(.system(size: 17, weight: .semibold, design: .rounded))
     }
@@ -256,24 +285,27 @@ private struct TimerBar: View {
 private struct WordCard: View {
     let session: GameSession
     let language: String
+    /// True while the on-screen keyboard occupies the lower screen (iOS) —
+    /// shrink everything so the card fits the visible upper area.
+    var compact: Bool = false
 
     var body: some View {
-        VStack(spacing: 18) {
+        VStack(spacing: compact ? 10 : 18) {
             Text(session.currentSurface ?? "")
-                .font(.system(size: 64, weight: .bold))
+                .font(.system(size: compact ? 40 : 64, weight: .bold))
                 .foregroundStyle(.white)
 
             kanaReading
 
             Text(session.currentGloss ?? "")
-                .font(.system(size: 20, weight: .medium, design: .rounded))
+                .font(.system(size: compact ? 15 : 20, weight: .medium, design: .rounded))
                 .foregroundStyle(Theme.dim)
 
-            Divider().background(Theme.cardStroke).frame(maxWidth: 360)
+            Divider().background(Theme.cardStroke).frame(maxWidth: compact ? 300 : 360)
 
             romaji
 
-            if let example = session.currentExampleJP {
+            if !compact, let example = session.currentExampleJP {
                 VStack(spacing: 3) {
                     Text(example)
                         .font(.system(size: 16, weight: .medium))
@@ -289,9 +321,9 @@ private struct WordCard: View {
             }
         }
         .frame(maxWidth: 560)
-        .padding(24)
-        .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: 28))
-        .overlay(RoundedRectangle(cornerRadius: 28).strokeBorder(.white.opacity(0.12)))
+        .padding(compact ? 14 : 24)
+        .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: compact ? 20 : 28))
+        .overlay(RoundedRectangle(cornerRadius: compact ? 20 : 28).strokeBorder(.white.opacity(0.12)))
     }
 
     /// Kana reading with committed kana tinted, the current one emphasized.
@@ -301,7 +333,7 @@ private struct WordCard: View {
         return HStack(spacing: 2) {
             ForEach(Array(kana.enumerated()), id: \.offset) { index, character in
                 Text(String(character))
-                    .font(.system(size: 40, weight: .semibold, design: .rounded))
+                    .font(.system(size: compact ? 26 : 40, weight: .semibold, design: .rounded))
                     .foregroundStyle(color(index: index, done: done))
                     .scaleEffect(index == done ? 1.12 : 1)
                     .animation(.smooth(duration: 0.15), value: done)
@@ -317,15 +349,17 @@ private struct WordCard: View {
 
     @ViewBuilder
     private var romaji: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: compact ? 5 : 8) {
             Text(session.typedRomaji.isEmpty ? " " : session.typedRomaji)
-                .font(.system(size: 26, weight: .bold, design: .monospaced))
+                .font(.system(size: compact ? 20 : 26, weight: .bold, design: .monospaced))
                 .foregroundStyle(Theme.accent2)
+                .accessibilityIdentifier("typedRomaji")
 
             if session.showRomajiHint {
                 Text("→ \(session.currentRomaji ?? "")")
-                    .font(.system(size: 18, weight: .regular, design: .monospaced))
+                    .font(.system(size: compact ? 14 : 18, weight: .regular, design: .monospaced))
                     .foregroundStyle(Theme.dim)
+                    .accessibilityIdentifier("romajiHint")
                 nextKeys
             }
         }
@@ -336,12 +370,12 @@ private struct WordCard: View {
         return HStack(spacing: 6) {
             ForEach(keys, id: \.self) { key in
                 Text(key)
-                    .font(.system(size: 14, weight: .bold, design: .monospaced))
+                    .font(.system(size: compact ? 12 : 14, weight: .bold, design: .monospaced))
                     .padding(.horizontal, 9).padding(.vertical, 4)
                     .background(Theme.accent.opacity(0.18), in: RoundedRectangle(cornerRadius: 6))
                     .foregroundStyle(Theme.accent)
             }
         }
-        .frame(height: 26)
+        .frame(height: compact ? 22 : 26)
     }
 }

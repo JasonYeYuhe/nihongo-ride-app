@@ -31,7 +31,14 @@ struct GameSummary: Equatable {
 final class AppModel {
     enum Screen: Equatable { case menu, playing, results, about }
 
-    var screen: Screen = .menu
+    var screen: Screen = .menu {
+        didSet { navCount += 1 }
+    }
+    /// Monotonic navigation counter. RootView uses it as the screen's zIndex so
+    /// the incoming screen always stacks ABOVE the outgoing one mid-transition —
+    /// otherwise the dying screen (still hit-testable for ~0.4s) swallows taps
+    /// meant for the new screen's buttons.
+    private(set) var navCount = 0
 
     // Settings
     var languageCode: String = "en"      // "en" or "zh"

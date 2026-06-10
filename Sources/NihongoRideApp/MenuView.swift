@@ -115,6 +115,7 @@ struct MenuView: View {
             .background(Theme.accent, in: Capsule())
             .foregroundStyle(.white)
             .shadow(color: Theme.accent.opacity(0.5), radius: 16, y: 6)
+            .accessibilityIdentifier("startButton")
 
             footer
 

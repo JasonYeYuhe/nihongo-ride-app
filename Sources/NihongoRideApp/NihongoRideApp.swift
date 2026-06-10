@@ -82,6 +82,9 @@ struct RootView: View {
             screen
                 .transition(.screenLift)
                 .id(model.screen)
+                // Incoming screen must stack above the outgoing one, or the
+                // dying view eats taps during the 0.42s transition.
+                .zIndex(Double(model.navCount))
         }
         .animation(.spring(response: 0.42, dampingFraction: 0.86), value: model.screen)
         .preferredColorScheme(.dark)

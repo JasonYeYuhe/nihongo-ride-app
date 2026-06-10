@@ -51,6 +51,7 @@ struct ResultsView: View {
                 .buttonStyle(.plain)
                 .background(Theme.accent, in: Capsule())
                 .foregroundStyle(.white)
+                .accessibilityIdentifier("rideAgainButton")
 
                 Button(action: model.backToMenu) {
                     Text(zh ? "回到主页" : "Menu")
@@ -61,6 +62,7 @@ struct ResultsView: View {
                 .background(Theme.card, in: Capsule())
                 .overlay(Capsule().strokeBorder(Theme.cardStroke))
                 .foregroundStyle(.white)
+                .accessibilityIdentifier("menuButton")
             }
             .padding(.top, 8)
 
