@@ -5285,9 +5285,9 @@
         "计算"
       ]
     },
-    "exJP": "熱を計ってから学校に行きます。",
-    "exEN": "I will take my temperature before going to school.",
-    "exZH": "去学校前我会量一下体温。"
+    "exJP": "50メートル走のタイムを計った。",
+    "exEN": "I timed the 50-meter dash.",
+    "exZH": "我给50米短跑计了时。"
   },
   {
     "id": "n3-g242",
@@ -6722,7 +6722,7 @@
     },
     "exJP": "前のトラックを追い越しましょう。",
     "exEN": "Let's pass the truck in front.",
-    "exZH": "我们超车前面的卡车吧。"
+    "exZH": "我们超过前面的卡车吧。"
   },
   {
     "id": "n3-g307",
@@ -7773,9 +7773,9 @@
         "富翁"
       ]
     },
-    "exJP": "彼女はとても金持ちな家庭で育った。",
-    "exEN": "She grew up in a very rich family.",
-    "exZH": "她在一个非常富裕的家庭长大。"
+    "exJP": "彼女は金持ちの家庭で育った。",
+    "exEN": "She grew up in a rich family.",
+    "exZH": "她在富裕的家庭长大。"
   },
   {
     "id": "n3-g355",
@@ -8303,7 +8303,7 @@
       ]
     },
     "exJP": "夜が明けると、鳥が鳴き始めた。",
-    "exEN": "When the night dawned, the birds started singing.",
+    "exEN": "When dawn broke, the birds started singing.",
     "exZH": "天一亮，鸟儿就开始鸣叫了。"
   },
   {
@@ -8613,9 +8613,9 @@
         "敬语前缀"
       ]
     },
-    "exJP": "御家族の皆様はお元気ですか。",
-    "exEN": "Is your honorable family doing well?",
-    "exZH": "您的家人们都好吗？"
+    "exJP": "御茶をどうぞ。",
+    "exEN": "Please have some tea.",
+    "exZH": "请用茶。"
   },
   {
     "id": "n3-b018",
@@ -9010,9 +9010,9 @@
         "管子"
       ]
     },
-    "exJP": "水道管が破裂して水が漏れている。",
-    "exEN": "The water pipe burst and water is leaking.",
-    "exZH": "水管破裂漏水了。"
+    "exJP": "ガラスの管に水を入れる。",
+    "exEN": "Pour water into the glass tube.",
+    "exZH": "往玻璃管里倒水。"
   },
   {
     "id": "n3-b036",
@@ -10042,9 +10042,9 @@
         "心智"
       ]
     },
-    "exJP": "彼はとても精神が強い人です。",
-    "exEN": "He is a person with a very strong mind.",
-    "exZH": "他是一个精神很坚强的人。"
+    "exJP": "スポーツは精神と体の両方を鍛える。",
+    "exEN": "Sports train both the mind and the body.",
+    "exZH": "运动能锻炼精神和身体。"
   },
   {
     "id": "n3-b084",
@@ -10504,7 +10504,7 @@
         "男孩"
       ]
     },
-    "exJP": "私の高校は男子の生徒が多いです。",
+    "exJP": "私の高校は男子生徒が多いです。",
     "exEN": "My high school has many male students.",
     "exZH": "我的高中男学生很多。"
   },

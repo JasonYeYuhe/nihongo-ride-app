@@ -36,3 +36,5 @@
 ならし
 ふくきゅう
 まこころ
+# 2026-06-12 v1.1 audit adjudication (truncated row, fixed in-place as いってまいります)
+いってまいりま

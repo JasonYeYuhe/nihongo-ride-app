@@ -6396,9 +6396,9 @@
         "强忍(感情)"
       ]
     },
-    "exJP": "満員電車で押し殺されそうだ。",
-    "exEN": "I feel like I'm going to be crushed to death on the crowded train.",
-    "exZH": "在满员电车里感觉要被挤死了。"
+    "exJP": "彼女は声を押し殺して泣いた。",
+    "exEN": "She cried, stifling her sobs.",
+    "exZH": "她强忍着哭声啜泣。"
   },
   {
     "id": "n1-g283",
@@ -8052,7 +8052,7 @@
   },
   {
     "id": "n1-b002",
-    "surface": "字",
+    "surface": "痣",
     "kana": "あざ",
     "pos": [
       "n"
@@ -8068,7 +8068,7 @@
         "淤青"
       ]
     },
-    "exJP": "赤ちゃんの背中に小さな字がある。",
+    "exJP": "赤ちゃんの背中に小さな痣がある。",
     "exEN": "There is a small birthmark on the baby's back.",
     "exZH": "婴儿的背上有一个小胎记。"
   },
@@ -8592,7 +8592,7 @@
   {
     "id": "n1-b027",
     "surface": "予言",
-    "kana": "かねごと",
+    "kana": "よげん",
     "pos": [
       "n"
     ],
@@ -9225,7 +9225,7 @@
   },
   {
     "id": "n1-b056",
-    "surface": "濠",
+    "surface": "壕",
     "kana": "ごう",
     "pos": [
       "n"
@@ -9233,16 +9233,17 @@
     "jlpt": 1,
     "meanings": {
       "en": [
-        "moat",
-        "ditch"
+        "trench",
+        "dugout; ditch"
       ],
       "zh": [
-        "壕沟"
+        "壕沟",
+        "防空洞"
       ]
     },
-    "exJP": "古いお城の周りには深い濠がある。",
-    "exEN": "There is a deep moat around the old castle.",
-    "exZH": "古城堡周围有深深的护城河。"
+    "exJP": "戦時中、人々は庭に防空壕を掘った。",
+    "exEN": "During the war, people dug air-raid shelters in their gardens.",
+    "exZH": "战争时期，人们在院子里挖了防空壕。"
   },
   {
     "id": "n1-b057",
@@ -9351,9 +9352,9 @@
         "拐骗"
       ]
     },
-    "exJP": "強い波に足を拐われそうになった。",
-    "exEN": "My feet were almost swept away by the strong waves.",
-    "exZH": "我的脚差点被大浪卷走。"
+    "exJP": "子どもが拐われる事件が相次いだ。",
+    "exEN": "There was a string of incidents of children being kidnapped.",
+    "exZH": "接连发生了儿童被拐走的事件。"
   },
   {
     "id": "n1-b062",
@@ -9399,29 +9400,6 @@
     "exZH": "硬要说的话，我比较喜欢这个颜色。"
   },
   {
-    "id": "n1-b064",
-    "surface": "施行",
-    "kana": "しぎょう",
-    "pos": [
-      "n",
-      "v"
-    ],
-    "jlpt": 1,
-    "meanings": {
-      "en": [
-        "execution",
-        "enforcing"
-      ],
-      "zh": [
-        "施行",
-        "执行"
-      ]
-    },
-    "exJP": "新しい法律が来月から施行される。",
-    "exEN": "The new law will be put into execution next month.",
-    "exZH": "新法律将于下个月起施行。"
-  },
-  {
     "id": "n1-b065",
     "surface": "下心",
     "kana": "したごころ",
@@ -9453,9 +9431,8 @@
     "jlpt": 1,
     "meanings": {
       "en": [
-        "breeding",
         "upbringing",
-        "discipline"
+        "discipline; manners"
       ],
       "zh": [
         "教养",
@@ -9463,7 +9440,7 @@
       ]
     },
     "exJP": "犬の躾は子犬のうちに始めるべきだ。",
-    "exEN": "The breeding and training of a dog should start when it is a puppy.",
+    "exEN": "The training of a dog should start when it is a puppy.",
     "exZH": "狗的管教应该在幼犬时期就开始。"
   },
   {
@@ -10109,8 +10086,8 @@
     "jlpt": 1,
     "meanings": {
       "en": [
-        "interview",
-        "meeting"
+        "meeting face-to-face",
+        "facing each other"
       ],
       "zh": [
         "见面",

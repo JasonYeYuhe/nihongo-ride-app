@@ -6586,12 +6586,12 @@
     "jlpt": 2,
     "meanings": {
       "en": [
-        "mutual",
-        "alternate"
+        "alternate",
+        "alternating"
       ],
       "zh": [
-        "交互",
-        "交替"
+        "交替",
+        "轮流"
       ]
     },
     "exJP": "二人の選手が交互にボールを打った。",
@@ -6763,8 +6763,8 @@
     "jlpt": 2,
     "meanings": {
       "en": [
-        "to plan",
-        "to intend"
+        "to aspire to",
+        "to set one's heart on"
       ],
       "zh": [
         "立志",
@@ -7057,9 +7057,9 @@
         "赞美"
       ]
     },
-    "exJP": "誰もが彼の素晴らしい業績を賛美した。",
-    "exEN": "Everyone praised his wonderful achievements.",
-    "exZH": "每个人都赞美了他了不起的成就。"
+    "exJP": "人々は大自然の美しさを賛美した。",
+    "exEN": "People praised the beauty of nature.",
+    "exZH": "人们赞美大自然之美。"
   },
   {
     "id": "n2-g316",
@@ -7951,8 +7951,8 @@
   },
   {
     "id": "n2-b008",
-    "surface": "いってまいりま",
-    "kana": "いってまいりま",
+    "surface": "いってまいります",
+    "kana": "いってまいります",
     "pos": [
       "exp"
     ],
@@ -8376,9 +8376,9 @@
         "征税"
       ]
     },
-    "exJP": "この商品には高い税金が課税される。",
-    "exEN": "High taxes are levied on this product.",
-    "exZH": "这种商品会被征收高额税款。"
+    "exJP": "輸入品には高い税率で課税される。",
+    "exEN": "Imported goods are taxed at a high rate.",
+    "exZH": "进口商品按高税率征税。"
   },
   {
     "id": "n2-b028",
@@ -10290,9 +10290,8 @@
     "jlpt": 2,
     "meanings": {
       "en": [
-        "suspension",
-        "interruption",
-        "stoppage"
+        "stop; halt",
+        "suspension"
       ],
       "zh": [
         "停止",
@@ -10427,9 +10426,9 @@
         "东方和西方"
       ]
     },
-    "exJP": "日本は東西に細長い国です。",
-    "exEN": "Japan is a long, narrow country from east to west.",
-    "exZH": "日本是一个东西狭长的国家。"
+    "exJP": "ロシアは東西に長い国です。",
+    "exEN": "Russia is a country that stretches far from east to west.",
+    "exZH": "俄罗斯是一个东西狭长的国家。"
   },
   {
     "id": "n2-b123",
