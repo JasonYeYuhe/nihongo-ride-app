@@ -5284,7 +5284,10 @@
         "测量",
         "计算"
       ]
-    }
+    },
+    "exJP": "熱を計ってから学校に行きます。",
+    "exEN": "I will take my temperature before going to school.",
+    "exZH": "去学校前我会量一下体温。"
   },
   {
     "id": "n3-g242",
@@ -5303,7 +5306,10 @@
         "搬运",
         "运输"
       ]
-    }
+    },
+    "exJP": "荷物を部屋に運びました。",
+    "exEN": "I carried the luggage into the room.",
+    "exZH": "我把行李搬进了房间。"
   },
   {
     "id": "n3-g243",
@@ -5323,7 +5329,10 @@
         "发展",
         "扩展"
       ]
-    }
+    },
+    "exJP": "この町は大きく発展しました。",
+    "exEN": "This town has developed greatly.",
+    "exZH": "这个小镇有了很大的发展。"
   },
   {
     "id": "n3-g244",
@@ -5343,7 +5352,10 @@
         "拍手",
         "鼓掌"
       ]
-    }
+    },
+    "exJP": "素晴らしい演奏に拍手を送った。",
+    "exEN": "We applauded the wonderful performance.",
+    "exZH": "我们为精彩的演出鼓掌。"
   },
   {
     "id": "n3-g245",
@@ -5363,7 +5375,10 @@
         "反对",
         "相反"
       ]
-    }
+    },
+    "exJP": "両親は私の留学に反対した。",
+    "exEN": "My parents opposed my studying abroad.",
+    "exZH": "父母反对我出国留学。"
   },
   {
     "id": "n3-g246",
@@ -5382,7 +5397,10 @@
         "受害",
         "灾害"
       ]
-    }
+    },
+    "exJP": "台風の被害は少なかったです。",
+    "exEN": "The damage from the typhoon was minor.",
+    "exZH": "台风的灾害很小。"
   },
   {
     "id": "n3-g247",
@@ -5400,7 +5418,10 @@
       "zh": [
         "胡须"
       ]
-    }
+    },
+    "exJP": "父は毎日髭を剃ります。",
+    "exEN": "My father shaves his beard every day.",
+    "exZH": "父亲每天都刮胡子。"
   },
   {
     "id": "n3-g248",
@@ -5420,7 +5441,10 @@
         "否定",
         "否认"
       ]
-    }
+    },
+    "exJP": "彼はその噂を完全に否定した。",
+    "exEN": "He completely denied that rumor.",
+    "exZH": "他完全否认了那个传闻。"
   },
   {
     "id": "n3-g249",
@@ -5439,7 +5463,10 @@
         "加深",
         "深化"
       ]
-    }
+    },
+    "exJP": "お互いの理解を深めましょう。",
+    "exEN": "Let's deepen our mutual understanding.",
+    "exZH": "让我们加深彼此的了解。"
   },
   {
     "id": "n3-g250",
@@ -5458,7 +5485,10 @@
         "防御",
         "防备"
       ]
-    }
+    },
+    "exJP": "マスクをして風邪を防ぎます。",
+    "exEN": "I wear a mask to prevent catching a cold.",
+    "exZH": "我戴口罩来预防感冒。"
   },
   {
     "id": "n3-g251",
@@ -5476,7 +5506,10 @@
       "zh": [
         "物价"
       ]
-    }
+    },
+    "exJP": "最近、物価が高くなっています。",
+    "exEN": "Prices have been getting higher recently.",
+    "exZH": "最近物价变高了。"
   },
   {
     "id": "n3-g252",
@@ -5496,7 +5529,10 @@
         "变化",
         "改变"
       ]
-    }
+    },
+    "exJP": "季節の変化を感じます。",
+    "exEN": "I feel the change of seasons.",
+    "exZH": "我感觉到了季节的变化。"
   },
   {
     "id": "n3-g253",
@@ -5515,7 +5551,10 @@
         "减少",
         "削减"
       ]
-    }
+    },
+    "exJP": "クラスの学生が少し減りました。",
+    "exEN": "The number of students in the class decreased a little.",
+    "exZH": "班上的学生减少了一些。"
   },
   {
     "id": "n3-g254",
@@ -5535,7 +5574,10 @@
         "报告",
         "汇报"
       ]
-    }
+    },
+    "exJP": "会議の結果を社長に報告した。",
+    "exEN": "I reported the results of the meeting to the president.",
+    "exZH": "我向总经理报告了会议结果。"
   },
   {
     "id": "n3-g255",
@@ -5554,7 +5596,10 @@
         "丰富",
         "富裕"
       ]
-    }
+    },
+    "exJP": "日本は魚の種類が豊富です。",
+    "exEN": "Japan is abundant in types of fish.",
+    "exZH": "日本有丰富的鱼类。"
   },
   {
     "id": "n3-g256",
@@ -5571,7 +5616,10 @@
       "zh": [
         "微笑"
       ]
-    }
+    },
+    "exJP": "彼女は優しく微笑んでくれた。",
+    "exEN": "She smiled at me gently.",
+    "exZH": "她对我温柔地微笑了。"
   },
   {
     "id": "n3-g257",
@@ -5590,7 +5638,10 @@
         "委托",
         "听任"
       ]
-    }
+    },
+    "exJP": "この仕事はあなたに任せます。",
+    "exEN": "I will entrust this work to you.",
+    "exZH": "这份工作交给你了。"
   },
   {
     "id": "n3-g258",
@@ -5609,7 +5660,10 @@
         "汇总",
         "归纳"
       ]
-    }
+    },
+    "exJP": "自分の意見を紙にまとめました。",
+    "exEN": "I summarized my opinions on paper.",
+    "exZH": "我把自己的意见总结在纸上了。"
   },
   {
     "id": "n3-g259",
@@ -5629,7 +5683,10 @@
         "亲自",
         "自己"
       ]
-    }
+    },
+    "exJP": "社長は自ら工場を案内した。",
+    "exEN": "The president personally guided us around the factory.",
+    "exZH": "总裁亲自带领参观了工厂。"
   },
   {
     "id": "n3-g260",
@@ -5648,7 +5705,10 @@
         "引导",
         "指导"
       ]
-    }
+    },
+    "exJP": "先生は私たちを正しい道に導いた。",
+    "exEN": "The teacher guided us on the right path.",
+    "exZH": "老师引导我们走上了正路。"
   },
   {
     "id": "n3-g261",
@@ -5667,7 +5727,10 @@
         "承认",
         "赏识"
       ]
-    }
+    },
+    "exJP": "自分の失敗を認めるのは難しい。",
+    "exEN": "It is difficult to admit one's own failure.",
+    "exZH": "承认自己的失败是很困难的。"
   },
   {
     "id": "n3-g262",
@@ -5686,7 +5749,10 @@
         "面向",
         "前往"
       ]
-    }
+    },
+    "exJP": "今から駅に向かいます。",
+    "exEN": "I am heading to the station now.",
+    "exZH": "我现在前往车站。"
   },
   {
     "id": "n3-g263",
@@ -5706,7 +5772,10 @@
         "无视",
         "忽视"
       ]
-    }
+    },
+    "exJP": "信号無視はとても危険です。",
+    "exEN": "Ignoring traffic lights is very dangerous.",
+    "exZH": "闯红灯非常危险。"
   },
   {
     "id": "n3-g264",
@@ -5726,7 +5795,10 @@
         "徒劳",
         "浪费"
       ]
-    }
+    },
+    "exJP": "時間を無駄にしてはいけません。",
+    "exEN": "You must not waste time.",
+    "exZH": "不可以浪费时间。"
   },
   {
     "id": "n3-g265",
@@ -5746,7 +5818,10 @@
         "命令",
         "指令"
       ]
-    }
+    },
+    "exJP": "上司の命令には絶対に従う。",
+    "exEN": "I absolutely obey my boss's orders.",
+    "exZH": "我绝对服从上司的命令。"
   },
   {
     "id": "n3-g266",
@@ -5765,7 +5840,10 @@
         "富有",
         "蒙受恩惠"
       ]
-    }
+    },
+    "exJP": "日本は豊かな自然に恵まれている。",
+    "exEN": "Japan is blessed with rich nature.",
+    "exZH": "日本拥有丰富的自然资源。"
   },
   {
     "id": "n3-g267",
@@ -5784,7 +5862,10 @@
         "申请",
         "报名"
       ]
-    }
+    },
+    "exJP": "明日、試験に申し込むつもりです。",
+    "exEN": "I plan to apply for the exam tomorrow.",
+    "exZH": "我打算明天报名参加考试。"
   },
   {
     "id": "n3-g268",
@@ -5803,7 +5884,10 @@
         "燃烧",
         "热情洋溢"
       ]
-    }
+    },
+    "exJP": "紙はすぐに燃えてしまいます。",
+    "exEN": "Paper burns up quickly.",
+    "exZH": "纸张很快就会燃烧殆尽。"
   },
   {
     "id": "n3-g269",
@@ -5822,7 +5906,10 @@
         "返回",
         "回到"
       ]
-    }
+    },
+    "exJP": "すぐに席に戻ってください。",
+    "exEN": "Please return to your seat immediately.",
+    "exZH": "请立刻回到座位上。"
   },
   {
     "id": "n3-g270",
@@ -5841,7 +5928,10 @@
         "破裂",
         "破损"
       ]
-    }
+    },
+    "exJP": "古いシャツが破れてしまった。",
+    "exEN": "My old shirt got torn.",
+    "exZH": "旧衬衫破了。"
   },
   {
     "id": "n3-g271",
@@ -5860,7 +5950,10 @@
         "停止",
         "停息"
       ]
-    }
+    },
+    "exJP": "雨が止んだら出かけましょう。",
+    "exEN": "Let's go out when the rain stops.",
+    "exZH": "雨停了我们就出门吧。"
   },
   {
     "id": "n3-g272",
@@ -5879,7 +5972,10 @@
         "作用",
         "角色"
       ]
-    }
+    },
+    "exJP": "自分の役割をしっかり果たす。",
+    "exEN": "I will fulfill my role properly.",
+    "exZH": "我会好好完成自己的角色。"
   },
   {
     "id": "n3-g273",
@@ -5898,7 +5994,10 @@
         "剩余",
         "多余"
       ]
-    }
+    },
+    "exJP": "ケーキが一つ余っています。",
+    "exEN": "There is one cake left over.",
+    "exZH": "剩下一块蛋糕。"
   },
   {
     "id": "n3-g274",
@@ -5916,7 +6015,10 @@
       "zh": [
         "编织"
       ]
-    }
+    },
+    "exJP": "母は私にセーターを編んでくれた。",
+    "exEN": "My mother knitted a sweater for me.",
+    "exZH": "妈妈给我织了一件毛衣。"
   },
   {
     "id": "n3-g275",
@@ -5933,7 +6035,10 @@
       "zh": [
         "暴风雨"
       ]
-    }
+    },
+    "exJP": "昨日の夜はひどい嵐だった。",
+    "exEN": "There was a terrible storm last night.",
+    "exZH": "昨晚有一场可怕的风暴。"
   },
   {
     "id": "n3-g276",
@@ -5952,7 +6057,10 @@
         "新",
         "重新"
       ]
-    }
+    },
+    "exJP": "新たな気持ちで頑張ります。",
+    "exEN": "I will do my best with a fresh mindset.",
+    "exZH": "我会以崭新的心情努力。"
   },
   {
     "id": "n3-g277",
@@ -5970,7 +6078,10 @@
       "zh": [
         "泡沫"
       ]
-    }
+    },
+    "exJP": "石鹸の泡で手を洗います。",
+    "exEN": "I wash my hands with soap bubbles.",
+    "exZH": "我用肥皂沫洗手。"
   },
   {
     "id": "n3-g278",
@@ -5989,7 +6100,10 @@
         "可怜",
         "悲哀"
       ]
-    }
+    },
+    "exJP": "捨てられた犬が哀れだった。",
+    "exEN": "The abandoned dog was pitiful.",
+    "exZH": "被遗弃的狗很可怜。"
   },
   {
     "id": "n3-g279",
@@ -6008,7 +6122,10 @@
         "意外地",
         "出乎意料"
       ]
-    }
+    },
+    "exJP": "このテストは案外簡単だった。",
+    "exEN": "This test was surprisingly easy.",
+    "exZH": "这个测试出乎意料地简单。"
   },
   {
     "id": "n3-g280",
@@ -6027,7 +6144,10 @@
         "势头",
         "气势"
       ]
-    }
+    },
+    "exJP": "水がすごい勢いで流れている。",
+    "exEN": "The water is flowing with great momentum.",
+    "exZH": "水流的速度非常快。"
   },
   {
     "id": "n3-g281",
@@ -6046,7 +6166,10 @@
         "生物",
         "动物"
       ]
-    }
+    },
+    "exJP": "地球にはたくさんの生き物がいる。",
+    "exEN": "There are many living things on Earth.",
+    "exZH": "地球上有很多生物。"
   },
   {
     "id": "n3-g282",
@@ -6067,7 +6190,10 @@
         "以前",
         "以前的"
       ]
-    }
+    },
+    "exJP": "以前、この町に住んでいました。",
+    "exEN": "I lived in this town previously.",
+    "exZH": "我以前住在这个镇上。"
   },
   {
     "id": "n3-g283",
@@ -6086,7 +6212,10 @@
         "木板",
         "板子"
       ]
-    }
+    },
+    "exJP": "この木の板で棚を作ります。",
+    "exEN": "I will make a shelf with these wooden boards.",
+    "exZH": "我要用这些木板做一个架子。"
   },
   {
     "id": "n3-g284",
@@ -6104,7 +6233,10 @@
       "zh": [
         "伟大"
       ]
-    }
+    },
+    "exJP": "彼は偉大な科学者だと思います。",
+    "exEN": "I think he is a great scientist.",
+    "exZH": "我认为他是一位伟大的科学家。"
   },
   {
     "id": "n3-g285",
@@ -6123,7 +6255,10 @@
         "拥抱",
         "怀有"
       ]
-    }
+    },
+    "exJP": "大きな夢を抱いて東京に来た。",
+    "exEN": "I came to Tokyo harboring a big dream.",
+    "exZH": "我怀揣着大梦想来到了东京。"
   },
   {
     "id": "n3-g286",
@@ -6143,7 +6278,10 @@
         "暂时",
         "一时"
       ]
-    }
+    },
+    "exJP": "一時、雨が強く降りました。",
+    "exEN": "It rained heavily for a time.",
+    "exZH": "雨一时下得很大。"
   },
   {
     "id": "n3-g287",
@@ -6162,7 +6300,10 @@
         "更加",
         "越发"
       ]
-    }
+    },
+    "exJP": "今日の富士山は一段と美しい。",
+    "exEN": "Mount Fuji is even more beautiful today.",
+    "exZH": "今天的富士山格外美丽。"
   },
   {
     "id": "n3-g288",
@@ -6181,7 +6322,10 @@
         "一流",
         "头等"
       ]
-    }
+    },
+    "exJP": "将来は一流のホテルで働きたい。",
+    "exEN": "I want to work at a first-class hotel in the future.",
+    "exZH": "将来我想在一家一流的酒店工作。"
   },
   {
     "id": "n3-g289",
@@ -6201,7 +6345,10 @@
         "一致",
         "吻合"
       ]
-    }
+    },
+    "exJP": "皆の意見が完全に一致しました。",
+    "exEN": "Everyone's opinions were in complete agreement.",
+    "exZH": "大家的意见完全一致。"
   },
   {
     "id": "n3-g290",
@@ -6220,7 +6367,10 @@
         "一般",
         "普通"
       ]
-    }
+    },
+    "exJP": "これが一般の考え方です。",
+    "exEN": "This is the general way of thinking.",
+    "exZH": "这是普遍的想法。"
   },
   {
     "id": "n3-g291",
@@ -6239,7 +6389,10 @@
         "漂浮",
         "浮现"
       ]
-    }
+    },
+    "exJP": "空に白い雲が浮かんでいる。",
+    "exEN": "White clouds are floating in the sky.",
+    "exZH": "天空中漂浮着白云。"
   },
   {
     "id": "n3-g292",
@@ -6258,7 +6411,10 @@
         "听取",
         "接受"
       ]
-    }
+    },
+    "exJP": "ご注文は確かに承りました。",
+    "exEN": "I have certainly received your order.",
+    "exZH": "您的订单我已经收到了。"
   },
   {
     "id": "n3-g293",
@@ -6276,7 +6432,10 @@
         "担任",
         "负责"
       ]
-    }
+    },
+    "exJP": "私が一年生のクラスを受け持つ。",
+    "exEN": "I will take charge of the first-grade class.",
+    "exZH": "我来负责一年级的班级。"
   },
   {
     "id": "n3-g294",
@@ -6295,7 +6454,10 @@
         "埋",
         "填满"
       ]
-    }
+    },
+    "exJP": "庭に桜の種を埋めました。",
+    "exEN": "I buried a cherry blossom seed in the garden.",
+    "exZH": "我在院子里埋下了一颗樱花种子。"
   },
   {
     "id": "n3-g295",
@@ -6314,7 +6476,10 @@
         "尊敬",
         "尊重"
       ]
-    }
+    },
+    "exJP": "お年寄りを敬う心は大切です。",
+    "exEN": "A heart that respects the elderly is important.",
+    "exZH": "尊敬老人的心是很重要的。"
   },
   {
     "id": "n3-g296",
@@ -6333,7 +6498,10 @@
         "翻过来",
         "里朝外"
       ]
-    }
+    },
+    "exJP": "肉を焼くとき、一度裏返してね。",
+    "exEN": "When grilling the meat, flip it over once.",
+    "exZH": "烤肉的时候，记得翻一次面。"
   },
   {
     "id": "n3-g297",
@@ -6352,7 +6520,10 @@
         "占卜",
         "算命"
       ]
-    }
+    },
+    "exJP": "明日の運勢を占ってみましょう。",
+    "exEN": "Let's try to tell your fortune for tomorrow.",
+    "exZH": "我们来占卜一下明天的运势吧。"
   },
   {
     "id": "n3-g298",
@@ -6371,7 +6542,10 @@
         "羡慕的",
         "令人眼红的"
       ]
-    }
+    },
+    "exJP": "彼の新しい車がとても羨ましい。",
+    "exEN": "I am very jealous of his new car.",
+    "exZH": "我很羡慕他的新车。"
   },
   {
     "id": "n3-g299",
@@ -6391,7 +6565,10 @@
         "营业",
         "销售"
       ]
-    }
+    },
+    "exJP": "明日は朝から営業に出かけます。",
+    "exEN": "I will go out for sales starting tomorrow morning.",
+    "exZH": "明天一早我就要去跑业务。"
   },
   {
     "id": "n3-g300",
@@ -6409,7 +6586,10 @@
       "zh": [
         "卫生"
       ]
-    }
+    },
+    "exJP": "食堂の衛生管理は厳格です。",
+    "exEN": "The cafeteria's hygiene management is strict.",
+    "exZH": "食堂的卫生管理很严格。"
   },
   {
     "id": "n3-g301",
@@ -6429,7 +6609,10 @@
         "画",
         "描绘"
       ]
-    }
+    },
+    "exJP": "彼女は美しい風景の絵を描いた。",
+    "exEN": "She drew a picture of a beautiful landscape.",
+    "exZH": "她画了一幅美丽的风景画。"
   },
   {
     "id": "n3-g302",
@@ -6448,7 +6631,10 @@
         "饵",
         "饲料"
       ]
-    }
+    },
+    "exJP": "朝起きて、犬に餌をやりました。",
+    "exEN": "I woke up in the morning and fed the dog.",
+    "exZH": "早上起床后，我给狗喂了食。"
   },
   {
     "id": "n3-g303",
@@ -6468,7 +6654,10 @@
         "延长",
         "延期"
       ]
-    }
+    },
+    "exJP": "会議の時間が少し延長された。",
+    "exEN": "The meeting time was extended a little.",
+    "exZH": "会议时间延长了一点。"
   },
   {
     "id": "n3-g304",
@@ -6486,7 +6675,10 @@
       "zh": [
         "烟囱"
       ]
-    }
+    },
+    "exJP": "屋根の上に古い煙突が見える。",
+    "exEN": "An old chimney can be seen on the roof.",
+    "exZH": "可以看到屋顶上的旧烟囱。"
   },
   {
     "id": "n3-g305",
@@ -6505,7 +6697,10 @@
         "追赶",
         "追踪"
       ]
-    }
+    },
+    "exJP": "泥棒を追いかけましたが逃げられました。",
+    "exEN": "I chased the thief, but he got away.",
+    "exZH": "我追赶小偷，但被他逃脱了。"
   },
   {
     "id": "n3-g306",
@@ -6524,7 +6719,10 @@
         "超过",
         "赶超"
       ]
-    }
+    },
+    "exJP": "前のトラックを追い越しましょう。",
+    "exEN": "Let's pass the truck in front.",
+    "exZH": "我们超车前面的卡车吧。"
   },
   {
     "id": "n3-g307",
@@ -6541,7 +6739,10 @@
       "zh": [
         "国王"
       ]
-    }
+    },
+    "exJP": "その国には優しい王様がいた。",
+    "exEN": "There was a kind king in that country.",
+    "exZH": "那个国家有一位善良的国王。"
   },
   {
     "id": "n3-g308",
@@ -6558,7 +6759,10 @@
       "zh": [
         "王子"
       ]
-    }
+    },
+    "exJP": "おとぎ話の王子様になりたい。",
+    "exEN": "I want to become a prince from a fairy tale.",
+    "exZH": "我想成为童话里的王子。"
   },
   {
     "id": "n3-g309",
@@ -6577,7 +6781,10 @@
         "结束",
         "完成"
       ]
-    }
+    },
+    "exJP": "今日の仕事をやっと終えました。",
+    "exEN": "I finally finished today's work.",
+    "exZH": "我终于完成了今天的工作。"
   },
   {
     "id": "n3-g310",
@@ -6597,7 +6804,10 @@
         "非常",
         "大大地"
       ]
-    }
+    },
+    "exJP": "今夜は大いに飲んで楽しみましょう。",
+    "exEN": "Let's drink a lot and have fun tonight.",
+    "exZH": "今晚我们开怀畅饮，尽情享受吧。"
   },
   {
     "id": "n3-g311",
@@ -6616,7 +6826,10 @@
         "覆盖",
         "掩盖"
       ]
-    }
+    },
+    "exJP": "雪が山全体を白く覆っている。",
+    "exEN": "Snow covers the entire mountain in white.",
+    "exZH": "雪把整座山覆盖得白茫茫的。"
   },
   {
     "id": "n3-g312",
@@ -6634,7 +6847,10 @@
       "zh": [
         "房东"
       ]
-    }
+    },
+    "exJP": "アパートの大家さんはとても親切です。",
+    "exEN": "The landlord of the apartment is very kind.",
+    "exZH": "公寓的房东非常和蔼可亲。"
   },
   {
     "id": "n3-g313",
@@ -6653,7 +6869,10 @@
         "山丘",
         "小山"
       ]
-    }
+    },
+    "exJP": "あの丘の上に小さな教会がある。",
+    "exEN": "There is a small church on that hill.",
+    "exZH": "那座山丘上有一座小教堂。"
   },
   {
     "id": "n3-g314",
@@ -6672,7 +6891,10 @@
         "海上",
         "冲"
       ]
-    }
+    },
+    "exJP": "船が沖へ向かって進んでいく。",
+    "exEN": "The ship is heading towards the open sea.",
+    "exZH": "船正朝着远洋驶去。"
   },
   {
     "id": "n3-g315",
@@ -6691,7 +6913,10 @@
         "幼小的",
         "幼稚的"
       ]
-    }
+    },
+    "exJP": "幼い頃、よくここで遊んでいました。",
+    "exEN": "When I was very young, I used to play here often.",
+    "exZH": "我小时候经常在这里玩。"
   },
   {
     "id": "n3-g316",
@@ -6710,7 +6935,10 @@
         "带子",
         "和服腰带"
       ]
-    }
+    },
+    "exJP": "着物の帯を締めるのが難しいです。",
+    "exEN": "Tying a kimono sash is difficult.",
+    "exZH": "系和服的腰带很难。"
   },
   {
     "id": "n3-g317",
@@ -6729,7 +6957,10 @@
         "溺水",
         "沉迷"
       ]
-    }
+    },
+    "exJP": "海で泳いでいるとき、溺れかけた。",
+    "exEN": "When I was swimming in the sea, I almost drowned.",
+    "exZH": "我在海里游泳时，差点溺水了。"
   },
   {
     "id": "n3-g318",
@@ -6748,7 +6979,10 @@
         "恩情",
         "恩惠"
       ]
-    }
+    },
+    "exJP": "先生の恩は決して忘れません。",
+    "exEN": "I will never forget my teacher's favor.",
+    "exZH": "我绝对不会忘记老师的恩情。"
   },
   {
     "id": "n3-g319",
@@ -6767,7 +7001,10 @@
         "害处",
         "伤害"
       ]
-    }
+    },
+    "exJP": "タバコは健康に害を与えます。",
+    "exEN": "Cigarettes cause harm to one's health.",
+    "exZH": "抽烟对健康有害。"
   },
   {
     "id": "n3-g320",
@@ -6784,7 +7021,10 @@
       "zh": [
         "会员"
       ]
-    }
+    },
+    "exJP": "スポーツジムの会員になりました。",
+    "exEN": "I became a member of a sports gym.",
+    "exZH": "我成为了健身房的会员。"
   },
   {
     "id": "n3-g321",
@@ -6803,7 +7043,10 @@
         "绘画",
         "画"
       ]
-    }
+    },
+    "exJP": "美術館で美しい絵画を見た。",
+    "exEN": "I saw a beautiful painting at the art museum.",
+    "exZH": "我在美术馆看到了一幅美丽的画。"
   },
   {
     "id": "n3-g322",
@@ -6822,7 +7065,10 @@
         "会计",
         "结账"
       ]
-    }
+    },
+    "exJP": "お会計は別々にお願いします。",
+    "exEN": "We would like to pay separately.",
+    "exZH": "请分开结账。"
   },
   {
     "id": "n3-g323",
@@ -6841,7 +7087,10 @@
       "zh": [
         "解决"
       ]
-    }
+    },
+    "exJP": "その問題はすでに解決しました。",
+    "exEN": "That problem has already been resolved.",
+    "exZH": "那个问题已经解决了。"
   },
   {
     "id": "n3-g324",
@@ -6861,7 +7110,10 @@
         "聚会",
         "会议"
       ]
-    }
+    },
+    "exJP": "明日の午後、重要な会合があります。",
+    "exEN": "There is an important meeting tomorrow afternoon.",
+    "exZH": "明天下午有一个重要的会议。"
   },
   {
     "id": "n3-g325",
@@ -6878,7 +7130,10 @@
       "zh": [
         "外交"
       ]
-    }
+    },
+    "exJP": "彼は外交の仕事に興味を持っている。",
+    "exEN": "He is interested in diplomatic work.",
+    "exZH": "他对外交工作很感兴趣。"
   },
   {
     "id": "n3-g326",
@@ -6898,7 +7153,10 @@
         "解释",
         "理解"
       ]
-    }
+    },
+    "exJP": "この文の解釈は少し難しいです。",
+    "exEN": "The interpretation of this sentence is a little difficult.",
+    "exZH": "这句话的解释有点难。"
   },
   {
     "id": "n3-g327",
@@ -6918,7 +7176,10 @@
         "外出",
         "出门"
       ]
-    }
+    },
+    "exJP": "今日は一日中外出していました。",
+    "exEN": "I was out all day today.",
+    "exZH": "我今天外出了一整天。"
   },
   {
     "id": "n3-g328",
@@ -6938,7 +7199,10 @@
         "解答",
         "答案"
       ]
-    }
+    },
+    "exJP": "テストの解答用紙を提出してください。",
+    "exEN": "Please submit your test answer sheet.",
+    "exZH": "请提交考试的答题纸。"
   },
   {
     "id": "n3-g329",
@@ -6957,7 +7221,10 @@
         "香气",
         "香味"
       ]
-    }
+    },
+    "exJP": "コーヒーの良い香りが部屋に広がった。",
+    "exEN": "The good aroma of coffee spread through the room.",
+    "exZH": "房间里弥漫着咖啡的香味。"
   },
   {
     "id": "n3-g330",
@@ -6976,7 +7243,10 @@
         "价格",
         "价值"
       ]
-    }
+    },
+    "exJP": "このパソコンの価格は安いです。",
+    "exEN": "The price of this computer is cheap.",
+    "exZH": "这台电脑的价格很便宜。"
   },
   {
     "id": "n3-g331",
@@ -6995,7 +7265,10 @@
         "闪耀",
         "发光"
       ]
-    }
+    },
+    "exJP": "夜空に星がキラキラと輝いている。",
+    "exEN": "Stars are shining brightly in the night sky.",
+    "exZH": "夜空中繁星闪烁。"
   },
   {
     "id": "n3-g332",
@@ -7015,7 +7288,10 @@
         "负责人",
         "担任"
       ]
-    }
+    },
+    "exJP": "詳しいことは受付の係に聞いてください。",
+    "exEN": "Please ask the person in charge at the reception for details.",
+    "exZH": "详情请询问接待处的负责人。"
   },
   {
     "id": "n3-g333",
@@ -7033,7 +7309,10 @@
         "钥匙",
         "关键"
       ]
-    }
+    },
+    "exJP": "家を出る前に、必ず鍵をかけてください。",
+    "exEN": "Please make sure to lock the door before you leave the house.",
+    "exZH": "出门前请务必锁好门。"
   },
   {
     "id": "n3-g334",
@@ -7052,7 +7331,10 @@
         "限制",
         "只限于"
       ]
-    }
+    },
+    "exJP": "参加者は学生に限ります。",
+    "exEN": "Participants are restricted to students.",
+    "exZH": "参与者仅限学生。"
   },
   {
     "id": "n3-g335",
@@ -7071,7 +7353,10 @@
         "隐藏",
         "躲藏"
       ]
-    }
+    },
+    "exJP": "猫がベッドの下に隠れている。",
+    "exEN": "The cat is hiding under the bed.",
+    "exZH": "猫躲在床底下。"
   },
   {
     "id": "n3-g336",
@@ -7090,7 +7375,10 @@
         "影子",
         "影像"
       ]
-    }
+    },
+    "exJP": "月の光で自分の影が長く見えた。",
+    "exEN": "My shadow looked long in the moonlight.",
+    "exZH": "在月光下，我的影子显得很长。"
   },
   {
     "id": "n3-g337",
@@ -7110,7 +7398,10 @@
         "觉悟",
         "精神准备"
       ]
-    }
+    },
+    "exJP": "どんな結果になっても覚悟はできている。",
+    "exEN": "I am prepared for whatever the outcome may be.",
+    "exZH": "无论结果如何，我都已经做好了心理准备。"
   },
   {
     "id": "n3-g338",
@@ -7131,7 +7422,10 @@
         "程度",
         "状态"
       ]
-    }
+    },
+    "exJP": "お風呂の湯の加減はちょうどいいです。",
+    "exEN": "The temperature of the bathwater is just right.",
+    "exZH": "洗澡水的温度刚刚好。"
   },
   {
     "id": "n3-g339",
@@ -7149,7 +7443,10 @@
       "zh": [
         "过去"
       ]
-    }
+    },
+    "exJP": "過去の失敗を気にする必要はない。",
+    "exEN": "There is no need to worry about past failures.",
+    "exZH": "没必要在意过去的失败。"
   },
   {
     "id": "n3-g340",
@@ -7168,7 +7465,10 @@
         "篮子",
         "笼子"
       ]
-    }
+    },
+    "exJP": "フルーツを籠に入れてテーブルに置いた。",
+    "exEN": "I put the fruits in a basket and placed them on the table.",
+    "exZH": "我把水果放进篮子里放在桌子上。"
   },
   {
     "id": "n3-g341",
@@ -7187,7 +7487,10 @@
         "包围",
         "围绕"
       ]
-    }
+    },
+    "exJP": "家族みんなでテーブルを囲んで食事をした。",
+    "exEN": "The whole family sat around the table and had a meal.",
+    "exZH": "全家人围坐在桌旁吃饭。"
   },
   {
     "id": "n3-g342",
@@ -7205,7 +7508,10 @@
       "zh": [
         "火灾"
       ]
-    }
+    },
+    "exJP": "昨夜、近所で大きな火災があった。",
+    "exEN": "There was a large fire in the neighborhood last night.",
+    "exZH": "昨晚附近发生了大火灾。"
   },
   {
     "id": "n3-g343",
@@ -7224,7 +7530,10 @@
         "借出",
         "出租"
       ]
-    }
+    },
+    "exJP": "図書館の貸し出し期間は二週間です。",
+    "exEN": "The library lending period is two weeks.",
+    "exZH": "图书馆的出借期限是两周。"
   },
   {
     "id": "n3-g344",
@@ -7244,7 +7553,10 @@
         "点心",
         "糖果"
       ]
-    }
+    },
+    "exJP": "お茶を飲みながらお菓子を食べましょう。",
+    "exEN": "Let's eat some pastries while drinking tea.",
+    "exZH": "我们边喝茶边吃点心吧。"
   },
   {
     "id": "n3-g345",
@@ -7262,7 +7574,10 @@
       "zh": [
         "出租房间"
       ]
-    }
+    },
+    "exJP": "駅の近くで貸間を探しています。",
+    "exEN": "I am looking for a room to let near the station.",
+    "exZH": "我在车站附近找一间出租的房间。"
   },
   {
     "id": "n3-g346",
@@ -7282,7 +7597,10 @@
         "地方",
         "部分"
       ]
-    }
+    },
+    "exJP": "分からない箇所に印をつけてください。",
+    "exEN": "Please mark the passages you do not understand.",
+    "exZH": "请在不懂的地方做记号。"
   },
   {
     "id": "n3-g347",
@@ -7301,7 +7619,10 @@
         "数目",
         "数字"
       ]
-    }
+    },
+    "exJP": "パーティーの参加者の数を確認した。",
+    "exEN": "I checked the number of participants for the party.",
+    "exZH": "我确认了派对的参加人数。"
   },
   {
     "id": "n3-g348",
@@ -7321,7 +7642,10 @@
         "模型",
         "类型"
       ]
-    }
+    },
+    "exJP": "彼は古い型のカメラを大切に使っている。",
+    "exEN": "He takes good care of his old-style camera.",
+    "exZH": "他很爱惜地使用着旧款的相机。"
   },
   {
     "id": "n3-g349",
@@ -7340,7 +7664,10 @@
         "刀",
         "剑"
       ]
-    }
+    },
+    "exJP": "博物館で昔の武士の刀を見た。",
+    "exEN": "I saw a sword of an ancient samurai at the museum.",
+    "exZH": "我在博物馆看到了以前武士的刀。"
   },
   {
     "id": "n3-g350",
@@ -7360,7 +7687,10 @@
         "讲述",
         "谈论"
       ]
-    }
+    },
+    "exJP": "おじいさんが昔の経験を語ってくれた。",
+    "exEN": "My grandfather narrated his past experiences to us.",
+    "exZH": "爷爷给我们讲述了他过去的经历。"
   },
   {
     "id": "n3-g351",
@@ -7378,7 +7708,10 @@
       "zh": [
         "学期"
       ]
-    }
+    },
+    "exJP": "新しい学期が始まって忙しくなった。",
+    "exEN": "I have become busy since the new school term started.",
+    "exZH": "新学期开始后，我变得忙碌起来。"
   },
   {
     "id": "n3-g352",
@@ -7396,7 +7729,10 @@
       "zh": [
         "括号"
       ]
-    }
+    },
+    "exJP": "大切な言葉は括弧で囲んでください。",
+    "exEN": "Please enclose important words in parentheses.",
+    "exZH": "请将重要的词语用括号括起来。"
   },
   {
     "id": "n3-g353",
@@ -7415,7 +7751,10 @@
         "未必",
         "不一定"
       ]
-    }
+    },
+    "exJP": "高いものが必ずしも良いとは限らない。",
+    "exEN": "Expensive things are not always necessarily good.",
+    "exZH": "贵的东西未必总是好的。"
   },
   {
     "id": "n3-g354",
@@ -7433,7 +7772,10 @@
         "有钱人",
         "富翁"
       ]
-    }
+    },
+    "exJP": "彼女はとても金持ちな家庭で育った。",
+    "exEN": "She grew up in a very rich family.",
+    "exZH": "她在一个非常富裕的家庭长大。"
   },
   {
     "id": "n3-g355",
@@ -7452,7 +7794,10 @@
         "可能",
         "办得到"
       ]
-    }
+    },
+    "exJP": "明日の会議にオンラインで参加することは可能です。",
+    "exEN": "It is possible to participate in tomorrow's meeting online.",
+    "exZH": "可以在线参加明天的会议。"
   },
   {
     "id": "n3-g356",
@@ -7472,7 +7817,10 @@
         "股票",
         "树桩"
       ]
-    }
+    },
+    "exJP": "彼は最近、株の投資を始めたらしい。",
+    "exEN": "It seems he has recently started investing in stocks.",
+    "exZH": "听说他最近开始投资股票了。"
   },
   {
     "id": "n3-g357",
@@ -7491,7 +7839,10 @@
         "戴(帽子等)",
         "蒙受"
       ]
-    }
+    },
+    "exJP": "外は暑いので、必ず帽子を被ってください。",
+    "exEN": "It is hot outside, so please make sure to put on a hat.",
+    "exZH": "外面很热，请务必戴上帽子。"
   },
   {
     "id": "n3-g358",
@@ -7510,7 +7861,10 @@
         "雷",
         "雷声"
       ]
-    }
+    },
+    "exJP": "遠くで雷の音が聞こえる。",
+    "exEN": "I can hear the sound of thunder in the distance.",
+    "exZH": "能听到远处打雷的声音。"
   },
   {
     "id": "n3-g359",
@@ -7527,7 +7881,10 @@
       "zh": [
         "头发"
       ]
-    }
+    },
+    "exJP": "風が強くて、髪の毛が乱れてしまった。",
+    "exEN": "The wind was strong, and my hair got messed up.",
+    "exZH": "风很大，头发都被吹乱了。"
   },
   {
     "id": "n3-g360",
@@ -7546,7 +7903,10 @@
         "科目",
         "课程"
       ]
-    }
+    },
+    "exJP": "大学で歴史の科目を選択するつもりです。",
+    "exEN": "I plan to choose history subjects at university.",
+    "exZH": "我打算在大学选修历史科目。"
   },
   {
     "id": "n3-g361",
@@ -7565,7 +7925,10 @@
         "空",
         "空虚"
       ]
-    }
+    },
+    "exJP": "この箱の中は完全に空だった。",
+    "exEN": "The inside of this box was completely empty.",
+    "exZH": "这个箱子里面完全是空的。"
   },
   {
     "id": "n3-g362",
@@ -7585,7 +7948,10 @@
         "图案",
         "花样"
       ]
-    }
+    },
+    "exJP": "花柄のシャツを買いました。",
+    "exEN": "I bought a shirt with a floral pattern.",
+    "exZH": "我买了一件碎花图案的衬衫。"
   },
   {
     "id": "n3-g363",
@@ -7603,7 +7969,10 @@
       "zh": [
         "危机"
       ]
-    }
+    },
+    "exJP": "会社は経営の危機に直面している。",
+    "exEN": "The company is facing a management crisis.",
+    "exZH": "公司正面临经营危机。"
   },
   {
     "id": "n3-g364",
@@ -7623,7 +7992,10 @@
         "心情",
         "情绪"
       ]
-    }
+    },
+    "exJP": "今日の社長はとても機嫌が良いですね。",
+    "exEN": "The president is in a very good mood today.",
+    "exZH": "今天社长的心情非常好。"
   },
   {
     "id": "n3-g365",
@@ -7640,7 +8012,10 @@
       "zh": [
         "气候"
       ]
-    }
+    },
+    "exJP": "この地域は温暖な気候です。",
+    "exEN": "This region has a mild climate.",
+    "exZH": "这个地区气候温和。"
   },
   {
     "id": "n3-g366",
@@ -7660,7 +8035,10 @@
         "岸",
         "岸边"
       ]
-    }
+    },
+    "exJP": "川の岸をゆっくり歩きました。",
+    "exEN": "I walked slowly along the river bank.",
+    "exZH": "我沿着河岸慢慢地散步。"
   },
   {
     "id": "n3-g367",
@@ -7680,7 +8058,10 @@
         "标准",
         "基准"
       ]
-    }
+    },
+    "exJP": "厳しい基準をクリアした製品です。",
+    "exEN": "This product has cleared strict standards.",
+    "exZH": "这是通过了严格标准的产品。"
   },
   {
     "id": "n3-g368",
@@ -7699,7 +8080,10 @@
         "报道",
         "文章"
       ]
-    }
+    },
+    "exJP": "新聞で面白い記事を読みました。",
+    "exEN": "I read an interesting article in the newspaper.",
+    "exZH": "我在报纸上读到了一篇有趣的报道。"
   },
   {
     "id": "n3-g369",
@@ -7719,7 +8103,10 @@
         "伤",
         "伤痕"
       ]
-    }
+    },
+    "exJP": "転んで足に小さな傷ができた。",
+    "exEN": "I fell and got a small wound on my leg.",
+    "exZH": "我摔倒了，腿上受了点轻伤。"
   },
   {
     "id": "n3-g370",
@@ -7737,7 +8124,10 @@
       "zh": [
         "基础"
       ]
-    }
+    },
+    "exJP": "何事も基礎が一番大切です。",
+    "exEN": "The foundation is the most important thing in everything.",
+    "exZH": "无论做什么事，基础都是最重要的。"
   },
   {
     "id": "n3-g371",
@@ -7755,7 +8145,10 @@
       "zh": [
         "回家"
       ]
-    }
+    },
+    "exJP": "父は毎日夜遅くに帰宅します。",
+    "exEN": "My father returns home late at night every day.",
+    "exZH": "父亲每天深夜才回家。"
   },
   {
     "id": "n3-g372",
@@ -7774,7 +8167,10 @@
         "议长",
         "主席"
       ]
-    }
+    },
+    "exJP": "彼は会議の議長に選ばれました。",
+    "exEN": "He was elected chairman of the meeting.",
+    "exZH": "他被选为会议的主席。"
   },
   {
     "id": "n3-g373",
@@ -7794,7 +8190,10 @@
         "整洁地",
         "好好地"
       ]
-    }
+    },
+    "exJP": "靴をきちんと並べてください。",
+    "exEN": "Please line up your shoes neatly.",
+    "exZH": "请把鞋子整齐地摆放好。"
   },
   {
     "id": "n3-g374",
@@ -7811,7 +8210,10 @@
       "zh": [
         "狐狸"
       ]
-    }
+    },
+    "exJP": "森の中で野生の狐を見ました。",
+    "exEN": "I saw a wild fox in the forest.",
+    "exZH": "我在森林里看到了一只野狐狸。"
   },
   {
     "id": "n3-g375",
@@ -7831,7 +8233,10 @@
         "捐款",
         "捐赠"
       ]
-    }
+    },
+    "exJP": "孤児院に少しお金を寄付した。",
+    "exEN": "I contributed a little money to the orphanage.",
+    "exZH": "我向孤儿院捐了一点钱。"
   },
   {
     "id": "n3-b001",
@@ -7851,7 +8256,10 @@
         "哎呀",
         "啊"
       ]
-    }
+    },
+    "exJP": "あっ、財布を忘れてしまった。",
+    "exEN": "Ah! I forgot my wallet.",
+    "exZH": "啊！我忘记带钱包了。"
   },
   {
     "id": "n3-b002",
@@ -7871,7 +8279,10 @@
         "不凑巧",
         "偏偏"
       ]
-    }
+    },
+    "exJP": "あいにくですが、明日は雨のようです。",
+    "exEN": "Unfortunately, it seems it will rain tomorrow.",
+    "exZH": "很不凑巧，明天好像要下雨。"
   },
   {
     "id": "n3-b003",
@@ -7890,7 +8301,10 @@
         "黎明",
         "结束"
       ]
-    }
+    },
+    "exJP": "夜が明けると、鳥が鳴き始めた。",
+    "exEN": "When the night dawned, the birds started singing.",
+    "exZH": "天一亮，鸟儿就开始鸣叫了。"
   },
   {
     "id": "n3-b004",
@@ -7910,7 +8324,10 @@
         "集合",
         "聚会"
       ]
-    }
+    },
+    "exJP": "今夜は家族の集まりがあります。",
+    "exEN": "We have a family gathering tonight.",
+    "exZH": "今晚有个家庭聚会。"
   },
   {
     "id": "n3-b005",
@@ -7930,7 +8347,10 @@
         "缺点",
         "瑕疵"
       ]
-    }
+    },
+    "exJP": "他人の粗を探すのはやめなさい。",
+    "exEN": "Stop looking for other people's defects.",
+    "exZH": "请不要再挑别人的毛病了。"
   },
   {
     "id": "n3-b006",
@@ -7950,7 +8370,10 @@
         "或者",
         "也许"
       ]
-    }
+    },
+    "exJP": "バス、あるいは電車で行きます。",
+    "exEN": "I will go by bus or by train.",
+    "exZH": "我将乘公交车或火车去。"
   },
   {
     "id": "n3-b007",
@@ -7967,7 +8390,10 @@
       "zh": [
         "胃"
       ]
-    }
+    },
+    "exJP": "食べ過ぎて胃が痛くなりました。",
+    "exEN": "I ate too much and my stomach hurts.",
+    "exZH": "我吃得太多，胃疼起来了。"
   },
   {
     "id": "n3-b008",
@@ -7988,7 +8414,10 @@
         "不行",
         "不可以"
       ]
-    }
+    },
+    "exJP": "人に嘘をついてはいけないよ。",
+    "exEN": "You must not tell lies to people.",
+    "exZH": "不可以对别人撒谎哦。"
   },
   {
     "id": "n3-b009",
@@ -8007,7 +8436,10 @@
         "一次",
         "同时"
       ]
-    }
+    },
+    "exJP": "一度にたくさんのことをするのは難しい。",
+    "exEN": "It is difficult to do many things all at once.",
+    "exZH": "一次做很多事情是很困难的。"
   },
   {
     "id": "n3-b010",
@@ -8027,7 +8459,10 @@
         "一瞬间",
         "一刹那"
       ]
-    }
+    },
+    "exJP": "その一瞬の出来事を忘れない。",
+    "exEN": "I will never forget the events of that instant.",
+    "exZH": "我不会忘记那一瞬间发生的事。"
   },
   {
     "id": "n3-b011",
@@ -8047,7 +8482,10 @@
         "一方面",
         "另一方"
       ]
-    }
+    },
+    "exJP": "意見は一方だけでなく両方聞くべきだ。",
+    "exEN": "When listening to opinions, you should listen to both sides, not just one side.",
+    "exZH": "听取意见时，不应只听一面之词，而应该听取双方的意见。"
   },
   {
     "id": "n3-b012",
@@ -8066,7 +8504,10 @@
         "马上",
         "不久"
       ]
-    }
+    },
+    "exJP": "空が暗くなり、今にも雨が降りそうだ。",
+    "exEN": "The sky is getting dark and it looks like it will rain at any moment.",
+    "exZH": "天变黑了，眼看随时都要下雨。"
   },
   {
     "id": "n3-b013",
@@ -8084,7 +8525,10 @@
       "zh": [
         "岩石"
       ]
-    }
+    },
+    "exJP": "海岸には大きな岩がたくさんある。",
+    "exEN": "There are many large rocks on the coast.",
+    "exZH": "海岸边有许多巨大的岩石。"
   },
   {
     "id": "n3-b014",
@@ -8102,7 +8546,10 @@
       "zh": [
         "印刷"
       ]
-    }
+    },
+    "exJP": "この書類を百枚印刷してください。",
+    "exEN": "Please print one hundred copies of this document.",
+    "exZH": "请把这份文件打印一百份。"
   },
   {
     "id": "n3-b015",
@@ -8121,7 +8568,10 @@
         "失去",
         "丧失"
       ]
-    }
+    },
+    "exJP": "事故で全ての記憶を失った。",
+    "exEN": "I lost all my memories in the accident.",
+    "exZH": "我在事故中失去了所有的记忆。"
   },
   {
     "id": "n3-b016",
@@ -8140,7 +8590,10 @@
         "出生",
         "籍贯"
       ]
-    }
+    },
+    "exJP": "私は東京生まれの東京育ちです。",
+    "exEN": "I was born and raised in Tokyo.",
+    "exZH": "我在东京出生并长大。"
   },
   {
     "id": "n3-b017",
@@ -8159,7 +8612,10 @@
         "御",
         "敬语前缀"
       ]
-    }
+    },
+    "exJP": "御家族の皆様はお元気ですか。",
+    "exEN": "Is your honorable family doing well?",
+    "exZH": "您的家人们都好吗？"
   },
   {
     "id": "n3-b018",
@@ -8178,7 +8634,10 @@
         "恐怕",
         "大概"
       ]
-    }
+    },
+    "exJP": "おそらく明日は晴れるでしょう。",
+    "exEN": "Perhaps it will be sunny tomorrow.",
+    "exZH": "也许明天会是个晴天。"
   },
   {
     "id": "n3-b019",
@@ -8196,7 +8655,10 @@
         "恭喜",
         "祝贺"
       ]
-    }
+    },
+    "exJP": "大学の合格、本当におめでとう。",
+    "exEN": "Truly congratulations on passing the university exam.",
+    "exZH": "真的非常恭喜你考上大学。"
   },
   {
     "id": "n3-b020",
@@ -8217,7 +8679,10 @@
         "大约",
         "大概"
       ]
-    }
+    },
+    "exJP": "駅からおよそ十分歩きました。",
+    "exEN": "I walked for about ten minutes from the station.",
+    "exZH": "我从车站大概走了十分钟。"
   },
   {
     "id": "n3-b021",
@@ -8235,7 +8700,10 @@
       "zh": [
         "画家"
       ]
-    }
+    },
+    "exJP": "彼は世界的に有名な画家になった。",
+    "exEN": "He became a world-famous painter.",
+    "exZH": "他成了一位世界闻名的画家。"
   },
   {
     "id": "n3-b022",
@@ -8254,7 +8722,10 @@
       "zh": [
         "学习"
       ]
-    }
+    },
+    "exJP": "毎日の学習が成功の鍵です。",
+    "exEN": "Daily learning is the key to success.",
+    "exZH": "每天的学习是成功的关键。"
   },
   {
     "id": "n3-b023",
@@ -8274,7 +8745,10 @@
         "失望",
         "灰心"
       ]
-    }
+    },
+    "exJP": "テストの点数が低くてがっかりした。",
+    "exEN": "I felt disappointed because my test score was low.",
+    "exZH": "考试分数很低，让我感到很失望。"
   },
   {
     "id": "n3-b024",
@@ -8293,7 +8767,10 @@
       "zh": [
         "感觉"
       ]
-    }
+    },
+    "exJP": "足の感覚がなくなるまで歩いた。",
+    "exEN": "I walked until I lost the sense in my legs.",
+    "exZH": "我一直走到双腿失去知觉。"
   },
   {
     "id": "n3-b025",
@@ -8311,7 +8788,10 @@
         "患者",
         "病人"
       ]
-    }
+    },
+    "exJP": "病院にはたくさんの患者がいた。",
+    "exEN": "There were many patients in the hospital.",
+    "exZH": "医院里有很多患者。"
   },
   {
     "id": "n3-b026",
@@ -8331,7 +8811,10 @@
         "关联",
         "联系"
       ]
-    }
+    },
+    "exJP": "この二つの事件は関連があるようだ。",
+    "exEN": "There seems to be a relation between these two incidents.",
+    "exZH": "这两起事件似乎有关联。"
   },
   {
     "id": "n3-b027",
@@ -8350,7 +8833,10 @@
         "注意到",
         "察觉"
       ]
-    }
+    },
+    "exJP": "彼は自分の間違いに気付かなかった。",
+    "exEN": "He didn't notice his own mistake.",
+    "exZH": "他没有注意到自己的错误。"
   },
   {
     "id": "n3-b028",
@@ -8369,7 +8855,10 @@
         "基本",
         "基础"
       ]
-    }
+    },
+    "exJP": "何事も基本が一番大切です。",
+    "exEN": "The foundation is the most important thing in everything.",
+    "exZH": "任何事情基础都是最重要的。"
   },
   {
     "id": "n3-b029",
@@ -8390,7 +8879,10 @@
         "急剧",
         "突然"
       ]
-    }
+    },
+    "exJP": "最近、気温が急激に下がった。",
+    "exEN": "The temperature has dropped suddenly recently.",
+    "exZH": "最近气温急剧下降。"
   },
   {
     "id": "n3-b030",
@@ -8407,7 +8899,10 @@
       "zh": [
         "教科书"
       ]
-    }
+    },
+    "exJP": "明日は歴史の教科書を忘れずに持ってきて。",
+    "exEN": "Don't forget to bring your history textbook tomorrow.",
+    "exZH": "明天别忘了带历史教科书。"
   },
   {
     "id": "n3-b031",
@@ -8428,7 +8923,10 @@
         "恐怖",
         "恐惧"
       ]
-    }
+    },
+    "exJP": "暗い道を歩くのは恐怖を感じる。",
+    "exEN": "Walking on a dark road makes me feel fear.",
+    "exZH": "走在黑漆漆的路上会感到恐惧。"
   },
   {
     "id": "n3-b032",
@@ -8448,7 +8946,10 @@
         "议论",
         "讨论"
       ]
-    }
+    },
+    "exJP": "会議では活発な議論が交わされた。",
+    "exEN": "An active argument was exchanged at the meeting.",
+    "exZH": "会议上展开了热烈的讨论。"
   },
   {
     "id": "n3-b033",
@@ -8467,7 +8968,10 @@
         "保险箱",
         "金库"
       ]
-    }
+    },
+    "exJP": "大切な書類は金庫にしまってあります。",
+    "exEN": "Important documents are stored in the safe.",
+    "exZH": "重要的文件存放在保险箱里。"
   },
   {
     "id": "n3-b034",
@@ -8484,7 +8988,10 @@
       "zh": [
         "星期五"
       ]
-    }
+    },
+    "exJP": "次の金曜に一緒に映画を見ませんか。",
+    "exEN": "Would you like to watch a movie together next Friday?",
+    "exZH": "下周五要不要一起看电影？"
   },
   {
     "id": "n3-b035",
@@ -8502,7 +9009,10 @@
       "zh": [
         "管子"
       ]
-    }
+    },
+    "exJP": "水道管が破裂して水が漏れている。",
+    "exEN": "The water pipe burst and water is leaking.",
+    "exZH": "水管破裂漏水了。"
   },
   {
     "id": "n3-b036",
@@ -8522,7 +9032,10 @@
         "组",
         "班"
       ]
-    }
+    },
+    "exJP": "私は三組の生徒たちに英語を教えている。",
+    "exEN": "I am teaching English to the students in group three.",
+    "exZH": "我在教三班的学生们英语。"
   },
   {
     "id": "n3-b037",
@@ -8540,7 +9053,10 @@
         "反复",
         "重复"
       ]
-    }
+    },
+    "exJP": "先生は大切なポイントを何度も繰り返した。",
+    "exEN": "The teacher repeated the important points many times.",
+    "exZH": "老师把重点重复了好几次。"
   },
   {
     "id": "n3-b038",
@@ -8558,7 +9074,10 @@
       "zh": [
         "军队"
       ]
-    }
+    },
+    "exJP": "彼は若い頃、軍に入っていたそうだ。",
+    "exEN": "I heard he was in the army when he was young.",
+    "exZH": "听说他年轻时参过军。"
   },
   {
     "id": "n3-b039",
@@ -8575,7 +9094,10 @@
       "zh": [
         "艺术"
       ]
-    }
+    },
+    "exJP": "休日は美術館で芸術を楽しむのが好きだ。",
+    "exEN": "I like to enjoy art at the museum on my days off.",
+    "exZH": "休息日我喜欢在美术馆欣赏艺术。"
   },
   {
     "id": "n3-b040",
@@ -8595,7 +9117,10 @@
         "小气",
         "吝啬"
       ]
-    }
+    },
+    "exJP": "彼はとてもけちで、絶対におごってくれない。",
+    "exEN": "He is very stingy and never treats anyone.",
+    "exZH": "他非常小气，从来不请客。"
   },
   {
     "id": "n3-b041",
@@ -8612,7 +9137,10 @@
       "zh": [
         "烟"
       ]
-    }
+    },
+    "exJP": "遠くの山から黒い煙が上がっている。",
+    "exEN": "Black smoke is rising from the mountain in the distance.",
+    "exZH": "远处的山上升起了黑烟。"
   },
   {
     "id": "n3-b042",
@@ -8629,7 +9157,10 @@
       "zh": [
         "现象"
       ]
-    }
+    },
+    "exJP": "オーロラはとても不思議な自然現象です。",
+    "exEN": "The aurora is a very mysterious natural phenomenon.",
+    "exZH": "极光是非常神奇的自然现象。"
   },
   {
     "id": "n3-b043",
@@ -8646,7 +9177,10 @@
       "zh": [
         "宪法"
       ]
-    }
+    },
+    "exJP": "憲法を改正するには国民の賛成が必要だ。",
+    "exEN": "To amend the constitution, the public's approval is necessary.",
+    "exZH": "修改宪法需要得到国民的赞成。"
   },
   {
     "id": "n3-b044",
@@ -8665,7 +9199,10 @@
       "zh": [
         "交换"
       ]
-    }
+    },
+    "exJP": "パーティーで友達とプレゼントを交換した。",
+    "exEN": "I exchanged gifts with my friends at the party.",
+    "exZH": "在聚会上和朋友交换了礼物。"
   },
   {
     "id": "n3-b045",
@@ -8682,7 +9219,10 @@
       "zh": [
         "后者"
       ]
-    }
+    },
+    "exJP": "二つの案のうち、私は後者を選ぶ。",
+    "exEN": "Between the two proposals, I choose the latter.",
+    "exZH": "两个方案中，我选后者。"
   },
   {
     "id": "n3-b046",
@@ -8699,7 +9239,10 @@
       "zh": [
         "冰"
       ]
-    }
+    },
+    "exJP": "冷たいジュースに氷をたくさん入れた。",
+    "exEN": "I put a lot of ice in the cold juice.",
+    "exZH": "我在冷饮里加了很多冰块。"
   },
   {
     "id": "n3-b047",
@@ -8718,7 +9261,10 @@
         "谷物",
         "粮食"
       ]
-    }
+    },
+    "exJP": "この地域では米や麦などの穀物を育てている。",
+    "exEN": "Grains like rice and wheat are grown in this region.",
+    "exZH": "这个地区种植大米和麦子等谷物。"
   },
   {
     "id": "n3-b048",
@@ -8736,7 +9282,10 @@
       "zh": [
         "国家"
       ]
-    }
+    },
+    "exJP": "オリンピックでは国家を代表して戦う。",
+    "exEN": "At the Olympics, they compete representing their state.",
+    "exZH": "在奥运会上代表国家参加比赛。"
   },
   {
     "id": "n3-b049",
@@ -8755,7 +9304,10 @@
         "小屋",
         "棚子"
       ]
-    }
+    },
+    "exJP": "庭の隅に犬のための小さな小屋を作った。",
+    "exEN": "I built a small hut for the dog in the corner of the garden.",
+    "exZH": "在院子角落里给狗搭了一个小木屋。"
   },
   {
     "id": "n3-b050",
@@ -8775,7 +9327,10 @@
         "今后",
         "以后"
       ]
-    }
+    },
+    "exJP": "今後もこの仕事を続けていきたいです。",
+    "exEN": "I want to continue doing this job from now on.",
+    "exZH": "今后我也想继续做这份工作。"
   },
   {
     "id": "n3-b051",
@@ -8795,7 +9350,10 @@
         "时候",
         "边缘"
       ]
-    }
+    },
+    "exJP": "帰国の際、空港で多くの友人が見送ってくれた。",
+    "exEN": "On the occasion of returning home, many friends saw me off at the airport.",
+    "exZH": "回国之际，很多朋友在机场为我送行。"
   },
   {
     "id": "n3-b052",
@@ -8814,7 +9372,10 @@
         "材料",
         "原料"
       ]
-    }
+    },
+    "exJP": "カレーの材料をスーパーに買いに行きます。",
+    "exEN": "I'm going to the supermarket to buy ingredients for curry.",
+    "exZH": "我去超市买做咖喱的材料。"
   },
   {
     "id": "n3-b053",
@@ -8832,7 +9393,10 @@
       "zh": [
         "农作物"
       ]
-    }
+    },
+    "exJP": "今年の夏は暑すぎて、作物がうまく育たない。",
+    "exEN": "This summer is too hot, and the crops are not growing well.",
+    "exZH": "今年夏天太热了，农作物长得不好。"
   },
   {
     "id": "n3-b054",
@@ -8852,7 +9416,10 @@
         "纸币",
         "钞票"
       ]
-    }
+    },
+    "exJP": "財布の中に千円札が一枚しか入っていない。",
+    "exEN": "There is only one thousand-yen bill in my wallet.",
+    "exZH": "钱包里只有一张千元钞票。"
   },
   {
     "id": "n3-b055",
@@ -8872,7 +9439,10 @@
         "差别",
         "歧视"
       ]
-    }
+    },
+    "exJP": "性別による差別は許されないことです。",
+    "exEN": "Discrimination based on gender is unforgivable.",
+    "exZH": "性别歧视是不可原谅的。"
   },
   {
     "id": "n3-b056",
@@ -8892,7 +9462,10 @@
         "左右",
         "控制"
       ]
-    }
+    },
+    "exJP": "道を渡る前に、必ず左右を確認しなさい。",
+    "exEN": "Make sure to check left and right before crossing the road.",
+    "exZH": "过马路前，一定要确认左右两边。"
   },
   {
     "id": "n3-b057",
@@ -8909,7 +9482,10 @@
       "zh": [
         "氧气"
       ]
-    }
+    },
+    "exJP": "高い山の上では酸素が少なくて息苦しい。",
+    "exEN": "On top of a high mountain, there is little oxygen and it's hard to breathe.",
+    "exZH": "高山上氧气稀薄，呼吸困难。"
   },
   {
     "id": "n3-b058",
@@ -8926,7 +9502,10 @@
       "zh": [
         "资源"
       ]
-    }
+    },
+    "exJP": "地球の限りある資源を大切に使いましょう。",
+    "exEN": "Let's carefully use the limited resources of the Earth.",
+    "exZH": "让我们珍惜使用地球有限的资源。"
   },
   {
     "id": "n3-b059",
@@ -8943,7 +9522,10 @@
       "zh": [
         "诗人"
       ]
-    }
+    },
+    "exJP": "彼女は有名な詩人として世界中で知られている。",
+    "exEN": "She is known all over the world as a famous poet.",
+    "exZH": "作为著名的诗人，她闻名于世。"
   },
   {
     "id": "n3-b060",
@@ -8962,7 +9544,10 @@
         "质量",
         "素质"
       ]
-    }
+    },
+    "exJP": "このレストランは値段が高いが、料理の質は良い。",
+    "exEN": "This restaurant is expensive, but the quality of the food is good.",
+    "exZH": "这家餐厅虽然价格高，但饭菜质量很好。"
   },
   {
     "id": "n3-b061",
@@ -8982,7 +9567,10 @@
         "实施",
         "实行"
       ]
-    }
+    },
+    "exJP": "明日の午前中に防災訓練を実施します。",
+    "exEN": "We will implement a disaster drill tomorrow morning.",
+    "exZH": "明天上午将举行防灾演练。"
   },
   {
     "id": "n3-b062",
@@ -9002,7 +9590,10 @@
         "指导",
         "领导"
       ]
-    }
+    },
+    "exJP": "コーチの熱心な指導のおかげで優勝できた。",
+    "exEN": "Thanks to the coach's enthusiastic guidance, we were able to win the championship.",
+    "exZH": "多亏了教练热情的指导，我们才赢得了冠军。"
   },
   {
     "id": "n3-b063",
@@ -9021,7 +9612,10 @@
       "zh": [
         "死亡"
       ]
-    }
+    },
+    "exJP": "その悲惨な交通事故で三人が死亡した。",
+    "exEN": "Three people died in that tragic traffic accident.",
+    "exZH": "在那起惨烈的交通事故中有三人死亡。"
   },
   {
     "id": "n3-b064",
@@ -9040,7 +9634,10 @@
         "表示",
         "展现"
       ]
-    }
+    },
+    "exJP": "彼はグラフを使って売上の伸びを示した。",
+    "exEN": "He used a graph to show the growth in sales.",
+    "exZH": "他用图表展示了销售额的增长。"
   },
   {
     "id": "n3-b065",
@@ -9059,7 +9656,10 @@
         "周围",
         "四周"
       ]
-    }
+    },
+    "exJP": "周囲の意見をよく聞いてから決断するべきだ。",
+    "exEN": "You should make a decision after listening carefully to the opinions of your surroundings.",
+    "exZH": "应该在仔细听取周围人的意见后再做决定。"
   },
   {
     "id": "n3-b066",
@@ -9078,7 +9678,10 @@
         "集团",
         "群体"
       ]
-    }
+    },
+    "exJP": "大きな集団で旅行するのは苦手です。",
+    "exEN": "I am not good at traveling in large groups.",
+    "exZH": "我不擅长在大集体中旅行。"
   },
   {
     "id": "n3-b067",
@@ -9099,7 +9702,10 @@
         "主义",
         "原则"
       ]
-    }
+    },
+    "exJP": "彼は完璧主義なので、仕事が丁寧です。",
+    "exEN": "He is a perfectionist, so his work is thorough.",
+    "exZH": "他是个完美主义者，所以工作很仔细。"
   },
   {
     "id": "n3-b068",
@@ -9118,7 +9724,10 @@
         "籍贯",
         "出身"
       ]
-    }
+    },
+    "exJP": "彼女の出身は京都だそうです。",
+    "exEN": "I hear her hometown is Kyoto.",
+    "exZH": "听说她的家乡是京都。"
   },
   {
     "id": "n3-b069",
@@ -9137,7 +9746,10 @@
       "zh": [
         "种类"
       ]
-    }
+    },
+    "exJP": "この店には色々な種類のパンがあります。",
+    "exEN": "There are various kinds of bread in this shop.",
+    "exZH": "这家店有各种各样的面包。"
   },
   {
     "id": "n3-b070",
@@ -9156,7 +9768,10 @@
       "zh": [
         "小"
       ]
-    }
+    },
+    "exJP": "コーヒーの小をお願いします。",
+    "exEN": "A small coffee, please.",
+    "exZH": "请给我一杯小杯咖啡。"
   },
   {
     "id": "n3-b071",
@@ -9175,7 +9790,10 @@
         "进京",
         "到东京去"
       ]
-    }
+    },
+    "exJP": "大学に入学するため、春に上京しました。",
+    "exEN": "I moved to Tokyo in the spring to enter university.",
+    "exZH": "为了上大学，我春天来到了东京。"
   },
   {
     "id": "n3-b072",
@@ -9193,7 +9811,10 @@
       "zh": [
         "症状"
       ]
-    }
+    },
+    "exJP": "薬を飲んだら、風邪の症状が軽くなりました。",
+    "exEN": "After taking the medicine, my cold symptoms became milder.",
+    "exZH": "吃了药之后，感冒的症状减轻了。"
   },
   {
     "id": "n3-b073",
@@ -9211,7 +9832,10 @@
       "zh": [
         "少年"
       ]
-    }
+    },
+    "exJP": "公園で三人の少年がサッカーをしています。",
+    "exEN": "Three boys are playing soccer in the park.",
+    "exZH": "公园里有三个少年在踢足球。"
   },
   {
     "id": "n3-b074",
@@ -9228,7 +9852,10 @@
       "zh": [
         "女王"
       ]
-    }
+    },
+    "exJP": "この映画は昔の女王の物語です。",
+    "exEN": "This movie is the story of an ancient queen.",
+    "exZH": "这部电影是关于一位古代女王的故事。"
   },
   {
     "id": "n3-b075",
@@ -9245,7 +9872,10 @@
       "zh": [
         "书房"
       ]
-    }
+    },
+    "exJP": "父は書斎で本を読んでいます。",
+    "exEN": "My father is reading a book in his study.",
+    "exZH": "爸爸正在书房里看书。"
   },
   {
     "id": "n3-b076",
@@ -9262,7 +9892,10 @@
       "zh": [
         "女演员"
       ]
-    }
+    },
+    "exJP": "彼女は将来、有名な女優になりたいです。",
+    "exEN": "She wants to become a famous actress in the future.",
+    "exZH": "她将来想成为一名著名的女演员。"
   },
   {
     "id": "n3-b077",
@@ -9279,7 +9912,10 @@
       "zh": [
         "城堡"
       ]
-    }
+    },
+    "exJP": "山の上に古い城が見えます。",
+    "exEN": "You can see an old castle on top of the mountain.",
+    "exZH": "可以看到山顶上有一座古堡。"
   },
   {
     "id": "n3-b078",
@@ -9297,7 +9933,10 @@
         "人种",
         "种族"
       ]
-    }
+    },
+    "exJP": "ここには様々な人種の人々が住んでいます。",
+    "exEN": "People of various races live here.",
+    "exZH": "这里居住着各种种族的人。"
   },
   {
     "id": "n3-b079",
@@ -9316,7 +9955,10 @@
         "身体",
         "肉体"
       ]
-    }
+    },
+    "exJP": "運動は身体に良い影響を与えます。",
+    "exEN": "Exercise has a positive effect on the body.",
+    "exZH": "运动对身体有很好的影响。"
   },
   {
     "id": "n3-b080",
@@ -9334,7 +9976,10 @@
       "zh": [
         "心理"
       ]
-    }
+    },
+    "exJP": "私は大学で人間の心理を学んでいます。",
+    "exEN": "I am studying human psychology at university.",
+    "exZH": "我在大学里学习人类心理学。"
   },
   {
     "id": "n3-b081",
@@ -9354,7 +9999,10 @@
         "极好的",
         "极漂亮的"
       ]
-    }
+    },
+    "exJP": "そのワンピース、とてもすてきですね。",
+    "exEN": "That dress is very lovely.",
+    "exZH": "那条连衣裙真漂亮。"
   },
   {
     "id": "n3-b082",
@@ -9371,7 +10019,10 @@
       "zh": [
         "税"
       ]
-    }
+    },
+    "exJP": "この値段は税を含んでいますか。",
+    "exEN": "Does this price include tax?",
+    "exZH": "这个价格含税吗？"
   },
   {
     "id": "n3-b083",
@@ -9390,7 +10041,10 @@
         "精神",
         "心智"
       ]
-    }
+    },
+    "exJP": "彼はとても精神が強い人です。",
+    "exEN": "He is a person with a very strong mind.",
+    "exZH": "他是一个精神很坚强的人。"
   },
   {
     "id": "n3-b084",
@@ -9410,7 +10064,10 @@
         "成长",
         "发展"
       ]
-    }
+    },
+    "exJP": "子供の成長は本当に早いですね。",
+    "exEN": "Children's growth is really fast, isn't it?",
+    "exZH": "孩子的成长真是快啊。"
   },
   {
     "id": "n3-b085",
@@ -9430,7 +10087,10 @@
         "整理",
         "清理"
       ]
-    }
+    },
+    "exJP": "机の上をきれいに整理しました。",
+    "exEN": "I organized my desk neatly.",
+    "exZH": "我把桌子整理得很干净。"
   },
   {
     "id": "n3-b086",
@@ -9448,7 +10108,10 @@
       "zh": [
         "积极的"
       ]
-    }
+    },
+    "exJP": "彼女は授業で積極的に質問します。",
+    "exEN": "She proactively asks questions in class.",
+    "exZH": "她在课堂上积极提问。"
   },
   {
     "id": "n3-b087",
@@ -9468,7 +10131,10 @@
         "专业",
         "专攻"
       ]
-    }
+    },
+    "exJP": "大学での私の専攻は経済学でした。",
+    "exEN": "My major in university was economics.",
+    "exZH": "我在大学的专业是经济学。"
   },
   {
     "id": "n3-b088",
@@ -9487,7 +10153,10 @@
       "zh": [
         "前进"
       ]
-    }
+    },
+    "exJP": "私たちの計画は少しずつ前進しています。",
+    "exEN": "Our plan is advancing little by little.",
+    "exZH": "我们的计划正在一点点向前推进。"
   },
   {
     "id": "n3-b089",
@@ -9507,7 +10176,10 @@
         "打扫",
         "清洁"
       ]
-    }
+    },
+    "exJP": "週末は部屋の掃除をするつもりです。",
+    "exEN": "I plan to clean my room on the weekend.",
+    "exZH": "我打算周末打扫房间。"
   },
   {
     "id": "n3-b090",
@@ -9526,7 +10198,10 @@
         "那里",
         "那儿"
       ]
-    }
+    },
+    "exJP": "そこに傘を置かないでください。",
+    "exEN": "Please do not put your umbrella there.",
+    "exZH": "请不要把伞放在那里。"
   },
   {
     "id": "n3-b091",
@@ -9543,7 +10218,10 @@
       "zh": [
         "袖子"
       ]
-    }
+    },
+    "exJP": "暑いのでシャツの袖をまくりました。",
+    "exEN": "I rolled up my shirt sleeves because it's hot.",
+    "exZH": "因为很热，我卷起了衬衫的袖子。"
   },
   {
     "id": "n3-b092",
@@ -9563,7 +10241,10 @@
         "各自",
         "分别"
       ]
-    }
+    },
+    "exJP": "学生はそれぞれの意見を発表しました。",
+    "exEN": "The students each presented their own opinions.",
+    "exZH": "学生们各自发表了自己的意见。"
   },
   {
     "id": "n3-b093",
@@ -9584,7 +10265,10 @@
         "损害",
         "损失"
       ]
-    }
+    },
+    "exJP": "台風で農作物に大きな損害が出た。",
+    "exEN": "The typhoon caused major damage to the crops.",
+    "exZH": "台风给农作物造成了巨大的损失。"
   },
   {
     "id": "n3-b094",
@@ -9601,7 +10285,10 @@
       "zh": [
         "体温"
       ]
-    }
+    },
+    "exJP": "朝起きてすぐに体温を測ります。",
+    "exEN": "I measure my body temperature as soon as I wake up.",
+    "exZH": "早上起床后我立刻量体温。"
   },
   {
     "id": "n3-b095",
@@ -9618,7 +10305,10 @@
       "zh": [
         "大使"
       ]
-    }
+    },
+    "exJP": "日本の大使が新しい協定に署名した。",
+    "exEN": "The Japanese ambassador signed the new agreement.",
+    "exZH": "日本大使签署了新协议。"
   },
   {
     "id": "n3-b096",
@@ -9635,7 +10325,10 @@
       "zh": [
         "总统"
       ]
-    }
+    },
+    "exJP": "アメリカの大統領が日本を訪問します。",
+    "exEN": "The president of the United States will visit Japan.",
+    "exZH": "美国总统将访问日本。"
   },
   {
     "id": "n3-b097",
@@ -9655,7 +10348,10 @@
         "平坦",
         "扁平"
       ]
-    }
+    },
+    "exJP": "この道は平らで歩きやすいです。",
+    "exEN": "This road is flat and easy to walk on.",
+    "exZH": "这条路很平坦，很好走。"
   },
   {
     "id": "n3-b098",
@@ -9674,7 +10370,10 @@
         "互相",
         "彼此"
       ]
-    }
+    },
+    "exJP": "私たちは互いに助け合わなければならない。",
+    "exEN": "We must help each other.",
+    "exZH": "我们必须互相帮助。"
   },
   {
     "id": "n3-b099",
@@ -9695,7 +10394,10 @@
         "仅仅",
         "免费"
       ]
-    }
+    },
+    "exJP": "彼はただの友達で、恋人ではありません。",
+    "exEN": "He is just an ordinary friend, not a boyfriend.",
+    "exZH": "他只是个普通朋友，不是男朋友。"
   },
   {
     "id": "n3-b100",
@@ -9714,7 +10416,10 @@
         "到达",
         "达到"
       ]
-    }
+    },
+    "exJP": "山の頂上に達するまで３時間かかりました。",
+    "exEN": "It took 3 hours to reach the top of the mountain.",
+    "exZH": "花了三个小时才到达山顶。"
   },
   {
     "id": "n3-b101",
@@ -9731,7 +10436,10 @@
       "zh": [
         "山谷"
       ]
-    }
+    },
+    "exJP": "この谷は秋になると紅葉が美しいです。",
+    "exEN": "The autumn leaves are beautiful in this valley in autumn.",
+    "exZH": "一到秋天，这个山谷的红叶非常美丽。"
   },
   {
     "id": "n3-b102",
@@ -9751,7 +10459,10 @@
         "球",
         "珠子"
       ]
-    }
+    },
+    "exJP": "猫が毛糸の玉で遊んでいます。",
+    "exEN": "The cat is playing with a ball of yarn.",
+    "exZH": "猫正在玩毛线球。"
   },
   {
     "id": "n3-b103",
@@ -9770,7 +10481,10 @@
         "尝试",
         "试验"
       ]
-    }
+    },
+    "exJP": "新しいケーキのレシピを試しました。",
+    "exEN": "I attempted a new cake recipe.",
+    "exZH": "我尝试了新的蛋糕食谱。"
   },
   {
     "id": "n3-b104",
@@ -9789,7 +10503,10 @@
         "男子",
         "男孩"
       ]
-    }
+    },
+    "exJP": "私の高校は男子の生徒が多いです。",
+    "exEN": "My high school has many male students.",
+    "exZH": "我的高中男学生很多。"
   },
   {
     "id": "n3-b105",
@@ -9808,7 +10525,10 @@
         "仅仅",
         "单纯"
       ]
-    }
+    },
+    "exJP": "単に忙しいから行けないだけです。",
+    "exEN": "I simply cannot go because I am busy.",
+    "exZH": "仅仅是因为忙所以去不了。"
   },
   {
     "id": "n3-b106",

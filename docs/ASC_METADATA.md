@@ -110,12 +110,63 @@ Nihongo Ride 是一款安静、专注的打字练习应用,真正帮你学会日
 
 Source: `NIHONGO_SHOT=/tmp/nihongo-store NIHONGO_SHOT_STORE=1 swift run NihongoRideApp`
 
-Upload order:
+**v1.1 macOS upload order(menu.png 已弃用 — ImageRenderer 黄占位条,2.3.3 风险):**
 1. `game.png` — 骑行环游(主玩法)
-2. `practice.png` — Practice 长文章
-3. `menu.png` — 模式/等级选择
+2. `journal.png` — 骑行日志(1.1 新功能)
+3. `practice.png` — Practice 长文章
 4. `results.png` — 结算 + 评级
 5. `practice-blind.png` — 盲打挑战
+6. `game-mid.png` — 旅程中段(富士山)
+
+**v1.1 iPhone (APP_IPHONE_67, 1320×2868) order**(真机截屏,
+`TEST_RUNNER_NIHONGO_STORE_SHOTS=1 xcodebuild … -only-testing:…StoreScreenshotTests test` → `xcresulttool export attachments`):
+1. `*-2-game.png` 2. `*-5-journal.png` 3. `*-1-menu.png`(真截屏,无占位问题) 4. `*-4-practice.png` 5. `*-3-results.png`
+
+---
+
+## v1.1 What's New / 新功能
+
+### macOS — English (≤4000)
+```
+• NEW: Ride Log — your typing travel diary. Daily streak, lifetime words and kilometres, a WPM trend drawn as the road you've ridden, upcoming reviews, and your last ten runs.
+• 720 new example sentences across N3–N1, and 50 new literary practice passages (now 233).
+• Polish and fixes throughout.
+```
+
+### macOS — 简体中文
+```
+• 新增「骑行日志」:连续天数、累计词数与里程、WPM 趋势(画成你骑过的那条路)、复习到期预报、最近十程列表。
+• 新增 720 条 N3–N1 例句、50 篇文学风练习段落(现共 233 篇)。
+• 多处细节打磨与修复。
+```
+
+### iOS — English (≤4000)
+```
+• NEW: iPhone support — the whole ride, redesigned for portrait. Everything fits neatly above the on-screen keyboard.
+• NEW: Ride Log — your typing travel diary. Daily streak, lifetime words and kilometres, a WPM trend drawn as the road you've ridden, upcoming reviews, and your last ten runs.
+• 720 new example sentences across N3–N1, and 50 new literary practice passages (now 233).
+• The menu and results screens no longer pop up the keyboard — it appears only where you type.
+```
+
+### iOS — 简体中文
+```
+• 新增 iPhone 支持:整个骑行之旅为竖屏重新设计,所有内容都稳稳排布在屏幕键盘上方。
+• 新增「骑行日志」:连续天数、累计词数与里程、WPM 趋势(画成你骑过的那条路)、复习到期预报、最近十程列表。
+• 新增 720 条 N3–N1 例句、50 篇文学风练习段落(现共 233 篇)。
+• 菜单与结算页不再弹出屏幕键盘——键盘只在需要打字的地方出现。
+```
+
+### iOS 1.1 审核备注 / Review notes
+```
+Nihongo Ride is a fully offline typing-practice app for Japanese learners.
+No account or login is required. No data is collected.
+
+On iPad and iPhone the on-screen keyboard appears automatically on the game
+screen — type the romaji shown under each word to ride forward. Pause (⏸) and
+End run are touch buttons in the HUD; Practice mode has touch Next/Done
+buttons. Version 1.1 adds iPhone (portrait) support and a Ride Log progress
+screen, reachable from the main menu.
+```
 
 ## 审核备注 / Review notes (App Review)
 ```

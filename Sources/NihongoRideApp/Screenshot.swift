@@ -108,20 +108,23 @@ enum Screenshotter {
                to: directory + "/about.png")
 
         // Ride Log — seeded with an in-memory demo fortnight (never persisted).
-        // Rendered taller than the game screens: it's a scrolling page.
+        // Store mode keeps the standard frame (top-aligned; the ledger runs off
+        // the bottom edge like a page below the fold). Dev mode renders tall.
         let journal = makeModel()
         journal.seedDemoJournal()
-        let journalView = ZStack { Theme.background.ignoresSafeArea(); JournalView() }
+        let journalView = ZStack(alignment: .top) { Theme.background.ignoresSafeArea(); JournalView() }
             .preferredColorScheme(.dark)
             .environment(journal)
-        render(journalView, size: CGSize(width: size.width, height: max(size.height, 1180)),
+        let journalSize = storeMode ? size : CGSize(width: size.width, height: max(size.height, 1180))
+        render(journalView, size: journalSize, alignment: .top,
                to: directory + "/journal.png")
     }
 
-    @MainActor private static func render(_ view: some View, size: CGSize, to path: String) {
+    @MainActor private static func render(_ view: some View, size: CGSize,
+                                          alignment: Alignment = .center, to path: String) {
         let renderer = ImageRenderer(content:
             view
-                .frame(width: size.width, height: size.height)
+                .frame(width: size.width, height: size.height, alignment: alignment)
                 .environment(\.colorScheme, .dark)
         )
         renderer.scale = scale

@@ -17,17 +17,38 @@ struct NihongoRideApp: App {
 
     var body: some Scene {
         WindowGroup("Nihongo Ride") {
+            #if os(macOS)
+            // Dev-only: NIHONGO_WINDOW=1440x900 pins the window to an exact
+            // App Store screenshot size for real-window captures
+            // (`screencapture -l`) — ImageRenderer can't draw native controls.
+            if let size = Self.fixedWindowSize {
+                RootView()
+                    .environment(model)
+                    .frame(width: size.width, height: size.height)
+            } else {
+                RootView()
+                    .environment(model)
+                    .frame(minWidth: 880, minHeight: 600)
+            }
+            #else
             RootView()
                 .environment(model)
-                #if os(macOS)
-                .frame(minWidth: 880, minHeight: 600)
-                #endif
+            #endif
         }
         #if os(macOS)
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentMinSize)
         #endif
     }
+
+    #if os(macOS)
+    private static let fixedWindowSize: CGSize? = {
+        guard let spec = ProcessInfo.processInfo.environment["NIHONGO_WINDOW"] else { return nil }
+        let parts = spec.lowercased().split(separator: "x").compactMap { Double($0) }
+        guard parts.count == 2 else { return nil }
+        return CGSize(width: parts[0], height: parts[1])
+    }()
+    #endif
 }
 
 #if os(macOS)

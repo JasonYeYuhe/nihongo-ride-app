@@ -67,6 +67,11 @@ final class AppModel {
         journalURL = Self.supportFileURL("history.json")
         reviewStore = ReviewStore.load(from: storeURL)
         journal = RideJournal.load(from: journalURL)
+        // Dev-only: pin the UI language for screenshot captures.
+        if let lang = ProcessInfo.processInfo.environment["NIHONGO_UILANG"],
+           ["en", "zh"].contains(lang) {
+            languageCode = lang
+        }
     }
 
     /// Words currently waiting in the review deck (due now).
