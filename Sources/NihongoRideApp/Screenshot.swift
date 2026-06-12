@@ -115,7 +115,11 @@ enum Screenshotter {
         let journalView = ZStack(alignment: .top) { Theme.background.ignoresSafeArea(); JournalView() }
             .preferredColorScheme(.dark)
             .environment(journal)
+        #if os(iOS)
+        let journalSize = size            // device sizes are store sizes on iOS
+        #else
         let journalSize = storeMode ? size : CGSize(width: size.width, height: max(size.height, 1180))
+        #endif
         render(journalView, size: journalSize, alignment: .top,
                to: directory + "/journal.png")
     }
