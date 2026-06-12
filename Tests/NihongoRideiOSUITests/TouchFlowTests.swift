@@ -78,6 +78,24 @@ final class TouchFlowTests: XCTestCase {
         XCTAssertTrue(start.waitForExistence(timeout: 8), "should be back on the menu")
     }
 
+    /// The Ride Log must open from the menu and return — by touch only.
+    @MainActor
+    func testJournalOpensAndReturnsByTouch() {
+        let app = XCUIApplication()
+        app.launch()
+
+        let journal = app.buttons["journalButton"]
+        XCTAssertTrue(journal.waitForExistence(timeout: 10), "menu should show a Ride Log button")
+        tapWhenSettled(journal)
+
+        let back = app.buttons["journalBackButton"]
+        XCTAssertTrue(back.waitForExistence(timeout: 5), "journal should show a Back button")
+        tapWhenSettled(back)
+
+        XCTAssertTrue(app.buttons["startButton"].waitForExistence(timeout: 8),
+                      "Back should land on the menu")
+    }
+
     /// Practice mode must be controllable by touch: Next advances the passage,
     /// Done returns to the menu (these were Enter/Esc-only before).
     @MainActor

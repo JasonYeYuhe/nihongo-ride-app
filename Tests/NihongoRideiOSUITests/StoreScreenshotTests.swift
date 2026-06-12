@@ -72,7 +72,15 @@ final class StoreScreenshotTests: XCTestCase {
         snap("\(lang)-4-practice")
         app.buttons["practiceDone"].tap()
         XCTAssertTrue(app.buttons["startButton"].waitForExistence(timeout: 8))
-        mode.buttons.element(boundBy: 0).tap()   // back to journey for the next pass
+        tapWhenSettled(mode.buttons.element(boundBy: 0))   // back to journey
+
+        // Ride Log: real history from the runs above.
+        tapWhenSettled(app.buttons["journalButton"])
+        XCTAssertTrue(app.buttons["journalBackButton"].waitForExistence(timeout: 5))
+        sleep(1)
+        snap("\(lang)-5-journal")
+        tapWhenSettled(app.buttons["journalBackButton"])
+        XCTAssertTrue(app.buttons["startButton"].waitForExistence(timeout: 8))
     }
 
     /// Types the leading `fraction` of the current word's remaining romaji,

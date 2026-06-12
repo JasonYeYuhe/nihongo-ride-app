@@ -106,6 +106,16 @@ enum Screenshotter {
             .environment(about)
         render(aboutView, size: CGSize(width: 1000, height: 1100),
                to: directory + "/about.png")
+
+        // Ride Log — seeded with an in-memory demo fortnight (never persisted).
+        // Rendered taller than the game screens: it's a scrolling page.
+        let journal = makeModel()
+        journal.seedDemoJournal()
+        let journalView = ZStack { Theme.background.ignoresSafeArea(); JournalView() }
+            .preferredColorScheme(.dark)
+            .environment(journal)
+        render(journalView, size: CGSize(width: size.width, height: max(size.height, 1180)),
+               to: directory + "/journal.png")
     }
 
     @MainActor private static func render(_ view: some View, size: CGSize, to path: String) {

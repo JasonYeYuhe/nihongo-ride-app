@@ -13,6 +13,7 @@ let package = Package(
         .library(name: "VocabKit", targets: ["VocabKit"]),
         .library(name: "ReviewKit", targets: ["ReviewKit"]),
         .library(name: "GameCore", targets: ["GameCore"]),
+        .library(name: "JournalKit", targets: ["JournalKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -50,10 +51,14 @@ let package = Package(
         .target(name: "GameCore", dependencies: ["RomajiKana", "VocabKit", "ReviewKit"]),
         .testTarget(name: "GameCoreTests", dependencies: ["GameCore"]),
 
+        // MARK: Ride journal — append-only run history + streak/trend analytics.
+        .target(name: "JournalKit"),
+        .testTarget(name: "JournalKitTests", dependencies: ["JournalKit"]),
+
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore"],
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]

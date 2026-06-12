@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import GameCore
+import JournalKit
 import ReviewKit
 import VocabKit
 
@@ -29,7 +30,7 @@ struct GameSummary: Equatable {
 @MainActor
 @Observable
 final class AppModel {
-    enum Screen: Equatable { case menu, playing, results, about }
+    enum Screen: Equatable { case menu, playing, results, about, journal }
 
     var screen: Screen = .menu {
         didSet { navCount += 1 }
@@ -54,12 +55,18 @@ final class AppModel {
     private(set) var session: GameSession?
     private(set) var lastSummary: GameSummary?
     private(set) var reviewStore: ReviewStore
+    private(set) var journal: RideJournal
+    /// Wall-clock start of the current run, for duration/WPM in the journal.
+    private var runStartedAt: Date?
 
     private let storeURL: URL
+    private let journalURL: URL
 
     init() {
-        storeURL = Self.defaultStoreURL()
+        storeURL = Self.supportFileURL("review.json")
+        journalURL = Self.supportFileURL("history.json")
         reviewStore = ReviewStore.load(from: storeURL)
+        journal = RideJournal.load(from: journalURL)
     }
 
     /// Words currently waiting in the review deck (due now).
@@ -89,12 +96,13 @@ final class AppModel {
         } else {
             session = GameSession.make(config: config, vocab: .shared, review: reviewStore)
         }
+        runStartedAt = Date()
         screen = .playing
     }
 
     /// Ends the current run, persists SRS progress (except for Practice, which
-    /// uses a transient SRS store), and shows results.
-    /// Practice mode skips the score screen and returns to the menu.
+    /// uses a transient SRS store), logs the run to the ride journal, and shows
+    /// results. Practice mode skips the score screen and returns to the menu.
     func finishGame() {
         guard let session else { return }
         let wasPractice = session.mode == .practice
@@ -103,6 +111,7 @@ final class AppModel {
             try? reviewStore.save(to: storeURL)
         }
         lastSummary = GameSummary(from: session)
+        logRun(session)
         self.session = nil
         screen = wasPractice ? .menu : .results
     }
@@ -112,12 +121,79 @@ final class AppModel {
         screen = .menu
     }
 
-    private static func defaultStoreURL() -> URL {
+    /// Appends the finished run to the ride journal and persists it. Runs with
+    /// nothing typed at all (abandoned immediately) aren't worth remembering.
+    private func logRun(_ session: GameSession) {
+        guard session.wordsCompleted > 0 || session.correctKeystrokes > 0 else {
+            runStartedAt = nil
+            return
+        }
+        let now = Date()
+        let duration = runStartedAt.map { now.timeIntervalSince($0) } ?? 0
+        // Same WPM convention as PracticeView's live readout: a run shorter
+        // than 2s (or with no correct keys) has no meaningful speed.
+        let wpm = (duration < 2 || session.correctKeystrokes == 0)
+            ? 0
+            : (Double(session.correctKeystrokes) / 5.0) / (duration / 60)
+        let level: String
+        if session.mode == .practice && practicePassages {
+            level = practicePassageLevel.rawValue
+        } else {
+            level = session.config.level?.label ?? "all"
+        }
+        var seen = Set<String>()
+        let lapsed = session.lapsedEntries.filter { seen.insert($0.id).inserted }.count
+        journal.append(RideRecord(
+            date: now,
+            mode: session.mode.rawValue,
+            level: level,
+            score: session.score,
+            wpm: wpm,
+            accuracy: session.accuracy,
+            wordsCompleted: session.wordsCompleted,
+            lapsed: lapsed,
+            distanceMeters: session.distanceMeters,
+            duration: duration
+        ))
+        try? journal.save(to: journalURL)
+        runStartedAt = nil
+    }
+
+    /// Fills the in-memory journal with a believable two-week history for
+    /// headless screenshot rendering ONLY. Never persisted: nothing here calls
+    /// `save`, and the screenshot process exits without finishing a run.
+    func seedDemoJournal() {
+        var demo = RideJournal()
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let wpms: [Double] = [16, 18, 17, 20, 22, 21, 24, 23, 26, 28, 27, 30, 29, 32]
+        for (index, wpm) in wpms.enumerated() {
+            // Most days ridden, two rest days — streak ends up 4.
+            let daysAgo = wpms.count - 1 - index
+            if daysAgo == 4 || daysAgo == 9 { continue }
+            guard let day = calendar.date(byAdding: .day, value: -daysAgo, to: today) else { continue }
+            demo.append(RideRecord(
+                date: day.addingTimeInterval(9 * 3600 + Double(index) * 600),
+                mode: index % 3 == 2 ? "practice" : (index % 3 == 1 ? "timeAttack" : "journey"),
+                level: index % 3 == 2 ? "med" : "N5",
+                score: index % 3 == 2 ? 0 : 180 + index * 14,
+                wpm: wpm,
+                accuracy: 0.88 + Double(index % 5) * 0.025,
+                wordsCompleted: 10 + index,
+                lapsed: max(0, 3 - index / 4),
+                distanceMeters: Double(200 + index * 18),
+                duration: 240
+            ))
+        }
+        journal = demo
+    }
+
+    private static func supportFileURL(_ name: String) -> URL {
         let base = FileManager.default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory
         let dir = base.appendingPathComponent("NihongoRide", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return dir.appendingPathComponent("review.json")
+        return dir.appendingPathComponent(name)
     }
 }

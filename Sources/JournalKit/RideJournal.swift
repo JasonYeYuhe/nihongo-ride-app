@@ -1,0 +1,92 @@
+import Foundation
+
+/// Append-only history of finished runs, plus the analytics the journal
+/// screen shows (streak, totals, WPM trend). Value type with `Codable`
+/// persistence, mirroring `ReviewStore`.
+public struct RideJournal: Codable, Sendable {
+    /// Chronological append order (oldest first).
+    public private(set) var records: [RideRecord]
+
+    public init(records: [RideRecord] = []) {
+        self.records = records
+    }
+
+    public var count: Int { records.count }
+    public var isEmpty: Bool { records.isEmpty }
+
+    public mutating func append(_ record: RideRecord) {
+        records.append(record)
+    }
+
+    // MARK: Analytics
+
+    /// Newest-first slice for the "recent rides" list.
+    public func recent(_ limit: Int = 10) -> [RideRecord] {
+        Array(records.suffix(limit).reversed())
+    }
+
+    public var totalWords: Int {
+        records.reduce(0) { $0 + $1.wordsCompleted }
+    }
+
+    public var totalDistanceMeters: Double {
+        records.reduce(0) { $0 + $1.distanceMeters }
+    }
+
+    public var totalRuns: Int { records.count }
+
+    /// Consecutive calendar days with at least one ride, counting back from
+    /// `date`'s day. A quiet "today" doesn't break the streak — it just isn't
+    /// counted yet (the chain only breaks once a full day passes with no ride).
+    public func streakDays(asOf date: Date = Date(), calendar: Calendar = .current) -> Int {
+        guard !records.isEmpty else { return 0 }
+        let days = Set(records.map { calendar.startOfDay(for: $0.date) })
+        let today = calendar.startOfDay(for: date)
+
+        var cursor: Date
+        if days.contains(today) {
+            cursor = today
+        } else if let yesterday = calendar.date(byAdding: .day, value: -1, to: today),
+                  days.contains(yesterday) {
+            cursor = yesterday
+        } else {
+            return 0
+        }
+
+        var streak = 0
+        while days.contains(cursor) {
+            streak += 1
+            guard let previous = calendar.date(byAdding: .day, value: -1, to: cursor) else { break }
+            cursor = previous
+        }
+        return streak
+    }
+
+    /// Chronological WPM values of the last `limit` runs that have a
+    /// meaningful WPM (> 0), for the trend sparkline.
+    public func wpmSeries(last limit: Int = 20) -> [Double] {
+        Array(records.lazy.map(\.wpm).filter { $0 > 0 }.suffix(limit))
+    }
+
+    /// Best (highest) recorded WPM, or nil with no meaningful runs yet.
+    public var bestWPM: Double? {
+        let best = records.lazy.map(\.wpm).max()
+        return (best ?? 0) > 0 ? best : nil
+    }
+
+    // MARK: Persistence
+
+    public func save(to url: URL) throws {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let data = try encoder.encode(self)
+        try data.write(to: url, options: .atomic)
+    }
+
+    public static func load(from url: URL) -> RideJournal {
+        guard let data = try? Data(contentsOf: url) else { return RideJournal() }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return (try? decoder.decode(RideJournal.self, from: data)) ?? RideJournal()
+    }
+}

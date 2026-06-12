@@ -128,12 +128,30 @@ struct MenuView: View {
 
             footer
 
-            Button(action: { model.screen = .about }) {
-                Label(model.languageCode == "zh" ? "关于与致谢" : "About & Credits", systemImage: "info.circle")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(Theme.dim)
+            HStack(spacing: 18) {
+                Button(action: { model.screen = .journal }) {
+                    Label {
+                        Text(model.languageCode == "zh" ? "骑行日志" : "Ride Log")
+                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    } icon: {
+                        Image(systemName: streak >= 2 ? "flame.fill" : "book.closed")
+                            .foregroundStyle(streak >= 2 ? Theme.accent : Theme.accent2)
+                    }
+                    .foregroundStyle(.white.opacity(0.85))
+                    .padding(.horizontal, 14).padding(.vertical, 7)
+                    .background(Theme.card, in: Capsule())
+                    .overlay(Capsule().strokeBorder(Theme.cardStroke))
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("journalButton")
+
+                Button(action: { model.screen = .about }) {
+                    Label(model.languageCode == "zh" ? "关于与致谢" : "About & Credits", systemImage: "info.circle")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(Theme.dim)
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
             .padding(.top, -8)
 
             Spacer()
@@ -151,6 +169,8 @@ struct MenuView: View {
             }
         }
     }
+
+    private var streak: Int { model.journal.streakDays() }
 
     private var routePreview: some View {
         let stops: [(String, String)] = [("🗼", "Tokyo"), ("🗻", "Fuji"), ("🏯", "Nagoya"), ("⛩️", "Kyoto")]
