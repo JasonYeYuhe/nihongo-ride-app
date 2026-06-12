@@ -1,14 +1,47 @@
 import Foundation
 
-/// Append-only history of finished runs, plus the analytics the journal
-/// screen shows (streak, totals, WPM trend). Value type with `Codable`
-/// persistence, mirroring `ReviewStore`.
+/// History of finished runs, plus the analytics the journal screen shows
+/// (streak, totals, WPM trend). Value type with `Codable` persistence,
+/// mirroring `ReviewStore`.
+///
+/// Storage is capped at `maxStoredRecords` (oldest trimmed) so the file and
+/// its launch-time decode stay small forever; the lifetime odometer counters
+/// survive trimming.
 public struct RideJournal: Codable, Sendable {
-    /// Chronological append order (oldest first).
+    /// Chronological append order (oldest first), at most `maxStoredRecords`.
     public private(set) var records: [RideRecord]
+    /// Odometer totals over every run ever logged, including trimmed ones.
+    public private(set) var lifetimeWords: Int
+    public private(set) var lifetimeDistanceMeters: Double
+    public private(set) var lifetimeRuns: Int
+
+    /// ~250 bytes/record → the file stays well under a megabyte. 2000 records
+    /// also keeps over a year of daily history for the streak math.
+    public static let maxStoredRecords = 2000
 
     public init(records: [RideRecord] = []) {
         self.records = records
+        lifetimeWords = records.reduce(0) { $0 + $1.wordsCompleted }
+        lifetimeDistanceMeters = records.reduce(0) { $0 + $1.distanceMeters }
+        lifetimeRuns = records.count
+    }
+
+    // Tolerate files written before the lifetime counters existed by
+    // recomputing them from the stored records.
+    private enum CodingKeys: String, CodingKey {
+        case records, lifetimeWords, lifetimeDistanceMeters, lifetimeRuns
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let stored = try container.decode([RideRecord].self, forKey: .records)
+        records = stored
+        lifetimeWords = try container.decodeIfPresent(Int.self, forKey: .lifetimeWords)
+            ?? stored.reduce(0) { $0 + $1.wordsCompleted }
+        lifetimeDistanceMeters = try container.decodeIfPresent(Double.self, forKey: .lifetimeDistanceMeters)
+            ?? stored.reduce(0) { $0 + $1.distanceMeters }
+        lifetimeRuns = try container.decodeIfPresent(Int.self, forKey: .lifetimeRuns)
+            ?? stored.count
     }
 
     public var count: Int { records.count }
@@ -16,6 +49,12 @@ public struct RideJournal: Codable, Sendable {
 
     public mutating func append(_ record: RideRecord) {
         records.append(record)
+        lifetimeWords += record.wordsCompleted
+        lifetimeDistanceMeters += record.distanceMeters
+        lifetimeRuns += 1
+        if records.count > Self.maxStoredRecords {
+            records.removeFirst(records.count - Self.maxStoredRecords)
+        }
     }
 
     // MARK: Analytics
@@ -25,15 +64,11 @@ public struct RideJournal: Codable, Sendable {
         Array(records.suffix(limit).reversed())
     }
 
-    public var totalWords: Int {
-        records.reduce(0) { $0 + $1.wordsCompleted }
-    }
+    public var totalWords: Int { lifetimeWords }
 
-    public var totalDistanceMeters: Double {
-        records.reduce(0) { $0 + $1.distanceMeters }
-    }
+    public var totalDistanceMeters: Double { lifetimeDistanceMeters }
 
-    public var totalRuns: Int { records.count }
+    public var totalRuns: Int { lifetimeRuns }
 
     /// Consecutive calendar days with at least one ride, counting back from
     /// `date`'s day. A quiet "today" doesn't break the streak — it just isn't

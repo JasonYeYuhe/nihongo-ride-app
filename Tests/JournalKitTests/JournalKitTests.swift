@@ -142,6 +142,61 @@ struct RideJournalTests {
         #expect(journal.bestWPM == nil)
     }
 
+    @Test("storage caps at maxStoredRecords but the odometer keeps counting")
+    func capAndLifetime() {
+        var journal = RideJournal()
+        let cap = RideJournal.maxStoredRecords
+        for index in 0..<(cap + 25) {
+            journal.append(ride(on: anchor.addingTimeInterval(Double(index) * 60),
+                                words: 1, distance: 10))
+        }
+        #expect(journal.count == cap)
+        #expect(journal.totalRuns == cap + 25)
+        #expect(journal.totalWords == cap + 25)
+        #expect(journal.totalDistanceMeters == Double((cap + 25) * 10))
+        // Oldest got trimmed: first stored record is run #25.
+        #expect(journal.records.first?.date == anchor.addingTimeInterval(25 * 60))
+    }
+
+    @Test("lifetime counters survive a save/load round-trip and trimming")
+    func lifetimePersistence() throws {
+        var journal = RideJournal()
+        journal.append(ride(on: at(day: 1, hour: 9), words: 7, distance: 70))
+        journal.append(ride(on: at(day: 2, hour: 9), words: 8, distance: 80))
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("journal-lifetime-\(UUID().uuidString).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try journal.save(to: url)
+        let loaded = RideJournal.load(from: url)
+        #expect(loaded.totalWords == 15)
+        #expect(loaded.totalRuns == 2)
+        #expect(loaded.totalDistanceMeters == 150)
+    }
+
+    @Test("a legacy file without lifetime keys recomputes them from records")
+    func legacyDecode() throws {
+        var journal = RideJournal()
+        journal.append(ride(on: at(day: 1, hour: 9), words: 5, distance: 50))
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        // Strip the lifetime keys to simulate the pre-counter schema.
+        var object = try JSONSerialization.jsonObject(
+            with: encoder.encode(journal)) as! [String: Any]
+        object.removeValue(forKey: "lifetimeWords")
+        object.removeValue(forKey: "lifetimeDistanceMeters")
+        object.removeValue(forKey: "lifetimeRuns")
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("journal-legacy-\(UUID().uuidString).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try JSONSerialization.data(withJSONObject: object).write(to: url)
+
+        let loaded = RideJournal.load(from: url)
+        #expect(loaded.totalWords == 5)
+        #expect(loaded.totalRuns == 1)
+        #expect(loaded.totalDistanceMeters == 50)
+        #expect(loaded.records.count == 1)
+    }
+
     // MARK: Persistence
 
     @Test("save/load round-trips every field")

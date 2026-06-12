@@ -118,6 +118,7 @@ final class AppModel {
 
     func backToMenu() {
         session = nil
+        runStartedAt = nil
         screen = .menu
     }
 
@@ -155,7 +156,13 @@ final class AppModel {
             distanceMeters: session.distanceMeters,
             duration: duration
         ))
-        try? journal.save(to: journalURL)
+        // Snapshot + background write: RideJournal is a Sendable value type,
+        // so the copy is immune to later mutations on the main actor.
+        let snapshot = journal
+        let url = journalURL
+        Task.detached(priority: .utility) {
+            try? snapshot.save(to: url)
+        }
         runStartedAt = nil
     }
 
