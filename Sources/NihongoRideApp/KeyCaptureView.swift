@@ -99,7 +99,13 @@ final class KeyCaptureUIView: UIView, UIKeyInput {
     /// (40% of an iPhone). A zero-sized custom input view suppresses it while
     /// hardware key events still arrive through `insertText`. Game screens keep
     /// the real keyboard — it MUST auto-appear there (App Review 2.1a).
-    var suppressSoftwareKeyboard = false
+    var suppressSoftwareKeyboard = false {
+        didSet {
+            // If toggled while we already hold first responder, the system
+            // won't re-query inputView on its own.
+            if oldValue != suppressSoftwareKeyboard, isFirstResponder { reloadInputViews() }
+        }
+    }
     private lazy var emptyInputView = UIView()
     override var inputView: UIView? { suppressSoftwareKeyboard ? emptyInputView : nil }
 

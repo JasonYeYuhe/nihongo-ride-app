@@ -345,8 +345,12 @@ private struct WordCard: View {
         let kana = Array(session.currentKana ?? "")
         let done = session.completedKanaCount
         if isPhoneIdiom {
+            // Concatenated runs can't scale per character, so the current kana
+            // is emphasized with an underline instead (mirrors PracticeView).
             kana.enumerated().reduce(Text("")) { acc, pair in
-                acc + Text(String(pair.element)).foregroundStyle(color(index: pair.offset, done: done))
+                acc + Text(String(pair.element))
+                    .foregroundStyle(color(index: pair.offset, done: done))
+                    .underline(pair.offset == done, color: Theme.accent)
             }
             .font(.system(size: compact ? 26 : 34, weight: .semibold, design: .rounded))
             .lineLimit(1)
