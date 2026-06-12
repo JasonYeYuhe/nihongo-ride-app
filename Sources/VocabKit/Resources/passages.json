@@ -2011,5 +2011,555 @@
       "en": "The sound of the clock hands advancing feels a bit faster today. I deeply reflect on the preciousness of a single day before falling asleep.",
       "zh": "今天感觉时针走动的声音似乎快了一些。在入睡前，我深深地体味着一天的珍贵。"
     }
+  },
+  {
+    "id": "para124",
+    "kana": "あまおとがまどべをゆびでたたくようにひびいているあたたかいへやのなかでただそのしずかなしらべにみみをすませていたこころのなかのとげがすこしずつあらいながされていくようなきがする",
+    "topic": "rain",
+    "level": "hard",
+    "meanings": {
+      "en": "The sound of rain echoes as if tapping the windowpane with its fingers. Inside the warm room, I simply listened to that quiet melody. It feels as though the thorns in my heart are gradually being washed away.",
+      "zh": "雨声回荡，仿佛有手指在轻叩窗台。在温暖的房间里，我只是倾听着那安静的旋律。感觉心中的刺也正在被一点点洗刷而去。"
+    },
+    "display": "あまおとが、まどべをゆびでたたくようにひびいている。あたたかいへやのなかで、ただそのしずかなしらべにみみをすませていた。こころのなかのとげが、すこしずつあらいながされていくようなきがする。"
+  },
+  {
+    "id": "para125",
+    "kana": "とおくをはしるでんしゃのしゃりんのきしむおとがよるのくうきをふるわせるだれかをのせてどこかへむかうそのけはいだけがのこされたわたしをやさしくつつみこんでくれた",
+    "topic": "train",
+    "level": "hard",
+    "meanings": {
+      "en": "The creaking sound of the wheels of a distant train vibrates through the night air. Carrying someone toward somewhere, just the presence of its passing gently enveloped me, left behind.",
+      "zh": "远行列车车轮的沉重摩擦声，震动着夜晚的空气。它载着不知名的人驶向未知的远方，仅仅是那种远去的气息，便温柔地将留在这里的我包裹。"
+    },
+    "display": "とおくをはしるでんしゃの、しゃりんのきしむおとが、よるのくうきをふるわせる。だれかをのせて、どこかへむかうそのけはいだけが、のこされたわたしをやさしくつつみこんでくれた。"
+  },
+  {
+    "id": "para126",
+    "kana": "だいだいいろにそまったそらがすこしずつあわいむらさきいろへととけていくかえりみちをいそぐひとびとのあしおとがゆうぐれのまちにすいこまれてきえたきょうというひがまたひとつおわろうとしている",
+    "topic": "dusk",
+    "level": "hard",
+    "meanings": {
+      "en": "The sky, dyed in orange, gradually melts into a pale purple. The footsteps of people hurrying home were swallowed up and vanished into the twilight town. Yet another day is coming to an end.",
+      "zh": "染成橙色的天空，渐渐融化成淡淡的紫色。赶路回家的人们的脚步声，被黄昏的街道吞没而消失不见。今天这一天，又即将迎来终结。"
+    },
+    "display": "だいだいいろにそまったそらが、すこしずつあわいむらさきいろへととけていく。かえりみちをいそぐひとびとのあしおとが、ゆうぐれのまちにすいこまれてきえた。きょうというひが、またひとつおわろうとしている。"
+  },
+  {
+    "id": "para127",
+    "kana": "ゆのみからたちのぼるしろいゆげがへやのすみにあつまるくらいかげをゆっくりととかしていくひとくちふくむとほうじちゃのこうばしいかおりがはなをぬけたながいよるのおだやかなはじまりだった",
+    "topic": "tea",
+    "level": "hard",
+    "meanings": {
+      "en": "The white steam rising from the teacup slowly melts the dark shadows gathering in the corner of the room. With one sip, the roasted aroma of hojicha passes through my nose. It was the calm beginning of a long night.",
+      "zh": "从茶杯中袅袅升起的白雾，慢慢融化了聚集在房间角落里的黯淡阴影。喝下一口，焙茶的焦香穿过鼻腔。这是一个漫长夜晚平静的开始。"
+    },
+    "display": "ゆのみからたちのぼるしろいゆげが、へやのすみにあつまるくらいかげをゆっくりととかしていく。ひとくちふくむと、ほうじちゃのこうばしいかおりがはなをぬけた。ながいよるの、おだやかなはじまりだった。"
+  },
+  {
+    "id": "para128",
+    "kana": "いつのまにかふりだしたゆきがまちのおとをすべてすいとってしまったようだまどをあけるとつめたいかぜがほおをなでるしろくそめられたせかいでじぶんのいきだけがかすかにあたたかかった",
+    "topic": "snow",
+    "level": "hard",
+    "meanings": {
+      "en": "The snow that started falling at some point seems to have absorbed all the sounds of the town. Opening the window, a cold wind strokes my cheek. In a world painted white, only my own breath was faintly warm.",
+      "zh": "不知何时下起的雪，仿佛吸走了街道上所有的声音。打开窗户，冷风轻抚脸颊。在被染成白色的世界里，只有自己的呼吸带着微弱的温度。"
+    },
+    "display": "いつのまにかふりだしたゆきが、まちのおとをすべてすいとってしまったようだ。まどをあけると、つめたいかぜがほおをなでる。しろくそめられたせかいで、じぶんのいきだけがかすかにあたたかかった。"
+  },
+  {
+    "id": "para129",
+    "kana": "あさつゆにぬれたくさばがあさひをあびてきらきらとひかっているまだだれもふれていないまっさらなきょうのくうきをむねいっぱいにすいこむことりがあたらしいひのたんじょうをうたっていた",
+    "topic": "morning",
+    "level": "hard",
+    "meanings": {
+      "en": "The blades of grass, wet with morning dew, are sparkling in the morning sun. I take a deep breath of the brand-new air of today, which no one has touched yet. Small birds were singing of the birth of a new day.",
+      "zh": "沾满晨露的草叶，沐浴在晨光中闪闪发亮。深吸一口今天这全新而无人触碰过的空气。小鸟们正歌唱着新一天的诞生。"
+    },
+    "display": "あさつゆにぬれたくさばが、あさひをあびてきらきらとひかっている。まだだれもふれていない、まっさらなきょうのくうきをむねいっぱいにすいこむ。ことりが、あたらしいひのたんじょうをうたっていた。"
+  },
+  {
+    "id": "para130",
+    "kana": "ひだまりのなかでのらねこがまるくなってねむっているやわらかなけなみがかぜにゆれるたびにひかりをはじくそのむぼうびなすがたにせわしないにちじょうのちいさなささくれがなだめられていく",
+    "topic": "cat",
+    "level": "hard",
+    "meanings": {
+      "en": "In a patch of sunlight, a stray cat is curled up asleep. Every time its soft fur sways in the wind, it catches the light. Seeing that defenseless figure, the small splinters of my hectic daily life are soothed.",
+      "zh": "在一片阳光下，野猫蜷缩着身子睡得正香。每当微风吹拂，它柔软的毛发便闪烁着微光。看着那毫无防备的模样，我忙碌日常中生出的小小烦躁也被安抚了。"
+    },
+    "display": "ひだまりのなかで、のらねこがまるくなってねむっている。やわらかなけなみが、かぜにゆれるたびにひかりをはじく。そのむぼうびなすがたに、せわしないにちじょうのちいさなささくれがなだめられていく。"
+  },
+  {
+    "id": "para131",
+    "kana": "つよいかぜがふきぬけふるいきのえだがきしむおとをたてたみえないちからがせかいのかたちをすこしだけゆがめているようなきがするわたしはえりもとをあわせうつむきながらあしをはやめた",
+    "topic": "wind",
+    "level": "hard",
+    "meanings": {
+      "en": "A strong wind blew through, and the branches of an old tree made a creaking sound. It feels as if an invisible force is slightly warping the shape of the world. I pulled my collar tight and quickened my pace while looking down.",
+      "zh": "强风吹过，老树的树枝发出嘎吱的声响。感觉仿佛有一种看不见的力量，正将世界的形状微微扭曲。我拢了拢衣领，低着头加快了脚步。"
+    },
+    "display": "つよいかぜがふきぬけ、ふるいきのえだがきしむおとをたてた。みえないちからが、せかいのかたちをすこしだけゆがめているようなきがする。わたしはえりもとをあわせ、うつむきながらあしをはやめた。"
+  },
+  {
+    "id": "para132",
+    "kana": "まどのそとをみあげるとやいばのようなくっきりとしたみかづきがうかんでいたあまりにもしずかでてのとどかないほどのつめたさをまとっているそのひかりはよるのふかさをよりいっそうきわだたせていた",
+    "topic": "moon",
+    "level": "hard",
+    "meanings": {
+      "en": "Looking up outside the window, a crescent moon as sharp as a blade was floating there. It is overwhelmingly silent, clad in a coldness so far out of reach. That light made the depth of the night stand out even more.",
+      "zh": "抬头望向窗外，一弯如利刃般清晰的新月悬挂在夜空中。它太过安静，带着一种触手不可及的清冷。那光芒反而更衬托出夜晚的深邃。"
+    },
+    "display": "まどのそとをみあげると、やいばのようなくっきりとしたみかづきがうかんでいた。あまりにもしずかで、てのとどかないほどのつめたさをまとっている。そのひかりは、よるのふかさをよりいっそうきわだたせていた。"
+  },
+  {
+    "id": "para133",
+    "kana": "ふるいほんをひらくとかみとほこりのまざったなつかしいにおいがしただれかがむかしひいたうすいえんぴつのせんがのこっているじくうをこえてみしらぬだれかとおもいがまじわったようなきがした",
+    "topic": "book",
+    "level": "hard",
+    "meanings": {
+      "en": "Opening an old book, there was a nostalgic smell of mixed paper and dust. Faint pencil lines drawn by someone long ago still remain. I felt as if my thoughts had intersected with an unknown someone across time and space.",
+      "zh": "翻开旧书，散发出一股纸张与灰尘交织的怀旧气息。不知是谁在很久以前画下的浅浅铅笔线依然留存着。我感觉仿佛跨越了时空，与某个陌生人的思绪产生了交集。"
+    },
+    "display": "ふるいほんをひらくと、かみとほこりのまざったなつかしいにおいがした。だれかがむかしひいた、うすいえんぴつのせんがのこっている。じくうをこえて、みしらぬだれかとおもいがまじわったようなきがした。"
+  },
+  {
+    "id": "para134",
+    "kana": "あしもとでかわいたおちばがかさかさとおとをたてるあきのかぜがふきぬけるたびにまちぜんたいがすこしずついろあせていくそれはふゆをむかえるためのしずかなじゅんびのようにみえた",
+    "topic": "autumn",
+    "level": "hard",
+    "meanings": {
+      "en": "Beneath my feet, dry fallen leaves make a rustling sound. Every time the autumn wind blows through, the whole town gradually fades in color. It looked like a quiet preparation for welcoming winter.",
+      "zh": "脚下，干枯的落叶发出沙沙的声响。每当秋风吹过，整座城市便渐渐褪去色彩。这看起来就像是在为迎接冬天的到来做着安静的准备。"
+    },
+    "display": "あしもとで、かわいたおちばがかさかさとおとをたてる。あきのかぜがふきぬけるたびに、まちぜんたいがすこしずついろあせていく。それは、ふゆをむかえるためのしずかなじゅんびのようにみえた。"
+  },
+  {
+    "id": "para135",
+    "kana": "こおりがとけこがわのせせらぎがすきとおったおとをたてはじめたかたいつぼみがはるのあたたかなひかりをあびてすこしずつほころんでいくながいねむりからさめたせかいがふたたびいぶきはじめていた",
+    "topic": "spring",
+    "level": "hard",
+    "meanings": {
+      "en": "The ice melts, and the murmuring of the stream begins to make a clear sound. The hard buds, bathed in the warm spring light, gradually begin to bloom. The world, awakened from a long sleep, was starting to breathe once again.",
+      "zh": "冰雪消融，小溪的潺潺流水开始发出清澈的声响。坚硬的花蕾沐浴着春天的温暖阳光，渐渐绽开。从漫长沉睡中苏醒的世界，正重新开始呼吸。"
+    },
+    "display": "こおりがとけ、こがわのせせらぎがすきとおったおとをたてはじめた。かたいつぼみが、はるのあたたかなひかりをあびてすこしずつほころんでいく。ながいねむりからさめたせかいが、ふたたびいぶきはじめていた。"
+  },
+  {
+    "id": "para136",
+    "kana": "はまべにうちよせるなみのおとがよせてはかえすをえいえんにくりかえしているしおのかおりがまざったかぜをむねいっぱいにすいこむとじぶんのちいさななやみがうみのかなたへととけていくようなきがした",
+    "topic": "ocean",
+    "level": "hard",
+    "meanings": {
+      "en": "The sound of the waves washing ashore on the beach eternally repeats its ebb and flow. Breathing in the wind mixed with the scent of the tide, I felt as if my small worries were melting away into the horizon of the ocean.",
+      "zh": "海浪拍打海滩的声音，永远在重复着涨潮与退潮。深吸一口夹杂着海潮气味的微风，感觉自己那些微不足道的烦恼，仿佛都消融在了海洋的彼岸。"
+    },
+    "display": "はまべにうちよせるなみのおとが、よせてはかえすをえいえんにくりかえしている。しおのかおりがまざったかぜをむねいっぱいにすいこむと、じぶんのちいさななやみが、うみのかなたへととけていくようなきがした。"
+  },
+  {
+    "id": "para137",
+    "kana": "ゆうひがながいかげをみちにのばしているじぶんのかげととなりにいるひとのかげがくろくまじわりあってひとつになっていたこのおだやかなじかんがいつまでもつづけばいいのにとこころのなかでつぶやいた",
+    "topic": "shadow",
+    "level": "hard",
+    "meanings": {
+      "en": "The setting sun casts long shadows onto the street. My shadow and the shadow of the person beside me mingled in black and became one. I murmured in my heart, wishing this peaceful time could last forever.",
+      "zh": "夕阳在街道上拉出长长的影子。我的影子和身边人的影子在黑暗中交汇，融为了一体。我在心里默默低语，希望这段安宁的时光能永远持续下去。"
+    },
+    "display": "ゆうひがながいかげをみちにのばしている。じぶんのかげと、となりにいるひとのかげが、くろくまじわりあってひとつになっていた。このおだやかなじかんが、いつまでもつづけばいいのにとこころのなかでつぶやいた。"
+  },
+  {
+    "id": "para138",
+    "kana": "よなかにふとめがさめるとせかいはしんとしたしじまにつつまれていたとけいのはりがすすむおとだけがへやのなかにひびいているだれもおきているひとはいないようなふしぎなこどくかんがわたしをみたした",
+    "topic": "night",
+    "level": "hard",
+    "meanings": {
+      "en": "Waking up suddenly in the middle of the night, the world was wrapped in a dead silence. Only the sound of the clock's hands advancing echoed in the room. A strange sense of loneliness filled me, as if no one else was awake.",
+      "zh": "半夜突然醒来，世界被一片死寂所笼罩。房间里只回荡着时钟指针走动的声音。一种仿佛没有其他任何人醒着的奇妙孤独感充斥了我的心。"
+    },
+    "display": "よなかにふとめがさめると、せかいはしんとしたしじまにつつまれていた。とけいのはりがすすむおとだけが、へやのなかにひびいている。だれもおきているひとはいないような、ふしぎなこどくかんがわたしをみたした。"
+  },
+  {
+    "id": "para139",
+    "kana": "ふるいしゃしんのなかでおさないじぶんがむじゃきにわらっているそのときのにおいやはれわたったそらのあおさがきゅうにあたまのなかへよみがえってきたわすれていたはずのきおくがいまもここにある",
+    "topic": "memory",
+    "level": "hard",
+    "meanings": {
+      "en": "In an old photograph, my younger self is smiling innocently. The smells of that time and the blueness of the clear sky suddenly rushed back into my mind. Memories I thought I had forgotten are still right here.",
+      "zh": "在一张旧照片里，年幼的自己正天真无邪地笑着。那时的气味和万里无云的碧空，突然在脑海中苏醒。本以为已经遗忘的记忆，如今依然存在于此。"
+    },
+    "display": "ふるいしゃしんのなかで、おさないじぶんがむじゃきにわらっている。そのときのにおいや、はれわたったそらのあおさが、きゅうにあたまのなかへよみがえってきた。わすれていたはずのきおくが、いまもここにある。"
+  },
+  {
+    "id": "para140",
+    "kana": "あおぞらにうかぶしろいくもがかぜにながされてゆっくりとかたちをかえていくどうぶつのようにみえたりおおきなふねのようにみえたりするそのゆったりとしたうごきにみているほうのいきもふかくなった",
+    "topic": "clouds",
+    "level": "hard",
+    "meanings": {
+      "en": "The white clouds floating in the blue sky slowly change their shape as they are carried by the wind. They look like animals, or like giant ships. Watching their leisurely movements, my own breaths grew deeper.",
+      "zh": "漂浮在蓝天中的白云，被风吹拂着慢慢改变了形状。有时看起来像动物，有时又像大船。看着它们那悠闲的移动，观望者的呼吸也随之变得深沉了。"
+    },
+    "display": "あおぞらにうかぶしろいくもが、かぜにながされてゆっくりとかたちをかえていく。どうぶつのようにみえたり、おおきなふねのようにみえたりする。そのゆったりとしたうごきに、みているほうのいきもふかくなった。"
+  },
+  {
+    "id": "para141",
+    "kana": "ふゆのあさはきだすいきがしろくそまってはくうきにとけていくきせつのつめたさをからだのぜんたいでかんじるしゅんかんだまっしろないきをみつめながらわたしはまたあたらしくあるきはじめた",
+    "topic": "breath",
+    "level": "hard",
+    "meanings": {
+      "en": "On a winter morning, the breath I exhale turns white and melts into the air. It is a moment when I feel the coldness of the season with my entire body. Watching my pure white breath, I started walking anew once more.",
+      "zh": "冬日的清晨，呼出的气息染成白色，又融化在空气中。这是全身都能感受到季节寒冷的一瞬间。注视着这雪白的气息，我重新迈出了新的一步。"
+    },
+    "display": "ふゆのあさ、はきだすいきがしろくそまっては、くうきにとけていく。きせつのつめたさを、からだのぜんたいでかんじるしゅんかんだ。まっしろないきをみつめながら、わたしはまたあたらしくあるきはじめた。"
+  },
+  {
+    "id": "para142",
+    "kana": "あたたかいもうふにくるまるといちにちのつかれがゆっくりととけていくのをかんじたまぶたをおもくするここちよいまどろみがわたしをゆめのせかいへといざなうあしたもまたはれるといいなとかすかにねがった",
+    "topic": "sleep",
+    "level": "hard",
+    "meanings": {
+      "en": "Wrapped in a warm blanket, I felt the day's exhaustion slowly melting away. A pleasant slumber making my eyelids heavy invites me into the world of dreams. I faintly wished that tomorrow would be sunny, too.",
+      "zh": "裹在温暖的毛毯里，感觉到一天的疲惫正在慢慢消融。让眼皮变得沉重的舒适睡意，正引诱我进入梦乡。我在心底微弱地期盼着明天也能是个晴天。"
+    },
+    "display": "あたたかいもうふにくるまると、いちにちのつかれがゆっくりととけていくのをかんじた。まぶたをおもくするここちよいまどろみが、わたしをゆめのせかいへといざなう。あしたもまたはれるといいなと、かすかにねがった。"
+  },
+  {
+    "id": "para143",
+    "kana": "きのえだからこぼれるあさのひかりがじめんのうえでちいさなまだらもようをつくっているかぜがふくたびにそのもようはゆらゆらとゆれてまるでいきているようだひかりとあそぶようにわたしはそのうえをあるいた",
+    "topic": "light",
+    "level": "hard",
+    "meanings": {
+      "en": "The morning light spilling through the tree branches creates small dappled patterns on the ground. Every time the wind blows, the patterns sway back and forth as if they were alive. I walked over them, as if playing with the light.",
+      "zh": "从树枝间洒落的晨光，在地面上形成了小小的斑驳图案。每当风吹过，那些图案便摇曳生姿，仿佛有了生命。我踩在上面走着，就像是在与光影嬉戏。"
+    },
+    "display": "きのえだからこぼれるあさのひかりが、じめんのうえでちいさなまだらもようをつくっている。かぜがふくたびにそのもようはゆらゆらとゆれて、まるでいきているようだ。ひかりとあそぶように、わたしはそのうえをあるいた。"
+  },
+  {
+    "id": "para144",
+    "kana": "ろじうらのちいさなきっさてんからふかくほろにがいかおりがただよってくるとびらをおしてなかへはいるとあたたかでちいさなあかりがわたしをむかえてくれたここでならじぶんのじかんをとりもどせそうだ",
+    "topic": "coffee",
+    "level": "hard",
+    "meanings": {
+      "en": "A deep, bittersweet aroma drifts from a small coffee shop in the back alley. Pushing the door and stepping inside, a warm, small light welcomed me. I feel like I can regain my own time if I stay here.",
+      "zh": "从后巷的一家小咖啡馆里，飘来一阵浓郁而微苦的香气。推开门走进去，一盏温暖的小灯迎接着我。感觉如果在这里的话，我就能找回属于自己的时间。"
+    },
+    "display": "ろじうらのちいさなきっさてんから、ふかくほろにがいかおりがただよってくる。とびらをおしてなかへはいると、あたたかでちいさなあかりがわたしをむかえてくれた。ここでなら、じぶんのじかんをとりもどせそうだ。"
+  },
+  {
+    "id": "para145",
+    "kana": "あきのきびしいかぜにふかれてさいごのいちまいのはがえだからまいおちたじゅうりょくにさからうようにくるくるとそらをまいながらつちにきえていくそれはいとなみのおわりをかざるしずかなまいだった",
+    "topic": "leaves",
+    "level": "hard",
+    "meanings": {
+      "en": "Blown by the harsh autumn wind, the very last leaf fluttered down from the branch. As if defying gravity, it twirled and danced in the air before disappearing into the soil. It was a quiet dance marking the end of its life's work.",
+      "zh": "在严酷的秋风吹拂下，最后一片叶子从树枝上飘落。仿佛要反抗重力一般，它在空中打着转飞舞，随后消失在泥土中。那是一场点缀着生命终结的安静舞蹈。"
+    },
+    "display": "あきのきびしいかぜにふかれて、さいごのいちまいのはがえだからまいおちた。じゅうりょくにさからうように、くるくるとそらをまいながらつちにきえていく。それは、いとなみのおわりをかざるしずかなまいだった。"
+  },
+  {
+    "id": "para146",
+    "kana": "なだらかなきしべにすわりゆっくりとながれるかわのみなもをながめていたみずはきらきらとひかりをはんしゃしどこまでもとおくへつづいているすべてをうけいれてながれるすがたにこころがすくわれたきがする",
+    "topic": "river",
+    "level": "hard",
+    "meanings": {
+      "en": "Sitting on the gently sloping bank, I was gazing at the water's surface of the slowly flowing river. The water reflected the light, sparkling and continuing endlessly far away. I felt my heart saved by the way it flows, accepting everything.",
+      "zh": "坐在平缓的河岸边，我注视着缓慢流淌的河水表面。水面波光粼粼地反射着光芒，无边无际地向远方延伸。看着它包容一切静静流淌的姿态，感觉我的心也得到了救赎。"
+    },
+    "display": "なだらかなきしべにすわり、ゆっくりとながれるかわのみなもをながめていた。みずはきらきらとひかりをはんしゃし、どこまでもとおくへつづいている。すべてをうけいれてながれるすがたに、こころがすくわれたきがする。"
+  },
+  {
+    "id": "para147",
+    "kana": "だれもいないよるのろじでじぶんのあしおとだけがこつこつとひびくまるでよるのやみのなかにじぶんのそんざいをたしかめるようにあるきつづけたみあげたそらにはほしがひとつだけさみしげにまたたいていた",
+    "topic": "footsteps",
+    "level": "hard",
+    "meanings": {
+      "en": "In an empty night alley, only my own footsteps echo with a clicking sound. I kept walking as if to confirm my own existence within the darkness of the night. In the sky I looked up at, a single star was blinking lonely.",
+      "zh": "在空无一人的夜晚小巷里，只有自己的脚步声在吧嗒吧嗒地回荡。我不断地走着，仿佛要在黑夜中确认自己的存在。抬眼望去的天空中，只有一颗星星在寂寞地闪烁。"
+    },
+    "display": "だれもいないよるのろじで、じぶんのあしおとだけがこつこつとひびく。まるでよるのやみのなかに、じぶんのそんざいをたしかめるようにあるきつづけた。みあげたそらには、ほしがひとつだけさみしげにまたたいていた。"
+  },
+  {
+    "id": "para148",
+    "kana": "ほしくずをちりばめたようなよぞらがあたまのうえにひろがっているどんなにちいさなひかりでもながいじかんをかけてここへたどりついたのだそのとてつもないきょりをおもうとじぶんのなやみがちりのようにちいさくみえた",
+    "topic": "stars",
+    "level": "hard",
+    "meanings": {
+      "en": "A night sky, as if scattered with stardust, spreads out above my head. No matter how small the light, it took a long time to reach here. When I think of that tremendous distance, my own worries looked as small as dust.",
+      "zh": "宛如点缀着星尘的夜空，在头顶上铺展开来。无论多么微弱的光芒，都是历经漫长岁月才抵达这里的。一想到那令人惊叹的距离，我自己的烦恼就显得如尘埃般渺小。"
+    },
+    "display": "ほしくずをちりばめたようなよぞらが、あたまのうえにひろがっている。どんなにちいさなひかりでも、ながいじかんをかけてここへたどりついたのだ。そのとてつもないきょりをおもうと、じぶんのなやみがちりのようにちいさくみえた。"
+  },
+  {
+    "id": "para149",
+    "kana": "あさぎりがすこしずつはれてとおくのやまやまがうっすらとすがたをあらわしたつめたいくうきがほおをさしあたらしいいちにちがはじまったことをおしえてくれる",
+    "topic": "dawn",
+    "level": "hard",
+    "meanings": {
+      "en": "The morning mist gradually clears, and the distant mountains faintly reveal their forms. The cold air pierces my cheeks, telling me a new day has begun.",
+      "zh": "晨雾渐渐散去，远处的群山隐约显露出身影。冰冷的空气刺痛脸颊，告诉我新的一天已经开始。"
+    },
+    "display": "あさぎりがすこしずつはれて、とおくのやまやまがうっすらとすがたをあらわした。つめたいくうきがほおをさし、あたらしいいちにちがはじまったことをおしえてくれる。"
+  },
+  {
+    "id": "para150",
+    "kana": "まどがらすをあめのしずくがゆっくりとすべりおちふくざつなもようをえがいているしずかなおとにみみをかたむけながらてもとのゆのみにはいったおちゃでゆびさきをあたためた",
+    "topic": "rain",
+    "level": "hard",
+    "meanings": {
+      "en": "Raindrops slowly slide down the windowpane, drawing complex patterns. Listening to the quiet sound, I warmed my fingertips with the tea in the teacup at hand.",
+      "zh": "雨滴顺着窗玻璃缓缓滑落，描绘出复杂的图案。倾听着寂静的雨声，我用手边茶杯里的茶水温暖指尖。"
+    },
+    "display": "まどがらすをあめのしずくがゆっくりとすべりおち、ふくざつなもようをえがいている。しずかなおとにみみをかたむけながら、てもとのゆのみにはいったおちゃでゆびさきをあたためた。"
+  },
+  {
+    "id": "para151",
+    "kana": "ゆうやけがにしのそらをあかくそめみちにながいかげをおとしているどこからかゆうはんのしたくをするにおいがただよいまちをやさしいきょうしゅうでつつみこんだ",
+    "topic": "dusk",
+    "level": "hard",
+    "meanings": {
+      "en": "The sunset dyes the western sky red, casting long shadows on the road. The smell of someone preparing dinner drifts from somewhere, wrapping the town in a gentle nostalgia.",
+      "zh": "晚霞将西方的天空染成红色，在路上投下长长的影子。不知从何处飘来准备晚饭的香味，用温柔的乡愁将小镇包裹。"
+    },
+    "display": "ゆうやけがにしのそらをあかくそめ、みちにながいかげをおとしている。どこからかゆうはんのしたくをするにおいがただよい、まちをやさしいきょうしゅうでつつみこんだ。"
+  },
+  {
+    "id": "para152",
+    "kana": "かわいたかぜにおちばがまいこうえんのかたすみにそっとふきだまるよんでいたほんのしおりがゆれわたしのこころはふたたびげんじつへとひきもどされた",
+    "topic": "autumn",
+    "level": "hard",
+    "meanings": {
+      "en": "Fallen leaves dance in the dry wind, gently drifting into the corner of the park. The bookmark in the book I was reading swayed, pulling my mind back to reality once again.",
+      "zh": "落叶在干燥的风中飞舞，轻轻地堆积在公园的角落。正读着的书里书签摇曳，将我的思绪再次拉回现实。"
+    },
+    "display": "かわいたかぜにおちばがまい、こうえんのかたすみにそっとふきだまる。よんでいたほんのしおりがゆれ、わたしのこころはふたたびげんじつへとひきもどされた。"
+  },
+  {
+    "id": "para153",
+    "kana": "まんげつのあおじろいひかりがくらいしんしつをやわらかくてらしだしているとおりすぎるくもがときおりそれをかくしへやのかげがしずかにこきゅうしているようにみえた",
+    "topic": "moon",
+    "level": "hard",
+    "meanings": {
+      "en": "The pale light of the full moon softly illuminates the dark bedroom. Passing clouds occasionally hide it, making the shadows in the room look as if they are quietly breathing.",
+      "zh": "满月苍白的光芒柔和地照亮了黑暗的卧室。飘过的云朵偶尔将它遮蔽，让房间里的影子看起来仿佛在静静地呼吸。"
+    },
+    "display": "まんげつのあおじろいひかりが、くらいしんしつをやわらかくてらしだしている。とおりすぎるくもがときおりそれをかくし、へやのかげがしずかにこきゅうしているようにみえた。"
+  },
+  {
+    "id": "para154",
+    "kana": "あさのにわにあしをふみいれるとしものおりたくさがかすかにおとをたてたいたみをかんじるほどにすみきったくうきがこころのおくそこまでしずかにじょうかしていくようだ",
+    "topic": "frost",
+    "level": "hard",
+    "meanings": {
+      "en": "Stepping into the morning garden, the frosted grass made a faint crunching sound. The air, so clear it almost hurt, seemed to quietly purify the very depths of my heart.",
+      "zh": "踏入清晨的庭院，结霜的草发出微弱的声响。清澈得几乎让人感到刺痛的空气，仿佛在静静地净化着内心的深处。"
+    },
+    "display": "あさのにわにあしをふみいれると、しものおりたくさがかすかにおとをたてた。いたみをかんじるほどにすみきったくうきが、こころのおくそこまでしずかにじょうかしていくようだ。"
+  },
+  {
+    "id": "para155",
+    "kana": "とおくをはしるよぎしゃのおとがくらいそらにひびきわたしのまどをわずかにゆらすだれかがとおくへむかっているというじじつがこのちいさなへやであしたをまつわたしをなぐさめてくれた",
+    "topic": "train",
+    "level": "hard",
+    "meanings": {
+      "en": "The sound of a distant night train echoes in the dark sky, slightly shaking my window. The fact that someone is heading far away comforts me as I wait for tomorrow in this small room.",
+      "zh": "远处夜行列车的声音在夜空中回荡，微微震动了我的窗户。有人正驶向远方，这个事实在这个小房间里安慰着等待明天的我。"
+    },
+    "display": "とおくをはしるよぎしゃのおとがくらいそらにひびき、わたしのまどをわずかにゆらす。だれかがとおくへむかっているというじじつが、このちいさなへやであしたをまつわたしをなぐさめてくれた。"
+  },
+  {
+    "id": "para156",
+    "kana": "ゆのみにそそいだあついおちゃがしろいゆげをたててんじょうのほうへとふわりときえていくほうじちゃのこうばしいにおいがひろがりこわばっていたかたのちからをぬいてくれた",
+    "topic": "tea",
+    "level": "hard",
+    "meanings": {
+      "en": "The hot tea poured into the teacup creates white steam, floating and fading towards the ceiling. The fragrant scent of roasted green tea spreads, releasing the tension in my stiff shoulders.",
+      "zh": "倒入茶杯的热茶升起白色的雾气，向着天花板飘散而去。焙茶的香气弥漫开来，让我僵硬的肩膀放松下来。"
+    },
+    "display": "ゆのみにそそいだあついおちゃがしろいゆげをたて、てんじょうのほうへとふわりときえていく。ほうじちゃのこうばしいにおいがひろがり、こわばっていたかたのちからをぬいてくれた。"
+  },
+  {
+    "id": "para157",
+    "kana": "いつのまにかまどのそとではおおきなゆきのつぶがおともなくまいはじめていたせかいがきゅうそくにしろくそまりまちのさわがしいおとをすべてぬぐいさっていく",
+    "topic": "snow",
+    "level": "hard",
+    "meanings": {
+      "en": "Before I knew it, large snowflakes had begun to fall soundlessly outside the window. The world rapidly dyes white, wiping away all the noisy sounds of the town.",
+      "zh": "不知不觉间，窗外大片的雪花开始无声地飞舞。世界迅速被染成白色，抹去了街道上所有喧闹的声音。"
+    },
+    "display": "いつのまにか、まどのそとではおおきなゆきのつぶがおともなくまいはじめていた。せかいがきゅうそくにしろくそまり、まちのさわがしいおとをすべてぬぐいさっていく。"
+  },
+  {
+    "id": "para158",
+    "kana": "やわらかなはるのかぜがわかばをなであまいかおりをはなさきにはこんでくるめをとじるとずっとむかしのとおいいひのきおくがそっとよみがえってくるようなきがした",
+    "topic": "breeze",
+    "level": "hard",
+    "meanings": {
+      "en": "A gentle spring breeze strokes the new leaves, bringing a sweet scent to my nose. Closing my eyes, I felt as if memories of distant, long-ago days were softly reviving.",
+      "zh": "柔和的春风抚摸着新叶，将甜美的香气送到鼻尖。闭上眼睛，仿佛很久以前那遥远日子的记忆又悄悄苏醒了。"
+    },
+    "display": "やわらかなはるのかぜがわかばをなで、あまいかおりをはなさきにはこんでくる。めをとじると、ずっとむかしのとおいいひのきおくがそっとよみがえってくるようなきがした。"
+  },
+  {
+    "id": "para159",
+    "kana": "ふるいとしょかんのなかにはただかすかにほんをめくるおとだけがひびいているまどからさしこむひざしのなかでほこりがまいここだけじかんがとまっているようだった",
+    "topic": "library",
+    "level": "hard",
+    "meanings": {
+      "en": "In the old library, only the faint sound of turning pages echoes. Dust dances in the sunlight streaming through the window, as if time has stopped only here.",
+      "zh": "古老的图书馆里，只有微弱的翻书声在回荡。灰尘在窗外照进来的阳光中飞舞，仿佛只有这里的时间停止了。"
+    },
+    "display": "ふるいとしょかんのなかには、ただかすかにほんをめくるおとだけがひびいている。まどからさしこむひざしのなかでほこりがまい、ここだけじかんがとまっているようだった。"
+  },
+  {
+    "id": "para160",
+    "kana": "ふゆのよぞらをみあげるとくだけたこおりのかけらのようにむすうのほしがまたたいているしろくにごったいきをはきだしながらきょだいなうちゅうのしたでじぶんのちいささをかんじた",
+    "topic": "stars",
+    "level": "hard",
+    "meanings": {
+      "en": "Looking up at the winter night sky, countless stars are twinkling like fragments of broken ice. Letting out a white, cloudy breath, I felt my own smallness beneath the massive universe.",
+      "zh": "仰望冬日的夜空，无数星星如同碎裂的冰块般闪烁。呼出白色的浊气，在浩瀚的宇宙下我感到了自己的渺小。"
+    },
+    "display": "ふゆのよぞらをみあげると、くだけたこおりのかけらのようにむすうのほしがまたたいている。しろくにごったいきをはきだしながら、きょだいなうちゅうのしたでじぶんのちいささをかんじた。"
+  },
+  {
+    "id": "para161",
+    "kana": "とけいのはりのおとがふととだえるとふかいちんもくがきゅうにへやをしはいしたわたしはせいじゃくのなかでじぶんじしんのしんぞうのこどうをききとろうとじっとみみをすませた",
+    "topic": "silence",
+    "level": "hard",
+    "meanings": {
+      "en": "When the ticking of the clock suddenly stops, a deep silence abruptly dominates the room. In the stillness, I strained my ears to listen to the beating of my own heart.",
+      "zh": "时钟指针的声音突然停下时，深深的沉默顿时占据了房间。在寂静中，我屏息凝神，试图听清自己心脏跳动的声音。"
+    },
+    "display": "とけいのはりのおとがふととだえると、ふかいちんもくがきゅうにへやをしはいした。わたしはせいじゃくのなかで、じぶんじしんのしんぞうのこどうをききとろうとじっとみみをすませた。"
+  },
+  {
+    "id": "para162",
+    "kana": "かわもがゆうぐれのひかりをはんしゃしながらおともなくしずかにながれていくいちわのみずどりがはばたきあとはただすいもんがどこまでもひろがっていくだけだった",
+    "topic": "river",
+    "level": "hard",
+    "meanings": {
+      "en": "The surface of the river flows silently, reflecting the evening light. A single waterbird took flight, and after that, only the ripples spread out endlessly.",
+      "zh": "河面反射着傍晚的光芒，无声地静静流淌。一只水鸟展翅飞起，之后便只有水纹在无尽地扩散。"
+    },
+    "display": "かわもがゆうぐれのひかりをはんしゃしながら、おともなくしずかにながれていく。いちわのみずどりがはばたき、あとはただすいもんがどこまでもひろがっていくだけだった。"
+  },
+  {
+    "id": "para163",
+    "kana": "のきしたでゆれるあかいちょうちんがくらいろじうらをあたたかくてらしだしているとおくのあしおとがゆっくりとちかづきやがてまたやみのおくへときえていった",
+    "topic": "lantern",
+    "level": "hard",
+    "meanings": {
+      "en": "The red lantern swaying under the eaves warmly illuminates the dark back alley. Distant footsteps slowly approach, and eventually fade away into the depths of the darkness again.",
+      "zh": "屋檐下摇晃的红灯笼，温暖地照亮了黑暗的小巷。远处的脚步声慢慢靠近，随后又消失在黑暗的深处。"
+    },
+    "display": "のきしたでゆれるあかいちょうちんが、くらいろじうらをあたたかくてらしだしている。とおくのあしおとがゆっくりとちかづき、やがてまたやみのおくへときえていった。"
+  },
+  {
+    "id": "para164",
+    "kana": "ふるいてがみをひらくとかすかなすみのにおいがはなをかすめたそのやさしいひっせきはそれをかいたひとをいますぐめのまえによびもどしてくれるかのようだった",
+    "topic": "letter",
+    "level": "hard",
+    "meanings": {
+      "en": "Upon opening the old letter, the faint smell of ink brushed my nose. The gentle handwriting seemed as if it could bring the person who wrote it right back in front of my eyes.",
+      "zh": "展开旧信，微弱的墨香掠过鼻尖。那温柔的笔迹，仿佛立刻就能将写信人召唤到我的眼前。"
+    },
+    "display": "ふるいてがみをひらくと、かすかなすみのにおいがはなをかすめた。そのやさしいひっせきは、それをかいたひとをいますぐめのまえによびもどしてくれるかのようだった。"
+  },
+  {
+    "id": "para165",
+    "kana": "ごごのつよいひざしのなかできぎのかげがじめんにするどくのびているかぜがふくとまるでそれじたいがいしをもっているかのようにはげしくゆれうごいた",
+    "topic": "shadow",
+    "level": "hard",
+    "meanings": {
+      "en": "In the strong afternoon sunlight, the shadows of the trees stretch sharply across the ground. When the wind blew, they swayed violently as if they possessed a will of their own.",
+      "zh": "在午后强烈的阳光下，树木的影子在地面上锐利地拉长。风吹过时，它们剧烈地摇晃，仿佛拥有自己的意志。"
+    },
+    "display": "ごごのつよいひざしのなかで、きぎのかげがじめんにするどくのびている。かぜがふくと、まるでそれじたいがいしをもっているかのように、はげしくゆれうごいた。"
+  },
+  {
+    "id": "para166",
+    "kana": "さむぞらのしたでひとをまっているとはきだしたいきがすぐにしろいきりにかわるわたしはえりまきにあごをうずめかじかんだりょうてをそっとすりあわせた",
+    "topic": "breath",
+    "level": "hard",
+    "meanings": {
+      "en": "Waiting for someone under the cold sky, my exhaled breath immediately turns into a white mist. I buried my chin in my muffler, softly rubbing my numb hands together.",
+      "zh": "在寒空下等待着某人，呼出的白气瞬间化作白雾。我将下巴埋进围巾里，轻轻搓揉着冻僵的双手。"
+    },
+    "display": "さむぞらのしたでひとをまっていると、はきだしたいきがすぐにしろいきりにかわる。わたしはえりまきにあごをうずめ、かじかんだりょうてをそっとすりあわせた。"
+  },
+  {
+    "id": "para167",
+    "kana": "まよなかになるとかべかけとけいのきざむおとがみょうにおおきくきこえてくるまるでじかんそのものがいちびょうずつけずりとられているようでなかなかねむりにつくことができない",
+    "topic": "clock",
+    "level": "hard",
+    "meanings": {
+      "en": "In the middle of the night, the ticking sound of the wall clock sounds strangely loud. It feels as if time itself is being scraped away one second at a time, making it hard for me to fall asleep.",
+      "zh": "到了半夜，挂钟滴答的声音听起来格外响亮。仿佛时间本身正在被一秒一秒地削去，让我迟迟无法入睡。"
+    },
+    "display": "まよなかになると、かべかけとけいのきざむおとがみょうにおおきくきこえてくる。まるでじかんそのものがいちびょうずつけずりとられているようで、なかなかねむりにつくことができない。"
+  },
+  {
+    "id": "para168",
+    "kana": "いろあせたしゃしんをながめているとあのひのにおいやおとがあざやかによみがえるきおくとはふしぎなものでじかんなどまったくかんけいないかのようにわたしたちのなかにひそんでいる",
+    "topic": "memory",
+    "level": "hard",
+    "meanings": {
+      "en": "Looking at the faded photograph, the smells and sounds of that day revive vividly. Memory is a strange thing; it hides within us as if completely unaffected by time.",
+      "zh": "看着褪色的照片，那一天的气味和声音鲜明地苏醒了。记忆真是不可思议的东西，它潜伏在我们的心中，仿佛完全不受时间的影响。"
+    },
+    "display": "いろあせたしゃしんをながめていると、あのひのにおいやおとがあざやかによみがえる。きおくとはふしぎなもので、じかんなどまったくかんけいないかのようにわたしたちのなかにひそんでいる。"
+  },
+  {
+    "id": "para169",
+    "kana": "ふるびたかがみにうつるじんぶつはすこしだけつかれたようなひょうじょうをうかべているわたしはくもりをそででぬぐいほんとうのじぶんをまっすぐにみつめなおそうとした",
+    "topic": "mirror",
+    "level": "hard",
+    "meanings": {
+      "en": "The person reflected in the old mirror wears a slightly tired expression. I wiped away the cloudiness with my sleeve, trying to look straight at my true self once again.",
+      "zh": "映在旧镜子里的人，露出有些疲惫的神情。我用袖子擦去镜面上的雾气，试图直视真实的自己。"
+    },
+    "display": "ふるびたかがみにうつるじんぶつは、すこしだけつかれたようなひょうじょうをうかべている。わたしはくもりをそででぬぐい、ほんとうのじぶんをまっすぐにみつめなおそうとした。"
+  },
+  {
+    "id": "para170",
+    "kana": "だれもいないろじうらにはじぶんじしんのあしおとだけがむなしくひびいているときおりふりかえってみてもそこにはただふかいやみがどこまでもつづいているだけだった",
+    "topic": "footsteps",
+    "level": "hard",
+    "meanings": {
+      "en": "In the deserted back alley, only my own footsteps echo emptily. Even when I occasionally looked back, there was only the deep darkness continuing endlessly.",
+      "zh": "在空无一人的小巷里，只有自己的脚步声空洞地回响着。即使偶尔回头看去，那里也只有无尽延伸的深深黑暗。"
+    },
+    "display": "だれもいないろじうらには、じぶんじしんのあしおとだけがむなしくひびいている。ときおりふりかえってみても、そこにはただふかいやみがどこまでもつづいているだけだった。"
+  },
+  {
+    "id": "para171",
+    "kana": "ちいさなとりがえださきでさえずりあさひにむかってあいさつをしているそのよわよわしくもせいめいりょくにみちたこえはわたしにきょうをはじめるためのすこしのゆうきをあたえてくれた",
+    "topic": "bird",
+    "level": "hard",
+    "meanings": {
+      "en": "A small bird chirps on the tip of a branch, greeting the morning sun. That fragile yet vibrant voice gave me a little courage to begin today.",
+      "zh": "小鸟在枝头鸣叫，向着朝阳打着招呼。那微弱却充满生命力的声音，给了我一点开始今天的勇气。"
+    },
+    "display": "ちいさなとりがえださきでさえずり、あさひにむかってあいさつをしている。そのよわよわしくもせいめいりょくにみちたこえは、わたしにきょうをはじめるためのすこしのゆうきをあたえてくれた。"
+  },
+  {
+    "id": "para172",
+    "kana": "とおくのえんとつからたちのぼるけむりがはいいろのそらへとゆっくりとけていくそのけしきをながめているとむしょうにあたたかいろばたとかぞくのことがこいしくなった",
+    "topic": "smoke",
+    "level": "hard",
+    "meanings": {
+      "en": "The smoke rising from a distant chimney slowly melts into the gray sky. Watching that scenery, I suddenly intensely missed the warm hearth and my family.",
+      "zh": "远处烟囱升起的青烟，缓缓融入灰色的天空。望着这番景色，我突然无比想念温暖的炉边和家人。"
+    },
+    "display": "とおくのえんとつからたちのぼるけむりが、はいいろのそらへとゆっくりとけていく。そのけしきをながめていると、むしょうにあたたかいろばたとかぞくのことがこいしくなった。"
+  },
+  {
+    "id": "para173",
+    "kana": "どこからかかすかにただよってくるおこうのにおいがわたしのこころをしずめてくれるめをとじてじかんのながれにみをまかせているとじんせいのはかなさのようなものをかんじた",
+    "topic": "scent",
+    "level": "hard",
+    "meanings": {
+      "en": "The scent of incense faintly drifting from somewhere calms my mind. Closing my eyes and surrendering myself to the flow of time, I felt something like the transience of life.",
+      "zh": "不知从何处隐隐飘来的线香气味，让我的心平静下来。闭上眼睛将自己交托于时光的流逝中，我感受到了犹如人生虚幻般的东西。"
+    },
+    "display": "どこからかかすかにただよってくるおこうのにおいが、わたしのこころをしずめてくれる。めをとじてじかんのながれにみをまかせていると、じんせいのはかなさのようなものをかんじた。"
   }
 ]
