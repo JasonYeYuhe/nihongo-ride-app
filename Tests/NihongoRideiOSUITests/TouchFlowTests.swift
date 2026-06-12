@@ -71,11 +71,27 @@ final class TouchFlowTests: XCTestCase {
         XCTAssertTrue(endRun.waitForExistence(timeout: 5), "pause overlay should offer End run")
         endRun.tap()
 
-        // Results screen → back to menu (both are plain buttons).
+        // Results screen → back to menu (both are plain buttons). The keyboard
+        // is dismissing as results appear, so content can reflow between the
+        // settle check and the tap — retry, and recover if the mis-tap landed
+        // on "Ride again" and started a fresh run.
         let menuButton = app.buttons["menuButton"]
         XCTAssertTrue(menuButton.waitForExistence(timeout: 5), "results should offer Menu")
-        tapWhenSettled(menuButton)
-        XCTAssertTrue(start.waitForExistence(timeout: 8), "should be back on the menu")
+        var backOnMenu = false
+        for _ in 0..<3 {
+            if menuButton.waitForExistence(timeout: 3) {
+                tapWhenSettled(menuButton)
+            }
+            if start.waitForExistence(timeout: 4) { backOnMenu = true; break }
+            // Mis-tap recovery: if a new run started, end it by touch.
+            if app.buttons["pauseButton"].waitForExistence(timeout: 2) {
+                app.buttons["pauseButton"].tap()
+                if app.buttons["endRunButton"].waitForExistence(timeout: 3) {
+                    app.buttons["endRunButton"].tap()
+                }
+            }
+        }
+        XCTAssertTrue(backOnMenu, "should be back on the menu")
     }
 
     /// The Ride Log must open from the menu and return — by touch only.
