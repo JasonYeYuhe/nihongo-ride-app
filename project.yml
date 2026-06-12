@@ -53,6 +53,10 @@ targets:
       properties:
         CFBundleDisplayName: Nihongo Ride
         CFBundleName: Nihongo Ride
+        # xcodegen writes literal defaults (1.0/1) when these are omitted —
+        # reference the build settings so version bumps in project.yml stick.
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSApplicationCategoryType: public.app-category.education
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
         NSHumanReadableCopyright: "© 2026 Jason. All rights reserved."
@@ -118,6 +122,8 @@ targets:
       properties:
         CFBundleDisplayName: Nihongo Ride
         CFBundleName: Nihongo Ride
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSApplicationCategoryType: public.app-category.education
         ITSAppUsesNonExemptEncryption: false
         UILaunchScreen: {}
