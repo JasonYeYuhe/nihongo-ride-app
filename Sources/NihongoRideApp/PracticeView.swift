@@ -55,7 +55,7 @@ struct PracticeView: View {
                 }
                 if !keyboardUp { statsRow(session) }
             }
-            .padding(keyboardUp ? 20 : 44)
+            .padding(isPhoneIdiom ? (keyboardUp ? 12 : 20) : (keyboardUp ? 20 : 44))
         }
         .summonKeyboardOnTap()
         .observingKeyboard($keyboardUp)
@@ -142,8 +142,8 @@ struct PracticeView: View {
             }
         }
         return text
-            .font(.system(size: 46, weight: .medium, design: .serif))
-            .lineSpacing(20)
+            .font(.system(size: isPhoneIdiom ? 32 : 46, weight: .medium, design: .serif))
+            .lineSpacing(isPhoneIdiom ? 14 : 20)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: 720, alignment: .leading)
     }
@@ -175,8 +175,8 @@ struct PracticeView: View {
             }
         }
         return text
-            .font(.system(size: 34, weight: .medium, design: .serif))
-            .lineSpacing(16)
+            .font(.system(size: isPhoneIdiom ? 24 : 34, weight: .medium, design: .serif))
+            .lineSpacing(isPhoneIdiom ? 11 : 16)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: 760, alignment: .leading)
     }
@@ -231,6 +231,7 @@ struct PracticeView: View {
             Text(s.currentRomaji ?? "")
                 .foregroundStyle(ink.opacity(0.32))
                 .font(.system(size: 15, weight: .regular, design: .monospaced))
+                .accessibilityIdentifier("practiceRomaji")
         }
     }
 

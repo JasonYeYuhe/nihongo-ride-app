@@ -51,3 +51,28 @@ var isTouchDevice: Bool {
     false
     #endif
 }
+
+/// True on iPhone (portrait-only, ~390pt wide) — views swap in narrow layout
+/// variants: tighter padding, scaled-down type, stacked instead of side-by-side.
+/// A static device check (not a size class) because the iPhone app is locked to
+/// portrait, so the narrow layout is a property of the device, not the window.
+@MainActor
+var isPhoneIdiom: Bool {
+    #if os(iOS)
+    UIDevice.current.userInterfaceIdiom == .phone
+    #else
+    false
+    #endif
+}
+
+/// Lays children out in an HStack on roomy screens, a VStack on narrow ones.
+@MainActor
+@ViewBuilder
+func adaptiveStack(horizontal: Bool, spacing: CGFloat,
+                   @ViewBuilder content: () -> some View) -> some View {
+    if horizontal {
+        HStack(spacing: spacing) { content() }
+    } else {
+        VStack(spacing: spacing) { content() }
+    }
+}

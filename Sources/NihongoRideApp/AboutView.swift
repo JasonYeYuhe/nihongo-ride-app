@@ -60,7 +60,7 @@ struct AboutView: View {
                 Spacer(minLength: 18)
                 footerNote
             }
-            .padding(40)
+            .padding(isPhoneIdiom ? 22 : 40)
             .frame(maxWidth: 760, alignment: .leading)
 
         return Group {
@@ -77,7 +77,8 @@ struct AboutView: View {
                     onKey: { _ in },
                     onCommand: { command in
                         if command == .escape || command == .returnKey { model.backToMenu() }
-                    }
+                    },
+                    suppressSoftwareKeyboard: true
                 )
             }
         }
@@ -105,7 +106,7 @@ struct AboutView: View {
             Text("Nihongo Ride · v\(bundleVersion)")
                 .font(.system(size: 13, weight: .medium, design: .monospaced))
                 .foregroundStyle(Theme.accent2)
-            Text(zh ? "打字环游日本 · macOS / SwiftUI" : "Type your way across Japan · macOS / SwiftUI")
+            Text(zh ? "打字环游日本 · macOS / iOS · SwiftUI" : "Type your way across Japan · macOS / iOS · SwiftUI")
                 .font(.system(size: 14)).foregroundStyle(Theme.dim)
         }
     }

@@ -19,8 +19,11 @@ enum Screenshotter {
         // the preferred macOS App Store screenshot resolution.
         let storeMode = ProcessInfo.processInfo.environment["NIHONGO_SHOT_STORE"] != nil
         #if os(iOS)
-        // iPad 13" landscape logical points (×2 scale → 2752×2064 store size).
-        let size = CGSize(width: 1376, height: 1032)
+        // iPad 13" landscape logical points (×2 scale → 2752×2064 store size);
+        // iPhone 6.9" portrait logical points (×3 scale → 1320×2868 store size).
+        let size = UIDevice.current.userInterfaceIdiom == .phone
+            ? CGSize(width: 440, height: 956)
+            : CGSize(width: 1376, height: 1032)
         #else
         let size = storeMode ? CGSize(width: 1440, height: 900) : CGSize(width: 1000, height: 700)
         #endif
@@ -130,6 +133,12 @@ enum Screenshotter {
         FileHandle.standardError.write(Data("wrote \(path)\n".utf8))
     }
 
-    /// Render scale: 2× (macOS Retina, and iPad @2x → 2752×2064 store size).
-    private static var scale: CGFloat { 2 }
+    /// Render scale: 2× (macOS Retina, iPad @2x → 2752×2064) or 3× (iPhone @3x).
+    @MainActor private static var scale: CGFloat {
+        #if os(iOS)
+        UIDevice.current.userInterfaceIdiom == .phone ? 3 : 2
+        #else
+        2
+        #endif
+    }
 }

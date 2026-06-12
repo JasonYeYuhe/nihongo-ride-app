@@ -6,29 +6,38 @@ struct MenuView: View {
     @Environment(AppModel.self) private var model
 
     var body: some View {
+        // iPhone: the stack can outgrow short screens (SE class), so scroll.
+        if isPhoneIdiom {
+            ScrollView(showsIndicators: false) { content }
+        } else {
+            content
+        }
+    }
+
+    private var content: some View {
         @Bindable var model = model
 
-        VStack(spacing: 28) {
+        return VStack(spacing: isPhoneIdiom ? 20 : 28) {
             Spacer()
 
             VStack(spacing: 10) {
                 Text("Nihongo Ride")
-                    .font(.system(size: 60, weight: .heavy, design: .rounded))
+                    .font(.system(size: isPhoneIdiom ? 38 : 60, weight: .heavy, design: .rounded))
                     .foregroundStyle(.white)
                 Text("にほんご ライド")
-                    .font(.system(size: 22, weight: .semibold, design: .rounded))
-                    .tracking(4)
+                    .font(.system(size: isPhoneIdiom ? 16 : 22, weight: .semibold, design: .rounded))
+                    .tracking(isPhoneIdiom ? 3 : 4)
                     .foregroundStyle(Theme.accent)
                 Text(model.languageCode == "zh"
                      ? "打字环游日本 · 边骑边学"
                      : "Type your way across Japan")
-                    .font(.title3)
+                    .font(isPhoneIdiom ? .callout : .title3)
                     .foregroundStyle(Theme.dim)
             }
 
             routePreview
                 .frame(maxWidth: 520)
-                .padding(.vertical, 8)
+                .padding(.vertical, isPhoneIdiom ? 0 : 8)
 
             VStack(spacing: 18) {
                 HStack(spacing: 12) {
@@ -39,7 +48,7 @@ struct MenuView: View {
                         Text(model.languageCode == "zh" ? "练习" : "Practice").tag(GameMode.practice)
                     }
                     .pickerStyle(.segmented)
-                    .frame(width: 280)
+                    .menuControlWidth(280)
                 }
                 HStack(spacing: 12) {
                     Image(systemName: "globe")
@@ -48,7 +57,7 @@ struct MenuView: View {
                         Text("中文").tag("zh")
                     }
                     .pickerStyle(.segmented)
-                    .frame(width: 220)
+                    .menuControlWidth(220)
                 }
                 // JLPT level applies to word-stream modes; Practice Passages has its own level picker below.
                 let showJLPT = !(model.selectedMode == .practice && model.practicePassages)
@@ -62,7 +71,7 @@ struct MenuView: View {
                             Text(model.languageCode == "zh" ? "混合" : "All").tag(JLPTLevel?.none)
                         }
                         .pickerStyle(.segmented)
-                        .frame(width: 300)
+                        .menuControlWidth(300)
                     }
                 }
                 if model.selectedMode == .practice {
@@ -73,7 +82,7 @@ struct MenuView: View {
                             Text(model.languageCode == "zh" ? "词流" : "Words").tag(false)
                         }
                         .pickerStyle(.segmented)
-                        .frame(width: 220)
+                        .menuControlWidth(220)
                     }
                     if model.practicePassages {
                         HStack(spacing: 12) {
@@ -84,7 +93,7 @@ struct MenuView: View {
                                 Text(model.languageCode == "zh" ? "长" : "Long").tag(Passage.Level.hard)
                             }
                             .pickerStyle(.segmented)
-                            .frame(width: 220)
+                            .menuControlWidth(220)
                         }
                     }
                 }
@@ -94,14 +103,14 @@ struct MenuView: View {
                 }
                 .toggleStyle(.switch)
                 .tint(Theme.accent2)
-                .frame(width: 320)
+                .menuControlWidth(320)
                 Toggle(isOn: $model.soundEnabled) {
                     Label(model.languageCode == "zh" ? "音效" : "Sound effects",
                           systemImage: "speaker.wave.2.fill")
                 }
                 .toggleStyle(.switch)
                 .tint(Theme.accent2)
-                .frame(width: 320)
+                .menuControlWidth(320)
             }
             .panel()
             .frame(maxWidth: 420)
@@ -129,14 +138,15 @@ struct MenuView: View {
 
             Spacer()
         }
-        .padding(40)
+        .padding(isPhoneIdiom ? 20 : 40)
         .background {
             if !Screenshotter.isCapturing {
                 KeyCaptureView(
                     onKey: { _ in },
                     onCommand: { command in
                         if command == .returnKey || command == .space { model.startGame() }
-                    }
+                    },
+                    suppressSoftwareKeyboard: true
                 )
             }
         }
@@ -147,7 +157,7 @@ struct MenuView: View {
         return HStack(spacing: 0) {
             ForEach(Array(stops.enumerated()), id: \.offset) { index, stop in
                 VStack(spacing: 6) {
-                    Text(stop.0).font(.system(size: 30))
+                    Text(stop.0).font(.system(size: isPhoneIdiom ? 24 : 30))
                     Text(stop.1).font(.caption2).foregroundStyle(Theme.dim)
                 }
                 if index < stops.count - 1 {
@@ -171,6 +181,20 @@ struct MenuView: View {
                 .font(.callout).foregroundStyle(Theme.dim)
             Text("Dictionary data: JMdict/Mozc · CC BY-SA / BSD")
                 .font(.caption2).foregroundStyle(Theme.dim.opacity(0.6))
+        }
+    }
+}
+
+extension View {
+    /// Menu controls are fixed-width on the roomy mac/iPad layout, but stretch
+    /// to the panel's width on the narrow iPhone screen.
+    @MainActor
+    @ViewBuilder
+    fileprivate func menuControlWidth(_ width: CGFloat) -> some View {
+        if isPhoneIdiom {
+            frame(maxWidth: .infinity)
+        } else {
+            frame(width: width)
         }
     }
 }

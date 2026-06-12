@@ -39,7 +39,7 @@ struct GameView: View {
                         controls
                     }
                 }
-                .padding(keyboardUp ? 14 : 32)
+                .padding(isPhoneIdiom ? (keyboardUp ? 10 : 16) : (keyboardUp ? 14 : 32))
             }
             .blur(radius: isPaused ? 8 : 0)
             .summonKeyboardOnTap()
@@ -91,7 +91,8 @@ struct GameView: View {
                 Text(zh ? "暂停" : "Paused")
                     .font(.system(size: 34, weight: .heavy, design: .rounded))
                     .foregroundStyle(.white)
-                HStack(spacing: 14) {
+                // iPhone is too narrow for the buttons side by side — stack them.
+                adaptiveStack(horizontal: !isPhoneIdiom, spacing: 14) {
                     Button(action: { isPaused = false }) {
                         Text(zh ? "继续 ▶" : "Resume ▶")
                             .font(.system(size: 17, weight: .bold, design: .rounded))
@@ -118,7 +119,7 @@ struct GameView: View {
                         .font(.caption).foregroundStyle(Theme.dim)
                 }
             }
-            .padding(36)
+            .padding(isPhoneIdiom ? 26 : 36)
             .panel(26)
         }
     }
@@ -157,8 +158,12 @@ private struct HUDBar: View {
     let language: String
     var onPause: (() -> Void)? = nil
 
+    /// iPhone width fits ~4 pills; distance + accuracy move to the results
+    /// screen there (they're informational, not actionable mid-run).
+    private var narrow: Bool { isPhoneIdiom }
+
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: narrow ? 8 : 14) {
             Text(session.currentLevelLabel)
                 .font(.system(size: 14, weight: .heavy, design: .rounded))
                 .foregroundStyle(.white)
@@ -169,12 +174,16 @@ private struct HUDBar: View {
                  value: session.combo >= 2 ? "×\(session.combo)" : "—",
                  tint: session.combo >= 2 ? Theme.accent : Theme.dim)
             Spacer()
-            stat(icon: "bicycle", value: "\(Int(session.distanceMeters)) m", tint: Theme.accent2)
+            if !narrow {
+                stat(icon: "bicycle", value: "\(Int(session.distanceMeters)) m", tint: Theme.accent2)
+            }
             stat(icon: "checkmark.circle.fill",
                  value: "\(session.wordsCompleted)/\(session.wordCount)", tint: Theme.done)
                 .accessibilityIdentifier("hudProgress")
-            stat(icon: "scope",
-                 value: "\(Int(session.accuracy * 100))%", tint: .white)
+            if !narrow {
+                stat(icon: "scope",
+                     value: "\(Int(session.accuracy * 100))%", tint: .white)
+            }
             if let onPause {
                 Button(action: onPause) {
                     Image(systemName: "pause.fill")
@@ -188,7 +197,7 @@ private struct HUDBar: View {
                 .accessibilityIdentifier("pauseButton")
             }
         }
-        .font(.system(size: 17, weight: .semibold, design: .rounded))
+        .font(.system(size: narrow ? 15 : 17, weight: .semibold, design: .rounded))
     }
 
     private func stat(icon: String, value: String, tint: Color) -> some View {
@@ -196,7 +205,7 @@ private struct HUDBar: View {
             Image(systemName: icon).foregroundStyle(tint)
             Text(value).foregroundStyle(.white).monospacedDigit()
         }
-        .padding(.horizontal, 12).padding(.vertical, 7)
+        .padding(.horizontal, narrow ? 9 : 12).padding(.vertical, 7)
         .background(.black.opacity(0.42), in: Capsule())
     }
 }
@@ -294,6 +303,8 @@ private struct WordCard: View {
             Text(session.currentSurface ?? "")
                 .font(.system(size: compact ? 40 : 64, weight: .bold))
                 .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.4)   // long compounds shrink instead of clipping (narrow screens)
 
             kanaReading
 
@@ -327,16 +338,28 @@ private struct WordCard: View {
     }
 
     /// Kana reading with committed kana tinted, the current one emphasized.
+    /// iPhone: one concatenated Text so a long reading scales down as a unit
+    /// instead of overflowing (per-character HStack can't shrink).
+    @ViewBuilder
     private var kanaReading: some View {
         let kana = Array(session.currentKana ?? "")
         let done = session.completedKanaCount
-        return HStack(spacing: 2) {
-            ForEach(Array(kana.enumerated()), id: \.offset) { index, character in
-                Text(String(character))
-                    .font(.system(size: compact ? 26 : 40, weight: .semibold, design: .rounded))
-                    .foregroundStyle(color(index: index, done: done))
-                    .scaleEffect(index == done ? 1.12 : 1)
-                    .animation(.smooth(duration: 0.15), value: done)
+        if isPhoneIdiom {
+            kana.enumerated().reduce(Text("")) { acc, pair in
+                acc + Text(String(pair.element)).foregroundStyle(color(index: pair.offset, done: done))
+            }
+            .font(.system(size: compact ? 26 : 34, weight: .semibold, design: .rounded))
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
+        } else {
+            HStack(spacing: 2) {
+                ForEach(Array(kana.enumerated()), id: \.offset) { index, character in
+                    Text(String(character))
+                        .font(.system(size: compact ? 26 : 40, weight: .semibold, design: .rounded))
+                        .foregroundStyle(color(index: index, done: done))
+                        .scaleEffect(index == done ? 1.12 : 1)
+                        .animation(.smooth(duration: 0.15), value: done)
+                }
             }
         }
     }

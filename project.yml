@@ -85,8 +85,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride
         PRODUCT_NAME: Nihongo Ride
-        MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "1"
+        MARKETING_VERSION: "1.1"
+        CURRENT_PROJECT_VERSION: "2"
         MACOSX_DEPLOYMENT_TARGET: "14.0"
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
@@ -119,14 +119,14 @@ targets:
         LSApplicationCategoryType: public.app-category.education
         ITSAppUsesNonExemptEncryption: false
         UILaunchScreen: {}
-        # All orientations: iPadOS 26 ignores landscape-only declarations
+        # iPhone: portrait only — the game is played against the software
+        # keyboard, and landscape leaves no usable screen above it. Orientation
+        # limits are still honored on iPhone; the iPad rule below is different.
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        # iPad: all orientations. iPadOS 26 ignores landscape-only declarations
         # (UIRequiresFullScreen is deprecated), so the app must genuinely
         # support portrait — and it does; layouts are flexible.
-        UISupportedInterfaceOrientations:
-          - UIInterfaceOrientationLandscapeLeft
-          - UIInterfaceOrientationLandscapeRight
-          - UIInterfaceOrientationPortrait
-          - UIInterfaceOrientationPortraitUpsideDown
         UISupportedInterfaceOrientations~ipad:
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
@@ -145,14 +145,12 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride
         PRODUCT_NAME: Nihongo Ride
-        MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "2"
+        MARKETING_VERSION: "1.1"
+        CURRENT_PROJECT_VERSION: "3"
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
-        # iPad-only: a landscape typing game with an immersive ride scene is a
-        # great fit for the larger screen + common hardware keyboards, and the
-        # 4:3 layout mirrors the macOS app. (iPhone landscape + on-screen
-        # keyboard is a poor fit; revisit with a portrait redesign later.)
-        TARGETED_DEVICE_FAMILY: "2"
+        # iPhone + iPad. iPhone runs portrait-only with narrow layout variants
+        # (isPhoneIdiom); iPad keeps the 4:3 landscape-first design.
+        TARGETED_DEVICE_FAMILY: "1,2"
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
         CODE_SIGN_STYLE: Automatic
@@ -171,7 +169,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride.uitests
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
-        TARGETED_DEVICE_FAMILY: "2"
+        TARGETED_DEVICE_FAMILY: "1,2"
         SWIFT_VERSION: "6.0"
         CODE_SIGN_STYLE: Automatic
         TEST_TARGET_NAME: NihongoRideiOS

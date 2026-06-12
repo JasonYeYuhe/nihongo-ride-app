@@ -47,6 +47,9 @@ final class KeyCaptureNSView: NSView {
 struct KeyCaptureView: NSViewRepresentable {
     var onKey: (Character) -> Void
     var onCommand: (KeyCommand) -> Void = { _ in }
+    /// iOS-only concept (software keyboard); accepted and ignored on macOS so
+    /// call sites stay platform-agnostic.
+    var suppressSoftwareKeyboard = false
 
     func makeNSView(context: Context) -> KeyCaptureNSView {
         let view = KeyCaptureNSView()
@@ -90,6 +93,15 @@ enum KeyboardSummon {
 final class KeyCaptureUIView: UIView, UIKeyInput {
     var onKey: ((Character) -> Void)?
     var onCommand: ((KeyCommand) -> Void)?
+
+    /// Menu/results/about set this: they want hardware-keyboard shortcuts but
+    /// have nothing to type, so the software keyboard would only eat the screen
+    /// (40% of an iPhone). A zero-sized custom input view suppresses it while
+    /// hardware key events still arrive through `insertText`. Game screens keep
+    /// the real keyboard — it MUST auto-appear there (App Review 2.1a).
+    var suppressSoftwareKeyboard = false
+    private lazy var emptyInputView = UIView()
+    override var inputView: UIView? { suppressSoftwareKeyboard ? emptyInputView : nil }
 
     private var retryTimer: Timer?
     private var retriesLeft = 0
@@ -192,17 +204,22 @@ final class KeyCaptureUIView: UIView, UIKeyInput {
 struct KeyCaptureView: UIViewRepresentable {
     var onKey: (Character) -> Void
     var onCommand: (KeyCommand) -> Void = { _ in }
+    /// True on screens with nothing to type (menu/results/about) — keeps
+    /// hardware shortcuts but doesn't summon the software keyboard.
+    var suppressSoftwareKeyboard = false
 
     func makeUIView(context: Context) -> KeyCaptureUIView {
         let view = KeyCaptureUIView()
         view.onKey = onKey
         view.onCommand = onCommand
+        view.suppressSoftwareKeyboard = suppressSoftwareKeyboard
         return view
     }
 
     func updateUIView(_ uiView: KeyCaptureUIView, context: Context) {
         uiView.onKey = onKey
         uiView.onCommand = onCommand
+        uiView.suppressSoftwareKeyboard = suppressSoftwareKeyboard
     }
 }
 #endif
