@@ -88,6 +88,10 @@ targets:
         product: JournalKit
       - package: Nihongo
         product: SettingsKit
+      - package: Nihongo
+        product: SyncKit
+      - package: Nihongo
+        product: NotificationKit
 
     settings:
       base:
@@ -155,6 +159,10 @@ targets:
         product: JournalKit
       - package: Nihongo
         product: SettingsKit
+      - package: Nihongo
+        product: SyncKit
+      - package: Nihongo
+        product: NotificationKit
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride

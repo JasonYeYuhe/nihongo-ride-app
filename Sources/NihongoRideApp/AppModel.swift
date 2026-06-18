@@ -31,7 +31,7 @@ struct GameSummary: Equatable {
 @MainActor
 @Observable
 final class AppModel {
-    enum Screen: Equatable { case menu, playing, results, about, journal }
+    enum Screen: Equatable { case menu, playing, results, about, journal, settings }
 
     var screen: Screen = .menu {
         didSet { navCount += 1 }
@@ -55,6 +55,18 @@ final class AppModel {
     /// In Practice mode: cycle whole passages (true) or stream individual words (false).
     var practicePassages: Bool = true { didSet { persistSettings() } }
     var practicePassageLevel: Passage.Level = .med { didSet { persistSettings() } }
+
+    // v1.2 settings.
+    /// Sync SRS + ride history through the user's private iCloud (CloudKit).
+    var iCloudSyncEnabled: Bool = true { didSet { persistSettings(); syncEnabledChanged() } }
+    /// Daily local reminder when SRS cards are due (default off; opt-in).
+    var dueReminderEnabled: Bool = false { didSet { persistSettings(); refreshReminders() } }
+    /// Hour-of-day (0…23) the due reminder fires.
+    var dueReminderHour: Int = 20 { didSet { persistSettings(); refreshReminders() } }
+
+    /// Live iCloud sync state, surfaced on the settings screen.
+    enum SyncStatus: Equatable { case off, waiting, syncing, synced, noAccount, error(String) }
+    private(set) var syncStatus: SyncStatus = .off
 
     private(set) var session: GameSession?
     private(set) var lastSummary: GameSummary?
@@ -90,6 +102,9 @@ final class AppModel {
         selectedLevel = loaded.selectedLevel.flatMap { JLPTLevel(rawValue: $0) }
         practicePassages = loaded.practicePassages
         practicePassageLevel = Passage.Level(rawValue: loaded.practicePassageLevel) ?? .med
+        iCloudSyncEnabled = loaded.iCloudSyncEnabled
+        dueReminderEnabled = loaded.dueReminderEnabled
+        dueReminderHour = loaded.dueReminderHour
 
         // Dev-only: pin the UI language for screenshot captures (not persisted).
         if let lang = ProcessInfo.processInfo.environment["NIHONGO_UILANG"],
@@ -100,6 +115,34 @@ final class AppModel {
         settingsLoaded = true
         // Persist once so a fresh install writes back its minted deviceID.
         settings.save(to: .standard)
+        if iCloudSyncEnabled { syncStatus = .waiting }
+        // Refresh the reminder schedule for the days ahead (no-op when off).
+        refreshReminders()
+    }
+
+    /// Reschedules due reminders for the next few days from the current SRS
+    /// state. Called on launch, whenever the reminder preference changes, after a
+    /// run (the due count moved), and when the app becomes active. If the user
+    /// turned reminders on but denied the system prompt, the toggle flips back.
+    func refreshReminders() {
+        guard ReminderScheduler.isAvailable else { return }   // dev / screenshot: skip
+        let enabled = dueReminderEnabled
+        let store = reviewStore
+        let hour = dueReminderHour
+        let lang = languageCode
+        Task { [weak self] in
+            let scheduled = await ReminderScheduler.apply(
+                enabled: enabled, store: store, hour: hour, languageCode: lang)
+            if enabled && !scheduled {
+                self?.dueReminderEnabled = false   // denied / unavailable
+            }
+        }
+    }
+
+    /// Hook for the iCloud sync toggle. The CloudKit controller (Phase B-3) wires
+    /// itself here; for now it just reflects intent in `syncStatus`.
+    private func syncEnabledChanged() {
+        syncStatus = iCloudSyncEnabled ? .waiting : .off
     }
 
     /// Mirrors the live settings into the persisted blob and writes it. Cheap
@@ -113,6 +156,9 @@ final class AppModel {
         settings.selectedLevel = selectedLevel?.rawValue
         settings.practicePassages = practicePassages
         settings.practicePassageLevel = practicePassageLevel.rawValue
+        settings.iCloudSyncEnabled = iCloudSyncEnabled
+        settings.dueReminderEnabled = dueReminderEnabled
+        settings.dueReminderHour = dueReminderHour
         settings.save(to: .standard)
     }
 
@@ -156,6 +202,7 @@ final class AppModel {
         if !wasPractice {                          // never overwrite real SRS with a practice run
             reviewStore = session.review
             try? reviewStore.save(to: storeURL)
+            refreshReminders()                     // the due count just changed
         }
         lastSummary = GameSummary(from: session)
         logRun(session)

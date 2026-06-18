@@ -96,6 +96,7 @@ final class IOSAppDelegate: NSObject, UIApplicationDelegate {
 
 struct RootView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         ZStack {
@@ -109,6 +110,10 @@ struct RootView: View {
         }
         .animation(.spring(response: 0.42, dampingFraction: 0.86), value: model.screen)
         .preferredColorScheme(.dark)
+        // Keep the due-reminder schedule (and any pending sync) fresh as days pass.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { model.refreshReminders() }
+        }
     }
 
     @ViewBuilder private var screen: some View {
@@ -119,6 +124,7 @@ struct RootView: View {
         case .results: ResultsView()
         case .about:   AboutView()
         case .journal: JournalView()
+        case .settings: SettingsView()
         }
     }
 }

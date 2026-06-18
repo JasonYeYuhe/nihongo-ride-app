@@ -145,6 +145,17 @@ struct MenuView: View {
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("journalButton")
 
+                Button(action: { model.screen = .settings }) {
+                    Label(model.languageCode == "zh" ? "设置" : "Settings", systemImage: "gearshape")
+                        .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.85))
+                        .padding(.horizontal, 14).padding(.vertical, 7)
+                        .background(Theme.card, in: Capsule())
+                        .overlay(Capsule().strokeBorder(Theme.cardStroke))
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("settingsButton")
+
                 Button(action: { model.screen = .about }) {
                     Label(model.languageCode == "zh" ? "关于与致谢" : "About & Credits", systemImage: "info.circle")
                         .font(.system(size: 12, weight: .medium))
