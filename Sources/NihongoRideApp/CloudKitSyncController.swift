@@ -128,13 +128,13 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         case .sentRecordZoneChanges(let sent):
             handleSent(sent, syncEngine: syncEngine)
 
-        case .willFetchChanges, .willSendChanges:
+        case .willFetchChanges, .willSendChanges, .willFetchRecordZoneChanges:
             model?.updateSyncStatus(.syncing)
 
         case .didSendChanges, .didFetchChanges:
             model?.updateSyncStatus(.synced)
 
-        case .fetchedDatabaseChanges, .sentDatabaseChanges:
+        case .fetchedDatabaseChanges, .sentDatabaseChanges, .didFetchRecordZoneChanges:
             break
 
         @unknown default:

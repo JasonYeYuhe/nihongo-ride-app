@@ -124,6 +124,37 @@ Source: `NIHONGO_SHOT=/tmp/nihongo-store NIHONGO_SHOT_STORE=1 swift run NihongoR
 
 ---
 
+## v1.2 What's New / 新功能
+
+> Ships: persisted Settings screen + opt-in daily review reminders. (iCloud sync
+> is built but deferred to a later version until the CloudKit container is set up.)
+> Same copy for macOS and iOS — both platforms get the features.
+
+### English (≤4000)
+```
+• NEW: Daily review reminders — turn them on in the new Settings screen and get a gentle nudge when words are due, counted accurately for each day ahead.
+• NEW: Settings screen — your language, romaji hints, sound and reminder preferences now stay put between launches.
+• Polish and fixes throughout.
+```
+
+### 简体中文
+```
+• 新增「每日复习提醒」:在新的「设置」页里开启,词到期时温柔提醒你,并按未来每天的实际到期数显示。
+• 新增「设置」页:语言、罗马字提示、音效与提醒偏好现在会跨启动保存。
+• 多处细节打磨与修复。
+```
+
+### Review notes (both platforms)
+```
+Nihongo Ride is a fully offline typing-practice app for Japanese learners. No
+account or login is required. No data is collected.
+
+Version 1.2 adds a Settings screen and an OPTIONAL daily "reviews due" reminder.
+Notifications are OFF by default and strictly opt-in: the user enables them in
+Settings → Review Reminder (and can turn them off there at any time). The app
+requests notification permission only when the user flips that switch on.
+```
+
 ## v1.1 What's New / 新功能
 
 ### macOS — English (≤4000)
