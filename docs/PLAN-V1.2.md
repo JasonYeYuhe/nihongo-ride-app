@@ -100,21 +100,19 @@ PLAN-V1.1 把「同步 + 社交」笼统放进 v1.2。落到工程上,这两块�
 - **推送 / 同步模式(审核裁定:采纳 Gemini 补充)**:`CKSyncEngine` 默认(`automaticallySync = true`)会建 CloudKit subscription,**需要 Push Notifications 能力(`aps-environment` entitlement)+ remote-notification 后台模式**,否则启动期会持续报错。
   - **首选**:加 Push Notifications capability + 后台模式,用自动同步(近实时,体验最好;沙盒/Mac App Store 均可)。
   - **备选**:`automaticallySync = false` + 在 app 启动/回前台/每局结束后**手动 `fetchChanges`/`sendChanges`**,此模式**不建 subscription、不需 `aps-environment`**。若想最小化能力面可走此路。
-  - **决策:首选自动同步**(加 push 能力),除非 provisioning 出问题再退备选。
+  - **决策(v1.2 已实现):走备选——手动模式** `automaticallySync = false`,只在**启动 / 回前台 / 每局结束后** `sendChanges` + `fetchChanges`。**不需 `aps-environment`、不需后台模式**,把 Jason 要在开发者后台/描述文件配置的能力面降到最小(仅 iCloud 容器)。自动+push 留作后续增强(届时再加回 aps-environment + remote-notification)。
 - **账号状态变化(审核裁定:采纳 Gemini 补充)**:监听 `CKAccountChanged` / `CKSyncEngine` 的 account-change 状态。用户在系统设置退出或切换 iCloud 账号时,**必须清掉 sync engine 的 state(change token 等),不得把上一个账号的数据写进新账号**;本地 JSON 保留(它是 system-of-record),仅停同步或重新初始化引擎。
 - **降级**:未登录 iCloud / 同步关 / 网络无 → 全程用本地 JSON,功能不受影响(同步是增益,非依赖)。
 - **首次开启同步的合并**:用户在设备 B 装新版、本地已有历史 → 必须**先完整拉取并合并再覆盖本地**,严禁「空远端覆盖本地历史」(red-line R2)。
 
-### 3.4 entitlements / 能力变更(Phase B)
-- `xcode/NihongoRide.entitlements`(macOS)增:
+### 3.4 entitlements / 能力变更(Phase B —— ✅ 已实现,手动模式)
+- `xcode/NihongoRide.entitlements`(macOS)已增(保留 `app-sandbox: true`):
   - `com.apple.developer.icloud-container-identifiers = [iCloud.com.jasonye.nihongoride]`
   - `com.apple.developer.icloud-services = [CloudKit]`
-  - **`com.apple.developer.aps-environment = development/production`(自动同步必需,见 §3.3)**
-  - 保留 `app-sandbox: true`(sandbox 下 CloudKit + 本地通知均正常,无需额外项)。
-- **Info.plist 两端**加 `UIBackgroundModes`/`NSBackgroundModes` 含 `remote-notification`(自动同步必需)。
-- **新建 `xcode/NihongoRide-iOS.entitlements`** 并在 `project.yml` 的 `NihongoRideiOS` target 挂上(当前 iOS 无 entitlements 文件)——内容同上(CloudKit + aps-environment)。
-- `project.yml` 两 target 的 `entitlements.properties` 各加上述键;**不要动 `$(MARKETING_VERSION)`/`$(CURRENT_PROJECT_VERSION)` 注入**。
-- 苹果开发者后台:App ID 勾 iCloud + 容器 + Push Notifications;`xcodebuild` 加 `-allowProvisioningUpdates`(脚本已带)。
+  - **手动模式 → 不加 `aps-environment`、不加后台模式**(见 §3.3 决策)。若日后改自动+push 再加。
+- **已新建 `xcode/NihongoRide-iOS.entitlements`** 并在 `project.yml` 的 `NihongoRideiOS` target 挂上(此前 iOS 无 entitlements 文件)——内容同上(仅 CloudKit)。
+- `project.yml` 两 target 的 `entitlements.properties` 已加上述键;**未动 `$(MARKETING_VERSION)`/`$(CURRENT_PROJECT_VERSION)` 注入**。
+- **待 Jason(开发者后台/Dashboard)**:App ID 勾 iCloud + 新建容器 `iCloud.com.jasonye.nihongoride`;`xcodebuild` 用 `-allowProvisioningUpdates`(脚本已带)。
 - **CloudKit schema 顺序(审核裁定:采纳 Gemini「JIT schema」补充)**:CloudKit 的 record type 是**首次在 Development 环境保存记录时即时(JIT)生成**的。流程必须是:① 先在 Development 跑通,让引擎保存出至少一条 `SRSCard`/`RideRecord`/`Odometer`,Dashboard 自动捕获 schema;② 再在 CloudKit Dashboard **把 schema 部署到 Production**。**漏掉①直接 deploy = 无 schema 可部署;漏掉② = 上架后真机同步全空。**
 
 ### 3.5 隐私合规(审核裁定:采纳 Gemini「App Privacy」补充)

@@ -4,6 +4,7 @@ import GameCore
 import JournalKit
 import ReviewKit
 import SettingsKit
+import SyncKit
 import VocabKit
 
 /// A snapshot of a finished run, shown on the results screen.
@@ -72,11 +73,18 @@ final class AppModel {
     private(set) var lastSummary: GameSummary?
     private(set) var reviewStore: ReviewStore
     private(set) var journal: RideJournal
+    /// Lifetime odometer as a per-device G-Counter — the iCloud-sync vehicle for
+    /// lifetime totals (sums correctly across devices; see SyncKit.OdometerLog).
+    private(set) var odometer: OdometerLog
     /// Wall-clock start of the current run, for duration/WPM in the journal.
     private var runStartedAt: Date?
 
+    /// Stable per-install id, used as this device's odometer slot key.
+    var deviceID: String { settings.deviceID }
+
     private let storeURL: URL
     private let journalURL: URL
+    private let odometerURL: URL
 
     /// The persisted settings blob. Also carries the install `deviceID` and the
     /// v1.2 sync/reminder toggles that don't have dedicated UI yet (Phase B).
@@ -87,8 +95,10 @@ final class AppModel {
     init() {
         storeURL = Self.supportFileURL("review.json")
         journalURL = Self.supportFileURL("history.json")
+        odometerURL = Self.supportFileURL("odometer.json")
         reviewStore = ReviewStore.load(from: storeURL)
         journal = RideJournal.load(from: journalURL)
+        odometer = OdometerLog.load(from: odometerURL)
 
         // Restore persisted settings (a fresh install gets sanitized defaults +
         // a freshly minted deviceID). `didSet` observers don't fire for
@@ -106,6 +116,17 @@ final class AppModel {
         dueReminderEnabled = loaded.dueReminderEnabled
         dueReminderHour = loaded.dueReminderHour
 
+        // One-time odometer backfill: seed this device's slot from the existing
+        // journal lifetime so totals stay correct for users upgrading to v1.2
+        // (and so this device contributes its real history once sync turns on).
+        if odometer.slots[settings.deviceID] == nil && journal.totalRuns > 0 {
+            odometer.setSlot(.init(words: journal.totalWords,
+                                   distanceMeters: journal.totalDistanceMeters,
+                                   runs: journal.totalRuns),
+                             for: settings.deviceID)
+            try? odometer.save(to: odometerURL)
+        }
+
         // Dev-only: pin the UI language for screenshot captures (not persisted).
         if let lang = ProcessInfo.processInfo.environment["NIHONGO_UILANG"],
            ["en", "zh"].contains(lang) {
@@ -115,9 +136,9 @@ final class AppModel {
         settingsLoaded = true
         // Persist once so a fresh install writes back its minted deviceID.
         settings.save(to: .standard)
-        if iCloudSyncEnabled { syncStatus = .waiting }
         // Refresh the reminder schedule for the days ahead (no-op when off).
         refreshReminders()
+        startSyncIfEnabled()
     }
 
     /// Reschedules due reminders for the next few days from the current SRS
@@ -139,10 +160,65 @@ final class AppModel {
         }
     }
 
-    /// Hook for the iCloud sync toggle. The CloudKit controller (Phase B-3) wires
-    /// itself here; for now it just reflects intent in `syncStatus`.
+    /// The iCloud sync controller (nil when sync is off / CloudKit unavailable,
+    /// e.g. under `swift run`). Owned here; created lazily when sync is enabled.
+    private var syncController: CloudKitSyncController?
+
+    private func startSyncIfEnabled() {
+        guard iCloudSyncEnabled else { syncStatus = .off; return }
+        guard let controller = CloudKitSyncController(model: self) else {
+            syncStatus = .off          // CloudKit unavailable (dev / no entitlement)
+            return
+        }
+        syncController = controller
+        syncStatus = .waiting
+        Task { await controller.start() }
+    }
+
+    /// Reacts to the iCloud sync toggle.
     private func syncEnabledChanged() {
-        syncStatus = iCloudSyncEnabled ? .waiting : .off
+        if iCloudSyncEnabled {
+            startSyncIfEnabled()
+        } else {
+            syncController?.stop()
+            syncController = nil
+            syncStatus = .off
+        }
+    }
+
+    /// App returned to the foreground: refresh reminders and pull/push sync.
+    func appBecameActive() {
+        refreshReminders()
+        if let syncController { Task { await syncController.syncNow() } }
+    }
+
+    /// Called by the sync controller to surface live state in the UI.
+    func updateSyncStatus(_ status: SyncStatus) { syncStatus = status }
+
+    /// Merges cloud changes into the local stores (via the tested SyncKit merges)
+    /// and persists. Called by the sync controller when records arrive.
+    func applyCloudChanges(cards: [SRSCard], records: [RideRecord],
+                           odometerSlots: [String: OdometerLog.Slot]) {
+        if !cards.isEmpty {
+            let remote = ReviewStore(cards: Dictionary(cards.map { ($0.id, $0) },
+                                                       uniquingKeysWith: { a, _ in a }))
+            reviewStore = SyncMerge.reviewStores(reviewStore, remote)
+            try? reviewStore.save(to: storeURL)
+            refreshReminders()
+        }
+        if !records.isEmpty {
+            // Display lifetime comes from the odometer, so rebuilding the journal
+            // from merged records here can't undercount the odometer totals.
+            let merged = SyncMerge.rideRecords(journal.records, records)
+            journal = RideJournal(records: merged)
+            try? journal.save(to: journalURL)
+        }
+        if !odometerSlots.isEmpty {
+            var remote = OdometerLog()
+            for (id, slot) in odometerSlots { remote.setSlot(slot, for: id) }
+            odometer = SyncMerge.odometers(odometer, remote)
+            try? odometer.save(to: odometerURL)
+        }
     }
 
     /// Mirrors the live settings into the persisted blob and writes it. Cheap
@@ -166,6 +242,12 @@ final class AppModel {
     var dueReviewCount: Int { reviewStore.dueCount() }
     var totalWordsSeen: Int { reviewStore.count }
     var totalWordsAvailable: Int { VocabStore.shared.entries.count }
+
+    // Lifetime totals prefer the cross-device odometer (G-Counter) but never show
+    // less than the local journal's own accumulation (equal on a single device).
+    var lifetimeWords: Int { max(journal.totalWords, odometer.totalWords) }
+    var lifetimeDistanceMeters: Double { max(journal.totalDistanceMeters, odometer.totalDistanceMeters) }
+    var lifetimeRuns: Int { max(journal.totalRuns, odometer.totalRuns) }
 
     func startGame() {
         var config = GameSession.Config()
@@ -199,13 +281,24 @@ final class AppModel {
     func finishGame() {
         guard let session else { return }
         let wasPractice = session.mode == .practice
+        var changedSRS: [String] = []
         if !wasPractice {                          // never overwrite real SRS with a practice run
+            // Diff old vs new so sync pushes exactly the cards that changed.
+            let oldCards = reviewStore.cards
+            changedSRS = session.review.cards.compactMap { id, card in
+                oldCards[id] != card ? id : nil
+            }
             reviewStore = session.review
             try? reviewStore.save(to: storeURL)
             refreshReminders()                     // the due count just changed
         }
         lastSummary = GameSummary(from: session)
-        logRun(session)
+        let appended = logRun(session)
+        // Tell the iCloud sync controller what changed (no-op when sync off).
+        syncController?.recordLocalChanges(
+            srsIDs: changedSRS,
+            rideRecordIDs: appended.map { [$0.id] } ?? [],
+            odometerChanged: appended != nil)
         self.session = nil
         screen = wasPractice ? .menu : .results
     }
@@ -216,12 +309,14 @@ final class AppModel {
         screen = .menu
     }
 
-    /// Appends the finished run to the ride journal and persists it. Runs with
-    /// nothing typed at all (abandoned immediately) aren't worth remembering.
-    private func logRun(_ session: GameSession) {
+    /// Appends the finished run to the ride journal + odometer and persists them.
+    /// Returns the appended record, or nil for an abandoned run (nothing typed)
+    /// that isn't worth remembering.
+    @discardableResult
+    private func logRun(_ session: GameSession) -> RideRecord? {
         guard session.wordsCompleted > 0 || session.correctKeystrokes > 0 else {
             runStartedAt = nil
-            return
+            return nil
         }
         let now = Date()
         let duration = runStartedAt.map { now.timeIntervalSince($0) } ?? 0
@@ -238,7 +333,7 @@ final class AppModel {
         }
         var seen = Set<String>()
         let lapsed = session.lapsedEntries.filter { seen.insert($0.id).inserted }.count
-        journal.append(RideRecord(
+        let record = RideRecord(
             date: now,
             mode: session.mode.rawValue,
             level: level,
@@ -249,15 +344,24 @@ final class AppModel {
             lapsed: lapsed,
             distanceMeters: session.distanceMeters,
             duration: duration
-        ))
-        // Snapshot + background write: RideJournal is a Sendable value type,
-        // so the copy is immune to later mutations on the main actor.
+        )
+        journal.append(record)
+        // This device's lifetime odometer slot (the cross-device sync vehicle).
+        odometer.record(deviceID: deviceID,
+                        words: session.wordsCompleted,
+                        distanceMeters: session.distanceMeters)
+        // Snapshot + background write: both are Sendable value types, so the
+        // copies are immune to later mutations on the main actor.
         let snapshot = journal
         let url = journalURL
+        let odoSnapshot = odometer
+        let odoURL = odometerURL
         Task.detached(priority: .utility) {
             try? snapshot.save(to: url)
+            try? odoSnapshot.save(to: odoURL)
         }
         runStartedAt = nil
+        return record
     }
 
     /// Fills the in-memory journal with a believable two-week history for
@@ -289,7 +393,7 @@ final class AppModel {
         journal = demo
     }
 
-    private static func supportFileURL(_ name: String) -> URL {
+    static func supportFileURL(_ name: String) -> URL {
         let base = FileManager.default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory

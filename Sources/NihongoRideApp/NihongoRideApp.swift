@@ -110,9 +110,9 @@ struct RootView: View {
         }
         .animation(.spring(response: 0.42, dampingFraction: 0.86), value: model.screen)
         .preferredColorScheme(.dark)
-        // Keep the due-reminder schedule (and any pending sync) fresh as days pass.
+        // Keep the due-reminder schedule and iCloud sync fresh as days pass.
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { model.refreshReminders() }
+            if phase == .active { model.appBecameActive() }
         }
     }
 

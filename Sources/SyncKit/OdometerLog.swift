@@ -44,4 +44,23 @@ public struct OdometerLog: Codable, Equatable, Sendable {
         slot.runs += runs
         slots[deviceID] = slot
     }
+
+    /// Replaces a single device's slot wholesale (used when applying a merged
+    /// slot pulled from the cloud).
+    public mutating func setSlot(_ slot: Slot, for deviceID: String) {
+        slots[deviceID] = slot
+    }
+
+    // MARK: Persistence (mirrors ReviewStore / RideJournal)
+
+    public func save(to url: URL) throws {
+        try JSONEncoder().encode(self).write(to: url, options: .atomic)
+    }
+
+    public static func load(from url: URL) -> OdometerLog {
+        guard let data = try? Data(contentsOf: url),
+              let log = try? JSONDecoder().decode(OdometerLog.self, from: data)
+        else { return OdometerLog() }
+        return log
+    }
 }

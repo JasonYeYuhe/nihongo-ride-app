@@ -138,13 +138,14 @@ struct JournalView: View {
     // MARK: Lifetime odometer
 
     private var totalsCard: some View {
-        let journal = model.journal
-        return VStack(alignment: .leading, spacing: 12) {
+        // Lifetime totals come from the odometer (sums across synced devices),
+        // falling back to the local journal — never showing less than either.
+        VStack(alignment: .leading, spacing: 12) {
             cardTitle(zh ? "里程表" : "Odometer", icon: "bicycle", tint: Theme.accent2)
-            odoRow(value: "\(journal.totalWords)", unit: zh ? "词" : "words")
-            odoRow(value: String(format: "%.1f", journal.totalDistanceMeters / 1000),
+            odoRow(value: "\(model.lifetimeWords)", unit: zh ? "词" : "words")
+            odoRow(value: String(format: "%.1f", model.lifetimeDistanceMeters / 1000),
                    unit: "km")
-            odoRow(value: "\(journal.totalRuns)", unit: zh ? "程" : "runs")
+            odoRow(value: "\(model.lifetimeRuns)", unit: zh ? "程" : "runs")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .panel(20)
