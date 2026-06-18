@@ -70,10 +70,18 @@ targets:
     entitlements:
       path: xcode/NihongoRide.entitlements
       properties:
-        # App Sandbox is required for the Mac App Store. The app is fully
-        # offline, so no network entitlement is requested. SRS persistence
-        # writes into ~/Library/Containers/<bundle-id>/Data/Library/...
+        # App Sandbox is required for the Mac App Store. CloudKit works inside
+        # the sandbox. SRS/history persistence writes into
+        # ~/Library/Containers/<bundle-id>/Data/Library/...
         com.apple.security.app-sandbox: true
+        # iCloud sync (v1.2): private-database CloudKit, one shared container
+        # across macOS + iOS. v1.2 runs CKSyncEngine in manual mode
+        # (automaticallySync = false), so NO aps-environment / background modes
+        # are needed — add those only if/when we move to push-driven sync.
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.jasonye.nihongoride
+        com.apple.developer.icloud-services:
+          - CloudKit
 
     dependencies:
       - package: Nihongo
@@ -123,6 +131,18 @@ targets:
       - path: xcode/Assets.xcassets
       - path: xcode/Info-iOS.plist
         buildPhase: none
+      - path: xcode/NihongoRide-iOS.entitlements
+        buildPhase: none
+    entitlements:
+      path: xcode/NihongoRide-iOS.entitlements
+      properties:
+        # iCloud sync (v1.2) — same CloudKit container as macOS. Manual-mode
+        # CKSyncEngine, so no aps-environment / background modes needed. iOS apps
+        # aren't sandboxed via entitlement (the system sandboxes them).
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.jasonye.nihongoride
+        com.apple.developer.icloud-services:
+          - CloudKit
     info:
       path: xcode/Info-iOS.plist
       properties:
