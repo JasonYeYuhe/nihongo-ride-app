@@ -46,7 +46,9 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
 
     // MARK: Lifecycle
 
-    func start() async {
+    /// - Parameter fullResync: re-enqueue all local records (used when the user
+    ///   just turned sync on, since edits made while it was off aren't tracked).
+    func start(fullResync: Bool = false) async {
         let saved = loadState()
         var config = CKSyncEngine.Configuration(
             database: database, stateSerialization: saved, delegate: self)
@@ -55,11 +57,13 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         self.engine = engine
         model?.updateSyncStatus(.syncing)
         do {
-            // Ensure our record zone exists, then push then pull.
+            // Ensure our record zone exists (saving an existing zone is a no-op).
             engine.state.add(pendingDatabaseChanges: [.saveZone(CKRecordZone(zoneID: zoneID))])
-            if saved == nil { enqueueAllLocal() }   // first run on this device: upload everything
-            try await engine.sendChanges()
+            // Pull FIRST so local adopts any newer cloud state before we push —
+            // a first send must never overwrite newer remote data.
             try await engine.fetchChanges()
+            if saved == nil || fullResync { enqueueAllLocal() }
+            try await engine.sendChanges()
             model?.updateSyncStatus(.synced)
         } catch {
             model?.updateSyncStatus(Self.status(for: error))
@@ -87,12 +91,12 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         }
     }
 
-    /// Manual fetch+send (called when the app becomes active).
+    /// Manual fetch+send (called when the app becomes active). Pull before push.
     func syncNow() async {
         guard let engine else { return }
         do {
-            try await engine.sendChanges()
             try await engine.fetchChanges()
+            try await engine.sendChanges()
             model?.updateSyncStatus(.synced)
         } catch {
             report(error)
@@ -205,12 +209,37 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         for failure in sent.failedRecordSaves {
             let error = failure.error
             if error.code == .serverRecordChanged, let serverRecord = error.serverRecord {
-                // Cache the server copy (preserves its change tag + unknown fields)
-                // and re-enqueue; nextRecordZoneChangeBatch re-applies our values.
+                // Cache the server copy (its change tag + any unknown fields), then
+                // MERGE it into local via the same SyncKit rules BEFORE re-enqueuing.
+                // Without the merge, the re-send would blindly push the local value
+                // and could clobber a newer remote lastReviewed (data loss).
                 recordCache[serverRecord.recordID.recordName] = serverRecord
+                mergeServerRecord(serverRecord)
                 syncEngine.state.add(pendingRecordZoneChanges: [.saveRecord(serverRecord.recordID)])
             }
             // Other errors are left for the engine's own retry handling.
+        }
+    }
+
+    /// Merges a single conflicting server record into the local store so the next
+    /// send materializes the merge *winner* (not a stale local value).
+    private func mergeServerRecord(_ record: CKRecord) {
+        switch record.recordType {
+        case RT.srs:
+            if let card = Self.srsCard(from: record) {
+                model?.applyCloudChanges(cards: [card], records: [], odometerSlots: [:])
+            }
+        case RT.ride:
+            if let ride = Self.rideRecord(from: record) {
+                model?.applyCloudChanges(cards: [], records: [ride], odometerSlots: [:])
+            }
+        case RT.odo:
+            let (_, device) = Self.parse(record.recordID.recordName)
+            if let slot = Self.odometerSlot(from: record) {
+                model?.applyCloudChanges(cards: [], records: [], odometerSlots: [device: slot])
+            }
+        default:
+            break
         }
     }
 
@@ -256,8 +285,15 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     }
 
     private nonisolated static func status(for error: Error) -> AppModel.SyncStatus {
-        if let ckError = error as? CKError, ckError.code == .notAuthenticated {
-            return .noAccount
+        if let ckError = error as? CKError {
+            switch ckError.code {
+            case .notAuthenticated:
+                return .noAccount
+            case .networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited, .zoneBusy:
+                return .waiting   // transient — retried on the next launch / app-active
+            default:
+                break
+            }
         }
         return .error(error.localizedDescription)
     }

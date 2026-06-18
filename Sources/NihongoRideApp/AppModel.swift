@@ -164,7 +164,7 @@ final class AppModel {
     /// e.g. under `swift run`). Owned here; created lazily when sync is enabled.
     private var syncController: CloudKitSyncController?
 
-    private func startSyncIfEnabled() {
+    private func startSyncIfEnabled(fullResync: Bool = false) {
         guard iCloudSyncEnabled else { syncStatus = .off; return }
         guard let controller = CloudKitSyncController(model: self) else {
             syncStatus = .off          // CloudKit unavailable (dev / no entitlement)
@@ -172,13 +172,14 @@ final class AppModel {
         }
         syncController = controller
         syncStatus = .waiting
-        Task { await controller.start() }
+        Task { await controller.start(fullResync: fullResync) }
     }
 
     /// Reacts to the iCloud sync toggle.
     private func syncEnabledChanged() {
         if iCloudSyncEnabled {
-            startSyncIfEnabled()
+            // Re-enabling: push everything, since edits made while off aren't tracked.
+            startSyncIfEnabled(fullResync: true)
         } else {
             syncController?.stop()
             syncController = nil
