@@ -70,18 +70,11 @@ targets:
     entitlements:
       path: xcode/NihongoRide.entitlements
       properties:
-        # App Sandbox is required for the Mac App Store. CloudKit works inside
-        # the sandbox. SRS/history persistence writes into
-        # ~/Library/Containers/<bundle-id>/Data/Library/...
+        # App Sandbox is required for the Mac App Store. iCloud sync ships in a
+        # later version (the CloudKit code is gated off until the container is
+        # provisioned + verified), so 1.2 requests only the sandbox entitlement —
+        # keeping signing clean (no CloudKit container dependency).
         com.apple.security.app-sandbox: true
-        # iCloud sync (v1.2): private-database CloudKit, one shared container
-        # across macOS + iOS. v1.2 runs CKSyncEngine in manual mode
-        # (automaticallySync = false), so NO aps-environment / background modes
-        # are needed — add those only if/when we move to push-driven sync.
-        com.apple.developer.icloud-container-identifiers:
-          - iCloud.com.jasonye.nihongoride
-        com.apple.developer.icloud-services:
-          - CloudKit
 
     dependencies:
       - package: Nihongo
@@ -105,8 +98,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride
         PRODUCT_NAME: Nihongo Ride
-        MARKETING_VERSION: "1.1"
-        CURRENT_PROJECT_VERSION: "2"
+        MARKETING_VERSION: "1.2"
+        CURRENT_PROJECT_VERSION: "3"
         MACOSX_DEPLOYMENT_TARGET: "14.0"
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
@@ -131,18 +124,8 @@ targets:
       - path: xcode/Assets.xcassets
       - path: xcode/Info-iOS.plist
         buildPhase: none
-      - path: xcode/NihongoRide-iOS.entitlements
-        buildPhase: none
-    entitlements:
-      path: xcode/NihongoRide-iOS.entitlements
-      properties:
-        # iCloud sync (v1.2) — same CloudKit container as macOS. Manual-mode
-        # CKSyncEngine, so no aps-environment / background modes needed. iOS apps
-        # aren't sandboxed via entitlement (the system sandboxes them).
-        com.apple.developer.icloud-container-identifiers:
-          - iCloud.com.jasonye.nihongoride
-        com.apple.developer.icloud-services:
-          - CloudKit
+    # iOS has no entitlements in 1.2 (iCloud sync deferred to a later version;
+    # xcode/NihongoRide-iOS.entitlements is kept ready but unwired).
     info:
       path: xcode/Info-iOS.plist
       properties:
@@ -187,8 +170,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride
         PRODUCT_NAME: Nihongo Ride
-        MARKETING_VERSION: "1.1"
-        CURRENT_PROJECT_VERSION: "3"
+        MARKETING_VERSION: "1.2"
+        CURRENT_PROJECT_VERSION: "4"
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
         # iPhone + iPad. iPhone runs portrait-only with narrow layout variants
         # (isPhoneIdiom); iPad keeps the 4:3 landscape-first design.

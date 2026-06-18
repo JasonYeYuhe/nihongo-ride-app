@@ -37,20 +37,22 @@ struct SettingsView: View {
                 .toggleStyle(.switch).tint(Theme.accent2)
             }
 
-            // iCloud sync.
-            settingsCard(title: zh ? "iCloud 同步" : "iCloud Sync") {
-                Toggle(isOn: $model.iCloudSyncEnabled) {
-                    rowLabel(icon: "icloud",
-                             text: zh ? "同步复习进度与骑行日志" : "Sync review progress & ride log")
+            // iCloud sync (hidden until the feature ships in a later version).
+            if AppModel.cloudSyncAvailable {
+                settingsCard(title: zh ? "iCloud 同步" : "iCloud Sync") {
+                    Toggle(isOn: $model.iCloudSyncEnabled) {
+                        rowLabel(icon: "icloud",
+                                 text: zh ? "同步复习进度与骑行日志" : "Sync review progress & ride log")
+                    }
+                    .toggleStyle(.switch).tint(Theme.accent2)
+                    Text(syncStatusText)
+                        .font(.system(size: 12)).foregroundStyle(Theme.dim)
+                    Text(zh
+                         ? "数据存于你自己的 iCloud(私有库),仅你可见。"
+                         : "Stored in your own private iCloud — visible only to you.")
+                        .font(.system(size: 11)).foregroundStyle(Theme.dim.opacity(0.7))
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .toggleStyle(.switch).tint(Theme.accent2)
-                Text(syncStatusText)
-                    .font(.system(size: 12)).foregroundStyle(Theme.dim)
-                Text(zh
-                     ? "数据存于你自己的 iCloud(私有库),仅你可见。"
-                     : "Stored in your own private iCloud — visible only to you.")
-                    .font(.system(size: 11)).foregroundStyle(Theme.dim.opacity(0.7))
-                    .fixedSize(horizontal: false, vertical: true)
             }
 
             // SRS due reminder.

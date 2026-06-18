@@ -160,11 +160,19 @@ final class AppModel {
         }
     }
 
+    /// iCloud sync ships in a later version: the CloudKit code is complete and
+    /// compile-verified but not yet device-verified, and the CloudKit container
+    /// isn't provisioned. Flipping this to `true` (plus restoring the iCloud
+    /// entitlements in project.yml) turns the whole feature on. Until then the
+    /// controller never starts and the Settings card stays hidden.
+    static let cloudSyncAvailable = false
+
     /// The iCloud sync controller (nil when sync is off / CloudKit unavailable,
     /// e.g. under `swift run`). Owned here; created lazily when sync is enabled.
     private var syncController: CloudKitSyncController?
 
     private func startSyncIfEnabled(fullResync: Bool = false) {
+        guard Self.cloudSyncAvailable else { syncStatus = .off; return }
         guard iCloudSyncEnabled else { syncStatus = .off; return }
         guard let controller = CloudKitSyncController(model: self) else {
             syncStatus = .off          // CloudKit unavailable (dev / no entitlement)
