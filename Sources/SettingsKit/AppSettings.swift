@@ -1,0 +1,143 @@
+import Foundation
+
+/// Persisted app settings.
+///
+/// Stored as a single JSON blob under one `UserDefaults` key so the schema is
+/// easy to evolve. Enum-typed app concepts (game mode, JLPT level, passage
+/// level) are stored here as their *raw values* and validated back into enums at
+/// the `AppModel` boundary — that keeps this type dependency-free (no GameCore /
+/// VocabKit import) and fully unit-testable.
+///
+/// Before v1.2 these settings lived only in memory and reset to defaults on every
+/// launch; persisting them is the first v1.2 fix.
+public struct AppSettings: Codable, Equatable, Sendable {
+    // Settings that previously only lived in memory.
+    public var languageCode: String          // "en" | "zh"
+    public var showRomajiHint: Bool
+    public var soundEnabled: Bool
+    public var selectedMode: String          // GameMode raw value
+    public var selectedLevel: Int?           // JLPTLevel raw value; nil = mix all levels
+    public var practicePassages: Bool
+    public var practicePassageLevel: String  // Passage.Level raw value
+
+    // v1.2 additions.
+    public var iCloudSyncEnabled: Bool
+    public var dueReminderEnabled: Bool
+    public var dueReminderHour: Int          // 0…23
+    /// Stable per-install id for the lifetime-odometer G-Counter (see SyncKit).
+    public var deviceID: String
+
+    public init(
+        languageCode: String = "en",
+        showRomajiHint: Bool = true,
+        soundEnabled: Bool = true,
+        selectedMode: String = "journey",
+        selectedLevel: Int? = 5,
+        practicePassages: Bool = true,
+        practicePassageLevel: String = "med",
+        iCloudSyncEnabled: Bool = true,
+        dueReminderEnabled: Bool = false,
+        dueReminderHour: Int = 20,
+        deviceID: String = ""
+    ) {
+        self.languageCode = languageCode
+        self.showRomajiHint = showRomajiHint
+        self.soundEnabled = soundEnabled
+        self.selectedMode = selectedMode
+        self.selectedLevel = selectedLevel
+        self.practicePassages = practicePassages
+        self.practicePassageLevel = practicePassageLevel
+        self.iCloudSyncEnabled = iCloudSyncEnabled
+        self.dueReminderEnabled = dueReminderEnabled
+        self.dueReminderHour = dueReminderHour
+        self.deviceID = deviceID
+    }
+
+    public static let `default` = AppSettings()
+
+    /// The `UserDefaults` key the settings blob lives under.
+    public static let defaultsKey = "NihongoRide.settings.v1"
+
+    private static let validLanguages: Set<String> = ["en", "zh"]
+
+    // Decode tolerantly: any missing key falls back to the default value, so a
+    // partial / older / forward-version blob still loads instead of throwing.
+    private enum CodingKeys: String, CodingKey {
+        case languageCode, showRomajiHint, soundEnabled, selectedMode, selectedLevel
+        case practicePassages, practicePassageLevel
+        case iCloudSyncEnabled, dueReminderEnabled, dueReminderHour, deviceID
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let d = AppSettings.default
+        languageCode = try c.decodeIfPresent(String.self, forKey: .languageCode) ?? d.languageCode
+        showRomajiHint = try c.decodeIfPresent(Bool.self, forKey: .showRomajiHint) ?? d.showRomajiHint
+        soundEnabled = try c.decodeIfPresent(Bool.self, forKey: .soundEnabled) ?? d.soundEnabled
+        selectedMode = try c.decodeIfPresent(String.self, forKey: .selectedMode) ?? d.selectedMode
+        // `nil` is meaningful here (mix all levels), so distinguish an absent key
+        // (older / partial blob → default) from an explicit null (mix all).
+        selectedLevel = c.contains(.selectedLevel)
+            ? try c.decode(Int?.self, forKey: .selectedLevel)
+            : d.selectedLevel
+        practicePassages = try c.decodeIfPresent(Bool.self, forKey: .practicePassages) ?? d.practicePassages
+        practicePassageLevel = try c.decodeIfPresent(String.self, forKey: .practicePassageLevel) ?? d.practicePassageLevel
+        iCloudSyncEnabled = try c.decodeIfPresent(Bool.self, forKey: .iCloudSyncEnabled) ?? d.iCloudSyncEnabled
+        dueReminderEnabled = try c.decodeIfPresent(Bool.self, forKey: .dueReminderEnabled) ?? d.dueReminderEnabled
+        dueReminderHour = try c.decodeIfPresent(Int.self, forKey: .dueReminderHour) ?? d.dueReminderHour
+        deviceID = try c.decodeIfPresent(String.self, forKey: .deviceID) ?? d.deviceID
+    }
+
+    // Always write every key — including `selectedLevel` as an explicit null when
+    // nil — so a round-trip preserves "mix all levels" (the synthesized encoder
+    // would omit a nil optional, making absent vs. mix-all ambiguous on decode).
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(languageCode, forKey: .languageCode)
+        try c.encode(showRomajiHint, forKey: .showRomajiHint)
+        try c.encode(soundEnabled, forKey: .soundEnabled)
+        try c.encode(selectedMode, forKey: .selectedMode)
+        try c.encode(selectedLevel, forKey: .selectedLevel)
+        try c.encode(practicePassages, forKey: .practicePassages)
+        try c.encode(practicePassageLevel, forKey: .practicePassageLevel)
+        try c.encode(iCloudSyncEnabled, forKey: .iCloudSyncEnabled)
+        try c.encode(dueReminderEnabled, forKey: .dueReminderEnabled)
+        try c.encode(dueReminderHour, forKey: .dueReminderHour)
+        try c.encode(deviceID, forKey: .deviceID)
+    }
+
+    /// Clamps/repairs out-of-range primitive values and guarantees a `deviceID`.
+    /// Enum raw values (mode / level) are validated at the `AppModel` boundary,
+    /// where an unknown raw maps to a safe default.
+    public func sanitized() -> AppSettings {
+        var s = self
+        if !Self.validLanguages.contains(s.languageCode) { s.languageCode = "en" }
+        s.dueReminderHour = min(23, max(0, s.dueReminderHour))
+        if s.deviceID.isEmpty { s.deviceID = UUID().uuidString }
+        return s
+    }
+
+    // MARK: Persistence
+
+    /// Decodes a settings blob, or `nil` if the data isn't valid settings JSON.
+    public static func decode(_ data: Data) -> AppSettings? {
+        try? JSONDecoder().decode(AppSettings.self, from: data)
+    }
+
+    public func encoded() -> Data {
+        (try? JSONEncoder().encode(self)) ?? Data()
+    }
+
+    /// Loads (and sanitizes) settings from `defaults`. A fresh install with no
+    /// stored blob returns sanitized defaults — which mints a new `deviceID`.
+    public static func load(from defaults: UserDefaults, key: String = defaultsKey) -> AppSettings {
+        guard let data = defaults.data(forKey: key), let decoded = decode(data) else {
+            return AppSettings.default.sanitized()
+        }
+        return decoded.sanitized()
+    }
+
+    public func save(to defaults: UserDefaults, key: String = defaultsKey) {
+        defaults.set(encoded(), forKey: key)
+    }
+}

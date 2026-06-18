@@ -86,6 +86,8 @@ targets:
         product: GameCore
       - package: Nihongo
         product: JournalKit
+      - package: Nihongo
+        product: SettingsKit
 
     settings:
       base:
@@ -151,6 +153,8 @@ targets:
         product: GameCore
       - package: Nihongo
         product: JournalKit
+      - package: Nihongo
+        product: SettingsKit
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride

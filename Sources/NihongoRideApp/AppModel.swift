@@ -3,6 +3,7 @@ import Observation
 import GameCore
 import JournalKit
 import ReviewKit
+import SettingsKit
 import VocabKit
 
 /// A snapshot of a finished run, shown on the results screen.
@@ -41,16 +42,19 @@ final class AppModel {
     /// meant for the new screen's buttons.
     private(set) var navCount = 0
 
-    // Settings
-    var languageCode: String = "en"      // "en" or "zh"
-    var showRomajiHint: Bool = true
-    var soundEnabled: Bool = true
-    var selectedMode: GameMode = .journey
+    // Settings. Each persists on change (v1.2 — before this they only lived in
+    // memory and reset to defaults on every launch). `didSet` doesn't fire during
+    // init, so applying loaded values below is free; `settingsLoaded` guards any
+    // re-entrancy and skips writes until the initial load is in place.
+    var languageCode: String = "en" { didSet { persistSettings() } }      // "en" or "zh"
+    var showRomajiHint: Bool = true { didSet { persistSettings() } }
+    var soundEnabled: Bool = true { didSet { persistSettings() } }
+    var selectedMode: GameMode = .journey { didSet { persistSettings() } }
     /// Chosen JLPT level for new words; `nil` mixes all levels.
-    var selectedLevel: JLPTLevel? = .n5
+    var selectedLevel: JLPTLevel? = .n5 { didSet { persistSettings() } }
     /// In Practice mode: cycle whole passages (true) or stream individual words (false).
-    var practicePassages: Bool = true
-    var practicePassageLevel: Passage.Level = .med
+    var practicePassages: Bool = true { didSet { persistSettings() } }
+    var practicePassageLevel: Passage.Level = .med { didSet { persistSettings() } }
 
     private(set) var session: GameSession?
     private(set) var lastSummary: GameSummary?
@@ -62,16 +66,54 @@ final class AppModel {
     private let storeURL: URL
     private let journalURL: URL
 
+    /// The persisted settings blob. Also carries the install `deviceID` and the
+    /// v1.2 sync/reminder toggles that don't have dedicated UI yet (Phase B).
+    private var settings: AppSettings = .default
+    /// Until the initial load is applied, skip per-field persistence.
+    private var settingsLoaded = false
+
     init() {
         storeURL = Self.supportFileURL("review.json")
         journalURL = Self.supportFileURL("history.json")
         reviewStore = ReviewStore.load(from: storeURL)
         journal = RideJournal.load(from: journalURL)
-        // Dev-only: pin the UI language for screenshot captures.
+
+        // Restore persisted settings (a fresh install gets sanitized defaults +
+        // a freshly minted deviceID). `didSet` observers don't fire for
+        // assignments made inside an initializer, so these don't trigger saves.
+        let loaded = AppSettings.load(from: .standard)
+        settings = loaded
+        languageCode = loaded.languageCode
+        showRomajiHint = loaded.showRomajiHint
+        soundEnabled = loaded.soundEnabled
+        selectedMode = GameMode(rawValue: loaded.selectedMode) ?? .journey
+        selectedLevel = loaded.selectedLevel.flatMap { JLPTLevel(rawValue: $0) }
+        practicePassages = loaded.practicePassages
+        practicePassageLevel = Passage.Level(rawValue: loaded.practicePassageLevel) ?? .med
+
+        // Dev-only: pin the UI language for screenshot captures (not persisted).
         if let lang = ProcessInfo.processInfo.environment["NIHONGO_UILANG"],
            ["en", "zh"].contains(lang) {
             languageCode = lang
         }
+
+        settingsLoaded = true
+        // Persist once so a fresh install writes back its minted deviceID.
+        settings.save(to: .standard)
+    }
+
+    /// Mirrors the live settings into the persisted blob and writes it. Cheap
+    /// (a single UserDefaults write); called on each settings mutation.
+    private func persistSettings() {
+        guard settingsLoaded else { return }
+        settings.languageCode = languageCode
+        settings.showRomajiHint = showRomajiHint
+        settings.soundEnabled = soundEnabled
+        settings.selectedMode = selectedMode.rawValue
+        settings.selectedLevel = selectedLevel?.rawValue
+        settings.practicePassages = practicePassages
+        settings.practicePassageLevel = practicePassageLevel.rawValue
+        settings.save(to: .standard)
     }
 
     /// Words currently waiting in the review deck (due now).

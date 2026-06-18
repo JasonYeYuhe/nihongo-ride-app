@@ -14,6 +14,9 @@ let package = Package(
         .library(name: "ReviewKit", targets: ["ReviewKit"]),
         .library(name: "GameCore", targets: ["GameCore"]),
         .library(name: "JournalKit", targets: ["JournalKit"]),
+        .library(name: "SettingsKit", targets: ["SettingsKit"]),
+        .library(name: "SyncKit", targets: ["SyncKit"]),
+        .library(name: "NotificationKit", targets: ["NotificationKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -55,10 +58,22 @@ let package = Package(
         .target(name: "JournalKit"),
         .testTarget(name: "JournalKitTests", dependencies: ["JournalKit"]),
 
+        // MARK: App settings — Codable settings blob + UserDefaults persistence (v1.2).
+        .target(name: "SettingsKit"),
+        .testTarget(name: "SettingsKitTests", dependencies: ["SettingsKit"]),
+
+        // MARK: iCloud sync core — pure merge of SRS / history / odometer (v1.2 Phase A).
+        .target(name: "SyncKit", dependencies: ["ReviewKit", "JournalKit"]),
+        .testTarget(name: "SyncKitTests", dependencies: ["SyncKit"]),
+
+        // MARK: SRS due-reminder scheduling — pure planner over the review store (v1.2 Phase A).
+        .target(name: "NotificationKit", dependencies: ["ReviewKit"]),
+        .testTarget(name: "NotificationKitTests", dependencies: ["NotificationKit"]),
+
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit"],
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]
