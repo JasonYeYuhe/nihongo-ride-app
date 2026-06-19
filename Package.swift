@@ -17,6 +17,7 @@ let package = Package(
         .library(name: "SettingsKit", targets: ["SettingsKit"]),
         .library(name: "SyncKit", targets: ["SyncKit"]),
         .library(name: "NotificationKit", targets: ["NotificationKit"]),
+        .library(name: "SavedWordsKit", targets: ["SavedWordsKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -69,6 +70,10 @@ let package = Package(
         // MARK: SRS due-reminder scheduling — pure planner over the review store (v1.2 Phase A).
         .target(name: "NotificationKit", dependencies: ["ReviewKit"]),
         .testTarget(name: "NotificationKitTests", dependencies: ["NotificationKit"]),
+
+        // MARK: Saved-words deck — user-curated vocab list (v1.4 feature core).
+        .target(name: "SavedWordsKit"),
+        .testTarget(name: "SavedWordsKitTests", dependencies: ["SavedWordsKit"]),
 
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
