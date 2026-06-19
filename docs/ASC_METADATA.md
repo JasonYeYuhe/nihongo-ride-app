@@ -124,6 +124,35 @@ Source: `NIHONGO_SHOT=/tmp/nihongo-store NIHONGO_SHOT_STORE=1 swift run NihongoR
 
 ---
 
+## v1.3 What's New / 新功能
+
+> Ships: Game Center (Time Attack leaderboard + 5 achievements). iCloud sync is
+> built but deferred to v1.4 (needs the CloudKit container + a device schema run
+> + 2-device verification). Same copy for macOS and iOS.
+
+### English (≤4000)
+```
+• NEW: Game Center — climb the Time Attack leaderboard and earn achievements: First Ride, Century (100 words), Long Hauler (1,000 words), a Seven-Day Streak, and a Flawless Run.
+• Polish and fixes throughout.
+```
+
+### 简体中文
+```
+• 新增 Game Center:登上「限时赛」排行榜,解锁成就——首次出发、百词、千里(1000 词)、七日连骑、完美一程。
+• 多处细节打磨与修复。
+```
+
+### Review notes (both platforms)
+```
+Nihongo Ride is a fully offline typing-practice app for Japanese learners. No
+account or login is required; no data is collected.
+
+Version 1.3 adds Game Center: a Time Attack leaderboard and five achievements.
+Game Center is optional — the app is fully playable without signing in. On iOS
+the on-screen keyboard appears automatically on the game screen (type the romaji
+shown under each word); Pause and End run are touch buttons in the HUD.
+```
+
 ## v1.2 What's New / 新功能
 
 > Ships: persisted Settings screen + opt-in daily review reminders. (iCloud sync

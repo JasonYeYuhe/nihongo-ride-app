@@ -70,16 +70,12 @@ targets:
     entitlements:
       path: xcode/NihongoRide.entitlements
       properties:
-        # App Sandbox (required for the Mac App Store). CloudKit works inside it.
+        # App Sandbox (required for the Mac App Store).
         com.apple.security.app-sandbox: true
-        # v1.3: iCloud sync (private-database CloudKit, one container across
-        # macOS + iOS, manual-mode CKSyncEngine — no aps-environment needed) and
-        # Game Center (leaderboard + achievements). Archiving needs the App ID to
-        # have iCloud (+ container) and Game Center enabled in the dev portal.
-        com.apple.developer.icloud-container-identifiers:
-          - iCloud.com.jasonye.nihongoride
-        com.apple.developer.icloud-services:
-          - CloudKit
+        # v1.3 ships Game Center (leaderboard + achievements). iCloud sync is
+        # deferred to v1.4 — its CloudKit code stays in the repo but gated off
+        # (AppModel.cloudSyncAvailable=false) and its entitlement is omitted so
+        # signing has no CloudKit-container dependency.
         com.apple.developer.game-center: true
 
     dependencies:
@@ -135,13 +131,7 @@ targets:
     entitlements:
       path: xcode/NihongoRide-iOS.entitlements
       properties:
-        # v1.3: same CloudKit container as macOS + Game Center. Manual-mode
-        # CKSyncEngine, so no aps-environment / background modes. iOS apps aren't
-        # sandboxed via entitlement (the system sandboxes them).
-        com.apple.developer.icloud-container-identifiers:
-          - iCloud.com.jasonye.nihongoride
-        com.apple.developer.icloud-services:
-          - CloudKit
+        # v1.3: Game Center only (iCloud sync deferred to v1.4).
         com.apple.developer.game-center: true
     info:
       path: xcode/Info-iOS.plist

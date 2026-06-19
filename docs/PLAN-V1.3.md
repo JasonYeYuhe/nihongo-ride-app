@@ -15,6 +15,8 @@
 
 A 是全新代码(我现在就能写+编译验证);B 的代码 v1.2 已完成,主要是恢复 entitlement + 翻开关 + 配置/验证。
 
+> **更新(2026-06-19):v1.3 最终只发 A(Game Center),B(iCloud)推迟到 v1.4。** 原因:开发者后台已开 iCloud 能力,但 CloudKit **容器 `iCloud.com.jasonye.nihongoride` 未创建/未挂到 App ID**,导致归档签名失败(profile 不含该容器);而容器创建 + 真机出 schema + 双设备验证都需要 Jason 亲自操作,无法自动化。Game Center 全部就绪(代码 + 排行榜/成就 + 图 + 能力),故先发。B 的代码保留、`cloudSyncAvailable=false` 关着、iCloud entitlement 撤出构建,v1.4 翻开即可。
+
 ---
 
 ## 1. 模块 A — Game Center

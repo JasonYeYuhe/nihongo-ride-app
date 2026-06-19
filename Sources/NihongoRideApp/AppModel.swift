@@ -181,11 +181,12 @@ final class AppModel {
         }
     }
 
-    /// iCloud sync feature switch. v1.3 turns it on (entitlements restored in
-    /// project.yml). The controller still no-ops gracefully if the user isn't
-    /// signed in to iCloud or the CloudKit container isn't reachable, so this
-    /// being `true` is safe even before the container is fully provisioned.
-    static let cloudSyncAvailable = true
+    /// iCloud sync feature switch. Deferred to v1.4: the CloudKit code is
+    /// complete + compile-verified, but the CloudKit container + schema + a
+    /// 2-device verification aren't done yet, so it stays off (controller never
+    /// starts, Settings card hidden) and the iCloud entitlement is omitted from
+    /// the build. Flip to `true` + restore the iCloud entitlements to ship it.
+    static let cloudSyncAvailable = false
 
     /// The iCloud sync controller (nil when sync is off / CloudKit unavailable,
     /// e.g. under `swift run`). Owned here; created lazily when sync is enabled.
