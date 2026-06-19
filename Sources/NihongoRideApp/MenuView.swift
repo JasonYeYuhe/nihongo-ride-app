@@ -128,11 +128,12 @@ struct MenuView: View {
 
             footer
 
-            HStack(spacing: 18) {
+            MenuFlow(spacing: 12, rowSpacing: 10) {
                 Button(action: { model.screen = .journal }) {
                     Label {
                         Text(model.languageCode == "zh" ? "骑行日志" : "Ride Log")
                             .font(.system(size: 13, weight: .semibold, design: .rounded))
+                            .lineLimit(1)
                     } icon: {
                         Image(systemName: streak >= 2 ? "flame.fill" : "book.closed")
                             .foregroundStyle(streak >= 2 ? Theme.accent : Theme.accent2)
@@ -143,6 +144,7 @@ struct MenuView: View {
                     .overlay(Capsule().strokeBorder(Theme.cardStroke))
                 }
                 .buttonStyle(.plain)
+                .fixedSize()
                 .accessibilityIdentifier("journalButton")
 
                 if model.savedCount > 0 {
@@ -150,6 +152,7 @@ struct MenuView: View {
                         Label {
                             Text(model.languageCode == "zh" ? "收藏 \(model.savedCount)" : "Saved \(model.savedCount)")
                                 .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                .lineLimit(1)
                         } icon: {
                             Image(systemName: "star.fill").foregroundStyle(Theme.gold)
                         }
@@ -159,26 +162,31 @@ struct MenuView: View {
                         .overlay(Capsule().strokeBorder(Theme.cardStroke))
                     }
                     .buttonStyle(.plain)
+                    .fixedSize()
                     .accessibilityIdentifier("savedDeckButton")
                 }
 
                 Button(action: { model.screen = .settings }) {
                     Label(model.languageCode == "zh" ? "设置" : "Settings", systemImage: "gearshape")
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        .lineLimit(1)
                         .foregroundStyle(.white.opacity(0.85))
                         .padding(.horizontal, 14).padding(.vertical, 7)
                         .background(Theme.card, in: Capsule())
                         .overlay(Capsule().strokeBorder(Theme.cardStroke))
                 }
                 .buttonStyle(.plain)
+                .fixedSize()
                 .accessibilityIdentifier("settingsButton")
 
                 Button(action: { model.screen = .about }) {
                     Label(model.languageCode == "zh" ? "关于与致谢" : "About & Credits", systemImage: "info.circle")
                         .font(.system(size: 12, weight: .medium))
+                        .lineLimit(1)
                         .foregroundStyle(Theme.dim)
                 }
                 .buttonStyle(.plain)
+                .fixedSize()
             }
             .padding(.top, -8)
 
@@ -244,5 +252,56 @@ extension View {
         } else {
             frame(width: width)
         }
+    }
+}
+
+/// A centered, wrapping row layout for the menu's footer chips: lays items out
+/// left-to-right and wraps to a new centered row when the width runs out, so a
+/// growing number of chips (Ride Log / Saved / Settings / About) never overflows
+/// or forces their labels onto two lines on a narrow iPhone.
+struct MenuFlow: Layout {
+    var spacing: CGFloat = 12
+    var rowSpacing: CGFloat = 10
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) -> CGSize {
+        let rows = rows(maxWidth: proposal.width ?? .infinity, subviews: subviews)
+        let width = rows.map(\.width).max() ?? 0
+        let height = rows.map(\.height).reduce(0, +) + rowSpacing * CGFloat(max(0, rows.count - 1))
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) {
+        var y = bounds.minY
+        for row in rows(maxWidth: bounds.width, subviews: subviews) {
+            var x = bounds.minX + (bounds.width - row.width) / 2   // center each row
+            for i in row.indices {
+                let size = subviews[i].sizeThatFits(.unspecified)
+                subviews[i].place(
+                    at: CGPoint(x: x, y: y + (row.height - size.height) / 2),
+                    proposal: ProposedViewSize(size))
+                x += size.width + spacing
+            }
+            y += row.height + rowSpacing
+        }
+    }
+
+    private struct Row { var indices: [Int] = []; var width: CGFloat = 0; var height: CGFloat = 0 }
+
+    private func rows(maxWidth: CGFloat, subviews: Subviews) -> [Row] {
+        var rows: [Row] = []
+        var row = Row()
+        for (i, sub) in subviews.enumerated() {
+            let size = sub.sizeThatFits(.unspecified)
+            let advance = (row.indices.isEmpty ? 0 : spacing) + size.width
+            if !row.indices.isEmpty, row.width + advance > maxWidth {
+                rows.append(row)
+                row = Row()
+            }
+            row.indices.append(i)
+            row.width += (row.indices.count == 1 ? 0 : spacing) + size.width
+            row.height = max(row.height, size.height)
+        }
+        if !row.indices.isEmpty { rows.append(row) }
+        return rows
     }
 }
