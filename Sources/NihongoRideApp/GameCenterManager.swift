@@ -42,11 +42,12 @@ final class GameCenterManager {
     /// after the sign-in UI).
     func authenticate() {
         guard Self.isAvailable else { return }
-        GKLocalPlayer.local.authenticateHandler = { viewController, _ in
-            if let viewController { Self.present(viewController) }
+        GKLocalPlayer.local.authenticateHandler = { [weak self] viewController, _ in
+            // GameKit invokes this on the main thread; keep UI + state changes here.
             MainActor.assumeIsolated {
-                self.isAuthenticated = GKLocalPlayer.local.isAuthenticated
-                if self.isAuthenticated { self.configureAccessPoint() }
+                if let viewController { Self.present(viewController) }
+                self?.isAuthenticated = GKLocalPlayer.local.isAuthenticated
+                if GKLocalPlayer.local.isAuthenticated { self?.configureAccessPoint() }
             }
         }
     }
