@@ -151,6 +151,23 @@ public final class GameSession {
         return GameSession(words: words, review: review, config: config, now: now)
     }
 
+    /// Builds a journey-mode run from a saved-words deck (the user's curated
+    /// vocab ids). Ids that no longer resolve are skipped; the deck is shuffled.
+    /// Outcomes count toward SRS like a normal run.
+    public static func makeSaved(
+        ids: [String],
+        vocab: VocabStore = .shared,
+        review: ReviewStore = ReviewStore(),
+        config: Config = .init(),
+        now: @escaping () -> Date = Date.init
+    ) -> GameSession {
+        var words = ids.compactMap { vocab.entry(id: $0) }
+        words.shuffle()
+        var savedConfig = config
+        savedConfig.mode = .journey
+        return GameSession(words: words, review: review, config: savedConfig, now: now)
+    }
+
     // MARK: Derived state for the UI
 
     public var currentKana: String? { current?.kana }

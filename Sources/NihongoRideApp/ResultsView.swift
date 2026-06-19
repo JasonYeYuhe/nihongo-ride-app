@@ -180,18 +180,31 @@ struct ResultsView: View {
 
     private func reviewList(_ words: [VocabEntry]) -> some View {
         VStack(spacing: 8) {
-            Text(zh ? "复习这些词:" : "Review these:")
+            Text(zh ? "复习这些词(点 ★ 收藏):" : "Review these (tap ★ to save):")
                 .font(.caption).foregroundStyle(Theme.dim)
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 116), spacing: 8)], spacing: 8) {
                 ForEach(words.prefix(12)) { word in
-                    VStack(spacing: 2) {
-                        Text(word.surface)
-                            .font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
-                        Text(word.gloss(for: model.languageCode))
-                            .font(.caption2).foregroundStyle(Theme.dim).lineLimit(1)
+                    let saved = model.isSaved(word.id)
+                    Button { model.toggleSaved(word.id) } label: {
+                        VStack(spacing: 2) {
+                            HStack(spacing: 4) {
+                                Image(systemName: saved ? "star.fill" : "star")
+                                    .font(.system(size: 9)).foregroundStyle(saved ? Theme.gold : Theme.dim)
+                                Text(word.surface)
+                                    .font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                            }
+                            Text(word.gloss(for: model.languageCode))
+                                .font(.caption2).foregroundStyle(Theme.dim).lineLimit(1)
+                        }
+                        .padding(.horizontal, 10).padding(.vertical, 6)
+                        .frame(maxWidth: .infinity)
+                        .background(saved ? Theme.gold.opacity(0.14) : Theme.card,
+                                    in: RoundedRectangle(cornerRadius: 8))
+                        .overlay(RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(saved ? Theme.gold.opacity(0.5) : .clear))
+                        .contentShape(Rectangle())
                     }
-                    .padding(.horizontal, 10).padding(.vertical, 6)
-                    .background(Theme.card, in: RoundedRectangle(cornerRadius: 8))
+                    .buttonStyle(.plain)
                 }
             }
             if words.count > 12 {

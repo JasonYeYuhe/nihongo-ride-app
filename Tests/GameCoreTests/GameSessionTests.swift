@@ -37,6 +37,19 @@ struct GameSessionTests {
         #expect(session.currentKana == nil)
     }
 
+    @Test("makeSaved builds a journey deck from resolvable ids, skipping unknown ones")
+    func makeSavedDeck() {
+        let vocab = VocabStore(entries: [makeEntry("a", "水", "みず"), makeEntry("b", "猫", "ねこ")])
+        let deck = GameSession.makeSaved(ids: ["a"], vocab: vocab)
+        #expect(deck.mode == .journey)
+        #expect(deck.currentKana == "みず")
+        #expect(!deck.isFinished)
+        // Only-unknown ids → empty deck → finishes immediately.
+        let empty = GameSession.makeSaved(ids: ["zzz"], vocab: vocab)
+        #expect(empty.isFinished)
+        #expect(empty.currentKana == nil)
+    }
+
     @Test("a typo counts a mistake and breaks the combo")
     func mistakes() {
         let session = GameSession(words: [makeEntry("a", "水", "みず")])

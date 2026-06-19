@@ -3,6 +3,7 @@ import Observation
 import GameCore
 import JournalKit
 import ReviewKit
+import SavedWordsKit
 import SettingsKit
 import SyncKit
 import VocabKit
@@ -93,6 +94,8 @@ final class AppModel {
     /// Lifetime odometer as a per-device G-Counter — the iCloud-sync vehicle for
     /// lifetime totals (sums correctly across devices; see SyncKit.OdometerLog).
     private(set) var odometer: OdometerLog
+    /// User-curated "saved words" deck (v1.4).
+    private(set) var savedWords: SavedWordsStore
     /// Wall-clock start of the current run, for duration/WPM in the journal.
     private var runStartedAt: Date?
 
@@ -105,6 +108,7 @@ final class AppModel {
     private let storeURL: URL
     private let journalURL: URL
     private let odometerURL: URL
+    private let savedWordsURL: URL
 
     /// The persisted settings blob. Also carries the install `deviceID` and the
     /// v1.2 sync/reminder toggles that don't have dedicated UI yet (Phase B).
@@ -116,9 +120,11 @@ final class AppModel {
         storeURL = Self.supportFileURL("review.json")
         journalURL = Self.supportFileURL("history.json")
         odometerURL = Self.supportFileURL("odometer.json")
+        savedWordsURL = Self.supportFileURL("saved-words.json")
         reviewStore = ReviewStore.load(from: storeURL)
         journal = RideJournal.load(from: journalURL)
         odometer = OdometerLog.load(from: odometerURL)
+        savedWords = SavedWordsStore.load(from: savedWordsURL)
 
         // Restore persisted settings (a fresh install gets sanitized defaults +
         // a freshly minted deviceID). `didSet` observers don't fire for
@@ -278,6 +284,32 @@ final class AppModel {
     var lifetimeWords: Int { max(journal.totalWords, odometer.totalWords) }
     var lifetimeDistanceMeters: Double { max(journal.totalDistanceMeters, odometer.totalDistanceMeters) }
     var lifetimeRuns: Int { max(journal.totalRuns, odometer.totalRuns) }
+
+    // MARK: Saved words (v1.4)
+
+    var savedCount: Int { savedWords.count }
+    func isSaved(_ id: String) -> Bool { savedWords.contains(id) }
+
+    /// Toggles a word's saved state and persists in the background.
+    func toggleSaved(_ id: String) {
+        savedWords.toggle(id)
+        let snapshot = savedWords
+        let url = savedWordsURL
+        Task.detached(priority: .utility) { try? snapshot.save(to: url) }
+    }
+
+    /// Starts a journey run drawn from the saved-words deck. No-op if empty.
+    func startSavedGame() {
+        guard !savedWords.isEmpty else { return }
+        var config = GameSession.Config()
+        config.languageCode = languageCode
+        config.showRomajiHint = showRomajiHint
+        config.mode = .journey
+        session = GameSession.makeSaved(
+            ids: savedWords.ids, vocab: .shared, review: reviewStore, config: config)
+        runStartedAt = Date()
+        screen = .playing
+    }
 
     func startGame() {
         var config = GameSession.Config()

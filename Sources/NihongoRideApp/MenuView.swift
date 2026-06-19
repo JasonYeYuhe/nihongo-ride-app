@@ -145,6 +145,23 @@ struct MenuView: View {
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("journalButton")
 
+                if model.savedCount > 0 {
+                    Button(action: model.startSavedGame) {
+                        Label {
+                            Text(model.languageCode == "zh" ? "收藏 \(model.savedCount)" : "Saved \(model.savedCount)")
+                                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        } icon: {
+                            Image(systemName: "star.fill").foregroundStyle(Theme.gold)
+                        }
+                        .foregroundStyle(.white.opacity(0.85))
+                        .padding(.horizontal, 14).padding(.vertical, 7)
+                        .background(Theme.card, in: Capsule())
+                        .overlay(Capsule().strokeBorder(Theme.cardStroke))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("savedDeckButton")
+                }
+
                 Button(action: { model.screen = .settings }) {
                     Label(model.languageCode == "zh" ? "设置" : "Settings", systemImage: "gearshape")
                         .font(.system(size: 13, weight: .semibold, design: .rounded))

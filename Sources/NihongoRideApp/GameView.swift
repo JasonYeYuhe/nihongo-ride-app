@@ -292,6 +292,7 @@ private struct TimerBar: View {
 // MARK: - Current word
 
 private struct WordCard: View {
+    @Environment(AppModel.self) private var model
     let session: GameSession
     let language: String
     /// True while the on-screen keyboard occupies the lower screen (iOS) —
@@ -335,6 +336,23 @@ private struct WordCard: View {
         .padding(compact ? 14 : 24)
         .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: compact ? 20 : 28))
         .overlay(RoundedRectangle(cornerRadius: compact ? 20 : 28).strokeBorder(.white.opacity(0.12)))
+        .overlay(alignment: .topTrailing) { saveStar }
+    }
+
+    /// Star toggle to save the current word into the user's deck.
+    @ViewBuilder private var saveStar: some View {
+        if let id = session.current?.id {
+            let saved = model.isSaved(id)
+            Button { model.toggleSaved(id) } label: {
+                Image(systemName: saved ? "star.fill" : "star")
+                    .font(.system(size: compact ? 15 : 18))
+                    .foregroundStyle(saved ? Theme.gold : Theme.dim)
+                    .padding(compact ? 10 : 14)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("saveWordButton")
+        }
     }
 
     /// Kana reading with committed kana tinted, the current one emphasized.
