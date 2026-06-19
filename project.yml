@@ -70,11 +70,17 @@ targets:
     entitlements:
       path: xcode/NihongoRide.entitlements
       properties:
-        # App Sandbox is required for the Mac App Store. iCloud sync ships in a
-        # later version (the CloudKit code is gated off until the container is
-        # provisioned + verified), so 1.2 requests only the sandbox entitlement —
-        # keeping signing clean (no CloudKit container dependency).
+        # App Sandbox (required for the Mac App Store). CloudKit works inside it.
         com.apple.security.app-sandbox: true
+        # v1.3: iCloud sync (private-database CloudKit, one container across
+        # macOS + iOS, manual-mode CKSyncEngine — no aps-environment needed) and
+        # Game Center (leaderboard + achievements). Archiving needs the App ID to
+        # have iCloud (+ container) and Game Center enabled in the dev portal.
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.jasonye.nihongoride
+        com.apple.developer.icloud-services:
+          - CloudKit
+        com.apple.developer.game-center: true
 
     dependencies:
       - package: Nihongo
@@ -98,8 +104,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride
         PRODUCT_NAME: Nihongo Ride
-        MARKETING_VERSION: "1.2"
-        CURRENT_PROJECT_VERSION: "3"
+        MARKETING_VERSION: "1.3"
+        CURRENT_PROJECT_VERSION: "4"
         MACOSX_DEPLOYMENT_TARGET: "14.0"
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
@@ -124,8 +130,19 @@ targets:
       - path: xcode/Assets.xcassets
       - path: xcode/Info-iOS.plist
         buildPhase: none
-    # iOS has no entitlements in 1.2 (iCloud sync deferred to a later version;
-    # xcode/NihongoRide-iOS.entitlements is kept ready but unwired).
+      - path: xcode/NihongoRide-iOS.entitlements
+        buildPhase: none
+    entitlements:
+      path: xcode/NihongoRide-iOS.entitlements
+      properties:
+        # v1.3: same CloudKit container as macOS + Game Center. Manual-mode
+        # CKSyncEngine, so no aps-environment / background modes. iOS apps aren't
+        # sandboxed via entitlement (the system sandboxes them).
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.jasonye.nihongoride
+        com.apple.developer.icloud-services:
+          - CloudKit
+        com.apple.developer.game-center: true
     info:
       path: xcode/Info-iOS.plist
       properties:
@@ -170,8 +187,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride
         PRODUCT_NAME: Nihongo Ride
-        MARKETING_VERSION: "1.2"
-        CURRENT_PROJECT_VERSION: "4"
+        MARKETING_VERSION: "1.3"
+        CURRENT_PROJECT_VERSION: "5"
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
         # iPhone + iPad. iPhone runs portrait-only with narrow layout variants
         # (isPhoneIdiom); iPad keeps the 4:3 landscape-first design.

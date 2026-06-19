@@ -28,6 +28,23 @@ struct GameSummary: Equatable {
     }
 }
 
+extension GameSummary {
+    /// How well a run went. Single source of truth shared by the results screen
+    /// and the Game Center "Flawless Run" achievement (so the badge the player
+    /// sees and the achievement they earn never disagree).
+    enum Grade { case flawless, steady, building, lap }
+
+    var grade: Grade {
+        let clean = reviewWords.isEmpty
+        if accuracy >= 0.97 && clean && maxCombo >= max(5, wordsCompleted - 1) {
+            return .flawless
+        }
+        if accuracy >= 0.90 && reviewWords.count <= 2 { return .steady }
+        if accuracy >= 0.75 && wordsCompleted > 0 { return .building }
+        return .lap
+    }
+}
+
 /// Top-level app state: settings, the persistent SRS store, and which screen is showing.
 @MainActor
 @Observable
@@ -81,6 +98,9 @@ final class AppModel {
 
     /// Stable per-install id, used as this device's odometer slot key.
     var deviceID: String { settings.deviceID }
+
+    /// Game Center — leaderboard + achievements. No-op until authenticated.
+    let gameCenter = GameCenterManager()
 
     private let storeURL: URL
     private let journalURL: URL
@@ -139,6 +159,7 @@ final class AppModel {
         // Refresh the reminder schedule for the days ahead (no-op when off).
         refreshReminders()
         startSyncIfEnabled()
+        gameCenter.authenticate()
     }
 
     /// Reschedules due reminders for the next few days from the current SRS
@@ -160,12 +181,11 @@ final class AppModel {
         }
     }
 
-    /// iCloud sync ships in a later version: the CloudKit code is complete and
-    /// compile-verified but not yet device-verified, and the CloudKit container
-    /// isn't provisioned. Flipping this to `true` (plus restoring the iCloud
-    /// entitlements in project.yml) turns the whole feature on. Until then the
-    /// controller never starts and the Settings card stays hidden.
-    static let cloudSyncAvailable = false
+    /// iCloud sync feature switch. v1.3 turns it on (entitlements restored in
+    /// project.yml). The controller still no-ops gracefully if the user isn't
+    /// signed in to iCloud or the CloudKit container isn't reachable, so this
+    /// being `true` is safe even before the container is fully provisioned.
+    static let cloudSyncAvailable = true
 
     /// The iCloud sync controller (nil when sync is off / CloudKit unavailable,
     /// e.g. under `swift run`). Owned here; created lazily when sync is enabled.
@@ -308,6 +328,13 @@ final class AppModel {
             srsIDs: changedSRS,
             rideRecordIDs: appended.map { [$0.id] } ?? [],
             odometerChanged: appended != nil)
+        // Game Center: submit score + achievements for real (non-practice) runs.
+        if !wasPractice, let summary = lastSummary {
+            gameCenter.recordRun(summary: summary, mode: session.mode,
+                                 lifetimeWords: lifetimeWords,
+                                 streakDays: journal.streakDays(),
+                                 totalRuns: journal.totalRuns)
+        }
         self.session = nil
         screen = wasPractice ? .menu : .results
     }

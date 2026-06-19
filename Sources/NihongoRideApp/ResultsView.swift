@@ -140,20 +140,8 @@ struct ResultsView: View {
 
     // MARK: Grade
 
-    private enum Grade { case flawless, steady, building, lap }
-
-    private func gradeOf(_ s: GameSummary) -> Grade {
-        let clean = s.reviewWords.isEmpty
-        if s.accuracy >= 0.97 && clean && s.maxCombo >= max(5, s.wordsCompleted - 1) {
-            return .flawless
-        }
-        if s.accuracy >= 0.90 && s.reviewWords.count <= 2 { return .steady }
-        if s.accuracy >= 0.75 && s.wordsCompleted > 0 { return .building }
-        return .lap
-    }
-
     private func grade(for s: GameSummary) -> some View {
-        let g = gradeOf(s)
+        let g = s.grade
         let (title, tint): (String, Color) = {
             switch g {
             case .flawless: return (zh ? "完美" : "Flawless", Theme.gold)

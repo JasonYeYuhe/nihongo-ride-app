@@ -114,6 +114,13 @@ struct RootView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { model.appBecameActive() }
         }
+        // Game Center access point: show on non-game screens only (never over the ride).
+        .onChange(of: model.screen) { _, screen in
+            model.gameCenter.setAccessPointActive(screen != .playing)
+        }
+        .onChange(of: model.gameCenter.isAuthenticated) { _, _ in
+            model.gameCenter.setAccessPointActive(model.screen != .playing)
+        }
     }
 
     @ViewBuilder private var screen: some View {
