@@ -1,6 +1,7 @@
 import Foundation
 import ReviewKit
 import JournalKit
+import SavedWordsKit
 
 /// Pure, side-effect-free merge of two devices' state. These functions are the
 /// risky core of iCloud sync, deliberately written and tested in isolation
@@ -57,6 +58,19 @@ public enum SyncMerge {
             ($0.date, $0.id.uuidString) < ($1.date, $1.id.uuidString)
         }
         return sorted.count > cap ? Array(sorted.suffix(cap)) : sorted
+    }
+
+    // MARK: Saved-words deck — union (add-wins).
+
+    /// Merges two saved-words decks as a union: a word saved on either device
+    /// stays saved (local order first, then remote-only ids appended). This is
+    /// add-wins — un-saving doesn't propagate across devices (a curated-favorites
+    /// MVP choice); a future version could use per-id tombstones for that.
+    public static func savedWords(_ local: SavedWordsStore, _ remote: SavedWordsStore) -> SavedWordsStore {
+        var ids = local.ids
+        let have = Set(ids)
+        for id in remote.ids where !have.contains(id) { ids.append(id) }
+        return SavedWordsStore(ids: ids)
     }
 
     // MARK: Lifetime odometer — G-Counter (per-device slot, summed).

@@ -3,6 +3,7 @@ import Foundation
 @testable import SyncKit
 import ReviewKit
 import JournalKit
+import SavedWordsKit
 
 private let t0 = Date(timeIntervalSince1970: 1_700_000_000)
 private func t(_ secs: Double) -> Date { t0.addingTimeInterval(secs) }
@@ -161,5 +162,27 @@ struct OdometerMergeTests {
         let ba = SyncMerge.odometers(b, a)
         #expect(ab == ba)
         #expect(SyncMerge.odometers(a, ab) == ab)
+    }
+}
+
+@Suite("SyncMerge — saved words")
+struct SavedWordsMergeTests {
+
+    @Test("union keeps words saved on either device, deduped, local order first")
+    func union() {
+        let a = SavedWordsStore(ids: ["x", "y"])
+        let b = SavedWordsStore(ids: ["y", "z"])
+        #expect(SyncMerge.savedWords(a, b).ids == ["x", "y", "z"])
+        // Order-dependent (local first), but the set is commutative.
+        #expect(Set(SyncMerge.savedWords(b, a).ids) == ["x", "y", "z"])
+    }
+
+    @Test("merge is idempotent")
+    func idempotent() {
+        let a = SavedWordsStore(ids: ["a"])
+        let b = SavedWordsStore(ids: ["b", "a"])
+        let once = SyncMerge.savedWords(a, b)
+        #expect(once.ids == ["a", "b"])
+        #expect(SyncMerge.savedWords(a, once).ids == once.ids)
     }
 }

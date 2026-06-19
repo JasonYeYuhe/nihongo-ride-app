@@ -63,8 +63,8 @@ let package = Package(
         .target(name: "SettingsKit"),
         .testTarget(name: "SettingsKitTests", dependencies: ["SettingsKit"]),
 
-        // MARK: iCloud sync core — pure merge of SRS / history / odometer (v1.2 Phase A).
-        .target(name: "SyncKit", dependencies: ["ReviewKit", "JournalKit"]),
+        // MARK: iCloud sync core — pure merge of SRS / history / odometer / saved (v1.2 Phase A, +v1.4).
+        .target(name: "SyncKit", dependencies: ["ReviewKit", "JournalKit", "SavedWordsKit"]),
         .testTarget(name: "SyncKitTests", dependencies: ["SyncKit"]),
 
         // MARK: SRS due-reminder scheduling — pure planner over the review store (v1.2 Phase A).

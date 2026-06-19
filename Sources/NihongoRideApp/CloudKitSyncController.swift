@@ -2,6 +2,7 @@ import Foundation
 import CloudKit
 import ReviewKit
 import JournalKit
+import SavedWordsKit
 import SyncKit
 
 /// Drives iCloud sync of SRS cards, ride history, and the lifetime odometer
@@ -31,7 +32,9 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     /// preserves fields unknown to this app version (forward compatibility).
     private var recordCache: [String: CKRecord] = [:]
 
-    private enum RT { static let srs = "SRSCard", ride = "RideRecord", odo = "Odometer" }
+    private enum RT { static let srs = "SRSCard", ride = "RideRecord", odo = "Odometer", saved = "SavedWords" }
+    /// The saved-words deck is one shared record.
+    private static let savedDeckKey = "deck"
     private static let containerID = "iCloud.com.jasonye.nihongoride"
 
     /// Fails when CloudKit can't run (e.g. `swift run` has no entitlement/bundle,
@@ -76,13 +79,17 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     }
 
     /// Enqueue and push the records that just changed locally.
-    func recordLocalChanges(srsIDs: [String], rideRecordIDs: [UUID], odometerChanged: Bool) {
+    func recordLocalChanges(srsIDs: [String], rideRecordIDs: [UUID],
+                            odometerChanged: Bool, savedChanged: Bool = false) {
         guard let engine else { return }
         var changes: [CKSyncEngine.PendingRecordZoneChange] = []
         changes += srsIDs.map { .saveRecord(recordID(RT.srs, $0)) }
         changes += rideRecordIDs.map { .saveRecord(recordID(RT.ride, $0.uuidString)) }
         if odometerChanged, let device = model?.deviceID {
             changes.append(.saveRecord(recordID(RT.odo, device)))
+        }
+        if savedChanged {
+            changes.append(.saveRecord(recordID(RT.saved, Self.savedDeckKey)))
         }
         guard !changes.isEmpty else { return }
         engine.state.add(pendingRecordZoneChanges: changes)
@@ -109,6 +116,9 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         changes += model.reviewStore.cards.keys.map { .saveRecord(recordID(RT.srs, $0)) }
         changes += model.journal.records.map { .saveRecord(recordID(RT.ride, $0.id.uuidString)) }
         changes += model.odometer.slots.keys.map { .saveRecord(recordID(RT.odo, $0)) }
+        if !model.savedWords.isEmpty {
+            changes.append(.saveRecord(recordID(RT.saved, Self.savedDeckKey)))
+        }
         engine.state.add(pendingRecordZoneChanges: changes)
     }
 
@@ -155,6 +165,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         let rides = Dictionary((model?.journal.records ?? []).map { ($0.id.uuidString, $0) },
                                uniquingKeysWith: { a, _ in a })
         let slots = model?.odometer.slots ?? [:]
+        let savedIDs = model?.savedWords.ids ?? []
         let cache = recordCache
 
         return await CKSyncEngine.RecordZoneChangeBatch(pendingChanges: pending) { recordID in
@@ -171,6 +182,8 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             case RT.odo:
                 guard let slot = slots[key] else { return nil }
                 Self.fill(record, from: slot, deviceID: key)
+            case RT.saved:
+                Self.fill(record, savedIDs: savedIDs)
             default:
                 return nil
             }
@@ -184,6 +197,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         var cards: [SRSCard] = []
         var rides: [RideRecord] = []
         var slots: [String: OdometerLog.Slot] = [:]
+        var saved: SavedWordsStore?
         for modification in changes.modifications {
             let record = modification.record
             recordCache[record.recordID.recordName] = record
@@ -193,13 +207,14 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             case RT.odo:
                 let (_, device) = Self.parse(record.recordID.recordName)
                 if let s = Self.odometerSlot(from: record) { slots[device] = s }
+            case RT.saved: saved = Self.savedWords(from: record)
             default: break
             }
         }
         // Deletions are ignored: this app never deletes synced records (history is
-        // append-only; SRS cards and odometer slots are never removed).
-        guard !cards.isEmpty || !rides.isEmpty || !slots.isEmpty else { return }
-        model?.applyCloudChanges(cards: cards, records: rides, odometerSlots: slots)
+        // append-only; SRS cards, odometer slots, and saved words are never removed).
+        guard !cards.isEmpty || !rides.isEmpty || !slots.isEmpty || saved != nil else { return }
+        model?.applyCloudChanges(cards: cards, records: rides, odometerSlots: slots, savedWords: saved)
     }
 
     private func handleSent(_ sent: CKSyncEngine.Event.SentRecordZoneChanges, syncEngine: CKSyncEngine) {
@@ -238,6 +253,8 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             if let slot = Self.odometerSlot(from: record) {
                 model?.applyCloudChanges(cards: [], records: [], odometerSlots: [device: slot])
             }
+        case RT.saved:
+            model?.applyCloudChanges(savedWords: Self.savedWords(from: record))
         default:
             break
         }
@@ -381,5 +398,13 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             words: record["words"] as? Int ?? 0,
             distanceMeters: record["distanceMeters"] as? Double ?? 0,
             runs: record["runs"] as? Int ?? 0)
+    }
+
+    private nonisolated static func fill(_ record: CKRecord, savedIDs: [String]) {
+        record["ids"] = savedIDs
+    }
+
+    private nonisolated static func savedWords(from record: CKRecord) -> SavedWordsStore {
+        SavedWordsStore(ids: record["ids"] as? [String] ?? [])
     }
 }

@@ -233,8 +233,15 @@ final class AppModel {
 
     /// Merges cloud changes into the local stores (via the tested SyncKit merges)
     /// and persists. Called by the sync controller when records arrive.
-    func applyCloudChanges(cards: [SRSCard], records: [RideRecord],
-                           odometerSlots: [String: OdometerLog.Slot]) {
+    func applyCloudChanges(cards: [SRSCard] = [], records: [RideRecord] = [],
+                           odometerSlots: [String: OdometerLog.Slot] = [:],
+                           savedWords incomingSaved: SavedWordsStore? = nil) {
+        if let incomingSaved {
+            savedWords = SyncMerge.savedWords(savedWords, incomingSaved)
+            let snapshot = savedWords
+            let url = savedWordsURL
+            Task.detached(priority: .utility) { try? snapshot.save(to: url) }
+        }
         if !cards.isEmpty {
             let remote = ReviewStore(cards: Dictionary(cards.map { ($0.id, $0) },
                                                        uniquingKeysWith: { a, _ in a }))
@@ -296,6 +303,8 @@ final class AppModel {
         let snapshot = savedWords
         let url = savedWordsURL
         Task.detached(priority: .utility) { try? snapshot.save(to: url) }
+        syncController?.recordLocalChanges(
+            srsIDs: [], rideRecordIDs: [], odometerChanged: false, savedChanged: true)
     }
 
     /// Starts a journey run drawn from the saved-words deck. No-op if empty.
