@@ -237,9 +237,7 @@ final class AppModel {
                            savedWords incomingSaved: SavedWordsStore? = nil) {
         if let incomingSaved {
             savedWords = SyncMerge.savedWords(savedWords, incomingSaved)
-            let snapshot = savedWords
-            let url = savedWordsURL
-            Task.detached(priority: .utility) { try? snapshot.save(to: url) }
+            try? savedWords.save(to: savedWordsURL)
         }
         if !cards.isEmpty {
             let remote = ReviewStore(cards: Dictionary(cards.map { ($0.id, $0) },
@@ -296,25 +294,29 @@ final class AppModel {
     var savedCount: Int { savedWords.count }
     func isSaved(_ id: String) -> Bool { savedWords.contains(id) }
 
-    /// Toggles a word's saved state and persists in the background.
+    /// Toggles a word's saved state and persists. Saves run on the main actor
+    /// (small file) so they stay ordered with the sync-merge writes to the same
+    /// file — mixing them with `Task.detached` raced last-writer-wins.
     func toggleSaved(_ id: String) {
         savedWords.toggle(id)
-        let snapshot = savedWords
-        let url = savedWordsURL
-        Task.detached(priority: .utility) { try? snapshot.save(to: url) }
+        try? savedWords.save(to: savedWordsURL)
         syncController?.recordLocalChanges(
             srsIDs: [], rideRecordIDs: [], odometerChanged: false, savedChanged: true)
     }
 
-    /// Starts a journey run drawn from the saved-words deck. No-op if empty.
+    /// Starts a journey run drawn from the saved-words deck. Resolves ids first
+    /// and bails if none resolve to a vocab entry — otherwise an all-unresolvable
+    /// deck (e.g. ids synced from a richer/newer device, or stale after a vocab
+    /// change) would strand the player on a blank, already-finished game screen.
     func startSavedGame() {
-        guard !savedWords.isEmpty else { return }
+        let resolvable = savedWords.ids.filter { VocabStore.shared.entry(id: $0) != nil }
+        guard !resolvable.isEmpty else { return }
         var config = GameSession.Config()
         config.languageCode = languageCode
         config.showRomajiHint = showRomajiHint
         config.mode = .journey
         session = GameSession.makeSaved(
-            ids: savedWords.ids, vocab: .shared, review: reviewStore, config: config)
+            ids: resolvable, vocab: .shared, review: reviewStore, config: config)
         runStartedAt = Date()
         screen = .playing
     }
@@ -374,7 +376,7 @@ final class AppModel {
             gameCenter.recordRun(summary: summary, mode: session.mode,
                                  lifetimeWords: lifetimeWords,
                                  streakDays: journal.streakDays(),
-                                 totalRuns: journal.totalRuns)
+                                 totalRuns: lifetimeRuns)
         }
         self.session = nil
         screen = wasPractice ? .menu : .results
@@ -427,16 +429,11 @@ final class AppModel {
         odometer.record(deviceID: deviceID,
                         words: session.wordsCompleted,
                         distanceMeters: session.distanceMeters)
-        // Snapshot + background write: both are Sendable value types, so the
-        // copies are immune to later mutations on the main actor.
-        let snapshot = journal
-        let url = journalURL
-        let odoSnapshot = odometer
-        let odoURL = odometerURL
-        Task.detached(priority: .utility) {
-            try? snapshot.save(to: url)
-            try? odoSnapshot.save(to: odoURL)
-        }
+        // Save on the main actor (small files) so these stay ordered with the
+        // sync-merge writes to the same files — a detached write could land after
+        // a fetch-merge write and clobber merged cloud data (last-writer-wins).
+        try? journal.save(to: journalURL)
+        try? odometer.save(to: odometerURL)
         runStartedAt = nil
         return record
     }

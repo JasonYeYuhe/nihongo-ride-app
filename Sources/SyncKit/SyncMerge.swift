@@ -43,8 +43,12 @@ public enum SyncMerge {
     /// Merges two ride-history record sets: union by record id (records are
     /// immutable, so a shared id is the same run), sorted oldest-first by date
     /// (id as a stable tie-breaker), then trimmed to `cap` keeping the NEWEST.
-    /// Dedup and sort happen *before* the trim, so a merge that overflows the cap
-    /// drops the oldest records — never a newer one that only one device had.
+    /// The journal is a display-only capped rolling window (local append trims the
+    /// same way); lifetime totals are odometer-backed and survive trimming. So an
+    /// overflowing merge drops the oldest-by-DATE records — which, in the rare
+    /// case the union exceeds `cap` (>1yr of daily history), could include a
+    /// backdated record one device just contributed. That only loses old
+    /// journal-analytics rows past the cap, never lifetime data.
     public static func rideRecords(
         _ a: [RideRecord],
         _ b: [RideRecord],

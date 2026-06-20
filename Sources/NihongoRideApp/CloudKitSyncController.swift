@@ -166,7 +166,13 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
                                uniquingKeysWith: { a, _ in a })
         let slots = model?.odometer.slots ?? [:]
         let savedIDs = model?.savedWords.ids ?? []
-        let cache = recordCache
+        // Deep-COPY cached records into the snapshot: the record provider runs
+        // off the main actor and mutates these via Self.fill, while the main
+        // actor concurrently mutates/replaces the originals in applyFetched /
+        // handleSent. Sharing the same CKRecord instances across actors is a data
+        // race (CKRecord's backing store isn't thread-safe). Copies give the
+        // provider private instances; server records flow back via handleSent.
+        let cache = recordCache.mapValues { $0.copy() as! CKRecord }
 
         return await CKSyncEngine.RecordZoneChangeBatch(pendingChanges: pending) { recordID in
             let name = recordID.recordName
@@ -265,6 +271,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         case .signIn:
             // New account: push our local state up to it.
             enqueueAllLocal()
+            flush()
             model?.updateSyncStatus(.waiting)
         case .signOut:
             // Keep local data (it's the system-of-record); just stop syncing and
@@ -275,9 +282,18 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             clearState()
             recordCache.removeAll()
             enqueueAllLocal()
+            flush()
             model?.updateSyncStatus(.waiting)
         @unknown default:
             break
+        }
+    }
+
+    /// Fire-and-forget send of pending changes (manual mode doesn't auto-flush).
+    private func flush() {
+        guard let engine else { return }
+        Task { [weak self] in
+            do { try await engine.sendChanges() } catch { self?.report(error) }
         }
     }
 

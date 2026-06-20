@@ -72,6 +72,10 @@ struct GameView: View {
             Sound.enabled = model.soundEnabled
             isPaused = false
             timeRemaining = session.config.timeLimit ?? 0
+            // Defensive: a session that was already finished at construction
+            // (e.g. an empty queue) would otherwise strand here — onChange won't
+            // fire for a value that never changes. Finish it immediately.
+            if session.isFinished { model.finishGame() }
         }
         .onReceive(ticker) { _ in
             guard session.mode == .timeAttack, !isPaused, !session.isFinished else { return }
