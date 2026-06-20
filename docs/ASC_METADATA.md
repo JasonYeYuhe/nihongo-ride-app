@@ -132,14 +132,14 @@ Source: `NIHONGO_SHOT=/tmp/nihongo-store NIHONGO_SHOT_STORE=1 swift run NihongoR
 ### English (≤4000)
 ```
 • NEW: iCloud sync — your review progress, ride log, and saved words now follow you across all your devices, automatically and privately.
-• NEW: Saved Words — tap ★ to save any word (on the word card or the results screen), then drill your saved deck right from the menu.
+• NEW: Saved Words — tap the star to save any word (on the word card or the results screen), then drill your saved deck right from the menu.
 • Polish and fixes throughout.
 ```
 
 ### 简体中文
 ```
 • 新增 iCloud 同步:复习进度、骑行日志、收藏词单在你的设备间自动、私密地同步。
-• 新增「收藏词单」:打字时或结算页点 ★ 收藏任意词,在菜单里随时开练你的收藏。
+• 新增「收藏词单」:打字时或结算页点星标收藏任意词,在菜单里随时开练你的收藏。
 • 多处细节打磨与修复。
 ```
 
