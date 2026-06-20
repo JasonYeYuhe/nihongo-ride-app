@@ -70,13 +70,15 @@ targets:
     entitlements:
       path: xcode/NihongoRide.entitlements
       properties:
-        # App Sandbox (required for the Mac App Store).
+        # App Sandbox (required for the Mac App Store). CloudKit works inside it.
         com.apple.security.app-sandbox: true
-        # v1.3 ships Game Center (leaderboard + achievements). iCloud sync is
-        # deferred to v1.4 — its CloudKit code stays in the repo but gated off
-        # (AppModel.cloudSyncAvailable=false) and its entitlement is omitted so
-        # signing has no CloudKit-container dependency.
         com.apple.developer.game-center: true
+        # v1.4: iCloud sync (private CloudKit, manual-mode CKSyncEngine — no
+        # aps-environment). Container created + assigned to the App ID.
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.jasonye.nihongoride
+        com.apple.developer.icloud-services:
+          - CloudKit
 
     dependencies:
       - package: Nihongo
@@ -133,8 +135,12 @@ targets:
     entitlements:
       path: xcode/NihongoRide-iOS.entitlements
       properties:
-        # v1.3: Game Center only (iCloud sync deferred to v1.4).
         com.apple.developer.game-center: true
+        # v1.4: iCloud sync — same CloudKit container as macOS.
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.jasonye.nihongoride
+        com.apple.developer.icloud-services:
+          - CloudKit
     info:
       path: xcode/Info-iOS.plist
       properties:
