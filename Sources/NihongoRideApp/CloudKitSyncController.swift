@@ -90,7 +90,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         }
         guard !changes.isEmpty else { return }
         engine.state.add(pendingRecordZoneChanges: changes)
-        Task { [weak self] in await self?.syncNow() }
+        scheduleSync()
     }
 
     /// Manual fetch+send. Pull before push. Serialized + coalescing: a call that
@@ -113,6 +113,16 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             }
         } while needsResync
         syncing = false
+    }
+
+    /// Kick a sync from a context where we must NOT await the engine directly —
+    /// e.g. inside a delegate callback (handleAccountChange). The fresh Task hops
+    /// out of the callback before touching the engine, and syncNow()'s in-flight
+    /// guard coalesces it into any pass already running (setting needsResync so
+    /// that pass re-runs) — so queued records are always sent, never stranded,
+    /// and the engine is never driven re-entrantly from the delegate.
+    private func scheduleSync() {
+        Task { [weak self] in await self?.syncNow() }
     }
 
     private func enqueueAllLocal() {
@@ -274,11 +284,13 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     private func handleAccountChange(_ change: CKSyncEngine.Event.AccountChange) {
         switch change.changeType {
         case .signIn:
-            // New account: queue our local state. Sent by the syncNow already in
-            // flight (this event arrives during its fetch) or the next one — NOT
-            // driven from here: calling the engine from inside a delegate callback
-            // is what CKSyncEngine forbids.
+            // New account: queue all local state and schedule a flush. We never
+            // call the engine here (that's the delegate-re-entrancy CKSyncEngine
+            // forbids); scheduleSync() hops out to syncNow(), which sends the
+            // queued records whether or not a sync is already in flight — so a
+            // signIn that lands after the in-flight pass's send isn't stranded.
             enqueueAllLocal()
+            scheduleSync()
             model?.updateSyncStatus(.waiting)
         case .signOut:
             // Keep local data (it's the system-of-record); just stop syncing and
@@ -289,6 +301,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             clearState()
             recordCache.removeAll()
             enqueueAllLocal()
+            scheduleSync()
             model?.updateSyncStatus(.waiting)
         @unknown default:
             break
