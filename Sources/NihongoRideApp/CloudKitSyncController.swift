@@ -27,6 +27,11 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     private let zoneID = CKRecordZone.ID(zoneName: "NihongoRide")
     private let stateURL: URL
     private var engine: CKSyncEngine?
+    /// Serializes fetch/send so two drivers (launch start + scene-active + a
+    /// local change) never call into the engine concurrently. A request that
+    /// arrives mid-sync sets `needsResync` and the running pass loops again.
+    private var syncing = false
+    private var needsResync = false
 
     /// Last-seen server records, so a re-send reuses the server change tag and
     /// preserves fields unknown to this app version (forward compatibility).
@@ -58,19 +63,11 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         config.automaticallySync = false
         let engine = CKSyncEngine(config)
         self.engine = engine
-        model?.updateSyncStatus(.syncing)
-        do {
-            // Ensure our record zone exists (saving an existing zone is a no-op).
-            engine.state.add(pendingDatabaseChanges: [.saveZone(CKRecordZone(zoneID: zoneID))])
-            // Pull FIRST so local adopts any newer cloud state before we push —
-            // a first send must never overwrite newer remote data.
-            try await engine.fetchChanges()
-            if saved == nil || fullResync { enqueueAllLocal() }
-            try await engine.sendChanges()
-            model?.updateSyncStatus(.synced)
-        } catch {
-            model?.updateSyncStatus(Self.status(for: error))
-        }
+        // Ensure our record zone exists (saving an existing zone is a no-op), and
+        // on first run / re-enable queue all local records to upload.
+        engine.state.add(pendingDatabaseChanges: [.saveZone(CKRecordZone(zoneID: zoneID))])
+        if saved == nil || fullResync { enqueueAllLocal() }
+        await syncNow()
     }
 
     func stop() {
@@ -93,21 +90,29 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         }
         guard !changes.isEmpty else { return }
         engine.state.add(pendingRecordZoneChanges: changes)
-        Task { [weak self] in
-            do { try await engine.sendChanges() } catch { self?.report(error) }
-        }
+        Task { [weak self] in await self?.syncNow() }
     }
 
-    /// Manual fetch+send (called when the app becomes active). Pull before push.
+    /// Manual fetch+send. Pull before push. Serialized + coalescing: a call that
+    /// arrives while a sync is running just flags a re-run, so we never call into
+    /// the engine concurrently (CKSyncEngine forbids re-entrant/overlapping calls)
+    /// and never lose a queued change. Must NOT be called from a delegate callback.
     func syncNow() async {
         guard let engine else { return }
-        do {
-            try await engine.fetchChanges()
-            try await engine.sendChanges()
-            model?.updateSyncStatus(.synced)
-        } catch {
-            report(error)
-        }
+        if syncing { needsResync = true; return }
+        syncing = true
+        repeat {
+            needsResync = false
+            model?.updateSyncStatus(.syncing)
+            do {
+                try await engine.fetchChanges()
+                try await engine.sendChanges()
+                model?.updateSyncStatus(.synced)
+            } catch {
+                report(error)
+            }
+        } while needsResync
+        syncing = false
     }
 
     private func enqueueAllLocal() {
@@ -269,9 +274,11 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     private func handleAccountChange(_ change: CKSyncEngine.Event.AccountChange) {
         switch change.changeType {
         case .signIn:
-            // New account: push our local state up to it.
+            // New account: queue our local state. Sent by the syncNow already in
+            // flight (this event arrives during its fetch) or the next one — NOT
+            // driven from here: calling the engine from inside a delegate callback
+            // is what CKSyncEngine forbids.
             enqueueAllLocal()
-            flush()
             model?.updateSyncStatus(.waiting)
         case .signOut:
             // Keep local data (it's the system-of-record); just stop syncing and
@@ -282,18 +289,9 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             clearState()
             recordCache.removeAll()
             enqueueAllLocal()
-            flush()
             model?.updateSyncStatus(.waiting)
         @unknown default:
             break
-        }
-    }
-
-    /// Fire-and-forget send of pending changes (manual mode doesn't auto-flush).
-    private func flush() {
-        guard let engine else { return }
-        Task { [weak self] in
-            do { try await engine.sendChanges() } catch { self?.report(error) }
         }
     }
 
