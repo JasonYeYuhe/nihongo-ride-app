@@ -124,6 +124,41 @@ Source: `NIHONGO_SHOT=/tmp/nihongo-store NIHONGO_SHOT_STORE=1 swift run NihongoR
 
 ---
 
+## v1.5 What's New / 新功能
+
+> Ships: Custom Word Lists (the v1.4 Saved deck generalizes into N named lists,
+> synced privately via iCloud), a first-launch intro, and a VoiceOver pass.
+> Same copy for macOS and iOS. NOTE: App Store What's New REJECTS the "★" glyph
+> ("can't contain ★") — keep it as the word "star" / "星标".
+
+### English (≤4000)
+```
+• NEW: Custom Word Lists — make as many named lists as you like. Tap the star to save a word to your favourites, or long-press it to file the word into any list. Practice any list on its own, right from the menu. Your lists sync privately across your devices via iCloud.
+• NEW: A short, skippable intro on first launch — romaji spelling, the three modes, and saving words.
+• Accessibility: VoiceOver now reads every screen — the HUD, score cards, ride log, settings, and your word lists.
+• Polish and fixes throughout.
+```
+
+### 简体中文
+```
+• 新增「自定义词单」:想建几个就建几个。点星标把词加入收藏,长按可把它归入任意词单;在菜单里单独练习任何一个词单。你的词单通过 iCloud 在设备间私密同步。
+• 新增首次启动的简短引导(可跳过):罗马音拼写、三种模式、收藏词。
+• 无障碍:VoiceOver 现已朗读每一个界面——HUD、成绩卡、骑行日志、设置,以及你的词单。
+• 多处细节打磨与修复。
+```
+
+### Review notes (both platforms)
+```
+Nihongo Ride is a fully offline-capable typing-practice app for Japanese
+learners. No account or login is required; the developer collects no data.
+
+Version 1.5 adds Custom Word Lists. Lists (and the favourites/saved deck) are
+the user's OWN content, stored locally and, when iCloud sync is on, in the
+user's PRIVATE iCloud (CloudKit private database) — not accessible to the
+developer. The app is fully usable without signing in to iCloud. The first-
+launch intro does not request any permissions and can be skipped.
+```
+
 ## v1.4 What's New / 新功能
 
 > Ships: iCloud sync (SRS progress / ride log / saved words, private CloudKit) +
