@@ -50,7 +50,7 @@ extension GameSummary {
 @MainActor
 @Observable
 final class AppModel {
-    enum Screen: Equatable { case menu, playing, results, about, journal, settings, lists, listDetail }
+    enum Screen: Equatable { case menu, playing, results, about, journal, settings, lists, listDetail, onboarding }
 
     var screen: Screen = .menu {
         didSet { navCount += 1 }
@@ -180,12 +180,35 @@ final class AppModel {
         wordLists = migration.store
 
         settingsLoaded = true
-        // Persist once so a fresh install writes back its minted deviceID.
+
+        // First-launch onboarding: show it only to a genuinely fresh install, and
+        // never while capturing screenshots (would replace menu.png). An upgrading
+        // user who already has data is silently marked as seen so they never get it.
+        if !settings.hasSeenOnboarding && !Screenshotter.isCapturing {
+            let freshInstall = reviewStore.count == 0 && journal.totalRuns == 0
+            if freshInstall {
+                screen = .onboarding           // didSet doesn't fire in init; navCount stays 0
+            } else {
+                settings.hasSeenOnboarding = true
+            }
+        }
+
+        // Persist once so a fresh install writes back its minted deviceID (and the
+        // onboarding flag above for upgrading users).
         settings.save(to: .standard)
         // Refresh the reminder schedule for the days ahead (no-op when off).
         refreshReminders()
         startSyncIfEnabled()
         gameCenter.authenticate()
+    }
+
+    /// Dismisses first-launch onboarding (finish or skip): records it as seen and
+    /// drops to the menu. Onboarding deliberately does NOT request notifications —
+    /// reminders stay opt-in from the settings screen.
+    func finishOnboarding() {
+        settings.hasSeenOnboarding = true
+        settings.save(to: .standard)
+        screen = .menu
     }
 
     /// Reschedules due reminders for the next few days from the current SRS

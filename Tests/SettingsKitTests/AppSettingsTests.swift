@@ -18,10 +18,19 @@ struct AppSettingsTests {
             iCloudSyncEnabled: false,
             dueReminderEnabled: true,
             dueReminderHour: 7,
-            deviceID: "device-abc"
+            deviceID: "device-abc",
+            hasSeenOnboarding: true
         )
         let decoded = try #require(AppSettings.decode(original.encoded()))
         #expect(decoded == original)
+    }
+
+    @Test("hasSeenOnboarding defaults to false and a pre-v1.5 blob without it stays false")
+    func onboardingFlagDefaults() throws {
+        #expect(AppSettings.default.hasSeenOnboarding == false)
+        let json = Data(#"{"languageCode":"en","deviceID":"d1"}"#.utf8)
+        let decoded = try #require(AppSettings.decode(json))
+        #expect(decoded.hasSeenOnboarding == false)
     }
 
     @Test("nil selectedLevel (mix all) survives a round-trip")

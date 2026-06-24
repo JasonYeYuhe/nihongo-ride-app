@@ -116,11 +116,17 @@ struct RootView: View {
         }
         // Game Center access point: show on non-game screens only (never over the ride).
         .onChange(of: model.screen) { _, screen in
-            model.gameCenter.setAccessPointActive(screen != .playing)
+            model.gameCenter.setAccessPointActive(showsAccessPoint(screen))
         }
         .onChange(of: model.gameCenter.isAuthenticated) { _, _ in
-            model.gameCenter.setAccessPointActive(model.screen != .playing)
+            model.gameCenter.setAccessPointActive(showsAccessPoint(model.screen))
         }
+    }
+
+    /// The Game Center access point shows on calm non-game screens only — never
+    /// over the ride, and not over the first-launch intro (keep it uncluttered).
+    private func showsAccessPoint(_ screen: AppModel.Screen) -> Bool {
+        screen != .playing && screen != .onboarding
     }
 
     @ViewBuilder private var screen: some View {
@@ -134,6 +140,7 @@ struct RootView: View {
         case .settings: SettingsView()
         case .lists:   ListsView()
         case .listDetail: ListDetailView()
+        case .onboarding: OnboardingView()
         }
     }
 }

@@ -122,6 +122,23 @@ enum Screenshotter {
         #endif
         render(journalView, size: journalSize, alignment: .top,
                to: directory + "/journal.png")
+
+        // First-launch onboarding (page 0). NOTE: ImageRenderer ignores the
+        // dynamicTypeSize environment, so large-type layout must be verified on a
+        // live device/simulator (C3 §7) — not here.
+        let onboarding = makeModel()
+        let onboardingView = ZStack { Theme.background.ignoresSafeArea(); OnboardingView() }
+            .preferredColorScheme(.dark).environment(onboarding)
+        render(onboardingView, size: size, to: directory + "/onboarding.png")
+
+        // Word Lists screen (the default ★ list as migrated locally). Rendered
+        // read-only — no list mutations here, so the capture never pollutes the
+        // machine's real word-list data. (The ⋯ menu draws as a placeholder in
+        // ImageRenderer like all native controls; fine at runtime.)
+        let lists = makeModel()
+        let listsView = ZStack { Theme.background.ignoresSafeArea(); ListsView() }
+            .preferredColorScheme(.dark).environment(lists)
+        render(listsView, size: size, to: directory + "/lists.png")
     }
 
     @MainActor private static func render(_ view: some View, size: CGSize,

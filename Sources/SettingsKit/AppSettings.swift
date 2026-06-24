@@ -27,6 +27,12 @@ public struct AppSettings: Codable, Equatable, Sendable {
     /// Stable per-install id for the lifetime-odometer G-Counter (see SyncKit).
     public var deviceID: String
 
+    // v1.5 additions.
+    /// Whether the one-time first-launch onboarding has been shown. Defaults false;
+    /// flipped true when the user finishes/skips it (or silently for an upgrading
+    /// user who already has data — see AppModel).
+    public var hasSeenOnboarding: Bool
+
     public init(
         languageCode: String = "en",
         showRomajiHint: Bool = true,
@@ -38,7 +44,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
         iCloudSyncEnabled: Bool = true,
         dueReminderEnabled: Bool = false,
         dueReminderHour: Int = 20,
-        deviceID: String = ""
+        deviceID: String = "",
+        hasSeenOnboarding: Bool = false
     ) {
         self.languageCode = languageCode
         self.showRomajiHint = showRomajiHint
@@ -51,6 +58,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.dueReminderEnabled = dueReminderEnabled
         self.dueReminderHour = dueReminderHour
         self.deviceID = deviceID
+        self.hasSeenOnboarding = hasSeenOnboarding
     }
 
     public static let `default` = AppSettings()
@@ -66,6 +74,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         case languageCode, showRomajiHint, soundEnabled, selectedMode, selectedLevel
         case practicePassages, practicePassageLevel
         case iCloudSyncEnabled, dueReminderEnabled, dueReminderHour, deviceID
+        case hasSeenOnboarding
     }
 
     public init(from decoder: Decoder) throws {
@@ -86,6 +95,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         dueReminderEnabled = try c.decodeIfPresent(Bool.self, forKey: .dueReminderEnabled) ?? d.dueReminderEnabled
         dueReminderHour = try c.decodeIfPresent(Int.self, forKey: .dueReminderHour) ?? d.dueReminderHour
         deviceID = try c.decodeIfPresent(String.self, forKey: .deviceID) ?? d.deviceID
+        hasSeenOnboarding = try c.decodeIfPresent(Bool.self, forKey: .hasSeenOnboarding) ?? d.hasSeenOnboarding
     }
 
     // Always write every key — including `selectedLevel` as an explicit null when
@@ -104,6 +114,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         try c.encode(dueReminderEnabled, forKey: .dueReminderEnabled)
         try c.encode(dueReminderHour, forKey: .dueReminderHour)
         try c.encode(deviceID, forKey: .deviceID)
+        try c.encode(hasSeenOnboarding, forKey: .hasSeenOnboarding)
     }
 
     /// Clamps/repairs out-of-range primitive values and guarantees a `deviceID`.
