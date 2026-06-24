@@ -192,29 +192,32 @@ struct ResultsView: View {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 116), spacing: 8)], spacing: 8) {
                 ForEach(words.prefix(12)) { word in
                     let saved = model.isSaved(word.id)
-                    Button { model.toggleSaved(word.id) } label: {
-                        VStack(spacing: 2) {
-                            HStack(spacing: 4) {
-                                Image(systemName: saved ? "star.fill" : "star")
-                                    .font(.system(size: 9)).foregroundStyle(saved ? Theme.gold : Theme.dim)
-                                Text(word.surface)
-                                    .font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
-                            }
-                            Text(word.gloss(for: model.languageCode))
-                                .font(.caption2).foregroundStyle(Theme.dim).lineLimit(1)
+                    // Composed tap + long-press (NOT Button + simultaneousGesture,
+                    // which let a long-press also toggle the ★ unintentionally).
+                    VStack(spacing: 2) {
+                        HStack(spacing: 4) {
+                            Image(systemName: saved ? "star.fill" : "star")
+                                .font(.system(size: 9)).foregroundStyle(saved ? Theme.gold : Theme.dim)
+                            Text(word.surface)
+                                .font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
                         }
-                        .padding(.horizontal, 10).padding(.vertical, 6)
-                        .frame(maxWidth: .infinity)
-                        .background(saved ? Theme.gold.opacity(0.14) : Theme.card,
-                                    in: RoundedRectangle(cornerRadius: 8))
-                        .overlay(RoundedRectangle(cornerRadius: 8)
-                            .strokeBorder(saved ? Theme.gold.opacity(0.5) : .clear))
-                        .contentShape(Rectangle())
+                        Text(word.gloss(for: model.languageCode))
+                            .font(.caption2).foregroundStyle(Theme.dim).lineLimit(1)
                     }
-                    .buttonStyle(.plain)
-                    .simultaneousGesture(LongPressGesture().onEnded { _ in addToListsTarget = word.id })
+                    .padding(.horizontal, 10).padding(.vertical, 6)
+                    .frame(maxWidth: .infinity)
+                    .background(saved ? Theme.gold.opacity(0.14) : Theme.card,
+                                in: RoundedRectangle(cornerRadius: 8))
+                    .overlay(RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(saved ? Theme.gold.opacity(0.5) : .clear))
+                    .contentShape(Rectangle())
+                    .onTapGesture { model.toggleSaved(word.id) }
+                    .onLongPressGesture { addToListsTarget = word.id }
+                    .accessibilityElement()
+                    .accessibilityAddTraits(.isButton)
                     .accessibilityLabel(saved ? (zh ? "\(word.surface),已收藏" : "\(word.surface), saved")
                                               : (zh ? "\(word.surface),收藏" : "Save \(word.surface)"))
+                    .accessibilityAction(named: Text(zh ? "加入词单" : "Add to lists")) { addToListsTarget = word.id }
                 }
             }
             if words.count > 12 {

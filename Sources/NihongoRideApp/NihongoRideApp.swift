@@ -121,6 +121,17 @@ struct RootView: View {
         .onChange(of: model.gameCenter.isAuthenticated) { _, _ in
             model.gameCenter.setAccessPointActive(showsAccessPoint(model.screen))
         }
+        // Surfaces a word-list error from a path with no local alert (the in-game /
+        // results ★ tap hitting the per-list cap), instead of swallowing it.
+        .alert(model.languageCode == "zh" ? "无法完成" : "Can't do that",
+               isPresented: Binding(get: { model.lastListError != nil },
+                                    set: { if !$0 { model.lastListError = nil } })) {
+            Button("OK", role: .cancel) { model.lastListError = nil }
+        } message: {
+            if let error = model.lastListError {
+                Text(ListsView.message(for: error, zh: model.languageCode == "zh"))
+            }
+        }
     }
 
     /// The Game Center access point shows on calm non-game screens only — never

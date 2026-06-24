@@ -100,6 +100,9 @@ final class AppModel {
     private(set) var wordLists: WordListStore
     /// The list currently open in the detail screen.
     var selectedListID: String?
+    /// Last word-list error from a path that has no local alert of its own (the
+    /// in-game / results ★ tap). Surfaced by a RootView alert; cleared on dismiss.
+    var lastListError: WordListError?
     /// Wall-clock start of the current run, for duration/WPM in the journal.
     private var runStartedAt: Date?
 
@@ -364,10 +367,18 @@ final class AppModel {
     /// Active lists that contain `vocabID` — drives the "add to lists" checkmarks.
     func listIDs(containing vocabID: String) -> [String] { wordLists.listIDs(containing: vocabID) }
 
+    /// How many of a list's words resolve to a vocab entry on THIS device. A list
+    /// whose ids all came from a richer/newer device (via union sync) can be
+    /// non-empty yet have 0 playable words — the play button must reflect that
+    /// instead of being a silent dead tap.
+    func playableCount(in list: WordList) -> Int {
+        list.ids.reduce(0) { $0 + (VocabStore.shared.entry(id: $1) != nil ? 1 : 0) }
+    }
+
     /// Toggles a word in the default ★ list and persists. All word-list writes run
     /// synchronously on the main actor (small file) so they stay ordered with the
     /// sync-merge writes to the same file — `Task.detached` raced last-writer-wins.
-    func toggleSaved(_ id: String) { _ = toggleWord(id, in: WordList.defaultID) }
+    func toggleSaved(_ id: String) { lastListError = toggleWord(id, in: WordList.defaultID) }
 
     /// Toggles a word in any list, persists, and enqueues that list for sync.
     /// Returns the resulting error (cap reached) for the UI to surface, else nil.
@@ -634,11 +645,17 @@ final class AppModel {
     }
 
     static func supportFileURL(_ name: String) -> URL {
-        let base = FileManager.default
-            .urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-            ?? FileManager.default.temporaryDirectory
+        let fm = FileManager.default
+        // Screenshot capture redirects ALL file I/O to a throwaway temp dir, so a
+        // headless render never reads or writes the machine's real data. (Capture
+        // models mint a fresh deviceID and run startGame/finishGame, which would
+        // otherwise pollute the real, iCloud-synced odometer/journal/word-lists —
+        // and leak the real review queue into store screenshots.)
+        let base: URL = Screenshotter.isCapturing
+            ? fm.temporaryDirectory.appendingPathComponent("NihongoRideCapture", isDirectory: true)
+            : (fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first ?? fm.temporaryDirectory)
         let dir = base.appendingPathComponent("NihongoRide", isDirectory: true)
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir.appendingPathComponent(name)
     }
 }

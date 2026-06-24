@@ -407,22 +407,26 @@ private struct WordCard: View {
         .overlay(alignment: .topTrailing) { saveStar }
     }
 
-    /// Star toggle: tap = ★ favorites (default list); long-press = add to lists.
+    /// Star: tap = ★ favorites (default list); long-press = add to lists.
     @ViewBuilder private var saveStar: some View {
         if let id = session.current?.id {
             let saved = model.isSaved(id)
-            Button { model.toggleSaved(id) } label: {
-                Image(systemName: saved ? "star.fill" : "star")
-                    .font(.system(size: compact ? 15 : 18))
-                    .foregroundStyle(saved ? Theme.gold : Theme.dim)
-                    .padding(compact ? 10 : 14)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("saveWordButton")
-            .accessibilityLabel(saved ? (language == "zh" ? "已收藏,点按取消" : "Saved, tap to remove")
-                                      : (language == "zh" ? "收藏此词" : "Save this word"))
-            .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPressStar(id) })
+            let zh = language == "zh"
+            // Composed tap + long-press (NOT a Button + simultaneousGesture, which
+            // let the long-press ALSO fire the tap → an unintended ★ toggle).
+            Image(systemName: saved ? "star.fill" : "star")
+                .font(.system(size: compact ? 15 : 18))
+                .foregroundStyle(saved ? Theme.gold : Theme.dim)
+                .padding(compact ? 10 : 14)
+                .contentShape(Rectangle())
+                .onTapGesture { model.toggleSaved(id) }
+                .onLongPressGesture { onLongPressStar(id) }
+                .accessibilityElement()
+                .accessibilityAddTraits(.isButton)
+                .accessibilityIdentifier("saveWordButton")
+                .accessibilityLabel(saved ? (zh ? "已收藏,点按取消" : "Saved, tap to remove")
+                                          : (zh ? "收藏此词" : "Save this word"))
+                .accessibilityAction(named: Text(zh ? "加入词单" : "Add to lists")) { onLongPressStar(id) }
         }
     }
 

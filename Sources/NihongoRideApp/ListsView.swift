@@ -108,6 +108,7 @@ struct ListsView: View {
     private func listRow(_ list: WordList) -> some View {
         let name = displayName(list)
         let count = list.ids.count
+        let playable = model.playableCount(in: list)
         return HStack(spacing: 12) {
             Image(systemName: list.isDefault ? "star.fill" : "rectangle.stack")
                 .foregroundStyle(list.isDefault ? Theme.gold : Theme.accent2)
@@ -128,16 +129,17 @@ struct ListsView: View {
             .buttonStyle(.plain)
             .accessibilityLabel(zh ? "\(name),\(count) 词,打开" : "\(name), \(count) words, open")
 
-            // Play this list (resolve-then-guard lives in startListGame).
+            // Play this list (resolve-then-guard lives in startListGame). Disabled
+            // when no words resolve on this device — not just when the list is empty.
             Button { model.startListGame(list.id) } label: {
                 Image(systemName: "play.fill")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(count > 0 ? .white : Theme.dim)
+                    .foregroundStyle(playable > 0 ? .white : Theme.dim)
                     .padding(8)
-                    .background(count > 0 ? Theme.accent : Theme.card, in: Circle())
+                    .background(playable > 0 ? Theme.accent : Theme.card, in: Circle())
             }
             .buttonStyle(.plain)
-            .disabled(count == 0)
+            .disabled(playable == 0)
             .accessibilityLabel(zh ? "\(name),开始练习" : "Practice \(name)")
 
             Menu {
@@ -246,6 +248,9 @@ struct ListDetailView: View {
                 if list.ids.isEmpty {
                     emptyState
                 } else {
+                    if model.playableCount(in: list) == 0 {
+                        unplayableHint
+                    }
                     ForEach(list.ids, id: \.self) { id in
                         wordRow(id: id, listID: list.id)
                     }
@@ -275,17 +280,26 @@ struct ListDetailView: View {
     }
 
     private func playButton(_ list: WordList) -> some View {
-        Button { model.startListGame(list.id) } label: {
+        let playable = model.playableCount(in: list) > 0
+        return Button { model.startListGame(list.id) } label: {
             Label(zh ? "开始练习" : "Practice this list", systemImage: "play.fill")
                 .font(.system(size: 16, weight: .bold))
                 .frame(maxWidth: .infinity)
                 .frame(height: 48)
         }
         .buttonStyle(.plain)
-        .background(list.ids.isEmpty ? Theme.card : Theme.accent, in: Capsule())
-        .foregroundStyle(list.ids.isEmpty ? Theme.dim : .white)
-        .disabled(list.ids.isEmpty)
+        .background(playable ? Theme.accent : Theme.card, in: Capsule())
+        .foregroundStyle(playable ? .white : Theme.dim)
+        .disabled(!playable)
         .accessibilityIdentifier("practiceListButton")
+    }
+
+    private var unplayableHint: some View {
+        Text(zh ? "这些词在本设备上暂不可用(可能来自更新版本的词库)。"
+                : "These words aren't available on this device (they may come from a newer vocabulary).")
+            .font(.callout).foregroundStyle(Theme.dim)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.vertical, 4)
     }
 
     private func wordRow(id: String, listID: String) -> some View {
