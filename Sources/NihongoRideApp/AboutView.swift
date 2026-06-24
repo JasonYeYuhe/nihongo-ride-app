@@ -147,6 +147,10 @@ struct AboutView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: 10))
         .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Theme.cardStroke))
+        // One element: name + license + description. The raw URL is excluded so
+        // VoiceOver doesn't spell out "h-t-t-p-s-colon-slash-slash…".
+        .accessibilityElement()
+        .accessibilityLabel("\(name), \(license). \(zh ? zhText : en)")
     }
 
     private var stats: some View {
@@ -168,6 +172,9 @@ struct AboutView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: 8))
+        .accessibilityElement()
+        .accessibilityLabel(label)
+        .accessibilityValue(value)
     }
 
     private var footerNote: some View {

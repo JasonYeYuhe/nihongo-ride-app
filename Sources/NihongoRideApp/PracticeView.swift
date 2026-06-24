@@ -123,6 +123,9 @@ struct PracticeView: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier(id)
+        // Strip the "▸" glyph VoiceOver would read as "black right-pointing triangle".
+        .accessibilityLabel(title.replacingOccurrences(of: "▸", with: "")
+            .trimmingCharacters(in: .whitespaces))
     }
 
     // MARK: Flowing passage
@@ -253,6 +256,9 @@ struct PracticeView: View {
             Text(value).font(.system(size: 19, weight: .semibold, design: .monospaced))
             Text(label).font(.system(size: 10, weight: .bold)).tracking(2)
         }
+        .accessibilityElement()
+        .accessibilityLabel(label)
+        .accessibilityValue(value)
     }
 
     /// A pencil-thin progress line for the current passage. Subtle ink track,
@@ -269,5 +275,6 @@ struct PracticeView: View {
         }
         .frame(height: 2)
         .frame(maxWidth: 760)
+        .accessibilityHidden(true)   // decorative; the DONE stat conveys progress
     }
 }

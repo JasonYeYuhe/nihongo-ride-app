@@ -51,6 +51,7 @@ struct ResultsView: View {
 
             Text("🏁")
                 .font(.system(size: 50))
+                .accessibilityHidden(true)
             Text(zh ? "到站!" : "You've arrived!")
                 .font(.system(size: isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded))
                 .foregroundStyle(.white)
@@ -94,59 +95,54 @@ struct ResultsView: View {
 
     /// Six stat cards: 3×2 rows on roomy screens, a 2-column grid on iPhone.
     private func scoreGrid(_ summary: GameSummary) -> some View {
-        let cards = [
+        let cards: [(icon: String, tint: Color, value: String, label: String, spoken: String?)] = [
             (icon: "star.fill", tint: Theme.gold,
-             value: "\(summary.score)", label: zh ? "得分" : "Score"),
+             value: "\(summary.score)", label: zh ? "得分" : "Score", spoken: nil),
             (icon: "bicycle", tint: Theme.accent2,
-             value: "\(Int(summary.distanceMeters)) m", label: zh ? "距离" : "Distance"),
+             value: "\(Int(summary.distanceMeters)) m", label: zh ? "距离" : "Distance",
+             spoken: zh ? "\(Int(summary.distanceMeters)) 米" : "\(Int(summary.distanceMeters)) meters"),
             (icon: "flame.fill", tint: Theme.accent,
-             value: "×\(summary.maxCombo)", label: zh ? "最高连击" : "Best combo"),
+             value: "×\(summary.maxCombo)", label: zh ? "最高连击" : "Best combo",
+             spoken: "\(summary.maxCombo)"),
             (icon: "checkmark.circle.fill", tint: Theme.done,
-             value: "\(summary.wordsCompleted)", label: zh ? "完成词数" : "Words"),
+             value: "\(summary.wordsCompleted)", label: zh ? "完成词数" : "Words", spoken: nil),
             (icon: "scope", tint: Color.white,
-             value: "\(Int(summary.accuracy * 100))%", label: zh ? "准确率" : "Accuracy"),
+             value: "\(Int(summary.accuracy * 100))%", label: zh ? "准确率" : "Accuracy", spoken: nil),
             (icon: "brain.head.profile", tint: Theme.accent,
-             value: "\(summary.reviewWords.count)", label: zh ? "待复习" : "To review"),
+             value: "\(summary.reviewWords.count)", label: zh ? "待复习" : "To review", spoken: nil),
         ]
         return Group {
             if isPhoneIdiom {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     ForEach(cards.indices, id: \.self) { i in
-                        scoreCard(icon: cards[i].icon, tint: cards[i].tint,
-                                  value: cards[i].value, label: cards[i].label)
+                        scoreCard(cards[i])
                     }
                 }
                 .frame(maxWidth: 420)
             } else {
                 VStack(spacing: 14) {
-                    HStack(spacing: 14) {
-                        ForEach(0..<3) { i in
-                            scoreCard(icon: cards[i].icon, tint: cards[i].tint,
-                                      value: cards[i].value, label: cards[i].label)
-                        }
-                    }
-                    HStack(spacing: 14) {
-                        ForEach(3..<6) { i in
-                            scoreCard(icon: cards[i].icon, tint: cards[i].tint,
-                                      value: cards[i].value, label: cards[i].label)
-                        }
-                    }
+                    HStack(spacing: 14) { ForEach(0..<3) { i in scoreCard(cards[i]) } }
+                    HStack(spacing: 14) { ForEach(3..<6) { i in scoreCard(cards[i]) } }
                 }
             }
         }
     }
 
-    private func scoreCard(icon: String, tint: Color, value: String, label: String) -> some View {
+    private func scoreCard(_ c: (icon: String, tint: Color, value: String, label: String, spoken: String?)) -> some View {
         VStack(spacing: 8) {
-            Image(systemName: icon).font(.title2).foregroundStyle(tint)
-            Text(value)
+            Image(systemName: c.icon).font(.title2).foregroundStyle(c.tint)
+            Text(c.value)
                 .font(.system(size: 28, weight: .bold, design: .rounded))
                 .foregroundStyle(.white).monospacedDigit()
-            Text(label).font(.caption).foregroundStyle(Theme.dim)
+            Text(c.label).font(.caption).foregroundStyle(Theme.dim)
         }
         .frame(maxWidth: isPhoneIdiom ? .infinity : nil)
         .frame(width: isPhoneIdiom ? nil : 150, height: isPhoneIdiom ? 104 : 120)
         .panel(20)
+        // One element: "Score, 150" instead of icon + "150" + "Score" fragments.
+        .accessibilityElement()
+        .accessibilityLabel(c.label)
+        .accessibilityValue(c.spoken ?? c.value)
     }
 
     // MARK: Grade

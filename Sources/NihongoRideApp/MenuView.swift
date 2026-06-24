@@ -38,10 +38,14 @@ struct MenuView: View {
             routePreview
                 .frame(maxWidth: 520)
                 .padding(.vertical, isPhoneIdiom ? 0 : 8)
+                .accessibilityElement()
+                .accessibilityLabel(model.languageCode == "zh"
+                                    ? "路线:东京 · 富士 · 名古屋 · 京都"
+                                    : "Route: Tokyo, Fuji, Nagoya, Kyoto")
 
             VStack(spacing: 18) {
                 HStack(spacing: 12) {
-                    Image(systemName: "gamecontroller")
+                    Image(systemName: "gamecontroller").accessibilityHidden(true)
                     Picker("", selection: $model.selectedMode) {
                         Text(model.languageCode == "zh" ? "环游" : "Journey").tag(GameMode.journey)
                         Text(model.languageCode == "zh" ? "限时" : "Time").tag(GameMode.timeAttack)
@@ -49,21 +53,23 @@ struct MenuView: View {
                     }
                     .pickerStyle(.segmented)
                     .menuControlWidth(280)
+                    .accessibilityLabel(model.languageCode == "zh" ? "游戏模式" : "Game mode")
                 }
                 HStack(spacing: 12) {
-                    Image(systemName: "globe")
+                    Image(systemName: "globe").accessibilityHidden(true)
                     Picker("", selection: $model.languageCode) {
                         Text("English").tag("en")
                         Text("中文").tag("zh")
                     }
                     .pickerStyle(.segmented)
                     .menuControlWidth(220)
+                    .accessibilityLabel(model.languageCode == "zh" ? "界面语言" : "Language")
                 }
                 // JLPT level applies to word-stream modes; Practice Passages has its own level picker below.
                 let showJLPT = !(model.selectedMode == .practice && model.practicePassages)
                 if showJLPT {
                     HStack(spacing: 12) {
-                        Image(systemName: "graduationcap")
+                        Image(systemName: "graduationcap").accessibilityHidden(true)
                         Picker("", selection: $model.selectedLevel) {
                             ForEach(JLPTLevel.allCases, id: \.self) { level in
                                 Text(level.label).tag(JLPTLevel?.some(level))
@@ -72,21 +78,23 @@ struct MenuView: View {
                         }
                         .pickerStyle(.segmented)
                         .menuControlWidth(300)
+                        .accessibilityLabel(model.languageCode == "zh" ? "JLPT 等级" : "JLPT level")
                     }
                 }
                 if model.selectedMode == .practice {
                     HStack(spacing: 12) {
-                        Image(systemName: "text.alignleft")
+                        Image(systemName: "text.alignleft").accessibilityHidden(true)
                         Picker("", selection: $model.practicePassages) {
                             Text(model.languageCode == "zh" ? "文章" : "Passages").tag(true)
                             Text(model.languageCode == "zh" ? "词流" : "Words").tag(false)
                         }
                         .pickerStyle(.segmented)
                         .menuControlWidth(220)
+                        .accessibilityLabel(model.languageCode == "zh" ? "练习内容" : "Practice content")
                     }
                     if model.practicePassages {
                         HStack(spacing: 12) {
-                            Image(systemName: "ruler")
+                            Image(systemName: "ruler").accessibilityHidden(true)
                             Picker("", selection: $model.practicePassageLevel) {
                                 Text(model.languageCode == "zh" ? "短" : "Short").tag(Passage.Level.easy)
                                 Text(model.languageCode == "zh" ? "中" : "Med").tag(Passage.Level.med)
@@ -94,6 +102,7 @@ struct MenuView: View {
                             }
                             .pickerStyle(.segmented)
                             .menuControlWidth(220)
+                            .accessibilityLabel(model.languageCode == "zh" ? "文章长度" : "Passage length")
                         }
                     }
                 }
@@ -125,6 +134,7 @@ struct MenuView: View {
             .foregroundStyle(.white)
             .shadow(color: Theme.accent.opacity(0.5), radius: 16, y: 6)
             .accessibilityIdentifier("startButton")
+            .accessibilityLabel(model.languageCode == "zh" ? "出发,开始骑行" : "Start ride")
 
             footer
 
@@ -146,6 +156,9 @@ struct MenuView: View {
                 .buttonStyle(.plain)
                 .fixedSize()
                 .accessibilityIdentifier("journalButton")
+                .accessibilityLabel(streak >= 2
+                    ? (model.languageCode == "zh" ? "骑行日志,连续 \(streak) 天" : "Ride Log, \(streak)-day streak")
+                    : (model.languageCode == "zh" ? "骑行日志" : "Ride Log"))
 
                 Button(action: { model.screen = .lists }) {
                     Label {

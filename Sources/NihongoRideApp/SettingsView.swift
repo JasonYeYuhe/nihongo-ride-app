@@ -24,6 +24,7 @@ struct SettingsView: View {
                     }
                     .pickerStyle(.segmented)
                     .frame(maxWidth: 200)
+                    .accessibilityLabel(zh ? "界面语言" : "Language")
                 }
                 Toggle(isOn: $model.showRomajiHint) {
                     rowLabel(icon: "character.cursor.ibeam",
@@ -47,6 +48,8 @@ struct SettingsView: View {
                     .toggleStyle(.switch).tint(Theme.accent2)
                     Text(syncStatusText)
                         .font(.system(size: 12)).foregroundStyle(Theme.dim)
+                        .accessibilityLabel(zh ? "同步状态" : "Sync status")
+                        .accessibilityValue(syncStatusText)
                     Text(zh
                          ? "数据存于你自己的 iCloud(私有库),仅你可见。"
                          : "Stored in your own private iCloud — visible only to you.")
@@ -71,6 +74,7 @@ struct SettingsView: View {
                         }
                         .pickerStyle(.menu)
                         .frame(maxWidth: 120)
+                        .accessibilityLabel(zh ? "提醒时间" : "Reminder time")
                     }
                 }
                 Text(zh

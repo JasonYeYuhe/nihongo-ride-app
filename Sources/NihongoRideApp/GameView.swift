@@ -32,9 +32,10 @@ struct GameView: View {
                     HUDBar(session: session, language: model.languageCode,
                            onPause: isTouchDevice ? { isPaused = true } : nil)
                     if session.mode == .timeAttack {
-                        TimerBar(remaining: timeRemaining, total: session.config.timeLimit ?? 1)
+                        TimerBar(remaining: timeRemaining, total: session.config.timeLimit ?? 1,
+                                 language: model.languageCode)
                     } else {
-                        JourneyBar(session: session)
+                        JourneyBar(session: session, language: model.languageCode)
                     }
                     Spacer(minLength: 0)
                     WordCard(session: session, language: model.languageCode, compact: keyboardUp,
@@ -190,6 +191,8 @@ private struct HUDBar: View {
     /// screen there (they're informational, not actionable mid-run).
     private var narrow: Bool { isPhoneIdiom }
 
+    private var zh: Bool { language == "zh" }
+
     var body: some View {
         HStack(spacing: narrow ? 8 : 14) {
             Text(session.currentLevelLabel)
@@ -197,20 +200,30 @@ private struct HUDBar: View {
                 .foregroundStyle(.white)
                 .padding(.horizontal, 10).padding(.vertical, 6)
                 .background(Theme.accent2.opacity(0.85), in: Capsule())
-            stat(icon: "star.fill", value: "\(session.score)", tint: Theme.gold)
+                .accessibilityLabel(zh ? "等级 \(session.currentLevelLabel)" : "Level \(session.currentLevelLabel)")
+            stat(icon: "star.fill", value: "\(session.score)", tint: Theme.gold,
+                 label: zh ? "得分" : "Score")
             stat(icon: "flame.fill",
                  value: session.combo >= 2 ? "×\(session.combo)" : "—",
-                 tint: session.combo >= 2 ? Theme.accent : Theme.dim)
+                 tint: session.combo >= 2 ? Theme.accent : Theme.dim,
+                 label: zh ? "连击" : "Combo",
+                 spoken: session.combo >= 2 ? "\(session.combo)" : (zh ? "无" : "none"))
             Spacer()
             if !narrow {
-                stat(icon: "bicycle", value: "\(Int(session.distanceMeters)) m", tint: Theme.accent2)
+                stat(icon: "bicycle", value: "\(Int(session.distanceMeters)) m", tint: Theme.accent2,
+                     label: zh ? "距离" : "Distance",
+                     spoken: zh ? "\(Int(session.distanceMeters)) 米" : "\(Int(session.distanceMeters)) meters")
             }
             stat(icon: "checkmark.circle.fill",
-                 value: "\(session.wordsCompleted)/\(session.wordCount)", tint: Theme.done)
+                 value: "\(session.wordsCompleted)/\(session.wordCount)", tint: Theme.done,
+                 label: zh ? "进度" : "Words",
+                 spoken: zh ? "\(session.wordsCompleted) / \(session.wordCount)"
+                            : "\(session.wordsCompleted) of \(session.wordCount)")
                 .accessibilityIdentifier("hudProgress")
             if !narrow {
                 stat(icon: "scope",
-                     value: "\(Int(session.accuracy * 100))%", tint: .white)
+                     value: "\(Int(session.accuracy * 100))%", tint: .white,
+                     label: zh ? "正确率" : "Accuracy")
             }
             if let onPause {
                 Button(action: onPause) {
@@ -221,20 +234,27 @@ private struct HUDBar: View {
                         .background(.black.opacity(0.42), in: Capsule())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Pause")
+                .accessibilityLabel(zh ? "暂停" : "Pause")
                 .accessibilityIdentifier("pauseButton")
             }
         }
         .font(.system(size: narrow ? 15 : 17, weight: .semibold, design: .rounded))
     }
 
-    private func stat(icon: String, value: String, tint: Color) -> some View {
+    /// One HUD telemetry pill, exposed to VoiceOver as a single labeled+valued
+    /// element (the icon is decorative). `spoken` overrides the announced value
+    /// where the on-screen glyph would read poorly (e.g. "—", "150 m").
+    private func stat(icon: String, value: String, tint: Color,
+                      label: String, spoken: String? = nil) -> some View {
         HStack(spacing: 6) {
             Image(systemName: icon).foregroundStyle(tint)
             Text(value).foregroundStyle(.white).monospacedDigit()
         }
         .padding(.horizontal, narrow ? 9 : 12).padding(.vertical, 7)
         .background(.black.opacity(0.42), in: Capsule())
+        .accessibilityElement()
+        .accessibilityLabel(label)
+        .accessibilityValue(spoken ?? value)
     }
 }
 
@@ -242,12 +262,21 @@ private struct HUDBar: View {
 
 private struct JourneyBar: View {
     let session: GameSession
+    var language: String = "en"
     private let landmarks = ["🗼", "🗻", "🏯", "⛩️"]
     @State private var bob = false
     @State private var hop = false
 
     var body: some View {
         let progress = session.progress
+        return bar(progress)
+            // The bar + landmark emoji + bicycle are decorative; expose one element.
+            .accessibilityElement()
+            .accessibilityLabel(language == "zh" ? "行程进度" : "Journey progress")
+            .accessibilityValue("\(Int(progress * 100))%")
+    }
+
+    private func bar(_ progress: Double) -> some View {
         GeometryReader { geo in
             let width = geo.size.width
             ZStack(alignment: .leading) {
@@ -292,10 +321,18 @@ private struct JourneyBar: View {
 private struct TimerBar: View {
     let remaining: Double
     let total: Double
+    var language: String = "en"
 
     var body: some View {
         let fraction = total > 0 ? max(0, min(1, remaining / total)) : 0
         let low = remaining <= 10
+        return content(fraction: fraction, low: low)
+            .accessibilityElement()
+            .accessibilityLabel(language == "zh" ? "剩余时间" : "Time remaining")
+            .accessibilityValue(language == "zh" ? "\(Int(ceil(remaining))) 秒" : "\(Int(ceil(remaining))) seconds")
+    }
+
+    private func content(fraction: Double, low: Bool) -> some View {
         HStack(spacing: 12) {
             Image(systemName: "timer").foregroundStyle(low ? Theme.accent : Theme.accent2)
             GeometryReader { geo in

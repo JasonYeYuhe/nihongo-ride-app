@@ -109,6 +109,11 @@ struct JournalView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .panel(20)
+        // One element — the title, big number, and decorative day-studs strip
+        // would otherwise be three disjoint VoiceOver stops.
+        .accessibilityElement()
+        .accessibilityLabel(zh ? "连续骑行" : "Streak")
+        .accessibilityValue(zh ? "\(streak) 天" : "\(streak) \(streak == 1 ? "day" : "days")")
     }
 
     /// 14 "road studs", one per day, lit on days with a ride; today ringed.
@@ -140,15 +145,21 @@ struct JournalView: View {
     private var totalsCard: some View {
         // Lifetime totals come from the odometer (sums across synced devices),
         // falling back to the local journal — never showing less than either.
-        VStack(alignment: .leading, spacing: 12) {
+        let km = String(format: "%.1f", model.lifetimeDistanceMeters / 1000)
+        let spoken = zh
+            ? "\(model.lifetimeWords) 词,\(km) 公里,\(model.lifetimeRuns) 程"
+            : "\(model.lifetimeWords) words, \(km) kilometers, \(model.lifetimeRuns) runs"
+        return VStack(alignment: .leading, spacing: 12) {
             cardTitle(zh ? "里程表" : "Odometer", icon: "bicycle", tint: Theme.accent2)
             odoRow(value: "\(model.lifetimeWords)", unit: zh ? "词" : "words")
-            odoRow(value: String(format: "%.1f", model.lifetimeDistanceMeters / 1000),
-                   unit: "km")
+            odoRow(value: km, unit: "km")
             odoRow(value: "\(model.lifetimeRuns)", unit: zh ? "程" : "runs")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .panel(20)
+        .accessibilityElement()
+        .accessibilityLabel(zh ? "里程表" : "Odometer")
+        .accessibilityValue(spoken)
     }
 
     private func odoRow(value: String, unit: String) -> some View {
@@ -167,6 +178,9 @@ struct JournalView: View {
 
     private var forecastCard: some View {
         let forecast = model.reviewStore.dueForecast()
+        let spoken = zh
+            ? "今天 \(forecast.today),明天 \(forecast.tomorrow),本周 \(forecast.thisWeek)"
+            : "Today \(forecast.today), tomorrow \(forecast.tomorrow), this week \(forecast.thisWeek)"
         return VStack(alignment: .leading, spacing: 12) {
             cardTitle(zh ? "复习预报" : "Review forecast", icon: "brain.head.profile", tint: Theme.gold)
             forecastRow(zh ? "今天" : "Today", count: forecast.today, tint: Theme.accent)
@@ -175,6 +189,9 @@ struct JournalView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .panel(20)
+        .accessibilityElement()
+        .accessibilityLabel(zh ? "复习预报" : "Review forecast")
+        .accessibilityValue(spoken)
     }
 
     private func forecastRow(_ label: String, count: Int, tint: Color) -> some View {
@@ -196,6 +213,14 @@ struct JournalView: View {
 
     private var trendCard: some View {
         let series = model.journal.wpmSeries(last: 20)
+        let trendSpoken: String = {
+            guard series.count >= 2 else {
+                return zh ? "数据不足" : "Not enough rides yet"
+            }
+            let best = Int(model.journal.bestWPM ?? 0)
+            return zh ? "最佳 \(best) WPM,最近 \(series.count) 程"
+                      : "Best \(best) WPM across your last \(series.count) rides"
+        }()
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
                 cardTitle(zh ? "速度趋势" : "Speed trend", icon: "gauge.with.needle", tint: Theme.done)
@@ -210,6 +235,7 @@ struct JournalView: View {
             if series.count >= 2 {
                 RoadSparkline(values: series)
                     .frame(height: isPhoneIdiom ? 90 : 110)
+                    .accessibilityHidden(true)   // decorative chart; summarized below
                 Text(zh ? "最近 \(series.count) 程的 WPM" : "WPM across your last \(series.count) rides")
                     .font(.system(size: 11))
                     .foregroundStyle(Theme.dim.opacity(0.7))
@@ -219,6 +245,9 @@ struct JournalView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .panel(20)
+        .accessibilityElement()
+        .accessibilityLabel(zh ? "速度趋势" : "Speed trend")
+        .accessibilityValue(trendSpoken)
     }
 
     // MARK: Recent rides
@@ -271,6 +300,25 @@ struct JournalView: View {
             rowStat("", "\(Int(record.accuracy * 100))%", tint: .white)
         }
         .padding(.vertical, 8)
+        // Combine the date / mode / level / score / wpm / accuracy fragments into
+        // one spoken row instead of six disjoint VoiceOver stops.
+        .accessibilityElement()
+        .accessibilityLabel(rideRowLabel(record))
+    }
+
+    private func rideRowLabel(_ record: RideRecord) -> String {
+        let mode: String
+        switch record.mode {
+        case "timeAttack": mode = zh ? "限时" : "Time Attack"
+        case "practice":   mode = zh ? "练习" : "Practice"
+        default:           mode = zh ? "环游" : "Journey"
+        }
+        let acc = Int(record.accuracy * 100)
+        var parts = [dayLabel(record.date), mode, levelLabel(record.level)]
+        if record.score > 0 { parts.append(zh ? "得分 \(record.score)" : "score \(record.score)") }
+        if record.wpm > 0 { parts.append("\(Int(record.wpm)) WPM") }
+        parts.append(zh ? "正确率 \(acc)%" : "\(acc)% accuracy")
+        return parts.joined(separator: zh ? "," : ", ")
     }
 
     private func rowStat(_ label: String, _ value: String, tint: Color) -> some View {

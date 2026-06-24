@@ -139,7 +139,13 @@ final class AppModel {
         // Restore persisted settings (a fresh install gets sanitized defaults +
         // a freshly minted deviceID). `didSet` observers don't fire for
         // assignments made inside an initializer, so these don't trigger saves.
-        let loaded = AppSettings.load(from: .standard)
+        // In screenshot-capture mode, start from clean defaults and never persist
+        // (below): each render mutates this model's settings (mode/hints/level),
+        // and persisting them would both corrupt the real install's settings and
+        // make subsequent capture runs non-deterministic.
+        let loaded = Screenshotter.isCapturing
+            ? AppSettings.default.sanitized()
+            : AppSettings.load(from: .standard)
         settings = loaded
         languageCode = loaded.languageCode
         showRomajiHint = loaded.showRomajiHint
@@ -194,8 +200,8 @@ final class AppModel {
         }
 
         // Persist once so a fresh install writes back its minted deviceID (and the
-        // onboarding flag above for upgrading users).
-        settings.save(to: .standard)
+        // onboarding flag above for upgrading users). Never in capture mode.
+        if !Screenshotter.isCapturing { settings.save(to: .standard) }
         // Refresh the reminder schedule for the days ahead (no-op when off).
         refreshReminders()
         startSyncIfEnabled()
@@ -315,7 +321,7 @@ final class AppModel {
     /// Mirrors the live settings into the persisted blob and writes it. Cheap
     /// (a single UserDefaults write); called on each settings mutation.
     private func persistSettings() {
-        guard settingsLoaded else { return }
+        guard settingsLoaded, !Screenshotter.isCapturing else { return }
         settings.languageCode = languageCode
         settings.showRomajiHint = showRomajiHint
         settings.soundEnabled = soundEnabled
