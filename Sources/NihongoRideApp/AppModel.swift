@@ -3,10 +3,10 @@ import Observation
 import GameCore
 import JournalKit
 import ReviewKit
-import SavedWordsKit
 import SettingsKit
 import SyncKit
 import VocabKit
+import WordListsKit
 
 /// A snapshot of a finished run, shown on the results screen.
 struct GameSummary: Equatable {
@@ -50,7 +50,7 @@ extension GameSummary {
 @MainActor
 @Observable
 final class AppModel {
-    enum Screen: Equatable { case menu, playing, results, about, journal, settings }
+    enum Screen: Equatable { case menu, playing, results, about, journal, settings, lists, listDetail }
 
     var screen: Screen = .menu {
         didSet { navCount += 1 }
@@ -94,8 +94,12 @@ final class AppModel {
     /// Lifetime odometer as a per-device G-Counter — the iCloud-sync vehicle for
     /// lifetime totals (sums correctly across devices; see SyncKit.OdometerLog).
     private(set) var odometer: OdometerLog
-    /// User-curated "saved words" deck (v1.4).
-    private(set) var savedWords: SavedWordsStore
+    /// User-curated word lists (v1.5). The v1.4 single "★ saved" deck survives as
+    /// the one `isDefault` list (constant id `"default"`); all the old ★ behavior
+    /// now reads/writes that list.
+    private(set) var wordLists: WordListStore
+    /// The list currently open in the detail screen.
+    var selectedListID: String?
     /// Wall-clock start of the current run, for duration/WPM in the journal.
     private var runStartedAt: Date?
 
@@ -108,6 +112,8 @@ final class AppModel {
     private let storeURL: URL
     private let journalURL: URL
     private let odometerURL: URL
+    private let wordListsURL: URL
+    /// Legacy v1.4 deck file — migration input only (preserved for rollback).
     private let savedWordsURL: URL
 
     /// The persisted settings blob. Also carries the install `deviceID` and the
@@ -120,11 +126,15 @@ final class AppModel {
         storeURL = Self.supportFileURL("review.json")
         journalURL = Self.supportFileURL("history.json")
         odometerURL = Self.supportFileURL("odometer.json")
+        wordListsURL = Self.supportFileURL("word-lists.json")
         savedWordsURL = Self.supportFileURL("saved-words.json")
         reviewStore = ReviewStore.load(from: storeURL)
         journal = RideJournal.load(from: journalURL)
         odometer = OdometerLog.load(from: odometerURL)
-        savedWords = SavedWordsStore.load(from: savedWordsURL)
+        // Word lists load via a corruption-aware, one-time migration from the
+        // legacy saved-words deck; localized default name applied after settings
+        // load below. Temporary empty store until then (no reads in between).
+        wordLists = WordListStore()
 
         // Restore persisted settings (a fresh install gets sanitized defaults +
         // a freshly minted deviceID). `didSet` observers don't fire for
@@ -158,6 +168,16 @@ final class AppModel {
            ["en", "zh"].contains(lang) {
             languageCode = lang
         }
+
+        // Now that the language is resolved, load/migrate the word lists. Runs
+        // before sync `start()` so the local store is shaped first and the first
+        // cloud fetch merges into it (ids union + name LWW) rather than an empty
+        // store overwriting the cloud (§A2).
+        let migration = WordListStore.loadOrMigrate(
+            wordListsURL: wordListsURL,
+            legacySavedWordsURL: savedWordsURL,
+            defaultName: Self.defaultListName(languageCode))
+        wordLists = migration.store
 
         settingsLoaded = true
         // Persist once so a fresh install writes back its minted deviceID.
@@ -234,11 +254,19 @@ final class AppModel {
     /// and persists. Called by the sync controller when records arrive.
     func applyCloudChanges(cards: [SRSCard] = [], records: [RideRecord] = [],
                            odometerSlots: [String: OdometerLog.Slot] = [:],
-                           savedWords incomingSaved: SavedWordsStore? = nil) {
-        if let incomingSaved {
-            savedWords = SyncMerge.savedWords(savedWords, incomingSaved)
-            try? savedWords.save(to: savedWordsURL)
+                           wordLists incomingLists: [WordList] = [],
+                           legacyDeck deckIDs: [String]? = nil) {
+        if !incomingLists.isEmpty {
+            wordLists = SyncMerge.wordLists(wordLists, WordListStore(lists: incomingLists))
+            // Compaction runs ONLY here — after a successful cloud merge — never on
+            // the load path: a not-yet-propagated deletion compacted too early gets
+            // revived by a peer's union on the next fetch (§A2 / WordListStore docs).
+            wordLists.compactTombstones()
+            try? wordLists.save(to: wordListsURL)
         }
+        // Legacy v1.4 `SavedWords:deck` record: fold into the default list once,
+        // then never again (the persisted flag in foldLegacyDeck enforces "once").
+        if let deckIDs { foldLegacyDeck(deckIDs) }
         if !cards.isEmpty {
             let remote = ReviewStore(cards: Dictionary(cards.map { ($0.id, $0) },
                                                        uniquingKeysWith: { a, _ in a }))
@@ -289,27 +317,102 @@ final class AppModel {
     var lifetimeDistanceMeters: Double { max(journal.totalDistanceMeters, odometer.totalDistanceMeters) }
     var lifetimeRuns: Int { max(journal.totalRuns, odometer.totalRuns) }
 
-    // MARK: Saved words (v1.4)
+    // MARK: Word lists (v1.5) — the default list is the old ★ "saved" deck.
 
-    var savedCount: Int { savedWords.count }
-    func isSaved(_ id: String) -> Bool { savedWords.contains(id) }
-
-    /// Toggles a word's saved state and persists. Saves run on the main actor
-    /// (small file) so they stay ordered with the sync-merge writes to the same
-    /// file — mixing them with `Task.detached` raced last-writer-wins.
-    func toggleSaved(_ id: String) {
-        savedWords.toggle(id)
-        try? savedWords.save(to: savedWordsURL)
-        syncController?.recordLocalChanges(
-            srsIDs: [], rideRecordIDs: [], odometerChanged: false, savedChanged: true)
+    /// Localized display name for the default "★" list. The UI also overrides the
+    /// label for `isDefault` lists, so the *stored* name is only a fallback.
+    static func defaultListName(_ languageCode: String) -> String {
+        languageCode == "zh" ? "★ 收藏" : "★ Saved"
     }
 
-    /// Starts a journey run drawn from the saved-words deck. Resolves ids first
-    /// and bails if none resolve to a vocab entry — otherwise an all-unresolvable
-    /// deck (e.g. ids synced from a richer/newer device, or stale after a vocab
-    /// change) would strand the player on a blank, already-finished game screen.
-    func startSavedGame() {
-        let resolvable = savedWords.ids.filter { VocabStore.shared.entry(id: $0) != nil }
+    /// Active (non-deleted) lists, default first.
+    var activeLists: [WordList] { wordLists.activeLists }
+    func list(id: String) -> WordList? { wordLists.list(id: id) }
+
+    // ★ favorites — the default list, preserving the v1.4 surface API.
+    var savedCount: Int { wordLists.defaultList?.ids.count ?? 0 }
+    func isSaved(_ id: String) -> Bool { wordLists.defaultContains(id) }
+    /// Active lists that contain `vocabID` — drives the "add to lists" checkmarks.
+    func listIDs(containing vocabID: String) -> [String] { wordLists.listIDs(containing: vocabID) }
+
+    /// Toggles a word in the default ★ list and persists. All word-list writes run
+    /// synchronously on the main actor (small file) so they stay ordered with the
+    /// sync-merge writes to the same file — `Task.detached` raced last-writer-wins.
+    func toggleSaved(_ id: String) { _ = toggleWord(id, in: WordList.defaultID) }
+
+    /// Toggles a word in any list, persists, and enqueues that list for sync.
+    /// Returns the resulting error (cap reached) for the UI to surface, else nil.
+    @discardableResult
+    func toggleWord(_ vocabID: String, in listID: String) -> WordListError? {
+        switch wordLists.toggle(vocabID, in: listID) {
+        case .success: persistWordLists(changed: [listID]); return nil
+        case .failure(let error): return error
+        }
+    }
+
+    @discardableResult
+    func addWord(_ vocabID: String, to listID: String) -> WordListError? {
+        switch wordLists.addWord(vocabID, to: listID) {
+        case .success: persistWordLists(changed: [listID]); return nil
+        case .failure(let error): return error
+        }
+    }
+
+    func removeWord(_ vocabID: String, from listID: String) {
+        if case .success = wordLists.removeWord(vocabID, from: listID) {
+            persistWordLists(changed: [listID])
+        }
+    }
+
+    @discardableResult
+    func createList(name: String) -> Result<WordList, WordListError> {
+        let result = wordLists.createList(name: name)
+        if case .success(let list) = result { persistWordLists(changed: [list.id]) }
+        return result
+    }
+
+    @discardableResult
+    func renameList(_ listID: String, to name: String) -> WordListError? {
+        switch wordLists.rename(listID, to: name) {
+        case .success: persistWordLists(changed: [listID]); return nil
+        case .failure(let error): return error
+        }
+    }
+
+    /// Soft-deletes a list (tombstone propagates; default list can't be deleted).
+    @discardableResult
+    func deleteList(_ listID: String) -> WordListError? {
+        switch wordLists.softDelete(listID) {
+        case .success:
+            if selectedListID == listID { selectedListID = nil }
+            persistWordLists(changed: [listID])
+            return nil
+        case .failure(let error): return error
+        }
+    }
+
+    func clearList(_ listID: String) {
+        if case .success = wordLists.clear(listID) { persistWordLists(changed: [listID]) }
+    }
+
+    /// Persists the word-list store synchronously + atomically, then tells the
+    /// sync controller which list ids changed (no-op when sync is off).
+    private func persistWordLists(changed listIDs: [String]) {
+        try? wordLists.save(to: wordListsURL)
+        syncController?.recordLocalChanges(listIDs: listIDs)
+    }
+
+    /// Starts a journey run drawn from the default ★ list. (Back-compat entry used
+    /// by the menu chip / star UI.)
+    func startSavedGame() { startListGame(WordList.defaultID) }
+
+    /// Starts a journey run drawn from a list. Resolves ids first and bails if none
+    /// resolve to a vocab entry — otherwise an all-unresolvable list (ids synced
+    /// from a richer/newer device, or stale after a vocab change) would strand the
+    /// player on a blank, already-finished game screen (v1.4 regression, per list).
+    func startListGame(_ listID: String) {
+        guard let list = wordLists.list(id: listID), !list.deleted else { return }
+        let resolvable = list.ids.filter { VocabStore.shared.entry(id: $0) != nil }
         guard !resolvable.isEmpty else { return }
         var config = GameSession.Config()
         config.languageCode = languageCode
@@ -319,6 +422,43 @@ final class AppModel {
             ids: resolvable, vocab: .shared, review: reviewStore, config: config)
         runStartedAt = Date()
         screen = .playing
+    }
+
+    // MARK: Legacy deck convergence + sync snapshots
+
+    /// Whether the one-time v1.4-deck convergence is done (see `foldLegacyDeck`).
+    var deckConverged: Bool { settings.deckConvergedV15 }
+
+    /// All list ids including tombstoned ones — so a deletion also enqueues its
+    /// record. Used by the sync controller's full re-enqueue.
+    var allWordListIDs: [String] { wordLists.lists.map(\.id) }
+
+    /// Value snapshot of the lists by id (Sendable) for the off-actor record
+    /// provider in `nextRecordZoneChangeBatch`.
+    var wordListsByID: [String: WordList] {
+        Dictionary(wordLists.lists.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+    }
+
+    /// Folds the legacy v1.4 `SavedWords:deck` ids into the default list **once**.
+    /// After convergence (`deckConvergedV15`) this is a no-op: continuing to union
+    /// a v1.4 peer's stale deck would resurrect words the user has since removed
+    /// (add-wins ping-pong). The default record stays enqueued during the
+    /// unconverged window, so the merged set is sent without a re-enqueue here.
+    private func foldLegacyDeck(_ ids: [String]) {
+        guard !settings.deckConvergedV15, !ids.isEmpty else { return }
+        let before = wordLists.defaultList?.ids
+        for id in ids { _ = wordLists.addWord(id, to: WordList.defaultID) }
+        if wordLists.defaultList?.ids != before { try? wordLists.save(to: wordListsURL) }
+    }
+
+    /// Marks deck convergence complete (idempotent). Called by the sync controller
+    /// after the first successful sync pass — by then the cloud deck has been
+    /// fetched+folded and our converged default has been sent (incl. a one-time
+    /// deck write for v1.4 peers). Thereafter the deck record is ignored entirely.
+    func markDeckConverged() {
+        guard !settings.deckConvergedV15 else { return }
+        settings.deckConvergedV15 = true
+        settings.save(to: .standard)
     }
 
     func startGame() {

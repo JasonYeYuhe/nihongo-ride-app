@@ -5,6 +5,8 @@ struct ResultsView: View {
     @Environment(AppModel.self) private var model
 
     private var zh: Bool { model.languageCode == "zh" }
+    /// Word whose "add to lists" multi-select sheet is open (long-press a chip).
+    @State private var addToListsTarget: String?
 
     var body: some View {
         // iPhone: results (cards + review list) outgrow the screen — scroll.
@@ -28,6 +30,15 @@ struct ResultsView: View {
                     },
                     suppressSoftwareKeyboard: true
                 )
+            }
+        }
+        .sheet(isPresented: Binding(get: { addToListsTarget != nil },
+                                    set: { if !$0 { addToListsTarget = nil } })) {
+            if let id = addToListsTarget {
+                AddToListsSheet(vocabID: id, isPresented: Binding(
+                    get: { addToListsTarget != nil },
+                    set: { if !$0 { addToListsTarget = nil } }))
+                    .presentationBackground(Theme.background)
             }
         }
     }
@@ -205,6 +216,9 @@ struct ResultsView: View {
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
+                    .simultaneousGesture(LongPressGesture().onEnded { _ in addToListsTarget = word.id })
+                    .accessibilityLabel(saved ? (zh ? "\(word.surface),已收藏" : "\(word.surface), saved")
+                                              : (zh ? "\(word.surface),收藏" : "Save \(word.surface)"))
                 }
             }
             if words.count > 12 {

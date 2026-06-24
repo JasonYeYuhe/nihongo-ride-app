@@ -302,6 +302,8 @@ private struct WordCard: View {
     /// True while the on-screen keyboard occupies the lower screen (iOS) —
     /// shrink everything so the card fits the visible upper area.
     var compact: Bool = false
+    /// Long-press the ★ to add the current word to multiple lists.
+    @State private var showingAddToLists = false
 
     var body: some View {
         VStack(spacing: compact ? 10 : 18) {
@@ -343,7 +345,7 @@ private struct WordCard: View {
         .overlay(alignment: .topTrailing) { saveStar }
     }
 
-    /// Star toggle to save the current word into the user's deck.
+    /// Star toggle: tap = ★ favorites (default list); long-press = add to lists.
     @ViewBuilder private var saveStar: some View {
         if let id = session.current?.id {
             let saved = model.isSaved(id)
@@ -356,6 +358,19 @@ private struct WordCard: View {
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("saveWordButton")
+            .accessibilityLabel(saved ? (language == "zh" ? "已收藏,点按取消" : "Saved, tap to remove")
+                                      : (language == "zh" ? "收藏此词" : "Save this word"))
+            .simultaneousGesture(LongPressGesture().onEnded { _ in showingAddToLists = true })
+            .sheet(isPresented: $showingAddToLists, onDismiss: {
+                // Reclaim the game keyboard the sheet displaced (touch-only iPad
+                // would otherwise be a dead end — App Review 2.1a).
+                #if os(iOS)
+                KeyboardSummon.summon()
+                #endif
+            }) {
+                AddToListsSheet(vocabID: id, isPresented: $showingAddToLists)
+                    .presentationBackground(Theme.background)
+            }
         }
     }
 

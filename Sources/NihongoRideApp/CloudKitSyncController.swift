@@ -2,8 +2,8 @@ import Foundation
 import CloudKit
 import ReviewKit
 import JournalKit
-import SavedWordsKit
 import SyncKit
+import WordListsKit
 
 /// Drives iCloud sync of SRS cards, ride history, and the lifetime odometer
 /// through a private-database `CKSyncEngine`. The local JSON files remain the
@@ -37,8 +37,9 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     /// preserves fields unknown to this app version (forward compatibility).
     private var recordCache: [String: CKRecord] = [:]
 
-    private enum RT { static let srs = "SRSCard", ride = "RideRecord", odo = "Odometer", saved = "SavedWords" }
-    /// The saved-words deck is one shared record.
+    private enum RT { static let srs = "SRSCard", ride = "RideRecord", odo = "Odometer", saved = "SavedWords", list = "WordList" }
+    /// The legacy v1.4 saved-words deck is one shared record (key "deck"). v1.5
+    /// reads/writes it only during the one-time convergence (see AppModel).
     private static let savedDeckKey = "deck"
     private static let containerID = "iCloud.com.jasonye.nihongoride"
 
@@ -66,7 +67,12 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         // Ensure our record zone exists (saving an existing zone is a no-op), and
         // on first run / re-enable queue all local records to upload.
         engine.state.add(pendingDatabaseChanges: [.saveZone(CKRecordZone(zoneID: zoneID))])
-        if saved == nil || fullResync { enqueueAllLocal() }
+        // Enqueue all local records on first run / re-enable, OR on the very first
+        // v1.5 launch even with existing sync state: the WordList records don't
+        // exist on the cloud yet (v1.4 only synced SRS/ride/odo/deck), and we must
+        // write the deck once so v1.4 peers converge. `deckConverged` flips after
+        // the first successful pass, so this self-limits to the upgrade window.
+        if saved == nil || fullResync || model?.deckConverged == false { enqueueAllLocal() }
         await syncNow()
     }
 
@@ -76,8 +82,8 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     }
 
     /// Enqueue and push the records that just changed locally.
-    func recordLocalChanges(srsIDs: [String], rideRecordIDs: [UUID],
-                            odometerChanged: Bool, savedChanged: Bool = false) {
+    func recordLocalChanges(srsIDs: [String] = [], rideRecordIDs: [UUID] = [],
+                            odometerChanged: Bool = false, listIDs: [String] = []) {
         guard let engine else { return }
         var changes: [CKSyncEngine.PendingRecordZoneChange] = []
         changes += srsIDs.map { .saveRecord(recordID(RT.srs, $0)) }
@@ -85,9 +91,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         if odometerChanged, let device = model?.deviceID {
             changes.append(.saveRecord(recordID(RT.odo, device)))
         }
-        if savedChanged {
-            changes.append(.saveRecord(recordID(RT.saved, Self.savedDeckKey)))
-        }
+        changes += listIDs.map { .saveRecord(recordID(RT.list, $0)) }
         guard !changes.isEmpty else { return }
         engine.state.add(pendingRecordZoneChanges: changes)
         scheduleSync()
@@ -108,6 +112,10 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
                 try await engine.fetchChanges()
                 try await engine.sendChanges()
                 model?.updateSyncStatus(.synced)
+                // First successful pass: the cloud deck (if any) has been fetched
+                // and folded into the default list, and our converged default +
+                // one-time deck write have been sent. Retire the legacy deck now.
+                model?.markDeckConverged()
             } catch {
                 report(error)
             }
@@ -131,7 +139,11 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         changes += model.reviewStore.cards.keys.map { .saveRecord(recordID(RT.srs, $0)) }
         changes += model.journal.records.map { .saveRecord(recordID(RT.ride, $0.id.uuidString)) }
         changes += model.odometer.slots.keys.map { .saveRecord(recordID(RT.odo, $0)) }
-        if !model.savedWords.isEmpty {
+        // Every list (incl. tombstoned, so deletions propagate).
+        changes += model.allWordListIDs.map { .saveRecord(recordID(RT.list, $0)) }
+        // One-time legacy-deck write (= default list ids) so v1.4 peers converge.
+        // Skipped once converged: we never touch the deck again (see AppModel).
+        if !model.deckConverged {
             changes.append(.saveRecord(recordID(RT.saved, Self.savedDeckKey)))
         }
         engine.state.add(pendingRecordZoneChanges: changes)
@@ -180,7 +192,10 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         let rides = Dictionary((model?.journal.records ?? []).map { ($0.id.uuidString, $0) },
                                uniquingKeysWith: { a, _ in a })
         let slots = model?.odometer.slots ?? [:]
-        let savedIDs = model?.savedWords.ids ?? []
+        // WordList records, snapshotted by value (Sendable). The legacy deck
+        // record (written only during convergence) carries the default list's ids.
+        let lists = model?.wordListsByID ?? [:]
+        let defaultIDs = lists[WordList.defaultID]?.ids ?? []
         // Deep-COPY cached records into the snapshot: the record provider runs
         // off the main actor and mutates these via Self.fill, while the main
         // actor concurrently mutates/replaces the originals in applyFetched /
@@ -203,8 +218,11 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             case RT.odo:
                 guard let slot = slots[key] else { return nil }
                 Self.fill(record, from: slot, deviceID: key)
+            case RT.list:
+                guard let list = lists[key] else { return nil }
+                Self.fill(record, from: list)
             case RT.saved:
-                Self.fill(record, savedIDs: savedIDs)
+                Self.fill(record, savedIDs: defaultIDs)
             default:
                 return nil
             }
@@ -218,7 +236,8 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         var cards: [SRSCard] = []
         var rides: [RideRecord] = []
         var slots: [String: OdometerLog.Slot] = [:]
-        var saved: SavedWordsStore?
+        var lists: [WordList] = []
+        var deckIDs: [String]?
         for modification in changes.modifications {
             let record = modification.record
             recordCache[record.recordID.recordName] = record
@@ -228,14 +247,18 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             case RT.odo:
                 let (_, device) = Self.parse(record.recordID.recordName)
                 if let s = Self.odometerSlot(from: record) { slots[device] = s }
-            case RT.saved: saved = Self.savedWords(from: record)
+            case RT.list: if let l = Self.wordList(from: record) { lists.append(l) }
+            case RT.saved: deckIDs = Self.savedIDs(from: record)   // legacy deck → fold once
             default: break
             }
         }
-        // Deletions are ignored: this app never deletes synced records (history is
-        // append-only; SRS cards, odometer slots, and saved words are never removed).
-        guard !cards.isEmpty || !rides.isEmpty || !slots.isEmpty || saved != nil else { return }
-        model?.applyCloudChanges(cards: cards, records: rides, odometerSlots: slots, savedWords: saved)
+        // Deletions are ignored at the record level: SRS/ride/odometer are
+        // append-only, and word-list deletions travel as the `deleted` FIELD
+        // (a tombstone modification), not a CloudKit record delete.
+        guard !cards.isEmpty || !rides.isEmpty || !slots.isEmpty
+                || !lists.isEmpty || deckIDs != nil else { return }
+        model?.applyCloudChanges(cards: cards, records: rides, odometerSlots: slots,
+                                 wordLists: lists, legacyDeck: deckIDs)
     }
 
     private func handleSent(_ sent: CKSyncEngine.Event.SentRecordZoneChanges, syncEngine: CKSyncEngine) {
@@ -274,8 +297,14 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             if let slot = Self.odometerSlot(from: record) {
                 model?.applyCloudChanges(cards: [], records: [], odometerSlots: [device: slot])
             }
+        case RT.list:
+            // Field-level merge (ids union / name LWW / once-true-wins delete) so
+            // the re-send materializes the merge winner, not a stale local value.
+            if let list = Self.wordList(from: record) {
+                model?.applyCloudChanges(wordLists: [list])
+            }
         case RT.saved:
-            model?.applyCloudChanges(savedWords: Self.savedWords(from: record))
+            model?.applyCloudChanges(legacyDeck: Self.savedIDs(from: record))
         default:
             break
         }
@@ -431,7 +460,29 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         record["ids"] = savedIDs
     }
 
-    private nonisolated static func savedWords(from record: CKRecord) -> SavedWordsStore {
-        SavedWordsStore(ids: record["ids"] as? [String] ?? [])
+    /// Legacy v1.4 deck record → just its ids (folded into the default list once).
+    private nonisolated static func savedIDs(from record: CKRecord) -> [String] {
+        record["ids"] as? [String] ?? []
+    }
+
+    private nonisolated static func fill(_ record: CKRecord, from list: WordList) {
+        record["name"] = list.name
+        record["ids"] = list.ids
+        record["nameUpdatedAt"] = list.nameUpdatedAt
+        record["deleted"] = list.deleted ? 1 : 0
+        record["deletedAt"] = list.deletedAt
+    }
+
+    private nonisolated static func wordList(from record: CKRecord) -> WordList? {
+        let (_, id) = parse(record.recordID.recordName)
+        guard !id.isEmpty else { return nil }
+        return WordList(
+            id: id,
+            name: record["name"] as? String ?? "",
+            ids: record["ids"] as? [String] ?? [],
+            nameUpdatedAt: record["nameUpdatedAt"] as? Date ?? Date(timeIntervalSince1970: 0),
+            deleted: (record["deleted"] as? Int ?? 0) != 0,
+            deletedAt: record["deletedAt"] as? Date,
+            isDefault: id == WordList.defaultID)
     }
 }

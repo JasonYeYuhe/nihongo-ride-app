@@ -99,6 +99,8 @@ targets:
         product: NotificationKit
       - package: Nihongo
         product: SavedWordsKit
+      - package: Nihongo
+        product: WordListsKit
 
     settings:
       base:
@@ -183,6 +185,8 @@ targets:
         product: NotificationKit
       - package: Nihongo
         product: SavedWordsKit
+      - package: Nihongo
+        product: WordListsKit
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride

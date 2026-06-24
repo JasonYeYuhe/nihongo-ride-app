@@ -132,6 +132,8 @@ struct RootView: View {
         case .about:   AboutView()
         case .journal: JournalView()
         case .settings: SettingsView()
+        case .lists:   ListsView()
+        case .listDetail: ListDetailView()
         }
     }
 }
