@@ -19,6 +19,7 @@ let package = Package(
         .library(name: "NotificationKit", targets: ["NotificationKit"]),
         .library(name: "SavedWordsKit", targets: ["SavedWordsKit"]),
         .library(name: "WordListsKit", targets: ["WordListsKit"]),
+        .library(name: "ConjugationKit", targets: ["ConjugationKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -80,6 +81,12 @@ let package = Package(
         // migration, tombstones (v1.5 Workstream A). Zero deps (pure module).
         .target(name: "WordListsKit"),
         .testTarget(name: "WordListsKitTests", dependencies: ["WordListsKit"]),
+
+        // MARK: Verb conjugation engine — pure kana conjugator + lemma exceptions
+        // (v1.5 Workstream B; zero deps, golden-tested). Output is transient, never
+        // persisted as a VocabEntry.
+        .target(name: "ConjugationKit"),
+        .testTarget(name: "ConjugationKitTests", dependencies: ["ConjugationKit"]),
 
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
