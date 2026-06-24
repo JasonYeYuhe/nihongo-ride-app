@@ -64,12 +64,21 @@ public enum SyncMerge {
         return sorted.count > cap ? Array(sorted.suffix(cap)) : sorted
     }
 
-    // MARK: Saved-words deck — union (add-wins).
+    // MARK: Saved-words deck — union (add-wins). LEGACY (v1.4).
 
     /// Merges two saved-words decks as a union: a word saved on either device
     /// stays saved (local order first, then remote-only ids appended). This is
     /// add-wins — un-saving doesn't propagate across devices (a curated-favorites
     /// MVP choice); a future version could use per-id tombstones for that.
+    ///
+    /// **Superseded in v1.5 by ``wordLists(_:_:)``.** The user-facing ★ deck is now
+    /// the default ``WordListsKit/WordList`` (id `"default"`), merged field-level.
+    /// The v1.4 `SavedWords:deck` CloudKit record lives on only as a one-way-compat
+    /// *mirror* of that default list (the app folds an incoming deck into the
+    /// default via union and re-writes it for still-v1.4 peers — see
+    /// `AppModel.foldLegacyDeck`). This pure union is retained for that mirror's
+    /// tests and for any code still reading the legacy store; new word-list merges
+    /// must use ``wordLists(_:_:)``, not this.
     public static func savedWords(_ local: SavedWordsStore, _ remote: SavedWordsStore) -> SavedWordsStore {
         var ids = local.ids
         let have = Set(ids)
