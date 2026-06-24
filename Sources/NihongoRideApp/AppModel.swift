@@ -424,10 +424,7 @@ final class AppModel {
         screen = .playing
     }
 
-    // MARK: Legacy deck convergence + sync snapshots
-
-    /// Whether the one-time v1.4-deck convergence is done (see `foldLegacyDeck`).
-    var deckConverged: Bool { settings.deckConvergedV15 }
+    // MARK: Legacy deck mirror + sync snapshots
 
     /// All list ids including tombstoned ones — so a deletion also enqueues its
     /// record. Used by the sync controller's full re-enqueue.
@@ -439,26 +436,26 @@ final class AppModel {
         Dictionary(wordLists.lists.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
     }
 
-    /// Folds the legacy v1.4 `SavedWords:deck` ids into the default list **once**.
-    /// After convergence (`deckConvergedV15`) this is a no-op: continuing to union
-    /// a v1.4 peer's stale deck would resurrect words the user has since removed
-    /// (add-wins ping-pong). The default record stays enqueued during the
-    /// unconverged window, so the merged set is sent without a re-enqueue here.
+    /// Folds the legacy v1.4 `SavedWords:deck` ids into the default list (union).
+    ///
+    /// Runs on **every** fetch of the deck — the deck is a permanent v1.4-compat
+    /// mirror of the default list (the controller re-writes it whenever the default
+    /// changes), so a still-v1.4 peer's later ★ additions keep arriving instead of
+    /// being lost after a one-time window (the data-loss the adversarial review
+    /// caught). Union add-wins is exactly the cross-device semantics the default
+    /// list already has v1.5↔v1.5 — per-word un-save does not propagate (documented
+    /// MVP behavior) — so there is no resurrection asymmetry, and union reaches a
+    /// fixpoint so there is no ping-pong.
     private func foldLegacyDeck(_ ids: [String]) {
-        guard !settings.deckConvergedV15, !ids.isEmpty else { return }
+        guard !ids.isEmpty else { return }
         let before = wordLists.defaultList?.ids
         for id in ids { _ = wordLists.addWord(id, to: WordList.defaultID) }
-        if wordLists.defaultList?.ids != before { try? wordLists.save(to: wordListsURL) }
-    }
-
-    /// Marks deck convergence complete (idempotent). Called by the sync controller
-    /// after the first successful sync pass — by then the cloud deck has been
-    /// fetched+folded and our converged default has been sent (incl. a one-time
-    /// deck write for v1.4 peers). Thereafter the deck record is ignored entirely.
-    func markDeckConverged() {
-        guard !settings.deckConvergedV15 else { return }
-        settings.deckConvergedV15 = true
-        settings.save(to: .standard)
+        if wordLists.defaultList?.ids != before {
+            try? wordLists.save(to: wordListsURL)
+            // A v1.4 addition changed our default → propagate to v1.5 peers (and the
+            // controller refreshes the deck mirror because the default id is included).
+            syncController?.recordLocalChanges(listIDs: [WordList.defaultID])
+        }
     }
 
     func startGame() {

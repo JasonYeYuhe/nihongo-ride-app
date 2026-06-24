@@ -18,20 +18,10 @@ struct AppSettingsTests {
             iCloudSyncEnabled: false,
             dueReminderEnabled: true,
             dueReminderHour: 7,
-            deviceID: "device-abc",
-            deckConvergedV15: true
+            deviceID: "device-abc"
         )
         let decoded = try #require(AppSettings.decode(original.encoded()))
         #expect(decoded == original)
-    }
-
-    @Test("deckConvergedV15 defaults to false and an older blob without it stays false")
-    func deckConvergedDefaults() throws {
-        #expect(AppSettings.default.deckConvergedV15 == false)
-        // A pre-v1.5 blob has no key → must decode false so convergence runs once.
-        let json = Data(#"{"languageCode":"en","deviceID":"d1"}"#.utf8)
-        let decoded = try #require(AppSettings.decode(json))
-        #expect(decoded.deckConvergedV15 == false)
     }
 
     @Test("nil selectedLevel (mix all) survives a round-trip")

@@ -7,6 +7,10 @@ struct GameView: View {
     @State private var isPaused = false
     @State private var timeRemaining = 0.0
     @State private var keyboardUp = false   // iOS: software keyboard visible → compact layout
+    /// Vocab id whose "add to lists" sheet is open (long-press ★). While set, the
+    /// game must NOT consume keystrokes or advance the word — otherwise the sheet
+    /// would end up editing a *different* word than the one the user long-pressed.
+    @State private var addToListsID: String?
     private let ticker = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -33,7 +37,8 @@ struct GameView: View {
                         JourneyBar(session: session)
                     }
                     Spacer(minLength: 0)
-                    WordCard(session: session, language: model.languageCode, compact: keyboardUp)
+                    WordCard(session: session, language: model.languageCode, compact: keyboardUp,
+                             onLongPressStar: { addToListsID = $0 })
                     if !keyboardUp {
                         Spacer(minLength: 0).frame(maxHeight: 60)   // bias card lower; scene breathes above
                         controls
@@ -51,7 +56,7 @@ struct GameView: View {
             if !Screenshotter.isCapturing {
                 KeyCaptureView(
                     onKey: { character in
-                        guard !isPaused else { return }
+                        guard !isPaused, addToListsID == nil else { return }
                         switch session.input(character) {
                         case .completed: Sound.wordComplete()
                         case .rejected: Sound.mistake()
@@ -59,6 +64,7 @@ struct GameView: View {
                         }
                     },
                     onCommand: { command in
+                        guard addToListsID == nil else { return }   // sheet open → ignore keys
                         switch command {
                         case .escape: isPaused.toggle()
                         case .returnKey: if isPaused { isPaused = false }
@@ -78,12 +84,30 @@ struct GameView: View {
             if session.isFinished { model.finishGame() }
         }
         .onReceive(ticker) { _ in
-            guard session.mode == .timeAttack, !isPaused, !session.isFinished else { return }
+            // Sheet open → pause the time-attack clock too (it's a modal interruption).
+            guard session.mode == .timeAttack, !isPaused, addToListsID == nil,
+                  !session.isFinished else { return }
             timeRemaining = max(0, timeRemaining - 0.1)
             if timeRemaining <= 0 { Sound.finish(); model.finishGame() }
         }
         .onChange(of: session.isFinished) { _, finished in
             if finished { Sound.finish(); model.finishGame() }
+        }
+        .sheet(isPresented: Binding(get: { addToListsID != nil },
+                                    set: { if !$0 { addToListsID = nil } }),
+               onDismiss: {
+                   // Reclaim the game keyboard the sheet displaced — a touch-only
+                   // iPad would otherwise be stuck with no keyboard (App Review 2.1a).
+                   #if os(iOS)
+                   KeyboardSummon.summon()
+                   #endif
+               }) {
+            if let id = addToListsID {
+                AddToListsSheet(vocabID: id, isPresented: Binding(
+                    get: { addToListsID != nil },
+                    set: { if !$0 { addToListsID = nil } }))
+                    .presentationBackground(Theme.background)
+            }
         }
     }
 
@@ -302,8 +326,9 @@ private struct WordCard: View {
     /// True while the on-screen keyboard occupies the lower screen (iOS) —
     /// shrink everything so the card fits the visible upper area.
     var compact: Bool = false
-    /// Long-press the ★ to add the current word to multiple lists.
-    @State private var showingAddToLists = false
+    /// Long-press the ★ → open the "add to lists" sheet for the given vocab id.
+    /// Owned by GameView so it can suspend game input while the sheet is up.
+    var onLongPressStar: (String) -> Void = { _ in }
 
     var body: some View {
         VStack(spacing: compact ? 10 : 18) {
@@ -360,17 +385,7 @@ private struct WordCard: View {
             .accessibilityIdentifier("saveWordButton")
             .accessibilityLabel(saved ? (language == "zh" ? "已收藏,点按取消" : "Saved, tap to remove")
                                       : (language == "zh" ? "收藏此词" : "Save this word"))
-            .simultaneousGesture(LongPressGesture().onEnded { _ in showingAddToLists = true })
-            .sheet(isPresented: $showingAddToLists, onDismiss: {
-                // Reclaim the game keyboard the sheet displaced (touch-only iPad
-                // would otherwise be a dead end — App Review 2.1a).
-                #if os(iOS)
-                KeyboardSummon.summon()
-                #endif
-            }) {
-                AddToListsSheet(vocabID: id, isPresented: $showingAddToLists)
-                    .presentationBackground(Theme.background)
-            }
+            .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPressStar(id) })
         }
     }
 

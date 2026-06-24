@@ -67,12 +67,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         // Ensure our record zone exists (saving an existing zone is a no-op), and
         // on first run / re-enable queue all local records to upload.
         engine.state.add(pendingDatabaseChanges: [.saveZone(CKRecordZone(zoneID: zoneID))])
-        // Enqueue all local records on first run / re-enable, OR on the very first
-        // v1.5 launch even with existing sync state: the WordList records don't
-        // exist on the cloud yet (v1.4 only synced SRS/ride/odo/deck), and we must
-        // write the deck once so v1.4 peers converge. `deckConverged` flips after
-        // the first successful pass, so this self-limits to the upgrade window.
-        if saved == nil || fullResync || model?.deckConverged == false { enqueueAllLocal() }
+        if saved == nil || fullResync { enqueueAllLocal() }
         await syncNow()
     }
 
@@ -92,6 +87,11 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             changes.append(.saveRecord(recordID(RT.odo, device)))
         }
         changes += listIDs.map { .saveRecord(recordID(RT.list, $0)) }
+        // Keep the legacy v1.4 deck record mirrored to the default list so v1.4
+        // peers track the user's ★ edits (the deck is folded back on fetch).
+        if listIDs.contains(WordList.defaultID) {
+            changes.append(.saveRecord(recordID(RT.saved, Self.savedDeckKey)))
+        }
         guard !changes.isEmpty else { return }
         engine.state.add(pendingRecordZoneChanges: changes)
         scheduleSync()
@@ -112,10 +112,6 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
                 try await engine.fetchChanges()
                 try await engine.sendChanges()
                 model?.updateSyncStatus(.synced)
-                // First successful pass: the cloud deck (if any) has been fetched
-                // and folded into the default list, and our converged default +
-                // one-time deck write have been sent. Retire the legacy deck now.
-                model?.markDeckConverged()
             } catch {
                 report(error)
             }
@@ -141,11 +137,8 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         changes += model.odometer.slots.keys.map { .saveRecord(recordID(RT.odo, $0)) }
         // Every list (incl. tombstoned, so deletions propagate).
         changes += model.allWordListIDs.map { .saveRecord(recordID(RT.list, $0)) }
-        // One-time legacy-deck write (= default list ids) so v1.4 peers converge.
-        // Skipped once converged: we never touch the deck again (see AppModel).
-        if !model.deckConverged {
-            changes.append(.saveRecord(recordID(RT.saved, Self.savedDeckKey)))
-        }
+        // Legacy-deck mirror (= default list ids) so still-v1.4 peers stay in sync.
+        changes.append(.saveRecord(recordID(RT.saved, Self.savedDeckKey)))
         engine.state.add(pendingRecordZoneChanges: changes)
     }
 

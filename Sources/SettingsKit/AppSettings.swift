@@ -27,14 +27,6 @@ public struct AppSettings: Codable, Equatable, Sendable {
     /// Stable per-install id for the lifetime-odometer G-Counter (see SyncKit).
     public var deviceID: String
 
-    // v1.5 additions.
-    /// One-time flag: the legacy v1.4 `SavedWords:deck` iCloud record has been
-    /// folded into the default word list and (once) written back so v1.4 peers
-    /// converge. Once true we stop reading/writing the deck entirely — keeping it
-    /// would let a v1.4 peer's stale deck resurrect words the user removed
-    /// (add-wins ping-pong). See `AppModel.foldLegacyDeck`.
-    public var deckConvergedV15: Bool
-
     public init(
         languageCode: String = "en",
         showRomajiHint: Bool = true,
@@ -46,8 +38,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         iCloudSyncEnabled: Bool = true,
         dueReminderEnabled: Bool = false,
         dueReminderHour: Int = 20,
-        deviceID: String = "",
-        deckConvergedV15: Bool = false
+        deviceID: String = ""
     ) {
         self.languageCode = languageCode
         self.showRomajiHint = showRomajiHint
@@ -60,7 +51,6 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.dueReminderEnabled = dueReminderEnabled
         self.dueReminderHour = dueReminderHour
         self.deviceID = deviceID
-        self.deckConvergedV15 = deckConvergedV15
     }
 
     public static let `default` = AppSettings()
@@ -76,7 +66,6 @@ public struct AppSettings: Codable, Equatable, Sendable {
         case languageCode, showRomajiHint, soundEnabled, selectedMode, selectedLevel
         case practicePassages, practicePassageLevel
         case iCloudSyncEnabled, dueReminderEnabled, dueReminderHour, deviceID
-        case deckConvergedV15
     }
 
     public init(from decoder: Decoder) throws {
@@ -97,7 +86,6 @@ public struct AppSettings: Codable, Equatable, Sendable {
         dueReminderEnabled = try c.decodeIfPresent(Bool.self, forKey: .dueReminderEnabled) ?? d.dueReminderEnabled
         dueReminderHour = try c.decodeIfPresent(Int.self, forKey: .dueReminderHour) ?? d.dueReminderHour
         deviceID = try c.decodeIfPresent(String.self, forKey: .deviceID) ?? d.deviceID
-        deckConvergedV15 = try c.decodeIfPresent(Bool.self, forKey: .deckConvergedV15) ?? d.deckConvergedV15
     }
 
     // Always write every key — including `selectedLevel` as an explicit null when
@@ -116,7 +104,6 @@ public struct AppSettings: Codable, Equatable, Sendable {
         try c.encode(dueReminderEnabled, forKey: .dueReminderEnabled)
         try c.encode(dueReminderHour, forKey: .dueReminderHour)
         try c.encode(deviceID, forKey: .deviceID)
-        try c.encode(deckConvergedV15, forKey: .deckConvergedV15)
     }
 
     /// Clamps/repairs out-of-range primitive values and guarantees a `deviceID`.
