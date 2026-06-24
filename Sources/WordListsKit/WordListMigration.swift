@@ -9,9 +9,15 @@ extension WordListStore {
         case loadedExisting
         /// No `word-lists.json` → built the default list from `saved-words.json`.
         case migratedFromSavedWords
-        /// `word-lists.json` existed but was unreadable → quarantined to `.corrupt`
-        /// and rebuilt from `saved-words.json` (at worst keeps the default list).
+        /// `word-lists.json` existed and was readable but failed to decode → the bad
+        /// bytes were quarantined to `.corrupt` and the store rebuilt from
+        /// `saved-words.json` (at worst keeps the default list).
         case recoveredFromCorrupt
+        /// `word-lists.json` exists but could not be *read* (transient I/O, file
+        /// protection unavailable at early launch). The file is left UNTOUCHED — we
+        /// return an in-memory default for this session and retry next launch rather
+        /// than clobbering possibly-good data with a rebuild.
+        case unreadableDeferred
         /// Neither file existed → fresh empty default list.
         case freshInstall
     }
@@ -41,17 +47,32 @@ extension WordListStore {
         let fm = FileManager.default
 
         if fm.fileExists(atPath: wordListsURL.path) {
-            if let data = try? Data(contentsOf: wordListsURL),
-               let decoded = try? JSONDecoder().decode(WordListStore.self, from: data) {
-                // Valid file. Repair (ensure default) + compact, persist only if changed.
+            // Distinguish "unreadable" (read throws) from "undecodable" (read OK,
+            // decode fails). Only the latter is corruption we should quarantine +
+            // rebuild; an unreadable file must NOT be overwritten.
+            let data: Data
+            do {
+                data = try Data(contentsOf: wordListsURL)
+            } catch {
+                var store = WordListStore()
+                store.ensureDefault(name: defaultName, now: now)
+                return (store, .unreadableDeferred)   // leave the file untouched, retry next launch
+            }
+
+            if let decoded = try? JSONDecoder().decode(WordListStore.self, from: data) {
+                // Valid file. Repair (ensure default) only; persist only if changed.
+                // Tombstone compaction is intentionally NOT run on the load path —
+                // it must run only after a successful cloud merge (see
+                // WordListStore.compactTombstones docs), else a not-yet-propagated
+                // deletion can be revived by the peer on the first fetch.
                 var store = decoded
                 store.ensureDefault(name: defaultName, now: now)
-                store.compactTombstones(now: now)
                 if store != decoded { try? store.save(to: wordListsURL) }
                 return (store, .loadedExisting)
             } else {
-                // Exists but unreadable → quarantine + rebuild (don't lose silently).
-                quarantineCorrupt(wordListsURL)
+                // Read OK but undecodable → genuine corruption: quarantine the bytes
+                // we already have + rebuild (don't lose silently).
+                quarantineCorrupt(data: data, original: wordListsURL)
                 let store = migrate(fromSaved: legacySavedWordsURL, defaultName: defaultName, now: now)
                 try? store.save(to: wordListsURL)
                 return (store, .recoveredFromCorrupt)
@@ -92,12 +113,11 @@ extension WordListStore {
         return legacy.ids ?? []
     }
 
-    /// Copies the raw bytes of a corrupt file to `<name>.corrupt` (atomic), for
-    /// post-mortem / recovery. Best-effort.
-    private static func quarantineCorrupt(_ url: URL) {
+    /// Writes the already-read bytes of a corrupt file to `<name>.corrupt` (atomic),
+    /// for post-mortem / recovery. Best-effort; takes the bytes directly so it never
+    /// re-reads (and so it works even if the file is replaced right after).
+    private static func quarantineCorrupt(data: Data, original url: URL) {
         let dest = url.appendingPathExtension("corrupt")
-        if let data = try? Data(contentsOf: url) {
-            try? data.write(to: dest, options: .atomic)
-        }
+        try? data.write(to: dest, options: .atomic)
     }
 }

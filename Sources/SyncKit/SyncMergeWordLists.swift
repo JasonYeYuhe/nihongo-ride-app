@@ -23,7 +23,11 @@ extension SyncMerge {
     /// The default "★" list uses the constant id ``WordList/defaultID`` on every
     /// device, so it converges to one record and never splits.
     ///
-    /// Commutative on the set of lists and on each field; idempotent.
+    /// Convergent: every field (ids set, name, deleted, deletedAt) agrees on both
+    /// devices regardless of merge direction, and the merge is idempotent. Display
+    /// *order* (list order and ids order) is local-first BY DESIGN — each device
+    /// keeps its own insertion order — so the two stores need not be byte-identical
+    /// (same intentional property as `savedWords`); they converge as sets.
     public static func wordLists(_ local: WordListStore, _ remote: WordListStore) -> WordListStore {
         var byID: [String: WordList] = [:]
         var order: [String] = []
@@ -48,8 +52,13 @@ extension SyncMerge {
         let have = Set(ids)
         for id in b.ids where !have.contains(id) { ids.append(id) }
 
-        // name: later nameUpdatedAt wins; tie → local (a).
-        let name = b.nameUpdatedAt > a.nameUpdatedAt ? b.name : a.name
+        // name: later nameUpdatedAt wins; exact-timestamp tie → deterministic,
+        // device-independent tie-break (lexicographically greater) so the chosen
+        // name is the same regardless of merge direction.
+        let name: String
+        if b.nameUpdatedAt > a.nameUpdatedAt { name = b.name }
+        else if a.nameUpdatedAt > b.nameUpdatedAt { name = a.name }
+        else { name = max(a.name, b.name) }
 
         // deleted: once-true-wins; deletedAt = later of the two (longer tombstone life).
         let deleted = a.deleted || b.deleted

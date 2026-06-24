@@ -164,6 +164,18 @@ struct WordListStoreTombstoneTests {
         #expect(ids.contains(recent.id))               // kept (still propagating)
         #expect(ids.contains(WordList.defaultID))      // default never dropped
     }
+
+    @Test("compaction drops a deleted list with NO deletedAt (no immortal tombstones)")
+    func compactNilDeletedAt() throws {
+        // Hand-edited / forward-written shape: deleted:true with deletedAt absent.
+        let json = #"{"lists":[{"id":"default","name":"★","isDefault":true},{"id":"z","name":"Zombie","deleted":true}]}"#
+        var store = try #require(try? JSONDecoder().decode(WordListStore.self, from: Data(json.utf8)))
+        #expect(store.list(id: "z")?.deleted == true)
+        #expect(store.list(id: "z")?.deletedAt == nil)
+        store.compactTombstones(now: t(0))
+        #expect(store.list(id: "z") == nil)            // dropped despite nil deletedAt
+        #expect(store.defaultList != nil)              // default kept
+    }
 }
 
 // MARK: - Persistence & migration
@@ -248,5 +260,61 @@ struct WordListStoreMigrationTests {
         #expect(store.lists.count == 2)
         #expect(store.defaultList?.isDefault == true)                 // inferred from constant id
         #expect(store.list(id: "x")?.deleted == false)               // defaulted
+    }
+
+    @Test("element-tolerant decode: a malformed/non-object entry is skipped, the rest survive")
+    func elementTolerantDecode() throws {
+        // entry 1 missing `id`, entry 2 a non-object, entry 3 valid → only the valid one loads.
+        let json = #"{"lists":[{"name":"NoId"},"garbage",{"id":"keep","name":"Keep","ids":["a"]}]}"#
+        let store = try #require(try? JSONDecoder().decode(WordListStore.self, from: Data(json.utf8)))
+        #expect(store.lists.map(\.id) == ["keep"])
+    }
+
+    @Test("loadOrMigrate keeps surviving named lists when ONE entry is malformed (not corrupt-rebuild)")
+    func loadOrMigratePartial() throws {
+        let wl = tmp(); let saved = tmp()
+        let corruptBackup = wl.appendingPathExtension("corrupt")
+        defer { for u in [wl, saved, corruptBackup] { try? FileManager.default.removeItem(at: u) } }
+        try Data(#"{"lists":[{"id":"default","name":"★","ids":["d1"]},{"badentry":1},{"id":"keep","name":"Keep","ids":["k1"]}]}"#.utf8).write(to: wl)
+        let (store, outcome) = WordListStore.loadOrMigrate(
+            wordListsURL: wl, legacySavedWordsURL: saved, defaultName: "★", now: t(0))
+        #expect(outcome == .loadedExisting)                          // NOT recoveredFromCorrupt
+        #expect(store.list(id: "keep")?.ids == ["k1"])              // named list survived
+        #expect(store.defaultList?.ids == ["d1"])
+        #expect(!FileManager.default.fileExists(atPath: corruptBackup.path))   // nothing quarantined
+    }
+
+    @Test("loadOrMigrate does NOT compact tombstones on load (compaction is post-sync only)")
+    func loadDoesNotCompact() throws {
+        let wl = tmp(); let saved = tmp()
+        defer { try? FileManager.default.removeItem(at: wl); try? FileManager.default.removeItem(at: saved) }
+        var s = WordListStore(); s.ensureDefault(name: "★", now: t(0))
+        let gone = try s.createList(name: "Gone", now: t(0)).get()
+        _ = s.softDelete(gone.id, now: t(0))               // deletedAt = t(0)
+        try s.save(to: wl)
+        // Load far past the 30-day TTL; the tombstone must SURVIVE the load
+        // (compacting here would let a peer revive the deletion on first fetch).
+        let now = t(100 * 24 * 60 * 60)
+        let (store, outcome) = WordListStore.loadOrMigrate(
+            wordListsURL: wl, legacySavedWordsURL: saved, defaultName: "★", now: now)
+        #expect(outcome == .loadedExisting)
+        #expect(store.list(id: gone.id)?.deleted == true)  // tombstone retained, not compacted at load
+    }
+
+    @Test("an existing-but-unreadable word-lists.json is left untouched (unreadableDeferred), not clobbered")
+    func unreadableDeferred() throws {
+        // A directory at the path makes Data(contentsOf:) throw while fileExists is true.
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("wl-unread-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let saved = tmp()
+        defer { try? FileManager.default.removeItem(at: dir); try? FileManager.default.removeItem(at: saved) }
+        let (store, outcome) = WordListStore.loadOrMigrate(
+            wordListsURL: dir, legacySavedWordsURL: saved, defaultName: "★", now: t(0))
+        #expect(outcome == .unreadableDeferred)
+        #expect(store.activeLists.count == 1)              // in-memory default for this session
+        #expect(!FileManager.default.fileExists(atPath: dir.appendingPathExtension("corrupt").path))
+        var isDir: ObjCBool = false
+        #expect(FileManager.default.fileExists(atPath: dir.path, isDirectory: &isDir) && isDir.boolValue)
     }
 }

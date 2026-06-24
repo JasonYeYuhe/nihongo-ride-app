@@ -85,6 +85,28 @@ struct SyncMergeWordListsTests {
         #expect(merged.defaultList?.ids.contains("x") == true)
     }
 
+    @Test("name LWW tie-break is deterministic and commutative on equal timestamps")
+    func nameTieCommutative() {
+        let a = WordListStore(lists: [list("L", name: "Apple", ids: [], nameAt: t(10))])
+        let b = WordListStore(lists: [list("L", name: "Banana", ids: [], nameAt: t(10))])
+        let ab = SyncMerge.wordLists(a, b).list(id: "L")?.name
+        let ba = SyncMerge.wordLists(b, a).list(id: "L")?.name
+        #expect(ab == ba)            // commutative even on exact-timestamp tie
+        #expect(ab == "Banana")      // deterministic max() tie-break
+    }
+
+    @Test("whole-list deletion propagates while BOTH sides still hold the list (why compaction stays post-sync)")
+    func deletionPropagatesBeforeCompaction() {
+        // Supported flow: A tombstoned L, B still has L alive; first merge carries the
+        // deletion via once-true-wins because both sides still hold id L.
+        let aDeleted = WordListStore(lists: [def(ids: []), list("L", name: "L", ids: ["x"], nameAt: t(0), deleted: true, deletedAt: t(5))])
+        let bAlive = WordListStore(lists: [def(ids: []), list("L", name: "L", ids: ["x"], nameAt: t(0))])
+        #expect(SyncMerge.wordLists(bAlive, aDeleted).list(id: "L")?.deleted == true)
+        // If A had COMPACTED L away before this merge, the union would re-add B's alive
+        // L — which is exactly why compaction is deferred to post-sync (guarded by the
+        // WordListsKit loadDoesNotCompact test).
+    }
+
     @Test("merge is idempotent and does not oscillate over repeated fetch/send rounds")
     func idempotentNoOscillation() {
         let local = WordListStore(lists: [

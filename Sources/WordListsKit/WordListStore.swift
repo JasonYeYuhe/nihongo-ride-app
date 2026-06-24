@@ -26,6 +26,30 @@ public struct WordListStore: Codable, Sendable, Equatable {
         self.lists = lists
     }
 
+    // MARK: Codable — element-level tolerant decode
+
+    private enum CodingKeys: String, CodingKey { case lists }
+
+    /// Decodes a value that can fail without taking the whole array down with it.
+    private struct FailableWordList: Decodable {
+        let value: WordList?
+        init(from decoder: Decoder) throws { value = try? WordList(from: decoder) }
+    }
+
+    /// Element-tolerant decode: a single malformed list entry (missing `id`, wrong
+    /// type, not an object) is *skipped*, not fatal — so one bad entry can't strand
+    /// every named list by routing the whole file to the corrupt-rebuild path. The
+    /// `lists` key being absent / not an array is still a genuine-corruption throw.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.lists = try c.decode([FailableWordList].self, forKey: .lists).compactMap(\.value)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(lists, forKey: .lists)
+    }
+
     // MARK: Accessors
 
     /// Active (non-deleted) lists, default first.
@@ -145,20 +169,30 @@ public struct WordListStore: Codable, Sendable, Equatable {
     }
 
     /// Drops soft-deleted (non-default) lists whose tombstone is older than
-    /// ``tombstoneTTL``.
+    /// ``tombstoneTTL``. A tombstone with no `deletedAt` (degenerate state only
+    /// reachable via a hand-edit / forward-write) is treated as immediately
+    /// compactable so it can't become an immortal hidden list.
+    ///
+    /// ⚠️ Must run ONLY *after* a successful cloud merge — never on the load path
+    /// (see ``loadOrMigrate(wordListsURL:legacySavedWordsURL:defaultName:now:)``).
+    /// Compacting before a deletion has propagated lets a peer that still holds the
+    /// list resurrect it on the next fetch (the merge unions a remote-only list back
+    /// in). Deferring compaction to post-sync keeps the tombstone alive long enough
+    /// to spread.
     public mutating func compactTombstones(now: Date = Date()) {
         let cutoff = now.addingTimeInterval(-Self.tombstoneTTL)
-        lists.removeAll { $0.deleted && !$0.isDefault && ($0.deletedAt ?? .distantFuture) < cutoff }
+        lists.removeAll { $0.deleted && !$0.isDefault && ($0.deletedAt ?? .distantPast) < cutoff }
     }
 
     // MARK: Persistence (synchronous, atomic — red line: no Task.detached writes)
 
-    /// Atomically writes the store, then reads it back and decodes it to verify
-    /// the write round-trips (§A2 "原子写 + 读回校验"). Throws if the verify fails.
+    /// Verifies the encoded bytes round-trip back to a decodable store *before*
+    /// touching the target, then writes atomically (§A2 "原子写 + 读回校验"). Verifying
+    /// in memory first means a bad encode throws without ever replacing the good
+    /// on-disk file; the atomic write then protects against torn writes.
     public func save(to url: URL) throws {
         let data = try JSONEncoder().encode(self)
+        _ = try JSONDecoder().decode(WordListStore.self, from: data)   // round-trip verify pre-write
         try data.write(to: url, options: .atomic)
-        let back = try Data(contentsOf: url)
-        _ = try JSONDecoder().decode(WordListStore.self, from: back)
     }
 }
