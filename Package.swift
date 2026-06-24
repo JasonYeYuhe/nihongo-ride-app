@@ -18,6 +18,7 @@ let package = Package(
         .library(name: "SyncKit", targets: ["SyncKit"]),
         .library(name: "NotificationKit", targets: ["NotificationKit"]),
         .library(name: "SavedWordsKit", targets: ["SavedWordsKit"]),
+        .library(name: "WordListsKit", targets: ["WordListsKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -63,8 +64,8 @@ let package = Package(
         .target(name: "SettingsKit"),
         .testTarget(name: "SettingsKitTests", dependencies: ["SettingsKit"]),
 
-        // MARK: iCloud sync core — pure merge of SRS / history / odometer / saved (v1.2 Phase A, +v1.4).
-        .target(name: "SyncKit", dependencies: ["ReviewKit", "JournalKit", "SavedWordsKit"]),
+        // MARK: iCloud sync core — pure merge of SRS / history / odometer / saved / word-lists (v1.2 Phase A, +v1.4, +v1.5).
+        .target(name: "SyncKit", dependencies: ["ReviewKit", "JournalKit", "SavedWordsKit", "WordListsKit"]),
         .testTarget(name: "SyncKitTests", dependencies: ["SyncKit"]),
 
         // MARK: SRS due-reminder scheduling — pure planner over the review store (v1.2 Phase A).
@@ -75,10 +76,15 @@ let package = Package(
         .target(name: "SavedWordsKit"),
         .testTarget(name: "SavedWordsKitTests", dependencies: ["SavedWordsKit"]),
 
+        // MARK: Word lists — N named user-curated lists w/ CRUD, caps, corruption-aware
+        // migration, tombstones (v1.5 Workstream A). Zero deps (pure module).
+        .target(name: "WordListsKit"),
+        .testTarget(name: "WordListsKitTests", dependencies: ["WordListsKit"]),
+
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit"],
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]
