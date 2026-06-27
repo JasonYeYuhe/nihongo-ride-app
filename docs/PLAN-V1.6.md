@@ -142,3 +142,20 @@
 - bump `MARKETING_VERSION 1.6`;build **macOS 9 / iOS 10**。
 - 元数据/截图自动继承;What's New 双语写动词变形(明确「N5–N3 起步」若降级);若 B1 落地,EDRDG 致谢同 commit 进 About。
 - 全 API 提交(`scripts/submit_1_5.py` 为模板改 `submit_1_6.py`,或泛化)。1.5 须先上架(一次一个版本在审)。
+
+---
+
+## 11. 实现状态(2026-06-27,opus-4-8)= 代码完成 ✅
+
+| 阶段 | 状态 | commit |
+|---|---|---|
+| **Gate-0** | ✅ GO(N5–N3 98.3%,引擎修+68 词 golden) | 7c68999 / 658376e |
+| **B1 数据写回** | ✅ 2305 vc + 数据通路 golden + 分类器四修 + EDRDG 致谢;650 る动词 2-pass 对抗校验过 | 7b87a97 / 3c194f6 / 486e1e4 |
+| **B3a 抽象** | ✅ 独立 ConjugationSession(结构性零写 SRS)+ vc→VerbClass + 6 测试 | 2dad447 |
+| **B3b UI** | ✅ GameMode.conjugation + 复用 .playing 键盘路径 + 菜单/结算 + headless 渲染验证 | 5cbcbad |
+| **§5 CKRecord 硬化** | ✅ `as!`→`as?` 降级 | a1c86c4 |
+| **最终对抗 review** | ✅ 0 红线违规/0 critical;2 真问题已修 | 96888d8 |
+
+`swift test` **170/31 全绿**。`走る→意志形→はしろう` 渲染正确。
+
+**剩余 = 发版门(须等 v1.5 上架解锁「一次一个版本在审」)**:bump 1.6(mac 9/iOS 10)→ 签名 Release 启动自测(CKSyncEngine 崩溃门;就地跑 `build-appstore*.sh`)→ `submit_1_6.py`(What's New 双语)→ ASC 提交。**诚实边界(留 Jason 设备)**:触屏软键盘 2.1a 实机(结构同已上架 GameView)、双语形标签母语审(7 标准语法术语)、双设备 iCloud。
