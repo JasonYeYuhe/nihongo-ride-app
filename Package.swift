@@ -54,7 +54,10 @@ let package = Package(
         .testTarget(name: "ReviewKitTests", dependencies: ["ReviewKit"]),
 
         // MARK: Game loop — word queue, scoring, SRS recording (UI-independent).
-        .target(name: "GameCore", dependencies: ["RomajiKana", "VocabKit", "ReviewKit"]),
+        // Depends on ConjugationKit for the v1.6 conjugation mode (vc→VerbClass mapping
+        // + ConjugationSession). The app reaches CK transitively through GameCore, so the
+        // app target / project.yml need no direct CK dependency (PLAN-V1.6 §4).
+        .target(name: "GameCore", dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "ConjugationKit"]),
         .testTarget(name: "GameCoreTests", dependencies: ["GameCore"]),
 
         // MARK: Ride journal — append-only run history + streak/trend analytics.
