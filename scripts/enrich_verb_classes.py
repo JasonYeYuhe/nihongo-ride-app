@@ -17,6 +17,13 @@ Run:  python3 scripts/enrich_verb_classes.py [--jmdict PATH_TO_JMdict_e[.gz]]
 The gate for promoting Workstream B into v1.5 is NOT this coverage % — it is the
 ConjugationKit golden set running 100% correct (see PLAN-V1.5 §B0 决策闸). This
 script quantifies how load-bearing JMdict is, to inform the JMdict go/no-go.
+
+WRITE mode (--write, PLAN-V1.6 §B1): stamps the DERIVED verb class (`vc`, a
+VerbClass.rawValue string) into the vocab JSON. Only the derived class LABEL is
+written — no JMdict text is copied. Verb-class facts come from EDRDG's JMdict_e
+(© EDRDG, used under CC-BY-SA 4.0; the in-app About screen carries the attribution).
+Bare suru-verbs (vs-s) and entries JMdict can't disambiguate get NO `vc` (withheld),
+so they never enter the conjugation pool.
 """
 from __future__ import annotations
 import argparse
@@ -162,9 +169,10 @@ def classify(entry, jmdict):
         if surface.endswith("する") and not has_noun and has_kanji(surface[:-2]):
             return None, "suru-verb-withheld"          # bare suru-verb: WITHHOLD (§3)
         return "suru", "heuristic"                     # katakana suru-noun (コピーする)
-    # Kuru is ONLY the verb 来る — never any verb whose reading happens to end くる
-    # (作る/つくる, 送る/おくる are godan_r, resolved below by JMdict).
-    if kana == "くる" or surface.endswith("来る"):
+    # Kuru is ONLY the irregular verb 来る (reading …くる). Require BOTH the 来る surface
+    # AND a くる reading: excludes 作る/送る (surface not 来る) and 来る/きたる (the godan_r
+    # reading 来たる, kana ends る not くる → resolved as godan_r below by JMdict).
+    if kana == "くる" or (kana.endswith("くる") and surface.endswith("来る")):
         return "kuru", "heuristic"
 
     end = kana[-1] if kana else ""
@@ -198,9 +206,45 @@ def jmdict_lookup(jmdict, surface, kana):
     return None
 
 
+def write_mode(jmdict):
+    """Stamp the derived `vc` (VerbClass.rawValue) into each vocab JSON, in place.
+    Inserts `vc` right after `pos`; never touches other fields; idempotent (re-derives,
+    dropping any stale `vc`). Only a definite class is written — withheld/ambiguous/
+    unresolved/non-verb entries get no `vc`. Output matches the files' exact 2-space,
+    non-ASCII, no-trailing-newline format so diffs show only the added `vc` lines."""
+    total = Counter()
+    for f in sorted(glob.glob(VOCAB_GLOB)):
+        rows = json.load(open(f, encoding="utf-8"))
+        n = 0
+        new_rows = []
+        for e in rows:
+            cls, _src = classify(e, jmdict)
+            new_e = {}
+            for k, v in e.items():
+                if k == "vc":
+                    continue                       # drop stale vc; re-derive
+                new_e[k] = v
+                if k == "pos" and cls is not None:
+                    new_e["vc"] = cls
+            if cls is not None and "vc" not in new_e:
+                new_e["vc"] = cls                  # defensive: entry without pos
+            if cls is not None:
+                n += 1
+                total[cls] += 1
+            new_rows.append(new_e)
+        open(f, "w", encoding="utf-8").write(json.dumps(new_rows, ensure_ascii=False, indent=2))
+        print(f"  {os.path.basename(f)}: vc on {n}/{len(rows)} entries", file=sys.stderr)
+    print("=== vc written by class ===", file=sys.stderr)
+    for c, k in total.most_common():
+        print(f"  {k:>5}  {c}", file=sys.stderr)
+    print(f"  TOTAL  {sum(total.values())}", file=sys.stderr)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--jmdict", help="path to JMdict_e (xml or .gz)")
+    ap.add_argument("--write", action="store_true",
+                    help="stamp derived vc into the vocab JSON in place (PLAN-V1.6 §B1)")
     ap.add_argument("--samples", type=int, default=12, help="how many spot-check samples to print")
     args = ap.parse_args()
 
@@ -211,6 +255,14 @@ def main():
         print(f"loading JMdict from {args.jmdict} …", file=sys.stderr)
         jmdict = load_jmdict(args.jmdict)
         print(f"  {len(jmdict)} verb (surface,reading) keys", file=sys.stderr)
+
+    if args.write:
+        if not jmdict:
+            print("WARNING: --write without --jmdict leaves most る/godan_r unresolved; "
+                  "pass --jmdict for full coverage.", file=sys.stderr)
+        print("writing derived vc into vocab JSON …", file=sys.stderr)
+        write_mode(jmdict)
+        print("(re-reading written files for the coverage report below)", file=sys.stderr)
 
     rows = load_vocab()
 

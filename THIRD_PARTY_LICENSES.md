@@ -58,7 +58,17 @@ Practice 模式的「文章/句子」语料(`Sources/VocabKit/Resources/passages
 致谢」页保留署名:
 *"Practice sentences inspired by the Tatoeba Project (tatoeba.org), CC BY 2.0 FR."*
 
+## EDRDG — JMdict / EDICT(动词变形,v1.6)
+
+- **JMdict_e** —— © James William Breen & the Electronic Dictionary Research and
+  Development Group (EDRDG),**CC BY-SA 4.0** —— <https://www.edrdg.org/jmdict/j_jmdict.html>
+  / <https://www.edrdg.org/edrdg/licence.html>
+- **用途**:在**构建/数据派生阶段**用 JMdict 的动词词类(v1 / v5x / vs / kuru)为词库派生
+  每个动词的变形类标签 `vc`(`scripts/enrich_verb_classes.py --jmdict … --write`)。
+- **只 ship 派生事实**:发布包内**仅含派生出来的类标签字符串**(如 `"godan_r"`),**不含
+  JMdict 的任何词典文本/释义/例句**。署名在 app 内「关于/致谢」页常设展示(CC BY-SA 要求)。
+
 ## 计划中(后续引入,届时在此补全署名)
 
-- **JMdict / KANJIDIC2** —— © James William Breen & EDRDG,CC BY-SA 4.0 —— <https://www.edrdg.org/edrdg/licence.html>
+- **KANJIDIC2** —— © James William Breen & EDRDG,CC BY-SA 4.0 —— <https://www.edrdg.org/edrdg/licence.html>
 - **词频(可选)** —— wordfreq,CC BY-SA 4.0

@@ -88,6 +88,12 @@ let package = Package(
         .target(name: "ConjugationKit"),
         .testTarget(name: "ConjugationKitTests", dependencies: ["ConjugationKit"]),
 
+        // MARK: Derived verb-class data path — conservation invariants + end-to-end
+        // golden over the real vc-stamped vocab JSON (v1.6 B1, PLAN-V1.6 §3 layer-ii).
+        // Imports VocabKit (the data) + ConjugationKit (the engine); vc is mapped via
+        // VerbClass(rawValue:) — no extra dependency edge.
+        .testTarget(name: "ConjugationDataTests", dependencies: ["VocabKit", "ConjugationKit"]),
+
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",

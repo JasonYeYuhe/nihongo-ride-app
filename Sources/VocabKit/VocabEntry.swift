@@ -29,6 +29,11 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
     public let kana: String
     /// Part-of-speech tags, e.g. ["n"], ["v"], ["adj-i"].
     public let partsOfSpeech: [String]
+    /// Derived verb-conjugation class, as a `VerbClass.rawValue` string (e.g. "ichidan",
+    /// "godan_r", "suru"), or nil when the word isn't a conjugable verb OR its class is
+    /// ambiguous/withheld (PLAN-V1.6 §B1). Stored as an opaque String so VocabKit stays
+    /// free of any ConjugationKit dependency; GameCore maps it to `VerbClass`.
+    public let vc: String?
     /// JLPT level.
     public let jlpt: JLPTLevel
     /// Meanings keyed by language code: `["en": ["school"], "zh": ["学校"]]`.
@@ -42,6 +47,7 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case id, surface, kana
         case partsOfSpeech = "pos"
+        case vc
         case jlpt, meanings
         case exampleJP = "exJP"
         case exampleEN = "exEN"
@@ -55,6 +61,7 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
         partsOfSpeech: [String],
         jlpt: JLPTLevel,
         meanings: [String: [String]],
+        vc: String? = nil,
         exampleJP: String? = nil,
         exampleEN: String? = nil,
         exampleZH: String? = nil
@@ -63,6 +70,7 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
         self.surface = surface
         self.kana = kana
         self.partsOfSpeech = partsOfSpeech
+        self.vc = vc
         self.jlpt = jlpt
         self.meanings = meanings
         self.exampleJP = exampleJP

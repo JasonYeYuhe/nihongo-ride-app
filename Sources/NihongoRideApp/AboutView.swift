@@ -38,6 +38,11 @@ struct AboutView: View {
                        url: "https://github.com/Bluskyo/JLPT_Vocabulary",
                        en: "Word forms + authoritative readings + levels (the source of our -b / -k entries).",
                        zh: "词形 + 权威读音 + 等级(本作 -b / -k 词条来源)。")
+                credit("EDRDG — JMdict / EDICT",
+                       license: "CC BY-SA 4.0",
+                       url: "https://www.edrdg.org/jmdict/j_jmdict.html",
+                       en: "Verb-class facts for the conjugation practice (only the derived class label ships, no dictionary text).",
+                       zh: "动词变形练习的词类事实(仅 ship 派生的类标签,不含词典原文)。")
                 credit("Tatoeba Project",
                        license: "CC BY 2.0 FR",
                        url: "https://tatoeba.org",
