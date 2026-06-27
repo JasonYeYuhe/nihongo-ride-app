@@ -11,6 +11,25 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(dirname "$SCRIPT_DIR")"
 cd "$ROOT"
 
+# --- Build from an xattr-free copy when the source tree carries provenance ----
+# macOS Sequoia stamps com.apple.provenance on files under ~/Documents; that
+# xattr is STICKY (xattr -c / -d don't remove it) and makes codesign fail with
+# "resource fork, Finder information, or similar detritus not allowed". So when
+# it's present, mirror the working tree (incl. uncommitted changes) into a temp
+# dir with rsync — rsync WITHOUT -X drops xattrs — and re-exec there. The
+# NR_BUILD_COPY sentinel prevents re-looping; the copy also has no provenance so
+# the inner run's check is false anyway. Skip entirely if the tree is clean
+# (e.g. repo lives outside ~/Documents).
+if [[ -z "${NR_BUILD_COPY:-}" ]] && xattr "$ROOT/project.yml" 2>/dev/null | grep -q com.apple.provenance; then
+    WORK="$(mktemp -d "${TMPDIR:-/tmp}/nrbuild.XXXXXX")"
+    echo "==> Source carries provenance xattrs (codesign-hostile); building from a clean copy:"
+    echo "    $WORK"
+    rsync -a --exclude .git --exclude build --exclude .build \
+        --exclude '*.xcodeproj' --exclude .swiftpm "$ROOT/" "$WORK/"
+    export NR_BUILD_COPY="$ROOT"
+    exec "$WORK/scripts/build-appstore.sh" "$@"
+fi
+
 TEAM_ID="KHMK6Q3L3K"
 API_KEY_ID="${ASC_KEY_ID:-DMMFP6XTXX}"
 API_ISSUER="${ASC_ISSUER_ID:-c5671c11-49ec-47d9-bd38-5e3c1a249416}"
