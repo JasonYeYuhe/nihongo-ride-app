@@ -50,6 +50,10 @@ def is_hiragana(ch: str) -> bool:
     return "぀" <= ch <= "ゟ"
 
 
+def has_kanji(s: str) -> bool:
+    return any("一" <= ch <= "鿿" for ch in s)
+
+
 def has_okurigana(surface: str, kana: str) -> bool:
     """A genuine inflecting verb shows kana okurigana in its surface form
     (食べる ends る, 帰る ends る); a suru-noun is pure kanji (暗殺)."""
@@ -69,20 +73,25 @@ def load_jmdict(path: str):
     import xml.etree.ElementTree as ET
     opener = gzip.open if path.endswith(".gz") else open
     classes: dict[tuple[str, str], set[str]] = defaultdict(set)
-    # JMdict POS entities look like "Godan verb with `ru' ending" etc.; map the
-    # canonical entity codes (v1, v5r, v5k, ...) which appear as &v5r; expanded text.
-    # We parse <sense><pos> text and match known substrings.
+    # JMdict POS entities expand to text like "Godan verb with 'ru' ending". Different
+    # dumps quote the row letter with either a backtick+apostrophe (`ru') OR straight
+    # apostrophes ('ru') — we strip BOTH from the text before matching, so the needles
+    # below carry no quote chars. (Matching the quoted form is the bug that made every
+    # godan class silently fail to resolve; see PLAN-V1.6 §Gate-0.) The "with X ending"
+    # prefix keeps su/tsu and u/ku/ru from cross-matching.
     POS_TEXT = [
         ("Ichidan verb", "ichidan"),
-        ("Godan verb with `u'", "godan_u"),
-        ("Godan verb with `ku'", "godan_k"),
-        ("Godan verb with `gu'", "godan_g"),
-        ("Godan verb with `su'", "godan_s"),
-        ("Godan verb with `tsu'", "godan_t"),
-        ("Godan verb with `nu'", "godan_n"),
-        ("Godan verb with `bu'", "godan_b"),
-        ("Godan verb with `mu'", "godan_m"),
-        ("Godan verb with `ru'", "godan_r"),
+        ("Godan verb with u ending", "godan_u"),
+        ("Godan verb with ku ending", "godan_k"),
+        ("Godan verb with gu ending", "godan_g"),
+        ("Godan verb with su ending", "godan_s"),
+        ("Godan verb with tsu ending", "godan_t"),
+        ("Godan verb with nu ending", "godan_n"),
+        ("Godan verb with bu ending", "godan_b"),
+        ("Godan verb with mu ending", "godan_m"),
+        ("Godan verb with ru ending", "godan_r"),
+        ("Godan verb - -aru special class", "godan_r"),       # ござる/くださる: engine handles via lemma exc.
+        ("Godan verb - Iku/Yuku special class", "godan_k"),   # 行く: engine handles via lemma exc.
         ("suru verb", "suru"),
         ("Kuru verb", "kuru"),
     ]
@@ -94,7 +103,7 @@ def load_jmdict(path: str):
         rebs = [r.text for r in elem.findall("./r_ele/reb") if r.text]
         cls = set()
         for pos in elem.findall("./sense/pos"):
-            txt = pos.text or ""
+            txt = (pos.text or "").replace("`", "").replace("'", "")
             for needle, c in POS_TEXT:
                 if needle in txt:
                     cls.add(c)
@@ -141,8 +150,21 @@ def classify(entry, jmdict):
 
     # standalone irregulars
     if kana.endswith("する"):
-        return "suru", "heuristic"
-    if kana in ("くる", "来る") or kana.endswith("くる"):
+        # Three shapes reach here (suru-nouns with pure-kanji surface are caught above):
+        #   標準  さっする/察する → bare suru-VERB (vs-s): potential is せる, NOT できる.
+        #   罠    こする/擦る     → actually godan_r (kana coincidentally ends する).
+        #   仮名  コピーする      → katakana suru-noun, conjugates fine.
+        jc = jmdict_lookup(jmdict, surface, kana)
+        if jc and jc != "suru":
+            return jc, "jmdict"                       # 擦る/こする → godan_r etc.
+        if kana == "する":
+            return "suru", "heuristic"                # standalone する
+        if surface.endswith("する") and not has_noun and has_kanji(surface[:-2]):
+            return None, "suru-verb-withheld"          # bare suru-verb: WITHHOLD (§3)
+        return "suru", "heuristic"                     # katakana suru-noun (コピーする)
+    # Kuru is ONLY the verb 来る — never any verb whose reading happens to end くる
+    # (作る/つくる, 送る/おくる are godan_r, resolved below by JMdict).
+    if kana == "くる" or surface.endswith("来る"):
         return "kuru", "heuristic"
 
     end = kana[-1] if kana else ""
@@ -212,7 +234,7 @@ def main():
             samples[src].append(f"{e.get('surface')}/{e.get('kana')} pos={e.get('pos')} -> {cls}")
 
     # report
-    SRC_ORDER = ["exact", "heuristic", "heuristic-suru", "jmdict", "ambiguous-ru", "unresolved"]
+    SRC_ORDER = ["exact", "heuristic", "heuristic-suru", "jmdict", "ambiguous-ru", "suru-verb-withheld", "unresolved"]
     def resolved(src): return src in ("exact", "heuristic", "heuristic-suru", "jmdict")
 
     print("\n=== B0 verb-class coverage by JLPT and source (MEASURE ONLY) ===")
