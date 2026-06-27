@@ -40,6 +40,12 @@
 
 **决策**:轨 A 覆盖足够 + 轨 B 两层 golden 全绿 → B 进 1.6;否则 N2/N1 池太薄就**只出 N5–N3**(优雅降级,菜单按池大小 gate),仍可进;若核心集都过不了 → B 退回继续打磨,本期改出小功能(见 §7 备选)。
 
+### Gate-0 实测结果(2026-06-27,opus-4-8)= **GO** ✅(commit 7c68999)
+
+- **轨 A — JMdict 覆盖(EDRDG JMdict_e,21014 动词键)按 JLPT**:N5 80.2% / N4 81.6% / N3 91.8% / N2 86.7% / N1 92.4%。**N5–N3 = 747 动词:无 JMdict 67.1% → 含 JMdict 87.4%**,残留歧义る 仅 **88/747**(无 vc、排除出池=优雅)。**N2/N1 池健康,无需「只出 N5–N3」降级**。
+- **轨 B — 引擎修复 + layer-(i) golden 全绿**:`suruForm` 文档化为「suru-noun 组合 + 独立する」契约(引擎逻辑字节不变);删 `察する→さっできる` 错 golden(改数据层 withhold + 真实数据 `べんきょうする` golden + 独立する 守卫);新 `ConjugatorCoreSetTests` = **68 核心动词(全 12 类)× 7 形 = 476 断言,对 3 独立语法 pass 一致表决(0 冲突)的 ground truth 100% 匹配**。`swift test` 156/29 绿。
+- **⚠️ B1 必修分类器 bug(Gate-0 暴露,引擎无错、错在数据派生层)**:① `kana.endswith("くる")` 贪婪 → **作る/つくる 误判 kuru**(应 godan_r);② JMdict `(kana,kana)` 回退键撞同音异形 → **帰る/切る 误判 ichidan**(变/着る 串味);③ 裸 suru-verb(surface 以する 结尾,如 察/愛/関/対…する 共 ~24 个 + 陷阱 擦る/こする)→ **必须 withhold 或 JMdict 解析**;④ 真实数据 N5 的 散歩/掃除/勉強/練習 把 kana 存成「…する」且 pos=['v'](surface 纯汉字→走 noun-gate 正确得 suru,引擎 drop する 仍对)。B1 写回前必须修 ①②③(否则池里出现错变形),layer-(ii) 数据通路 golden 钉死。
+
 ---
 
 ## 3. Phase B1 —— 数据(过 Gate-0 后)
