@@ -75,6 +75,18 @@ struct ConjugationDataTests {
         }
     }
 
+    @Test("zuru verbs (演ずる/応ずる… vz) are never labeled ichidan — withheld or godan_r")
+    func zuruNotIchidan() {
+        // vz verbs shift the stem ず→じ and the engine can't conjugate them, so they
+        // must be withheld (no vc). Only genuine godan_r verbs ending ずる (削る/譲る)
+        // keep a vc. None may be ichidan (would mis-conjugate 演ずる→えんずます).
+        for e in Self.entries where e.kana.hasSuffix("ずる") {
+            #expect(e.vc != "ichidan", "\(e.surface)/\(e.kana) ends ずる but is labeled ichidan (vz must withhold)")
+        }
+        #expect(Self.entries.first { $0.kana == "えんずる" }?.vc == nil)   // 演ずる withheld
+        #expect(Self.entries.first { $0.kana == "けずる" }?.vc == "godan_r")  // 削る kept
+    }
+
     // MARK: end-to-end core-set golden (data → engine, engine-independent ground truth)
 
     private struct Core { let surface, kana, vc, te, potential: String }

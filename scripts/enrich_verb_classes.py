@@ -111,6 +111,14 @@ def load_jmdict(path: str):
         cls = set()
         for pos in elem.findall("./sense/pos"):
             txt = (pos.text or "").replace("`", "").replace("'", "")
+            # vz "Ichidan verb - zuru verb" (演ずる/応ずる…): the る is part of ずる and the
+            # stem shifts ず→じ, so it is NOT a plain ichidan — the engine can't conjugate
+            # it. Mark it "zuru" (a withhold sentinel) and do NOT also tag it ichidan
+            # (the "Ichidan verb" substring would otherwise match). Genuine godan_r verbs
+            # that happen to end ずる (削る/譲る/引きずる) are tagged v5r, not vz, so unaffected.
+            if "zuru verb" in txt:
+                cls.add("zuru")
+                continue
             for needle, c in POS_TEXT:
                 if needle in txt:
                     cls.add(c)
@@ -198,11 +206,15 @@ def jmdict_lookup(jmdict, surface, kana):
         return None
     for key in ((surface, kana), (kana, kana), (surface, surface)):
         cls = jmdict.get(key)
-        if cls and len(cls) == 1:
-            return next(iter(cls))
-        if cls:
-            # multiple senses (e.g. v1 & v5r homographs) → ambiguous, skip
-            return None
+        if not cls:
+            continue
+        if cls == {"zuru"}:
+            return None                      # vz verb → withhold (engine can't conjugate)
+        usable = cls - {"zuru"}
+        if len(usable) == 1:
+            return next(iter(usable))
+        # multiple senses (e.g. v1 & v5r homographs) → ambiguous, skip
+        return None
     return None
 
 
