@@ -114,9 +114,6 @@ final class AppModel {
     private(set) var lastConjugationSummary: ConjugationSummary?
     /// True while the results screen is showing a conjugation drill (vs a ride).
     private(set) var resultsAreConjugation = false
-    /// Set when a conjugation drill couldn't start (empty pool at the chosen level) so
-    /// the menu can show a transient note instead of silently doing nothing.
-    var conjugationUnavailable = false
     private(set) var reviewStore: ReviewStore
     private(set) var journal: RideJournal
     /// Lifetime odometer as a per-device G-Counter — the iCloud-sync vehicle for
@@ -488,6 +485,7 @@ final class AppModel {
         config.mode = .journey
         session = GameSession.makeSaved(
             ids: resolvable, vocab: .shared, review: reviewStore, config: config)
+        conjugationSession = nil   // defensive: a list/saved run must not route to the conjugation screen
         runStartedAt = Date()
         screen = .playing
     }
@@ -528,6 +526,7 @@ final class AppModel {
 
     func startGame() {
         if selectedMode == .conjugation { startConjugation(); return }
+        conjugationSession = nil   // defensive: a ride run must never route to the conjugation screen
         var config = GameSession.Config()
         config.languageCode = languageCode
         config.showRomajiHint = showRomajiHint
@@ -571,11 +570,10 @@ final class AppModel {
         config.level = selectedLevel
         config.promptCount = 12
         let built = ConjugationSession.make(vocab: .shared, config: config)
-        guard built.promptCount > 0 else {
-            conjugationUnavailable = true   // surfaced as a transient menu note
-            return
-        }
-        conjugationUnavailable = false
+        // Resolve-then-guard: an empty pool must not enter the (already-finished) screen.
+        // The menu surfaces this proactively via `conjugationPoolCount == 0`, so a no-op
+        // here is never silent.
+        guard built.promptCount > 0 else { return }
         session = nil
         conjugationSession = built
         runStartedAt = Date()

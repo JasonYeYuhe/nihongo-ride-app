@@ -140,7 +140,9 @@ struct MenuView: View {
             .accessibilityIdentifier("startButton")
             .accessibilityLabel(isConjugation ? (zhLang ? "开始动词变形练习" : "Start conjugation drill")
                                               : (zhLang ? "出发,开始骑行" : "Start ride"))
-            if isConjugation && model.conjugationUnavailable {
+            // Derived live from the pool (never a stale flag): updates as the level
+            // changes. With shipped data every level has verbs, so this stays hidden.
+            if isConjugation && model.conjugationPoolCount == 0 {
                 Text(zhLang ? "该等级暂无可练的动词,换个等级试试。"
                             : "No verbs to drill at this level — try another level.")
                     .font(.caption).foregroundStyle(Theme.accent)
