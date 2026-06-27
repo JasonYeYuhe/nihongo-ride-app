@@ -92,12 +92,23 @@ struct ConjugatorGoldenTests {
             .negative: "べんきょうしない", .pastNegative: "べんきょうしなかった",
             .potential: "べんきょうできる", .volitional: "べんきょうしよう",
         ]))
-        // suru-verb whose reading already ends in する
-        check(Golden(label: "察する", kana: "さっする", cls: .suru, expect: [
-            .polite: "さっします", .te: "さっして", .potential: "さっできる",
+        // Real N5 data stores some suru-nouns with する already in the kana
+        // (勉強/べんきょうする, pos:["v"]). suruForm drops the trailing する, so the
+        // paradigm is identical to the no-する representation above — lock that in.
+        check(Golden(label: "勉強する (kana incl. する)", kana: "べんきょうする", cls: .suru, expect: [
+            .polite: "べんきょうします", .te: "べんきょうして", .past: "べんきょうした",
+            .negative: "べんきょうしない", .pastNegative: "べんきょうしなかった",
+            .potential: "べんきょうできる", .volitional: "べんきょうしよう",
         ]))
         // Negative control: the suru-noun must NOT be conjugated as godan_u (べんきょって).
         #expect(Conjugator.conjugate(kana: "べんきょう", verbClass: .suru, form: .te) != "べんきょって")
+        // The former golden here pinned 察する(さっする).potential = さっできる — a real
+        // grammar BUG (察する is a bare suru-VERB, vs-s; its potential is 察せる). The
+        // engine can't tell さっする(→せる) from べんきょうする(→できる) by reading alone,
+        // so bare suru-verbs are WITHHELD at the data-derivation layer (no `vc`) — that
+        // protection is tested in B1's data-path golden (察する must carry no `vc`), not
+        // here. The `.suru` class contract is suru-nouns + standalone する only.
+        #expect(Conjugator.conjugate(kana: "する", verbClass: .suru, form: .potential) == "できる")
     }
 
     @Test("lemma exceptions: 行く て/た, ある negative, v5aru keigo polite stem")

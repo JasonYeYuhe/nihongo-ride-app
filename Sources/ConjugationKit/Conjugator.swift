@@ -141,9 +141,17 @@ public enum Conjugator {
         }
     }
 
-    /// する standalone, suru-verbs (察する→さっ+…), and suru-nouns
-    /// (勉強/べんきょう → べんきょう+…). The noun reading keeps its full kana as the
-    /// stem; a kana that ends in する drops it.
+    /// `.suru` is the class for standalone する and **suru-NOUN composition**
+    /// (noun reading + する: 勉強/べんきょう → べんきょう+します, potential べんきょうできる).
+    /// The noun reading is the stem; a kana that already shows する drops it, so both
+    /// data shapes — べんきょう and べんきょうする — yield the same paradigm.
+    ///
+    /// NOT modeled here: a bare suru-VERB (single stem + する, e.g. 察する/さっする, a
+    /// `vs-s` verb with pos:["v"] and no noun) whose potential is 〜せる (察せる), NOT
+    /// 〜できる. The engine cannot tell べんきょうする (→できる) from さっする (→せる) from
+    /// the reading alone, so these are WITHHELD at the data-derivation layer (no `vc`,
+    /// §3) and never reach the engine as `.suru`. The class contract is therefore:
+    /// `.suru` inputs are always suru-nouns or standalone する — never a bare suru-verb.
     private static func suruForm(kana: String, form: ConjugationForm) -> String? {
         let stem = kana.hasSuffix("する") ? String(kana.dropLast(2)) : kana
         switch form {
