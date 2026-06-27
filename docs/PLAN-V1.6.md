@@ -80,7 +80,7 @@
 | **suru 可能形 bug** | `Conjugator.swift:147` / `ConjugatorTests.swift:96-97` | 数据层不给裸 suru-verb 打 `vc`(§3)+ 题池排除 + 修/删错误 golden | S |
 | **两层 golden** | 新 `ConjugationDataTests` + 扩 `ConjugatorTests` | (i) 内存分类器 golden(Gate-0)+ (ii) 派生数据端到端 golden(发版闸,§2) | M |
 | **no-SRS 守卫测试** | GameCore tests | conjugation session 跑完对 ReviewStore/VocabStore 零写入(§4) | S |
-| **构建 xattr 修复** | `scripts/build-appstore.sh` + `-ios.sh` | 脚本顶部加 `xattr -rc "$ROOT"`(或定向删 `com.apple.provenance`),让构建可**就地**跑、退掉 /tmp clone 仪式。**关键**:clone 构建会静默漏掉未提交改动 = 发版正确性隐患。落地后先验证一次就地 archive 端到端 | M |
+| **构建 xattr 修复 ✅已做(ae11d46)** | `scripts/build-appstore.sh` + `-ios.sh` | ~~xattr -rc~~(provenance 是 sticky,删不掉)→ 改成**脚本检测到 provenance 时自动 rsync(无 -X 丢 xattr,带未提交改动)到临时副本再构建**。就地跑脚本即可,/tmp clone 仪式已退役。已验证就地 archive 端到端 codesign 通过 | — |
 | **EDRDG 致谢** | `AboutView.swift` | 同 B1 commit(§3) | S |
 | **CKRecord 守卫** | `CloudKitSyncController.swift:198` | `as! CKRecord` → `compactMapValues { $0.copy() as? CKRecord }`,坏拷贝降级跳过而非崩整批 | S |
 
@@ -92,7 +92,7 @@
 |---|---|---|
 | **R1 JMdict 覆盖不足** | 承重;纯启发式仅 ~23–26% | Gate-0 测量 + 策展 golden 100%;池薄则**只出 N5–N3**,菜单按池大小 gate(优雅降级,非阻塞) |
 | **R2 自信错变形** | 误派生 `vc` / 仅靠读音(Conjugator 忽略 `lemma`,:48-61);suru-noun↔suru-verb 冲突**今日代码确实错** | 题池只收无歧义类 + 数据通路 golden;引擎不能从 kana 单独消歧的类绝不出题 |
-| **R3 构建正确性** | clone vs 就地;provenance xattr | 落 xattr 修复 + 发版前验证一次就地 archive |
+| **R3 构建正确性** | provenance xattr 致 codesign 失败 | **已解决(ae11d46)**:脚本自动从 rsync 临时副本构建(带未提交改动),就地跑即可 |
 | **R4 标签/释义质量** | 用户可见的引擎生成语法串 + 新双语标签 | 母语审一轮(en+zh),测试管不了 |
 
 ---
@@ -103,7 +103,7 @@
 2. **B1**:`vc:String?` 字段 + WRITE 模式派生(**裸 suru-verb withhold**)+ 守恒测试 + **数据通路 golden(layer ii)** + EDRDG 致谢(同 commit)。闸:layer ii 100% + 守恒不变量。
 3. **B3a 抽象先行**:GameCore 依赖 CK + `GameItem`/prompt 抽象(或独立 ConjugationSession),**no-SRS 零写入测试先绿**。
 4. **B3b UI**:`GameMode.conjugation` + `makeConjugation` + `.playing` 接线 + 菜单/空池 gating + 母语审。
-5. **硬化 + 发版**:构建脚本 xattr 修复(验证就地 archive)+ CKRecord 守卫 + bump 1.6(**macOS build ≥9 / iOS build ≥10**,> v1.5 的 8/9)+ Release 启动自测(从 /tmp clone,除非 xattr 修复已生效)+ 最终对抗 review + ASC 提交。
+5. **硬化 + 发版**:~~构建脚本 xattr 修复~~(已做 ae11d46)+ CKRecord 守卫 + bump 1.6(**macOS build ≥9 / iOS build ≥10**,> v1.5 的 8/9)+ Release 启动自测(就地跑 `build-appstore.sh` 即可,脚本自动副本)+ 最终对抗 review + ASC 提交。
 5. **备选**(若 B 过不了闸或想要小版本):**弱词训练**(S,纯复用 `GameSession.makeSaved` + `ReviewStore.weakestCards(limit:)`)单独成 1.6,B 推 1.7。
 
 ---
@@ -127,7 +127,7 @@
 6. xcodegen 版本字面量:`CFBundleShortVersionString:$(MARKETING_VERSION)` / `CFBundleVersion:$(CURRENT_PROJECT_VERSION)` 显式引用 build setting。
 7. **构建号每平台严格递增**:当前 macOS=8 / iOS=9(v1.5)。1.6 用 **macOS≥9 / iOS≥10**。
 8. 不复制第三方版权内容(JMdict 仅取「动词类」事实 + EDRDG 归属;只 ship 派生类整数)。
-9. **构建从干净源跑**:repo 在 `~/Documents` 下有 `com.apple.provenance` xattr 致 codesign 失败;落 §5 的脚本 xattr 修复前,必须从 `/tmp` git clone 构建。
+9. **构建从干净源跑**:repo 在 `~/Documents` 下有 sticky `com.apple.provenance` xattr 致 codesign 失败。**已自动化(ae11d46)**:`build-appstore*.sh` 检测到即自动 rsync 到临时副本构建,**就地跑脚本即可**,无需手动 /tmp clone。
 
 ---
 
