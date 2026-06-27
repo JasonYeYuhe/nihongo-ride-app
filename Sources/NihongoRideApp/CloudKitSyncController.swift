@@ -195,7 +195,10 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         // handleSent. Sharing the same CKRecord instances across actors is a data
         // race (CKRecord's backing store isn't thread-safe). Copies give the
         // provider private instances; server records flow back via handleSent.
-        let cache = recordCache.mapValues { $0.copy() as! CKRecord }
+        // compactMapValues + `as?`: a copy that somehow isn't a CKRecord is dropped
+        // (the provider rebuilds a fresh record below via the `?? CKRecord(...)`
+        // fallback) rather than `as!`-trapping and crashing the whole sync batch.
+        let cache = recordCache.compactMapValues { $0.copy() as? CKRecord }
 
         return await CKSyncEngine.RecordZoneChangeBatch(pendingChanges: pending) { recordID in
             let name = recordID.recordName
