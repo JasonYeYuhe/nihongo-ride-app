@@ -98,6 +98,28 @@ enum Screenshotter {
         }
         render(RootView().environment(blind), size: size, to: directory + "/practice-blind.png")
 
+        // Conjugation drill (v1.6) — dictionary form + target-form label; type a couple
+        // keys so the answer shows progress. Pure-drawn (no native controls), so it
+        // renders faithfully unlike the menu.
+        let conj = makeModel()
+        conj.selectedMode = .conjugation
+        conj.startGame()
+        if let romaji = conj.conjugationSession?.currentRomaji {
+            for character in romaji.prefix(2) { _ = conj.conjugationSession?.input(character) }
+        }
+        render(RootView().environment(conj), size: size, to: directory + "/conjugation.png")
+
+        // Conjugation results — complete a few prompts, then finish.
+        let conjResults = makeModel()
+        conjResults.selectedMode = .conjugation
+        conjResults.startGame()
+        for _ in 0 ..< 5 {
+            guard let romaji = conjResults.conjugationSession?.currentRomaji else { break }
+            for character in romaji { _ = conjResults.conjugationSession?.input(character) }
+        }
+        conjResults.finishConjugation()
+        render(RootView().environment(conjResults), size: size, to: directory + "/conjugation-results.png")
+
         // About / Credits page — render the view directly so the screen-transition
         // animation doesn't catch it mid-flight.
         let about = makeModel()

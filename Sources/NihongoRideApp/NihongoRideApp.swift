@@ -144,8 +144,11 @@ struct RootView: View {
         switch model.screen {
         case .menu:    MenuView()
         case .playing:
-            if model.session?.mode == .practice { PracticeView() } else { GameView() }
-        case .results: ResultsView()
+            if model.conjugationSession != nil { ConjugationGameView() }
+            else if model.session?.mode == .practice { PracticeView() }
+            else { GameView() }
+        case .results:
+            if model.resultsAreConjugation { ConjugationResultsView() } else { ResultsView() }
         case .about:   AboutView()
         case .journal: JournalView()
         case .settings: SettingsView()

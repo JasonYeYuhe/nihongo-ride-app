@@ -50,9 +50,10 @@ struct MenuView: View {
                         Text(model.languageCode == "zh" ? "环游" : "Journey").tag(GameMode.journey)
                         Text(model.languageCode == "zh" ? "限时" : "Time").tag(GameMode.timeAttack)
                         Text(model.languageCode == "zh" ? "练习" : "Practice").tag(GameMode.practice)
+                        Text(model.languageCode == "zh" ? "变形" : "Verbs").tag(GameMode.conjugation)
                     }
                     .pickerStyle(.segmented)
-                    .menuControlWidth(280)
+                    .menuControlWidth(340)
                     .accessibilityLabel(model.languageCode == "zh" ? "游戏模式" : "Game mode")
                 }
                 HStack(spacing: 12) {
@@ -124,8 +125,11 @@ struct MenuView: View {
             .panel()
             .frame(maxWidth: 420)
 
+            let isConjugation = model.selectedMode == .conjugation
+            let zhLang = model.languageCode == "zh"
             Button(action: model.startGame) {
-                Text(model.languageCode == "zh" ? "出发 ▶" : "Start ride ▶")
+                Text(isConjugation ? (zhLang ? "开始变形 ▶" : "Start drill ▶")
+                                   : (zhLang ? "出发 ▶" : "Start ride ▶"))
                     .font(.system(size: 20, weight: .bold, design: .rounded))
                     .frame(width: 240, height: 54)
             }
@@ -134,7 +138,14 @@ struct MenuView: View {
             .foregroundStyle(.white)
             .shadow(color: Theme.accent.opacity(0.5), radius: 16, y: 6)
             .accessibilityIdentifier("startButton")
-            .accessibilityLabel(model.languageCode == "zh" ? "出发,开始骑行" : "Start ride")
+            .accessibilityLabel(isConjugation ? (zhLang ? "开始动词变形练习" : "Start conjugation drill")
+                                              : (zhLang ? "出发,开始骑行" : "Start ride"))
+            if isConjugation && model.conjugationUnavailable {
+                Text(zhLang ? "该等级暂无可练的动词,换个等级试试。"
+                            : "No verbs to drill at this level — try another level.")
+                    .font(.caption).foregroundStyle(Theme.accent)
+                    .multilineTextAlignment(.center)
+            }
 
             footer
 

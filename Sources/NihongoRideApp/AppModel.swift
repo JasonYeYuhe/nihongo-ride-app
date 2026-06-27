@@ -46,6 +46,24 @@ extension GameSummary {
     }
 }
 
+/// A snapshot of a finished conjugation drill (no SRS / distance / review list — the
+/// drill never touches the review store).
+struct ConjugationSummary: Equatable {
+    var score: Int
+    var maxCombo: Int
+    var promptsCompleted: Int
+    var promptCount: Int
+    var accuracy: Double
+
+    init(from session: ConjugationSession) {
+        score = session.score
+        maxCombo = session.maxCombo
+        promptsCompleted = session.promptsCompleted
+        promptCount = session.promptCount
+        accuracy = session.accuracy
+    }
+}
+
 /// Top-level app state: settings, the persistent SRS store, and which screen is showing.
 @MainActor
 @Observable
@@ -89,6 +107,16 @@ final class AppModel {
 
     private(set) var session: GameSession?
     private(set) var lastSummary: GameSummary?
+    /// The verb-conjugation drill (v1.6). A SEPARATE session type that holds no SRS/vocab
+    /// state, so the "conjugation never writes SRS" red line is structural. When this is
+    /// non-nil the `.playing` / `.results` screens render the conjugation variants.
+    private(set) var conjugationSession: ConjugationSession?
+    private(set) var lastConjugationSummary: ConjugationSummary?
+    /// True while the results screen is showing a conjugation drill (vs a ride).
+    private(set) var resultsAreConjugation = false
+    /// Set when a conjugation drill couldn't start (empty pool at the chosen level) so
+    /// the menu can show a transient note instead of silently doing nothing.
+    var conjugationUnavailable = false
     private(set) var reviewStore: ReviewStore
     private(set) var journal: RideJournal
     /// Lifetime odometer as a per-device G-Counter — the iCloud-sync vehicle for
@@ -499,6 +527,7 @@ final class AppModel {
     }
 
     func startGame() {
+        if selectedMode == .conjugation { startConjugation(); return }
         var config = GameSession.Config()
         config.languageCode = languageCode
         config.showRomajiHint = showRomajiHint
@@ -514,6 +543,8 @@ final class AppModel {
             config.reviewWordCount = 0
         case .journey:
             break
+        case .conjugation:
+            break   // handled by the early return above
         }
         if selectedMode == .practice && practicePassages {
             session = GameSession.makePractice(level: practicePassageLevel, config: config)
@@ -522,6 +553,43 @@ final class AppModel {
         }
         runStartedAt = Date()
         screen = .playing
+    }
+
+    /// How many verbs are available to drill at the chosen level (menu gating).
+    var conjugationPoolCount: Int {
+        ConjugationSession.playableCount(vocab: .shared, level: selectedLevel)
+    }
+
+    /// Starts a verb-conjugation drill. Resolve-then-guard: if the pool for the chosen
+    /// level is empty (no `vc` data / old vocab), it does NOT enter the playing screen —
+    /// otherwise the player would be stranded on an empty, already-finished screen
+    /// (the v1.4 saved-deck lesson, PLAN-V1.6 §4). The drill writes no SRS by design.
+    func startConjugation() {
+        var config = ConjugationSession.Config()
+        config.languageCode = languageCode
+        config.showRomajiHint = showRomajiHint
+        config.level = selectedLevel
+        config.promptCount = 12
+        let built = ConjugationSession.make(vocab: .shared, config: config)
+        guard built.promptCount > 0 else {
+            conjugationUnavailable = true   // surfaced as a transient menu note
+            return
+        }
+        conjugationUnavailable = false
+        session = nil
+        conjugationSession = built
+        runStartedAt = Date()
+        screen = .playing
+    }
+
+    /// Ends the conjugation drill: snapshot the score, NO SRS / journal / odometer /
+    /// Game Center writes (it is a transient drill), and show the results screen.
+    func finishConjugation() {
+        guard let conjugationSession else { return }
+        lastConjugationSummary = ConjugationSummary(from: conjugationSession)
+        resultsAreConjugation = true
+        self.conjugationSession = nil
+        screen = .results
     }
 
     /// Ends the current run, persists SRS progress (except for Practice, which
@@ -542,6 +610,7 @@ final class AppModel {
             refreshReminders()                     // the due count just changed
         }
         lastSummary = GameSummary(from: session)
+        resultsAreConjugation = false
         let appended = logRun(session)
         // Tell the iCloud sync controller what changed (no-op when sync off).
         syncController?.recordLocalChanges(
@@ -561,6 +630,7 @@ final class AppModel {
 
     func backToMenu() {
         session = nil
+        conjugationSession = nil
         runStartedAt = nil
         screen = .menu
     }

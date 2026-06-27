@@ -17,6 +17,7 @@ public enum GameMode: String, Sendable, CaseIterable {
     case journey       // ride a route; ends when the word queue is done
     case timeAttack    // sprint; ends when the timer (UI-driven) runs out
     case practice      // calm, distraction-free passage typing
+    case conjugation   // verb-conjugation drill (driven by ConjugationSession, no SRS)
 }
 
 @Observable
