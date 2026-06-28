@@ -562,6 +562,35 @@ final class AppModel {
         screen = .playing
     }
 
+    // MARK: Weak-words cram (v1.7) — practice your hardest reviewed words, no SRS.
+
+    /// Minimum reviewed words before the weak-words cram is offered (a cram of one
+    /// or two words isn't worth a menu entry). Below this the menu hides the launcher.
+    static let weakWordsMinimum = 5
+    /// How many of the weakest words a single cram run drills.
+    private static let weakWordsRunSize = 15
+
+    /// How many reviewed words are available to cram (menu gating).
+    var weakWordsPoolCount: Int { reviewStore.reviewedCount }
+
+    /// Starts a weak-words cram: the user's hardest reviewed words, run through the
+    /// same journey loop but recording **NO SRS** (`makeWeak` → `recordsSRS = false`;
+    /// a cram must not touch the SM-2 schedule — PLAN-V1.7 §B). Resolve-then-guard:
+    /// bails if nothing resolves (the menu gates proactively via `weakWordsPoolCount`,
+    /// so a silent no-op here can't strand the player on a blank screen).
+    func startWeakWords() {
+        let ids = reviewStore.weakestCards(limit: Self.weakWordsRunSize).map(\.id)
+        let resolvable = ids.filter { VocabStore.shared.entry(id: $0) != nil }
+        guard !resolvable.isEmpty else { return }
+        var config = GameSession.Config()
+        config.languageCode = languageCode
+        config.showRomajiHint = showRomajiHint
+        session = GameSession.makeWeak(ids: resolvable, vocab: .shared, config: config)
+        conjugationSession = nil   // defensive: a cram must not route to the conjugation screen
+        runStartedAt = Date()
+        screen = .playing
+    }
+
     /// How many verbs are available to drill at the chosen level (menu gating).
     var conjugationPoolCount: Int {
         ConjugationSession.playableCount(vocab: .shared, level: selectedLevel)
@@ -620,11 +649,16 @@ final class AppModel {
     /// Ends the current run, persists SRS progress (except for Practice, which
     /// uses a transient SRS store), logs the run to the ride journal, and shows
     /// results. Practice mode skips the score screen and returns to the menu.
+    ///
+    /// The **weak-words cram** (`session.config.recordsSRS == false`) advances
+    /// nothing: no SRS persist, no journal/odometer, no Game Center — it just shows
+    /// its review-these results. Practice is unchanged (it still logs a ride).
     func finishGame() {
         guard let session else { return }
         let wasPractice = session.mode == .practice
+        let isCram = !session.config.recordsSRS    // weak-words: a cram that advances nothing
         var changedSRS: [String] = []
-        if !wasPractice {                          // never overwrite real SRS with a practice run
+        if !wasPractice && !isCram {               // never overwrite real SRS with a practice/cram run
             // Diff old vs new so sync pushes exactly the cards that changed.
             let oldCards = reviewStore.cards
             changedSRS = session.review.cards.compactMap { id, card in
@@ -636,14 +670,14 @@ final class AppModel {
         }
         lastSummary = GameSummary(from: session)
         resultsAreConjugation = false
-        let appended = logRun(session)
-        // Tell the iCloud sync controller what changed (no-op when sync off).
+        let appended = isCram ? nil : logRun(session)   // a cram doesn't log a ride / odometer
+        // Tell the iCloud sync controller what changed (no-op when sync off / a cram).
         syncController?.recordLocalChanges(
             srsIDs: changedSRS,
             rideRecordIDs: appended.map { [$0.id] } ?? [],
             odometerChanged: appended != nil)
-        // Game Center: submit score + achievements for real (non-practice) runs.
-        if !wasPractice, let summary = lastSummary {
+        // Game Center: submit score + achievements for real (non-practice, non-cram) runs.
+        if !wasPractice && !isCram, let summary = lastSummary {
             gameCenter.recordRun(summary: summary, mode: session.mode,
                                  lifetimeWords: lifetimeWords,
                                  streakDays: journal.streakDays(),

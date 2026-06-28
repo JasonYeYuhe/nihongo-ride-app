@@ -228,6 +228,30 @@ struct MenuView: View {
                 .fixedSize()
                 .accessibilityIdentifier("wordListsButton")
 
+                // Weak-words cram: shown only once enough words have been reviewed to
+                // make it worthwhile. Starts a run directly (a cram, not a screen).
+                if model.weakWordsPoolCount >= AppModel.weakWordsMinimum {
+                    Button(action: { model.startWeakWords() }) {
+                        Label {
+                            Text(model.languageCode == "zh" ? "弱词练习" : "Weak words")
+                                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                .lineLimit(1)
+                        } icon: {
+                            Image(systemName: "bolt.fill").foregroundStyle(Theme.accent)
+                        }
+                        .foregroundStyle(.white.opacity(0.85))
+                        .padding(.horizontal, 14).padding(.vertical, 7)
+                        .background(Theme.card, in: Capsule())
+                        .overlay(Capsule().strokeBorder(Theme.cardStroke))
+                    }
+                    .buttonStyle(.plain)
+                    .fixedSize()
+                    .accessibilityIdentifier("weakWordsButton")
+                    .accessibilityLabel(model.languageCode == "zh"
+                        ? "弱词练习,\(model.weakWordsPoolCount) 个薄弱词"
+                        : "Weak words drill, \(model.weakWordsPoolCount) words")
+                }
+
                 Button(action: { model.screen = .settings }) {
                     Label(model.languageCode == "zh" ? "设置" : "Settings", systemImage: "gearshape")
                         .font(.system(size: 13, weight: .semibold, design: .rounded))

@@ -37,6 +37,11 @@ public final class GameSession {
         public var mode: GameMode
         /// Countdown for time-attack, in seconds (UI-driven); `nil` for journey.
         public var timeLimit: TimeInterval?
+        /// Whether typing outcomes are written to the SRS store during the run.
+        /// `true` for real rides; **`false` for the weak-words cram** — early-reviewing
+        /// not-yet-due cards would corrupt the SM-2 schedule, so a cram must never
+        /// write SRS (PLAN-V1.7 §B red line). Default `true` preserves all real runs.
+        public var recordsSRS: Bool
 
         public init(
             languageCode: String = "en",
@@ -46,7 +51,8 @@ public final class GameSession {
             secondsPerKanaBaseline: Double = 0.8,
             level: JLPTLevel? = nil,
             mode: GameMode = .journey,
-            timeLimit: TimeInterval? = nil
+            timeLimit: TimeInterval? = nil,
+            recordsSRS: Bool = true
         ) {
             self.languageCode = languageCode
             self.showRomajiHint = showRomajiHint
@@ -56,6 +62,7 @@ public final class GameSession {
             self.level = level
             self.mode = mode
             self.timeLimit = timeLimit
+            self.recordsSRS = recordsSRS
         }
     }
 
@@ -169,6 +176,25 @@ public final class GameSession {
         return GameSession(words: words, review: review, config: savedConfig, now: now)
     }
 
+    /// Builds a **weak-words cram** from the user's hardest reviewed words: the same
+    /// journey loop, but it records NO SRS (`recordsSRS = false`) — a cram must not
+    /// touch the SM-2 schedule (PLAN-V1.7 §B). Ids that no longer resolve are skipped.
+    /// No `ReviewStore` is passed in: nothing is recorded, so the run can't reach the
+    /// real store at all (the red line is structural at the session level).
+    public static func makeWeak(
+        ids: [String],
+        vocab: VocabStore = .shared,
+        config: Config = .init(),
+        now: @escaping () -> Date = Date.init
+    ) -> GameSession {
+        var words = ids.compactMap { vocab.entry(id: $0) }
+        words.shuffle()
+        var weakConfig = config
+        weakConfig.mode = .journey
+        weakConfig.recordsSRS = false
+        return GameSession(words: words, config: weakConfig, now: now)
+    }
+
     // MARK: Derived state for the UI
 
     public var currentKana: String? { current?.kana }
@@ -225,11 +251,15 @@ public final class GameSession {
     /// Gives up on the current word, recording it as not completed, and advances.
     public func skip() {
         if let entry = current {
-            review.record(
-                entryID: entry.id,
-                outcome: TypingOutcome(completed: false, mistakes: currentMistakes),
-                on: now()
-            )
+            // Gate ONLY the SRS write on recordsSRS (a cram must not touch SM-2);
+            // lapsedEntries still collects so the review-these feedback works.
+            if config.recordsSRS {
+                review.record(
+                    entryID: entry.id,
+                    outcome: TypingOutcome(completed: false, mistakes: currentMistakes),
+                    on: now()
+                )
+            }
             lapsedEntries.append(entry)
         }
         combo = 0
@@ -268,7 +298,9 @@ public final class GameSession {
             usedHint: currentRevealed,
             durationRatio: ratio
         )
-        review.record(entryID: entry.id, outcome: outcome, on: now())
+        if config.recordsSRS {
+            review.record(entryID: entry.id, outcome: outcome, on: now())
+        }
         if SRSCard.quality(from: outcome) < 3 { lapsedEntries.append(entry) }
 
         score += currentRevealed ? 10 : wordScore(entry: entry, mistakes: currentMistakes, combo: combo)

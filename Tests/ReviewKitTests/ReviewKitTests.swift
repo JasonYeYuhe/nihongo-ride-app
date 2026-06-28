@@ -141,3 +141,73 @@ struct ReviewStoreTests {
         #expect(loaded.card(for: "a")?.easeFactor == store.card(for: "a")?.easeFactor)
     }
 }
+
+/// Weak-words cram pool (PLAN-V1.7 §B). `weakestCards` is a PURE read that ranks the
+/// user's hardest reviewed cards — it must never mutate the store (a cram never writes SRS).
+@Suite("ReviewStore — weakest cards (v1.7 cram)")
+struct WeakestCardsTests {
+    private func card(_ id: String, ease: Double = 2.5, lapses: Int = 0,
+                      reviews: Int = 1, mistakes: Int = 0) -> SRSCard {
+        var c = SRSCard(id: id, createdAt: day0)
+        c.easeFactor = ease
+        c.lapses = lapses
+        c.totalReviews = reviews
+        c.totalMistakes = mistakes
+        return c
+    }
+
+    @Test("only reviewed cards are eligible; fresh (never-reviewed) cards are excluded")
+    func excludesFresh() {
+        let store = ReviewStore(cards: [
+            "fresh": card("fresh", reviews: 0),
+            "seen": card("seen", reviews: 3),
+        ])
+        #expect(store.reviewedCount == 1)
+        #expect(store.weakestCards().map(\.id) == ["seen"])
+    }
+
+    @Test("leeches rank first, then lower ease, then more lapses, then mistake-rate")
+    func ranking() {
+        let store = ReviewStore(cards: [
+            "leech":   card("leech",   ease: 2.5, lapses: 8, reviews: 10),  // isLeech (lapses≥8)
+            "lowEase": card("lowEase", ease: 1.4, lapses: 1, reviews: 5),
+            "midEase": card("midEase", ease: 2.0, lapses: 3, reviews: 5),
+            "clean":   card("clean",   ease: 2.8, lapses: 0, reviews: 5),
+        ])
+        #expect(store.weakestCards().map(\.id) == ["leech", "lowEase", "midEase", "clean"])
+    }
+
+    @Test("mistake-rate breaks ties after ease and lapses")
+    func mistakeRateTiebreak() {
+        let store = ReviewStore(cards: [
+            "sloppy": card("sloppy", ease: 2.0, lapses: 2, reviews: 4, mistakes: 8),  // rate 2.0
+            "tidy":   card("tidy",   ease: 2.0, lapses: 2, reviews: 4, mistakes: 1),  // rate 0.25
+        ])
+        #expect(store.weakestCards().map(\.id) == ["sloppy", "tidy"])
+    }
+
+    @Test("limit caps the result count")
+    func limit() {
+        let cards = Dictionary(uniqueKeysWithValues: (0..<10).map { ("c\($0)", card("c\($0)", reviews: 2)) })
+        #expect(ReviewStore(cards: cards).weakestCards(limit: 3).count == 3)
+    }
+
+    @Test("weakestCards / reviewedCount are pure reads — they never mutate the store")
+    func pureRead() {
+        let store = ReviewStore(cards: [
+            "a": card("a", ease: 1.5, lapses: 2, reviews: 4, mistakes: 3),
+            "b": card("b", reviews: 1),
+        ])
+        let before = store.cards
+        _ = store.weakestCards()
+        _ = store.reviewedCount
+        #expect(store.cards == before)
+    }
+
+    @Test("an empty store yields no weak cards")
+    func empty() {
+        let store = ReviewStore()
+        #expect(store.weakestCards().isEmpty)
+        #expect(store.reviewedCount == 0)
+    }
+}

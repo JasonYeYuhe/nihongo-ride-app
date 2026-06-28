@@ -30,6 +30,36 @@ public struct ReviewStore: Codable, Sendable {
         cards.values.filter(\.isLeech).sorted { $0.lapses > $1.lapses }
     }
 
+    /// Cards reviewed at least once — the pool the weak-words cram draws from
+    /// (fresh, never-reviewed cards aren't "weak"). Cheap count for menu gating.
+    public var reviewedCount: Int {
+        cards.values.lazy.filter { $0.totalReviews > 0 }.count
+    }
+
+    /// The user's weakest *reviewed* cards, worst-first, capped at `limit`. Ranking:
+    /// leeches first, then lower ease, more lapses, higher mistake-rate; id breaks
+    /// ties for a deterministic order. Only cards with `totalReviews > 0` (a fresh
+    /// card has no track record to call it "weak").
+    ///
+    /// **Pure read — never mutates the store.** The weak-words feature is a *cram*:
+    /// it must NEVER write SRS (early-reviewing not-yet-due cards would corrupt the
+    /// SM-2 interval/ease schedule). This function only ranks; it schedules nothing.
+    public func weakestCards(limit: Int = 100) -> [SRSCard] {
+        cards.values
+            .filter { $0.totalReviews > 0 }
+            .sorted { a, b in
+                if a.isLeech != b.isLeech { return a.isLeech }                       // leeches first
+                if a.easeFactor != b.easeFactor { return a.easeFactor < b.easeFactor } // weaker ease first
+                if a.lapses != b.lapses { return a.lapses > b.lapses }               // more lapses first
+                let ra = Double(a.totalMistakes) / Double(max(1, a.totalReviews))
+                let rb = Double(b.totalMistakes) / Double(max(1, b.totalReviews))
+                if ra != rb { return ra > rb }                                       // higher mistake-rate first
+                return a.id < b.id                                                   // deterministic tie-break
+            }
+            .prefix(limit)
+            .map { $0 }
+    }
+
     /// Records a typing outcome for `entryID`, creating the card if it's new.
     /// Returns the SM-2 quality grade that was applied.
     @discardableResult

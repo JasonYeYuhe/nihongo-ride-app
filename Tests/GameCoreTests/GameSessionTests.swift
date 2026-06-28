@@ -50,6 +50,47 @@ struct GameSessionTests {
         #expect(empty.currentKana == nil)
     }
 
+    @Test("makeWeak builds a journey deck with recordsSRS off, skipping unknown ids")
+    func makeWeakBuilder() {
+        let vocab = VocabStore(entries: [makeEntry("a", "水", "みず"), makeEntry("b", "猫", "ねこ")])
+        let deck = GameSession.makeWeak(ids: ["a", "zzz"], vocab: vocab)
+        #expect(deck.mode == .journey)
+        #expect(deck.config.recordsSRS == false)
+        #expect(deck.currentKana == "みず")
+        #expect(deck.wordCount == 1)             // unknown "zzz" dropped (resolve-then-guard)
+    }
+
+    @Test("a weak-words cram (recordsSRS=false) writes ZERO to SRS — skip and complete alike")
+    func weakCramZeroSRS() {
+        let vocab = VocabStore(entries: [makeEntry("a", "水", "みず"), makeEntry("b", "猫", "ねこ")])
+        let session = GameSession.makeWeak(ids: ["a", "b"], vocab: vocab)
+        #expect(session.config.recordsSRS == false)
+        // First word: skip (exercises skip()'s gated record). Then type the rest.
+        session.skip()
+        var guardCounter = 0
+        while !session.isFinished && guardCounter < 100 {
+            guardCounter += 1
+            guard let kana = session.currentKana else { break }
+            type(KanaRomanizer.romaji(for: kana), into: session)
+        }
+        #expect(session.isFinished)
+        #expect(session.review.cards.isEmpty, "a weak-words cram must never write SRS")
+        #expect(!session.lapsedEntries.isEmpty, "the skip still collects review feedback")
+    }
+
+    @Test("recordsSRS=false suppresses the SRS write but a default session still records")
+    func recordsSRSGate() {
+        let off = GameSession(words: [makeEntry("a", "水", "みず")],
+                              config: .init(recordsSRS: false))
+        type("mizu", into: off)
+        #expect(off.wordsCompleted == 1)               // still plays normally
+        #expect(off.review.card(for: "a") == nil)      // ...but recorded nothing
+
+        let on = GameSession(words: [makeEntry("a", "水", "みず")])   // default recordsSRS=true
+        type("mizu", into: on)
+        #expect(on.review.card(for: "a") != nil)       // default still records
+    }
+
     @Test("a typo counts a mistake and breaks the combo")
     func mistakes() {
         let session = GameSession(words: [makeEntry("a", "水", "みず")])
