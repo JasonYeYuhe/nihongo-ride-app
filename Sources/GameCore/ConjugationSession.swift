@@ -118,6 +118,16 @@ public final class ConjugationSession {
             self.level = level
             self.forms = forms.isEmpty ? ConjugationForm.allCases : forms
         }
+
+        /// Sets ``forms`` from persisted raw `ConjugationForm` values (e.g.
+        /// `AppSettings.conjugationForms`). Unknown raw values are tolerantly dropped
+        /// (`compactMap`), and an empty / all-unknown selection falls back to all forms
+        /// — so the app never has to import ConjugationKit to pick forms, and a stale
+        /// stored value can never strand the drill with zero forms (PLAN-V1.7 §C).
+        public mutating func setForms(rawValues: [String]) {
+            let parsed = rawValues.compactMap(ConjugationForm.init(rawValue:))
+            forms = parsed.isEmpty ? ConjugationForm.allCases : parsed
+        }
     }
 
     // MARK: Public state (observed by the UI)
@@ -240,6 +250,32 @@ public final class ConjugationSession {
         let penalty = mistakes * 15
         let comboMultiplier = 1.0 + Double(min(combo, 10)) * 0.1
         return max(10, Int(Double(max(0, base - penalty)) * comboMultiplier))
+    }
+}
+
+// MARK: Form options (menu facade — keeps the app free of a ConjugationKit import)
+
+/// One selectable conjugation form for the menu form-picker. Carries raw value +
+/// localized labels so the app renders the picker without importing ConjugationKit
+/// (the vc/form types stay behind GameCore, per the v1.6 boundary).
+public struct ConjugationFormOption: Identifiable, Sendable, Equatable {
+    /// The `ConjugationForm` raw value — the token stored in `AppSettings.conjugationForms`.
+    public let rawValue: String
+    /// Ultra-short tag for the chip (e.g. "て", "なかった").
+    public let shortLabel: String
+    /// Localized full label for accessibility (e.g. "Te-form", "ます形（敬体）").
+    public let accessibilityLabel: String
+    public var id: String { rawValue }
+}
+
+extension ConjugationSession {
+    /// All drillable forms in canonical order, with labels for the menu picker.
+    public static func formOptions(languageCode: String) -> [ConjugationFormOption] {
+        ConjugationForm.allCases.map {
+            ConjugationFormOption(rawValue: $0.rawValue,
+                                  shortLabel: $0.shortLabel,
+                                  accessibilityLabel: $0.label(for: languageCode))
+        }
     }
 }
 

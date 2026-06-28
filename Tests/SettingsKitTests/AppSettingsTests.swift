@@ -19,10 +19,27 @@ struct AppSettingsTests {
             dueReminderEnabled: true,
             dueReminderHour: 7,
             deviceID: "device-abc",
-            hasSeenOnboarding: true
+            hasSeenOnboarding: true,
+            conjugationForms: ["te", "volitional"]
         )
         let decoded = try #require(AppSettings.decode(original.encoded()))
         #expect(decoded == original)
+    }
+
+    @Test("conjugationForms round-trips and defaults to empty (= all forms)")
+    func conjugationFormsRoundTrip() throws {
+        #expect(AppSettings.default.conjugationForms == [])
+        var s = AppSettings.default
+        s.conjugationForms = ["te", "past"]
+        let decoded = try #require(AppSettings.decode(s.encoded()))
+        #expect(decoded.conjugationForms == ["te", "past"])
+    }
+
+    @Test("a pre-v1.7 blob without conjugationForms decodes to empty (= all forms)")
+    func conjugationFormsAbsent() throws {
+        let json = Data(#"{"languageCode":"en","deviceID":"d1"}"#.utf8)
+        let decoded = try #require(AppSettings.decode(json))
+        #expect(decoded.conjugationForms == [])
     }
 
     @Test("hasSeenOnboarding defaults to false and a pre-v1.5 blob without it stays false")

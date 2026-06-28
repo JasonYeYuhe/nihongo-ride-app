@@ -102,6 +102,46 @@ struct ConjugationSessionTests {
         }
     }
 
+    @Test("setForms(rawValues:) maps known forms, drops unknown, empty → all (PLAN-V1.7 §C)")
+    func setFormsTolerant() {
+        var some = ConjugationSession.Config()
+        some.setForms(rawValues: ["te", "past", "bogus"])
+        #expect(Set(some.forms) == [.te, .past])              // unknown silently dropped
+
+        var none = ConjugationSession.Config()
+        none.setForms(rawValues: [])
+        #expect(Set(none.forms) == Set(ConjugationForm.allCases))   // empty → all
+
+        var unknownOnly = ConjugationSession.Config()
+        unknownOnly.setForms(rawValues: ["nope", "zzz"])
+        #expect(Set(unknownOnly.forms) == Set(ConjugationForm.allCases))   // all-unknown → all (never zero)
+    }
+
+    @Test("formOptions lists every form in canonical order with non-empty labels")
+    func formOptionsList() {
+        let opts = ConjugationSession.formOptions(languageCode: "en")
+        #expect(opts.map(\.rawValue) == ConjugationForm.allCases.map(\.rawValue))
+        #expect(opts.allSatisfy { !$0.shortLabel.isEmpty && !$0.accessibilityLabel.isEmpty })
+        // zh labels differ from en for at least one form (localized path exercised).
+        let zh = ConjugationSession.formOptions(languageCode: "zh")
+        #expect(zh.map(\.rawValue) == opts.map(\.rawValue))
+    }
+
+    @Test("a run restricted to selected forms (via setForms) only produces those forms")
+    func formFilterRespected() {
+        var c = ConjugationSession.Config(promptCount: 15)
+        c.setForms(rawValues: ["te", "volitional"])
+        let session = ConjugationSession.make(config: c)
+        #expect(session.promptCount > 0)
+        var guardCounter = 0
+        while !session.isFinished && guardCounter < 1000 {
+            guardCounter += 1
+            guard let p = session.current else { break }
+            #expect([.te, .volitional].contains(p.targetForm))
+            play(session, character: KanaRomanizer.romaji(for: p.conjugatedKana))
+        }
+    }
+
     @Test("builder draws from the pool and every prompt's answer matches the engine")
     func builderConsistency() {
         let session = ConjugationSession.make(config: .init(promptCount: 15, forms: [.te, .past, .potential]))

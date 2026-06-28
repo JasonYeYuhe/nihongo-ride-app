@@ -41,6 +41,20 @@ public enum ConjugationForm: String, Codable, Sendable, CaseIterable, Equatable 
     case potential       // 可能 ～(ら)れる / できる
     case volitional      // 意志 ～(よ)う
 
+    /// Ultra-short form tag for compact UI (the menu form-picker chips): "て", "た"…
+    /// Distinct from ``japaneseLabel`` (which appends 形/parentheticals).
+    public var shortLabel: String {
+        switch self {
+        case .polite: return "ます"
+        case .te: return "て"
+        case .past: return "た"
+        case .negative: return "ない"
+        case .pastNegative: return "なかった"
+        case .potential: return "可能"
+        case .volitional: return "意志"
+        }
+    }
+
     /// Short Japanese label for the form, e.g. "ます形".
     public var japaneseLabel: String {
         switch self {

@@ -33,6 +33,13 @@ public struct AppSettings: Codable, Equatable, Sendable {
     /// user who already has data — see AppModel).
     public var hasSeenOnboarding: Bool
 
+    // v1.7 additions.
+    /// Which verb-conjugation forms to drill, as `ConjugationForm` raw values.
+    /// Empty = all forms (the default). Stored opaquely (raw strings, like
+    /// `selectedMode`); unknown raw values are tolerated and dropped at the
+    /// `AppModel` boundary (`compactMap(ConjugationForm.init(rawValue:))`).
+    public var conjugationForms: [String]
+
     public init(
         languageCode: String = "en",
         showRomajiHint: Bool = true,
@@ -45,7 +52,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
         dueReminderEnabled: Bool = false,
         dueReminderHour: Int = 20,
         deviceID: String = "",
-        hasSeenOnboarding: Bool = false
+        hasSeenOnboarding: Bool = false,
+        conjugationForms: [String] = []
     ) {
         self.languageCode = languageCode
         self.showRomajiHint = showRomajiHint
@@ -59,6 +67,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.dueReminderHour = dueReminderHour
         self.deviceID = deviceID
         self.hasSeenOnboarding = hasSeenOnboarding
+        self.conjugationForms = conjugationForms
     }
 
     public static let `default` = AppSettings()
@@ -75,6 +84,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         case practicePassages, practicePassageLevel
         case iCloudSyncEnabled, dueReminderEnabled, dueReminderHour, deviceID
         case hasSeenOnboarding
+        case conjugationForms
     }
 
     public init(from decoder: Decoder) throws {
@@ -96,6 +106,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         dueReminderHour = try c.decodeIfPresent(Int.self, forKey: .dueReminderHour) ?? d.dueReminderHour
         deviceID = try c.decodeIfPresent(String.self, forKey: .deviceID) ?? d.deviceID
         hasSeenOnboarding = try c.decodeIfPresent(Bool.self, forKey: .hasSeenOnboarding) ?? d.hasSeenOnboarding
+        conjugationForms = try c.decodeIfPresent([String].self, forKey: .conjugationForms) ?? d.conjugationForms
     }
 
     // Always write every key — including `selectedLevel` as an explicit null when
@@ -115,6 +126,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         try c.encode(dueReminderHour, forKey: .dueReminderHour)
         try c.encode(deviceID, forKey: .deviceID)
         try c.encode(hasSeenOnboarding, forKey: .hasSeenOnboarding)
+        try c.encode(conjugationForms, forKey: .conjugationForms)
     }
 
     /// Clamps/repairs out-of-range primitive values and guarantees a `deviceID`.

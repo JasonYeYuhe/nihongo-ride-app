@@ -101,6 +101,12 @@ final class AppModel {
     /// Hour-of-day (0…23) the due reminder fires.
     var dueReminderHour: Int = 20 { didSet { persistSettings(); refreshReminders() } }
 
+    // v1.7 settings (pure-local; no SRS / cloud state).
+    /// Which verb-conjugation forms to drill, as `ConjugationForm` raw values.
+    /// Empty = all forms. Mapped to typed forms (dropping unknowns) at the drill
+    /// boundary via `ConjugationSession.Config.setForms(rawValues:)`.
+    var conjugationForms: [String] = [] { didSet { persistSettings() } }
+
     /// Live iCloud sync state, surfaced on the settings screen.
     enum SyncStatus: Equatable { case off, waiting, syncing, synced, noAccount, error(String) }
     private(set) var syncStatus: SyncStatus = .off
@@ -185,6 +191,7 @@ final class AppModel {
         iCloudSyncEnabled = loaded.iCloudSyncEnabled
         dueReminderEnabled = loaded.dueReminderEnabled
         dueReminderHour = loaded.dueReminderHour
+        conjugationForms = loaded.conjugationForms
 
         // One-time odometer backfill: seed this device's slot from the existing
         // journal lifetime so totals stay correct for users upgrading to v1.2
@@ -360,6 +367,7 @@ final class AppModel {
         settings.iCloudSyncEnabled = iCloudSyncEnabled
         settings.dueReminderEnabled = dueReminderEnabled
         settings.dueReminderHour = dueReminderHour
+        settings.conjugationForms = conjugationForms
         settings.save(to: .standard)
     }
 
@@ -559,6 +567,24 @@ final class AppModel {
         ConjugationSession.playableCount(vocab: .shared, level: selectedLevel)
     }
 
+    /// The drillable conjugation forms (for the menu form-picker), localized.
+    var conjugationFormOptions: [ConjugationFormOption] {
+        ConjugationSession.formOptions(languageCode: languageCode)
+    }
+
+    /// Whether `rawValue` is in the drilled-forms set (an empty set = all forms).
+    func isConjugationFormSelected(_ rawValue: String) -> Bool { conjugationForms.contains(rawValue) }
+
+    /// Toggles a form in the drilled-forms set. Deselecting everything (empty set)
+    /// means "all forms" — the drill builder falls back to all (never zero forms).
+    func toggleConjugationForm(_ rawValue: String) {
+        if let i = conjugationForms.firstIndex(of: rawValue) {
+            conjugationForms.remove(at: i)
+        } else {
+            conjugationForms.append(rawValue)
+        }
+    }
+
     /// Starts a verb-conjugation drill. Resolve-then-guard: if the pool for the chosen
     /// level is empty (no `vc` data / old vocab), it does NOT enter the playing screen —
     /// otherwise the player would be stranded on an empty, already-finished screen
@@ -569,6 +595,7 @@ final class AppModel {
         config.showRomajiHint = showRomajiHint
         config.level = selectedLevel
         config.promptCount = 12
+        config.setForms(rawValues: conjugationForms)   // empty / unknown → all forms
         let built = ConjugationSession.make(vocab: .shared, config: config)
         // Resolve-then-guard: an empty pool must not enter the (already-finished) screen.
         // The menu surfaces this proactively via `conjugationPoolCount == 0`, so a no-op

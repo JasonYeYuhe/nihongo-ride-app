@@ -82,6 +82,44 @@ struct MenuView: View {
                         .accessibilityLabel(model.languageCode == "zh" ? "JLPT 等级" : "JLPT level")
                     }
                 }
+                // Conjugation: pick which forms to drill (native buttons — no soft
+                // keyboard). Empty selection = all forms (the drill builder falls back).
+                if model.selectedMode == .conjugation {
+                    let zh = model.languageCode == "zh"
+                    VStack(spacing: 8) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "switch.2").accessibilityHidden(true)
+                            Text(zh ? "练习形" : "Forms")
+                                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                .foregroundStyle(Theme.dim)
+                            Spacer()
+                        }
+                        MenuFlow(spacing: 8, rowSpacing: 8) {
+                            ForEach(model.conjugationFormOptions) { option in
+                                let on = model.isConjugationFormSelected(option.rawValue)
+                                Button(action: { model.toggleConjugationForm(option.rawValue) }) {
+                                    Text(option.shortLabel)
+                                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                        .lineLimit(1)
+                                        .foregroundStyle(on ? .white : Theme.dim)
+                                        .padding(.horizontal, 12).padding(.vertical, 6)
+                                        .background(on ? Theme.accent : Theme.card, in: Capsule())
+                                        .overlay(Capsule().strokeBorder(on ? Color.clear : Theme.cardStroke))
+                                }
+                                .buttonStyle(.plain)
+                                .fixedSize()
+                                .accessibilityLabel(option.accessibilityLabel)
+                                .accessibilityValue(on ? (zh ? "已选" : "Selected") : (zh ? "未选" : "Not selected"))
+                                .accessibilityAddTraits(on ? [.isSelected] : [])
+                            }
+                        }
+                        Text(model.conjugationForms.isEmpty
+                             ? (zh ? "未选 = 全部形" : "None selected = all forms")
+                             : (zh ? "只练所选形" : "Drilling selected forms only"))
+                            .font(.caption2).foregroundStyle(Theme.dim.opacity(0.8))
+                    }
+                    .menuControlWidth(340)
+                }
                 if model.selectedMode == .practice {
                     HStack(spacing: 12) {
                         Image(systemName: "text.alignleft").accessibilityHidden(true)
