@@ -1,6 +1,18 @@
 import Foundation
+import os
 
 extension WordListStore {
+
+    /// Launch-time migration writes are best-effort: `loadOrMigrate` always returns a
+    /// usable in-memory store, and a failed save just retries next launch. So failures
+    /// LOG (never silent, never crash) rather than alert. The write itself is unchanged
+    /// (synchronous + atomic) — only failure handling. (PLAN-V1.7 §D.)
+    private static let migrationLog = Logger(subsystem: "com.jasonye.nihongoride", category: "persist")
+
+    private static func bestEffortSave(_ what: String, _ write: () throws -> Void) {
+        do { try write() }
+        catch { migrationLog.error("migration persist failed [\(what, privacy: .public)]: \(error.localizedDescription, privacy: .public)") }
+    }
 
     /// What ``loadOrMigrate(wordListsURL:legacySavedWordsURL:defaultName:now:)`` did,
     /// for telemetry / logging.
@@ -67,14 +79,16 @@ extension WordListStore {
                 // deletion can be revived by the peer on the first fetch.
                 var store = decoded
                 store.ensureDefault(name: defaultName, now: now)
-                if store != decoded { try? store.save(to: wordListsURL) }
+                if store != decoded {
+                    bestEffortSave("repair default") { try store.save(to: wordListsURL) }
+                }
                 return (store, .loadedExisting)
             } else {
                 // Read OK but undecodable → genuine corruption: quarantine the bytes
                 // we already have + rebuild (don't lose silently).
                 quarantineCorrupt(data: data, original: wordListsURL)
                 let store = migrate(fromSaved: legacySavedWordsURL, defaultName: defaultName, now: now)
-                try? store.save(to: wordListsURL)
+                bestEffortSave("rebuild after corrupt") { try store.save(to: wordListsURL) }
                 return (store, .recoveredFromCorrupt)
             }
         }
@@ -82,13 +96,13 @@ extension WordListStore {
         // No word-lists.json yet.
         if fm.fileExists(atPath: legacySavedWordsURL.path) {
             let store = migrate(fromSaved: legacySavedWordsURL, defaultName: defaultName, now: now)
-            try? store.save(to: wordListsURL)
+            bestEffortSave("migrate from saved-words") { try store.save(to: wordListsURL) }
             return (store, .migratedFromSavedWords)
         }
 
         var store = WordListStore()
         store.ensureDefault(name: defaultName, now: now)
-        try? store.save(to: wordListsURL)
+        bestEffortSave("fresh install default") { try store.save(to: wordListsURL) }
         return (store, .freshInstall)
     }
 
@@ -118,6 +132,6 @@ extension WordListStore {
     /// re-reads (and so it works even if the file is replaced right after).
     private static func quarantineCorrupt(data: Data, original url: URL) {
         let dest = url.appendingPathExtension("corrupt")
-        try? data.write(to: dest, options: .atomic)
+        bestEffortSave("quarantine corrupt bytes") { try data.write(to: dest, options: .atomic) }
     }
 }

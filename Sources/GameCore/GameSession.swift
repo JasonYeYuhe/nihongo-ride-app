@@ -20,6 +20,34 @@ public enum GameMode: String, Sendable, CaseIterable {
     case conjugation   // verb-conjugation drill (driven by ConjugationSession, no SRS)
 }
 
+/// What a finished run persists and where it lands — the single source of truth for
+/// `AppModel.finishGame`'s side-effect gating, extracted as a pure value so the
+/// cram/practice red lines are unit-testable (PLAN-V1.7 §D test seam).
+public struct RunCompletion: Equatable, Sendable {
+    /// Persist SRS progress — real rides only (never practice or a weak-words cram).
+    public var persistsSRS: Bool
+    /// Append to the ride journal + lifetime odometer — everything except a cram.
+    public var logsRide: Bool
+    /// Report score / achievements to Game Center — real rides only.
+    public var reportsGameCenter: Bool
+    /// Show the results screen (true) vs go straight back to the menu (practice).
+    public var showsResults: Bool
+
+    /// Decides a run's completion from its mode + whether it records SRS:
+    /// - a **weak-words cram** (`recordsSRS == false`) advances nothing — no SRS,
+    ///   journal, odometer, or Game Center — but still shows its review-these results;
+    /// - **practice** records no SRS but still logs a ride, and returns to the menu;
+    /// - every real ride persists everything and shows results.
+    public init(mode: GameMode, recordsSRS: Bool) {
+        let isCram = !recordsSRS
+        let isPractice = mode == .practice
+        persistsSRS = !isPractice && !isCram
+        logsRide = !isCram
+        reportsGameCenter = !isPractice && !isCram
+        showsResults = !isPractice
+    }
+}
+
 @Observable
 public final class GameSession {
     public struct Config: Sendable {

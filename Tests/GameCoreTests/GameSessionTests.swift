@@ -91,6 +91,27 @@ struct GameSessionTests {
         #expect(on.review.card(for: "a") != nil)       // default still records
     }
 
+    @Test("runCompletion gates finishGame side-effects by mode + recordsSRS (cram/practice red lines)")
+    func runCompletionGating() {
+        // Real ride (journey / time-attack): persists everything, shows results.
+        for mode in [GameMode.journey, .timeAttack] {
+            let rc = RunCompletion(mode: mode, recordsSRS: true)
+            #expect(rc.persistsSRS && rc.logsRide && rc.reportsGameCenter && rc.showsResults)
+        }
+        // Practice: no SRS persist, but still logs a ride; returns to the menu (no results).
+        let practice = RunCompletion(mode: .practice, recordsSRS: true)
+        #expect(practice.persistsSRS == false)
+        #expect(practice.logsRide == true)
+        #expect(practice.reportsGameCenter == false)
+        #expect(practice.showsResults == false)
+        // Weak-words cram: advances NOTHING (no SRS / ride / Game Center) but shows results.
+        let cram = RunCompletion(mode: .journey, recordsSRS: false)
+        #expect(cram.persistsSRS == false)
+        #expect(cram.logsRide == false)
+        #expect(cram.reportsGameCenter == false)
+        #expect(cram.showsResults == true)
+    }
+
     @Test("a typo counts a mistake and breaks the combo")
     func mistakes() {
         let session = GameSession(words: [makeEntry("a", "水", "みず")])

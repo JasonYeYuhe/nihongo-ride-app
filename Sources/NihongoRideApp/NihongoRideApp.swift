@@ -132,6 +132,17 @@ struct RootView: View {
                 Text(ListsView.message(for: error, zh: model.languageCode == "zh"))
             }
         }
+        // A user-initiated data write (list CRUD / ★) failed to persist — surface it
+        // once so silent data loss is visible. Background writes only log (no alert).
+        .alert(model.languageCode == "zh" ? "保存失败" : "Couldn't save",
+               isPresented: Binding(get: { model.lastPersistError != nil },
+                                    set: { if !$0 { model.lastPersistError = nil } })) {
+            Button("OK", role: .cancel) { model.lastPersistError = nil }
+        } message: {
+            if let error = model.lastPersistError {
+                Text(error.message(zh: model.languageCode == "zh"))
+            }
+        }
     }
 
     /// The Game Center access point shows on calm non-game screens only — never

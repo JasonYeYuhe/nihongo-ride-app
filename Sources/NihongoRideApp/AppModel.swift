@@ -134,6 +134,10 @@ final class AppModel {
     /// Last word-list error from a path that has no local alert of its own (the
     /// in-game / results ★ tap). Surfaced by a RootView alert; cleared on dismiss.
     var lastListError: WordListError?
+    /// Last failure to persist a USER-INITIATED data change (list CRUD, ★). Surfaced
+    /// once by a RootView alert so silent data loss is visible. Background/auto writes
+    /// only log (no alert — could loop). Cleared on dismiss. (PLAN-V1.7 §D.)
+    var lastPersistError: PersistError?
     /// Wall-clock start of the current run, for duration/WPM in the journal.
     private var runStartedAt: Date?
 
@@ -201,7 +205,7 @@ final class AppModel {
                                    distanceMeters: journal.totalDistanceMeters,
                                    runs: journal.totalRuns),
                              for: settings.deviceID)
-            try? odometer.save(to: odometerURL)
+            bgSave("odometer (backfill)") { try odometer.save(to: odometerURL) }
         }
 
         // Dev-only: pin the UI language for screenshot captures (not persisted).
@@ -326,7 +330,7 @@ final class AppModel {
             // the load path: a not-yet-propagated deletion compacted too early gets
             // revived by a peer's union on the next fetch (§A2 / WordListStore docs).
             wordLists.compactTombstones()
-            try? wordLists.save(to: wordListsURL)
+            bgSave("word-lists (sync merge)") { try wordLists.save(to: wordListsURL) }
         }
         // Legacy v1.4 `SavedWords:deck` record: fold into the default list once,
         // then never again (the persisted flag in foldLegacyDeck enforces "once").
@@ -335,7 +339,7 @@ final class AppModel {
             let remote = ReviewStore(cards: Dictionary(cards.map { ($0.id, $0) },
                                                        uniquingKeysWith: { a, _ in a }))
             reviewStore = SyncMerge.reviewStores(reviewStore, remote)
-            try? reviewStore.save(to: storeURL)
+            bgSave("review (sync merge)") { try reviewStore.save(to: storeURL) }
             refreshReminders()
         }
         if !records.isEmpty {
@@ -343,13 +347,13 @@ final class AppModel {
             // from merged records here can't undercount the odometer totals.
             let merged = SyncMerge.rideRecords(journal.records, records)
             journal = RideJournal(records: merged)
-            try? journal.save(to: journalURL)
+            bgSave("journal (sync merge)") { try journal.save(to: journalURL) }
         }
         if !odometerSlots.isEmpty {
             var remote = OdometerLog()
             for (id, slot) in odometerSlots { remote.setSlot(slot, for: id) }
             odometer = SyncMerge.odometers(odometer, remote)
-            try? odometer.save(to: odometerURL)
+            bgSave("odometer (sync merge)") { try odometer.save(to: odometerURL) }
         }
     }
 
@@ -468,10 +472,25 @@ final class AppModel {
         if case .success = wordLists.clear(listID) { persistWordLists(changed: [listID]) }
     }
 
-    /// Persists the word-list store synchronously + atomically, then tells the
-    /// sync controller which list ids changed (no-op when sync is off).
+    /// Best-effort BACKGROUND / automatic persist: the write itself is unchanged
+    /// (synchronous, main-actor, atomic — the red line), only failure handling
+    /// changes. Never alerts (a persistently-failing disk would loop); logs so a
+    /// failure isn't fully silent. (PLAN-V1.7 §D.)
+    private func bgSave(_ what: String, _ write: () throws -> Void) {
+        do { try write() } catch { PersistLog.failure(what, error) }
+    }
+
+    /// Persists the word-list store synchronously + atomically, then tells the sync
+    /// controller which list ids changed (no-op when sync is off). This is a
+    /// USER-INITIATED path (list CRUD / ★), so a save failure surfaces an alert via
+    /// `lastPersistError` — not just a log — so the user knows the change may be lost.
     private func persistWordLists(changed listIDs: [String]) {
-        try? wordLists.save(to: wordListsURL)
+        do {
+            try wordLists.save(to: wordListsURL)
+        } catch {
+            lastPersistError = .saveFailed
+            PersistLog.failure("word-lists", error)
+        }
         syncController?.recordLocalChanges(listIDs: listIDs)
     }
 
@@ -525,7 +544,7 @@ final class AppModel {
         let before = wordLists.defaultList?.ids
         for id in ids { _ = wordLists.addWord(id, to: WordList.defaultID) }
         if wordLists.defaultList?.ids != before {
-            try? wordLists.save(to: wordListsURL)
+            bgSave("word-lists (legacy fold)") { try wordLists.save(to: wordListsURL) }
             // A v1.4 addition changed our default → propagate to v1.5 peers (and the
             // controller refreshes the deck mirror because the default id is included).
             syncController?.recordLocalChanges(listIDs: [WordList.defaultID])
@@ -655,36 +674,36 @@ final class AppModel {
     /// its review-these results. Practice is unchanged (it still logs a ride).
     func finishGame() {
         guard let session else { return }
-        let wasPractice = session.mode == .practice
-        let isCram = !session.config.recordsSRS    // weak-words: a cram that advances nothing
+        // Single source of truth for the side-effect gating (tested in GameCore).
+        let completion = RunCompletion(mode: session.mode, recordsSRS: session.config.recordsSRS)
         var changedSRS: [String] = []
-        if !wasPractice && !isCram {               // never overwrite real SRS with a practice/cram run
+        if completion.persistsSRS {                // never overwrite real SRS with a practice/cram run
             // Diff old vs new so sync pushes exactly the cards that changed.
             let oldCards = reviewStore.cards
             changedSRS = session.review.cards.compactMap { id, card in
                 oldCards[id] != card ? id : nil
             }
             reviewStore = session.review
-            try? reviewStore.save(to: storeURL)
+            bgSave("review (run)") { try reviewStore.save(to: storeURL) }
             refreshReminders()                     // the due count just changed
         }
         lastSummary = GameSummary(from: session)
         resultsAreConjugation = false
-        let appended = isCram ? nil : logRun(session)   // a cram doesn't log a ride / odometer
+        let appended = completion.logsRide ? logRun(session) : nil   // a cram doesn't log a ride / odometer
         // Tell the iCloud sync controller what changed (no-op when sync off / a cram).
         syncController?.recordLocalChanges(
             srsIDs: changedSRS,
             rideRecordIDs: appended.map { [$0.id] } ?? [],
             odometerChanged: appended != nil)
         // Game Center: submit score + achievements for real (non-practice, non-cram) runs.
-        if !wasPractice && !isCram, let summary = lastSummary {
+        if completion.reportsGameCenter, let summary = lastSummary {
             gameCenter.recordRun(summary: summary, mode: session.mode,
                                  lifetimeWords: lifetimeWords,
                                  streakDays: journal.streakDays(),
                                  totalRuns: lifetimeRuns)
         }
         self.session = nil
-        screen = wasPractice ? .menu : .results
+        screen = completion.showsResults ? .results : .menu
     }
 
     func backToMenu() {
@@ -738,8 +757,8 @@ final class AppModel {
         // Save on the main actor (small files) so these stay ordered with the
         // sync-merge writes to the same files — a detached write could land after
         // a fetch-merge write and clobber merged cloud data (last-writer-wins).
-        try? journal.save(to: journalURL)
-        try? odometer.save(to: odometerURL)
+        bgSave("journal (run)") { try journal.save(to: journalURL) }
+        bgSave("odometer (run)") { try odometer.save(to: odometerURL) }
         runStartedAt = nil
         return record
     }

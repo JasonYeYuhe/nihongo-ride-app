@@ -342,7 +342,10 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
 
     private func saveState(_ serialization: CKSyncEngine.State.Serialization) {
         guard let data = try? JSONEncoder().encode(serialization) else { return }
-        try? data.write(to: stateURL, options: .atomic)
+        // Background (engine-state) write: log on failure, never alert. The write
+        // mechanism is unchanged (atomic); only failure handling. (PLAN-V1.7 §D.)
+        do { try data.write(to: stateURL, options: .atomic) }
+        catch { PersistLog.failure("sync-engine state", error) }
     }
 
     private func clearState() {
