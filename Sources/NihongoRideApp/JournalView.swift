@@ -431,8 +431,11 @@ private struct RoadSparkline: View {
                         .position(points[index])
                 }
                 if let last = points.last {
+                    // Decorative, accessibilityHidden, position-anchored to a hand-computed
+                    // y-offset — keep it a FIXED size (like the GameView progress-bar emoji)
+                    // so it can't drift off its anchor at large Dynamic Type sizes.
                     Text("🚲")
-                        .scaledSystemFont(16)
+                        .font(.system(size: 16))
                         .position(x: last.x - 2, y: max(10, last.y - 16))
                 }
             }
