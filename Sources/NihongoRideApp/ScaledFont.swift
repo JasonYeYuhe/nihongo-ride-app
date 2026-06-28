@@ -1,0 +1,55 @@
+import SwiftUI
+
+/// Dynamic-Type-aware replacement for `.font(.system(size:weight:design:))`.
+///
+/// v1.7 Phase A: the app shipped ~132 fixed `.system(size:)` sites that ignored the
+/// system "Larger Text" accessibility setting. This wraps the EXACT existing size in
+/// a `@ScaledMetric`, so at the default text size the rendered size is byte-identical
+/// to before — the headless render gate relies on that (ImageRenderer ignores
+/// `dynamicTypeSize`, so only the default size is render-verifiable; large-type
+/// layout is device-verified, Gate E). Above the default size it now scales.
+///
+/// - `relativeTo` picks the text style the size scales against (a title scales at a
+///   different rate than body), preserving visual hierarchy.
+/// - `maxScaled` caps the scaled size for tight game-screen elements (the big kana /
+///   HUD pills) so a huge accessibility size can't blow out the fixed game layout.
+struct ScaledSystemFont: ViewModifier {
+    @ScaledMetric private var size: CGFloat
+    private let weight: Font.Weight
+    private let design: Font.Design
+    private let maxScaled: CGFloat?
+
+    init(size: CGFloat, weight: Font.Weight, design: Font.Design,
+         relativeTo style: Font.TextStyle, maxScaled: CGFloat?) {
+        self._size = ScaledMetric(wrappedValue: size, relativeTo: style)
+        self.weight = weight
+        self.design = design
+        self.maxScaled = maxScaled
+    }
+
+    func body(content: Content) -> some View {
+        let resolved = maxScaled.map { Swift.min(size, $0) } ?? size
+        return content.font(.system(size: resolved, weight: weight, design: design))
+    }
+}
+
+extension View {
+    /// Dynamic-Type scaling wrapper for a fixed system-font size. At the default text
+    /// size this is identical to `.font(.system(size:weight:design:))`; above it the
+    /// size scales with the user's setting.
+    ///
+    /// - Parameters:
+    ///   - size: the base (default-size) point size — unchanged from before.
+    ///   - weight: font weight (default `.regular`).
+    ///   - design: font design (default `.default`; the app often uses `.rounded`).
+    ///   - relativeTo: the text style the size scales against (default `.body`).
+    ///   - maxScaled: optional upper bound on the scaled size (tight game layouts).
+    func scaledSystemFont(_ size: CGFloat,
+                          weight: Font.Weight = .regular,
+                          design: Font.Design = .default,
+                          relativeTo style: Font.TextStyle = .body,
+                          maxScaled: CGFloat? = nil) -> some View {
+        modifier(ScaledSystemFont(size: size, weight: weight, design: design,
+                                  relativeTo: style, maxScaled: maxScaled))
+    }
+}
