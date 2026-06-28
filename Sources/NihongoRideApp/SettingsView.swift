@@ -47,13 +47,13 @@ struct SettingsView: View {
                     }
                     .toggleStyle(.switch).tint(Theme.accent2)
                     Text(syncStatusText)
-                        .font(.system(size: 12)).foregroundStyle(Theme.dim)
+                        .scaledSystemFont(12).foregroundStyle(Theme.dim)
                         .accessibilityLabel(zh ? "同步状态" : "Sync status")
                         .accessibilityValue(syncStatusText)
                     Text(zh
                          ? "数据存于你自己的 iCloud(私有库),仅你可见。"
                          : "Stored in your own private iCloud — visible only to you.")
-                        .font(.system(size: 11)).foregroundStyle(Theme.dim.opacity(0.7))
+                        .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.7))
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -80,7 +80,7 @@ struct SettingsView: View {
                 Text(zh
                      ? "默认关闭。开启后会按未来几天的实际到期数提醒你。"
                      : "Off by default. When on, reminders reflect each day's actual due count.")
-                    .font(.system(size: 11)).foregroundStyle(Theme.dim.opacity(0.7))
+                    .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.7))
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -111,12 +111,12 @@ struct SettingsView: View {
     private var header: some View {
         HStack {
             Text(zh ? "设置" : "Settings")
-                .font(.system(size: 32, weight: .heavy, design: .rounded))
+                .scaledSystemFont(32, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                 .foregroundStyle(.white)
             Spacer()
             Button(action: model.backToMenu) {
                 Label(zh ? "返回" : "Back", systemImage: "chevron.left")
-                    .font(.system(size: 14, weight: .semibold))
+                    .scaledSystemFont(14, weight: .semibold)
                     .padding(.horizontal, 12).padding(.vertical, 8)
                     .background(Theme.card, in: Capsule())
                     .overlay(Capsule().strokeBorder(Theme.cardStroke))
@@ -141,7 +141,7 @@ struct SettingsView: View {
     private func settingsCard(title: String, @ViewBuilder _ content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(title.uppercased())
-                .font(.system(size: 11, weight: .black)).tracking(3)
+                .scaledSystemFont(11, weight: .black).tracking(3)
                 .foregroundStyle(Theme.accent)
             content()
         }
@@ -159,7 +159,7 @@ struct SettingsView: View {
 
     private func rowLabel(icon: String, text: String) -> some View {
         Label {
-            Text(text).font(.system(size: 15)).foregroundStyle(.white.opacity(0.9))
+            Text(text).scaledSystemFont(15).foregroundStyle(.white.opacity(0.9))
         } icon: {
             Image(systemName: icon).foregroundStyle(Theme.accent2)
         }

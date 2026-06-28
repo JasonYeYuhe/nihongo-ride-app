@@ -95,12 +95,12 @@ struct AboutView: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Text(zh ? "关于" : "About")
-                    .font(.system(size: 32, weight: .heavy, design: .rounded))
+                    .scaledSystemFont(32, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                     .foregroundStyle(.white)
                 Spacer()
                 Button(action: model.backToMenu) {
                     Label(zh ? "返回" : "Back", systemImage: "chevron.left")
-                        .font(.system(size: 14, weight: .semibold))
+                        .scaledSystemFont(14, weight: .semibold)
                         .padding(.horizontal, 12).padding(.vertical, 8)
                         .background(Theme.card, in: Capsule())
                         .overlay(Capsule().strokeBorder(Theme.cardStroke))
@@ -109,20 +109,20 @@ struct AboutView: View {
                 .buttonStyle(.plain)
             }
             Text("Nihongo Ride · v\(bundleVersion)")
-                .font(.system(size: 13, weight: .medium, design: .monospaced))
+                .scaledSystemFont(13, weight: .medium, design: .monospaced)
                 .foregroundStyle(Theme.accent2)
             Text(zh ? "打字环游日本 · macOS / iOS · SwiftUI" : "Type your way across Japan · macOS / iOS · SwiftUI")
-                .font(.system(size: 14)).foregroundStyle(Theme.dim)
+                .scaledSystemFont(14).foregroundStyle(Theme.dim)
         }
     }
 
     private func section(title: String, body: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title.uppercased())
-                .font(.system(size: 11, weight: .black)).tracking(3)
+                .scaledSystemFont(11, weight: .black).tracking(3)
                 .foregroundStyle(Theme.accent)
             Text(body)
-                .font(.system(size: 14))
+                .scaledSystemFont(14)
                 .foregroundStyle(.white.opacity(0.82))
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -132,20 +132,20 @@ struct AboutView: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 8) {
                 Text(name)
-                    .font(.system(size: 15, weight: .semibold))
+                    .scaledSystemFont(15, weight: .semibold)
                     .foregroundStyle(.white)
                 Text(license)
-                    .font(.system(size: 11, weight: .bold, design: .monospaced))
+                    .scaledSystemFont(11, weight: .bold, design: .monospaced)
                     .padding(.horizontal, 7).padding(.vertical, 2)
                     .background(Theme.accent2.opacity(0.22), in: Capsule())
                     .foregroundStyle(Theme.accent2)
             }
             Text(zh ? zhText : en)
-                .font(.system(size: 13))
+                .scaledSystemFont(13)
                 .foregroundStyle(.white.opacity(0.7))
                 .fixedSize(horizontal: false, vertical: true)
             Text(url)
-                .font(.system(size: 12, weight: .regular, design: .monospaced))
+                .scaledSystemFont(12, weight: .regular, design: .monospaced)
                 .foregroundStyle(Theme.dim)
         }
         .padding(14)
@@ -171,8 +171,8 @@ struct AboutView: View {
 
     private func stat(label: String, value: String) -> some View {
         VStack(spacing: 4) {
-            Text(value).font(.system(size: 22, weight: .bold, design: .rounded)).foregroundStyle(.white)
-            Text(label.uppercased()).font(.system(size: 10, weight: .bold)).tracking(2).foregroundStyle(Theme.dim)
+            Text(value).scaledSystemFont(22, weight: .bold, design: .rounded).foregroundStyle(.white)
+            Text(label.uppercased()).scaledSystemFont(10, weight: .bold).tracking(2).foregroundStyle(Theme.dim)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
@@ -186,7 +186,7 @@ struct AboutView: View {
         Text(zh
              ? "感谢所有开源项目的维护者,以及让 Tatoeba 句子被翻译成数十种语言的志愿者们。"
              : "Thanks to the maintainers of every open project above, and to the volunteers who translated Tatoeba sentences into dozens of languages.")
-            .font(.system(size: 12))
+            .scaledSystemFont(12)
             .foregroundStyle(Theme.dim.opacity(0.7))
             .italic()
     }

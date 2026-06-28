@@ -53,6 +53,10 @@ struct GameView: View {
             if isPaused { pauseOverlay }
         }
         .observingKeyboard($keyboardUp)
+        // The dense, fixed ride layout (HUD pills + word card) can't reflow, so cap
+        // Dynamic Type here: it still scales up to one accessibility step but extreme
+        // sizes can't shatter the HUD. Large-type layout is device-verified (Gate E).
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .background {
             if !Screenshotter.isCapturing {
                 KeyCaptureView(
@@ -118,13 +122,13 @@ struct GameView: View {
             Color.black.opacity(0.45).ignoresSafeArea()
             VStack(spacing: 18) {
                 Text(zh ? "暂停" : "Paused")
-                    .font(.system(size: 34, weight: .heavy, design: .rounded))
+                    .scaledSystemFont(34, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                     .foregroundStyle(.white)
                 // iPhone is too narrow for the buttons side by side — stack them.
                 adaptiveStack(horizontal: !isPhoneIdiom, spacing: 14) {
                     Button(action: { isPaused = false }) {
                         Text(zh ? "继续 ▶" : "Resume ▶")
-                            .font(.system(size: 17, weight: .bold, design: .rounded))
+                            .scaledSystemFont(17, weight: .bold, design: .rounded)
                             .frame(width: 160, height: 46)
                     }
                     .buttonStyle(.plain)
@@ -134,7 +138,7 @@ struct GameView: View {
 
                     Button(action: { isPaused = false; model.finishGame() }) {
                         Text(zh ? "结束本程" : "End run")
-                            .font(.system(size: 17, weight: .semibold, design: .rounded))
+                            .scaledSystemFont(17, weight: .semibold, design: .rounded)
                             .frame(width: 140, height: 46)
                     }
                     .buttonStyle(.plain)
@@ -196,7 +200,7 @@ private struct HUDBar: View {
     var body: some View {
         HStack(spacing: narrow ? 8 : 14) {
             Text(session.currentLevelLabel)
-                .font(.system(size: 14, weight: .heavy, design: .rounded))
+                .scaledSystemFont(14, weight: .heavy, design: .rounded)
                 .foregroundStyle(.white)
                 .padding(.horizontal, 10).padding(.vertical, 6)
                 .background(Theme.accent2.opacity(0.85), in: Capsule())
@@ -228,7 +232,7 @@ private struct HUDBar: View {
             if let onPause {
                 Button(action: onPause) {
                     Image(systemName: "pause.fill")
-                        .font(.system(size: 17, weight: .bold))
+                        .scaledSystemFont(17, weight: .bold)
                         .foregroundStyle(.white)
                         .frame(width: 44, height: 34)
                         .background(.black.opacity(0.42), in: Capsule())
@@ -238,7 +242,7 @@ private struct HUDBar: View {
                 .accessibilityIdentifier("pauseButton")
             }
         }
-        .font(.system(size: narrow ? 15 : 17, weight: .semibold, design: .rounded))
+        .scaledSystemFont(narrow ? 15 : 17, weight: .semibold, design: .rounded)
     }
 
     /// One HUD telemetry pill, exposed to VoiceOver as a single labeled+valued
@@ -346,7 +350,7 @@ private struct TimerBar: View {
             }
             .frame(height: 10)
             Text("\(Int(ceil(remaining)))s")
-                .font(.system(size: 17, weight: .bold, design: .rounded).monospacedDigit())
+                .scaledSystemFont(17, weight: .bold, design: .rounded, monospacedDigit: true)
                 .foregroundStyle(low ? Theme.accent : .white)
                 .frame(width: 46, alignment: .trailing)
         }
@@ -370,7 +374,7 @@ private struct WordCard: View {
     var body: some View {
         VStack(spacing: compact ? 10 : 18) {
             Text(session.currentSurface ?? "")
-                .font(.system(size: compact ? 40 : 64, weight: .bold))
+                .scaledSystemFont(compact ? 40 : 64, weight: .bold, relativeTo: .largeTitle)
                 .foregroundStyle(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(0.4)   // long compounds shrink instead of clipping (narrow screens)
@@ -378,7 +382,7 @@ private struct WordCard: View {
             kanaReading
 
             Text(session.currentGloss ?? "")
-                .font(.system(size: compact ? 15 : 20, weight: .medium, design: .rounded))
+                .scaledSystemFont(compact ? 15 : 20, weight: .medium, design: .rounded)
                 .foregroundStyle(Theme.dim)
 
             Divider().background(Theme.cardStroke).frame(maxWidth: compact ? 300 : 360)
@@ -388,11 +392,11 @@ private struct WordCard: View {
             if !compact, let example = session.currentExampleJP {
                 VStack(spacing: 3) {
                     Text(example)
-                        .font(.system(size: 16, weight: .medium))
+                        .scaledSystemFont(16, weight: .medium)
                         .foregroundStyle(.white.opacity(0.7))
                     if let translation = session.currentExampleTranslation {
                         Text(translation)
-                            .font(.system(size: 13))
+                            .scaledSystemFont(13)
                             .foregroundStyle(Theme.dim)
                     }
                 }
@@ -415,7 +419,7 @@ private struct WordCard: View {
             // Composed tap + long-press (NOT a Button + simultaneousGesture, which
             // let the long-press ALSO fire the tap → an unintended ★ toggle).
             Image(systemName: saved ? "star.fill" : "star")
-                .font(.system(size: compact ? 15 : 18))
+                .scaledSystemFont(compact ? 15 : 18)
                 .foregroundStyle(saved ? Theme.gold : Theme.dim)
                 .padding(compact ? 10 : 14)
                 .contentShape(Rectangle())
@@ -445,14 +449,14 @@ private struct WordCard: View {
                     .foregroundStyle(color(index: pair.offset, done: done))
                     .underline(pair.offset == done, color: Theme.accent)
             }
-            .font(.system(size: compact ? 26 : 34, weight: .semibold, design: .rounded))
+            .scaledSystemFont(compact ? 26 : 34, weight: .semibold, design: .rounded, relativeTo: .largeTitle)
             .lineLimit(1)
             .minimumScaleFactor(0.5)
         } else {
             HStack(spacing: 2) {
                 ForEach(Array(kana.enumerated()), id: \.offset) { index, character in
                     Text(String(character))
-                        .font(.system(size: compact ? 26 : 40, weight: .semibold, design: .rounded))
+                        .scaledSystemFont(compact ? 26 : 40, weight: .semibold, design: .rounded, relativeTo: .largeTitle)
                         .foregroundStyle(color(index: index, done: done))
                         .scaleEffect(index == done ? 1.12 : 1)
                         .animation(.smooth(duration: 0.15), value: done)
@@ -471,13 +475,13 @@ private struct WordCard: View {
     private var romaji: some View {
         VStack(spacing: compact ? 5 : 8) {
             Text(session.typedRomaji.isEmpty ? " " : session.typedRomaji)
-                .font(.system(size: compact ? 20 : 26, weight: .bold, design: .monospaced))
+                .scaledSystemFont(compact ? 20 : 26, weight: .bold, design: .monospaced)
                 .foregroundStyle(Theme.accent2)
                 .accessibilityIdentifier("typedRomaji")
 
             if session.showRomajiHint {
                 Text("→ \(session.currentRomaji ?? "")")
-                    .font(.system(size: compact ? 14 : 18, weight: .regular, design: .monospaced))
+                    .scaledSystemFont(compact ? 14 : 18, weight: .regular, design: .monospaced)
                     .foregroundStyle(Theme.dim)
                     .accessibilityIdentifier("romajiHint")
                 nextKeys
@@ -490,7 +494,7 @@ private struct WordCard: View {
         return HStack(spacing: 6) {
             ForEach(keys, id: \.self) { key in
                 Text(key)
-                    .font(.system(size: compact ? 12 : 14, weight: .bold, design: .monospaced))
+                    .scaledSystemFont(compact ? 12 : 14, weight: .bold, design: .monospaced)
                     .padding(.horizontal, 9).padding(.vertical, 4)
                     .background(Theme.accent.opacity(0.18), in: RoundedRectangle(cornerRadius: 6))
                     .foregroundStyle(Theme.accent)

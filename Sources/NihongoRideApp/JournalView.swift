@@ -66,16 +66,16 @@ struct JournalView: View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(zh ? "骑行日志" : "Ride Log")
-                    .font(.system(size: isPhoneIdiom ? 28 : 32, weight: .heavy, design: .rounded))
+                    .scaledSystemFont(isPhoneIdiom ? 28 : 32, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                     .foregroundStyle(.white)
                 Text(zh ? "你的打字旅程,一页一页记着" : "Every ride, remembered")
-                    .font(.system(size: 13))
+                    .scaledSystemFont(13)
                     .foregroundStyle(Theme.dim)
             }
             Spacer()
             Button(action: model.backToMenu) {
                 Label(zh ? "返回" : "Back", systemImage: "chevron.left")
-                    .font(.system(size: 14, weight: .semibold))
+                    .scaledSystemFont(14, weight: .semibold)
                     .padding(.horizontal, 12).padding(.vertical, 8)
                     .background(Theme.card, in: Capsule())
                     .overlay(Capsule().strokeBorder(Theme.cardStroke))
@@ -94,16 +94,16 @@ struct JournalView: View {
             cardTitle(zh ? "连续骑行" : "Streak", icon: "flame.fill", tint: Theme.accent)
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Text("\(streak)")
-                    .font(.system(size: 44, weight: .black, design: .rounded))
+                    .scaledSystemFont(44, weight: .black, design: .rounded, relativeTo: .largeTitle)
                     .foregroundStyle(streak > 0 ? Theme.accent : Theme.dim)
                     .monospacedDigit()
                 Text(zh ? "天" : (streak == 1 ? "day" : "days"))
-                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .scaledSystemFont(15, weight: .semibold, design: .rounded)
                     .foregroundStyle(Theme.dim)
             }
             dayStuds
             Text(zh ? "最近两周" : "Last two weeks")
-                .font(.system(size: 10, weight: .medium))
+                .scaledSystemFont(10, weight: .medium)
                 .tracking(1)
                 .foregroundStyle(Theme.dim.opacity(0.7))
         }
@@ -165,11 +165,11 @@ struct JournalView: View {
     private func odoRow(value: String, unit: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 6) {
             Text(value)
-                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .scaledSystemFont(24, weight: .bold, design: .rounded)
                 .foregroundStyle(.white)
                 .monospacedDigit()
             Text(unit)
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .scaledSystemFont(12, weight: .semibold, design: .rounded)
                 .foregroundStyle(Theme.dim)
         }
     }
@@ -199,11 +199,11 @@ struct JournalView: View {
             Circle().fill(count > 0 ? tint : Color.white.opacity(0.12))
                 .frame(width: 7, height: 7)
             Text(label)
-                .font(.system(size: 13, weight: .medium, design: .rounded))
+                .scaledSystemFont(13, weight: .medium, design: .rounded)
                 .foregroundStyle(Theme.dim)
             Spacer()
             Text("\(count)")
-                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .scaledSystemFont(18, weight: .bold, design: .rounded)
                 .foregroundStyle(count > 0 ? .white : Theme.dim)
                 .monospacedDigit()
         }
@@ -227,7 +227,7 @@ struct JournalView: View {
                 Spacer()
                 if let best = model.journal.bestWPM {
                     Text((zh ? "最佳 " : "BEST ") + "\(Int(best)) WPM")
-                        .font(.system(size: 11, weight: .heavy, design: .rounded))
+                        .scaledSystemFont(11, weight: .heavy, design: .rounded)
                         .tracking(1)
                         .foregroundStyle(Theme.gold)
                 }
@@ -237,7 +237,7 @@ struct JournalView: View {
                     .frame(height: isPhoneIdiom ? 90 : 110)
                     .accessibilityHidden(true)   // decorative chart; summarized below
                 Text(zh ? "最近 \(series.count) 程的 WPM" : "WPM across your last \(series.count) rides")
-                    .font(.system(size: 11))
+                    .scaledSystemFont(11)
                     .foregroundStyle(Theme.dim.opacity(0.7))
             } else {
                 emptyHint(zh ? "骑满两程,这里会画出你的路。" : "Ride twice and your road appears here.")
@@ -277,16 +277,16 @@ struct JournalView: View {
         let style = modeStyle(record.mode)
         return HStack(spacing: isPhoneIdiom ? 8 : 12) {
             Image(systemName: style.icon)
-                .font(.system(size: 12, weight: .bold))
+                .scaledSystemFont(12, weight: .bold)
                 .foregroundStyle(style.tint)
                 .frame(width: 26, height: 26)
                 .background(style.tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 7))
             Text(dayLabel(record.date))
-                .font(.system(size: 12, weight: .medium, design: .rounded))
+                .scaledSystemFont(12, weight: .medium, design: .rounded)
                 .foregroundStyle(.white.opacity(0.85))
                 .frame(width: isPhoneIdiom ? 52 : 64, alignment: .leading)
             Text(levelLabel(record.level))
-                .font(.system(size: 10, weight: .heavy, design: .rounded))
+                .scaledSystemFont(10, weight: .heavy, design: .rounded)
                 .foregroundStyle(Theme.accent2)
                 .padding(.horizontal, 6).padding(.vertical, 2)
                 .background(Theme.accent2.opacity(0.14), in: Capsule())
@@ -325,11 +325,11 @@ struct JournalView: View {
         HStack(spacing: 3) {
             if !label.isEmpty {
                 Text(label)
-                    .font(.system(size: 9, weight: .bold, design: .rounded))
+                    .scaledSystemFont(9, weight: .bold, design: .rounded)
                     .foregroundStyle(tint.opacity(0.8))
             }
             Text(value)
-                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .scaledSystemFont(13, weight: .semibold, design: .rounded)
                 .foregroundStyle(.white.opacity(0.9))
                 .monospacedDigit()
         }
@@ -341,19 +341,19 @@ struct JournalView: View {
     private func cardTitle(_ title: String, icon: String, tint: Color) -> some View {
         Label {
             Text(title.uppercased())
-                .font(.system(size: 11, weight: .black, design: .rounded))
+                .scaledSystemFont(11, weight: .black, design: .rounded)
                 .tracking(2)
                 .foregroundStyle(Theme.dim)
         } icon: {
             Image(systemName: icon)
-                .font(.system(size: 12, weight: .bold))
+                .scaledSystemFont(12, weight: .bold)
                 .foregroundStyle(tint)
         }
     }
 
     private func emptyHint(_ text: String) -> some View {
         Text(text)
-            .font(.system(size: 13))
+            .scaledSystemFont(13)
             .foregroundStyle(Theme.dim)
             .frame(maxWidth: .infinity, minHeight: 56)
             .multilineTextAlignment(.center)
@@ -432,7 +432,7 @@ private struct RoadSparkline: View {
                 }
                 if let last = points.last {
                     Text("🚲")
-                        .font(.system(size: 16))
+                        .scaledSystemFont(16)
                         .position(x: last.x - 2, y: max(10, last.y - 16))
                 }
             }

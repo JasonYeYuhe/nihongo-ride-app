@@ -48,6 +48,10 @@ struct ConjugationGameView: View {
             if isPaused { pauseOverlay }
         }
         .observingKeyboard($keyboardUp)
+        // Cap Dynamic Type on the dense, fixed drill layout (mirrors GameView): it
+        // still scales up to one accessibility step, but extreme sizes can't shatter
+        // the HUD / card. Large-type layout is device-verified (Gate E).
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .background {
             if !Screenshotter.isCapturing {
                 KeyCaptureView(
@@ -102,12 +106,12 @@ struct ConjugationGameView: View {
             Color.black.opacity(0.45).ignoresSafeArea()
             VStack(spacing: 18) {
                 Text(zh ? "暂停" : "Paused")
-                    .font(.system(size: 34, weight: .heavy, design: .rounded))
+                    .scaledSystemFont(34, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                     .foregroundStyle(.white)
                 adaptiveStack(horizontal: !isPhoneIdiom, spacing: 14) {
                     Button(action: { isPaused = false }) {
                         Text(zh ? "继续 ▶" : "Resume ▶")
-                            .font(.system(size: 17, weight: .bold, design: .rounded))
+                            .scaledSystemFont(17, weight: .bold, design: .rounded)
                             .frame(width: 160, height: 46)
                     }
                     .buttonStyle(.plain)
@@ -117,7 +121,7 @@ struct ConjugationGameView: View {
 
                     Button(action: { isPaused = false; model.finishConjugation() }) {
                         Text(zh ? "结束本程" : "End run")
-                            .font(.system(size: 17, weight: .semibold, design: .rounded))
+                            .scaledSystemFont(17, weight: .semibold, design: .rounded)
                             .frame(width: 140, height: 46)
                     }
                     .buttonStyle(.plain)
@@ -150,7 +154,7 @@ private struct ConjugationHUD: View {
     var body: some View {
         HStack(spacing: narrow ? 8 : 14) {
             Text(zh ? "变形" : "Conjugate")
-                .font(.system(size: 14, weight: .heavy, design: .rounded))
+                .scaledSystemFont(14, weight: .heavy, design: .rounded)
                 .foregroundStyle(.white)
                 .padding(.horizontal, 10).padding(.vertical, 6)
                 .background(Theme.accent2.opacity(0.85), in: Capsule())
@@ -175,7 +179,7 @@ private struct ConjugationHUD: View {
             if let onPause {
                 Button(action: onPause) {
                     Image(systemName: "pause.fill")
-                        .font(.system(size: 17, weight: .bold))
+                        .scaledSystemFont(17, weight: .bold)
                         .foregroundStyle(.white)
                         .frame(width: 44, height: 34)
                         .background(.black.opacity(0.42), in: Capsule())
@@ -185,7 +189,7 @@ private struct ConjugationHUD: View {
                 .accessibilityIdentifier("pauseButton")
             }
         }
-        .font(.system(size: narrow ? 15 : 17, weight: .semibold, design: .rounded))
+        .scaledSystemFont(narrow ? 15 : 17, weight: .semibold, design: .rounded)
     }
 
     private func stat(icon: String, value: String, tint: Color, label: String, spoken: String? = nil) -> some View {
@@ -237,29 +241,29 @@ private struct ConjugationCard: View {
     var body: some View {
         VStack(spacing: compact ? 10 : 18) {
             Text(zh ? "辞書形" : "Dictionary form")
-                .font(.system(size: compact ? 11 : 13, weight: .semibold, design: .rounded))
+                .scaledSystemFont(compact ? 11 : 13, weight: .semibold, design: .rounded)
                 .foregroundStyle(Theme.dim)
                 .accessibilityHidden(true)
 
             Text(session.currentSurface ?? "")
-                .font(.system(size: compact ? 36 : 56, weight: .bold))
+                .scaledSystemFont(compact ? 36 : 56, weight: .bold, relativeTo: .largeTitle)
                 .foregroundStyle(.white)
                 .lineLimit(1).minimumScaleFactor(0.4)
             Text(session.currentDictKana ?? "")
-                .font(.system(size: compact ? 18 : 24, weight: .semibold, design: .rounded))
+                .scaledSystemFont(compact ? 18 : 24, weight: .semibold, design: .rounded)
                 .foregroundStyle(.white.opacity(0.75))
             Text(session.currentGloss ?? "")
-                .font(.system(size: compact ? 14 : 18, weight: .medium, design: .rounded))
+                .scaledSystemFont(compact ? 14 : 18, weight: .medium, design: .rounded)
                 .foregroundStyle(Theme.dim)
                 .lineLimit(1).minimumScaleFactor(0.5)
 
             // The instruction: produce THIS form.
             Image(systemName: "arrow.down")
-                .font(.system(size: compact ? 13 : 16, weight: .bold))
+                .scaledSystemFont(compact ? 13 : 16, weight: .bold)
                 .foregroundStyle(Theme.accent2)
                 .accessibilityHidden(true)
             Text(session.currentFormLabel ?? "")
-                .font(.system(size: compact ? 18 : 24, weight: .heavy, design: .rounded))
+                .scaledSystemFont(compact ? 18 : 24, weight: .heavy, design: .rounded)
                 .foregroundStyle(.white)
                 .padding(.horizontal, 14).padding(.vertical, 7)
                 .background(Theme.accent.opacity(0.22), in: Capsule())
@@ -290,7 +294,7 @@ private struct ConjugationCard: View {
                 ForEach(Array(kana.enumerated()), id: \.offset) { index, character in
                     let revealed = index < done || hint
                     Text(revealed ? String(character) : "・")
-                        .font(.system(size: compact ? 26 : 40, weight: .semibold, design: .rounded))
+                        .scaledSystemFont(compact ? 26 : 40, weight: .semibold, design: .rounded, relativeTo: .largeTitle)
                         .foregroundStyle(color(index: index, done: done, revealed: revealed))
                         .scaleEffect(index == done ? 1.12 : 1)
                         .animation(.smooth(duration: 0.15), value: done)
@@ -301,13 +305,13 @@ private struct ConjugationCard: View {
             .accessibilityValue(hint ? String(kana) : (zh ? "\(kana.count) 个假名" : "\(kana.count) kana"))
 
             Text(session.typedRomaji.isEmpty ? " " : session.typedRomaji)
-                .font(.system(size: compact ? 18 : 24, weight: .bold, design: .monospaced))
+                .scaledSystemFont(compact ? 18 : 24, weight: .bold, design: .monospaced)
                 .foregroundStyle(Theme.accent2)
                 .accessibilityIdentifier("typedRomaji")
 
             if hint {
                 Text("→ \(session.currentRomaji ?? "")")
-                    .font(.system(size: compact ? 13 : 16, weight: .regular, design: .monospaced))
+                    .scaledSystemFont(compact ? 13 : 16, weight: .regular, design: .monospaced)
                     .foregroundStyle(Theme.dim)
                     .accessibilityIdentifier("romajiHint")
                 nextKeys
@@ -326,7 +330,7 @@ private struct ConjugationCard: View {
         return HStack(spacing: 6) {
             ForEach(keys, id: \.self) { key in
                 Text(key)
-                    .font(.system(size: compact ? 12 : 14, weight: .bold, design: .monospaced))
+                    .scaledSystemFont(compact ? 12 : 14, weight: .bold, design: .monospaced)
                     .padding(.horizontal, 9).padding(.vertical, 4)
                     .background(Theme.accent.opacity(0.18), in: RoundedRectangle(cornerRadius: 6))
                     .foregroundStyle(Theme.accent)

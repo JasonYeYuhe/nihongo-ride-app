@@ -22,10 +22,10 @@ struct MenuView: View {
 
             VStack(spacing: 10) {
                 Text("Nihongo Ride")
-                    .font(.system(size: isPhoneIdiom ? 38 : 60, weight: .heavy, design: .rounded))
+                    .scaledSystemFont(isPhoneIdiom ? 38 : 60, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                     .foregroundStyle(.white)
                 Text("にほんご ライド")
-                    .font(.system(size: isPhoneIdiom ? 16 : 22, weight: .semibold, design: .rounded))
+                    .scaledSystemFont(isPhoneIdiom ? 16 : 22, weight: .semibold, design: .rounded)
                     .tracking(isPhoneIdiom ? 3 : 4)
                     .foregroundStyle(Theme.accent)
                 Text(model.languageCode == "zh"
@@ -90,7 +90,7 @@ struct MenuView: View {
                         HStack(spacing: 12) {
                             Image(systemName: "switch.2").accessibilityHidden(true)
                             Text(zh ? "练习形" : "Forms")
-                                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                .scaledSystemFont(14, weight: .semibold, design: .rounded)
                                 .foregroundStyle(Theme.dim)
                             Spacer()
                         }
@@ -99,7 +99,7 @@ struct MenuView: View {
                                 let on = model.isConjugationFormSelected(option.rawValue)
                                 Button(action: { model.toggleConjugationForm(option.rawValue) }) {
                                     Text(option.shortLabel)
-                                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                        .scaledSystemFont(14, weight: .semibold, design: .rounded)
                                         .lineLimit(1)
                                         .foregroundStyle(on ? .white : Theme.dim)
                                         .padding(.horizontal, 12).padding(.vertical, 6)
@@ -168,7 +168,7 @@ struct MenuView: View {
             Button(action: model.startGame) {
                 Text(isConjugation ? (zhLang ? "开始变形 ▶" : "Start drill ▶")
                                    : (zhLang ? "出发 ▶" : "Start ride ▶"))
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .scaledSystemFont(20, weight: .bold, design: .rounded)
                     .frame(width: 240, height: 54)
             }
             .buttonStyle(.plain)
@@ -193,7 +193,7 @@ struct MenuView: View {
                 Button(action: { model.screen = .journal }) {
                     Label {
                         Text(model.languageCode == "zh" ? "骑行日志" : "Ride Log")
-                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                            .scaledSystemFont(13, weight: .semibold, design: .rounded)
                             .lineLimit(1)
                     } icon: {
                         Image(systemName: streak >= 2 ? "flame.fill" : "book.closed")
@@ -214,7 +214,7 @@ struct MenuView: View {
                 Button(action: { model.screen = .lists }) {
                     Label {
                         Text(model.languageCode == "zh" ? "词单" : "Word Lists")
-                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                            .scaledSystemFont(13, weight: .semibold, design: .rounded)
                             .lineLimit(1)
                     } icon: {
                         Image(systemName: "star.fill").foregroundStyle(Theme.gold)
@@ -234,7 +234,7 @@ struct MenuView: View {
                     Button(action: { model.startWeakWords() }) {
                         Label {
                             Text(model.languageCode == "zh" ? "弱词练习" : "Weak words")
-                                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                .scaledSystemFont(13, weight: .semibold, design: .rounded)
                                 .lineLimit(1)
                         } icon: {
                             Image(systemName: "bolt.fill").foregroundStyle(Theme.accent)
@@ -254,7 +254,7 @@ struct MenuView: View {
 
                 Button(action: { model.screen = .settings }) {
                     Label(model.languageCode == "zh" ? "设置" : "Settings", systemImage: "gearshape")
-                        .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        .scaledSystemFont(13, weight: .semibold, design: .rounded)
                         .lineLimit(1)
                         .foregroundStyle(.white.opacity(0.85))
                         .padding(.horizontal, 14).padding(.vertical, 7)
@@ -267,7 +267,7 @@ struct MenuView: View {
 
                 Button(action: { model.screen = .about }) {
                     Label(model.languageCode == "zh" ? "关于与致谢" : "About & Credits", systemImage: "info.circle")
-                        .font(.system(size: 12, weight: .medium))
+                        .scaledSystemFont(12, weight: .medium)
                         .lineLimit(1)
                         .foregroundStyle(Theme.dim)
                 }
@@ -299,7 +299,7 @@ struct MenuView: View {
         return HStack(spacing: 0) {
             ForEach(Array(stops.enumerated()), id: \.offset) { index, stop in
                 VStack(spacing: 6) {
-                    Text(stop.0).font(.system(size: isPhoneIdiom ? 24 : 30))
+                    Text(stop.0).scaledSystemFont(isPhoneIdiom ? 24 : 30, relativeTo: .largeTitle)
                     Text(stop.1).font(.caption2).foregroundStyle(Theme.dim)
                 }
                 if index < stops.count - 1 {

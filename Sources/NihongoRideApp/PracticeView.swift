@@ -86,10 +86,10 @@ struct PracticeView: View {
     private func topBar(_ s: GameSession) -> some View {
         HStack {
             Text("PRACTICE · \(s.currentLevelLabel)")
-                .font(.system(size: 12, weight: .bold)).tracking(3)
+                .scaledSystemFont(12, weight: .bold).tracking(3)
                 .foregroundStyle(ink.opacity(0.4))
             if !model.showRomajiHint {
-                Text("BLIND").font(.system(size: 11, weight: .heavy)).tracking(2)
+                Text("BLIND").scaledSystemFont(11, weight: .heavy).tracking(2)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 8).padding(.vertical, 2)
                     .background(accent, in: Capsule())
@@ -107,7 +107,7 @@ struct PracticeView: View {
                 }
             } else {
                 Text(model.languageCode == "zh" ? "Enter 下一段 · Esc 结束" : "Enter for next · Esc to finish")
-                    .font(.system(size: 12, weight: .medium)).foregroundStyle(ink.opacity(0.35))
+                    .scaledSystemFont(12, weight: .medium).foregroundStyle(ink.opacity(0.35))
             }
         }
     }
@@ -115,7 +115,7 @@ struct PracticeView: View {
     private func topButton(_ title: String, id: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title)
-                .font(.system(size: 14, weight: .semibold))
+                .scaledSystemFont(14, weight: .semibold)
                 .padding(.horizontal, 16).padding(.vertical, 8)
                 .background(ink.opacity(0.07), in: Capsule())
                 .overlay(Capsule().strokeBorder(ink.opacity(0.12)))
@@ -145,7 +145,7 @@ struct PracticeView: View {
             }
         }
         return text
-            .font(.system(size: isPhoneIdiom ? 32 : 46, weight: .medium, design: .serif))
+            .scaledSystemFont(isPhoneIdiom ? 32 : 46, weight: .medium, design: .serif, relativeTo: .largeTitle)
             .lineSpacing(isPhoneIdiom ? 14 : 20)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: 720, alignment: .leading)
@@ -178,7 +178,7 @@ struct PracticeView: View {
             }
         }
         return text
-            .font(.system(size: isPhoneIdiom ? 24 : 34, weight: .medium, design: .serif))
+            .scaledSystemFont(isPhoneIdiom ? 24 : 34, weight: .medium, design: .serif, relativeTo: .largeTitle)
             .lineSpacing(isPhoneIdiom ? 11 : 16)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: 760, alignment: .leading)
@@ -205,7 +205,7 @@ struct PracticeView: View {
 
     private func translation(_ s: GameSession) -> some View {
         Text(s.currentGloss ?? "")
-            .font(.system(size: 15, weight: .regular, design: .serif))
+            .scaledSystemFont(15, weight: .regular, design: .serif)
             .italic()
             .foregroundStyle(ink.opacity(0.45))
             .frame(maxWidth: 720, alignment: .leading)
@@ -230,10 +230,10 @@ struct PracticeView: View {
         VStack(spacing: 6) {
             Text(s.typedRomaji.isEmpty ? " " : s.typedRomaji)
                 .foregroundStyle(accent)
-                .font(.system(size: 22, weight: .semibold, design: .monospaced))
+                .scaledSystemFont(22, weight: .semibold, design: .monospaced)
             Text(s.currentRomaji ?? "")
                 .foregroundStyle(ink.opacity(0.32))
-                .font(.system(size: 15, weight: .regular, design: .monospaced))
+                .scaledSystemFont(15, weight: .regular, design: .monospaced)
                 .accessibilityIdentifier("practiceRomaji")
         }
     }
@@ -253,8 +253,8 @@ struct PracticeView: View {
 
     private func stat(_ label: String, _ value: String) -> some View {
         VStack(spacing: 3) {
-            Text(value).font(.system(size: 19, weight: .semibold, design: .monospaced))
-            Text(label).font(.system(size: 10, weight: .bold)).tracking(2)
+            Text(value).scaledSystemFont(19, weight: .semibold, design: .monospaced)
+            Text(label).scaledSystemFont(10, weight: .bold).tracking(2)
         }
         .accessibilityElement()
         .accessibilityLabel(label)

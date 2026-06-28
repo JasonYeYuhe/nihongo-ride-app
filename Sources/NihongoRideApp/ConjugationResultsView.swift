@@ -32,10 +32,10 @@ struct ConjugationResultsView: View {
         let summary = model.lastConjugationSummary
         return VStack(spacing: 20) {
             Spacer(minLength: 0)
-            Text("✓").font(.system(size: 50, weight: .bold)).foregroundStyle(Theme.done)
+            Text("✓").scaledSystemFont(50, weight: .bold, relativeTo: .largeTitle).foregroundStyle(Theme.done)
                 .accessibilityHidden(true)
             Text(zh ? "完成!" : "Drill complete!")
-                .font(.system(size: isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded))
+                .scaledSystemFont(isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                 .foregroundStyle(.white)
 
             if let summary {
@@ -46,7 +46,7 @@ struct ConjugationResultsView: View {
             adaptiveStack(horizontal: !isPhoneIdiom, spacing: isPhoneIdiom ? 12 : 16) {
                 Button(action: model.startGame) {
                     Text(zh ? "再练一组 ▶" : "Practice again ▶")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                        .scaledSystemFont(18, weight: .bold, design: .rounded)
                         .frame(width: 200, height: 50)
                 }
                 .buttonStyle(.plain)
@@ -56,7 +56,7 @@ struct ConjugationResultsView: View {
 
                 Button(action: model.backToMenu) {
                     Text(zh ? "回到主页" : "Menu")
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .scaledSystemFont(18, weight: .semibold, design: .rounded)
                         .frame(width: 140, height: 50)
                 }
                 .buttonStyle(.plain)
@@ -95,7 +95,7 @@ struct ConjugationResultsView: View {
     private func card(_ c: (icon: String, tint: Color, value: String, label: String, spoken: String?)) -> some View {
         VStack(spacing: 8) {
             Image(systemName: c.icon).font(.title2).foregroundStyle(c.tint)
-            Text(c.value).font(.system(size: 28, weight: .bold, design: .rounded))
+            Text(c.value).scaledSystemFont(28, weight: .bold, design: .rounded, relativeTo: .largeTitle)
                 .foregroundStyle(.white).monospacedDigit()
             Text(c.label).font(.caption).foregroundStyle(Theme.dim)
         }
@@ -126,9 +126,9 @@ struct ConjugationResultsView: View {
         }()
         return VStack(spacing: 6) {
             Text(title.uppercased())
-                .font(.system(size: 14, weight: .black, design: .rounded)).tracking(4)
+                .scaledSystemFont(14, weight: .black, design: .rounded).tracking(4)
                 .foregroundStyle(tint)
-            Text(line).font(.system(size: 13)).foregroundStyle(Theme.dim)
+            Text(line).scaledSystemFont(13).foregroundStyle(Theme.dim)
         }
     }
 }

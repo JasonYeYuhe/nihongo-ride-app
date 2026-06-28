@@ -50,10 +50,10 @@ struct ResultsView: View {
             Spacer(minLength: 0)
 
             Text("🏁")
-                .font(.system(size: 50))
+                .scaledSystemFont(50, relativeTo: .largeTitle)
                 .accessibilityHidden(true)
             Text(zh ? "到站!" : "You've arrived!")
-                .font(.system(size: isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded))
+                .scaledSystemFont(isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                 .foregroundStyle(.white)
 
             if let summary {
@@ -67,7 +67,7 @@ struct ResultsView: View {
             adaptiveStack(horizontal: !isPhoneIdiom, spacing: isPhoneIdiom ? 12 : 16) {
                 Button(action: model.startGame) {
                     Text(zh ? "再来一程 ▶" : "Ride again ▶")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                        .scaledSystemFont(18, weight: .bold, design: .rounded)
                         .frame(width: 200, height: 50)
                 }
                 .buttonStyle(.plain)
@@ -77,7 +77,7 @@ struct ResultsView: View {
 
                 Button(action: model.backToMenu) {
                     Text(zh ? "回到主页" : "Menu")
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .scaledSystemFont(18, weight: .semibold, design: .rounded)
                         .frame(width: 140, height: 50)
                 }
                 .buttonStyle(.plain)
@@ -132,7 +132,7 @@ struct ResultsView: View {
         VStack(spacing: 8) {
             Image(systemName: c.icon).font(.title2).foregroundStyle(c.tint)
             Text(c.value)
-                .font(.system(size: 28, weight: .bold, design: .rounded))
+                .scaledSystemFont(28, weight: .bold, design: .rounded, relativeTo: .largeTitle)
                 .foregroundStyle(.white).monospacedDigit()
             Text(c.label).font(.caption).foregroundStyle(Theme.dim)
         }
@@ -176,11 +176,11 @@ struct ResultsView: View {
         }()
         return VStack(spacing: 6) {
             Text(title.uppercased())
-                .font(.system(size: 14, weight: .black, design: .rounded))
+                .scaledSystemFont(14, weight: .black, design: .rounded)
                 .tracking(4)
                 .foregroundStyle(tint)
             Text(line)
-                .font(.system(size: 13, weight: .regular))
+                .scaledSystemFont(13, weight: .regular)
                 .foregroundStyle(Theme.dim)
         }
     }
@@ -197,9 +197,9 @@ struct ResultsView: View {
                     VStack(spacing: 2) {
                         HStack(spacing: 4) {
                             Image(systemName: saved ? "star.fill" : "star")
-                                .font(.system(size: 9)).foregroundStyle(saved ? Theme.gold : Theme.dim)
+                                .scaledSystemFont(9).foregroundStyle(saved ? Theme.gold : Theme.dim)
                             Text(word.surface)
-                                .font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                                .scaledSystemFont(15, weight: .semibold).foregroundStyle(.white)
                         }
                         Text(word.gloss(for: model.languageCode))
                             .font(.caption2).foregroundStyle(Theme.dim).lineLimit(1)

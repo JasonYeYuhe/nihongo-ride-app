@@ -52,7 +52,7 @@ struct OnboardingView: View {
                 Spacer()
                 Button(action: model.finishOnboarding) {
                     Text(zh ? "跳过" : "Skip")
-                        .font(.system(size: 14, weight: .semibold))
+                        .scaledSystemFont(14, weight: .semibold)
                         .foregroundStyle(Theme.dim)
                         .padding(.horizontal, 12).padding(.vertical, 8)
                 }
@@ -64,11 +64,11 @@ struct OnboardingView: View {
 
             VStack(spacing: 22) {
                 Image(systemName: current.icon)
-                    .font(.system(size: 56, weight: .semibold))
+                    .scaledSystemFont(56, weight: .semibold, relativeTo: .largeTitle)
                     .foregroundStyle(Theme.accent)
                     .accessibilityHidden(true)
                 Text(current.title)
-                    .font(.system(size: 28, weight: .heavy, design: .rounded))
+                    .scaledSystemFont(28, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
                 Text(current.body)
@@ -78,7 +78,7 @@ struct OnboardingView: View {
                     .fixedSize(horizontal: false, vertical: true)
                 if let example = current.example {
                     Text(example)
-                        .font(.system(size: 16, weight: .medium, design: .monospaced))
+                        .scaledSystemFont(16, weight: .medium, design: .monospaced)
                         .foregroundStyle(Theme.gold)
                         .padding(.horizontal, 16).padding(.vertical, 10)
                         .background(Theme.card, in: Capsule())
@@ -107,7 +107,7 @@ struct OnboardingView: View {
             Button(action: advance) {
                 Text(isLast ? (zh ? "开始 ▶" : "Get started ▶")
                             : (zh ? "下一步" : "Next"))
-                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .scaledSystemFont(18, weight: .bold, design: .rounded)
                     .frame(width: 220, height: 52)
             }
             .buttonStyle(.plain)

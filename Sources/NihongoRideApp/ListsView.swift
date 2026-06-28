@@ -40,7 +40,7 @@ struct ListsView: View {
                 showingCreate = true
             } label: {
                 Label(zh ? "新建词单" : "New list", systemImage: "plus.circle.fill")
-                    .font(.system(size: 15, weight: .semibold))
+                    .scaledSystemFont(15, weight: .semibold)
                     .foregroundStyle(Theme.accent)
                     .padding(.vertical, 6)
             }
@@ -112,13 +112,13 @@ struct ListsView: View {
         return HStack(spacing: 12) {
             Image(systemName: list.isDefault ? "star.fill" : "rectangle.stack")
                 .foregroundStyle(list.isDefault ? Theme.gold : Theme.accent2)
-                .font(.system(size: 16))
+                .scaledSystemFont(16)
             Button {
                 model.selectedListID = list.id
                 model.screen = .listDetail
             } label: {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(name).font(.system(size: 16, weight: .semibold))
+                    Text(name).scaledSystemFont(16, weight: .semibold)
                         .foregroundStyle(.white)
                     Text(zh ? "\(count) 词" : "\(count) word\(count == 1 ? "" : "s")")
                         .font(.caption).foregroundStyle(Theme.dim)
@@ -133,7 +133,7 @@ struct ListsView: View {
             // when no words resolve on this device — not just when the list is empty.
             Button { model.startListGame(list.id) } label: {
                 Image(systemName: "play.fill")
-                    .font(.system(size: 14, weight: .bold))
+                    .scaledSystemFont(14, weight: .bold)
                     .foregroundStyle(playable > 0 ? .white : Theme.dim)
                     .padding(8)
                     .background(playable > 0 ? Theme.accent : Theme.card, in: Circle())
@@ -157,7 +157,7 @@ struct ListsView: View {
                 } label: { Label(zh ? "清空" : "Clear words", systemImage: "eraser") }
             } label: {
                 Image(systemName: "ellipsis")
-                    .font(.system(size: 16, weight: .bold))
+                    .scaledSystemFont(16, weight: .bold)
                     .foregroundStyle(Theme.dim)
                     .padding(8)
                     .contentShape(Rectangle())
@@ -174,12 +174,12 @@ struct ListsView: View {
     private var header: some View {
         HStack {
             Text(zh ? "我的词单" : "Word Lists")
-                .font(.system(size: 32, weight: .heavy, design: .rounded))
+                .scaledSystemFont(32, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                 .foregroundStyle(.white)
             Spacer()
             Button(action: model.backToMenu) {
                 Label(zh ? "返回" : "Back", systemImage: "chevron.left")
-                    .font(.system(size: 14, weight: .semibold))
+                    .scaledSystemFont(14, weight: .semibold)
                     .padding(.horizontal, 12).padding(.vertical, 8)
                     .background(Theme.card, in: Capsule())
                     .overlay(Capsule().strokeBorder(Theme.cardStroke))
@@ -283,7 +283,7 @@ struct ListDetailView: View {
         let playable = model.playableCount(in: list) > 0
         return Button { model.startListGame(list.id) } label: {
             Label(zh ? "开始练习" : "Practice this list", systemImage: "play.fill")
-                .font(.system(size: 16, weight: .bold))
+                .scaledSystemFont(16, weight: .bold)
                 .frame(maxWidth: .infinity)
                 .frame(height: 48)
         }
@@ -307,7 +307,7 @@ struct ListDetailView: View {
         return HStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(entry?.surface ?? id)
-                    .font(.system(size: 16, weight: .semibold))
+                    .scaledSystemFont(16, weight: .semibold)
                     .foregroundStyle(entry == nil ? Theme.dim : .white)
                 if let entry {
                     Text(entry.gloss(for: model.languageCode))
@@ -320,7 +320,7 @@ struct ListDetailView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             Button { model.removeWord(id, from: listID) } label: {
                 Image(systemName: "minus.circle")
-                    .font(.system(size: 16))
+                    .scaledSystemFont(16)
                     .foregroundStyle(Theme.accent)
                     .padding(6)
                     .contentShape(Rectangle())
@@ -346,12 +346,12 @@ struct ListDetailView: View {
             ?? (zh ? "词单" : "List")
         return HStack {
             Text(name)
-                .font(.system(size: 28, weight: .heavy, design: .rounded))
+                .scaledSystemFont(28, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                 .foregroundStyle(.white).lineLimit(1)
             Spacer()
             Button(action: backToLists) {
                 Label(zh ? "返回" : "Back", systemImage: "chevron.left")
-                    .font(.system(size: 14, weight: .semibold))
+                    .scaledSystemFont(14, weight: .semibold)
                     .padding(.horizontal, 12).padding(.vertical, 8)
                     .background(Theme.card, in: Capsule())
                     .overlay(Capsule().strokeBorder(Theme.cardStroke))
@@ -386,7 +386,7 @@ struct AddToListsSheet: View {
         return VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text(zh ? "加入词单" : "Add to lists")
-                    .font(.system(size: 18, weight: .bold)).foregroundStyle(.white)
+                    .scaledSystemFont(18, weight: .bold).foregroundStyle(.white)
                 Spacer()
                 Button(zh ? "完成" : "Done") { isPresented = false }
                     .buttonStyle(.plain).foregroundStyle(Theme.accent)

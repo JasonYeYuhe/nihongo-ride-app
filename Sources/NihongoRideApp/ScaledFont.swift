@@ -17,19 +17,23 @@ struct ScaledSystemFont: ViewModifier {
     @ScaledMetric private var size: CGFloat
     private let weight: Font.Weight
     private let design: Font.Design
+    private let monospacedDigit: Bool
     private let maxScaled: CGFloat?
 
     init(size: CGFloat, weight: Font.Weight, design: Font.Design,
-         relativeTo style: Font.TextStyle, maxScaled: CGFloat?) {
+         relativeTo style: Font.TextStyle, monospacedDigit: Bool, maxScaled: CGFloat?) {
         self._size = ScaledMetric(wrappedValue: size, relativeTo: style)
         self.weight = weight
         self.design = design
+        self.monospacedDigit = monospacedDigit
         self.maxScaled = maxScaled
     }
 
     func body(content: Content) -> some View {
         let resolved = maxScaled.map { Swift.min(size, $0) } ?? size
-        return content.font(.system(size: resolved, weight: weight, design: design))
+        var font = Font.system(size: resolved, weight: weight, design: design)
+        if monospacedDigit { font = font.monospacedDigit() }
+        return content.font(font)
     }
 }
 
@@ -43,13 +47,16 @@ extension View {
     ///   - weight: font weight (default `.regular`).
     ///   - design: font design (default `.default`; the app often uses `.rounded`).
     ///   - relativeTo: the text style the size scales against (default `.body`).
+    ///   - monospacedDigit: apply `.monospacedDigit()` to the font (tabular figures).
     ///   - maxScaled: optional upper bound on the scaled size (tight game layouts).
     func scaledSystemFont(_ size: CGFloat,
                           weight: Font.Weight = .regular,
                           design: Font.Design = .default,
                           relativeTo style: Font.TextStyle = .body,
+                          monospacedDigit: Bool = false,
                           maxScaled: CGFloat? = nil) -> some View {
         modifier(ScaledSystemFont(size: size, weight: weight, design: design,
-                                  relativeTo: style, maxScaled: maxScaled))
+                                  relativeTo: style, monospacedDigit: monospacedDigit,
+                                  maxScaled: maxScaled))
     }
 }
