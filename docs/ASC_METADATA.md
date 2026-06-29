@@ -124,6 +124,35 @@ Source: `NIHONGO_SHOT=/tmp/nihongo-store NIHONGO_SHOT_STORE=1 swift run NihongoR
 
 ---
 
+## v1.7 What's New / 新功能
+
+> Ships: Dynamic Type / "Larger Text" support across the whole app (accessibility;
+> identical at the default size), a "Weak Words" cram (drills your hardest reviewed
+> words, never writes SRS), and conjugation-form selection (pick which forms to drill).
+> Same copy for macOS and iOS. NOTE: What's New REJECTS the "★" glyph — no star glyph.
+> Canonical copy lives in `scripts/submit_1_7.py` (WHATS_NEW / REVIEW_NOTES).
+
+### English (≤4000)
+```
+• Bigger text support: Nihongo Ride now follows your system "Larger Text" (Dynamic Type) setting across the whole app, so the menus, word cards, and stats scale up for easier reading.
+• NEW: Weak Words — a focused cram of the words you struggle with most, drawn from your review history. It's pure practice: it never changes your spaced-repetition schedule.
+• Verb Conjugation: choose exactly which forms to drill (te-form, past, negative, potential, volitional, and more) from the menu, instead of always getting every form.
+• Polish and fixes throughout.
+```
+
+### 简体中文
+```
+• 更大字体支持：にほんご ライド 现在全 app 跟随系统「更大字体」（动态字体）设置，菜单、单词卡与统计都会随之放大，更易阅读。
+• 新增「弱词练习」：从你的复习记录里挑出你最薄弱的词，集中强化。纯练习，绝不改动你的间隔复习计划。
+• 动词变形：现在可在菜单里精选要练哪些变形（て形、过去、否定、可能、意志等），不必每次全练。
+• 多处细节打磨与修复。
+```
+
+### Review notes (both platforms)
+v1.7 = Dynamic Type support (accessibility; unchanged at default size) + Weak Words practice (pure cram, no SRS write) + conjugation-form selection (local menu pref). All local + offline; no new data collected; iCloud not required.
+
+---
+
 ## v1.5 What's New / 新功能
 
 > Ships: Custom Word Lists (the v1.4 Saved deck generalizes into N named lists,
