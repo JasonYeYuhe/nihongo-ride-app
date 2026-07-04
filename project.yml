@@ -101,6 +101,8 @@ targets:
         product: SavedWordsKit
       - package: Nihongo
         product: WordListsKit
+      - package: Nihongo
+        product: ConjugationReviewKit
 
     settings:
       base:
@@ -187,6 +189,8 @@ targets:
         product: SavedWordsKit
       - package: Nihongo
         product: WordListsKit
+      - package: Nihongo
+        product: ConjugationReviewKit
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride

@@ -117,6 +117,28 @@ struct MenuView: View {
                              ? (zh ? "未选 = 全部形" : "None selected = all forms")
                              : (zh ? "只练所选形" : "Drilling selected forms only"))
                             .font(.caption2).foregroundStyle(Theme.dim.opacity(0.8))
+
+                        // Due-review entry (v1.8 §B): shown only when conjugation cards are
+                        // due. Runs the spaced-review drill (due forms first, weak-form fill).
+                        if model.conjugationDueCount > 0 {
+                            let n = model.conjugationDueCount
+                            Button(action: model.startConjugationReview) {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "arrow.triangle.2.circlepath")
+                                        .accessibilityHidden(true)
+                                    Text(zh ? "复习 \(n) 个到期变形" : "Review \(n) due")
+                                        .scaledSystemFont(14, weight: .semibold, design: .rounded)
+                                        .lineLimit(1)
+                                }
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 16).padding(.vertical, 8)
+                                .background(Theme.accent2, in: Capsule())
+                            }
+                            .buttonStyle(.plain)
+                            .fixedSize()
+                            .padding(.top, 2)
+                            .accessibilityLabel(zh ? "复习 \(n) 个到期的变形" : "Review \(n) due conjugations")
+                        }
                     }
                     .menuControlWidth(340)
                 }

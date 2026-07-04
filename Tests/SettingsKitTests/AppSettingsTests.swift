@@ -42,6 +42,18 @@ struct AppSettingsTests {
         #expect(decoded.conjugationForms == [])
     }
 
+    @Test("conjugationSRSEnabled defaults true, round-trips, and a pre-v1.8 blob stays true")
+    func conjugationSRSEnabled() throws {
+        #expect(AppSettings.default.conjugationSRSEnabled)                       // default on
+        var s = AppSettings.default
+        s.conjugationSRSEnabled = false
+        let decoded = try #require(AppSettings.decode(s.encoded()))
+        #expect(!decoded.conjugationSRSEnabled)                                  // round-trips false
+        // A pre-v1.8 blob (no key) decodes to the default true — never silently off.
+        let old = try #require(AppSettings.decode(Data(#"{"languageCode":"en","deviceID":"d1"}"#.utf8)))
+        #expect(old.conjugationSRSEnabled)
+    }
+
     @Test("hasSeenOnboarding defaults to false and a pre-v1.5 blob without it stays false")
     func onboardingFlagDefaults() throws {
         #expect(AppSettings.default.hasSeenOnboarding == false)

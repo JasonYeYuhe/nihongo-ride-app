@@ -3,6 +3,7 @@ import Observation
 import RomajiKana
 import VocabKit
 import ConjugationKit
+import ReviewKit   // TypingOutcome (value type only — the session still holds NO ReviewStore)
 
 // MARK: vc → VerbClass mapping (lives in GameCore so VocabKit keeps no CK dependency)
 
@@ -90,9 +91,14 @@ public struct ConjugationPrompt: Identifiable, Sendable, Equatable {
 
 /// Drives one conjugation drill: a queue of ``ConjugationPrompt``s, the current prompt's
 /// matcher, and scoring/combo. **It holds no `ReviewStore` and no `VocabStore`** — by
-/// construction it cannot write SRS or vocab state (red line: the conjugation MVP never
-/// writes SRS). It mirrors the parts of ``GameSession`` the playing screen observes, so
-/// the same `.playing` view path can drive it.
+/// construction it cannot write SRS or vocab state. It mirrors the parts of ``GameSession``
+/// the playing screen observes, so the same `.playing` view path can drive it.
+///
+/// v1.8 adds an optional ``onOutcome`` callback: when set, the session *emits* a
+/// `(ConjugationPrompt, TypingOutcome)` on each completed/skipped prompt — but it still
+/// holds no store, so the "session never writes SRS" red line stays structural. The app
+/// (AppModel) owns the `ConjugationReviewStore` and does the actual write in the closure;
+/// the default (nil) keeps the pre-v1.8 zero-side-effect behavior.
 @Observable
 public final class ConjugationSession {
     public struct Config: Sendable {
@@ -142,6 +148,13 @@ public final class ConjugationSession {
     public private(set) var correctKeystrokes = 0
     public private(set) var isFinished = false
     public var showRomajiHint: Bool
+
+    /// Optional per-prompt outcome sink (v1.8 §B). Fired once per completed or skipped
+    /// prompt with the prompt and its `TypingOutcome`. Default nil = the session emits
+    /// nothing (pre-v1.8 MVP behavior). The session itself still writes no SRS — the app
+    /// wires this to its `ConjugationReviewStore`. Non-throwing by design; the app closure
+    /// swallows/logs its own persistence errors so a bad write never crashes the drill.
+    public var onOutcome: ((ConjugationPrompt, TypingOutcome) -> Void)?
 
     public let config: Config
 
@@ -207,13 +220,18 @@ public final class ConjugationSession {
         combo = 0
     }
 
-    /// Gives up on the current prompt and advances. **Records nothing** — no SRS.
+    /// Gives up on the current prompt and advances. Emits an incomplete outcome (if a sink
+    /// is set) — the session still holds no store; the app decides what to persist.
     public func skip() {
         combo = 0
+        if let prompt = current {
+            onOutcome?(prompt, TypingOutcome(completed: false, mistakes: currentMistakes, usedHint: currentRevealed))
+        }
         advance()
     }
 
-    // MARK: Internals (note: NO review.record anywhere — the red line is structural)
+    // MARK: Internals (note: NO ReviewStore held — outcomes only EMIT via onOutcome; the
+    // session persists nothing itself, so "session writes no SRS" stays structural)
 
     private func loadCurrent() {
         if index < queue.count {
@@ -235,6 +253,9 @@ public final class ConjugationSession {
             maxCombo = max(maxCombo, combo)
         }
         score += currentRevealed ? 10 : promptScore(mistakes: currentMistakes, combo: combo)
+        if let prompt = current {
+            onOutcome?(prompt, TypingOutcome(completed: true, mistakes: currentMistakes, usedHint: currentRevealed))
+        }
         advance()
     }
 
@@ -269,6 +290,26 @@ public struct ConjugationFormOption: Identifiable, Sendable, Equatable {
 }
 
 extension ConjugationSession {
+    /// Bridges an app-provided, String-token weak-form picker into a `chooseForm` closure
+    /// for ``make``/``makeReview``. This lets the app bias form selection using its
+    /// `ConjugationReviewStore` WITHOUT importing ConjugationKit (it speaks only form
+    /// raw-value tokens) AND without GameCore importing ConjugationReviewKit (red line §6):
+    /// the store stays entirely behind the app's closure. `weakBiasedPick` returns a chosen
+    /// token, or nil to fall back to a uniform random form. An unknown / out-of-set token
+    /// also falls back, so a stale token can never strand form selection.
+    public static func weightedFormChooser(
+        weakBiasedPick: @escaping (_ entryID: String, _ formTokens: [String]) -> String?
+    ) -> (String, [ConjugationForm]) -> ConjugationForm {
+        { entryID, forms in
+            let tokens = forms.map(\.rawValue)
+            if let picked = weakBiasedPick(entryID, tokens),
+               let f = ConjugationForm(rawValue: picked), forms.contains(f) {
+                return f
+            }
+            return forms.randomElement() ?? .polite
+        }
+    }
+
     /// All drillable forms in canonical order, with labels for the menu picker.
     public static func formOptions(languageCode: String) -> [ConjugationFormOption] {
         ConjugationForm.allCases.map {
@@ -302,17 +343,61 @@ extension ConjugationSession {
         vocab: VocabStore = .shared,
         config: Config = .init(),
         pick: ([VocabEntry], Int) -> [VocabEntry] = { entries, n in Array(entries.shuffled().prefix(n)) },
-        chooseForm: (Int, [ConjugationForm]) -> ConjugationForm = { _, forms in forms.randomElement() ?? .polite }
+        chooseForm: (String, [ConjugationForm]) -> ConjugationForm = { _, forms in forms.randomElement() ?? .polite }
     ) -> ConjugationSession {
         let candidates = pool(vocab: vocab, level: config.level)
         let chosen = pick(candidates, config.promptCount)
         var prompts: [ConjugationPrompt] = []
-        for (i, entry) in chosen.enumerated() {
-            let form = chooseForm(i, config.forms)
+        for entry in chosen {
+            let form = chooseForm(entry.id, config.forms)
             if let p = ConjugationPrompt(entry: entry, form: form, languageCode: config.languageCode) {
                 prompts.append(p)
             }
         }
+        return ConjugationSession(prompts: prompts, config: config)
+    }
+
+    /// Builds a **due-review** run (v1.8 §B): the caller's due `(entryID, formToken)` pairs
+    /// first (in the given, soonest-first order), then fills up to `promptCount` with fresh
+    /// (verb, form) prompts not already queued. GameCore takes only plain strings — `due`
+    /// carries no ConjugationReviewKit type, so GameCore never imports it (red line §6).
+    ///
+    /// `formToken` is a `ConjugationForm` raw value; a due pair whose entry is unresolvable,
+    /// unconjugable, or whose token is unknown is skipped (resolve-then-guard). An empty
+    /// result finishes the session immediately so the UI can guard the empty screen.
+    public static func makeReview(
+        due: [(entryID: String, formToken: String)],
+        vocab: VocabStore = .shared,
+        config: Config = .init(),
+        fillPick: ([VocabEntry], Int) -> [VocabEntry] = { entries, n in Array(entries.shuffled().prefix(n)) },
+        chooseForm: (String, [ConjugationForm]) -> ConjugationForm = { _, forms in forms.randomElement() ?? .polite }
+    ) -> ConjugationSession {
+        var prompts: [ConjugationPrompt] = []
+        var seen = Set<String>()
+
+        // 1) Due prompts, in order, capped at promptCount.
+        for pair in due {
+            if prompts.count >= config.promptCount { break }
+            guard let entry = vocab.entry(id: pair.entryID),
+                  let form = ConjugationForm(rawValue: pair.formToken),
+                  let p = ConjugationPrompt(entry: entry, form: form, languageCode: config.languageCode)
+            else { continue }
+            if seen.insert(p.id).inserted { prompts.append(p) }
+        }
+
+        // 2) Fill the remainder with fresh prompts not already queued. Over-draw candidates
+        //    so dedup against the due set can't leave the run short.
+        if prompts.count < config.promptCount {
+            let remaining = config.promptCount - prompts.count
+            let candidates = pool(vocab: vocab, level: config.level)
+            for entry in fillPick(candidates, remaining * 2 + 16) {
+                if prompts.count >= config.promptCount { break }
+                let form = chooseForm(entry.id, config.forms)
+                guard let p = ConjugationPrompt(entry: entry, form: form, languageCode: config.languageCode) else { continue }
+                if seen.insert(p.id).inserted { prompts.append(p) }
+            }
+        }
+
         return ConjugationSession(prompts: prompts, config: config)
     }
 }

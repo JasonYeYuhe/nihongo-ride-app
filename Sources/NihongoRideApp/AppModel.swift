@@ -7,6 +7,7 @@ import SettingsKit
 import SyncKit
 import VocabKit
 import WordListsKit
+import ConjugationReviewKit
 
 /// A snapshot of a finished run, shown on the results screen.
 struct GameSummary: Equatable {
@@ -107,6 +108,12 @@ final class AppModel {
     /// boundary via `ConjugationSession.Config.setForms(rawValues:)`.
     var conjugationForms: [String] = [] { didSet { persistSettings() } }
 
+    // v1.8 settings.
+    /// Whether verb-conjugation drills record to the separate conjugation SRS store.
+    /// Default true (the drill is a learning tool now). The weak-words cram / Practice /
+    /// example-sentence drills NEVER write it — only the conjugation drill does.
+    var conjugationSRSEnabled: Bool = true { didSet { persistSettings() } }
+
     /// Live iCloud sync state, surfaced on the settings screen.
     enum SyncStatus: Equatable { case off, waiting, syncing, synced, noAccount, error(String) }
     private(set) var syncStatus: SyncStatus = .off
@@ -121,6 +128,11 @@ final class AppModel {
     /// True while the results screen is showing a conjugation drill (vs a ride).
     private(set) var resultsAreConjugation = false
     private(set) var reviewStore: ReviewStore
+    /// The verb-conjugation SRS store (v1.8 §B) — a SEPARATE store, file, and CKRecord
+    /// from the flat `reviewStore` (red line §1): a conjugation lapse (keyed `sourceID#form`)
+    /// must never flow into the vocab journey due-queue. Owned here by AppModel (GameCore
+    /// stays ignorant of it); written only via a conjugation drill's `onOutcome` sink.
+    private(set) var conjugationReviewStore: ConjugationReviewStore
     private(set) var journal: RideJournal
     /// Lifetime odometer as a per-device G-Counter — the iCloud-sync vehicle for
     /// lifetime totals (sums correctly across devices; see SyncKit.OdometerLog).
@@ -148,6 +160,7 @@ final class AppModel {
     let gameCenter = GameCenterManager()
 
     private let storeURL: URL
+    private let conjugationReviewURL: URL
     private let journalURL: URL
     private let odometerURL: URL
     private let wordListsURL: URL
@@ -162,11 +175,13 @@ final class AppModel {
 
     init() {
         storeURL = Self.supportFileURL("review.json")
+        conjugationReviewURL = Self.supportFileURL("conjugation-review.json")
         journalURL = Self.supportFileURL("history.json")
         odometerURL = Self.supportFileURL("odometer.json")
         wordListsURL = Self.supportFileURL("word-lists.json")
         savedWordsURL = Self.supportFileURL("saved-words.json")
         reviewStore = ReviewStore.load(from: storeURL)
+        conjugationReviewStore = ConjugationReviewStore.load(from: conjugationReviewURL)
         journal = RideJournal.load(from: journalURL)
         odometer = OdometerLog.load(from: odometerURL)
         // Word lists load via a corruption-aware, one-time migration from the
@@ -196,6 +211,7 @@ final class AppModel {
         dueReminderEnabled = loaded.dueReminderEnabled
         dueReminderHour = loaded.dueReminderHour
         conjugationForms = loaded.conjugationForms
+        conjugationSRSEnabled = loaded.conjugationSRSEnabled
 
         // One-time odometer backfill: seed this device's slot from the existing
         // journal lifetime so totals stay correct for users upgrading to v1.2
@@ -372,6 +388,7 @@ final class AppModel {
         settings.dueReminderEnabled = dueReminderEnabled
         settings.dueReminderHour = dueReminderHour
         settings.conjugationForms = conjugationForms
+        settings.conjugationSRSEnabled = conjugationSRSEnabled
         settings.save(to: .standard)
     }
 
@@ -644,19 +661,89 @@ final class AppModel {
         config.level = selectedLevel
         config.promptCount = 12
         config.setForms(rawValues: conjugationForms)   // empty / unknown → all forms
-        let built = ConjugationSession.make(vocab: .shared, config: config)
+        let chooser = ConjugationSession.weightedFormChooser(weakBiasedPick: conjugationWeakFormPick())
+        let built = ConjugationSession.make(vocab: .shared, config: config, chooseForm: chooser)
         // Resolve-then-guard: an empty pool must not enter the (already-finished) screen.
         // The menu surfaces this proactively via `conjugationPoolCount == 0`, so a no-op
         // here is never silent.
         guard built.promptCount > 0 else { return }
+        built.onOutcome = conjugationOutcomeSink()
         session = nil
         conjugationSession = built
         runStartedAt = Date()
         screen = .playing
     }
 
-    /// Ends the conjugation drill: snapshot the score, NO SRS / journal / odometer /
-    /// Game Center writes (it is a transient drill), and show the results screen.
+    /// How many (verb, form) cards are due for conjugation review right now (menu gating).
+    var conjugationDueCount: Int { conjugationReviewStore.dueCount() }
+
+    /// Starts a **due-review** conjugation drill: the due (verb, form) cards first, then
+    /// fresh forms filled in (weak-form weighted). Resolve-then-guard like `startConjugation`
+    /// — a run that resolves to nothing (all due cards point at removed vocab) does NOT enter
+    /// the screen. Due review spans all levels (the due cards define its scope).
+    func startConjugationReview() {
+        let due = conjugationReviewStore.dueCards(limit: Self.conjugationRunSize)
+            .map { (entryID: $0.sourceID, formToken: $0.formToken) }
+        var config = ConjugationSession.Config()
+        config.languageCode = languageCode
+        config.showRomajiHint = showRomajiHint
+        config.level = nil                      // review pulls from the whole due set / pool
+        config.promptCount = Self.conjugationRunSize
+        let chooser = ConjugationSession.weightedFormChooser(weakBiasedPick: conjugationWeakFormPick())
+        let built = ConjugationSession.makeReview(due: due, vocab: .shared, config: config,
+                                                  chooseForm: chooser)
+        guard built.promptCount > 0 else { return }
+        built.onOutcome = conjugationOutcomeSink()
+        session = nil
+        conjugationSession = built
+        runStartedAt = Date()
+        screen = .playing
+    }
+
+    private static let conjugationRunSize = 12
+
+    /// The `onOutcome` sink a conjugation drill writes through. It records each completed/
+    /// skipped prompt into the SEPARATE conjugation SRS store and persists it. Gated on
+    /// `conjugationSRSEnabled` (default true). The `ConjugationSession` itself still holds
+    /// no store — this closure, owned by AppModel, is the only writer. Invoked synchronously
+    /// on the main actor (driven by the game view's key handling).
+    private func conjugationOutcomeSink() -> (ConjugationPrompt, TypingOutcome) -> Void {
+        { [weak self] prompt, outcome in
+            MainActor.assumeIsolated {
+                self?.recordConjugationOutcome(promptID: prompt.id, outcome: outcome)
+            }
+        }
+    }
+
+    private func recordConjugationOutcome(promptID: String, outcome: TypingOutcome) {
+        guard conjugationSRSEnabled, !Screenshotter.isCapturing else { return }
+        let c = ConjugationOutcome(completed: outcome.completed, mistakes: outcome.mistakes,
+                                   usedHint: outcome.usedHint, durationRatio: outcome.durationRatio)
+        conjugationReviewStore.record(promptID: promptID, outcome: c)
+        // Background/auto write (a drill outcome, not a user-initiated data action) → log-only
+        // on failure, no alert (§D). Sync push of the changed card is Phase C.
+        bgSave("conjugation review") { [conjugationReviewStore, conjugationReviewURL] in
+            try conjugationReviewStore.save(to: conjugationReviewURL)
+        }
+    }
+
+    /// The weak-form picker the drill builders use, expressed in String tokens only so the
+    /// app never names a ConjugationKit type (red line §6). It reads a SNAPSHOT of the
+    /// conjugation SRS store and biases form selection toward the learner's weakest forms
+    /// (60/40 so no single form monopolizes); returns nil to fall back to a random form.
+    /// Pure read — selection never writes SRS. `GameCore.weightedFormChooser` (inlined at
+    /// the call sites) adapts this into the builders' `ConjugationForm` closure, so GameCore
+    /// never sees the store either.
+    private func conjugationWeakFormPick() -> (String, [String]) -> String? {
+        { [store = conjugationReviewStore] entryID, tokens in
+            var rng = SystemRandomNumberGenerator()
+            return FormWeighting.weightedPick(entryID: entryID, formTokens: tokens, store: store, using: &rng)
+        }
+    }
+
+    /// Ends the conjugation drill: snapshot the score and show the results screen. SRS was
+    /// already recorded per-prompt via the `onOutcome` sink; there is NO journal / odometer /
+    /// Game Center write (the drill is not a ride).
     func finishConjugation() {
         guard let conjugationSession else { return }
         lastConjugationSummary = ConjugationSummary(from: conjugationSession)

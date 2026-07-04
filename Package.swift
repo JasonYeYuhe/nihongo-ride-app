@@ -20,6 +20,7 @@ let package = Package(
         .library(name: "SavedWordsKit", targets: ["SavedWordsKit"]),
         .library(name: "WordListsKit", targets: ["WordListsKit"]),
         .library(name: "ConjugationKit", targets: ["ConjugationKit"]),
+        .library(name: "ConjugationReviewKit", targets: ["ConjugationReviewKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -91,6 +92,14 @@ let package = Package(
         .target(name: "ConjugationKit"),
         .testTarget(name: "ConjugationKitTests", dependencies: ["ConjugationKit"]),
 
+        // MARK: Conjugation SRS — spaced repetition for (verb, form) pairs (v1.8 §B).
+        // A deliberate ZERO-dependency sibling of ReviewKit (parallel SM-2 card, Option A):
+        // its own store + file + CKRecord, so a conjugation lapse can never leak into the
+        // flat vocab journey due-queue. GameCore must NOT depend on this (red line §6):
+        // the app (AppModel) owns the store and hands GameCore only plain data/closures.
+        .target(name: "ConjugationReviewKit"),
+        .testTarget(name: "ConjugationReviewKitTests", dependencies: ["ConjugationReviewKit"]),
+
         // MARK: Derived verb-class data path — conservation invariants + end-to-end
         // golden over the real vc-stamped vocab JSON (v1.6 B1, PLAN-V1.6 §3 layer-ii).
         // Imports VocabKit (the data) + ConjugationKit (the engine); vc is mapped via
@@ -100,7 +109,7 @@ let package = Package(
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit"],
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]

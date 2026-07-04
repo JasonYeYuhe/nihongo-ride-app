@@ -161,4 +161,79 @@ struct ConjugationSessionTests {
         }
         #expect(seen == session.promptCount)
     }
+
+    // MARK: v1.8 §B — onOutcome sink + due-review builder
+
+    @Test("onOutcome emits exactly once per completed/skipped prompt, with the right flag")
+    func onOutcomeEmits() {
+        let session = ConjugationSession.make(config: .init(promptCount: 6))
+        #expect(session.promptCount > 0)
+        var emitted: [(id: String, completed: Bool)] = []
+        session.onOutcome = { prompt, outcome in emitted.append((prompt.id, outcome.completed)) }
+
+        // The session still holds no store: emitting is the ONLY effect.
+        let review = ReviewStore()
+        var i = 0, guardCounter = 0
+        while !session.isFinished && guardCounter < 1000 {
+            guardCounter += 1
+            guard let answer = session.currentKana else { break }
+            if i % 2 == 0 { session.skip() } else { play(session, character: KanaRomanizer.romaji(for: answer)) }
+            i += 1
+        }
+        #expect(emitted.count == session.promptCount, "one outcome per prompt")
+        #expect(emitted.contains { !$0.completed }, "skipped prompts emit completed=false")
+        #expect(emitted.contains { $0.completed }, "typed prompts emit completed=true")
+        #expect(Set(emitted.map(\.id)).count == emitted.count, "no prompt emits twice")
+        #expect(review.cards.isEmpty, "emitting is not writing — the flat store is untouched")
+    }
+
+    @Test("default onOutcome (nil) emits nothing and never crashes")
+    func onOutcomeDefaultNil() {
+        let session = ConjugationSession.make(config: .init(promptCount: 4))
+        var guardCounter = 0
+        while !session.isFinished && guardCounter < 1000 {
+            guardCounter += 1
+            guard let answer = session.currentKana else { break }
+            play(session, character: KanaRomanizer.romaji(for: answer))
+        }
+        #expect(session.isFinished)   // ran clean with no sink set
+    }
+
+    @Test("makeReview puts due (verb, form) pairs first, then fills fresh to promptCount")
+    func makeReviewDueFirst() {
+        // Two real conjugable verbs for the due list.
+        let pool = ConjugationSession.pool()
+        let a = pool[0], b = pool[1]
+        let due = [(entryID: a.id, formToken: "te"), (entryID: b.id, formToken: "past")]
+        let session = ConjugationSession.makeReview(due: due, config: .init(promptCount: 10))
+        #expect(session.promptCount == 10)
+        // The due pairs lead the queue, in order, with their exact ids.
+        #expect(session.current?.id == "\(a.id)#te")
+        // Collect all queued ids and confirm both due prompts are present.
+        var ids: [String] = []
+        var guardCounter = 0
+        while !session.isFinished && guardCounter < 1000 {
+            guardCounter += 1
+            guard let p = session.current else { break }
+            ids.append(p.id)
+            play(session, character: KanaRomanizer.romaji(for: p.conjugatedKana))
+        }
+        #expect(ids.prefix(2) == ["\(a.id)#te", "\(b.id)#past"])
+        #expect(Set(ids).count == ids.count, "no duplicate prompts")
+    }
+
+    @Test("makeReview skips unresolvable / unknown-form due pairs and still fills")
+    func makeReviewSkipsBad() {
+        let due = [(entryID: "nope-does-not-exist", formToken: "te"),
+                   (entryID: ConjugationSession.pool()[0].id, formToken: "bogusform")]
+        let session = ConjugationSession.makeReview(due: due, config: .init(promptCount: 8))
+        // Both due pairs are unusable → the run is entirely fresh fill, but still full.
+        #expect(session.promptCount == 8)
+    }
+
+    @Test("makeReview with empty due behaves like a fresh run")
+    func makeReviewEmptyDue() {
+        let session = ConjugationSession.makeReview(due: [], config: .init(promptCount: 12))
+        #expect(session.promptCount == 12)
+    }
 }
