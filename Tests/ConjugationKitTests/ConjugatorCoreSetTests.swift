@@ -105,7 +105,10 @@ struct ConjugatorCoreSetGoldenTests {
     @Test("core-set spans every VerbClass and is sized as the gate expects")
     func coverage() {
         let classes = Set(Self.rows.map { $0.cls })
-        #expect(classes.count == VerbClass.allCases.count)   // all 12 classes represented
+        // The N5–N3 core set spans every class EXCEPT .zuru: zuru verbs (演ずる/感ずる…)
+        // are N1/N2 only, so they have no N5–N3 exemplar here — their じ-stem paradigm
+        // has its own golden in ConjugatorGoldenTests.zuru (v1.8 §A).
+        #expect(classes == Set(VerbClass.allCases).subtracting([.zuru]))
         #expect(Self.rows.count >= 60)                        // ~68 curated core verbs
     }
 }

@@ -38,6 +38,8 @@ struct ConjugationDataTests {
                 #expect(kana.hasSuffix("る"), "\(e.surface)/\(kana) ichidan must end る")
             } else if vc == "kuru" {
                 #expect(kana.hasSuffix("くる"), "\(e.surface)/\(kana) kuru must end くる")
+            } else if vc == "zuru" {
+                #expect(kana.hasSuffix("ずる"), "\(e.surface)/\(kana) zuru must end ずる")
             }
             // suru: no kana-ending invariant (noun reading りょうり OR べんきょうする) —
             // covered by `conjugatesCleanly`.
@@ -75,16 +77,30 @@ struct ConjugationDataTests {
         }
     }
 
-    @Test("zuru verbs (演ずる/応ずる… vz) are never labeled ichidan — withheld or godan_r")
-    func zuruNotIchidan() {
-        // vz verbs shift the stem ず→じ and the engine can't conjugate them, so they
-        // must be withheld (no vc). Only genuine godan_r verbs ending ずる (削る/譲る)
-        // keep a vc. None may be ichidan (would mis-conjugate 演ずる→えんずます).
+    @Test("zuru verbs (演ずる/応ずる… vz) are labeled zuru + conjugate on the じ-stem; godan_r ずる stays godan_r")
+    func zuruLabeledAndConjugates() {
+        // vz verbs shift the stem ず→じ. Since v1.8 §A they are their own VerbClass
+        // ("zuru") and conjugate on the じ-stem (演ずる → 演じます). They must NEVER be
+        // labeled ichidan (which would mis-conjugate 演ずる→えんずます). Genuine godan_r
+        // verbs that end ずる (削る/譲る/引きずる/囀る) stay godan_r — never upgraded.
         for e in Self.entries where e.kana.hasSuffix("ずる") {
-            #expect(e.vc != "ichidan", "\(e.surface)/\(e.kana) ends ずる but is labeled ichidan (vz must withhold)")
+            #expect(e.vc != "ichidan", "\(e.surface)/\(e.kana) ends ずる but is labeled ichidan")
+            if e.vc == "zuru" {
+                let forms = Conjugator.allForms(kana: e.kana, verbClass: .zuru, lemma: e.surface)
+                #expect(forms.count == ConjugationForm.allCases.count, "\(e.surface)/\(e.kana) zuru incomplete")
+                #expect(forms[.te]?.hasSuffix("じて") == true,
+                        "\(e.surface) zuru te should end じて, got \(forms[.te] ?? "nil")")
+            }
         }
-        #expect(Self.entries.first { $0.kana == "えんずる" }?.vc == nil)   // 演ずる withheld
-        #expect(Self.entries.first { $0.kana == "けずる" }?.vc == "godan_r")  // 削る kept
+        #expect(Self.entries.first { $0.kana == "えんずる" }?.vc == "zuru")     // 演ずる now conjugable
+        #expect(Self.entries.first { $0.kana == "しんずる" }?.vc == "zuru")     // 信ずる
+        #expect(Self.entries.first { $0.kana == "けずる" }?.vc == "godan_r")   // 削る kept
+        #expect(Self.entries.first { $0.kana == "ゆずる" }?.vc == "godan_r")   // 譲る kept
+        #expect(Self.entries.first { $0.kana == "ひきずる" }?.vc == "godan_r") // 引きずる kept
+        #expect(Self.entries.first { $0.kana == "さえずる" }?.vc == "godan_r") // 囀る kept
+        // exactly the 13 real zuru verbs got the class — guards against over/under-stamping.
+        let zuruCount = Self.entries.filter { $0.vc == "zuru" }.count
+        #expect(zuruCount == 13, "expected 13 zuru verbs stamped, got \(zuruCount)")
     }
 
     // MARK: end-to-end core-set golden (data → engine, engine-independent ground truth)

@@ -20,10 +20,11 @@ public enum VerbClass: String, Codable, Sendable, CaseIterable, Equatable {
     case godanR = "godan_r"            // 五段 る: 帰る (incl. v5aru keigo)
     case suru                          // サ変 する / noun+する (勉強する)
     case kuru                          // カ変 来る/くる
+    case zuru                          // ずる (演ずる/感ずる): ず→じ stem, ichidan-like endings
 
     var isGodan: Bool {
         switch self {
-        case .ichidan, .suru, .kuru: return false
+        case .ichidan, .suru, .kuru, .zuru: return false
         default: return true
         }
     }

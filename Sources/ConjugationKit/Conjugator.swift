@@ -55,6 +55,7 @@ public enum Conjugator {
         switch verbClass {
         case .suru:    return suruForm(kana: kana, form: form)
         case .kuru:    return kuruForm(kana: kana, form: form)
+        case .zuru:    return zuruForm(kana: kana, form: form)
         case .ichidan: return ichidanForm(kana: kana, form: form)
         default:       return godanForm(kana: kana, form: form)   // all godan_*
         }
@@ -176,6 +177,28 @@ public enum Conjugator {
         case .pastNegative: return prefix + "こなかった"
         case .potential:    return prefix + "こられる"
         case .volitional:   return prefix + "こよう"
+        }
+    }
+
+    /// `.zuru` verbs (演ずる/感ずる/信ずる… the "Ichidan verb - zuru verb" sub-class):
+    /// the dictionary form ends ずる, and every inflected form is built on the じ-stem
+    /// (演ずる → 演じ + ます/て/た/ない…) with ichidan-style endings — NO euphonic
+    /// change. Only the dictionary form keeps ず; ます/て/past/negative/potential/
+    /// volitional all take じ. Potential is the ichidan られる (演じられる), volitional
+    /// the ichidan よう (演じよう). Genuine godan_r verbs that end ずる (削る/譲る/引きずる)
+    /// are labeled `godanR`, not `zuru`, so they never reach here.
+    /// Guard: a kana not ending ずる yields nil (mirrors ichidan/godan guards).
+    private static func zuruForm(kana: String, form: ConjugationForm) -> String? {
+        guard kana.hasSuffix("ずる") else { return nil }
+        let stem = String(kana.dropLast(2)) + "じ"   // えんずる → えん + じ
+        switch form {
+        case .polite:       return stem + "ます"
+        case .te:           return stem + "て"
+        case .past:         return stem + "た"
+        case .negative:     return stem + "ない"
+        case .pastNegative: return stem + "なかった"
+        case .potential:    return stem + "られる"
+        case .volitional:   return stem + "よう"
         }
     }
 }

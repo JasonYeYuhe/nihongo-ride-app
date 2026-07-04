@@ -60,7 +60,7 @@ struct ConjugationSessionTests {
         let satsu = VocabEntry(id: "s", surface: "察する", kana: "さっする", partsOfSpeech: ["v"],
                                jlpt: .n1, meanings: ["en": ["guess"]], vc: nil)
         #expect(ConjugationPrompt(entry: satsu, form: .te, languageCode: "en") == nil)
-        #expect(satsu.verbClass == nil)
+        #expect(satsu.verbClass == nil, "vc=\(String(describing: satsu.vc)) verbClass=\(String(describing: satsu.verbClass))")
     }
 
     @Test("typing the answer completes a prompt and advances; skip advances without it")

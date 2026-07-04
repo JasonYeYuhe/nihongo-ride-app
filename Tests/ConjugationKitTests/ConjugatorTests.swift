@@ -147,6 +147,43 @@ struct ConjugatorGoldenTests {
         ]))
     }
 
+    @Test("zuru (演ずる/感ずる…): ず→じ stem, ichidan-style endings, no euphonic change")
+    func zuru() {
+        // Ground truth = grammar (ずる verbs inflect on the じ-stem: 演ずる → 演じます/演じて…).
+        // These are the 13 real "Ichidan verb - zuru verb" entries in the shipped vocab.
+        func z(_ label: String, _ kana: String, _ stem: String) -> Golden {
+            Golden(label: label, kana: kana, cls: .zuru, expect: [
+                .polite: stem + "ます", .te: stem + "て", .past: stem + "た",
+                .negative: stem + "ない", .pastNegative: stem + "なかった",
+                .potential: stem + "られる", .volitional: stem + "よう",
+            ])
+        }
+        check(z("演ずる", "えんずる", "えんじ"))
+        check(z("応ずる", "おうずる", "おうじ"))
+        check(z("感ずる", "かんずる", "かんじ"))
+        check(z("信ずる", "しんずる", "しんじ"))
+        check(z("存ずる", "ぞんずる", "ぞんじ"))
+        check(z("生ずる", "しょうずる", "しょうじ"))
+        check(z("通ずる", "つうずる", "つうじ"))
+        check(z("命ずる", "めいずる", "めいじ"))
+        check(z("論ずる", "ろんずる", "ろんじ"))
+        check(z("禁ずる", "きんずる", "きんじ"))
+        check(z("準ずる", "じゅんずる", "じゅんじ"))
+        check(z("報ずる", "ほうずる", "ほうじ"))
+        check(z("重んずる", "おもんずる", "おもんじ"))
+
+        // Guard: a kana not ending ずる yields nil (never a bogus form).
+        #expect(Conjugator.conjugate(kana: "たべる", verbClass: .zuru, form: .te) == nil)
+        #expect(Conjugator.conjugate(kana: "えんずる", verbClass: .zuru, form: .te) == "えんじて")
+        // The trap: 演ずる is NOT a plain ichidan (ichidan would drop る → えんず + ます = えんずます).
+        #expect(Conjugator.conjugate(kana: "えんずる", verbClass: .ichidan, form: .polite) == "えんずます")
+        #expect(Conjugator.conjugate(kana: "えんずる", verbClass: .zuru, form: .polite) == "えんじます")
+        // Red line: genuine godan_r ずる verbs (削る/譲る) stay godan_r, NOT zuru — a data-layer
+        // guarantee tested in ConjugationDataTests; here we just pin the godan_r te-form.
+        #expect(Conjugator.conjugate(kana: "けずる", verbClass: .godanR, form: .te) == "けずって")
+        #expect(Conjugator.conjugate(kana: "ゆずる", verbClass: .godanR, form: .te) == "ゆずって")
+    }
+
     @Test("る-disambiguation: 帰る(v5r) vs 食べる(ichidan) produce different te-forms")
     func ruDisambiguation() {
         #expect(Conjugator.conjugate(kana: "かえる", verbClass: .godanR, form: .te) == "かえって")

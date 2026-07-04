@@ -112,10 +112,11 @@ def load_jmdict(path: str):
         for pos in elem.findall("./sense/pos"):
             txt = (pos.text or "").replace("`", "").replace("'", "")
             # vz "Ichidan verb - zuru verb" (演ずる/応ずる…): the る is part of ずる and the
-            # stem shifts ず→じ, so it is NOT a plain ichidan — the engine can't conjugate
-            # it. Mark it "zuru" (a withhold sentinel) and do NOT also tag it ichidan
-            # (the "Ichidan verb" substring would otherwise match). Genuine godan_r verbs
-            # that happen to end ずる (削る/譲る/引きずる) are tagged v5r, not vz, so unaffected.
+            # stem shifts ず→じ, so it is NOT a plain ichidan. Mark it "zuru" (its own
+            # VerbClass since v1.8 §A — the engine conjugates it on the じ-stem) and do NOT
+            # also tag it ichidan (the "Ichidan verb" substring would otherwise match).
+            # Genuine godan_r verbs that happen to end ずる (削る/譲る/引きずる) are tagged
+            # v5r, not vz, so they stay godan_r — never upgraded to zuru.
             if "zuru verb" in txt:
                 cls.add("zuru")
                 continue
@@ -209,8 +210,8 @@ def jmdict_lookup(jmdict, surface, kana):
         if not cls:
             continue
         if cls == {"zuru"}:
-            return None                      # vz verb → withhold (engine can't conjugate)
-        usable = cls - {"zuru"}
+            return "zuru"                    # vz verb → じ-stem paradigm (演ずる → 演じます), v1.8 §A
+        usable = cls - {"zuru"}              # mixed senses (zuru + a real class) → the real class wins
         if len(usable) == 1:
             return next(iter(usable))
         # multiple senses (e.g. v1 & v5r homographs) → ambiguous, skip
