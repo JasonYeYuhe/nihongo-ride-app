@@ -2,6 +2,7 @@ import Foundation
 import ReviewKit
 import JournalKit
 import SavedWordsKit
+import ConjugationReviewKit
 
 /// Pure, side-effect-free merge of two devices' state. These functions are the
 /// risky core of iCloud sync, deliberately written and tested in isolation
@@ -30,6 +31,38 @@ public enum SyncMerge {
     }
 
     private static func winner(_ a: SRSCard, _ b: SRSCard) -> SRSCard {
+        switch (a.lastReviewed, b.lastReviewed) {
+        case let (la?, lb?): return lb > la ? b : a   // newer wins; tie → local (a)
+        case (nil, _?):      return b                 // local never reviewed → remote wins
+        case (_?, nil):      return a                 // remote never reviewed → local wins
+        case (nil, nil):     return a                 // both new → equivalent, keep local
+        }
+    }
+
+    // MARK: Conjugation SRS store — newer `lastReviewed` wins, per (verb, form) card.
+
+    /// Merges two conjugation SRS stores, keyed `sourceID#form` (v1.8 §C). Same rule as
+    /// ``reviewStores`` — per card, the newer `lastReviewed` wins; `nil` (never reviewed)
+    /// loses to a real timestamp; both `nil` → keep local; tie → keep local. A SEPARATE
+    /// merge from ``reviewStores`` over a SEPARATE store (red line §1) — a conjugation
+    /// card can never merge into the flat vocab review store. An empty `remote` is a no-op
+    /// (backward compatible: a peer that has never written a conjugation card contributes
+    /// nothing).
+    public static func conjugationReviewStores(
+        _ local: ConjugationReviewStore, _ remote: ConjugationReviewStore
+    ) -> ConjugationReviewStore {
+        var merged = local.cards
+        for (id, remoteCard) in remote.cards {
+            guard let localCard = merged[id] else {
+                merged[id] = remoteCard
+                continue
+            }
+            merged[id] = conjWinner(localCard, remoteCard)
+        }
+        return ConjugationReviewStore(cards: merged)
+    }
+
+    private static func conjWinner(_ a: ConjugationSRSCard, _ b: ConjugationSRSCard) -> ConjugationSRSCard {
         switch (a.lastReviewed, b.lastReviewed) {
         case let (la?, lb?): return lb > la ? b : a   // newer wins; tie → local (a)
         case (nil, _?):      return b                 // local never reviewed → remote wins

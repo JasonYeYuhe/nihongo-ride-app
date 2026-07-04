@@ -312,6 +312,15 @@ final class AppModel {
     /// this is safe even before the schema is deployed to Production.
     static let cloudSyncAvailable = true
 
+    /// Conjugation-SRS iCloud sync feature switch (v1.8 §C). **Gated OFF** for v1.8: the
+    /// code lands (CloudKitSyncController RT.conjSRS / SyncMerge / applyCloudChanges) but
+    /// no `ConjugationSRSCard` is ever written or read, so the Production schema stays
+    /// un-JIT'd and v1.8 ships local-only conjugation SRS. Flip to true only AFTER device
+    /// gate E (two-device iCloud verify + dev→prod schema deploy), mirroring the v1.2–v1.4
+    /// iCloud staging. Until then this is the single point that keeps the fragile new
+    /// record type dormant.
+    static let conjSRSSyncAvailable = false
+
     /// The iCloud sync controller (nil when sync is off / CloudKit unavailable,
     /// e.g. under `swift run`). Owned here; created lazily when sync is enabled.
     private var syncController: CloudKitSyncController?
@@ -354,7 +363,8 @@ final class AppModel {
     func applyCloudChanges(cards: [SRSCard] = [], records: [RideRecord] = [],
                            odometerSlots: [String: OdometerLog.Slot] = [:],
                            wordLists incomingLists: [WordList] = [],
-                           legacyDeck deckIDs: [String]? = nil) {
+                           legacyDeck deckIDs: [String]? = nil,
+                           conjugationCards: [ConjugationSRSCard] = []) {
         if !incomingLists.isEmpty {
             wordLists = SyncMerge.wordLists(wordLists, WordListStore(lists: incomingLists))
             // Compaction runs ONLY here — after a successful cloud merge — never on
@@ -385,6 +395,16 @@ final class AppModel {
             for (id, slot) in odometerSlots { remote.setSlot(slot, for: id) }
             odometer = SyncMerge.odometers(odometer, remote)
             bgSave("odometer (sync merge)") { try odometer.save(to: odometerURL) }
+        }
+        if !conjugationCards.isEmpty {
+            // Merge into the SEPARATE conjugation SRS store (never the flat reviewStore,
+            // red line §1). newer lastReviewed wins, per (verb, form) card.
+            let remote = ConjugationReviewStore(cards: Dictionary(conjugationCards.map { ($0.id, $0) },
+                                                                  uniquingKeysWith: { a, _ in a }))
+            conjugationReviewStore = SyncMerge.conjugationReviewStores(conjugationReviewStore, remote)
+            bgSave("conjugation review (sync merge)") { [conjugationReviewStore, conjugationReviewURL] in
+                try conjugationReviewStore.save(to: conjugationReviewURL)
+            }
         }
     }
 
@@ -750,9 +770,14 @@ final class AppModel {
                                    usedHint: outcome.usedHint, durationRatio: outcome.durationRatio)
         conjugationReviewStore.record(promptID: promptID, outcome: c)
         // Background/auto write (a drill outcome, not a user-initiated data action) → log-only
-        // on failure, no alert (§D). Sync push of the changed card is Phase C.
+        // on failure, no alert (§D).
         bgSave("conjugation review") { [conjugationReviewStore, conjugationReviewURL] in
             try conjugationReviewStore.save(to: conjugationReviewURL)
+        }
+        // Push the changed card to iCloud — GATED OFF for v1.8 (conjSRSSyncAvailable=false),
+        // so this is a no-op until device gate E flips it on (PLAN-V1.8 §4).
+        if Self.conjSRSSyncAvailable {
+            syncController?.recordLocalChanges(conjugationSRSIDs: [promptID])
         }
     }
 

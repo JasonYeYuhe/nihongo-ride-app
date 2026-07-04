@@ -4,6 +4,7 @@ import Foundation
 import ReviewKit
 import JournalKit
 import SavedWordsKit
+import ConjugationReviewKit
 
 private let t0 = Date(timeIntervalSince1970: 1_700_000_000)
 private func t(_ secs: Double) -> Date { t0.addingTimeInterval(secs) }
@@ -70,6 +71,64 @@ struct ReviewStoreMergeTests {
         let b = ReviewStore(cards: ["w": card("w", reviewed: t(100)), "y": card("y", reviewed: t(5))])
         let once = SyncMerge.reviewStores(a, b)
         let twice = SyncMerge.reviewStores(a, once)
+        #expect(once.cards == twice.cards)
+    }
+}
+
+/// Builds a conjugation SRS card with an explicit last-reviewed instant.
+private func conjCard(_ id: String, reviewed: Date?) -> ConjugationSRSCard {
+    var c = ConjugationSRSCard(id: id, createdAt: t0)
+    c.lastReviewed = reviewed
+    if let reviewed { c.dueDate = reviewed.addingTimeInterval(86_400) }
+    return c
+}
+
+@Suite("SyncMerge — conjugation SRS store")
+struct ConjugationReviewStoreMergeTests {
+
+    @Test("newer lastReviewed wins, per (verb, form) card, both directions")
+    func newerWins() {
+        let local = ConjugationReviewStore(cards: ["v#te": conjCard("v#te", reviewed: t(0))])
+        let remote = ConjugationReviewStore(cards: ["v#te": conjCard("v#te", reviewed: t(100))])
+        #expect(SyncMerge.conjugationReviewStores(local, remote).card(for: "v#te")?.lastReviewed == t(100))
+        #expect(SyncMerge.conjugationReviewStores(remote, local).card(for: "v#te")?.lastReviewed == t(100))
+    }
+
+    @Test("never-reviewed (nil) loses to reviewed; both-nil keeps a card")
+    func nilRules() {
+        let reviewed = ConjugationReviewStore(cards: ["v#te": conjCard("v#te", reviewed: t(50))])
+        let fresh = ConjugationReviewStore(cards: ["v#te": conjCard("v#te", reviewed: nil)])
+        #expect(SyncMerge.conjugationReviewStores(fresh, reviewed).card(for: "v#te")?.lastReviewed == t(50))
+        #expect(SyncMerge.conjugationReviewStores(reviewed, fresh).card(for: "v#te")?.lastReviewed == t(50))
+        let bothNil = SyncMerge.conjugationReviewStores(fresh, fresh)
+        #expect(bothNil.card(for: "v#te") != nil)
+    }
+
+    @Test("different forms of the same verb are distinct cards (form-level id)")
+    func formLevelDistinct() {
+        let a = ConjugationReviewStore(cards: ["v#te": conjCard("v#te", reviewed: t(1))])
+        let b = ConjugationReviewStore(cards: ["v#past": conjCard("v#past", reviewed: t(2))])
+        let merged = SyncMerge.conjugationReviewStores(a, b)
+        #expect(merged.cards.count == 2)
+        #expect(merged.card(for: "v#te") != nil)
+        #expect(merged.card(for: "v#past") != nil)
+    }
+
+    @Test("empty remote is a no-op (backward compatible with a peer that has no cards)")
+    func emptyRemoteNoOp() {
+        let local = ConjugationReviewStore(cards: ["v#te": conjCard("v#te", reviewed: t(0))])
+        let merged = SyncMerge.conjugationReviewStores(local, ConjugationReviewStore())
+        #expect(merged.cards == local.cards)
+    }
+
+    @Test("merge is idempotent")
+    func idempotent() {
+        let a = ConjugationReviewStore(cards: ["v#te": conjCard("v#te", reviewed: t(0)),
+                                               "v#past": conjCard("v#past", reviewed: nil)])
+        let b = ConjugationReviewStore(cards: ["v#te": conjCard("v#te", reviewed: t(100)),
+                                               "w#ない": conjCard("w#ない", reviewed: t(5))])
+        let once = SyncMerge.conjugationReviewStores(a, b)
+        let twice = SyncMerge.conjugationReviewStores(a, once)
         #expect(once.cards == twice.cards)
     }
 }

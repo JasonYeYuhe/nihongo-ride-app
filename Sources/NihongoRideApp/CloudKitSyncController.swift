@@ -4,6 +4,7 @@ import ReviewKit
 import JournalKit
 import SyncKit
 import WordListsKit
+import ConjugationReviewKit
 
 /// Drives iCloud sync of SRS cards, ride history, and the lifetime odometer
 /// through a private-database `CKSyncEngine`. The local JSON files remain the
@@ -37,7 +38,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     /// preserves fields unknown to this app version (forward compatibility).
     private var recordCache: [String: CKRecord] = [:]
 
-    private enum RT { static let srs = "SRSCard", ride = "RideRecord", odo = "Odometer", saved = "SavedWords", list = "WordList" }
+    private enum RT { static let srs = "SRSCard", ride = "RideRecord", odo = "Odometer", saved = "SavedWords", list = "WordList", conjSRS = "ConjugationSRSCard" }
     /// The legacy v1.4 saved-words deck is one shared record (key "deck"). v1.5
     /// reads/writes it only during the one-time convergence (see AppModel).
     private static let savedDeckKey = "deck"
@@ -78,7 +79,8 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
 
     /// Enqueue and push the records that just changed locally.
     func recordLocalChanges(srsIDs: [String] = [], rideRecordIDs: [UUID] = [],
-                            odometerChanged: Bool = false, listIDs: [String] = []) {
+                            odometerChanged: Bool = false, listIDs: [String] = [],
+                            conjugationSRSIDs: [String] = []) {
         guard let engine else { return }
         var changes: [CKSyncEngine.PendingRecordZoneChange] = []
         changes += srsIDs.map { .saveRecord(recordID(RT.srs, $0)) }
@@ -87,6 +89,13 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             changes.append(.saveRecord(recordID(RT.odo, device)))
         }
         changes += listIDs.map { .saveRecord(recordID(RT.list, $0)) }
+        // Conjugation SRS: gated OFF for v1.8 (conjSRSSyncAvailable=false) so no
+        // ConjugationSRSCard is ever written — the Production schema stays un-JIT'd
+        // until device gate E flips it on (PLAN-V1.8 §4). Callers also gate, but guard
+        // here too so a stray call can't leak a record.
+        if AppModel.conjSRSSyncAvailable {
+            changes += conjugationSRSIDs.map { .saveRecord(recordID(RT.conjSRS, $0)) }
+        }
         // Keep the legacy v1.4 deck record mirrored to the default list so v1.4
         // peers track the user's ★ edits (the deck is folded back on fetch).
         if listIDs.contains(WordList.defaultID) {
@@ -139,6 +148,10 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         changes += model.allWordListIDs.map { .saveRecord(recordID(RT.list, $0)) }
         // Legacy-deck mirror (= default list ids) so still-v1.4 peers stay in sync.
         changes.append(.saveRecord(recordID(RT.saved, Self.savedDeckKey)))
+        // Conjugation SRS cards — gated OFF for v1.8 (see recordLocalChanges).
+        if AppModel.conjSRSSyncAvailable {
+            changes += model.conjugationReviewStore.cards.keys.map { .saveRecord(recordID(RT.conjSRS, $0)) }
+        }
         engine.state.add(pendingRecordZoneChanges: changes)
     }
 
@@ -189,6 +202,8 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         // record (written only during convergence) carries the default list's ids.
         let lists = model?.wordListsByID ?? [:]
         let defaultIDs = lists[WordList.defaultID]?.ids ?? []
+        // Conjugation SRS cards, snapshotted by value (Sendable value type).
+        let conjCards = model?.conjugationReviewStore.cards ?? [:]
         // Deep-COPY cached records into the snapshot: the record provider runs
         // off the main actor and mutates these via Self.fill, while the main
         // actor concurrently mutates/replaces the originals in applyFetched /
@@ -219,6 +234,9 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
                 Self.fill(record, from: list)
             case RT.saved:
                 Self.fill(record, savedIDs: defaultIDs)
+            case RT.conjSRS:
+                guard let card = conjCards[key] else { return nil }
+                Self.fill(record, from: card)
             default:
                 return nil
             }
@@ -233,6 +251,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         var rides: [RideRecord] = []
         var slots: [String: OdometerLog.Slot] = [:]
         var lists: [WordList] = []
+        var conjCards: [ConjugationSRSCard] = []
         var deckIDs: [String]?
         for modification in changes.modifications {
             let record = modification.record
@@ -245,16 +264,17 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
                 if let s = Self.odometerSlot(from: record) { slots[device] = s }
             case RT.list: if let l = Self.wordList(from: record) { lists.append(l) }
             case RT.saved: deckIDs = Self.savedIDs(from: record)   // legacy deck → fold once
-            default: break
+            case RT.conjSRS: if let c = Self.conjSrsCard(from: record) { conjCards.append(c) }
+            default: break   // unknown record type (e.g. a newer schema) → safely skipped
             }
         }
-        // Deletions are ignored at the record level: SRS/ride/odometer are
+        // Deletions are ignored at the record level: SRS/ride/odometer/conjugation are
         // append-only, and word-list deletions travel as the `deleted` FIELD
         // (a tombstone modification), not a CloudKit record delete.
         guard !cards.isEmpty || !rides.isEmpty || !slots.isEmpty
-                || !lists.isEmpty || deckIDs != nil else { return }
+                || !lists.isEmpty || !conjCards.isEmpty || deckIDs != nil else { return }
         model?.applyCloudChanges(cards: cards, records: rides, odometerSlots: slots,
-                                 wordLists: lists, legacyDeck: deckIDs)
+                                 wordLists: lists, legacyDeck: deckIDs, conjugationCards: conjCards)
     }
 
     private func handleSent(_ sent: CKSyncEngine.Event.SentRecordZoneChanges, syncEngine: CKSyncEngine) {
@@ -301,6 +321,10 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             }
         case RT.saved:
             model?.applyCloudChanges(legacyDeck: Self.savedIDs(from: record))
+        case RT.conjSRS:
+            if let card = Self.conjSrsCard(from: record) {
+                model?.applyCloudChanges(conjugationCards: [card])
+            }
         default:
             break
         }
@@ -399,6 +423,34 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     private nonisolated static func srsCard(from record: CKRecord) -> SRSCard? {
         guard let id = record["vocabID"] as? String else { return nil }
         var card = SRSCard(id: id)
+        card.easeFactor = record["easeFactor"] as? Double ?? card.easeFactor
+        card.interval = record["interval"] as? Int ?? card.interval
+        card.repetitions = record["repetitions"] as? Int ?? card.repetitions
+        card.dueDate = record["dueDate"] as? Date ?? card.dueDate
+        card.lapses = record["lapses"] as? Int ?? card.lapses
+        card.lastReviewed = record["lastReviewed"] as? Date
+        card.totalReviews = record["totalReviews"] as? Int ?? card.totalReviews
+        card.totalMistakes = record["totalMistakes"] as? Int ?? card.totalMistakes
+        return card
+    }
+
+    // Conjugation SRS card (v1.8 §C) — same field shape as SRSCard, its own record type
+    // ("ConjugationSRSCard"). `cardID` holds the form-level id (`sourceID#form`).
+    private nonisolated static func fill(_ record: CKRecord, from card: ConjugationSRSCard) {
+        record["cardID"] = card.id
+        record["easeFactor"] = card.easeFactor
+        record["interval"] = card.interval
+        record["repetitions"] = card.repetitions
+        record["dueDate"] = card.dueDate
+        record["lapses"] = card.lapses
+        record["lastReviewed"] = card.lastReviewed
+        record["totalReviews"] = card.totalReviews
+        record["totalMistakes"] = card.totalMistakes
+    }
+
+    private nonisolated static func conjSrsCard(from record: CKRecord) -> ConjugationSRSCard? {
+        guard let id = record["cardID"] as? String else { return nil }
+        var card = ConjugationSRSCard(id: id)
         card.easeFactor = record["easeFactor"] as? Double ?? card.easeFactor
         card.interval = record["interval"] as? Int ?? card.interval
         card.repetitions = record["repetitions"] as? Int ?? card.repetitions
