@@ -124,6 +124,37 @@ Source: `NIHONGO_SHOT=/tmp/nihongo-store NIHONGO_SHOT_STORE=1 swift run NihongoR
 
 ---
 
+## v1.8 What's New / 新功能
+
+> Ships: Verb-Conjugation Review (spaced repetition for verb forms — local; the drill
+> now remembers which forms you miss and brings them back on schedule, weighted toward
+> your weak forms), more verbs to drill (the ずる verbs — 演ずる/感ずる… — are unlocked),
+> and Kana Read-Aloud (opt-in offline Japanese text-to-speech button on the cards).
+> iCloud sync of the conjugation review is built but GATED OFF this version (ships local
+> only) — so do NOT mention cloud sync. Same copy for macOS and iOS. NOTE: What's New
+> REJECTS the "★" glyph — no star glyph. Canonical copy → `scripts/submit_1_8.py`.
+
+### English (≤4000)
+```
+• NEW: Conjugation Review — verb-conjugation practice now remembers the forms you get wrong and brings them back with spaced repetition, weighted toward your weakest forms. A "Review N due" button appears in the menu when forms are ready.
+• More verbs to drill: the ずる verbs (演ずる, 感ずる, 信ずる, and more) are now conjugable, adding N1/N2 verbs to the pool.
+• NEW: Read Aloud — turn on the speaker button (in Settings) to hear the kana spoken with an offline Japanese voice, on the word and conjugation cards.
+• Polish and fixes throughout.
+```
+
+### 简体中文
+```
+• 新增「变形复习」：动词变形练习现在会记住你答错的变形，用间隔复习把它们按时带回来，并向你最薄弱的变形加权。有到期变形时，菜单会出现「复习 N 个」按钮。
+• 更多可练动词：ずる 动词（演ずる、感ずる、信ずる 等）现已可变形，为词池加入 N1/N2 动词。
+• 新增「假名朗读」：在设置里打开朗读按钮，即可在单词卡与变形卡上用离线日语语音听假名发音。
+• 多处细节打磨与修复。
+```
+
+### Review notes (both platforms)
+v1.8 = Conjugation Review (local spaced repetition for verb forms, its own separate store — never touches vocabulary review) + ずる verbs unlocked (conjugation labels derived from EDRDG JMdict, CC BY-SA, credited in About) + opt-in offline kana Text-to-Speech (AVSpeechSynthesizer, ja-JP). All local + offline; no new data collected; iCloud not required (conjugation cloud sync is present but disabled this release).
+
+---
+
 ## v1.7 What's New / 新功能
 
 > Ships: Dynamic Type / "Larger Text" support across the whole app (accessibility;

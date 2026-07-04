@@ -1,8 +1,10 @@
 import SwiftUI
 
-/// Results for a verb-conjugation drill (v1.6). Lightweight — no distance, no "review
-/// these" list, because the drill writes no SRS. "Practice again" re-enters the drill
-/// (startGame dispatches to startConjugation while the mode is .conjugation).
+/// Results for a verb-conjugation drill (v1.6). Lightweight — no distance and no "review
+/// these" list on this screen: since v1.8 the drill DOES record to the separate
+/// conjugation SRS, but due forms are surfaced from the menu's "Review N due" entry, not
+/// here. "Practice again" re-enters the drill (startGame dispatches to startConjugation
+/// while the mode is .conjugation).
 struct ConjugationResultsView: View {
     @Environment(AppModel.self) private var model
     private var zh: Bool { model.languageCode == "zh" }

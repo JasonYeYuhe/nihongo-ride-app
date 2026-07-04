@@ -816,6 +816,7 @@ final class AppModel {
     /// its review-these results. Practice is unchanged (it still logs a ride).
     func finishGame() {
         guard let session else { return }
+        stopSpeaking()   // cancel any in-flight read-aloud when a run ends (parity with finishConjugation)
         // Single source of truth for the side-effect gating (tested in GameCore).
         let completion = RunCompletion(mode: session.mode, recordsSRS: session.config.recordsSRS)
         var changedSRS: [String] = []
