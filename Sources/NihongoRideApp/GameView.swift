@@ -409,6 +409,9 @@ private struct WordCard: View {
         .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: compact ? 20 : 28))
         .overlay(RoundedRectangle(cornerRadius: compact ? 20 : 28).strokeBorder(.white.opacity(0.12)))
         .overlay(alignment: .topTrailing) { saveStar }
+        .overlay(alignment: .topLeading) {
+            SpeakButton(kana: session.currentKana, compact: compact, language: language)
+        }
     }
 
     /// Star: tap = ★ favorites (default list); long-press = add to lists.

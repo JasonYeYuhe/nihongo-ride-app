@@ -103,6 +103,8 @@ targets:
         product: WordListsKit
       - package: Nihongo
         product: ConjugationReviewKit
+      - package: Nihongo
+        product: SpeechKit
 
     settings:
       base:
@@ -191,6 +193,8 @@ targets:
         product: WordListsKit
       - package: Nihongo
         product: ConjugationReviewKit
+      - package: Nihongo
+        product: SpeechKit
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride

@@ -46,6 +46,12 @@ public struct AppSettings: Codable, Equatable, Sendable {
     /// so future UI can turn it off; the weak-words cram and Practice NEVER feed it.
     public var conjugationSRSEnabled: Bool
 
+    /// Read-aloud (TTS) of the kana on the game cards. Opt-in (default off). `ttsRate` is
+    /// an `AVSpeechUtterance` rate — stored as a plain Float (0.5 = the platform default)
+    /// so this type keeps no AVFoundation dependency; SpeechKit clamps it to the valid range.
+    public var ttsEnabled: Bool
+    public var ttsRate: Float
+
     public init(
         languageCode: String = "en",
         showRomajiHint: Bool = true,
@@ -60,7 +66,9 @@ public struct AppSettings: Codable, Equatable, Sendable {
         deviceID: String = "",
         hasSeenOnboarding: Bool = false,
         conjugationForms: [String] = [],
-        conjugationSRSEnabled: Bool = true
+        conjugationSRSEnabled: Bool = true,
+        ttsEnabled: Bool = false,
+        ttsRate: Float = 0.5
     ) {
         self.languageCode = languageCode
         self.showRomajiHint = showRomajiHint
@@ -76,6 +84,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.hasSeenOnboarding = hasSeenOnboarding
         self.conjugationForms = conjugationForms
         self.conjugationSRSEnabled = conjugationSRSEnabled
+        self.ttsEnabled = ttsEnabled
+        self.ttsRate = ttsRate
     }
 
     public static let `default` = AppSettings()
@@ -94,6 +104,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         case hasSeenOnboarding
         case conjugationForms
         case conjugationSRSEnabled
+        case ttsEnabled, ttsRate
     }
 
     public init(from decoder: Decoder) throws {
@@ -117,6 +128,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
         hasSeenOnboarding = try c.decodeIfPresent(Bool.self, forKey: .hasSeenOnboarding) ?? d.hasSeenOnboarding
         conjugationForms = try c.decodeIfPresent([String].self, forKey: .conjugationForms) ?? d.conjugationForms
         conjugationSRSEnabled = try c.decodeIfPresent(Bool.self, forKey: .conjugationSRSEnabled) ?? d.conjugationSRSEnabled
+        ttsEnabled = try c.decodeIfPresent(Bool.self, forKey: .ttsEnabled) ?? d.ttsEnabled
+        ttsRate = try c.decodeIfPresent(Float.self, forKey: .ttsRate) ?? d.ttsRate
     }
 
     // Always write every key — including `selectedLevel` as an explicit null when
@@ -138,6 +151,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
         try c.encode(hasSeenOnboarding, forKey: .hasSeenOnboarding)
         try c.encode(conjugationForms, forKey: .conjugationForms)
         try c.encode(conjugationSRSEnabled, forKey: .conjugationSRSEnabled)
+        try c.encode(ttsEnabled, forKey: .ttsEnabled)
+        try c.encode(ttsRate, forKey: .ttsRate)
     }
 
     /// Clamps/repairs out-of-range primitive values and guarantees a `deviceID`.

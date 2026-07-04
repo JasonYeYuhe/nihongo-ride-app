@@ -84,6 +84,35 @@ struct SettingsView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
+            // Read-aloud (TTS) of the card kana.
+            settingsCard(title: zh ? "假名朗读" : "Read Aloud") {
+                Toggle(isOn: $model.ttsEnabled) {
+                    rowLabel(icon: "speaker.wave.2",
+                             text: zh ? "卡片上显示朗读按钮" : "Show a read-aloud button on cards")
+                }
+                .toggleStyle(.switch).tint(Theme.accent2)
+                if model.ttsEnabled {
+                    row(icon: "gauge.with.dots.needle.50percent", label: zh ? "语速" : "Speed") {
+                        Slider(value: $model.ttsRate, in: 0.30...0.65)
+                            .frame(maxWidth: 180)
+                            .tint(Theme.accent2)
+                            .accessibilityLabel(zh ? "朗读语速" : "Read-aloud speed")
+                    }
+                    if !model.ttsAvailable {
+                        Text(zh
+                             ? "未检测到日语语音。可在系统「设置 › 辅助功能 › 朗读内容」中下载后使用。"
+                             : "No Japanese voice found. Add one in System Settings › Accessibility › Spoken Content.")
+                            .scaledSystemFont(11).foregroundStyle(Theme.accent)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                Text(zh
+                     ? "默认关闭。开启后练习卡片上会出现朗读按钮,使用离线日语语音。"
+                     : "Off by default. When on, a speaker button appears on the cards, using an offline Japanese voice.")
+                    .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.7))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
             Spacer(minLength: 12)
         }
         .padding(isPhoneIdiom ? 22 : 40)

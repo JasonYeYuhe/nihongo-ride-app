@@ -54,6 +54,21 @@ struct AppSettingsTests {
         #expect(old.conjugationSRSEnabled)
     }
 
+    @Test("tts settings default off/0.5, round-trip, and a pre-v1.8 blob keeps defaults")
+    func ttsSettings() throws {
+        #expect(!AppSettings.default.ttsEnabled)
+        #expect(AppSettings.default.ttsRate == 0.5)
+        var s = AppSettings.default
+        s.ttsEnabled = true
+        s.ttsRate = 0.42
+        let decoded = try #require(AppSettings.decode(s.encoded()))
+        #expect(decoded.ttsEnabled)
+        #expect(decoded.ttsRate == 0.42)
+        let old = try #require(AppSettings.decode(Data(#"{"languageCode":"en","deviceID":"d1"}"#.utf8)))
+        #expect(!old.ttsEnabled)
+        #expect(old.ttsRate == 0.5)
+    }
+
     @Test("hasSeenOnboarding defaults to false and a pre-v1.5 blob without it stays false")
     func onboardingFlagDefaults() throws {
         #expect(AppSettings.default.hasSeenOnboarding == false)

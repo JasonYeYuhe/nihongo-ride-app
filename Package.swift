@@ -21,6 +21,7 @@ let package = Package(
         .library(name: "WordListsKit", targets: ["WordListsKit"]),
         .library(name: "ConjugationKit", targets: ["ConjugationKit"]),
         .library(name: "ConjugationReviewKit", targets: ["ConjugationReviewKit"]),
+        .library(name: "SpeechKit", targets: ["SpeechKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -100,6 +101,11 @@ let package = Package(
         .target(name: "ConjugationReviewKit"),
         .testTarget(name: "ConjugationReviewKitTests", dependencies: ["ConjugationReviewKit"]),
 
+        // MARK: Text-to-speech — @MainActor AVSpeechSynthesizer wrapper for on-demand
+        // kana read-aloud (v1.8 §D). A leaf module; the app depends on it directly.
+        .target(name: "SpeechKit"),
+        .testTarget(name: "SpeechKitTests", dependencies: ["SpeechKit"]),
+
         // MARK: Derived verb-class data path — conservation invariants + end-to-end
         // golden over the real vc-stamped vocab JSON (v1.6 B1, PLAN-V1.6 §3 layer-ii).
         // Imports VocabKit (the data) + ConjugationKit (the engine); vc is mapped via
@@ -109,7 +115,7 @@ let package = Package(
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit"],
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]

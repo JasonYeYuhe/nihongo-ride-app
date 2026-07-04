@@ -8,6 +8,7 @@ import SyncKit
 import VocabKit
 import WordListsKit
 import ConjugationReviewKit
+import SpeechKit
 
 /// A snapshot of a finished run, shown on the results screen.
 struct GameSummary: Equatable {
@@ -113,6 +114,11 @@ final class AppModel {
     /// Default true (the drill is a learning tool now). The weak-words cram / Practice /
     /// example-sentence drills NEVER write it — only the conjugation drill does.
     var conjugationSRSEnabled: Bool = true { didSet { persistSettings() } }
+    /// Read-aloud (TTS) of the card kana. Opt-in (default off). Turning it off cancels
+    /// any in-flight utterance.
+    var ttsEnabled: Bool = false { didSet { persistSettings(); if !ttsEnabled { speech.stop() } } }
+    /// AVSpeech utterance rate (SpeechKit clamps it to the valid range).
+    var ttsRate: Float = 0.5 { didSet { persistSettings() } }
 
     /// Live iCloud sync state, surfaced on the settings screen.
     enum SyncStatus: Equatable { case off, waiting, syncing, synced, noAccount, error(String) }
@@ -158,6 +164,13 @@ final class AppModel {
 
     /// Game Center — leaderboard + achievements. No-op until authenticated.
     let gameCenter = GameCenterManager()
+
+    /// On-demand kana read-aloud (v1.8 §D). A leaf synthesizer owned directly by the app.
+    private let speech = SpeechSynthesizer()
+
+    /// Whether an offline Japanese voice is installed (for hiding the speak button /
+    /// graceful degradation — no alert when missing).
+    var ttsAvailable: Bool { SpeechSynthesizer.isJapaneseAvailable }
 
     private let storeURL: URL
     private let conjugationReviewURL: URL
@@ -212,6 +225,8 @@ final class AppModel {
         dueReminderHour = loaded.dueReminderHour
         conjugationForms = loaded.conjugationForms
         conjugationSRSEnabled = loaded.conjugationSRSEnabled
+        ttsEnabled = loaded.ttsEnabled
+        ttsRate = loaded.ttsRate
 
         // One-time odometer backfill: seed this device's slot from the existing
         // journal lifetime so totals stay correct for users upgrading to v1.2
@@ -389,8 +404,22 @@ final class AppModel {
         settings.dueReminderHour = dueReminderHour
         settings.conjugationForms = conjugationForms
         settings.conjugationSRSEnabled = conjugationSRSEnabled
+        settings.ttsEnabled = ttsEnabled
+        settings.ttsRate = ttsRate
         settings.save(to: .standard)
     }
+
+    /// Speaks `text` (a kana string) aloud if TTS is enabled and text is present. Owned by
+    /// AppModel so any screen can call it; the synthesizer cancels any in-flight utterance
+    /// so tapping the button repeatedly / switching cards never backs up. No-op (never an
+    /// alert) when TTS is off or no Japanese voice is installed.
+    func speak(_ text: String?) {
+        guard ttsEnabled, let text, !text.isEmpty else { return }
+        speech.speak(text, rate: ttsRate)
+    }
+
+    /// Cancels any in-flight utterance (call when leaving a game screen).
+    func stopSpeaking() { speech.stop() }
 
     /// Words currently waiting in the review deck (due now).
     var dueReviewCount: Int { reviewStore.dueCount() }
@@ -746,6 +775,7 @@ final class AppModel {
     /// Game Center write (the drill is not a ride).
     func finishConjugation() {
         guard let conjugationSession else { return }
+        stopSpeaking()
         lastConjugationSummary = ConjugationSummary(from: conjugationSession)
         resultsAreConjugation = true
         self.conjugationSession = nil
@@ -797,6 +827,7 @@ final class AppModel {
         session = nil
         conjugationSession = nil
         runStartedAt = nil
+        stopSpeaking()
         screen = .menu
     }
 

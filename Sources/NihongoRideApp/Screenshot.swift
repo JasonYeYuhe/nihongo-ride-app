@@ -30,9 +30,12 @@ enum Screenshotter {
 
         // Optional UI language for the rendered screenshots (NIHONGO_SHOT_LANG=zh).
         let shotLang = ProcessInfo.processInfo.environment["NIHONGO_SHOT_LANG"] ?? "en"
+        // Dev-only: force the read-aloud button on for a visual check (NIHONGO_TTS=1).
+        let forceTTS = ProcessInfo.processInfo.environment["NIHONGO_TTS"] == "1"
         let makeModel: () -> AppModel = {
             let m = AppModel.init()
             m.languageCode = shotLang
+            if forceTTS { m.ttsEnabled = true }
             return m
         }
 

@@ -279,6 +279,10 @@ private struct ConjugationCard: View {
         .padding(compact ? 14 : 24)
         .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: compact ? 20 : 28))
         .overlay(RoundedRectangle(cornerRadius: compact ? 20 : 28).strokeBorder(.white.opacity(0.12)))
+        // Read the DICTIONARY reading (not the answer being typed — that would spoil the drill).
+        .overlay(alignment: .topLeading) {
+            SpeakButton(kana: session.currentDictKana, compact: compact, language: language)
+        }
     }
 
     /// The answer reading. Already-typed kana are always shown (you typed them); upcoming
