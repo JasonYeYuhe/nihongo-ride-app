@@ -312,14 +312,15 @@ final class AppModel {
     /// this is safe even before the schema is deployed to Production.
     static let cloudSyncAvailable = true
 
-    /// Conjugation-SRS iCloud sync feature switch (v1.8 §C). **Gated OFF** for v1.8: the
-    /// code lands (CloudKitSyncController RT.conjSRS / SyncMerge / applyCloudChanges) but
-    /// no `ConjugationSRSCard` is ever written or read, so the Production schema stays
-    /// un-JIT'd and v1.8 ships local-only conjugation SRS. Flip to true only AFTER device
-    /// gate E (two-device iCloud verify + dev→prod schema deploy), mirroring the v1.2–v1.4
-    /// iCloud staging. Until then this is the single point that keeps the fragile new
-    /// record type dormant.
-    static let conjSRSSyncAvailable = false
+    /// Conjugation-SRS iCloud sync feature switch (v1.8 §C). **ON** since 2026-07-05: the
+    /// `ConjugationSRSCard` record type (+ its indexes) is deployed to the CloudKit
+    /// **Production** schema (via cktool import to Development + Dashboard Deploy Dev→Prod,
+    /// verified with `cktool export-schema --environment production`), so writes/reads of
+    /// the new type succeed in the field. Sync flows through the same engine paths as the
+    /// v1.2–v1.4 record types (init/start/delegate unchanged; §C only added additive record
+    /// handling). This flag ships in the first build AFTER v1.8 (v1.8's in-review build had
+    /// it off). Two-device read verify is a recommended follow-up, not a ship blocker.
+    static let conjSRSSyncAvailable = true
 
     /// The iCloud sync controller (nil when sync is off / CloudKit unavailable,
     /// e.g. under `swift run`). Owned here; created lazily when sync is enabled.
