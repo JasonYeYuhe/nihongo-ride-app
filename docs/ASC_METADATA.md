@@ -124,6 +124,31 @@ Source: `NIHONGO_SHOT=/tmp/nihongo-store NIHONGO_SHOT_STORE=1 swift run NihongoR
 
 ---
 
+## v1.8.1 What's New / 新功能
+
+> Ships: iCloud sync for the Conjugation Review (the v1.8 §C code, shipped gated off in 1.8,
+> is now ON — AppModel.conjSRSSyncAvailable = true). The ConjugationSRSCard record type is
+> deployed to CloudKit PRODUCTION (2026-07-05 via cktool + Console; also fixed the WordList
+> gap so named-list sync works in Prod). No other user-facing change. Same copy both
+> platforms. NOTE: no star glyph. Canonical copy → `scripts/submit_1_8_1.py`.
+
+### English (≤4000)
+```
+• Conjugation Review now syncs across your devices via iCloud — the verb forms you're due to review follow you from Mac to iPhone to iPad, so you can pick up right where you left off.
+• Sync reliability improvements.
+```
+
+### 简体中文
+```
+• 「变形复习」现在通过 iCloud 在你的设备间同步——到期要复习的动词变形会从 Mac 跟到 iPhone、iPad,让你随时接着上次的进度练。
+• 同步稳定性改进。
+```
+
+### Review notes (both platforms)
+v1.8.1 enables iCloud sync for the v1.8 verb-conjugation review — the SM-2 schedule for verb forms syncs across the user's own devices via their private CloudKit database (a SEPARATE store from the vocabulary review; no new data collected). iCloud optional; app fully usable without it. No other user-facing change.
+
+---
+
 ## v1.8 What's New / 新功能
 
 > Ships: Verb-Conjugation Review (spaced repetition for verb forms — local; the drill
