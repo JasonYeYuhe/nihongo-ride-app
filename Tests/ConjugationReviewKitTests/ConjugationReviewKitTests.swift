@@ -145,6 +145,30 @@ struct ConjugationReviewKitTests {
         }
     }
 
+    @Test("dueForecast buckets cards into today / tomorrow / this week (v1.9 §B)")
+    func dueForecast() {
+        let now = Date(timeIntervalSince1970: 3_000_000)
+        let cal = Calendar.current
+        var store = ConjugationReviewStore()
+        func addCard(_ id: String, dueOffsetDays: Int) {
+            // record once to create the card, then force its dueDate
+            store.record(promptID: id, outcome: .init(completed: true), on: now)
+            var c = store.card(for: id)!
+            c.dueDate = cal.date(byAdding: .day, value: dueOffsetDays, to: cal.startOfDay(for: now))!
+                .addingTimeInterval(3600)
+            store = ConjugationReviewStore(cards: store.cards.merging([id: c]) { _, new in new })
+        }
+        addCard("a#te", dueOffsetDays: -1)   // overdue → today
+        addCard("b#te", dueOffsetDays: 0)    // today
+        addCard("c#te", dueOffsetDays: 1)    // tomorrow
+        addCard("d#te", dueOffsetDays: 4)    // this week
+        addCard("e#te", dueOffsetDays: 30)   // beyond → uncounted
+        let f = store.dueForecast(asOf: now, calendar: cal)
+        #expect(f.today == 2)
+        #expect(f.tomorrow == 1)
+        #expect(f.thisWeek == 1)
+    }
+
     @Test("weightedPick biases toward the weak form but never starves the others")
     func weightingBiasesWeak() {
         var store = ConjugationReviewStore()

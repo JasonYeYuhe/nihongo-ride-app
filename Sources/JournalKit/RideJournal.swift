@@ -109,6 +109,35 @@ public struct RideJournal: Codable, Sendable {
         return (best ?? 0) > 0 ? best : nil
     }
 
+    // MARK: Stats aggregations (v1.9 §B — pure, for the Stats screen's charts)
+
+    /// One point per calendar day for the last `days` days (oldest→newest), zero-filled so the
+    /// bar chart shows empty days too. Value = words completed that day (summed across runs).
+    public func dailyWords(days: Int = 14, asOf date: Date = Date(), calendar: Calendar = .current)
+        -> [(day: Date, words: Int)] {
+        let startToday = calendar.startOfDay(for: date)
+        var byDay: [Date: Int] = [:]
+        for r in records { byDay[calendar.startOfDay(for: r.date), default: 0] += r.wordsCompleted }
+        return (0..<max(1, days)).reversed().compactMap { offset in
+            calendar.date(byAdding: .day, value: -offset, to: startToday).map { ($0, byDay[$0] ?? 0) }
+        }
+    }
+
+    /// The last `limit` runs that typed something, oldest→newest, as (date, accuracy) — for the
+    /// accuracy-trend line. Zero-word runs (abandoned) are excluded so the line isn't dragged to 0.
+    public func accuracySeries(last limit: Int = 20) -> [(date: Date, accuracy: Double)] {
+        records.lazy.filter { $0.wordsCompleted > 0 }.suffix(limit).map { ($0.date, $0.accuracy) }
+    }
+
+    /// Run counts grouped by mode (journey / timeAttack / practice …), most-run first — for a
+    /// mode-breakdown summary. (Conjugation drills don't log rides, so they never appear here.)
+    public func runsByMode() -> [(mode: String, runs: Int)] {
+        var counts: [String: Int] = [:]
+        for r in records { counts[r.mode, default: 0] += 1 }
+        return counts.sorted { $0.value != $1.value ? $0.value > $1.value : $0.key < $1.key }
+            .map { ($0.key, $0.value) }
+    }
+
     // MARK: Persistence
 
     public func save(to url: URL) throws {

@@ -86,4 +86,33 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
         }
         return store
     }
+
+    /// Near-term due buckets for the Stats screen's conjugation section (v1.9 §B). Parallel to
+    /// `ReviewKit.DueForecast` but defined here to keep ConjugationReviewKit zero-dependency.
+    /// Disjoint: `today` includes anything overdue, `tomorrow` = next day, `thisWeek` = the 5 days
+    /// after that.
+    public func dueForecast(asOf date: Date = Date(), calendar: Calendar = .current) -> Forecast {
+        let start = calendar.startOfDay(for: date)
+        guard let endToday = calendar.date(byAdding: .day, value: 1, to: start),
+              let endTomorrow = calendar.date(byAdding: .day, value: 2, to: start),
+              let endWeek = calendar.date(byAdding: .day, value: 7, to: start)
+        else { return Forecast() }
+        var f = Forecast()
+        for card in cards.values {
+            if card.dueDate < endToday { f.today += 1 }
+            else if card.dueDate < endTomorrow { f.tomorrow += 1 }
+            else if card.dueDate < endWeek { f.thisWeek += 1 }
+        }
+        return f
+    }
+
+    /// Near-term due counts (today / tomorrow / this week).
+    public struct Forecast: Sendable, Equatable {
+        public var today: Int
+        public var tomorrow: Int
+        public var thisWeek: Int
+        public init(today: Int = 0, tomorrow: Int = 0, thisWeek: Int = 0) {
+            self.today = today; self.tomorrow = tomorrow; self.thisWeek = thisWeek
+        }
+    }
 }

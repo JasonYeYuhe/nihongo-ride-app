@@ -40,7 +40,7 @@
 
 - **数据**:`JournalKit.RideRecord`(10 个可图字段/局)+ `RideJournal` + `OdometerLog` lifetime;变形区读 `conjugationReviewStore`。
 - **新代码(诚实,不是「零新码」)**:`ConjugationReviewStore.dueForecast()`——ReviewKit.DueForecast 是 ReviewStore 方法,变形 store 无等价物;**加到 ConjugationReviewKit(app 已 import),纯计算不改 SRS**(红线:pure-read)。
-- **⚠️ 前置验证(review 要求 Day-1 做)**:**先确认 Swift Charts 在 ImageRenderer + Screenshotter capture 路径下能渲染**(丢个 throwaway Chart 进 capture 试)。若不行:统计屏在 `Screenshotter.isCapturing` 时省略 chart(仿 JournalView 对装饰的做法),不阻塞本阶段、不破 store 截图生成。
+- **✅ 前置验证已过(B0,2026-07-14)**:Swift Charts 在 ImageRenderer(headless capture)下**完美渲染**(真柱/轴/网格/标签,非占位)——统计屏可自由用 Charts,含 store 截图,**无需在 isCapturing 时省略**。最大未知已清。
 - **UI 契约**:非游戏屏(抑键盘、Esc/Back、RootView zIndex);`.scaledSystemFont`(Dynamic Type 不回退);C3 VoiceOver(图表加合成 label/summary,仿 v1.5 JournalView sparkline 处理)。
 - **闸**:统计读取纯函数测(空历史/单局/多局降级)+ headless 渲染(capture 模式确定性,chart 缺失优雅降级)+ 不破现有屏。
 

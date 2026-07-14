@@ -227,3 +227,51 @@ struct RideJournalTests {
         #expect(RideJournal.load(from: corrupt).isEmpty)
     }
 }
+
+@Suite("Ride journal — stats aggregations (v1.9 §B)")
+struct StatsAggregationTests {
+
+    @Test("dailyWords zero-fills empty days and sums words within a day")
+    func dailyWords() {
+        var j = RideJournal()
+        j.append(ride(on: at(day: 10, hour: 9), words: 12))
+        j.append(ride(on: at(day: 10, hour: 20), words: 8))   // same day → summed
+        j.append(ride(on: at(day: 12, hour: 9), words: 5))
+        // as of day 12, last 5 days = days 8,9,10,11,12
+        let series = j.dailyWords(days: 5, asOf: at(day: 12, hour: 23), calendar: tokyo)
+        #expect(series.count == 5)
+        #expect(series.map(\.words) == [0, 0, 20, 0, 5])   // day10=20 (12+8), day12=5, rest 0
+    }
+
+    @Test("accuracySeries excludes zero-word runs and keeps chronological order")
+    func accuracySeries() {
+        var j = RideJournal()
+        j.append(ride(on: at(day: 1, hour: 9), words: 12))
+        j.append(RideRecord(date: at(day: 2, hour: 9), mode: "journey", level: "N5", score: 0,
+                            wpm: 0, accuracy: 0, wordsCompleted: 0, lapsed: 0, distanceMeters: 0, duration: 0))
+        j.append(ride(on: at(day: 3, hour: 9), words: 8))
+        let s = j.accuracySeries()
+        #expect(s.count == 2)                       // the zero-word run is dropped
+        #expect(s.map(\.date) == [at(day: 1, hour: 9), at(day: 3, hour: 9)])
+    }
+
+    @Test("runsByMode counts per mode, most-run first")
+    func runsByMode() {
+        var j = RideJournal()
+        for _ in 0..<3 { j.append(ride(on: at(day: 1, hour: 9), mode: "journey")) }
+        j.append(ride(on: at(day: 1, hour: 9), mode: "practice"))
+        j.append(ride(on: at(day: 1, hour: 9), mode: "timeAttack"))
+        let m = j.runsByMode()
+        #expect(m.first?.mode == "journey")
+        #expect(m.first?.runs == 3)
+        #expect(m.count == 3)
+    }
+
+    @Test("empty journal aggregations don't crash")
+    func emptyAggregations() {
+        let j = RideJournal()
+        #expect(j.dailyWords(days: 7).allSatisfy { $0.words == 0 })
+        #expect(j.accuracySeries().isEmpty)
+        #expect(j.runsByMode().isEmpty)
+    }
+}
