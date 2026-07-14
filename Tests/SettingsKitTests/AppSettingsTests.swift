@@ -69,6 +69,16 @@ struct AppSettingsTests {
         #expect(old.ttsRate == 0.5)
     }
 
+    @Test("conjSRSBackfilled defaults false, round-trips, and a pre-v1.9 blob stays false (v1.9 §A1)")
+    func conjSRSBackfilled() throws {
+        #expect(!AppSettings.default.conjSRSBackfilled)
+        var s = AppSettings.default
+        s.conjSRSBackfilled = true
+        #expect(try #require(AppSettings.decode(s.encoded())).conjSRSBackfilled)
+        let old = try #require(AppSettings.decode(Data(#"{"languageCode":"en","deviceID":"d1"}"#.utf8)))
+        #expect(!old.conjSRSBackfilled)   // a pre-v1.9 blob must not read as "already backfilled"
+    }
+
     @Test("hasSeenOnboarding defaults to false and a pre-v1.5 blob without it stays false")
     func onboardingFlagDefaults() throws {
         #expect(AppSettings.default.hasSeenOnboarding == false)

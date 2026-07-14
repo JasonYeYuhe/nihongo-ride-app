@@ -359,6 +359,17 @@ final class AppModel {
     /// Called by the sync controller to surface live state in the UI.
     func updateSyncStatus(_ status: SyncStatus) { syncStatus = status }
 
+    /// Whether the one-time conjugation-SRS sync back-fill has already run (v1.9 §A1).
+    /// The sync controller reads this to enqueue pre-existing conjugation cards exactly once
+    /// after conjugation iCloud sync was enabled (v1.8.1).
+    var conjSRSBackfilled: Bool { settings.conjSRSBackfilled }
+
+    /// Marks the one-time conjugation-SRS back-fill as done (persisted).
+    func markConjSRSBackfilled() {
+        settings.conjSRSBackfilled = true
+        if !Screenshotter.isCapturing { settings.save(to: .standard) }
+    }
+
     /// Merges cloud changes into the local stores (via the tested SyncKit merges)
     /// and persists. Called by the sync controller when records arrive.
     func applyCloudChanges(cards: [SRSCard] = [], records: [RideRecord] = [],
@@ -822,12 +833,13 @@ final class AppModel {
         let completion = RunCompletion(mode: session.mode, recordsSRS: session.config.recordsSRS)
         var changedSRS: [String] = []
         if completion.persistsSRS {                // never overwrite real SRS with a practice/cram run
-            // Diff old vs new so sync pushes exactly the cards that changed.
-            let oldCards = reviewStore.cards
-            changedSRS = session.review.cards.compactMap { id, card in
-                oldCards[id] != card ? id : nil
-            }
-            reviewStore = session.review
+            // MERGE this run's outcomes into the live store instead of wholesale-replacing it —
+            // a cloud fetch can merge newer cards into `reviewStore` mid-run, and a bare
+            // `reviewStore = session.review` would revert that AND re-upload stale (v1.9 §A2).
+            // The pure, tested SyncMerge.applyRun keeps both and reports exactly the changed ids.
+            let (merged, changed) = SyncMerge.applyRun(session.review, into: reviewStore)
+            changedSRS = changed
+            reviewStore = merged
             bgSave("review (run)") { try reviewStore.save(to: storeURL) }
             refreshReminders()                     // the due count just changed
         }

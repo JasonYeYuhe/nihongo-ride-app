@@ -30,6 +30,23 @@ public enum SyncMerge {
         return ReviewStore(cards: merged)
     }
 
+    /// Applies a finished run's SRS snapshot back into the live store (v1.9 §A2).
+    ///
+    /// `sessionReview` is a value-type copy of the store taken when the run STARTED, plus this
+    /// run's outcomes. `store` is the live store, which a cloud fetch may have merged newer
+    /// cards into WHILE the run was in progress. A bare `store = sessionReview` would silently
+    /// REVERT that mid-run cloud merge and re-upload the stale snapshot (cross-device data loss,
+    /// latent since v1.4). This merges field-level (newer `lastReviewed` wins) so BOTH this run's
+    /// fresh reviews and the mid-run cloud cards survive, and returns exactly the ids whose
+    /// STORED value changed — so sync uploads only those (the merge winner, never stale).
+    public static func applyRun(_ sessionReview: ReviewStore, into store: ReviewStore)
+        -> (merged: ReviewStore, changedIDs: [String]) {
+        let before = store.cards
+        let merged = reviewStores(sessionReview, store)
+        let changed = merged.cards.compactMap { id, card in before[id] != card ? id : nil }
+        return (merged, changed)
+    }
+
     private static func winner(_ a: SRSCard, _ b: SRSCard) -> SRSCard {
         switch (a.lastReviewed, b.lastReviewed) {
         case let (la?, lb?): return lb > la ? b : a   // newer wins; tie → local (a)

@@ -52,6 +52,12 @@ public struct AppSettings: Codable, Equatable, Sendable {
     public var ttsEnabled: Bool
     public var ttsRate: Float
 
+    // v1.9 additions.
+    /// One-time marker: the conjugation SRS cards accumulated before conjugation iCloud
+    /// sync was enabled (v1.8.1) have been enqueued for upload once. Prevents re-enqueuing
+    /// the whole store on every launch. Set true after the back-fill fires. (v1.9 §A1.)
+    public var conjSRSBackfilled: Bool
+
     public init(
         languageCode: String = "en",
         showRomajiHint: Bool = true,
@@ -68,7 +74,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
         conjugationForms: [String] = [],
         conjugationSRSEnabled: Bool = true,
         ttsEnabled: Bool = false,
-        ttsRate: Float = 0.5
+        ttsRate: Float = 0.5,
+        conjSRSBackfilled: Bool = false
     ) {
         self.languageCode = languageCode
         self.showRomajiHint = showRomajiHint
@@ -86,6 +93,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.conjugationSRSEnabled = conjugationSRSEnabled
         self.ttsEnabled = ttsEnabled
         self.ttsRate = ttsRate
+        self.conjSRSBackfilled = conjSRSBackfilled
     }
 
     public static let `default` = AppSettings()
@@ -105,6 +113,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         case conjugationForms
         case conjugationSRSEnabled
         case ttsEnabled, ttsRate
+        case conjSRSBackfilled
     }
 
     public init(from decoder: Decoder) throws {
@@ -130,6 +139,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         conjugationSRSEnabled = try c.decodeIfPresent(Bool.self, forKey: .conjugationSRSEnabled) ?? d.conjugationSRSEnabled
         ttsEnabled = try c.decodeIfPresent(Bool.self, forKey: .ttsEnabled) ?? d.ttsEnabled
         ttsRate = try c.decodeIfPresent(Float.self, forKey: .ttsRate) ?? d.ttsRate
+        conjSRSBackfilled = try c.decodeIfPresent(Bool.self, forKey: .conjSRSBackfilled) ?? d.conjSRSBackfilled
     }
 
     // Always write every key — including `selectedLevel` as an explicit null when
@@ -153,6 +163,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         try c.encode(conjugationSRSEnabled, forKey: .conjugationSRSEnabled)
         try c.encode(ttsEnabled, forKey: .ttsEnabled)
         try c.encode(ttsRate, forKey: .ttsRate)
+        try c.encode(conjSRSBackfilled, forKey: .conjSRSBackfilled)
     }
 
     /// Clamps/repairs out-of-range primitive values and guarantees a `deviceID`.

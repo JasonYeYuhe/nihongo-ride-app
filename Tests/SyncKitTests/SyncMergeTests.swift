@@ -73,6 +73,33 @@ struct ReviewStoreMergeTests {
         let twice = SyncMerge.reviewStores(a, once)
         #expect(once.cards == twice.cards)
     }
+
+    // v1.9 §A2 — finishGame merge race. A bare `store = sessionReview` would revert a mid-run
+    // cloud merge; applyRun must keep BOTH and report only the run's changed ids.
+    @Test("applyRun keeps this run's reviews AND a mid-run cloud card (no revert)")
+    func applyRunKeepsCloudCard() {
+        // Run started with card A (old). This run reviewed A → sessionReview has A-new.
+        let sessionReview = ReviewStore(cards: ["A": card("A", reviewed: t(100))])
+        // Meanwhile a cloud fetch merged card C into the live store mid-run (A still pre-run).
+        let liveStore = ReviewStore(cards: ["A": card("A", reviewed: t(0)),
+                                            "C": card("C", reviewed: t(50))])
+        let (merged, changed) = SyncMerge.applyRun(sessionReview, into: liveStore)
+        #expect(merged.card(for: "A")?.lastReviewed == t(100), "this run's fresh review wins")
+        #expect(merged.card(for: "C") != nil, "mid-run cloud card must NOT be reverted")
+        // Only A changed vs the live store; C was already present unchanged → not re-uploaded.
+        #expect(changed == ["A"])
+    }
+
+    @Test("applyRun uploads new cards and does not re-upload an unchanged mid-run cloud card")
+    func applyRunChangedIDs() {
+        let sessionReview = ReviewStore(cards: ["A": card("A", reviewed: t(100)),   // reviewed this run
+                                                "B": card("B", reviewed: t(100))])  // new word this run
+        let liveStore = ReviewStore(cards: ["A": card("A", reviewed: t(0)),
+                                            "C": card("C", reviewed: t(50))])        // mid-run cloud card
+        let (merged, changed) = SyncMerge.applyRun(sessionReview, into: liveStore)
+        #expect(Set(changed) == ["A", "B"])                 // this run's cards, not C
+        #expect(merged.cards.count == 3)                     // A, B, C all present
+    }
 }
 
 /// Builds a conjugation SRS card with an explicit last-reviewed instant.

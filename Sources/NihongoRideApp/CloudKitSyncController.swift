@@ -69,6 +69,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         // on first run / re-enable queue all local records to upload.
         engine.state.add(pendingDatabaseChanges: [.saveZone(CKRecordZone(zoneID: zoneID))])
         if saved == nil || fullResync { enqueueAllLocal() }
+        backfillConjugationSRSIfNeeded(engine)
         await syncNow()
     }
 
@@ -136,6 +137,22 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     /// and the engine is never driven re-entrantly from the delegate.
     private func scheduleSync() {
         Task { [weak self] in await self?.syncNow() }
+    }
+
+    /// One-time back-fill of conjugation SRS cards (v1.9 §A1). `enqueueAllLocal` only runs on
+    /// a nil saved state (first ever sync) or a manual full-resync — so an EXISTING sync user
+    /// (non-nil state) who accumulated conjugation cards under v1.8 (while the feature was
+    /// gated off) would never upload them when v1.8.1 flipped `conjSRSSyncAvailable` on; only
+    /// newly-drilled cards would sync. Push the whole conjugation store once, gated by a
+    /// persisted marker on the model so it never repeats. Enqueue-only (state.add) — the send
+    /// happens through the caller's `syncNow()`; no engine is driven here.
+    private func backfillConjugationSRSIfNeeded(_ engine: CKSyncEngine) {
+        guard AppModel.conjSRSSyncAvailable, let model, !model.conjSRSBackfilled else { return }
+        let changes = model.conjugationReviewStore.cards.keys.map {
+            CKSyncEngine.PendingRecordZoneChange.saveRecord(recordID(RT.conjSRS, $0))
+        }
+        if !changes.isEmpty { engine.state.add(pendingRecordZoneChanges: changes) }
+        model.markConjSRSBackfilled()
     }
 
     private func enqueueAllLocal() {
@@ -291,8 +308,28 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
                 recordCache[serverRecord.recordID.recordName] = serverRecord
                 mergeServerRecord(serverRecord)
                 syncEngine.state.add(pendingRecordZoneChanges: [.saveRecord(serverRecord.recordID)])
+            } else {
+                // Every OTHER save failure used to be swallowed silently — the exact blind
+                // spot that hid the WordList Production-schema miss for 3 versions (writes to a
+                // non-existent Prod record type failed, nothing was logged, status stayed
+                // "synced"). Log it, and surface a degraded status for a NON-transient error so
+                // it's visible. LOG / STATUS ONLY — never drive the engine from this delegate
+                // callback (red line: no engine fetch/send here). (v1.9 §A3.)
+                PersistLog.failure("cksync save \(failure.record.recordID.recordName)", error)
+                if !Self.isTransient(error) {
+                    model?.updateSyncStatus(Self.status(for: error))
+                }
             }
-            // Other errors are left for the engine's own retry handling.
+        }
+    }
+
+    /// Transient CKErrors that the engine retries on its own — not worth a degraded status.
+    private nonisolated static func isTransient(_ error: CKError) -> Bool {
+        switch error.code {
+        case .networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited, .zoneBusy:
+            return true
+        default:
+            return false
         }
     }
 
