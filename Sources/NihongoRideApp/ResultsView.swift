@@ -194,12 +194,22 @@ struct ResultsView: View {
                     let saved = model.isSaved(word.id)
                     // Composed tap + long-press (NOT Button + simultaneousGesture,
                     // which let a long-press also toggle the ★ unintentionally).
+                    let canSpeak = model.ttsEnabled && model.ttsAvailable
                     VStack(spacing: 2) {
                         HStack(spacing: 4) {
                             Image(systemName: saved ? "star.fill" : "star")
                                 .scaledSystemFont(9).foregroundStyle(saved ? Theme.gold : Theme.dim)
                             Text(word.surface)
                                 .scaledSystemFont(15, weight: .semibold).foregroundStyle(.white)
+                            // Read-aloud (v1.9 §C): a nested tap-target reads the word's kana; the
+                            // innermost gesture wins so it doesn't also toggle the chip's ★. No
+                            // keyboard summon here — results suppresses the keyboard (not a game screen).
+                            if canSpeak {
+                                Image(systemName: "speaker.wave.2")
+                                    .scaledSystemFont(10).foregroundStyle(Theme.accent2)
+                                    .padding(.leading, 2).contentShape(Rectangle())
+                                    .onTapGesture { model.speak(word.kana) }
+                            }
                         }
                         Text(word.gloss(for: model.languageCode))
                             .font(.caption2).foregroundStyle(Theme.dim).lineLimit(1)
@@ -218,6 +228,11 @@ struct ResultsView: View {
                     .accessibilityLabel(saved ? (zh ? "\(word.surface),已收藏" : "\(word.surface), saved")
                                               : (zh ? "\(word.surface),收藏" : "Save \(word.surface)"))
                     .accessibilityAction(named: Text(zh ? "加入词单" : "Add to lists")) { addToListsTarget = word.id }
+                    .accessibilityActions {
+                        if canSpeak {
+                            Button(zh ? "朗读" : "Read aloud") { model.speak(word.kana) }
+                        }
+                    }
                 }
             }
             if words.count > 12 {
