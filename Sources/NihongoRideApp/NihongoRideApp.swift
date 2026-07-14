@@ -162,6 +162,7 @@ struct RootView: View {
             if model.resultsAreConjugation { ConjugationResultsView() } else { ResultsView() }
         case .about:   AboutView()
         case .journal: JournalView()
+        case .stats:   StatsView()
         case .settings: SettingsView()
         case .lists:   ListsView()
         case .listDetail: ListDetailView()

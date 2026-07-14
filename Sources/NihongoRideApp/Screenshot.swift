@@ -123,6 +123,15 @@ enum Screenshotter {
         conjResults.finishConjugation()
         render(RootView().environment(conjResults), size: size, to: directory + "/conjugation-results.png")
 
+        // Stats screen (v1.9) — seed demo journal + conjugation data so the charts have content.
+        let stats = makeModel()
+        stats.seedDemoStatsData()
+        stats.screen = .stats
+        // Taller than the game viewport: the Stats screen scrolls at runtime, so capture the
+        // full content (header + all cards) for a store-worthy shot.
+        render(RootView().environment(stats), size: CGSize(width: size.width, height: 1500),
+               to: directory + "/stats.png")
+
         // About / Credits page — render the view directly so the screen-transition
         // animation doesn't catch it mid-flight.
         let about = makeModel()

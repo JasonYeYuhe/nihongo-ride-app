@@ -70,7 +70,7 @@ struct ConjugationSummary: Equatable {
 @MainActor
 @Observable
 final class AppModel {
-    enum Screen: Equatable { case menu, playing, results, about, journal, settings, lists, listDetail, onboarding }
+    enum Screen: Equatable { case menu, playing, results, about, journal, settings, lists, listDetail, onboarding, stats }
 
     var screen: Screen = .menu {
         didSet { navCount += 1 }
@@ -452,6 +452,44 @@ final class AppModel {
 
     /// Cancels any in-flight utterance (call when leaving a game screen).
     func stopSpeaking() { speech.stop() }
+
+    // MARK: Stats screen (v1.9 §B) — pure reads over the journal + conjugation store.
+    var statsDailyWords: [(day: Date, words: Int)] { journal.dailyWords() }
+    var statsAccuracySeries: [(date: Date, accuracy: Double)] { journal.accuracySeries() }
+    var statsWPMSeries: [Double] { journal.wpmSeries() }
+    var statsRunsByMode: [(mode: String, runs: Int)] { journal.runsByMode() }
+    var statsBestWPM: Double? { journal.bestWPM }
+    var statsHasRides: Bool { !journal.isEmpty }
+    /// Near-term conjugation due buckets (surfaces the v1.8 conjugation SRS on the Stats screen).
+    var conjugationDueForecast: ConjugationReviewStore.Forecast { conjugationReviewStore.dueForecast() }
+    var conjugationReviewedCount: Int { conjugationReviewStore.reviewedCount }
+    var conjugationLeechCount: Int { conjugationReviewStore.leeches().count }
+
+    /// Capture-only: seed demo journal + conjugation data so the Stats screenshot has content
+    /// (the real journal is empty in a fresh render). No-op outside capture mode, where all file
+    /// I/O is already redirected to a temp dir — this never touches the user's data.
+    func seedDemoStatsData() {
+        guard Screenshotter.isCapturing else { return }
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        var j = RideJournal()
+        let words = [8, 0, 12, 15, 10, 18, 22, 0, 20, 25, 19, 28, 24, 30]   // ~2 weeks, upward
+        for (i, w) in words.enumerated() where w > 0 {
+            let day = cal.date(byAdding: .day, value: -(words.count - 1 - i), to: today)!.addingTimeInterval(36000)
+            j.append(RideRecord(date: day, mode: i % 4 == 0 ? "practice" : "journey", level: "N5",
+                                score: w * 20, wpm: 24 + Double(i), accuracy: min(0.99, 0.82 + Double(i) * 0.012),
+                                wordsCompleted: w, lapsed: max(0, 3 - i / 4),
+                                distanceMeters: Double(w) * 20, duration: 120))
+        }
+        journal = j
+        var store = ConjugationReviewStore()
+        let ids = ["たべる#te", "かく#past", "のむ#negative", "みる#potential", "はしる#volitional", "いく#te"]
+        for (i, id) in ids.enumerated() {
+            store.record(promptID: id, outcome: .init(completed: i % 3 != 0, mistakes: i % 3), on: today)
+            if i < 2, var c = store.card(for: id) { c.dueDate = today.addingTimeInterval(-3600); store = ConjugationReviewStore(cards: store.cards.merging([id: c]) { _, n in n }) }
+        }
+        conjugationReviewStore = store
+    }
 
     /// Words currently waiting in the review deck (due now).
     var dueReviewCount: Int { reviewStore.dueCount() }

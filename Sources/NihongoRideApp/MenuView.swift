@@ -250,6 +250,23 @@ struct MenuView: View {
                 .fixedSize()
                 .accessibilityIdentifier("wordListsButton")
 
+                Button(action: { model.screen = .stats }) {
+                    Label {
+                        Text(model.languageCode == "zh" ? "统计" : "Stats")
+                            .scaledSystemFont(13, weight: .semibold, design: .rounded)
+                            .lineLimit(1)
+                    } icon: {
+                        Image(systemName: "chart.bar.fill").foregroundStyle(Theme.accent2)
+                    }
+                    .foregroundStyle(.white.opacity(0.85))
+                    .padding(.horizontal, 14).padding(.vertical, 7)
+                    .background(Theme.card, in: Capsule())
+                    .overlay(Capsule().strokeBorder(Theme.cardStroke))
+                }
+                .buttonStyle(.plain)
+                .fixedSize()
+                .accessibilityIdentifier("statsButton")
+
                 // Weak-words cram: shown only once enough words have been reviewed to
                 // make it worthwhile. Starts a run directly (a cram, not a screen).
                 if model.weakWordsPoolCount >= AppModel.weakWordsMinimum {
