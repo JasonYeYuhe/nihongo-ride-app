@@ -201,13 +201,19 @@ struct ResultsView: View {
                                 .scaledSystemFont(9).foregroundStyle(saved ? Theme.gold : Theme.dim)
                             Text(word.surface)
                                 .scaledSystemFont(15, weight: .semibold).foregroundStyle(.white)
-                            // Read-aloud (v1.9 §C): a nested tap-target reads the word's kana; the
-                            // innermost gesture wins so it doesn't also toggle the chip's ★. No
-                            // keyboard summon here — results suppresses the keyboard (not a game screen).
+                            // Read-aloud: reads the word's kana. A tap that LANDS on this shape wins
+                            // (innermost gesture) — but a tap that MISSES falls through to the chip
+                            // and toggles ★. v1.9 shipped this at ~12x12pt, which made a near-miss a
+                            // silent un-save; harmless then (a peer's union resurrected the word) but
+                            // Phase A is exactly what turns it into a propagating cross-device delete
+                            // an old peer can't undo. Hence a solid 28pt target (~5x the area) — the
+                            // most a chip this dense allows. No keyboard summon: results suppresses
+                            // the keyboard (not a game screen). (v1.10 §A4.)
                             if canSpeak {
                                 Image(systemName: "speaker.wave.2")
-                                    .scaledSystemFont(10).foregroundStyle(Theme.accent2)
-                                    .padding(.leading, 2).contentShape(Rectangle())
+                                    .scaledSystemFont(12).foregroundStyle(Theme.accent2)
+                                    .frame(width: 28, height: 28)
+                                    .contentShape(Rectangle())
                                     .onTapGesture { model.speak(word.kana) }
                             }
                         }

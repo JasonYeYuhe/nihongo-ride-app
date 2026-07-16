@@ -385,8 +385,11 @@ final class AppModel {
             wordLists.compactTombstones()
             bgSave("word-lists (sync merge)") { try wordLists.save(to: wordListsURL) }
         }
-        // Legacy v1.4 `SavedWords:deck` record: fold into the default list once,
-        // then never again (the persisted flag in foldLegacyDeck enforces "once").
+        // Legacy v1.4 `SavedWords:deck` record: folded into the default list on EVERY fetch —
+        // the deck is a permanent v1.4-compat mirror, not a one-time migration. (This comment
+        // used to claim "once, then never again — a persisted flag in foldLegacyDeck enforces
+        // it"; there is no such flag and never was. See foldLegacyDeck's own doc, which had
+        // been saying the opposite. v1.10 §A3.)
         if let deckIDs { foldLegacyDeck(deckIDs) }
         if !cards.isEmpty {
             let remote = ReviewStore(cards: Dictionary(cards.map { ($0.id, $0) },
