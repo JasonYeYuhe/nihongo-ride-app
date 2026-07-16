@@ -106,6 +106,30 @@ struct SyncMergeWordMetaTests {
         #expect(!json.contains("wordMeta"))
     }
 
+    @Test("meta survives the JSON-in-STRING wire round-trip with its dates intact")
+    func wireRoundTrip() throws {
+        // wordMeta rides to CloudKit as one JSON STRING (CloudKitSyncController's
+        // encodeMeta/decodeMeta). Both ends use a bare JSONEncoder/JSONDecoder, so the
+        // date strategy matches by default — but "by default" is precisely the kind of
+        // coupling that breaks silently when someone sets a strategy on one side. Dates
+        // are the whole mechanism here: a lossy round-trip turns `a > r` into `a == r`
+        // and flips a word's membership. Sub-second precision is deliberate.
+        let meta: [String: WordMeta] = [
+            "w": WordMeta(a: t(20.123456), r: t(10.654321)),
+            "tombstoned": WordMeta(r: t(5)),
+            "added": WordMeta(a: t(7)),
+        ]
+        let json = String(data: try JSONEncoder().encode(meta), encoding: .utf8)!
+        let back = try JSONDecoder().decode([String: WordMeta].self, from: Data(json.utf8))
+        #expect(back == meta)
+        #expect(WordList.isPresent("w", inIDs: true, meta: back["w"]),
+                "a > r must still hold after the round-trip")
+
+        // A blob we can't parse degrades to no-meta, never to a thrown error that would
+        // strand the whole list (decodeMeta's `?? [:]`).
+        #expect((try? JSONDecoder().decode([String: WordMeta].self, from: Data("{oops".utf8))) == nil)
+    }
+
     // MARK: CRDT laws — the stated obligation
 
     @Test("commutative: merge order cannot change the outcome")
