@@ -89,6 +89,15 @@ cat > "$BUILD_DIR/ExportOptions.plist" << 'EOF'
     <string>automatic</string>
     <key>uploadSymbols</key>
     <true/>
+    <!-- Absent, this defaults to TRUE on Xcode 15+, and Xcode then silently rewrites
+         the build number on upload to dodge a collision. It really happened: a
+         duplicate upload of macOS build 14 landed in App Store Connect as build 15,
+         a number that appears nowhere in project.yml. The submit script looks builds
+         up BY NUMBER, so a silently renumbered build is one it can't find -- or worse,
+         one it mistakes for another. The build number must be what we wrote; a
+         collision should fail loudly instead of being papered over. -->
+    <key>manageAppVersionAndBuildNumber</key>
+    <false/>
 </dict>
 </plist>
 EOF
