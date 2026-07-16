@@ -7,6 +7,10 @@ struct ResultsView: View {
     private var zh: Bool { model.languageCode == "zh" }
     /// Word whose "add to lists" multi-select sheet is open (long-press a chip).
     @State private var addToListsTarget: String?
+    /// The rendered ride card, or nil while it hasn't rendered / couldn't render.
+    /// Rendered once on appear rather than per body pass: ImageRenderer is not free,
+    /// and body runs on every state change (each ★ toggle, each sheet open).
+    @State private var shareCard: ShareCardImage?
 
     var body: some View {
         // iPhone: results (cards + review list) outgrow the screen — scroll.
@@ -31,6 +35,13 @@ struct ResultsView: View {
                     suppressSoftwareKeyboard: true
                 )
             }
+        }
+        .onAppear {
+            // Never in capture mode: the headless renderer would be re-entering
+            // ImageRenderer from inside its own render pass.
+            guard !Screenshotter.isCapturing, let summary = model.lastSummary else { return }
+            shareCard = ShareCardRenderer.render(summary: summary, zh: zh)
+                .map { ShareCardImage(data: $0, title: zh ? "にほんご ライド" : "Nihongo Ride") }
         }
         .sheet(isPresented: Binding(get: { addToListsTarget != nil },
                                     set: { if !$0 { addToListsTarget = nil } })) {
@@ -85,6 +96,33 @@ struct ResultsView: View {
                 .overlay(Capsule().strokeBorder(Theme.cardStroke))
                 .foregroundStyle(.white)
                 .accessibilityIdentifier("menuButton")
+
+                // Only shown once a card actually rendered — never a button that
+                // would hand the share sheet nothing.
+                if let card = shareCard {
+                    ShareLink(item: card, preview: SharePreview(card.title)) {
+                        Label(zh ? "分享" : "Share", systemImage: "square.and.arrow.up")
+                            .scaledSystemFont(18, weight: .semibold, design: .rounded)
+                            .frame(width: 140, height: 50)
+                    }
+                    .buttonStyle(.plain)
+                    .background(Theme.card, in: Capsule())
+                    .overlay(Capsule().strokeBorder(Theme.cardStroke))
+                    .foregroundStyle(.white)
+                    .accessibilityIdentifier("shareButton")
+                    // ShareLink is a real control, so it TAKES first responder from the
+                    // hidden KeyCaptureView — and unlike the speak button (v1.9 §D3,
+                    // which dodged this by not being a Button at all) it has to be one.
+                    // Summon focus back, or Return/Escape stay dead on this screen after
+                    // the sheet closes: macOS claimed first responder exactly once at
+                    // viewDidMoveToWindow, and iOS would leave the keyboard dismissed.
+                    // Fires on tap rather than on dismissal because there is no dismissal
+                    // callback; the re-claim is idempotent and the sheet keeps focus while
+                    // it is up. (Device gate: both platforms, after the sheet closes.)
+                    .simultaneousGesture(TapGesture().onEnded {
+                        Task { @MainActor in KeyboardSummon.summon() }
+                    })
+                }
             }
             .padding(.top, 8)
 

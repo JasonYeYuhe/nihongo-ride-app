@@ -5,6 +5,21 @@ enum KeyCommand {
     case escape, returnKey, backspace, space
 }
 
+/// Posts a request for the key-capture view to (re)claim first responder.
+///
+/// On iOS that also brings the on-screen keyboard back: game screens post this from
+/// a whole-screen tap so a dismissed keyboard is never a dead end on touch-only iPads.
+/// On macOS there is no keyboard to summon, but first responder is just as losable —
+/// any real control (a `ShareLink`, say) takes it, and `KeyCaptureNSView` claimed it
+/// exactly once in `viewDidMoveToWindow`, so the screen's Return/Escape keys died
+/// permanently once something else grabbed focus. Both platforms answer this now.
+enum KeyboardSummon {
+    static let notification = Notification.Name("NihongoRideSummonKeyboard")
+    @MainActor static func summon() {
+        NotificationCenter.default.post(name: notification, object: nil)
+    }
+}
+
 #if os(macOS)
 import AppKit
 
@@ -18,12 +33,30 @@ final class KeyCaptureNSView: NSView {
     var onCommand: ((KeyCommand) -> Void)?
 
     override var acceptsFirstResponder: Bool { true }
+    private var observing = false
 
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
+        claimFocus()
+        guard !observing else { return }
+        observing = true
+        // A screen that lost first responder to a real control (ShareLink) gets it back
+        // when that control is done. Without this, the claim above is the ONLY one this
+        // view ever makes. The selector-based API is deliberate: its observer is
+        // unregistered automatically on dealloc (macOS 10.11+), whereas the block-based
+        // one returns a token that a nonisolated deinit cannot even touch under Swift 6
+        // strict concurrency, so it would simply leak.
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(handleSummon),
+            name: KeyboardSummon.notification, object: nil)
+    }
+
+    @objc private func handleSummon() { claimFocus() }
+
+    private func claimFocus() {
         DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            self.window?.makeFirstResponder(self)
+            guard let self, let window = self.window else { return }
+            window.makeFirstResponder(self)
         }
     }
 
@@ -66,16 +99,6 @@ struct KeyCaptureView: NSViewRepresentable {
 
 #elseif os(iOS)
 import UIKit
-
-/// Posts a request for the key-capture view to (re)claim first responder and
-/// bring the on-screen keyboard back. Game screens post this from a whole-screen
-/// tap gesture so a dismissed keyboard is never a dead end on touch-only iPads.
-enum KeyboardSummon {
-    static let notification = Notification.Name("NihongoRideSummonKeyboard")
-    @MainActor static func summon() {
-        NotificationCenter.default.post(name: notification, object: nil)
-    }
-}
 
 /// A `UIKeyInput` view that brings up the keyboard (on-screen on iPad, or a
 /// hardware keyboard when attached) and feeds each typed character to the game.

@@ -71,6 +71,16 @@ enum Screenshotter {
         results.finishGame()
         render(RootView().environment(results), size: size, to: directory + "/results.png")
 
+        // The share card (v1.10 §C). Not an App Store screenshot — it is the ONLY
+        // headless check that the card renders at all, since ResultsView deliberately
+        // skips rendering it while capturing (that would re-enter ImageRenderer from
+        // inside its own pass) and the app target has no unit tests. A card that came
+        // out blank would otherwise be found by whoever first tapped Share.
+        if let summary = results.lastSummary {
+            render(ShareCardView(summary: summary, zh: shotLang == "zh"),
+                   size: CGSize(width: 540, height: 400), to: directory + "/share-card.png")
+        }
+
         // Practice (passage) mode — washi paper, full multi-sentence paragraph
         let practice = makeModel()
         practice.selectedMode = .practice

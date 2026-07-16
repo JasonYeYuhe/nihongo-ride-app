@@ -156,6 +156,12 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSApplicationCategoryType: public.app-category.education
         ITSAppUsesNonExemptEncryption: false
+        # The results screen's ShareLink hands iOS a PNG, and the share sheet ALWAYS
+        # offers "Save Image" for one. Choosing it without this key is not a denial —
+        # the system terminates the app. We never touch the photo library ourselves;
+        # this exists purely so that one share-sheet action can't crash us. (v1.10 §C)
+        NSPhotoLibraryAddUsageDescription: >-
+          Save your ride card to Photos when you choose "Save Image" from the share sheet.
         UILaunchScreen: {}
         # iPhone: portrait only — the game is played against the software
         # keyboard, and landscape leaves no usable screen above it. Orientation

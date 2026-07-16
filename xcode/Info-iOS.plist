@@ -24,6 +24,8 @@
 	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.education</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save your ride card to Photos when you choose "Save Image" from the share sheet.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>
