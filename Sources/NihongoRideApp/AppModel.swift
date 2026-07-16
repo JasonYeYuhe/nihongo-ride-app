@@ -654,14 +654,26 @@ final class AppModel {
     /// mirror of the default list (the controller re-writes it whenever the default
     /// changes), so a still-v1.4 peer's later ★ additions keep arriving instead of
     /// being lost after a one-time window (the data-loss the adversarial review
-    /// caught). Union add-wins is exactly the cross-device semantics the default
-    /// list already has v1.5↔v1.5 — per-word un-save does not propagate (documented
-    /// MVP behavior) — so there is no resurrection asymmetry, and union reaches a
-    /// fixpoint so there is no ping-pong.
+    /// caught). Union reaches a fixpoint, so there is no ping-pong.
+    ///
+    /// **Tombstoned words are skipped (v1.10 §A1).** This doc used to argue there was
+    /// "no resurrection asymmetry" because per-word un-save didn't propagate — true
+    /// until §A made it propagate, at which point a blind fold silently undoes a
+    /// removal on *every* fetch. And this is not only a v1.4 hazard: in an all-v1.10
+    /// fleet a peer that hasn't fetched the tombstone yet rewrites the deck mirror
+    /// WITH the word, and the same `applyCloudChanges` batch folds it back in one line
+    /// after the merge removed it. The deck is a bare, timestamp-less set of ids, so
+    /// "a v1.4 peer re-starred it just now" is genuinely indistinguishable from
+    /// "pre-removal residue" — the bounded cost of choosing safety is that a v1.4
+    /// peer's re-star after a removal is ignored. A removal must never be undone
+    /// silently; a re-star that needs doing twice is survivable.
     private func foldLegacyDeck(_ ids: [String]) {
         guard !ids.isEmpty else { return }
         let before = wordLists.defaultList?.ids
-        for id in ids { _ = wordLists.addWord(id, to: WordList.defaultID) }
+        let list = wordLists.defaultList
+        for id in ids where list?.isPresent(id, inIDs: true) ?? true {
+            _ = wordLists.addWord(id, to: WordList.defaultID)
+        }
         if wordLists.defaultList?.ids != before {
             bgSave("word-lists (legacy fold)") { try wordLists.save(to: wordListsURL) }
             // A v1.4 addition changed our default → propagate to v1.5 peers (and the

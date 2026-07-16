@@ -600,12 +600,35 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         record["ids"] as? [String] ?? []
     }
 
+    /// One STRING field, not a per-word record type: a list's meta is only ever read
+    /// and written whole, alongside the list itself, so N extra records would buy
+    /// nothing and cost a fetch each.
+    private nonisolated static func encodeMeta(_ meta: [String: WordMeta]) -> String? {
+        guard !meta.isEmpty else { return nil }
+        return (try? JSONEncoder().encode(meta)).flatMap { String(data: $0, encoding: .utf8) }
+    }
+
+    private nonisolated static func decodeMeta(_ raw: Any?) -> [String: WordMeta] {
+        guard let s = raw as? String, let data = s.data(using: .utf8) else { return [:] }
+        // A meta blob we can't parse must NOT fail the whole list: dropping to [:]
+        // degrades to pre-v1.10 union semantics (a stale word may linger) rather than
+        // stranding the user's list entirely.
+        return (try? JSONDecoder().decode([String: WordMeta].self, from: data)) ?? [:]
+    }
+
     private nonisolated static func fill(_ record: CKRecord, from list: WordList) {
         record["name"] = list.name
         record["ids"] = list.ids
         record["nameUpdatedAt"] = list.nameUpdatedAt
         record["deleted"] = list.deleted ? 1 : 0
         record["deletedAt"] = list.deletedAt
+        // ⚠️ Assigning nil REMOVES the key — the exact mechanism that hid the missing
+        // `deletedAt` Prod field for 3 versions (lists synced fine until someone
+        // deleted one, because only a deletion wrote the field). So this field only
+        // exists on the wire once a word has been removed, which means the Prod schema
+        // MUST carry `wordMeta` BEFORE this build ships (Phase 0) — otherwise the
+        // failure reappears in the same shape: fine until the first removal.
+        record["wordMeta"] = Self.encodeMeta(list.wordMeta)
     }
 
     private nonisolated static func wordList(from record: CKRecord) -> WordList? {
@@ -618,6 +641,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             nameUpdatedAt: record["nameUpdatedAt"] as? Date ?? Date(timeIntervalSince1970: 0),
             deleted: (record["deleted"] as? Int ?? 0) != 0,
             deletedAt: record["deletedAt"] as? Date,
-            isDefault: id == WordList.defaultID)
+            isDefault: id == WordList.defaultID,
+            wordMeta: decodeMeta(record["wordMeta"]))
     }
 }

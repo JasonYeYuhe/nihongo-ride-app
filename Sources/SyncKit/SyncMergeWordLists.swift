@@ -9,10 +9,16 @@ extension SyncMerge {
     /// (a list present on either side survives). For a list present on **both**, the
     /// merge is field-level and deliberately clock-skew-free:
     ///
-    /// - `ids`  → **per-id union** (local order first, remote-only appended). This
-    ///   preserves the v1.4 ★ *add-wins* guarantee: a word added concurrently on
+    /// - `ids` + `wordMeta` → **LWW-element-set** (v1.10 §A). Uncontested words —
+    ///   those with no tombstone, which is every word in a fleet that has never
+    ///   removed one — are a plain **per-id union** (local order first, remote-only
+    ///   appended), exactly as v1.5–v1.9 behaved: a word added concurrently on
     ///   either device is never lost. (Whole-list LWW would depend on cross-device
-    ///   clocks and silently drop words — the bug this avoids.)
+    ///   clocks and silently drop words — the bug this avoids.) Once a word carries
+    ///   a tombstone it is present only if its `a` post-dates its `r`, which is what
+    ///   makes a per-word removal propagate instead of being unioned back in by the
+    ///   next fetch. See ``WordListsKit/WordList/isPresent(_:inIDs:)`` — the single
+    ///   home of that rule.
     /// - `name` → scalar **LWW** on `nameUpdatedAt` (renames are the one genuinely
     ///   conflicting scalar; tie keeps local).
     /// - `deleted` → **once-true-wins** (either side deleted ⇒ deleted), so a
@@ -47,10 +53,31 @@ extension SyncMerge {
     }
 
     private static func mergeList(_ a: WordList, _ b: WordList) -> WordList {
-        // ids: per-id union, local order first (add-wins, skew-free).
-        var ids = a.ids
-        let have = Set(ids)
-        for id in b.ids where !have.contains(id) { ids.append(id) }
+        // wordMeta: field-wise `max` per id. `max` is commutative, associative and
+        // idempotent, which is what buys those same properties for the whole merge.
+        var meta = a.wordMeta
+        for (id, rm) in b.wordMeta {
+            guard let lm = meta[id] else { meta[id] = rm; continue }
+            meta[id] = WordMeta(a: later(lm.a, rm.a), r: later(lm.r, rm.r))
+        }
+
+        // ids: union local-first (unchanged add-wins order), then filtered through
+        // the LWW-element-set rule. An id with no tombstone survives the filter
+        // untouched, so a fleet that has never removed a word merges EXACTLY as it
+        // did pre-v1.10.
+        var union = a.ids
+        let have = Set(union)
+        for id in b.ids where !have.contains(id) { union.append(id) }
+        var ids = union.filter { WordList.isPresent($0, inIDs: true, meta: meta[$0]) }
+        // A word whose merged meta says present (a > r) but that is in NEITHER side's
+        // ids has no path to get here today — but "unreachable" is how the merge stops
+        // being a pure function of the merged meta, and with it associativity. Sorted,
+        // because Dictionary iteration order is not stable and this must be
+        // device-independent.
+        let listed = Set(ids)
+        ids += meta.keys.sorted().filter {
+            !listed.contains($0) && WordList.isPresent($0, inIDs: false, meta: meta[$0])
+        }
 
         // name: later nameUpdatedAt wins; exact-timestamp tie → deterministic,
         // device-independent tie-break (lexicographically greater) so the chosen
@@ -77,7 +104,20 @@ extension SyncMerge {
             nameUpdatedAt: max(a.nameUpdatedAt, b.nameUpdatedAt),
             deleted: deleted,
             deletedAt: deletedAt,
-            isDefault: a.isDefault || b.isDefault
+            isDefault: a.isDefault || b.isDefault,
+            wordMeta: meta
         )
+    }
+
+    /// `max` over optional Dates where nil means "no such event" and therefore loses
+    /// to any real timestamp (NOT `.distantPast`-style arithmetic, which would make
+    /// nil a legitimate, comparable value).
+    private static func later(_ x: Date?, _ y: Date?) -> Date? {
+        switch (x, y) {
+        case let (l?, r?): return max(l, r)
+        case let (l?, nil): return l
+        case let (nil, r?): return r
+        case (nil, nil):    return nil
+        }
     }
 }

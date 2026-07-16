@@ -126,8 +126,11 @@ public struct WordListStore: Codable, Sendable, Equatable {
     /// Empties a list's words (allowed on the default list — that's how the old
     /// "clear favorites" maps).
     @discardableResult
-    public mutating func clear(_ listID: String) -> Result<Void, WordListError> {
+    public mutating func clear(_ listID: String, now: Date = Date()) -> Result<Void, WordListError> {
         guard let i = index(of: listID) else { return .failure(.listNotFound) }
+        // Clearing is N removals: each id needs its own tombstone, or a peer's union
+        // would refill the list on the next fetch (v1.10 §A).
+        for id in lists[i].ids { lists[i].wordMeta[id, default: WordMeta()].r = now }
         lists[i].ids.removeAll()
         return .success(())
     }
@@ -142,13 +145,19 @@ public struct WordListStore: Codable, Sendable, Equatable {
             return .failure(.wordCapReached(max: Self.maxWordsPerList))
         }
         lists[i].ids.append(vocabID)
+        lists[i].wordMeta[vocabID, default: WordMeta()].a = now
         return .success(())
     }
 
     @discardableResult
-    public mutating func removeWord(_ vocabID: String, from listID: String) -> Result<Void, WordListError> {
+    public mutating func removeWord(_ vocabID: String, from listID: String,
+                                    now: Date = Date()) -> Result<Void, WordListError> {
         guard let i = index(of: listID) else { return .failure(.listNotFound) }
+        // Only tombstone a word that was actually here: stamping `r` on a word we
+        // simply haven't fetched yet would suppress a peer's legitimate add.
+        guard lists[i].ids.contains(vocabID) else { return .success(()) }
         lists[i].ids.removeAll { $0 == vocabID }
+        lists[i].wordMeta[vocabID, default: WordMeta()].r = now
         return .success(())
     }
 
@@ -159,12 +168,14 @@ public struct WordListStore: Codable, Sendable, Equatable {
         guard let i = index(of: listID) else { return .failure(.listNotFound) }
         if lists[i].ids.contains(vocabID) {
             lists[i].ids.removeAll { $0 == vocabID }
+            lists[i].wordMeta[vocabID, default: WordMeta()].r = now
             return .success(false)
         }
         guard lists[i].ids.count < Self.maxWordsPerList else {
             return .failure(.wordCapReached(max: Self.maxWordsPerList))
         }
         lists[i].ids.append(vocabID)
+        lists[i].wordMeta[vocabID, default: WordMeta()].a = now
         return .success(true)
     }
 
@@ -182,6 +193,12 @@ public struct WordListStore: Codable, Sendable, Equatable {
     public mutating func compactTombstones(now: Date = Date()) {
         let cutoff = now.addingTimeInterval(-Self.tombstoneTTL)
         lists.removeAll { $0.deleted && !$0.isDefault && ($0.deletedAt ?? .distantPast) < cutoff }
+        // Same TTL, same "post-merge only" rule, one level down: per-WORD meta
+        // (v1.10 §A). Without this the meta dictionary grows forever — it is paid
+        // for on every list sync, as one CloudKit STRING field.
+        for i in lists.indices {
+            lists[i].compactWordMeta(now: now, ttl: Self.tombstoneTTL)
+        }
     }
 
     // MARK: Persistence (synchronous, atomic — red line: no Task.detached writes)
