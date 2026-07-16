@@ -140,26 +140,77 @@ struct SyncMergeWordMetaTests {
         #expect(ab_c.ids == ["w"], "t20 re-add is the latest event, so w is present")
     }
 
-    // MARK: Compaction
+    // MARK: Compaction — regressions for the two bugs the TTL version shipped with
 
-    @Test("compaction drops expired meta but never a live tombstone")
-    func compaction() {
+    @Test("compaction never drops a tombstone, however old — a v1.9 peer can't learn it")
+    func compactionKeepsOldTombstones() {
+        // The TTL version dropped this at day 30 on the argument that "every peer has had
+        // the full TTL to receive it". A v1.9 peer never receives it (no wordMeta decode,
+        // ids unioned), so dropping it handed the word back — and re-removing restarted the
+        // same 30-day loop, making the removal permanently impossible.
         let now = t(0)
-        let ttl = WordListStore.tombstoneTTL
+        let ancient = now.addingTimeInterval(-WordListStore.tombstoneTTL * 10)
         var store = WordListStore(lists: [WordList(
-            id: WordList.defaultID, name: "★", ids: ["fresh"], nameUpdatedAt: t(0), isDefault: true,
-            wordMeta: [
-                "old":   WordMeta(a: now.addingTimeInterval(-ttl - 100), r: now.addingTimeInterval(-ttl - 50)),
-                "live":  WordMeta(r: now.addingTimeInterval(-10)),
-                "fresh": WordMeta(a: now.addingTimeInterval(-10)),
-                "stale": WordMeta(a: now.addingTimeInterval(-ttl - 100)),
-            ])])
+            id: WordList.defaultID, name: "★", ids: [], nameUpdatedAt: t(0), isDefault: true,
+            wordMeta: ["w": WordMeta(r: ancient)])])
         store.compactTombstones(now: now)
-        let m = store.lists[0].wordMeta
-        #expect(m["old"] == nil, "an expired tombstone is dropped with its addedAt")
-        #expect(m["live"] != nil, "a tombstone still inside the TTL must survive to spread")
-        #expect(m["fresh"] != nil)
-        #expect(m["stale"] == nil, "an uncontested addedAt past the TTL is redundant")
+        #expect(store.lists[0].wordMeta["w"]?.r == ancient)
+
+        // ...and the tombstone still does its job against a v1.9 peer that never stopped
+        // asserting the word.
+        let v19 = def(["w"])
+        #expect(merged(def([], store.lists[0].wordMeta), v19).ids.isEmpty)
+    }
+
+    @Test("compaction never drops a live re-add sitting on an expired tombstone")
+    func compactionKeepsLiveReadd() {
+        // {a: yesterday, r: 40 days ago}: the TTL version keyed retention off `r` alone and
+        // dropped the entry whole, discarding a one-day-old `a`. The word then read as
+        // uncontested, so any peer still holding the old tombstone deleted it on the next
+        // merge — the user's re-add lost silently, on every device.
+        let now = t(0)
+        let old = now.addingTimeInterval(-WordListStore.tombstoneTTL - 86_400 * 10)
+        let fresh = now.addingTimeInterval(-86_400)
+        var store = WordListStore(lists: [WordList(
+            id: WordList.defaultID, name: "★", ids: ["w"], nameUpdatedAt: t(0), isDefault: true,
+            wordMeta: ["w": WordMeta(a: fresh, r: old)])])
+        store.compactTombstones(now: now)
+        #expect(store.lists[0].wordMeta["w"]?.a == fresh, "the load-bearing addedAt must survive")
+
+        // The stale peer (still holding only the old tombstone) must NOT win.
+        let stalePeer = def([], ["w": WordMeta(r: old)])
+        #expect(merged(def(store.lists[0].ids, store.lists[0].wordMeta), stalePeer).ids == ["w"])
+        #expect(merged(stalePeer, def(store.lists[0].ids, store.lists[0].wordMeta)).ids == ["w"])
+    }
+
+    @Test("compaction commutes with merge (it did not when it was a TTL)")
+    func compactionCommutesWithMerge() {
+        let now = t(0)
+        let old = now.addingTimeInterval(-WordListStore.tombstoneTTL - 86_400)
+        let fresh = now.addingTimeInterval(-86_400)
+        let a = def(["w"], ["w": WordMeta(a: fresh, r: old)])
+        let b = def([], ["w": WordMeta(r: old)])
+
+        // merge → compact
+        var mergeFirst = WordListStore(lists: [merged(a, b)])
+        mergeFirst.compactTombstones(now: now)
+
+        // compact → merge
+        var ca = a; ca.compactTombstones(now: now)
+        var cb = b; cb.compactTombstones(now: now)
+        let compactFirst = SyncMerge.wordLists(ca, cb).lists[0]
+
+        #expect(mergeFirst.lists[0].ids == compactFirst.ids)
+        #expect(compactFirst.ids == ["w"])
+    }
+
+    @Test("compaction sweeps entries that carry no information")
+    func compactionSweepsEmpty() {
+        var store = WordListStore(lists: [WordList(
+            id: WordList.defaultID, name: "★", ids: [], nameUpdatedAt: t(0), isDefault: true,
+            wordMeta: ["empty": WordMeta()])])
+        store.compactTombstones(now: t(0))
+        #expect(store.lists[0].wordMeta["empty"] == nil)
     }
 
     // MARK: Store mutations stamp what the merge reads

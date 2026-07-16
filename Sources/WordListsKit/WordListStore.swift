@@ -193,11 +193,13 @@ public struct WordListStore: Codable, Sendable, Equatable {
     public mutating func compactTombstones(now: Date = Date()) {
         let cutoff = now.addingTimeInterval(-Self.tombstoneTTL)
         lists.removeAll { $0.deleted && !$0.isDefault && ($0.deletedAt ?? .distantPast) < cutoff }
-        // Same TTL, same "post-merge only" rule, one level down: per-WORD meta
-        // (v1.10 §A). Without this the meta dictionary grows forever — it is paid
-        // for on every list sync, as one CloudKit STRING field.
+        // Per-WORD meta is NOT on a TTL — only empty entries are swept. The whole-list
+        // tombstone above can use one because every version back to v1.5 understands
+        // `deleted`, so "every peer has had the TTL to see it" is actually true there.
+        // No such luck one level down: v1.9 cannot parse wordMeta at all. See
+        // WordList.compactWordMeta.
         for i in lists.indices {
-            lists[i].compactWordMeta(now: now, ttl: Self.tombstoneTTL)
+            lists[i].compactWordMeta()
         }
     }
 

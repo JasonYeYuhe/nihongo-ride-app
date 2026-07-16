@@ -150,22 +150,37 @@ extension WordList {
         if !wordMeta.isEmpty { try c.encode(wordMeta, forKey: .wordMeta) }
     }
 
-    /// Drops meta entries that can no longer change any merge outcome (v1.10 §A).
-    /// Same TTL argument as the whole-list tombstone, and the same red line: run it
-    /// ONLY after a successful cloud merge, never on the load path.
+    /// Drops meta entries that carry no information at all. Deliberately NOT a
+    /// time-based GC — see below.
     ///
-    /// - A tombstone older than the TTL is dropped with its `a`: every peer has had
-    ///   the full TTL to receive it.
-    /// - An `a` with NO tombstone is dropped once it is older than the TTL: it is
-    ///   redundant while uncontested (presence in `ids` decides), and if no tombstone
-    ///   has arrived in a whole TTL, none older than this `a` can still be in flight.
-    mutating func compactWordMeta(now: Date, ttl: TimeInterval) {
-        let cutoff = now.addingTimeInterval(-ttl)
-        wordMeta = wordMeta.filter { _, m in
-            if let r = m.r { return r >= cutoff }
-            if let a = m.a { return a >= cutoff }
-            return false   // degenerate empty entry — carries no information
-        }
+    /// v1.10 first shipped a 30-day TTL here, mirroring the whole-list tombstone, and
+    /// it was wrong twice over. Both failures trace to one false premise, which the TTL
+    /// doc stated outright: *"every peer has had the full TTL to receive it."*
+    ///
+    /// 1. A v1.9 peer can NEVER receive it. It decodes no `wordMeta` and unions `ids`,
+    ///    so it keeps re-asserting a removed word forever. Dropping the tombstone at day
+    ///    30 handed the word straight back — and re-removing it only restarted the same
+    ///    30-day loop, so the user could never permanently remove it. That makes the
+    ///    v1.10 headline false in exactly the mixed fleet it was written for.
+    /// 2. Retention keyed off `r` alone (`if let r = m.r { return r >= cutoff }`) never
+    ///    looked at `a`, so `{a: yesterday, r: 40 days ago}` was dropped whole — a
+    ///    one-day-old, load-bearing re-add discarded. Any peer still holding the old
+    ///    tombstone then won the next merge and deleted the word, because `isPresent`
+    ///    reads `a == nil` as losing to every `r`. Compaction did not commute with
+    ///    merge: compact-then-merge gave `[]`, merge-then-compact gave `[w]`.
+    ///
+    /// The unifying point: a time-based GC assumes propagation is timely AND symmetric,
+    /// and neither holds — a peer can be offline past any TTL, or (v1.9) structurally
+    /// unable to learn the fact at all. Only the peer's own acknowledgement could make
+    /// dropping safe, and this merge has no version vectors to carry one.
+    ///
+    /// Not GC'ing costs little, because the meta is bounded by the VOCAB, not by time:
+    /// keys are vocab ids ever added to this list, so the ceiling is the whole deck
+    /// (7074 words ≈ 350KB of JSON, against CKRecord's ~1MB). A realistic list sits
+    /// under 500 entries (~25KB) — the per-list word cap. Repeated fill/clear cycles do
+    /// not accumulate: the same word reuses its own entry.
+    mutating func compactWordMeta() {
+        wordMeta = wordMeta.filter { $0.value.a != nil || $0.value.r != nil }
     }
 }
 
