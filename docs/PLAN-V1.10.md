@@ -117,3 +117,58 @@
 6. **发前**:对抗 re-review + 设备门全跑 + bump 1.10(mac≥14/iOS≥15)+ `check_prod_schema.sh`(字段级)+ submit_1_10.py(find_build 按平台解析)。
 
 What's New 双语:词单删除跨设备生效(文案受设备门 #1 结论约束)、同步稳定性、分享成绩卡;无 ★ 字形。
+
+---
+
+## §A 设计定案(2026-07-16,实现前的两处暗礁裁决)
+
+### 暗礁 2 — v1.9 peer 抹掉 wordMeta:**不存在,无需改码**
+
+担心的是 v1.9 peer 在 `recordCache` miss 时新建 CKRecord(`cache[name] ?? CKRecord(...)`,
+CloudKitSyncController.swift:283),`fill(_:from:)` 只写它认识的 5 个字段 → wordMeta 丢失。
+
+实际走不到:新建的 record 没有 change tag → 保存必然 `.serverRecordChanged` → 走 :348 的分支,
+**把服务器副本(含它不认识的 wordMeta)缓存下来**再 merge + 重发。v1.9 的 `fill` 不认识 wordMeta,
+就无法移除它(对比 `deletedAt` 的教训:`record["deletedAt"] = nil` 会**移除 key** —— 只有代码
+显式写 nil 才会掉字段,不认识的字段碰都碰不到)。
+
+⇒ 保留为**实测门**(混合舰队)而非代码任务。v1.9 peer 自己那份 W 撤不掉(它没有 tombstone 概念),
+但**不得在 v1.10 设备上复活 W** —— 这是要验的断言。
+
+### 暗礁 1 — foldLegacyDeck 复活已删词:**必须改**
+
+`foldLegacyDeck`(AppModel.swift:661)每次 fetch 都把 legacy deck 的 ids `addWord` 进默认单。
+它的文档现在写着「per-word un-save 不传播……**所以没有复活不对称**」—— Phase A 让 un-save 真的
+传播的那一刻,这句话变假,这个 union 就是复活通道。
+
+**且这不止是 v1.4 兼容问题,纯 v1.10 舰队也会中招**:A 删 W → deck 镜像重写(无 W);B 尚未 fetch,
+本地仍有 W,B 因别的改动重写 deck 镜像(**带 W**)→ A 同一批 fetch 里 `applyCloudChanges` 先合词单
+(W 被 tombstone 移除)、**紧接着 `foldLegacyDeck(deckIDs)` 又把 W 加回来**。
+
+⇒ 定案:**fold 时跳过被 tombstone 判定为 absent 的 id**。代价有界且只落在 v1.4 舰队上——
+一个 still-v1.4 peer 在 W 被删后重新 ★ 的 W 会被忽略(deck 是**无时间戳的裸 set**,分不清
+「t2 新加」和「t1 之前的陈旧残留」)。宁可丢掉 v1.4 的一次重加,也不能让删除被静默撤销。
+
+### LWW-element-set 语义(`wordMeta`)
+
+`wordMeta: [String: Meta]`,`Meta { a: Date?, r: Date? }`,JSON-in-STRING 单字段。
+
+- **Present(id)** = `r == nil` ? `id ∈ ids`(今天的 union 语义,未争用)
+                              : `(a ?? .distantPast) > r`
+- **Add(id)**:`ids.append` + `wordMeta[id].a = now`(**每次显式添加都写**)
+- **Remove(id)**:`ids.remove` + `wordMeta[id].r = now`
+- **Merge**:逐 id 取 `a = max(a₁,a₂)`、`r = max(r₁,r₂)`,再按 Present 过滤 union 后的 ids
+  (本地序优先)。max 天然满足 pure/commutative/idempotent/associative —— 这是**测试义务**。
+
+**⚠️ 推翻计划原文的「`a` 只在争用时写」(review HIGH#3)**:那会丢掉真实重加 ——
+A 在 t1 删 W;B 在 t2>t1 重加 W 但**尚未收到 tombstone**,故 B 本地无争用、不写 `a` →
+合并时 `r=t1`、`a=nil` → W 判 absent → **B 用户的重加被静默吃掉**。改为每次 add 都写 `a`,
+靠**压缩**控体积而非靠少写。
+
+**压缩**(仅 `applyCloudChanges` 路径,与整单 tombstone 同一条铁律):
+- 丢弃 `r` 早于 30d TTL 的条目(连同其 `a`)
+- 丢弃**无 `r` 且 `a` 早于 30d** 的条目(未争用时 `a` 冗余,`ids` 里的存在性已足够)。
+  安全性同 TTL 论证:`a` 已 30 天没等到任何 tombstone,就不可能还有更早的 tombstone 在飞。
+
+**向后解码**:老 `wordLists.json` 无 wordMeta → `[:]` → 全部 id 未争用 → **逐字等于今天的行为**。
+零数据丢失(红线)。
