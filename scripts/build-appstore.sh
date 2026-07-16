@@ -39,6 +39,22 @@ API_KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${API_KEY_ID}.p8"
 UPLOAD=false
 [[ "${1:-}" == "--upload" ]] && UPLOAD=true
 
+# --- Prod schema gate (only when this build can actually reach users) ---------
+# CloudKit Production rejects writes naming a record type or field it doesn't have,
+# and nothing surfaces it: the save fails, the app carries on. That gap shipped twice
+# (WordList type, v1.5–v1.8; WordList.deletedAt, v1.5–v1.9) because the check lived in
+# a plan doc as a step someone had to remember. It lives HERE now — on the path a build
+# takes to reach App Store Connect — so it cannot be forgotten, only deliberately
+# skipped with NR_SKIP_SCHEMA_CHECK=1 (network down, token expired; you own the risk).
+if $UPLOAD && [[ "${NR_SKIP_SCHEMA_CHECK:-0}" != "1" ]]; then
+    echo "==> [0/2] CloudKit Production schema gate"
+    if ! "$SCRIPT_DIR/check_prod_schema.sh"; then
+        echo "❌ Refusing to build for upload: Production can't store what this build writes."
+        echo "   Deploy the schema first, or NR_SKIP_SCHEMA_CHECK=1 to override."
+        exit 1
+    fi
+fi
+
 BUILD_DIR="$ROOT/build/appstore"
 ARCHIVE="$BUILD_DIR/NihongoRide.xcarchive"
 EXPORT="$BUILD_DIR/export"

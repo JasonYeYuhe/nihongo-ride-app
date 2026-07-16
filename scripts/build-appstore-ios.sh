@@ -32,6 +32,18 @@ API_KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${API_KEY_ID}.p8"
 UPLOAD=false
 [[ "${1:-}" == "--upload" ]] && UPLOAD=true
 
+# --- Prod schema gate (only when this build can actually reach users) ---------
+# See build-appstore.sh for why this gate lives on the build path and not in a doc.
+# Both platforms write the same records to the same container, so both are gated.
+if $UPLOAD && [[ "${NR_SKIP_SCHEMA_CHECK:-0}" != "1" ]]; then
+    echo "==> [0/2] CloudKit Production schema gate"
+    if ! "$SCRIPT_DIR/check_prod_schema.sh"; then
+        echo "❌ Refusing to build for upload: Production can't store what this build writes."
+        echo "   Deploy the schema first, or NR_SKIP_SCHEMA_CHECK=1 to override."
+        exit 1
+    fi
+fi
+
 BUILD_DIR="$ROOT/build/appstore-ios"
 ARCHIVE="$BUILD_DIR/NihongoRideiOS.xcarchive"
 EXPORT="$BUILD_DIR/export"
