@@ -70,10 +70,14 @@ extension SyncMerge {
         for id in b.ids where !have.contains(id) { union.append(id) }
         var ids = union.filter { WordList.isPresent($0, inIDs: true, meta: meta[$0]) }
         // A word whose merged meta says present (a > r) but that is in NEITHER side's
-        // ids has no path to get here today — but "unreachable" is how the merge stops
-        // being a pure function of the merged meta, and with it associativity. Sorted,
-        // because Dictionary iteration order is not stable and this must be
-        // device-independent.
+        // ids. This is NOT the defensive edge case it was first written as ("no path to
+        // get here today" — wrong): a MERGE RESULT is itself such a state. Merging
+        // {ids:[w], a:t1} with {r:t10} yields ids [] while keeping meta for w, and
+        // feeding that forward into a peer holding {a:t20} must re-materialise w, or the
+        // merge is not associative — (a·b)·c drops w while a·(b·c) keeps it, so three
+        // devices converge on the word being present or absent purely by which pair
+        // synced first. Sorted, because Dictionary iteration order is not stable and
+        // this must be device-independent.
         let listed = Set(ids)
         ids += meta.keys.sorted().filter {
             !listed.contains($0) && WordList.isPresent($0, inIDs: false, meta: meta[$0])

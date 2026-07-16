@@ -130,14 +130,22 @@ struct SyncMergeWordMetaTests {
 
     @Test("associative: how devices pair off cannot change the outcome")
     func associative() {
+        // `c` deliberately holds w ONLY in its meta, not its ids. An earlier version of
+        // this test gave c `ids: ["w"]`, which let every grouping reach w through some
+        // side's ids union — so the re-materialise block in mergeList (whose sole job is
+        // associativity) never ran, and deleting it left the whole suite green. That
+        // state is not contrived: it is exactly what a merge RESULT looks like, which is
+        // what the operand of the next merge is.
         let a = def(["w"], ["w": WordMeta(a: t(1))])
         let b = def([], ["w": WordMeta(r: t(10))])
-        let c = def(["w"], ["w": WordMeta(a: t(20))])
-        let ab_c = SyncMerge.wordLists(def(merged(a, b).ids, merged(a, b).wordMeta), c).lists[0]
-        let a_bc = SyncMerge.wordLists(a, def(merged(b, c).ids, merged(b, c).wordMeta)).lists[0]
+        let c = def([], ["w": WordMeta(a: t(20))])
+        let ab = merged(a, b), bc = merged(b, c)
+        let ab_c = SyncMerge.wordLists(def(ab.ids, ab.wordMeta), c).lists[0]
+        let a_bc = SyncMerge.wordLists(a, def(bc.ids, bc.wordMeta)).lists[0]
         #expect(Set(ab_c.ids) == Set(a_bc.ids))
         #expect(ab_c.wordMeta == a_bc.wordMeta)
         #expect(ab_c.ids == ["w"], "t20 re-add is the latest event, so w is present")
+        #expect(ab.ids.isEmpty, "the intermediate really is 'meta knows w, ids does not'")
     }
 
     // MARK: Compaction — regressions for the two bugs the TTL version shipped with
@@ -214,6 +222,33 @@ struct SyncMergeWordMetaTests {
     }
 
     // MARK: Store mutations stamp what the merge reads
+
+    @Test("legacy saved-words migration stamps no addedAt, so a peer's tombstone still wins")
+    func migrationDoesNotResurrect() throws {
+        // saved-words.json is a bare, timestamp-less set. If migration stamped `a = now`,
+        // recovering from a corrupt word-lists file (or a v1.4 device upgrading) would
+        // turn pre-removal residue into a fresh re-add that beats a live tombstone, and
+        // re-upload it — silently undoing the user's removal on every device.
+        let dir = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent("nr-migrate-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let saved = dir.appendingPathComponent("saved-words.json")
+        try Data(#"{"ids":["w","keep"]}"#.utf8).write(to: saved)
+
+        let (store, outcome) = WordListStore.loadOrMigrate(
+            wordListsURL: dir.appendingPathComponent("word-lists.json"),
+            legacySavedWordsURL: saved, defaultName: "★", now: t(50))
+        #expect(outcome == .migratedFromSavedWords)
+        let list = store.lists.first { $0.id == WordList.defaultID }!
+        #expect(list.ids == ["w", "keep"], "the migration must carry every legacy word over")
+        #expect(list.wordMeta.isEmpty, "and must claim no add-time it does not actually know")
+
+        // A peer removed "w" at t10 — before the t50 migration. The removal must hold.
+        let peer = def(["keep"], ["w": WordMeta(r: t(10))])
+        #expect(merged(def(list.ids, list.wordMeta), peer).ids == ["keep"])
+        #expect(merged(peer, def(list.ids, list.wordMeta)).ids == ["keep"])
+    }
 
     @Test("remove/clear stamp tombstones; a no-op remove stamps nothing")
     func mutationsStamp() {

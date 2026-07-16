@@ -107,12 +107,23 @@ extension WordListStore {
     }
 
     /// Builds a store whose default list holds the legacy saved-words ids (if any).
+    ///
+    /// These ids get NO `wordMeta` (v1.10 §A). `saved-words.json` is a bare,
+    /// timestamp-less set — the very structure `AppModel.foldLegacyDeck` was rewritten
+    /// to distrust, because a word in it cannot be told apart from pre-removal residue.
+    /// Routing it through `addWord(_:to:now:)` would stamp `a = now` and thereby turn
+    /// that residue into a brand-new re-add that beats any live tombstone
+    /// (`isPresent` is `(a ?? .distantPast) > r`). A device recovering from a corrupt
+    /// word-lists file, or a v1.4 device upgrading, would then silently undo a removal
+    /// the user made on another device — fleet-wide, since it re-uploads the word.
+    ///
+    /// Left unstamped, these ids are *uncontested*: present unless some peer holds a
+    /// tombstone, in which case the tombstone correctly wins. That is the same trade
+    /// foldLegacyDeck already takes — a v1.4 peer's re-star after a removal is ignored.
     private static func migrate(fromSaved url: URL, defaultName: String, now: Date) -> WordListStore {
         var store = WordListStore()
         store.ensureDefault(name: defaultName, now: now)
-        for id in legacySavedIDs(url) {
-            _ = store.addWord(id, to: WordList.defaultID, now: now)
-        }
+        store.seedDefaultIDs(legacySavedIDs(url))
         return store
     }
 

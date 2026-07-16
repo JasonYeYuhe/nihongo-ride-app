@@ -135,6 +135,19 @@ public struct WordListStore: Codable, Sendable, Equatable {
         return .success(())
     }
 
+    /// Seeds the default list's ids WITHOUT stamping any `wordMeta` — migration only.
+    ///
+    /// The ordinary `addWord` stamps `a = now`, which is right for a real user action and
+    /// wrong for legacy data: `saved-words.json` is a bare, timestamp-less set, so
+    /// claiming "added just now" for it converts pre-removal residue into a re-add that
+    /// beats a peer's live tombstone (v1.10 §A). Unstamped ids stay *uncontested* — kept
+    /// unless a peer holds a tombstone, in which case the tombstone rightly wins.
+    mutating func seedDefaultIDs(_ ids: [String]) {
+        guard let i = index(of: WordList.defaultID) else { return }
+        lists[i].ids = WordList.deduped(Array(ids.prefix(Self.maxWordsPerList)))
+        lists[i].wordMeta = [:]
+    }
+
     /// Adds a word to a list. No-op success if already present; fails if the list
     /// is at the per-list cap (the UI prompts instead of silently dropping).
     @discardableResult
