@@ -33,6 +33,10 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     /// arrives mid-sync sets `needsResync` and the running pass loops again.
     private var syncing = false
     private var needsResync = false
+    /// A non-transient per-record save failure seen during the CURRENT sync pass (set by
+    /// handleSent, consumed by syncNow). Setting the status inside the delegate would be
+    /// clobbered by the pass's closing `.synced`, so the pass reports it at the end instead.
+    private var passFailure: AppModel.SyncStatus?
 
     /// Last-seen server records, so a re-send reuses the server change tag and
     /// preserves fields unknown to this app version (forward compatibility).
@@ -69,8 +73,12 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         // on first run / re-enable queue all local records to upload.
         engine.state.add(pendingDatabaseChanges: [.saveZone(CKRecordZone(zoneID: zoneID))])
         if saved == nil || fullResync { enqueueAllLocal() }
-        backfillConjugationSRSIfNeeded(engine)
+        let didBackfill = backfillConjugationSRSIfNeeded(engine)
         await syncNow()
+        // Mark the one-time back-fill done only AFTER the pass, so a crash between the enqueue
+        // and the engine persisting its state re-runs it next launch instead of losing it
+        // (re-enqueuing the same record ids is idempotent).
+        if didBackfill { model?.markConjSRSBackfilled() }
     }
 
     func stop() {
@@ -117,11 +125,15 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         syncing = true
         repeat {
             needsResync = false
+            passFailure = nil
             model?.updateSyncStatus(.syncing)
             do {
                 try await engine.fetchChanges()
                 try await engine.sendChanges()
-                model?.updateSyncStatus(.synced)
+                // A per-record save failure surfaced by handleSent must NOT be clobbered by a
+                // blanket .synced — that would re-hide exactly the failures §A3 exists to show
+                // (the status is set here, at the end of the pass, not inside the delegate).
+                model?.updateSyncStatus(passFailure ?? .synced)
             } catch {
                 report(error)
             }
@@ -146,13 +158,15 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     /// newly-drilled cards would sync. Push the whole conjugation store once, gated by a
     /// persisted marker on the model so it never repeats. Enqueue-only (state.add) — the send
     /// happens through the caller's `syncNow()`; no engine is driven here.
-    private func backfillConjugationSRSIfNeeded(_ engine: CKSyncEngine) {
-        guard AppModel.conjSRSSyncAvailable, let model, !model.conjSRSBackfilled else { return }
+    /// Returns true when the back-fill was enqueued this launch — the CALLER marks it done
+    /// after the sync pass (see start()), not here, so a crash can't lose it.
+    private func backfillConjugationSRSIfNeeded(_ engine: CKSyncEngine) -> Bool {
+        guard AppModel.conjSRSSyncAvailable, let model, !model.conjSRSBackfilled else { return false }
         let changes = model.conjugationReviewStore.cards.keys.map {
             CKSyncEngine.PendingRecordZoneChange.saveRecord(recordID(RT.conjSRS, $0))
         }
         if !changes.isEmpty { engine.state.add(pendingRecordZoneChanges: changes) }
-        model.markConjSRSBackfilled()
+        return true
     }
 
     private func enqueueAllLocal() {
@@ -317,7 +331,9 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
                 // callback (red line: no engine fetch/send here). (v1.9 §A3.)
                 PersistLog.failure("cksync save \(failure.record.recordID.recordName)", error)
                 if !Self.isTransient(error) {
-                    model?.updateSyncStatus(Self.status(for: error))
+                    // Hand it to the pass — syncNow reports it at the end. Setting the status
+                    // here would be immediately overwritten by the pass's closing `.synced`.
+                    passFailure = Self.status(for: error)
                 }
             }
         }
