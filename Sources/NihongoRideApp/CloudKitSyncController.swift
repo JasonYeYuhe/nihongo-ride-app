@@ -37,6 +37,9 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     /// handleSent, consumed by syncNow). Setting the status inside the delegate would be
     /// clobbered by the pass's closing `.synced`, so the pass reports it at the end instead.
     private var passFailure: AppModel.SyncStatus?
+    /// Set by stop(): an in-flight pass checks it to stand down (no further rounds, no status
+    /// writes). Cleared by start() — a stale `true` would make a re-enabled sync a silent no-op.
+    private var stopped = false
 
     /// Last-seen server records, so a re-send reuses the server change tag and
     /// preserves fields unknown to this app version (forward compatibility).
@@ -63,6 +66,11 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     /// - Parameter fullResync: re-enqueue all local records (used when the user
     ///   just turned sync on, since edits made while it was off aren't tracked).
     func start(fullResync: Bool = false) async {
+        // Reset the stop signal and any stale failure from a previous life — a leftover
+        // `stopped == true` would make a re-enabled sync a silent no-op, and a stale
+        // passFailure would report the OLD session's error on this session's first pass.
+        stopped = false
+        passFailure = nil
         let saved = loadState()
         var config = CKSyncEngine.Configuration(
             database: database, stateSerialization: saved, delegate: self)
@@ -81,7 +89,12 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         if didBackfill { model?.markConjSRSBackfilled() }
     }
 
+    /// Turns sync off. A pass may be suspended inside `await engine.fetchChanges()` right now —
+    /// it holds its own strong binding, so nilling `engine` can't dealloc it mid-await. What
+    /// `stopped` adds is that the in-flight pass STANDS DOWN: it won't start another round and
+    /// won't report a status for a sync the user just switched off (v1.10 §B1).
     func stop() {
+        stopped = true
         engine = nil
         recordCache.removeAll()
     }
@@ -120,25 +133,38 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     /// the engine concurrently (CKSyncEngine forbids re-entrant/overlapping calls)
     /// and never lose a queued change. Must NOT be called from a delegate callback.
     func syncNow() async {
-        guard let engine else { return }
         if syncing { needsResync = true; return }
         syncing = true
+        // Every exit path must clear this — an early `return` that skipped it would wedge
+        // syncing==true forever and silently kill all future syncs (v1.10 §B1).
+        defer { syncing = false }
         repeat {
             needsResync = false
             passFailure = nil
+            // Re-read the engine at the TOP of each iteration and hold ONE local strong
+            // binding for the whole iteration: the binding keeps the engine alive across this
+            // iteration's awaits (stop() nils `self.engine`, and a suspended pass must not
+            // dealloc it mid-await), while re-reading each round means a stop→start hands the
+            // next round the NEW engine instead of driving the old one against the same
+            // cksync-state.json (two engines, one state file). (v1.10 §B1.)
+            guard !stopped, let engine = self.engine else { return }
             model?.updateSyncStatus(.syncing)
             do {
                 try await engine.fetchChanges()
                 try await engine.sendChanges()
+                // stop() landed while we were awaiting: the user turned sync OFF, so don't
+                // report a status for it — reporting `.synced` here is the "sync layer lies"
+                // bug this phase exists to kill.
+                guard !stopped else { return }
                 // A per-record save failure surfaced by handleSent must NOT be clobbered by a
                 // blanket .synced — that would re-hide exactly the failures §A3 exists to show
                 // (the status is set here, at the end of the pass, not inside the delegate).
                 model?.updateSyncStatus(passFailure ?? .synced)
             } catch {
+                guard !stopped else { return }
                 report(error)
             }
         } while needsResync
-        syncing = false
     }
 
     /// Kick a sync from a context where we must NOT await the engine directly —
@@ -174,7 +200,12 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         var changes: [CKSyncEngine.PendingRecordZoneChange] = []
         changes += model.reviewStore.cards.keys.map { .saveRecord(recordID(RT.srs, $0)) }
         changes += model.journal.records.map { .saveRecord(recordID(RT.ride, $0.id.uuidString)) }
-        changes += model.odometer.slots.keys.map { .saveRecord(recordID(RT.odo, $0)) }
+        // ONLY our own slot. OdometerLog's G-Counter contract is "a device only ever mutates
+        // its own slot, so the odometer never has a write conflict" — but enqueuing every
+        // slot we happen to know about broke exactly that: we'd re-upload each peer's slot,
+        // and any peer that had since moved on hands us a guaranteed serverRecordChanged
+        // conflict round-trip per full resync, for a value we can only ever echo back. (v1.10 §B3.)
+        changes.append(.saveRecord(recordID(RT.odo, model.deviceID)))
         // Every list (incl. tombstoned, so deletions propagate).
         changes += model.allWordListIDs.map { .saveRecord(recordID(RT.list, $0)) }
         // Legacy-deck mirror (= default list ids) so still-v1.4 peers stay in sync.
