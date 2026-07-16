@@ -357,8 +357,8 @@ struct MenuView: View {
     private var footer: some View {
         VStack(spacing: 4) {
             Text(model.languageCode == "zh"
-                 ? "N5 词库:\(model.totalWordsAvailable) 词 · 待复习:\(model.dueReviewCount)"
-                 : "N5 deck: \(model.totalWordsAvailable) words · Due for review: \(model.dueReviewCount)")
+                 ? "\(model.wordPoolLabel) 词库:\(model.wordsAvailableAtLevel) 词 · 待复习:\(model.dueReviewCount)"
+                 : "\(model.wordPoolLabel) deck: \(model.wordsAvailableAtLevel) words · Due for review: \(model.dueReviewCount)")
                 .font(.callout).foregroundStyle(Theme.dim)
             Text("Dictionary data: JMdict/Mozc · CC BY-SA / BSD")
                 .font(.caption2).foregroundStyle(Theme.dim.opacity(0.6))

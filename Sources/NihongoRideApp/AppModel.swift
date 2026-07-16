@@ -497,7 +497,24 @@ final class AppModel {
     /// Words currently waiting in the review deck (due now).
     var dueReviewCount: Int { reviewStore.dueCount() }
     var totalWordsSeen: Int { reviewStore.count }
-    var totalWordsAvailable: Int { VocabStore.shared.entries.count }
+    /// Words in the pool the next ride will actually draw new words from — i.e. the
+    /// SELECTED level, or all levels when the picker is on "mixed" (`nil`), matching
+    /// `GameSession.make`'s `vocab.ordered(level: config.level)`.
+    ///
+    /// This used to be `entries.count` under a hard-coded "N5 deck" label, which was
+    /// wrong twice over: `entries` is all five packs concatenated, so the N5 deck was
+    /// advertised at 7074 words when N5 has 646, and the number never moved when you
+    /// switched level.
+    var wordsAvailableAtLevel: Int {
+        guard let level = selectedLevel else { return VocabStore.shared.entries.count }
+        return VocabStore.shared.entries(level: level).count
+    }
+
+    /// Label for the pool above — the selected level, or "mixed", worded to match the
+    /// level picker's own options so the footer can't disagree with the control.
+    var wordPoolLabel: String {
+        selectedLevel?.label ?? (languageCode == "zh" ? "混合" : "All")
+    }
 
     // Lifetime totals prefer the cross-device odometer (G-Counter) but never show
     // less than the local journal's own accumulation (equal on a single device).
