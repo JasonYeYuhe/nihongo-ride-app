@@ -60,3 +60,74 @@ struct DueForecastTests {
         #expect(ReviewStore().dueForecast(asOf: noon, calendar: tokyo) == DueForecast())
     }
 }
+
+@Suite("Due-by-day histogram (widget)")
+struct DueByDayTests {
+
+    private func store(dueOffsets hours: [Double]) -> ReviewStore {
+        var cards: [String: SRSCard] = [:]
+        for (index, offset) in hours.enumerated() {
+            var card = SRSCard(id: "w\(index)", createdAt: noon.addingTimeInterval(-86_400))
+            card.dueDate = noon.addingTimeInterval(offset * 3600)
+            cards[card.id] = card
+        }
+        return ReviewStore(cards: cards)
+    }
+
+    @Test("overdue and same-day both land in bucket 0")
+    func overdueFoldsIntoToday() {
+        // -48h and -1h overdue, +6h same evening → all bucket 0; +30h → bucket 1
+        let h = store(dueOffsets: [-48, -1, 6, 30]).dueByDay(asOf: noon, horizon: 7, calendar: tokyo)
+        #expect(h[0] == 3)
+        #expect(h[1] == 1)
+        #expect(h[2...].allSatisfy { $0 == 0 })
+    }
+
+    @Test("each calendar day gets its own bucket")
+    func perDayBuckets() {
+        // noon + 0h, +24h, +48h, +72h → buckets 0,1,2,3 (JST, no DST so hours map cleanly)
+        let h = store(dueOffsets: [0, 24, 48, 72]).dueByDay(asOf: noon, horizon: 7, calendar: tokyo)
+        #expect(Array(h[0...3]) == [1, 1, 1, 1])
+        #expect(h[4...].allSatisfy { $0 == 0 })
+    }
+
+    @Test("cards at or beyond the horizon are omitted, not clamped into the last bucket")
+    func horizonTruncates() {
+        // horizon 3 (buckets 0,1,2); a card +72h (day 3) must NOT appear
+        let h = store(dueOffsets: [0, 72]).dueByDay(asOf: noon, horizon: 3, calendar: tokyo)
+        #expect(h == [1, 0, 0])
+    }
+
+    @Test("horizon 1 collapses everything in-range to a single bucket")
+    func horizonOne() {
+        let h = store(dueOffsets: [-24, 6]).dueByDay(asOf: noon, horizon: 1, calendar: tokyo)
+        #expect(h == [2])
+    }
+
+    @Test("crossing a DST spring-forward still counts whole calendar days")
+    func dstSafe() {
+        // US Pacific springs forward 2026-03-08 02:00. A day that is only 23 hours long
+        // must still be one bucket, which a fixed +86400 would get wrong.
+        var la = Calendar(identifier: .gregorian)
+        la.timeZone = TimeZone(identifier: "America/Los_Angeles")!
+        var c = DateComponents(); c.year = 2026; c.month = 3; c.day = 7; c.hour = 12
+        let mar7noon = la.date(from: c)!
+        var store = ReviewStore()
+        var cards: [String: SRSCard] = [:]
+        // due Mar 7 (day 0), Mar 8 (day 1, the 23h day), Mar 9 (day 2)
+        for (i, day) in [7, 8, 9].enumerated() {
+            var cc = DateComponents(); cc.year = 2026; cc.month = 3; cc.day = day; cc.hour = 15
+            var card = SRSCard(id: "d\(i)", createdAt: mar7noon.addingTimeInterval(-86_400))
+            card.dueDate = la.date(from: cc)!
+            cards[card.id] = card
+        }
+        store = ReviewStore(cards: cards)
+        let h = store.dueByDay(asOf: mar7noon, horizon: 4, calendar: la)
+        #expect(Array(h[0...2]) == [1, 1, 1], "the 23-hour DST day is still exactly one bucket")
+    }
+
+    @Test("empty store is all zeros")
+    func empty() {
+        #expect(ReviewStore().dueByDay(asOf: noon, horizon: 5, calendar: tokyo) == [0, 0, 0, 0, 0])
+    }
+}

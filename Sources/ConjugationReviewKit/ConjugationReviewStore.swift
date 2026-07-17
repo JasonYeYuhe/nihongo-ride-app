@@ -87,6 +87,24 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
         return store
     }
 
+    /// Absolute-calendar-day due histogram for the home-screen widget (v1.11). Parallel to
+    /// `ReviewStore.dueByDay` but hand-copied here to keep this module zero-dependency
+    /// (Option A parallel types). `result[0]` absorbs everything overdue; cards `horizon`+
+    /// days out are omitted. See `ReviewStore.dueByDay` for the full rationale (why a
+    /// histogram, not a relative forecast). DST-safe via `dateComponents([.day])`.
+    public func dueByDay(asOf date: Date = Date(), horizon: Int, calendar: Calendar = .current) -> [Int] {
+        precondition(horizon > 0, "horizon must be positive")
+        let start = calendar.startOfDay(for: date)
+        var hist = [Int](repeating: 0, count: horizon)
+        for card in cards.values {
+            let cardDay = calendar.startOfDay(for: card.dueDate)
+            guard let off = calendar.dateComponents([.day], from: start, to: cardDay).day else { continue }
+            let bucket = max(0, off)
+            if bucket < horizon { hist[bucket] += 1 }
+        }
+        return hist
+    }
+
     /// Near-term due buckets for the Stats screen's conjugation section (v1.9 §B). Parallel to
     /// `ReviewKit.DueForecast` but defined here to keep ConjugationReviewKit zero-dependency.
     /// Disjoint: `today` includes anything overdue, `tomorrow` = next day, `thisWeek` = the 5 days

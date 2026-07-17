@@ -22,6 +22,7 @@ let package = Package(
         .library(name: "ConjugationKit", targets: ["ConjugationKit"]),
         .library(name: "ConjugationReviewKit", targets: ["ConjugationReviewKit"]),
         .library(name: "SpeechKit", targets: ["SpeechKit"]),
+        .library(name: "WidgetSharedKit", targets: ["WidgetSharedKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -106,6 +107,14 @@ let package = Package(
         .target(name: "SpeechKit"),
         .testTarget(name: "SpeechKitTests", dependencies: ["SpeechKit"]),
 
+        // MARK: Widget shared data — the ONE derived snapshot the app writes to the
+        // App Group container and the widget extensions read (v1.11). Zero-dependency
+        // leaf on purpose: it is a pure DTO + reader/writer + accumulation math, so
+        // the widget extensions never link the SRS stores. The app builds the snapshot
+        // from those stores' dueByDay(...) and hands this module the finished arrays.
+        .target(name: "WidgetSharedKit"),
+        .testTarget(name: "WidgetSharedKitTests", dependencies: ["WidgetSharedKit"]),
+
         // MARK: Derived verb-class data path — conservation invariants + end-to-end
         // golden over the real vc-stamped vocab JSON (v1.6 B1, PLAN-V1.6 §3 layer-ii).
         // Imports VocabKit (the data) + ConjugationKit (the engine); vc is mapped via
@@ -115,7 +124,7 @@ let package = Package(
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit"],
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit", "WidgetSharedKit"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]
