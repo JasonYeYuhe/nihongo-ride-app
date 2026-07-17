@@ -48,6 +48,18 @@ struct WidgetSnapshotTests {
         #expect(s.conjugationDue(onDayOffset: 5) == 10)
     }
 
+    @Test("asOf maps a wall-clock day to the histogram offset from generatedAt")
+    func asOfMapsToOffset() {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone(identifier: "Asia/Tokyo")!
+        let s = snap([2, 1, 0, 5], gen: t0)   // generatedAt = t0
+        #expect(s.vocabDue(asOf: t0, calendar: cal) == 2)                       // day 0 → bucket 0
+        #expect(s.vocabDue(asOf: t0.addingTimeInterval(86_400), calendar: cal) == 3)   // day 1 → 0..1
+        #expect(s.vocabDue(asOf: t0.addingTimeInterval(3 * 86_400), calendar: cal) == 8) // day 3 → all
+        #expect(s.vocabDue(asOf: t0.addingTimeInterval(99 * 86_400), calendar: cal) == 8) // past horizon → total
+        #expect(s.vocabDue(asOf: t0.addingTimeInterval(-86_400), calendar: cal) == 2)   // before → bucket 0
+    }
+
     // MARK: Staleness
 
     @Test("fresh within the horizon, stale once the day count exceeds it")

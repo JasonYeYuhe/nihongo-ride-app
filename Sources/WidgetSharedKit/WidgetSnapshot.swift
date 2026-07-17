@@ -68,6 +68,23 @@ extension WidgetSnapshot {
         Self.accumulate(conjugationDueByDay, throughDayOffset: dayOffset)
     }
 
+    /// The due counts to show at a wall-clock `date` — the timeline provider's entry
+    /// dates are calendar days, and this maps one to the histogram offset from
+    /// `generatedAt`. Keeps the provider thin and the date math under test.
+    public func vocabDue(asOf date: Date, calendar: Calendar = .current) -> Int {
+        vocabDue(onDayOffset: dayOffset(to: date, calendar: calendar))
+    }
+
+    public func conjugationDue(asOf date: Date, calendar: Calendar = .current) -> Int {
+        conjugationDue(onDayOffset: dayOffset(to: date, calendar: calendar))
+    }
+
+    func dayOffset(to date: Date, calendar: Calendar) -> Int {
+        let start = calendar.startOfDay(for: generatedAt)
+        let target = calendar.startOfDay(for: date)
+        return calendar.dateComponents([.day], from: start, to: target).day ?? 0
+    }
+
     static func accumulate(_ histogram: [Int], throughDayOffset dayOffset: Int) -> Int {
         guard !histogram.isEmpty else { return 0 }
         let last = min(max(dayOffset, 0), histogram.count - 1)

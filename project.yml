@@ -110,6 +110,9 @@ targets:
         product: ConjugationReviewKit
       - package: Nihongo
         product: SpeechKit
+      # v1.11: embed the widget extension into the app (xcodegen auto-embeds
+      # app-extension target deps into the host).
+      - target: NihongoRideWidget
 
     settings:
       base:
@@ -209,6 +212,8 @@ targets:
         product: ConjugationReviewKit
       - package: Nihongo
         product: SpeechKit
+      # v1.11: embed the iOS widget extension.
+      - target: NihongoRideWidgetiOS
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride
@@ -223,6 +228,82 @@ targets:
         SWIFT_STRICT_CONCURRENCY: complete
         CODE_SIGN_STYLE: Automatic
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  # v1.11 widget extensions. Two targets (WidgetKit extensions are per-platform),
+  # ONE shared source dir (Sources/NihongoRideWidget). Each embeds into its host app
+  # and reads the app's derived snapshot from the App Group — read-only, no store deps.
+  #
+  # 🔴 Version MUST match the host app (App Store rejects a mismatched extension
+  # version): macOS widget == macOS app (1.10/14), iOS widget == iOS app (1.10/15).
+  # Phase S bumps all FOUR in lockstep.
+  NihongoRideWidget:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: Sources/NihongoRideWidget
+    info:
+      path: xcode/WidgetInfo.plist
+      properties:
+        CFBundleDisplayName: Nihongo Ride
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: xcode/NihongoRideWidget.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.application-groups:
+          - KHMK6Q3L3K.group.com.jasonye.nihongoride
+    dependencies:
+      - package: Nihongo
+        product: WidgetSharedKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride.widget
+        PRODUCT_NAME: NihongoRideWidget
+        MARKETING_VERSION: "1.10"
+        CURRENT_PROJECT_VERSION: "14"
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        CODE_SIGN_STYLE: Automatic
+        ENABLE_HARDENED_RUNTIME: YES
+        SKIP_INSTALL: YES
+
+  NihongoRideWidgetiOS:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Sources/NihongoRideWidget
+    info:
+      path: xcode/WidgetInfo-iOS.plist
+      properties:
+        CFBundleDisplayName: Nihongo Ride
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: xcode/NihongoRideWidget-iOS.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.jasonye.nihongoride
+    dependencies:
+      - package: Nihongo
+        product: WidgetSharedKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride.widget
+        PRODUCT_NAME: NihongoRideWidget
+        MARKETING_VERSION: "1.10"
+        CURRENT_PROJECT_VERSION: "15"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        CODE_SIGN_STYLE: Automatic
+        SKIP_INSTALL: YES
 
   # XCUITest bundle reproducing the App Review touch-only flow on the iPad
   # simulator (keyboard appears, typing works, pause/exit by touch).
