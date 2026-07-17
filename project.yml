@@ -110,6 +110,8 @@ targets:
         product: ConjugationReviewKit
       - package: Nihongo
         product: SpeechKit
+      - package: Nihongo
+        product: WidgetSharedKit
       # v1.11: embed the widget extension into the app (xcodegen auto-embeds
       # app-extension target deps into the host).
       - target: NihongoRideWidget
@@ -212,6 +214,8 @@ targets:
         product: ConjugationReviewKit
       - package: Nihongo
         product: SpeechKit
+      - package: Nihongo
+        product: WidgetSharedKit
       # v1.11: embed the iOS widget extension.
       - target: NihongoRideWidgetiOS
     settings:

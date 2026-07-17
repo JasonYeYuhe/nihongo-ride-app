@@ -9,6 +9,8 @@ import VocabKit
 import WordListsKit
 import ConjugationReviewKit
 import SpeechKit
+import WidgetSharedKit
+import WidgetKit
 
 /// A snapshot of a finished run, shown on the results screen.
 struct GameSummary: Equatable {
@@ -274,6 +276,7 @@ final class AppModel {
         if !Screenshotter.isCapturing { settings.save(to: .standard) }
         // Refresh the reminder schedule for the days ahead (no-op when off).
         refreshReminders()
+        refreshWidgetSnapshot()   // v1.11: publish the current due counts to the widget
         startSyncIfEnabled()
         gameCenter.authenticate()
     }
@@ -303,6 +306,39 @@ final class AppModel {
             if enabled && !scheduled {
                 self?.dueReminderEnabled = false   // denied / unavailable
             }
+        }
+    }
+
+    /// Rewrites the home-screen widget's derived snapshot (v1.11) from the current
+    /// review stores + streak, and asks WidgetKit to reload. Called after anything
+    /// that moves the due count: launch, finishing a run or a conjugation drill,
+    /// recording a drill outcome, and a cloud merge.
+    ///
+    /// 🔴 Skipped while capturing. `WidgetSnapshotStore.write` targets the shared App
+    /// Group container, which is OUTSIDE `supportFileURL`'s capture redirect — so a
+    /// headless render, which mints demo stores and plays fake runs, would otherwise
+    /// stamp demo numbers onto the real widget on the user's home screen.
+    ///
+    /// The write is tiny (a few fields + two 14-int arrays) and atomic, so it runs
+    /// inline like `settings.save`. A failure is logged, never alerted: the widget is
+    /// a convenience, and `containerUnavailable` is simply the normal state under
+    /// `swift run` (no entitlement), not an error worth surfacing.
+    func refreshWidgetSnapshot(now: Date = Date()) {
+        guard !Screenshotter.isCapturing else { return }
+        let h = WidgetSnapshot.horizon
+        let snapshot = WidgetSnapshot(
+            generatedAt: now,
+            vocabDueByDay: reviewStore.dueByDay(asOf: now, horizon: h),
+            conjugationDueByDay: conjugationReviewStore.dueByDay(asOf: now, horizon: h),
+            streakDays: journal.streakDays(asOf: now),
+            lifetimeWords: lifetimeWords)
+        switch WidgetSnapshotStore.write(snapshot) {
+        case .success:
+            WidgetCenter.shared.reloadAllTimelines()
+        case .failure(.containerUnavailable):
+            break   // no App Group in this context (e.g. swift run) — nothing to do
+        case .failure(let error):
+            PersistLog.failure("widget snapshot write", error)
         }
     }
 
@@ -353,6 +389,7 @@ final class AppModel {
     /// App returned to the foreground: refresh reminders and pull/push sync.
     func appBecameActive() {
         refreshReminders()
+        refreshWidgetSnapshot()   // foregrounding may have crossed midnight → re-anchor the histogram
         if let syncController { Task { await syncController.syncNow() } }
     }
 
@@ -421,6 +458,8 @@ final class AppModel {
                 try conjugationReviewStore.save(to: conjugationReviewURL)
             }
         }
+        // A cloud merge that touched either review store moved the due count → widget.
+        if !cards.isEmpty || !conjugationCards.isEmpty { refreshWidgetSnapshot() }
     }
 
     /// Mirrors the live settings into the persisted blob and writes it. Cheap
@@ -886,6 +925,7 @@ final class AppModel {
         lastConjugationSummary = ConjugationSummary(from: conjugationSession)
         resultsAreConjugation = true
         self.conjugationSession = nil
+        refreshWidgetSnapshot()   // conjugation due count moved
         screen = .results
     }
 
@@ -929,6 +969,7 @@ final class AppModel {
                                  totalRuns: lifetimeRuns)
         }
         self.session = nil
+        refreshWidgetSnapshot()   // the due count just moved
         screen = completion.showsResults ? .results : .menu
     }
 
