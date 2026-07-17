@@ -79,6 +79,11 @@ targets:
           - iCloud.com.jasonye.nihongoride
         com.apple.developer.icloud-services:
           - CloudKit
+        # v1.11: App Group so the widget extension can read the app's derived snapshot.
+        # macOS REQUIRES the team-id prefix on the group id; iOS must NOT have it. Must
+        # match WidgetSharedKit.AppGroup.identifier's platform-conditional value.
+        com.apple.security.application-groups:
+          - KHMK6Q3L3K.group.com.jasonye.nihongoride
 
     dependencies:
       - package: Nihongo
@@ -147,6 +152,9 @@ targets:
           - iCloud.com.jasonye.nihongoride
         com.apple.developer.icloud-services:
           - CloudKit
+        # v1.11: App Group (iOS — NO team-id prefix, unlike macOS above).
+        com.apple.security.application-groups:
+          - group.com.jasonye.nihongoride
     info:
       path: xcode/Info-iOS.plist
       properties:
