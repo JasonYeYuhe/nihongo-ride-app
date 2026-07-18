@@ -87,7 +87,14 @@ final class AppModel {
     // memory and reset to defaults on every launch). `didSet` doesn't fire during
     // init, so applying loaded values below is free; `settingsLoaded` guards any
     // re-entrancy and skips writes until the initial load is in place.
-    var languageCode: String = "en" { didSet { persistSettings() } }      // "en" or "zh"
+    var languageCode: String = "en" {                                     // "en" or "zh"
+        didSet {
+            persistSettings()
+            // The widget shows localized labels; without this it lags the app's language
+            // until the next run/foreground (review LOW#2).
+            if oldValue != languageCode { refreshWidgetSnapshot() }
+        }
+    }
     var showRomajiHint: Bool = true { didSet { persistSettings() } }
     var soundEnabled: Bool = true { didSet { persistSettings() } }
     var selectedMode: GameMode = .journey { didSet { persistSettings() } }
@@ -326,11 +333,19 @@ final class AppModel {
     func refreshWidgetSnapshot(now: Date = Date()) {
         guard !Screenshotter.isCapturing else { return }
         let h = WidgetSnapshot.horizon
+        let cal = Calendar.current
+        let startToday = cal.startOfDay(for: now)
+        // Per-day streak so the widget's streak DECAYS as the days pass without a ride,
+        // instead of freezing the write-time value (a lost streak lingering ~2 weeks).
+        let streakByDay: [Int] = (0..<h).map { offset in
+            let day = cal.date(byAdding: .day, value: offset, to: startToday) ?? now
+            return journal.streakDays(asOf: day, calendar: cal)
+        }
         let snapshot = WidgetSnapshot(
             generatedAt: now,
             vocabDueByDay: reviewStore.dueByDay(asOf: now, horizon: h),
             conjugationDueByDay: conjugationReviewStore.dueByDay(asOf: now, horizon: h),
-            streakDays: journal.streakDays(asOf: now),
+            streakByDay: streakByDay,
             lifetimeWords: lifetimeWords,
             languageCode: languageCode)
         switch WidgetSnapshotStore.write(snapshot) {

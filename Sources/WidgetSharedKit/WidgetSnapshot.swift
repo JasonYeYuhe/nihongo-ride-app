@@ -23,7 +23,13 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
     public var vocabDueByDay: [Int]
     /// Same, for the separate conjugation review store.
     public var conjugationDueByDay: [Int]
-    public var streakDays: Int
+    /// Per-day streak, a POINT value per horizon day (NOT accumulated): `streakByDay[i]`
+    /// is `journal.streakDays(asOf:)` on the i-th day. It must decay day-by-day like the
+    /// due counts do — a frozen scalar would keep showing a streak the user has already
+    /// lost until the snapshot went stale (~2 weeks). Since the app rewrites the snapshot
+    /// the moment the user practices, a decaying streak is exactly "your streak if you
+    /// don't ride again", which is the honest thing to show.
+    public var streakByDay: [Int]
     public var lifetimeWords: Int
     /// The app's UI language at write time ("en" / "zh") so the widget matches the app
     /// instead of the system locale — the user picks the language in-app, and the whole
@@ -35,7 +41,7 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
         generatedAt: Date,
         vocabDueByDay: [Int],
         conjugationDueByDay: [Int],
-        streakDays: Int,
+        streakByDay: [Int],
         lifetimeWords: Int,
         languageCode: String = "en"
     ) {
@@ -43,14 +49,14 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
         self.generatedAt = generatedAt
         self.vocabDueByDay = vocabDueByDay
         self.conjugationDueByDay = conjugationDueByDay
-        self.streakDays = streakDays
+        self.streakByDay = streakByDay
         self.lifetimeWords = lifetimeWords
         self.languageCode = languageCode
     }
 
     private enum CodingKeys: String, CodingKey {
         case schemaVersion, generatedAt, vocabDueByDay, conjugationDueByDay
-        case streakDays, lifetimeWords, languageCode
+        case streakByDay, lifetimeWords, languageCode
     }
 
     /// Tolerant decode (matching WordList/RideJournal): a field the writer omitted falls
@@ -63,7 +69,7 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
         generatedAt = (try? c.decode(Date.self, forKey: .generatedAt)) ?? Date(timeIntervalSince1970: 0)
         vocabDueByDay = (try? c.decode([Int].self, forKey: .vocabDueByDay)) ?? []
         conjugationDueByDay = (try? c.decode([Int].self, forKey: .conjugationDueByDay)) ?? []
-        streakDays = (try? c.decode(Int.self, forKey: .streakDays)) ?? 0
+        streakByDay = (try? c.decode([Int].self, forKey: .streakByDay)) ?? []
         lifetimeWords = (try? c.decode(Int.self, forKey: .lifetimeWords)) ?? 0
         languageCode = (try? c.decode(String.self, forKey: .languageCode)) ?? "en"
     }
@@ -103,6 +109,15 @@ extension WidgetSnapshot {
 
     public func conjugationDue(asOf date: Date, calendar: Calendar = .current) -> Int {
         conjugationDue(onDayOffset: dayOffset(to: date, calendar: calendar))
+    }
+
+    /// The streak to show on `date` — a POINT lookup into `streakByDay` (each entry is
+    /// already that day's streak), NOT an accumulation. Out-of-range clamps to the ends;
+    /// an empty array (no data) is 0.
+    public func streak(asOf date: Date, calendar: Calendar = .current) -> Int {
+        guard !streakByDay.isEmpty else { return 0 }
+        let i = min(max(dayOffset(to: date, calendar: calendar), 0), streakByDay.count - 1)
+        return streakByDay[i]
     }
 
     func dayOffset(to date: Date, calendar: Calendar) -> Int {

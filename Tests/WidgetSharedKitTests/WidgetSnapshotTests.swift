@@ -7,9 +7,9 @@ private let t0 = Date(timeIntervalSince1970: 1_700_000_000)
 @Suite("WidgetSnapshot — accumulation, staleness, round-trip")
 struct WidgetSnapshotTests {
 
-    private func snap(_ vocab: [Int], conj: [Int] = [], gen: Date = t0) -> WidgetSnapshot {
+    private func snap(_ vocab: [Int], conj: [Int] = [], streak: [Int] = [], gen: Date = t0) -> WidgetSnapshot {
         WidgetSnapshot(generatedAt: gen, vocabDueByDay: vocab, conjugationDueByDay: conj,
-                       streakDays: 3, lifetimeWords: 100)
+                       streakByDay: streak, lifetimeWords: 100)
     }
 
     // MARK: Accumulation — the one subtle rule
@@ -48,6 +48,24 @@ struct WidgetSnapshotTests {
         #expect(s.conjugationDue(onDayOffset: 5) == 10)
     }
 
+    @Test("streak is a per-day POINT lookup and decays across days, unlike due counts")
+    func streakDecaysPerDay() {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone(identifier: "Asia/Tokyo")!
+        // Monday 5-day streak, still alive (grace) on Tue, broken Wed onward — exactly
+        // the review's phantom-streak scenario. Must NOT accumulate.
+        let s = snap([0], streak: [5, 5, 0, 0], gen: t0)
+        #expect(s.streak(asOf: t0, calendar: cal) == 5)
+        #expect(s.streak(asOf: t0.addingTimeInterval(86_400), calendar: cal) == 5)     // Tue: grace
+        #expect(s.streak(asOf: t0.addingTimeInterval(2 * 86_400), calendar: cal) == 0) // Wed: lost
+        #expect(s.streak(asOf: t0.addingTimeInterval(3 * 86_400), calendar: cal) == 0)
+        // clamps: before generation → day 0; past the array → last day
+        #expect(s.streak(asOf: t0.addingTimeInterval(-86_400), calendar: cal) == 5)
+        #expect(s.streak(asOf: t0.addingTimeInterval(99 * 86_400), calendar: cal) == 0)
+        // empty (no data) is 0, not a crash
+        #expect(snap([1]).streak(asOf: t0, calendar: cal) == 0)
+    }
+
     @Test("asOf maps a wall-clock day to the histogram offset from generatedAt")
     func asOfMapsToOffset() {
         var cal = Calendar(identifier: .gregorian)
@@ -77,7 +95,7 @@ struct WidgetSnapshotTests {
     @Test("languageCode round-trips; a snapshot that omits it decodes to en, not a failure")
     func languageCodeDecode() throws {
         let zh = WidgetSnapshot(generatedAt: t0, vocabDueByDay: [1], conjugationDueByDay: [],
-                                streakDays: 0, lifetimeWords: 0, languageCode: "zh")
+                                streakByDay: [], lifetimeWords: 0, languageCode: "zh")
         let back = try JSONDecoder().decode(WidgetSnapshot.self, from: JSONEncoder().encode(zh))
         #expect(back.languageCode == "zh")
 
