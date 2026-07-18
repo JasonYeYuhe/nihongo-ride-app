@@ -1,4 +1,5 @@
 import SwiftUI
+import WidgetSharedKit
 #if os(macOS)
 import AppKit
 #elseif os(iOS)
@@ -80,6 +81,24 @@ enum Screenshotter {
             render(ShareCardView(summary: summary, zh: shotLang == "zh"),
                    size: CGSize(width: 540, height: 400), to: directory + "/share-card.png")
         }
+
+        // Widget previews (v1.11). Like the share card, this is the ONLY headless check
+        // that the widget's snapshot→view chain renders — the view lives in the widget
+        // extension (its @main can't run here), so its render-ready twin ReviewWidgetContent
+        // is shared in WidgetSharedKit precisely so it can be drawn here. Backgrounds are
+        // supplied by the wrapper (the content carries none, matching the widget's
+        // containerBackground). Two data states so an empty/degenerate layout shows up.
+        let widgetSample = ReviewWidgetData(hasData: true, stale: false,
+                                            vocabDue: 12, conjugationDue: 3, streakDays: 5)
+        render(ReviewWidgetContent(data: widgetSample, size: .small).padding(12)
+                    .background(WidgetPalette.bg),
+               size: CGSize(width: 170, height: 170), to: directory + "/widget-small.png")
+        render(ReviewWidgetContent(data: widgetSample, size: .medium).padding(14)
+                    .background(WidgetPalette.bg),
+               size: CGSize(width: 360, height: 170), to: directory + "/widget-medium.png")
+        render(ReviewWidgetContent(data: .empty, size: .small).padding(12)
+                    .background(WidgetPalette.bg),
+               size: CGSize(width: 170, height: 170), to: directory + "/widget-empty.png")
 
         // Practice (passage) mode — washi paper, full multi-sentence paragraph
         let practice = makeModel()
