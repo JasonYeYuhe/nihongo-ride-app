@@ -74,6 +74,20 @@ struct WidgetSnapshotTests {
 
     // MARK: Round-trip through the store
 
+    @Test("languageCode round-trips; a snapshot that omits it decodes to en, not a failure")
+    func languageCodeDecode() throws {
+        let zh = WidgetSnapshot(generatedAt: t0, vocabDueByDay: [1], conjugationDueByDay: [],
+                                streakDays: 0, lifetimeWords: 0, languageCode: "zh")
+        let back = try JSONDecoder().decode(WidgetSnapshot.self, from: JSONEncoder().encode(zh))
+        #expect(back.languageCode == "zh")
+
+        // A pre-languageCode JSON (older writer) must decode with a default, never throw.
+        let legacy = #"{"schemaVersion":1,"generatedAt":0,"vocabDueByDay":[2],"conjugationDueByDay":[],"streakDays":1,"lifetimeWords":9}"#
+        let decoded = try JSONDecoder().decode(WidgetSnapshot.self, from: Data(legacy.utf8))
+        #expect(decoded.languageCode == "en")
+        #expect(decoded.vocabDueByDay == [2])
+    }
+
     @Test("write then read round-trips exactly through a container dir")
     func roundTrip() throws {
         let dir = URL(fileURLWithPath: NSTemporaryDirectory())

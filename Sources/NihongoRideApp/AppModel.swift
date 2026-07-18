@@ -331,7 +331,8 @@ final class AppModel {
             vocabDueByDay: reviewStore.dueByDay(asOf: now, horizon: h),
             conjugationDueByDay: conjugationReviewStore.dueByDay(asOf: now, horizon: h),
             streakDays: journal.streakDays(asOf: now),
-            lifetimeWords: lifetimeWords)
+            lifetimeWords: lifetimeWords,
+            languageCode: languageCode)
         switch WidgetSnapshotStore.write(snapshot) {
         case .success:
             WidgetCenter.shared.reloadAllTimelines()

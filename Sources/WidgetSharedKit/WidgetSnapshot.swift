@@ -25,6 +25,10 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
     public var conjugationDueByDay: [Int]
     public var streakDays: Int
     public var lifetimeWords: Int
+    /// The app's UI language at write time ("en" / "zh") so the widget matches the app
+    /// instead of the system locale — the user picks the language in-app, and the whole
+    /// app + share card are bilingual, so the widget must be too.
+    public var languageCode: String
 
     public init(
         schemaVersion: Int = WidgetSnapshot.currentSchema,
@@ -32,7 +36,8 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
         vocabDueByDay: [Int],
         conjugationDueByDay: [Int],
         streakDays: Int,
-        lifetimeWords: Int
+        lifetimeWords: Int,
+        languageCode: String = "en"
     ) {
         self.schemaVersion = schemaVersion
         self.generatedAt = generatedAt
@@ -40,6 +45,27 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
         self.conjugationDueByDay = conjugationDueByDay
         self.streakDays = streakDays
         self.lifetimeWords = lifetimeWords
+        self.languageCode = languageCode
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case schemaVersion, generatedAt, vocabDueByDay, conjugationDueByDay
+        case streakDays, lifetimeWords, languageCode
+    }
+
+    /// Tolerant decode (matching WordList/RideJournal): a field the writer omitted falls
+    /// back to a sane default rather than failing the whole read → placeholder. App and
+    /// widget ship together, so this only matters across an upgrade race, but the cost is
+    /// nil and the codebase decodes defensively everywhere.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        schemaVersion = (try? c.decode(Int.self, forKey: .schemaVersion)) ?? WidgetSnapshot.currentSchema
+        generatedAt = (try? c.decode(Date.self, forKey: .generatedAt)) ?? Date(timeIntervalSince1970: 0)
+        vocabDueByDay = (try? c.decode([Int].self, forKey: .vocabDueByDay)) ?? []
+        conjugationDueByDay = (try? c.decode([Int].self, forKey: .conjugationDueByDay)) ?? []
+        streakDays = (try? c.decode(Int.self, forKey: .streakDays)) ?? 0
+        lifetimeWords = (try? c.decode(Int.self, forKey: .lifetimeWords)) ?? 0
+        languageCode = (try? c.decode(String.self, forKey: .languageCode)) ?? "en"
     }
 }
 

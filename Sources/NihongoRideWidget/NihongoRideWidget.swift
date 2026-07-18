@@ -56,7 +56,8 @@ struct ReviewProvider: TimelineProvider {
             stale: snap.isStale(asOf: date, calendar: cal),
             vocabDue: snap.vocabDue(asOf: date, calendar: cal),
             conjugationDue: snap.conjugationDue(asOf: date, calendar: cal),
-            streakDays: snap.streakDays)
+            streakDays: snap.streakDays,
+            zh: snap.languageCode == "zh")
     }
 }
 

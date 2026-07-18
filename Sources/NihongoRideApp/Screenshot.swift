@@ -88,15 +88,17 @@ enum Screenshotter {
         // is shared in WidgetSharedKit precisely so it can be drawn here. Backgrounds are
         // supplied by the wrapper (the content carries none, matching the widget's
         // containerBackground). Two data states so an empty/degenerate layout shows up.
+        let zh = shotLang == "zh"
         let widgetSample = ReviewWidgetData(hasData: true, stale: false,
-                                            vocabDue: 12, conjugationDue: 3, streakDays: 5)
+                                            vocabDue: 12, conjugationDue: 3, streakDays: 5, zh: zh)
         render(ReviewWidgetContent(data: widgetSample, size: .small).padding(12)
                     .background(WidgetPalette.bg),
                size: CGSize(width: 170, height: 170), to: directory + "/widget-small.png")
         render(ReviewWidgetContent(data: widgetSample, size: .medium).padding(14)
                     .background(WidgetPalette.bg),
                size: CGSize(width: 360, height: 170), to: directory + "/widget-medium.png")
-        render(ReviewWidgetContent(data: .empty, size: .small).padding(12)
+        render(ReviewWidgetContent(data: ReviewWidgetData(hasData: false, stale: false,
+                    vocabDue: 0, conjugationDue: 0, streakDays: 0, zh: zh), size: .small).padding(12)
                     .background(WidgetPalette.bg),
                size: CGSize(width: 170, height: 170), to: directory + "/widget-empty.png")
 

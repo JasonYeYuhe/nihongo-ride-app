@@ -10,13 +10,18 @@ public struct ReviewWidgetData: Sendable, Equatable {
     public var vocabDue: Int
     public var conjugationDue: Int
     public var streakDays: Int
+    /// Follows the app's in-app language choice (carried by the snapshot), not the
+    /// system locale.
+    public var zh: Bool
 
-    public init(hasData: Bool, stale: Bool, vocabDue: Int, conjugationDue: Int, streakDays: Int) {
+    public init(hasData: Bool, stale: Bool, vocabDue: Int, conjugationDue: Int,
+                streakDays: Int, zh: Bool = false) {
         self.hasData = hasData
         self.stale = stale
         self.vocabDue = vocabDue
         self.conjugationDue = conjugationDue
         self.streakDays = streakDays
+        self.zh = zh
     }
 
     public static let placeholder = ReviewWidgetData(
@@ -53,6 +58,8 @@ public struct ReviewWidgetContent: View {
         self.size = size
     }
 
+    private func t(_ zh: String, _ en: String) -> String { data.zh ? zh : en }
+
     public var body: some View {
         if !data.hasData {
             emptyState
@@ -66,10 +73,10 @@ public struct ReviewWidgetContent: View {
     private var emptyState: some View {
         VStack(spacing: 6) {
             Text("🚲").font(.system(size: 26))
-            Text("Open Nihongo Ride")
+            Text(t("打开 Nihongo Ride", "Open Nihongo Ride"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(.white)
-            Text("to see what's due")
+            Text(t("看看有什么要复习", "to see what's due"))
                 .font(.system(size: 11)).foregroundStyle(WidgetPalette.dim)
         }
         .multilineTextAlignment(.center)
@@ -84,7 +91,8 @@ public struct ReviewWidgetContent: View {
                 .font(.system(size: 44, weight: .heavy, design: .rounded))
                 .foregroundStyle(data.vocabDue == 0 ? WidgetPalette.dim : .white)
                 .contentTransition(.numericText())
-            Text(data.vocabDue == 0 ? "all caught up" : "words due")
+            Text(data.vocabDue == 0 ? t("全部复习完啦", "all caught up")
+                                    : t("个词到期", "words due"))
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundStyle(WidgetPalette.dim)
             Spacer(minLength: 0)
@@ -105,7 +113,8 @@ public struct ReviewWidgetContent: View {
                     .font(.system(size: 44, weight: .heavy, design: .rounded))
                     .foregroundStyle(data.vocabDue == 0 ? WidgetPalette.dim : .white)
                     .monospacedDigit()
-                Text(data.vocabDue == 0 ? "all caught up" : "words due")
+                Text(data.vocabDue == 0 ? t("全部复习完啦", "all caught up")
+                                        : t("个词到期", "words due"))
                     .font(.system(size: 12, weight: .medium, design: .rounded))
                     .foregroundStyle(WidgetPalette.dim)
                 Spacer(minLength: 0)
@@ -116,13 +125,14 @@ public struct ReviewWidgetContent: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 Spacer(minLength: 0)
-                dueRow(count: data.conjugationDue, label: "conjugations", tint: WidgetPalette.accent2)
+                dueRow(count: data.conjugationDue, label: t("个变形", "conjugations"),
+                       tint: WidgetPalette.accent2)
                 Spacer(minLength: 0)
                 if data.stale {
-                    Text("open to refresh")
+                    Text(t("打开以刷新", "open to refresh"))
                         .font(.system(size: 11)).foregroundStyle(WidgetPalette.dim)
                 } else if data.streakDays > 0 {
-                    Text("🔥 \(data.streakDays)-day streak")
+                    Text(t("🔥 连续 \(data.streakDays) 天", "🔥 \(data.streakDays)-day streak"))
                         .font(.system(size: 12, weight: .semibold, design: .rounded))
                         .foregroundStyle(WidgetPalette.gold)
                 }
@@ -153,7 +163,7 @@ public struct ReviewWidgetContent: View {
 
     @ViewBuilder private var footline: some View {
         if data.stale {
-            Text("open to refresh")
+            Text(t("打开以刷新", "open to refresh"))
                 .font(.system(size: 10)).foregroundStyle(WidgetPalette.dim)
         } else if data.streakDays > 0 {
             Text("🔥 \(data.streakDays)")
