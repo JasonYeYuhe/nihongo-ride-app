@@ -23,6 +23,7 @@ let package = Package(
         .library(name: "ConjugationReviewKit", targets: ["ConjugationReviewKit"]),
         .library(name: "SpeechKit", targets: ["SpeechKit"]),
         .library(name: "WidgetSharedKit", targets: ["WidgetSharedKit"]),
+        .library(name: "SceneryKit", targets: ["SceneryKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -113,6 +114,8 @@ let package = Package(
         // the widget extensions never link the SRS stores. The app builds the snapshot
         // from those stores' dueByDay(...) and hands this module the finished arrays.
         .target(name: "WidgetSharedKit"),
+        .target(name: "SceneryKit"),
+        .testTarget(name: "SceneryKitTests", dependencies: ["SceneryKit"]),
         .testTarget(name: "WidgetSharedKitTests", dependencies: ["WidgetSharedKit"]),
 
         // MARK: Derived verb-class data path — conservation invariants + end-to-end
@@ -124,7 +127,7 @@ let package = Package(
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit", "WidgetSharedKit"],
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit", "WidgetSharedKit", "SceneryKit"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]

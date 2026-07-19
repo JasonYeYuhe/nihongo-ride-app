@@ -1,4 +1,5 @@
 import SwiftUI
+import SceneryKit
 
 /// A first-person "riding" scene rendered in code — like a gym exercise-bike
 /// screen. A red road with gold lane dashes streams toward the viewer (faster
@@ -22,10 +23,15 @@ struct RideBackgroundView: View {
     /// the HUD strip and spaces the dashes evenly.
     private static let stillPhase: TimeInterval = 1625.6
 
-    private let road = Color(red: 0.82, green: 0.21, blue: 0.21)
-    private let roadFar = Color(red: 0.45, green: 0.14, blue: 0.18)
-    private let lane = Color(red: 0.98, green: 0.80, blue: 0.35)
-    private let silhouette = Color(red: 0.24, green: 0.28, blue: 0.50)
+    /// The stretch of road this run is on. Chosen ONCE when the run starts and held for its
+    /// whole length — nothing behind the word card may change while someone is reading kana.
+    var stage: RideStage = RideRoute.stages[0]
+
+    private var palette: RidePalette { stage.palette }
+    private var road: Color { palette.road.color }
+    private var roadFar: Color { palette.roadFar.color }
+    private var lane: Color { palette.lane.color }
+    private var silhouette: Color { palette.silhouette.color }
 
     var body: some View {
         Group {
@@ -64,36 +70,37 @@ struct RideBackgroundView: View {
         // Sky
         ctx.fill(Path(CGRect(x: 0, y: 0, width: w, height: horizon)),
                  with: .linearGradient(
-                    Gradient(colors: [Color(red: 0.08, green: 0.11, blue: 0.26),
-                                      Color(red: 0.36, green: 0.30, blue: 0.50),
-                                      Color(red: 0.98, green: 0.62, blue: 0.46)]),
+                    Gradient(colors: [palette.skyTop.color, palette.skyMid.color,
+                                      palette.skyLow.color]),
                     startPoint: CGPoint(x: cx, y: 0), endPoint: CGPoint(x: cx, y: horizon)))
 
         // Sun + glow
         let sunC = CGPoint(x: cx + w * 0.22, y: horizon - h * 0.10)
         ctx.fill(Path(ellipseIn: CGRect(x: sunC.x - w * 0.22, y: sunC.y - w * 0.22, width: w * 0.44, height: w * 0.44)),
-                 with: .radialGradient(Gradient(colors: [Color(red: 1, green: 0.85, blue: 0.5).opacity(0.55), .clear]),
+                 with: .radialGradient(Gradient(colors: [palette.sun.color.opacity(palette.sunGlow), .clear]),
                                        center: sunC, startRadius: 0, endRadius: w * 0.22))
         let sunR = w * 0.05
         ctx.fill(Path(ellipseIn: CGRect(x: sunC.x - sunR, y: sunC.y - sunR, width: sunR * 2, height: sunR * 2)),
-                 with: .color(Color(red: 0.99, green: 0.86, blue: 0.55)))
+                 with: .color(palette.sun.color))
 
         // Clouds
         for c in cloudSpecs {
             let drift = (t * c.speed).truncatingRemainder(dividingBy: 1)
-            drawCloud(ctx, at: CGPoint(x: (1 - drift) * (w + 240) - 120, y: horizon * c.y), scale: c.scale * w)
+            drawCloud(ctx, at: CGPoint(x: (1 - drift) * (w + 240) - 120, y: horizon * c.y),
+                      scale: c.scale * w, alpha: palette.cloudAlpha)
         }
 
         // Distant hills
         for hill in [(0.12, 0.10), (0.78, 0.12), (0.45, 0.08)] {
             let hw = w * 0.5
             ctx.fill(Path(ellipseIn: CGRect(x: w * hill.0 - hw / 2, y: horizon - h * hill.1, width: hw, height: h * hill.1 * 2)),
-                     with: .color(Color(red: 0.13, green: 0.40, blue: 0.42).opacity(0.85)))
+                     with: .color(palette.landFar.color.opacity(0.85)))
         }
 
         // Approaching landmark
-        let count = 4
-        let idx = Int(max(0, landmarkPhase).rounded(.down)) % count
+        // The KIND of landmark now belongs to the stretch of road you are on, so it is
+        // stable for the whole run; landmarkPhase still governs how near it has come.
+        let idx = stage.landmark
         let frac = max(0, landmarkPhase) - max(0, landmarkPhase).rounded(.down)
         let lmH = horizon * (0.34 + 0.42 * frac)            // far → near
         drawLandmark(ctx, kind: idx, cx: cx - w * 0.16, horizon: horizon, height: lmH)
@@ -105,7 +112,7 @@ struct RideBackgroundView: View {
 
         // Land
         ctx.fill(Path(CGRect(x: 0, y: horizon, width: w, height: h - horizon)),
-                 with: .linearGradient(Gradient(colors: [Color(red: 0.16, green: 0.55, blue: 0.52), Color(red: 0.08, green: 0.32, blue: 0.35)]),
+                 with: .linearGradient(Gradient(colors: [palette.landFar.color, palette.land.color]),
                                        startPoint: CGPoint(x: cx, y: horizon), endPoint: CGPoint(x: cx, y: h)))
 
         // Road
@@ -208,10 +215,16 @@ struct RideBackgroundView: View {
                               CloudSpec(y: 0.55, scale: 0.11, speed: 0.018),
                               CloudSpec(y: 0.30, scale: 0.13, speed: 0.009)]
 
-    private func drawCloud(_ ctx: GraphicsContext, at p: CGPoint, scale s: CGFloat) {
-        let color = GraphicsContext.Shading.color(.white.opacity(0.5))
+    private func drawCloud(_ ctx: GraphicsContext, at p: CGPoint, scale s: CGFloat, alpha: Double) {
+        let color = GraphicsContext.Shading.color(.white.opacity(alpha))
         for (dx, dy, r) in [(-0.5, 0.1, 0.45), (0.0, -0.1, 0.6), (0.5, 0.1, 0.45), (0.15, 0.15, 0.4)] {
             ctx.fill(Path(ellipseIn: CGRect(x: p.x + dx * s - r * s / 2, y: p.y + dy * s - r * s / 2, width: r * s, height: r * s * 0.7)), with: color)
         }
     }
+}
+
+extension RGB {
+    /// SceneryKit stores plain components so palettes can be tested; this is the one place
+    /// they become something SwiftUI can draw.
+    var color: Color { Color(red: r, green: g, blue: b) }
 }

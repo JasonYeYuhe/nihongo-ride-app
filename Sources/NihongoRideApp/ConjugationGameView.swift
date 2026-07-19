@@ -1,4 +1,5 @@
 import SwiftUI
+import SceneryKit
 import GameCore
 import RomajiKana
 
@@ -26,8 +27,10 @@ struct ConjugationGameView: View {
         ZStack {
             ZStack {
                 RideBackgroundView(speed: 1.0 + Double(min(session.combo, 12)) * 0.12,
-                                   landmarkPhase: session.progress * 4)
-                Color.black.opacity(0.18).ignoresSafeArea()
+                                   landmarkPhase: session.progress * 4,
+                                   stage: model.rideStage)
+                // Derived from the stage's ground luminance — see GameView. (v1.12 §D.)
+                Color.black.opacity(model.rideStage.palette.textScrim).ignoresSafeArea()
 
                 VStack(spacing: keyboardUp ? 12 : 22) {
                     ConjugationHUD(session: session, language: model.languageCode,
@@ -277,7 +280,8 @@ private struct ConjugationCard: View {
         }
         .frame(maxWidth: 560)
         .padding(compact ? 14 : 24)
-        .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: compact ? 20 : 28))
+        // The card's own backing IS the legibility mechanism — see RidePalette.cardAlpha.
+        .background(.black.opacity(RidePalette.cardAlpha), in: RoundedRectangle(cornerRadius: compact ? 20 : 28))
         .overlay(RoundedRectangle(cornerRadius: compact ? 20 : 28).strokeBorder(.white.opacity(0.12)))
         // Read the DICTIONARY reading (not the answer being typed — that would spoil the drill).
         .overlay(alignment: .topLeading) {

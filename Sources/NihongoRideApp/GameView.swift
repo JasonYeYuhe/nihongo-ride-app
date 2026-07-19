@@ -1,4 +1,5 @@
 import SwiftUI
+import SceneryKit
 import GameCore
 import RomajiKana
 
@@ -25,8 +26,10 @@ struct GameView: View {
     private func play(_ session: GameSession) -> some View {
         ZStack {
             ZStack {
-                RideBackgroundView(speed: rideSpeed(session), landmarkPhase: landmarkPhase(session))
-                Color.black.opacity(0.18).ignoresSafeArea()   // scrim for text legibility
+                RideBackgroundView(speed: rideSpeed(session), landmarkPhase: landmarkPhase(session), stage: model.rideStage)
+                // Scrim derived from the stage's own ground luminance, never a literal: a
+                // brighter road cannot ship without buying the contrast back. (v1.12 §D.)
+                Color.black.opacity(model.rideStage.palette.textScrim).ignoresSafeArea()
 
                 VStack(spacing: keyboardUp ? 12 : 22) {
                     HUDBar(session: session, language: model.languageCode,
@@ -406,7 +409,8 @@ private struct WordCard: View {
         }
         .frame(maxWidth: 560)
         .padding(compact ? 14 : 24)
-        .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: compact ? 20 : 28))
+        // The card's own backing IS the legibility mechanism — see RidePalette.cardAlpha.
+        .background(.black.opacity(RidePalette.cardAlpha), in: RoundedRectangle(cornerRadius: compact ? 20 : 28))
         .overlay(RoundedRectangle(cornerRadius: compact ? 20 : 28).strokeBorder(.white.opacity(0.12)))
         .overlay(alignment: .topTrailing) { saveStar }
         .overlay(alignment: .topLeading) {

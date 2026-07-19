@@ -11,6 +11,7 @@ import ConjugationReviewKit
 import SpeechKit
 import WidgetSharedKit
 import WidgetKit
+import SceneryKit
 
 /// A snapshot of a finished run, shown on the results screen.
 struct GameSummary: Equatable {
@@ -585,6 +586,27 @@ final class AppModel {
     // less than the local journal's own accumulation (equal on a single device).
     var lifetimeWords: Int { max(journal.totalWords, odometer.totalWords) }
     var lifetimeDistanceMeters: Double { max(journal.totalDistanceMeters, odometer.totalDistanceMeters) }
+
+    /// The stretch of road the CURRENT run is on, resolved when the run starts and then held.
+    ///
+    /// Frozen deliberately. If it tracked `lifetimeDistanceMeters` live, crossing a threshold
+    /// mid-run would repaint the whole world behind the word the player is typing — the one
+    /// thing a background in a typing app must never do. Freezing also means the reward lands
+    /// where it reads as a reward: you set out on a new road, rather than having it change
+    /// under you. (v1.12 §D.)
+    private(set) var rideStage: RideStage = RideRoute.stages[0]
+
+    /// Resolves the stage for a run about to start. Called by every start* path.
+    func resolveRideStage() {
+        rideStage = RideRoute.stage(forLifetimeMetres: lifetimeDistanceMeters)
+    }
+
+    /// Capture-only: pin a stage so the headless renderer can shoot the whole route without
+    /// riding 25 km. Refuses outside capture, so it can never affect a real rider.
+    func forceRideStage(_ stage: RideStage) {
+        guard Screenshotter.isCapturing else { return }
+        rideStage = stage
+    }
     var lifetimeRuns: Int { max(journal.totalRuns, odometer.totalRuns) }
 
     // MARK: Word lists (v1.5) — the default list is the old ★ "saved" deck.
@@ -715,6 +737,7 @@ final class AppModel {
             ids: resolvable, vocab: .shared, review: reviewStore, config: config)
         conjugationSession = nil   // defensive: a list/saved run must not route to the conjugation screen
         runStartedAt = Date()
+        resolveRideStage()
         screen = .playing
     }
 
@@ -791,6 +814,7 @@ final class AppModel {
             session = GameSession.make(config: config, vocab: .shared, review: reviewStore)
         }
         runStartedAt = Date()
+        resolveRideStage()
         screen = .playing
     }
 
@@ -820,6 +844,7 @@ final class AppModel {
         session = GameSession.makeWeak(ids: resolvable, vocab: .shared, config: config)
         conjugationSession = nil   // defensive: a cram must not route to the conjugation screen
         runStartedAt = Date()
+        resolveRideStage()
         screen = .playing
     }
 
@@ -867,6 +892,7 @@ final class AppModel {
         session = nil
         conjugationSession = built
         runStartedAt = Date()
+        resolveRideStage()
         screen = .playing
     }
 
@@ -893,6 +919,7 @@ final class AppModel {
         session = nil
         conjugationSession = built
         runStartedAt = Date()
+        resolveRideStage()
         screen = .playing
     }
 

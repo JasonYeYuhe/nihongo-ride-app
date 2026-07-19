@@ -1,4 +1,5 @@
 import SwiftUI
+import SceneryKit
 import WidgetSharedKit
 #if os(macOS)
 import AppKit
@@ -71,6 +72,32 @@ enum Screenshotter {
         }
         results.finishGame()
         render(RootView().environment(results), size: size, to: directory + "/results.png")
+
+        // Every stretch of road, as a contact sheet (v1.12 §D). The palettes are the one
+        // part of the scenery a person has to LOOK at to judge, and there is no other way
+        // to see seven of them without riding 25 km. NIHONGO_SHOT_STAGES=1 opts in.
+        if ProcessInfo.processInfo.environment["NIHONGO_SHOT_STAGES"] != nil {
+            for stage in RideRoute.stages {
+                let m = makeModel()
+                m.startGame()
+                m.session?.skip()
+                for _ in 0 ..< 5 {
+                    guard let romaji = m.session?.currentRomaji else { break }
+                    for ch in romaji { _ = m.session?.input(ch) }
+                }
+                m.forceRideStage(stage)
+                render(RootView().environment(m), size: size,
+                       to: directory + "/stage-\(stage.id)-\(stage.romaji).png")
+                // The same scene with NO text or HUD, so the contrast check can measure what
+                // is actually BEHIND the words. Measuring the composed screen instead just
+                // finds the white text and reports 1:1.
+                render(ZStack {
+                        RideBackgroundView(speed: 1, landmarkPhase: 2.4, stage: stage)
+                        Color.black.opacity(stage.palette.textScrim).ignoresSafeArea()
+                       }, size: size,
+                       to: directory + "/bare-\(stage.id)-\(stage.romaji).png")
+            }
+        }
 
         // The share card (v1.10 §C). Not an App Store screenshot — it is the ONLY
         // headless check that the card renders at all, since ResultsView deliberately
