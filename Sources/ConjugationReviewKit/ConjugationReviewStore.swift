@@ -16,17 +16,30 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
 
     public func card(for promptID: String) -> ConjugationSRSCard? { cards[promptID] }
 
-    /// Cards due on or before `date`, soonest-first, capped at `limit`.
-    public func dueCards(on date: Date = Date(), limit: Int = 100) -> [ConjugationSRSCard] {
-        cards.values
-            .filter { $0.dueDate <= date }
+    /// Cards due **by the end of `date`'s calendar day**, soonest-first, capped at `limit`.
+    ///
+    /// Day granularity, mirroring `ReviewKit.ReviewStore.dueCards` — read that doc for why.
+    /// The same split existed here: `dueForecast` (Stats, the widget) bucketed by calendar
+    /// day while this compared instants, so the menu's "Review N due" button could sit
+    /// hidden at 0 while Stats said cards were due today. (v1.12 §B.)
+    public func dueCards(on date: Date = Date(), limit: Int = 100,
+                         calendar: Calendar = .current) -> [ConjugationSRSCard] {
+        let cutoff = Self.dueCutoff(for: date, calendar: calendar)
+        return cards.values
+            .filter { $0.dueDate < cutoff }
             .sorted { $0.dueDate < $1.dueDate }
             .prefix(limit)
             .map { $0 }
     }
 
-    public func dueCount(on date: Date = Date()) -> Int {
-        cards.values.lazy.filter { $0.dueDate <= date }.count
+    public func dueCount(on date: Date = Date(), calendar: Calendar = .current) -> Int {
+        let cutoff = Self.dueCutoff(for: date, calendar: calendar)
+        return cards.values.lazy.filter { $0.dueDate < cutoff }.count
+    }
+
+    /// Midnight ending `date`'s day (see `ReviewStore.dueCutoff`).
+    static func dueCutoff(for date: Date, calendar: Calendar) -> Date {
+        calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: date)) ?? date
     }
 
     /// Cards reviewed at least once (the pool weak-form weighting can rank).

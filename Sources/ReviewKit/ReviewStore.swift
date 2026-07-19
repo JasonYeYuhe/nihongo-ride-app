@@ -13,17 +13,41 @@ public struct ReviewStore: Codable, Sendable {
 
     public func card(for id: String) -> SRSCard? { cards[id] }
 
-    /// Cards due on or before `date`, soonest-first, capped at `limit`.
-    public func dueCards(on date: Date = Date(), limit: Int = 100) -> [SRSCard] {
-        cards.values
-            .filter { $0.dueDate <= date }
+    /// Cards due **by the end of `date`'s calendar day**, soonest-first, capped at `limit`.
+    ///
+    /// Day granularity, not instant, and the distinction is the whole point. `SRSCard.review`
+    /// sets `dueDate = reviewInstant + N days`, so a card inherits the clock time it was
+    /// reviewed at — practise at 21:00 and tomorrow's card comes due at 21:00. An instant
+    /// comparison therefore reports 0 for most of the day while `dueByDay`/`dueForecast`
+    /// (which bucket by calendar day) report the real number, and those are what feed the
+    /// widget, the Ride Log, and the daily notification. The user got told "12 words due",
+    /// opened the app, and read "Due for review: 0" — with the ride pulling nothing.
+    ///
+    /// Day granularity is the half that can actually be kept: a widget cannot re-render each
+    /// minute, so an instant-based promise is structurally unkeepable, and day-granular
+    /// scheduling is the SRS norm anyway. `DueReminderPlanner` had already hand-rolled this by
+    /// passing an end-of-day instant — that workaround still lands on the same answer here.
+    /// (v1.12 §B.)
+    public func dueCards(on date: Date = Date(), limit: Int = 100,
+                         calendar: Calendar = .current) -> [SRSCard] {
+        let cutoff = Self.dueCutoff(for: date, calendar: calendar)
+        return cards.values
+            .filter { $0.dueDate < cutoff }
             .sorted { $0.dueDate < $1.dueDate }
             .prefix(limit)
             .map { $0 }
     }
 
-    public func dueCount(on date: Date = Date()) -> Int {
-        cards.values.lazy.filter { $0.dueDate <= date }.count
+    public func dueCount(on date: Date = Date(), calendar: Calendar = .current) -> Int {
+        let cutoff = Self.dueCutoff(for: date, calendar: calendar)
+        return cards.values.lazy.filter { $0.dueDate < cutoff }.count
+    }
+
+    /// Midnight ending `date`'s day. Falls back to `date` itself if the calendar can't
+    /// produce it (DST-degenerate input), which restores the old instant behaviour rather
+    /// than counting nothing.
+    static func dueCutoff(for date: Date, calendar: Calendar) -> Date {
+        calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: date)) ?? date
     }
 
     public func leeches() -> [SRSCard] {
