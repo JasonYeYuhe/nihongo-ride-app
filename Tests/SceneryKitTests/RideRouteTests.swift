@@ -107,15 +107,24 @@ struct RideRouteTests {
         }
     }
 
-    @Test("consecutive stretches actually look different")
+    @Test("consecutive stretches actually look different — sky AND road surface")
     func stagesAreDistinct() {
-        // Otherwise the reward for riding 5 km is a road that looks the same.
+        // Luminance delta was the first version of this check and it was the wrong proxy:
+        // Kawasaki red → Hakone blue-grey is a large visible material change at a luminance
+        // delta of 0.013. Colour DISTANCE in component space is what the eye gets.
+        func dist(_ a: RGB, _ b: RGB) -> Double {
+            ((a.r - b.r) * (a.r - b.r) + (a.g - b.g) * (a.g - b.g)
+             + (a.b - b.b) * (a.b - b.b)).squareRoot()
+        }
         for i in 1 ..< RideRoute.stages.count {
             let a = RideRoute.stages[i - 1].palette, b = RideRoute.stages[i].palette
-            let skyShift = abs(a.skyMid.luminance - b.skyMid.luminance)
-                + abs(a.skyLow.luminance - b.skyLow.luminance)
-            #expect(skyShift > 0.02,
-                    "\(RideRoute.stages[i - 1].name) → \(RideRoute.stages[i].name) is too subtle to notice")
+            let skyShift = dist(a.skyMid, b.skyMid) + dist(a.skyLow, b.skyLow)
+            #expect(skyShift > 0.10,
+                    "sky \(RideRoute.stages[i - 1].name) → \(RideRoute.stages[i].name) too subtle")
+            // The road is the dominant on-screen element; every boundary must change its
+            // surface visibly. 0.12 is what the shipped values clear with margin (min 0.146).
+            #expect(dist(a.road, b.road) >= 0.12,
+                    "road \(RideRoute.stages[i - 1].name) → \(RideRoute.stages[i].name) barely changes")
         }
     }
 

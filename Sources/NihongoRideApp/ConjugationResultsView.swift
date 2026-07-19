@@ -1,4 +1,5 @@
 import SwiftUI
+import SceneryKit
 
 /// Results for a verb-conjugation drill (v1.6). Lightweight — no distance and no "review
 /// these" list on this screen: since v1.8 the drill DOES record to the separate
@@ -10,7 +11,10 @@ struct ConjugationResultsView: View {
     private var zh: Bool { model.languageCode == "zh" }
 
     var body: some View {
-        Group {
+        ZStack {
+            // Same arrival sky as the ride results — the drill rides the same road.
+            // (v1.12 §D2; the Codex review caught that this view is NOT ResultsView.)
+            RideArrivalBackdrop(stage: model.rideStage)
             if isPhoneIdiom { ScrollView(showsIndicators: false) { content } } else { content }
         }
         .background {
@@ -34,15 +38,18 @@ struct ConjugationResultsView: View {
         let summary = model.lastConjugationSummary
         return VStack(spacing: 20) {
             Spacer(minLength: 0)
-            Text("✓").scaledSystemFont(50, weight: .bold, relativeTo: .largeTitle).foregroundStyle(Theme.done)
-                .accessibilityHidden(true)
-            Text(zh ? "完成!" : "Drill complete!")
-                .scaledSystemFont(isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
-                .foregroundStyle(.white)
-
             if let summary {
-                grade(for: summary)
-                scoreGrid(summary)
+                VStack(spacing: 20) {
+                    // Inside the panel for the same reason as ResultsView's title.
+                    Text("✓").scaledSystemFont(50, weight: .bold, relativeTo: .largeTitle).foregroundStyle(Theme.done)
+                        .accessibilityHidden(true)
+                    Text(zh ? "完成!" : "Drill complete!")
+                        .scaledSystemFont(isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
+                        .foregroundStyle(.white)
+                    grade(for: summary)
+                    scoreGrid(summary)
+                }
+                .arrivalPanel(compact: isPhoneIdiom)
             }
 
             adaptiveStack(horizontal: !isPhoneIdiom, spacing: isPhoneIdiom ? 12 : 16) {

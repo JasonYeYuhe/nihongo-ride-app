@@ -49,32 +49,45 @@ def luminance(px):
     return 0.2126 * lin(px[0]) + 0.7152 * lin(px[1]) + 0.0722 * lin(px[2])
 
 
-def main(directory):
-    files = sorted(glob.glob(os.path.join(directory, "bare-*.png")),
-                   key=lambda f: int(os.path.basename(f).split("-")[1]))
+def main(directory, results_mode=False):
+    if results_mode:
+        # Results screens: the panel carries the cards (CARD_ALPHA), but the big title
+        # ("到站!") and the action buttons sit naked on the scene. The title is 30-36pt
+        # heavy — WCAG large-text — so its floor is 4.5:1, not 7:1.
+        # Everything textual on results now sits INSIDE the arrival panel (the naked
+        # title measured 2-5:1 against the clouds, exactly as the Codex review predicted,
+        # and dimming the whole sky to fix a title would defeat the feature). The panel
+        # rect below extends over the title area; outside it only self-backed buttons
+        # remain, whose label contrast is against their own fills, not the scene.
+        pattern, checks = "bare-results-*.png", [
+            ("panel", (0.20, 0.10, 0.80, 0.80), CARD_ALPHA, FLOOR),
+        ]
+    else:
+        pattern, checks = "bare-[0-9]*.png", [("card", CARD_BOX, CARD_ALPHA, FLOOR)]
+    files = sorted(glob.glob(os.path.join(directory, pattern)),
+                   key=lambda f: int([p for p in os.path.basename(f).split("-") if p.isdigit()][0]))
     if not files:
-        sys.exit(f"no bare-*.png in {directory} — run with NIHONGO_SHOT_STAGES=1 first")
+        sys.exit(f"no {pattern} in {directory} — run with NIHONGO_SHOT_STAGES=1 first")
 
     worst, worst_name, failed = 99.0, None, []
     for path in files:
         image = Image.open(path).convert("RGB")
         w, h = image.size
-        box = image.crop((int(w * CARD_BOX[0]), int(h * CARD_BOX[1]),
-                          int(w * CARD_BOX[2]), int(h * CARD_BOX[3])))
-        levels = sorted(luminance(p) for p in box.getdata())
-        brightest = levels[int(len(levels) * PERCENTILE)]
-        # White text over: scene (already scrimmed by the render) → the card's black backing.
-        contrast = 1.05 / (brightest * (1 - CARD_ALPHA) + 0.05)
+        name = os.path.basename(path).replace(".png", "").split("-")[-1]
+        for label, box_frac, alpha, floor in checks:
+            box = image.crop((int(w * box_frac[0]), int(h * box_frac[1]),
+                              int(w * box_frac[2]), int(h * box_frac[3])))
+            levels = sorted(luminance(p) for p in box.getdata())
+            brightest = levels[int(len(levels) * PERCENTILE)]
+            contrast = 1.05 / (brightest * (1 - alpha) + 0.05)
+            ok = contrast >= floor
+            print(f"  {'✅' if ok else '❌'} {name:<12} {label:<6} {contrast:5.1f}:1 (floor {floor}:1)")
+            if not ok:
+                failed.append(f"{name}/{label}")
+            if contrast - floor < worst:
+                worst, worst_name = contrast - floor, f"{name}/{label}"
 
-        name = os.path.basename(path).replace(".png", "").split("-", 2)[2]
-        ok = contrast >= FLOOR
-        print(f"  {'✅' if ok else '❌'} {name:<14} {contrast:5.1f}:1")
-        if not ok:
-            failed.append(name)
-        if contrast < worst:
-            worst, worst_name = contrast, name
-
-    print(f"\nworst: {worst:.1f}:1 ({worst_name}), floor {FLOOR}:1")
+    print(f"\nsmallest margin above floor: {worst:+.1f} ({worst_name})")
     if failed:
         print(f"❌ below the floor: {', '.join(failed)}")
         print("   Dim that stage's sun / sunGlow / cloudAlpha — those are what sit under the card.")
@@ -84,4 +97,5 @@ def main(directory):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else "/tmp/shot"))
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    sys.exit(main(args[0] if args else "/tmp/shot", results_mode="--results" in sys.argv))

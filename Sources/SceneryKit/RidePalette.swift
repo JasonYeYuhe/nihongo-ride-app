@@ -22,6 +22,11 @@ public struct RGB: Sendable, Equatable {
 
     public func lerp(to other: RGB, _ t: Double) -> RGB {
         let k = min(max(t, 0), 1)
+        // Exact at the endpoints: a + (b-a)*1 in floating point is not b (0.82 + (0.22 -
+        // 0.82) gives 0.21999…97), and palettes are compared with == in tests and in
+        // SwiftUI's change detection.
+        if k <= 0 { return self }
+        if k >= 1 { return other }
         return RGB(r + (other.r - r) * k, g + (other.g - g) * k, b + (other.b - b) * k)
     }
 }

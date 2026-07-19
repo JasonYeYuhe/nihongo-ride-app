@@ -24,6 +24,11 @@ public struct RideStage: Sendable, Equatable, Identifiable {
 
 /// The route your lifetime odometer walks you along: Edo to Kyoto, in eight stretches.
 ///
+/// The road itself changes surface as it leaves the capital: the signature red holds for
+/// the first two stretches (it is the app's icon), then wet Hakone stone, Fuji volcanic
+/// grit, the sandy Hamanako causeway, Nagoya brick, dusk slate at Suzuka, and night
+/// cobbles into Kyoto. (v1.12 §D2 — reviewed by Codex, colour distances asserted.)
+///
 /// Deliberately EIGHT well-known places, not the Tōkaidō's literal 53 post-towns, and
 /// deliberately unnumbered. Naming "第14次 原" would be a factual claim about a historical
 /// route, and this app teaches Japanese — a wrong reading here is a taught error, not a
@@ -71,8 +76,8 @@ public enum RideRoute {
                     skyLow: RGB(0.62, 0.74, 0.84),
                     sun: RGB(0.86, 0.90, 0.96), sunGlow: 0.22, cloudAlpha: 0.40,
                     landFar: RGB(0.12, 0.34, 0.44), land: RGB(0.06, 0.20, 0.30),
-                    roadFar: RGB(0.30, 0.18, 0.24), road: RGB(0.58, 0.26, 0.30),
-                    lane: RGB(0.92, 0.88, 0.62), silhouette: RGB(0.16, 0.24, 0.42))),
+                    roadFar: RGB(0.21, 0.20, 0.24), road: RGB(0.38, 0.36, 0.44),
+                    lane: RGB(0.80, 0.82, 0.72), silhouette: RGB(0.16, 0.24, 0.42))),
 
         RideStage(id: 3, name: "富士", romaji: "Fuji", startMetres: 2_500, landmark: 0,
                   palette: RidePalette(
@@ -81,8 +86,8 @@ public enum RideRoute {
                     skyLow: RGB(0.72, 0.86, 0.94),
                     sun: RGB(0.94, 0.90, 0.78), sunGlow: 0.20, cloudAlpha: 0.40,
                     landFar: RGB(0.13, 0.42, 0.42), land: RGB(0.06, 0.24, 0.28),
-                    roadFar: RGB(0.34, 0.16, 0.18), road: RGB(0.64, 0.22, 0.22),
-                    lane: RGB(0.98, 0.84, 0.40), silhouette: RGB(0.22, 0.30, 0.52))),
+                    roadFar: RGB(0.22, 0.18, 0.17), road: RGB(0.40, 0.32, 0.30),
+                    lane: RGB(0.92, 0.84, 0.60), silhouette: RGB(0.22, 0.30, 0.52))),
 
         RideStage(id: 4, name: "浜名湖", romaji: "Hamanako", startMetres: 5_000, landmark: 1,
                   palette: RidePalette(
@@ -91,8 +96,8 @@ public enum RideRoute {
                     skyLow: RGB(0.80, 0.80, 0.66),
                     sun: RGB(0.99, 0.92, 0.66), sunGlow: 0.40, cloudAlpha: 0.46,
                     landFar: RGB(0.10, 0.44, 0.44), land: RGB(0.05, 0.26, 0.30),
-                    roadFar: RGB(0.32, 0.18, 0.20), road: RGB(0.62, 0.26, 0.24),
-                    lane: RGB(0.96, 0.86, 0.46), silhouette: RGB(0.18, 0.30, 0.46))),
+                    roadFar: RGB(0.32, 0.26, 0.19), road: RGB(0.58, 0.48, 0.34),
+                    lane: RGB(0.42, 0.28, 0.16), silhouette: RGB(0.18, 0.30, 0.46))),
 
         RideStage(id: 5, name: "名古屋", romaji: "Nagoya", startMetres: 9_000, landmark: 2,
                   palette: RidePalette(
@@ -101,7 +106,7 @@ public enum RideRoute {
                     skyLow: RGB(0.96, 0.72, 0.48),
                     sun: RGB(1.00, 0.88, 0.58), sunGlow: 0.50, cloudAlpha: 0.42,
                     landFar: RGB(0.16, 0.48, 0.44), land: RGB(0.08, 0.28, 0.30),
-                    roadFar: RGB(0.40, 0.16, 0.18), road: RGB(0.74, 0.22, 0.20),
+                    roadFar: RGB(0.33, 0.17, 0.11), road: RGB(0.60, 0.30, 0.20),
                     lane: RGB(0.98, 0.82, 0.38), silhouette: RGB(0.24, 0.26, 0.44))),
 
         RideStage(id: 6, name: "鈴鹿", romaji: "Suzuka", startMetres: 15_000, landmark: 2,
@@ -111,8 +116,8 @@ public enum RideRoute {
                     skyLow: RGB(0.86, 0.46, 0.40),
                     sun: RGB(0.98, 0.68, 0.44), sunGlow: 0.46, cloudAlpha: 0.38,
                     landFar: RGB(0.12, 0.36, 0.38), land: RGB(0.05, 0.20, 0.26),
-                    roadFar: RGB(0.30, 0.12, 0.16), road: RGB(0.60, 0.18, 0.20),
-                    lane: RGB(0.94, 0.76, 0.36), silhouette: RGB(0.14, 0.16, 0.34))),
+                    roadFar: RGB(0.19, 0.15, 0.18), road: RGB(0.34, 0.28, 0.32),
+                    lane: RGB(0.88, 0.78, 0.50), silhouette: RGB(0.14, 0.16, 0.34))),
 
         RideStage(id: 7, name: "京都", romaji: "Kyōto", startMetres: 25_000, landmark: 1,
                   palette: RidePalette(
@@ -121,8 +126,8 @@ public enum RideRoute {
                     skyLow: RGB(0.52, 0.30, 0.42),
                     sun: RGB(0.98, 0.84, 0.62), sunGlow: 0.34, cloudAlpha: 0.30,
                     landFar: RGB(0.10, 0.30, 0.34), land: RGB(0.04, 0.16, 0.22),
-                    roadFar: RGB(0.26, 0.12, 0.16), road: RGB(0.54, 0.18, 0.20),
-                    lane: RGB(0.96, 0.80, 0.42), silhouette: RGB(0.12, 0.14, 0.30))),
+                    roadFar: RGB(0.12, 0.11, 0.20), road: RGB(0.22, 0.20, 0.36),
+                    lane: RGB(0.98, 0.76, 0.36), silhouette: RGB(0.12, 0.14, 0.30))),
     ]
 
     /// The stretch a rider with this lifetime distance is on.

@@ -1,4 +1,5 @@
 import SwiftUI
+import SceneryKit
 import VocabKit
 
 struct ResultsView: View {
@@ -14,7 +15,11 @@ struct ResultsView: View {
 
     var body: some View {
         // iPhone: results (cards + review list) outgrow the screen — scroll.
-        Group {
+        ZStack {
+            // The sky you arrived under (v1.12 §D2). Attached OUTSIDE the ScrollView so it
+            // fills the screen and stays put; inside, it would become a tall scrolling
+            // canvas and drift away with the review list.
+            RideArrivalBackdrop(stage: model.rideStage)
             if isPhoneIdiom {
                 ScrollView(showsIndicators: false) { content }
             } else {
@@ -54,25 +59,42 @@ struct ResultsView: View {
         }
     }
 
+    /// Names the stretch this run was ridden on. Deliberately about the RUN, not the
+    /// rider's current lifetime position: rideStage is frozen at run start, so at a stage
+    /// boundary the two can differ, and "arrived at X" would be a lie exactly then.
+    private var stageLine: some View {
+        Text(zh ? "本程路段:\(model.rideStage.name)"
+                : "This ride: the \(model.rideStage.romaji) stretch")
+            .font(.caption)
+            .foregroundStyle(Theme.dim)
+    }
+
     private var content: some View {
         let summary = model.lastSummary
 
         return VStack(spacing: 20) {
             Spacer(minLength: 0)
 
-            Text("🏁")
-                .scaledSystemFont(50, relativeTo: .largeTitle)
-                .accessibilityHidden(true)
-            Text(zh ? "到站!" : "You've arrived!")
-                .scaledSystemFont(isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
-                .foregroundStyle(.white)
-
             if let summary {
-                grade(for: summary)
-                scoreGrid(summary)
-                if !summary.reviewWords.isEmpty {
-                    reviewList(summary.reviewWords)
+                VStack(spacing: 20) {
+                    // Title lives INSIDE the panel: naked over the scene it measured
+                    // 2-5:1 against the clouds (the Codex review predicted exactly this),
+                    // and dimming the whole arrival sky to fix a title would defeat the
+                    // feature. The panel already owes its content 7:1.
+                    Text("🏁")
+                        .scaledSystemFont(50, relativeTo: .largeTitle)
+                        .accessibilityHidden(true)
+                    Text(zh ? "到站!" : "You've arrived!")
+                        .scaledSystemFont(isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
+                        .foregroundStyle(.white)
+                    grade(for: summary)
+                    scoreGrid(summary)
+                    if !summary.reviewWords.isEmpty {
+                        reviewList(summary.reviewWords)
+                    }
+                    stageLine
                 }
+                .arrivalPanel(compact: isPhoneIdiom)
             }
 
             adaptiveStack(horizontal: !isPhoneIdiom, spacing: isPhoneIdiom ? 12 : 16) {

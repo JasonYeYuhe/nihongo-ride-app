@@ -96,6 +96,16 @@ enum Screenshotter {
                         Color.black.opacity(stage.palette.textScrim).ignoresSafeArea()
                        }, size: size,
                        to: directory + "/bare-\(stage.id)-\(stage.romaji).png")
+                // The results screens' backdrop (heavier scrim, landmark at its closest),
+                // again with no text: what the arrival panel and the naked title actually
+                // sit on. Measured by check_scene_contrast.py --results.
+                render(RideArrivalBackdrop(stage: stage), size: size,
+                       to: directory + "/bare-results-\(stage.id)-\(stage.romaji).png")
+                // The composed results screen for this stage — title, panel, arrival sky.
+                m.finishGame()
+                m.forceRideStage(stage)   // finishGame doesn't reresolve, but be explicit
+                render(RootView().environment(m), size: size,
+                       to: directory + "/results-\(stage.id)-\(stage.romaji).png")
             }
         }
 

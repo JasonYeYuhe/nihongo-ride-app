@@ -2,11 +2,11 @@ import SwiftUI
 import SceneryKit
 
 /// A first-person "riding" scene rendered in code — like a gym exercise-bike
-/// screen. A red road with gold lane dashes streams toward the viewer (faster
-/// with `speed`), over teal land, dawn sky, sun, clouds and hills. The landmark
-/// on the horizon advances with `landmarkPhase` (Fuji → torii → castle → tower)
-/// and grows as you approach, so route progress shows in the scene.
-/// Palette matches the app icon. (Swappable for real art later.)
+/// screen. The road streams toward the viewer (faster with `speed`) under the
+/// colours of the current `RideStage`: signature red out of 日本橋, Hakone stone,
+/// Fuji grit, Hamanako sand, Nagoya brick, Suzuka slate, Kyoto night cobbles.
+/// The stage's landmark grows on the horizon as `landmarkPhase` advances, so
+/// both route progress and lifetime progress show in the scene.
 struct RideBackgroundView: View {
     var speed: Double = 1
     /// 0→4 across a journey (≈ progress × landmark count); cycles in time-attack.
@@ -26,6 +26,11 @@ struct RideBackgroundView: View {
     /// The stretch of road this run is on. Chosen ONCE when the run starts and held for its
     /// whole length — nothing behind the word card may change while someone is reading kana.
     var stage: RideStage = RideRoute.stages[0]
+    /// Draw one static frame regardless of Reduce Motion. The results screens use this:
+    /// `landmarkPhase` alone only freezes the landmark — clouds and lane dashes are
+    /// wall-clock-driven and would keep streaming behind a screen that is meant to be
+    /// a stopped moment. (v1.12 §D2, Codex review.)
+    var still = false
 
     private var palette: RidePalette { stage.palette }
     private var road: Color { palette.road.color }
@@ -35,7 +40,7 @@ struct RideBackgroundView: View {
 
     var body: some View {
         Group {
-            if reduceMotion || Screenshotter.isCapturing {
+            if still || reduceMotion || Screenshotter.isCapturing {
                 // Reduce Motion: the scene is decorative, so it simply stops. Nothing about
                 // the ride is communicated by the drift — progress lives in the landmark and
                 // the HUD — so a still frame loses the user nothing.
