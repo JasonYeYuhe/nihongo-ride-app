@@ -11,17 +11,49 @@ struct RideBackgroundView: View {
     /// 0→4 across a journey (≈ progress × landmark count); cycles in time-attack.
     var landmarkPhase: Double = 0
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// The frozen phase used when the scene must not animate.
+    ///
+    /// Motion here comes from wall-clock time, so without a fixed value the still frame
+    /// would land wherever the clock happened to be — which is precisely why every App
+    /// Store screenshot had its clouds and lane dashes in a different, arbitrary place.
+    /// Chosen by rendering candidates and picking the composition that keeps clouds off
+    /// the HUD strip and spaces the dashes evenly.
+    private static let stillPhase: TimeInterval = 1625.6
+
     private let road = Color(red: 0.82, green: 0.21, blue: 0.21)
     private let roadFar = Color(red: 0.45, green: 0.14, blue: 0.18)
     private let lane = Color(red: 0.98, green: 0.80, blue: 0.35)
     private let silhouette = Color(red: 0.24, green: 0.28, blue: 0.50)
 
     var body: some View {
-        TimelineView(.animation) { timeline in
-            let t = timeline.date.timeIntervalSinceReferenceDate
-            Canvas { ctx, size in draw(ctx, size, t) }
+        Group {
+            if reduceMotion || Screenshotter.isCapturing {
+                // Reduce Motion: the scene is decorative, so it simply stops. Nothing about
+                // the ride is communicated by the drift — progress lives in the landmark and
+                // the HUD — so a still frame loses the user nothing.
+                //
+                // Capture: a frozen phase is what makes a headless render reproducible. The
+                // same render run twice used to differ.
+                Canvas { ctx, size in draw(ctx, size, Self.stillPhase) }
+            } else {
+                // 30fps, not display-link rate. This is a full-canvas repaint — sky, sun,
+                // glow, 3 clouds, 3 hills, a landmark, road, 8 lane dashes and 16 posts —
+                // and it ran at up to 120Hz for the entire length of every ride. Drifting
+                // clouds and streaming dashes read identically at 30, on a device that is
+                // otherwise idle waiting for keystrokes.
+                TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { timeline in
+                    Canvas { ctx, size in
+                        draw(ctx, size, timeline.date.timeIntervalSinceReferenceDate)
+                    }
+                }
+            }
         }
         .ignoresSafeArea()
+        // The whole scene is decoration; the HUD and the word card carry the real
+        // information. Hide it so VoiceOver users don't sweep through a Canvas.
+        .accessibilityHidden(true)
     }
 
     private func draw(_ ctx: GraphicsContext, _ size: CGSize, _ t: TimeInterval) {
