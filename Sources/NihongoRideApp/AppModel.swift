@@ -240,7 +240,12 @@ final class AppModel {
         // One-time odometer backfill: seed this device's slot from the existing
         // journal lifetime so totals stay correct for users upgrading to v1.2
         // (and so this device contributes its real history once sync turns on).
-        if odometer.slots[settings.deviceID] == nil && journal.totalRuns > 0 {
+        //
+        // The condition lives in OdometerLog.shouldBackfill — read its doc before
+        // touching this. The guard used to be `slots[deviceID] == nil`, which a second
+        // device satisfies with a journal a cloud fetch filled with ANOTHER device's
+        // rides, permanently doubling the fleet's lifetime totals. (v1.12 §A.)
+        if OdometerLog.shouldBackfill(slots: odometer.slots, localRuns: journal.totalRuns) {
             odometer.setSlot(.init(words: journal.totalWords,
                                    distanceMeters: journal.totalDistanceMeters,
                                    runs: journal.totalRuns),

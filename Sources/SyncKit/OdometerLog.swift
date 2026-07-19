@@ -51,6 +51,26 @@ public struct OdometerLog: Codable, Equatable, Sendable {
         slots[deviceID] = slot
     }
 
+    /// May this device seed its slot from the local ride journal?
+    ///
+    /// Only when NO slot exists at all. The obvious guard — "I have no slot of my own
+    /// yet" — is wrong, because the journal is not a local-only quantity: a cloud fetch
+    /// rebuilds it from the MERGED record set and saves that to disk, so after one sync
+    /// it holds the whole fleet's rides. A device that synced before its first ride
+    /// therefore satisfied "no slot of mine + journal is non-empty" using data that was
+    /// entirely someone else's, and seeded itself with the fleet's lifetime. Slots are
+    /// SUMMED, so the total doubled; slots merge by `max`, so it could never come back
+    /// down, on any device, ever.
+    ///
+    /// The presence of ANY slot means this device has already talked to the cloud (or
+    /// already ridden), and in both cases the journal can no longer be trusted as a
+    /// record of this device alone. An empty slot table is the only state where the
+    /// journal is provably local — which is exactly the v1.1→v1.2 upgrader the backfill
+    /// was written for.
+    public static func shouldBackfill(slots: [String: Slot], localRuns: Int) -> Bool {
+        slots.isEmpty && localRuns > 0
+    }
+
     // MARK: Persistence (mirrors ReviewStore / RideJournal)
 
     public func save(to url: URL) throws {
