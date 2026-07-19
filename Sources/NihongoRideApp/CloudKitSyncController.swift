@@ -151,6 +151,12 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             model?.updateSyncStatus(.syncing)
             do {
                 try await engine.fetchChanges()
+                // stop() can land while we are suspended INSIDE fetchChanges. v1.10 only
+                // checked after the send, so the upload still went out: the user switched
+                // sync off and their records were pushed to iCloud anyway. The local `engine`
+                // binding deliberately keeps the engine alive across the await, so nothing
+                // else was going to prevent it. (v1.12 §C.)
+                guard !stopped else { return }
                 try await engine.sendChanges()
                 // stop() landed while we were awaiting: the user turned sync OFF, so don't
                 // report a status for it — reporting `.synced` here is the "sync layer lies"
@@ -228,15 +234,25 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             handleAccountChange(change)
 
         case .fetchedRecordZoneChanges(let changes):
+            // Same reason as the status cases below: an in-flight pass can deliver these
+            // after the user switched sync off, and merging them would keep mutating local
+            // stores from iCloud for a feature they just disabled. The records stay in the
+            // cloud, so re-enabling sync picks them up again. (v1.12 §C.)
+            guard !stopped else { break }
             applyFetched(changes)
 
         case .sentRecordZoneChanges(let sent):
             handleSent(sent, syncEngine: syncEngine)
 
+        // These fire from an in-flight pass that may outlive stop(). Without the guard they
+        // overwrite the `.off` that syncEnabledChanged just set, so the Settings row reads
+        // "Synced" while the toggle sits off and nothing ever corrects it. (v1.12 §C.)
         case .willFetchChanges, .willSendChanges, .willFetchRecordZoneChanges:
+            guard !stopped else { break }
             model?.updateSyncStatus(.syncing)
 
         case .didSendChanges, .didFetchChanges:
+            guard !stopped else { break }
             model?.updateSyncStatus(.synced)
 
         case .fetchedDatabaseChanges, .sentDatabaseChanges, .didFetchRecordZoneChanges:

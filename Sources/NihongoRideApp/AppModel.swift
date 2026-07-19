@@ -34,19 +34,18 @@ struct GameSummary: Equatable {
 }
 
 extension GameSummary {
-    /// How well a run went. Single source of truth shared by the results screen
-    /// and the Game Center "Flawless Run" achievement (so the badge the player
-    /// sees and the achievement they earn never disagree).
-    enum Grade { case flawless, steady, building, lap }
+    /// How well a run went. Single source of truth shared by the results screen, the share
+    /// card, and the Game Center "Flawless Run" achievement (so the badge the player sees
+    /// and the achievement they earn never disagree).
+    ///
+    /// The rule itself lives in `GameCore.RideGrade` — the app target has no unit tests, and
+    /// this rule shipped a bug precisely because of that. `Grade` stays as a local alias so
+    /// the call sites read unchanged. (v1.12 §C.)
+    typealias Grade = RideGrade
 
     var grade: Grade {
-        let clean = reviewWords.isEmpty
-        if accuracy >= 0.97 && clean && maxCombo >= max(5, wordsCompleted - 1) {
-            return .flawless
-        }
-        if accuracy >= 0.90 && reviewWords.count <= 2 { return .steady }
-        if accuracy >= 0.75 && wordsCompleted > 0 { return .building }
-        return .lap
+        RideGrade.grade(accuracy: accuracy, maxCombo: maxCombo,
+                        wordsCompleted: wordsCompleted, lapsedCount: reviewWords.count)
     }
 }
 
@@ -479,8 +478,14 @@ final class AppModel {
                 try conjugationReviewStore.save(to: conjugationReviewURL)
             }
         }
-        // A cloud merge that touched either review store moved the due count → widget.
-        if !cards.isEmpty || !conjugationCards.isEmpty { refreshWidgetSnapshot() }
+        // Republish the widget if the merge touched ANYTHING the snapshot derives from.
+        // Gating on the review stores alone was too narrow: `streakByDay` comes from the
+        // journal and `lifetimeWords` from the odometer, and both of those branches can fire
+        // on their own — a Practice run uses a transient SRS store, so it syncs as records
+        // only. The peer's ride would restore the streak in-app while the widget kept walking
+        // its decay curve toward a streak the user had not actually lost. (v1.12 §C.)
+        if !cards.isEmpty || !conjugationCards.isEmpty
+            || !records.isEmpty || !odometerSlots.isEmpty { refreshWidgetSnapshot() }
     }
 
     /// Mirrors the live settings into the persisted blob and writes it. Cheap
