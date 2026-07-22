@@ -107,7 +107,12 @@ struct RideBackgroundView: View {
         // stable for the whole run; landmarkPhase still governs how near it has come.
         let idx = stage.landmark
         let frac = max(0, landmarkPhase) - max(0, landmarkPhase).rounded(.down)
-        let lmH = horizon * (0.34 + 0.42 * frac)            // far → near
+        // Size is capped against WIDTH as well as the horizon. Scaling by `horizon` alone
+        // (a fraction of HEIGHT) made the landmark tower over the word card on a tall,
+        // narrow phone — verified in the iPhone simulator, where Tokyo Tower's spire ran
+        // straight through the kanji. The wide Mac layout is unaffected: there `horizon` is
+        // already the smaller of the two.
+        let lmH = min(horizon, w * 0.34) * (0.34 + 0.42 * frac)   // far → near
         drawLandmark(ctx, kind: idx, cx: cx - w * 0.16, horizon: horizon, height: lmH)
 
         // Horizon haze
@@ -164,12 +169,24 @@ struct RideBackgroundView: View {
 
     // MARK: Landmarks (silhouettes)
 
+    /// A landmark's characteristic hue, carried into the stage's own light.
+    ///
+    /// The torii and the tower used to be hardcoded daylight vermilion and orange, so they
+    /// ignored the palette entirely — a torii at midnight over Kyoto was still painted for
+    /// noon, and on the ride screen that saturated shape read as noise behind the word card.
+    /// (Fuji and the castle were always palette-driven; these two were the ones that got
+    /// missed.) Blending toward `silhouette` keeps them recognisable while putting them in
+    /// the same light as everything else on the horizon.
+    private func landmarkTint(_ characteristic: RGB) -> Color {
+        palette.silhouette.lerp(to: characteristic, 0.45).color
+    }
+
     private func drawLandmark(_ ctx: GraphicsContext, kind: Int, cx: CGFloat, horizon: CGFloat, height h: CGFloat) {
         let base = horizon
         switch kind {
         case 1:   // ⛩ torii
             let bw = h * 0.95, postW = h * 0.11, postX = bw * 0.32
-            let vermilion = Color(red: 0.80, green: 0.22, blue: 0.18)
+            let vermilion = landmarkTint(RGB(0.80, 0.22, 0.18))
             for s in [-1.0, 1.0] {
                 ctx.fill(Path(CGRect(x: cx + s * postX - postW / 2, y: base - h, width: postW, height: h)), with: .color(vermilion))
             }
@@ -191,7 +208,7 @@ struct RideBackgroundView: View {
                          with: .color(Color(red: 0.16, green: 0.18, blue: 0.34)))
             }
         case 3:   // 塔 tower (Tokyo-Tower-ish)
-            let orange = Color(red: 0.90, green: 0.36, blue: 0.20)
+            let orange = landmarkTint(RGB(0.90, 0.36, 0.20))
             var tri = Path()
             tri.move(to: CGPoint(x: cx - h * 0.26, y: base)); tri.addLine(to: CGPoint(x: cx, y: base - h))
             tri.addLine(to: CGPoint(x: cx + h * 0.26, y: base)); tri.closeSubpath()
