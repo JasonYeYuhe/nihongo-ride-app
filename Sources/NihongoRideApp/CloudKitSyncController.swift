@@ -40,6 +40,21 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     /// Set by stop(): an in-flight pass checks it to stand down (no further rounds, no status
     /// writes). Cleared by start() — a stale `true` would make a re-enabled sync a silent no-op.
     private var stopped = false
+    /// Set when a `.fetchedDatabaseChanges` event reports OUR zone was deleted server-side
+    /// (the user cleared the app's iCloud data via Settings > Apple ID > iCloud > Manage
+    /// Storage). CKSyncEngine will NOT re-upload on its own — it tracks only pending changes,
+    /// and previously-sent records are no longer pending — so syncNow rebuilds the zone and
+    /// re-enqueues every local record before its next send, repopulating iCloud instead of
+    /// leaving an empty zone the status row lies about (grounding HIGH, v1.13 §A). Held true
+    /// until a send actually SUCCEEDS (Codex review), and backed by a durable marker file so a
+    /// crash after the deletion token advanced — when the deletion can never be re-delivered —
+    /// still rebuilds on the next launch. A flag, NOT engine work: the delegate never drives
+    /// fetch/send (v1.4 crash lesson).
+    private var zoneWasDeleted = false
+    /// Durable backing for `zoneWasDeleted`. Its mere existence means "rebuild the zone and
+    /// re-upload everything, not yet verified sent". Written when the deletion is seen, removed
+    /// only after a clean send.
+    private let rebuildMarkerURL = AppModel.supportFileURL("cksync-rebuild-needed")
 
     /// Last-seen server records, so a re-send reuses the server change tag and
     /// preserves fields unknown to this app version (forward compatibility).
@@ -148,6 +163,12 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             // next round the NEW engine instead of driving the old one against the same
             // cksync-state.json (two engines, one state file). (v1.10 §B1.)
             guard !stopped, let engine = self.engine else { return }
+            // Recover a rebuild that a crash interrupted: the marker outlives the process, and
+            // after a crash the zone deletion won't be re-delivered (its token already advanced),
+            // so the in-memory flag alone would miss it. (v1.13 §A, Codex review.)
+            if !zoneWasDeleted && FileManager.default.fileExists(atPath: rebuildMarkerURL.path) {
+                zoneWasDeleted = true
+            }
             model?.updateSyncStatus(.syncing)
             do {
                 try await engine.fetchChanges()
@@ -157,15 +178,40 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
                 // binding deliberately keeps the engine alive across the await, so nothing
                 // else was going to prevent it. (v1.12 §C.)
                 guard !stopped else { return }
+                // If the fetch just reported our zone was deleted server-side, rebuild it and
+                // re-enqueue every local record NOW, so this same pass's send repopulates
+                // iCloud. Handles both the running case and the next-launch case (the deletion
+                // is always delivered during a fetchChanges). The flag is NOT cleared yet —
+                // only after a clean send below — so a failed repair retries instead of being
+                // reported as done (Codex review). enqueueAllLocal is idempotent. (v1.13 §A.)
+                if zoneWasDeleted {
+                    engine.state.add(pendingDatabaseChanges: [.saveZone(CKRecordZone(zoneID: zoneID))])
+                    enqueueAllLocal()
+                }
                 try await engine.sendChanges()
                 // stop() landed while we were awaiting: the user turned sync OFF, so don't
                 // report a status for it — reporting `.synced` here is the "sync layer lies"
                 // bug this phase exists to kill.
                 guard !stopped else { return }
+                // The rebuild is DONE only when the send left NO repair work pending. A
+                // `passFailure == nil` alone is not enough: a TRANSIENT save failure, or a
+                // record re-enqueued by the unknownItem / serverRecordChanged fallbacks, keeps
+                // changes pending while passFailure stays nil — clearing then would report
+                // .synced with iCloud still incomplete (Codex review). So also require the
+                // engine's pending queues to be empty. If work remains with no hard error, keep
+                // the flag + marker and report .waiting; the next sync trigger (foreground /
+                // next launch) retries — no busy loop, and the status never lies. (v1.13 §A.)
+                let repairPending = !engine.state.pendingRecordZoneChanges.isEmpty
+                                 || !engine.state.pendingDatabaseChanges.isEmpty
+                if zoneWasDeleted && passFailure == nil && !repairPending {
+                    zoneWasDeleted = false
+                    try? FileManager.default.removeItem(at: rebuildMarkerURL)
+                }
                 // A per-record save failure surfaced by handleSent must NOT be clobbered by a
                 // blanket .synced — that would re-hide exactly the failures §A3 exists to show
                 // (the status is set here, at the end of the pass, not inside the delegate).
-                model?.updateSyncStatus(passFailure ?? .synced)
+                // While a rebuild is still pending (no hard error), .waiting — never .synced.
+                model?.updateSyncStatus(passFailure ?? (zoneWasDeleted ? .waiting : .synced))
             } catch {
                 guard !stopped else { return }
                 report(error)
@@ -252,10 +298,33 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             model?.updateSyncStatus(.syncing)
 
         case .didSendChanges, .didFetchChanges:
-            guard !stopped else { break }
+            // While a zone rebuild is pending, the cloud is NOT yet up to date — reporting
+            // .synced here (before the repair send) would be exactly the transient lie this
+            // phase kills. syncNow sets the real status after the send. (v1.13 §A.)
+            guard !stopped, !zoneWasDeleted else { break }
             model?.updateSyncStatus(.synced)
 
-        case .fetchedDatabaseChanges, .sentDatabaseChanges, .didFetchRecordZoneChanges:
+        case .fetchedDatabaseChanges(let changes):
+            // A server-side deletion of OUR zone (user cleared the app's iCloud data in
+            // Settings — arrives as .deleted / .purged / .encryptedDataReset) is delivered
+            // here. Flag it and DROP the record cache: those cached CKRecords carry change
+            // tags for a zone that no longer exists, so re-saving them would fail `unknownItem`
+            // and never repopulate (Codex review). syncNow then rebuilds the zone and
+            // re-enqueues everything before its next send. Local memory + a marker file only;
+            // the delegate must never drive fetch/send (v1.4 crash lesson).
+            if changes.deletions.contains(where: { $0.zoneID == zoneID }) {
+                markZoneDeleted()
+            }
+
+        case .sentDatabaseChanges(let sent):
+            // A zone save that failed (e.g. rebuilding after a deletion) must surface, not be
+            // swallowed — that silent swallow is the class of bug this whole area keeps fixing.
+            for failure in sent.failedZoneSaves where !Self.isTransient(failure.error) {
+                PersistLog.failure("cksync saveZone \(failure.zone.zoneID.zoneName)", failure.error)
+                passFailure = Self.status(for: failure.error)
+            }
+
+        case .didFetchRecordZoneChanges:
             break
 
         @unknown default:
@@ -369,6 +438,13 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
                 recordCache[serverRecord.recordID.recordName] = serverRecord
                 mergeServerRecord(serverRecord)
                 syncEngine.state.add(pendingRecordZoneChanges: [.saveRecord(serverRecord.recordID)])
+            } else if error.code == .unknownItem {
+                // A cached CKRecord's server counterpart no longer exists — the case Apple's
+                // sample handles by dropping the stale cached record and re-enqueuing a fresh
+                // save. Happens right after a zone rebuild if any cache entry survived. Without
+                // this the record silently never repopulates. (Codex review, v1.13 §A.)
+                recordCache.removeValue(forKey: failure.record.recordID.recordName)
+                syncEngine.state.add(pendingRecordZoneChanges: [.saveRecord(failure.record.recordID)])
             } else {
                 // Every OTHER save failure used to be swallowed silently — the exact blind
                 // spot that hid the WordList Production-schema miss for 3 versions (writes to a
@@ -472,8 +548,24 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         catch { PersistLog.failure("sync-engine state", error) }
     }
 
+    /// Records that our zone was deleted server-side: flag + durable marker + drop the record
+    /// cache (its change tags point at a zone that no longer exists). Local IO only — never
+    /// touches the engine, so it is safe to call from the delegate.
+    private func markZoneDeleted() {
+        zoneWasDeleted = true
+        recordCache.removeAll()
+        // Atomic write with a logged failure, matching saveState's convention — this marker
+        // is the durability guarantee, so a silent write failure would quietly reopen the
+        // crash window it exists to close. (Codex review.)
+        do { try Data().write(to: rebuildMarkerURL, options: .atomic) }
+        catch { PersistLog.failure("cksync rebuild marker", error) }
+    }
+
     private func clearState() {
         try? FileManager.default.removeItem(at: stateURL)
+        // A fresh account starts clean — no leftover rebuild intent from the previous one.
+        try? FileManager.default.removeItem(at: rebuildMarkerURL)
+        zoneWasDeleted = false
     }
 
     private func report(_ error: Error) {
