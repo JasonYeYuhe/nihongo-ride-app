@@ -30,7 +30,13 @@ public struct ReviewWidgetData: Sendable, Equatable {
         hasData: false, stale: false, vocabDue: 0, conjugationDue: 0, streakDays: 0)
 }
 
-public enum ReviewWidgetSize: Sendable { case small, medium }
+public enum ReviewWidgetSize: Sendable {
+    case small, medium
+    // Lock-screen accessories (v1.13 §C). These are rendered MONOCHROME by the system
+    // (it applies its own tint), so their layouts use SF Symbols + text only and never
+    // reference WidgetPalette colours — a colour there would just be flattened to the tint.
+    case accessoryRectangular, accessoryInline, accessoryCircular
+}
 
 /// Widget colours, matched by eye to `Theme` in NihongoRideApp.swift. Public so the
 /// widget extension and the headless preview both wrap the content in the same
@@ -60,13 +66,70 @@ public struct ReviewWidgetContent: View {
 
     private func t(_ zh: String, _ en: String) -> String { data.zh ? zh : en }
 
+    /// Total items due across both stores — the single number the tiny accessories show.
+    private var totalDue: Int { data.vocabDue + data.conjugationDue }
+
     public var body: some View {
-        if !data.hasData {
-            emptyState
-        } else if size == .medium {
-            medium
-        } else {
-            small
+        switch size {
+        case .accessoryRectangular: accessoryRectangular
+        case .accessoryInline:      accessoryInline
+        case .accessoryCircular:    accessoryCircular
+        case .medium where data.hasData: medium
+        case .small where data.hasData:  small
+        default: emptyState
+        }
+    }
+
+    // MARK: Lock-screen accessories (monochrome — no palette colours)
+
+    /// One line above the clock: "🚲 12 due" / "🚲 全部复习完".
+    private var accessoryInline: some View {
+        Label {
+            Text(!data.hasData ? t("にほんご ライド", "Nihongo Ride")
+                 : totalDue == 0 ? t("全部复习完", "all caught up")
+                                 : t("\(totalDue) 个到期", "\(totalDue) due"))
+        } icon: {
+            Image(systemName: "bicycle")
+        }
+    }
+
+    /// A rectangle: due breakdown + streak, all monochrome.
+    private var accessoryRectangular: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Label(t("にほんご ライド", "Nihongo Ride"), systemImage: "bicycle")
+                .font(.caption2).fontWeight(.semibold)
+            if !data.hasData {
+                Text(t("打开看看要复习什么", "Open to see what's due")).font(.caption)
+            } else if totalDue == 0 {
+                Text(t("全部复习完啦", "All caught up")).font(.caption)
+            } else {
+                Text(t("\(data.vocabDue) 词 · \(data.conjugationDue) 变形",
+                       "\(data.vocabDue) words · \(data.conjugationDue) forms"))
+                    .font(.caption).fontWeight(.medium)
+            }
+            if data.streakDays > 0 {
+                Text(t("🔥 连续 \(data.streakDays) 天", "🔥 \(data.streakDays)-day streak"))
+                    .font(.caption2)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// A circular gauge: the total due count, centered.
+    private var accessoryCircular: some View {
+        ZStack {
+            // A faint disc instead of WidgetKit's AccessoryWidgetBackground — keeps this
+            // module WidgetKit-free so the app can render it headlessly. On the lock
+            // screen the system's own vibrancy sits behind it either way.
+            Circle().fill(.secondary.opacity(0.25))
+            if data.hasData {
+                VStack(spacing: -2) {
+                    Text("\(totalDue)").font(.system(size: 20, weight: .bold, design: .rounded))
+                    Text(t("到期", "due")).font(.system(size: 9))
+                }
+            } else {
+                Image(systemName: "bicycle").font(.system(size: 20))
+            }
         }
     }
 

@@ -69,9 +69,38 @@ struct ReviewWidgetEntryView: View {
     let entry: ReviewEntry
 
     var body: some View {
-        ReviewWidgetContent(data: entry.data, size: family == .systemMedium ? .medium : .small)
-            .padding(family == .systemMedium ? 4 : 2)
-            .containerBackground(for: .widget) { WidgetPalette.bg }
+        ReviewWidgetContent(data: entry.data, size: contentSize)
+            .padding(padding)
+            // Home-screen families get the app's dark background; lock-screen accessories
+            // are system-tinted, so they take the widget's default (clear) container.
+            .containerBackground(for: .widget) {
+                isAccessory ? AnyView(Color.clear) : AnyView(WidgetPalette.bg)
+            }
+    }
+
+    private var isAccessory: Bool {
+        switch family {
+        case .accessoryRectangular, .accessoryInline, .accessoryCircular: return true
+        default: return false
+        }
+    }
+
+    private var padding: CGFloat {
+        switch family {
+        case .systemMedium: return 4
+        case .systemSmall: return 2
+        default: return 0   // accessories manage their own tight layout
+        }
+    }
+
+    private var contentSize: ReviewWidgetSize {
+        switch family {
+        case .systemMedium: return .medium
+        case .accessoryRectangular: return .accessoryRectangular
+        case .accessoryInline: return .accessoryInline
+        case .accessoryCircular: return .accessoryCircular
+        default: return .small
+        }
     }
 }
 
@@ -82,7 +111,8 @@ struct ReviewDueWidget: Widget {
         }
         .configurationDisplayName("Review Due")
         .description("How many words and conjugations are due to review today.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium,
+                            .accessoryRectangular, .accessoryInline, .accessoryCircular])
     }
 }
 

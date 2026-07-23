@@ -144,6 +144,20 @@ enum Screenshotter {
                     vocabDue: 0, conjugationDue: 4, streakDays: 2, zh: zh), size: .small).padding(12)
                     .background(WidgetPalette.bg),
                size: CGSize(width: 170, height: 170), to: directory + "/widget-conj-only.png")
+        // Lock-screen accessories (v1.13 §C). Rendered light-on-dark here to stand in for
+        // the system's monochrome tint — the ONLY headless check the accessory layouts fit
+        // their tiny frames. Real tint/vibrancy is a device gate.
+        let acc = ReviewWidgetData(hasData: true, stale: false,
+                                   vocabDue: 12, conjugationDue: 3, streakDays: 5, zh: zh)
+        render(ReviewWidgetContent(data: acc, size: .accessoryRectangular)
+                    .foregroundStyle(.white).padding(6).background(.black),
+               size: CGSize(width: 160, height: 72), to: directory + "/acc-rectangular.png")
+        render(ReviewWidgetContent(data: acc, size: .accessoryInline)
+                    .foregroundStyle(.white).padding(6).background(.black),
+               size: CGSize(width: 200, height: 30), to: directory + "/acc-inline.png")
+        render(ReviewWidgetContent(data: acc, size: .accessoryCircular)
+                    .foregroundStyle(.white).padding(6).background(.black),
+               size: CGSize(width: 84, height: 84), to: directory + "/acc-circular.png")
 
         // Practice (passage) mode — washi paper, full multi-sentence paragraph
         let practice = makeModel()
