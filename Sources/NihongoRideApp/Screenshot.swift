@@ -138,6 +138,12 @@ enum Screenshotter {
                     vocabDue: 0, conjugationDue: 0, streakDays: 0, zh: zh), size: .small).padding(12)
                     .background(WidgetPalette.bg),
                size: CGSize(width: 170, height: 170), to: directory + "/widget-empty.png")
+        // Vocab all done but conjugations still due — the small widget must show the
+        // conjugation count, NOT claim "all caught up" (v1.13 §B). Checks the fix headlessly.
+        render(ReviewWidgetContent(data: ReviewWidgetData(hasData: true, stale: false,
+                    vocabDue: 0, conjugationDue: 4, streakDays: 2, zh: zh), size: .small).padding(12)
+                    .background(WidgetPalette.bg),
+               size: CGSize(width: 170, height: 170), to: directory + "/widget-conj-only.png")
 
         // Practice (passage) mode — washi paper, full multi-sentence paragraph
         let practice = makeModel()

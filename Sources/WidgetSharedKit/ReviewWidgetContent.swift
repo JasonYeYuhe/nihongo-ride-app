@@ -84,14 +84,23 @@ public struct ReviewWidgetContent: View {
     }
 
     private var small: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        // The headline number is vocab if any is due, otherwise conjugation. Only when
+        // BOTH are zero does it say "all caught up" — the old layout read vocab alone and
+        // claimed everything was done while conjugation drills were still due (grounding
+        // LOW, v1.13 §B). The label names which count is showing so the number is never
+        // ambiguous.
+        let showConj = data.vocabDue == 0 && data.conjugationDue > 0
+        let count = showConj ? data.conjugationDue : data.vocabDue
+        let allDone = data.vocabDue == 0 && data.conjugationDue == 0
+        return VStack(alignment: .leading, spacing: 4) {
             header
             Spacer(minLength: 0)
-            Text("\(data.vocabDue)")
+            Text("\(count)")
                 .font(.system(size: 44, weight: .heavy, design: .rounded))
-                .foregroundStyle(data.vocabDue == 0 ? WidgetPalette.dim : .white)
+                .foregroundStyle(allDone ? WidgetPalette.dim : .white)
                 .contentTransition(.numericText())
-            Text(data.vocabDue == 0 ? t("全部复习完啦", "all caught up")
+            Text(allDone ? t("全部复习完啦", "all caught up")
+                         : showConj ? t("个变形到期", "forms due")
                                     : t("个词到期", "words due"))
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundStyle(WidgetPalette.dim)
