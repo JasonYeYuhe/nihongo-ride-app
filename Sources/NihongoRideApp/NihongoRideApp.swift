@@ -108,6 +108,28 @@ struct RootView: View {
                 // dying view eats taps during the 0.42s transition.
                 .zIndex(Double(model.navCount))
         }
+        #if os(iOS)
+        // A scrolling screen's content passes UNDER the transparent status bar — that is
+        // normal iOS behaviour, not a layout bug (verified against a minimal reproduction:
+        // every structural variant does it, and it has been so since the first iPhone
+        // build). System apps mask it with a navigation bar's material. This app has none,
+        // so a status-bar-height fade of the SAME colour as the background sits at the top:
+        // invisible when nothing is under it, and it cleanly hides content that scrolls up
+        // behind the clock. Only on the flat-background screens — the ride and results
+        // screens bleed the scene to the top on purpose, and a band there would cut into it.
+        .overlay(alignment: .top) {
+            if flatBackgroundScreen(model.screen) {
+                GeometryReader { geo in
+                    LinearGradient(colors: [Theme.backgroundTop, Theme.backgroundTop,
+                                            Theme.backgroundTop.opacity(0)],
+                                   startPoint: .top, endPoint: .bottom)
+                        .frame(height: geo.safeAreaInsets.top + 8)
+                        .ignoresSafeArea(edges: .top)
+                        .allowsHitTesting(false)
+                }
+            }
+        }
+        #endif
         .animation(.spring(response: 0.42, dampingFraction: 0.86), value: model.screen)
         .preferredColorScheme(.dark)
         // Keep the due-reminder schedule and iCloud sync fresh as days pass.
@@ -151,6 +173,16 @@ struct RootView: View {
         screen != .playing && screen != .onboarding
     }
 
+    /// Screens drawn on the flat `Theme.background` (so a same-colour status-bar scrim is
+    /// invisible). The ride and both results screens bleed the ride scene to the very top,
+    /// so they are excluded — a scrim would sit over the sky.
+    private func flatBackgroundScreen(_ screen: AppModel.Screen) -> Bool {
+        switch screen {
+        case .playing, .results, .onboarding: return false
+        default: return true
+        }
+    }
+
     @ViewBuilder private var screen: some View {
         switch model.screen {
         case .menu:    MenuView()
@@ -188,8 +220,12 @@ extension AnyTransition {
 // MARK: - Theme
 
 enum Theme {
+    /// The top stop of ``background`` as a plain Color. `background` is a LinearGradient
+    /// and can't be sampled, and the status-bar scrim must fade FROM the exact colour the
+    /// screen begins at.
+    static let backgroundTop = Color(red: 0.06, green: 0.09, blue: 0.18)
     static let background = LinearGradient(
-        colors: [Color(red: 0.06, green: 0.09, blue: 0.18),
+        colors: [backgroundTop,
                  Color(red: 0.10, green: 0.14, blue: 0.26)],
         startPoint: .top, endPoint: .bottom
     )
