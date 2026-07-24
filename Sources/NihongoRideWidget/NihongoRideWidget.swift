@@ -78,11 +78,17 @@ struct ReviewWidgetEntryView: View {
             }
     }
 
+    // The accessory WidgetFamily cases only exist on iOS, so every switch that names them
+    // is #if-guarded — referencing them on macOS is a compile error.
     private var isAccessory: Bool {
+        #if os(iOS)
         switch family {
         case .accessoryRectangular, .accessoryInline, .accessoryCircular: return true
         default: return false
         }
+        #else
+        return false
+        #endif
     }
 
     private var padding: CGFloat {
@@ -94,13 +100,15 @@ struct ReviewWidgetEntryView: View {
     }
 
     private var contentSize: ReviewWidgetSize {
+        #if os(iOS)
         switch family {
-        case .systemMedium: return .medium
         case .accessoryRectangular: return .accessoryRectangular
         case .accessoryInline: return .accessoryInline
         case .accessoryCircular: return .accessoryCircular
-        default: return .small
+        default: break
         }
+        #endif
+        return family == .systemMedium ? .medium : .small
     }
 }
 
@@ -111,8 +119,18 @@ struct ReviewDueWidget: Widget {
         }
         .configurationDisplayName("Review Due")
         .description("How many words and conjugations are due to review today.")
-        .supportedFamilies([.systemSmall, .systemMedium,
-                            .accessoryRectangular, .accessoryInline, .accessoryCircular])
+        // Accessory (lock-screen) families exist only on iOS — they are unavailable in
+        // macOS WidgetKit, so listing them there fails to compile. Home-screen families
+        // are shared. (v1.13 §C.)
+        .supportedFamilies(Self.families)
+    }
+
+    private static var families: [WidgetFamily] {
+        #if os(iOS)
+        [.systemSmall, .systemMedium, .accessoryRectangular, .accessoryInline, .accessoryCircular]
+        #else
+        [.systemSmall, .systemMedium]
+        #endif
     }
 }
 
