@@ -76,3 +76,36 @@ func adaptiveStack(horizontal: Bool, spacing: CGFloat,
         VStack(spacing: spacing) { content() }
     }
 }
+
+extension View {
+    /// Sizes a pill button's LABEL. Replaces the fixed `.frame(width:height:)` these
+    /// buttons used to carry.
+    ///
+    /// v1.14 §C: the label text scales with Dynamic Type (`scaledSystemFont`) but the pill
+    /// around it did not, so at the larger accessibility sizes the app's primary calls to
+    /// action — 出発 / Ride again / Menu / Get started — were the first things to become
+    /// unreadable. A fixed frame proposes exactly WxH to the text, and text that needs more
+    /// height than that gets truncated; nothing about the button hinted it was clipped.
+    ///
+    /// `minWidth`/`minHeight` keep the original dimensions as a FLOOR, so at the default text
+    /// size the rendered pill is identical to before — verified as PIXELS across all 21
+    /// headless renders, not as file bytes: PNG encoding is not byte-stable here, and a naive
+    /// `cmp` reports differences on screens the change cannot reach. Above the default the
+    /// pill grows with its text, and the padding keeps the glyphs off the capsule edge. If the
+    /// screen is too narrow to grow into, the text now wraps and the pill gets taller instead
+    /// of losing characters.
+    func ctaLabel(minWidth: CGFloat, minHeight: CGFloat,
+                  hPadding: CGFloat = 14, vPadding: CGFloat = 8) -> some View {
+        self.multilineTextAlignment(.center)
+            .padding(.horizontal, hPadding)
+            .padding(.vertical, vPadding)
+            .frame(minWidth: minWidth, minHeight: minHeight)
+    }
+}
+
+extension DynamicTypeSize {
+    /// Roomy side-by-side button rows have to stack once the text is accessibility-sized:
+    /// three grown pills across a phone don't fit, and SwiftUI's compromise there is to
+    /// squeeze each one until its label truncates — the exact failure `ctaLabel` fixes.
+    var wantsStackedButtons: Bool { isAccessibilitySize }
+}

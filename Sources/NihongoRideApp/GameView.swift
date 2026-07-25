@@ -5,6 +5,7 @@ import RomajiKana
 
 struct GameView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var isPaused = false
     @State private var timeRemaining = 0.0
     @State private var keyboardUp = false   // iOS: software keyboard visible → compact layout
@@ -128,11 +129,11 @@ struct GameView: View {
                     .scaledSystemFont(34, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                     .foregroundStyle(.white)
                 // iPhone is too narrow for the buttons side by side — stack them.
-                adaptiveStack(horizontal: !isPhoneIdiom, spacing: 14) {
+                adaptiveStack(horizontal: !isPhoneIdiom && !typeSize.wantsStackedButtons, spacing: 14) {
                     Button(action: { isPaused = false }) {
                         Text(zh ? "继续 ▶" : "Resume ▶")
                             .scaledSystemFont(17, weight: .bold, design: .rounded)
-                            .frame(width: 160, height: 46)
+                            .ctaLabel(minWidth: 160, minHeight: 46)
                     }
                     .buttonStyle(.plain)
                     .background(Theme.accent, in: Capsule())
@@ -142,7 +143,7 @@ struct GameView: View {
                     Button(action: { isPaused = false; model.finishGame() }) {
                         Text(zh ? "结束本程" : "End run")
                             .scaledSystemFont(17, weight: .semibold, design: .rounded)
-                            .frame(width: 140, height: 46)
+                            .ctaLabel(minWidth: 140, minHeight: 46)
                     }
                     .buttonStyle(.plain)
                     .background(Theme.card, in: Capsule())

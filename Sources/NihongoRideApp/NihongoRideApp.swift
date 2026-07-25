@@ -132,6 +132,15 @@ struct RootView: View {
         #endif
         .animation(.spring(response: 0.42, dampingFraction: 0.86), value: model.screen)
         .preferredColorScheme(.dark)
+        // Debug-only: jump straight to a screen so its layout can be checked on a device at
+        // a large text size. ImageRenderer ignores dynamicTypeSize, so the headless gate is
+        // blind to exactly the failures Dynamic Type causes (v1.14 §C found three shipped
+        // ones), and Gate E's "verify on a device" was previously a manual walk through the
+        // app — impractical to repeat per text size. `#if DEBUG` keeps it out of any archive.
+        //   NIHONGO_DEBUG_SCREEN=menu|results|conj-results|game xcrun simctl launch …
+        #if DEBUG
+        .task { model.jumpToDebugScreen() }
+        #endif
         // Keep the due-reminder schedule and iCloud sync fresh as days pass.
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { model.appBecameActive() }

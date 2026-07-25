@@ -8,6 +8,7 @@ import SceneryKit
 /// while the mode is .conjugation).
 struct ConjugationResultsView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
     private var zh: Bool { model.languageCode == "zh" }
 
     var body: some View {
@@ -52,11 +53,11 @@ struct ConjugationResultsView: View {
                 .arrivalPanel(compact: isPhoneIdiom)
             }
 
-            adaptiveStack(horizontal: !isPhoneIdiom, spacing: isPhoneIdiom ? 12 : 16) {
+            adaptiveStack(horizontal: !isPhoneIdiom && !typeSize.wantsStackedButtons, spacing: isPhoneIdiom ? 12 : 16) {
                 Button(action: model.startGame) {
                     Text(zh ? "再练一组 ▶" : "Practice again ▶")
                         .scaledSystemFont(18, weight: .bold, design: .rounded)
-                        .frame(width: 200, height: 50)
+                        .ctaLabel(minWidth: 200, minHeight: 50)
                 }
                 .buttonStyle(.plain)
                 .background(Theme.accent, in: Capsule())
@@ -66,7 +67,7 @@ struct ConjugationResultsView: View {
                 Button(action: model.backToMenu) {
                     Text(zh ? "回到主页" : "Menu")
                         .scaledSystemFont(18, weight: .semibold, design: .rounded)
-                        .frame(width: 140, height: 50)
+                        .ctaLabel(minWidth: 140, minHeight: 50)
                 }
                 .buttonStyle(.plain)
                 .background(Theme.card, in: Capsule())
@@ -106,10 +107,16 @@ struct ConjugationResultsView: View {
             Image(systemName: c.icon).font(.title2).foregroundStyle(c.tint)
             Text(c.value).scaledSystemFont(28, weight: .bold, design: .rounded, relativeTo: .largeTitle)
                 .foregroundStyle(.white).monospacedDigit()
+                .lineLimit(1).minimumScaleFactor(0.4)
             Text(c.label).font(.caption).foregroundStyle(Theme.dim)
+                .lineLimit(2).multilineTextAlignment(.center)
         }
+        .padding(.vertical, 8)
         .frame(maxWidth: isPhoneIdiom ? .infinity : nil)
-        .frame(width: isPhoneIdiom ? nil : 150, height: isPhoneIdiom ? 104 : 120)
+        // See ResultsView.scoreCard: a fixed height lets accessibility-sized contents spill
+        // out of the panel and overlap the row below. (v1.14 §C.)
+        .frame(width: isPhoneIdiom ? nil : 150)
+        .frame(minHeight: isPhoneIdiom ? 104 : 120)
         .panel(20)
         .accessibilityElement()
         .accessibilityLabel(c.label)

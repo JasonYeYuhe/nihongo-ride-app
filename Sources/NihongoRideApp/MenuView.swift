@@ -4,6 +4,7 @@ import GameCore
 
 struct MenuView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         // iPhone: the stack can outgrow short screens (SE class), so scroll.
@@ -35,13 +36,23 @@ struct MenuView: View {
                     .foregroundStyle(Theme.dim)
             }
 
-            routePreview
-                .frame(maxWidth: 520)
-                .padding(.vertical, isPhoneIdiom ? 0 : 8)
-                .accessibilityElement()
-                .accessibilityLabel(model.languageCode == "zh"
-                                    ? "路线:东京 · 富士 · 名古屋 · 京都"
-                                    : "Route: Tokyo, Fuji, Nagoya, Kyoto")
+            // At the accessibility text sizes the four-stop strip collapses: each city name
+            // wraps to one letter per line and lands on top of the bicycles between them.
+            // It is decoration carrying one sentence of information, so at those sizes it
+            // becomes that sentence — which is also exactly what VoiceOver already read.
+            // (v1.14 §C, found on a device; the headless gate renders only the default size.)
+            if typeSize.isAccessibilitySize {
+                Text(routeLabel)
+                    .font(.callout).foregroundStyle(Theme.dim)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 520)
+            } else {
+                routePreview
+                    .frame(maxWidth: 520)
+                    .padding(.vertical, isPhoneIdiom ? 0 : 8)
+                    .accessibilityElement()
+                    .accessibilityLabel(routeLabel)
+            }
 
             VStack(spacing: 18) {
                 HStack(spacing: 12) {
@@ -191,7 +202,7 @@ struct MenuView: View {
                 Text(isConjugation ? (zhLang ? "开始变形 ▶" : "Start drill ▶")
                                    : (zhLang ? "出发 ▶" : "Start ride ▶"))
                     .scaledSystemFont(20, weight: .bold, design: .rounded)
-                    .frame(width: 240, height: 54)
+                    .ctaLabel(minWidth: 240, minHeight: 54)
             }
             .buttonStyle(.plain)
             .background(Theme.accent, in: Capsule())
@@ -332,6 +343,13 @@ struct MenuView: View {
     }
 
     private var streak: Int { model.journal.streakDays() }
+
+    /// One sentence for the route strip — the VoiceOver label, and the strip itself at
+    /// accessibility text sizes.
+    private var routeLabel: String {
+        model.languageCode == "zh" ? "路线:东京 · 富士 · 名古屋 · 京都"
+                                   : "Route: Tokyo, Fuji, Nagoya, Kyoto"
+    }
 
     private var routePreview: some View {
         let stops: [(String, String)] = [("🗼", "Tokyo"), ("🗻", "Fuji"), ("🏯", "Nagoya"), ("⛩️", "Kyoto")]

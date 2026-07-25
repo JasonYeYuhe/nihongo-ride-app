@@ -4,6 +4,7 @@ import VocabKit
 
 struct ResultsView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     private var zh: Bool { model.languageCode == "zh" }
     /// Word whose "add to lists" multi-select sheet is open (long-press a chip).
@@ -97,11 +98,11 @@ struct ResultsView: View {
                 .arrivalPanel(compact: isPhoneIdiom)
             }
 
-            adaptiveStack(horizontal: !isPhoneIdiom, spacing: isPhoneIdiom ? 12 : 16) {
+            adaptiveStack(horizontal: !isPhoneIdiom && !typeSize.wantsStackedButtons, spacing: isPhoneIdiom ? 12 : 16) {
                 Button(action: model.startGame) {
                     Text(zh ? "再来一程 ▶" : "Ride again ▶")
                         .scaledSystemFont(18, weight: .bold, design: .rounded)
-                        .frame(width: 200, height: 50)
+                        .ctaLabel(minWidth: 200, minHeight: 50)
                 }
                 .buttonStyle(.plain)
                 .background(Theme.accent, in: Capsule())
@@ -111,7 +112,7 @@ struct ResultsView: View {
                 Button(action: model.backToMenu) {
                     Text(zh ? "回到主页" : "Menu")
                         .scaledSystemFont(18, weight: .semibold, design: .rounded)
-                        .frame(width: 140, height: 50)
+                        .ctaLabel(minWidth: 140, minHeight: 50)
                 }
                 .buttonStyle(.plain)
                 .background(Theme.card, in: Capsule())
@@ -125,7 +126,7 @@ struct ResultsView: View {
                     ShareLink(item: card, preview: SharePreview(card.title)) {
                         Label(zh ? "分享" : "Share", systemImage: "square.and.arrow.up")
                             .scaledSystemFont(18, weight: .semibold, design: .rounded)
-                            .frame(width: 140, height: 50)
+                            .ctaLabel(minWidth: 140, minHeight: 50)
                     }
                     .buttonStyle(.plain)
                     .background(Theme.card, in: Capsule())
@@ -191,13 +192,24 @@ struct ResultsView: View {
     private func scoreCard(_ c: (icon: String, tint: Color, value: String, label: String, spoken: String?)) -> some View {
         VStack(spacing: 8) {
             Image(systemName: c.icon).font(.title2).foregroundStyle(c.tint)
+            // A number must never lose digits — 1100 m truncated to "11…" reports a
+            // different ride. Shrink to fit instead, and only then wrap.
             Text(c.value)
                 .scaledSystemFont(28, weight: .bold, design: .rounded, relativeTo: .largeTitle)
                 .foregroundStyle(.white).monospacedDigit()
+                .lineLimit(1).minimumScaleFactor(0.4)
             Text(c.label).font(.caption).foregroundStyle(Theme.dim)
+                .lineLimit(2).multilineTextAlignment(.center)
         }
+        .padding(.vertical, 8)
         .frame(maxWidth: isPhoneIdiom ? .infinity : nil)
-        .frame(width: isPhoneIdiom ? nil : 150, height: isPhoneIdiom ? 104 : 120)
+        // minHeight, not height: at the accessibility text sizes the contents are taller
+        // than 104/120pt and a fixed frame does not clip them — it lets them spill OUTSIDE
+        // the panel, so the tiles overlapped each other and the labels sat on the next
+        // row's icon. Growing the tile is the only thing that keeps the grid readable.
+        // (v1.14 §C, seen on a device at AX5 — ImageRenderer cannot show this.)
+        .frame(width: isPhoneIdiom ? nil : 150)
+        .frame(minHeight: isPhoneIdiom ? 104 : 120)
         .panel(20)
         // One element: "Score, 150" instead of icon + "150" + "Score" fragments.
         .accessibilityElement()

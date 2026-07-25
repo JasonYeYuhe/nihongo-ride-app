@@ -108,7 +108,7 @@ struct OnboardingView: View {
                 Text(isLast ? (zh ? "开始 ▶" : "Get started ▶")
                             : (zh ? "下一步" : "Next"))
                     .scaledSystemFont(18, weight: .bold, design: .rounded)
-                    .frame(width: 220, height: 52)
+                    .ctaLabel(minWidth: 220, minHeight: 52)
             }
             .buttonStyle(.plain)
             .background(Theme.accent, in: Capsule())

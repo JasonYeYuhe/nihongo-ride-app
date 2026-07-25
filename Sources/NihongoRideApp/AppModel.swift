@@ -409,6 +409,45 @@ final class AppModel {
         }
     }
 
+    #if DEBUG
+    /// Debug-only layout harness: `NIHONGO_DEBUG_SCREEN` drops the app straight onto one
+    /// screen, populated enough to be worth looking at. Its whole reason to exist is
+    /// Dynamic Type — `ImageRenderer` does not honour `dynamicTypeSize` (an explicitly
+    /// injected value doesn't reach `@ScaledMetric` either; measured, not assumed), so the
+    /// headless gate cannot see large-text layout at all, and the alternative was tapping
+    /// through the app by hand once per text size.
+    ///
+    /// Nothing here writes: it seeds a live session the way the screenshotter does, and it
+    /// never runs in a Release build.
+    func jumpToDebugScreen() {
+        guard let want = ProcessInfo.processInfo.environment["NIHONGO_DEBUG_SCREEN"] else { return }
+        switch want {
+        case "menu":
+            screen = .menu
+        case "results":
+            startGame()
+            session?.skip()                       // one lapse so the review list has a row
+            for _ in 0 ..< 6 {
+                guard let romaji = session?.currentRomaji else { break }
+                for ch in romaji { _ = session?.input(ch) }
+            }
+            finishGame()
+        case "conj-results":
+            selectedMode = .conjugation
+            startGame()
+            for _ in 0 ..< 4 {
+                guard let romaji = conjugationSession?.currentRomaji else { break }
+                for ch in romaji { _ = conjugationSession?.input(ch) }
+            }
+            finishConjugation()
+        case "game":
+            startGame()
+        default:
+            break
+        }
+    }
+    #endif
+
     /// App returned to the foreground: refresh reminders and pull/push sync.
     func appBecameActive() {
         refreshReminders()
