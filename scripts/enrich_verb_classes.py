@@ -160,7 +160,15 @@ def classify(entry, jmdict):
     if has_noun or not okuri:
         # JMdict may still confirm a real class for these; try it before suru-default.
         jc = jmdict_lookup(jmdict, surface, kana)
-        if jc:
+        # ...but NOT an inflecting class for a PURE-KANJI surface. A real godan/ichidan
+        # verb always writes its okurigana (拾う, 食べる); a pure-kanji headword that
+        # "matches" one is a homophone collision on the READING. That is exactly how
+        # 披露(ひろう)→拾う, 予想(よそう)→装う and 寄贈(きそう)→競う were stamped godan_u and
+        # then drilled with a completely invented paradigm (ひろって for 披露して).
+        # Only suru/kuru are legitimate for a pure-kanji surface here.
+        if jc and okuri:
+            return jc, "jmdict"
+        if jc in ("suru", "kuru"):
             return jc, "jmdict"
         return "suru", "heuristic-suru"
 

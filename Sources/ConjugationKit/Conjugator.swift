@@ -51,7 +51,7 @@ public enum Conjugator {
         lemma: String? = nil,
         form: ConjugationForm
     ) -> String? {
-        if let ex = lemmaException(kana: kana, form: form) { return ex }
+        if let ex = lemmaException(kana: kana, verbClass: verbClass, form: form) { return ex }
         switch verbClass {
         case .suru:    return suruForm(kana: kana, form: form)
         case .kuru:    return kuruForm(kana: kana, form: form)
@@ -72,10 +72,18 @@ public enum Conjugator {
 
     // MARK: Lemma exceptions (checked first)
 
-    private static func lemmaException(kana: String, form: ConjugationForm) -> String? {
+    private static func lemmaException(kana: String, verbClass: VerbClass,
+                                       form: ConjugationForm) -> String? {
         // 行く-type: te/ta euphonic is って/った (not いて/いた). Catches 行く and
         // compounds (連れて行く). Other forms fall through to godan-k rules.
-        if kana.hasSuffix("いく") {
+        //
+        // The godan-k guard is load-bearing, not decoration. Matching on the reading alone
+        // also caught suru-nouns that merely END in いく — 保育(ほいく), 発育(はついく),
+        // 生育(せいいく), 飼育(しいく), 細工(さいく) — and taught 保育して as ほいって. Their
+        // polite/negative forms fell through correctly, so the drill looked plausible while
+        // handing a learner a non-word as the answer to grade against. 行く is the only
+        // godan-k verb reading いく, so the class is exactly the right discriminator.
+        if verbClass == .godanK, kana.hasSuffix("いく") {
             let stem = String(kana.dropLast())   // drop く
             switch form {
             case .te:   return stem + "って"
