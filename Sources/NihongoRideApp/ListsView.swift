@@ -401,8 +401,7 @@ struct AddToListsSheet: View {
                             HStack {
                                 Image(systemName: inList ? "checkmark.circle.fill" : "circle")
                                     .foregroundStyle(inList ? Theme.gold : Theme.dim)
-                                Text(list.isDefault
-                                     ? AppModel.defaultListName(model.languageCode) : list.name)
+                                Text(displayName(list))
                                     .foregroundStyle(.white)
                                 Spacer()
                             }
@@ -411,7 +410,11 @@ struct AddToListsSheet: View {
                             .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel(list.name)
+                        // Same string the row shows. It used to pass `list.name`, so on the
+                        // default list VoiceOver announced the raw stored name while the
+                        // screen read "★ 收藏" — one helper now feeds both so they can't
+                        // drift apart again. (v1.14 §C.)
+                        .accessibilityLabel(displayName(list))
                         .accessibilityValue(inList ? (zh ? "已加入" : "in list") : (zh ? "未加入" : "not in list"))
                     }
                     Button {
@@ -440,6 +443,12 @@ struct AddToListsSheet: View {
                                     set: { if !$0 { errorMessage = nil } })) {
             Button("OK", role: .cancel) { errorMessage = nil }
         } message: { Text(errorMessage ?? "") }
+    }
+
+    /// The default list stores an internal name and is shown under a localized one
+    /// (mirrors `ListsView.displayName`).
+    private func displayName(_ list: WordList) -> String {
+        list.isDefault ? AppModel.defaultListName(model.languageCode) : list.name
     }
 
     private func toggle(_ listID: String) {
