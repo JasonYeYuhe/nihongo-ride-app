@@ -409,7 +409,7 @@ final class AppModel {
         }
     }
 
-    #if DEBUG
+    #if DEBUG && targetEnvironment(simulator)
     /// Debug-only layout harness: `NIHONGO_DEBUG_SCREEN` drops the app straight onto one
     /// screen, populated enough to be worth looking at. Its whole reason to exist is
     /// Dynamic Type — `ImageRenderer` does not honour `dynamicTypeSize` (an explicitly
@@ -417,8 +417,11 @@ final class AppModel {
     /// headless gate cannot see large-text layout at all, and the alternative was tapping
     /// through the app by hand once per text size.
     ///
-    /// Nothing here writes: it seeds a live session the way the screenshotter does, and it
-    /// never runs in a Release build.
+    /// 🔴 This WRITES. `finishGame()` persists SRS progress and logs a ride to the journal —
+    /// that is the point of it, since a results screen with no numbers proves nothing about
+    /// layout. So it is gated on the SIMULATOR as well as DEBUG: a Debug build on a real
+    /// device (or `swift run` on the Mac) would otherwise silently add a phantom ride to the
+    /// developer's own history. A simulator container is disposable; a person's is not.
     func jumpToDebugScreen() {
         guard let want = ProcessInfo.processInfo.environment["NIHONGO_DEBUG_SCREEN"] else { return }
         switch want {

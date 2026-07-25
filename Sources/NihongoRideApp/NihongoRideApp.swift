@@ -136,9 +136,11 @@ struct RootView: View {
         // a large text size. ImageRenderer ignores dynamicTypeSize, so the headless gate is
         // blind to exactly the failures Dynamic Type causes (v1.14 §C found three shipped
         // ones), and Gate E's "verify on a device" was previously a manual walk through the
-        // app — impractical to repeat per text size. `#if DEBUG` keeps it out of any archive.
+        // app — impractical to repeat per text size. DEBUG keeps it out of any archive, and
+        // the simulator gate keeps it away from real data: the harness WRITES (it finishes a
+        // run, which persists SRS and logs a ride) — see jumpToDebugScreen.
         //   NIHONGO_DEBUG_SCREEN=menu|results|conj-results|game xcrun simctl launch …
-        #if DEBUG
+        #if DEBUG && targetEnvironment(simulator)
         .task { model.jumpToDebugScreen() }
         #endif
         // Keep the due-reminder schedule and iCloud sync fresh as days pass.
