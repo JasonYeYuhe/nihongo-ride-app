@@ -15,20 +15,20 @@ v1.14 is a correctness release -- no new features:
 
 Two phases:
   scripts/submit_1_14.py --metadata   # create versions + What's New + review detail
-  scripts/submit_1_14.py --submit     # attach VALID builds (mac 22 / iOS 23) + submit
+  scripts/submit_1_14.py --submit     # attach VALID builds (mac 24 / iOS 25) + submit
 
 NOTE: build numbers are PER-PLATFORM and collide across platforms, so find_build
 resolves each candidate's platform via its preReleaseVersion -- never match by build
 number alone. The embedded widget extension carries the SAME build number as its host
-app (App Store rejects a mismatch): mac app+widget 22, iOS app+widget 23.
+app (App Store rejects a mismatch): mac app+widget 24, iOS app+widget 25.
 """
 import json, subprocess, sys, os
 
 APP = "6777469778"
 VERSION = "1.14"
 TARGETS = [
-    {"name": "macOS", "platform": "MAC_OS", "build_num": "22"},
-    {"name": "iOS",   "platform": "IOS",    "build_num": "23"},
+    {"name": "macOS", "platform": "MAC_OS", "build_num": "24"},
+    {"name": "iOS",   "platform": "IOS",    "build_num": "25"},
 ]
 
 # What's New — MUST NOT contain the literal star glyph (ASC rejects it).

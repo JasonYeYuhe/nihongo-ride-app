@@ -92,6 +92,37 @@ struct WrongTeachingRegressionTests {
         #expect(helper.kana == "おてつだいさん")
     }
 
+    @Test("a suru-verb headword writes its する, matching the reading it asks for")
+    func suruVerbSurfacesIncludeSuru() {
+        // 勉強 / 散歩 / 掃除 / 練習 shipped as the 64pt prompt while the typing target was
+        // べんきょうする / さんぽする / … — the four most common suru-verbs an N5 learner meets,
+        // each showing a headword whose reading is NOT what it wanted typed.
+        //
+        // The cause is visible only next to the noun entries: 勉強/べんきょう already exists as
+        // n5-benkyou, and 散歩・掃除・練習 exist at N3. These are the VERB copies, and the する
+        // was appended to the READING alone to get past the global reading-uniqueness gate —
+        // which it did, at the cost of a headword that no longer matched. Writing 勉強する is
+        // both correct Japanese and the thing that makes surface and reading agree again.
+        //
+        // The rule below is structural and exact: across all 7074 entries it selects these
+        // four and nothing else. 擦る/こする is a genuine godan-r verb, not a suru-verb, and
+        // its class keeps it out.
+        for e in VocabStore.shared.entries where e.vc == "suru" && e.kana.hasSuffix("する") {
+            #expect(e.surface.hasSuffix("する"),
+                    "\(e.id) shows \(e.surface) but asks for \(e.kana)")
+        }
+        // And the four are still present, still conjugating from the noun stem.
+        for id in ["n5-b078", "n5-b095", "n5-b164", "n5-b197"] {
+            guard let e = entry(id) else { Issue.record("missing \(id)"); continue }
+            let polite = Conjugator.conjugate(kana: e.kana, verbClass: .suru, form: .polite)
+            #expect(polite == String(e.kana.dropLast(2)) + "します",
+                    "\(e.surface): polite was \(polite ?? "nil")")
+        }
+        // The noun entries they were colliding with are untouched — the fix must not have
+        // been "make them unique by deleting one".
+        #expect(entry("n5-benkyou")?.kana == "べんきょう")
+    }
+
     @Test("より is taught as より, not as 方")
     func yoriIsNotHou() {
         // n5-b380 displayed より while teaching the reading ほう and the meaning "direction"
