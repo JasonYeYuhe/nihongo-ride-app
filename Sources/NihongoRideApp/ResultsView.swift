@@ -172,24 +172,24 @@ struct ResultsView: View {
             (icon: "brain.head.profile", tint: Theme.accent,
              value: "\(summary.reviewWords.count)", label: zh ? "待复习" : "To review", spoken: nil),
         ]
-        return Group {
-            if isPhoneIdiom {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                    ForEach(cards.indices, id: \.self) { i in
-                        scoreCard(cards[i])
-                    }
-                }
-                .frame(maxWidth: 420)
-            } else {
-                VStack(spacing: 14) {
-                    HStack(spacing: 14) { ForEach(0..<3) { i in scoreCard(cards[i]) } }
-                    HStack(spacing: 14) { ForEach(3..<6) { i in scoreCard(cards[i]) } }
+        // Width-driven, not idiom-driven — see ConjugationResultsView.scoreGrid for the bug
+        // this replaces (iPad portrait treated as roomy, tiles off both screen edges).
+        return ViewThatFits(in: .horizontal) {
+            VStack(spacing: 14) {
+                HStack(spacing: 14) { ForEach(0..<3) { i in scoreCard(cards[i], flexible: false) } }
+                HStack(spacing: 14) { ForEach(3..<6) { i in scoreCard(cards[i], flexible: false) } }
+            }
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                ForEach(cards.indices, id: \.self) { i in
+                    scoreCard(cards[i], flexible: true)
                 }
             }
+            .frame(maxWidth: 420)
         }
     }
 
-    private func scoreCard(_ c: (icon: String, tint: Color, value: String, label: String, spoken: String?)) -> some View {
+    private func scoreCard(_ c: (icon: String, tint: Color, value: String, label: String, spoken: String?),
+                           flexible: Bool) -> some View {
         VStack(spacing: 8) {
             Image(systemName: c.icon).font(.title2).foregroundStyle(c.tint)
             // A number must never lose digits — 1100 m truncated to "11…" reports a
@@ -202,14 +202,14 @@ struct ResultsView: View {
                 .lineLimit(2).multilineTextAlignment(.center)
         }
         .padding(.vertical, 8)
-        .frame(maxWidth: isPhoneIdiom ? .infinity : nil)
+        .frame(maxWidth: flexible ? .infinity : nil)
         // minHeight, not height: at the accessibility text sizes the contents are taller
         // than 104/120pt and a fixed frame does not clip them — it lets them spill OUTSIDE
         // the panel, so the tiles overlapped each other and the labels sat on the next
         // row's icon. Growing the tile is the only thing that keeps the grid readable.
         // (v1.14 §C, seen on a device at AX5 — ImageRenderer cannot show this.)
-        .frame(width: isPhoneIdiom ? nil : 150)
-        .frame(minHeight: isPhoneIdiom ? 104 : 120)
+        .frame(width: flexible ? nil : 150)
+        .frame(minHeight: flexible ? 104 : 120)
         .panel(20)
         // One element: "Score, 150" instead of icon + "150" + "Score" fragments.
         .accessibilityElement()

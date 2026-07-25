@@ -372,11 +372,23 @@ struct MenuView: View {
         }
     }
 
+    /// Deck size + what is actually due, both kinds. See the call site for why.
+    private var dueLine: String {
+        let zh = model.languageCode == "zh"
+        let conj = model.conjugationDueCount
+        let head = zh ? "\(model.wordPoolLabel) 词库:\(model.wordsAvailableAtLevel) 词 · 待复习:\(model.dueReviewCount) 词"
+                      : "\(model.wordPoolLabel) deck: \(model.wordsAvailableAtLevel) words · Due: \(model.dueReviewCount) words"
+        guard conj > 0 else { return head }
+        return head + (zh ? " + \(conj) 变形" : " + \(conj) conjugations")
+    }
+
     private var footer: some View {
         VStack(spacing: 4) {
-            Text(model.languageCode == "zh"
-                 ? "\(model.wordPoolLabel) 词库:\(model.wordsAvailableAtLevel) 词 · 待复习:\(model.dueReviewCount)"
-                 : "\(model.wordPoolLabel) deck: \(model.wordsAvailableAtLevel) words · Due for review: \(model.dueReviewCount)")
+            // "Due for review" used to mean vocabulary only while the app badge (v1.14 §B)
+            // means both, so a learner with 3 conjugations due read a badge of 3 and a menu
+            // saying 0. The line now names what it counts, and adds conjugations when there
+            // are any — silent on zero, so the common case stays short.
+            Text(dueLine)
                 .font(.callout).foregroundStyle(Theme.dim)
             Text("Dictionary data: JMdict/Mozc · CC BY-SA / BSD")
                 .font(.caption2).foregroundStyle(Theme.dim.opacity(0.6))

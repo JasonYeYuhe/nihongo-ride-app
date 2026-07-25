@@ -387,6 +387,7 @@ final class AppModel {
 
     private func startSyncIfEnabled(fullResync: Bool = false) {
         guard Self.cloudSyncAvailable else { syncStatus = .off; return }
+        guard !Self.isLayoutHarness else { syncStatus = .off; return }
         guard iCloudSyncEnabled else { syncStatus = .off; return }
         guard let controller = CloudKitSyncController(model: self) else {
             syncStatus = .off          // CloudKit unavailable (dev / no entitlement)
@@ -409,6 +410,17 @@ final class AppModel {
         }
     }
 
+    /// True while the layout harness is driving. Kept OUTSIDE the `#if` so the guards that
+    /// consult it read the same in every configuration; it is constant-false anywhere the
+    /// harness cannot run.
+    static var isLayoutHarness: Bool {
+        #if DEBUG && targetEnvironment(simulator)
+        return ProcessInfo.processInfo.environment["NIHONGO_DEBUG_SCREEN"] != nil
+        #else
+        return false
+        #endif
+    }
+
     #if DEBUG && targetEnvironment(simulator)
     /// Debug-only layout harness: `NIHONGO_DEBUG_SCREEN` drops the app straight onto one
     /// screen, populated enough to be worth looking at. Its whole reason to exist is
@@ -422,12 +434,22 @@ final class AppModel {
     /// layout. So it is gated on the SIMULATOR as well as DEBUG: a Debug build on a real
     /// device (or `swift run` on the Mac) would otherwise silently add a phantom ride to the
     /// developer's own history. A simulator container is disposable; a person's is not.
+    ///
+    /// "Disposable container" is NOT the same as "no side effects", though: a simulator signed
+    /// into iCloud would have pushed those phantom rides into the developer's real CloudKit
+    /// development database, where they are not disposable at all. `isLayoutHarness` therefore
+    /// also keeps the sync controller from starting (see `startSyncIfEnabled`).
     func jumpToDebugScreen() {
         guard let want = ProcessInfo.processInfo.environment["NIHONGO_DEBUG_SCREEN"] else { return }
         switch want {
         case "menu":
             screen = .menu
         case "results":
+            // Force Journey: dispatching through the PERSISTED mode meant that if the app was
+            // last left on Verbs this built a conjugation session and then called a finishGame
+            // that does nothing, and on Practice it returned to the menu — the harness silently
+            // showed the wrong screen, which is worse than failing.
+            selectedMode = .journey
             startGame()
             session?.skip()                       // one lapse so the review list has a row
             for _ in 0 ..< 6 {

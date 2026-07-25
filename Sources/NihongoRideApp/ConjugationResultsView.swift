@@ -90,19 +90,23 @@ struct ConjugationResultsView: View {
              zh ? "\(s.promptsCompleted) / \(s.promptCount)" : "\(s.promptsCompleted) of \(s.promptCount)"),
             ("scope", .white, "\(Int(s.accuracy * 100))%", zh ? "准确率" : "Accuracy", nil),
         ]
-        return Group {
-            if isPhoneIdiom {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                    ForEach(cards.indices, id: \.self) { i in card(cards[i]) }
-                }
-                .frame(maxWidth: 420)
-            } else {
-                HStack(spacing: 14) { ForEach(cards.indices, id: \.self) { i in card(cards[i]) } }
+        // Chosen by AVAILABLE WIDTH, not by device idiom. Four 150pt tiles plus their panel
+        // padding need ~950pt, and `isPhoneIdiom` calls every iPad roomy — so on an iPad mini
+        // in portrait (744pt) the first and last tiles ran off both edges of the screen, at the
+        // DEFAULT text size. ViewThatFits takes the single row when it genuinely fits and the
+        // two-column grid otherwise, which also covers Slide Over and the accessibility sizes.
+        // (v1.14 §D, after the Codex review; reproduced on the iPad mini simulator.)
+        return ViewThatFits(in: .horizontal) {
+            HStack(spacing: 14) { ForEach(cards.indices, id: \.self) { i in card(cards[i], flexible: false) } }
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                ForEach(cards.indices, id: \.self) { i in card(cards[i], flexible: true) }
             }
+            .frame(maxWidth: 420)
         }
     }
 
-    private func card(_ c: (icon: String, tint: Color, value: String, label: String, spoken: String?)) -> some View {
+    private func card(_ c: (icon: String, tint: Color, value: String, label: String, spoken: String?),
+                      flexible: Bool) -> some View {
         VStack(spacing: 8) {
             Image(systemName: c.icon).font(.title2).foregroundStyle(c.tint)
             Text(c.value).scaledSystemFont(28, weight: .bold, design: .rounded, relativeTo: .largeTitle)
@@ -112,11 +116,11 @@ struct ConjugationResultsView: View {
                 .lineLimit(2).multilineTextAlignment(.center)
         }
         .padding(.vertical, 8)
-        .frame(maxWidth: isPhoneIdiom ? .infinity : nil)
+        .frame(maxWidth: flexible ? .infinity : nil)
         // See ResultsView.scoreCard: a fixed height lets accessibility-sized contents spill
         // out of the panel and overlap the row below. (v1.14 §C.)
-        .frame(width: isPhoneIdiom ? nil : 150)
-        .frame(minHeight: isPhoneIdiom ? 104 : 120)
+        .frame(width: flexible ? nil : 150)
+        .frame(minHeight: flexible ? 104 : 120)
         .panel(20)
         .accessibilityElement()
         .accessibilityLabel(c.label)

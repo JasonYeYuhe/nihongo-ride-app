@@ -53,7 +53,7 @@ enum ReminderScheduler {
         let zh = languageCode == "zh"
         let reminders = DueReminderPlanner.plan(
             store: store,
-            conjugationDue: { conjugationStore.dueCount(on: $0) },
+            conjugationDue: { conjugationStore.dueCount(on: $0, calendar: $1) },
             from: Date(), hour: hour)
         for (index, reminder) in reminders.enumerated() {
             let content = UNMutableNotificationContent()

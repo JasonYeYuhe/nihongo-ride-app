@@ -185,8 +185,14 @@ public struct ReviewWidgetContent: View {
                     .font(.system(size: 44, weight: .heavy, design: .rounded))
                     .foregroundStyle(data.vocabDue == 0 ? WidgetPalette.dim : .white)
                     .monospacedDigit()
-                Text(data.vocabDue == 0 ? t("全部复习完啦", "all caught up")
-                                        : t("个词到期", "words due"))
+                // "All caught up" only when BOTH counts are zero. v1.13 §B fixed exactly this
+                // for the small layout and missed the medium, where the very next column can
+                // be showing due conjugations — and since v1.14 §B the app badge counts them,
+                // so the widget would have been contradicting the badge on the same screen.
+                Text(data.vocabDue == 0
+                     ? (data.conjugationDue == 0 ? t("全部复习完啦", "all caught up")
+                                                 : t("个词到期", "words due"))
+                     : t("个词到期", "words due"))
                     .font(.system(size: 12, weight: .medium, design: .rounded))
                     .foregroundStyle(WidgetPalette.dim)
                 Spacer(minLength: 0)

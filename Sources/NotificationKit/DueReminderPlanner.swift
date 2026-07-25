@@ -35,10 +35,17 @@ public enum DueReminderPlanner {
 
     /// - Parameters:
     ///   - store: current vocab SRS state (its cards' `dueDate`s drive the counts).
-    ///   - conjugationDue: how many CONJUGATION cards are due by a given instant. A closure,
-    ///     not a store, so this module keeps depending on ReviewKit alone — the conjugation
-    ///     SRS is a deliberately separate store (red line §1) and NotificationKit must not
-    ///     learn about it. Defaults to zero so existing callers are unchanged.
+    ///   - conjugationDue: how many CONJUGATION cards are due by a given instant, **in the
+    ///     calendar passed as the second argument**. A closure, not a store, so this module
+    ///     keeps depending on ReviewKit alone — the conjugation SRS is a deliberately separate
+    ///     store (red line §1) and NotificationKit must not learn about it. Defaults to zero
+    ///     so existing callers are unchanged.
+    ///
+    ///     Both counts are taken in `calendar`, not `Calendar.current`. Leaving that to the
+    ///     default made `calendar:` a half-injection: the planner built Tokyo days and then
+    ///     asked the stores to re-derive "which day is this instant in" from the machine's
+    ///     time zone, so the same code counted differently under `TZ=UTC` and the unit tests
+    ///     were passing only because this Mac is on JST.
     ///   - now: the reference instant ("now").
     ///   - hour: local hour-of-day to fire at (clamped to 0…23).
     ///   - days: how many days ahead to plan (default 7; iOS allows 64 pending).
@@ -46,7 +53,7 @@ public enum DueReminderPlanner {
     /// - Returns: future reminders, soonest first, skipping zero-due days.
     public static func plan(
         store: ReviewStore,
-        conjugationDue: (Date) -> Int = { _ in 0 },
+        conjugationDue: (Date, Calendar) -> Int = { _, _ in 0 },
         from now: Date,
         hour: Int,
         days: Int = 7,
@@ -69,8 +76,8 @@ public enum DueReminderPlanner {
 
             // Cards due by the end of this calendar day (one second before midnight).
             let endOfDay = nextDay.addingTimeInterval(-1)
-            let vocab = store.dueCount(on: endOfDay)
-            let conj = conjugationDue(endOfDay)
+            let vocab = store.dueCount(on: endOfDay, calendar: calendar)
+            let conj = conjugationDue(endOfDay, calendar)
             if vocab + conj > 0 {
                 reminders.append(DueReminder(fireDate: fire, vocabCount: vocab, conjugationCount: conj))
             }

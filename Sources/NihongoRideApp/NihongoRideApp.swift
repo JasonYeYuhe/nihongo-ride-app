@@ -146,6 +146,11 @@ struct RootView: View {
         // Keep the due-reminder schedule and iCloud sync fresh as days pass.
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { model.appBecameActive() }
+            // Leaving the foreground is the last moment we are guaranteed to run. A
+            // conjugation drill writes SRS after EVERY prompt but only reschedules when the
+            // drill ends, so backgrounding mid-drill (and then being terminated) left the
+            // badge and the next 7 days of reminders describing a store that had moved on.
+            if phase == .background { model.refreshReminders() }
         }
         // Game Center access point: show on non-game screens only (never over the ride).
         .onChange(of: model.screen) { _, screen in

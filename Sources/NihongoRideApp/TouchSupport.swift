@@ -88,9 +88,13 @@ extension View {
     /// height than that gets truncated; nothing about the button hinted it was clipped.
     ///
     /// `minWidth`/`minHeight` keep the original dimensions as a FLOOR, so at the default text
-    /// size the rendered pill is identical to before — verified as PIXELS across all 21
-    /// headless renders, not as file bytes: PNG encoding is not byte-stable here, and a naive
-    /// `cmp` reports differences on screens the change cannot reach. Above the default the
+    /// size the pill keeps its exact geometry. Its LABEL can land up to half a pixel
+    /// differently — one more layout layer, one more rounding — which the headless renders
+    /// show as a faint antialiasing change on onboarding.png and conjugation-results.png and
+    /// which is invisible side by side. (I first claimed "pixel-identical" here on the
+    /// strength of a check that could not have detected otherwise: `getbbox()` on an RGBA
+    /// difference image reads the ALPHA channel only. Use `scripts/compare_renders.py`.)
+    /// Above the default the
     /// pill grows with its text, and the padding keeps the glyphs off the capsule edge. If the
     /// screen is too narrow to grow into, the text now wraps and the pill gets taller instead
     /// of losing characters.
