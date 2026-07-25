@@ -310,11 +310,13 @@ final class AppModel {
         guard ReminderScheduler.isAvailable else { return }   // dev / screenshot: skip
         let enabled = dueReminderEnabled
         let store = reviewStore
+        let conjStore = conjugationReviewStore
         let hour = dueReminderHour
         let lang = languageCode
         Task { [weak self] in
             let scheduled = await ReminderScheduler.apply(
-                enabled: enabled, store: store, hour: hour, languageCode: lang)
+                enabled: enabled, store: store, conjugationStore: conjStore,
+                hour: hour, languageCode: lang)
             if enabled && !scheduled {
                 self?.dueReminderEnabled = false   // denied / unavailable
             }
@@ -454,7 +456,6 @@ final class AppModel {
                                                        uniquingKeysWith: { a, _ in a }))
             reviewStore = SyncMerge.reviewStores(reviewStore, remote)
             bgSave("review (sync merge)") { try reviewStore.save(to: storeURL) }
-            refreshReminders()
         }
         if !records.isEmpty {
             // Display lifetime comes from the odometer, so rebuilding the journal
@@ -479,6 +480,11 @@ final class AppModel {
                 try conjugationReviewStore.save(to: conjugationReviewURL)
             }
         }
+        // Reminders read BOTH SRS stores (v1.14 §B), so they are rescheduled once, after both
+        // merges — the call used to sit inside the vocab branch above, which meant a peer's
+        // conjugation progress reached the app but never the badge, and a vocab-only fetch
+        // rescheduled from a conjugation store that was still about to change.
+        if !cards.isEmpty || !conjugationCards.isEmpty { refreshReminders() }
         // Republish the widget if the merge touched ANYTHING the snapshot derives from.
         // Gating on the review stores alone was too narrow: `streakByDay` comes from the
         // journal and `lifetimeWords` from the odometer, and both of those branches can fire
@@ -979,6 +985,7 @@ final class AppModel {
         resultsAreConjugation = true
         self.conjugationSession = nil
         refreshWidgetSnapshot()   // conjugation due count moved
+        refreshReminders()        // …and so did the badge / the next 7 days of reminders
         screen = .results
     }
 

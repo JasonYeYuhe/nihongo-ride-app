@@ -1,5 +1,6 @@
 import Foundation
 import ReviewKit
+import ConjugationReviewKit
 import NotificationKit
 import UserNotifications
 
@@ -26,8 +27,13 @@ enum ReminderScheduler {
     /// scheduled, `false` if reminders are off or authorization was denied (the
     /// caller flips its toggle back to reflect a denial). Only call when
     /// `isAvailable`.
+    ///
+    /// `conjugationStore` is counted alongside `store`: due means ONE thing across the
+    /// app (v1.12), and until v1.14 a learner who drilled only conjugations was never
+    /// reminded and saw a zero badge while the menu offered them reviews.
     @discardableResult
-    static func apply(enabled: Bool, store: ReviewStore, hour: Int, languageCode: String) async -> Bool {
+    static func apply(enabled: Bool, store: ReviewStore, conjugationStore: ConjugationReviewStore,
+                      hour: Int, languageCode: String) async -> Bool {
         let center = UNUserNotificationCenter.current()
 
         guard enabled else {
@@ -45,11 +51,14 @@ enum ReminderScheduler {
 
         cancelAll(center)
         let zh = languageCode == "zh"
-        let reminders = DueReminderPlanner.plan(store: store, from: Date(), hour: hour)
+        let reminders = DueReminderPlanner.plan(
+            store: store,
+            conjugationDue: { conjugationStore.dueCount(on: $0) },
+            from: Date(), hour: hour)
         for (index, reminder) in reminders.enumerated() {
             let content = UNMutableNotificationContent()
             content.title = zh ? "复习时间到" : "Time to review"
-            content.body = body(count: reminder.dueCount, zh: zh)
+            content.body = body(reminder, zh: zh)
             content.sound = .default
             content.badge = NSNumber(value: reminder.dueCount)
 
@@ -60,8 +69,8 @@ enum ReminderScheduler {
                 identifier: "\(idPrefix)\(index)", content: content, trigger: trigger)
             try? await center.add(request)
         }
-        // Keep the app icon badge honest with what's due right now.
-        try? await center.setBadgeCount(store.dueCount())
+        // Keep the app icon badge honest with what's due right now — both kinds.
+        try? await center.setBadgeCount(store.dueCount() + conjugationStore.dueCount())
         return true
     }
 
@@ -69,8 +78,22 @@ enum ReminderScheduler {
         center.removeAllPendingNotificationRequests()
     }
 
-    private static func body(count: Int, zh: Bool) -> String {
-        if zh { return "今天有 \(count) 个词到期复习,上车继续吧。" }
-        return count == 1 ? "1 word is due for review today." : "\(count) words are due for review today."
+    /// The body names what is actually due. Saying "words" when the pile is entirely
+    /// conjugation drills would be a small lie the user can check against the menu, so
+    /// each mix gets its own wording and the mixed case just says "reviews".
+    private static func body(_ r: DueReminder, zh: Bool) -> String {
+        let n = r.dueCount
+        switch (r.vocabCount > 0, r.conjugationCount > 0) {
+        case (true, false):
+            if zh { return "今天有 \(n) 个词到期复习,上车继续吧。" }
+            return n == 1 ? "1 word is due for review today." : "\(n) words are due for review today."
+        case (false, true):
+            if zh { return "今天有 \(n) 个变形到期复习,上车继续吧。" }
+            return n == 1 ? "1 conjugation is due for review today."
+                          : "\(n) conjugations are due for review today."
+        default:
+            if zh { return "今天有 \(n) 个复习到期(\(r.vocabCount) 词 + \(r.conjugationCount) 变形)。" }
+            return "\(n) reviews are due today (\(r.vocabCount) words + \(r.conjugationCount) conjugations)."
+        }
     }
 }
