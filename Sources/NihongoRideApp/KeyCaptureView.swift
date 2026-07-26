@@ -1,4 +1,5 @@
 import SwiftUI
+import GameCore
 
 /// Non-character control keys we care about.
 enum KeyCommand {
@@ -69,7 +70,16 @@ final class KeyCaptureNSView: NSView {
         default: break
         }
         guard let characters = event.charactersIgnoringModifiers, !characters.isEmpty else { return }
-        for character in characters.lowercased() {
+        // Everything the keyCode switch did not claim used to be forwarded verbatim. AppKit
+        // reports Tab as "\t" and the arrows / F-keys / Home / End / Page keys as characters
+        // in a private-use block, so all of them reached the matcher, were rejected, and each
+        // booked a typo and zeroed the combo — three of them on one word recorded a word the
+        // learner had typed correctly as an SM-2 lapse. The rule is pure and tested in
+        // GameCore.TypingKeyFilter. (v1.15 §D.)
+        let shortcut = event.modifierFlags.contains(.command)
+            || event.modifierFlags.contains(.control)
+        for character in characters.lowercased()
+        where TypingKeyFilter.accepts(character, commandOrControl: shortcut) {
             onKey?(character)
         }
     }

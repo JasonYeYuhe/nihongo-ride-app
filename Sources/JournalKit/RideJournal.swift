@@ -85,7 +85,19 @@ public struct RideJournal: Codable, Sendable {
     /// counted yet (the chain only breaks once a full day passes with no ride).
     public func streakDays(asOf date: Date = Date(), calendar: Calendar = .current) -> Int {
         guard !records.isEmpty else { return 0 }
-        let days = Set(records.map { calendar.startOfDay(for: $0.date) })
+        // A ride counts for every day it was RIDDEN ON, not only the day it ended. A record
+        // stores when it finished plus its duration, so a session begun at 23:50 and finished
+        // at 00:02 covers both days — and a rider who does exactly that at the end of a long
+        // chain used to see the streak reset to 1, having ridden without missing a day.
+        // `dailyWords` deliberately keeps attributing the words to the end day; this is only
+        // about whether the day was ridden at all. (v1.15 §D.)
+        var days = Set<Date>()
+        for record in records {
+            days.insert(calendar.startOfDay(for: record.date))
+            if record.duration > 0 {
+                days.insert(calendar.startOfDay(for: record.date.addingTimeInterval(-record.duration)))
+            }
+        }
         let today = calendar.startOfDay(for: date)
 
         var cursor: Date

@@ -6,6 +6,7 @@ import RomajiKana
 struct GameView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.scenePhase) private var scenePhase
     @State private var isPaused = false
     @State private var timeRemaining = 0.0
     @State private var keyboardUp = false   // iOS: software keyboard visible → compact layout
@@ -82,6 +83,18 @@ struct GameView: View {
                     }
                 )
             }
+        }
+        // The ridden-time clock follows the SAME three signals that already stop the game's
+        // own timer, so the duration written to the journal matches what the rider saw.
+        // (v1.15 §D — before this, paused/sheet/backgrounded time was recorded as riding.)
+        .onChange(of: isPaused) { _, paused in
+            paused ? model.pauseRunClock() : model.resumeRunClock()
+        }
+        .onChange(of: addToListsID != nil) { _, open in
+            open ? model.pauseRunClock() : model.resumeRunClock()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            phase == .active ? model.resumeRunClock() : model.pauseRunClock()
         }
         .onAppear {
             Sound.enabled = model.soundEnabled

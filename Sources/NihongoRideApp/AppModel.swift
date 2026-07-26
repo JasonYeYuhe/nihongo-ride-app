@@ -84,6 +84,10 @@ final class AppModel {
     /// meant for the new screen's buttons.
     private(set) var navCount = 0
 
+    /// The last start attempt found nothing to ride — every word at this level is already
+    /// scheduled beyond today. Shown on the menu instead of a fake arrival screen. (v1.15 §D.)
+    private(set) var emptyPoolNotice = false
+
     // Settings. Each persists on change (v1.2 — before this they only lived in
     // memory and reset to defaults on every launch). `didSet` doesn't fire during
     // init, so applying loaded values below is free; `settingsLoaded` guards any
@@ -184,7 +188,10 @@ final class AppModel {
     /// only log (no alert — could loop). Cleared on dismiss. (PLAN-V1.7 §D.)
     var lastPersistError: PersistError?
     /// Wall-clock start of the current run, for duration/WPM in the journal.
-    private var runStartedAt: Date?
+    /// Ridden time for the run in flight — wall clock minus paused / sheet-open /
+    /// backgrounded stretches. Replaces a bare start timestamp, which counted all three as
+    /// riding and wrote the resulting WPM into the journal permanently. (v1.15 §D.)
+    private var runClock: RunClock?
 
     /// Stable per-install id, used as this device's odometer slot key.
     var deviceID: String { settings.deviceID }
@@ -525,6 +532,13 @@ final class AppModel {
         }
     }
     #endif
+
+    /// The rider stopped riding — pause overlay, a sheet over the game, or the app leaving
+    /// the foreground. Idempotent, because those three overlap. (v1.15 §D.)
+    func pauseRunClock() { runClock?.pause(at: Date()) }
+
+    /// The rider resumed. Ignored when not paused.
+    func resumeRunClock() { runClock?.resume(at: Date()) }
 
     /// App returned to the foreground: refresh reminders and pull/push sync.
     func appBecameActive() {
@@ -867,7 +881,7 @@ final class AppModel {
         session = GameSession.makeSaved(
             ids: resolvable, vocab: .shared, review: reviewStore, config: config)
         conjugationSession = nil   // defensive: a list/saved run must not route to the conjugation screen
-        runStartedAt = Date()
+        runClock = RunClock(startedAt: Date())
         resolveRideStage()
         screen = .playing
     }
@@ -939,12 +953,27 @@ final class AppModel {
         case .conjugation:
             break   // handled by the early return above
         }
+        let built: GameSession
         if selectedMode == .practice && practicePassages {
-            session = GameSession.makePractice(level: practicePassageLevel, config: config)
+            built = GameSession.makePractice(level: practicePassageLevel, config: config)
         } else {
-            session = GameSession.make(config: config, vocab: .shared, review: reviewStore)
+            built = GameSession.make(config: config, vocab: .shared, review: reviewStore)
         }
-        runStartedAt = Date()
+        // Build-then-guard, like every sibling start path (startListGame, the weak-words
+        // cram, the conjugation drill). This one had no guard, and Time Attack sets
+        // reviewWordCount = 0 — so once a learner has typed every word at their level the
+        // queue is empty, the session is already finished at construction, GameView's
+        // defensive onAppear finishes it, and the results screen congratulates them on a run
+        // with zero keystrokes at 100% accuracy. Staying on the menu is the honest outcome;
+        // the menu explains why. (v1.15 §D.)
+        guard !built.isFinished else {
+            session = nil
+            emptyPoolNotice = true
+            return
+        }
+        emptyPoolNotice = false
+        session = built
+        runClock = RunClock(startedAt: Date())
         resolveRideStage()
         screen = .playing
     }
@@ -974,7 +1003,7 @@ final class AppModel {
         config.showRomajiHint = showRomajiHint
         session = GameSession.makeWeak(ids: resolvable, vocab: .shared, config: config)
         conjugationSession = nil   // defensive: a cram must not route to the conjugation screen
-        runStartedAt = Date()
+        runClock = RunClock(startedAt: Date())
         resolveRideStage()
         screen = .playing
     }
@@ -1022,7 +1051,7 @@ final class AppModel {
         built.onOutcome = conjugationOutcomeSink()
         session = nil
         conjugationSession = built
-        runStartedAt = Date()
+        runClock = RunClock(startedAt: Date())
         resolveRideStage()
         screen = .playing
     }
@@ -1049,7 +1078,7 @@ final class AppModel {
         built.onOutcome = conjugationOutcomeSink()
         session = nil
         conjugationSession = built
-        runStartedAt = Date()
+        runClock = RunClock(startedAt: Date())
         resolveRideStage()
         screen = .playing
     }
@@ -1161,7 +1190,7 @@ final class AppModel {
     func backToMenu() {
         session = nil
         conjugationSession = nil
-        runStartedAt = nil
+        runClock = nil
         stopSpeaking()
         screen = .menu
     }
@@ -1172,16 +1201,15 @@ final class AppModel {
     @discardableResult
     private func logRun(_ session: GameSession) -> RideRecord? {
         guard session.wordsCompleted > 0 || session.correctKeystrokes > 0 else {
-            runStartedAt = nil
+            runClock = nil
             return nil
         }
         let now = Date()
-        let duration = runStartedAt.map { now.timeIntervalSince($0) } ?? 0
-        // Same WPM convention as PracticeView's live readout: a run shorter
-        // than 2s (or with no correct keys) has no meaningful speed.
-        let wpm = (duration < 2 || session.correctKeystrokes == 0)
-            ? 0
-            : (Double(session.correctKeystrokes) / 5.0) / (duration / 60)
+        // Ridden time, not wall clock — see RunClock. The WPM convention lives there too, so
+        // the journal row and the live readout cannot drift apart.
+        let clock = runClock ?? RunClock(startedAt: now)
+        let duration = clock.elapsed(at: now)
+        let wpm = clock.wpm(correctKeystrokes: session.correctKeystrokes, at: now)
         let level: String
         if session.mode == .practice && practicePassages {
             level = practicePassageLevel.rawValue
@@ -1212,7 +1240,7 @@ final class AppModel {
         // a fetch-merge write and clobber merged cloud data (last-writer-wins).
         bgSave("journal (run)", allowed: journalWritable) { try journal.save(to: journalURL) }
         bgSave("odometer (run)", allowed: odometerWritable) { try odometer.save(to: odometerURL) }
-        runStartedAt = nil
+        runClock = nil
         return record
     }
 
