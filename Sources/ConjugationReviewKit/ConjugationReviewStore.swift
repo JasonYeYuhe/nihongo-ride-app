@@ -1,4 +1,5 @@
 import Foundation
+import PersistKit
 
 /// Holds conjugation SM-2 cards keyed by `sourceID#form`, answers "what's due", and
 /// records drill outcomes. A **separate store from the flat `ReviewKit.ReviewStore`**
@@ -11,6 +12,18 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     public init(cards: [String: ConjugationSRSCard] = [:]) {
         self.cards = cards
     }
+
+    // Element-lossy decode — see ReviewKit.ReviewStore. (v1.15 §B.)
+    private enum CodingKeys: String, CodingKey { case cards }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        (cards, skippedOnLoad) = try LossyLoad.lossyDictionary(
+            ConjugationSRSCard.self, from: c, forKey: .cards)
+    }
+
+    /// How many cards the last decode had to drop.
+    public private(set) var skippedOnLoad: Int = 0
 
     public var count: Int { cards.count }
 
@@ -91,14 +104,17 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
         try data.write(to: url, options: .atomic)
     }
 
-    public static func load(from url: URL) -> ConjugationReviewStore {
-        guard let data = try? Data(contentsOf: url),
-              let store = try? JSONDecoder().decode(ConjugationReviewStore.self, from: data)
-        else {
-            return ConjugationReviewStore()
+    /// See ReviewKit.ReviewStore.loadReporting. (v1.15 §B.)
+    public static func loadReporting(from url: URL) -> (store: ConjugationReviewStore, outcome: LossyLoad.Outcome) {
+        let (decoded, outcome) = LossyLoad.load(ConjugationReviewStore.self, from: url)
+        let store = decoded ?? ConjugationReviewStore()
+        if store.skippedOnLoad > 0 {
+            return (store, .loadedWithSkips(skipped: store.skippedOnLoad))
         }
-        return store
+        return (store, outcome)
     }
+
+    public static func load(from url: URL) -> ConjugationReviewStore { loadReporting(from: url).store }
 
     /// Absolute-calendar-day due histogram for the home-screen widget (v1.11). Parallel to
     /// `ReviewStore.dueByDay` but hand-copied here to keep this module zero-dependency

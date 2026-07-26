@@ -1,4 +1,5 @@
 import Foundation
+import PersistKit
 
 /// Lifetime odometer as a grow-only counter (G-Counter CRDT).
 ///
@@ -23,6 +24,18 @@ public struct OdometerLog: Codable, Equatable, Sendable {
             self.distanceMeters = distanceMeters
             self.runs = runs
         }
+
+        // Tolerant decoder — see ReviewKit.SRSCard. Slots SUM into the lifetime totals, so
+        // losing one silently subtracts a device's whole history from every screen that
+        // shows a lifetime number.
+        private enum CodingKeys: String, CodingKey { case words, distanceMeters, runs }
+
+        public init(from decoder: Decoder) throws {
+            let c = try decoder.container(keyedBy: CodingKeys.self)
+            words = try c.decodeIfPresent(Int.self, forKey: .words) ?? 0
+            distanceMeters = try c.decodeIfPresent(Double.self, forKey: .distanceMeters) ?? 0
+            runs = try c.decodeIfPresent(Int.self, forKey: .runs) ?? 0
+        }
     }
 
     /// deviceID → that device's lifetime contribution.
@@ -31,6 +44,18 @@ public struct OdometerLog: Codable, Equatable, Sendable {
     public init(slots: [String: Slot] = [:]) {
         self.slots = slots
     }
+
+    // Element-lossy decode — see ReviewKit.ReviewStore. Slots sum, so a dropped slot is a
+    // silently smaller lifetime. (v1.15 §B.)
+    private enum CodingKeys: String, CodingKey { case slots }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        (slots, skippedOnLoad) = try LossyLoad.lossyDictionary(Slot.self, from: c, forKey: .slots)
+    }
+
+    /// How many slots the last decode had to drop.
+    public private(set) var skippedOnLoad: Int = 0
 
     public var totalWords: Int { slots.values.reduce(0) { $0 + $1.words } }
     public var totalDistanceMeters: Double { slots.values.reduce(0) { $0 + $1.distanceMeters } }
@@ -77,10 +102,17 @@ public struct OdometerLog: Codable, Equatable, Sendable {
         try JSONEncoder().encode(self).write(to: url, options: .atomic)
     }
 
-    public static func load(from url: URL) -> OdometerLog {
-        guard let data = try? Data(contentsOf: url),
-              let log = try? JSONDecoder().decode(OdometerLog.self, from: data)
-        else { return OdometerLog() }
-        return log
+    /// See ReviewKit.ReviewStore.loadReporting. The outcome matters more here than anywhere
+    /// else: `shouldBackfill` keys off an EMPTY slot map, so a file this device merely could
+    /// not read must never be mistaken for "this device has no odometer yet". (v1.15 §B.)
+    public static func loadReporting(from url: URL) -> (log: OdometerLog, outcome: LossyLoad.Outcome) {
+        let (decoded, outcome) = LossyLoad.load(OdometerLog.self, from: url)
+        let log = decoded ?? OdometerLog()
+        if log.skippedOnLoad > 0 {
+            return (log, .loadedWithSkips(skipped: log.skippedOnLoad))
+        }
+        return (log, outcome)
     }
+
+    public static func load(from url: URL) -> OdometerLog { loadReporting(from: url).log }
 }

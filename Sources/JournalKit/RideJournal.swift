@@ -1,4 +1,5 @@
 import Foundation
+import PersistKit
 
 /// History of finished runs, plus the analytics the journal screen shows
 /// (streak, totals, WPM trend). Value type with `Codable` persistence,
@@ -32,10 +33,19 @@ public struct RideJournal: Codable, Sendable {
         case records, lifetimeWords, lifetimeDistanceMeters, lifetimeRuns
     }
 
+    /// How many records the last decode had to drop.
+    public private(set) var skippedOnLoad: Int = 0
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let stored = try container.decode([RideRecord].self, forKey: .records)
+        // Element-lossy: one unreadable row costs that row, not the whole history.
+        // (v1.15 §B — see ReviewKit.SRSCard.)
+        let (stored, skipped) = try LossyLoad.lossyArray(
+            RideRecord.self, from: container, forKey: .records)
+        skippedOnLoad = skipped
         records = stored
+        // The stored counters are authoritative when present: they include rides already
+        // trimmed by the 2000-record cap, which the surviving records cannot account for.
         lifetimeWords = try container.decodeIfPresent(Int.self, forKey: .lifetimeWords)
             ?? stored.reduce(0) { $0 + $1.wordsCompleted }
         lifetimeDistanceMeters = try container.decodeIfPresent(Double.self, forKey: .lifetimeDistanceMeters)
@@ -147,10 +157,17 @@ public struct RideJournal: Codable, Sendable {
         try data.write(to: url, options: .atomic)
     }
 
-    public static func load(from url: URL) -> RideJournal {
-        guard let data = try? Data(contentsOf: url) else { return RideJournal() }
+    /// See ReviewKit.ReviewStore.loadReporting. (v1.15 §B.)
+    public static func loadReporting(from url: URL) -> (journal: RideJournal, outcome: LossyLoad.Outcome) {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        return (try? decoder.decode(RideJournal.self, from: data)) ?? RideJournal()
+        let (decoded, outcome) = LossyLoad.load(RideJournal.self, from: url, decoder: decoder)
+        let journal = decoded ?? RideJournal()
+        if journal.skippedOnLoad > 0 {
+            return (journal, .loadedWithSkips(skipped: journal.skippedOnLoad))
+        }
+        return (journal, outcome)
     }
+
+    public static func load(from url: URL) -> RideJournal { loadReporting(from: url).journal }
 }

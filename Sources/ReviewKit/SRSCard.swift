@@ -39,6 +39,32 @@ public struct SRSCard: Codable, Hashable, Sendable, Identifiable {
     public var totalReviews: Int
     public var totalMistakes: Int
 
+    // Tolerant decoder. The synthesized one throws for the WHOLE array if a single card is
+    // missing a single key, and `ReviewStore.load` then returned an empty store — nine
+    // hundred cards gone because one lost a field, made permanent by the next write and
+    // unrecoverable from iCloud (the change token means those records are never re-sent).
+    // Only `id` is required, because a card without one cannot be filed anywhere; every
+    // other field falls back to what a fresh card would have. (v1.15 §B.)
+    private enum CodingKeys: String, CodingKey {
+        case id, easeFactor, interval, repetitions, dueDate, lapses
+        case lastReviewed, totalReviews, totalMistakes
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        easeFactor = try c.decodeIfPresent(Double.self, forKey: .easeFactor) ?? Self.initialEaseFactor
+        interval = try c.decodeIfPresent(Int.self, forKey: .interval) ?? 0
+        repetitions = try c.decodeIfPresent(Int.self, forKey: .repetitions) ?? 0
+        // A card with no due date is due now: it re-enters the rotation rather than
+        // disappearing into the far future.
+        dueDate = try c.decodeIfPresent(Date.self, forKey: .dueDate) ?? Date()
+        lapses = try c.decodeIfPresent(Int.self, forKey: .lapses) ?? 0
+        lastReviewed = try c.decodeIfPresent(Date.self, forKey: .lastReviewed)
+        totalReviews = try c.decodeIfPresent(Int.self, forKey: .totalReviews) ?? 0
+        totalMistakes = try c.decodeIfPresent(Int.self, forKey: .totalMistakes) ?? 0
+    }
+
     public static let minimumEaseFactor = 1.3
     public static let initialEaseFactor = 2.5
     /// Lapses at/above this count flag the card as a "leech" worth extra attention.

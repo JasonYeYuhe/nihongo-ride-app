@@ -24,6 +24,7 @@ let package = Package(
         .library(name: "SpeechKit", targets: ["SpeechKit"]),
         .library(name: "WidgetSharedKit", targets: ["WidgetSharedKit"]),
         .library(name: "SceneryKit", targets: ["SceneryKit"]),
+        .library(name: "PersistKit", targets: ["PersistKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -53,9 +54,13 @@ let package = Package(
         ),
         .testTarget(name: "VocabKitTests", dependencies: ["VocabKit"]),
 
+        // MARK: Loading JSON stores off disk without losing everything to one bad element.
+        .target(name: "PersistKit"),
+        .testTarget(name: "PersistKitTests", dependencies: ["PersistKit"]),
+
         // MARK: Spaced repetition — simplified SM-2 over typing performance.
-        .target(name: "ReviewKit"),
-        .testTarget(name: "ReviewKitTests", dependencies: ["ReviewKit"]),
+        .target(name: "ReviewKit", dependencies: ["PersistKit"]),
+        .testTarget(name: "ReviewKitTests", dependencies: ["ReviewKit", "PersistKit"]),
 
         // MARK: Game loop — word queue, scoring, SRS recording (UI-independent).
         // Depends on ConjugationKit for the v1.6 conjugation mode (vc→VerbClass mapping
@@ -65,7 +70,7 @@ let package = Package(
         .testTarget(name: "GameCoreTests", dependencies: ["GameCore"]),
 
         // MARK: Ride journal — append-only run history + streak/trend analytics.
-        .target(name: "JournalKit"),
+        .target(name: "JournalKit", dependencies: ["PersistKit"]),
         .testTarget(name: "JournalKitTests", dependencies: ["JournalKit"]),
 
         // MARK: App settings — Codable settings blob + UserDefaults persistence (v1.2).
@@ -73,7 +78,7 @@ let package = Package(
         .testTarget(name: "SettingsKitTests", dependencies: ["SettingsKit"]),
 
         // MARK: iCloud sync core — pure merge of SRS / history / odometer / saved / word-lists (v1.2 Phase A, +v1.4, +v1.5).
-        .target(name: "SyncKit", dependencies: ["ReviewKit", "JournalKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit"]),
+        .target(name: "SyncKit", dependencies: ["ReviewKit", "JournalKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "PersistKit"]),
         .testTarget(name: "SyncKitTests", dependencies: ["SyncKit"]),
 
         // MARK: SRS due-reminder scheduling — pure planner over the review store (v1.2 Phase A).
@@ -100,7 +105,7 @@ let package = Package(
         // its own store + file + CKRecord, so a conjugation lapse can never leak into the
         // flat vocab journey due-queue. GameCore must NOT depend on this (red line §6):
         // the app (AppModel) owns the store and hands GameCore only plain data/closures.
-        .target(name: "ConjugationReviewKit"),
+        .target(name: "ConjugationReviewKit", dependencies: ["PersistKit"]),
         .testTarget(name: "ConjugationReviewKitTests", dependencies: ["ConjugationReviewKit"]),
 
         // MARK: Text-to-speech — @MainActor AVSpeechSynthesizer wrapper for on-demand

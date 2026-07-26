@@ -25,6 +25,30 @@ public struct RideRecord: Codable, Sendable, Equatable, Identifiable {
     /// Wall-clock seconds from start to finish.
     public var duration: TimeInterval
 
+    // Tolerant decoder — see ReviewKit.SRSCard. A journal is append-only history: dropping
+    // every ride because one row lost a field would destroy the streak, the lifetime totals
+    // and the charts at once. Only `date` is required (a ride with no date cannot be placed
+    // on any timeline); everything else degrades to a zero that reads as "not recorded".
+    private enum CodingKeys: String, CodingKey {
+        case id, date, mode, level, score, wpm, accuracy
+        case wordsCompleted, lapsed, distanceMeters, duration
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        date = try c.decode(Date.self, forKey: .date)
+        id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        mode = try c.decodeIfPresent(String.self, forKey: .mode) ?? "journey"
+        level = try c.decodeIfPresent(String.self, forKey: .level) ?? "all"
+        score = try c.decodeIfPresent(Int.self, forKey: .score) ?? 0
+        wpm = try c.decodeIfPresent(Double.self, forKey: .wpm) ?? 0
+        accuracy = try c.decodeIfPresent(Double.self, forKey: .accuracy) ?? 0
+        wordsCompleted = try c.decodeIfPresent(Int.self, forKey: .wordsCompleted) ?? 0
+        lapsed = try c.decodeIfPresent(Int.self, forKey: .lapsed) ?? 0
+        distanceMeters = try c.decodeIfPresent(Double.self, forKey: .distanceMeters) ?? 0
+        duration = try c.decodeIfPresent(TimeInterval.self, forKey: .duration) ?? 0
+    }
+
     public init(
         id: UUID = UUID(),
         date: Date,
