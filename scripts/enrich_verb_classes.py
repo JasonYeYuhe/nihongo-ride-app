@@ -253,7 +253,11 @@ def write_mode(jmdict):
                 n += 1
                 total[cls] += 1
             new_rows.append(new_e)
-        open(f, "w", encoding="utf-8").write(json.dumps(new_rows, ensure_ascii=False, indent=2))
+        # Trailing newline: without it every regeneration re-dirties whichever files a
+        # human last touched, and the diff for a one-word data fix carries a
+        # "\ No newline at end of file" marker that hides the real change.
+        open(f, "w", encoding="utf-8").write(
+            json.dumps(new_rows, ensure_ascii=False, indent=2) + "\n")
         print(f"  {os.path.basename(f)}: vc on {n}/{len(rows)} entries", file=sys.stderr)
     print("=== vc written by class ===", file=sys.stderr)
     for c, k in total.most_common():
