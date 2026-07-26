@@ -25,6 +25,7 @@ let package = Package(
         .library(name: "WidgetSharedKit", targets: ["WidgetSharedKit"]),
         .library(name: "SceneryKit", targets: ["SceneryKit"]),
         .library(name: "PersistKit", targets: ["PersistKit"]),
+        .library(name: "DiagnosticsKit", targets: ["DiagnosticsKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -55,6 +56,10 @@ let package = Package(
         .testTarget(name: "VocabKitTests", dependencies: ["VocabKit"]),
 
         // MARK: Loading JSON stores off disk without losing everything to one bad element.
+        // MARK: Typing diagnostics — names what the engine refused, so the app can explain it.
+        .target(name: "DiagnosticsKit", dependencies: ["RomajiKana"]),
+        .testTarget(name: "DiagnosticsKitTests", dependencies: ["DiagnosticsKit", "RomajiKana"]),
+
         .target(name: "PersistKit"),
         .testTarget(name: "PersistKitTests", dependencies: ["PersistKit"]),
 

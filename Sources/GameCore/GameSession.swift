@@ -97,6 +97,9 @@ public final class GameSession {
     // MARK: Public state (observed by the UI)
 
     public private(set) var current: VocabEntry?
+    /// Refused keystrokes for this run, with the context needed to explain them back.
+    /// In memory only; never persisted, never synced. (v1.15.)
+    public private(set) var mistakes = MistakeTrace()
     public private(set) var index = 0
     public private(set) var score = 0
     public private(set) var combo = 0
@@ -259,6 +262,20 @@ public final class GameSession {
         case .rejected:
             currentMistakes += 1
             combo = 0
+            // Record WHAT was refused, not just that something was (v1.15). Everything here
+            // was already on hand at this instant and was being thrown away, which is why the
+            // app could count a learner's mistakes but never explain one. In memory, this run
+            // only — see MistakeTrace on why a keystroke log goes no further than that.
+            if let kana = current?.kana {
+                mistakes.record(MistakeEvent(
+                    targetKana: kana,
+                    entryID: current?.id,
+                    acceptedRomaji: matcher.typedRomaji,
+                    rejected: Character(character.lowercased()),
+                    expectedNext: matcher.expectedNextCharacters,
+                    kanaIndex: matcher.completedKanaCount,
+                    order: mistakes.count + mistakes.dropped))
+            }
         case .accepted:
             correctKeystrokes += 1
         case .completed:
