@@ -27,7 +27,9 @@ with a `japanese` / `kana` / `english` schema.
 the learner is graded against. This single result disqualifies the obvious design.
 
 **Probe B — can it analyse mistakes?** Given explicit data (`shi -> si (7), chi -> ti (5),
-tsu -> tu (4), …`), the pattern is plainly kunrei-shiki romaji plus dropped sokuon.
+tsu -> tu (4), …`), the pattern is plainly a romanisation-system difference plus dropped sokuon.
+(The data was synthetic, and badly chosen — this app ACCEPTS si/ti/tu. See §AI-1. What the probe
+still measures is whether the model can read a pattern out of counts, and it could not.)
 
 - English: pattern = *"Consistent mistake pattern"*, advice = *"Keep practicing!"*
 - Chinese: pattern = *"Vowel sound changes"* — wrong, these are consonants — and it
@@ -58,9 +60,10 @@ So the rule this design is built on:
 
 The corollary is the part worth saying out loud: for the diagnosis itself, *the app is better
 than the model*. It owns the romaji NFA, the kana tables and every keystroke. It can say
-"you are typing kunrei-shiki: si/ti/tu where this app teaches shi/chi/tsu" — correctly, every
-time, in 0 ms. Asking a model to guess that from a summary is strictly worse. The model's
-honest job is warmth, not truth.
+"you typed `konnichiwa`; the particle は is written `ha`, so you got こんにちわ" — correctly,
+every time, in 0 ms, pointing at the exact character. Asking a model to infer that from a
+summary is strictly worse, and Probe C shows it gets it wrong half the time. The model's honest
+job here is warmth, not truth.
 
 ## 3. The update
 
