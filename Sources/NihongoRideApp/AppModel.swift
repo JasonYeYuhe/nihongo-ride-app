@@ -91,8 +91,14 @@ final class AppModel {
         didSet {
             persistSettings()
             // The widget shows localized labels; without this it lags the app's language
-            // until the next run/foreground (review LOW#2).
-            if oldValue != languageCode { refreshWidgetSnapshot() }
+            // until the next run/foreground (review LOW#2). Pending notifications carry
+            // their text too and are already written into the system's schedule, so they
+            // need rewriting for the same reason — otherwise tonight's reminder still
+            // arrives in the language the user just switched away from.
+            if oldValue != languageCode {
+                refreshWidgetSnapshot()
+                refreshReminders()
+            }
         }
     }
     var showRomajiHint: Bool = true { didSet { persistSettings() } }

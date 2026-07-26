@@ -150,7 +150,14 @@ struct RootView: View {
             // conjugation drill writes SRS after EVERY prompt but only reschedules when the
             // drill ends, so backgrounding mid-drill (and then being terminated) left the
             // badge and the next 7 days of reminders describing a store that had moved on.
-            if phase == .background { model.refreshReminders() }
+            // Both surfaces, not just the badge: every other site that moves the due count
+            // rewrites the widget snapshot alongside the reminders, and refreshing only one
+            // here recreated the badge-vs-widget split v1.14 §B/§D existed to close — a
+            // drill abandoned mid-way left a badge of 2 beside a widget still reading 12.
+            if phase == .background {
+                model.refreshReminders()
+                model.refreshWidgetSnapshot()
+            }
         }
         // Game Center access point: show on non-game screens only (never over the ride).
         .onChange(of: model.screen) { _, screen in

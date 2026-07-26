@@ -107,6 +107,37 @@ extension View {
     }
 }
 
+/// Wraps a screen so it scrolls only when it has to, without moving it when it doesn't.
+///
+/// A bare `ScrollView` is not a no-op for these layouts: the results screens center
+/// themselves with `Spacer()`s, and a scroll view proposes unbounded height, so the spacers
+/// collapse and the content jumps to the top. Giving the content a `minHeight` of the
+/// viewport restores the spacers' room — identical rendering while it fits, scrolling once
+/// it doesn't.
+///
+/// It has to fit on every device, not just iPhone: the results screen's height depends on how
+/// long the run's review list is, and the accessibility text sizes multiply it, so an iPad
+/// mini in portrait or a small macOS window could push the primary button off the bottom with
+/// no way to reach it. (v1.15 §A.)
+/// 🔴 Skipped while capturing. `ImageRenderer` draws a `ScrollView`'s content as NOTHING —
+/// wrapping these screens rendered them as bare scenery, which would silently have emptied
+/// the macOS App Store screenshots, since those come out of the same headless pipeline.
+/// Verified on an iPad simulator that the wrapped screen is correct at runtime; the empty
+/// output was the renderer, not the layout.
+@MainActor
+@ViewBuilder
+func scrollsWhenTall(@ViewBuilder content: @escaping () -> some View) -> some View {
+    if Screenshotter.isCapturing {
+        content()
+    } else {
+        GeometryReader { geo in
+            ScrollView(showsIndicators: false) {
+                content().frame(minHeight: geo.size.height)
+            }
+        }
+    }
+}
+
 extension DynamicTypeSize {
     /// Roomy side-by-side button rows have to stack once the text is accessibility-sized:
     /// three grown pills across a phone don't fit, and SwiftUI's compromise there is to

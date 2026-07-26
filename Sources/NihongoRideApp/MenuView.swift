@@ -377,9 +377,10 @@ struct MenuView: View {
         let zh = model.languageCode == "zh"
         let conj = model.conjugationDueCount
         let head = zh ? "\(model.wordPoolLabel) 词库:\(model.wordsAvailableAtLevel) 词 · 待复习:\(model.dueReviewCount) 词"
-                      : "\(model.wordPoolLabel) deck: \(model.wordsAvailableAtLevel) words · Due: \(model.dueReviewCount) words"
+                      : "\(model.wordPoolLabel) deck: \(model.wordsAvailableAtLevel) words · "
+                        + "Due: \(countLabel(model.dueReviewCount, "word"))"
         guard conj > 0 else { return head }
-        return head + (zh ? " + \(conj) 变形" : " + \(conj) conjugations")
+        return head + (zh ? " + \(conj) 变形" : " + \(countLabel(conj, "conjugation"))")
     }
 
     private var footer: some View {

@@ -16,7 +16,8 @@ struct ConjugationResultsView: View {
             // Same arrival sky as the ride results — the drill rides the same road.
             // (v1.12 §D2; the Codex review caught that this view is NOT ResultsView.)
             RideArrivalBackdrop(stage: model.rideStage)
-            if isPhoneIdiom { ScrollView(showsIndicators: false) { content } } else { content }
+            // See ResultsView / scrollsWhenTall. (v1.15 §A.)
+            scrollsWhenTall { content }
         }
         .background {
             if !Screenshotter.isCapturing {

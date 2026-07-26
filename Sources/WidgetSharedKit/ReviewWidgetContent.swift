@@ -24,6 +24,19 @@ public struct ReviewWidgetData: Sendable, Equatable {
         self.zh = zh
     }
 
+    /// Everything the learner owes today, across BOTH SRS stores — the same number the app
+    /// icon badge shows since v1.14 §B.
+    public var totalDue: Int { vocabDue + conjugationDue }
+
+    /// Whether the widget may say "all caught up".
+    ///
+    /// This is one property rather than a condition written per layout because the per-layout
+    /// version got it wrong twice in a row: the small layout claimed it while conjugations
+    /// were due (fixed in v1.13 §B) and then the medium layout claimed it while the column
+    /// beside it displayed those conjugations (fixed in v1.14 §D). Five layouts sharing one
+    /// definition cannot drift apart a third time.
+    public var isAllCaughtUp: Bool { hasData && totalDue == 0 }
+
     public static let placeholder = ReviewWidgetData(
         hasData: true, stale: false, vocabDue: 12, conjugationDue: 3, streakDays: 5)
     public static let empty = ReviewWidgetData(
@@ -67,7 +80,7 @@ public struct ReviewWidgetContent: View {
     private func t(_ zh: String, _ en: String) -> String { data.zh ? zh : en }
 
     /// Total items due across both stores — the single number the tiny accessories show.
-    private var totalDue: Int { data.vocabDue + data.conjugationDue }
+    private var totalDue: Int { data.totalDue }
 
     public var body: some View {
         switch size {
@@ -86,7 +99,7 @@ public struct ReviewWidgetContent: View {
     private var accessoryInline: some View {
         Label {
             Text(!data.hasData ? t("にほんご ライド", "Nihongo Ride")
-                 : totalDue == 0 ? t("全部复习完", "all caught up")
+                 : data.isAllCaughtUp ? t("全部复习完", "all caught up")
                                  : t("\(totalDue) 个到期", "\(totalDue) due"))
         } icon: {
             Image(systemName: "bicycle")
@@ -100,14 +113,22 @@ public struct ReviewWidgetContent: View {
                 .font(.caption2).fontWeight(.semibold)
             if !data.hasData {
                 Text(t("打开看看要复习什么", "Open to see what's due")).font(.caption)
-            } else if totalDue == 0 {
+            } else if data.isAllCaughtUp {
                 Text(t("全部复习完啦", "All caught up")).font(.caption)
             } else {
                 Text(t("\(data.vocabDue) 词 · \(data.conjugationDue) 变形",
                        "\(data.vocabDue) words · \(data.conjugationDue) forms"))
                     .font(.caption).fontWeight(.medium)
             }
-            if data.streakDays > 0 {
+            // The stale hint that the home-screen layouts carry. Of the three accessory
+            // layouts this is the only one with a spare line for it, and without it a
+            // lock-screen widget whose snapshot has aged past the horizon states a stale
+            // count as fact — the same dishonesty v1.12/v1.13 removed from the larger
+            // sizes. Streak yields the line when both want it: a wrong number matters
+            // more than a right one.
+            if data.stale {
+                Text(t("打开以刷新", "Open to refresh")).font(.caption2)
+            } else if data.streakDays > 0 {
                 Text(t("🔥 连续 \(data.streakDays) 天", "🔥 \(data.streakDays)-day streak"))
                     .font(.caption2)
             }
@@ -154,7 +175,7 @@ public struct ReviewWidgetContent: View {
         // ambiguous.
         let showConj = data.vocabDue == 0 && data.conjugationDue > 0
         let count = showConj ? data.conjugationDue : data.vocabDue
-        let allDone = data.vocabDue == 0 && data.conjugationDue == 0
+        let allDone = data.isAllCaughtUp
         return VStack(alignment: .leading, spacing: 4) {
             header
             Spacer(minLength: 0)
@@ -189,10 +210,8 @@ public struct ReviewWidgetContent: View {
                 // for the small layout and missed the medium, where the very next column can
                 // be showing due conjugations — and since v1.14 §B the app badge counts them,
                 // so the widget would have been contradicting the badge on the same screen.
-                Text(data.vocabDue == 0
-                     ? (data.conjugationDue == 0 ? t("全部复习完啦", "all caught up")
-                                                 : t("个词到期", "words due"))
-                     : t("个词到期", "words due"))
+                Text(data.isAllCaughtUp ? t("全部复习完啦", "all caught up")
+                                          : t("个词到期", "words due"))
                     .font(.system(size: 12, weight: .medium, design: .rounded))
                     .foregroundStyle(WidgetPalette.dim)
                 Spacer(minLength: 0)

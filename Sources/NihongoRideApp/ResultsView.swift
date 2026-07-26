@@ -21,11 +21,9 @@ struct ResultsView: View {
             // fills the screen and stays put; inside, it would become a tall scrolling
             // canvas and drift away with the review list.
             RideArrivalBackdrop(stage: model.rideStage)
-            if isPhoneIdiom {
-                ScrollView(showsIndicators: false) { content }
-            } else {
-                content
-            }
+            // Scrolls on every device now, not only iPhone — see scrollsWhenTall for why
+            // a bare ScrollView would have moved the roomy layouts. (v1.15 §A.)
+            scrollsWhenTall { content }
         }
         .background {
             if !Screenshotter.isCapturing {

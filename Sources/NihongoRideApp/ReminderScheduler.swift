@@ -86,14 +86,16 @@ enum ReminderScheduler {
         switch (r.vocabCount > 0, r.conjugationCount > 0) {
         case (true, false):
             if zh { return "今天有 \(n) 个词到期复习,上车继续吧。" }
-            return n == 1 ? "1 word is due for review today." : "\(n) words are due for review today."
+            return "\(countLabel(n, "word")) \(countVerb(n)) due for review today."
         case (false, true):
             if zh { return "今天有 \(n) 个变形到期复习,上车继续吧。" }
-            return n == 1 ? "1 conjugation is due for review today."
-                          : "\(n) conjugations are due for review today."
+            return "\(countLabel(n, "conjugation")) \(countVerb(n)) due for review today."
         default:
+            // Both counts are non-zero here, so the outer noun is always plural; the two
+            // inner counts are not — this branch shipped "(1 words + 1 conjugations)".
             if zh { return "今天有 \(n) 个复习到期(\(r.vocabCount) 词 + \(r.conjugationCount) 变形)。" }
-            return "\(n) reviews are due today (\(r.vocabCount) words + \(r.conjugationCount) conjugations)."
+            return "\(n) reviews are due today (\(countLabel(r.vocabCount, "word")) + "
+                 + "\(countLabel(r.conjugationCount, "conjugation")))."
         }
     }
 }
