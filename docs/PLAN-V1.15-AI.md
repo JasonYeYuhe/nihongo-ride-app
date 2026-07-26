@@ -71,19 +71,36 @@ A new screen, plus an entry point on the results screen when there is something 
 **Diagnosis: deterministic.** A new `DiagnosticsKit` classifies recorded mistakes into named
 patterns using the app's own romaji tables:
 
-| pattern | signature | remediation drill |
+| pattern | signature | what the learner needs |
 |---|---|---|
-| kunrei-shiki | `si/ti/tu/hu/zi` accepted where `shi/chi/tsu/fu/ji` is taught | words rich in し・ち・つ |
-| dropped sokuon | expected っ, got the bare consonant | words containing っ |
-| long vowel | missing/extra ー or doubled vowel | words containing ー and おう/えい |
-| small ya/yu/yo | きゃ typed きや | words with拗音 |
-| dakuten | が/か, だ/た, ば/ぱ | minimal pairs from the deck |
-| ん before vowel | んあ vs な | words with ん before a vowel |
+| **particle は/へ/を** | typed `wa`/`e`/`o`, got わ/え/お | the rule: these three are written `ha`/`he`/`wo` |
+| **ん before a vowel or y** | `honya` → ほにゃ, wanted ほんや | the rule: `nn` (or `n'`) closes ん |
+| dropped sokuon | expected っ, got the bare consonant | `tt`/`kk`/`ss` doubles the consonant |
+| long vowel | missing/extra ー, おう vs おお | which words take う and which take お |
+| small ya/yu/yo | `kiya` → きや, wanted きゃ | `kya` is one key sequence, not two |
+| dakuten | が/か, だ/た, ば/ぱ | a reading problem, not an input one — drill the words |
 
-Each pattern carries a written explanation and a **drill built from the app's own vocabulary
-by structural query** — so the practice content is as correct as the dictionary is. This is
-the actual new capability: the app notices what you keep getting wrong, names it, and hands
-you a targeted set. None of it needs a model.
+The first two are the highest-value entries and neither was in the first draft of this plan.
+**こんにちは is the very first passage in the corpus**, 152 of 233 passages contain particle は,
+134 contain を, 33 contain へ — and a learner typing what they hear (`konnichiwa`) gets
+こんにちわ every time. This is the most common romaji-input mistake there is, it is live in the
+app's most-used practice content, and the app can detect it exactly.
+
+**What the first draft got wrong, and it matters.** It led with a "kunrei-shiki" pattern —
+flagging `si`/`ti`/`tu` as mistakes. The engine's own table accepts all of them
+(`romaji-hiragana.tsv` lines 207, 257, 258, 278, 242), and onboarding advertises "し = shi / si"
+as a feature. It is not a mistake in this app; I had invented the probe data and then designed a
+diagnostic for the fiction. Caught by the Gemini review. The lesson generalises: a pattern only
+belongs here if the ENGINE rejects it, so each one ships with a test that feeds the wrong input
+through `KanaInputMatcher` and asserts it is actually rejected.
+
+**Remedy: the rule, then the practice — in that order.** The review's sharpest point: if a
+learner types `kiya` for きゃ, the cause is not that they don't know the word, it is that they
+don't know the key sequence. Handing them a vocabulary deck drills the wrong thing. So each
+pattern leads with a short, concrete rule and a **character-level replay of their own mistake**
+— the romaji they typed against the romaji that would have worked, aligned at the point of
+divergence — and only then offers a drill built from the app's own vocabulary by structural
+query, for the patterns where repetition actually helps.
 
 **Phrasing: optional, on-device.** When Apple Intelligence is available and the setting is on,
 the model rewrites the app's own diagnosis into one warm, personal sentence — given the
@@ -112,6 +129,25 @@ committed pipeline (`scripts/gen_examples.py`), never at runtime:
    be globally unique, the sentence must contain the target word;
 3. sample-audit what survives, by hand;
 4. ship the survivors as data, with provenance in the id, exactly like every previous batch.
+
+**Those gates are necessary and nowhere near sufficient.** The Gemini review produced five
+concrete sentences that pass every one of them and are still wrong:
+
+- **transitivity** — 「彼がドアを開く」: 開く is intransitive, so を is ungrammatical. The
+  reading matches, the kana is typeable, the word is present.
+- **homograph** — target 角 (かど, "corner"), sentence 「牛の角が大きい」, which reads つの.
+  The learner is graded on a reading the sentence does not have.
+- **level overload** — an N5 target wrapped in N1 vocabulary: correct, useless.
+- **register mixing** — 「わたくしは本日にラーメンを食べる」: humble nouns, plain verb.
+- **semantic absurdity** — 「電気を勉強する」: parses, means nothing.
+
+So the gate set grows: a morphological pass (Sudachi/MeCab) must agree that the target token
+carries the target reading — that alone kills the homograph class, which is the dangerous one
+because it teaches a false reading; every non-target token must be at or below the target's
+JLPT level plus one, using the app's own 7,074-entry level data; transitivity is checked
+against the JMdict POS the entries already carry; and register/naturalness stay a human
+sample-audit, because nothing mechanical catches translation-ese. A batch that cannot clear
+this ships as nothing — the app is better with 2,122 good sentences than 7,074 uneven ones.
 
 The model proposes; the app's deterministic engines dispose. Nothing reaches a learner that
 the app cannot itself verify.
@@ -148,3 +184,35 @@ invites the question.
 parallel on my machine and lands as data whenever a batch passes its gates.
 
 The v1.15 correctness work already committed (§A–§D) ships in the same release.
+
+---
+
+## 7. Review round 1 — Gemini 3.6 Flash (via `agy`, 2026-07-26)
+
+It was given the plan as text with no repository access, and asked for disagreement. Four
+things it said that changed the plan, and one it said that I am not taking.
+
+**Taken — the kunrei-shiki pattern was fiction.** Covered in §AI-1 above. This is the review's
+biggest single contribution: I had designed a diagnostic for input the engine accepts.
+
+**Taken — the missing patterns are the important ones.** Particle は/へ/を and ん-before-vowel,
+which it called the most common romaji-input mistake there is. Verified against the corpus:
+こんにちは is passage #1, and 152 of 233 passages contain particle は.
+
+**Taken — a word drill is the wrong remedy for an input-mechanics error.** "The root cause is
+IME key-sequence ignorance, not unfamiliarity with vocabulary containing 拗音." §AI-1 now leads
+with the rule and a character-level replay of the learner's own divergence.
+
+**Taken — the pipeline gates are porous.** Five concrete counter-examples, now in §AI-3, plus
+the morphological / level / transitivity gates they force.
+
+**Noted, not taken — "the model selects from app-authored candidates".** It is genuinely safe
+(no invalid Japanese is reachable) and I dismissed it too fast in the first draft. But the app
+has 2,122 sentences across 7,074 words: there is almost never more than one candidate to choose
+between. The architecture is right and the data does not exist yet. If §AI-3 lands and words
+start carrying three or four validated sentences, selection becomes the obvious next use — and
+it stays inside the constraint. Recorded here so it is not rediscovered from scratch.
+
+Two more of its blind-spot points I am carrying but not building now: real-time character-level
+feedback DURING typing (the diffing machinery §AI-1 needs is the same machinery, so this is a
+natural v1.16), and pitch-accent metadata alongside TTS (a content problem, not a code one).
