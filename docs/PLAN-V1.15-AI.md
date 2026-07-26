@@ -77,25 +77,31 @@ patterns using the app's own romaji tables:
 | pattern | signature | what the learner needs |
 |---|---|---|
 | **particle は/へ/を** | typed `wa`/`e`/`o`, got わ/え/お | the rule: these three are written `ha`/`he`/`wo` |
-| **ん before a vowel or y** | `honya` → ほにゃ, wanted ほんや | the rule: `nn` (or `n'`) closes ん |
+| **Hepburn m before b/p** | `shimbun` rejected for しんぶん | ん is always `n`, even before b/p |
 | dropped sokuon | expected っ, got the bare consonant | `tt`/`kk`/`ss` doubles the consonant |
 | long vowel | missing/extra ー, おう vs おお | which words take う and which take お |
 | small ya/yu/yo | `kiya` → きや, wanted きゃ | `kya` is one key sequence, not two |
 | dakuten | が/か, だ/た, ば/ぱ | a reading problem, not an input one — drill the words |
 
-The first two are the highest-value entries and neither was in the first draft of this plan.
-**こんにちは is the very first passage in the corpus**, 152 of 233 passages contain particle は,
-134 contain を, 33 contain へ — and a learner typing what they hear (`konnichiwa`) gets
-こんにちわ every time. This is the most common romaji-input mistake there is, it is live in the
-app's most-used practice content, and the app can detect it exactly.
+The particle row is the highest-value entry and it was not in the first draft.
+**こんにちは is the very first passage in the corpus**, 152 of 233 passages contain は, 134
+contain を, 33 contain へ — and a learner typing what they hear gets rejected at the は. Every
+row above is now backed by a case in `Tests/RomajiKanaTests/MistakeTaxonomyTests.swift` that
+feeds the wrong input to `KanaInputMatcher` and asserts the engine really refuses it, at a
+specific index.
 
-**What the first draft got wrong, and it matters.** It led with a "kunrei-shiki" pattern —
-flagging `si`/`ti`/`tu` as mistakes. The engine's own table accepts all of them
-(`romaji-hiragana.tsv` lines 207, 257, 258, 278, 242), and onboarding advertises "し = shi / si"
-as a feature. It is not a mistake in this app; I had invented the probe data and then designed a
-diagnostic for the fiction. Caught by the Gemini review. The lesson generalises: a pattern only
-belongs here if the ENGINE rejects it, so each one ships with a test that feeds the wrong input
-through `KanaInputMatcher` and asserts it is actually rejected.
+**I got this taxonomy wrong twice, the same way.** Draft 1 led with "kunrei-shiki", flagging
+`si`/`ti`/`tu` — the engine accepts all of them and onboarding advertises "し = shi / si" as a
+feature (Gemini caught it). Draft 2 replaced it with "ん before a vowel" — the matcher is
+deliberately lenient and its own tests accept `renai` for れんあい and `kinyoubi` for きんようび
+(Codex caught it). Both times I wrote the taxonomy from intuition without reading the matcher's
+test contract, which is the authoritative spec.
+
+So the taxonomy is now DERIVED, not asserted. I asked the engine directly what it does with
+each plausible wrong input, and the answers set the table above: `wa`→は, `o`→を, `e`→へ,
+`ite`→いって, `kiyaku`→きゃく and `shimbun`→しんぶん are all rejected, at indices 0, 0, 0, 2, 2
+and 3. The accepted half is pinned too, so a third attempt to diagnose valid input fails a test
+instead of reaching a learner.
 
 **Remedy: the rule, then the practice — in that order.** The review's sharpest point: if a
 learner types `kiya` for きゃ, the cause is not that they don't know the word, it is that they
@@ -105,11 +111,13 @@ pattern leads with a short, concrete rule and a **character-level replay of thei
 divergence — and only then offers a drill built from the app's own vocabulary by structural
 query, for the patterns where repetition actually helps.
 
-**Phrasing: optional, on-device.** When Apple Intelligence is available and the setting is on,
-the model rewrites the app's own diagnosis into one warm, personal sentence — given the
-pattern name, the fix, and the counts. The written fallback is always present and always
-correct; the model's line replaces it only if it arrives, and is capped in length. Off, or
-unavailable, or slow → the feature is complete without it.
+**Phrasing: optional, on-device, and never a replacement.** Draft 1 had the model's sentence
+REPLACE the app's own line when it arrived. Codex pointed out that this breaks the plan's own
+"never in the trust path" rule — Probe C had already produced actively harmful advice, and
+swapping text in after 8 seconds also moves layout and interrupts VoiceOver. So the
+deterministic diagnosis and fix are permanently visible, and any generated warmth is a
+separate, labeled, dismissible line beneath them. Off, unavailable, or slow → nothing is
+missing from the screen.
 
 ### §AI-2 — Word insight
 
@@ -119,9 +127,9 @@ Probe D showed it does acceptably. Opt-in, cached per word (so it costs one gene
 labeled as AI-written, never introduces Japanese beyond the word already on screen, and
 silently absent when the model is not available.
 
-### §AI-3 — Example sentences for the 4,952 words that have none
+### §AI-3 — Example sentences for the 4,953 words that have none
 
-2,122 of 7,074 entries have an example sentence. This is the biggest content gap in the app,
+2,121 of 7,074 entries have an example sentence (counted, after the review corrected my 2,122). This is the biggest content gap in the app,
 and it is where a *large* model earns its place — offline, at build time, through the existing
 committed pipeline (`scripts/gen_examples.py`), never at runtime:
 
@@ -150,17 +158,21 @@ because it teaches a false reading; every non-target token must be at or below t
 JLPT level plus one, using the app's own 7,074-entry level data; transitivity is checked
 against the JMdict POS the entries already carry; and register/naturalness stay a human
 sample-audit, because nothing mechanical catches translation-ese. A batch that cannot clear
-this ships as nothing — the app is better with 2,122 good sentences than 7,074 uneven ones.
+this ships as nothing — the app is better with 2,121 good sentences than 7,074 uneven ones.
 
 The model proposes; the app's deterministic engines dispose. Nothing reaches a learner that
 the app cannot itself verify.
 
 ### Privacy and review
 
-Everything at runtime is on-device; §AI-3 happens on my machine before the build. **No network
-calls, no accounts, no data leaves the device**, so App Privacy stays "Data Not Collected" and
-the review notes stay true. Worth stating plainly in the notes, because "AI" in a release note
-invites the question.
+Everything at runtime is on-device; §AI-3 happens on my machine before the build. App Privacy
+stays "Data Not Collected" — Apple's rule is that on-device processing is not collection.
+
+But the wording I drafted for the review notes — "no network calls, no data leaves the device" —
+is **factually false for the app as a whole**: private iCloud sync is on by default. The
+defensible sentence, which is what will ship, is: *"AI processing happens entirely on device and
+adds no network requests and no data collection; the app's existing optional private iCloud sync
+is unchanged."* Reassess the label if a diagnostic trace is ever synced.
 
 ## 4. What I am NOT building, and why
 
@@ -211,7 +223,7 @@ the morphological / level / transitivity gates they force.
 
 **Noted, not taken — "the model selects from app-authored candidates".** It is genuinely safe
 (no invalid Japanese is reachable) and I dismissed it too fast in the first draft. But the app
-has 2,122 sentences across 7,074 words: there is almost never more than one candidate to choose
+has 2,121 sentences across 7,074 words: there is almost never more than one candidate to choose
 between. The architecture is right and the data does not exist yet. If §AI-3 lands and words
 start carrying three or four validated sentences, selection becomes the obvious next use — and
 it stays inside the constraint. Recorded here so it is not rediscovered from scratch.
@@ -219,3 +231,85 @@ it stays inside the constraint. Recorded here so it is not rediscovered from scr
 Two more of its blind-spot points I am carrying but not building now: real-time character-level
 feedback DURING typing (the diffing machinery §AI-1 needs is the same machinery, so this is a
 natural v1.16), and pitch-accent metadata alongside TTS (a content problem, not a code one).
+
+---
+
+## 8. Review round 2 — Codex (2026-07-26)
+
+It read the repository, not just the plan, and it found the thing that decides the release.
+
+### The blocker: the evidence the Coach diagnoses does not exist
+
+`GameSession.input(_:)` on a rejection does `currentMistakes += 1; combo = 0` and **discards
+the character**. `KanaInputMatcher` retains accepted input only; a rejection leaves its state
+untouched. `SRSCard` persists aggregate counts. So there is no record anywhere of *what* was
+typed, *where*, or *against what* — every diagnosis in §AI-1 is computed from data the app
+throws away. Verified in the source; it is correct.
+
+**§AI-1 therefore has a prerequisite, and that prerequisite is now the first work item:** a
+mistake-event trace — target id, the accepted prefix, the rejected character, the expected-next
+set, the index, and the word boundary. Decisions that come with it, none of which the plan had
+made: current-run only or longitudinal; if longitudinal, retention, deletion, and whether it
+ever crosses CloudKit (the answer should be no — an aggregate is enough for coaching and a
+keystroke trace is the most sensitive thing this app could hold).
+
+### Also taken
+
+- **"ん before a vowel" is accepted input**, exactly like kunrei-shiki was. Both drafts of the
+  taxonomy diagnosed something the engine permits. §AI-1 now derives the taxonomy from the
+  engine and pins the accepted half so it cannot happen a third time.
+- **`shimbun` for しんぶん IS rejected** — Hepburn `m` before b/p, documented in the matcher's
+  own suite. It replaces the ん row.
+- **The generated line must not replace the deterministic one.** See §AI-1.
+- **"No network calls" is false** — iCloud sync is on by default. See the privacy paragraph.
+- **Long vowel is two skills**, not one: katakana ー is a keyboard fact, おう/おお is lexical
+  spelling. One drill must not conflate them.
+- **One rejection is not a pattern.** `ite` for いって is equally consistent with a stray key.
+  Diagnosis requires recurrence across distinct words, and needs an explicit "unknown" outcome.
+- **Drills should prefer already-reviewed words**, or an unfamiliar word adds a second cause of
+  failure to the one being remediated.
+- **§AI-2 has no screen to live on.** There is no word-detail screen; tapping a review word
+  toggles saved state. And `VocabEntry` carries no register, collocation or error data, so
+  "why this word trips people up" is not actually grounded — Probe D tested one word.
+  §AI-2 is deferred until it has both a surface and a grounding.
+- **The counts were wrong** (2,121/4,953), there are already **9 duplicate example sentences**
+  in the shipped data, and `gen_examples.py`'s target check treats "drop the last character" as
+  a stem — so `数学を勉強します。` validates for target 学校 because both contain 学. That gate
+  is actively unsafe and predates this plan.
+- **Provenance, feedback, rollback, evaluation governance** — all absent. Generated content
+  needs a manifest (model, prompt version, batch, reviewer, decision), a way for a user to
+  report a bad sentence, and a way to roll a batch back.
+
+### The honest conclusion about "an AI update"
+
+Codex's judgement, which I agree with: **as an AI headline, the Coach is weak — its valuable
+work is deterministic, and the model adds latency plus an uncheckable rewrite.** The same is
+true of most of what "AI" would nominally do here. The app's advantage is that it owns the
+romaji NFA, the conjugator and 7,074 authoritative readings; a language model is worse than all
+three at their own jobs, and dangerous at the one job that matters most.
+
+So v1.15 is a big update whose headline is **adaptive diagnostics**, not AI. It will be
+marketed that way. The genuinely AI-shaped parts are two thin, labeled, optional layers
+(warmth on the coach line; word insight once it has a home) and one offline content pipeline
+where a large model proposes and the app's engines reject. Calling the release "AI-powered"
+would be the same kind of claim as the sync status that said "Synced" when nothing had synced —
+and this project has spent three releases removing those.
+
+### Both reviewers converged on one thing I had dismissed
+
+Constrained SELECTION — the model choosing from app-authored candidates, enforced with
+`GenerationGuide.anyOf` so an off-list answer is structurally impossible — is safe in a way
+generation never is: no invalid Japanese is reachable, only a poor choice. It is the right
+long-term home for a model in this app. It needs candidates to choose between, which is what
+§AI-3 would create. Recorded, not built now.
+
+## 9. Revised sequencing
+
+1. **Mistake trace** (prerequisite, deterministic, no AI). Current-run, in memory, never synced.
+2. **Coach**: derived taxonomy, recurrence requirement, rule + character-level replay, drills
+   from already-reviewed words. Deterministic end to end; ships complete without a model.
+3. **Optional warmth**: on-device, labeled, adjunct, behind a default-off setting, with the
+   availability/locale/cancellation matrix Codex listed.
+4. **§AI-3**: fix `contains_target` first (it is a live defect), then reject-only gates with
+   morphological alignment, then a reviewed batch. Ship nothing unreviewed.
+5. **§AI-2**: deferred until there is a word-detail screen and something real to ground it in.
