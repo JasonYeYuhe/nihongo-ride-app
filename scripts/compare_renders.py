@@ -25,8 +25,9 @@ Usage:
     NIHONGO_SHOT=/tmp/a swift run NihongoRideApp     # baseline, before the change
     …make changes…
     NIHONGO_SHOT=/tmp/b swift run NihongoRideApp
-    NIHONGO_SHOT=/tmp/b2 swift run NihongoRideApp    # again, unchanged — the control
-    scripts/compare_renders.py /tmp/a /tmp/b --control /tmp/b2
+    NIHONGO_SHOT=/tmp/b2 swift run NihongoRideApp    # again, unchanged — a control
+    NIHONGO_SHOT=/tmp/b3 swift run NihongoRideApp    # and again; one control undersamples
+    scripts/compare_renders.py /tmp/a /tmp/b --control /tmp/b2 --control /tmp/b3
 
 Exit 0 if every STABLE screen is unchanged, 1 otherwise. Without --control every screen
 is treated as stable, which is the right default for widget/panel-only comparisons.
@@ -68,8 +69,12 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("baseline")
     ap.add_argument("candidate")
-    ap.add_argument("--control", help="a second render of the CANDIDATE's code; classifies "
-                                      "screens as stable vs run-to-run noisy")
+    ap.add_argument("--control", action="append", default=[],
+                    help="a second render of the CANDIDATE's code; classifies screens as "
+                         "stable vs run-to-run noisy. Repeatable — ONE control run "
+                         "undersamples, because two runs can draw the same deck by luck and "
+                         "a genuinely noisy screen then gets held to a pixel standard. Pass "
+                         "two or three.")
     args = ap.parse_args()
 
     base = names(args.baseline)
@@ -79,14 +84,16 @@ def main() -> int:
 
     noisy = set()
     if args.control:
-        for n in base:
-            other = os.path.join(args.control, n)
-            cand = os.path.join(args.candidate, n)
-            if not (os.path.exists(other) and os.path.exists(cand)):
-                continue
-            verdict, _ = compare(cand, other)
-            if verdict != "same":
-                noisy.add(n)
+        # A screen is noisy if ANY control pair differs — one matching pair proves nothing.
+        for control in args.control:
+            for n in base:
+                other = os.path.join(control, n)
+                cand = os.path.join(args.candidate, n)
+                if not (os.path.exists(other) and os.path.exists(cand)):
+                    continue
+                verdict, _ = compare(cand, other)
+                if verdict != "same":
+                    noisy.add(n)
         print(f"control: {len(noisy)} of {len(base)} screens vary run-to-run "
               f"(random deck order) — they cannot be held to a pixel standard")
         if noisy:

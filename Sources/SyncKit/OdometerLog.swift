@@ -96,6 +96,39 @@ public struct OdometerLog: Codable, Equatable, Sendable {
         slots.isEmpty && localRuns > 0
     }
 
+    /// Whether this device may seed its slot from the local journal.
+    ///
+    /// `shouldBackfill` alone reads an empty slot map as "this device has never had an
+    /// odometer", and three different situations produce that map on a device whose journal
+    /// is NOT its own history:
+    ///
+    ///   - a first sync that persisted the fleet's ride records and then died before the
+    ///     `Odometer` record page arrived (they are separate branches over a paged fetch);
+    ///   - an `odometer.json` this launch could not READ, which v1.15 §B can now tell apart
+    ///     from a missing one;
+    ///   - any later launch, because the decision was re-taken every time — so a device that
+    ///     correctly declined once could still fire the next morning.
+    ///
+    /// Slots SUM and merge by `max`, so a wrong seed is permanent and propagates to every
+    /// device: the fleet's lifetime totals double and nothing ever brings them back down.
+    /// The three extra conditions are therefore all "prove this is a genuine upgrader":
+    /// never considered before, never talked to the cloud, and the odometer file really is
+    /// absent rather than unavailable.
+    ///
+    /// - Parameters:
+    ///   - alreadyConsidered: `AppSettings.odometerBackfillDone`.
+    ///   - hasSyncedBefore: this device has CloudKit sync state on disk.
+    ///   - fileOutcome: how `odometer.json` loaded.
+    public static func shouldBackfill(
+        slots: [String: Slot], localRuns: Int,
+        alreadyConsidered: Bool, hasSyncedBefore: Bool, fileOutcome: LossyLoad.Outcome
+    ) -> Bool {
+        guard !alreadyConsidered else { return false }
+        guard !hasSyncedBefore else { return false }
+        guard fileOutcome == .missing else { return false }
+        return shouldBackfill(slots: slots, localRuns: localRuns)
+    }
+
     // MARK: Persistence (mirrors ReviewStore / RideJournal)
 
     public func save(to url: URL) throws {

@@ -57,6 +57,12 @@ public struct AppSettings: Codable, Equatable, Sendable {
     /// sync was enabled (v1.8.1) have been enqueued for upload once. Prevents re-enqueuing
     /// the whole store on every launch. Set true after the back-fill fires. (v1.9 §A1.)
     public var conjSRSBackfilled: Bool
+    /// Whether the one-time odometer backfill has already been CONSIDERED on this device.
+    /// Set once the condition has been evaluated, whether or not it fired — see
+    /// `OdometerLog.shouldBackfill`. Without it the decision was re-taken on every launch,
+    /// so a device that legitimately declined could still fire later once transient state
+    /// (an unreadable odometer file, a half-finished first sync) made it look eligible.
+    public var odometerBackfillDone: Bool
 
     public init(
         languageCode: String = "en",
@@ -75,7 +81,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
         conjugationSRSEnabled: Bool = true,
         ttsEnabled: Bool = false,
         ttsRate: Float = 0.5,
-        conjSRSBackfilled: Bool = false
+        conjSRSBackfilled: Bool = false,
+        odometerBackfillDone: Bool = false
     ) {
         self.languageCode = languageCode
         self.showRomajiHint = showRomajiHint
@@ -94,6 +101,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.ttsEnabled = ttsEnabled
         self.ttsRate = ttsRate
         self.conjSRSBackfilled = conjSRSBackfilled
+        self.odometerBackfillDone = odometerBackfillDone
     }
 
     public static let `default` = AppSettings()
@@ -114,6 +122,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         case conjugationSRSEnabled
         case ttsEnabled, ttsRate
         case conjSRSBackfilled
+        case odometerBackfillDone
     }
 
     public init(from decoder: Decoder) throws {
@@ -140,6 +149,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         ttsEnabled = try c.decodeIfPresent(Bool.self, forKey: .ttsEnabled) ?? d.ttsEnabled
         ttsRate = try c.decodeIfPresent(Float.self, forKey: .ttsRate) ?? d.ttsRate
         conjSRSBackfilled = try c.decodeIfPresent(Bool.self, forKey: .conjSRSBackfilled) ?? d.conjSRSBackfilled
+        odometerBackfillDone = try c.decodeIfPresent(Bool.self, forKey: .odometerBackfillDone) ?? d.odometerBackfillDone
     }
 
     // Always write every key — including `selectedLevel` as an explicit null when
@@ -164,6 +174,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         try c.encode(ttsEnabled, forKey: .ttsEnabled)
         try c.encode(ttsRate, forKey: .ttsRate)
         try c.encode(conjSRSBackfilled, forKey: .conjSRSBackfilled)
+        try c.encode(odometerBackfillDone, forKey: .odometerBackfillDone)
     }
 
     /// Clamps/repairs out-of-range primitive values and guarantees a `deviceID`.

@@ -4,6 +4,7 @@ import GameCore
 import JournalKit
 import ReviewKit
 import SettingsKit
+import PersistKit
 import SyncKit
 import VocabKit
 import WordListsKit
@@ -158,6 +159,17 @@ final class AppModel {
     /// Lifetime odometer as a per-device G-Counter — the iCloud-sync vehicle for
     /// lifetime totals (sums correctly across devices; see SyncKit.OdometerLog).
     private(set) var odometer: OdometerLog
+
+    // Which stores this launch is allowed to WRITE. A store that was merely UNREADABLE
+    // decodes to an empty one, and saving that empty store over the file destroys data that
+    // was probably intact — the loader's care is undone by the first write otherwise.
+    // (v1.15 §C.)
+    private let reviewStoreWritable: Bool
+    private let conjugationStoreWritable: Bool
+    private let journalWritable: Bool
+    private let odometerWritable: Bool
+    /// What each store's load reported, for the launch log.
+    private let persistLoadOutcomes: [(String, LossyLoad.Outcome)]
     /// User-curated word lists (v1.5). The v1.4 single "★ saved" deck survives as
     /// the one `isDefault` list (constant id `"default"`); all the old ★ behavior
     /// now reads/writes that list.
@@ -208,10 +220,23 @@ final class AppModel {
         odometerURL = Self.supportFileURL("odometer.json")
         wordListsURL = Self.supportFileURL("word-lists.json")
         savedWordsURL = Self.supportFileURL("saved-words.json")
-        reviewStore = ReviewStore.load(from: storeURL)
-        conjugationReviewStore = ConjugationReviewStore.load(from: conjugationReviewURL)
-        journal = RideJournal.load(from: journalURL)
-        odometer = OdometerLog.load(from: odometerURL)
+        // Loaded reporting their outcome (v1.15 §B). A store that was merely UNREADABLE must
+        // not be written back over — it is probably intact — and the odometer's outcome also
+        // decides whether the one-time backfill below is allowed to run at all.
+        let reviewLoad = ReviewStore.loadReporting(from: storeURL)
+        reviewStore = reviewLoad.store
+        let conjLoad = ConjugationReviewStore.loadReporting(from: conjugationReviewURL)
+        conjugationReviewStore = conjLoad.store
+        let journalLoad = RideJournal.loadReporting(from: journalURL)
+        journal = journalLoad.journal
+        let odometerLoad = OdometerLog.loadReporting(from: odometerURL)
+        odometer = odometerLoad.log
+        reviewStoreWritable = LossyLoad.isSafeToWrite(reviewLoad.outcome)
+        conjugationStoreWritable = LossyLoad.isSafeToWrite(conjLoad.outcome)
+        journalWritable = LossyLoad.isSafeToWrite(journalLoad.outcome)
+        odometerWritable = LossyLoad.isSafeToWrite(odometerLoad.outcome)
+        persistLoadOutcomes = [("review", reviewLoad.outcome), ("conjugation", conjLoad.outcome),
+                               ("journal", journalLoad.outcome), ("odometer", odometerLoad.outcome)]
         // Word lists load via a corruption-aware, one-time migration from the
         // legacy saved-words deck; localized default name applied after settings
         // load below. Temporary empty store until then (no reads in between).
@@ -251,12 +276,28 @@ final class AppModel {
         // touching this. The guard used to be `slots[deviceID] == nil`, which a second
         // device satisfies with a journal a cloud fetch filled with ANOTHER device's
         // rides, permanently doubling the fleet's lifetime totals. (v1.12 §A.)
-        if OdometerLog.shouldBackfill(slots: odometer.slots, localRuns: journal.totalRuns) {
-            odometer.setSlot(.init(words: journal.totalWords,
-                                   distanceMeters: journal.totalDistanceMeters,
-                                   runs: journal.totalRuns),
-                             for: settings.deviceID)
-            bgSave("odometer (backfill)") { try odometer.save(to: odometerURL) }
+        // Considered exactly ONCE per device, and only for a device that can prove it is a
+        // genuine upgrader rather than one whose journal a cloud fetch has already filled
+        // with the fleet's rides. See OdometerLog.shouldBackfill(slots:localRuns:
+        // alreadyConsidered:hasSyncedBefore:fileOutcome:) — a wrong seed here is permanent
+        // and spreads. (v1.15 §C.)
+        if !settings.odometerBackfillDone {
+            let mayBackfill = OdometerLog.shouldBackfill(
+                slots: odometer.slots, localRuns: journal.totalRuns,
+                alreadyConsidered: settings.odometerBackfillDone,
+                hasSyncedBefore: FileManager.default.fileExists(
+                    atPath: Self.supportFileURL("cksync-state.json").path),
+                fileOutcome: odometerLoad.outcome)
+            if mayBackfill {
+                odometer.setSlot(.init(words: journal.totalWords,
+                                       distanceMeters: journal.totalDistanceMeters,
+                                       runs: journal.totalRuns),
+                                 for: settings.deviceID)
+                bgSave("odometer (backfill)", allowed: odometerWritable) { try odometer.save(to: odometerURL) }
+            }
+            // Recorded whether it fired or not: the question is settled for this install, so
+            // later transient state can never make it look eligible again.
+            settings.odometerBackfillDone = true
         }
 
         // Dev-only: pin the UI language for screenshot captures (not persisted).
@@ -287,6 +328,12 @@ final class AppModel {
             } else {
                 settings.hasSeenOnboarding = true
             }
+        }
+
+        // One line per store, so a support question about vanished progress has something
+        // to look at instead of a guess. (v1.15 §C.)
+        for (name, outcome) in persistLoadOutcomes where outcome != .loaded && outcome != .missing {
+            PersistLog.loadOutcome(name, String(describing: outcome))
         }
 
         // Persist once so a fresh install writes back its minted deviceID (and the
@@ -525,20 +572,20 @@ final class AppModel {
             let remote = ReviewStore(cards: Dictionary(cards.map { ($0.id, $0) },
                                                        uniquingKeysWith: { a, _ in a }))
             reviewStore = SyncMerge.reviewStores(reviewStore, remote)
-            bgSave("review (sync merge)") { try reviewStore.save(to: storeURL) }
+            bgSave("review (sync merge)", allowed: reviewStoreWritable) { try reviewStore.save(to: storeURL) }
         }
         if !records.isEmpty {
             // Display lifetime comes from the odometer, so rebuilding the journal
             // from merged records here can't undercount the odometer totals.
             let merged = SyncMerge.rideRecords(journal.records, records)
             journal = RideJournal(records: merged)
-            bgSave("journal (sync merge)") { try journal.save(to: journalURL) }
+            bgSave("journal (sync merge)", allowed: journalWritable) { try journal.save(to: journalURL) }
         }
         if !odometerSlots.isEmpty {
             var remote = OdometerLog()
             for (id, slot) in odometerSlots { remote.setSlot(slot, for: id) }
             odometer = SyncMerge.odometers(odometer, remote)
-            bgSave("odometer (sync merge)") { try odometer.save(to: odometerURL) }
+            bgSave("odometer (sync merge)", allowed: odometerWritable) { try odometer.save(to: odometerURL) }
         }
         if !conjugationCards.isEmpty {
             // Merge into the SEPARATE conjugation SRS store (never the flat reviewStore,
@@ -546,7 +593,7 @@ final class AppModel {
             let remote = ConjugationReviewStore(cards: Dictionary(conjugationCards.map { ($0.id, $0) },
                                                                   uniquingKeysWith: { a, _ in a }))
             conjugationReviewStore = SyncMerge.conjugationReviewStores(conjugationReviewStore, remote)
-            bgSave("conjugation review (sync merge)") { [conjugationReviewStore, conjugationReviewURL] in
+            bgSave("conjugation review (sync merge)", allowed: conjugationStoreWritable) { [conjugationReviewStore, conjugationReviewURL] in
                 try conjugationReviewStore.save(to: conjugationReviewURL)
             }
         }
@@ -775,7 +822,15 @@ final class AppModel {
     /// (synchronous, main-actor, atomic — the red line), only failure handling
     /// changes. Never alerts (a persistently-failing disk would loop); logs so a
     /// failure isn't fully silent. (PLAN-V1.7 §D.)
-    private func bgSave(_ what: String, _ write: () throws -> Void) {
+    /// - Parameter allowed: false when this store was UNREADABLE at launch. The in-memory
+    ///   store is then an empty stand-in, and writing it would replace a file that is
+    ///   probably intact with nothing — undoing the loader's whole reason for distinguishing
+    ///   "unreadable" from "corrupt". The write is skipped and logged loudly. (v1.15 §C.)
+    private func bgSave(_ what: String, allowed: Bool = true, _ write: () throws -> Void) {
+        guard allowed else {
+            PersistLog.skipped(what, reason: "store was unreadable at launch; not overwriting it")
+            return
+        }
         do { try write() } catch { PersistLog.failure(what, error) }
     }
 
@@ -1021,7 +1076,7 @@ final class AppModel {
         conjugationReviewStore.record(promptID: promptID, outcome: c)
         // Background/auto write (a drill outcome, not a user-initiated data action) → log-only
         // on failure, no alert (§D).
-        bgSave("conjugation review") { [conjugationReviewStore, conjugationReviewURL] in
+        bgSave("conjugation review", allowed: conjugationStoreWritable) { [conjugationReviewStore, conjugationReviewURL] in
             try conjugationReviewStore.save(to: conjugationReviewURL)
         }
         // Push the changed card to iCloud — GATED OFF for v1.8 (conjSRSSyncAvailable=false),
@@ -1080,7 +1135,7 @@ final class AppModel {
             let (merged, changed) = SyncMerge.applyRun(session.review, into: reviewStore)
             changedSRS = changed
             reviewStore = merged
-            bgSave("review (run)") { try reviewStore.save(to: storeURL) }
+            bgSave("review (run)", allowed: reviewStoreWritable) { try reviewStore.save(to: storeURL) }
             refreshReminders()                     // the due count just changed
         }
         lastSummary = GameSummary(from: session)
@@ -1155,8 +1210,8 @@ final class AppModel {
         // Save on the main actor (small files) so these stay ordered with the
         // sync-merge writes to the same files — a detached write could land after
         // a fetch-merge write and clobber merged cloud data (last-writer-wins).
-        bgSave("journal (run)") { try journal.save(to: journalURL) }
-        bgSave("odometer (run)") { try odometer.save(to: odometerURL) }
+        bgSave("journal (run)", allowed: journalWritable) { try journal.save(to: journalURL) }
+        bgSave("odometer (run)", allowed: odometerWritable) { try odometer.save(to: odometerURL) }
         runStartedAt = nil
         return record
     }

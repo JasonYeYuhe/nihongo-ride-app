@@ -29,4 +29,16 @@ enum PersistLog {
     static func failure(_ what: String, _ error: Error) {
         logger.error("persist failed [\(what, privacy: .public)]: \(error.localizedDescription, privacy: .public)")
     }
+
+    /// A write deliberately NOT performed because the store could not be read at launch.
+    /// Loud, because the app is running on an empty store the user's real data may contradict.
+    static func skipped(_ what: String, reason: String) {
+        logger.error("persist SKIPPED [\(what, privacy: .public)]: \(reason, privacy: .public)")
+    }
+
+    /// What each store's load reported. Logged once at launch so a support question about
+    /// vanished progress has something to look at.
+    static func loadOutcome(_ what: String, _ outcome: String) {
+        logger.info("loaded [\(what, privacy: .public)]: \(outcome, privacy: .public)")
+    }
 }
