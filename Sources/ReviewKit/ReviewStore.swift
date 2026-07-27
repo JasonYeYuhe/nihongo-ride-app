@@ -75,6 +75,13 @@ public struct ReviewStore: Codable, Sendable {
         cards.values.lazy.filter { $0.totalReviews > 0 }.count
     }
 
+    /// Ids of cards reviewed at least once, sorted for a deterministic drill order.
+    /// The pool a coaching drill draws from: words the learner already knows, so the drill
+    /// isolates the typing problem instead of testing vocabulary at the same time. (v1.15.)
+    public var reviewedIDs: [String] {
+        cards.values.lazy.filter { $0.totalReviews > 0 }.map(\.id).sorted()
+    }
+
     /// The user's weakest *reviewed* cards, worst-first, capped at `limit`. Ranking:
     /// leeches first, then lower ease, more lapses, higher mistake-rate; id breaks
     /// ties for a deterministic order. Only cards with `totalReviews > 0` (a fresh

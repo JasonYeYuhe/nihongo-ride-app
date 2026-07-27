@@ -218,6 +218,7 @@ struct RootView: View {
         case .about:   AboutView()
         case .journal: JournalView()
         case .stats:   StatsView()
+        case .coach:   CoachView()
         case .settings: SettingsView()
         case .lists:   ListsView()
         case .listDetail: ListDetailView()

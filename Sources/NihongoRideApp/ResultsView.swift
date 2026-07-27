@@ -1,6 +1,7 @@
 import SwiftUI
 import SceneryKit
 import VocabKit
+import DiagnosticsKit
 
 struct ResultsView: View {
     @Environment(AppModel.self) private var model
@@ -92,6 +93,7 @@ struct ResultsView: View {
                         reviewList(summary.reviewWords)
                     }
                     stageLine
+                    coachEntry
                 }
                 .arrivalPanel(compact: isPhoneIdiom)
             }
@@ -150,6 +152,41 @@ struct ResultsView: View {
             Spacer()
         }
         .padding(isPhoneIdiom ? 24 : 40)
+    }
+
+    /// One line about HOW the ride was typed, when the run gives grounds for one.
+    ///
+    /// Absent by default and absent by design: it appears only when a pattern recurred across
+    /// two distinct words and the app has a name and a rule for it. A ride with a clean run,
+    /// a single slip, or only unexplainable refusals shows nothing here — the coach earns its
+    /// space or does not take it. (v1.15 §E.)
+    @ViewBuilder
+    private var coachEntry: some View {
+        if let d = model.coachHeadline,
+           let advice = CoachContent.advice(for: d.pattern, zh: zh) {
+            Button(action: { model.screen = .coach }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "lightbulb.fill")
+                        .foregroundStyle(Theme.gold)
+                        .accessibilityHidden(true)
+                    Text(advice.title)
+                        .scaledSystemFont(14, weight: .semibold, design: .rounded)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Image(systemName: "chevron.right")
+                        .font(.caption2).foregroundStyle(Theme.dim)
+                        .accessibilityHidden(true)
+                }
+                .foregroundStyle(.white.opacity(0.9))
+                .padding(.horizontal, 14).padding(.vertical, 10)
+                .background(Theme.card, in: Capsule())
+                .overlay(Capsule().strokeBorder(Theme.cardStroke))
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("coachEntryButton")
+            .accessibilityLabel(zh ? "打字教练:\(advice.title)" : "Typing coach: \(advice.title)")
+            .accessibilityHint(zh ? "查看这次反复出错的地方" : "See what kept going wrong this ride")
+        }
     }
 
     /// Six stat cards: 3×2 rows on roomy screens, a 2-column grid on iPhone.

@@ -114,6 +114,10 @@ targets:
         product: WidgetSharedKit
       - package: Nihongo
         product: SceneryKit
+      - package: Nihongo
+        product: PersistKit
+      - package: Nihongo
+        product: DiagnosticsKit
       # v1.11: embed the widget extension into the app (xcodegen auto-embeds
       # app-extension target deps into the host).
       - target: NihongoRideWidget
@@ -220,6 +224,10 @@ targets:
         product: WidgetSharedKit
       - package: Nihongo
         product: SceneryKit
+      - package: Nihongo
+        product: PersistKit
+      - package: Nihongo
+        product: DiagnosticsKit
       # v1.11: embed the iOS widget extension.
       - target: NihongoRideWidgetiOS
     settings:

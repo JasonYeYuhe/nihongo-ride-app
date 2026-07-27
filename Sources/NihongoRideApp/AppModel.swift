@@ -5,6 +5,8 @@ import JournalKit
 import ReviewKit
 import SettingsKit
 import PersistKit
+import DiagnosticsKit
+import RomajiKana
 import SyncKit
 import VocabKit
 import WordListsKit
@@ -23,6 +25,9 @@ struct GameSummary: Equatable {
     var distanceMeters: Double
     /// Distinct words that lapsed this run (skipped / hinted / many typos).
     var reviewWords: [VocabEntry]
+    /// The run's refused keystrokes, carried so the results screen can coach from them.
+    /// In memory with the summary; never persisted (see RomajiKana.MistakeTrace).
+    var mistakes: MistakeTrace
 
     init(from session: GameSession) {
         score = session.score
@@ -32,6 +37,7 @@ struct GameSummary: Equatable {
         distanceMeters = session.distanceMeters
         var seen = Set<String>()
         reviewWords = session.lapsedEntries.filter { seen.insert($0.id).inserted }
+        mistakes = session.mistakes
     }
 }
 
@@ -73,7 +79,7 @@ struct ConjugationSummary: Equatable {
 @MainActor
 @Observable
 final class AppModel {
-    enum Screen: Equatable { case menu, playing, results, about, journal, settings, lists, listDetail, onboarding, stats }
+    enum Screen: Equatable { case menu, playing, results, about, journal, settings, lists, listDetail, onboarding, stats, coach }
 
     var screen: Screen = .menu {
         didSet { navCount += 1 }
@@ -525,6 +531,32 @@ final class AppModel {
                 for ch in romaji { _ = conjugationSession?.input(ch) }
             }
             finishConjugation()
+        case "coach":
+            // Seeds a run that really does contain a recurring, classifiable pattern, so the
+            // coach screen can be looked at. It drills words with っ and types each one's own
+            // correct romaji with ONE half of the doubled consonant removed — which is
+            // precisely the dropped-sokuon mistake, derived from the data rather than faked.
+            let sokuonIDs = VocabStore.shared.entries
+                .filter { $0.kana.contains("っ") }.prefix(3).map(\.id)
+            var config = GameSession.Config()
+            config.languageCode = languageCode
+            config.mode = .journey
+            session = GameSession.makeSaved(ids: Array(sokuonIDs), vocab: .shared,
+                                            review: reviewStore, config: config)
+            runClock = RunClock(startedAt: Date())
+            while let romaji = session?.currentRomaji, session?.isFinished == false {
+                let chars = Array(romaji)
+                // First doubled consonant → type the word with one of them missing.
+                let doubled = chars.indices.dropLast().first { chars[$0] == chars[$0 + 1] }
+                var attempt = chars
+                if let d = doubled { attempt.remove(at: d) }
+                for ch in attempt where session?.isFinished == false {
+                    _ = session?.input(ch)
+                }
+                session?.skip()
+            }
+            finishGame()
+            screen = .coach
         case "game":
             startGame()
         default:
@@ -539,6 +571,47 @@ final class AppModel {
 
     /// The rider resumed. Ignored when not paused.
     func resumeRunClock() { runClock?.resume(at: Date()) }
+
+    // MARK: Coach (v1.15)
+
+    /// The one thing worth saying about how the last run was TYPED, if anything is.
+    ///
+    /// Deterministic, computed from the run's own refused keystrokes. Nil when the run was
+    /// clean, when nothing recurred across two distinct words, or when the only recurring
+    /// thing has no name the app can explain — silence is the correct output in all three.
+    var coachHeadline: Diagnosis? {
+        lastSummary.flatMap { TypingDiagnostics.headline($0.mistakes) }
+    }
+
+    /// Words the learner has ALREADY reviewed that exercise the diagnosed pattern.
+    ///
+    /// Already-reviewed on purpose: a drill is meant to isolate the keyboard problem, and an
+    /// unfamiliar word adds a second reason to fail on top of the one being fixed.
+    func coachDrillIDs(for pattern: TypingPattern) -> [String] {
+        let known = reviewStore.reviewedIDs.compactMap { id -> (id: String, kana: String)? in
+            guard let e = VocabStore.shared.entry(id: id) else { return nil }
+            return (id: e.id, kana: e.kana)
+        }
+        return CoachContent.drillCandidates(for: pattern, from: known)
+    }
+
+    /// Starts a drill on the diagnosed pattern. Same journey loop, same SRS rules as any
+    /// list run — these are the learner's own words, so their progress still counts.
+    func startCoachDrill(for pattern: TypingPattern) {
+        let ids = coachDrillIDs(for: pattern)
+        guard !ids.isEmpty else { return }
+        var config = GameSession.Config()
+        config.languageCode = languageCode
+        config.showRomajiHint = showRomajiHint
+        config.mode = .journey
+        let built = GameSession.makeSaved(ids: ids, vocab: .shared, review: reviewStore, config: config)
+        guard !built.isFinished else { return }
+        session = built
+        conjugationSession = nil
+        runClock = RunClock(startedAt: Date())
+        resolveRideStage()
+        screen = .playing
+    }
 
     /// App returned to the foreground: refresh reminders and pull/push sync.
     func appBecameActive() {

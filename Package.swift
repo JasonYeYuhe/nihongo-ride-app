@@ -137,7 +137,7 @@ let package = Package(
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit", "WidgetSharedKit", "SceneryKit"],
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit", "WidgetSharedKit", "SceneryKit", "PersistKit", "DiagnosticsKit"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]
