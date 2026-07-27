@@ -57,13 +57,47 @@ def gloss_of(entry):
     return en[0] if en else ""
 
 
-def contains_target(sentence: str, entry) -> bool:
+# Verb classes whose written form changes in a sentence, so the dictionary form does not
+# appear literally: 食べる shows up as 食べて / 食べた / 食べます.
+INFLECTING_VC = {"godan_u", "godan_k", "godan_g", "godan_s", "godan_t",
+                 "godan_n", "godan_b", "godan_m", "godan_r", "ichidan", "zuru"}
+SURU_VC = {"suru", "kuru"}
+INFLECTING_POS = {"adj-i", "i-adjective", "I-adjective"}
+# A stem shorter than this is not evidence. 行く's stem is 行, which appears in 銀行, 旅行,
+# 行事 … — matching on it would call almost anything an example of 行く.
+MIN_STEM = 2
+
+
+def _stems(entry):
+    """Forms of this entry that a sentence may legitimately contain, besides the headword.
+
+    Class-aware rather than "drop the last character", which was applied to every entry and
+    turned the noun 学校 into 学 — so 「数学を勉強します。」 validated as an example of 学校.
+    This is the only check that a generated sentence is about the right word, so it has to
+    mean something.
+
+    Deliberately biased toward FALSE NEGATIVES. A rejected good sentence costs one more
+    generation; an accepted wrong one ships to a learner. Words whose stem is a single
+    character (行く → 行) therefore get no stem at all and must appear in full.
+    """
     surface, kana = entry["surface"], entry["kana"]
-    candidates = [surface, kana]
-    if len(surface) >= 2:
-        candidates.append(surface[:-1])   # verb/adj stem (食べる → 食べ)
-    if len(kana) >= 3:
-        candidates.append(kana[:-1])
+    vc, pos = entry.get("vc"), entry.get("pos", [])
+    out = []
+    if vc in SURU_VC:
+        # 勉強する → 勉強, which is a literal prefix of 勉強して / 勉強します.
+        for form, suffix in ((surface, "する"), (kana, "する"),
+                             (surface, "くる"), (kana, "くる")):
+            if form.endswith(suffix):
+                out.append(form[: -len(suffix)])
+    elif vc in INFLECTING_VC or any(p in INFLECTING_POS for p in pos):
+        out.append(surface[:-1])
+        out.append(kana[:-1])
+    return [x for x in out if len(x) >= MIN_STEM]
+
+
+def contains_target(sentence: str, entry) -> bool:
+    """Does the sentence actually use this entry's word?"""
+    candidates = [entry["surface"], entry["kana"], *_stems(entry)]
     return any(c and c in sentence for c in candidates)
 
 
