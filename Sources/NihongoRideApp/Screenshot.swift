@@ -17,6 +17,16 @@ enum Screenshotter {
 
     @MainActor static func capture(into directory: String) {
         isCapturing = true
+        // Start from nothing. `supportFileURL` redirects capture I/O to a FIXED temp
+        // directory, and nothing was clearing it — so every capture run inherited the rides
+        // logged by every previous one. Lifetime distance grew monotonically across runs and
+        // dragged the scenery stage with it, which made the render gate depend on how many
+        // times it had been run. It silently undermined every "unchanged" verdict it gave:
+        // screens drifted between comparisons, and one screen's whole background changed
+        // between two builds for no reason in either build. A gate has to be reproducible.
+        let captureRoot = FileManager.default.temporaryDirectory
+            .appendingPathComponent("NihongoRideCapture", isDirectory: true)
+        try? FileManager.default.removeItem(at: captureRoot)
         // App Store mode: 1440×900 logical × @2x scale = 2880×1800 actual PNG,
         // the preferred macOS App Store screenshot resolution.
         let storeMode = ProcessInfo.processInfo.environment["NIHONGO_SHOT_STORE"] != nil
