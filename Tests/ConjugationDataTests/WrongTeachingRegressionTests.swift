@@ -76,12 +76,15 @@ struct WrongTeachingRegressionTests {
         // final ん.
         //
         // The rule has to be narrow. A first draft flagged any kana surface whose length
-        // differed from its reading and caught eight PERFECTLY VALID entries: キロ/キログラム,
-        // やはり/やっぱり, ジェット/ジェット機, けれど/けれども, そうして/そして, じゃ/じゃあ,
-        // コンピュータ/コンピューター — common contractions and variant spellings, not errors.
-        // What made お手伝いさ wrong was specifically that it is a strict PREFIX of its own
-        // reading while containing kanji: a mixed kanji/kana headword whose trailing okurigana
-        // stops short. Contractions differ in shape, not by truncation, so they don't match.
+        // differed from its reading and caught eight entries I judged valid at the time:
+        // キロ/キログラム, やはり/やっぱり, ジェット/ジェット機, けれど/けれども, そうして/そして,
+        // じゃ/じゃあ, コンピュータ/コンピューター. They ARE real contractions and variant
+        // spellings — but that answered the wrong question, and v1.15 §H fixed all nine of
+        // them for a different reason: whatever the strings are, the app was displaying one
+        // word and grading the learner on another. See `kanaHeadwordMatchesReading`.
+        // What made お手伝いさ wrong is still its own thing: it is a strict PREFIX of its own
+        // reading while containing kanji — a mixed kanji/kana headword whose okurigana stops
+        // short — which no contraction is.
         // No structural sweep here: every version of that rule I tried either missed this
         // entry or flagged the valid contractions above, because "truncated" and "variant
         // spelling" are not distinguishable from the strings alone. The pure-kanji audit in
@@ -121,6 +124,46 @@ struct WrongTeachingRegressionTests {
         // The noun entries they were colliding with are untouched — the fix must not have
         // been "make them unique by deleting one".
         #expect(entry("n5-benkyou")?.kana == "べんきょう")
+    }
+
+    @Test("a kana headword IS its own reading")
+    func kanaHeadwordMatchesReading() {
+        // The general form of the 勉強 bug, and the question v1.14 failed to ask.
+        //
+        // v1.14 asked "is this surface a TRUNCATION of its reading?" and correctly answered
+        // no for けれど/けれども, やはり/やっぱり, キロ/キログラム and friends — they are real
+        // contractions and variant spellings, not damage. Then it dropped the structural rule
+        // and moved on.
+        //
+        // The question it should also have asked is the one the app actually makes a claim
+        // about: does the screen show one word and require the learner to type a DIFFERENT
+        // one? For all of them it did. けれど's reading is けれど; setting the target to
+        // けれども teaches that けれど is read けれども, which is false — and ジェット was the
+        // same shape with the meaning "jet plane" and the target ジェットき.
+        //
+        // If the headword is written entirely in kana then it IS its reading, and there is
+        // nothing for the two fields to disagree about. All nine were fixed by extending the
+        // surface, exactly as 勉強 became 勉強する: the display changes, the typing target
+        // does not, so no reading can collide.
+        for e in VocabStore.shared.entries where isPureKana(e.surface) {
+            #expect(hiragana(e.surface) == hiragana(e.kana),
+                    "\(e.id) shows \(e.surface) but asks for \(e.kana)")
+        }
+    }
+
+    private func isPureKana(_ s: String) -> Bool {
+        !s.isEmpty && s.unicodeScalars.allSatisfy {
+            (0x3041...0x3096).contains(Int($0.value))      // hiragana
+                || (0x30A1...0x30F6).contains(Int($0.value))   // katakana
+                || $0 == "ー" || $0 == "・"
+        }
+    }
+
+    private func hiragana(_ s: String) -> String {
+        String(String.UnicodeScalarView(s.unicodeScalars.map {
+            (0x30A1...0x30F6).contains(Int($0.value))
+                ? Unicode.Scalar($0.value - 0x60)! : $0
+        }))
     }
 
     @Test("より is taught as より, not as 方")

@@ -21,3 +21,4 @@ DerivedData/
 # Python bytecode cache
 __pycache__/
 *.pyc
+.venv-jp/
