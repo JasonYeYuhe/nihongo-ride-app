@@ -2613,6 +2613,15 @@
       "zh": [
         "比较"
       ]
+    },
+    "exJP": "去年と今年を比べます。",
+    "exEN": "I compare last year and this year.",
+    "exZH": "我把去年和今年做比较。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2651,6 +2660,15 @@
         "警察局",
         "警察"
       ]
+    },
+    "exJP": "困ったときに警察へ行きました。",
+    "exEN": "I went to the police when I was in trouble.",
+    "exZH": "我在遇到困难时去了警察局。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2670,6 +2688,15 @@
         "景色",
         "风景"
       ]
+    },
+    "exJP": "山の上からの景色がきれいです。",
+    "exEN": "The scenery from the top of the mountain is beautiful.",
+    "exZH": "从山顶看到的景色很美。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2689,6 +2716,15 @@
         "寄宿",
         "出租的房间"
       ]
+    },
+    "exJP": "大学の近くで下宿をしています。",
+    "exEN": "I am living in a lodging house near the university.",
+    "exZH": "我在大学附近寄宿。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2708,6 +2744,15 @@
         "决不",
         "绝对不"
       ]
+    },
+    "exJP": "この秘密は決して言いません。",
+    "exEN": "I will never tell this secret.",
+    "exZH": "我绝不说出这个秘密。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2726,6 +2771,15 @@
       "zh": [
         "原因"
       ]
+    },
+    "exJP": "事故の原因を調べています。",
+    "exEN": "They are investigating the cause of the accident.",
+    "exZH": "正在调查事故的原因。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2747,6 +2801,15 @@
         "吵架",
         "打架"
       ]
+    },
+    "exJP": "兄弟で喧嘩をしてはいけません。",
+    "exEN": "Siblings must not fight with each other.",
+    "exZH": "兄弟姐妹之间不能吵架。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2767,6 +2830,15 @@
       "zh": [
         "研究"
       ]
+    },
+    "exJP": "大学で日本の歴史を研究します。",
+    "exEN": "I research Japanese history at university.",
+    "exZH": "我在大学研究日本历史。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2788,6 +2860,15 @@
         "参观",
         "游览"
       ]
+    },
+    "exJP": "京都の街を見物しました。",
+    "exEN": "I did sightseeing in the streets of Kyoto.",
+    "exZH": "我游览了京都的街区。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2806,6 +2887,15 @@
       "zh": [
         "郊外"
       ]
+    },
+    "exJP": "私は静かな郊外に住んでいます。",
+    "exEN": "I live in a quiet suburb.",
+    "exZH": "我住在安静的郊区。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2824,6 +2914,15 @@
         "讲义",
         "讲课"
       ]
+    },
+    "exJP": "明日の講義は午前中にあります。",
+    "exEN": "Tomorrow's lecture is in the morning.",
+    "exZH": "明天的讲座在上午举行。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2842,6 +2941,15 @@
       "zh": [
         "工业"
       ]
+    },
+    "exJP": "この町は工業が盛んです。",
+    "exEN": "Industry is thriving in this town.",
+    "exZH": "这个小镇的工业很发达。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2859,6 +2967,15 @@
       "zh": [
         "高中"
       ]
+    },
+    "exJP": "兄は高校に通っています。",
+    "exEN": "My older brother attends high school.",
+    "exZH": "我哥哥在读高中。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2877,6 +2994,15 @@
       "zh": [
         "工厂"
       ]
+    },
+    "exJP": "父は自動車の工場で働いています。",
+    "exEN": "My father works in an automobile factory.",
+    "exZH": "我父亲在一家汽车工厂工作。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2895,6 +3021,15 @@
       "zh": [
         "校长"
       ]
+    },
+    "exJP": "校長先生のお話を聞きました。",
+    "exEN": "We listened to the principal's speech.",
+    "exZH": "我们听了校长的讲话。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2913,6 +3048,15 @@
       "zh": [
         "交通"
       ]
+    },
+    "exJP": "この辺りは交通が便利です。",
+    "exEN": "Transportation is convenient around here.",
+    "exZH": "这附近交通很方便。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2932,6 +3076,15 @@
         "礼堂",
         "讲堂"
       ]
+    },
+    "exJP": "全校生徒が講堂に集まりました。",
+    "exEN": "All the students gathered in the auditorium.",
+    "exZH": "全校学生聚集在大礼堂。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2949,6 +3102,15 @@
       "zh": [
         "高级中学"
       ]
+    },
+    "exJP": "姉は近くの高等学校に通っています。",
+    "exEN": "My older sister attends a high school nearby.",
+    "exZH": "我姐姐在附近的高中上学。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2967,6 +3129,15 @@
       "zh": [
         "公务员"
       ]
+    },
+    "exJP": "父は公務員として働いています。",
+    "exEN": "My father works as a civil servant.",
+    "exZH": "我父亲作为公务员工作。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -2987,6 +3158,15 @@
         "回答",
         "答复"
       ]
+    },
+    "exJP": "先生の質問に答えます。",
+    "exEN": "I answer the teacher's question.",
+    "exZH": "我回答老师的问题。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3006,6 +3186,15 @@
         "盛宴",
         "款待"
       ]
+    },
+    "exJP": "今日はおいしい御馳走を食べました。",
+    "exEN": "Today I ate a delicious feast.",
+    "exZH": "今天我吃了美味的大餐。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3023,6 +3212,15 @@
       "zh": [
         "小鸟"
       ]
+    },
+    "exJP": "庭で可愛い小鳥が鳴いています。",
+    "exEN": "A cute small bird is singing in the garden.",
+    "exZH": "可爱的小鸟在庭院里鸣叫。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3042,6 +3240,15 @@
         "细小的",
         "详细的"
       ]
+    },
+    "exJP": "細かいお金を持っていません。",
+    "exEN": "I do not have small change.",
+    "exZH": "我没有带零钱。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3098,6 +3305,15 @@
         "可怕的",
         "害怕的"
       ]
+    },
+    "exJP": "この映画は少し怖いです。",
+    "exEN": "This movie is a little scary.",
+    "exZH": "这部电影有点恐怖。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3118,6 +3334,15 @@
         "弄坏",
         "破坏"
       ]
+    },
+    "exJP": "弟が時計を壊しました。",
+    "exEN": "My younger brother broke the clock.",
+    "exZH": "弟弟把钟表弄坏了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3138,6 +3363,15 @@
         "坏",
         "碎"
       ]
+    },
+    "exJP": "このパソコンは壊れています。",
+    "exEN": "This computer is broken.",
+    "exZH": "这台电脑坏了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3157,6 +3391,15 @@
         "最后",
         "末尾"
       ]
+    },
+    "exJP": "最後のページまで読みました。",
+    "exEN": "I read up to the last page.",
+    "exZH": "我读到了最后一页。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3177,6 +3420,15 @@
         "最近",
         "近来"
       ]
+    },
+    "exJP": "最近とても忙しいです。",
+    "exEN": "I have been very busy recently.",
+    "exZH": "最近非常忙碌。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3197,6 +3449,15 @@
         "寻找",
         "探索"
       ]
+    },
+    "exJP": "部屋で鍵を探しています。",
+    "exEN": "I am looking for my keys in the room.",
+    "exZH": "我正在房间里找钥匙。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3217,6 +3478,15 @@
         "下降",
         "退后"
       ]
+    },
+    "exJP": "夕方になると気温が下がります。",
+    "exEN": "The temperature drops in the evening.",
+    "exZH": "到了傍晚气温就会下降。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3236,6 +3506,15 @@
         "繁荣",
         "盛行"
       ]
+    },
+    "exJP": "この町ではサッカーが盛んです。",
+    "exEN": "Soccer is popular in this town.",
+    "exZH": "在这个城镇足球很盛行。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3256,6 +3535,15 @@
         "降低",
         "悬挂"
       ]
+    },
+    "exJP": "声を下げて話してください。",
+    "exEN": "Please lower your voice when speaking.",
+    "exZH": "请压低声音说话。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3276,6 +3564,15 @@
         "指",
         "指示"
       ]
+    },
+    "exJP": "時計の針が十二時を指しています。",
+    "exEN": "The clock hands point to twelve o'clock.",
+    "exZH": "时针正指向十二点。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3296,6 +3593,15 @@
         "吵闹",
         "慌乱"
       ]
+    },
+    "exJP": "図書館で騒いではいけません。",
+    "exEN": "You must not make noise in the library.",
+    "exZH": "不能在图书馆里吵闹。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3314,6 +3620,15 @@
       "zh": [
         "比赛"
       ]
+    },
+    "exJP": "明日のサッカーの試合が楽しみです。",
+    "exEN": "I am looking forward to tomorrow's soccer match.",
+    "exZH": "我很期待明天的足球比赛。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3333,6 +3648,15 @@
         "方法",
         "办法"
       ]
+    },
+    "exJP": "料理の仕方を本で調べました。",
+    "exEN": "I checked how to cook in a book.",
+    "exZH": "我查了书里做菜的方法。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3353,6 +3677,15 @@
         "责备",
         "批评"
       ]
+    },
+    "exJP": "母に遅刻したことを叱られました。",
+    "exEN": "I was scolded by my mother for being late.",
+    "exZH": "我因为迟到被妈妈训斥了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3370,6 +3703,15 @@
       "zh": [
         "地震"
       ]
+    },
+    "exJP": "昨日大きな地震がありました。",
+    "exEN": "There was a big earthquake yesterday.",
+    "exZH": "昨天发生了大地震。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3389,6 +3731,15 @@
         "时代",
         "时期"
       ]
+    },
+    "exJP": "学生時代に旅行へ行きました。",
+    "exEN": "I went traveling during my student days.",
+    "exZH": "我学生时代去旅行过。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3406,6 +3757,15 @@
       "zh": [
         "内衣"
       ]
+    },
+    "exJP": "新しい下着を買いに行きます。",
+    "exEN": "I am going to buy new underwear.",
+    "exZH": "我要去买新的内衣。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3425,6 +3785,15 @@
         "结实",
         "可靠"
       ]
+    },
+    "exJP": "ドアをしっかり閉めてください。",
+    "exEN": "Please close the door firmly.",
+    "exZH": "请把门关紧。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3445,6 +3814,15 @@
         "失礼",
         "打扰"
       ]
+    },
+    "exJP": "返事が遅くなって失礼しました。",
+    "exEN": "Excuse me for replying late.",
+    "exZH": "很抱歉回复晚了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3463,6 +3841,15 @@
         "词典",
         "字典"
       ]
+    },
+    "exJP": "図書館で大きな辞典を使いました。",
+    "exEN": "I used a large dictionary at the library.",
+    "exZH": "我在图书馆使用了大词典。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3482,6 +3869,15 @@
         "物品",
         "商品"
       ]
+    },
+    "exJP": "店には色々な品物が並んでいます。",
+    "exEN": "Various goods are displayed in the shop.",
+    "exZH": "店里摆放着各种各样的商品。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3501,6 +3897,15 @@
         "支付",
         "付款"
       ]
+    },
+    "exJP": "レジで現金で支払いました。",
+    "exEN": "I paid with cash at the register.",
+    "exZH": "我在收银台用现金支付了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3518,6 +3923,15 @@
       "zh": [
         "岛屿"
       ]
+    },
+    "exJP": "夏休みにきれいな島へ行きました。",
+    "exEN": "I went to a beautiful island during summer vacation.",
+    "exZH": "暑假我去了美丽的小岛。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3536,6 +3950,15 @@
         "市民",
         "公民"
       ]
+    },
+    "exJP": "多くの市民が公園に集まりました。",
+    "exEN": "Many citizens gathered at the park.",
+    "exZH": "许多市民聚集在公园里。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3554,6 +3977,15 @@
         "事务所",
         "办公室"
       ]
+    },
+    "exJP": "彼の事務所はビルの三階にあります。",
+    "exEN": "His office is on the third floor of the building.",
+    "exZH": "他的事务所在大楼的三层。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3591,6 +4023,15 @@
         "社长",
         "总经理"
       ]
+    },
+    "exJP": "社長に新しい計画を話しました。",
+    "exEN": "I spoke about the new plan to the company president.",
+    "exZH": "我向社长汇报了新计划。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3611,6 +4052,15 @@
         "打搅",
         "妨碍"
       ]
+    },
+    "exJP": "勉強の邪魔をしないでください。",
+    "exEN": "Please do not disturb my studying.",
+    "exZH": "请不要打扰我学习。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3630,6 +4080,15 @@
       "zh": [
         "自由"
       ]
+    },
+    "exJP": "公園で自由に遊ぶことができます。",
+    "exEN": "You can play freely in the park.",
+    "exZH": "可以在公园里自由地玩耍。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3649,6 +4108,15 @@
         "习惯",
         "风俗"
       ]
+    },
+    "exJP": "毎朝走るのが私の習慣です。",
+    "exEN": "Running every morning is my habit.",
+    "exZH": "每天早上跑步是我的习惯。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3668,6 +4136,15 @@
         "住址",
         "地址"
       ]
+    },
+    "exJP": "ここに住所と名前を書いてください。",
+    "exEN": "Please write your address and name here.",
+    "exZH": "请在这里写下地址和姓名。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3688,6 +4165,15 @@
         "充分",
         "足够"
       ]
+    },
+    "exJP": "時間は十分にあるので安心してください。",
+    "exEN": "Please rest assured as there is plenty of time.",
+    "exZH": "时间非常充足，请放心。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3709,6 +4195,15 @@
         "出席",
         "参加"
       ]
+    },
+    "exJP": "明日の会議に出席する予定です。",
+    "exEN": "I plan to attend tomorrow's meeting.",
+    "exZH": "我计划参加明天的会议。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3729,6 +4224,15 @@
         "出发",
         "启程"
       ]
+    },
+    "exJP": "電車は九時に出発します。",
+    "exEN": "The train departs at nine o'clock.",
+    "exZH": "电车在九点出发。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3748,6 +4252,15 @@
         "爱好",
         "兴趣"
       ]
+    },
+    "exJP": "私の趣味は写真を撮ることです。",
+    "exEN": "My hobby is taking photos.",
+    "exZH": "我的爱好是拍照。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3766,6 +4279,15 @@
         "正月",
         "新年"
       ]
+    },
+    "exJP": "お正月には家族と一緒に過ごします。",
+    "exEN": "During New Year, I spend time with my family.",
+    "exZH": "新年期间我和家人一起过。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3784,6 +4306,15 @@
       "zh": [
         "小学"
       ]
+    },
+    "exJP": "弟は来年から小学校に通います。",
+    "exEN": "My younger brother will attend elementary school starting next year.",
+    "exZH": "我弟弟从明年开始上小学。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3802,6 +4333,15 @@
       "zh": [
         "小说"
       ]
+    },
+    "exJP": "週末に面白い小説を読みました。",
+    "exEN": "I read an interesting novel over the weekend.",
+    "exZH": "我在周末读了一本有意思的小说。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3822,6 +4362,15 @@
         "招待",
         "邀请"
       ]
+    },
+    "exJP": "友達を誕生日のパーティーに招待しました。",
+    "exEN": "I invited my friends to my birthday party.",
+    "exZH": "我邀请了朋友参加生日派对。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3862,6 +4411,15 @@
         "将来",
         "未来"
       ]
+    },
+    "exJP": "将来は医者になりたいです。",
+    "exEN": "I want to become a doctor in the future.",
+    "exZH": "我将来想成为一名医生。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3883,6 +4441,15 @@
         "进餐",
         "吃饭"
       ]
+    },
+    "exJP": "友達と一緒に食事を楽しみたいです。",
+    "exEN": "I want to enjoy a meal with my friends.",
+    "exZH": "我想和朋友一起享受美食。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3902,6 +4469,15 @@
         "食品",
         "粮食"
       ]
+    },
+    "exJP": "スーパーで一週間分の食料を買いました。",
+    "exEN": "I bought a week's worth of food at the supermarket.",
+    "exZH": "我在超市买了一周份的食物。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3941,6 +4517,15 @@
         "通知",
         "告知"
       ]
+    },
+    "exJP": "予定が決まったら知らせてください。",
+    "exEN": "Please notify me once the schedule is decided.",
+    "exZH": "安排确定后请通知我。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3961,6 +4546,15 @@
         "调查",
         "查阅"
       ]
+    },
+    "exJP": "わからない言葉を辞書で調べました。",
+    "exEN": "I looked up unknown words in the dictionary.",
+    "exZH": "我用字典查了不懂的词语。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3978,6 +4572,15 @@
       "zh": [
         "人口"
       ]
+    },
+    "exJP": "この町の人口は毎年増えています。",
+    "exEN": "The population of this town is increasing every year.",
+    "exZH": "这个城镇的人口每年都在增加。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -3995,6 +4598,15 @@
       "zh": [
         "神社"
       ]
+    },
+    "exJP": "初詣で有名な神社へ行きました。",
+    "exEN": "I went to a famous shrine for Hatsumode.",
+    "exZH": "我去了一座著名神社进行初诣。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4015,6 +4627,15 @@
         "亲切",
         "热情"
       ]
+    },
+    "exJP": "彼はいつも親切に手伝ってくれます。",
+    "exEN": "He always kindly helps me.",
+    "exZH": "他总是很热心地帮助我。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4037,6 +4658,15 @@
         "担心",
         "操心"
       ]
+    },
+    "exJP": "明日のテストが少し心配です。",
+    "exEN": "I am a little worried about tomorrow's test.",
+    "exZH": "我有点担心明天的考试。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4054,6 +4684,15 @@
       "zh": [
         "报社"
       ]
+    },
+    "exJP": "兄は大きな新聞社で働いています。",
+    "exEN": "My older brother works for a large newspaper company.",
+    "exZH": "我哥哥在一家大型报社工作。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4073,6 +4712,15 @@
       "zh": [
         "游泳"
       ]
+    },
+    "exJP": "夏休みに水泳の練習をします。",
+    "exEN": "I practice swimming during summer vacation.",
+    "exZH": "我在暑假练习游泳。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4091,6 +4739,15 @@
         "自来水",
         "水道"
       ]
+    },
+    "exJP": "工事のために水道が止まっています。",
+    "exEN": "The water supply is shut off due to construction work.",
+    "exZH": "因为施工，供水停止了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4110,6 +4767,15 @@
         "相当",
         "很"
       ]
+    },
+    "exJP": "今日はずいぶん寒くなりましたね。",
+    "exEN": "It has become quite cold today, hasn't it?",
+    "exZH": "今天变得相当冷了呢。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4127,6 +4793,15 @@
       "zh": [
         "数学"
       ]
+    },
+    "exJP": "私は高校の時、数学が一番好きでした。",
+    "exEN": "When I was in high school, I liked math the best.",
+    "exZH": "我上高中时最喜欢数学。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4147,6 +4822,15 @@
         "经过",
         "过度"
       ]
+    },
+    "exJP": "バスの時間が過ぎてしまいました。",
+    "exEN": "The bus time has already passed.",
+    "exZH": "公交车的时间已经过了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4186,6 +4870,15 @@
         "完全",
         "全部"
       ]
+    },
+    "exJP": "風邪はもうすっかり良くなりました。",
+    "exEN": "I have completely recovered from my cold.",
+    "exZH": "感冒已经完全好了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4206,6 +4899,15 @@
         "前进",
         "进步"
       ]
+    },
+    "exJP": "この道をまっすぐ進むと駅があります。",
+    "exEN": "If you go straight along this road, you will find the station.",
+    "exZH": "沿着这条路直走就会看到车站。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4226,6 +4928,15 @@
         "扔掉",
         "抛弃"
       ]
+    },
+    "exJP": "古い教科書をゴミ箱に捨てました。",
+    "exEN": "I threw away the old textbook into the trash bin.",
+    "exZH": "我把旧教科书扔进了垃圾桶。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4244,6 +4955,15 @@
         "沙子",
         "砂"
       ]
+    },
+    "exJP": "靴の中に砂が入ってしまいました。",
+    "exEN": "Sand got inside my shoes.",
+    "exZH": "沙子进到鞋子里了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4264,6 +4984,15 @@
         "滑",
         "滑倒"
       ]
+    },
+    "exJP": "道が凍っていて滑りやすいです。",
+    "exEN": "The road is frozen and slippery.",
+    "exZH": "路面结冰了，很容易滑倒。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4283,6 +5012,15 @@
         "角落",
         "边缘"
       ]
+    },
+    "exJP": "部屋の隅に小さな机を置きました。",
+    "exEN": "I placed a small desk in the corner of the room.",
+    "exZH": "我在房间角落放了一张小桌子。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4303,6 +5041,15 @@
         "结束",
         "完成"
       ]
+    },
+    "exJP": "宿題が早く済んだので映画を見ました。",
+    "exEN": "Since I finished my homework early, I watched a movie.",
+    "exZH": "因为作业很快就做完了，所以我看了电影。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4360,6 +5107,15 @@
       "zh": [
         "生活"
       ]
+    },
+    "exJP": "日本での生活にもう慣れましたか。",
+    "exEN": "Have you gotten used to life in Japan yet?",
+    "exZH": "你适应在日本的生活了吗？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4381,6 +5137,15 @@
         "生产",
         "产量"
       ]
+    },
+    "exJP": "この工場では車を生産しています。",
+    "exEN": "Cars are produced at this factory.",
+    "exZH": "这家工厂生产汽车。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4400,6 +5165,15 @@
         "西洋",
         "西方"
       ]
+    },
+    "exJP": "私は西洋の歴史に興味があります。",
+    "exEN": "I am interested in Western history.",
+    "exZH": "我对西方历史感兴趣。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4417,6 +5191,15 @@
       "zh": [
         "世界"
       ]
+    },
+    "exJP": "将来は世界中を旅行したいです。",
+    "exEN": "I want to travel around the world in the future.",
+    "exZH": "将来我想去世界各地旅行。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4436,6 +5219,15 @@
         "座位",
         "席位"
       ]
+    },
+    "exJP": "どうぞこちらの空いている席に座ってください。",
+    "exEN": "Please sit in this open seat over here.",
+    "exZH": "请坐在这边空着的座位上。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4456,6 +5248,15 @@
         "说明",
         "解释"
       ]
+    },
+    "exJP": "先生が使い方の説明をしてくれました。",
+    "exEN": "The teacher explained how to use it to us.",
+    "exZH": "老师给我们说明了使用方法。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4474,6 +5275,15 @@
         "后背",
         "背部"
       ]
+    },
+    "exJP": "荷物が重くて背中が痛いです。",
+    "exEN": "My back hurts because the luggage is heavy.",
+    "exZH": "行李很重，我的后背很痛。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4493,6 +5303,15 @@
         "务必",
         "一定"
       ]
+    },
+    "exJP": "今度ぜひ私の家にも遊びに来てください。",
+    "exEN": "Please be sure to come visit my house next time.",
+    "exZH": "下次请务必到我家来玩。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4514,6 +5333,15 @@
         "照顾",
         "关照"
       ]
+    },
+    "exJP": "毎日ペットの犬の世話をしています。",
+    "exEN": "I take care of my pet dog every day.",
+    "exZH": "我每天都照顾我的宠物狗。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4533,6 +5361,15 @@
         "线",
         "线条"
       ]
+    },
+    "exJP": "ノートに赤い線を引きましょう。",
+    "exEN": "Let's draw a red line in the notebook.",
+    "exZH": "在笔记本上画一条红线吧。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4552,6 +5389,15 @@
         "完全(不)",
         "根本"
       ]
+    },
+    "exJP": "昨日は忙しくて全然寝られませんでした。",
+    "exEN": "I was busy yesterday and couldn't sleep at all.",
+    "exZH": "昨天太忙了，我一点都没睡。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4571,6 +5417,15 @@
       "zh": [
         "战争"
       ]
+    },
+    "exJP": "昔の戦争について本を読みました。",
+    "exEN": "I read a book about past wars.",
+    "exZH": "我读了一本关于过去战争的书。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4610,6 +5465,15 @@
         "抚养",
         "培育"
       ]
+    },
+    "exJP": "庭で綺麗な花を育てています。",
+    "exEN": "I am growing beautiful flowers in the garden.",
+    "exZH": "我在院子里培育着漂亮的花。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4629,6 +5493,15 @@
       "zh": [
         "毕业"
       ]
+    },
+    "exJP": "来年高校を卒業したら大学に入ります。",
+    "exEN": "When I graduate from high school next year, I will enter university.",
+    "exZH": "明年高中毕业后我要读大学。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4647,6 +5520,15 @@
         "祖父",
         "外祖父"
       ]
+    },
+    "exJP": "私の祖父は毎日散歩をしています。",
+    "exEN": "My grandfather takes a walk every day.",
+    "exZH": "我的祖父每天都散步。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4703,6 +5585,15 @@
         "而且",
         "另外"
       ]
+    },
+    "exJP": "この店は安いですし、それに美味しいです。",
+    "exEN": "This shop is cheap, and besides, the food is delicious.",
+    "exZH": "这家店便宜，而且味道很好。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4722,6 +5613,15 @@
         "那么",
         "那种程度"
       ]
+    },
+    "exJP": "今日のテストはそれほど難しくなかったです。",
+    "exEN": "Today's test wasn't that difficult.",
+    "exZH": "今天的测试并没有那么难。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4741,6 +5641,15 @@
         "差不多",
         "渐渐"
       ]
+    },
+    "exJP": "もう暗くなったのでそろそろ帰りましょう。",
+    "exEN": "It has gotten dark already, so let's head home soon.",
+    "exZH": "天已经黑了，我们差不多该回去了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4760,6 +5669,15 @@
       "zh": [
         "那样的"
       ]
+    },
+    "exJP": "そんなにたくさん食べられません。",
+    "exEN": "I cannot eat that much.",
+    "exZH": "我吃不了那么多。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4780,6 +5698,15 @@
       "zh": [
         "出院"
       ]
+    },
+    "exJP": "怪我が良くなったので明日退院します。",
+    "exEN": "My injury has improved, so I will leave the hospital tomorrow.",
+    "exZH": "我的伤好了，所以明天出院。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4817,6 +5744,15 @@
         "重要",
         "保重"
       ]
+    },
+    "exJP": "これは母からもらった大事な時計です。",
+    "exEN": "This is an important watch I received from my mother.",
+    "exZH": "这是我从母亲那里得到的珍贵手表。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4837,6 +5773,15 @@
         "大概",
         "大约"
       ]
+    },
+    "exJP": "今日の宿題は大体終わりました。",
+    "exEN": "I have finished roughly most of today's homework.",
+    "exZH": "今天的作业大致完成了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4856,6 +5801,15 @@
         "相当",
         "很"
       ]
+    },
+    "exJP": "熱が下がり、体がだいぶ楽になりました。",
+    "exEN": "My fever went down and my body feels much better.",
+    "exZH": "烧退了，身体舒服多了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4873,6 +5827,15 @@
       "zh": [
         "台风"
       ]
+    },
+    "exJP": "大きな台風が近づいています。",
+    "exEN": "A large typhoon is approaching.",
+    "exZH": "强台风正在接近。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4893,6 +5856,15 @@
         "倒下",
         "垮台"
       ]
+    },
+    "exJP": "強い風で庭の木が倒れてしまいました。",
+    "exEN": "The tree in the garden fell over due to strong winds.",
+    "exZH": "院子里的树被强风吹倒了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4932,6 +5904,15 @@
         "确实",
         "大概"
       ]
+    },
+    "exJP": "あの人は確か田中さんの弟さんです。",
+    "exEN": "If I remember correctly, that person is Tanaka-san's younger brother.",
+    "exZH": "那个人如果没记错的话是田中先生的弟弟。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4952,6 +5933,15 @@
         "加",
         "添"
       ]
+    },
+    "exJP": "スープに少し塩を足しました。",
+    "exEN": "I added a little salt to the soup.",
+    "exZH": "我在汤里加了一点盐。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4972,6 +5962,15 @@
         "访问",
         "拜访"
       ]
+    },
+    "exJP": "休みに京都の友達の家を訪ねました。",
+    "exEN": "I visited my friend's house in Kyoto during the holidays.",
+    "exZH": "假期里我拜访了京都朋友的家。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -4991,6 +5990,15 @@
         "正确",
         "对"
       ]
+    },
+    "exJP": "正しい答えを一つ選んでください。",
+    "exEN": "Please choose one correct answer.",
+    "exZH": "请选择一个正确的答案。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5028,6 +6036,15 @@
         "立起",
         "竖起"
       ]
+    },
+    "exJP": "机の上に本を立てて置きました。",
+    "exEN": "I stood the books upright on the desk.",
+    "exZH": "我把书竖着放在桌子上。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5066,6 +6083,15 @@
         "架子",
         "搁板"
       ]
+    },
+    "exJP": "棚の上に新しい本を並べました。",
+    "exEN": "I lined up new books on the shelf.",
+    "exZH": "我在架子上摆放了新书。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5085,6 +6111,15 @@
         "期待",
         "乐趣"
       ]
+    },
+    "exJP": "来週の旅行をとても楽しみにしています。",
+    "exEN": "I am really looking forward to next week's trip.",
+    "exZH": "我非常期待下周的旅行。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5105,6 +6140,15 @@
         "拜托",
         "请求"
       ]
+    },
+    "exJP": "友達に引っ越しの手伝いを頼みました。",
+    "exEN": "I asked my friend to help me move.",
+    "exZH": "我请朋友帮忙搬家。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5125,6 +6169,15 @@
         "足够",
         "足以"
       ]
+    },
+    "exJP": "買い物をしたが、お金が足りなかった。",
+    "exEN": "I went shopping, but I didn't have enough money.",
+    "exZH": "我去买东西，但钱不够了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5144,6 +6197,15 @@
         "男性",
         "男子"
       ]
+    },
+    "exJP": "あちらの背の高い男性は誰ですか。",
+    "exEN": "Who is that tall man over there?",
+    "exZH": "那边那位高个子男性是谁？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5164,6 +6226,15 @@
         "暖气",
         "供暖"
       ]
+    },
+    "exJP": "部屋が寒いので暖房をつけました。",
+    "exEN": "Since the room was cold, I turned on the heating.",
+    "exZH": "因为房间冷，所以我开暖气了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5182,6 +6253,15 @@
         "血",
         "血液"
       ]
+    },
+    "exJP": "転んで膝から血が出ました。",
+    "exEN": "I fell down and my knee bled.",
+    "exZH": "我摔倒了，膝盖流血了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5201,6 +6281,15 @@
         "力量",
         "力气"
       ]
+    },
+    "exJP": "重い荷物を持つには力が必要です。",
+    "exEN": "Strength is needed to carry heavy luggage.",
+    "exZH": "搬重物需要力量。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5220,6 +6309,15 @@
         "一点也不",
         "丝毫"
       ]
+    },
+    "exJP": "この本はちっとも面白くないです。",
+    "exEN": "This book is not interesting at all.",
+    "exZH": "这本书一点意思也没有。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5237,6 +6335,15 @@
       "zh": [
         "初中"
       ]
+    },
+    "exJP": "弟は来年から中学校に通います。",
+    "exEN": "My younger brother will attend junior high school starting next year.",
+    "exZH": "我弟弟从明年开始上初中。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5274,6 +6381,15 @@
       "zh": [
         "停车场"
       ]
+    },
+    "exJP": "このビルには広い駐車場があります。",
+    "exEN": "This building has a spacious parking lot.",
+    "exZH": "这栋大楼有一个很大的停车场。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5291,6 +6407,15 @@
       "zh": [
         "地理"
       ]
+    },
+    "exJP": "私は高校のとき地理の授業が好きでした。",
+    "exEN": "I liked geography class when I was in high school.",
+    "exZH": "我高中时很喜欢地理课。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5311,6 +6436,15 @@
         "抓住",
         "逮捕"
       ]
+    },
+    "exJP": "公園で綺麗なチョウを捕まえました。",
+    "exEN": "I caught a pretty butterfly in the park.",
+    "exZH": "我在公园抓到了一只漂亮的蝴蝶。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5330,6 +6464,15 @@
         "月亮",
         "月"
       ]
+    },
+    "exJP": "今夜は月がとても綺麗に見えます。",
+    "exEN": "The moon looks very beautiful tonight.",
+    "exZH": "今晚的月亮看起来非常漂亮。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5370,6 +6513,15 @@
         "浸泡",
         "腌制"
       ]
+    },
+    "exJP": "野菜を塩にしばらく漬けます。",
+    "exEN": "Soak the vegetables in salt for a while.",
+    "exZH": "把蔬菜用盐腌一会儿。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5390,6 +6542,15 @@
         "传达",
         "转告"
       ]
+    },
+    "exJP": "明日の予定を友達に伝えました。",
+    "exEN": "I conveyed tomorrow's schedule to my friend.",
+    "exZH": "我把明天的计划告诉了朋友。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5410,6 +6571,15 @@
         "继续",
         "连绵"
       ]
+    },
+    "exJP": "今週は暑い日がずっと続いています。",
+    "exEN": "Hot days have continued all week.",
+    "exZH": "这个星期一直是炎热的天气。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5430,6 +6600,15 @@
         "继续",
         "使连续"
       ]
+    },
+    "exJP": "私は毎日日本語の勉強を続けています。",
+    "exEN": "I keep studying Japanese every day.",
+    "exZH": "我每天都在坚持学习日语。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5450,6 +6629,15 @@
         "包",
         "包裹"
       ]
+    },
+    "exJP": "プレゼントを綺麗な紙で包みました。",
+    "exEN": "I wrapped the present in pretty paper.",
+    "exZH": "我用漂亮的纸把礼物包了起来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5467,6 +6655,15 @@
       "zh": [
         "妻子"
       ]
+    },
+    "exJP": "休日には妻と一緒に買い物へ行きます。",
+    "exEN": "On holidays, I go shopping with my wife.",
+    "exZH": "休息日我和妻子一起去买东西。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5486,6 +6683,15 @@
         "打算",
         "意图"
       ]
+    },
+    "exJP": "来週の週末は家で休むつもりです。",
+    "exEN": "I intend to rest at home next weekend.",
+    "exZH": "下周末我打算在家里休息。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5506,6 +6712,15 @@
         "带领",
         "带"
       ]
+    },
+    "exJP": "妹を連れて散歩に出かけました。",
+    "exEN": "I went out for a walk with my younger sister.",
+    "exZH": "我带着妹妹出门散步了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5525,6 +6740,15 @@
         "礼貌",
         "仔细"
       ]
+    },
+    "exJP": "彼はいつも丁寧な言葉を使います。",
+    "exEN": "He always uses polite language.",
+    "exZH": "他总是使用礼貌的用语。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5545,6 +6769,15 @@
         "帮忙",
         "协助"
       ]
+    },
+    "exJP": "母の料理を少し手伝いました。",
+    "exEN": "I helped my mother a little with cooking.",
+    "exZH": "我帮妈妈做了点做饭的活。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5617,6 +6850,15 @@
       "zh": [
         "店员"
       ]
+    },
+    "exJP": "店員さんが笑顔で迎えてくれました。",
+    "exEN": "The shop clerk welcomed me with a smile.",
+    "exZH": "店员微笑着迎接了我。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5634,6 +6876,15 @@
       "zh": [
         "天气预报"
       ]
+    },
+    "exJP": "朝のニュースで天気予報を確認します。",
+    "exEN": "I check the weather forecast on the morning news.",
+    "exZH": "我通过早间新闻确认天气预报。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5651,6 +6902,15 @@
       "zh": [
         "电报"
       ]
+    },
+    "exJP": "結婚式のお祝いに電報を送りました。",
+    "exEN": "I sent a telegram to congratulate them on their wedding.",
+    "exZH": "我发了一份电报表达结婚祝贺。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5687,6 +6947,15 @@
         "都市",
         "都"
       ]
+    },
+    "exJP": "東京都の人口はとても多いです。",
+    "exEN": "The population of Tokyo Metropolis is very large.",
+    "exZH": "东京都的人口非常多。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5706,6 +6975,15 @@
         "工具",
         "道具"
       ]
+    },
+    "exJP": "掃除の道具を押し入れから出しました。",
+    "exEN": "I took the cleaning tools out of the closet.",
+    "exZH": "我把打扫工具从壁橱里拿了出来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5723,6 +7001,15 @@
       "zh": [
         "动物园"
       ]
+    },
+    "exJP": "家族で動物園へ遊びに行きました。",
+    "exEN": "I went to the zoo with my family.",
+    "exZH": "我和家人一起去动物园玩了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5742,6 +7029,15 @@
         "婴儿",
         "宝宝"
       ]
+    },
+    "exJP": "赤ちゃんが気持ちよさそうに寝ています。",
+    "exEN": "The baby is sleeping peacefully.",
+    "exZH": "宝宝正在香甜地睡着。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5762,6 +7058,15 @@
         "上升",
         "上去"
       ]
+    },
+    "exJP": "階段を上がって二階へ行きました。",
+    "exEN": "I went up the stairs to the second floor.",
+    "exZH": "我上了楼梯去了二楼。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5781,6 +7086,15 @@
         "放弃",
         "死心"
       ]
+    },
+    "exJP": "夢を諦めずに努力を続けます。",
+    "exEN": "I will continue to work hard without giving up on my dream.",
+    "exZH": "我不会放弃梦想，会继续努力。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5798,6 +7112,15 @@
       "zh": [
         "早上睡懒觉"
       ]
+    },
+    "exJP": "今日は朝寝坊をして遅刻しそうでした。",
+    "exEN": "I overslept this morning and almost was late.",
+    "exZH": "我今天早上睡过头了，差点迟到。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5816,6 +7139,15 @@
         "洞",
         "穴"
       ]
+    },
+    "exJP": "靴下に小さな穴が開いていました。",
+    "exEN": "There was a small hole in my sock.",
+    "exZH": "袜子上有个小洞。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5837,6 +7169,15 @@
         "向导",
         "引路"
       ]
+    },
+    "exJP": "友達に街の美味しいお店を案内しました。",
+    "exEN": "I guided my friend to good restaurants in town.",
+    "exZH": "我带朋友去了城里好吃的餐馆。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5857,6 +7198,15 @@
         "欺负",
         "捉弄"
       ]
+    },
+    "exJP": "動物をいじめてはいけません。",
+    "exEN": "You must not mistreat animals.",
+    "exZH": "不能欺负动物。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5877,6 +7227,15 @@
         "领受",
         "吃/喝(谦让语)"
       ]
+    },
+    "exJP": "先生から綺麗な本を頂きました。",
+    "exEN": "I received a fine book from my teacher.",
+    "exZH": "我从老师那里收到了一本精美的书。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5895,6 +7254,15 @@
       "zh": [
         "疼痛"
       ]
+    },
+    "exJP": "薬を飲むと足の痛みが消えました。",
+    "exEN": "When I took the medicine, the pain in my leg went away.",
+    "exZH": "吃了药之后脚痛就消失了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5912,6 +7280,15 @@
       "zh": [
         "堂表兄弟姐妹"
       ]
+    },
+    "exJP": "歳の近い従兄弟と一緒に遊んでいます。",
+    "exEN": "I am playing with my cousin who is close to me in age.",
+    "exZH": "我正在和年龄相仿的表亲一起玩。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5929,6 +7306,15 @@
       "zh": [
         "水稻"
       ]
+    },
+    "exJP": "秋になると黄色い稲が風に揺れます。",
+    "exEN": "In autumn, the golden rice plants sway in the wind.",
+    "exZH": "到了秋天，金黄的水稻在风中摇曳。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5949,6 +7335,15 @@
         "拜访",
         "请教(谦让语)"
       ]
+    },
+    "exJP": "明日の午後にご自宅へ伺います。",
+    "exEN": "I will visit your home tomorrow afternoon.",
+    "exZH": "明天下午我会拜访您家。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5968,6 +7363,15 @@
         "考上",
         "及格"
       ]
+    },
+    "exJP": "兄は大学の試験に受かりました。",
+    "exEN": "My older brother passed the university entrance exam.",
+    "exZH": "哥哥考上了大学。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -5987,6 +7391,15 @@
         "浮",
         "飘"
       ]
+    },
+    "exJP": "水の上に黄色い葉が浮いています。",
+    "exEN": "Yellow leaves are floating on the water.",
+    "exZH": "水面上飘浮着黄叶。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6007,6 +7420,15 @@
         "接收",
         "领受"
       ]
+    },
+    "exJP": "郵便配達員から荷物を受け取りました。",
+    "exEN": "I received a package from the mail carrier.",
+    "exZH": "我从邮递员那里收到了包裹。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6026,6 +7448,15 @@
         "开动",
         "移动(他动词)"
       ]
+    },
+    "exJP": "重い机を部屋の隅へ動かしました。",
+    "exEN": "I moved the heavy desk to the corner of the room.",
+    "exZH": "我把沉重的桌子搬到了房间的角落。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6043,6 +7474,15 @@
       "zh": [
         "兔子"
       ]
+    },
+    "exJP": "公園で可愛い白い兎を見ました。",
+    "exEN": "I saw a cute white rabbit in the park.",
+    "exZH": "我在公园里看到了一只可爱的小白兔。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6081,6 +7521,15 @@
         "迁移",
         "转移"
       ]
+    },
+    "exJP": "友達は隣の町へ移りました。",
+    "exEN": "My friend moved to the neighboring town.",
+    "exZH": "朋友搬到了隔壁的城镇。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6100,6 +7549,15 @@
         "好吃",
         "高明"
       ]
+    },
+    "exJP": "母が作った料理はとてもうまいです。",
+    "exEN": "The dish my mother made is very delicious.",
+    "exZH": "妈妈做的菜非常好吃。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6119,6 +7577,15 @@
         "背面",
         "里子"
       ]
+    },
+    "exJP": "紙の裏にメモを書きました。",
+    "exEN": "I wrote a note on the back of the paper.",
+    "exZH": "我在纸的背面写了笔记。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6138,6 +7605,15 @@
         "卖场",
         "专柜"
       ]
+    },
+    "exJP": "デパートの靴売り場で新しい靴を買いました。",
+    "exEN": "I bought new shoes at the shoe department of the department store.",
+    "exZH": "我在百货店的鞋类柜台买了新鞋。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6156,6 +7632,15 @@
       "zh": [
         "运气"
       ]
+    },
+    "exJP": "今日は運がよくて宝くじが当たりました。",
+    "exEN": "I was lucky today and won the lottery.",
+    "exZH": "今天运气很好，中彩票了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6176,6 +7661,15 @@
       "zh": [
         "运动"
       ]
+    },
+    "exJP": "健康のために毎日公園で運動しています。",
+    "exEN": "I exercise in the park every day for my health.",
+    "exZH": "为了健康，我每天都在公园锻炼。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6194,6 +7688,15 @@
       "zh": [
         "颜料"
       ]
+    },
+    "exJP": "新しい絵の具を使って絵を描きました。",
+    "exEN": "I painted a picture using new paints.",
+    "exZH": "我用了新颜料画画。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6212,6 +7715,15 @@
       "zh": [
         "会客室"
       ]
+    },
+    "exJP": "お客様を応接間へお通ししました。",
+    "exEN": "I showed the guest into the reception room.",
+    "exZH": "我把客人领进了接待室。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6248,6 +7760,15 @@
       "zh": [
         "一亿"
       ]
+    },
+    "exJP": "日本の人口は一億人を超えています。",
+    "exEN": "Japan's population exceeds one hundred million people.",
+    "exZH": "日本的人口超过了一亿人。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6265,6 +7786,15 @@
       "zh": [
         "屋顶"
       ]
+    },
+    "exJP": "ビルの屋上から綺麗な景色が見えます。",
+    "exEN": "You can see a beautiful view from the building's rooftop.",
+    "exZH": "从大楼顶楼可以看到美丽的景色。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6283,6 +7813,15 @@
       "zh": [
         "礼物"
       ]
+    },
+    "exJP": "誕生日に心のこもった贈り物をもらいました。",
+    "exEN": "I received a heartfelt gift on my birthday.",
+    "exZH": "生日时我收到了一份心意满满的礼物。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6300,6 +7839,15 @@
       "zh": [
         "(别人的)孩子"
       ]
+    },
+    "exJP": "田中さんのお子さんは元気に遊んでいます。",
+    "exEN": "Tanaka-san's child is playing energetically.",
+    "exZH": "田中家的孩子正在活力满满地玩耍。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6318,6 +7866,15 @@
         "伯父",
         "叔父"
       ]
+    },
+    "exJP": "私の伯父は山で果物を育てています。",
+    "exEN": "My uncle grows fruit in the mountains.",
+    "exZH": "我的大伯在山上种植水果。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6352,6 +7909,15 @@
       "zh": [
         "肚子"
       ]
+    },
+    "exJP": "お腹がすいたのでパンを食べました。",
+    "exEN": "I was hungry, so I ate some bread.",
+    "exZH": "我肚子饿了，所以吃了面包。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6370,6 +7936,15 @@
         "伯母",
         "阿姨"
       ]
+    },
+    "exJP": "私の伯母は京都に住んでいます。",
+    "exEN": "My aunt lives in Kyoto.",
+    "exZH": "我的伯母住在京都。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6407,6 +7982,15 @@
         "折断",
         "弯曲"
       ]
+    },
+    "exJP": "強い風で木の枝が折れました。",
+    "exEN": "A tree branch broke in the strong wind.",
+    "exZH": "树枝被大风刮断了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6424,6 +8008,15 @@
       "zh": [
         "温度"
       ]
+    },
+    "exJP": "お湯の温度を確かめてください。",
+    "exEN": "Please check the temperature of the hot water.",
+    "exZH": "请确认一下热水的温度。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6443,6 +8036,15 @@
         "聚会",
         "会"
       ]
+    },
+    "exJP": "今日の会は午後二時に始まります。",
+    "exEN": "Today's meeting starts at two in the afternoon.",
+    "exZH": "今天的会议在下午两点开始。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6461,6 +8063,15 @@
       "zh": [
         "会场"
       ]
+    },
+    "exJP": "会場にはたくさんの人が集まりました。",
+    "exEN": "Many people gathered at the venue.",
+    "exZH": "会场里聚集了很多人。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6481,6 +8092,15 @@
         "会话",
         "交谈"
       ]
+    },
+    "exJP": "毎日日本語で会話を練習しています。",
+    "exEN": "I practice Japanese conversation every day.",
+    "exZH": "我每天用日语练习对话。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6515,6 +8135,15 @@
       "zh": [
         "柿子"
       ]
+    },
+    "exJP": "秋になると甘い柿を食べます。",
+    "exEN": "When autumn comes, I eat sweet persimmons.",
+    "exZH": "到了秋天我会吃甜柿子。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6532,6 +8161,15 @@
       "zh": [
         "歌手"
       ]
+    },
+    "exJP": "彼女の歌が好きで歌手になりたいです。",
+    "exEN": "I like her singing and want to become a singer.",
+    "exZH": "我喜欢她的歌，想成为一名歌手。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6551,6 +8189,15 @@
         "打扮",
         "外表"
       ]
+    },
+    "exJP": "彼は暖かい格好をして出かけました。",
+    "exEN": "He went out dressed warmly.",
+    "exZH": "他穿着保暖的衣服出门了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6570,6 +8217,15 @@
         "钟",
         "钟声"
       ]
+    },
+    "exJP": "お寺の鐘の音が遠くから聞こえます。",
+    "exEN": "The sound of the temple bell can be heard from afar.",
+    "exZH": "从远处能听到寺庙的钟声。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6587,6 +8243,15 @@
       "zh": [
         "墙壁"
       ]
+    },
+    "exJP": "部屋の壁に新しい絵を飾りました。",
+    "exEN": "I decorated the room's wall with a new picture.",
+    "exZH": "我在房间的墙上挂了一幅新画。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6607,6 +8272,15 @@
         "介意",
         "在乎"
       ]
+    },
+    "exJP": "私のことは構わないでください。",
+    "exEN": "Please don't worry about me.",
+    "exZH": "请不要管我。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6624,6 +8298,15 @@
       "zh": [
         "护士"
       ]
+    },
+    "exJP": "優しい看護師さんが親切にしてくれました。",
+    "exEN": "A kind nurse was very nice to me.",
+    "exZH": "温柔的护士对我很好。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6663,6 +8346,15 @@
       "zh": [
         "感动"
       ]
+    },
+    "exJP": "素晴らしい映画を見て深く感動しました。",
+    "exEN": "I was deeply moved after watching a wonderful movie.",
+    "exZH": "看了精彩的电影，我深受感动。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6683,6 +8375,15 @@
       "zh": [
         "干杯"
       ]
+    },
+    "exJP": "みんなでグラスを持って乾杯しました。",
+    "exEN": "Everyone held up their glasses and proposed a toast.",
+    "exZH": "大家举杯干杯。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6702,6 +8403,15 @@
         "加油",
         "努力"
       ]
+    },
+    "exJP": "明日の試験のために最後まで頑張ります。",
+    "exEN": "I will do my best until the very end for tomorrow's exam.",
+    "exZH": "为了明天的考试，我会努力到最后。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6720,6 +8430,15 @@
       "zh": [
         "期间"
       ]
+    },
+    "exJP": "夏休みの期間に旅行へ行く予定です。",
+    "exEN": "I plan to go on a trip during the summer vacation period.",
+    "exZH": "我打算在暑假期间去旅行。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6738,6 +8457,15 @@
       "zh": [
         "曲子"
       ]
+    },
+    "exJP": "ラジオから明るい曲が聞こえます。",
+    "exEN": "A cheerful song can be heard from the radio.",
+    "exZH": "收音机里传来欢快的歌曲。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6755,6 +8483,15 @@
       "zh": [
         "近视"
       ]
+    },
+    "exJP": "私は昔から少し近眼です。",
+    "exEN": "I have been a bit nearsighted for a long time.",
+    "exZH": "我很久以前就有点近视。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6772,6 +8509,15 @@
       "zh": [
         "金鱼"
       ]
+    },
+    "exJP": "小さな水槽で金魚を飼っています。",
+    "exEN": "I keep goldfish in a small fish tank.",
+    "exZH": "我在小水族箱里养了金鱼。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6810,6 +8556,15 @@
       "zh": [
         "草"
       ]
+    },
+    "exJP": "庭の草を綺麗に抜きました。",
+    "exEN": "I pulled out all the weeds in the garden.",
+    "exZH": "我把院子里的草拔干净了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6829,6 +8584,15 @@
       "zh": [
         "腐烂"
       ]
+    },
+    "exJP": "夏は食べ物が腐りやすいです。",
+    "exEN": "Food spoils easily in the summer.",
+    "exZH": "夏天食物容易变质。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6868,6 +8632,15 @@
         "交叉",
         "组建"
       ]
+    },
+    "exJP": "友達と腕を組んで歩きました。",
+    "exEN": "I walked arm in arm with my friend.",
+    "exZH": "我和朋友挽着手走路。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6887,6 +8660,15 @@
         "痛苦的",
         "艰难的"
       ]
+    },
+    "exJP": "たくさん走ったので息が苦しいです。",
+    "exEN": "I ran a lot, so it is difficult to breathe.",
+    "exZH": "跑了很多路，感觉喘不过气来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6905,6 +8687,15 @@
       "zh": [
         "军人"
       ]
+    },
+    "exJP": "彼の祖父は若い頃に軍人でした。",
+    "exEN": "His grandfather was a soldier when he was young.",
+    "exZH": "他的祖父年轻时曾是一名军人。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6924,6 +8715,15 @@
       "zh": [
         "受伤"
       ]
+    },
+    "exJP": "転んで足に軽い怪我をしました。",
+    "exEN": "I fell down and suffered a light injury to my leg.",
+    "exZH": "我跌倒了，腿上受了轻伤。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6943,6 +8743,15 @@
       "zh": [
         "健康"
       ]
+    },
+    "exJP": "健康のために毎日運動をしています。",
+    "exEN": "I exercise every day for my health.",
+    "exZH": "为了健康，我每天都坚持运动。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6960,6 +8769,15 @@
       "zh": [
         "语言"
       ]
+    },
+    "exJP": "世界には多くの言語があります。",
+    "exEN": "There are many languages in the world.",
+    "exZH": "世界上有许多种语言。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -6980,6 +8798,15 @@
         "施工",
         "工程"
       ]
+    },
+    "exJP": "駅の前で道路の工事をしています。",
+    "exEN": "Road construction work is being done in front of the station.",
+    "exZH": "车站前正在进行道路施工。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7000,6 +8827,15 @@
         "合格",
         "及格"
       ]
+    },
+    "exJP": "頑張って大学の試験に合格しました。",
+    "exEN": "I worked hard and passed the university exam.",
+    "exZH": "我努力通过了大学考试。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7017,6 +8853,15 @@
       "zh": [
         "国际"
       ]
+    },
+    "exJP": "来週この街で国際会議が開かれます。",
+    "exEN": "An international conference will be held in this town next week.",
+    "exZH": "下周在这个城市将举行国际会议。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7034,6 +8879,15 @@
       "zh": [
         "黑板"
       ]
+    },
+    "exJP": "先生が黒板に漢字を書きました。",
+    "exEN": "The teacher wrote kanji on the blackboard.",
+    "exZH": "老师在黑板上写了汉字。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7052,6 +8906,15 @@
       "zh": [
         "国民"
       ]
+    },
+    "exJP": "国民全員が平和を願っています。",
+    "exEN": "All citizens wish for peace.",
+    "exZH": "全体国民都渴望和平。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7070,6 +8933,15 @@
       "zh": [
         "心"
       ]
+    },
+    "exJP": "彼の優しい言葉に心が温かくなりました。",
+    "exEN": "My heart was warmed by his kind words.",
+    "exZH": "他温暖的话语让我的内心感到十分温暖。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7087,6 +8959,15 @@
       "zh": [
         "(别人的)丈夫"
       ]
+    },
+    "exJP": "田中さんのご主人は会社員です。",
+    "exEN": "Ms. Tanaka's husband is an office worker.",
+    "exZH": "田中女士的丈夫是一位公司职员。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7105,6 +8986,15 @@
       "zh": [
         "事情"
       ]
+    },
+    "exJP": "明日の会議について大切な事を聞きました。",
+    "exEN": "I heard an important matter about tomorrow's meeting.",
+    "exZH": "我听说了关于明天会议的重要事情。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7142,6 +9032,15 @@
       "zh": [
         "垃圾"
       ]
+    },
+    "exJP": "部屋のごみを集めて捨てました。",
+    "exEN": "I collected the trash in the room and threw it away.",
+    "exZH": "我把房间里的垃圾收集起来扔掉了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7162,6 +9061,15 @@
         "这次",
         "下次"
       ]
+    },
+    "exJP": "今度の週末に友達と映画を見ます。",
+    "exEN": "I am going to watch a movie with a friend this coming weekend.",
+    "exZH": "这个周末我要和朋友去看电影。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7179,6 +9087,15 @@
       "zh": [
         "今晚"
       ]
+    },
+    "exJP": "今夜は空が晴れて星がよく見えます。",
+    "exEN": "Tonight the sky is clear, so stars are clearly visible.",
+    "exZH": "今晚天空晴朗，能清楚看到星星。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7198,6 +9115,15 @@
         "最初",
         "开始"
       ]
+    },
+    "exJP": "最初のページを静かにめくりました。",
+    "exEN": "I quietly turned the first page.",
+    "exZH": "我静静地翻开了第一页。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7217,6 +9143,15 @@
         "遗憾",
         "可惜"
       ]
+    },
+    "exJP": "雨で旅行が中止になって残念です。",
+    "exEN": "It is a pity that the trip was canceled because of rain.",
+    "exZH": "因为下雨旅行被取消了，真遗憾。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7253,6 +9188,15 @@
         "仪式",
         "公式"
       ]
+    },
+    "exJP": "明日の朝から卒業式が始まります。",
+    "exEN": "The graduation ceremony starts tomorrow morning.",
+    "exZH": "毕业典礼将于明天早晨开始。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7270,6 +9214,15 @@
       "zh": [
         "事故"
       ]
+    },
+    "exJP": "電車が事故で遅れています。",
+    "exEN": "The train is delayed due to an accident.",
+    "exZH": "电车因为事故延误了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7289,6 +9242,15 @@
       "zh": [
         "准备"
       ]
+    },
+    "exJP": "出かける前に旅行の支度をします。",
+    "exEN": "Before leaving, I will make preparations for the trip.",
+    "exZH": "出门前我要做旅行的准备。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7306,6 +9268,15 @@
       "zh": [
         "耳鼻科"
       ]
+    },
+    "exJP": "鼻の調子が悪いので耳鼻科に行きます。",
+    "exEN": "My nose doesn't feel right, so I will go to the ENT clinic.",
+    "exZH": "我鼻子不大舒服，所以要去耳鼻喉科。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7323,6 +9294,15 @@
       "zh": [
         "柔道"
       ]
+    },
+    "exJP": "彼は毎週土曜日に柔道を習っています。",
+    "exEN": "He learns judo every Saturday.",
+    "exZH": "他每周六学习柔道。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7342,6 +9322,15 @@
         "专业",
         "专门"
       ]
+    },
+    "exJP": "大学での私の専門は歴史です。",
+    "exEN": "My major at university is history.",
+    "exZH": "我在大学的专业是历史。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7379,6 +9368,15 @@
         "终于",
         "到底"
       ]
+    },
+    "exJP": "長い時間がかかりましたがとうとう完成しました。",
+    "exEN": "It took a long time, but it was finally completed.",
+    "exZH": "花了很长时间，终于完成了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7397,6 +9395,15 @@
       "zh": [
         "理发店"
       ]
+    },
+    "exJP": "髪が伸びたので床屋へ行きました。",
+    "exEN": "My hair got long, so I went to the barbershop.",
+    "exZH": "头发长长了，所以我去了理发店。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7416,6 +9423,15 @@
       "zh": [
         "特别"
       ]
+    },
+    "exJP": "今日はお祝いに特別な料理を作りました。",
+    "exEN": "Today I made a special dish to celebrate.",
+    "exZH": "今天我做了一道特别的菜来庆祝。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7433,6 +9449,15 @@
       "zh": [
         "特快列车"
       ]
+    },
+    "exJP": "特急に乗ると次の駅まで一時間で行けます。",
+    "exEN": "If you take the limited express, you can reach the next station in one hour.",
+    "exZH": "如果搭乘特急列车，一小时内就能到下一站。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7453,6 +9478,15 @@
         "送到",
         "递交"
       ]
+    },
+    "exJP": "手紙を友達の家に届けました。",
+    "exEN": "I delivered a letter to my friend's house.",
+    "exZH": "我把信送到了朋友家。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7472,6 +9506,15 @@
         "住宿",
         "留宿"
       ]
+    },
+    "exJP": "週末は有名なホテルに泊まります。",
+    "exEN": "I will stay at a famous hotel this weekend.",
+    "exZH": "这个周末我要住在著名的酒店。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7511,6 +9554,15 @@
         "修理",
         "改正"
       ]
+    },
+    "exJP": "父は壊れた時計を直してくれました。",
+    "exEN": "My father fixed the broken watch for me.",
+    "exZH": "父亲帮我修好了坏掉的表。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7531,6 +9583,15 @@
         "修好",
         "恢复"
       ]
+    },
+    "exJP": "パソコンがすぐに直ってよかったです。",
+    "exEN": "I'm glad the computer was fixed right away.",
+    "exZH": "电脑很快修好了，太好了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7551,6 +9612,15 @@
         "消失",
         "用尽"
       ]
+    },
+    "exJP": "机の上にあった鍵が無くなりました。",
+    "exEN": "The key that was on the desk disappeared.",
+    "exZH": "桌子上的钥匙不见了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7589,6 +9659,15 @@
       "zh": [
         "做(尊他语)"
       ]
+    },
+    "exJP": "先生は週末に何をなさいますか。",
+    "exEN": "What do you do on weekends, teacher?",
+    "exZH": "老师，您周末做什么呢？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7606,6 +9685,15 @@
       "zh": [
         "尽量"
       ]
+    },
+    "exJP": "明日はなるべく早く来てください。",
+    "exEN": "Please come as early as possible tomorrow.",
+    "exZH": "明天请尽量早点来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7625,6 +9713,15 @@
         "习惯",
         "熟悉"
       ]
+    },
+    "exJP": "新しい生活にすっかり慣れました。",
+    "exEN": "I have completely gotten used to my new life.",
+    "exZH": "我已经完全习惯了新的生活。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7644,6 +9741,15 @@
       "zh": [
         "逃跑"
       ]
+    },
+    "exJP": "猫がドアから外へ逃げました。",
+    "exEN": "The cat ran away outside through the door.",
+    "exZH": "猫从门跑到了外面。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7661,6 +9767,15 @@
       "zh": [
         "日记"
       ]
+    },
+    "exJP": "私は毎日夜に日記を書きます。",
+    "exEN": "I write in a diary every night.",
+    "exZH": "我每天晚上写日记。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7680,6 +9795,15 @@
       "zh": [
         "住院"
       ]
+    },
+    "exJP": "祖母が先週から入院しています。",
+    "exEN": "My grandmother has been in the hospital since last week.",
+    "exZH": "我奶奶从上周开始住院了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7699,6 +9823,15 @@
       "zh": [
         "入学"
       ]
+    },
+    "exJP": "弟は来月大学に入学します。",
+    "exEN": "My younger brother will enter university next month.",
+    "exZH": "我弟弟下个月要上大学了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7719,6 +9852,15 @@
         "像",
         "相似"
       ]
+    },
+    "exJP": "妹は母によく似ています。",
+    "exEN": "My younger sister looks very much like our mother.",
+    "exZH": "妹妹长得非常像母亲。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7738,6 +9880,15 @@
         "人偶",
         "玩具娃娃"
       ]
+    },
+    "exJP": "かわいい人形を妹にあげました。",
+    "exEN": "I gave a cute doll to my younger sister.",
+    "exZH": "我送了一只可爱的人偶给妹妹。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7757,6 +9908,15 @@
       "zh": [
         "涂抹"
       ]
+    },
+    "exJP": "パンにバターを塗って食べます。",
+    "exEN": "I spread butter on bread and eat it.",
+    "exZH": "我在面包上抹黄油吃。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7775,6 +9935,15 @@
       "zh": [
         "弄湿"
       ]
+    },
+    "exJP": "雨が降って服が濡れてしまいました。",
+    "exEN": "It rained and my clothes got wet.",
+    "exZH": "下雨了，我的衣服湿透了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7792,6 +9961,15 @@
       "zh": [
         "酸的"
       ]
+    },
+    "exJP": "このみかんは少し酸っぱいです。",
+    "exEN": "This mandarin orange is a bit sour.",
+    "exZH": "这个蜜柑有点酸。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7811,6 +9989,15 @@
         "入睡",
         "睡觉"
       ]
+    },
+    "exJP": "赤ちゃんが気持ちよさそうに眠っています。",
+    "exEN": "The baby is sleeping comfortably.",
+    "exZH": "宝宝正在舒服地睡着。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7830,6 +10017,15 @@
         "啊",
         "哦"
       ]
+    },
+    "exJP": "あ、電車の中に傘を忘れました。",
+    "exEN": "Ah, I left my umbrella on the train.",
+    "exZH": "啊，我把伞忘在电车上了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7870,6 +10066,15 @@
         "之间",
         "期间"
       ]
+    },
+    "exJP": "本棚と机の間に鞄を置きました。",
+    "exEN": "I placed the bag between the bookshelf and the desk.",
+    "exZH": "我把包放在了书架和桌子之间。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7908,6 +10113,15 @@
       "zh": [
         "那样的"
       ]
+    },
+    "exJP": "あんなに広い部屋に住んでみたいです。",
+    "exEN": "I would like to try living in a room like that.",
+    "exZH": "我想住在那么宽敞的房间里试试。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7929,6 +10143,15 @@
         "拼命",
         "努力"
       ]
+    },
+    "exJP": "テストのために一生懸命勉強しました。",
+    "exEN": "I studied hard for the test.",
+    "exZH": "为了考试我拼命学习了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7949,6 +10172,15 @@
         "满",
         "很多"
       ]
+    },
+    "exJP": "公園にはきれいな花がいっぱい咲いています。",
+    "exEN": "There are lots of beautiful flowers blooming in the park.",
+    "exZH": "公园里开满了美丽的花朵。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7970,6 +10202,15 @@
         "驾驶",
         "运转"
       ]
+    },
+    "exJP": "父は毎日車を運転して会社へ行きます。",
+    "exEN": "My father drives a car to work every day.",
+    "exZH": "我父亲每天开车去公司。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -7989,6 +10230,15 @@
         "托福",
         "多亏"
       ]
+    },
+    "exJP": "先生のおかげで試験に合格できました。",
+    "exEN": "Thanks to the teacher, I was able to pass the exam.",
+    "exZH": "多亏了老师，我通过了考试。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8007,6 +10257,15 @@
       "zh": [
         "说 (尊他)"
       ]
+    },
+    "exJP": "社長は何とおっしゃいましたか。",
+    "exEN": "What did the company president say?",
+    "exZH": "社长说了什么？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8042,6 +10301,15 @@
       "zh": [
         "声音"
       ]
+    },
+    "exJP": "外から大きな音が聞こえました。",
+    "exEN": "I heard a loud sound from outside.",
+    "exZH": "从外面传来了很大的声音。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8060,6 +10328,15 @@
         "节日",
         "庆典"
       ]
+    },
+    "exJP": "夏休みにお祭りへ行きました。",
+    "exEN": "I went to a festival during the summer vacation.",
+    "exZH": "我在暑假去了祭典。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8079,6 +10356,15 @@
         "特产",
         "礼物"
       ]
+    },
+    "exJP": "旅行先で家族にお土産を買いました。",
+    "exEN": "I bought souvenirs for my family at my travel destination.",
+    "exZH": "我在旅行地给家人买了伴手礼。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8098,6 +10384,15 @@
         "感谢",
         "谢礼"
       ]
+    },
+    "exJP": "手伝ってくれた友達にお礼を言いました。",
+    "exEN": "I thanked the friend who helped me.",
+    "exZH": "我向帮助我的朋友表示了感谢。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8115,6 +10410,15 @@
       "zh": [
         "会议室"
       ]
+    },
+    "exJP": "みんなで会議室に入りました。",
+    "exEN": "Everyone entered the conference room together.",
+    "exZH": "大家一起进入了会议室。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8134,6 +10438,15 @@
         "回来",
         "归途"
       ]
+    },
+    "exJP": "仕事の帰りにスーパーで買い物をしました。",
+    "exEN": "On my way home from work, I went shopping at the supermarket.",
+    "exZH": "我在下班回家的路上去了超市买东西。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8152,6 +10465,15 @@
       "zh": [
         "他们"
       ]
+    },
+    "exJP": "彼らは放課後にサッカーをしています。",
+    "exEN": "They play soccer after school.",
+    "exZH": "他们放学后在踢足球。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8171,6 +10493,15 @@
         "一定",
         "肯定"
       ]
+    },
+    "exJP": "明日はきっといい天気になります。",
+    "exEN": "Tomorrow will surely be nice weather.",
+    "exZH": "明天一定是个好天气。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8188,6 +10519,15 @@
       "zh": [
         "机场"
       ]
+    },
+    "exJP": "バスで空港まで行きました。",
+    "exEN": "I went to the airport by bus.",
+    "exZH": "我坐公交车去了机场。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8207,6 +10547,15 @@
       "zh": [
         "给 (尊他)"
       ]
+    },
+    "exJP": "先生が本を貸してくださいました。",
+    "exEN": "The teacher kindly lent me a book.",
+    "exZH": "老师借给了我一本书。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8225,6 +10574,15 @@
       "zh": [
         "君 (后缀)"
       ]
+    },
+    "exJP": "田中くんはいつも元気です。",
+    "exEN": "Tanaka-kun is always energetic.",
+    "exZH": "田中同学总是很有活力。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8243,6 +10601,15 @@
       "zh": [
         "毛发"
       ]
+    },
+    "exJP": "このセーターは犬の毛がつきやすいです。",
+    "exEN": "Dog hair easily gets on this sweater.",
+    "exZH": "这件毛衣容易粘狗毛。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8262,6 +10629,15 @@
         "但是",
         "可是"
       ]
+    },
+    "exJP": "難しいけれど面白い本です。",
+    "exEN": "It is a difficult but interesting book.",
+    "exZH": "这是一本虽然难但很有趣的书。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8281,6 +10657,15 @@
         "但是",
         "可是"
       ]
+    },
+    "exJP": "雨が降っているけれども出かけます。",
+    "exEN": "Although it is raining, I am going out.",
+    "exZH": "虽然下着雨，但我还是要出门。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8317,6 +10702,15 @@
       "zh": [
         "孩子"
       ]
+    },
+    "exJP": "あそこに可愛い子がいます。",
+    "exEN": "There is a cute child over there.",
+    "exZH": "那里有个可爱的小孩。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8335,6 +10729,15 @@
       "zh": [
         "这样"
       ]
+    },
+    "exJP": "こうやって折り紙を折ります。",
+    "exEN": "You fold origami like this.",
+    "exZH": "像这样折折纸。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8352,6 +10755,15 @@
       "zh": [
         "高中生"
       ]
+    },
+    "exJP": "姉は高校生になりました。",
+    "exEN": "My older sister became a high school student.",
+    "exZH": "我姐姐成了高中生。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8371,6 +10783,15 @@
       "zh": [
         "知道 (尊他)"
       ]
+    },
+    "exJP": "あの先生の名前をご存じですか。",
+    "exEN": "Do you know that teacher's name?",
+    "exZH": "您知道那位老师的名字吗？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8390,6 +10811,15 @@
         "回答",
         "答案"
       ]
+    },
+    "exJP": "この問題の答が分かりません。",
+    "exEN": "I don't know the answer to this question.",
+    "exZH": "我不知道这道题的答案。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8410,6 +10840,15 @@
         "前几天",
         "最近"
       ]
+    },
+    "exJP": "このあいだデパートで友達に会いました。",
+    "exEN": "The other day, I met a friend at the department store.",
+    "exZH": "前几天我在百货商店遇到了朋友。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8430,6 +10869,15 @@
         "最近",
         "近来"
       ]
+    },
+    "exJP": "このごろ少し寒くなりました。",
+    "exEN": "It has become a bit cold these days.",
+    "exZH": "最近变得有点冷了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8449,6 +10897,15 @@
       "zh": [
         "看 (尊他)"
       ]
+    },
+    "exJP": "先生はこの映画をごらんになりましたか。",
+    "exEN": "Teacher, have you seen this movie?",
+    "exZH": "老师，您看过这部电影吗？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8489,6 +10946,15 @@
         "给 (自谦)",
         "奉献"
       ]
+    },
+    "exJP": "先生にお花を差し上げました。",
+    "exEN": "I gave flowers to the teacher.",
+    "exZH": "我给老师送了花。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8507,6 +10973,15 @@
       "zh": [
         "刚才"
       ]
+    },
+    "exJP": "さっき田中さんから電話がありました。",
+    "exEN": "There was a phone call from Mr. Tanaka a short while ago.",
+    "exZH": "刚才田中先生打来了电话。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8526,6 +11001,15 @@
         "寂寞",
         "孤单"
       ]
+    },
+    "exJP": "友達が帰ってしまって寂しいです。",
+    "exEN": "I feel lonely because my friend went home.",
+    "exZH": "朋友回去了，我觉得很寂寞。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8543,6 +11027,15 @@
       "zh": [
         "下下个月"
       ]
+    },
+    "exJP": "さ来月家族で旅行に行きます。",
+    "exEN": "I will go on a trip with my family the month after next.",
+    "exZH": "下下个月我和家人要去旅行。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8560,6 +11053,15 @@
       "zh": [
         "下下周"
       ]
+    },
+    "exJP": "さ来週の金曜日にテストがあります。",
+    "exEN": "There is a test on Friday of the week after next.",
+    "exZH": "下下周五有考试。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8578,6 +11080,15 @@
       "zh": [
         "字"
       ]
+    },
+    "exJP": "綺麗に字を書きます。",
+    "exEN": "I write characters neatly.",
+    "exZH": "我工整地写字。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8599,6 +11110,15 @@
         "考试",
         "试验"
       ]
+    },
+    "exJP": "明日日本語の試験があります。",
+    "exEN": "I have a Japanese test tomorrow.",
+    "exZH": "明天有日语考试。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8618,6 +11138,15 @@
         "片刻",
         "暂时"
       ]
+    },
+    "exJP": "しばらくここで待ってください。",
+    "exEN": "Please wait here for a while.",
+    "exZH": "请在这里等一会儿。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8636,6 +11165,15 @@
       "zh": [
         "食品"
       ]
+    },
+    "exJP": "スーパーで食料品を買いました。",
+    "exEN": "I bought groceries at the supermarket.",
+    "exZH": "我在超市买了食品。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8674,6 +11212,15 @@
         "迅速地",
         "爽快地"
       ]
+    },
+    "exJP": "彼はすっと立ち上がりました。",
+    "exEN": "He stood up quickly.",
+    "exZH": "他迅速站了起来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8693,6 +11240,15 @@
         "那样",
         "是的"
       ]
+    },
+    "exJP": "私もそう思います。",
+    "exEN": "I think so too.",
+    "exZH": "我也这么认为。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8712,6 +11268,15 @@
         "那么",
         "那样地"
       ]
+    },
+    "exJP": "そんなに急がなくてもいいです。",
+    "exEN": "You don't have to rush like that.",
+    "exZH": "不必那么着急。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8732,6 +11297,15 @@
         "大抵",
         "通常"
       ]
+    },
+    "exJP": "休みの日はたいてい家にいます。",
+    "exEN": "On days off, I am usually at home.",
+    "exZH": "休息日我通常在家里。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8770,6 +11344,15 @@
         "偶尔",
         "有时"
       ]
+    },
+    "exJP": "たまに映画館に行きます。",
+    "exEN": "I occasionally go to the movie theater.",
+    "exZH": "我偶尔去电影院。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8790,6 +11373,15 @@
         "为了",
         "因为"
       ]
+    },
+    "exJP": "家族のために料理を作ります。",
+    "exEN": "I cook food for my family.",
+    "exZH": "我为了家人做饭。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8810,6 +11402,15 @@
         "不行",
         "没用"
       ]
+    },
+    "exJP": "ここでタバコを吸ってはだめです。",
+    "exEN": "You must not smoke here.",
+    "exZH": "不能在这里吸烟。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8827,6 +11428,15 @@
       "zh": [
         "酱 (亲昵后缀)"
       ]
+    },
+    "exJP": "花子ちゃんは公園で遊んでいます。",
+    "exEN": "Hanako-chan is playing in the park.",
+    "exZH": "花子在公园玩耍。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8846,6 +11456,15 @@
         "情况",
         "方便"
       ]
+    },
+    "exJP": "明日は都合が悪いです。",
+    "exEN": "Tomorrow is inconvenient for me.",
+    "exZH": "我明天不太方便。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8864,6 +11483,15 @@
         "尽量",
         "尽可能"
       ]
+    },
+    "exJP": "できるだけ早く来てください。",
+    "exEN": "Please come as early as possible.",
+    "exZH": "请尽可能早点来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8882,6 +11510,15 @@
       "zh": [
         "远处"
       ]
+    },
+    "exJP": "遠くの山が綺麗に見えます。",
+    "exEN": "The mountains in the distance look beautiful.",
+    "exZH": "远处的山看起来很漂亮。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8902,6 +11539,15 @@
         "通过",
         "经过"
       ]
+    },
+    "exJP": "毎朝この道を通ります。",
+    "exEN": "I pass through this road every morning.",
+    "exZH": "我每天早上经过这条路。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8921,6 +11567,15 @@
         "特别",
         "尤其"
       ]
+    },
+    "exJP": "果物が好きで、特にりんごが好きです。",
+    "exEN": "I like fruit, especially apples.",
+    "exZH": "我喜欢水果，特别是苹果。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8940,6 +11595,15 @@
         "途中",
         "半路"
       ]
+    },
+    "exJP": "帰る途中で本を買いました。",
+    "exEN": "I bought a book on my way home.",
+    "exZH": "我在回家的路上买了一本书。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -8960,6 +11624,15 @@
         "停下",
         "止住"
       ]
+    },
+    "exJP": "車をここに止めました。",
+    "exEN": "I parked the car here.",
+    "exZH": "我把车停在了这里。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9000,6 +11673,15 @@
         "相当",
         "很"
       ]
+    },
+    "exJP": "バスが中々来ません。",
+    "exEN": "The bus is taking a long time to arrive.",
+    "exZH": "公交车一直都不来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9039,6 +11721,15 @@
         "鸣响",
         "发声"
       ]
+    },
+    "exJP": "電話が鳴っています。",
+    "exEN": "The phone is ringing.",
+    "exZH": "电话正在响。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9059,6 +11750,15 @@
         "原来如此",
         "的确"
       ]
+    },
+    "exJP": "なるほど、よく分かりました。",
+    "exEN": "I see, I understand completely now.",
+    "exZH": "原来如此，我完全明白了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9078,6 +11778,15 @@
         "气味",
         "香味"
       ]
+    },
+    "exJP": "パン屋からいいにおいがします。",
+    "exEN": "There is a nice smell coming from the bakery.",
+    "exZH": "面包店里传来一阵香味。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9095,6 +11804,15 @@
       "zh": [
         "两层建筑"
       ]
+    },
+    "exJP": "私の家は二階建てです。",
+    "exEN": "My house is a two-story building.",
+    "exZH": "我的房子是两层的。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9113,6 +11831,15 @@
       "zh": [
         "价格"
       ]
+    },
+    "exJP": "このシャツのねだんは高いです。",
+    "exEN": "The price of this shirt is high.",
+    "exZH": "这件衬衫的价格很高。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9132,6 +11859,15 @@
         "发烧",
         "热度"
       ]
+    },
+    "exJP": "今日は熱があります。",
+    "exEN": "I have a fever today.",
+    "exZH": "我今天发烧了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9153,6 +11889,15 @@
         "睡过头",
         "赖床"
       ]
+    },
+    "exJP": "今日は寝坊してしまいました。",
+    "exEN": "I accidentally overslept today.",
+    "exZH": "我今天睡过头了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9171,6 +11916,15 @@
       "zh": [
         "困倦的"
       ]
+    },
+    "exJP": "夜遅いのでとても眠いです。",
+    "exEN": "It is late at night, so I am very sleepy.",
+    "exZH": "因为很晚了，所以我非常困。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9191,6 +11945,15 @@
         "留下",
         "剩余"
       ]
+    },
+    "exJP": "ケーキが少し残っています。",
+    "exEN": "A little bit of cake is left.",
+    "exZH": "还剩下一点蛋糕。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9208,6 +11971,15 @@
       "zh": [
         "喉咙"
       ]
+    },
+    "exJP": "のどが渇いたので水を飲みます。",
+    "exEN": "My throat is dry, so I will drink water.",
+    "exZH": "我口渴了，所以喝水。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9227,6 +11999,15 @@
       "zh": [
         "换乘"
       ]
+    },
+    "exJP": "次の駅で電車を乗り換えます。",
+    "exEN": "I will transfer trains at the next station.",
+    "exZH": "我要在下一站换乘电车。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9246,6 +12027,15 @@
         "交通工具",
         "载具"
       ]
+    },
+    "exJP": "どんな乗り物が好きですか。",
+    "exEN": "What kind of vehicles do you like?",
+    "exZH": "你喜欢什么交通工具？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9265,6 +12055,15 @@
         "场合",
         "情况"
       ]
+    },
+    "exJP": "雨の場合は中止にします。",
+    "exEN": "In case of rain, it will be canceled.",
+    "exZH": "下雨的话就取消。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9285,6 +12084,15 @@
         "倍",
         "加倍"
       ]
+    },
+    "exJP": "大きさは前の二倍です。",
+    "exEN": "The size is twice as big as before.",
+    "exZH": "尺寸是之前的两倍。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9305,6 +12113,15 @@
         "拜读",
         "观看 (自谦)"
       ]
+    },
+    "exJP": "お手紙を拝見いたしました。",
+    "exEN": "I have read your letter.",
+    "exZH": "我拜读了您的信件。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9322,6 +12139,15 @@
       "zh": [
         "牙医"
       ]
+    },
+    "exJP": "明日歯医者に行きます。",
+    "exEN": "I am going to the dentist tomorrow.",
+    "exZH": "我明天去牙医诊所。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9341,6 +12167,15 @@
       "zh": [
         "开始"
       ]
+    },
+    "exJP": "これから会議を始めます。",
+    "exEN": "We will start the meeting now.",
+    "exZH": "现在开始开会。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9379,6 +12214,15 @@
         "应该",
         "理应"
       ]
+    },
+    "exJP": "彼も今日来るはずです。",
+    "exEN": "He ought to come today as well.",
+    "exZH": "他今天应该也会来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9398,6 +12242,15 @@
         "害羞的",
         "惭愧的"
       ]
+    },
+    "exJP": "大勢の前で話すのは恥ずかしいです。",
+    "exEN": "Speaking in front of many people is embarrassing.",
+    "exZH": "在众人面前讲话很害羞。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9417,6 +12270,15 @@
       "zh": [
         "发音"
       ]
+    },
+    "exJP": "彼女の日本語の発音は綺麗です。",
+    "exEN": "Her Japanese pronunciation is beautiful.",
+    "exZH": "她的日语发音很好听。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9436,6 +12298,15 @@
         "清楚地",
         "明确地"
       ]
+    },
+    "exJP": "富士山がはっきり見えます。",
+    "exEN": "Mount Fuji can be seen clearly.",
+    "exZH": "能清晰地看见富士山。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9455,6 +12326,15 @@
       "zh": [
         "赏花"
       ]
+    },
+    "exJP": "友達と一緒に花見に行きました。",
+    "exEN": "I went cherry blossom viewing with my friends.",
+    "exZH": "我和朋友一起去赏花了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9473,6 +12353,15 @@
       "zh": [
         "树林"
       ]
+    },
+    "exJP": "林の中に小さな家があります。",
+    "exEN": "There is a small house in the woods.",
+    "exZH": "树林里有一间小屋。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9508,6 +12397,15 @@
       "zh": [
         "节目"
       ]
+    },
+    "exJP": "面白いテレビ番組を見ました。",
+    "exEN": "I watched an interesting TV program.",
+    "exZH": "我看了一个有趣的电视节目。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9527,6 +12425,15 @@
         "日子",
         "太阳"
       ]
+    },
+    "exJP": "天気が良くて日が暖かかったです。",
+    "exEN": "The weather was good and the sun was warm.",
+    "exZH": "天气很好，阳光很温暖。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9547,6 +12454,15 @@
         "变冷",
         "冷却"
       ]
+    },
+    "exJP": "今夜は足が冷えます。",
+    "exEN": "My feet get cold tonight.",
+    "exZH": "今晚脚变冷了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9565,6 +12481,15 @@
         "光",
         "光线"
       ]
+    },
+    "exJP": "部屋に強い光が入ってきます。",
+    "exEN": "Strong light comes into the room.",
+    "exZH": "强光照进房间里。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9585,6 +12510,15 @@
         "发光",
         "闪烁"
       ]
+    },
+    "exJP": "夜空に星が綺麗に光っています。",
+    "exEN": "The stars are shining beautifully in the night sky.",
+    "exZH": "星星在夜空中美丽地闪烁着。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9604,6 +12538,15 @@
         "抽屉",
         "提取"
       ]
+    },
+    "exJP": "机の引き出しに鍵があります。",
+    "exEN": "There is a key in the desk drawer.",
+    "exZH": "书桌的抽屉里有钥匙。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9624,6 +12567,15 @@
         "拉出",
         "提取"
       ]
+    },
+    "exJP": "銀行でお金を引き出しました。",
+    "exEN": "I withdrew money at the bank.",
+    "exZH": "我在银行取了钱。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9642,6 +12594,15 @@
       "zh": [
         "飞机场"
       ]
+    },
+    "exJP": "バスで飛行場へ向かいます。",
+    "exEN": "I am heading to the airport by bus.",
+    "exZH": "我乘公交车前往机场。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9660,6 +12621,15 @@
       "zh": [
         "好久不见"
       ]
+    },
+    "exJP": "久しぶりに友達と会いました。",
+    "exEN": "I met my friend after a long time.",
+    "exZH": "我久违地和朋友见面了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9679,6 +12649,15 @@
         "非常",
         "极其"
       ]
+    },
+    "exJP": "その問題は非常に難しいです。",
+    "exEN": "That problem is extremely difficult.",
+    "exZH": "那个问题非常难。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9698,6 +12677,15 @@
         "吃惊",
         "吓一跳"
       ]
+    },
+    "exJP": "大きな音にびっくりしました。",
+    "exEN": "I was surprised by the loud noise.",
+    "exZH": "我被很大的声音吓了一跳。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9716,6 +12704,15 @@
       "zh": [
         "搬家"
       ]
+    },
+    "exJP": "来月、新しい家に引っ越します。",
+    "exEN": "I will move to a new house next month.",
+    "exZH": "我下个月要搬到新家。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9736,6 +12733,15 @@
         "必要",
         "必须"
       ]
+    },
+    "exJP": "旅行の前に準備が必要です。",
+    "exEN": "Preparation is necessary before traveling.",
+    "exZH": "旅行前需要做好准备。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9755,6 +12761,15 @@
         "残酷的",
         "严重的"
       ]
+    },
+    "exJP": "今日はひどい雨が降っています。",
+    "exEN": "It is raining heavily today.",
+    "exZH": "今天下着很大的雨。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9775,6 +12790,15 @@
         "打开",
         "举办"
       ]
+    },
+    "exJP": "本の五十ページを開いてください。",
+    "exEN": "Please open page 50 of the book.",
+    "exZH": "请打开书的第50页。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9793,6 +12817,15 @@
       "zh": [
         "白天"
       ]
+    },
+    "exJP": "昼間は暖かくて気持ちがいいです。",
+    "exEN": "It is warm and pleasant during the day.",
+    "exZH": "白天很温暖，感觉很舒服。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9810,6 +12843,15 @@
       "zh": [
         "午休"
       ]
+    },
+    "exJP": "昼休みに友達とおしゃべりしました。",
+    "exEN": "I chatted with my friend during lunch break.",
+    "exZH": "午休时我和朋友聊天了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9830,6 +12872,15 @@
         "增加",
         "增多"
       ]
+    },
+    "exJP": "最近、日本語を学ぶ人が増えています。",
+    "exEN": "Recently, the number of people learning Japanese is increasing.",
+    "exZH": "最近学习日语的人增加了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9869,6 +12920,15 @@
       "zh": [
         "复习"
       ]
+    },
+    "exJP": "授業のあとで毎日復習します。",
+    "exEN": "I review every day after class.",
+    "exZH": "下课后我每天都复习。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9888,6 +12948,15 @@
         "部长",
         "经理"
       ]
+    },
+    "exJP": "部長に書類を出しました。",
+    "exEN": "I submitted the documents to the department manager.",
+    "exZH": "我把文件交给了部长。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9905,6 +12974,15 @@
       "zh": [
         "葡萄"
       ]
+    },
+    "exJP": "甘くておいしいぶどうを買いました。",
+    "exEN": "I bought sweet and delicious grapes.",
+    "exZH": "我买了又甜又好吃的葡萄。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9925,6 +13003,15 @@
         "变胖",
         "发胖"
       ]
+    },
+    "exJP": "最近甘いものを食べすぎて太りました。",
+    "exEN": "Recently I ate too many sweets and gained weight.",
+    "exZH": "最近甜食吃多了，变胖了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9963,6 +13050,15 @@
         "小船",
         "舟"
       ]
+    },
+    "exJP": "小さい舟で川を渡りました。",
+    "exEN": "I crossed the river in a small boat.",
+    "exZH": "我坐小船过了河。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -9981,6 +13077,15 @@
       "zh": [
         "不方便"
       ]
+    },
+    "exJP": "この町は電車がなくて不便です。",
+    "exEN": "This town has no trains, so it is inconvenient.",
+    "exZH": "这个镇上没有电车，很不方便。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10001,6 +13106,15 @@
         "踩",
         "踏"
       ]
+    },
+    "exJP": "電車の中で人の足を踏んでしまいました。",
+    "exEN": "I accidentally stepped on someone's foot on the train.",
+    "exZH": "在电车里我不小心踩到了别人的脚。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10020,6 +13134,15 @@
       "zh": [
         "开始下(雨等)"
       ]
+    },
+    "exJP": "家を出たときに雨が降り出しました。",
+    "exEN": "It started raining when I left the house.",
+    "exZH": "我出门的时候下起雨来了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10055,6 +13178,15 @@
       "zh": [
         "文学"
       ]
+    },
+    "exJP": "大学で日本の文学を勉強しています。",
+    "exEN": "I am studying Japanese literature at university.",
+    "exZH": "我在大学学习日本文学。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10072,6 +13204,15 @@
       "zh": [
         "语法"
       ]
+    },
+    "exJP": "この教科書は文法がわかりやすいです。",
+    "exEN": "The grammar in this textbook is easy to understand.",
+    "exZH": "这本教科书的语法很容易懂。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10092,6 +13233,15 @@
         "分别",
         "另外的"
       ]
+    },
+    "exJP": "この問題は別の方法で解きましょう。",
+    "exEN": "Let's solve this problem using a different method.",
+    "exZH": "我们用另一种方法来解答这个问题吧。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10112,6 +13262,15 @@
         "奇怪的",
         "异常的"
       ]
+    },
+    "exJP": "変な音がして目が覚めました。",
+    "exEN": "I woke up because of a strange noise.",
+    "exZH": "听到奇怪的声音后我醒了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10133,6 +13292,15 @@
         "回答",
         "答复"
       ]
+    },
+    "exJP": "メールを送ったのに返事が来ません。",
+    "exEN": "I sent an email, but no reply has come.",
+    "exZH": "虽然发了邮件，但还没收到回复。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10172,6 +13340,15 @@
       "zh": [
         "我 (男性用语)"
       ]
+    },
+    "exJP": "僕もその映画を見たいです。",
+    "exEN": "I also want to watch that movie.",
+    "exZH": "我也想看那部电影。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10189,6 +13366,15 @@
       "zh": [
         "星星"
       ]
+    },
+    "exJP": "今夜は空がきれいで星がよく見えます。",
+    "exEN": "Tonight the sky is clear and stars are clearly visible.",
+    "exZH": "今晚夜空很美，星星看得非常清楚。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10210,6 +13396,15 @@
         "程度",
         "大约"
       ]
+    },
+    "exJP": "駅から家まで十分ほど歩きます。",
+    "exEN": "I walk about ten minutes from the station to home.",
+    "exZH": "从车站走到家大概要走十分钟。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10230,6 +13425,15 @@
         "几乎",
         "大部分"
       ]
+    },
+    "exJP": "宿題はほとんど終わりました。",
+    "exEN": "The homework is almost finished.",
+    "exZH": "作业几乎做完了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10250,6 +13454,15 @@
         "表扬",
         "赞美"
       ]
+    },
+    "exJP": "先生が私の作文をほめてくれました。",
+    "exEN": "The teacher praised my essay.",
+    "exZH": "老师夸奖了我的作文。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10270,6 +13483,15 @@
         "去 (自谦)",
         "来 (自谦)"
       ]
+    },
+    "exJP": "明日の十時にそちらへ参ります。",
+    "exEN": "I will come to your place at ten o'clock tomorrow.",
+    "exZH": "我明天十点过去您那里。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10310,6 +13532,15 @@
         "认真的",
         "严肃的"
       ]
+    },
+    "exJP": "彼はいつもまじめに働いています。",
+    "exEN": "He always works earnestly.",
+    "exZH": "他工作总是很认真。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10329,6 +13560,15 @@
         "首先",
         "大概"
       ]
+    },
+    "exJP": "家に着いたら、まず手を洗いましょう。",
+    "exEN": "When you get home, first wash your hands.",
+    "exZH": "到家后，首先洗手吧。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10348,6 +13588,15 @@
         "或者",
         "还是"
       ]
+    },
+    "exJP": "電話またはメールで連絡してください。",
+    "exEN": "Please contact me by phone or email.",
+    "exZH": "请通过电话或邮件联系我。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10367,6 +13616,15 @@
         "弄错",
         "搞错"
       ]
+    },
+    "exJP": "漢字の書き方を間違えました。",
+    "exEN": "I made a mistake in how to write the kanji.",
+    "exZH": "我把汉字的写法写错了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10386,6 +13644,15 @@
         "赶得上",
         "来得及"
       ]
+    },
+    "exJP": "急いで走ったので電車に間に合いました。",
+    "exEN": "Because I ran quickly, I made it in time for the train.",
+    "exZH": "因为赶快跑着去，所以赶上了电车。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10405,6 +13672,15 @@
         "周围",
         "附近"
       ]
+    },
+    "exJP": "公園の周りをゆっくり散歩しました。",
+    "exEN": "I took a relaxed stroll around the park.",
+    "exZH": "我在公园周围悠闲地散了步。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10443,6 +13719,15 @@
       "zh": [
         "漫画"
       ]
+    },
+    "exJP": "休みの日は部屋で漫画を読みます。",
+    "exEN": "On days off, I read manga in my room.",
+    "exZH": "休息日我在房间里看漫画。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10481,6 +13766,15 @@
         "看得见",
         "看来"
       ]
+    },
+    "exJP": "部屋の窓からきれいな海が見えます。",
+    "exEN": "You can see the beautiful sea from the room's window.",
+    "exZH": "从房间的窗户可以看到美丽的大海。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10498,6 +13792,15 @@
       "zh": [
         "湖泊"
       ]
+    },
+    "exJP": "湖の近くで写真を撮りました。",
+    "exEN": "I took photos near the lake.",
+    "exZH": "我在湖边拍了照片。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10517,6 +13820,15 @@
         "味噌",
         "黄酱"
       ]
+    },
+    "exJP": "毎朝温かい味噌汁を飲みます。",
+    "exEN": "I drink warm miso soup every morning.",
+    "exZH": "我每天早上都喝热味噌汤。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10537,6 +13849,15 @@
         "被找到",
         "被发现"
       ]
+    },
+    "exJP": "なくした鍵がカバンから見つかりました。",
+    "exEN": "The lost key was found in the bag.",
+    "exZH": "丢失的钥匙在包里找到了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10557,6 +13878,15 @@
         "找到",
         "发现"
       ]
+    },
+    "exJP": "図書館で探していた本を見つけました。",
+    "exEN": "I found the book I was looking for at the library.",
+    "exZH": "我在图书馆找到了一直在找的书。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10577,6 +13907,15 @@
         "大家",
         "全部"
       ]
+    },
+    "exJP": "クラスの皆で旅行に行きました。",
+    "exEN": "We went on a trip with everyone in the class.",
+    "exZH": "全班同学一起去旅行了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10596,6 +13935,15 @@
         "港口",
         "海港"
       ]
+    },
+    "exJP": "港に大きな船がとまっています。",
+    "exEN": "A large ship is docked at the harbor.",
+    "exZH": "港口停泊着一艘大船。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10615,6 +13963,15 @@
         "过去",
         "从前"
       ]
+    },
+    "exJP": "ここは昔とても静かな町でした。",
+    "exEN": "Long ago, this was a very quiet town.",
+    "exZH": "这里以前是个非常安静的小镇。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10651,6 +14008,15 @@
         "女儿",
         "少女"
       ]
+    },
+    "exJP": "娘はピアノを練習するのが好きです。",
+    "exEN": "My daughter likes practicing the piano.",
+    "exZH": "我女儿喜欢练习弹钢琴。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10691,6 +14057,15 @@
         "吃 (尊他)",
         "喝 (尊他)"
       ]
+    },
+    "exJP": "どうぞ温かいお茶を召し上がってください。",
+    "exEN": "Please help yourself to some warm tea.",
+    "exZH": "请喝杯热茶吧。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10711,6 +14086,15 @@
         "说 (自谦)",
         "表达"
       ]
+    },
+    "exJP": "心からお礼を申し上げます。",
+    "exEN": "I offer my heartfelt thanks.",
+    "exZH": "我衷心地向您致谢。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10731,6 +14115,15 @@
         "说 (自谦)",
         "叫做 (自谦)"
       ]
+    },
+    "exJP": "私は田中と申します。",
+    "exEN": "My name is Tanaka.",
+    "exZH": "我叫田中。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10750,6 +14143,15 @@
         "马上",
         "即将"
       ]
+    },
+    "exJP": "もうすぐ春がやってきます。",
+    "exEN": "Spring will be here very soon.",
+    "exZH": "春天马上就要来了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10770,6 +14172,15 @@
         "如果",
         "假如"
       ]
+    },
+    "exJP": "もし時間があれば一緒に行きましょう。",
+    "exEN": "If you have time, let's go together.",
+    "exZH": "如果有时间的话，我们一起去吧。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10827,6 +14238,15 @@
         "棉花",
         "棉布"
       ]
+    },
+    "exJP": "木綿のシャツは着心地がいいです。",
+    "exEN": "Cotton shirts are comfortable to wear.",
+    "exZH": "全棉衬衫穿着很舒适。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10847,6 +14267,15 @@
         "得到",
         "收到"
       ]
+    },
+    "exJP": "誕生日に友達からプレゼントをもらいました。",
+    "exEN": "I received a present from my friend on my birthday.",
+    "exZH": "生日时我从朋友那里收到了礼物。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-14",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10864,6 +14293,15 @@
       "zh": [
         "森林"
       ]
+    },
+    "exJP": "静かな森の中を散歩しました。",
+    "exEN": "I took a walk in a quiet forest.",
+    "exZH": "我在安静的森林里散步了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10884,6 +14322,15 @@
         "烤",
         "烧"
       ]
+    },
+    "exJP": "今日は朝からパンを焼きました。",
+    "exEN": "I baked bread this morning.",
+    "exZH": "我今天从早上起就烤了面包。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10905,6 +14352,15 @@
         "约定",
         "约会"
       ]
+    },
+    "exJP": "友達と明日会う約束をしました。",
+    "exEN": "I made a promise to meet my friend tomorrow.",
+    "exZH": "我和朋友约定了明天见面。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10926,6 +14382,15 @@
         "有用",
         "起作用"
       ]
+    },
+    "exJP": "この辞書はとても役に立ちます。",
+    "exEN": "This dictionary is very useful.",
+    "exZH": "这本字典非常有用。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10946,6 +14411,15 @@
         "烧着",
         "烤熟"
       ]
+    },
+    "exJP": "パンが綺麗に焼けました。",
+    "exEN": "The bread baked nicely.",
+    "exZH": "面包烤得很好。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10965,6 +14439,15 @@
       "zh": [
         "变瘦"
       ]
+    },
+    "exJP": "最近少し痩せました。",
+    "exEN": "I lost a little weight recently.",
+    "exZH": "我最近瘦了一点。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -10984,6 +14467,15 @@
         "好不容易",
         "终于"
       ]
+    },
+    "exJP": "やっと宿題が終わりました。",
+    "exEN": "I finally finished my homework.",
+    "exZH": "终于把作业做完了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11003,6 +14495,15 @@
         "依然",
         "果然"
       ]
+    },
+    "exJP": "やはりこの店のお菓子はおいしいです。",
+    "exEN": "As expected, the sweets from this shop are delicious.",
+    "exZH": "这家店的点心果然很美味。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11022,6 +14523,15 @@
         "依然",
         "果然"
       ]
+    },
+    "exJP": "やっぱり今日のお弁当も美味しいです。",
+    "exEN": "As expected, today's boxed lunch is also delicious.",
+    "exZH": "今天的便当果然也很美味。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11060,6 +14570,15 @@
       "zh": [
         "柔软的"
       ]
+    },
+    "exJP": "この肉はとても柔らかいです。",
+    "exEN": "This meat is very tender.",
+    "exZH": "这块肉非常嫩。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11079,6 +14598,15 @@
         "热水",
         "澡堂"
       ]
+    },
+    "exJP": "お風呂のお湯が熱いです。",
+    "exEN": "The bath water is hot.",
+    "exZH": "洗澡水很热。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11097,6 +14625,15 @@
       "zh": [
         "手指"
       ]
+    },
+    "exJP": "彼女の指は細くて綺麗です。",
+    "exEN": "Her fingers are slender and beautiful.",
+    "exZH": "她的手指纤细漂亮。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11114,6 +14651,15 @@
       "zh": [
         "戒指"
       ]
+    },
+    "exJP": "誕生日に素敵な指輪をもらいました。",
+    "exEN": "I received a wonderful ring for my birthday.",
+    "exZH": "我在生日时收到了一枚漂亮的戒指。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11132,6 +14678,15 @@
         "梦",
         "梦想"
       ]
+    },
+    "exJP": "昨日の夜、楽しい夢を見ました。",
+    "exEN": "I had a pleasant dream last night.",
+    "exZH": "昨晚我做了一个愉快的梦。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11152,6 +14707,15 @@
         "摇晃",
         "摇动"
       ]
+    },
+    "exJP": "風で木の葉が揺れています。",
+    "exEN": "The tree leaves are swaying in the wind.",
+    "exZH": "树叶在风中摇曳。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11171,6 +14735,15 @@
         "事情",
         "用途"
       ]
+    },
+    "exJP": "急な用ができたので失礼します。",
+    "exEN": "Something urgent came up, so I will excuse myself.",
+    "exZH": "我有些急事，先失陪了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11190,6 +14763,15 @@
         "事情",
         "差事"
       ]
+    },
+    "exJP": "午後は用事があるので出かけます。",
+    "exEN": "I have errands this afternoon, so I will go out.",
+    "exZH": "我下午有事，所以要出去。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11208,6 +14790,15 @@
       "zh": [
         "变脏"
       ]
+    },
+    "exJP": "公園で遊んで服が汚れました。",
+    "exEN": "My clothes got dirty while playing in the park.",
+    "exZH": "在公园玩耍时衣服弄脏了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11227,6 +14818,15 @@
       "zh": [
         "预习"
       ]
+    },
+    "exJP": "毎晩、次の日の授業を予習します。",
+    "exEN": "Every night, I prepare for the next day's class.",
+    "exZH": "我每天晚上都预习第二天的课。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11248,6 +14848,15 @@
         "预定",
         "计划"
       ]
+    },
+    "exJP": "来週の予定をカレンダーに書きました。",
+    "exEN": "I wrote next week's schedule on the calendar.",
+    "exZH": "我把下周的计划写在了日历上。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11269,6 +14878,15 @@
         "预约",
         "预订"
       ]
+    },
+    "exJP": "レストランの席を予約しました。",
+    "exEN": "I reserved a table at the restaurant.",
+    "exZH": "我预订了餐厅的座位。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11289,6 +14907,15 @@
         "高兴",
         "喜悦"
       ]
+    },
+    "exJP": "プレゼントを渡したらとても喜びました。",
+    "exEN": "When I gave them the present, they were very glad.",
+    "exZH": "送出礼物时，对方非常高兴。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11308,6 +14935,15 @@
         "好的",
         "可以"
       ]
+    },
+    "exJP": "お名前を教えていただいてもよろしいですか。",
+    "exEN": "May I please ask for your name?",
+    "exZH": "可以请告诉我您的名字吗？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11327,6 +14963,15 @@
         "双方",
         "两边"
       ]
+    },
+    "exJP": "ケーキとクッキーの両方を買いました。",
+    "exEN": "I bought both the cake and the cookies.",
+    "exZH": "我把蛋糕和饼干两者都买了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11363,6 +15008,15 @@
       "zh": [
         "不在家"
       ]
+    },
+    "exJP": "友達の家に行きましたが留守でした。",
+    "exEN": "I went to my friend's house, but they were away.",
+    "exZH": "我去了朋友家，但他不在家。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11384,6 +15038,15 @@
         "冷气",
         "冷风"
       ]
+    },
+    "exJP": "部屋が暑いので冷房をつけました。",
+    "exEN": "The room was hot, so I turned on the air conditioning.",
+    "exZH": "房间很热，所以我开了冷气。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11401,6 +15064,15 @@
       "zh": [
         "历史"
       ]
+    },
+    "exJP": "私は日本の歴史について勉強しています。",
+    "exEN": "I am studying Japanese history.",
+    "exZH": "我正在学习日本历史。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11421,6 +15093,15 @@
         "烧开",
         "煮沸"
       ]
+    },
+    "exJP": "お茶を飲むためにお湯を沸かしました。",
+    "exEN": "I boiled water to drink tea.",
+    "exZH": "我烧了热水准备喝茶。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11441,6 +15122,15 @@
         "分别",
         "分手"
       ]
+    },
+    "exJP": "駅の前で友達と別れました。",
+    "exEN": "I parted with my friend in front of the station.",
+    "exZH": "我在车站前和朋友告别了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11461,6 +15151,15 @@
         "沸腾",
         "烧开"
       ]
+    },
+    "exJP": "もうすぐお湯が沸きます。",
+    "exEN": "The water will boil soon.",
+    "exZH": "水马上就要烧开了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11480,6 +15179,15 @@
         "原因",
         "理由"
       ]
+    },
+    "exJP": "遅刻した訳を話してください。",
+    "exEN": "Please tell me the reason you were late.",
+    "exZH": "请说明一下迟到的原因。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11499,6 +15207,15 @@
         "遗忘物",
         "失物"
       ]
+    },
+    "exJP": "電車の中に忘れ物をしました。",
+    "exEN": "I left something behind on the train.",
+    "exZH": "我把东西忘在电车里了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11577,6 +15294,15 @@
       "zh": [
         "美术馆"
       ]
+    },
+    "exJP": "週末に一人で美術館へ行きました。",
+    "exEN": "I went to an art museum alone on the weekend.",
+    "exZH": "我周末独自去了美术馆。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {
@@ -11596,6 +15322,15 @@
         "游泳方法",
         "游法"
       ]
+    },
+    "exJP": "兄に泳ぎ方を教えてもらいました。",
+    "exEN": "My older brother taught me how to swim.",
+    "exZH": "哥哥教了我游泳的方法。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-15",
+      "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     }
   },
   {

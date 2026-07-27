@@ -39,7 +39,16 @@ struct ExampleSentenceTests {
             // above misses it and 「友達が来ます。」 looked like it did not contain its own word.
             if e.vc == "kuru", !e.surface.hasSuffix("くる") { out.append(String(e.surface.dropLast())) }
         }
-        if inflecting.contains(e.vc ?? "") || e.partsOfSpeech.contains(where: { $0.lowercased().contains("adj-i") }) {
+        // Also any entry that is a VERB by part of speech, even without a usable `vc`. Two
+        // shipped entries need this and neither has one: する is tagged suru, so stripping する
+        // leaves nothing, and できる carries no vc at all — yet 「サッカーをします。」 and
+        // 「話すことができます。」 plainly use them. The Python half of this gate already accepts
+        // both, because it asks Sudachi whether a token's dictionary form IS the target rather
+        // than matching substrings; without this the two halves contradict each other, and the
+        // stricter one is the one that is wrong.
+        if inflecting.contains(e.vc ?? "")
+            || e.partsOfSpeech.contains(where: { $0.lowercased().hasPrefix("v") })
+            || e.partsOfSpeech.contains(where: { $0.lowercased().contains("adj-i") }) {
             out.append(String(e.surface.dropLast()))
             out.append(String(e.kana.dropLast()))
         }
