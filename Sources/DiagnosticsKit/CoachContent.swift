@@ -107,29 +107,58 @@ public enum CoachContent {
         }
     }
 
+    /// Where a pattern's drill material has to come from.
+    public enum DrillSource: Equatable, Sendable {
+        case words
+        case passages
+    }
+
+    /// Particle spelling is the one pattern single words cannot drill.
+    ///
+    /// は is only a particle inside a SENTENCE. A vocabulary entry whose reading happens to
+    /// contain は — はな (flower), はし (bridge) — is typed `hana`, `hashi` and works first
+    /// time, so a word drill for this pattern practises nothing and quietly reports success.
+    /// The corpus has 233 passages and 152 of them contain particle は, which is the material
+    /// that actually exercises the rule.
+    public static func drillSource(for pattern: TypingPattern) -> DrillSource {
+        pattern == .particleSpelling ? .passages : .words
+    }
+
+    /// Whether a kana string exercises `pattern` — one definition, used by both the word path
+    /// and the passage path so they cannot drift.
+    public static func exercises(_ kana: String, pattern: TypingPattern) -> Bool {
+        switch pattern {
+        case .particleSpelling:
+            // Inside a sentence, a bare は/へ/を is overwhelmingly the particle. A false
+            // positive costs one extra line of practice; it cannot teach anything wrong.
+            return kana.contains(where: { "はへを".contains($0) })
+        case .sokuon:
+            return kana.contains("っ")
+        case .smallYa:
+            return kana.contains(where: { "ゃゅょ".contains($0) })
+        case .hepburnM:
+            // ん immediately before a b/p mora — the only place the m habit bites.
+            let chars = Array(kana)
+            return chars.indices.dropLast().contains { i in
+                chars[i] == "ん" && "ばびぶべぼぱぴぷぺぽ".contains(chars[i + 1])
+            }
+        case .unknown:
+            return false
+        }
+    }
+
     /// Which already-known words would exercise this pattern.
     ///
     /// Candidates come from the caller (the app passes words the learner has already reviewed)
     /// for two reasons: DiagnosticsKit stays free of VocabKit, and an unfamiliar word adds a
     /// second reason to fail on top of the one being remediated — the drill is supposed to
     /// isolate the keyboard problem, not test vocabulary at the same time.
+    ///
+    /// Returns nothing for a pattern whose material is sentences; see `drillSource`.
     public static func drillCandidates(for pattern: TypingPattern,
                                        from candidates: [(id: String, kana: String)],
                                        limit: Int = 12) -> [String] {
-        let matches: (String) -> Bool
-        switch pattern {
-        case .particleSpelling: matches = { $0.contains(where: { "はへを".contains($0) }) }
-        case .sokuon:           matches = { $0.contains("っ") }
-        case .smallYa:          matches = { $0.contains(where: { "ゃゅょ".contains($0) }) }
-        case .hepburnM:         matches = { kana in
-            // ん immediately before a b/p mora — the only place the m habit bites.
-            let chars = Array(kana)
-            return chars.indices.dropLast().contains { i in
-                chars[i] == "ん" && "ばびぶべぼぱぴぷぺぽ".contains(chars[i + 1])
-            }
-        }
-        case .unknown:          return []
-        }
-        return candidates.filter { matches($0.kana) }.prefix(limit).map(\.id)
+        guard drillSource(for: pattern) == .words else { return [] }
+        return candidates.filter { exercises($0.kana, pattern: pattern) }.prefix(limit).map(\.id)
     }
 }

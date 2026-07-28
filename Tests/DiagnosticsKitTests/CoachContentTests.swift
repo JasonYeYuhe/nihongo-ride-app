@@ -89,7 +89,12 @@ struct CoachContentTests {
 
     @Test("drills pick words that actually exercise the pattern")
     func drills() {
-        #expect(Set(CoachContent.drillCandidates(for: .particleSpelling, from: deck)) == ["a", "h"])
+        // particleSpelling is deliberately absent: its material is sentences, not words.
+        // This assertion used to expect ["a", "h"] — こんにちは and ほんを — which encoded the
+        // bug rather than the intent, since as single WORDS they are typed konnichiha and
+        // honwo correctly first time and teach nothing about the particle. See
+        // CoachDrillSourceTests.
+        #expect(CoachContent.drillCandidates(for: .particleSpelling, from: deck).isEmpty)
         #expect(Set(CoachContent.drillCandidates(for: .sokuon, from: deck)) == ["b", "f"])
         #expect(Set(CoachContent.drillCandidates(for: .smallYa, from: deck)) == ["c", "g"])
         #expect(Set(CoachContent.drillCandidates(for: .hepburnM, from: deck)) == ["d"])
@@ -118,5 +123,41 @@ struct CoachContentTests {
         // Whereas particle spelling and sokuon show up across many words and benefit from it.
         #expect(CoachContent.advice(for: .particleSpelling, zh: false)?.drillHelps == true)
         #expect(CoachContent.advice(for: .sokuon, zh: false)?.drillHelps == true)
+    }
+}
+
+/// v1.15 §J — the particle drill was being built from the wrong material.
+@Suite("Coach drill — the right material for each pattern")
+struct CoachDrillSourceTests {
+
+    @Test("particle spelling drills sentences; everything else drills words")
+    func sources() {
+        #expect(CoachContent.drillSource(for: .particleSpelling) == .passages)
+        for p: TypingPattern in [.sokuon, .smallYa, .hepburnM] {
+            #expect(CoachContent.drillSource(for: p) == .words, "\(p) should drill words")
+        }
+    }
+
+    @Test("a word drill for particle spelling returns nothing, on purpose")
+    func wordsCannotDrillParticles() {
+        // The bug this closes: はな (flower) and はし (bridge) contain は, so they matched, and
+        // the drill handed the learner words they type `hana`/`hashi` — first time, correctly,
+        // learning nothing about the particle while the app reported it as remediation.
+        let words = [("a", "はな"), ("b", "はし"), ("c", "がっこう")]
+        #expect(CoachContent.drillCandidates(for: .particleSpelling, from: words).isEmpty)
+        // …while the same words still drill the patterns they genuinely exercise.
+        #expect(CoachContent.drillCandidates(for: .sokuon, from: words) == ["c"])
+    }
+
+    @Test("one definition decides what exercises a pattern")
+    func exercisesIsShared() {
+        // Both paths — the word list and the passage filter — go through `exercises`, so a
+        // sentence and a word cannot disagree about what practises what.
+        #expect(CoachContent.exercises("こんにちは", pattern: .particleSpelling))
+        #expect(CoachContent.exercises("がっこうへいきます", pattern: .particleSpelling))
+        #expect(!CoachContent.exercises("ねこがいます", pattern: .particleSpelling))
+        #expect(CoachContent.exercises("しんぶん", pattern: .hepburnM))
+        #expect(!CoachContent.exercises("にほん", pattern: .hepburnM))
+        #expect(!CoachContent.exercises("がっこう", pattern: .unknown))
     }
 }

@@ -595,16 +595,43 @@ final class AppModel {
         return CoachContent.drillCandidates(for: pattern, from: known)
     }
 
+    /// How much material this pattern's drill would have — words for most patterns, sentences
+    /// for particle spelling. One question, so the view cannot ask the wrong one: it used to
+    /// count reviewed WORDS for every pattern, which meant the particle drill (whose material
+    /// is passages) always reported none and offered "learn a few more words first" forever.
+    func coachDrillCount(for pattern: TypingPattern) -> Int {
+        if CoachContent.drillSource(for: pattern) == .passages {
+            return PassageStore.shared.passages
+                .filter { CoachContent.exercises($0.kana, pattern: pattern) }.count
+        }
+        return coachDrillIDs(for: pattern).count
+    }
+
     /// Starts a drill on the diagnosed pattern. Same journey loop, same SRS rules as any
     /// list run — these are the learner's own words, so their progress still counts.
     func startCoachDrill(for pattern: TypingPattern) {
-        let ids = coachDrillIDs(for: pattern)
-        guard !ids.isEmpty else { return }
         var config = GameSession.Config()
         config.languageCode = languageCode
         config.showRomajiHint = showRomajiHint
-        config.mode = .journey
-        let built = GameSession.makeSaved(ids: ids, vocab: .shared, review: reviewStore, config: config)
+
+        let built: GameSession
+        if CoachContent.drillSource(for: pattern) == .passages {
+            // Particle spelling can only be drilled in sentences. Drilling WORDS whose reading
+            // contains は — はな, はし — would have the learner type `hana`, succeed, and learn
+            // nothing about the particle, while the app congratulated them on remediating it.
+            // Practice mode, so this never touches the SRS schedule.
+            config.mode = .practice
+            config.newWordCount = 8
+            config.reviewWordCount = 0
+            built = GameSession.makePractice(
+                matching: { CoachContent.exercises($0.kana, pattern: pattern) },
+                config: config)
+        } else {
+            let ids = coachDrillIDs(for: pattern)
+            guard !ids.isEmpty else { return }
+            config.mode = .journey
+            built = GameSession.makeSaved(ids: ids, vocab: .shared, review: reviewStore, config: config)
+        }
         guard !built.isFinished else { return }
         session = built
         conjugationSession = nil

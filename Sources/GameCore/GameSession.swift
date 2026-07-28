@@ -148,13 +148,18 @@ public final class GameSession {
     /// Builds a passage-driven session: every queue item is a full sentence
     /// (the passage's kana) — used by Practice "long-text" mode. Uses passages
     /// at or below `level`; difficulty rises as you progress through the run.
+    /// - Parameter matching: when given, selects passages by CONTENT across every level
+    ///   instead of by level. The coach's particle drill needs the sentences that actually
+    ///   contain は/へ/を, and those are spread over all three lengths. (v1.15 §J.)
     public static func makePractice(
         passages: PassageStore = .shared,
         level: Passage.Level = .hard,
+        matching: ((Passage) -> Bool)? = nil,
         config: Config = .init(),
         now: @escaping () -> Date = Date.init
     ) -> GameSession {
-        var pool = passages.passages.filter { $0.level == level }
+        var pool = matching.map { passages.passages.filter($0) }
+            ?? passages.passages.filter { $0.level == level }
         if pool.isEmpty { pool = passages.passages }   // safety net
         pool.shuffle()
         let words = pool.prefix(max(8, config.newWordCount)).map { passage -> VocabEntry in

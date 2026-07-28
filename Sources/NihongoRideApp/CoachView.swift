@@ -154,9 +154,10 @@ struct CoachView: View {
     }
 
     private func drillButton(for pattern: TypingPattern) -> some View {
-        let ids = model.coachDrillIDs(for: pattern)
+        let available = model.coachDrillCount(for: pattern)
+        let inSentences = CoachContent.drillSource(for: pattern) == .passages
         return Group {
-            if ids.isEmpty {
+            if available == 0 {
                 // No already-reviewed word exercises this pattern yet. Offering a drill that
                 // would be built from unknown words is worse than offering none.
                 Text(zh ? "等你多学几个相关的词,这里会出现针对练习。"
@@ -165,7 +166,9 @@ struct CoachView: View {
                     .multilineTextAlignment(.center)
             } else {
                 Button(action: { model.startCoachDrill(for: pattern) }) {
-                    Text(zh ? "练这 \(ids.count) 个词 ▶" : "Drill \(countLabel(ids.count, "word")) ▶")
+                    Text(inSentences
+                         ? (zh ? "用句子练这个 ▶" : "Practise this in sentences ▶")
+                         : (zh ? "练这 \(available) 个词 ▶" : "Drill \(countLabel(available, "word")) ▶"))
                         .scaledSystemFont(18, weight: .bold, design: .rounded)
                         .ctaLabel(minWidth: 220, minHeight: 50)
                 }
