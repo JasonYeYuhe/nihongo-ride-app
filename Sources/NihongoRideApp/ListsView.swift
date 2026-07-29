@@ -27,6 +27,10 @@ struct ListsView: View {
     @State private var renameTarget: WordList?
     @State private var renameText = ""
     @State private var deleteTarget: WordList?
+    /// List pending "clear words" confirmation. Clearing is MORE destructive than deleting
+    /// the list row (the words are gone fleet-wide via tombstones, the empty list remains),
+    /// yet it was the one action on this menu with no confirmation.
+    @State private var clearTarget: WordList?
     @State private var errorMessage: String?
 
     var body: some View {
@@ -93,6 +97,20 @@ struct ListsView: View {
             Text(zh ? "此词单将被删除并在你的设备间同步移除。"
                     : "This list will be deleted and removed across your devices.")
         }
+        // Clear-words confirmation. Same shape as delete above; the message says what the
+        // delete alert's does not — that the removals propagate and the list itself stays.
+        .alert(zh ? "清空词单?" : "Clear this list?", isPresented: Binding(
+            get: { clearTarget != nil },
+            set: { if !$0 { clearTarget = nil } })) {
+            Button(zh ? "清空" : "Clear", role: .destructive) {
+                if let target = clearTarget { model.clearList(target.id) }
+                clearTarget = nil
+            }
+            Button(zh ? "取消" : "Cancel", role: .cancel) { clearTarget = nil }
+        } message: {
+            Text(zh ? "将移除词单中的所有词,并同步到你的其他设备。词单本身会保留。"
+                    : "Every word in this list will be removed, across your devices. The list itself stays.")
+        }
         // Cap / validation errors.
         .alert(zh ? "无法完成" : "Can't do that",
                isPresented: Binding(get: { errorMessage != nil },
@@ -152,8 +170,8 @@ struct ListsView: View {
                         deleteTarget = list
                     } label: { Label(zh ? "删除" : "Delete", systemImage: "trash") }
                 }
-                Button {
-                    model.clearList(list.id)
+                Button(role: .destructive) {
+                    clearTarget = list
                 } label: { Label(zh ? "清空" : "Clear words", systemImage: "eraser") }
             } label: {
                 Image(systemName: "ellipsis")

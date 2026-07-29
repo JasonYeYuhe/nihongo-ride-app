@@ -66,8 +66,14 @@ struct PracticeView: View {
                     onCommand: { command in
                         switch command {
                         case .escape: model.finishGame()
-                        case .returnKey, .space: session.skip()       // skip to next passage
-                        case .backspace: break
+                        // Enter is the ADVERTISED skip (the hint says "Enter for next"; the
+                        // touch buttons say Next/Done). Space used to skip too, silently: a
+                        // learner pausing mid-passage who tapped space out of habit lost the
+                        // whole passage with no undo and no hint that space did that. Space is
+                        // never a typing key here (kana targets are punctuation-free), so the
+                        // honest behaviour is to ignore it. (v1.15 §K.)
+                        case .returnKey: session.skip()               // skip to next passage
+                        case .space, .backspace: break
                         }
                     }
                 )
@@ -85,7 +91,12 @@ struct PracticeView: View {
 
     private func topBar(_ s: GameSession) -> some View {
         HStack {
-            Text("PRACTICE · \(s.currentLevelLabel)")
+            // Passages ride a synthetic VocabEntry whose jlpt is hardcoded .n5, so the
+            // header claimed every passage was N5 — a Long passage full of N3 grammar
+            // included. The honest label for a passage is its LENGTH, which is the thing the
+            // user actually picked in the menu; the JLPT label stays for word-stream mode,
+            // where it is real. (v1.15 §L.)
+            Text("PRACTICE · \(practiceHeaderLabel(s))")
                 .scaledSystemFont(12, weight: .bold).tracking(3)
                 .foregroundStyle(ink.opacity(0.4))
             if !model.showRomajiHint {
@@ -109,6 +120,16 @@ struct PracticeView: View {
                 Text(model.languageCode == "zh" ? "Enter 下一段 · Esc 结束" : "Enter for next · Esc to finish")
                     .scaledSystemFont(12, weight: .medium).foregroundStyle(ink.opacity(0.35))
             }
+        }
+    }
+
+    private func practiceHeaderLabel(_ s: GameSession) -> String {
+        guard model.practicePassages else { return s.currentLevelLabel }
+        let zh = model.languageCode == "zh"
+        switch model.practicePassageLevel {
+        case .easy: return zh ? "短" : "SHORT"
+        case .med:  return zh ? "中" : "MED"
+        case .hard: return zh ? "长" : "LONG"
         }
     }
 
