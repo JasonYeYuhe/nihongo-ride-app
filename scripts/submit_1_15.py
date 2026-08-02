@@ -19,6 +19,14 @@ number per platform: mac app+widget 26, iOS app+widget 27. iOS can only be creat
 submitted once iOS 1.14 leaves review (one version in review per platform) — the script
 tolerates that: each platform proceeds independently and a blocked one just reports.
 """
+# ⚠️ LESSON FOR THE NEXT COPY OF THIS SCRIPT (v1.16+): running --submit for a platform
+# whose version is ALREADY LIVE creates an EMPTY reviewSubmission (attach fails on the live
+# version, but the submission container is created first). ASC refuses to cancel it ("not in
+# cancellable state") and refuses to DELETE it (403), so it sits in READY_FOR_REVIEW forever.
+# One such orphan exists for MAC_OS: 14d60575-fdec-4a50-a3a0-801e3e62cc63 (created 2026-07-31).
+# Two fixes, do both: (1) skip a platform whose version state is not PREPARE_FOR_SUBMISSION /
+# REJECTED — do not even try; (2) before POSTing a new reviewSubmission, GET the open ones for
+# the platform and REUSE a READY_FOR_REVIEW container by adding items to it instead.
 import json, subprocess, sys, os
 
 APP = "6777469778"
