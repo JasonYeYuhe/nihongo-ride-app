@@ -142,9 +142,23 @@ public struct WordListStore: Codable, Sendable, Equatable {
     /// claiming "added just now" for it converts pre-removal residue into a re-add that
     /// beats a peer's live tombstone (v1.10 §A). Unstamped ids stay *uncontested* — kept
     /// unless a peer holds a tombstone, in which case the tombstone rightly wins.
+    ///
+    /// It does NOT apply the per-list cap. v1.4's saved-words deck had no cap, so truncating
+    /// here silently deleted a user's favourites past the 500th — and `enqueueAllLocal` then
+    /// pushed the truncated deck over the cloud copy, so the loss propagated. A migrated
+    /// default list is therefore GRANDFATHERED: it may exceed the cap, and `addWord` keeps
+    /// refusing new additions until the count falls back under it (see `addWord`).
+    ///
+    /// Spilling the overflow into extra lists was the other candidate and is worse. The ★
+    /// glyph asks only whether the DEFAULT list holds the word, so a spilled favourite would
+    /// render unstarred and tapping ★ would try to re-add it to a list that is already full.
+    /// Only the default list has a constant cross-device id; auto-created lists get UUIDs, so
+    /// two upgrading devices would each mint their own "★ 2" and sync would union them. And
+    /// the v1.4 cloud mirror carries default-list ids only, so spilled words would vanish from
+    /// a peer still on v1.4. (v1.16 §C.)
     mutating func seedDefaultIDs(_ ids: [String]) {
         guard let i = index(of: WordList.defaultID) else { return }
-        lists[i].ids = WordList.deduped(Array(ids.prefix(Self.maxWordsPerList)))
+        lists[i].ids = WordList.deduped(ids)
         lists[i].wordMeta = [:]
     }
 
@@ -154,6 +168,9 @@ public struct WordListStore: Codable, Sendable, Equatable {
     public mutating func addWord(_ vocabID: String, to listID: String, now: Date = Date()) -> Result<Void, WordListError> {
         guard let i = index(of: listID) else { return .failure(.listNotFound) }
         if lists[i].ids.contains(vocabID) { return .success(()) }
+        // A grandfathered migration can leave the default list over the cap (see
+        // seedDefaultIDs). The cap still refuses NEW additions — `>=` rather than `==` — so an
+        // over-cap list drains toward the limit through removals and never grows past it.
         guard lists[i].ids.count < Self.maxWordsPerList else {
             return .failure(.wordCapReached(max: Self.maxWordsPerList))
         }

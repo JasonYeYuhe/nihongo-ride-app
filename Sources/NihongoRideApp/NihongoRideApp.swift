@@ -179,9 +179,19 @@ struct RootView: View {
         }
         // A user-initiated data write (list CRUD / ★) failed to persist — surface it
         // once so silent data loss is visible. Background writes only log (no alert).
-        .alert(model.languageCode == "zh" ? "保存失败" : "Couldn't save",
+        .alert(model.lastPersistError == .listsUnreadable
+               ? (model.languageCode == "zh" ? "读不到词单" : "Can't read your lists")
+               : (model.languageCode == "zh" ? "保存失败" : "Couldn't save"),
                isPresented: Binding(get: { model.lastPersistError != nil },
                                     set: { if !$0 { model.lastPersistError = nil } })) {
+            // The unreadable case gets a Retry, because the failure is usually transient
+            // (file protection while the device is locked, a busy volume) and "relaunch the
+            // app" is not a recovery path a learner should have to invent. (v1.16 §C.)
+            if model.lastPersistError == .listsUnreadable {
+                Button(model.languageCode == "zh" ? "重试" : "Retry") {
+                    model.lastPersistError = model.retryLoadWordLists() ? nil : .listsUnreadable
+                }
+            }
             Button("OK", role: .cancel) { model.lastPersistError = nil }
         } message: {
             if let error = model.lastPersistError {

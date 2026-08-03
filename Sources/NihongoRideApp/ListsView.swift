@@ -51,6 +51,10 @@ struct ListsView: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("newListButton")
             .accessibilityLabel(zh ? "新建词单" : "Create a new word list")
+            // Disabled while the lists file could not be read: the store on screen is an
+            // empty stand-in, and creating a list here would either be refused (confusing)
+            // or, before v1.16, saved over data that was probably fine. (v1.16 §C.)
+            .disabled(model.wordListsReadOnly)
             Spacer(minLength: 12)
         }
         .padding(isPhoneIdiom ? 22 : 40)
@@ -181,6 +185,7 @@ struct ListsView: View {
                     .contentShape(Rectangle())
             }
             .menuStyle(.borderlessButton)
+            .disabled(model.wordListsReadOnly)
             .fixedSize()
             .accessibilityLabel(zh ? "\(name),更多操作" : "More actions for \(name)")
         }

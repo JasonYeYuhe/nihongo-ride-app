@@ -180,6 +180,15 @@ final class AppModel {
     private let odometerWritable: Bool
     /// What each store's load reported, for the launch log.
     private let persistLoadOutcomes: [(String, LossyLoad.Outcome)]
+
+    /// The word-list file could not be READ at launch, so `wordLists` is an empty stand-in and
+    /// nothing may overwrite, sync, or mutate it.
+    ///
+    /// Write-gating alone is not enough (Codex, v1.16 review): `persistWordLists` records
+    /// local CloudKit changes even when the save THREW, so an empty stand-in could reach the
+    /// cloud with the file on disk still perfectly fine. Mutations, local persistence,
+    /// sync-merge persistence and outbound records are all gated on this.
+    private(set) var wordListsReadOnly = false
     /// User-curated word lists (v1.5). The v1.4 single "★ saved" deck survives as
     /// the one `isDefault` list (constant id `"default"`); all the old ★ behavior
     /// now reads/writes that list.
@@ -328,6 +337,10 @@ final class AppModel {
             legacySavedWordsURL: savedWordsURL,
             defaultName: Self.defaultListName(languageCode))
         wordLists = migration.store
+        // An UNREADABLE file (not a corrupt one) means the real lists are probably intact and
+        // this session is running on an empty stand-in. Everything that could make that
+        // stand-in permanent is disabled below — see `wordListsReadOnly`. (v1.16 §C.)
+        wordListsReadOnly = migration.outcome == .unreadableDeferred
 
         settingsLoaded = true
 
@@ -674,7 +687,7 @@ final class AppModel {
             // the load path: a not-yet-propagated deletion compacted too early gets
             // revived by a peer's union on the next fetch (§A2 / WordListStore docs).
             wordLists.compactTombstones()
-            bgSave("word-lists (sync merge)") { try wordLists.save(to: wordListsURL) }
+            bgSave("word-lists (sync merge)", allowed: !wordListsReadOnly) { try wordLists.save(to: wordListsURL) }
         }
         // Legacy v1.4 `SavedWords:deck` record: folded into the default list on EVERY fetch —
         // the deck is a permanent v1.4-compat mirror, not a one-time migration. (This comment
@@ -877,10 +890,23 @@ final class AppModel {
     /// sync-merge writes to the same file — `Task.detached` raced last-writer-wins.
     func toggleSaved(_ id: String) { lastListError = toggleWord(id, in: WordList.defaultID) }
 
+    /// Refuses a list mutation while the store is an unreadable-file stand-in, and says so.
+    ///
+    /// Checked at the ENTRY point, not just before the write: gating only `persistWordLists`
+    /// would let the in-memory store change, so the UI would show a word starred that was
+    /// never saved and will vanish on the next launch. Refusing up front keeps what the
+    /// learner sees and what is on disk the same thing. (v1.16 §C.)
+    private func refusesListMutation() -> Bool {
+        guard wordListsReadOnly else { return false }
+        lastPersistError = .listsUnreadable
+        return true
+    }
+
     /// Toggles a word in any list, persists, and enqueues that list for sync.
     /// Returns the resulting error (cap reached) for the UI to surface, else nil.
     @discardableResult
     func toggleWord(_ vocabID: String, in listID: String) -> WordListError? {
+        if refusesListMutation() { return nil }
         switch wordLists.toggle(vocabID, in: listID) {
         case .success: persistWordLists(changed: [listID]); return nil
         case .failure(let error): return error
@@ -889,6 +915,7 @@ final class AppModel {
 
     @discardableResult
     func addWord(_ vocabID: String, to listID: String) -> WordListError? {
+        if refusesListMutation() { return nil }
         switch wordLists.addWord(vocabID, to: listID) {
         case .success: persistWordLists(changed: [listID]); return nil
         case .failure(let error): return error
@@ -896,6 +923,7 @@ final class AppModel {
     }
 
     func removeWord(_ vocabID: String, from listID: String) {
+        if refusesListMutation() { return }
         if case .success = wordLists.removeWord(vocabID, from: listID) {
             persistWordLists(changed: [listID])
         }
@@ -903,6 +931,7 @@ final class AppModel {
 
     @discardableResult
     func createList(name: String) -> Result<WordList, WordListError> {
+        if refusesListMutation() { return .failure(.listNotFound) }
         let result = wordLists.createList(name: name)
         if case .success(let list) = result { persistWordLists(changed: [list.id]) }
         return result
@@ -910,6 +939,7 @@ final class AppModel {
 
     @discardableResult
     func renameList(_ listID: String, to name: String) -> WordListError? {
+        if refusesListMutation() { return nil }
         switch wordLists.rename(listID, to: name) {
         case .success: persistWordLists(changed: [listID]); return nil
         case .failure(let error): return error
@@ -919,6 +949,7 @@ final class AppModel {
     /// Soft-deletes a list (tombstone propagates; default list can't be deleted).
     @discardableResult
     func deleteList(_ listID: String) -> WordListError? {
+        if refusesListMutation() { return nil }
         switch wordLists.softDelete(listID) {
         case .success:
             if selectedListID == listID { selectedListID = nil }
@@ -929,6 +960,7 @@ final class AppModel {
     }
 
     func clearList(_ listID: String) {
+        if refusesListMutation() { return }
         if case .success = wordLists.clear(listID) { persistWordLists(changed: [listID]) }
     }
 
@@ -953,13 +985,38 @@ final class AppModel {
     /// USER-INITIATED path (list CRUD / ★), so a save failure surfaces an alert via
     /// `lastPersistError` — not just a log — so the user knows the change may be lost.
     private func persistWordLists(changed listIDs: [String]) {
+        guard !wordListsReadOnly else {
+            PersistLog.skipped("word-lists", reason: "file was unreadable at launch")
+            lastPersistError = .listsUnreadable
+            return
+        }
         do {
             try wordLists.save(to: wordListsURL)
         } catch {
             lastPersistError = .saveFailed
             PersistLog.failure("word-lists", error)
+            // Do NOT tell the sync controller about a change that did not reach disk. It used
+            // to record it unconditionally, so a failed save still queued the in-memory state
+            // for upload — the local file survived and the cloud got the version that didn't.
+            return
         }
         syncController?.recordLocalChanges(listIDs: listIDs)
+    }
+
+    /// Re-reads the word-list file after a transient failure (file protection while locked,
+    /// a busy volume). Clears the read-only state on success, so the user is not stranded
+    /// until they think to relaunch. (v1.16 §C.)
+    @discardableResult
+    func retryLoadWordLists() -> Bool {
+        let migration = WordListStore.loadOrMigrate(
+            wordListsURL: wordListsURL,
+            legacySavedWordsURL: savedWordsURL,
+            defaultName: Self.defaultListName(languageCode))
+        guard migration.outcome != .unreadableDeferred else { return false }
+        wordLists = migration.store
+        wordListsReadOnly = false
+        lastPersistError = nil
+        return true
     }
 
     /// Starts a journey run drawn from the default ★ list. (Back-compat entry used
@@ -1025,7 +1082,7 @@ final class AppModel {
             _ = wordLists.addWord(id, to: WordList.defaultID)
         }
         if wordLists.defaultList?.ids != before {
-            bgSave("word-lists (legacy fold)") { try wordLists.save(to: wordListsURL) }
+            bgSave("word-lists (legacy fold)", allowed: !wordListsReadOnly) { try wordLists.save(to: wordListsURL) }
             // A v1.4 addition changed our default → propagate to v1.5 peers (and the
             // controller refreshes the deck mirror because the default id is included).
             syncController?.recordLocalChanges(listIDs: [WordList.defaultID])
