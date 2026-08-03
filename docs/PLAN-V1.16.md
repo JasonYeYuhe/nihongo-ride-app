@@ -1,6 +1,7 @@
-# v1.16 — Live Coach, N3 content, and the debts v1.15 left
+# v1.16 — One assistance policy, N3 content, and the debts v1.15 left
 
-Status: proposal, for Codex and Gemini review before any code.
+Status: revised after Codex and Gemini review. Both rejected the first draft's
+headline feature; §A is its replacement. Review notes in §5.
 
 ---
 
@@ -22,36 +23,66 @@ three capabilities got worse** (`docs/ai-probes/RERUN-2026-08-03.md`):
 
 So the honest answer to "how do we get more AI in" is not a new on-device surface. It is
 the AI that has already been measured to work: **a large model, offline, behind the
-deterministic gates and the human read that shipped 779 sentences in v1.15 at a measured
-3.6% pre-review defect rate.**
+deterministic gates and the human read that shipped 779 sentences in v1.15.**
+
+**Scope of that claim, corrected after review.** Codex was right that "there is no on-device
+surface worth building, not 'not yet'" overreaches what n=5/4/1 with one prompt style, no
+few-shot, the default model and no `useCase` can support. What the probes establish is that
+this design, as probed, fails badly enough to reject **for v1.16** — not that no prompting
+or decoding setup could do better. Reopening it needs a pre-registered benchmark rather than
+prompt-tweaking against these same items: ≥100 authoring words stratified by level/POS/
+ambiguity plus ≥20 adversarial inputs, ≥30 matcher-derived traces per pattern, ≥100 entries
+for explanation with two independent readers, run English and Chinese, cold and warm, on an
+eligible iPhone, iPad and Mac. Pass means zero wrong learner-visible Japanese. Until someone
+runs that, the answer is "rejected for v1.16", and the phrasing layer is rejected with it.
 
 The v1.15 constraint therefore hardens: *the app authors every Japanese character; the model
 never does, at runtime or otherwise, without a gate and a reader between it and a learner.*
 
 ## 2. The update
 
-### §A — Live Coach (the headline; deterministic)
+### §A — One assistance policy (the headline; deterministic)
 
-v1.15's Coach explains a mistake **after** the ride. Both reviewers named the same next
-step, for the same reason: the diffing machinery already exists, and the moment a learner
-can actually use the information is the moment the key is refused, not five minutes later.
+The plan's first draft proposed a "Live Coach" that showed a correction inline on the second
+refusal. **Both reviewers rejected it independently, and the code says they are right:**
 
-At the instant of a refusal the app already knows the target kana, the romaji accepted so
-far, the key pressed, the keys that would have worked, and which kana the learner is
-standing on. Today it discards all of that into a red flash and a combo reset.
+- The ride screen **already** displays the full canonical romaji and every currently accepted
+  next key (`GameView.swift:495-524`), and `showRomajiHint` defaults ON — so inline coaching
+  is redundant in the default experience, and when the learner has turned hints OFF it
+  overrides an explicit choice to practise blind.
+- It would corrupt scoring. `revealHint()` marks the word revealed, forces a minimal score
+  and records an SRS lapse (`GameSession.swift:293-299, 333-356`). An automatic correction
+  after two refusals hands over the same information for free, so a learner could take the
+  answer and still receive an unhinted SRS outcome — the distinction between recall and
+  assisted completion stops meaning anything.
+- Pedagogically it rewards "try twice, then wait", which is the opposite of retrieval
+  practice in an app whose whole engine is spaced repetition.
 
-Live Coach spends that information, once, at the right time:
+What the app actually has is **two hint systems that do not know about each other**: an
+always-on romaji display, and a manual reveal that costs a lapse. v1.16 replaces both with
+one setting the learner can reason about:
 
-- the refused key is shown against a key that works, aligned at the divergence — the same
-  `MistakeReplay` the Coach screen draws, inline and immediate;
-- it appears only on the **second** refusal at the same kana, so a slipped finger is not
-  lectured at;
-- it never blocks input, never steals focus, and disappears the moment the correct key
-  arrives;
-- it is off during Time Attack (the mode is a sprint; an explanation mid-sprint is a
-  penalty), and behind a setting, default on.
+| assistance | during a word | cost |
+|---|---|---|
+| **Always show** | full romaji visible, as today with hints on | none — this is study mode |
+| **Offer after struggle** (new default for new installs) | nothing shown; after repeated refusal at the SAME matcher state, a reveal control appears | using it marks the word assisted: `usedHint`, minimal score, SRS lapse — the existing path |
+| **Off** | nothing, ever | none; the learner chose blind practice and is left alone |
 
-Everything it shows is derived, not authored. No model, no network, nothing new persisted.
+Three things this gets right that the first draft did not: the answer is never injected, only
+OFFERED; taking it costs exactly what taking it costs today; and "Off" means off.
+
+Definitions the reviewers asked for, because "second refusal at the same kana" was too vague
+to implement:
+
+- **Same state** = (entry-or-passage id, kana index, accepted romaji prefix). Not "the same
+  character value" — that conflates two unrelated attempts at the same kana in different
+  words. Reset on accepted progress, word change, pause, or backgrounding.
+- **Distinct attempts, not repeats.** The trace already documents that a held key produces
+  hundreds of refusals (`MistakeEvent.swift:60-78`). The offer requires distinct physical
+  attempts; the exact threshold is measured on a device, not chosen at a desk.
+- Time Attack keeps its exclusion: the timer runs every 0.1 s regardless
+  (`GameView.swift:108-113`), so any reading costs competitive time.
+- Refusals already reset the combo. The offer adds no second penalty.
 
 ### §B — N3 example sentences (the AI, where it is measured to work)
 
@@ -63,12 +94,32 @@ morphological target presence, reading alignment via Sudachi, level ceiling. The
 in batches, then the two-lens agent review, then my adjudication, then merge with per-example
 provenance (`exMeta`) so a batch stays rollback-able.
 
-**N3 is harder than N5/N4 and the gates must be re-measured, not assumed.** A pilot of 60
-N3 words runs first and reports its own numbers; the full batch only proceeds if they hold.
-Specifically expected to be worse at N3: homographs (more kanji with several readings),
-transitivity pairs (上がる/上げる, 変わる/変える), and register (N3 introduces keigo contexts).
-If the pilot's post-review defect rate is materially worse than N5/N4's, the batch stops and
-the release ships without it.
+**N3 is harder than N5/N4 and the gates must be re-measured, not assumed.** Three gate
+changes land BEFORE the pilot, all of them because a reviewer pointed at the code:
+
+1. **Require the morphological match.** `pilot_gate.py:108-110` currently accepts a Sudachi
+   target token **or** the older substring/stem fallback, so the weaker check still decides
+   the cases the stronger one cannot resolve. At N3 that is exactly the polysemous vocabulary
+   where it matters. Tokenizer uncertainty becomes rejection: false negatives cost coverage,
+   false positives teach the wrong word.
+2. **Close the level gate's hole.** It rejects known vocabulary above the ceiling but lets
+   **unknown** tokens through, and N3 permits one level harder — so an N3 sentence can be
+   built out of N2 words and compounds absent from the dictionary. Unknown content words are
+   counted and capped.
+3. **Transitivity.** The first draft anticipated 上がる/上げる failures and then shipped no
+   check for them; `VocabEntry` carries POS strings and a conjugation class but no
+   transitive/intransitive role. Either add authoritative transitivity metadata and a
+   conservative particle-frame gate, or quarantine transitivity-pair verbs into their own
+   reviewed stratum. Not "expect it and hope the reader catches it".
+
+**The stop rule, defined before any results are seen.** The metric is the **adjudicated
+defect rate among gate survivors, counted before flagged items are removed** — the v1.15
+comparable is 59/838 ≈ 7.0% reviewer-flagged, of which the small pilot's hand-read gave
+2/55 ≈ 3.6% genuinely wrong. The pilot uses **≥200 gate survivors**, stratified across verbs,
+ambiguous surfaces, single-kanji words and register-sensitive terms. **The batch stops if the
+adjudicated defect rate exceeds 10%, or if any false-reading or false-meaning defect appears
+that no deterministic gate can catch.** Numbers chosen now, recorded here, not after seeing
+the data.
 
 ### §C — The two data-loss debts v1.15 found and did not fix
 
@@ -78,21 +129,50 @@ Both were confirmed still present in the code today.
 returns `.unreadableDeferred` so a file it could not READ is left alone — and `AppModel`
 discards the outcome (zero references). The session runs on an empty store and the next ★
 tap saves it over the good file. The loader's whole reason for distinguishing "unreadable"
-from "corrupt" is undone by the first write. Same fix as v1.15 §C did for the four other
-stores: keep the outcome, gate the writes, tell the user.
+from "corrupt" is undone by the first write.
+
+Gating disk writes is necessary and **not sufficient** — Codex again. Protection has to cover
+user mutations, local persistence, sync-merge persistence AND outbound CloudKit records, or
+an empty stand-in becomes visible sync state even though the file on disk survived. Note that
+list persistence currently records local CloudKit changes after attempting the save *even
+when the save failed* (`AppModel.swift:951-963`). And "tell the user" is not recovery: there
+is a retry-read action, list controls stay disabled until it succeeds, and a persistent I/O
+or permission failure gets a non-destructive next step rather than stranding the learner
+until they think to relaunch.
 
 **The v1.4 favorites migration silently drops everything past the 500th.**
 `seedDefaultIDs` does `prefix(maxWordsPerList)`. v1.4 had no cap, so a user with 620 saved
 words loses 120 — and then `enqueueAllLocal` pushes the truncated deck over the cloud copy.
-Fix: spill into auto-created "★ 2", "★ 3" lists (the 50-list cap leaves room) and report the
-spill so it can be surfaced once.
+
+**The spill fix I proposed is wrong, and Codex showed why with three code references.** The
+★ glyph asks only whether the DEFAULT list contains the word (`WordListStore.swift:62-67`),
+so a favorite moved to "★ 2" renders unstarred and tapping ★ tries to re-add it to a list
+that is already full. Only the default list has a constant cross-device identity
+(`WordList.swift:25-38`); auto-created lists get UUIDs, sync unions by id and never enforces
+the 50-list cap after merging, so two upgrading peers each mint their own "★ 2". And the
+legacy v1.4 cloud mirror carries default-list ids only, so spilled favorites vanish from
+older peers entirely. Spill preserves the bytes and destroys the meaning of "favorite".
+
+**Grandfather instead.** Keep every deduplicated legacy id in the default list, let that one
+list exceed 500 as a migrated exception, and keep the 500 cap for NEW additions until the
+count falls back under it. ★ semantics, sync identity and the cap all survive. Raising the
+cap generally is a separate question that needs the worst-case encoded `ids + wordMeta +
+CKRecord` size measured first — the source's own estimate (~350 KB for all 7,074) omits
+fields and encoding overhead, so "just raise it" is not yet proven safe.
 
 ### §D — The accessibility debt, led by the worst case in the app
 
 At AX5 in Practice, **the characters the learner has to type are behind an ellipsis**.
-`PracticeView` has no `dynamicTypeSize` cap (GameView and ConjugationGameView both cap at
-accessibility1) and the passage `Group` has no ScrollView, so the target text truncates.
-A typing app that hides the typing target is broken, not merely inconvenient.
+`PracticeView` has no `dynamicTypeSize` cap and the passage `Group` has no ScrollView, so the
+target text truncates. A typing app that hides the typing target is broken, not merely
+inconvenient.
+
+**Do not fix it by copying the ride screen's cap.** GameView caps at accessibility1 because
+its HUD is a fixed layout that cannot reflow; Practice is a column of text that can. Capping
+would deny AX5 users the size they asked for in order to solve a problem reflow solves
+properly. The acceptance contract: full AX5 preserved, the passage scrolls, the caret stays
+visible above the software keyboard, and short/medium/long passages are each verified with
+VoiceOver on a device.
 
 Plus the rest of the v1.15 §F batch, which is the same shape as the §C work already
 reviewed and shipped: fixed frames on the Time Attack countdown ("3…" reads as 3 seconds
@@ -110,16 +190,39 @@ rounds).
 - **N2/N1 sentences.** After N3 reports its numbers, not before.
 - **A cloud model.** Still ends "Data Not Collected" for a job the pipeline does offline.
 
-## 4. Open questions for the reviewers
+## 4. Sequencing
 
-1. Is Live Coach the right headline, or is it a distraction that clutters the one screen
-   where the learner is concentrating? Is "second refusal at the same kana" the right
-   trigger, or should it be time-based, or per-word?
-2. What breaks at N3 that the N5/N4 gates cannot see, beyond homographs, transitivity and
-   register? What extra gate would you add before the pilot rather than after?
-3. Is there an AI-shaped feature I am dismissing too fast because the ON-DEVICE model is
-   bad — something a large model could do offline, at build time, that would show up as a
-   user-visible feature rather than as content? (Pre-computed per-word confusion notes?
-   Pre-computed drill sets? Something else?)
-4. §C's spill fix creates lists the user did not ask for. Is that better or worse than
-   raising the per-list cap for the default list only?
+§C first (data loss), then §D (a learner who cannot see the target cannot practise at all),
+then §A, then §B's gates → pilot → decision. §B ships only if its own numbers clear the bar
+in §2; the release does not wait for it.
+
+## 5. What the reviews changed
+
+Codex and Gemini reviewed the first draft independently and agreed on the headline.
+
+**Killed §A as drafted.** Gemini: showing a correction mid-word converts recall into visual
+pattern-matching and breeds hint dependency, and it "directly violates user intent when
+Romaji Hint is disabled". Codex found the code: the ride screen already shows the full romaji
+and every accepted next key, `showRomajiHint` defaults on, and `revealHint()` already charges
+an SRS lapse that an automatic correction would let a learner dodge. Two independent routes
+to the same verdict. The replacement — one assistance policy, offer-don't-inject — is Codex's
+suggestion and it is better than what I wrote.
+
+**Killed the favorites spill**, with the ★-semantics and sync-identity reasoning above.
+
+**Corrected my overclaim** about on-device AI being categorically not worth building.
+
+**Tightened §B**: require the morphological match rather than falling back to substrings,
+close the unknown-token hole in the level gate, gate transitivity instead of merely
+predicting it, and fix the stop rule's metric and threshold in advance.
+
+**One reviewer claim I checked and rejected.** Gemini warned that N3 grammar might fall
+outside the romaji engine's coverage (`ざるを得ない`, `っけ`, `っちゃ`, `っこない`). Measured
+against the real matcher: every one is typeable. The single failure was `zaruoenai` — typing
+`o` for を — which is not an engine gap but exactly the particle pattern the v1.15 Coach
+already diagnoses and teaches.
+
+**Carried, not built:** per-word confusion notes and pre-computed drill sets (both need the
+N3 batch to exist first), pitch-accent metadata (a content problem), and the IME/batched-input
+question Codex raised for macOS marked text and iOS `UIKeyInput` — worth its own measurement
+pass before anything touches the input path.
