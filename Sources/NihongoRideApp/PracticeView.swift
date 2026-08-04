@@ -34,21 +34,24 @@ struct PracticeView: View {
 
             VStack(spacing: 0) {
                 topBar(session)
-                Spacer()
-                Group {
-                    if model.practicePassages {
-                        longPassage(session)
-                        translation(session).padding(.top, 18)
-                    } else {
-                        passage(session)
-                    }
-                    if model.showRomajiHint {
-                        romajiGuide(session).padding(.top, 28)
-                    }
-                }
-                .opacity(passageOpacity)
-                .animation(.easeOut(duration: 0.18), value: passageOpacity)
-                Spacer()
+                Spacer(minLength: 0)
+                // The typing target REFLOWS rather than truncating. At the accessibility text
+                // sizes this column outgrew its space and SwiftUI resolved that by putting an
+                // ellipsis through the characters the learner is supposed to be typing — a
+                // typing app hiding the typing target. (v1.16 §D.)
+                //
+                // Deliberately NOT the ride screen's fix. GameView caps Dynamic Type at
+                // accessibility1 because its HUD is a fixed layout that cannot reflow; this is
+                // a column of text that can, so capping would deny AX5 users the size they
+                // asked for to solve a problem scrolling solves properly.
+                //
+                // The capture guard is not optional: ImageRenderer draws ScrollView content as
+                // blank, so wrapping this unconditionally would silently empty every practice
+                // screenshot in the App Store listing. ListsView guards the same way.
+                practiceBody(session)
+                    .opacity(passageOpacity)
+                    .animation(.easeOut(duration: 0.18), value: passageOpacity)
+                Spacer(minLength: 0)
                 if model.practicePassages, let total = session.currentKana?.count, total > 0 {
                     passageProgress(done: session.completedKanaCount, total: total)
                         .padding(.bottom, keyboardUp ? 0 : 14)
@@ -89,6 +92,30 @@ struct PracticeView: View {
         .onChange(of: session.isFinished) { _, finished in if finished { model.finishGame() } }
     }
 
+    /// The passage, its translation and the romaji guide — scrollable, and never truncated.
+    @ViewBuilder
+    private func practiceBody(_ session: GameSession) -> some View {
+        let content = VStack(spacing: 0) {
+            if model.practicePassages {
+                longPassage(session)
+                translation(session).padding(.top, 18)
+            } else {
+                passage(session)
+            }
+            if model.showRomajiHint {
+                romajiGuide(session).padding(.top, 28)
+            }
+        }
+        // Without this the Text still truncates inside the ScrollView instead of growing.
+        .fixedSize(horizontal: false, vertical: true)
+
+        if Screenshotter.isCapturing {
+            content
+        } else {
+            ScrollView(.vertical, showsIndicators: false) { content }
+        }
+    }
+
     private func topBar(_ s: GameSession) -> some View {
         HStack {
             // Passages ride a synthetic VocabEntry whose jlpt is hardcoded .n5, so the
@@ -99,6 +126,9 @@ struct PracticeView: View {
             Text("PRACTICE · \(practiceHeaderLabel(s))")
                 .scaledSystemFont(12, weight: .bold).tracking(3)
                 .foregroundStyle(ink.opacity(0.4))
+                // The label yields before the buttons do: it is decoration, they are controls.
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
             if !model.showRomajiHint {
                 Text("BLIND").scaledSystemFont(11, weight: .heavy).tracking(2)
                     .foregroundStyle(.white)
@@ -137,6 +167,13 @@ struct PracticeView: View {
         Button(action: action) {
             Text(title)
                 .scaledSystemFont(14, weight: .semibold)
+                // One line. At AX5 these wrapped mid-word inside their capsule — "Ne / xt ▸"
+                // and "Do / ne" in two circles — because the row has to share its width with
+                // the PRACTICE · LONG label. Shrinking is the honest trade for a control whose
+                // whole job is to be tappable and readable at a glance. (v1.16 §D.)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .fixedSize(horizontal: true, vertical: false)
                 .padding(.horizontal, 16).padding(.vertical, 8)
                 .background(ink.opacity(0.07), in: Capsule())
                 .overlay(Capsule().strokeBorder(ink.opacity(0.12)))

@@ -570,6 +570,14 @@ final class AppModel {
             }
             finishGame()
             screen = .coach
+        case "practice":
+            // Longest passages, hints on — the worst case for the reflow fix in §D, which is
+            // the only way to see whether the typing target is still behind an ellipsis.
+            selectedMode = .practice
+            practicePassages = true
+            practicePassageLevel = .hard
+            showRomajiHint = true
+            startGame()
         case "game":
             startGame()
         default:
