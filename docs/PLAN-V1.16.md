@@ -203,6 +203,47 @@ force the reading, names the Chinese false friends, and lets the model return an
 sentence rather than a wrong one. If pilot 2 does not clear the same bar, **N3 does not ship
 in v1.16** and the release is §A, §C and §D.
 
+### §B pilot 2 — better, and still stopped. N3 is deferred.
+
+Same 245 words, same gate, revised prompt. 208 survivors again (85%), and the model **used
+the refusal option on 6 words** — including 日本/にっぽん, one of pilot 1's false readings. The
+new per-kanji gate caught 後 written のち.
+
+|  | pilot 1 | pilot 2 |
+|---|---|---|
+| flagged | 55 (26.4%) | 53 (25.5%) |
+| severity "wrong" | 13 | 8 |
+| false readings among "wrong" | 2 | 0 |
+| gloss-mismatch among "wrong" | 6 | 0 |
+
+The severe end moved a lot. What is left at "wrong" is five Chinese-translation defects
+(捉迷藏 for 鬼ごっこ, 打折 for breaking a bone, 大众 for 方々, 代表 copied for 党の代表) and two
+register/grammar ones — no false reading, no gloss mismatch.
+
+**But the gloss-mismatch class did not disappear; it was demoted.** 通す is still threading a
+needle against "to let pass"; 見舞い is an ordinary sick-visit against "enquiry"; the English
+for 場 still says "opportunity"; the English for 姿 and 境 drops the target word entirely. The
+stop rule says *any* false-meaning defect no deterministic gate can catch — it does not say
+"any severe one". Condition two fires again, and the adjudicated total lands around 11–13%,
+still over the 10% ceiling.
+
+**So N3 does not ship in v1.16.** The release is §A, §C and §D.
+
+**The residual blocker is now identified precisely, and it is not the model.** 18 of 59 flags
+are gloss-versus-sense and 21 are Chinese translation. The Japanese itself is fine: three of
+four correctness reviewers found zero "wrong" items. N3 vocabulary is polysemous and the app
+shows **one narrow gloss per entry**, so a sentence using any other real sense is a defect no
+prompt can prevent — the model would have to guess which of several correct senses the app
+happens to display. That is a data-model problem: either the entry carries the sense the
+example teaches (an `exSense` alongside `exJP`), or the app displays the gloss that matches
+its own example. Either fixes the class at the root, and neither is a v1.16 patch.
+
+Kept from this work regardless: a much stronger gate (morphological match required, matcher
+taught mode-A splits and multi-token runs, unknown-content-word cap, per-kanji spelling check
+— 1.2% against the reviewed corpus), a prompt that pins sense and permits refusal, and
+`scripts/gate_calibration.py`, which killed five of eight candidate rules before they could
+ship.
+
 **The stop rule, defined before any results are seen.** The metric is the **adjudicated
 defect rate among gate survivors, counted before flagged items are removed** — the v1.15
 comparable is 59/838 ≈ 7.0% reviewer-flagged, of which the small pilot's hand-read gave
