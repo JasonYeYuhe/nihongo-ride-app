@@ -23,8 +23,14 @@ class; it demoted it. 通す was still threading a needle against "to let pass";
 an ordinary sick-visit against "enquiry"; the English for 場 still said "opportunity".
 
 **What that rules out.** The Japanese is not the problem: three of four correctness reviewers
-found zero "wrong" items in pilot 2. Prompt engineering is not the answer either — pilot 2 was
-the good version of that prompt and it plateaued.
+found zero "wrong" items in pilot 2.
+
+What it does **not** rule out — and the first draft of this plan wrongly claimed it did — is
+prompt engineering. Pilot 2's prompt told the model to pin the sense to the displayed gloss
+while feeding it an incomplete gloss list, i.e. it asked for natural Japanese for a word whose
+natural usage had been excluded from the input. That is a contradiction, not a ceiling. The
+prompt that has never been tried is the opposite one: let the model use the sense it wants and
+**say which sense it used**. §A is that experiment.
 
 ## 2. The measurement (2026-08-04)
 
@@ -53,8 +59,14 @@ the list at all.**
 | high — several common unrelated senses | 11 | 5% |
 
 **The problem is concentrated, not systemic.** 85% of N3 words are single-sense concrete
-vocabulary that will never produce this defect. Extrapolating 15% to the full pending set,
-roughly **130 of the 872 words** are missing a sense a natural sentence would plausibly use.
+vocabulary that will never produce this defect.
+
+**How much to trust these numbers.** Each word was judged once, by one agent — there is no
+second opinion and therefore no inter-rater number, and the judge is an LLM assessing glosses
+another LLM wrote, with no lexicographic authority behind it. The sample is also unstratified,
+while Japanese polysemy skews hard by word class. So 15% is an *estimate of where to look*,
+not a count to plan headcount against — which is why §A measures the gap on real generated
+output instead of scaling this audit to all 872.
 
 **And the missing senses are not obscure — they are the dominant ones:**
 
@@ -78,117 +90,173 @@ the ordinary *Chinese* reading of those characters and not a live sense of the J
 a false friend sitting in the data. Any reconciliation pass must verify a sense, not transplant
 it.
 
-## 3. Why completing the glosses is necessary but not sufficient
+## 3. What the review broke — and what is left standing
 
-Because the app joins every gloss into one line, completing the data changes what the word
-card renders. 通じる is already 26 characters at two glosses; at five it is roughly ninety,
-on a phone, on the typing screen, under the word being typed.
+The first draft of this section argued: completing the glosses forces a display cap, and the
+cap is what makes a per-example `exSense` field necessary. **Gemini 3.6 rejected that
+argument and the measurements agree with Gemini.**
 
-So the data fix forces a display decision, and the display decision is what makes the
-sentence–sense binding necessary rather than speculative:
+- **The gloss line has no `lineLimit`.** It wraps; it does not clip. Measured from a device
+  screenshot at 14.4 pt/character: 通じる is 1.3 lines today and would be 4.3 lines at five
+  senses, on a card about 380 pt tall with the keyboard up. That is a real cost but it is
+  "the card gets taller", not "the display breaks".
+- **The cap barely binds.** Of the 36 sampled entries needing a sense added, only **6** are
+  already at three English glosses. The other 28 have two, so the addition fits inside a cap
+  of three and is displayed anyway. A cap justified by 6 entries in 240 does not force a
+  schema change.
+- **A count cap is the wrong shape regardless.** Three long glosses wrap; five short ones fit
+  on one line. If the display needs bounding it should be bounded by width, in the view, not
+  by count, in the data.
 
-- the entry carries the **full** sense set (so the data is true),
-- the word card shows a **bounded** number of them (so the screen still works),
-- and therefore the example must carry **its own** sense, or we are back to a card whose
-  visible glosses may not include the one its example uses.
+So `exSense` is **not** adopted as a committed design. If a display bound turns out to be
+needed, the cheap options come first: truncate in the view, or order the entry's glosses so
+the one its example uses leads.
 
-That is the argument for `exSense`. It is not a nice-to-have; it is what the display cap costs.
+### The hazard the review surfaced that nearly shipped
 
-## 4. The design
+Gemini objected that a flat gloss list hides grammar and phonology, and gave 通り as the
+example. Checked against the data and Sudachi, it is worse than a style objection:
 
-### §A — complete the gloss layer
+- the entry is 通り / **とおり**, glossed "avenue, street";
+- the sense the audit says is missing is 「言ったとおり」/「予想どおり」;
+- 予想どおり is **どおり** — Sudachi reads it `ドオリ` against the entry's `トオリ`.
 
-**A1. Audit all 872 pending N3 words** with the same six-agent pass used for the sample
-(`/tmp/gloss-audit` chunks; the script is worth committing as `scripts/gloss_audit.py`).
-Expected yield from the sample: ~130 words needing a sense added, ~80 needing en/zh
-reconciliation.
+So adding that sense invites sentences whose reading is not the reading the app teaches —
+manufacturing exactly the false-reading defect the stop rule bans. **My audit's
+`missingFromBoth` list contains reading changes disguised as sense additions**, and a
+gloss-completion pass that trusted it would have imported them.
 
-**A2. Author the missing senses, review them, merge them.** Rules:
-- **Additive only.** No gloss is ever removed or reworded in this pass — a reworded gloss
-  changes what an already-shipped example appears to teach.
-- Cap raised from 3 to **5**, and only for entries the audit flagged. Everything else is
-  untouched, which is where the low regression risk comes from.
-- Every added sense is verified against the Japanese, not transplanted from the other
-  language (see 名人).
-- Gates before merge: ids, `surface`, `kana`, `jlpt`, `vc` byte-identical; only `meanings`
-  changes; no duplicate senses within a list; readings still globally unique (`swift test`
-  already enforces that).
+(One case I initially added to this list was my own error, not the audit's: 生放送 is
+なまほうそう, so the "live" sense of 生 really is at the entry's reading.)
 
-**A3. Bound the display and bind the example.**
-- `gloss(for:)` gains a display cap (3), keeping the full list available for the data.
-- `VocabEntry` gains `exSense: String?` — the gloss **this example teaches**, stored as the
-  gloss text and not an index, so it cannot silently point at the wrong sense when a list
-  changes. `VocabEntry` is bundled read-only data with no persistence or sync surface, so
-  this field is contained; it needs a `CodingKeys` entry and nothing else.
-- The word card's example row shows `exSense` when it is present and is not already the first
-  displayed gloss. One extra line, only when it says something.
+The fix is not a new gate — it is the gate that already exists. A proposed sense is only
+legitimate if a sentence using it tokenizes to the entry's kana, and `pilot_gate.py` already
+performs exactly that reading-alignment check. **Which means the sense and the sentence must
+be authored and validated together**, because the sentence is the evidence that the sense is
+realised at the taught reading. That collapses the two-phase design below into one loop.
 
-### §B — regenerate with the sense declared
+## 4. The design — one loop, not two phases
 
-**B1. The generator returns `sense` per sentence** — the English gloss the sentence teaches,
-which must match one of the entry's glosses after normalisation.
+### §A — pilot 3: let the model name the sense, and measure the real gap
 
-**B2. The gate gains a routing rule, not just a rejection.** A sentence whose declared sense
-is not in the entry's list is **not** a bad sentence. It goes to a **vocabulary-gap queue**:
-the word needs that sense added (§A2 again), and the sentence is probably fine. This is the
-mechanism the v1.16 stop rule said did not exist — it cannot prove the sentence is right, but
-it makes the specific failure *legible* instead of silent.
+Same 245 words, same seed, same strata: the third point in a controlled series.
 
-Honest limit: the gate cannot check that the declaration is truthful. A model could declare
-sense #1 and write sense #3. What it does buy is a much sharper review question — "this
-sentence claims to teach X; does it?" instead of "is this right?" — and sharper questions get
-better answers. Declaration honesty gets its own sampled number in B4.
+The generator returns, per word, `jp` / `en` / `zh` **and `sense`** — a short English gloss
+naming the sense the sentence teaches, written **freely**, not constrained to the entry's
+list. Pilot 2 constrained it to the list and that is precisely what plateaued: it asked for
+natural Japanese for a word whose natural usage the prompt had excluded. (Gemini called the
+first draft's "prompt engineering is not the answer" circular, and it was right — the
+untested prompt is this one.)
 
-**B3. Re-pilot the same 245 words.** Same seed, same strata, same gate, same two-lens review.
-This is the third point in a controlled series and directly comparable to pilots 1 and 2.
+The gate runs unchanged, then classifies each survivor by its declared sense:
 
-**B4. Measure declaration honesty** on a 60-item sample: does the sentence teach the sense it
-declares? Reported as its own number, not folded into the defect rate.
+- **sense already in the entry's list** → the normal path;
+- **sense not in the list** → a *proposed gloss addition, backed by a sentence whose reading
+  the gate has already verified*.
 
-### §C — ship or defer, by the rule below
+That second bucket is the measurement the whole plan exists for. It reports, on real generated
+material, how many N3 words actually need a sense — replacing the audit's hypothetical "a
+natural sentence could plausibly use this".
 
-## 5. The stop rule, written before any results
+### §B — adjudicate the pair, not the sentence
 
-The metric is unchanged: the **adjudicated defect rate among gate survivors, counted before
-flagged items are removed**. v1.16's pilots ran 13–15%.
+The two review lenses judge (sentence, sense) **together**:
+
+1. does the sentence teach the sense it declares?
+2. is that sense a real sense of this word **at this entry's reading**?
+
+Question 2 has teeth only because the reading gate has already run. Measured on the audit's
+own proposals: of 49 that were machine-checkable, **3 carry a different reading** — 注ぐ is
+つぐ but 力を注ぐ reads そそぐ; 下す is おろす but 判断を下す and 命令を下す read くだす — plus the
+通り/予想どおり case, which surface matching cannot even see. A gloss-completion pass that
+trusted the audit would have imported all four as "new senses".
+
+### §C — merge additively, with the evidence attached
+
+Accepted additions go into `meanings`, **appended**, never reordered or reworded: a reworded
+gloss changes what an already-shipped example appears to teach. Each carries `exMeta`
+provenance, as sentences already do, so a batch stays rollback-able.
+
+Gates before merge: `id`, `surface`, `kana`, `jlpt`, `vc` byte-identical; only `meanings`
+grows; no duplicate sense within a list; `swift test` still green (it already enforces
+globally unique readings).
+
+This is also the answer to the "vocabulary gap queue" Gemini called a deadlock: there is no
+queue beside the pipeline. The gap is resolved in the same loop that found it.
+
+### §D — display, decided after §C and not before
+
+Only after §C is the real distribution of gloss-line lengths known. Then:
+
+- if the 95th-percentile line still fits two lines on a phone with the keyboard up, **do
+  nothing**;
+- if not, bound it **in the view, by width** — a count cap is the wrong shape, since three
+  long glosses wrap and five short ones do not — or order an entry's glosses so the one its
+  example uses leads;
+- a stored `exSense` field is the last resort, adopted only if the display work proves it
+  necessary. It is **not** in scope by default.
+
+## 5. The stop rule — falsifiable this time
+
+The first draft's third condition was "zero gloss-versus-sense defects that the gate did not
+route". **Gemini showed that is unfalsifiable, and it is right.** The gate can only check
+`declaredSense ∈ glosses`; a model that declares sense A and writes sense B passes it. A stop
+condition must not depend on a check that the failure it targets can defeat.
+
+So condition 3 moves to the review, which actually reads the sentence.
 
 **N3 ships when all three hold:**
-1. adjudicated defect rate **≤ 10%**;
+
+1. adjudicated defect rate **≤ 10%** among gate survivors, counted before flagged items are
+   removed (v1.16's pilots ran 13–15%);
 2. **zero** false-reading defects;
-3. **zero** gloss-versus-sense defects that the gate did **not** route to the vocabulary-gap
-   queue.
+3. **declaration honesty ≥ 95%** on a 60-item hand-read sample — for each, does the sentence
+   teach the sense it declares? Below that threshold the declaration is noise and every
+   routing decision built on it is worthless.
 
-The third is the real test and it is deliberately not "zero mismatches". The claim this plan
-makes is that mismatches become *visible and routed*, not that they stop existing. If they are
-still arriving silently, the mechanism failed and N3 waits again.
-
-Additionally, §A ships **on its own merits even if §B stops again**: completing the glosses
-makes the existing 2,898 example sentences and every word card more accurate for English
-users today, independent of N3.
+Condition 3 fails loudly and specifically if the model games the declaration, which is exactly
+what the previous wording assumed away.
 
 ## 6. What I am not building, and why
 
-- **Re-deriving all glosses from JMdict.** The measurement says 85% of entries are fine.
-  Churning the displayed text of 7,000 entries to fix 15% of one level is the wrong trade, and
-  the licensing and quality questions are unanswered.
-- **One sentence per sense.** Multiplies the review burden by the polysemy factor for no
+- **A standalone 872-word gloss audit.** The 240-word sample earned its keep — it produced §2
+  and found the hazard in §3 — but scaling it is speculative work about words that may never
+  need a sentence. §A measures the gap on material that actually gets generated.
+- **`exSense` as a committed field.** §3 and §D: the display argument for it did not survive
+  measurement.
+- **A vocabulary-gap queue.** A queue with no resolution path is a bottleneck with a nicer
+  name; §C resolves gaps inside the loop.
+- **Re-deriving all glosses from JMdict.** 85% of entries are fine. Churning 7,000 entries'
+  displayed text to fix 15% of one level is the wrong trade, and the licensing and quality
+  questions are unanswered.
+- **One example sentence per sense.** Multiplies review burden by the polysemy factor for no
   measured learner benefit.
-- **A machine sense-matcher** (decide from the sentence which gloss it uses). That is the same
-  judgment the reviewers are already making, with less accuracy and no accountability.
-- **Touching N2/N1.** Same audit, later, once the method has a passing pilot behind it.
+- **Touching N2/N1.** Same method, later, once it has a passing pilot behind it.
 
-## 7. Sequencing and what each step costs
+## 7. Sequencing
 
 | step | work | gate |
 |---|---|---|
-| A1 | 872-word audit, 6 agents × ~4 chunks | none — measurement |
-| A2 | author ~130 sense additions + review | additive-only diff gate + `swift test` |
-| A3 | `exSense` field, display cap, example row | render gate + device check at large type |
-| B1–B2 | generator `sense` field, gate routing rule | calibrate against the 779 reviewed corpus first |
-| B3 | re-pilot 245, eight review agents | the stop rule in §5 |
-| B4 | 60-item declaration-honesty sample | reported separately |
+| A | pilot 3: regenerate 245 with a free `sense` declaration | existing gates unchanged |
+| B | eight review agents on (sentence, sense) pairs, then adjudication | — |
+| C | merge accepted sense additions | additive-only diff gate + `swift test` |
+| D | measure gloss-line lengths, then decide the display | render gate + device check at large type |
+| — | apply §5 | ship or defer |
 
-**Calibrate before trusting, as always.** Every gate change in B2 runs through
-`scripts/gate_calibration.py` against the 779 already-reviewed sentences before it is allowed
-to judge new material. Five of eight candidate gates died there during v1.16; the odds that a
-new one is right by intuition are not good.
+Roughly half the first draft's cost: no 872-word audit, no schema change, no display work
+before it is shown to be needed. **Any gate change still calibrates against the 779 reviewed
+sentences first** (`scripts/gate_calibration.py`) — five of eight candidate gates died there
+during v1.16, and the odds that a new one is right by intuition have not improved.
+
+## 8. What the reviews changed
+
+| raised by | claim | disposition |
+|---|---|---|
+| Gemini 3.6 | "completing the glosses forces a display cap, which forces `exSense`" is invalid | **Accepted.** Measured: only 6 of 36 affected entries are at the cap; the line wraps rather than clips. `exSense` dropped from the committed design. |
+| Gemini 3.6 | "prompt engineering plateaued" is circular — pilot 2 pinned the sense to an incomplete list | **Accepted.** §A is now exactly the untested prompt: declare the sense freely. |
+| Gemini 3.6 | the stop rule's routing condition is unfalsifiable | **Accepted.** Condition 3 rewritten as a hand-read declaration-honesty threshold. |
+| Gemini 3.6 | a flat gloss list hides grammar and phonology (通り / -どおり) | **Accepted, and it is worse than stylistic.** Verified with Sudachi; drove the reading-gate requirement in §B. |
+| Gemini 3.6 | exact string matching will flood the queue on `"as soon as"` vs `"as soon as; immediately"` | **Accepted.** No string match is a pass/fail gate any more: an unmatched sense is a routing signal, and review judges it. |
+| Gemini 3.6 | the audit is LLM-judging-LLM with no lexicographic authority and no agreement threshold | **Accepted as a limit on §2.** Each word was judged once, not voted on. §A replaces the estimate with a measurement on real output rather than scaling the audit. |
+| Gemini 3.6 | net-zero viewport saving: the cap saves a line, `exSense` adds one back | **Accepted**; part of why §D is deferred and `exSense` is not default. |
+| Gemini 3.6 | en/zh top-N may cover different sense sets, so a cap breaks one language | **Accepted**; recorded as a constraint on any §D display bound. |
