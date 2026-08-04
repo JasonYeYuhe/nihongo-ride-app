@@ -169,6 +169,117 @@ struct AssistanceTests {
         #expect(!o.assistanceOffered, "off means off — the learner asked to be left alone")
     }
 
+    @Test("a correct key withdraws an offer that is already on screen")
+    func progressWithdrawsTheOffer() {
+        // Distinct from `progressResets`: that one only proves the COUNT restarts, and the
+        // state key would restart it anyway (any accepted key changes typedRomaji). This
+        // pins the separate flag — an offer already displayed must disappear the moment the
+        // learner works it out, or they are invited to take a lapse they no longer need.
+        var now = t0
+        let s = session(.afterStruggle, clock: { now })
+        for c in "konnichi" { _ = s.input(c) }
+        for (i, c) in ["w", "o", "w"].enumerated() {
+            now = t0.addingTimeInterval(Double(i + 1)); _ = s.input(Character(c))
+        }
+        #expect(s.assistanceOffered)
+        _ = s.input("h")
+        #expect(!s.assistanceOffered, "the offer must be withdrawn once they get it right")
+        #expect(!s.isRevealed, "and no lapse charged")
+    }
+
+    @Test("skipping a word does not carry its offer to the next one")
+    func skipClearsTheOffer() {
+        var now = t0
+        let s = session(.afterStruggle, words: [word("w1"), word("w2", kana: "ねこ")],
+                        clock: { now })
+        for c in "konnichi" { _ = s.input(c) }
+        for (i, c) in ["w", "o", "w"].enumerated() {
+            now = t0.addingTimeInterval(Double(i + 1)); _ = s.input(Character(c))
+        }
+        #expect(s.assistanceOffered)
+        s.skip()
+        #expect(!s.assistanceOffered, "a fresh word must not open with the last word's offer")
+        #expect(!s.romajiVisible)
+    }
+
+    @Test("resetStruggle withdraws a pending offer, not just the count")
+    func resetWithdrawsOffer() {
+        // The pause/background hook's whole purpose. Clearing only the count would leave a
+        // stale "Stuck?" button on screen across an interruption.
+        var now = t0
+        let s = session(.afterStruggle, clock: { now })
+        for c in "konnichi" { _ = s.input(c) }
+        for (i, c) in ["w", "o", "w"].enumerated() {
+            now = t0.addingTimeInterval(Double(i + 1)); _ = s.input(Character(c))
+        }
+        #expect(s.assistanceOffered)
+        s.resetStruggle()
+        #expect(!s.assistanceOffered)
+    }
+
+    @Test("study mode never offers either — it has nothing to offer")
+    func alwaysNeverOffers() {
+        var now = t0
+        let a = session(.always, clock: { now })
+        for c in "konnichi" { _ = a.input(c) }
+        for i in 1...6 {
+            now = t0.addingTimeInterval(Double(i))
+            _ = a.input(i % 2 == 0 ? "w" : "o")
+        }
+        #expect(!a.assistanceOffered, "the answer is already on screen")
+    }
+
+    // MARK: the conjugation drill, which has the same machinery and its own UI
+
+    private func conjSession(_ mode: AssistanceMode,
+                             clock: @escaping () -> Date) -> ConjugationSession {
+        var config = ConjugationSession.Config()
+        config.assistance = mode
+        let prompt = ConjugationPrompt(sourceID: "v1", surface: "食べる", dictKana: "たべる",
+                                       gloss: "to eat", verbClass: .ichidan,
+                                       targetForm: .polite, conjugatedKana: "たべます")
+        return ConjugationSession(prompts: [prompt], config: config, now: clock)
+    }
+
+    @Test("the conjugation drill offers and charges exactly like the ride does")
+    func conjugationOffer() {
+        var now = t0
+        let s = conjSession(.afterStruggle, clock: { now })
+        #expect(!s.romajiVisible)
+        for c in "tabe" { _ = s.input(c) }
+        for (i, c) in ["w", "o", "w"].enumerated() {
+            now = t0.addingTimeInterval(Double(i + 1)); _ = s.input(Character(c))
+        }
+        #expect(s.assistanceOffered, "three distinct refusals at the same place is stuck here too")
+        s.revealHint()
+        #expect(s.romajiVisible)
+        #expect(!s.assistanceOffered)
+    }
+
+    @Test("the conjugation drill in study mode shows the answer and never offers")
+    func conjugationAlways() {
+        var now = t0
+        let s = conjSession(.always, clock: { now })
+        #expect(s.romajiVisible)
+        for c in "tabe" { _ = s.input(c) }
+        for i in 1...6 {
+            now = t0.addingTimeInterval(Double(i)); _ = s.input(i % 2 == 0 ? "w" : "o")
+        }
+        #expect(!s.assistanceOffered)
+    }
+
+    @Test("the conjugation drill with assistance off stays silent")
+    func conjugationOff() {
+        var now = t0
+        let s = conjSession(.off, clock: { now })
+        #expect(!s.romajiVisible)
+        for c in "tabe" { _ = s.input(c) }
+        for i in 1...6 {
+            now = t0.addingTimeInterval(Double(i)); _ = s.input(i % 2 == 0 ? "w" : "o")
+        }
+        #expect(!s.assistanceOffered)
+    }
+
     @Test("a pause makes the struggle stale")
     func pauseResets() {
         var now = t0

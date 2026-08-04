@@ -41,6 +41,15 @@ final class TouchFlowTests: XCTestCase {
         // Menu → start a ride.
         let start = app.buttons["startButton"]
         XCTAssertTrue(start.waitForExistence(timeout: 10), "menu should show Start ride")
+
+        // v1.16 §A: a fresh install defaults to "when stuck", which hides the romaji this test
+        // reads to know what to type. This test reproduces the 2.1(a) rejection flow, so it
+        // has to keep asserting on a VISIBLE hint — turn hints on rather than weaken it.
+        let assistance = app.segmentedControls.matching(
+            NSPredicate(format: "label IN {'Romaji assistance', '罗马字提示'}")).firstMatch
+        XCTAssertTrue(assistance.waitForExistence(timeout: 5), "assistance picker missing")
+        assistance.buttons.element(boundBy: 0).tap()
+
         start.tap()
 
         // The on-screen keyboard must come up on its own (this was the bug).

@@ -393,8 +393,6 @@ public final class GameSession {
         index += 1
         currentMistakes = 0
         currentRevealed = false
-        struggle.reset()
-        assistanceOffered = false
         loadCurrent()
     }
 

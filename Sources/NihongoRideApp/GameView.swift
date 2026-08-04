@@ -520,23 +520,28 @@ private struct WordCard: View {
                 nextKeys
             } else if session.assistanceOffered {
                 // The learner is demonstrably stuck (distinct refusals at the same matcher
-                // state). OFFER the answer, never inject it — and price it honestly: the
-                // button goes through revealHint(), which breaks the combo, scores the word
-                // minimally and records the SRS lapse, exactly as the reveal always has.
-                Button {
-                    session.revealHint()
-                } label: {
-                    Label(language == "zh" ? "卡住了?看答案" : "Stuck? Show answer",
-                          systemImage: "lightbulb")
-                        .scaledSystemFont(compact ? 13 : 15, weight: .semibold, design: .rounded)
-                        .padding(.horizontal, 12).padding(.vertical, 6)
-                        .background(Theme.gold.opacity(0.16), in: Capsule())
-                        .foregroundStyle(Theme.gold)
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("assistanceOffer")
-                .accessibilityLabel(language == "zh" ? "看答案。这个词会计为需要复习"
-                                       : "Show the answer. This word will count as needing review")
+                // state). OFFER the answer, never inject it — and price it honestly: this
+                // goes through revealHint(), which breaks the combo, scores the word minimally
+                // and records the SRS lapse, exactly as the reveal always has.
+                //
+                // A tap gesture and NOT a Button, for the same reason the ★ above is not one:
+                // this sits on the live typing screen, where KeyCaptureView must hold first
+                // responder. A focusable control in that view tree can take it and leave the
+                // learner typing into nothing. Buttons are fine in the pause overlay, where
+                // capture is already suspended; they are not fine here.
+                Label(language == "zh" ? "卡住了?看答案" : "Stuck? Show answer",
+                      systemImage: "lightbulb")
+                    .scaledSystemFont(compact ? 13 : 15, weight: .semibold, design: .rounded)
+                    .padding(.horizontal, 12).padding(.vertical, 6)
+                    .background(Theme.gold.opacity(0.16), in: Capsule())
+                    .foregroundStyle(Theme.gold)
+                    .contentShape(Capsule())
+                    .onTapGesture { session.revealHint() }
+                    .accessibilityElement()
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("assistanceOffer")
+                    .accessibilityLabel(language == "zh" ? "看答案。这个词会计为需要复习"
+                                           : "Show the answer. This word will count as needing review")
             }
         }
     }

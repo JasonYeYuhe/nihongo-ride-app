@@ -201,6 +201,12 @@ public struct AppSettings: Codable, Equatable, Sendable {
         if !["always", "struggle", "off"].contains(s.assistance) {
             s.assistance = s.showRomajiHint ? "always" : "off"
         }
+        // Keep the legacy boolean derived from the policy, never independent of it. A fresh
+        // v1.16 install would otherwise persist showRomajiHint = true (the old default)
+        // alongside assistance = "struggle", and then BOTH repair paths — the absent-key
+        // migration and the invalid-value fallback above — would read that stale true and
+        // resurrect "always" from a blob whose owner never chose it.
+        s.showRomajiHint = (s.assistance == "always")
         return s
     }
 

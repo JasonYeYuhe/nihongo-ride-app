@@ -12,6 +12,7 @@ import RomajiKana
 struct ConjugationGameView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.scenePhase) private var scenePhase
     @State private var isPaused = false
     @State private var keyboardUp = false
 
@@ -52,6 +53,12 @@ struct ConjugationGameView: View {
             if isPaused { pauseOverlay }
         }
         .observingKeyboard($keyboardUp)
+        .onChange(of: isPaused) { _, paused in
+            if paused { model.conjugationSession?.resetStruggle() }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { model.conjugationSession?.resetStruggle() }
+        }
         // Cap Dynamic Type on the dense, fixed drill layout (mirrors GameView): it
         // still scales up to one accessibility step, but extreme sizes can't shatter
         // the HUD / card. Large-type layout is device-verified (Gate E).
@@ -324,6 +331,23 @@ private struct ConjugationCard: View {
                     .foregroundStyle(Theme.dim)
                     .accessibilityIdentifier("romajiHint")
                 nextKeys
+            } else if session.assistanceOffered {
+                // Without this the conjugation drill is permanently blind under the new
+                // default: the session runs the struggle detector and sets the flag, but no
+                // view read it, so "when stuck" hid the answer and offered no way to see it.
+                // Tap gesture rather than a Button — this is a key-capture screen.
+                Label(zh ? "卡住了?看答案" : "Stuck? Show answer", systemImage: "lightbulb")
+                    .scaledSystemFont(compact ? 13 : 15, weight: .semibold, design: .rounded)
+                    .padding(.horizontal, 12).padding(.vertical, 6)
+                    .background(Theme.gold.opacity(0.16), in: Capsule())
+                    .foregroundStyle(Theme.gold)
+                    .contentShape(Capsule())
+                    .onTapGesture { session.revealHint() }
+                    .accessibilityElement()
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("assistanceOffer")
+                    .accessibilityLabel(zh ? "看答案。这一题会计为需要复习"
+                                           : "Show the answer. This prompt will count as needing review")
             }
         }
     }

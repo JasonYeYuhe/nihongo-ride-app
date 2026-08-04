@@ -19,6 +19,7 @@ struct PracticeView: View {
 
     private let paper = Color(red: 0.96, green: 0.94, blue: 0.88)
     private let paper2 = Color(red: 0.91, green: 0.88, blue: 0.80)
+    @Environment(\.scenePhase) private var scenePhase
     private let ink = Color(red: 0.12, green: 0.11, blue: 0.10)
     private let accent = Color(red: 0.85, green: 0.29, blue: 0.26)
 
@@ -83,6 +84,12 @@ struct PracticeView: View {
             }
         }
         .onAppear { startedAt = Date(); now = Date() }
+        // Backgrounding makes a pending offer stale: the learner had all the time they wanted
+        // to think, so coming back to a "Stuck?" button from before the interruption is the
+        // app claiming to know something it no longer knows. (v1.16 §A.)
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { model.session?.resetStruggle() }
+        }
         .onReceive(ticker) { now = $0 }
         // Brief breath between passages: dim out, then back in
         .onChange(of: session.wordsCompleted) { _, _ in
@@ -105,19 +112,26 @@ struct PracticeView: View {
             if session.romajiVisible {
                 romajiGuide(session).padding(.top, 28)
             } else if session.assistanceOffered {
-                Button {
-                    session.revealHint()
-                } label: {
-                    Label(model.languageCode == "zh" ? "卡住了?看提示" : "Stuck? Show hint",
-                          systemImage: "lightbulb")
-                        .scaledSystemFont(14, weight: .semibold)
-                        .padding(.horizontal, 12).padding(.vertical, 6)
-                        .background(accent.opacity(0.12), in: Capsule())
-                        .foregroundStyle(accent)
-                }
-                .buttonStyle(.plain)
-                .padding(.top, 28)
-                .accessibilityIdentifier("practiceAssistanceOffer")
+                // Tap gesture, not a Button — see the note on the same control in GameView:
+                // a focusable control on a key-capture screen can steal first responder.
+                // The paper theme is light, so the offer uses the ink colour rather than the
+                // coral accent, which does not carry enough contrast at this size.
+                Label(model.languageCode == "zh" ? "卡住了?看提示" : "Stuck? Show hint",
+                      systemImage: "lightbulb")
+                    .scaledSystemFont(14, weight: .semibold)
+                    .padding(.horizontal, 12).padding(.vertical, 6)
+                    .background(ink.opacity(0.06), in: Capsule())
+                    .overlay(Capsule().strokeBorder(ink.opacity(0.25)))
+                    .foregroundStyle(ink.opacity(0.85))
+                    .contentShape(Capsule())
+                    .onTapGesture { session.revealHint() }
+                    .padding(.top, 28)
+                    .accessibilityElement()
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("practiceAssistanceOffer")
+                    .accessibilityLabel(model.languageCode == "zh"
+                                        ? "看提示。这一条会计为需要复习"
+                                        : "Show the hint. This will count as needing review")
             }
         }
         // Without this the Text still truncates inside the ScrollView instead of growing.
