@@ -96,10 +96,6 @@ The first draft of this section argued: completing the glosses forces a display 
 cap is what makes a per-example `exSense` field necessary. **Gemini 3.6 rejected that
 argument and the measurements agree with Gemini.**
 
-- **The gloss line has no `lineLimit`.** It wraps; it does not clip. Measured from a device
-  screenshot at 14.4 pt/character: 通じる is 1.3 lines today and would be 4.3 lines at five
-  senses, on a card about 380 pt tall with the keyboard up. That is a real cost but it is
-  "the card gets taller", not "the display breaks".
 - **The cap barely binds.** Of the 36 sampled entries needing a sense added, only **6** are
   already at three English glosses. The other 28 have two, so the addition fits inside a cap
   of three and is displayed anyway. A cap justified by 6 entries in 240 does not force a
@@ -107,6 +103,19 @@ argument and the measurements agree with Gemini.**
 - **A count cap is the wrong shape regardless.** Three long glosses wrap; five short ones fit
   on one line. If the display needs bounding it should be bounded by width, in the view, not
   by count, in the data.
+- **The three cards do not behave the same way, and the first draft treated them as if they
+  did** (Codex). There are **five** consumers of the gloss, not three:
+
+  | site | behaviour with a longer gloss |
+  |---|---|
+  | `GameView.swift:413` | no `lineLimit` → **wraps**, card grows. Measured at 14.4 pt/char: 通じる is 1.3 lines today, 4.3 at five senses, on a ~380 pt card with the keyboard up. |
+  | `ConjugationGameView.swift:266` | `.lineLimit(1).minimumScaleFactor(0.5)` → **shrinks to half size, then truncates**. This is the one that actually breaks. |
+  | `ListsView.swift:343`, `ResultsView.swift:327` | one-line glosses in lists and result chips — also affected, and unnamed in the first draft. |
+  | `PracticeView.swift:293` | **not evidence.** Practice builds synthetic passage entries whose only "meaning" is the passage translation; N3 gloss growth cannot lengthen it. |
+
+- **Six shipped entries already exceed three glosses** — 宜しく (4), 割り込む (5), 様 (4), 汚す (4),
+  苦心 (4), 隙間 (4). A global `prefix(3)` is therefore already a change to shipped N1/N2 cards,
+  which contradicts the first draft's "everything else is untouched".
 
 So `exSense` is **not** adopted as a committed design. If a display bound turns out to be
 needed, the cheap options come first: truncate in the view, or order the entry's glosses so
@@ -217,11 +226,31 @@ So condition 3 moves to the review, which actually reads the sentence.
 Condition 3 fails loudly and specifically if the model games the declaration, which is exactly
 what the previous wording assumed away.
 
+**And "routed" is not a shipping state** (Codex). Three things have to be true or "zero
+unrouted defects" measures process visibility instead of what a user sees:
+
+- the gate returns one of three dispositions — `reject`, `vocabularyGap`, `survive` — with the
+  routing decision logged, not a flat list of rejection strings as today
+  (`pilot_gate.py` currently treats any reason as rejection);
+- **a routed item may not ship as-is.** Once its sense is added in §C it re-enters generation
+  and gating and gets fresh adjudication, in the same pilot;
+- the final merged data must show **zero adjudicated sentence-versus-visible-sense defects**,
+  however the item was routed on the way there.
+
+Below the 95% honesty threshold the pilot stops and the declaration mechanism itself is the
+thing under review, not the sentences.
+
 ## 6. What I am not building, and why
 
 - **A standalone 872-word gloss audit.** The 240-word sample earned its keep — it produced §2
   and found the hazard in §3 — but scaling it is speculative work about words that may never
   need a sentence. §A measures the gap on material that actually gets generated.
+
+  **Correction to the first draft:** it claimed §A "ships on its own merits — completing the
+  glosses improves every word card for English users today, independent of N3". That is false,
+  and Codex caught it. §A is scoped to the 872 N3 entries that have **no** example; the 2,898
+  entries that DO have one are a disjoint set, overlap zero by definition. The independent
+  benefit is real but much narrower: better word cards for those 872 pending words.
 - **`exSense` as a committed field.** §3 and §D: the display argument for it did not survive
   measurement.
 - **A vocabulary-gap queue.** A queue with no resolution path is a bottleneck with a nicer
@@ -244,9 +273,35 @@ what the previous wording assumed away.
 | — | apply §5 | ship or defer |
 
 Roughly half the first draft's cost: no 872-word audit, no schema change, no display work
-before it is shown to be needed. **Any gate change still calibrates against the 779 reviewed
-sentences first** (`scripts/gate_calibration.py`) — five of eight candidate gates died there
-during v1.16, and the odds that a new one is right by intuition have not improved.
+before it is shown to be needed.
+
+**The calibration claim in the first draft does not hold, and this is the correction that
+matters most.** It said any gate change calibrates against the 779 reviewed sentences first.
+It cannot: `gate_calibration.py` builds its corpus from `id / jp / en / zh` only — those
+sentences carry **no declared sense**, so the corpus cannot test declaration matching,
+normalisation, routing, or honesty. Either the 779 get adjudicated sense labels, or a separate
+labelled calibration set is built, **before** the routing rule is allowed to judge anything.
+The five-of-eight lesson from v1.16 still stands; what changed is that this particular safety
+net does not currently reach this particular gate.
+
+### The change surface, named
+
+The first draft said `exSense` needs "a `CodingKeys` entry and nothing else". Codex verified
+that is false. Even the reduced design touches:
+
+| file | change |
+|---|---|
+| `scripts/gen_batch.py` | prompt input semantics + the fixed `id/jp/en/zh` output contract |
+| `scripts/pilot_gate.py` | a three-way result model instead of a flat reason list |
+| `scripts/apply_batch.py` | currently writes only `exJP/exEN/exZH` + `exMeta` — a declared sense is silently discarded today |
+| `scripts/gate_calibration.py` | a sense-labelled corpus |
+| — | an additive ordered-diff validator for `meanings`; none exists (`swift test` only enforces globally unique readings) |
+| `Tests/ConjugationDataTests/ExampleSentenceTests.swift` | no sense-binding coverage; its header still says "2,121 shipped example sentences" against 2,898 in the data |
+
+And **if** §D concludes a stored field is needed after all: `VocabEntry`'s stored properties,
+`CodingKeys` **and** its custom initialiser, plus `GameSession`/`ConjugationSession` exposure
+and the UI — and it must be **localised** (`exSenseEN`/`exSenseZH` or a dictionary), because an
+English-only field would render English text in Chinese mode, a new user-visible mismatch.
 
 ## 8. What the reviews changed
 
@@ -260,3 +315,13 @@ during v1.16, and the odds that a new one is right by intuition have not improve
 | Gemini 3.6 | the audit is LLM-judging-LLM with no lexicographic authority and no agreement threshold | **Accepted as a limit on §2.** Each word was judged once, not voted on. §A replaces the estimate with a measurement on real output rather than scaling the audit. |
 | Gemini 3.6 | net-zero viewport saving: the cap saves a line, `exSense` adds one back | **Accepted**; part of why §D is deferred and `exSense` is not default. |
 | Gemini 3.6 | en/zh top-N may cover different sense sets, so a cap breaks one language | **Accepted**; recorded as a constraint on any §D display bound. |
+| Codex | the three cited cards do not behave alike, and there are five gloss consumers not three | **Accepted.** §3 rewritten per site. The conjugation card is the one that truncates; Practice is not evidence at all. |
+| Codex | "§A improves every word card / the 2,898 existing examples" is false | **Accepted — a flat error.** The 872 pending and the 2,898 with examples are disjoint. Corrected in §6. |
+| Codex | six shipped N1/N2 entries already exceed three glosses, so a global `prefix(3)` is not "untouched" | **Accepted**; listed in §3 as a constraint on any display bound. |
+| Codex | "`CodingKeys` and nothing else" is false; and an English-only `exSense` breaks Chinese mode | **Accepted.** §7 now names the change surface, including localisation. |
+| Codex | the 779-sentence corpus cannot calibrate a declaration-driven route — it has no sense labels | **Accepted, and it is the most important correction.** §7 rewritten: a labelled set has to exist first. |
+| Codex | `apply_batch.py` would silently discard a declared sense | **Accepted**; in the change-surface table. |
+| Codex | "zero unrouted" measures process visibility; routed items need a lifecycle | **Accepted.** §5 now requires three explicit dispositions, forbids shipping a routed item as-is, and adds a final zero-defect condition on the merged data. |
+| Codex | the audit percentages are not reproducible from the repo | **Accepted.** The 240 judgments and their limits are committed at `docs/measurements/n3-gloss-audit-2026-08-04.json`. |
+| Codex | "full sense set" contradicts a hard cap of five | **Accepted**; the cap is gone with `exSense`. §C appends what review accepts and §D decides display separately. |
+| Codex | verdict: **rework** | **Taken.** This revision is the rework; the design is smaller than the draft it replaces. |

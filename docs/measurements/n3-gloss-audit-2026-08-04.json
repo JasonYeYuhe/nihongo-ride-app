@@ -1,0 +1,2315 @@
+{
+ "what": "gloss-coverage audit of a 240-word random sample of the 872 pending N3 words",
+ "when": "2026-08-04",
+ "how": "scripts/gloss_audit.py n3 --pending --sample 240 --chunks 6 --seed 20260804, then six agents, ONE judgment per word (no second opinion, no inter-rater number)",
+ "limits": [
+  "an LLM judging glosses another LLM wrote, with no lexicographic authority behind it",
+  "each word judged once; there is no agreement threshold and no voting",
+  "unstratified sample, while Japanese polysemy skews hard by word class",
+  "3 of 49 machine-checkable 'missing sense' proposals are actually READING changes (注ぐ つぐ vs 力を注ぐ そそぐ; 下す おろす vs 判断を下す くだす), plus 通り/予想どおり which surface matching cannot see — the list must not be applied without the reading gate"
+ ],
+ "entries": [
+  {
+   "id": "n3-b706",
+   "surface": "厄介",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "to be looked after by / impose on someone's hospitality (〜の厄介になる)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b406",
+   "surface": "名人",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "famous person, celebrity — asserted by the gloss 名人, which is the ordinary Chinese reading of those characters but not a live sense of Japanese 名人 (false friend)"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b574",
+   "surface": "相当",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "considerably, quite, a good deal (adverbial 相当疲れた) — carried by Chinese 相当, absent from 'suitable / fair'"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "to correspond to, be equivalent to (日本の〜に相当する) — neither list clearly asserts the equivalence sense"
+   ],
+   "polysemyRisk": "high"
+  },
+  {
+   "id": "n3-b393",
+   "surface": "歩道",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b290",
+   "surface": "数字",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b425",
+   "surface": "老人",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b895",
+   "surface": "どんなに",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "no matter how ... (concessive どんなに〜ても) — carried by 无论怎么, absent from 'how / how much'"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b292",
+   "surface": "筋",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "logic, coherence, reason (筋が通る / 話の筋が合わない)",
+    "line, streak, stripe (a drawn or visible line)"
+   ],
+   "polysemyRisk": "high"
+  },
+  {
+   "id": "n3-b117",
+   "surface": "鉄",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b268",
+   "surface": "自慢",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b168",
+   "surface": "招く",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b879",
+   "surface": "梅雨",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b295",
+   "surface": "正式",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b167",
+   "surface": "真っ赤",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "utter, downright, flat-out (intensifier in 真っ赤な嘘 'an outright lie')"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b118",
+   "surface": "手間",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b621",
+   "surface": "十",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b544",
+   "surface": "商品",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b225",
+   "surface": "救助",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b403",
+   "surface": "魅力",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b613",
+   "surface": "出来事",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b316",
+   "surface": "たちあがる",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "(of a computer, program, or system) to boot up, start up — carried by 启动"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "to rise up, take a stand, spring into action (差別と闘うために立ち上がる)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b228",
+   "surface": "霧",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b710",
+   "surface": "床",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b717",
+   "surface": "喜び",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b204",
+   "surface": "祝い",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "a celebratory gift or gift money (お祝いを贈る / 入学のお祝いをもらう)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b819",
+   "surface": "正午",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b394",
+   "surface": "頬",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b845",
+   "surface": "全員",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b161",
+   "surface": "吠える",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b481",
+   "surface": "下り",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b805",
+   "surface": "実行",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b555",
+   "surface": "親友",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b468",
+   "surface": "記入",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b790",
+   "surface": "今回",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b293",
+   "surface": "すなわち",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b203",
+   "surface": "いらいら",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b663",
+   "surface": "紐",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b360",
+   "surface": "鼠",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b839",
+   "surface": "成功",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b174",
+   "surface": "命じる",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "to appoint someone to a post (課長に命じられた)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b490",
+   "surface": "現金",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "mercenary / calculating, of a person who changes attitude for personal gain (現金な人)"
+   ],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b605",
+   "surface": "通じる",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "to be connected / to get through (phone line, road, electricity — 電話が通じない)",
+    "to be well-versed in, to be familiar with (日本の事情に通じている)",
+    "throughout / over the course of (一年を通じて)"
+   ],
+   "polysemyRisk": "high"
+  },
+  {
+   "id": "n3-b267",
+   "surface": "支払",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b347",
+   "surface": "図書",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b944",
+   "surface": "守る",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b476",
+   "surface": "銀",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b823",
+   "surface": "情報",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b395",
+   "surface": "本人",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b888",
+   "surface": "通り",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "as / in accordance with (言った通りに, 予想通り)",
+    "exactly so, that's right (その通り)",
+    "way, manner, method",
+    "flow of people or traffic (人通りが多い)"
+   ],
+   "polysemyRisk": "high"
+  },
+  {
+   "id": "n3-b680",
+   "surface": "方々",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "people (polite plural), read かたがた — a different reading of the same surface that an example sentence could easily use"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b412",
+   "surface": "家賃",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b106",
+   "surface": "地区",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b305",
+   "surface": "そっと",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "to leave alone / leave as it is (そっとしておく)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b787",
+   "surface": "小包",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b795",
+   "surface": "酒",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b794",
+   "surface": "作業",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b256",
+   "surface": "座席",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b675",
+   "surface": "不利",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b946",
+   "surface": "見事",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b304",
+   "surface": "そこで",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "there / at that place (そこ + で: そこで待っていて) — a very likely reading in a generated sentence"
+   ],
+   "polysemyRisk": "high"
+  },
+  {
+   "id": "n3-b467",
+   "surface": "技師",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b232",
+   "surface": "臭い",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "suspicious, fishy, shady (あいつが臭い)"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "suffixal -くさい 'smacking of, -ish' (面倒くさい, 嘘くさい, 年寄りくさい)"
+   ],
+   "polysemyRisk": "high"
+  },
+  {
+   "id": "n3-b377",
+   "surface": "等しい",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b197",
+   "surface": "あんまり",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "too cruel / unreasonable, as a predicate (それはあんまりだ)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b862",
+   "surface": "他人",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b176",
+   "surface": "木曜",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b808",
+   "surface": "姉妹",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b434",
+   "surface": "誤り",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b238",
+   "surface": "欠点",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b388",
+   "surface": "震える",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b140",
+   "surface": "墓",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b635",
+   "surface": "生",
+   "verdict": "en_covers_more",
+   "missingFromEn": [],
+   "missingFromZh": [
+    "draft beer (生ビール / ordering 生ひとつ)"
+   ],
+   "missingFromBoth": [
+    "live, not recorded (生放送, 生中継)",
+    "direct / in person / unmediated (生の声, 生で見る)"
+   ],
+   "polysemyRisk": "high"
+  },
+  {
+   "id": "n3-b221",
+   "surface": "気温",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b696",
+   "surface": "寧ろ",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b881",
+   "surface": "適度",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b884",
+   "surface": "電子",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b115",
+   "surface": "定期",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "regular, periodic, recurring at fixed intervals (定期的に, 定期健診)"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b866",
+   "surface": "担当",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b193",
+   "surface": "握手",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b257",
+   "surface": "さっぱり",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "frank, easygoing, unfussy (of personality — さっぱりした人)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b924",
+   "surface": "表面",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b266",
+   "surface": "自動",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b330",
+   "surface": "付き合い",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "dating / being in a romantic relationship",
+    "going along with someone out of social obligation (付き合いで飲む)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b927",
+   "surface": "服装",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b133",
+   "surface": "にっこり",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b216",
+   "surface": "活用",
+   "verdict": "en_covers_more",
+   "missingFromEn": [],
+   "missingFromZh": [
+    "grammatical conjugation / inflection of verbs and adjectives (the zh pair 活用/应用 reads only as 'put to good use')"
+   ],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b871",
+   "surface": "昼食",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b237",
+   "surface": "結局",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "the noun sense: the outcome / the final result (結局のところ)"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b128",
+   "surface": "どんな",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b474",
+   "surface": "許可",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b780",
+   "surface": "幸運",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b777",
+   "surface": "検査",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b364",
+   "surface": "伸びる",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "(of noodles) to go soggy / lose their texture",
+    "to be worn out / knocked flat from exhaustion (伸びてしまう)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b263",
+   "surface": "沈む",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "to feel down / be depressed in spirits (気分が沈む)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b121",
+   "surface": "同僚",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b651",
+   "surface": "始まり",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b460",
+   "surface": "方々",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b966",
+   "surface": "予報",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b527",
+   "surface": "資本",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b830",
+   "surface": "親戚",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b721",
+   "surface": "料金",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b521",
+   "surface": "次第",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "as soon as ~ (V-stem + 次第, e.g. 決まり次第ご連絡します)",
+    "gradually / little by little (次第に)",
+    "the circumstances / how things came about (こういう次第です)"
+   ],
+   "polysemyRisk": "high"
+  },
+  {
+   "id": "n3-b439",
+   "surface": "一家",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b325",
+   "surface": "ちゃんと",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b443",
+   "surface": "以来",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b960",
+   "surface": "友情",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b649",
+   "surface": "馬鹿",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "absurd / ridiculous (馬鹿な話, 馬鹿げている)",
+    "absurdly, to a ridiculous degree (ばかに暑い)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b887",
+   "surface": "道徳",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b182",
+   "surface": "要素",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b968",
+   "surface": "楽",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b796",
+   "surface": "作家",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b713",
+   "surface": "曜日",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b756",
+   "surface": "議会",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b551",
+   "surface": "信仰",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b743",
+   "surface": "裏切る",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "to let down / fail to live up to (expectations), 期待を裏切る"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b678",
+   "surface": "平均",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b938",
+   "surface": "骨",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "hard/painstaking effort (骨が折れる, 骨の折れる仕事)",
+    "the frame or ribs of an object (傘の骨)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b446",
+   "surface": "印象",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b641",
+   "surface": "願い",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "a request / a favor asked of someone (お願いがあります)"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b975",
+   "surface": "別れ",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b624",
+   "surface": "どこか",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "somehow / somewhat / something about it (adverbial use before an adjective, e.g. どこか寂しい)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b686",
+   "surface": "まさか",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "the unexpected / an emergency or unforeseen turn (まさかの時, まさかの逆転負け)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b735",
+   "surface": "市場",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b410",
+   "surface": "元",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "former / ex- (元社長, 元カレ)",
+    "the source or root of something (火の元, 情報の元)"
+   ],
+   "polysemyRisk": "high"
+  },
+  {
+   "id": "n3-b152",
+   "surface": "広がる",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b251",
+   "surface": "混雑",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b620",
+   "surface": "到着",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b280",
+   "surface": "消防",
+   "verdict": "en_covers_more",
+   "missingFromEn": [],
+   "missingFromZh": [
+    "the fire department / fire service as an organization (消防署, 消防に通報する)"
+   ],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b430",
+   "surface": "愛する",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b801",
+   "surface": "直",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b313",
+   "surface": "代理",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b387",
+   "surface": "不平",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b525",
+   "surface": "支店",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b426",
+   "surface": "論文",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b441",
+   "surface": "いつでも",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b538",
+   "surface": "使用",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b623",
+   "surface": "読書",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b731",
+   "surface": "辺り",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "approximately / around (a time, place or amount), e.g. 来週あたり, 3時あたり"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b970",
+   "surface": "率",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b496",
+   "surface": "攻撃",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b247",
+   "surface": "国境",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b873",
+   "surface": "遂に",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "in the end / after all — including the negative outcome use ついに〜なかった (never did happen), which 到底 covers but \"finally / at last\" does not"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b670",
+   "surface": "夫人",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b840",
+   "surface": "精々",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b239",
+   "surface": "見解",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b607",
+   "surface": "注ぐ",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "to devote / concentrate (effort, attention) into something — 力を注ぐ (surface read そそぐ)",
+    "to pour down / stream down, of rain or sunlight — 降り注ぐ (surface read そそぐ)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b638",
+   "surface": "日光",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b549",
+   "surface": "書類",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b737",
+   "surface": "一体",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b153",
+   "surface": "風景",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b708",
+   "surface": "唯一",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b552",
+   "surface": "人生",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b472",
+   "surface": "競技",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b301",
+   "surface": "先日",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b732",
+   "surface": "現れ",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b725",
+   "surface": "輪",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b444",
+   "surface": "いらっしゃい",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b936",
+   "surface": "方法",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b373",
+   "surface": "犯罪",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b579",
+   "surface": "尊重",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b353",
+   "surface": "眺め",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b253",
+   "surface": "最終",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b783",
+   "surface": "公平",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b800",
+   "surface": "散歩",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b694",
+   "surface": "未来",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b487",
+   "surface": "化粧",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b127",
+   "surface": "虎",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b210",
+   "surface": "男の人",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b971",
+   "surface": "流行",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "(of an illness) to spread, be prevalent, be going around — インフルエンザ／風邪が流行する"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b448",
+   "surface": "梅",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "the plum/apricot blossom itself (梅が咲く), not just the tree or fruit"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b255",
+   "surface": "桜",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b217",
+   "surface": "かわいそう",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b202",
+   "surface": "衣服",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b799",
+   "surface": "更に",
+   "verdict": "both_incomplete",
+   "missingFromEn": [
+    "even more / to a still greater degree (comparative intensifier: 更に悪くなった)"
+   ],
+   "missingFromZh": [
+    "a further one / another (additive amount: 更に一時間待った)"
+   ],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b778",
+   "surface": "建設",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b178",
+   "surface": "やがて",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b687",
+   "surface": "全く",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "standalone interjection of exasperation — 全く、もう (\"honestly!\", \"good grief\")"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b835",
+   "surface": "優れる",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "in the negative, to be unwell / not in good shape — 体調（気分）が優れない"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b693",
+   "surface": "都",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b896",
+   "surface": "半ば",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b497",
+   "surface": "強盗",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b352",
+   "surface": "なお",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b158",
+   "surface": "雰囲気",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b141",
+   "surface": "博物館",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b963",
+   "surface": "用心",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b512",
+   "surface": "叫ぶ",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b601",
+   "surface": "中央",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b112",
+   "surface": "続き",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b515",
+   "surface": "覚める",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "figurative awakening — to come to one's senses, to snap out of an illusion (迷いから覚める)"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b914",
+   "surface": "発達",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b685",
+   "surface": "孫",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b209",
+   "surface": "王",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b595",
+   "surface": "団体",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "a group/party of people as opposed to an individual — 団体旅行, 団体割引"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b596",
+   "surface": "単なる",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b284",
+   "surface": "知らせ",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "news / word received (悪い知らせ = bad news), beyond a formal notice or notification"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b719",
+   "surface": "理想",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b892",
+   "surface": "とにかく",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b751",
+   "surface": "学",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b275",
+   "surface": "順番",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b763",
+   "surface": "嫌う",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b771",
+   "surface": "苦しむ",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "to struggle with / have a hard time doing something (経営に苦しむ, 返答に苦しむ, 解釈に苦しむ)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b568",
+   "surface": "石油",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b177",
+   "surface": "物音",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b380",
+   "surface": "品",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b408",
+   "surface": "毛布",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b932",
+   "surface": "不満",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b733",
+   "surface": "暗記",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b797",
+   "surface": "ざっと",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b537",
+   "surface": "瞬間",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b592",
+   "surface": "束",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b958",
+   "surface": "文句",
+   "verdict": "en_covers_more",
+   "missingFromEn": [],
+   "missingFromZh": [
+    "phrase, wording, words, set expression (決まり文句, 歌の文句)"
+   ],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b941",
+   "surface": "迷子",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "getting lost / going missing in general, not only of a child (迷子になる, said of adults, pets, luggage)"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b742",
+   "surface": "宇宙",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b749",
+   "surface": "下す",
+   "verdict": "both_incomplete",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "to withdraw money from an account (お金を下ろす)",
+    "to drop off / let out a passenger (駅で下ろす)",
+    "to hand down a decision, judgment or order (判断を下す, 命令を下す — the くだす reading the surface form actually implies)",
+    "to grate (大根をおろす)"
+   ],
+   "polysemyRisk": "high"
+  },
+  {
+   "id": "n3-b309",
+   "surface": "大会",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b878",
+   "surface": "罪",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b414",
+   "surface": "優勝",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b682",
+   "surface": "炎",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b296",
+   "surface": "成績",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b728",
+   "surface": "我々",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b396",
+   "surface": "まあ",
+   "verdict": "both_incomplete",
+   "missingFromEn": [
+    "exclamation of surprise or admiration — 'oh my!', 'goodness!' (まあ、きれい！)"
+   ],
+   "missingFromZh": [
+    "so-so, passable, moderately (まあまあの出来)"
+   ],
+   "missingFromBoth": [],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b509",
+   "surface": "幸い",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "the polite-request formula 'I would be grateful/glad if…' (〜いただければ幸いです)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b945",
+   "surface": "万一",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b359",
+   "surface": "人間",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b389",
+   "surface": "分",
+   "verdict": "en_covers_more",
+   "missingFromEn": [],
+   "missingFromZh": [
+    "state/rate that things are going at (この分では間に合わない)",
+    "minute of time — though that sense belongs to the ふん/ぷん reading, not the ぶん given here"
+   ],
+   "missingFromBoth": [
+    "one's place, station or proper role (分をわきまえる)",
+    "the worth/amount corresponding to something (三日分, 二人分)"
+   ],
+   "polysemyRisk": "high"
+  },
+  {
+   "id": "n3-b458",
+   "surface": "確実",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b185",
+   "surface": "離婚",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b602",
+   "surface": "中心",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b321",
+   "surface": "誕生",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b400",
+   "surface": "まるで",
+   "verdict": "zh_covers_more",
+   "missingFromEn": [
+    "just like / as if — the simile use, which is the dominant one (まるで夢のようだ)"
+   ],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b523",
+   "surface": "じっと",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [
+    "staying still / motionless (じっとしていなさい)"
+   ],
+   "polysemyRisk": "medium"
+  },
+  {
+   "id": "n3-b569",
+   "surface": "説",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b466",
+   "surface": "議員",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b571",
+   "surface": "全国",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b277",
+   "surface": "常識",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b901",
+   "surface": "日",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b340",
+   "surface": "党",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b261",
+   "surface": "しかも",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b908",
+   "surface": "望み",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  },
+  {
+   "id": "n3-b508",
+   "surface": "財産",
+   "verdict": "aligned",
+   "missingFromEn": [],
+   "missingFromZh": [],
+   "missingFromBoth": [],
+   "polysemyRisk": "low"
+  }
+ ]
+}
