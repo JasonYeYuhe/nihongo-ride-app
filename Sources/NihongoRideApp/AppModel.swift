@@ -115,7 +115,10 @@ final class AppModel {
     /// One assistance policy (v1.16 §A) — replaces the hint toggle. `.afterStruggle` offers
     /// a reveal only when the learner is demonstrably stuck; taking it charges the same
     /// lapse the manual reveal always did.
-    var assistance: AssistanceMode = .always { didSet { persistSettings() } }
+    /// Initial value is overwritten by the settings load in `init`, so it never decides
+    /// anything — but it should still agree with `AppSettings.default`, or a reader
+    /// concludes the fresh-install default is "always" when it is "when stuck".
+    var assistance: AssistanceMode = .afterStruggle { didSet { persistSettings() } }
     var soundEnabled: Bool = true { didSet { persistSettings() } }
     var selectedMode: GameMode = .journey { didSet { persistSettings() } }
     /// Chosen JLPT level for new words; `nil` mixes all levels.
