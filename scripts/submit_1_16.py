@@ -30,8 +30,12 @@ per platform: mac app+widget 30, iOS app+widget 31.
 # ALREADY LIVE creates an EMPTY reviewSubmission — the attach fails on the live version, but
 # the submission container is POSTed first. ASC then refuses to cancel it ("not in cancellable
 # state") AND refuses to DELETE it (403), so it sits in READY_FOR_REVIEW forever. One such
-# orphan is stuck on MAC_OS: 14d60575-fdec-4a50-a3a0-801e3e62cc63 (created 2026-07-31), and it
-# cannot be cleaned up — which is why this is prevented rather than handled.
+# orphan was stuck on MAC_OS: 14d60575-fdec-4a50-a3a0-801e3e62cc63 (created 2026-07-31).
+#
+# RESULT (2026-08-04): the reuse path CONSUMED it. The v1.16 macOS submit printed "reusing
+# open submission 14d60575-…", added its item and submitted — so the container that could not
+# be cancelled or deleted became this release's real submission. The orphan is gone, and the
+# guard that would have created a second one never fired.
 import json, subprocess, sys, os
 
 APP = "6777469778"
