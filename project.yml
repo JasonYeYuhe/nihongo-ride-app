@@ -338,6 +338,10 @@ targets:
         SWIFT_VERSION: "6.0"
         CODE_SIGN_STYLE: Automatic
         TEST_TARGET_NAME: NihongoRideiOS
+        # Newer Xcode refuses to code-sign a test bundle with no Info.plist rather than
+        # synthesising one, so the target has to ask for it explicitly. Nothing here changed
+        # since v1.1 — the toolchain did.
+        GENERATE_INFOPLIST_FILE: "YES"
 
 schemes:
   NihongoRide:
