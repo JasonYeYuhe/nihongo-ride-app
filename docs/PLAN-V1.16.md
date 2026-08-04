@@ -133,6 +133,33 @@ changes land BEFORE the pilot, all of them because a reviewer pointed at the cod
    conservative particle-frame gate, or quarantine transitivity-pair verbs into their own
    reviewed stratum. Not "expect it and hope the reader catches it".
 
+**What the measurement did to these three.** Calibrated against the 779 sentences that
+already shipped — every one past the gate, two-lens review and adjudication, so a rule that
+rejects many of them is not stricter but wrong (`scripts/gate_calibration.py`):
+
+1. **Landed, after the matcher was fixed first.** Dropping the fallback naively rejected 63
+   of the 779 (8.1%), and all 63 were good: the matcher could not see a target finer than
+   Sudachi's C-mode split (時代 inside 学生時代, 都 inside 東京都) or one spanning tokens
+   (ご主人 → ご|主人, ごらんになる → ごらん|に|なり). Teaching it A-mode splits and contiguous
+   token runs took that to 2 (0.3%) — both compounds Sudachi never splits — so the fallback
+   was paying for imprecision it no longer prevents, and is gone.
+2. **Landed, cap = 2, after fixing the counter.** The first counter called the いる of
+   ～ています an unknown content word, i.e. it measured its own tokenizer exactly as the first
+   level gate did with た and で. Excluding 非自立 tokens, the reviewed corpus runs
+   542 / 209 / 26 / 2 sentences at 0 / 1 / 2 / 3 unknowns, so the cap is read off the data.
+3. **Killed — replaced by a review flag.** Both drafted forms failed measurement.
+   *Metadata gate:* only 38 of 2126 verbs carry a vt/vi tag, and of the 184 verbs awaiting an
+   N3 example, **zero** do — it would have reported a clean sweep while checking nothing.
+   *Quarantine:* it blocks 73 of the 779 reviewed sentences; reading all 73, every one uses
+   the right verb with the right particle, so it would cost 51 of the 872 N3 words to prevent
+   a defect class with no observed occurrence. *The を particle-frame rule is itself wrong
+   Japanese:* 「橋を渡る」, 「階段を上がる」, 「この道を通る」 are all shipped and all correct — を
+   marks the path traversed. What ships instead is a `reviewFlag` on pair-verb items, telling
+   the review stage to check particles on a verb whose partner is one character away. The
+   check goes where the demonstrated capability is; 73 out of 73 says that is the reviewer.
+
+Full new gate against the reviewed corpus: **4 rejections in 779 (0.5%)**.
+
 **The stop rule, defined before any results are seen.** The metric is the **adjudicated
 defect rate among gate survivors, counted before flagged items are removed** — the v1.15
 comparable is 59/838 ≈ 7.0% reviewer-flagged, of which the small pilot's hand-read gave

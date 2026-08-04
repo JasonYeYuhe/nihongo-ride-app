@@ -72,6 +72,56 @@ def vocab_by_surface() -> dict:
 # i.e. the gate was measuring itself rather than the sentences.
 CONTENT_POS = {"名詞", "動詞", "形容詞", "副詞", "連体詞"}
 
+# The cap on content words carrying no JLPT level at all. Derived from the reviewed corpus,
+# not chosen: see the comment at its use site and scripts/gate_calibration.py.
+UNKNOWN_CONTENT_CAP = 2
+
+
+def paired_verbs():
+    """Verbs sharing a kanji stem with another verb — FLAGGED for review, not gated.
+
+    Teaching 沈む with a sentence that uses 沈める teaches the wrong verb, and the two are one
+    character apart. The strengthened `target_tokens` already blocks that particular swap: it
+    matches exact surfaces and dictionary forms, so 沈める does not satisfy 沈む. What no gate
+    here can check is whether the sentence uses the RIGHT verb with the right particles —
+    「船を沈みました」 is ungrammatical in a way only transitivity data would catch.
+
+    That data does not exist: of 2126 verbs in the vocabulary only 38 carry a vt/vi tag, and
+    of the 184 verbs still awaiting an N3 example, **zero** do. A transitivity gate written
+    against those tags would report a clean sweep while checking nothing.
+
+    Two rules were drafted here and both were killed by measurement, which is why this is a
+    flag and not a gate:
+
+    - **Quarantine the pair verbs.** It would have blocked 73 of the 779 reviewed sentences.
+      Reading all 73: every one uses the right verb with the right particle. A quarantine
+      would cost 51 of the 872 pending N3 words to prevent a defect class with zero observed
+      occurrences in 73 reviewed samples.
+    - **Require を for transitive, forbid it for intransitive.** Wrong Japanese. 「橋を渡る」,
+      「階段を上がる」 and 「この道を通る」 are all in the shipped corpus and all correct: を marks
+      the path traversed, not an object. The rule would have failed at least three good
+      sentences out of the handful it could even reach.
+
+    What survives is: mark these items so the review stage is told to check particles on a
+    verb whose partner is one character away. The check belongs where the capability is.
+
+    Shared-kanji-stem overgenerates a little — 命じる/命ずる and 信じる/信ずる are one verb in
+    two conjugation classes, not a transitivity pair. For a review flag that is harmless.
+    """
+    import collections
+    stems = collections.defaultdict(set)
+    for path in (REPO / "Sources/VocabKit/Resources").glob("n[1-5].json"):
+        for e in json.load(path.open()):
+            if not any(p.startswith("v") or p.lower() == "verb" for p in (e.get("pos") or [])):
+                continue
+            stem = re.sub(r"[ぁ-ん]+$", "", e["surface"])
+            if stem and stem != e["surface"]:
+                stems[stem].add(e["surface"])
+    return {v for group in stems.values() if len(group) > 1 for v in group}
+
+
+PAIRED_VERBS = paired_verbs()
+
 
 def target_tokens(tokenizer, sentence, entry):
     """Tokens in `sentence` that ARE the target word, decided morphologically.
@@ -80,14 +130,42 @@ def target_tokens(tokenizer, sentence, entry):
     use 持つ (the substring gate missed it, because 持つ's stem is the single character 持 and
     single-character stems are refused as too permissive), while a sentence merely containing
     学 is not thereby about 学校.
+
+    Two false-negative classes had to be closed before the substring fallback could go
+    (measured on the 779 reviewed sentences that already shipped — 63 of them, 8.1%, failed
+    a naive one-token mode-C match, and every one was a good sentence):
+
+    - **The target is finer than mode C.** 時代 lives inside 学生時代, 世界 inside 世界中,
+      都 inside 東京都, 億 inside 一億. Mode A splits those; mode C does not.
+    - **The target spans several tokens.** ご主人 → ご|主人, けれども → けれど|も,
+      ごらんになる → ごらん|に|なり. A run of adjacent tokens is checked by concatenating
+      their surfaces, and — so inflected multi-token targets like 知らせる (知ら|せ) match —
+      by concatenating all but the last surface with the last token's dictionary form.
+
+    A run must concatenate to EXACTLY the target, which is what keeps this stricter than the
+    substring test it replaces: 学 still cannot match inside 学校.
     """
     surface, kana = entry["surface"], entry["kana"]
+    wanted = {surface, kana}
     out = []
-    for token in tokenizer.tokenize(sentence, SplitMode.C):
-        if token.surface() == surface or token.dictionary_form() == surface:
-            out.append(token)
-        elif token.surface() == kana or token.dictionary_form() == kana:
-            out.append(token)
+    for mode in (SplitMode.C, SplitMode.A):
+        tokens = list(tokenizer.tokenize(sentence, mode))
+        for i, token in enumerate(tokens):
+            if token.surface() in wanted or token.dictionary_form() in wanted:
+                out.append(token)
+                continue
+            # Multi-token target: grow a run from here, up to the longest target.
+            run = ""
+            for j in range(i, min(i + 6, len(tokens))):
+                run += tokens[j].surface()
+                if len(run) > max(len(surface), len(kana)):
+                    break
+                if run in wanted or (run[:-len(tokens[j].surface())]
+                                     + tokens[j].dictionary_form()) in wanted:
+                    out.append(tokens[i])
+                    break
+        if out:
+            break
     return out
 
 
@@ -106,7 +184,15 @@ def gates(item, entry, tokenizer, seen, levels):
     if re.search(r"[a-zA-Z0-9]", jp):
         bad.append("latin characters")
     present = target_tokens(tokenizer, jp, entry)
-    if not present and not gen.contains_target(jp, entry):
+    if not present:
+        # The substring fallback that used to sit here (`gen.contains_target`) passed any
+        # sentence merely CONTAINING the characters, which is how a sentence about 学ぶ can
+        # be filed under 学校 — and, for a transitivity pair, how a sentence using 沈める can
+        # be filed under 沈む. It was carrying real weight only because the morphological
+        # matcher was weak: on the 779 reviewed sentences it covered 63 good ones (8.1%).
+        # After teaching the matcher mode-A splits and multi-token runs that is 2 (0.3%),
+        # both compounds Sudachi never splits (一億人, 南側), so the fallback is now paying
+        # for imprecision it no longer prevents. Measured by scripts/gate_calibration.py.
         bad.append("target word absent")
     if len(en) < 4:
         bad.append("english too short")
@@ -135,6 +221,27 @@ def gates(item, entry, tokenizer, seen, levels):
             bad.append(f"vocabulary above level: {token.surface()} is N{lvl}, "
                        f"target is N{target_level}")
             break
+
+    # Words the vocabulary has never heard of. The level check above can only judge tokens it
+    # can find a level FOR, so a sentence built entirely from words outside every JLPT list
+    # sails through with nothing flagged at all — that blind spot is what this closes. The cap
+    # is measured, not chosen: across the 779 reviewed sentences the counts run 542/209/26/2
+    # for 0/1/2/3 unknowns, so >2 rejects 0.3% of material a human already approved.
+    # 非自立 tokens are skipped because the いる of ～ています is grammar, not vocabulary;
+    # counting it repeated the first level gate's mistake of measuring its own tokenizer.
+    unknown = []
+    for token in tokenizer.tokenize(jp, SplitMode.C):
+        if token.part_of_speech()[0] not in CONTENT_POS:
+            continue
+        if "非自立" in "".join(token.part_of_speech()):
+            continue
+        if token.surface() in target_surfaces or token.dictionary_form() in target_surfaces:
+            continue
+        if levels.get(token.dictionary_form()) is None and levels.get(token.surface()) is None:
+            unknown.append(token.surface())
+    if len(unknown) > UNKNOWN_CONTENT_CAP:
+        bad.append(f"{len(unknown)} unknown content words: {' '.join(unknown)}")
+
     return bad
 
 
@@ -163,7 +270,11 @@ def main() -> int:
             for r in reasons:
                 counts[r.split(":")[0]] = counts.get(r.split(":")[0], 0) + 1
         else:
-            survivors.append({**item, "surface": entry["surface"], "kana": entry["kana"]})
+            survivor = {**item, "surface": entry["surface"], "kana": entry["kana"]}
+            if entry["surface"] in PAIRED_VERBS:
+                survivor["reviewFlag"] = ("transitivity pair — check the particles: this "
+                                          "verb has a partner one character away")
+            survivors.append(survivor)
         seen.add(item.get("jp", ""))
 
     print(f"generated {len(items)} for {len(words)} words")
