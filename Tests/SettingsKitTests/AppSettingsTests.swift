@@ -157,3 +157,40 @@ struct AppSettingsTests {
         #expect(loaded.deviceID == "stable-id")
     }
 }
+
+/// v1.16 §A migration: the assistance policy replaces the hint boolean, and an EXISTING
+/// user's explicit choice must survive the upgrade exactly.
+@Suite("Assistance migration")
+struct AssistanceMigrationTests {
+
+    private func decoded(_ json: String) -> AppSettings {
+        AppSettings.decode(Data(json.utf8))!.sanitized()
+    }
+
+    @Test("a pre-v1.16 blob maps the boolean the user actually set")
+    func mapsOldBoolean() {
+        // Hints on → always; hints off → off. NOT the new default: a learner who chose
+        // blind practice must not wake up to "offer after struggle" they never asked for.
+        #expect(decoded(#"{"showRomajiHint": true}"#).assistance == "always")
+        #expect(decoded(#"{"showRomajiHint": false}"#).assistance == "off")
+    }
+
+    @Test("only a genuinely fresh install gets the new default")
+    func freshDefault() {
+        #expect(AppSettings.default.assistance == "struggle")
+    }
+
+    @Test("a garbage value sanitizes back to the boolean's meaning")
+    func sanitizes() {
+        let s = decoded(#"{"showRomajiHint": false, "assistance": "sometimes-ish"}"#)
+        #expect(s.assistance == "off")
+    }
+
+    @Test("round-trips")
+    func roundTrip() {
+        var s = AppSettings.default
+        s.assistance = "struggle"
+        let back = AppSettings.decode(s.encoded())!
+        #expect(back.assistance == "struggle")
+    }
+}

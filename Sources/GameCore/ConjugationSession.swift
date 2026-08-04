@@ -103,7 +103,7 @@ public struct ConjugationPrompt: Identifiable, Sendable, Equatable {
 public final class ConjugationSession {
     public struct Config: Sendable {
         public var languageCode: String
-        public var showRomajiHint: Bool
+        public var assistance: AssistanceMode
         /// How many prompts in a run.
         public var promptCount: Int
         /// JLPT level to draw verbs from; nil mixes all levels.
@@ -113,13 +113,13 @@ public final class ConjugationSession {
 
         public init(
             languageCode: String = "en",
-            showRomajiHint: Bool = true,
+            assistance: AssistanceMode = .always,
             promptCount: Int = 12,
             level: JLPTLevel? = nil,
             forms: [ConjugationForm] = ConjugationForm.allCases
         ) {
             self.languageCode = languageCode
-            self.showRomajiHint = showRomajiHint
+            self.assistance = assistance
             self.promptCount = promptCount
             self.level = level
             self.forms = forms.isEmpty ? ConjugationForm.allCases : forms
@@ -147,7 +147,14 @@ public final class ConjugationSession {
     public private(set) var totalKeystrokes = 0
     public private(set) var correctKeystrokes = 0
     public private(set) var isFinished = false
-    public var showRomajiHint: Bool
+    /// Same policy and same struggle machinery as GameSession (v1.16 §A). The drill's
+    /// "hint" is the conjugated answer itself, so the reveal costs are identical in kind.
+    public var assistance: AssistanceMode { config.assistance }
+    public var romajiVisible: Bool { assistance == .always || currentRevealed }
+    public private(set) var assistanceOffered = false
+    public var isRevealed: Bool { currentRevealed }
+    private var struggle = StruggleDetector()
+    private let now: () -> Date
 
     /// Optional per-prompt outcome sink (v1.8 §B). Fired once per completed or skipped
     /// prompt with the prompt and its `TypingOutcome`. Default nil = the session emits
@@ -166,10 +173,11 @@ public final class ConjugationSession {
     // MARK: Init
 
     /// Designated initializer with an explicit prompt list (used by tests + the builder).
-    public init(prompts: [ConjugationPrompt], config: Config = .init()) {
+    public init(prompts: [ConjugationPrompt], config: Config = .init(),
+                now: @escaping () -> Date = Date.init) {
         self.queue = prompts
         self.config = config
-        self.showRomajiHint = config.showRomajiHint
+        self.now = now
         loadCurrent()
     }
 
@@ -204,8 +212,18 @@ public final class ConjugationSession {
         case .rejected:
             currentMistakes += 1
             combo = 0
+            if config.assistance == .afterStruggle, !currentRevealed, let m = self.matcher {
+                let state = StruggleDetector.StateKey(
+                    wordIndex: index, kanaIndex: m.completedKanaCount, acceptedRomaji: m.typedRomaji)
+                if struggle.record(Character(character.lowercased()), at: state, time: now())
+                    >= GameSession.struggleOfferThreshold {
+                    assistanceOffered = true
+                }
+            }
         case .accepted:
             correctKeystrokes += 1
+            struggle.reset()
+            assistanceOffered = false
         case .completed:
             correctKeystrokes += 1
             completeCurrent()
@@ -216,8 +234,14 @@ public final class ConjugationSession {
     /// Reveals the answer for the current prompt: breaks the combo, scores minimally.
     public func revealHint() {
         currentRevealed = true
-        showRomajiHint = true
+        assistanceOffered = false
+        struggle.reset()
         combo = 0
+    }
+
+    public func resetStruggle() {
+        struggle.reset()
+        assistanceOffered = false
     }
 
     /// Gives up on the current prompt and advances. Emits an incomplete outcome (if a sink
@@ -263,6 +287,8 @@ public final class ConjugationSession {
         index += 1
         currentMistakes = 0
         currentRevealed = false
+        struggle.reset()
+        assistanceOffered = false
         loadCurrent()
     }
 

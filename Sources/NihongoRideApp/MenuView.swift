@@ -178,13 +178,21 @@ struct MenuView: View {
                         }
                     }
                 }
-                Toggle(isOn: $model.showRomajiHint) {
-                    Label(model.languageCode == "zh" ? "显示罗马字提示" : "Show romaji hints",
-                          systemImage: "character.cursor.ibeam")
+                // One assistance policy (v1.16 §A), replacing the hints on/off toggle. The
+                // middle option is why this is a picker: "offer help only when I'm stuck" is
+                // a real position between study mode and blind practice, and it is the one
+                // the old boolean could not express.
+                HStack(spacing: 12) {
+                    Image(systemName: "character.cursor.ibeam").accessibilityHidden(true)
+                    Picker("", selection: $model.assistance) {
+                        Text(model.languageCode == "zh" ? "总是提示" : "Hints on").tag(AssistanceMode.always)
+                        Text(model.languageCode == "zh" ? "卡住时" : "When stuck").tag(AssistanceMode.afterStruggle)
+                        Text(model.languageCode == "zh" ? "关闭" : "Off").tag(AssistanceMode.off)
+                    }
+                    .pickerStyle(.segmented)
+                    .menuControlWidth(320)
+                    .accessibilityLabel(model.languageCode == "zh" ? "罗马字提示" : "Romaji assistance")
                 }
-                .toggleStyle(.switch)
-                .tint(Theme.accent2)
-                .menuControlWidth(320)
                 Toggle(isOn: $model.soundEnabled) {
                     Label(model.languageCode == "zh" ? "音效" : "Sound effects",
                           systemImage: "speaker.wave.2.fill")

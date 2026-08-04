@@ -102,8 +102,22 @@ struct PracticeView: View {
             } else {
                 passage(session)
             }
-            if model.showRomajiHint {
+            if session.romajiVisible {
                 romajiGuide(session).padding(.top, 28)
+            } else if session.assistanceOffered {
+                Button {
+                    session.revealHint()
+                } label: {
+                    Label(model.languageCode == "zh" ? "卡住了?看提示" : "Stuck? Show hint",
+                          systemImage: "lightbulb")
+                        .scaledSystemFont(14, weight: .semibold)
+                        .padding(.horizontal, 12).padding(.vertical, 6)
+                        .background(accent.opacity(0.12), in: Capsule())
+                        .foregroundStyle(accent)
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 28)
+                .accessibilityIdentifier("practiceAssistanceOffer")
             }
         }
         // Without this the Text still truncates inside the ScrollView instead of growing.
@@ -129,7 +143,7 @@ struct PracticeView: View {
                 // The label yields before the buttons do: it is decoration, they are controls.
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
-            if !model.showRomajiHint {
+            if model.assistance == .off {
                 Text("BLIND").scaledSystemFont(11, weight: .heavy).tracking(2)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 8).padding(.vertical, 2)

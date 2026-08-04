@@ -89,12 +89,16 @@ struct GameView: View {
         // (v1.15 §D — before this, paused/sheet/backgrounded time was recorded as riding.)
         .onChange(of: isPaused) { _, paused in
             paused ? model.pauseRunClock() : model.resumeRunClock()
+            // A pause gives the learner time to think, so the struggle count restarts —
+            // the offer should mean "stuck NOW", not "was stuck before dinner". (v1.16 §A.)
+            if paused { session.resetStruggle() }
         }
         .onChange(of: addToListsID != nil) { _, open in
             open ? model.pauseRunClock() : model.resumeRunClock()
         }
         .onChange(of: scenePhase) { _, phase in
             phase == .active ? model.resumeRunClock() : model.pauseRunClock()
+            if phase != .active { session.resetStruggle() }
         }
         .onAppear {
             Sound.enabled = model.soundEnabled
@@ -192,7 +196,7 @@ struct GameView: View {
             } else {
                 Label(zh ? "Esc 暂停" : "Esc to pause", systemImage: "escape")
             }
-            if let session = model.session, !session.showRomajiHint {
+            if let session = model.session, session.assistance == .off {
                 Label(zh ? "提示已关" : "Hints off", systemImage: "eye.slash")
             }
         }
@@ -500,12 +504,31 @@ private struct WordCard: View {
                 .foregroundStyle(Theme.accent2)
                 .accessibilityIdentifier("typedRomaji")
 
-            if session.showRomajiHint {
+            if session.romajiVisible {
                 Text("→ \(session.currentRomaji ?? "")")
                     .scaledSystemFont(compact ? 14 : 18, weight: .regular, design: .monospaced)
                     .foregroundStyle(Theme.dim)
                     .accessibilityIdentifier("romajiHint")
                 nextKeys
+            } else if session.assistanceOffered {
+                // The learner is demonstrably stuck (distinct refusals at the same matcher
+                // state). OFFER the answer, never inject it — and price it honestly: the
+                // button goes through revealHint(), which breaks the combo, scores the word
+                // minimally and records the SRS lapse, exactly as the reveal always has.
+                Button {
+                    session.revealHint()
+                } label: {
+                    Label(language == "zh" ? "卡住了?看答案" : "Stuck? Show answer",
+                          systemImage: "lightbulb")
+                        .scaledSystemFont(compact ? 13 : 15, weight: .semibold, design: .rounded)
+                        .padding(.horizontal, 12).padding(.vertical, 6)
+                        .background(Theme.gold.opacity(0.16), in: Capsule())
+                        .foregroundStyle(Theme.gold)
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("assistanceOffer")
+                .accessibilityLabel(language == "zh" ? "看答案。这个词会计为需要复习"
+                                       : "Show the answer. This word will count as needing review")
             }
         }
     }

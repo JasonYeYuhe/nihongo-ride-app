@@ -53,7 +53,7 @@ public final class GameSession {
     public struct Config: Sendable {
         /// Meaning display language code (e.g. "en", "zh").
         public var languageCode: String
-        public var showRomajiHint: Bool
+        public var assistance: AssistanceMode
         /// How many new words to introduce per run.
         public var newWordCount: Int
         /// How many due review words to mix in.
@@ -73,7 +73,7 @@ public final class GameSession {
 
         public init(
             languageCode: String = "en",
-            showRomajiHint: Bool = true,
+            assistance: AssistanceMode = .always,
             newWordCount: Int = 12,
             reviewWordCount: Int = 8,
             secondsPerKanaBaseline: Double = 0.8,
@@ -83,7 +83,7 @@ public final class GameSession {
             recordsSRS: Bool = true
         ) {
             self.languageCode = languageCode
-            self.showRomajiHint = showRomajiHint
+            self.assistance = assistance
             self.newWordCount = newWordCount
             self.reviewWordCount = reviewWordCount
             self.secondsPerKanaBaseline = secondsPerKanaBaseline
@@ -112,8 +112,21 @@ public final class GameSession {
     /// Words that lapsed this run (skipped, hinted, or many typos) — worth reviewing.
     public private(set) var lapsedEntries: [VocabEntry] = []
     public private(set) var isFinished = false
-    /// Whether to show the romaji hint (toggleable mid-run).
-    public var showRomajiHint: Bool
+    /// The assistance policy for this run (v1.16 §A — one policy, not two hint systems).
+    public var assistance: AssistanceMode { config.assistance }
+    /// Whether the romaji answer is visible RIGHT NOW: study mode, or this word was revealed.
+    /// Replaces the old mutable `showRomajiHint`, which `revealHint()` flipped session-wide —
+    /// one reveal turned hints on for every later word in the run.
+    public var romajiVisible: Bool { assistance == .always || currentRevealed }
+    /// A reveal control is being offered because the learner is genuinely stuck (distinct
+    /// refusals at the same matcher state, threshold `struggleOfferThreshold`). Never in
+    /// Time Attack — the timer runs regardless, so any reading costs competitive time.
+    public private(set) var assistanceOffered = false
+    /// Whether the current word has been revealed (charged as a hint on completion).
+    public var isRevealed: Bool { currentRevealed }
+
+    static let struggleOfferThreshold = 3
+    private var struggle = StruggleDetector()
 
     // MARK: Config / dependencies
 
@@ -140,7 +153,6 @@ public final class GameSession {
         self.review = review
         self.config = config
         self.now = now
-        self.showRomajiHint = config.showRomajiHint
         self.wordStartedAt = now()
         loadCurrent()
     }
@@ -267,6 +279,14 @@ public final class GameSession {
         case .rejected:
             currentMistakes += 1
             combo = 0
+            if config.assistance == .afterStruggle, config.mode != .timeAttack, !currentRevealed,
+               let m = self.matcher {
+                let state = StruggleDetector.StateKey(
+                    wordIndex: index, kanaIndex: m.completedKanaCount, acceptedRomaji: m.typedRomaji)
+                let attempts = struggle.record(Character(character.lowercased()),
+                                               at: state, time: now())
+                if attempts >= Self.struggleOfferThreshold { assistanceOffered = true }
+            }
             // Record WHAT was refused, not just that something was (v1.15). Everything here
             // was already on hand at this instant and was being thrown away, which is why the
             // app could count a learner's mistakes but never explain one. In memory, this run
@@ -283,6 +303,8 @@ public final class GameSession {
             }
         case .accepted:
             correctKeystrokes += 1
+            struggle.reset()
+            assistanceOffered = false
         case .completed:
             correctKeystrokes += 1
             completeCurrentWord()
@@ -294,8 +316,16 @@ public final class GameSession {
     /// breaks the combo and the word will score minimally / count as an SRS lapse.
     public func revealHint() {
         currentRevealed = true
-        showRomajiHint = true
+        assistanceOffered = false
+        struggle.reset()
         combo = 0
+    }
+
+    /// A pause or backgrounding makes the struggle signal stale: the learner had time to
+    /// think, so the count starts over. (v1.16 §A.)
+    public func resetStruggle() {
+        struggle.reset()
+        assistanceOffered = false
     }
 
     /// Gives up on the current word, recording it as not completed, and advances.
@@ -363,6 +393,8 @@ public final class GameSession {
         index += 1
         currentMistakes = 0
         currentRevealed = false
+        struggle.reset()
+        assistanceOffered = false
         loadCurrent()
     }
 

@@ -112,7 +112,10 @@ final class AppModel {
             }
         }
     }
-    var showRomajiHint: Bool = true { didSet { persistSettings() } }
+    /// One assistance policy (v1.16 §A) — replaces the hint toggle. `.afterStruggle` offers
+    /// a reveal only when the learner is demonstrably stuck; taking it charges the same
+    /// lapse the manual reveal always did.
+    var assistance: AssistanceMode = .always { didSet { persistSettings() } }
     var soundEnabled: Bool = true { didSet { persistSettings() } }
     var selectedMode: GameMode = .journey { didSet { persistSettings() } }
     /// Chosen JLPT level for new words; `nil` mixes all levels.
@@ -276,7 +279,8 @@ final class AppModel {
             : AppSettings.load(from: .standard)
         settings = loaded
         languageCode = loaded.languageCode
-        showRomajiHint = loaded.showRomajiHint
+        assistance = AssistanceMode(rawValue: loaded.assistance)
+            ?? (loaded.showRomajiHint ? .always : .off)
         soundEnabled = loaded.soundEnabled
         selectedMode = GameMode(rawValue: loaded.selectedMode) ?? .journey
         selectedLevel = loaded.selectedLevel.flatMap { JLPTLevel(rawValue: $0) }
@@ -576,7 +580,7 @@ final class AppModel {
             selectedMode = .practice
             practicePassages = true
             practicePassageLevel = .hard
-            showRomajiHint = true
+            assistance = .always
             startGame()
         case "game":
             startGame()
@@ -633,7 +637,7 @@ final class AppModel {
     func startCoachDrill(for pattern: TypingPattern) {
         var config = GameSession.Config()
         config.languageCode = languageCode
-        config.showRomajiHint = showRomajiHint
+        config.assistance = assistance
 
         let built: GameSession
         if CoachContent.drillSource(for: pattern) == .passages {
@@ -752,7 +756,10 @@ final class AppModel {
     private func persistSettings() {
         guard settingsLoaded, !Screenshotter.isCapturing else { return }
         settings.languageCode = languageCode
-        settings.showRomajiHint = showRomajiHint
+        settings.assistance = assistance.rawValue
+        // Kept in sync for a downgrade to v1.15, which reads only the boolean: "always" maps
+        // to hints on, the other two to off — the closest older behaviour to each.
+        settings.showRomajiHint = assistance == .always
         settings.soundEnabled = soundEnabled
         settings.selectedMode = selectedMode.rawValue
         settings.selectedLevel = selectedLevel?.rawValue
@@ -1041,7 +1048,7 @@ final class AppModel {
         guard !resolvable.isEmpty else { return }
         var config = GameSession.Config()
         config.languageCode = languageCode
-        config.showRomajiHint = showRomajiHint
+        config.assistance = assistance
         config.mode = .journey
         session = GameSession.makeSaved(
             ids: resolvable, vocab: .shared, review: reviewStore, config: config)
@@ -1102,7 +1109,7 @@ final class AppModel {
         conjugationSession = nil   // defensive: a ride run must never route to the conjugation screen
         var config = GameSession.Config()
         config.languageCode = languageCode
-        config.showRomajiHint = showRomajiHint
+        config.assistance = assistance
         config.level = selectedLevel
         config.mode = selectedMode
         switch selectedMode {
@@ -1165,7 +1172,7 @@ final class AppModel {
         guard !resolvable.isEmpty else { return }
         var config = GameSession.Config()
         config.languageCode = languageCode
-        config.showRomajiHint = showRomajiHint
+        config.assistance = assistance
         session = GameSession.makeWeak(ids: resolvable, vocab: .shared, config: config)
         conjugationSession = nil   // defensive: a cram must not route to the conjugation screen
         runClock = RunClock(startedAt: Date())
@@ -1203,7 +1210,7 @@ final class AppModel {
     func startConjugation() {
         var config = ConjugationSession.Config()
         config.languageCode = languageCode
-        config.showRomajiHint = showRomajiHint
+        config.assistance = assistance
         config.level = selectedLevel
         config.promptCount = 12
         config.setForms(rawValues: conjugationForms)   // empty / unknown → all forms
@@ -1233,7 +1240,7 @@ final class AppModel {
             .map { (entryID: $0.sourceID, formToken: $0.formToken) }
         var config = ConjugationSession.Config()
         config.languageCode = languageCode
-        config.showRomajiHint = showRomajiHint
+        config.assistance = assistance
         config.level = nil                      // review pulls from the whole due set / pool
         config.promptCount = Self.conjugationRunSize
         let chooser = ConjugationSession.weightedFormChooser(weakBiasedPick: conjugationWeakFormPick())

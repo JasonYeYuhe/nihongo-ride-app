@@ -96,7 +96,7 @@ struct ConjugationGameView: View {
             } else {
                 Label(zh ? "Esc 暂停" : "Esc to pause", systemImage: "escape")
             }
-            if let session = model.conjugationSession, !session.showRomajiHint {
+            if let session = model.conjugationSession, session.assistance == .off {
                 Label(zh ? "提示已关" : "Hints off", systemImage: "eye.slash")
             }
         }
@@ -297,7 +297,7 @@ private struct ConjugationCard: View {
     private var answer: some View {
         let kana = Array(session.currentKana ?? "")
         let done = session.completedKanaCount
-        let hint = session.showRomajiHint
+        let hint = session.romajiVisible
         VStack(spacing: compact ? 6 : 10) {
             HStack(spacing: 2) {
                 ForEach(Array(kana.enumerated()), id: \.offset) { index, character in

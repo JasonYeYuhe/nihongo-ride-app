@@ -14,6 +14,11 @@ public struct AppSettings: Codable, Equatable, Sendable {
     // Settings that previously only lived in memory.
     public var languageCode: String          // "en" | "zh"
     public var showRomajiHint: Bool
+    /// Assistance policy raw value: "always" / "struggle" / "off" (v1.16 §A). A string, not
+    /// the GameCore enum — SettingsKit deliberately depends on nothing. Decoding maps an
+    /// ABSENT key from the old boolean, so an existing user keeps exactly the behaviour they
+    /// chose: hints on → always, hints off → off. Only a fresh install gets "struggle".
+    public var assistance: String
     public var soundEnabled: Bool
     public var selectedMode: String          // GameMode raw value
     public var selectedLevel: Int?           // JLPTLevel raw value; nil = mix all levels
@@ -67,6 +72,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     public init(
         languageCode: String = "en",
         showRomajiHint: Bool = true,
+        assistance: String = "struggle",
         soundEnabled: Bool = true,
         selectedMode: String = "journey",
         selectedLevel: Int? = 5,
@@ -86,6 +92,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     ) {
         self.languageCode = languageCode
         self.showRomajiHint = showRomajiHint
+        self.assistance = assistance
         self.soundEnabled = soundEnabled
         self.selectedMode = selectedMode
         self.selectedLevel = selectedLevel
@@ -114,7 +121,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     // Decode tolerantly: any missing key falls back to the default value, so a
     // partial / older / forward-version blob still loads instead of throwing.
     private enum CodingKeys: String, CodingKey {
-        case languageCode, showRomajiHint, soundEnabled, selectedMode, selectedLevel
+        case languageCode, showRomajiHint, assistance, soundEnabled, selectedMode, selectedLevel
         case practicePassages, practicePassageLevel
         case iCloudSyncEnabled, dueReminderEnabled, dueReminderHour, deviceID
         case hasSeenOnboarding
@@ -130,6 +137,11 @@ public struct AppSettings: Codable, Equatable, Sendable {
         let d = AppSettings.default
         languageCode = try c.decodeIfPresent(String.self, forKey: .languageCode) ?? d.languageCode
         showRomajiHint = try c.decodeIfPresent(Bool.self, forKey: .showRomajiHint) ?? d.showRomajiHint
+        // Migration: a pre-v1.16 blob has no `assistance`. Deriving from the boolean the
+        // user actually set preserves their explicit choice; "struggle" is only ever the
+        // default for a blob that never existed (fresh install → AppSettings.default).
+        assistance = try c.decodeIfPresent(String.self, forKey: .assistance)
+            ?? (showRomajiHint ? "always" : "off")
         soundEnabled = try c.decodeIfPresent(Bool.self, forKey: .soundEnabled) ?? d.soundEnabled
         selectedMode = try c.decodeIfPresent(String.self, forKey: .selectedMode) ?? d.selectedMode
         // `nil` is meaningful here (mix all levels), so distinguish an absent key
@@ -159,6 +171,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(languageCode, forKey: .languageCode)
         try c.encode(showRomajiHint, forKey: .showRomajiHint)
+        try c.encode(assistance, forKey: .assistance)
         try c.encode(soundEnabled, forKey: .soundEnabled)
         try c.encode(selectedMode, forKey: .selectedMode)
         try c.encode(selectedLevel, forKey: .selectedLevel)
@@ -185,6 +198,9 @@ public struct AppSettings: Codable, Equatable, Sendable {
         if !Self.validLanguages.contains(s.languageCode) { s.languageCode = "en" }
         s.dueReminderHour = min(23, max(0, s.dueReminderHour))
         if s.deviceID.isEmpty { s.deviceID = UUID().uuidString }
+        if !["always", "struggle", "off"].contains(s.assistance) {
+            s.assistance = s.showRomajiHint ? "always" : "off"
+        }
         return s
     }
 

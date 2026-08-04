@@ -1,4 +1,5 @@
 import SwiftUI
+import GameCore
 
 /// App settings: general preferences (now persisted across launches), iCloud
 /// sync, and the opt-in SRS due reminder. Mirrors the menu's quick toggles and
@@ -26,11 +27,19 @@ struct SettingsView: View {
                     .frame(maxWidth: 200)
                     .accessibilityLabel(zh ? "界面语言" : "Language")
                 }
-                Toggle(isOn: $model.showRomajiHint) {
+                HStack {
                     rowLabel(icon: "character.cursor.ibeam",
-                             text: zh ? "显示罗马字提示" : "Show romaji hints")
+                             text: zh ? "罗马字提示" : "Romaji assistance")
+                    Spacer()
+                    Picker("", selection: $model.assistance) {
+                        Text(zh ? "总是" : "Always").tag(AssistanceMode.always)
+                        Text(zh ? "卡住时" : "When stuck").tag(AssistanceMode.afterStruggle)
+                        Text(zh ? "关闭" : "Off").tag(AssistanceMode.off)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(maxWidth: 260)
+                    .accessibilityLabel(zh ? "罗马字提示" : "Romaji assistance")
                 }
-                .toggleStyle(.switch).tint(Theme.accent2)
                 Toggle(isOn: $model.soundEnabled) {
                     rowLabel(icon: "speaker.wave.2.fill",
                              text: zh ? "音效" : "Sound effects")

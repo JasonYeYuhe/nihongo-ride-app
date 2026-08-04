@@ -59,8 +59,23 @@ refusal. **Both reviewers rejected it independently, and the code says they are 
   practice in an app whose whole engine is spaced repetition.
 
 What the app actually has is **two hint systems that do not know about each other**: an
-always-on romaji display, and a manual reveal that costs a lapse. v1.16 replaces both with
-one setting the learner can reason about:
+always-on romaji display, and a manual reveal that costs a lapse — except that the reveal is
+reachable from **nowhere**. `revealHint()` is fully written, scored and tested, and no view
+has ever called it (checked across the whole app target: the only non-test references are
+`ConjugationSession`'s own copy). So this section is not re-timing an existing control; it is
+building the control that the engine has been waiting for. Two further facts found while
+implementing, both fixed here:
+
+- `revealHint()` set `showRomajiHint = true` **session-wide** — one reveal would have put the
+  answer on screen for every remaining word of the run. Harmless while unreachable, a bug the
+  moment the offer makes it reachable. Reveal is now per-word (`romajiVisible`).
+- Holding a key is worth **2** distinct attempts, not 1: macOS delays the first repeat by
+  375 ms (default, and only longer on slower settings), which is past any sane
+  autorepeat-detection gap; every later repeat is filtered. Only the initial delay can exceed
+  the gap, so 2 is a hard bound — which is what makes the threshold of 3 safe, and is pinned
+  by a test so nobody lowers it to 2.
+
+v1.16 replaces both systems with one setting the learner can reason about:
 
 | assistance | during a word | cost |
 |---|---|---|
@@ -74,12 +89,18 @@ OFFERED; taking it costs exactly what taking it costs today; and "Off" means off
 Definitions the reviewers asked for, because "second refusal at the same kana" was too vague
 to implement:
 
-- **Same state** = (entry-or-passage id, kana index, accepted romaji prefix). Not "the same
+- **Same state** = (queue index, kana index, accepted romaji prefix). Not "the same
   character value" — that conflates two unrelated attempts at the same kana in different
-  words. Reset on accepted progress, word change, pause, or backgrounding.
+  words. The queue index stands in for the entry-or-passage id: it is unique within a run and
+  identical in both session types, and a word repeated later in the same run is a genuinely
+  new attempt, so identity is the wrong grain anyway. Reset on accepted progress, word change,
+  pause, or backgrounding.
 - **Distinct attempts, not repeats.** The trace already documents that a held key produces
   hundreds of refusals (`MistakeEvent.swift:60-78`). The offer requires distinct physical
-  attempts; the exact threshold is measured on a device, not chosen at a desk.
+  attempts. **Threshold: 3**, derived rather than picked — it is the smallest value strictly
+  above the 2-attempt ceiling a held key can reach, so no amount of leaning on one key can
+  produce an offer, and a learner who genuinely tries three different wrong keys at one
+  position gets one.
 - Time Attack keeps its exclusion: the timer runs every 0.1 s regardless
   (`GameView.swift:108-113`), so any reading costs competitive time.
 - Refusals already reset the combo. The offer adds no second penalty.

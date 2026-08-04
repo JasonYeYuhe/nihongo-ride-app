@@ -1,4 +1,5 @@
 import SwiftUI
+import GameCore
 import SceneryKit
 import WidgetSharedKit
 #if os(macOS)
@@ -47,6 +48,10 @@ enum Screenshotter {
         let makeModel: () -> AppModel = {
             let m = AppModel.init()
             m.languageCode = shotLang
+            // Store screenshots keep showing the hints — a fresh AppModel now defaults to
+            // .afterStruggle (v1.16 §A), which would silently strip the romaji row from
+            // every captured game screen.
+            m.assistance = .always
             if forceTTS { m.ttsEnabled = true }
             return m
         }
@@ -189,7 +194,7 @@ enum Screenshotter {
         blind.selectedMode = .practice
         blind.practicePassages = true
         blind.practicePassageLevel = .hard
-        blind.showRomajiHint = false
+        blind.assistance = .off
         for _ in 0 ..< 30 {
             blind.startGame()
             if let k = blind.session?.currentKana, k.count > 40 { break }
