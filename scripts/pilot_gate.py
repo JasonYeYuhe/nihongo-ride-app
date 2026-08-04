@@ -247,6 +247,15 @@ def gates(item, entry, tokenizer, seen, levels):
     if len(unknown) > UNKNOWN_CONTENT_CAP:
         bad.append(f"{len(unknown)} unknown content words: {' '.join(unknown)}")
 
+    # The entry teaches a kanji spelling, so the sentence has to contain that kanji. Matching
+    # only kana let 「明日の天気は晴れのち雨でしょう。」 be filed under 後: the reading is right,
+    # the word is right, and the character the learner is being shown never appears. Checked
+    # per-kanji rather than on the whole surface, because verbs conjugate — requiring the
+    # literal 比べる would reject 比べます, which is 19.5% of the reviewed corpus. Per-kanji
+    # costs 0.6%, and those are 是非/大分/為/所 written in kana, which is the same defect.
+    if (kanji := re.findall(r"[一-龥]", entry["surface"])) and not all(k in jp for k in kanji):
+        bad.append(f"teaches kanji {entry['surface']} but the sentence writes it in kana")
+
     return bad
 
 

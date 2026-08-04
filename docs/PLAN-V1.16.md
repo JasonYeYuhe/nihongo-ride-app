@@ -160,6 +160,49 @@ rejects many of them is not stricter but wrong (`scripts/gate_calibration.py`):
 
 Full new gate against the reviewed corpus: **4 rejections in 779 (0.5%)**.
 
+### §B pilot 1 — the stop rule fired
+
+245 words, stratified (pair verbs / other verbs / ambiguous surfaces / single kanji /
+register-sensitive / random), seed recorded. 208 survived the gate (85%). Two-lens agent
+review across eight agents flagged 55 (26.4%), against v1.15's 7.0%.
+
+Adjudicating: **all 13 "wrong" verdicts are real**, and roughly 15–18 of the 42 lesser ones
+are too — call it 13–15%. **Both stop conditions fired**: over 10%, and false-reading and
+false-meaning defects that no deterministic gate can catch.
+
+- **False reading (2).** 年月 is taught as としつき, but 「長い年月をかけて」 is normally read
+  ねんげつ; 日本 is taught as にっぽん, but 「サッカーの日本代表」 is read にほん. The sentence is
+  correct Japanese and teaches the wrong answer to type.
+- **False meaning (6).** The word is present, correctly read, in a real sense — that the
+  displayed gloss does not include. 針 glossed "needle, pin" as a clock hand; 単位 "unit" as an
+  academic credit; 面 "face, surface" as the suffix -面 "aspect"; 切れる "to break" as a battery
+  running out; 殺す "to kill" only inside 息を殺す; 通す "to let pass" as threading a needle.
+  **This is what N3 being harder actually looks like**: N3 vocabulary is polysemous and the
+  app shows one narrow gloss.
+- **Grammar and translation (5).** 倒す transitive with no possible agent; a doubled
+  connective で; Chinese that is not grammatical Chinese (我打了扫).
+
+**Three more candidate gates were killed by calibration**, on top of the two §B already
+killed — the pattern is consistent enough to be worth naming: rules that feel obviously right
+keep turning out to measure their own tokenizer rather than the sentences.
+
+- *Compound adjacency* ("reject when the target is glued to a neighbouring noun") rejects
+  9.6% of the reviewed corpus, and reading them they are good: 校長 in 校長先生, 時代 in
+  学生時代, 世界 in 世界中. It measures compounding, not defectiveness — 面 in 安全面 and 通行 in
+  通行止め are structurally identical to those. **No deterministic gate separates them.**
+- *Suffix POS* does not fire: Sudachi tags the 面 of 安全面 普通名詞, not 接尾辞.
+- *Whole-surface kanji match* rejects 19.5% — verbs conjugate, so 比べる never appears in
+  比べます. Per-kanji costs 0.6% and catches the real defect (是非 written ぜひ, 後 written のち),
+  so **that** one landed.
+
+What did NOT change: the pipeline writes good Japanese. The defects concentrate in
+gloss-versus-sense, which is a generation-time constraint, not a gate. Pilot 2 tests exactly
+that: same 245 words, same gate, a prompt that pins the sense to the displayed gloss, forbids
+burying the word in a compound or idiom, requires the given spelling, requires the context to
+force the reading, names the Chinese false friends, and lets the model return an empty
+sentence rather than a wrong one. If pilot 2 does not clear the same bar, **N3 does not ship
+in v1.16** and the release is §A, §C and §D.
+
 **The stop rule, defined before any results are seen.** The metric is the **adjudicated
 defect rate among gate survivors, counted before flagged items are removed** — the v1.15
 comparable is 59/838 ≈ 7.0% reviewer-flagged, of which the small pilot's hand-read gave

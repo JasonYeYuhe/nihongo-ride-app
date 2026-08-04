@@ -36,6 +36,25 @@ HARD REQUIREMENTS — a sentence that breaks any of these is discarded automatic
 - Choose the kanji the meaning calls for: warmth of feeling is 温かい, temperature is 暖かい.
 - Nothing violent, sexual, medical-advisory, or reliant on a stereotype.
 - Do not merely MENTION the word (「「薬」という字」); use it in its meaning.
+- **Use the word in the SENSE the English gloss gives, and only that sense.** This is the
+  gloss the learner sees next to your sentence; a sentence using a different real sense of
+  the same word shows them a definition that does not match. 針 glossed "needle, pin" must not
+  be a clock hand; 単位 glossed "unit" must not be an academic credit; 面 glossed "face,
+  surface" must not be the suffix -面 "aspect"; 切れる glossed "to break, to snap" must not be
+  a battery running out.
+- **The word must stand on its own, not be swallowed.** Do not bury the target inside a fixed
+  compound or a frozen idiom where it stops carrying its own meaning: 殺す inside 息を殺す,
+  通行 inside 通行止め, 場 inside この場を借りて. The learner must see the word working.
+- **Write the word in the spelling given.** If you were given kanji, use the kanji; a sentence
+  that writes 後 as のち teaches nothing about the character on screen.
+- **Force the reading given by the context.** If the word has another common reading in the
+  collocation you chose, choose a different collocation: 長い年月 is usually read ねんげつ, so
+  it cannot teach としつき; サッカーの日本代表 is read にほん, so it cannot teach にっぽん.
+- The Chinese translation must be CHINESE, not the Japanese word copied over. These differ:
+  鬼 is an ogre (妖怪/鬼怪 reads as a ghost), 犯人 is the culprit (not a convict), 社長 is a
+  company president (not 社长), 装置 and 芸能 do not carry their Japanese senses in Chinese.
+- If you cannot write a natural sentence meeting all of this for a word, return
+  {"id": "...", "jp": ""} for it. An omission costs one word; a wrong sentence costs trust.
 - Transitivity must be right. Use the verb you were given, not its partner: 開ける and 開く
   are different words. An intransitive verb does not take a direct object — but を also marks
   a path that is traversed, so 「橋を渡る」, 「階段を上がる」 and 「この道を通る」 are all correct.
