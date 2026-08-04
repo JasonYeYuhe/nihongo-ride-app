@@ -1,23 +1,29 @@
 #!/usr/bin/env python3
-"""Create the 1.15 App Store versions, set What's New + review notes, then attach
-the processed builds and submit for review.
+"""Create the 1.16 App Store versions, set What's New + review notes, then attach the
+processed builds and submit for review.
 
-v1.15 headline: the Typing Coach — after a ride the app names the recurring mistake
-PATTERN (particle spelling, dropped sokuon, small-ya, Hepburn m), replays the learner's
-own keystrokes against a spelling that works, and offers a targeted drill built from the
-app's own corpus. Deterministic: no model, no network. Plus 779 new reviewed example
-sentences for N5/N4, data corrections, and a batch of recorded-number fixes (ridden-time
-WPM, midnight streaks, macOS stray-key typos, store corruption resilience).
+v1.16 headline: ONE assistance policy. The app had two hint systems that did not know about
+each other — an always-on romaji display, and a reveal that charges the honest price
+(usedHint, minimal score, SRS lapse) which no view had ever called. Now: Always / When stuck
+/ Off. "When stuck" OFFERS the answer after repeated DISTINCT attempts at the same matcher
+state (a held key can only ever produce 2, and the threshold is 3, so leaning on a key never
+triggers it), and taking the offer costs exactly what the reveal always cost. Plus word-list
+data-loss fixes, the Practice screen no longer hiding the characters you are typing, and an
+accessibility batch: fixed frames that clipped at large text sizes, and three things
+VoiceOver said that were not true.
+
+NOT in this release: N3 example sentences. The pilot's pre-committed stop rule fired twice —
+see docs/PLAN-V1.16.md §B. The Japanese the pipeline writes is fine; the blocker is that N3
+vocabulary is polysemous and the app shows one narrow gloss per entry, so a sentence using
+any other real sense reads as a wrong definition. That is a data-model fix, not a prompt.
 
 Two phases:
-  scripts/submit_1_15.py --metadata   # create versions + What's New + review detail
-  scripts/submit_1_15.py --submit     # attach VALID builds (mac 26 / iOS 27) + submit
+  scripts/submit_1_16.py --metadata   # create versions + What's New + review detail
+  scripts/submit_1_16.py --submit     # attach VALID builds (mac 28 / iOS 29) + submit
 
-NOTE: build numbers are PER-PLATFORM and collide across platforms; find_build resolves
-each candidate's platform via its preReleaseVersion. App and widget carry the SAME build
-number per platform: mac app+widget 26, iOS app+widget 27. iOS can only be created and
-submitted once iOS 1.14 leaves review (one version in review per platform) — the script
-tolerates that: each platform proceeds independently and a blocked one just reports.
+Build numbers are PER-PLATFORM and collide across platforms; find_build resolves each
+candidate's platform via its preReleaseVersion. App and widget carry the SAME build number
+per platform: mac app+widget 28, iOS app+widget 29.
 """
 # Both fixes the v1.15 script asked for are implemented below (`submittable` and
 # `open_submission`). The bug they prevent: running --submit for a platform whose version is
@@ -38,32 +44,40 @@ TARGETS = [
 # What's New — MUST NOT contain the literal star glyph (ASC rejects it).
 WHATS_NEW = {
     "en-US": (
-        "\u2022 NEW: the Typing Coach. When a mistake keeps happening across different words, "
-        "the app now names the pattern -- particles typed the way they sound (konnichiwa for "
-        "\u3053\u3093\u306b\u3061\u306f), a dropped small tsu, kya typed as ki+ya, m before b/p -- "
-        "shows YOUR keystrokes next to a spelling that works, explains the rule, and offers a "
-        "targeted drill built from words you already know. All on your device, no AI guesswork: "
-        "the app knows exactly which key was refused and why.\n"
-        "\u2022 779 new example sentences for N5 and N4 words -- generated, machine-checked "
-        "against the app's own reading and level data, then reviewed before shipping. Nearly "
-        "every N5/N4 word now has one.\n"
-        "\u2022 Recorded numbers are honest now: paused time no longer counts as riding time in "
-        "your WPM, a ride that crosses midnight keeps your streak, and on Mac, stray presses of "
-        "Tab or the arrow keys no longer count as typos or reschedule words you typed correctly.\n"
-        "\u2022 Data fixes: eleven headwords that displayed one word while grading another "
-        "(\u30b8\u30a7\u30c3\u30c8, \u3051\u308c\u3069, \u30ad\u30ed and friends), and your "
-        "review history now survives a damaged file -- one bad record costs that record, not "
-        "everything.\n"
-        "\u2022 Small honesty fixes: passage practice shows the passage's length instead of "
-        "calling everything N5, the space bar no longer silently skips your passage, and "
-        "clearing a word list asks first."
+        "\u2022 One setting for hints, instead of two that did not know about each other. "
+        "Choose Always (full romaji on screen, as before), When stuck, or Off. \"When stuck\" "
+        "shows nothing until you are genuinely stuck -- repeated different attempts at the same "
+        "character -- and then OFFERS the answer rather than handing it over. Leaning on a key "
+        "is not being stuck, so holding one will never trigger it. Taking the offer costs what "
+        "it should: the word scores minimally and comes back for review. Off means off.\n"
+        "\u2022 Your word lists are safer. A list of more than 200 saved words is no longer "
+        "silently trimmed, and if the app cannot read your lists at startup it now says so and "
+        "refuses to overwrite them instead of quietly replacing them with an empty set.\n"
+        "\u2022 Practice no longer hides the characters you are supposed to be typing on short "
+        "screens, and its text scrolls at every text size.\n"
+        "\u2022 Accessibility: at the large text sizes the Time Attack countdown no longer "
+        "truncates 35 seconds into something that reads as 3, list buttons and journal dates stop "
+        "clipping, and charts grow with their labels. VoiceOver fixes too -- the Best WPM tile "
+        "said \"em dash\" where it meant \"no rides yet\", the BEST badge in Speed trend was on "
+        "screen but unreachable, and your best speed is now the same number in the journal and "
+        "the stats."
     ),
     "zh-Hans": (
-        "\u2022 \u65b0\u589e\uff1a\u6253\u5b57\u6559\u7ec3\u3002\u5f53\u540c\u4e00\u7c7b\u9519\u8bef\u5728\u4e0d\u540c\u7684\u8bcd\u4e0a\u53cd\u590d\u51fa\u73b0\uff0c\u5e94\u7528\u4f1a\u6307\u51fa\u5177\u4f53\u6a21\u5f0f\u2014\u2014\u52a9\u8bcd\u6309\u8bfb\u97f3\u62fc\u5199\uff08\u3053\u3093\u306b\u3061\u306f \u6253\u6210 konnichiwa\uff09\u3001\u6f0f\u4fc3\u97f3\u3001\u62d7\u97f3\u62c6\u5f00\u6253\u7b49\uff0c\u628a\u4f60\u81ea\u5df1\u7684\u6309\u952e\u548c\u6b63\u786e\u6253\u6cd5\u5e76\u6392\u5c55\u793a\uff0c\u8bb2\u6e05\u89c4\u5219\uff0c\u5e76\u7528\u4f60\u5b66\u8fc7\u7684\u8bcd\u751f\u6210\u9488\u5bf9\u7ec3\u4e60\u3002\u5168\u90e8\u5728\u8bbe\u5907\u672c\u5730\u5b8c\u6210\uff0c\u4e0d\u9760 AI \u731c\u6d4b\u3002\n"
-        "\u2022 \u65b0\u589e 779 \u6761 N5/N4 \u4f8b\u53e5\u2014\u2014\u751f\u6210\u540e\u7ecf\u8bfb\u97f3\u4e0e\u7b49\u7ea7\u6821\u9a8c\uff0c\u518d\u7ecf\u4eba\u5de5\u590d\u6838\u624d\u53d1\u5e03\u3002N5/N4 \u8bcd\u6c47\u51e0\u4e4e\u5168\u90e8\u914d\u4e0a\u4e86\u4f8b\u53e5\u3002\n"
-        "\u2022 \u8bb0\u5f55\u7684\u6570\u5b57\u66f4\u8bda\u5b9e\uff1a\u6682\u505c\u65f6\u95f4\u4e0d\u518d\u8ba1\u5165 WPM\uff0c\u8de8\u5348\u591c\u7684\u9a91\u884c\u4e0d\u518d\u65ad\u8fde\u7eed\u5929\u6570\uff0cMac \u4e0a\u8bef\u6309 Tab/\u65b9\u5411\u952e\u4e0d\u518d\u8ba1\u4e3a\u6253\u9519\u3002\n"
-        "\u2022 \u6570\u636e\u4fee\u6b63\uff1a\u5341\u4e00\u4e2a\u300c\u663e\u793a\u4e00\u4e2a\u8bcd\u3001\u8003\u53e6\u4e00\u4e2a\u8bcd\u300d\u7684\u8bcd\u6761\uff1b\u590d\u4e60\u8fdb\u5ea6\u6587\u4ef6\u5c40\u90e8\u635f\u574f\u65f6\u53ea\u4e22\u635f\u574f\u7684\u90a3\u4e00\u6761\uff0c\u4e0d\u518d\u6e05\u7a7a\u5168\u90e8\u3002\n"
-        "\u2022 \u7ec6\u8282\uff1a\u6bb5\u843d\u7ec3\u4e60\u6309\u957f\u5ea6\u6807\u6ce8\u800c\u4e0d\u662f\u4e00\u5f8b N5\uff0c\u7a7a\u683c\u4e0d\u518d\u9759\u9ed8\u8df3\u8fc7\u6bb5\u843d\uff0c\u6e05\u7a7a\u8bcd\u5355\u4f1a\u5148\u786e\u8ba4\u3002"
+        "\u2022 \u63d0\u793a\u5408\u5e76\u4e3a\u4e00\u4e2a\u8bbe\u7f6e\uff1a\u603b\u662f\u3001\u5361\u4f4f\u65f6\u3001\u5173\u95ed\u3002"
+        "\u9009\u201c\u5361\u4f4f\u65f6\u201d\u65f6\u5c4f\u5e55\u4e0a\u4e0d\u663e\u793a\u4efb\u4f55\u7f57\u9a6c\u5b57\uff0c"
+        "\u53ea\u6709\u5f53\u4f60\u5728\u540c\u4e00\u4e2a\u5b57\u4e0a\u53cd\u590d\u5c1d\u8bd5\u4e0d\u540c\u6309\u952e\u65f6\uff0c"
+        "\u624d\u4f1a\u51fa\u73b0\u4e00\u4e2a\u201c\u770b\u7b54\u6848\u201d\u6309\u94ae\u2014\u2014\u662f\u63d0\u4f9b\uff0c\u4e0d\u662f\u76f4\u63a5\u7ed9\u4f60\u3002"
+        "\u6309\u7740\u4e00\u4e2a\u952e\u4e0d\u7b97\u5361\u4f4f\uff0c\u6240\u4ee5\u957f\u6309\u6c38\u8fdc\u4e0d\u4f1a\u89e6\u53d1\u5b83\u3002"
+        "\u7528\u4e86\u5c31\u8981\u4ed8\u4ee3\u4ef7\uff1a\u8be5\u8bcd\u53ea\u8ba1\u6700\u4f4e\u5206\uff0c\u5e76\u4f1a\u91cd\u65b0\u5b89\u6392\u590d\u4e60\u3002\n"
+        "\u2022 \u8bcd\u5355\u66f4\u5b89\u5168\uff1a\u8d85\u8fc7 200 \u8bcd\u7684\u6536\u85cf\u5355\u4e0d\u518d\u88ab\u9759\u9ed8\u622a\u65ad\uff1b"
+        "\u82e5\u542f\u52a8\u65f6\u8bfb\u4e0d\u51fa\u4f60\u7684\u8bcd\u5355\uff0c\u5e94\u7528\u4f1a\u660e\u786e\u544a\u77e5\u5e76\u62d2\u7edd\u8986\u5199\uff0c"
+        "\u800c\u4e0d\u662f\u9759\u9ed8\u5730\u7528\u7a7a\u5217\u8868\u66ff\u6389\u5b83\u4eec\u3002\n"
+        "\u2022 \u7ec3\u4e60\u6a21\u5f0f\u5728\u77ee\u5c4f\u5e55\u4e0a\u4e0d\u518d\u906e\u4f4f\u4f60\u8981\u6253\u7684\u5b57\uff0c\u4efb\u4f55\u5b57\u53f7\u4e0b\u90fd\u53ef\u6eda\u52a8\u3002\n"
+        "\u2022 \u65e0\u969c\u788d\uff1a\u5927\u5b57\u53f7\u4e0b\u9650\u65f6\u5012\u8ba1\u65f6\u4e0d\u518d\u628a 35 \u79d2\u622a\u6210\u770b\u4f3c 3 \u79d2\uff0c"
+        "\u5217\u8868\u6309\u94ae\u3001\u9a91\u884c\u65e5\u5fd7\u65e5\u671f\u4e0d\u518d\u88ab\u88c1\u5207\uff0c\u56fe\u8868\u968f\u6807\u7b7e\u589e\u9ad8\u3002"
+        "\u65c1\u767d\u4e5f\u4fee\u4e86\uff1a\u6700\u4f73 WPM \u5361\u7247\u5728\u65e0\u8bb0\u5f55\u65f6\u4f1a\u62a5\u201c\u7834\u6298\u53f7\u201d\uff0c"
+        "\u901f\u5ea6\u8d8b\u52bf\u91cc\u7684\u6700\u4f73\u5f92\u6807\u5728\u5c4f\u5e55\u4e0a\u5374\u8bfb\u4e0d\u5230\uff0c"
+        "\u4e14\u540c\u4e00\u4e2a\u6700\u4f73\u901f\u5ea6\u5728\u65e5\u5fd7\u548c\u7edf\u8ba1\u91cc\u5dee\u4e00\u3002"
     ),
 }
 
