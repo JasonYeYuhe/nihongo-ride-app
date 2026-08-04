@@ -32,7 +32,9 @@ struct SettingsView: View {
                              text: zh ? "罗马字提示" : "Romaji assistance")
                     Spacer()
                     Picker("", selection: $model.assistance) {
-                        Text(zh ? "总是" : "Always").tag(AssistanceMode.always)
+                        // Same three words as the menu's copy of this control. Two spellings
+                        // of one setting reads as two settings.
+                        Text(zh ? "总是提示" : "Hints on").tag(AssistanceMode.always)
                         Text(zh ? "卡住时" : "When stuck").tag(AssistanceMode.afterStruggle)
                         Text(zh ? "关闭" : "Off").tag(AssistanceMode.off)
                     }

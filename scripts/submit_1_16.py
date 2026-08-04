@@ -19,11 +19,11 @@ any other real sense reads as a wrong definition. That is a data-model fix, not 
 
 Two phases:
   scripts/submit_1_16.py --metadata   # create versions + What's New + review detail
-  scripts/submit_1_16.py --submit     # attach VALID builds (mac 28 / iOS 29) + submit
+  scripts/submit_1_16.py --submit     # attach VALID builds (mac 30 / iOS 31) + submit
 
 Build numbers are PER-PLATFORM and collide across platforms; find_build resolves each
 candidate's platform via its preReleaseVersion. App and widget carry the SAME build number
-per platform: mac app+widget 28, iOS app+widget 29.
+per platform: mac app+widget 30, iOS app+widget 31.
 """
 # Both fixes the v1.15 script asked for are implemented below (`submittable` and
 # `open_submission`). The bug they prevent: running --submit for a platform whose version is
@@ -37,8 +37,8 @@ import json, subprocess, sys, os
 APP = "6777469778"
 VERSION = "1.16"
 TARGETS = [
-    {"name": "macOS", "platform": "MAC_OS", "build_num": "28"},
-    {"name": "iOS",   "platform": "IOS",    "build_num": "29"},
+    {"name": "macOS", "platform": "MAC_OS", "build_num": "30"},
+    {"name": "iOS",   "platform": "IOS",    "build_num": "31"},
 ]
 
 # What's New — MUST NOT contain the literal star glyph (ASC rejects it).
