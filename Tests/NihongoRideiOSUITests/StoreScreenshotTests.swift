@@ -24,6 +24,11 @@ final class StoreScreenshotTests: XCTestCase {
         app.launch()
         XCTAssertTrue(app.buttons["startButton"].waitForExistence(timeout: 10))
 
+        // v1.16 §A: a fresh install defaults to "when stuck", which hides the romaji — and the
+        // walk READS that romaji to know what to type. Without this the capture would not
+        // fail, it would silently produce game and practice shots with nothing typed.
+        selectAlwaysHints(app)
+
         walk(app, lang: "en")
 
         // Flip the in-app language picker (2nd segmented control) to 中文.
@@ -31,6 +36,7 @@ final class StoreScreenshotTests: XCTestCase {
         XCTAssertTrue(language.waitForExistence(timeout: 5))
         tapWhenSettled(language.buttons.element(boundBy: 1))
 
+        selectAlwaysHints(app)   // the setting persists, but assert it rather than assume
         walk(app, lang: "zh")
     }
 
@@ -83,14 +89,30 @@ final class StoreScreenshotTests: XCTestCase {
         XCTAssertTrue(app.buttons["startButton"].waitForExistence(timeout: 8))
     }
 
+    /// Puts the assistance policy on "always", by accessibility label so it survives the row
+    /// moving. Found by label rather than index because the menu's segmented-control count
+    /// changes with the selected mode.
+    @MainActor
+    private func selectAlwaysHints(_ app: XCUIApplication) {
+        let picker = app.segmentedControls.matching(
+            NSPredicate(format: "label IN {'Romaji assistance', '罗马字提示'}")).firstMatch
+        XCTAssertTrue(picker.waitForExistence(timeout: 5), "assistance picker not found")
+        tapWhenSettled(picker.buttons.element(boundBy: 0))
+    }
+
     /// Types the leading `fraction` of the current word's remaining romaji,
     /// read from the on-screen hint.
+    ///
+    /// Fails loudly when the hint is missing. It used to return silently, which meant a
+    /// change that hid the romaji (v1.16 §A did exactly that by default) degraded every store
+    /// screenshot instead of breaking the test.
     @MainActor
     private func typeCurrentWord(_ app: XCUIApplication, hint: String, fraction: Double) {
         let hintText = app.staticTexts[hint]
-        guard hintText.waitForExistence(timeout: 5) else { return }
+        XCTAssertTrue(hintText.waitForExistence(timeout: 5),
+                      "\(hint) missing — is the assistance policy on 'always'?")
         let romaji = hintText.label.replacingOccurrences(of: "→ ", with: "")
-        guard !romaji.isEmpty else { return }
+        XCTAssertFalse(romaji.isEmpty, "\(hint) was empty")
         let count = max(1, Int(Double(romaji.count) * fraction))
         app.typeText(String(romaji.prefix(count)))
         usleep(300_000)
