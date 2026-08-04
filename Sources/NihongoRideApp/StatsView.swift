@@ -10,6 +10,13 @@ import Charts
 /// out ScrollView children), all type via `.scaledSystemFont`, charts carry a synthesized
 /// VoiceOver label+value so they aren't a wall of per-point stops.
 struct StatsView: View {
+    /// Chart heights scale with Dynamic Type. A chart is not text, but its axis labels are:
+    /// at the accessibility sizes the day and percentage marks grow into the plot area and
+    /// overlap the bars, so the picture stops being readable exactly for the reader who
+    /// enlarged it. (v1.16 §D.)
+    @ScaledMetric(relativeTo: .body) private var tallChartHeight: CGFloat = 160
+    @ScaledMetric(relativeTo: .body) private var chartHeight: CGFloat = 130
+
     @Environment(AppModel.self) private var model
     private var zh: Bool { model.languageCode == "zh" }
 
@@ -82,12 +89,16 @@ struct StatsView: View {
             tile(zh ? "累计词数" : "Words", "\(model.lifetimeWords)", "textformat.abc", Theme.accent2)
             tile(zh ? "总骑行" : "Runs", "\(model.lifetimeRuns)", "bicycle", Theme.accent)
             tile(zh ? "连续天数" : "Streak", "\(streak)", "flame.fill", streak > 0 ? Theme.accent : Theme.dim)
+            // "—" is a drawing, not a word: VoiceOver announces the glyph, so the tile told a
+            // blind user "Best WPM, em dash" where it means "you have not ridden yet".
             tile(zh ? "最佳 WPM" : "Best WPM",
-                 model.statsBestWPM.map { String(Int($0.rounded())) } ?? "—", "speedometer", Theme.gold)
+                 model.statsBestWPM.map { String(Int($0.rounded())) } ?? "—", "speedometer", Theme.gold,
+                 spoken: model.statsBestWPM == nil ? (zh ? "还没有记录" : "No rides yet") : nil)
         }
     }
 
-    private func tile(_ label: String, _ value: String, _ icon: String, _ tint: Color) -> some View {
+    private func tile(_ label: String, _ value: String, _ icon: String, _ tint: Color,
+                      spoken: String? = nil) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Image(systemName: icon).scaledSystemFont(15, weight: .semibold).foregroundStyle(tint)
                 .accessibilityHidden(true)
@@ -101,7 +112,7 @@ struct StatsView: View {
         .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(Theme.cardStroke))
         .accessibilityElement()
         .accessibilityLabel(label)
-        .accessibilityValue(value)
+        .accessibilityValue(spoken ?? value)
     }
 
     // MARK: Charts
@@ -121,7 +132,7 @@ struct StatsView: View {
                 AxisValueLabel(format: .dateTime.day(), centered: true)
             } }
             .chartYAxis { AxisMarks(position: .trailing) }
-            .frame(height: 160)
+            .frame(height: tallChartHeight)
         }
     }
 
@@ -141,7 +152,7 @@ struct StatsView: View {
                 AxisValueLabel { if let d = v.as(Double.self) { Text("\(Int(d * 100))%") } }
             } }
             .chartXAxis(.hidden)
-            .frame(height: 130)
+            .frame(height: chartHeight)
         }
     }
 
@@ -157,7 +168,7 @@ struct StatsView: View {
             }
             .chartYAxis { AxisMarks(position: .trailing) }
             .chartXAxis(.hidden)
-            .frame(height: 130)
+            .frame(height: chartHeight)
         }
     }
 

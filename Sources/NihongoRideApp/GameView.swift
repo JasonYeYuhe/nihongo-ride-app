@@ -347,6 +347,12 @@ private struct TimerBar: View {
     let remaining: Double
     let total: Double
     var language: String = "en"
+    /// The countdown's width has to grow with the text, or the digits get cut off — and a
+    /// truncated countdown does not look broken, it looks like a different number: at the
+    /// accessibility sizes "35s" rendered as "3…", i.e. the screen said three seconds
+    /// remained when thirty-five did. @ScaledMetric grows the box; minimumScaleFactor is the
+    /// backstop for the sizes where even the grown box is not enough. (v1.16 §D.)
+    @ScaledMetric(relativeTo: .body) private var readoutWidth: CGFloat = 46
 
     var body: some View {
         let fraction = total > 0 ? max(0, min(1, remaining / total)) : 0
@@ -373,7 +379,9 @@ private struct TimerBar: View {
             Text("\(Int(ceil(remaining)))s")
                 .scaledSystemFont(17, weight: .bold, design: .rounded, monospacedDigit: true)
                 .foregroundStyle(low ? Theme.accent : .white)
-                .frame(width: 46, alignment: .trailing)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .frame(width: readoutWidth, alignment: .trailing)
         }
         .frame(height: 30)
     }

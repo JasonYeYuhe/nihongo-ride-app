@@ -151,7 +151,12 @@ def target_tokens(tokenizer, sentence, entry):
     for mode in (SplitMode.C, SplitMode.A):
         tokens = list(tokenizer.tokenize(sentence, mode))
         for i, token in enumerate(tokens):
-            if token.surface() in wanted or token.dictionary_form() in wanted:
+            # normalized_form as well as dictionary_form: for the -じる/-ずる class Sudachi
+            # lemmatises 命じた to the classical 命ずる, while the app teaches 命じる. The pilot
+            # lost 命じる, 通じる and 信じる to that alone — a systematic miss for a whole verb
+            # class, not three unlucky sentences.
+            if (token.surface() in wanted or token.dictionary_form() in wanted
+                    or token.normalized_form() in wanted):
                 out.append(token)
                 continue
             # Multi-token target: grow a run from here, up to the longest target.

@@ -302,13 +302,20 @@ struct ListDetailView: View {
         }
     }
 
+    /// A fixed 48pt tall button clips its own label once the text outgrows it — the row that
+    /// says "Practice this list" becomes a row that says nothing. Scaling the minimum with the
+    /// type size keeps the tap target at 48pt at default sizes and lets it grow. (v1.16 §D.)
+    @ScaledMetric(relativeTo: .body) private var playButtonHeight: CGFloat = 48
+
     private func playButton(_ list: WordList) -> some View {
         let playable = model.playableCount(in: list) > 0
         return Button { model.startListGame(list.id) } label: {
             Label(zh ? "开始练习" : "Practice this list", systemImage: "play.fill")
                 .scaledSystemFont(16, weight: .bold)
+                .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
-                .frame(height: 48)
+                .frame(minHeight: playButtonHeight)
+                .padding(.vertical, 4)
         }
         .buttonStyle(.plain)
         .background(playable ? Theme.accent : Theme.card, in: Capsule())

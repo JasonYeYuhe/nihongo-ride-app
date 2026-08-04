@@ -36,7 +36,9 @@ HARD REQUIREMENTS — a sentence that breaks any of these is discarded automatic
 - Choose the kanji the meaning calls for: warmth of feeling is 温かい, temperature is 暖かい.
 - Nothing violent, sexual, medical-advisory, or reliant on a stereotype.
 - Do not merely MENTION the word (「「薬」という字」); use it in its meaning.
-- Transitivity must be right: an intransitive verb takes が, not を.
+- Transitivity must be right. Use the verb you were given, not its partner: 開ける and 開く
+  are different words. An intransitive verb does not take a direct object — but を also marks
+  a path that is traversed, so 「橋を渡る」, 「階段を上がる」 and 「この道を通る」 are all correct.
 
 Also give an English translation and a Simplified Chinese translation of your sentence.
 

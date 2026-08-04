@@ -213,20 +213,30 @@ struct JournalView: View {
 
     private var trendCard: some View {
         let series = model.journal.wpmSeries(last: 20)
+        // Two things this used to get wrong, both of them VoiceOver saying something the
+        // screen does not:
+        //  - The BEST badge below draws whenever a best exists, which can be after ONE ride —
+        //    but this returned "Not enough rides yet" for the whole card, and the card is an
+        //    accessibilityElement, so the badge was on screen and unreachable. The best is now
+        //    spoken whenever it is drawn; only the CHART is what needs two rides.
+        //  - Int() truncates. StatsView's tile rounds. A best of 57.8 was the same number
+        //    read as 57 here and 58 there.
+        let bestSpoken: String? = model.journal.bestWPM.map { String(Int($0.rounded())) }
         let trendSpoken: String = {
+            let bestPart = bestSpoken.map { zh ? "最佳 \($0) WPM" : "Best \($0) WPM" }
             guard series.count >= 2 else {
-                return zh ? "数据不足" : "Not enough rides yet"
+                let none = zh ? "还需要一程才能画出趋势" : "One more ride and the trend appears"
+                return [bestPart, none].compactMap { $0 }.joined(separator: zh ? "," : ". ")
             }
-            let best = Int(model.journal.bestWPM ?? 0)
-            return zh ? "最佳 \(best) WPM,最近 \(series.count) 程"
-                      : "Best \(best) WPM across your last \(series.count) rides"
+            let span = zh ? "最近 \(series.count) 程" : "across your last \(series.count) rides"
+            return [bestPart, span].compactMap { $0 }.joined(separator: zh ? "," : " ")
         }()
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
                 cardTitle(zh ? "速度趋势" : "Speed trend", icon: "gauge.with.needle", tint: Theme.done)
                 Spacer()
-                if let best = model.journal.bestWPM {
-                    Text((zh ? "最佳 " : "BEST ") + "\(Int(best)) WPM")
+                if let best = bestSpoken {
+                    Text((zh ? "最佳 " : "BEST ") + "\(best) WPM")
                         .scaledSystemFont(11, weight: .heavy, design: .rounded)
                         .tracking(1)
                         .foregroundStyle(Theme.gold)
@@ -273,6 +283,11 @@ struct JournalView: View {
         .panel(20)
     }
 
+    /// Grows the date column with Dynamic Type — see the comment at its use site.
+    @ScaledMetric(relativeTo: .caption) private var dateColumnPhone: CGFloat = 52
+    @ScaledMetric(relativeTo: .caption) private var dateColumnWide: CGFloat = 64
+    private var dateColumnWidth: CGFloat { isPhoneIdiom ? dateColumnPhone : dateColumnWide }
+
     private func rideRow(_ record: RideRecord) -> some View {
         let style = modeStyle(record.mode)
         return HStack(spacing: isPhoneIdiom ? 8 : 12) {
@@ -284,7 +299,12 @@ struct JournalView: View {
             Text(dayLabel(record.date))
                 .scaledSystemFont(12, weight: .medium, design: .rounded)
                 .foregroundStyle(.white.opacity(0.85))
-                .frame(width: isPhoneIdiom ? 52 : 64, alignment: .leading)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                // A fixed date column truncates the date itself at larger text sizes, and a
+                // truncated date reads as a different day rather than as a broken layout.
+                // Scale the column with the text; shrink the glyphs only as a last resort.
+                .frame(width: dateColumnWidth, alignment: .leading)
             Text(levelLabel(record.level))
                 .scaledSystemFont(10, weight: .heavy, design: .rounded)
                 .foregroundStyle(Theme.accent2)
