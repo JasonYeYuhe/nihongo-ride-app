@@ -1,0 +1,272 @@
+{
+ "what": "two-lens review + declaration-honesty lens over pilot 3b (245 N3 words, seed 20260804)",
+ "when": "2026-08-04",
+ "gate": {
+  "generated": 245,
+  "passed": 205,
+  "survive": 169,
+  "vocabularyGap": 36,
+  "rejected": 40
+ },
+ "review": {
+  "reviewed": 205,
+  "flagged": 46,
+  "wrong": 2,
+  "honestyJudged": 205,
+  "dishonest": 0,
+  "honestyRate": 1
+ },
+ "series": {
+  "pilot1": {
+   "flagged": 55,
+   "wrong": 13
+  },
+  "pilot2": {
+   "flagged": 53,
+   "wrong": 8
+  },
+  "pilot3": {
+   "vocabularyGap": 3,
+   "note": "prompt told the model to reuse a listed gloss; three known-dishonest declarations"
+  },
+  "pilot3b": {
+   "flagged": 46,
+   "wrong": 2,
+   "vocabularyGap": 36
+  }
+ },
+ "wrongItems": [
+  {
+   "id": "n3-b394",
+   "severity": "wrong",
+   "problem": "頬 is swallowed by the frozen idiom 頬が落ちる (= something is deliciously good). The target stops carrying its own 'cheek' meaning, and both translations render the idiom word-for-word as nonsense: en 'my cheeks were about to drop' / zh '好吃得让脸颊都要掉下来了'. A learner is taught neither the idiom nor the word."
+  },
+  {
+   "id": "n3-b684",
+   "severity": "wrong",
+   "problem": "間 appears only inside the set phrase あっという間に, where it is a bound part of a frozen idiom rather than an independent noun meaning 'space/time'. The en/zh correctly render the idiom ('in the blink of an eye' / '眨眼间'), which confirms the target never surfaces as its own word — the sentence cannot teach 間=ま."
+  }
+ ],
+ "minorItems": [
+  {
+   "id": "n3-b965",
+   "severity": "minor",
+   "problem": "「無駄な買い物はもう止す。」 In modern Japanese よす is almost always used in volitional/imperative/advisory shapes (よそう・よせ・よした方がいい); a bare plain-form declarative 「もう止す」 sounds stilted, and よす is normally written in kana — the kanji form 止す is rare. 「無駄な買い物はもうよそう」/「もう止そう」 would be natural."
+  },
+  {
+   "id": "n3-b133",
+   "severity": "minor",
+   "problem": "「赤ちゃんが可愛くにっこり笑う。」 stacks two manner adverbials on one verb; 可愛く is tacked on redundantly next to にっこり, which already carries the sweet-smile nuance. Natural: 「赤ちゃんがにっこり笑う。」"
+  },
+  {
+   "id": "n3-b247",
+   "severity": "minor",
+   "problem": "「二つの国の間の国境を越えて旅行した。」 is redundant and の-heavy — 国境 already means the border between countries, so 「二つの国の間の」 restates it. 「国境を越えて旅行した。」 is the plain sentence a learner should see."
+  },
+  {
+   "id": "n3-b810",
+   "severity": "minor",
+   "problem": "「新しい週が元気に始まりました」は不自然。元気 describes a person's condition, so using it adverbially on 週が始まる attributes liveliness to the week itself; a native would write 「新しい週が始まりました」 or 「新しい週を元気に始めました／始めましょう」."
+  },
+  {
+   "id": "n3-b747",
+   "severity": "minor",
+   "problem": "The humble set phrase is normally written お目にかかる; 「社長におめにかかる予定です」 in all kana looks unidiomatic in a full sentence (grammar and register are otherwise correct)."
+  },
+  {
+   "id": "n3-b282",
+   "severity": "minor",
+   "problem": "「女子の学生」is not idiomatic. 女子 attaches directly as a compound (女子学生) or stands alone (このクラスは女子が多いです). Inserting の between 女子 and 学生 reads as learner-generated Japanese."
+  },
+  {
+   "id": "n3-b460",
+   "severity": "minor",
+   "problem": "Register mismatch inside one sentence: 方々 is the honorific plural for people, but the benefactive is the plain くれました. With 方々 a native would use 集まってくださいました (or drop the honorific: 大勢の人が集まってくれました)."
+  },
+  {
+   "id": "n3-b600",
+   "severity": "minor",
+   "problem": "Bare 茶を飲みました is stiff; in ordinary modern Japanese the drink is お茶 (食後に温かいお茶を飲みました). 茶 without お survives mainly in compounds (茶を濁す, 日本茶). Kanji choice 温かい is correct."
+  },
+  {
+   "id": "n3-b157",
+   "severity": "minor",
+   "problem": "Ordering makes 墨をつけて dangle: the thing being dipped (筆) is only introduced afterwards. Natural order is 大きな筆に墨をつけて文字を書きました."
+  },
+  {
+   "id": "n3-b314",
+   "severity": "minor",
+   "problem": "For a cherished personal object the noun is 宝物: 祖父からもらった宝物です. Bare 宝 in this frame sounds like 'treasure' in the buried-riches sense and is unnatural here."
+  },
+  {
+   "id": "n3-b768",
+   "severity": "minor",
+   "problem": "強い鎖 is a poor collocation; 強い describes force (強い風), not the sturdiness of an object. Native choice is 丈夫な鎖 or 太い鎖."
+  },
+  {
+   "id": "n3-b154",
+   "severity": "minor",
+   "problem": "「買い物をした商品」 is a broken relative clause — 買い物をする takes no direct object, so 商品 cannot be relativized out of it. Should be 買った商品 (or 買った物)."
+  },
+  {
+   "id": "n3-b340",
+   "severity": "minor",
+   "problem": "新しい党が作られる予定だ is stiff/awkward for party formation; Japanese uses 新しい党ができる予定だ or 新党が結成される予定だ."
+  },
+  {
+   "id": "n3-b470",
+   "severity": "minor",
+   "problem": "Category mismatch: 駅の場所 (a place) is equated with 進んでいる方向 (a direction). Natural phrasing drops 場所: 駅は進んでいる方向と逆ですよ."
+  },
+  {
+   "id": "n3-b682",
+   "severity": "minor",
+   "problem": "「赤く大きな炎」 stacks an i-adjective in 連用形 onto a na-adjective — a literary linking style that reads stiff for a learner sentence. Natural plain Japanese would be 「赤くて大きな炎」 or 「大きな赤い炎」."
+  },
+  {
+   "id": "n3-b234",
+   "severity": "minor",
+   "problem": "「買い物の人で混んでいる」 is not idiomatic; a native speaker would say 「買い物客で混んでいる」 (or 「買い物をする人たちで混んでいる」). Understandable but awkward."
+  },
+  {
+   "id": "n3-b253",
+   "severity": "minor",
+   "problem": "「最終の電車」 is unnatural — the fixed compound is 最終電車 (or 終電) with no の. The の insertion makes the collocation sound non-native."
+  },
+  {
+   "id": "n3-b216",
+   "severity": "minor",
+   "problem": "en misattaches the locative: '...the knowledge I learned at work' makes 仕事で modify 覚えた, but the jp has 仕事で活用したい (use it AT WORK) and 覚えた知識 (knowledge learned, place unspecified). Should be 'I want to put the knowledge I've learned to practical use at work.' zh gets the scope right, so en and zh disagree."
+  },
+  {
+   "id": "n3-b313",
+   "severity": "minor",
+   "problem": "部長 is rendered 'general manager' in en (部長 is a department/division manager) and copied verbatim as 部长 in zh, where standard Chinese 部长 means a government minister, not a company post. Use 'department manager' / 经理(部门经理). The two translations also disagree with each other about the rank."
+  },
+  {
+   "id": "n3-b763",
+   "severity": "minor",
+   "problem": "zh 「猫不喜欢身体弄湿」 is ungrammatical — 弄湿 is transitive and needs 被 or a different frame (猫讨厌身体被弄湿 / 猫不喜欢身上弄湿). en is fine."
+  },
+  {
+   "id": "n3-b562",
+   "severity": "minor",
+   "problem": "zh 「敷衍过去」 carries the connotation of fobbing someone off / doing a task perfunctorily, which is not what 済ませる means here. The neutral 'make do' sense (matched correctly by en) is 凑合 — e.g. 午饭吃面包凑合一下."
+  },
+  {
+   "id": "n3-b174",
+   "severity": "minor",
+   "problem": "en invents an object: the jp has no addressee, but en says 'ordered us to clean the room.' zh 「队长命令打扫房间」 is the opposite problem — Chinese 命令 needs a person object, so it reads as truncated. Also 隊長 (military squad leader) is above-N3 and an odd setting for a general-audience app."
+  },
+  {
+   "id": "n3-b129",
+   "severity": "minor",
+   "problem": "Both translations are literal calques that are unidiomatic. en 'Flush the toilet water' should be 'I flush the toilet'; zh 「冲马桶的水」 should be 冲马桶 (the 水 is not said in Chinese)."
+  },
+  {
+   "id": "n3-b956",
+   "severity": "minor",
+   "problem": "en 'the used book' reads in English as a secondhand book, not 使った本 = 'the book I (had) used'. Reword as 'I put the book I used back on the shelf.' zh 用过的书 is fine."
+  },
+  {
+   "id": "n3-b333",
+   "severity": "minor",
+   "problem": "荷物 is rendered as luggage/行李 in both en and zh, but you do not pack luggage into a 鞄 — here 荷物 is 'things/belongings'. 'I packed a lot of things into the bag' / 往包里装了很多东西."
+  },
+  {
+   "id": "n3-b175",
+   "severity": "minor",
+   "problem": "肯定的 is N2-level vocabulary and, in the sense 'affirmative', collocates oddly with 面; the natural N3 phrasing for this sentence is いい面 / 良い面. The surrounding vocabulary should sit at or below the target's level."
+  },
+  {
+   "id": "n3-b834",
+   "severity": "minor",
+   "problem": "末 appears only inside the fixed 〜た末に pattern (itself N2 grammar), where it functions as a grammatical suffix meaning 'after (much) ...' rather than as the standalone noun 'the end of' that the item teaches. A sentence like 今月の末に引っ越します would show the noun carrying its own meaning."
+  },
+  {
+   "id": "n3-b479",
+   "severity": "minor",
+   "problem": "腹が減った + 飯 + 食う stacks three rough, masculine-colloquial words, but en 'I'm hungry, so I'll eat a meal' and zh 「我肚子饿了，所以吃个饭」 are register-neutral, so a learner gets no signal that this sentence is inappropriate in polite company."
+  },
+  {
+   "id": "n3-b619",
+   "severity": "minor",
+   "problem": "en is a literal calque: ゴールに入った means they crossed the finish line, but \"entered the goal\" reads in English as a ball going into a soccer goal. The zh (\"冲过了终点\") gets it right, so en and zh disagree about what happened."
+  },
+  {
+   "id": "n3-b918",
+   "severity": "minor",
+   "problem": "逃げた犯人 is the culprit who fled (the scene), but en \"the escaped criminal\" and zh \"逃跑的罪犯\" both read as a convict who escaped custody — the exact culprit/convict divergence to avoid. Better: \"the culprit who ran away\" / \"逃走的作案者\"."
+  },
+  {
+   "id": "n3-b462",
+   "severity": "minor",
+   "problem": "zh 修长的草 is wrong: 修长 means slender/willowy (of a figure), not overgrown. 伸びた草 = 长长的草 / 长高了的草. The en (\"overgrown grass\") is correct, so zh diverges."
+  },
+  {
+   "id": "n3-b938",
+   "severity": "minor",
+   "problem": "足の骨 is rendered as \"a bone in my leg\" in en but 脚骨 (foot bone) in zh — the two translations point at different body parts. Also 折断了脚骨 is unidiomatic Chinese; 摔断了腿 / 腿骨骨折 is natural."
+  },
+  {
+   "id": "n3-b693",
+   "severity": "minor",
+   "problem": "都 (みやこ) means 'capital', but en flattens it to 'a beautiful city' and zh to '美丽都市'. The zh in particular reuses the character 都 in the Chinese compound 都市 ('metropolis'), where the sense diverges from Japanese みやこ. Neither translation lets the learner see the taught meaning."
+  },
+  {
+   "id": "n3-b171",
+   "severity": "minor",
+   "problem": "zh renders 土産 as 特产 ('local specialty product'), which shifts the sense away from the gift/souvenir-you-bring-back meaning the app teaches. '作为旅行的特产' also reads oddly — 伴手礼/纪念品 is the matching Chinese notion."
+  },
+  {
+   "id": "n3-b827",
+   "severity": "minor",
+   "problem": "zh '重重地摔到了屁股' is not idiomatic Chinese — 摔到 does not take one's own body part this way. Natural phrasing would be '屁股重重地着地了' or '把屁股摔得很疼'."
+  },
+  {
+   "id": "n3-b690",
+   "severity": "minor",
+   "problem": "en 'Protect one's own body from danger' is stilted and pushes 身 toward the literal 'body' sense; here 身 means 'oneself', so 'protect yourself from danger' is the accurate reading (which is what the zh correctly gives, 保护自己)."
+  },
+  {
+   "id": "n3-b751",
+   "severity": "minor",
+   "problem": "en 'he has a lot of learning' is unidiomatic English for 学がある; 'he is well-educated / he is a learned man' is the sense (the zh 很有学问 gets it right)."
+  },
+  {
+   "id": "n3-b569",
+   "severity": "minor",
+   "problem": "Surrounding vocabulary sits above N3: 異なる and 主張されている (passive) are N2-level, making this heavier than the 'plain, simple sentence' target. The zh '学者们主张着不同的学说' is also unnatural — 主张 does not take the progressive 着."
+  },
+  {
+   "id": "n3-b381",
+   "severity": "minor",
+   "problem": "en 'Eerie voices were heard from the night forest' is awkward and mis-numbers 声 as plural; the jp is a first-person perception of a single voice ('I heard an eerie voice from the forest at night')."
+  },
+  {
+   "id": "n3-b953",
+   "severity": "minor",
+   "problem": "申し訳 appears only inside the frozen apology formula 申し訳ありません, where it no longer functions as the noun 'apology/excuse' the app glosses. The en ('I am truly sorry') and zh ('真是非常抱歉') contain no trace of the glossed meaning, so the learner sees no link between word and gloss. Near-unavoidable for this entry, but worth noting as a teaching-fit weakness."
+  },
+  {
+   "id": "n3-b444",
+   "severity": "minor",
+   "problem": "zh renders the greeting as 欢迎光临, which in Chinese is a shop/restaurant formula addressed to customers. The jp (よく来たね、どうぞ中へいらっしゃい) is a host welcoming a visitor into a home; 你来啦，快请进 or 欢迎欢迎，快请进 fits the register. en 'Welcome' is fine."
+  },
+  {
+   "id": "n3-b577",
+   "severity": "minor",
+   "problem": "en 'I left the book as it is on the desk' mixes tenses and reads awkwardly; 本をそのまま机に置いておいた is 'I left the book on the desk just as it was'. Understandable but ungrammatical as written, and the misplaced 'as it is' obscures what そのまま modifies."
+  },
+  {
+   "id": "n3-b872",
+   "severity": "minor",
+   "problem": "zh '暑假期间打算去进行长期出国旅行' is stilted (去进行…旅行) and adds 打算 ('plan to'), which is not in the jp plain 行く. Natural rendering: 暑假要去长期的国外旅行。"
+  },
+  {
+   "id": "n3-b599",
+   "severity": "minor",
+   "problem": "zh copies 知事 unchanged ('新任知事发表了政策'). Modern Chinese has no live 知事 in this sense (it survives only as an archaism), so without a prefecture name it reads as opaque rather than 'prefectural governor'; 新任县知事 / 新上任的知事（相当于省长）would carry the glossed meaning. en is accurate."
+  }
+ ]
+}
