@@ -1,0 +1,516 @@
+[
+  {
+    "id": "n3-b152",
+    "jp": "目の前に青い海が広がる。",
+    "en": "The blue sea stretches out before my eyes.",
+    "zh": "蓝色的大海在眼前展开。",
+    "sense": "to stretch out or open up",
+    "surface": "広がる",
+    "kana": "ひろがる",
+    "reviewFlag": "transitivity pair — check the particles: this verb has a partner one character away",
+    "senseListed": false,
+    "entryGlosses": [
+      "to spread",
+      "to extend"
+    ]
+  },
+  {
+    "id": "n3-b263",
+    "jp": "太陽が西の空に沈む。",
+    "en": "The sun sets in the western sky.",
+    "zh": "太阳在西边的天空落下。",
+    "sense": "to set below the horizon",
+    "surface": "沈む",
+    "kana": "しずむ",
+    "reviewFlag": "transitivity pair — check the particles: this verb has a partner one character away",
+    "senseListed": false,
+    "entryGlosses": [
+      "to sink",
+      "to go under"
+    ]
+  },
+  {
+    "id": "n3-b956",
+    "jp": "使った本を棚に戻す。",
+    "en": "I put the used book back on the shelf.",
+    "zh": "我把用过的书放回书架上。",
+    "sense": "to return something to its place",
+    "surface": "戻す",
+    "kana": "もどす",
+    "reviewFlag": "transitivity pair — check the particles: this verb has a partner one character away",
+    "senseListed": false,
+    "entryGlosses": [
+      "to restore",
+      "to put back"
+    ]
+  },
+  {
+    "id": "n3-b965",
+    "jp": "無駄な買い物はもう止す。",
+    "en": "I will quit making wasteful purchases.",
+    "zh": "我不再进行浪费的购物了。",
+    "sense": "to stop or refrain from doing",
+    "surface": "止す",
+    "kana": "よす",
+    "reviewFlag": "transitivity pair — check the particles: this verb has a partner one character away",
+    "senseListed": false,
+    "entryGlosses": [
+      "to cease",
+      "to abolish"
+    ]
+  },
+  {
+    "id": "n3-b691",
+    "jp": "彼の心は希望に満ちている。",
+    "en": "His heart is filled with hope.",
+    "zh": "他的心中充满了希望。",
+    "sense": "to be filled with",
+    "surface": "満ちる",
+    "kana": "みちる",
+    "reviewFlag": "transitivity pair — check the particles: this verb has a partner one character away",
+    "senseListed": false,
+    "entryGlosses": [
+      "to be full",
+      "to mature"
+    ]
+  },
+  {
+    "id": "n3-b764",
+    "jp": "パソコンの電池が切れる。",
+    "en": "The computer battery runs out.",
+    "zh": "电脑的电池没电了。",
+    "sense": "to run out or be exhausted",
+    "surface": "切れる",
+    "kana": "きれる",
+    "reviewFlag": "transitivity pair — check the particles: this verb has a partner one character away",
+    "senseListed": false,
+    "entryGlosses": [
+      "to break",
+      "to snap"
+    ]
+  },
+  {
+    "id": "n3-b586",
+    "jp": "強風が庭の大きな木を倒した。",
+    "en": "Strong winds knocked down a large tree in the garden.",
+    "zh": "强风刮倒了花园里的大树。",
+    "sense": "to knock down or cause to fall",
+    "surface": "倒す",
+    "kana": "たおす",
+    "reviewFlag": "transitivity pair — check the particles: this verb has a partner one character away",
+    "senseListed": false,
+    "entryGlosses": [
+      "to throw down",
+      "to defeat"
+    ]
+  },
+  {
+    "id": "n3-b343",
+    "jp": "針に糸を通すのは難しい。",
+    "en": "It is difficult to thread a needle.",
+    "zh": "把线穿过针眼很困难。",
+    "sense": "to pass something through",
+    "surface": "通す",
+    "kana": "とおす",
+    "reviewFlag": "transitivity pair — check the particles: this verb has a partner one character away",
+    "senseListed": false,
+    "entryGlosses": [
+      "to let pass",
+      "to overlook",
+      "to continue"
+    ]
+  },
+  {
+    "id": "n3-b133",
+    "jp": "赤ちゃんが可愛くにっこり笑う。",
+    "en": "The baby smiles sweetly and cutely.",
+    "zh": "婴儿可爱地甜甜微笑。",
+    "sense": "with a sweet smile",
+    "surface": "にっこり",
+    "kana": "にっこり",
+    "senseListed": false,
+    "entryGlosses": [
+      "smile sweetly"
+    ]
+  },
+  {
+    "id": "n3-b507",
+    "jp": "二人は先月、正式に婚約した。",
+    "en": "The two of them officially got engaged last month.",
+    "zh": "他们两人上个月正式订婚了。",
+    "sense": "to become engaged",
+    "surface": "婚約",
+    "kana": "こんやく",
+    "senseListed": false,
+    "entryGlosses": [
+      "engagement",
+      "betrothal"
+    ]
+  },
+  {
+    "id": "n3-b216",
+    "jp": "覚えた知識を仕事で活用したい。",
+    "en": "I want to make practical use of the knowledge I learned at work.",
+    "zh": "我想在工作中活用所学的知识。",
+    "sense": "practical application of knowledge",
+    "surface": "活用",
+    "kana": "かつよう",
+    "senseListed": false,
+    "entryGlosses": [
+      "practical use",
+      "conjugation"
+    ]
+  },
+  {
+    "id": "n3-b565",
+    "jp": "この工場では新しい車を製造している。",
+    "en": "This factory manufactures new cars.",
+    "zh": "这家工厂制造新汽车。",
+    "sense": "manufacturing of goods",
+    "surface": "製造",
+    "kana": "せいぞう",
+    "senseListed": false,
+    "entryGlosses": [
+      "manufacture",
+      "production"
+    ]
+  },
+  {
+    "id": "n3-b516",
+    "jp": "台風が去って、青空が広がった。",
+    "en": "The typhoon passed, and the blue sky spread out.",
+    "zh": "台风离去后，天空一片晴朗。",
+    "sense": "to pass away (of weather)",
+    "surface": "去る",
+    "kana": "さる",
+    "senseListed": false,
+    "entryGlosses": [
+      "to leave",
+      "to go away"
+    ]
+  },
+  {
+    "id": "n3-b291",
+    "jp": "医者は重い病気から患者の命を救った。",
+    "en": "The doctor saved the patient's life from a serious illness.",
+    "zh": "医生从重病中拯救了患者的生命。",
+    "sense": "to save a life",
+    "surface": "救う",
+    "kana": "すくう",
+    "senseListed": false,
+    "entryGlosses": [
+      "to rescue from",
+      "to help out of"
+    ]
+  },
+  {
+    "id": "n3-b271",
+    "jp": "壊れた自転車を自分で修理した。",
+    "en": "I repaired the broken bicycle by myself.",
+    "zh": "我自己修好了坏掉的自行车。",
+    "sense": "repair of a bicycle",
+    "surface": "修理",
+    "kana": "しゅうり",
+    "senseListed": false,
+    "entryGlosses": [
+      "repairing",
+      "mending"
+    ]
+  },
+  {
+    "id": "n3-b313",
+    "jp": "部長が休みの間、私が代理を務めます。",
+    "en": "While the general manager is away, I will act as a proxy.",
+    "zh": "在部长请假期间，由我代行其职责。",
+    "sense": "acting on someone's behalf",
+    "surface": "代理",
+    "kana": "だいり",
+    "senseListed": false,
+    "entryGlosses": [
+      "representation",
+      "agency",
+      "proxy"
+    ]
+  },
+  {
+    "id": "n3-b247",
+    "jp": "二つの国の間の国境を越えて旅行した。",
+    "en": "I traveled across the national border between the two countries.",
+    "zh": "我穿越了两个国家之间的国界去旅行。",
+    "sense": "border between countries",
+    "surface": "国境",
+    "kana": "こっきょう",
+    "senseListed": false,
+    "entryGlosses": [
+      "national border"
+    ]
+  },
+  {
+    "id": "n3-b725",
+    "jp": "子供たちが手を繋いで大きな輪を作った。",
+    "en": "The children joined hands and made a big circle.",
+    "zh": "孩子们手拉手围成了一个大圈。",
+    "sense": "circle formed by people",
+    "surface": "輪",
+    "kana": "わ",
+    "senseListed": false,
+    "entryGlosses": [
+      "ring",
+      "hoop"
+    ]
+  },
+  {
+    "id": "n3-b862",
+    "jp": "他人の迷惑になる行動はやめましょう。",
+    "en": "Please stop acting in a way that bothers others.",
+    "zh": "请停止给他人添麻烦的行为。",
+    "sense": "other people",
+    "surface": "他人",
+    "kana": "たにん",
+    "senseListed": false,
+    "entryGlosses": [
+      "another person",
+      "others"
+    ]
+  },
+  {
+    "id": "n3-b175",
+    "jp": "この問題には肯定的な面もあります。",
+    "en": "This issue also has a positive aspect.",
+    "zh": "这个问题也有积极的一面。",
+    "sense": "aspect or side",
+    "surface": "面",
+    "kana": "めん",
+    "senseListed": false,
+    "entryGlosses": [
+      "face",
+      "mask",
+      "surface"
+    ]
+  },
+  {
+    "id": "n3-b389",
+    "jp": "私の分のケーキを取っておいてください。",
+    "en": "Please save my share of the cake.",
+    "zh": "请留出属于我的那份蛋糕。",
+    "sense": "one's share or portion",
+    "surface": "分",
+    "kana": "ぶん",
+    "senseListed": false,
+    "entryGlosses": [
+      "part",
+      "minute of time",
+      "condition"
+    ]
+  },
+  {
+    "id": "n3-b834",
+    "jp": "悩んだ末に新しい仕事を始めました。",
+    "en": "After much deliberation, I started a new job.",
+    "zh": "经过一番苦恼后，我开始了一份新工作。",
+    "sense": "end result after effort",
+    "surface": "末",
+    "kana": "すえ",
+    "senseListed": false,
+    "entryGlosses": [
+      "the end of",
+      "last"
+    ]
+  },
+  {
+    "id": "n3-b556",
+    "jp": "教科書の図を見ながら説明を聞いた。",
+    "en": "I listened to the explanation while looking at the diagram in the textbook.",
+    "zh": "我一边看教科书上的图表，一边听讲解。",
+    "sense": "diagram or illustration",
+    "surface": "図",
+    "kana": "ず",
+    "senseListed": false,
+    "entryGlosses": [
+      "figure",
+      "drawing"
+    ]
+  },
+  {
+    "id": "n3-b657",
+    "jp": "時計の針が十二時を指している。",
+    "en": "The clock hand is pointing to twelve o'clock.",
+    "zh": "时钟的针正指着十二点。",
+    "sense": "clock hand",
+    "surface": "針",
+    "kana": "はり",
+    "senseListed": false,
+    "entryGlosses": [
+      "needle",
+      "pin"
+    ]
+  },
+  {
+    "id": "n3-b292",
+    "jp": "この牛肉は筋が多くて少し硬い。",
+    "en": "This beef has a lot of gristle and is a bit tough.",
+    "zh": "这块牛肉肉筋很多，稍微有些硬。",
+    "sense": "gristle or tendon",
+    "surface": "筋",
+    "kana": "すじ",
+    "senseListed": false,
+    "entryGlosses": [
+      "muscle",
+      "string",
+      "plot"
+    ]
+  },
+  {
+    "id": "n3-b249",
+    "jp": "遅くなってしまって、本当にごめんなさい。",
+    "en": "I am truly sorry for being late.",
+    "zh": "我迟到了，真的很对不起。",
+    "sense": "apology or I am sorry",
+    "surface": "ごめんなさい",
+    "kana": "ごめんなさい",
+    "senseListed": false,
+    "entryGlosses": [
+      "I beg your pardon",
+      "excuse me"
+    ]
+  },
+  {
+    "id": "n3-b619",
+    "jp": "二人は同時にゴールに入った。",
+    "en": "The two entered the goal at the same time.",
+    "zh": "两个人同时冲过了终点。",
+    "sense": "at the same time",
+    "surface": "同時",
+    "kana": "どうじ",
+    "senseListed": false,
+    "entryGlosses": [
+      "simultaneous",
+      "concurrent"
+    ]
+  },
+  {
+    "id": "n3-b692",
+    "jp": "入院した友達の見舞いに行った。",
+    "en": "I went to visit a friend who was hospitalized.",
+    "zh": "我去探望了住院的朋友。",
+    "sense": "visit to someone who is ill",
+    "surface": "見舞い",
+    "kana": "みまい",
+    "senseListed": false,
+    "entryGlosses": [
+      "enquiry",
+      "expression of sympathy"
+    ]
+  },
+  {
+    "id": "n3-b594",
+    "jp": "大学で必要な単位をすべて取った。",
+    "en": "I earned all the necessary credits at university.",
+    "zh": "我在大学拿到了所有需要的学分。",
+    "sense": "academic credit",
+    "surface": "単位",
+    "kana": "たんい",
+    "senseListed": false,
+    "entryGlosses": [
+      "unit",
+      "denomination"
+    ]
+  },
+  {
+    "id": "n3-b449",
+    "jp": "この本はとてもよく売れています。",
+    "en": "This book is selling very well.",
+    "zh": "这本书卖得很好。",
+    "sense": "to sell in large quantities",
+    "surface": "売れる",
+    "kana": "うれる",
+    "reviewFlag": "transitivity pair — check the particles: this verb has a partner one character away",
+    "senseListed": false,
+    "entryGlosses": [
+      "to sell well",
+      "to be well known"
+    ]
+  },
+  {
+    "id": "n3-b656",
+    "jp": "母親が赤ちゃんを優しく抱いた。",
+    "en": "The mother gently held her baby.",
+    "zh": "母亲温柔地抱起了婴儿。",
+    "sense": "female parent",
+    "surface": "母親",
+    "kana": "ははおや",
+    "senseListed": false,
+    "entryGlosses": [
+      "mother"
+    ]
+  },
+  {
+    "id": "n3-b650",
+    "jp": "火災の影響でガス管が爆発した。",
+    "en": "The gas pipe exploded due to the fire.",
+    "zh": "由于火灾的影响，煤气管道发生了爆炸。",
+    "sense": "sudden violent bursting",
+    "surface": "爆発",
+    "kana": "ばくはつ",
+    "senseListed": false,
+    "entryGlosses": [
+      "explosion",
+      "detonation"
+    ]
+  },
+  {
+    "id": "n3-b810",
+    "jp": "新しい週が元気に始まりました。",
+    "en": "A new week has started with energy.",
+    "zh": "新的一周充满活力地开始了。",
+    "sense": "seven day period",
+    "surface": "週",
+    "kana": "しゅう",
+    "senseListed": false,
+    "entryGlosses": [
+      "week"
+    ]
+  },
+  {
+    "id": "n3-b481",
+    "jp": "下りの電車は比較的すいている。",
+    "en": "Outbound trains are relatively uncrowded.",
+    "zh": "下行方向的电车比较空。",
+    "sense": "bound away from the hub",
+    "surface": "下り",
+    "kana": "くだり",
+    "senseListed": false,
+    "entryGlosses": [
+      "descending",
+      "down-train"
+    ]
+  },
+  {
+    "id": "n3-b303",
+    "jp": "工場に新しい安全装置をつけた。",
+    "en": "We installed a new safety device in the factory.",
+    "zh": "工厂里安装了新的安全装置。",
+    "sense": "mechanical device or system",
+    "surface": "装置",
+    "kana": "そうち",
+    "senseListed": false,
+    "entryGlosses": [
+      "equipment",
+      "installation"
+    ]
+  },
+  {
+    "id": "n3-b918",
+    "jp": "警察が逃げた犯人を捕まえた。",
+    "en": "The police caught the escaped criminal.",
+    "zh": "警察抓住了逃跑的罪犯。",
+    "sense": "culprit or perpetrator of crime",
+    "surface": "犯人",
+    "kana": "はんにん",
+    "senseListed": false,
+    "entryGlosses": [
+      "offender",
+      "criminal"
+    ]
+  }
+]

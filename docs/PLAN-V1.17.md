@@ -310,9 +310,52 @@ English-only field would render English text in Chinese mode, a new user-visible
 | A1 `gen_batch.py` declares the sense; the pin-to-gloss constraint is gone; the reading rule for sense choice is in | **done** |
 | A2 `pilot_gate.py` three dispositions + loose sense matcher (8 cases pinned); rejection path unchanged, verified at 1.2% against the 779 | **done** |
 | A3 `apply_batch.py` carries the sense into `exMeta` | **done** |
-| B pilot 3 on the same 245 words, same seed | running |
+| B pilot 3 on the same 245 words, same seed | **done — see below** |
 | review + adjudication of (sentence, sense) pairs | next |
-| §C merge, §D display, stop rule | after the pilot reports |
+| §C merge, §D display, stop rule | after the review reports |
+
+### Pilot 3 and 3b — the mechanism works, and one prompt line decided everything
+
+Same 245 words, same seed, so this is directly comparable to pilots 1 and 2.
+
+| | pilot 3 | pilot 3b |
+|---|---|---|
+| passed the gate | 195 (80%) | 205 (84%) |
+| survive (declared sense already listed) | 192 | 169 |
+| **vocabularyGap (sense absent from the entry)** | **3** | **36** |
+
+The only difference between the two runs is one line of the prompt. Pilot 3 said "if the
+sense you used IS in the list you were given, reuse that gloss's exact wording", and the model
+read it as an instruction to map onto the list. Three of pilot 2's eight gloss-mismatch words
+came back still defective but wearing a listed gloss — 通す declaring "to let pass" over a
+sentence about threading a needle, 単位 declaring "unit" over academic credits, 見舞い
+declaring "enquiry" over a sick-visit. That is exactly the dishonest declaration Gemini
+predicted and Codex said would hollow out the stop rule, and it arrived on the first run.
+
+Pilot 3b replaces that line with its opposite — describe the sense as it works in **your**
+sentence, in your own words; matching the list earns nothing. Gaps went 3 → 36, and **six of
+the seven** words that were silent defects in pilot 2 now route with an accurate name:
+
+| word | app shows | declared | sentence |
+|---|---|---|---|
+| 通す | to let pass | to pass something through | 針に糸を通すのは難しい。 |
+| 単位 | unit, denomination | academic credit | 大学で必要な単位をすべて取った。 |
+| 見舞い | enquiry | visit to someone who is ill | 入院した友達の見舞いに行った。 |
+| 針 | needle, pin | clock hand | 時計の針が十二時を指している。 |
+| 面 | face, mask, surface | aspect or side | この問題には肯定的な面もあります。 |
+| 切れる | to break, to snap | to run out or be exhausted | パソコンの電池が切れる。 |
+
+(The seventh, 場, correctly **survived**: 「その場が静かになった」 really is the listed
+"place / situation".)
+
+36 of 205 is 17.6%, against the audit's 15% estimate from a different method — the two agree,
+and pilot 3's 3 was the artifact. **This is the result the section was built to produce**:
+every silent gloss-mismatch defect from pilot 2 is now a named proposal in a queue.
+
+It also tells us how much of the outcome rides on the declaration being honest, which is why
+the stop rule's third condition is a hand-read honesty sample and not a gate statistic.
+
+The 36 proposals are committed at `docs/measurements/n3-pilot3b-vocab-gaps.json`.
 
 ## 9. What the reviews changed
 
