@@ -1,0 +1,165 @@
+[
+ {
+  "id": "n3-b152",
+  "verdict": "paraphrase",
+  "reason": "to spread / to extend is exactly the sense used by 海が広がる; dictionaries group spread, extend and stretch out as one sense."
+ },
+ {
+  "id": "n3-b263",
+  "verdict": "paraphrase",
+  "reason": "The sun setting is the ordinary sink / go down sense; currentEN 'to go under' and currentZH 降下 both read correctly against 太陽が沈む."
+ },
+ {
+  "id": "n3-b965",
+  "verdict": "paraphrase",
+  "reason": "'to stop or refrain from doing' restates 'to cease' / 停止; 止す has only this one sense."
+ },
+ {
+  "id": "n3-b691",
+  "verdict": "paraphrase",
+  "reason": "'to be filled with' is 'to be full' / 充满 with the に-phrase spelled out; same sense."
+ },
+ {
+  "id": "n3-b764",
+  "verdict": "new_sense",
+  "reason": "Distinct dictionary sense (supply exhausted / expires). Neither 'to break, to snap' nor 断/切断 lets a learner read 電池が切れる as the battery running out.",
+  "glossEN": "to run out",
+  "glossZH": "用尽"
+ },
+ {
+  "id": "n3-b586",
+  "verdict": "paraphrase",
+  "reason": "'to knock down or cause to fall' is 'to throw down' / 弄倒; the wind-vs-person agent is a sentence detail, not a sense split."
+ },
+ {
+  "id": "n3-b343",
+  "verdict": "paraphrase",
+  "reason": "Threading is the same causing-passage-through meaning as 'to let pass' / 让通过; a learner maps 糸を通す onto it without a new gloss."
+ },
+ {
+  "id": "n3-b133",
+  "verdict": "paraphrase",
+  "reason": "'with a sweet smile' is the adverbial rewording of the existing 'smile sweetly' / 微微一笑."
+ },
+ {
+  "id": "n3-b507",
+  "verdict": "paraphrase",
+  "reason": "The する-verb use of the same noun sense 'engagement' / 订婚; a part-of-speech variant, not an added meaning."
+ },
+ {
+  "id": "n3-b565",
+  "verdict": "paraphrase",
+  "reason": "'manufacturing of goods' restates 'manufacture, production' / 制造."
+ },
+ {
+  "id": "n3-b516",
+  "verdict": "paraphrase",
+  "reason": "台風が去る is the plain 'to leave, to go away' / 离去 sense; the '(of weather)' qualifier comes from the sentence's subject."
+ },
+ {
+  "id": "n3-b291",
+  "verdict": "paraphrase",
+  "reason": "'to save a life' is 'to rescue from' / 拯救 with the sentence's object 命 attached; the meaning itself is unchanged."
+ },
+ {
+  "id": "n3-b271",
+  "verdict": "not_a_sense",
+  "reason": "Describes what the sentence is about (a bicycle) rather than any sense of 修理; the word is just 'repairing' / 修理."
+ },
+ {
+  "id": "n3-b247",
+  "verdict": "paraphrase",
+  "reason": "'border between countries' is a definition of the existing 'national border' / 国境."
+ },
+ {
+  "id": "n3-b725",
+  "verdict": "not_a_sense",
+  "reason": "'circle formed by people' is the sentence's referent; the word sense is the already-listed ring / circle, 环, 圈."
+ },
+ {
+  "id": "n3-b862",
+  "verdict": "paraphrase",
+  "reason": "'other people' is literally the existing gloss 'others' / 他人."
+ },
+ {
+  "id": "n3-b175",
+  "verdict": "new_sense",
+  "reason": "Separate dictionary sense (abstract facet of a matter), distinct from face / mask / physical surface; a learner given 'face, mask, surface' cannot read 肯定的な面 as a positive aspect. Note the ZH list already carries 方面, so dedupe on merge.",
+  "glossEN": "aspect",
+  "glossZH": "方面"
+ },
+ {
+  "id": "n3-b389",
+  "verdict": "paraphrase",
+  "reason": "'share or portion' is the existing 'part' / 份 sense; dictionaries list part, share and portion together."
+ },
+ {
+  "id": "n3-b834",
+  "verdict": "paraphrase",
+  "reason": "悩んだ末に reads directly off 'the end of' / 末尾 ('at the end of deliberating'); the ～た末に pattern is grammar, not an extra lexical sense."
+ },
+ {
+  "id": "n3-b556",
+  "verdict": "paraphrase",
+  "reason": "'diagram or illustration' is covered by 'figure, drawing' / 图, 图表."
+ },
+ {
+  "id": "n3-b657",
+  "verdict": "new_sense",
+  "reason": "Separate dictionary sense; 'needle, pin' gives a learner nothing for 時計の針. The ZH list already has 指针, so dedupe on merge.",
+  "glossEN": "clock hand",
+  "glossZH": "指针"
+ },
+ {
+  "id": "n3-b292",
+  "verdict": "paraphrase",
+  "reason": "Gristle, tendon and sinew sit in the same dictionary sense as 'muscle', and 筋 is already in the ZH list."
+ },
+ {
+  "id": "n3-b249",
+  "verdict": "paraphrase",
+  "reason": "'apology / I am sorry' restates 'I beg your pardon, excuse me' / 对不起, 抱歉."
+ },
+ {
+  "id": "n3-b692",
+  "verdict": "paraphrase",
+  "reason": "Visiting the sick is the same dictionary sense as 'enquiry, expression of sympathy', and 探望 in the ZH list is exactly 'to visit someone ill'."
+ },
+ {
+  "id": "n3-b594",
+  "verdict": "new_sense",
+  "reason": "Separate dictionary sense; 'unit, denomination' does not let a learner read 大学で単位を取る as earning course credits. The ZH list already has 学分, so dedupe on merge.",
+  "glossEN": "academic credit",
+  "glossZH": "学分"
+ },
+ {
+  "id": "n3-b449",
+  "verdict": "paraphrase",
+  "reason": "'to sell in large quantities' is the existing 'to sell well' / 畅销."
+ },
+ {
+  "id": "n3-b656",
+  "verdict": "paraphrase",
+  "reason": "'female parent' is a definition of 'mother' / 母亲."
+ },
+ {
+  "id": "n3-b650",
+  "verdict": "paraphrase",
+  "reason": "'sudden violent bursting' is a definition of 'explosion' / 爆炸."
+ },
+ {
+  "id": "n3-b810",
+  "verdict": "paraphrase",
+  "reason": "'seven day period' is a definition of 'week' / 周, 星期."
+ },
+ {
+  "id": "n3-b481",
+  "verdict": "paraphrase",
+  "reason": "'bound away from the hub' is precisely the existing 'down-train' / 下行 sense."
+ },
+ {
+  "id": "n3-b303",
+  "verdict": "paraphrase",
+  "reason": "'mechanical device or system' restates 'equipment, installation' / 装置, 设备."
+ }
+]

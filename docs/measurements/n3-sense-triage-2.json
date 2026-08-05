@@ -1,0 +1,163 @@
+[
+  {
+    "id": "n3-b152",
+    "verdict": "paraphrase",
+    "reason": "'to stretch out' is the same spatial-extension sense as the existing 'to spread / to extend' (扩大); the sea sentence reads fine off the current line."
+  },
+  {
+    "id": "n3-b263",
+    "verdict": "paraphrase",
+    "reason": "The sun setting is the ordinary 'to sink / to go under' sense applied to the sun; ZH 降下 already covers descending."
+  },
+  {
+    "id": "n3-b965",
+    "verdict": "paraphrase",
+    "reason": "'to stop or refrain from doing' is exactly the existing 'to cease' (停止 / 作罢)."
+  },
+  {
+    "id": "n3-b691",
+    "verdict": "paraphrase",
+    "reason": "'to be filled with' restates 'to be full'; ZH 充满 is literally that."
+  },
+  {
+    "id": "n3-b764",
+    "verdict": "new_sense",
+    "reason": "Battery/time/stock 切れる means 'to run out, be used up'. Neither 'to break / to snap' nor 断 / 切断 conveys that; a learner would read the sentence as the battery physically breaking.",
+    "glossEN": "to run out",
+    "glossZH": "用尽"
+  },
+  {
+    "id": "n3-b586",
+    "verdict": "paraphrase",
+    "reason": "'to knock down or cause to fall' is the existing 'to throw down' (弄倒)."
+  },
+  {
+    "id": "n3-b343",
+    "verdict": "paraphrase",
+    "reason": "Threading a needle is the existing causative 'to let pass' / 让通过 with the thread as the thing passed through."
+  },
+  {
+    "id": "n3-b133",
+    "verdict": "paraphrase",
+    "reason": "'with a sweet smile' is the adverbial restatement of 'smile sweetly' (微微一笑)."
+  },
+  {
+    "id": "n3-b507",
+    "verdict": "paraphrase",
+    "reason": "'to become engaged' is the する-verb form of the noun 'engagement / betrothal' (订婚), not a distinct sense."
+  },
+  {
+    "id": "n3-b565",
+    "verdict": "paraphrase",
+    "reason": "'manufacturing of goods' restates 'manufacture / production' (制造 / 生产)."
+  },
+  {
+    "id": "n3-b516",
+    "verdict": "paraphrase",
+    "reason": "A typhoon 去る is the plain 'to leave / to go away' sense (离去); no weather-specific meaning is involved."
+  },
+  {
+    "id": "n3-b291",
+    "verdict": "not_a_sense",
+    "reason": "'to save a life' bolts the sentence's object (患者の命) onto the word; the sense itself is already 'to rescue from' (拯救)."
+  },
+  {
+    "id": "n3-b271",
+    "verdict": "not_a_sense",
+    "reason": "'repair of a bicycle' describes the sentence's object, not a sense of 修理."
+  },
+  {
+    "id": "n3-b247",
+    "verdict": "paraphrase",
+    "reason": "'border between countries' is a wordier 'national border' (国境 / 边境)."
+  },
+  {
+    "id": "n3-b725",
+    "verdict": "not_a_sense",
+    "reason": "'circle formed by people' describes the sentence; the word's sense is just 'ring / circle' (环 / 圈)."
+  },
+  {
+    "id": "n3-b862",
+    "verdict": "paraphrase",
+    "reason": "'other people' is verbatim the existing 'another person / others' (别人 / 他人)."
+  },
+  {
+    "id": "n3-b175",
+    "verdict": "paraphrase",
+    "reason": "'aspect or side' is already carried by ZH 方面, which is the exact gloss for 肯定的な面."
+  },
+  {
+    "id": "n3-b389",
+    "verdict": "paraphrase",
+    "reason": "'one's share or portion' is already carried by ZH 份 and EN 'part'."
+  },
+  {
+    "id": "n3-b834",
+    "verdict": "paraphrase",
+    "reason": "〜た末に is the existing 'the end of' (末尾 / 最后) in a temporal usage; 'end result after effort' describes the construction, and the current line still reads correctly."
+  },
+  {
+    "id": "n3-b556",
+    "verdict": "paraphrase",
+    "reason": "'diagram or illustration' is the existing 'figure / drawing' (图 / 图表)."
+  },
+  {
+    "id": "n3-b657",
+    "verdict": "new_sense",
+    "reason": "EN line 'needle / pin' does not reach a clock's hands; a learner would misread 時計の針. (Note: ZH 指针 already covers it, so only the EN line actually gains.)",
+    "glossEN": "clock hand",
+    "glossZH": "指针"
+  },
+  {
+    "id": "n3-b292",
+    "verdict": "paraphrase",
+    "reason": "Gristle/sinew in meat is already covered by ZH 筋 (肉筋), the same word the Chinese sentence uses."
+  },
+  {
+    "id": "n3-b249",
+    "verdict": "paraphrase",
+    "reason": "'apology or I am sorry' is the existing 'I beg your pardon / excuse me' (对不起 / 抱歉)."
+  },
+  {
+    "id": "n3-b692",
+    "verdict": "paraphrase",
+    "reason": "Visiting a sick person is exactly the existing sense; ZH 探望 is the standard gloss for a sickbed visit."
+  },
+  {
+    "id": "n3-b594",
+    "verdict": "new_sense",
+    "reason": "EN line 'unit / denomination' does not reach university credits; a learner would misread 単位を取る. (Note: ZH 学分 already covers it, so only the EN line actually gains.)",
+    "glossEN": "academic credit",
+    "glossZH": "学分"
+  },
+  {
+    "id": "n3-b449",
+    "verdict": "paraphrase",
+    "reason": "'to sell in large quantities' is the existing 'to sell well' (畅销)."
+  },
+  {
+    "id": "n3-b656",
+    "verdict": "paraphrase",
+    "reason": "'female parent' is the existing 'mother' (母亲)."
+  },
+  {
+    "id": "n3-b650",
+    "verdict": "paraphrase",
+    "reason": "'sudden violent bursting' restates 'explosion / detonation' (爆炸)."
+  },
+  {
+    "id": "n3-b810",
+    "verdict": "paraphrase",
+    "reason": "'seven day period' restates 'week' (周 / 星期)."
+  },
+  {
+    "id": "n3-b481",
+    "verdict": "paraphrase",
+    "reason": "'bound away from the hub' is precisely the existing 'down-train' / 下行."
+  },
+  {
+    "id": "n3-b303",
+    "verdict": "paraphrase",
+    "reason": "'mechanical device or system' is the existing 'equipment / installation' (装置 / 设备)."
+  }
+]

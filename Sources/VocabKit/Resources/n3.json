@@ -11351,6 +11351,17 @@
         "微微一笑",
         "莞尔"
       ]
+    },
+    "exJP": "赤ちゃんが可愛くにっこり笑う。",
+    "exEN": "The baby smiles sweetly and cutely.",
+    "exZH": "婴儿可爱地甜甜微笑。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "with a sweet smile",
+      "senseListed": false
     }
   },
   {
@@ -11768,6 +11779,17 @@
         "蔓延",
         "扩大"
       ]
+    },
+    "exJP": "目の前に青い海が広がる。",
+    "exEN": "The blue sea stretches out before my eyes.",
+    "exZH": "蓝色的大海在眼前展开。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "to stretch out or open up",
+      "senseListed": false
     }
   },
   {
@@ -13768,6 +13790,17 @@
         "国境",
         "边境"
       ]
+    },
+    "exJP": "二つの国の間の国境を越えて旅行した。",
+    "exEN": "I traveled across the national border between the two countries.",
+    "exZH": "我穿越了两个国家之间的国界去旅行。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "border between countries",
+      "senseListed": false
     }
   },
   {
@@ -13805,6 +13838,17 @@
         "对不起",
         "抱歉"
       ]
+    },
+    "exJP": "遅くなってしまって、本当にごめんなさい。",
+    "exEN": "I am truly sorry for being late.",
+    "exZH": "我迟到了，真的很对不起。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "apology or I am sorry",
+      "senseListed": false
     }
   },
   {
@@ -14126,6 +14170,17 @@
         "沉没",
         "降下"
       ]
+    },
+    "exJP": "太陽が西の空に沈む。",
+    "exEN": "The sun sets in the western sky.",
+    "exZH": "太阳在西边的天空落下。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "to set below the horizon",
+      "senseListed": false
     }
   },
   {
@@ -14283,6 +14338,17 @@
       "zh": [
         "修理"
       ]
+    },
+    "exJP": "壊れた自転車を自分で修理した。",
+    "exEN": "I repaired the broken bicycle by myself.",
+    "exZH": "我自己修好了坏掉的自行车。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "repair of a bicycle",
+      "senseListed": false
     }
   },
   {
@@ -14702,6 +14768,17 @@
         "拯救",
         "挽救"
       ]
+    },
+    "exJP": "医者は重い病気から患者の命を救った。",
+    "exEN": "The doctor saved the patient's life from a serious illness.",
+    "exZH": "医生从重病中拯救了患者的生命。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "to save a life",
+      "senseListed": false
     }
   },
   {
@@ -14723,6 +14800,17 @@
         "筋",
         "剧情"
       ]
+    },
+    "exJP": "この牛肉は筋が多くて少し硬い。",
+    "exEN": "This beef has a lot of gristle and is a bit tough.",
+    "exZH": "这块牛肉肉筋很多，稍微有些硬。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "gristle or tendon",
+      "senseListed": false
     }
   },
   {
@@ -14956,6 +15044,17 @@
         "装置",
         "设备"
       ]
+    },
+    "exJP": "工場に新しい安全装置をつけた。",
+    "exEN": "We installed a new safety device in the factory.",
+    "exZH": "工厂里安装了新的安全装置。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "mechanical device or system",
+      "senseListed": false
     }
   },
   {
@@ -15854,6 +15953,17 @@
         "让通过",
         "坚持到底"
       ]
+    },
+    "exJP": "針に糸を通すのは難しい。",
+    "exEN": "It is difficult to thread a needle.",
+    "exZH": "把线穿过针眼很困难。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "to pass something through",
+      "senseListed": false
     }
   },
   {
@@ -16841,6 +16951,17 @@
         "部分",
         "份"
       ]
+    },
+    "exJP": "私の分のケーキを取っておいてください。",
+    "exEN": "Please save my share of the cake.",
+    "exZH": "请留出属于我的那份蛋糕。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "one's share or portion",
+      "senseListed": false
     }
   },
   {
@@ -20308,6 +20429,17 @@
         "畅销",
         "出名"
       ]
+    },
+    "exJP": "この本はとてもよく売れています。",
+    "exEN": "This book is selling very well.",
+    "exZH": "这本书卖得很好。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "to sell in large quantities",
+      "senseListed": false
     }
   },
   {
@@ -21004,6 +21136,17 @@
         "下行",
         "下坡"
       ]
+    },
+    "exJP": "下りの電車は比較的すいている。",
+    "exEN": "Outbound trains are relatively uncrowded.",
+    "exZH": "下行方向的电车比较空。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "bound away from the hub",
+      "senseListed": false
     }
   },
   {
@@ -21548,6 +21691,17 @@
       "zh": [
         "订婚"
       ]
+    },
+    "exJP": "二人は先月、正式に婚約した。",
+    "exEN": "The two of them officially got engaged last month.",
+    "exZH": "他们两人上个月正式订婚了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "to become engaged",
+      "senseListed": false
     }
   },
   {
@@ -21746,6 +21900,17 @@
         "离去",
         "离开"
       ]
+    },
+    "exJP": "台風が去って、青空が広がった。",
+    "exEN": "The typhoon passed, and the blue sky spread out.",
+    "exZH": "台风离去后，天空一片晴朗。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "to pass away (of weather)",
+      "senseListed": false
     }
   },
   {
@@ -22599,6 +22764,17 @@
         "图",
         "图表"
       ]
+    },
+    "exJP": "教科書の図を見ながら説明を聞いた。",
+    "exEN": "I listened to the explanation while looking at the diagram in the textbook.",
+    "exZH": "我一边看教科书上的图表，一边听讲解。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "diagram or illustration",
+      "senseListed": false
     }
   },
   {
@@ -22794,6 +22970,17 @@
         "制造",
         "生产"
       ]
+    },
+    "exJP": "この工場では新しい車を製造している。",
+    "exEN": "This factory manufactures new cars.",
+    "exZH": "这家工厂制造新汽车。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "manufacturing of goods",
+      "senseListed": false
     }
   },
   {
@@ -23257,6 +23444,17 @@
         "弄倒",
         "打倒"
       ]
+    },
+    "exJP": "強風が庭の大きな木を倒した。",
+    "exEN": "Strong winds knocked down a large tree in the garden.",
+    "exZH": "强风刮倒了花园里的大树。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "to knock down or cause to fall",
+      "senseListed": false
     }
   },
   {
@@ -24570,6 +24768,17 @@
         "爆炸",
         "爆发"
       ]
+    },
+    "exJP": "火災の影響でガス管が爆発した。",
+    "exEN": "The gas pipe exploded due to the fire.",
+    "exZH": "由于火灾的影响，煤气管道发生了爆炸。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "sudden violent bursting",
+      "senseListed": false
     }
   },
   {
@@ -24684,6 +24893,17 @@
       "zh": [
         "母亲"
       ]
+    },
+    "exJP": "母親が赤ちゃんを優しく抱いた。",
+    "exEN": "The mother gently held her baby.",
+    "exZH": "母亲温柔地抱起了婴儿。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "female parent",
+      "senseListed": false
     }
   },
   {
@@ -25447,6 +25667,17 @@
         "充满",
         "满"
       ]
+    },
+    "exJP": "彼の心は希望に満ちている。",
+    "exEN": "His heart is filled with hope.",
+    "exZH": "他的心中充满了希望。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "to be filled with",
+      "senseListed": false
     }
   },
   {
@@ -25466,6 +25697,17 @@
         "探望",
         "问候"
       ]
+    },
+    "exJP": "入院した友達の見舞いに行った。",
+    "exEN": "I went to visit a friend who was hospitalized.",
+    "exZH": "我去探望了住院的朋友。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "visit to someone who is ill",
+      "senseListed": false
     }
   },
   {
@@ -26159,6 +26401,17 @@
         "环",
         "圈"
       ]
+    },
+    "exJP": "子供たちが手を繋いで大きな輪を作った。",
+    "exEN": "The children joined hands and made a big circle.",
+    "exZH": "孩子们手拉手围成了一个大圈。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "circle formed by people",
+      "senseListed": false
     }
   },
   {
@@ -26907,12 +27160,24 @@
     "meanings": {
       "en": [
         "to break",
-        "to snap"
+        "to snap",
+        "to run out"
       ],
       "zh": [
         "断",
         "切断"
       ]
+    },
+    "exJP": "パソコンの電池が切れる。",
+    "exEN": "The computer battery runs out.",
+    "exZH": "电脑的电池没电了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "to run out or be exhausted",
+      "senseListed": false
     }
   },
   {
@@ -27812,6 +28077,17 @@
         "周",
         "星期"
       ]
+    },
+    "exJP": "新しい週が元気に始まりました。",
+    "exEN": "A new week has started with energy.",
+    "exZH": "新的一周充满活力地开始了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "seven day period",
+      "senseListed": false
     }
   },
   {
@@ -28273,6 +28549,17 @@
         "末尾",
         "最后"
       ]
+    },
+    "exJP": "悩んだ末に新しい仕事を始めました。",
+    "exEN": "After much deliberation, I started a new job.",
+    "exZH": "经过一番苦恼后，我开始了一份新工作。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "end result after effort",
+      "senseListed": false
     }
   },
   {
@@ -28820,6 +29107,17 @@
         "别人",
         "他人"
       ]
+    },
+    "exJP": "他人の迷惑になる行動はやめましょう。",
+    "exEN": "Please stop acting in a way that bothers others.",
+    "exZH": "请停止给他人添麻烦的行为。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "other people",
+      "senseListed": false
     }
   },
   {
@@ -30931,6 +31229,17 @@
         "停止",
         "作罢"
       ]
+    },
+    "exJP": "無駄な買い物はもう止す。",
+    "exEN": "I will quit making wasteful purchases.",
+    "exZH": "我不再进行浪费的购物了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §C)",
+      "sense": "to stop or refrain from doing",
+      "senseListed": false
     }
   },
   {

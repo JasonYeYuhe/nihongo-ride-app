@@ -1,0 +1,589 @@
+[
+ {
+  "id": "n3-b152",
+  "surface": "広がる",
+  "kana": "ひろがる",
+  "currentEN": [
+   "to spread",
+   "to extend"
+  ],
+  "currentZH": [
+   "蔓延",
+   "扩大"
+  ],
+  "proposedSense": "to stretch out or open up",
+  "evidenceJP": "目の前に青い海が広がる。",
+  "evidenceEN": "The blue sea stretches out before my eyes.",
+  "evidenceZH": "蓝色的大海在眼前展开。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "ひろがる"
+ },
+ {
+  "id": "n3-b263",
+  "surface": "沈む",
+  "kana": "しずむ",
+  "currentEN": [
+   "to sink",
+   "to go under"
+  ],
+  "currentZH": [
+   "沉没",
+   "降下"
+  ],
+  "proposedSense": "to set below the horizon",
+  "evidenceJP": "太陽が西の空に沈む。",
+  "evidenceEN": "The sun sets in the western sky.",
+  "evidenceZH": "太阳在西边的天空落下。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "しずむ"
+ },
+ {
+  "id": "n3-b965",
+  "surface": "止す",
+  "kana": "よす",
+  "currentEN": [
+   "to cease",
+   "to abolish"
+  ],
+  "currentZH": [
+   "停止",
+   "作罢"
+  ],
+  "proposedSense": "to stop or refrain from doing",
+  "evidenceJP": "無駄な買い物はもう止す。",
+  "evidenceEN": "I will quit making wasteful purchases.",
+  "evidenceZH": "我不再进行浪费的购物了。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "よす"
+ },
+ {
+  "id": "n3-b691",
+  "surface": "満ちる",
+  "kana": "みちる",
+  "currentEN": [
+   "to be full",
+   "to mature"
+  ],
+  "currentZH": [
+   "充满",
+   "满"
+  ],
+  "proposedSense": "to be filled with",
+  "evidenceJP": "彼の心は希望に満ちている。",
+  "evidenceEN": "His heart is filled with hope.",
+  "evidenceZH": "他的心中充满了希望。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "みち"
+ },
+ {
+  "id": "n3-b764",
+  "surface": "切れる",
+  "kana": "きれる",
+  "currentEN": [
+   "to break",
+   "to snap"
+  ],
+  "currentZH": [
+   "断",
+   "切断"
+  ],
+  "proposedSense": "to run out or be exhausted",
+  "evidenceJP": "パソコンの電池が切れる。",
+  "evidenceEN": "The computer battery runs out.",
+  "evidenceZH": "电脑的电池没电了。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "きれる"
+ },
+ {
+  "id": "n3-b586",
+  "surface": "倒す",
+  "kana": "たおす",
+  "currentEN": [
+   "to throw down",
+   "to defeat"
+  ],
+  "currentZH": [
+   "弄倒",
+   "打倒"
+  ],
+  "proposedSense": "to knock down or cause to fall",
+  "evidenceJP": "強風が庭の大きな木を倒した。",
+  "evidenceEN": "Strong winds knocked down a large tree in the garden.",
+  "evidenceZH": "强风刮倒了花园里的大树。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "たおし"
+ },
+ {
+  "id": "n3-b343",
+  "surface": "通す",
+  "kana": "とおす",
+  "currentEN": [
+   "to let pass",
+   "to overlook",
+   "to continue"
+  ],
+  "currentZH": [
+   "让通过",
+   "坚持到底"
+  ],
+  "proposedSense": "to pass something through",
+  "evidenceJP": "針に糸を通すのは難しい。",
+  "evidenceEN": "It is difficult to thread a needle.",
+  "evidenceZH": "把线穿过针眼很困难。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "とおす"
+ },
+ {
+  "id": "n3-b133",
+  "surface": "にっこり",
+  "kana": "にっこり",
+  "currentEN": [
+   "smile sweetly"
+  ],
+  "currentZH": [
+   "微微一笑",
+   "莞尔"
+  ],
+  "proposedSense": "with a sweet smile",
+  "evidenceJP": "赤ちゃんが可愛くにっこり笑う。",
+  "evidenceEN": "The baby smiles sweetly and cutely.",
+  "evidenceZH": "婴儿可爱地甜甜微笑。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "にっこり"
+ },
+ {
+  "id": "n3-b507",
+  "surface": "婚約",
+  "kana": "こんやく",
+  "currentEN": [
+   "engagement",
+   "betrothal"
+  ],
+  "currentZH": [
+   "订婚"
+  ],
+  "proposedSense": "to become engaged",
+  "evidenceJP": "二人は先月、正式に婚約した。",
+  "evidenceEN": "The two of them officially got engaged last month.",
+  "evidenceZH": "他们两人上个月正式订婚了。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "こんやく"
+ },
+ {
+  "id": "n3-b565",
+  "surface": "製造",
+  "kana": "せいぞう",
+  "currentEN": [
+   "manufacture",
+   "production"
+  ],
+  "currentZH": [
+   "制造",
+   "生产"
+  ],
+  "proposedSense": "manufacturing of goods",
+  "evidenceJP": "この工場では新しい車を製造している。",
+  "evidenceEN": "This factory manufactures new cars.",
+  "evidenceZH": "这家工厂制造新汽车。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "せいぞう"
+ },
+ {
+  "id": "n3-b516",
+  "surface": "去る",
+  "kana": "さる",
+  "currentEN": [
+   "to leave",
+   "to go away"
+  ],
+  "currentZH": [
+   "离去",
+   "离开"
+  ],
+  "proposedSense": "to pass away (of weather)",
+  "evidenceJP": "台風が去って、青空が広がった。",
+  "evidenceEN": "The typhoon passed, and the blue sky spread out.",
+  "evidenceZH": "台风离去后，天空一片晴朗。",
+  "readingVerifiedInSentence": false,
+  "inSentenceReading": "さっ"
+ },
+ {
+  "id": "n3-b291",
+  "surface": "救う",
+  "kana": "すくう",
+  "currentEN": [
+   "to rescue from",
+   "to help out of"
+  ],
+  "currentZH": [
+   "拯救",
+   "挽救"
+  ],
+  "proposedSense": "to save a life",
+  "evidenceJP": "医者は重い病気から患者の命を救った。",
+  "evidenceEN": "The doctor saved the patient's life from a serious illness.",
+  "evidenceZH": "医生从重病中拯救了患者的生命。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "すくっ"
+ },
+ {
+  "id": "n3-b271",
+  "surface": "修理",
+  "kana": "しゅうり",
+  "currentEN": [
+   "repairing",
+   "mending"
+  ],
+  "currentZH": [
+   "修理"
+  ],
+  "proposedSense": "repair of a bicycle",
+  "evidenceJP": "壊れた自転車を自分で修理した。",
+  "evidenceEN": "I repaired the broken bicycle by myself.",
+  "evidenceZH": "我自己修好了坏掉的自行车。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "しゅうり"
+ },
+ {
+  "id": "n3-b247",
+  "surface": "国境",
+  "kana": "こっきょう",
+  "currentEN": [
+   "national border"
+  ],
+  "currentZH": [
+   "国境",
+   "边境"
+  ],
+  "proposedSense": "border between countries",
+  "evidenceJP": "二つの国の間の国境を越えて旅行した。",
+  "evidenceEN": "I traveled across the national border between the two countries.",
+  "evidenceZH": "我穿越了两个国家之间的国界去旅行。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "こっきょう"
+ },
+ {
+  "id": "n3-b725",
+  "surface": "輪",
+  "kana": "わ",
+  "currentEN": [
+   "ring",
+   "hoop"
+  ],
+  "currentZH": [
+   "环",
+   "圈"
+  ],
+  "proposedSense": "circle formed by people",
+  "evidenceJP": "子供たちが手を繋いで大きな輪を作った。",
+  "evidenceEN": "The children joined hands and made a big circle.",
+  "evidenceZH": "孩子们手拉手围成了一个大圈。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "わ"
+ },
+ {
+  "id": "n3-b862",
+  "surface": "他人",
+  "kana": "たにん",
+  "currentEN": [
+   "another person",
+   "others"
+  ],
+  "currentZH": [
+   "别人",
+   "他人"
+  ],
+  "proposedSense": "other people",
+  "evidenceJP": "他人の迷惑になる行動はやめましょう。",
+  "evidenceEN": "Please stop acting in a way that bothers others.",
+  "evidenceZH": "请停止给他人添麻烦的行为。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "たにん"
+ },
+ {
+  "id": "n3-b175",
+  "surface": "面",
+  "kana": "めん",
+  "currentEN": [
+   "face",
+   "mask",
+   "surface"
+  ],
+  "currentZH": [
+   "脸",
+   "方面"
+  ],
+  "proposedSense": "aspect or side",
+  "evidenceJP": "この問題には肯定的な面もあります。",
+  "evidenceEN": "This issue also has a positive aspect.",
+  "evidenceZH": "这个问题也有积极的一面。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "めん"
+ },
+ {
+  "id": "n3-b389",
+  "surface": "分",
+  "kana": "ぶん",
+  "currentEN": [
+   "part",
+   "minute of time",
+   "condition"
+  ],
+  "currentZH": [
+   "部分",
+   "份"
+  ],
+  "proposedSense": "one's share or portion",
+  "evidenceJP": "私の分のケーキを取っておいてください。",
+  "evidenceEN": "Please save my share of the cake.",
+  "evidenceZH": "请留出属于我的那份蛋糕。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "ぶん"
+ },
+ {
+  "id": "n3-b834",
+  "surface": "末",
+  "kana": "すえ",
+  "currentEN": [
+   "the end of",
+   "last"
+  ],
+  "currentZH": [
+   "末尾",
+   "最后"
+  ],
+  "proposedSense": "end result after effort",
+  "evidenceJP": "悩んだ末に新しい仕事を始めました。",
+  "evidenceEN": "After much deliberation, I started a new job.",
+  "evidenceZH": "经过一番苦恼后，我开始了一份新工作。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "すえ"
+ },
+ {
+  "id": "n3-b556",
+  "surface": "図",
+  "kana": "ず",
+  "currentEN": [
+   "figure",
+   "drawing"
+  ],
+  "currentZH": [
+   "图",
+   "图表"
+  ],
+  "proposedSense": "diagram or illustration",
+  "evidenceJP": "教科書の図を見ながら説明を聞いた。",
+  "evidenceEN": "I listened to the explanation while looking at the diagram in the textbook.",
+  "evidenceZH": "我一边看教科书上的图表，一边听讲解。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "ず"
+ },
+ {
+  "id": "n3-b657",
+  "surface": "針",
+  "kana": "はり",
+  "currentEN": [
+   "needle",
+   "pin"
+  ],
+  "currentZH": [
+   "针",
+   "指针"
+  ],
+  "proposedSense": "clock hand",
+  "evidenceJP": "時計の針が十二時を指している。",
+  "evidenceEN": "The clock hand is pointing to twelve o'clock.",
+  "evidenceZH": "时钟的针正指着十二点。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "はり"
+ },
+ {
+  "id": "n3-b292",
+  "surface": "筋",
+  "kana": "すじ",
+  "currentEN": [
+   "muscle",
+   "string",
+   "plot"
+  ],
+  "currentZH": [
+   "肌肉",
+   "筋",
+   "剧情"
+  ],
+  "proposedSense": "gristle or tendon",
+  "evidenceJP": "この牛肉は筋が多くて少し硬い。",
+  "evidenceEN": "This beef has a lot of gristle and is a bit tough.",
+  "evidenceZH": "这块牛肉肉筋很多，稍微有些硬。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "すじ"
+ },
+ {
+  "id": "n3-b249",
+  "surface": "ごめんなさい",
+  "kana": "ごめんなさい",
+  "currentEN": [
+   "I beg your pardon",
+   "excuse me"
+  ],
+  "currentZH": [
+   "对不起",
+   "抱歉"
+  ],
+  "proposedSense": "apology or I am sorry",
+  "evidenceJP": "遅くなってしまって、本当にごめんなさい。",
+  "evidenceEN": "I am truly sorry for being late.",
+  "evidenceZH": "我迟到了，真的很对不起。",
+  "readingVerifiedInSentence": false,
+  "inSentenceReading": null
+ },
+ {
+  "id": "n3-b692",
+  "surface": "見舞い",
+  "kana": "みまい",
+  "currentEN": [
+   "enquiry",
+   "expression of sympathy"
+  ],
+  "currentZH": [
+   "探望",
+   "问候"
+  ],
+  "proposedSense": "visit to someone who is ill",
+  "evidenceJP": "入院した友達の見舞いに行った。",
+  "evidenceEN": "I went to visit a friend who was hospitalized.",
+  "evidenceZH": "我去探望了住院的朋友。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "みまい"
+ },
+ {
+  "id": "n3-b594",
+  "surface": "単位",
+  "kana": "たんい",
+  "currentEN": [
+   "unit",
+   "denomination"
+  ],
+  "currentZH": [
+   "单位",
+   "学分"
+  ],
+  "proposedSense": "academic credit",
+  "evidenceJP": "大学で必要な単位をすべて取った。",
+  "evidenceEN": "I earned all the necessary credits at university.",
+  "evidenceZH": "我在大学拿到了所有需要的学分。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "たんい"
+ },
+ {
+  "id": "n3-b449",
+  "surface": "売れる",
+  "kana": "うれる",
+  "currentEN": [
+   "to sell well",
+   "to be well known"
+  ],
+  "currentZH": [
+   "畅销",
+   "出名"
+  ],
+  "proposedSense": "to sell in large quantities",
+  "evidenceJP": "この本はとてもよく売れています。",
+  "evidenceEN": "This book is selling very well.",
+  "evidenceZH": "这本书卖得很好。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "うれ"
+ },
+ {
+  "id": "n3-b656",
+  "surface": "母親",
+  "kana": "ははおや",
+  "currentEN": [
+   "mother"
+  ],
+  "currentZH": [
+   "母亲"
+  ],
+  "proposedSense": "female parent",
+  "evidenceJP": "母親が赤ちゃんを優しく抱いた。",
+  "evidenceEN": "The mother gently held her baby.",
+  "evidenceZH": "母亲温柔地抱起了婴儿。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "ははおや"
+ },
+ {
+  "id": "n3-b650",
+  "surface": "爆発",
+  "kana": "ばくはつ",
+  "currentEN": [
+   "explosion",
+   "detonation"
+  ],
+  "currentZH": [
+   "爆炸",
+   "爆发"
+  ],
+  "proposedSense": "sudden violent bursting",
+  "evidenceJP": "火災の影響でガス管が爆発した。",
+  "evidenceEN": "The gas pipe exploded due to the fire.",
+  "evidenceZH": "由于火灾的影响，煤气管道发生了爆炸。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "ばくはつ"
+ },
+ {
+  "id": "n3-b810",
+  "surface": "週",
+  "kana": "しゅう",
+  "currentEN": [
+   "week"
+  ],
+  "currentZH": [
+   "周",
+   "星期"
+  ],
+  "proposedSense": "seven day period",
+  "evidenceJP": "新しい週が元気に始まりました。",
+  "evidenceEN": "A new week has started with energy.",
+  "evidenceZH": "新的一周充满活力地开始了。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "しゅう"
+ },
+ {
+  "id": "n3-b481",
+  "surface": "下り",
+  "kana": "くだり",
+  "currentEN": [
+   "descending",
+   "down-train"
+  ],
+  "currentZH": [
+   "下行",
+   "下坡"
+  ],
+  "proposedSense": "bound away from the hub",
+  "evidenceJP": "下りの電車は比較的すいている。",
+  "evidenceEN": "Outbound trains are relatively uncrowded.",
+  "evidenceZH": "下行方向的电车比较空。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "くだり"
+ },
+ {
+  "id": "n3-b303",
+  "surface": "装置",
+  "kana": "そうち",
+  "currentEN": [
+   "equipment",
+   "installation"
+  ],
+  "currentZH": [
+   "装置",
+   "设备"
+  ],
+  "proposedSense": "mechanical device or system",
+  "evidenceJP": "工場に新しい安全装置をつけた。",
+  "evidenceEN": "We installed a new safety device in the factory.",
+  "evidenceZH": "工厂里安装了新的安全装置。",
+  "readingVerifiedInSentence": true,
+  "inSentenceReading": "そうち"
+ }
+]

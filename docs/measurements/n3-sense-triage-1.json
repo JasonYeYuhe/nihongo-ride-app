@@ -1,0 +1,167 @@
+[
+  {
+    "id": "n3-b152",
+    "verdict": "paraphrase",
+    "reason": "\"to spread\" already covers a view spreading out before you; \"open up\" is the same sense reworded."
+  },
+  {
+    "id": "n3-b263",
+    "verdict": "paraphrase",
+    "reason": "The sun dropping below the horizon is exactly \"to sink / to go under\" (ZH 降下); no separate referent."
+  },
+  {
+    "id": "n3-b965",
+    "verdict": "paraphrase",
+    "reason": "\"to stop or refrain from doing\" is a restatement of \"to cease\"."
+  },
+  {
+    "id": "n3-b691",
+    "verdict": "paraphrase",
+    "reason": "\"to be full\" (充满) already covers 希望に満ちる; only the preposition differs."
+  },
+  {
+    "id": "n3-b764",
+    "verdict": "new_sense",
+    "reason": "\"to break / to snap\" (断, 切断) would tell a learner the battery physically broke; the run-out / expire sense of 切れる is in neither gloss line.",
+    "glossEN": "to run out",
+    "glossZH": "用完"
+  },
+  {
+    "id": "n3-b586",
+    "verdict": "paraphrase",
+    "reason": "\"to throw down\" (弄倒) is the same knocking-over sense; the wind is just a different agent."
+  },
+  {
+    "id": "n3-b343",
+    "verdict": "paraphrase",
+    "reason": "Threading a needle is the existing let-through sense (让通过) with an object; the wording nearly duplicates \"to let pass\"."
+  },
+  {
+    "id": "n3-b133",
+    "verdict": "paraphrase",
+    "reason": "Adverbial rewording of \"smile sweetly\"; no meaning added."
+  },
+  {
+    "id": "n3-b507",
+    "verdict": "paraphrase",
+    "reason": "Verb form of the noun already glossed; 婚約した reads straight off \"engagement / 订婚\"."
+  },
+  {
+    "id": "n3-b565",
+    "verdict": "paraphrase",
+    "reason": "\"manufacturing of goods\" is \"manufacture, production\" with the object spelled out."
+  },
+  {
+    "id": "n3-b516",
+    "verdict": "paraphrase",
+    "reason": "A typhoon departing is the existing \"to go away / 离去\"; weather is context, not a distinct sense."
+  },
+  {
+    "id": "n3-b291",
+    "verdict": "not_a_sense",
+    "reason": "Names the sentence's object (患者の命) rather than a sense; the saving sense is already \"to rescue from / 拯救\"."
+  },
+  {
+    "id": "n3-b271",
+    "verdict": "not_a_sense",
+    "reason": "\"repair of a bicycle\" is the sentence's subject matter, not a sense of 修理."
+  },
+  {
+    "id": "n3-b247",
+    "verdict": "paraphrase",
+    "reason": "\"border between countries\" restates \"national border / 国境\" in meaning."
+  },
+  {
+    "id": "n3-b725",
+    "verdict": "not_a_sense",
+    "reason": "\"circle formed by people\" describes what the sentence's ring is made of; ring/hoop already covers it."
+  },
+  {
+    "id": "n3-b862",
+    "verdict": "paraphrase",
+    "reason": "\"other people\" is literally the existing \"others / 别人\"."
+  },
+  {
+    "id": "n3-b175",
+    "verdict": "new_sense",
+    "reason": "\"face, mask, surface\" gives a learner nothing for 肯定的な面; the abstract aspect/facet sense is missing from the English line.",
+    "glossEN": "aspect",
+    "glossZH": "方面"
+  },
+  {
+    "id": "n3-b389",
+    "verdict": "paraphrase",
+    "reason": "\"part\" (部分, 份) already covers 私の分 = my share/portion."
+  },
+  {
+    "id": "n3-b834",
+    "verdict": "paraphrase",
+    "reason": "悩んだ末に parses off \"the end of\" (末尾, 最后); \"after effort\" is nuance of the construction, not a separate sense of 末."
+  },
+  {
+    "id": "n3-b556",
+    "verdict": "paraphrase",
+    "reason": "\"diagram or illustration\" is \"figure, drawing\" (图表) reworded."
+  },
+  {
+    "id": "n3-b657",
+    "verdict": "new_sense",
+    "reason": "A clock's hand is not a needle or pin; the English line leaves 時計の針 unintelligible.",
+    "glossEN": "clock hand",
+    "glossZH": "指针"
+  },
+  {
+    "id": "n3-b292",
+    "verdict": "paraphrase",
+    "reason": "Gristle/sinew belongs to the same dictionary sense as \"muscle\" plus the fibrous \"string\" gloss; ZH 筋 is exactly the meat-tendon word."
+  },
+  {
+    "id": "n3-b249",
+    "verdict": "paraphrase",
+    "reason": "\"I beg your pardon\" is already the apology sense; \"I am sorry\" adds nothing."
+  },
+  {
+    "id": "n3-b692",
+    "verdict": "new_sense",
+    "reason": "\"enquiry, expression of sympathy\" never conveys that the word denotes going to see the person; 見舞いに行った is opaque against the current English line.",
+    "glossEN": "visit to the sick",
+    "glossZH": "探病"
+  },
+  {
+    "id": "n3-b594",
+    "verdict": "new_sense",
+    "reason": "\"unit, denomination\" reads as a measurement unit; the university-credit sense is missing from the English line.",
+    "glossEN": "academic credit",
+    "glossZH": "学分"
+  },
+  {
+    "id": "n3-b449",
+    "verdict": "paraphrase",
+    "reason": "\"to sell in large quantities\" is \"to sell well / 畅销\"."
+  },
+  {
+    "id": "n3-b656",
+    "verdict": "paraphrase",
+    "reason": "\"female parent\" is a definition of \"mother\", not a further sense."
+  },
+  {
+    "id": "n3-b650",
+    "verdict": "paraphrase",
+    "reason": "\"sudden violent bursting\" is what \"explosion, detonation\" means."
+  },
+  {
+    "id": "n3-b810",
+    "verdict": "paraphrase",
+    "reason": "\"seven day period\" is the definition of \"week\"."
+  },
+  {
+    "id": "n3-b481",
+    "verdict": "paraphrase",
+    "reason": "\"down-train\" (下行) is precisely the outbound-from-the-hub sense already listed."
+  },
+  {
+    "id": "n3-b303",
+    "verdict": "paraphrase",
+    "reason": "A safety device is covered by \"equipment, installation / 装置, 设备\"."
+  }
+]
