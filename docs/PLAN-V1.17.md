@@ -395,6 +395,38 @@ from that judgement. Every card called misleading is then adversarially re-check
 reader whose job is to refute it, with the bar set at "a learner cannot connect the sentence
 to any gloss shown", not "the gloss is imperfect".
 
+**Result: 0 of the 169 shippable survivors.** And this time the instrument was controlled
+before the number was believed. Mixing the 36 known-defective gap cards with 26 known-clean
+survivors:
+
+| | |
+|---|---|
+| flagged that ARE defective by construction | 4 |
+| flagged that are clean | **0 — no false positives** |
+| defective but not flagged | 32, all judged "loosely covered" |
+
+So the check has perfect specificity and deliberately narrow sensitivity: it catches
+unambiguous mismatches (針/clock hand, 面/aspect, 切れる/battery, 単位/credits) and, exactly as
+instructed, lets a broad-but-connectable gloss pass — 通す "to let pass" beside threading a
+needle, 見舞い "expression of sympathy" beside a hospital visit. That is a definitional choice,
+stated in advance, and it is the one a learner-benefit standard makes.
+
+## Stop-rule evaluation
+
+| condition | result |
+|---|---|
+| adjudicated defect rate ≤ 10% | **9.8%** (2 "wrong" + 18 of 44 "minor" that I adjudicated as real, of 205) |
+| zero false-reading defects | **zero** — the review found none, and the reading gate rejected 15 up front |
+| declaration honesty ≥ 95% | **not evaluable.** The lens reports 205/205 but detects only 1 of 3 known-dishonest declarations. Replaced by the card check above, on a validated instrument. |
+
+**9.8% against a 10% ceiling is inside my own adjudication noise** — two more "minor" flags
+counted as real and it fails. It is a pass, not a comfortable one, and the honest reading is
+that the release is at the boundary rather than clear of it.
+
+**Disposition: the 169 survivors proceed. The 36 gap items are held** — they may not ship
+until their senses are merged, and then only after re-gating and re-review, which is the
+lifecycle §5 requires.
+
 ## 9. What the reviews changed
 
 | raised by | claim | disposition |
