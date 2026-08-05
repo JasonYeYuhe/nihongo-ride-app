@@ -85,8 +85,15 @@ def main() -> int:
                 for r in reasons:
                     causes[r.split(":")[0]] = causes.get(r.split(":")[0], 0) + 1
             else:
+                # senseListed is computed by pilot_gate's main loop, not by gates(), so it
+                # is absent from the batch JSON — recompute it here or every merged entry
+                # would record senseListed=false and the provenance would be a lie.
+                declared = (item.get("sense") or "").strip()
+                listed = (entry.get("meanings") or {}).get("en") or []
                 survivors.append({**item, "surface": entry["surface"], "kana": entry["kana"],
-                                  "jlpt": entry.get("jlpt"), "batch": batch_name})
+                                  "jlpt": entry.get("jlpt"), "batch": batch_name,
+                                  "senseListed": bool(declared)
+                                                 and pilot.sense_matches(declared, listed)})
             if jp:
                 seen.add(jp)
 
