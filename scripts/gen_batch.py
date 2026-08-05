@@ -26,6 +26,11 @@ HARD REQUIREMENTS — a sentence that breaks any of these is discarded automatic
 - It must USE the word with the READING given. Not a homograph, not a different word that
   merely shares a kanji. If the word has another common reading, make the context force the
   one given.
+- **The sense you choose must be realised AT THAT READING.** Some senses of a word live at a
+  different reading, or trigger a sound change, and those are a different word for this app:
+  通り is とおり, so 「予想どおり」 (どおり) does not belong to it; 下す given as おろす is not the
+  くだす of 「判断を下す」; 注ぐ given as つぐ is not the そそぐ of 「力を注ぐ」. If the sense you want
+  needs a different reading, pick another sense or return an empty sentence.
 - One sentence. 5 to 40 characters. Ends with 。
 - No latin letters or digits anywhere in the Japanese.
 - Natural, everyday Japanese at or below the stated JLPT level. Do not surround an N5 word
@@ -36,12 +41,13 @@ HARD REQUIREMENTS — a sentence that breaks any of these is discarded automatic
 - Choose the kanji the meaning calls for: warmth of feeling is 温かい, temperature is 暖かい.
 - Nothing violent, sexual, medical-advisory, or reliant on a stereotype.
 - Do not merely MENTION the word (「「薬」という字」); use it in its meaning.
-- **Use the word in the SENSE the English gloss gives, and only that sense.** This is the
-  gloss the learner sees next to your sentence; a sentence using a different real sense of
-  the same word shows them a definition that does not match. 針 glossed "needle, pin" must not
-  be a clock hand; 単位 glossed "unit" must not be an academic credit; 面 glossed "face,
-  surface" must not be the suffix -面 "aspect"; 切れる glossed "to break, to snap" must not be
-  a battery running out.
+- **Use whichever sense of the word is most natural, and TELL ME WHICH ONE.** The list of
+  glosses you are given is what the app currently displays, and it is often incomplete — for
+  several words the most ordinary usage is missing from it. Do NOT contort a sentence to fit
+  that list. Write the sentence a fluent speaker would write, then put the sense you used in
+  the `sense` field as a short English gloss (2–6 words, the style of a dictionary gloss:
+  "as / in accordance with", "to get through", "clock hand").
+  If the sense you used IS in the list you were given, reuse that gloss's exact wording.
 - **The word must stand on its own, not be swallowed.** Do not bury the target inside a fixed
   compound or a frozen idiom where it stops carrying its own meaning: 殺す inside 息を殺す,
   通行 inside 通行止め, 場 inside この場を借りて. The learner must see the word working.
@@ -62,9 +68,11 @@ HARD REQUIREMENTS — a sentence that breaks any of these is discarded automatic
 Also give an English translation and a Simplified Chinese translation of your sentence.
 
 Return ONLY a JSON array, no prose, no code fence, one object per input line:
-[{"id": "...", "jp": "...", "en": "...", "zh": "..."}]
+[{"id": "...", "jp": "...", "en": "...", "zh": "...", "sense": "..."}]
 
-Input — id, surface, reading, level, English gloss, tab-separated:
+Input — id, surface, reading, level, and the glosses the app currently displays
+(informational: reuse one if it fits, ignore it if the natural sense is missing),
+tab-separated:
 """
 
 

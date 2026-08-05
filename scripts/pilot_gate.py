@@ -123,6 +123,46 @@ def paired_verbs():
 PAIRED_VERBS = paired_verbs()
 
 
+def normalize_sense(text):
+    """Fold a gloss to something two spellings of the same sense agree on.
+
+    Deliberately loose. This match NEVER rejects anything — it only decides which of two
+    queues an already-passing sentence lands in — so a false negative costs one misrouted
+    item that review catches, while a false positive hides a real vocabulary gap. Both are
+    survivable; being strict here would flood the gap queue on "as soon as" vs
+    "as soon as; immediately", which is the failure Gemini predicted for an exact match.
+    """
+    text = text.lower().strip()
+    text = re.sub(r"^(to be|to|a|an|the)\s+", "", text)
+    text = re.sub(r"\([^)]*\)", " ", text)          # parenthetical qualifiers carry no sense
+    text = re.sub(r"[^a-z0-9\s]", " ", text)         # slashes, semicolons, hyphens, commas
+    return " ".join(text.split())
+
+
+def sense_matches(declared, glosses):
+    """True when `declared` names a sense the entry already lists.
+
+    Matches on containment in either direction after normalisation, so "clock hand" finds
+    "hand of a clock" and "as soon as" finds "as soon as; immediately".
+    """
+    d = normalize_sense(declared)
+    if not d:
+        return False
+    for g in glosses:
+        n = normalize_sense(g)
+        if not n:
+            continue
+        if d == n or d in n or n in d:
+            return True
+        # a shared content word is weak evidence on its own; require the shorter side to be
+        # fully contained word-wise, which "unit" vs "unit of academic credit" satisfies and
+        # "needle" vs "clock hand" does not.
+        dw, nw = set(d.split()), set(n.split())
+        if dw and nw and (dw <= nw or nw <= dw):
+            return True
+    return False
+
+
 def target_tokens(tokenizer, sentence, entry):
     """Tokens in `sentence` that ARE the target word, decided morphologically.
 
@@ -271,7 +311,12 @@ def main() -> int:
     seen = shipped_sentences()
     levels = vocab_by_surface()
 
-    survivors, rejected = [], []
+    # Three dispositions, not two (v1.17). `vocabularyGap` is NOT a rejection: the sentence
+    # passed every gate including reading alignment, and the only thing "wrong" is that the
+    # sense it declares is absent from the entry's gloss list — which is a fact about the
+    # word, not about the sentence. Routing it makes the failure legible; the old flat
+    # reject/survive split could only make it disappear.
+    survivors, rejected, gaps = [], [], []
     counts = {}
     for item in items:
         entry = words.get(item.get("id"))
@@ -288,11 +333,21 @@ def main() -> int:
             if entry["surface"] in PAIRED_VERBS:
                 survivor["reviewFlag"] = ("transitivity pair — check the particles: this "
                                           "verb has a partner one character away")
-            survivors.append(survivor)
+            declared = (item.get("sense") or "").strip()
+            listed = (entry.get("meanings") or {}).get("en") or []
+            survivor["senseListed"] = bool(declared) and sense_matches(declared, listed)
+            survivor["entryGlosses"] = listed
+            if declared and not survivor["senseListed"]:
+                gaps.append(survivor)
+            else:
+                survivors.append(survivor)
         seen.add(item.get("jp", ""))
 
+    passed = len(survivors) + len(gaps)
     print(f"generated {len(items)} for {len(words)} words")
-    print(f"survived every gate: {len(survivors)}  ({100 * len(survivors) / max(1, len(items)):.0f}%)")
+    print(f"passed every gate: {passed}  ({100 * passed / max(1, len(items)):.0f}%)")
+    print(f"  survive       (declared sense already listed): {len(survivors)}")
+    print(f"  vocabularyGap (sense absent from the entry)  : {len(gaps)}")
     print(f"rejected: {len(rejected)}\n")
     print("rejections by cause:")
     for cause, n in sorted(counts.items(), key=lambda kv: -kv[1]):
@@ -303,7 +358,18 @@ def main() -> int:
         for r in reasons:
             print(f"             ↳ {r}")
     json.dump(survivors, open("/tmp/pilot_survivors.json", "w"), ensure_ascii=False, indent=2)
-    print(f"\nsurvivors written to /tmp/pilot_survivors.json — they still need a human to read them")
+    json.dump(gaps, open("/tmp/pilot_vocab_gaps.json", "w"), ensure_ascii=False, indent=2)
+    print("\nsurvivors written to /tmp/pilot_survivors.json — they still need a human to read them")
+    print("vocabulary gaps written to /tmp/pilot_vocab_gaps.json — each is a sentence whose"
+          " reading the gate verified, proposing a sense the entry lacks.")
+    print("NEITHER file is shippable yet: a gap item may not ship until its sense is merged"
+          " and the sentence is re-gated and re-reviewed.")
+    if gaps:
+        print("\nproposed senses (word — app shows — sentence declares):")
+        for g in gaps[:40]:
+            print(f"  {g['surface']:6} [{', '.join(g.get('entryGlosses') or [])}]"
+                  f"  ->  {g.get('sense')}")
+            print(f"         {g.get('jp')}")
     return 0
 
 

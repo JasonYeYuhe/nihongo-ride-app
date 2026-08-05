@@ -120,8 +120,16 @@ def main() -> int:
             if not item or (entry.get("exJP") or "").strip():
                 continue
             entry["exJP"], entry["exEN"], entry["exZH"] = item["jp"], item["en"], item["zh"]
-            entry["exMeta"] = {"model": "gemini-3.6-flash", "prompt": PROMPT_VERSION,
-                               "batch": item["batch"], "reviewer": args.reviewer}
+            meta = {"model": "gemini-3.6-flash", "prompt": PROMPT_VERSION,
+                    "batch": item["batch"], "reviewer": args.reviewer}
+            # v1.17: record WHICH sense the sentence was accepted as teaching. Without this
+            # the declaration is generated, gated, reviewed — and then thrown away here, so
+            # nothing downstream could ever check that the shipped card's glosses cover the
+            # shipped sentence. Provenance only; no VocabEntry field is decoded from it.
+            if item.get("sense"):
+                meta["sense"] = item["sense"]
+                meta["senseListed"] = bool(item.get("senseListed"))
+            entry["exMeta"] = meta
             changed = True
             written += 1
         if changed:
