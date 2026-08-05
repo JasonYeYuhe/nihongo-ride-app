@@ -357,6 +357,44 @@ the stop rule's third condition is a hand-read honesty sample and not a gate sta
 
 The 36 proposals are committed at `docs/measurements/n3-pilot3b-vocab-gaps.json`.
 
+### The review, and why its best number is the one I trust least
+
+205 items, three lenses, twelve agents, with the gate's routing verdict withheld so it could
+not become the reviewers' prior.
+
+| | pilot 1 | pilot 2 | pilot 3b |
+|---|---|---|---|
+| flagged | 55 (26.4%) | 53 (25.5%) | 46 (22.4%) |
+| severity "wrong" | 13 | 8 | **2** |
+| declaration honesty | — | — | 205/205 |
+
+Both "wrong" items are the same class and neither is the class this release targets — the
+target swallowed by a frozen idiom (頬 in 頬が落ちる, 間 in あっという間に). No false readings, no
+gloss-versus-sense defects.
+
+**The 100% honesty figure does not survive its negative control.** An LLM judging whether an
+LLM's declaration matches its own sentence is the circularity this project keeps getting burnt
+by, so the same lens was run over pilot 3's output, which contains three declarations known to
+be dishonest. It found **one** of the three (単位 declaring "unit" over academic credit), plus
+one I had not labelled (流す). It missed 通す declaring "to let pass" over threading a needle,
+and 見舞い declaring "enquiry" over a sick-visit.
+
+Reading the misses, part of the fault is mine twice over: the lens prompt says not to flag "a
+merely imprecise wording of the right sense", and threading a needle arguably *is* letting
+something pass, while a sick-visit arguably *is* an expression of sympathy. Those two are
+**vague superset glosses**, not lies — my ground truth was too strict. But a vague superset is
+exactly how a mismatch stays hidden, so the practical conclusion holds:
+
+> **Declaration honesty cannot be the terminal guard.** It catches unambiguous dishonesty and
+> lets a sufficiently woolly gloss through, which is the same hole by a different route.
+
+So the release test is the one Codex asked for and the one that does not depend on the
+declaration at all: **would a learner reading the card be misled?** The card is the word, the
+comma-joined gloss line, and the sentence — the declaration is not on screen and is excluded
+from that judgement. Every card called misleading is then adversarially re-checked by a second
+reader whose job is to refute it, with the bar set at "a learner cannot connect the sentence
+to any gloss shown", not "the gloss is imperfect".
+
 ## 9. What the reviews changed
 
 | raised by | claim | disposition |
