@@ -303,7 +303,18 @@ And **if** §D concludes a stored field is needed after all: `VocabEntry`'s stor
 and the UI — and it must be **localised** (`exSenseEN`/`exSenseZH` or a dictionary), because an
 English-only field would render English text in Chinese mode, a new user-visible mismatch.
 
-## 8. What the reviews changed
+## 8. Implementation status
+
+| step | state |
+|---|---|
+| A1 `gen_batch.py` declares the sense; the pin-to-gloss constraint is gone; the reading rule for sense choice is in | **done** |
+| A2 `pilot_gate.py` three dispositions + loose sense matcher (8 cases pinned); rejection path unchanged, verified at 1.2% against the 779 | **done** |
+| A3 `apply_batch.py` carries the sense into `exMeta` | **done** |
+| B pilot 3 on the same 245 words, same seed | running |
+| review + adjudication of (sentence, sense) pairs | next |
+| §C merge, §D display, stop rule | after the pilot reports |
+
+## 9. What the reviews changed
 
 | raised by | claim | disposition |
 |---|---|---|

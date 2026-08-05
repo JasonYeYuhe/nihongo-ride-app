@@ -47,7 +47,13 @@ HARD REQUIREMENTS — a sentence that breaks any of these is discarded automatic
   that list. Write the sentence a fluent speaker would write, then put the sense you used in
   the `sense` field as a short English gloss (2–6 words, the style of a dictionary gloss:
   "as / in accordance with", "to get through", "clock hand").
-  If the sense you used IS in the list you were given, reuse that gloss's exact wording.
+  **Describe the sense as it works IN YOUR SENTENCE, in your own words. Matching the list you
+  were given is not a goal and you get no credit for it.** If you thread a needle, the sense
+  is "to pass something through", not "to let pass"; if the sentence is about academic
+  credits, the sense is "academic credit", not "unit"; if someone visits a sick friend, the
+  sense is "visit to someone who is ill", not "enquiry". Writing a listed gloss over a
+  sentence that means something else is the single worst thing you can do here — it hides the
+  mismatch instead of reporting it, and reporting it is the entire purpose of this field.
 - **The word must stand on its own, not be swallowed.** Do not bury the target inside a fixed
   compound or a frozen idiom where it stops carrying its own meaning: 殺す inside 息を殺す,
   通行 inside 通行止め, 場 inside この場を借りて. The learner must see the word working.
