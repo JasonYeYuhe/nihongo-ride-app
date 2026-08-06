@@ -11418,6 +11418,17 @@
         "什么样的",
         "怎样的"
       ]
+    },
+    "exJP": "どんな料理が好きですか。",
+    "exEN": "What kind of food do you like?",
+    "exZH": "你喜欢什么样的食物？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "what kind of",
+      "senseListed": true
     }
   },
   {
@@ -11439,6 +11450,17 @@
         "使流动",
         "冲走"
       ]
+    },
+    "exJP": "お風呂の水を流してください。",
+    "exEN": "Please drain the bathwater.",
+    "exZH": "请把浴室的水放掉。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "to drain liquid",
+      "senseListed": true
     }
   },
   {
@@ -11984,6 +12006,17 @@
         "紧急",
         "非常"
       ]
+    },
+    "exJP": "非常のときは、このボタンを押してください。",
+    "exEN": "In an emergency, please press this button.",
+    "exZH": "紧急情况下，请按下这个按钮。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "emergency situation",
+      "senseListed": true
     }
   },
   {
@@ -12067,6 +12100,17 @@
         "表格",
         "图表"
       ]
+    },
+    "exJP": "結果をわかりやすく表にまとめました。",
+    "exEN": "I summarized the results into a table so they are easy to understand.",
+    "exZH": "我把结果整理成了易于理解的表格。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "table or chart",
+      "senseListed": true
     }
   },
   {
@@ -12579,6 +12623,17 @@
         "转动",
         "传递"
       ]
+    },
+    "exJP": "ドアのノブを右に回してください。",
+    "exEN": "Please turn the doorknob to the right.",
+    "exZH": "请把门把手向右转动。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "to rotate or turn something",
+      "senseListed": true
     }
   },
   {
@@ -14213,6 +14268,17 @@
         "救助",
         "救援"
       ]
+    },
+    "exJP": "山で迷った人をみんなで救助した。",
+    "exEN": "Everyone rescued the person who was lost in the mountains.",
+    "exZH": "大家救援了在山上迷路的人。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "rescue / helping someone in danger",
+      "senseListed": true
     }
   },
   {
@@ -14263,6 +14329,17 @@
       "zh": [
         "共同"
       ]
+    },
+    "exJP": "友達と共同で小さな会社を作った。",
+    "exEN": "I started a small company jointly with a friend.",
+    "exZH": "我和朋友共同创立了一家小公司。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "joint operation / doing together",
+      "senseListed": true
     }
   },
   {
@@ -14339,6 +14416,17 @@
       "zh": [
         "金钱"
       ]
+    },
+    "exJP": "金銭の問題について家族と話し合った。",
+    "exEN": "I discussed monetary issues with my family.",
+    "exZH": "我和家人讨论了关于钱财的问题。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "money / monetary matters",
+      "senseListed": true
     }
   },
   {
@@ -15379,6 +15467,17 @@
         "支付",
         "付款"
       ]
+    },
+    "exJP": "レジで買い物の支払を済ませた。",
+    "exEN": "I completed the payment for my shopping at the cash register.",
+    "exZH": "我在结账处完成了购物的付款。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "payment / paying",
+      "senseListed": true
     }
   },
   {
@@ -15690,6 +15789,17 @@
         "产生",
         "发生"
       ]
+    },
+    "exJP": "意見の違いから大きな問題が生じた。",
+    "exEN": "A major problem arose from a difference of opinion.",
+    "exZH": "由于意见分歧产生了重大问题。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "to arise / to occur",
+      "senseListed": true
     }
   },
   {
@@ -16007,6 +16117,17 @@
         "巢",
         "窝"
       ]
+    },
+    "exJP": "木の上に小さな鳥が巣を作っている。",
+    "exEN": "A small bird is making a nest in the tree.",
+    "exZH": "小鸟在树上造了一个巢。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "nest / bird nest",
+      "senseListed": true
     }
   },
   {
@@ -16286,6 +16407,17 @@
         "世间",
         "社会"
       ]
+    },
+    "exJP": "彼女のニュースは世間の注目を集めた。",
+    "exEN": "Her news attracted the public's attention.",
+    "exZH": "关于她的新闻吸引了公众的关注。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "the public / society",
+      "senseListed": true
     }
   },
   {
@@ -16542,6 +16674,17 @@
         "对",
         "比"
       ]
+    },
+    "exJP": "サッカーの日本対韓国の試合を見ます。",
+    "exEN": "I will watch the soccer match of Japan versus South Korea.",
+    "exZH": "我要看日本对韩国的足球比赛。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "versus in a sports match",
+      "senseListed": true
     }
   },
   {
@@ -16798,6 +16941,17 @@
         "因为",
         "也"
       ]
+    },
+    "exJP": "誰だって間違えることはあります。",
+    "exEN": "Anyone can make mistakes.",
+    "exZH": "谁都会有犯错的时候。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "even / anyone (used after interrogative)",
+      "senseListed": true
     }
   },
   {
@@ -17403,6 +17557,17 @@
         "魔术",
         "戏法"
       ]
+    },
+    "exJP": "兄が素敵な手品を見せてくれた。",
+    "exEN": "My older brother showed me a wonderful magic trick.",
+    "exZH": "哥哥表演了精彩的魔术给我看。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "magic trick or sleight of hand",
+      "senseListed": true
     }
   },
   {
@@ -17665,6 +17830,17 @@
         "可是",
         "然而"
       ]
+    },
+    "exJP": "ところが、予定は急に変更されました。",
+    "exEN": "However, the plan was suddenly changed.",
+    "exZH": "然而，计划突然改变了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "however / contrary to expectation",
+      "senseListed": true
     }
   },
   {
@@ -17827,6 +18003,17 @@
         "此外",
         "仍然"
       ]
+    },
+    "exJP": "なお、明日のイベントは雨でも行います。",
+    "exEN": "Please note that tomorrow's event will be held even if it rains.",
+    "exZH": "另外，明天的活动即使下雨也会照常举行。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "furthermore / note that (supplementary notice)",
+      "senseListed": true
     }
   },
   {
@@ -17878,6 +18065,17 @@
         "什么也（不）",
         "并非"
       ]
+    },
+    "exJP": "彼はなにも言わずに部屋を出て行った。",
+    "exEN": "He left the room without saying anything.",
+    "exZH": "他什么也没说就离开了房间。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "nothing (used with negative verb)",
+      "senseListed": true
     }
   },
   {
@@ -17896,6 +18094,17 @@
         "波浪",
         "波纹"
       ]
+    },
+    "exJP": "今日は波が高いので海に入れません。",
+    "exEN": "Because the waves are high today, we cannot go into the sea.",
+    "exZH": "今天浪很大，所以不能下海。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "ocean wave",
+      "senseListed": true
     }
   },
   {
@@ -18342,6 +18551,17 @@
         "宽度",
         "幅度"
       ]
+    },
+    "exJP": "この道の幅はとても狭い。",
+    "exEN": "The width of this road is very narrow.",
+    "exZH": "这条路的宽度非常狭窄。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "width or breadth",
+      "senseListed": true
     }
   },
   {
@@ -18539,6 +18759,17 @@
       "zh": [
         "微妙"
       ]
+    },
+    "exJP": "二人の意見には微妙な違いがある。",
+    "exEN": "There is a subtle difference between their two opinions.",
+    "exZH": "两人的意见存在着微妙的差异。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "subtle or delicate",
+      "senseListed": true
     }
   },
   {
@@ -18963,6 +19194,17 @@
       "zh": [
         "人行道"
       ]
+    },
+    "exJP": "安全のために歩道を歩いてください。",
+    "exEN": "Please walk on the sidewalk for safety.",
+    "exZH": "为了安全，请走人行道。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "sidewalk, footway",
+      "senseListed": true
     }
   },
   {
@@ -19427,6 +19669,17 @@
         "如果",
         "万一"
       ]
+    },
+    "exJP": "もしも雨が降ったら、部屋で遊びましょう。",
+    "exEN": "If it rains, let's play inside the room.",
+    "exZH": "如果下雨的话，我们就在房间里玩吧。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "if, in case",
+      "senseListed": true
     }
   },
   {
@@ -19505,6 +19758,17 @@
       "zh": [
         "房租"
       ]
+    },
+    "exJP": "毎月五万円の家賃を払っています。",
+    "exEN": "I pay 50,000 yen in rent every month.",
+    "exZH": "我每个月付五万日元的房租。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "house rent",
+      "senseListed": true
     }
   },
   {
@@ -19713,6 +19977,17 @@
         "世间",
         "社会"
       ]
+    },
+    "exJP": "世の中にはいろいろな考え方の人がいる。",
+    "exEN": "There are people with various ways of thinking in the world.",
+    "exZH": "世界上有持各种想法的人。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "society, the world",
+      "senseListed": true
     }
   },
   {
@@ -23003,6 +23278,17 @@
         "确实",
         "可靠"
       ]
+    },
+    "exJP": "彼の成功はほぼ確実だと思われる。",
+    "exEN": "His success is considered almost certain.",
+    "exZH": "他的成功被认为几乎是确定的。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "certain, reliable",
+      "senseListed": true
     }
   },
   {
@@ -23075,6 +23361,17 @@
         "相当",
         "颇"
       ]
+    },
+    "exJP": "今日のテストはかなり難しかった。",
+    "exEN": "Today's test was quite difficult.",
+    "exZH": "今天的考试相当难。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "considerably, quite",
+      "senseListed": true
     }
   },
   {
@@ -23338,6 +23635,17 @@
         "相反",
         "逆"
       ]
+    },
+    "exJP": "予定とは逆の方向へ進んでしまった。",
+    "exEN": "I ended up going in the opposite direction from planned.",
+    "exZH": "走到了与计划相反的方向。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "opposite, reverse",
+      "senseListed": true
     }
   },
   {
@@ -23566,6 +23874,17 @@
       "zh": [
         "近代"
       ]
+    },
+    "exJP": "日本の近代の歴史について学ぶ。",
+    "exEN": "Learn about Japan's modern history.",
+    "exZH": "学习日本的近代历史。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "modern times, modern era",
+      "senseListed": true
     }
   },
   {
@@ -24120,6 +24439,17 @@
         "强盗",
         "抢劫"
       ]
+    },
+    "exJP": "昨夜、近所の銀行に強盗が入った。",
+    "exEN": "Last night, a robber broke into a neighborhood bank.",
+    "exZH": "昨晚有强盗闯进了附近的银行。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "robber, burglar",
+      "senseListed": true
     }
   },
   {
@@ -24349,6 +24679,17 @@
         "摔倒",
         "跌倒"
       ]
+    },
+    "exJP": "石につまずいて派手に転んだ。",
+    "exEN": "I tripped over a stone and fell down hard.",
+    "exZH": "被石头绊到重重地摔倒了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "to fall down, to tumble",
+      "senseListed": true
     }
   },
   {
@@ -24693,6 +25034,17 @@
         "骚动",
         "喧闹"
       ]
+    },
+    "exJP": "突然の大きな音で騒ぎが起きた。",
+    "exEN": "A disturbance broke out due to a sudden loud noise.",
+    "exZH": "突如其来的巨响引发了骚动。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "uproar, disturbance",
+      "senseListed": true
     }
   },
   {
@@ -24925,6 +25277,17 @@
         "分店",
         "分公司"
       ]
+    },
+    "exJP": "来月、大阪に新しい支店を開く。",
+    "exEN": "Next month, we will open a new branch in Osaka.",
+    "exZH": "下个月将在大阪开设新分店。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "branch office",
+      "senseListed": true
     }
   },
   {
@@ -25326,6 +25689,17 @@
         "障碍",
         "阻碍"
       ]
+    },
+    "exJP": "計画を進める上で大きな障害が生じた。",
+    "exEN": "A major obstacle arose in carrying out the plan.",
+    "exZH": "在推进计划的过程中出现了巨大的障碍。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "obstacle, barrier",
+      "senseListed": true
     }
   },
   {
@@ -25970,6 +26344,17 @@
         "完成",
         "办完"
       ]
+    },
+    "exJP": "出発前に朝食を早めに済ませた。",
+    "exEN": "I finished breakfast early before departure.",
+    "exZH": "出发前提前吃完了早餐。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "to finish, to complete",
+      "senseListed": true
     }
   },
   {
@@ -26529,6 +26914,17 @@
         "大气",
         "空气"
       ]
+    },
+    "exJP": "工場の減少で大気がきれいになった。",
+    "exEN": "The air became cleaner due to the decrease in factories.",
+    "exZH": "由于工厂减少，大气变得洁净了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "atmosphere, air",
+      "senseListed": true
     }
   },
   {
@@ -28234,6 +28630,17 @@
         "愿望",
         "请求"
       ]
+    },
+    "exJP": "星に自分の願いを込めた。",
+    "exEN": "I put my wish upon a star.",
+    "exZH": "向星星许下了自己的愿望。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "wish, desire",
+      "senseListed": true
     }
   },
   {
@@ -29089,6 +29496,17 @@
         "夫人",
         "太太"
       ]
+    },
+    "exJP": "社長は夫人と一緒にパーティーに来た。",
+    "exEN": "The company president came to the party with his wife.",
+    "exZH": "社长和夫人一起参加了宴会。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "wife (of someone else)",
+      "senseListed": true
     }
   },
   {
@@ -29275,6 +29693,17 @@
         "领域",
         "范围"
       ]
+    },
+    "exJP": "彼女は環境問題の分野で活躍している。",
+    "exEN": "She is active in the field of environmental issues.",
+    "exZH": "她在环境问题领域非常活跃。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "field, realm",
+      "senseListed": true
     }
   },
   {
@@ -29562,6 +29991,17 @@
         "豆",
         "豆子"
       ]
+    },
+    "exJP": "毎朝、スープに豆を入れて食べる。",
+    "exEN": "I put beans in my soup and eat it every morning.",
+    "exZH": "每天早上我都往汤里加豆子吃。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "beans, peas",
+      "senseListed": true
     }
   },
   {
@@ -29791,6 +30231,17 @@
         "宁可",
         "索性"
       ]
+    },
+    "exJP": "叱られるどころか寧ろ褒められた。",
+    "exEN": "Far from being scolded, I was rather praised.",
+    "exZH": "非但没挨骂，反而收到了表扬。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "rather, instead",
+      "senseListed": true
     }
   },
   {
@@ -30706,6 +31157,17 @@
       "zh": [
         "我们"
       ]
+    },
+    "exJP": "我々のチームは新しい計画を準備しています。",
+    "exEN": "Our team is preparing a new plan.",
+    "exZH": "我们团队正在准备新的计划。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "we as a group",
+      "senseListed": true
     }
   },
   {
@@ -30815,6 +31277,17 @@
         "表现",
         "显露"
       ]
+    },
+    "exJP": "彼の笑顔は感謝の現れです。",
+    "exEN": "His smile is an expression of gratitude.",
+    "exZH": "他的微笑是表示感谢的体现。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "expression or manifestation of feeling",
+      "senseListed": true
     }
   },
   {
@@ -31174,6 +31647,17 @@
         "鬼",
         "魔鬼"
       ]
+    },
+    "exJP": "昔話に出てくる鬼は大きな角を持っています。",
+    "exEN": "The ogre in the folktale has large horns.",
+    "exZH": "民间故事里出现的鬼怪长着大角。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "ogre in traditional folklore",
+      "senseListed": true
     }
   },
   {
@@ -31779,6 +32263,17 @@
       "zh": [
         "金融"
       ]
+    },
+    "exJP": "兄は銀行で金融の仕事をしています。",
+    "exEN": "My older brother works in finance at a bank.",
+    "exZH": "我哥哥在银行从事金融工作。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "finance and banking business",
+      "senseListed": true
     }
   },
   {
@@ -37421,6 +37916,17 @@
         "根据",
         "据...所说"
       ]
+    },
+    "exJP": "天気予報によると、明日は晴れそうです。",
+    "exEN": "According to the weather forecast, it seems it will be sunny tomorrow.",
+    "exZH": "根据天气预报，明天好像会放晴。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
+      "sense": "according to information source",
+      "senseListed": true
     }
   },
   {

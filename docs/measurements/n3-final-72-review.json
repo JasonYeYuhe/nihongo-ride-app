@@ -1,0 +1,96 @@
+{
+ "reviewed": 72,
+ "flagged": 16,
+ "wrong": 4,
+ "wrongItems": [
+  {
+   "id": "n3-b625",
+   "severity": "wrong",
+   "problem": "年月 in 「母と二人で過ごした年月を振り返る」 is not forced to としつき — ねんげつ is at least as natural a reading in this exact frame (長い年月/過ごした年月 are routinely read ねんげつ). Nothing in the sentence disambiguates, so a learner typing としつき is guessing. Needs a context that pins the emotive reading (e.g. 「としつきが流れる」-type collocations still don't force it; better to rebuild around an unambiguous frame)."
+  },
+  {
+   "id": "n3-b948",
+   "severity": "wrong",
+   "problem": "明後日 is read あさって by default; みょうごにち is the formal/business minority reading. 「明後日の午後に打ち合わせを行う予定です」 is polite but ordinary — あさって is the reading nearly every learner and native speaker would produce here. The sentence does not force みょうごにち (that needs a stiff announcement/legal register, e.g. 「明後日をもって受付を終了いたします」)."
+  },
+  {
+   "id": "n3-b114",
+   "severity": "wrong",
+   "problem": "「海で釣を楽しみました」 is orthographically wrong: the activity noun is 釣り with okurigana. Bare 釣 only appears in compounds/signage (釣具, 釣禁止) and in running text is read as part of お釣り (change). As written the sentence is not correct modern Japanese and also fails to force つり = fishing."
+  },
+  {
+   "id": "n3-b785",
+   "severity": "wrong",
+   "problem": "zh copies the kanji into a false friend: 「我在小学课上学习了国语」— Chinese 国语 means Mandarin/the national language of China (or, in Taiwan usage, the Chinese-language subject), not the Japanese-language school subject that 国語 denotes here. A Chinese learner is taught exactly the wrong referent. Needs 日语课 / 日语(国语)课. The en is also clumsy ('I studied Japanese language class') — 'I studied Japanese in class at elementary school'."
+  }
+ ],
+ "minorItems": [
+  {
+   "id": "n3-b624",
+   "severity": "minor",
+   "problem": "「静かなどこか」 is the wrong word order for the indefinite pronoun: Japanese puts the modifier after どこか — 「どこか静かなところへ旅行に行きたい」. Pre-modifying どこか with a な-adjective is marked/poetic at best and teaches learners a bad pattern. Reading and grammar otherwise fine."
+  },
+  {
+   "id": "n3-b890",
+   "severity": "minor",
+   "problem": "「独特な香りを持っています」 is translationese; a dish does not 香りを持つ in natural Japanese. Standard: 「この料理は独特の香りがします」 or 「独特の香りがある」. 独特の is also the commoner form before a noun. Reading どくとく is forced."
+  },
+  {
+   "id": "n3-b547",
+   "severity": "minor",
+   "problem": "「胃の中で食物を適切に消化する。」 has no subject and uses an active transitive verb with no agent, so it reads as a sentence fragment/instruction. Natural: 「食物は胃の中で適切に消化される。」 The technical register does support しょくもつ over たべもの, so the reading is OK."
+  },
+  {
+   "id": "n3-b581",
+   "severity": "minor",
+   "problem": "Word choice: 「大気がきれいになった」 is odd — 大気 is the atmosphere as a whole and collocates with 大気汚染; for local air becoming clean Japanese uses 空気. Natural: 「工場が減って空気がきれいになった」 or 「大気汚染が改善した」. Also 「工場の減少で」 is stiff nominalization for a spoken-register sentence."
+  },
+  {
+   "id": "n3-b641",
+   "severity": "minor",
+   "problem": "Collocation is off: 「願いを込める」 needs a vessel to put the wish into (手紙に/贈り物に願いを込める). Wishing on a star is 「星に願いをかける」. 「星に自分の願いを込めた」 is understandable but not idiomatic."
+  },
+  {
+   "id": "n3-b148",
+   "severity": "minor",
+   "problem": "「非常のとき」 is awkward. As a noun meaning emergency, 非常 lives in compounds and set phrases: 非常時には / 非常の際は / 非常の場合は. 非常のとき reads like a learner's construction; correct but unnatural."
+  },
+  {
+   "id": "n3-b732",
+   "severity": "minor",
+   "problem": "Kanji choice for the sense: a manifestation of a feeling is conventionally written 感謝の表れ (NHK/press style reserves 現れ for things appearing physically). 現れ here is not flatly wrong but is the dispreferred spelling for exactly this 感謝の… context."
+  },
+  {
+   "id": "n3-b204",
+   "severity": "minor",
+   "problem": "en and zh disagree on the same noun: 時計 is rendered 'a clock' in en but 一块手表 (a wristwatch) in zh. One of the two is wrong for the same jp word, and a learner comparing the two translations gets contradictory information about 時計."
+  },
+  {
+   "id": "n3-b598",
+   "severity": "minor",
+   "problem": "Surrounding vocabulary above target level: 冷え込み (nominalized 冷え込む) is N2, and 冷え込みが激しい is a weather-report register. The target 近頃 is easy but the rest of the sentence is the hard part, so the drill trains an N2 collocation rather than the N3 adverb."
+  },
+  {
+   "id": "n3-b746",
+   "severity": "minor",
+   "problem": "zh renders 鬼 as 鬼怪, which in Chinese reads as ghosts/spectres — the 恶鬼 sense the target is supposed to be distinguished from. en correctly says 'ogre'. 妖怪／(日本传说中的)鬼(食人怪) would carry the horned-ogre image the sentence and en both intend; 长着大角 only partly rescues it."
+  },
+  {
+   "id": "n3-b371",
+   "severity": "minor",
+   "problem": "Both translations render 幅が狭い literally and end up unidiomatic. en 'The width of this road is very narrow' — a width is small/not narrow; should be 'This road is very narrow.' zh 「这条路的宽度非常狭窄」 has the same collocation clash (宽度…狭窄); 这条路非常窄 is what the jp means."
+  },
+  {
+   "id": "n3-b357",
+   "severity": "minor",
+   "problem": "en and zh diverge on ゆっくり起きます. en 'I always get up slowly' is a literal misread (Japanese means getting up at a leisurely pace / sleeping in), while zh 「我总是很晚才起床」 says 'I always get up very late'. The two glosses teach different facts; en should be 'I always take my time getting up' or 'I always sleep in'."
+  }
+ ],
+ "misleadingCards": [
+  {
+   "id": "n3-b657",
+   "misleading": true,
+   "why": "Sentence is 時計の針 = the hands of a clock, but the gloss line only offers \"needle, pin\". The clock-hand sense is absent, so the definition does not explain the sentence."
+  }
+ ]
+}

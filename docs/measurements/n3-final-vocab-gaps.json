@@ -1,0 +1,253 @@
+[
+  {
+    "id": "n3-b395",
+    "jp": "手続きは本人が行う必要があります。",
+    "en": "The procedure must be carried out by the person themselves.",
+    "zh": "手续必须由本人办理。",
+    "sense": "the person in question, oneself",
+    "surface": "本人",
+    "kana": "ほんにん",
+    "senseListed": false,
+    "entryGlosses": [
+      "the person himself"
+    ]
+  },
+  {
+    "id": "n3-b657",
+    "jp": "時計の針が十二時を指している。",
+    "en": "The clock hands are pointing to twelve o'clock.",
+    "zh": "时钟的指针指向十二点。",
+    "sense": "hand of a clock",
+    "surface": "針",
+    "kana": "はり",
+    "senseListed": false,
+    "entryGlosses": [
+      "needle",
+      "pin"
+    ]
+  },
+  {
+    "id": "n3-b726",
+    "jp": "荷物を脇に抱えて歩いた。",
+    "en": "I walked carrying the luggage under my arm.",
+    "zh": "我把行李夹在腋下走着。",
+    "sense": "under one's arm",
+    "surface": "脇",
+    "kana": "わき",
+    "senseListed": false,
+    "entryGlosses": [
+      "side",
+      "armpit"
+    ]
+  },
+  {
+    "id": "n3-b804",
+    "jp": "景気が悪くなり失業する人が増えた。",
+    "en": "As the economy worsened, the number of people losing their jobs increased.",
+    "zh": "随着经济恶化，失业的人增加了。",
+    "sense": "loss of employment",
+    "surface": "失業",
+    "kana": "しつぎょう",
+    "senseListed": false,
+    "entryGlosses": [
+      "unemployment"
+    ]
+  },
+  {
+    "id": "n3-b815",
+    "jp": "母は専業主婦として家庭を支えています。",
+    "en": "My mother supports our household as a full-time homemaker.",
+    "zh": "我母亲作为全职主妇支撑着家庭。",
+    "sense": "full-time homemaker",
+    "reviewFlag": "embedded-in-longer-word",
+    "surface": "主婦",
+    "kana": "しゅふ",
+    "senseListed": false,
+    "entryGlosses": [
+      "housewife"
+    ]
+  },
+  {
+    "id": "n3-b839",
+    "jp": "長年の実験がようやく成功しました。",
+    "en": "Years of experimentation finally succeeded.",
+    "zh": "多年的实验终于成功了。",
+    "sense": "achieving a desired goal",
+    "surface": "成功",
+    "kana": "せいこう",
+    "senseListed": false,
+    "entryGlosses": [
+      "success"
+    ]
+  },
+  {
+    "id": "n3-b870",
+    "jp": "父は今、会議中なので電話に出られません。",
+    "en": "My father is in a meeting right now, so he cannot answer the phone.",
+    "zh": "我父亲现在正在开会，接不了电话。",
+    "sense": "currently engaged in an activity",
+    "surface": "中",
+    "kana": "ちゅう",
+    "senseListed": false,
+    "entryGlosses": [
+      "medium",
+      "during"
+    ]
+  },
+  {
+    "id": "n3-b878",
+    "jp": "嘘をついたことに強い罪の意識を感じた。",
+    "en": "I felt a strong sense of guilt about lying.",
+    "zh": "我为撒谎感到强烈的罪恶感。",
+    "sense": "feeling of moral guilt",
+    "surface": "罪",
+    "kana": "つみ",
+    "senseListed": false,
+    "entryGlosses": [
+      "crime",
+      "sin"
+    ]
+  },
+  {
+    "id": "n3-b890",
+    "jp": "この料理は独特な香りを持っています。",
+    "en": "This dish has a unique aroma.",
+    "zh": "这道菜具有独特的香气。",
+    "sense": "having a unique characteristic",
+    "surface": "独特",
+    "kana": "どくとく",
+    "senseListed": false,
+    "entryGlosses": [
+      "peculiarity",
+      "uniqueness"
+    ]
+  },
+  {
+    "id": "n3-b910",
+    "jp": "山田博士は植物の研究で有名です。",
+    "en": "Dr. Yamada is famous for plant research.",
+    "zh": "山田博士因研究植物而闻名。",
+    "sense": "title for a scholar",
+    "surface": "博士",
+    "kana": "はかせ",
+    "senseListed": false,
+    "entryGlosses": [
+      "doctorate",
+      "PhD"
+    ]
+  },
+  {
+    "id": "n3-b932",
+    "jp": "給料について会社に不満を持っています。",
+    "en": "I am dissatisfied with the company regarding my salary.",
+    "zh": "我对公司的薪水感到不满。",
+    "sense": "feeling of discontent",
+    "surface": "不満",
+    "kana": "ふまん",
+    "senseListed": false,
+    "entryGlosses": [
+      "dissatisfaction",
+      "displeasure"
+    ]
+  },
+  {
+    "id": "n3-b944",
+    "jp": "友達との約束は必ず守ります。",
+    "en": "I always keep my promises with friends.",
+    "zh": "我一定会遵守与朋友的约定。",
+    "sense": "to fulfill a promise",
+    "surface": "守る",
+    "kana": "まもる",
+    "senseListed": false,
+    "entryGlosses": [
+      "to protect",
+      "to obey"
+    ]
+  },
+  {
+    "id": "n3-b116",
+    "jp": "新しい規則が来月から適用される。",
+    "en": "The new rules will be applied starting next month.",
+    "zh": "新规则将从下个月开始适用。",
+    "sense": "applying a rule or law",
+    "surface": "適用",
+    "kana": "てきよう",
+    "senseListed": false,
+    "entryGlosses": [
+      "application",
+      "adoption"
+    ]
+  },
+  {
+    "id": "n3-b199",
+    "jp": "この道は駅前の広場に至る。",
+    "en": "This road leads to the plaza in front of the station.",
+    "zh": "这条路通往车站前的广场。",
+    "sense": "to lead to a place",
+    "surface": "至る",
+    "kana": "いたる",
+    "senseListed": false,
+    "entryGlosses": [
+      "to arrive at",
+      "to reach"
+    ]
+  },
+  {
+    "id": "n3-b204",
+    "jp": "友達の結婚の祝いに時計を贈った。",
+    "en": "I gave a clock as a gift for my friend's wedding celebration.",
+    "zh": "我送了一块手表作为朋友结婚的贺礼。",
+    "sense": "gift or celebration for an occasion",
+    "surface": "祝い",
+    "kana": "いわい",
+    "senseListed": false,
+    "entryGlosses": [
+      "congratulation",
+      "celebration"
+    ]
+  },
+  {
+    "id": "n3-b214",
+    "jp": "スマートフォンの画面を拡大して写真を見た。",
+    "en": "I enlarged the smartphone screen to view the photo.",
+    "zh": "我放大智能手机的屏幕看了照片。",
+    "sense": "enlarging an image or display",
+    "surface": "拡大",
+    "kana": "かくだい",
+    "senseListed": false,
+    "entryGlosses": [
+      "magnification",
+      "expansion"
+    ]
+  },
+  {
+    "id": "n3-b313",
+    "jp": "父の代理で結婚式に出席しました。",
+    "en": "I attended the wedding ceremony as a proxy for my father.",
+    "zh": "我代替父亲出席了婚礼。",
+    "sense": "representative or proxy for someone",
+    "surface": "代理",
+    "kana": "だいり",
+    "senseListed": false,
+    "entryGlosses": [
+      "representation",
+      "agency",
+      "proxy"
+    ]
+  },
+  {
+    "id": "n3-b351",
+    "jp": "彼はとんでもない嘘をついた。",
+    "en": "He told an outrageous lie.",
+    "zh": "他撒了个离谱的谎。",
+    "sense": "outrageous or absurd",
+    "surface": "とんでもない",
+    "kana": "とんでもない",
+    "senseListed": false,
+    "entryGlosses": [
+      "unexpected",
+      "offensive",
+      "ridiculous"
+    ]
+  }
+]

@@ -1,0 +1,268 @@
+[
+ {
+  "id": "n3-b138",
+  "surface": "後",
+  "taughtReading": "のち",
+  "readingInNaturalSentence": "あと",
+  "sentence": "今日の天気は晴れ後雨です。",
+  "glosses": [
+   "afterwards",
+   "since then"
+  ]
+ },
+ {
+  "id": "n3-b162",
+  "surface": "仏",
+  "taughtReading": "ほとけ",
+  "readingInNaturalSentence": "ふつ",
+  "sentence": "寺にいって仏に手を合わせました。",
+  "glosses": [
+   "Buddha",
+   "merciful person"
+  ]
+ },
+ {
+  "id": "n3-b190",
+  "surface": "綿",
+  "taughtReading": "わた",
+  "readingInNaturalSentence": "めん",
+  "sentence": "このクッションには綿がたくさん詰まっている。",
+  "glosses": [
+   "cotton"
+  ]
+ },
+ {
+  "id": "n3-b234",
+  "surface": "暮れ",
+  "taughtReading": "くれ",
+  "readingInNaturalSentence": "としのくれ",
+  "sentence": "年の暮れはいつも仕事が忙しくなる。",
+  "glosses": [
+   "year end",
+   "sunset"
+  ]
+ },
+ {
+  "id": "n3-b235",
+  "surface": "下",
+  "taughtReading": "げ",
+  "readingInNaturalSentence": "した",
+  "sentence": "この物語は上、中、下の三巻で構成されている。",
+  "glosses": [
+   "under",
+   "below"
+  ]
+ },
+ {
+  "id": "n3-b361",
+  "surface": "年月",
+  "taughtReading": "ねんげつ",
+  "readingInNaturalSentence": "としつき",
+  "sentence": "この建物は長い年月をかけて建てられた。",
+  "glosses": [
+   "months and years"
+  ]
+ },
+ {
+  "id": "n3-b380",
+  "surface": "品",
+  "taughtReading": "ひん",
+  "readingInNaturalSentence": "しな",
+  "sentence": "彼女の話し方には品がある。",
+  "glosses": [
+   "elegance",
+   "article"
+  ]
+ },
+ {
+  "id": "n3-b447",
+  "surface": "魚",
+  "taughtReading": "うお",
+  "readingInNaturalSentence": "さかな",
+  "sentence": "空の鳥や海の魚を観察する。",
+  "glosses": [
+   "fish"
+  ]
+ },
+ {
+  "id": "n3-b510",
+  "surface": "盛り",
+  "taughtReading": "さかり",
+  "readingInNaturalSentence": "もり",
+  "sentence": "桜の花は今が盛りだ。",
+  "glosses": [
+   "peak",
+   "prime"
+  ]
+ },
+ {
+  "id": "n3-b607",
+  "surface": "注ぐ",
+  "taughtReading": "つぐ",
+  "readingInNaturalSentence": "そそぐ",
+  "sentence": "コップに冷たい水を注ぐ。",
+  "glosses": [
+   "to pour",
+   "to fill"
+  ]
+ },
+ {
+  "id": "n3-b621",
+  "surface": "十",
+  "taughtReading": "とお",
+  "readingInNaturalSentence": "じゅう",
+  "sentence": "りんごを箱の中に十入れた。",
+  "glosses": [
+   "ten"
+  ]
+ },
+ {
+  "id": "n3-b639",
+  "surface": "日本",
+  "taughtReading": "にほん",
+  "readingInNaturalSentence": "にっぽん",
+  "sentence": "私は将来、日本に住みたいです。",
+  "glosses": [
+   "Japan"
+  ]
+ },
+ {
+  "id": "n3-b680",
+  "surface": "方々",
+  "taughtReading": "ほうぼう",
+  "readingInNaturalSentence": "かたがた",
+  "sentence": "街の方々を歩き回った。",
+  "glosses": [
+   "here and there"
+  ]
+ },
+ {
+  "id": "n3-b684",
+  "surface": "間",
+  "taughtReading": "ま",
+  "readingInNaturalSentence": "あいだ",
+  "sentence": "歌の途中で絶妙な間を取る。",
+  "glosses": [
+   "space",
+   "time"
+  ]
+ },
+ {
+  "id": "n3-b702",
+  "surface": "文字",
+  "taughtReading": "もんじ",
+  "readingInNaturalSentence": "もじ",
+  "sentence": "彼の言葉を文字通りに受け取る。",
+  "glosses": [
+   "letter of alphabet",
+   "character"
+  ]
+ },
+ {
+  "id": "n3-b713",
+  "surface": "曜日",
+  "taughtReading": "ようび",
+  "readingInNaturalSentence": "ひ",
+  "sentence": "何曜日にゴミを出すか確認します。",
+  "glosses": [
+   "day of the week"
+  ]
+ },
+ {
+  "id": "n3-b734",
+  "surface": "言う",
+  "taughtReading": "ゆう",
+  "readingInNaturalSentence": "いう",
+  "sentence": "自分の意見をはっきり言うことが大切です。",
+  "glosses": [
+   "to say",
+   "to tell"
+  ]
+ },
+ {
+  "id": "n3-b735",
+  "surface": "市場",
+  "taughtReading": "いちば",
+  "readingInNaturalSentence": "しじょう",
+  "sentence": "朝早く近くの市場へ野菜を買いに行った。",
+  "glosses": [
+   "market",
+   "marketplace"
+  ]
+ },
+ {
+  "id": "n3-b791",
+  "surface": "今日",
+  "taughtReading": "こんにち",
+  "readingInNaturalSentence": "きょう",
+  "sentence": "今日では多くの人がスマートフォンを使っています。",
+  "glosses": [
+   "today",
+   "this day"
+  ]
+ },
+ {
+  "id": "n3-b801",
+  "surface": "直",
+  "taughtReading": "じき",
+  "readingInNaturalSentence": "ちょく",
+  "sentence": "雨は直にやむでしょう。",
+  "glosses": [
+   "soon",
+   "direct"
+  ]
+ },
+ {
+  "id": "n3-b809",
+  "surface": "下",
+  "taughtReading": "しも",
+  "readingInNaturalSentence": "した",
+  "sentence": "この川の下には静かな村があります。",
+  "glosses": [
+   "lower reaches",
+   "bottom"
+  ]
+ },
+ {
+  "id": "n3-b861",
+  "surface": "唯",
+  "taughtReading": "たった",
+  "readingInNaturalSentence": "ただ",
+  "sentence": "会場には唯ひとりの客しかいなかった。",
+  "glosses": [
+   "only",
+   "merely"
+  ]
+ },
+ {
+  "id": "n3-b909",
+  "surface": "梅雨",
+  "taughtReading": "ばいう",
+  "readingInNaturalSentence": "つゆ",
+  "sentence": "梅雨前線の影響で大雨が続いています。",
+  "glosses": [
+   "rainy season"
+  ]
+ },
+ {
+  "id": "n3-b919",
+  "surface": "額",
+  "taughtReading": "ひたい",
+  "readingInNaturalSentence": "がく",
+  "sentence": "走った後、額に汗をかいていました。",
+  "glosses": [
+   "forehead",
+   "brow"
+  ]
+ },
+ {
+  "id": "n3-b939",
+  "surface": "頬",
+  "taughtReading": "ほほ",
+  "readingInNaturalSentence": "ほお",
+  "sentence": "冷たい風が頬にあたって痛かった。",
+  "glosses": [
+   "cheek"
+  ]
+ }
+]
