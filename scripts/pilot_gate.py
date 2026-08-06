@@ -148,17 +148,27 @@ def sense_matches(declared, glosses):
     d = normalize_sense(declared)
     if not d:
         return False
+    # A hedged declaration smuggles itself past by naming a listed gloss as an ALTERNATIVE to
+    # the sense it actually used. 笛 declared "whistle or flute instrument" against a gloss
+    # list of ["flute", "pipe"]: "flute" is in there, the matcher said listed, and a referee
+    # blowing a whistle would have shipped under "flute, pipe". The card check caught it and
+    # the gate did not — so match the FIRST alternative, which is the one the generator leads
+    # with and the one it means. If that alternative is absent, route it and let review decide.
+    lead = re.split(r"\bor\b|/|,", d, maxsplit=1)[0].strip() or d
     for g in glosses:
         n = normalize_sense(g)
         if not n:
             continue
-        if d == n or d in n or n in d:
+        if lead == n or lead in n or n in lead:
             return True
-        # a shared content word is weak evidence on its own; require the shorter side to be
-        # fully contained word-wise, which "unit" vs "unit of academic credit" satisfies and
-        # "needle" vs "clock hand" does not.
-        dw, nw = set(d.split()), set(n.split())
-        if dw and nw and (dw <= nw or nw <= dw):
+        lw, nw = set(lead.split()), set(n.split())
+        if lw and nw and (lw <= nw or nw <= lw):
+            return True
+    for g in glosses:
+        n = normalize_sense(g)
+        if not n:
+            continue
+        if d == n:
             return True
     return False
 
