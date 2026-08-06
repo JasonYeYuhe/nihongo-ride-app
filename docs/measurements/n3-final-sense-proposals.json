@@ -1,0 +1,265 @@
+[
+ {
+  "id": "n3-b395",
+  "surface": "本人",
+  "kana": "ほんにん",
+  "currentEN": [
+   "the person himself"
+  ],
+  "currentZH": [
+   "本人"
+  ],
+  "proposedSense": "the person in question, oneself",
+  "evidenceJP": "手続きは本人が行う必要があります。",
+  "evidenceEN": "The procedure must be carried out by the person themselves.",
+  "evidenceZH": "手续必须由本人办理。"
+ },
+ {
+  "id": "n3-b726",
+  "surface": "脇",
+  "kana": "わき",
+  "currentEN": [
+   "side",
+   "armpit"
+  ],
+  "currentZH": [
+   "旁边",
+   "侧面"
+  ],
+  "proposedSense": "under one's arm",
+  "evidenceJP": "荷物を脇に抱えて歩いた。",
+  "evidenceEN": "I walked carrying the luggage under my arm.",
+  "evidenceZH": "我把行李夹在腋下走着。"
+ },
+ {
+  "id": "n3-b804",
+  "surface": "失業",
+  "kana": "しつぎょう",
+  "currentEN": [
+   "unemployment"
+  ],
+  "currentZH": [
+   "失业"
+  ],
+  "proposedSense": "loss of employment",
+  "evidenceJP": "景気が悪くなり失業する人が増えた。",
+  "evidenceEN": "As the economy worsened, the number of people losing their jobs increased.",
+  "evidenceZH": "随着经济恶化，失业的人增加了。"
+ },
+ {
+  "id": "n3-b815",
+  "surface": "主婦",
+  "kana": "しゅふ",
+  "currentEN": [
+   "housewife"
+  ],
+  "currentZH": [
+   "家庭主妇"
+  ],
+  "proposedSense": "full-time homemaker",
+  "evidenceJP": "母は専業主婦として家庭を支えています。",
+  "evidenceEN": "My mother supports our household as a full-time homemaker.",
+  "evidenceZH": "我母亲作为全职主妇支撑着家庭。"
+ },
+ {
+  "id": "n3-b839",
+  "surface": "成功",
+  "kana": "せいこう",
+  "currentEN": [
+   "success"
+  ],
+  "currentZH": [
+   "成功"
+  ],
+  "proposedSense": "achieving a desired goal",
+  "evidenceJP": "長年の実験がようやく成功しました。",
+  "evidenceEN": "Years of experimentation finally succeeded.",
+  "evidenceZH": "多年的实验终于成功了。"
+ },
+ {
+  "id": "n3-b870",
+  "surface": "中",
+  "kana": "ちゅう",
+  "currentEN": [
+   "medium",
+   "during"
+  ],
+  "currentZH": [
+   "中等",
+   "之中"
+  ],
+  "proposedSense": "currently engaged in an activity",
+  "evidenceJP": "父は今、会議中なので電話に出られません。",
+  "evidenceEN": "My father is in a meeting right now, so he cannot answer the phone.",
+  "evidenceZH": "我父亲现在正在开会，接不了电话。"
+ },
+ {
+  "id": "n3-b878",
+  "surface": "罪",
+  "kana": "つみ",
+  "currentEN": [
+   "crime",
+   "sin"
+  ],
+  "currentZH": [
+   "罪",
+   "罪过"
+  ],
+  "proposedSense": "feeling of moral guilt",
+  "evidenceJP": "嘘をついたことに強い罪の意識を感じた。",
+  "evidenceEN": "I felt a strong sense of guilt about lying.",
+  "evidenceZH": "我为撒谎感到强烈的罪恶感。"
+ },
+ {
+  "id": "n3-b890",
+  "surface": "独特",
+  "kana": "どくとく",
+  "currentEN": [
+   "peculiarity",
+   "uniqueness"
+  ],
+  "currentZH": [
+   "独特",
+   "特有"
+  ],
+  "proposedSense": "having a unique characteristic",
+  "evidenceJP": "この料理は独特な香りを持っています。",
+  "evidenceEN": "This dish has a unique aroma.",
+  "evidenceZH": "这道菜具有独特的香气。"
+ },
+ {
+  "id": "n3-b910",
+  "surface": "博士",
+  "kana": "はかせ",
+  "currentEN": [
+   "doctorate",
+   "PhD"
+  ],
+  "currentZH": [
+   "博士"
+  ],
+  "proposedSense": "title for a scholar",
+  "evidenceJP": "山田博士は植物の研究で有名です。",
+  "evidenceEN": "Dr. Yamada is famous for plant research.",
+  "evidenceZH": "山田博士因研究植物而闻名。"
+ },
+ {
+  "id": "n3-b932",
+  "surface": "不満",
+  "kana": "ふまん",
+  "currentEN": [
+   "dissatisfaction",
+   "displeasure"
+  ],
+  "currentZH": [
+   "不满"
+  ],
+  "proposedSense": "feeling of discontent",
+  "evidenceJP": "給料について会社に不満を持っています。",
+  "evidenceEN": "I am dissatisfied with the company regarding my salary.",
+  "evidenceZH": "我对公司的薪水感到不满。"
+ },
+ {
+  "id": "n3-b944",
+  "surface": "守る",
+  "kana": "まもる",
+  "currentEN": [
+   "to protect",
+   "to obey"
+  ],
+  "currentZH": [
+   "保护",
+   "遵守"
+  ],
+  "proposedSense": "to fulfill a promise",
+  "evidenceJP": "友達との約束は必ず守ります。",
+  "evidenceEN": "I always keep my promises with friends.",
+  "evidenceZH": "我一定会遵守与朋友的约定。"
+ },
+ {
+  "id": "n3-b116",
+  "surface": "適用",
+  "kana": "てきよう",
+  "currentEN": [
+   "application",
+   "adoption"
+  ],
+  "currentZH": [
+   "适用",
+   "应用"
+  ],
+  "proposedSense": "applying a rule or law",
+  "evidenceJP": "新しい規則が来月から適用される。",
+  "evidenceEN": "The new rules will be applied starting next month.",
+  "evidenceZH": "新规则将从下个月开始适用。"
+ },
+ {
+  "id": "n3-b199",
+  "surface": "至る",
+  "kana": "いたる",
+  "currentEN": [
+   "to arrive at",
+   "to reach"
+  ],
+  "currentZH": [
+   "到达",
+   "至于"
+  ],
+  "proposedSense": "to lead to a place",
+  "evidenceJP": "この道は駅前の広場に至る。",
+  "evidenceEN": "This road leads to the plaza in front of the station.",
+  "evidenceZH": "这条路通往车站前的广场。"
+ },
+ {
+  "id": "n3-b214",
+  "surface": "拡大",
+  "kana": "かくだい",
+  "currentEN": [
+   "magnification",
+   "expansion"
+  ],
+  "currentZH": [
+   "扩大",
+   "扩展"
+  ],
+  "proposedSense": "enlarging an image or display",
+  "evidenceJP": "スマートフォンの画面を拡大して写真を見た。",
+  "evidenceEN": "I enlarged the smartphone screen to view the photo.",
+  "evidenceZH": "我放大智能手机的屏幕看了照片。"
+ },
+ {
+  "id": "n3-b313",
+  "surface": "代理",
+  "kana": "だいり",
+  "currentEN": [
+   "representation",
+   "agency",
+   "proxy"
+  ],
+  "currentZH": [
+   "代理"
+  ],
+  "proposedSense": "representative or proxy for someone",
+  "evidenceJP": "父の代理で結婚式に出席しました。",
+  "evidenceEN": "I attended the wedding ceremony as a proxy for my father.",
+  "evidenceZH": "我代替父亲出席了婚礼。"
+ },
+ {
+  "id": "n3-b351",
+  "surface": "とんでもない",
+  "kana": "とんでもない",
+  "currentEN": [
+   "unexpected",
+   "offensive",
+   "ridiculous"
+  ],
+  "currentZH": [
+   "出乎意料",
+   "岂有此理"
+  ],
+  "proposedSense": "outrageous or absurd",
+  "evidenceJP": "彼はとんでもない嘘をついた。",
+  "evidenceEN": "He told an outrageous lie.",
+  "evidenceZH": "他撒了个离谱的谎。"
+ }
+]

@@ -1,0 +1,84 @@
+[
+ {
+  "id": "n3-b395",
+  "verdict": "paraphrase",
+  "reason": "\"the person in question, oneself\" is a restatement of the existing EN gloss \"the person himself\" (and ZH 本人). 手続きは本人が行う is exactly the situation that gloss describes; nothing new is taught."
+ },
+ {
+  "id": "n3-b726",
+  "verdict": "paraphrase",
+  "reason": "脇に抱える is the existing \"armpit\" (and \"side\") sense used adverbially; a learner reading \"side, armpit\" understands \"carried under my arm\" immediately. Worth noting the reverse of the usual pattern here: EN carries \"armpit\" while ZH has only 旁边/侧面 and no 腋下 — but that is a ZH-completeness question, not a new sense for this proposal."
+ },
+ {
+  "id": "n3-b804",
+  "verdict": "paraphrase",
+  "reason": "\"loss of employment\" is the dictionary definition of \"unemployment\"/失业, not a second sense. 失業する in the sentence is the same noun used verbally."
+ },
+ {
+  "id": "n3-b815",
+  "verdict": "paraphrase",
+  "reason": "\"homemaker\" is a synonym of the existing \"housewife\"/家庭主妇; the \"full-time\" component comes from 専業 in 専業主婦, not from 主婦 itself. Adding it would restate the only sense the word has."
+ },
+ {
+  "id": "n3-b839",
+  "verdict": "paraphrase",
+  "reason": "\"achieving a desired goal\" is a definition of \"success\"/成功, phrased as a gloss. The experiment sentence is the ordinary use of that one sense."
+ },
+ {
+  "id": "n3-b870",
+  "verdict": "paraphrase",
+  "reason": "会議中 is the suffix use already covered by EN \"during\" (and ZH 之中). \"currently engaged in an activity\" is the same in-the-middle-of sense described from the subject's point of view."
+ },
+ {
+  "id": "n3-b878",
+  "verdict": "not_a_sense",
+  "reason": "The head of the proposal — \"feeling\" — is contributed by 意識 in 罪の意識, not by 罪. 罪 itself is the sin/wrongdoing already glossed \"sin\"/罪过; this describes the sentence's phrase rather than a sense of the word."
+ },
+ {
+  "id": "n3-b890",
+  "verdict": "paraphrase",
+  "reason": "\"having a unique characteristic\" is the adjectival use of the existing \"uniqueness\"/独特. 独特な香り needs nothing beyond the current line."
+ },
+ {
+  "id": "n3-b910",
+  "verdict": "paraphrase",
+  "reason": "山田博士 is the existing doctorate sense used appositively as a title; standard dictionaries do not split \"Dr. X\" from \"doctorate/PhD\". A learner seeing \"doctorate, PhD\" (and ZH 博士, which is itself an address form in Chinese) reads 山田博士 as Dr. Yamada without help. The genuinely separate はかせ sense would be \"expert / know-it-all\" (物知り博士), which this proposal does not claim."
+ },
+ {
+  "id": "n3-b932",
+  "verdict": "paraphrase",
+  "reason": "不満 already means the feeling: \"dissatisfaction, displeasure\"/不满. \"feeling of discontent\" is the same sense reworded."
+ },
+ {
+  "id": "n3-b944",
+  "verdict": "new_sense",
+  "reason": "EN lags ZH here — the documented pattern. ZH 遵守 already covers 約束を守る (遵守约定 is idiomatic), but the EN line offers only \"to protect\" and \"to obey\", and English does not \"obey\" a promise; the standard English gloss \"to keep (a promise)\" is missing, so an EN learner reading the current line beside 友達との約束は必ず守ります maps the verb wrongly. Note ZH already carries the sense; 信守 is added only to make the promise-keeping reading explicit alongside 遵守.",
+  "glossEN": "to keep (a promise)",
+  "glossZH": "信守"
+ },
+ {
+  "id": "n3-b116",
+  "verdict": "paraphrase",
+  "reason": "適用 is inherently the application of a rule, law or provision, which is what \"application\"/适用 already says; \"a rule or law\" is supplied by 新しい規則 in the sentence."
+ },
+ {
+  "id": "n3-b199",
+  "verdict": "paraphrase",
+  "reason": "\"to lead to a place\" is the same arrival sense with an inanimate subject; dictionaries list \"to lead to\" inside the \"to reach / to arrive at\" sense. この道は…に至る is understandable from 到达 as well."
+ },
+ {
+  "id": "n3-b214",
+  "verdict": "paraphrase",
+  "reason": "\"magnification\"/扩大 is precisely the zoom-in sense; \"an image or display\" comes from 画面 in the sentence, not from the word."
+ },
+ {
+  "id": "n3-b313",
+  "verdict": "paraphrase",
+  "reason": "The EN list already contains \"proxy\" and \"representation\" (ZH 代理); 父の代理で出席 is that exact sense. Pure restatement."
+ },
+ {
+  "id": "n3-b351",
+  "verdict": "paraphrase",
+  "reason": "\"outrageous or absurd\" is covered by the existing \"ridiculous\" (and ZH 岂有此理/出乎意料). とんでもない嘘 reads correctly off the current line."
+ }
+]

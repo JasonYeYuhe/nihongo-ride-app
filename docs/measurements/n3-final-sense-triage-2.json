@@ -1,0 +1,84 @@
+[
+ {
+  "id": "n3-b395",
+  "verdict": "paraphrase",
+  "reason": "\"the person in question, oneself\" is a restatement of \"the person himself\" / 本人. The sentence (手続きは本人が行う) is the plain core use: the individual concerned, not a delegate. Nothing in the sentence needs a gloss the line does not already give."
+ },
+ {
+  "id": "n3-b726",
+  "verdict": "paraphrase",
+  "reason": "\"under one's arm\" is the armpit/side-of-torso sense already carried by currentEN \"armpit\"; 脇に抱える is that body region used as a carrying spot, not a separate meaning. Worth flagging the reverse of the usual asymmetry here: the Chinese list (旁边/侧面) does NOT carry the 腋下 sense that the evidence translation uses, so ZH lags EN on this entry — but the sense itself is already glossed, so adding it would duplicate."
+ },
+ {
+  "id": "n3-b804",
+  "verdict": "paraphrase",
+  "reason": "\"loss of employment\" is the definition of \"unemployment\"/失业, and 失業する in the sentence is the ordinary verbal use of the same noun. No referent shift."
+ },
+ {
+  "id": "n3-b815",
+  "verdict": "paraphrase",
+  "reason": "\"homemaker\" is a straight synonym of \"housewife\"; the \"full-time\" qualifier is supplied by 専業 in the sentence, not by 主婦. Same sense, different words."
+ },
+ {
+  "id": "n3-b839",
+  "verdict": "paraphrase",
+  "reason": "\"achieving a desired goal\" is the dictionary definition of \"success\"/成功, restated. 実験が成功した is the core use."
+ },
+ {
+  "id": "n3-b870",
+  "verdict": "paraphrase",
+  "reason": "会議中 is the suffixal \"in the middle of / in progress\" use, which currentEN \"during\" already names (and ZH 之中 sits alongside it). A learner reading \"during\" beside 会議中 gets \"during a meeting\" directly."
+ },
+ {
+  "id": "n3-b878",
+  "verdict": "not_a_sense",
+  "reason": "\"feeling of moral guilt\" glosses the sentence's phrase 罪の意識, not 罪 itself — the \"feeling\" head comes from 意識 (the emotion word is 罪悪感). 罪 in this sentence is still the wrongdoing/sin sense already listed as \"sin\"/罪过."
+ },
+ {
+  "id": "n3-b890",
+  "verdict": "paraphrase",
+  "reason": "\"having a unique characteristic\" is the adjectival (独特な) surface of the same noun sense \"uniqueness\"/独特. Grammatical form, not a new meaning."
+ },
+ {
+  "id": "n3-b910",
+  "verdict": "new_sense",
+  "reason": "山田博士 is the honorific-title use attached to a personal name (Dr. Yamada) — the word denotes the person addressed, not the degree. currentEN \"doctorate, PhD\" names only the qualification, so a learner reading that gloss line beside this sentence gets \"Yamada doctorate is famous for plant research\" with no cue that 博士 works like a suffixed title (cf. 先生). This is the EN-lags-ZH pattern again: the Chinese list ALREADY carries the sense, because Chinese 博士 is itself both the degree and the form of address (山田博士 reads correctly in the ZH translation), while English needs a separate title gloss. Same shape as the accepted 針 (needle -> clock hand) and 単位 (unit -> credit) gaps: one word, two referents.",
+  "glossEN": "doctor (title)",
+  "glossZH": "博士（尊称）"
+ },
+ {
+  "id": "n3-b932",
+  "verdict": "paraphrase",
+  "reason": "\"feeling of discontent\" restates \"dissatisfaction, displeasure\"/不满. 不満を持つ is the core collocation of that same sense."
+ },
+ {
+  "id": "n3-b944",
+  "verdict": "paraphrase",
+  "reason": "約束を守る falls under the observe/abide-by sense already listed as \"to obey\" — and ZH 遵守 is the exact verb the evidence translation uses (遵守约定). Both lists cover it; only the English collocation (\"keep\" vs \"obey\") differs."
+ },
+ {
+  "id": "n3-b116",
+  "verdict": "paraphrase",
+  "reason": "\"applying a rule or law\" is the prototypical instance of \"application\"/适用 — 規則が適用される is exactly what the existing gloss denotes, with the rule/law part supplied by the sentence."
+ },
+ {
+  "id": "n3-b199",
+  "verdict": "paraphrase",
+  "reason": "An inanimate subject (この道は…に至る) does not create a new sense: dictionaries give the road-reaches-a-place example under the primary 到達 sense, which currentEN \"to reach\" and currentZH 到达 already state. \"leads to\" is an English rendering choice."
+ },
+ {
+  "id": "n3-b214",
+  "verdict": "paraphrase",
+  "reason": "\"enlarging an image or display\" is precisely currentEN \"magnification\" — zooming a screen is that sense applied to a screen. Noting the reverse asymmetry again: currentZH 扩大/扩展 lean toward \"broaden in scope\" and lack 放大, which the evidence ZH uses, so ZH is the weaker list here — but the sense is already glossed on the card."
+ },
+ {
+  "id": "n3-b313",
+  "verdict": "paraphrase",
+  "reason": "\"representative or proxy for someone\" repeats currentEN \"proxy\" verbatim in substance; 父の代理で出席 is the core use of 代理/代理."
+ },
+ {
+  "id": "n3-b351",
+  "verdict": "paraphrase",
+  "reason": "\"outrageous or absurd\" is covered by currentEN \"ridiculous\" and currentZH 岂有此理/出乎意料; とんでもない嘘 is that same evaluative sense."
+ }
+]

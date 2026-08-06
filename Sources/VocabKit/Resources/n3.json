@@ -11071,6 +11071,17 @@
         "适用",
         "应用"
       ]
+    },
+    "exJP": "新しい規則が来月から適用される。",
+    "exEN": "The new rules will be applied starting next month.",
+    "exZH": "新规则将从下个月开始适用。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "applying a rule or law",
+      "senseListed": false
     }
   },
   {
@@ -13513,6 +13524,17 @@
         "到达",
         "至于"
       ]
+    },
+    "exJP": "この道は駅前の広場に至る。",
+    "exEN": "This road leads to the plaza in front of the station.",
+    "exZH": "这条路通往车站前的广场。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "to lead to a place",
+      "senseListed": false
     }
   },
   {
@@ -13941,6 +13963,17 @@
         "扩大",
         "扩展"
       ]
+    },
+    "exJP": "スマートフォンの画面を拡大して写真を見た。",
+    "exEN": "I enlarged the smartphone screen to view the photo.",
+    "exZH": "我放大智能手机的屏幕看了照片。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "enlarging an image or display",
+      "senseListed": false
     }
   },
   {
@@ -16828,6 +16861,17 @@
       "zh": [
         "代理"
       ]
+    },
+    "exJP": "父の代理で結婚式に出席しました。",
+    "exEN": "I attended the wedding ceremony as a proxy for my father.",
+    "exZH": "我代替父亲出席了婚礼。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "representative or proxy for someone",
+      "senseListed": false
     }
   },
   {
@@ -17982,6 +18026,17 @@
         "出乎意料",
         "岂有此理"
       ]
+    },
+    "exJP": "彼はとんでもない嘘をついた。",
+    "exEN": "He told an outrageous lie.",
+    "exZH": "他撒了个离谱的谎。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "outrageous or absurd",
+      "senseListed": false
     }
   },
   {
@@ -19250,6 +19305,17 @@
       "zh": [
         "本人"
       ]
+    },
+    "exJP": "手続きは本人が行う必要があります。",
+    "exEN": "The procedure must be carried out by the person themselves.",
+    "exZH": "手续必须由本人办理。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "the person in question, oneself",
+      "senseListed": false
     }
   },
   {
@@ -31110,6 +31176,17 @@
         "旁边",
         "侧面"
       ]
+    },
+    "exJP": "荷物を脇に抱えて歩いた。",
+    "exEN": "I walked carrying the luggage under my arm.",
+    "exZH": "我把行李夹在腋下走着。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "under one's arm",
+      "senseListed": false
     }
   },
   {
@@ -33317,6 +33394,17 @@
       "zh": [
         "失业"
       ]
+    },
+    "exJP": "景気が悪くなり失業する人が増えた。",
+    "exEN": "As the economy worsened, the number of people losing their jobs increased.",
+    "exZH": "随着经济恶化，失业的人增加了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "loss of employment",
+      "senseListed": false
     }
   },
   {
@@ -33617,6 +33705,17 @@
       "zh": [
         "家庭主妇"
       ]
+    },
+    "exJP": "母は専業主婦として家庭を支えています。",
+    "exEN": "My mother supports our household as a full-time homemaker.",
+    "exZH": "我母亲作为全职主妇支撑着家庭。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "full-time homemaker",
+      "senseListed": false
     }
   },
   {
@@ -34289,6 +34388,17 @@
       "zh": [
         "成功"
       ]
+    },
+    "exJP": "長年の実験がようやく成功しました。",
+    "exEN": "Years of experimentation finally succeeded.",
+    "exZH": "多年的实验终于成功了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "achieving a desired goal",
+      "senseListed": false
     }
   },
   {
@@ -35157,6 +35267,17 @@
         "中等",
         "之中"
       ]
+    },
+    "exJP": "父は今、会議中なので電話に出られません。",
+    "exEN": "My father is in a meeting right now, so he cannot answer the phone.",
+    "exZH": "我父亲现在正在开会，接不了电话。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "currently engaged in an activity",
+      "senseListed": false
     }
   },
   {
@@ -35384,6 +35505,17 @@
         "罪",
         "罪过"
       ]
+    },
+    "exJP": "嘘をついたことに強い罪の意識を感じた。",
+    "exEN": "I felt a strong sense of guilt about lying.",
+    "exZH": "我为撒谎感到强烈的罪恶感。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "feeling of moral guilt",
+      "senseListed": false
     }
   },
   {
@@ -35716,6 +35848,17 @@
         "独特",
         "特有"
       ]
+    },
+    "exJP": "この料理は独特な香りを持っています。",
+    "exEN": "This dish has a unique aroma.",
+    "exZH": "这道菜具有独特的香气。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "having a unique characteristic",
+      "senseListed": false
     }
   },
   {
@@ -36925,6 +37068,17 @@
       "zh": [
         "不满"
       ]
+    },
+    "exJP": "給料について会社に不満を持っています。",
+    "exEN": "I am dissatisfied with the company regarding my salary.",
+    "exZH": "我对公司的薪水感到不满。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "feeling of discontent",
+      "senseListed": false
     }
   },
   {
@@ -37250,6 +37404,17 @@
         "保护",
         "遵守"
       ]
+    },
+    "exJP": "友達との約束は必ず守ります。",
+    "exEN": "I always keep my promises with friends.",
+    "exZH": "我一定会遵守与朋友的约定。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + 3-vote sense triage + refutation (v1.17 §E gaps)",
+      "sense": "to fulfill a promise",
+      "senseListed": false
     }
   },
   {

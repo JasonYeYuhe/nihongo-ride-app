@@ -1,0 +1,84 @@
+[
+ {
+  "id": "n3-b395",
+  "verdict": "paraphrase",
+  "reason": "\"the person in question, oneself\" is a word-for-word restatement of currentEN \"the person himself\"; ZH 本人 is the identical term. 手続きは本人が行う is the ordinary use of that one sense."
+ },
+ {
+  "id": "n3-b726",
+  "verdict": "paraphrase",
+  "reason": "脇に抱える = hold in the hollow under the arm, which is exactly currentEN \"armpit\"; adding \"under one's arm\" would duplicate an existing English gloss. Worth flagging separately: this is the REVERSE of the usual pattern - the English list carries the sense but currentZH (旁边/侧面) has no armpit equivalent (腋下/胳肢窝), so the ZH line alone would mislead here. That is a ZH-coverage defect on an existing sense, not a new sense."
+ },
+ {
+  "id": "n3-b804",
+  "verdict": "paraphrase",
+  "reason": "\"loss of employment\" is the definition of \"unemployment\"/失业, not a second sense; 失業する in the sentence is the plain verbal use of the same noun."
+ },
+ {
+  "id": "n3-b815",
+  "verdict": "paraphrase",
+  "reason": "\"homemaker\" is a register variant of \"housewife\"/家庭主妇, and the \"full-time\" component comes from 専業 in 専業主婦, not from 主婦 itself. Nothing in the sentence is unreachable from the current line."
+ },
+ {
+  "id": "n3-b839",
+  "verdict": "paraphrase",
+  "reason": "\"achieving a desired goal\" is a dictionary definition of \"success\"/成功 rather than a distinct sense; the experiment sentence uses the standard suru-verb reading of the same sense."
+ },
+ {
+  "id": "n3-b870",
+  "verdict": "paraphrase",
+  "reason": "会議中 is the suffix \"in the middle of / while\", which currentEN \"during\" and currentZH 之中 already name. \"currently engaged in an activity\" restates that suffix use in longer words."
+ },
+ {
+  "id": "n3-b878",
+  "verdict": "paraphrase",
+  "reason": "In 罪の意識 the \"feeling/consciousness\" is supplied by 意識; 罪 itself is still the wrongdoing, covered by \"sin\" and ZH 罪/罪过. A learner seeing \"crime, sin\" beside 罪の意識 reads \"consciousness of sin\" and lands on the right meaning."
+ },
+ {
+  "id": "n3-b890",
+  "verdict": "paraphrase",
+  "reason": "\"having a unique characteristic\" is the adjectival (独特な) framing of currentEN \"uniqueness\" / currentZH 独特; same sense, different part of speech."
+ },
+ {
+  "id": "n3-b910",
+  "verdict": "new_sense",
+  "reason": "At the reading はかせ the word is the title of address attached to a surname (山田博士 = Dr. Yamada) - a person, not a credential. currentEN \"doctorate, PhD\" names only the degree, so an English learner reads \"Yamada doctorate is famous for plant research\" and cannot resolve the construction. This is the referent shift the accepted 針/単位/笛 cases had (abstract qualification -> the person who holds it). Note the usual pattern applies: the Chinese list ALREADY carries the sense - Chinese 博士 denotes both the degree and its holder and 山田博士 is idiomatic Chinese - while the English list does not, so the real gap is English-side and the ZH entry is only being disambiguated.",
+  "glossEN": "doctor (title)",
+  "glossZH": "博士（尊称）"
+ },
+ {
+  "id": "n3-b932",
+  "verdict": "paraphrase",
+  "reason": "\"feeling of discontent\" is a longer spelling of \"dissatisfaction\"/\"displeasure\"/不满; 不満を持つ is the ordinary collocation of that same sense."
+ },
+ {
+  "id": "n3-b944",
+  "verdict": "paraphrase",
+  "reason": "約束を守る falls under the same abide-by sense as 規則を守る, which currentEN \"to obey\" and currentZH 遵守 already carry (遵守约定 is the natural Chinese). \"to fulfill a promise\" is an English collocation choice, not a separate sense."
+ },
+ {
+  "id": "n3-b116",
+  "verdict": "not_a_sense",
+  "reason": "\"applying a rule or law\" is currentEN \"application\" with the sentence's own object (新しい規則) welded on - the same shape as \"repair of a bicycle\" for 修理. 適用 supplies only the applying; the rule comes from the sentence."
+ },
+ {
+  "id": "n3-b199",
+  "verdict": "paraphrase",
+  "reason": "With a road as subject 至る is still the reach-an-endpoint sense; \"this road reaches the plaza\" is exactly what currentEN \"to reach\"/\"to arrive at\" yields, so the learner is not stranded. Only the subject's animacy differs, which is a syntactic frame rather than the referent shift the accepted cases showed."
+ },
+ {
+  "id": "n3-b214",
+  "verdict": "not_a_sense",
+  "reason": "Zooming a phone screen IS currentEN \"magnification\"; \"an image or display\" is just 画面 lifted out of the sentence. Sense plus sentence-object, the \"repair of a bicycle\" template."
+ },
+ {
+  "id": "n3-b313",
+  "verdict": "paraphrase",
+  "reason": "currentEN already lists \"proxy\" and \"representation\", and 父の代理で is the plain use of that sense; the proposal reuses the existing gloss words verbatim."
+ },
+ {
+  "id": "n3-b351",
+  "verdict": "paraphrase",
+  "reason": "\"outrageous or absurd\" is covered by currentEN \"ridiculous\" and currentZH 岂有此理; とんでもない嘘 = an absurd lie reads correctly off the existing line."
+ }
+]
