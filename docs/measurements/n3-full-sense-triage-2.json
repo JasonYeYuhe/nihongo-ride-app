@@ -1,0 +1,505 @@
+[
+  {
+    "id": "n3-b125",
+    "verdict": "paraphrase",
+    "reason": "Same single sense. 'just (now, at the moment)' is the -た途端に 'the moment that' use, and ZH 刚一...就 states it exactly; the proposal only rewords it."
+  },
+  {
+    "id": "n3-b135",
+    "verdict": "paraphrase",
+    "reason": "'tropics' and 'tropical zone' are the same word; 熱帯の植物 needs nothing new."
+  },
+  {
+    "id": "n3-b143",
+    "verdict": "paraphrase",
+    "reason": "'issue' already covers issuing a passport; 'issuance of documents' narrows the same sense to the sentence's referent."
+  },
+  {
+    "id": "n3-b175",
+    "verdict": "new_sense",
+    "reason": "別の面 = another aspect of a matter, not the face/mask/surface senses the EN line lists; a learner reading 'face, mask, surface' would picture a physical surface. ZH already carries it as 方面 - only EN is missing it.",
+    "glossEN": "aspect, side",
+    "glossZH": "方面"
+  },
+  {
+    "id": "n3-b177",
+    "verdict": "paraphrase",
+    "reason": "'sounds' is the same sense; 'noise' is only a stylistic upgrade of the wording."
+  },
+  {
+    "id": "n3-b182",
+    "verdict": "paraphrase",
+    "reason": "'factor' is already in the EN line verbatim."
+  },
+  {
+    "id": "n3-b202",
+    "verdict": "paraphrase",
+    "reason": "'clothes, garments' vs 'clothing or garments' - identical."
+  },
+  {
+    "id": "n3-b203",
+    "verdict": "paraphrase",
+    "reason": "'irritation' already listed; the proposal is the adjectival restatement of it."
+  },
+  {
+    "id": "n3-b226",
+    "verdict": "paraphrase",
+    "reason": "'skillful, handy' already covers 手先が器用 (dexterous)."
+  },
+  {
+    "id": "n3-b232",
+    "verdict": "paraphrase",
+    "reason": "'stinking, smelly' is exactly 'foul-smelling'."
+  },
+  {
+    "id": "n3-b233",
+    "verdict": "paraphrase",
+    "reason": "'sound asleep, fast asleep' is the same adverbial sense, reworded."
+  },
+  {
+    "id": "n3-b236",
+    "verdict": "paraphrase",
+    "reason": "'via, through' = 'by way of'; 東京経由 needs nothing new."
+  },
+  {
+    "id": "n3-b238",
+    "verdict": "paraphrase",
+    "reason": "'fault, defect, weakness' covers 'flaw or shortcoming' completely."
+  },
+  {
+    "id": "n3-b251",
+    "verdict": "paraphrase",
+    "reason": "'congestion' is already in the EN line."
+  },
+  {
+    "id": "n3-b264",
+    "verdict": "paraphrase",
+    "reason": "実際に = 'in reality/in practice', which the noun gloss 'reality, actual state' supports directly, and ZH 事实上 is already the adverbial reading. Part-of-speech restatement, not a new sense."
+  },
+  {
+    "id": "n3-b282",
+    "verdict": "not_a_sense",
+    "reason": "女子生徒 is what the sentence supplies; 女子 by itself is 'girl, woman', already glossed. 'female students' describes the sentence's noun phrase, not a sense of the headword."
+  },
+  {
+    "id": "n3-b284",
+    "verdict": "paraphrase",
+    "reason": "'notice, notification' is the same sense; 'news' is only a register shift, and ZH already lists 消息."
+  },
+  {
+    "id": "n3-b306",
+    "verdict": "new_sense",
+    "reason": "粗末にする = to treat carelessly / waste, which is a separate dictionary sense from 'crude, rough, plain'. A learner reading 'crude, rough, plain' beside 'You must not waste food' gets nothing usable. ZH 粗糙/简陋 is missing it too.",
+    "glossEN": "careless, wasteful",
+    "glossZH": "糟蹋，浪费"
+  },
+  {
+    "id": "n3-b323",
+    "verdict": "paraphrase",
+    "reason": "'sure, no mistake, certain' is exactly the に違いない 'must be' reading."
+  },
+  {
+    "id": "n3-b345",
+    "verdict": "paraphrase",
+    "reason": "\"one's strong point\" is already in the EN line verbatim."
+  },
+  {
+    "id": "n3-b375",
+    "verdict": "paraphrase",
+    "reason": "'beautiful person, beauty' covers 'beautiful woman'; only the gender is narrowed by the sentence."
+  },
+  {
+    "id": "n3-b382",
+    "verdict": "paraphrase",
+    "reason": "One sense in the dictionaries ('wrong, bad, improper, not allowed'); ZH 不可 is itself the 'must not / not permitted' word. Signage use is the same sense."
+  },
+  {
+    "id": "n3-b383",
+    "verdict": "paraphrase",
+    "reason": "'misfortune' is already listed; the proposal restates it as an event."
+  },
+  {
+    "id": "n3-b400",
+    "verdict": "new_sense",
+    "reason": "The EN line is only the 'entirely/completely' (with-negative) sense; まるで〜ようだ 'just like, as if' is the other, and 'quite, entirely, completely' beside 'Her smile is just like the sun' misleads. ZH already has it as 宛如 - the gap is EN-only.",
+    "glossEN": "just like, as if",
+    "glossZH": "宛如"
+  },
+  {
+    "id": "n3-b401",
+    "verdict": "paraphrase",
+    "reason": "'seeing one off' is already the EN gloss word for word."
+  },
+  {
+    "id": "n3-b405",
+    "verdict": "new_sense",
+    "reason": "EN gives only the 'daze, trance, ecstasy' sense; ゲームに夢中 is 'absorbed in, crazy about', which a learner cannot reach from 'daze' or 'ecstasy'. ZH 沉迷/热衷 already covers it, so this is an EN-side gap.",
+    "glossEN": "absorbed in, engrossed",
+    "glossZH": "着迷，入迷"
+  },
+  {
+    "id": "n3-b423",
+    "verdict": "paraphrase",
+    "reason": "'money exchange' already covers exchanging bills."
+  },
+  {
+    "id": "n3-b425",
+    "verdict": "paraphrase",
+    "reason": "'the aged, old person' = 'elderly person'."
+  },
+  {
+    "id": "n3-b431",
+    "verdict": "paraphrase",
+    "reason": "'to get tired of, to lose interest in' is the proposal verbatim."
+  },
+  {
+    "id": "n3-b438",
+    "verdict": "paraphrase",
+    "reason": "'someday' already covers いずれまたお会いしましょう."
+  },
+  {
+    "id": "n3-b441",
+    "verdict": "paraphrase",
+    "reason": "'anytime' is literally 'at any time'."
+  },
+  {
+    "id": "n3-b464",
+    "verdict": "paraphrase",
+    "reason": "'welcome, reception' covers welcoming a new member; 'warmly' adds only tone."
+  },
+  {
+    "id": "n3-b467",
+    "verdict": "paraphrase",
+    "reason": "'engineer, technician' = 'technical specialist or engineer'."
+  },
+  {
+    "id": "n3-b471",
+    "verdict": "paraphrase",
+    "reason": "'absorption' covers roots absorbing water; the proposal just names the sentence's substances."
+  },
+  {
+    "id": "n3-b472",
+    "verdict": "paraphrase",
+    "reason": "'game, match' already covers athletic events at a sports day."
+  },
+  {
+    "id": "n3-b493",
+    "verdict": "paraphrase",
+    "reason": "'lover, sweetheart' = 'romantic partner'."
+  },
+  {
+    "id": "n3-b513",
+    "verdict": "paraphrase",
+    "reason": "'composition (music)' is the same sense in noun form; 作曲する is the する verb of it."
+  },
+  {
+    "id": "n3-b535",
+    "verdict": "paraphrase",
+    "reason": "'publication' covers publishing a book; only the object is added from the sentence."
+  },
+  {
+    "id": "n3-b543",
+    "verdict": "paraphrase",
+    "reason": "'superiority, first class' already means high quality."
+  },
+  {
+    "id": "n3-b559",
+    "verdict": "paraphrase",
+    "reason": "'not one bit' is already the EN gloss for 少しも + negative."
+  },
+  {
+    "id": "n3-b566",
+    "verdict": "paraphrase",
+    "reason": "'manufactured goods, finished goods' = 'manufactured product'; singular vs plural only."
+  },
+  {
+    "id": "n3-b574",
+    "verdict": "new_sense",
+    "reason": "相当な here is the degree sense 'considerable, quite (high)', a separate numbered sense from 'suitable/befitting'. Beside 'suitable, fair' a learner reads 相当なレベル as 'a suitable level', which is a real misreading. ZH 相当 already carries the degree sense; EN does not.",
+    "glossEN": "considerable, quite",
+    "glossZH": "相当，颇为"
+  },
+  {
+    "id": "n3-b582",
+    "verdict": "paraphrase",
+    "reason": "大した病気ではない is the listed 'considerable, great' sense under negation; 'serious' is the same idea in the negative frame."
+  },
+  {
+    "id": "n3-b587",
+    "verdict": "paraphrase",
+    "reason": "'house' already covers 宅におります; 'one's own home' adds only the possessive from context."
+  },
+  {
+    "id": "n3-b594",
+    "verdict": "new_sense",
+    "reason": "University 単位 are course credits, which 'unit, denomination' does not reach - a learner reads 'I took all the necessary units'. ZH already lists 学分, so only the EN line is short.",
+    "glossEN": "credit (academic)",
+    "glossZH": "学分"
+  },
+  {
+    "id": "n3-b595",
+    "verdict": "not_a_sense",
+    "reason": "'tour group' is the sentence's referent, not a sense of 団体. (Separately, EN 'organization, association' arguably under-covers the 'group, party' reading that ZH 团体 has, but the proposal as worded is sentence-bound.)"
+  },
+  {
+    "id": "n3-b601",
+    "verdict": "paraphrase",
+    "reason": "'centre, central' covers the middle of a room."
+  },
+  {
+    "id": "n3-b602",
+    "verdict": "paraphrase",
+    "reason": "'core' already covers being the core/central figure of a team."
+  },
+  {
+    "id": "n3-b610",
+    "verdict": "paraphrase",
+    "reason": "'to pile up' = 'to accumulate'."
+  },
+  {
+    "id": "n3-b613",
+    "verdict": "paraphrase",
+    "reason": "'incident, happening' = 'event'."
+  },
+  {
+    "id": "n3-b615",
+    "verdict": "new_sense",
+    "reason": "EN lists only the person nouns 'helper, assistant'; 手伝いをする is the act, 'help, assistance'. Beside 'I helped with housework' the EN line reads as a person. ZH already has the act sense as 帮忙.",
+    "glossEN": "help, assistance",
+    "glossZH": "帮忙，协助"
+  },
+  {
+    "id": "n3-b618",
+    "verdict": "paraphrase",
+    "reason": "'examination paper, test paper' is the answer sheet; identical sense."
+  },
+  {
+    "id": "n3-b619",
+    "verdict": "paraphrase",
+    "reason": "'simultaneous, concurrent' = 'at the same time'."
+  },
+  {
+    "id": "n3-b632",
+    "verdict": "paraphrase",
+    "reason": "'company, fellow' already covers 会社の仲間 (colleagues, companions)."
+  },
+  {
+    "id": "n3-b634",
+    "verdict": "paraphrase",
+    "reason": "'riddle, puzzle' and 'mystery' are the same sense of 謎; unsolved puzzles of a building's history reads fine."
+  },
+  {
+    "id": "n3-b642",
+    "verdict": "paraphrase",
+    "reason": "'absorption' is already in the EN line."
+  },
+  {
+    "id": "n3-b643",
+    "verdict": "paraphrase",
+    "reason": "'whole year, always' = 'all year round'."
+  },
+  {
+    "id": "n3-b654",
+    "verdict": "paraphrase",
+    "reason": "'announcement, publication' covers presenting research results; the proposal is the verb form."
+  },
+  {
+    "id": "n3-b671",
+    "verdict": "paraphrase",
+    "reason": "One dictionary sense spanning injustice/impropriety/wrongdoing; 'injustice, unfairness' plus ZH 舞弊 already reads correctly for corporate 不正."
+  },
+  {
+    "id": "n3-b687",
+    "verdict": "paraphrase",
+    "reason": "全く + negative is the systematic use of the listed 'entirely'; ZH 完全 does the same work."
+  },
+  {
+    "id": "n3-b701",
+    "verdict": "paraphrase",
+    "reason": "'target' already means goal/objective."
+  },
+  {
+    "id": "n3-b723",
+    "verdict": "paraphrase",
+    "reason": "'association of ideas' is exactly 'mental association'."
+  },
+  {
+    "id": "n3-b756",
+    "verdict": "paraphrase",
+    "reason": "'congress, parliament' covers a city assembly; 'local' comes from 市の in the sentence."
+  },
+  {
+    "id": "n3-b758",
+    "verdict": "paraphrase",
+    "reason": "'commemoration, memory' covers 卒業の記念に."
+  },
+  {
+    "id": "n3-b765",
+    "verdict": "paraphrase",
+    "reason": "'no smoking' is 'prohibition of smoking'."
+  },
+  {
+    "id": "n3-b769",
+    "verdict": "paraphrase",
+    "reason": "'distinction, differentiation' = distinguishing between things."
+  },
+  {
+    "id": "n3-b772",
+    "verdict": "paraphrase",
+    "reason": "'army, troops' = 'armed forces, military'."
+  },
+  {
+    "id": "n3-b773",
+    "verdict": "paraphrase",
+    "reason": "'calculation, count' already covers calculating change."
+  },
+  {
+    "id": "n3-b775",
+    "verdict": "paraphrase",
+    "reason": "'decision, determination' = settling/deciding."
+  },
+  {
+    "id": "n3-b779",
+    "verdict": "paraphrase",
+    "reason": "'right, privilege' already covers the right to speak; 'legal or moral' only qualifies it."
+  },
+  {
+    "id": "n3-b783",
+    "verdict": "paraphrase",
+    "reason": "'fairness, justice' covers treating students fairly."
+  },
+  {
+    "id": "n3-b799",
+    "verdict": "new_sense",
+    "reason": "'furthermore, again' is the additive/connective sense; 風が更に強くなった is the degree intensifier 'even more, still more', which 'furthermore' does not give ('the wind became furthermore strong'). ZH 更加 already covers it - EN is the gap.",
+    "glossEN": "even more, further",
+    "glossZH": "更加"
+  },
+  {
+    "id": "n3-b805",
+    "verdict": "paraphrase",
+    "reason": "'execution, implementation' = carrying out a plan."
+  },
+  {
+    "id": "n3-b808",
+    "verdict": "paraphrase",
+    "reason": "'sisters' = 'female siblings'."
+  },
+  {
+    "id": "n3-b817",
+    "verdict": "paraphrase",
+    "reason": "'favourable, doing well' covers a project progressing smoothly."
+  },
+  {
+    "id": "n3-b820",
+    "verdict": "paraphrase",
+    "reason": "'just a minute' is already the time reading of 少々."
+  },
+  {
+    "id": "n3-b842",
+    "verdict": "paraphrase",
+    "reason": "'government' = 'governing body of a country'."
+  },
+  {
+    "id": "n3-b851",
+    "verdict": "paraphrase",
+    "reason": "'but (still), and yet' = 'even so, nevertheless'."
+  },
+  {
+    "id": "n3-b855",
+    "verdict": "paraphrase",
+    "reason": "'to be in response to' is already the 'regarding, toward' sense."
+  },
+  {
+    "id": "n3-b871",
+    "verdict": "paraphrase",
+    "reason": "'lunch' = 'midday meal'."
+  },
+  {
+    "id": "n3-b875",
+    "verdict": "paraphrase",
+    "reason": "'in succession, one by one' = 'one after another'."
+  },
+  {
+    "id": "n3-b876",
+    "verdict": "paraphrase",
+    "reason": "'bundle, package' already covers a wrapped parcel."
+  },
+  {
+    "id": "n3-b877",
+    "verdict": "not_a_sense",
+    "reason": "手を繋ぐ is a collocation, not a sense of 繋ぐ - the same shape as 'circle formed by people' for 輪. (Worth noting separately: the EN line 'to tie, to fasten' omits the general 'to connect, to link' sense that ZH already has as 连接.)"
+  },
+  {
+    "id": "n3-b883",
+    "verdict": "paraphrase",
+    "reason": "'thoroughness, completeness' covers 徹底する; the proposal is the verb form."
+  },
+  {
+    "id": "n3-b886",
+    "verdict": "paraphrase",
+    "reason": "'identity, same' = 'identical or same'."
+  },
+  {
+    "id": "n3-b903",
+    "verdict": "paraphrase",
+    "reason": "'entrance, admission' covers entering a venue."
+  },
+  {
+    "id": "n3-b906",
+    "verdict": "paraphrase",
+    "reason": "'farmer, farm family' = 'farm household or farmer'."
+  },
+  {
+    "id": "n3-b907",
+    "verdict": "paraphrase",
+    "reason": "'remnant, residue' is the same sense as 'remainder, leftover'; the rest of a cake reads fine."
+  },
+  {
+    "id": "n3-b908",
+    "verdict": "paraphrase",
+    "reason": "'wish, desire' covers the hope of winning."
+  },
+  {
+    "id": "n3-b917",
+    "verdict": "paraphrase",
+    "reason": "'opposition, resistance' covers rebelling against parents."
+  },
+  {
+    "id": "n3-b918",
+    "verdict": "paraphrase",
+    "reason": "'offender, criminal' = 'culprit'."
+  },
+  {
+    "id": "n3-b922",
+    "verdict": "paraphrase",
+    "reason": "'criticism, review' already contains 'review'."
+  },
+  {
+    "id": "n3-b926",
+    "verdict": "new_sense",
+    "reason": "A referee's 笛 is a whistle, not a flute or pipe - 'the referee blew the flute' is what the current EN line yields. ZH 笛子 is the musical instrument only, so both lists are missing it.",
+    "glossEN": "whistle",
+    "glossZH": "哨子"
+  },
+  {
+    "id": "n3-b927",
+    "verdict": "paraphrase",
+    "reason": "'garments, attire' = 'clothing or attire'."
+  },
+  {
+    "id": "n3-b928",
+    "verdict": "paraphrase",
+    "reason": "'safety' covers arriving safely; the proposal is its adverbial form."
+  },
+  {
+    "id": "n3-b945",
+    "verdict": "paraphrase",
+    "reason": "'in the unlikely event' already covers 万一の時に備えて (preparing for an emergency)."
+  },
+  {
+    "id": "n3-b968",
+    "verdict": "paraphrase",
+    "reason": "'comfort, ease' already covers work being easy."
+  }
+]

@@ -11329,6 +11329,17 @@
       "zh": [
         "刚一...就"
       ]
+    },
+    "exJP": "家を出た途端に雨が降り出した。",
+    "exEN": "It started raining as soon as I left the house.",
+    "exZH": "我刚出门就下起雨来了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "as soon as or just when",
+      "senseListed": false
     }
   },
   {
@@ -11595,6 +11606,17 @@
       "zh": [
         "热带"
       ]
+    },
+    "exJP": "この島には熱帯の植物が生えている。",
+    "exEN": "Tropical plants grow on this island.",
+    "exZH": "这座岛上生长着热带植物。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "tropical zone or tropics",
+      "senseListed": false
     }
   },
   {
@@ -11808,6 +11830,17 @@
         "发行",
         "发布"
       ]
+    },
+    "exJP": "新しいパスポートが発行された。",
+    "exEN": "A new passport was issued.",
+    "exZH": "新护照已经签发了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "issuance of documents",
+      "senseListed": false
     }
   },
   {
@@ -12704,12 +12737,24 @@
       "en": [
         "face",
         "mask",
-        "surface"
+        "surface",
+        "aspect"
       ],
       "zh": [
         "脸",
         "方面"
       ]
+    },
+    "exJP": "この問題には別の面もある。",
+    "exEN": "There is also another side to this problem.",
+    "exZH": "这个问题还有另外一面。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "aspect or side",
+      "senseListed": false
     }
   },
   {
@@ -12756,6 +12801,17 @@
         "声响",
         "声音"
       ]
+    },
+    "exJP": "隣の部屋から大きな物音が聞こえた。",
+    "exEN": "I heard a loud noise from the room next door.",
+    "exZH": "隔壁房间传来很大的响声。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "noise or sound",
+      "senseListed": false
     }
   },
   {
@@ -12893,6 +12949,17 @@
         "要素",
         "因素"
       ]
+    },
+    "exJP": "成功には運も重要な要素だ。",
+    "exEN": "Luck is also an important factor in success.",
+    "exZH": "运气也是成功的一个重要因素。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "element or factor",
+      "senseListed": false
     }
   },
   {
@@ -13470,6 +13537,17 @@
         "衣服",
         "服装"
       ]
+    },
+    "exJP": "季節に合わせて衣服を選ぶ。",
+    "exEN": "Choose clothing according to the season.",
+    "exZH": "配合季节挑选服装。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "clothing or garments",
+      "senseListed": false
     }
   },
   {
@@ -13490,6 +13568,17 @@
         "焦躁",
         "烦躁"
       ]
+    },
+    "exJP": "渋滞のせいでいらいらした。",
+    "exEN": "I felt irritated because of the traffic jam.",
+    "exZH": "因为堵车而感到烦躁。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "irritated or annoyed",
+      "senseListed": false
     }
   },
   {
@@ -14143,6 +14232,17 @@
         "灵巧",
         "巧妙"
       ]
+    },
+    "exJP": "彼女は手先が器用だ。",
+    "exEN": "She is dexterous with her hands.",
+    "exZH": "她心灵手巧。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "dexterous or handy",
+      "senseListed": false
     }
   },
   {
@@ -14286,6 +14386,17 @@
         "臭的",
         "可疑的"
       ]
+    },
+    "exJP": "この部屋は生ゴミの匂いで臭い。",
+    "exEN": "This room stinks of kitchen waste.",
+    "exZH": "这个房间有一股厨余垃圾的臭味。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "foul-smelling or stinking",
+      "senseListed": false
     }
   },
   {
@@ -14304,6 +14415,17 @@
       "zh": [
         "酣睡"
       ]
+    },
+    "exJP": "昨夜は疲れていたので、朝までぐっすり寝た。",
+    "exEN": "I was tired last night, so I slept soundly until morning.",
+    "exZH": "我昨晚太累了，所以一觉睡到了天亮。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "sleeping deeply and soundly",
+      "senseListed": false
     }
   },
   {
@@ -14363,6 +14485,17 @@
         "经由",
         "经过"
       ]
+    },
+    "exJP": "東京経由で大阪に向かった。",
+    "exEN": "I headed to Osaka via Tokyo.",
+    "exZH": "我途经东京前往大阪。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "going by way of",
+      "senseListed": false
     }
   },
   {
@@ -14414,6 +14547,17 @@
         "缺点",
         "毛病"
       ]
+    },
+    "exJP": "誰にでも一つや二つの欠点はある。",
+    "exEN": "Everyone has one or two shortcomings.",
+    "exZH": "每个人都会有一两个缺点。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "flaw or shortcoming",
+      "senseListed": false
     }
   },
   {
@@ -14758,6 +14902,17 @@
         "拥挤",
         "混杂"
       ]
+    },
+    "exJP": "休日の駅はいつも大勢の人で混雑している。",
+    "exEN": "The station is always congested with many people on holidays.",
+    "exZH": "假日的车站总是因人群而拥挤不堪。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "crowding or congestion",
+      "senseListed": false
     }
   },
   {
@@ -15136,6 +15291,17 @@
         "实际",
         "事实上"
       ]
+    },
+    "exJP": "実際に試してみないと分からない。",
+    "exEN": "You won't know unless you actually try it.",
+    "exZH": "不实际尝试一下的话是不会明白的。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "in practice or actually",
+      "senseListed": false
     }
   },
   {
@@ -15633,6 +15799,17 @@
         "女子",
         "女孩"
       ]
+    },
+    "exJP": "このクラスは女子の生徒が多い。",
+    "exEN": "This class has many female students.",
+    "exZH": "这个班级的女生很多。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "female students or girls",
+      "senseListed": false
     }
   },
   {
@@ -15681,6 +15858,17 @@
         "通知",
         "消息"
       ]
+    },
+    "exJP": "友人から合格の嬉しい知らせが届いた。",
+    "exEN": "Happy news of passing arrived from my friend.",
+    "exZH": "我收到了朋友考试合格的好消息。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "news or notification",
+      "senseListed": false
     }
   },
   {
@@ -16293,6 +16481,17 @@
         "粗糙",
         "简陋"
       ]
+    },
+    "exJP": "食べ物を粗末にしてはいけません。",
+    "exEN": "You must not waste food.",
+    "exZH": "不能浪费食物。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "wastefully / carelessly",
+      "senseListed": false
     }
   },
   {
@@ -16775,6 +16974,17 @@
         "一定",
         "肯定"
       ]
+    },
+    "exJP": "明日はきっと雨が降るに違いない。",
+    "exEN": "It is bound to rain tomorrow.",
+    "exZH": "明天一定会下雨。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "must be / bound to be",
+      "senseListed": false
     }
   },
   {
@@ -17424,6 +17634,17 @@
         "得意",
         "擅长"
       ]
+    },
+    "exJP": "姉は英語が得意です。",
+    "exEN": "My older sister is good at English.",
+    "exZH": "我姐姐擅长英语。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "strong point / good at",
+      "senseListed": false
     }
   },
   {
@@ -18227,6 +18448,17 @@
         "美人",
         "美女"
       ]
+    },
+    "exJP": "彼女は誰が見ても美人だ。",
+    "exEN": "She is a beauty in anyone's eyes.",
+    "exZH": "无论谁看她都是个美人。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "beautiful woman",
+      "senseListed": false
     }
   },
   {
@@ -18404,6 +18636,17 @@
         "不可",
         "不及格"
       ]
+    },
+    "exJP": "この場所での写真撮影は不可です。",
+    "exEN": "Taking photos at this location is not allowed.",
+    "exZH": "此场地禁止拍照。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "prohibited or not allowed",
+      "senseListed": false
     }
   },
   {
@@ -18425,6 +18668,17 @@
         "不幸",
         "灾祸"
       ]
+    },
+    "exJP": "事故に遭ったのは本当に不幸なことだ。",
+    "exEN": "Being involved in an accident is a truly unfortunate thing.",
+    "exZH": "遭遇事故真是件不幸的事。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "unfortunate or unlucky event",
+      "senseListed": false
     }
   },
   {
@@ -18900,6 +19154,17 @@
         "宛如",
         "完全"
       ]
+    },
+    "exJP": "彼女の笑顔はまるで太陽のようだ。",
+    "exEN": "Her smile is just like the sun.",
+    "exZH": "她的笑容简直就像太阳一样。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "just like or as if",
+      "senseListed": false
     }
   },
   {
@@ -18918,6 +19183,17 @@
       "zh": [
         "送行"
       ]
+    },
+    "exJP": "空港まで友達の見送りに行った。",
+    "exEN": "I went to the airport to see my friend off.",
+    "exZH": "我去了机场为朋友送行。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "seeing someone off",
+      "senseListed": false
     }
   },
   {
@@ -19025,12 +19301,24 @@
       "en": [
         "daze",
         "trance",
-        "ecstasy"
+        "ecstasy",
+        "absorbed in"
       ],
       "zh": [
         "沉迷",
         "热衷"
       ]
+    },
+    "exJP": "子供たちはゲームに夢中になっている。",
+    "exEN": "The children are absorbed in playing games.",
+    "exZH": "孩子们沉迷于玩游戏。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "absorbed in or obsessed with",
+      "senseListed": false
     }
   },
   {
@@ -19525,6 +19813,17 @@
       "zh": [
         "兑换"
       ]
+    },
+    "exJP": "銀行で一万円札を千円札に両替した。",
+    "exEN": "I exchanged a ten-thousand-yen bill for one-thousand-yen bills at the bank.",
+    "exZH": "我在银行把一万日元纸币换成了千日元纸币。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "exchanging currency or bills",
+      "senseListed": false
     }
   },
   {
@@ -19573,6 +19872,17 @@
       "zh": [
         "老人"
       ]
+    },
+    "exJP": "電車の中で老人に席を譲った。",
+    "exEN": "I offered my seat to an elderly person on the train.",
+    "exZH": "我在列车上给老人让了座。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "elderly person",
+      "senseListed": false
     }
   },
   {
@@ -21888,6 +22198,17 @@
         "厌倦",
         "失去兴趣"
       ]
+    },
+    "exJP": "毎日同じ料理を食べると飽きてしまう。",
+    "exEN": "If I eat the same dish every day, I get tired of it.",
+    "exZH": "每天吃同样的饭菜就会吃腻。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-04",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "to grow tired of or lose interest",
+      "senseListed": false
     }
   },
   {
@@ -22088,6 +22409,17 @@
         "早晚",
         "哪个"
       ]
+    },
+    "exJP": "いずれまたお会いしましょう。",
+    "exEN": "Let's meet again someday.",
+    "exZH": "我们改天再见吧。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "sooner or later, eventually",
+      "senseListed": false
     }
   },
   {
@@ -22168,6 +22500,17 @@
         "随时",
         "总是"
       ]
+    },
+    "exJP": "困ったときはいつでも連絡してね。",
+    "exEN": "Contact me anytime you are in trouble.",
+    "exZH": "遇到困难时随时联系我。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "at any time",
+      "senseListed": false
     }
   },
   {
@@ -22813,6 +23156,17 @@
       "zh": [
         "欢迎"
       ]
+    },
+    "exJP": "新しい仲間をみんなで歓迎した。",
+    "exEN": "We all welcomed our new member.",
+    "exZH": "大家一起欢迎了新伙伴。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "welcoming a person warmly",
+      "senseListed": false
     }
   },
   {
@@ -22891,6 +23245,17 @@
         "技师",
         "工程师"
       ]
+    },
+    "exJP": "経験豊富な技師が機械を修理した。",
+    "exEN": "An experienced engineer repaired the machine.",
+    "exZH": "经验丰富的工程师维修了机器。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "technical specialist or engineer",
+      "senseListed": false
     }
   },
   {
@@ -22992,6 +23357,17 @@
       "zh": [
         "吸收"
       ]
+    },
+    "exJP": "植物は根から水を吸収する。",
+    "exEN": "Plants absorb water from their roots.",
+    "exZH": "植物从根部吸收水分。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "absorbing liquids or nutrients",
+      "senseListed": false
     }
   },
   {
@@ -23013,6 +23389,17 @@
         "竞技",
         "比赛"
       ]
+    },
+    "exJP": "明日は運動会で色々な競技がある。",
+    "exEN": "There will be various events at the sports day tomorrow.",
+    "exZH": "明天的运动会有各种各样的比赛项目。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "sports contest or event",
+      "senseListed": false
     }
   },
   {
@@ -23611,6 +23998,17 @@
         "恋人",
         "情人"
       ]
+    },
+    "exJP": "彼は週末に恋人とデートを楽しんだ。",
+    "exEN": "He enjoyed a date with his lover over the weekend.",
+    "exZH": "他在周末和恋人享受了约会。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "romantic partner",
+      "senseListed": false
     }
   },
   {
@@ -24172,6 +24570,17 @@
       "zh": [
         "作曲"
       ]
+    },
+    "exJP": "彼は新しい曲を作曲している。",
+    "exEN": "He is composing a new song.",
+    "exZH": "他正在创作一首新歌曲。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "to compose music",
+      "senseListed": false
     }
   },
   {
@@ -24797,6 +25206,17 @@
       "zh": [
         "出版"
       ]
+    },
+    "exJP": "彼女は新しい本を出版した。",
+    "exEN": "She published a new book.",
+    "exZH": "她出版了一本新书。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "to publish a book",
+      "senseListed": false
     }
   },
   {
@@ -25005,6 +25425,17 @@
         "上等",
         "优秀"
       ]
+    },
+    "exJP": "これはとても上等な生地だ。",
+    "exEN": "This is very fine-quality fabric.",
+    "exZH": "这是非常高级的面料。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "high quality or superior",
+      "senseListed": false
     }
   },
   {
@@ -25449,6 +25880,17 @@
       "zh": [
         "一点也不"
       ]
+    },
+    "exJP": "彼の説明は少しも分からなかった。",
+    "exEN": "I didn't understand his explanation one bit.",
+    "exZH": "我一点也不理解他的解释。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "not at all",
+      "senseListed": false
     }
   },
   {
@@ -25629,6 +26071,17 @@
         "制品",
         "产品"
       ]
+    },
+    "exJP": "新しい製品を市場に出す。",
+    "exEN": "Release a new manufactured product to the market.",
+    "exZH": "将新产品推向市场。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "manufactured product",
+      "senseListed": false
     }
   },
   {
@@ -25862,6 +26315,17 @@
         "相当",
         "适合"
       ]
+    },
+    "exJP": "彼の日本語は相当なレベルだ。",
+    "exEN": "His Japanese is at a fairly high level.",
+    "exZH": "他的日语水平相当高。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "considerable",
+      "senseListed": false
     }
   },
   {
@@ -26085,6 +26549,17 @@
         "了不起",
         "惊人"
       ]
+    },
+    "exJP": "大した病気ではなさそうで安心した。",
+    "exEN": "I was relieved that it didn't seem to be a serious illness.",
+    "exZH": "看起来并不是什么大病，让人放心了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "serious",
+      "senseListed": false
     }
   },
   {
@@ -26224,6 +26699,17 @@
         "住宅",
         "丈夫"
       ]
+    },
+    "exJP": "明日の午後は宅におります。",
+    "exEN": "I will be at my home tomorrow afternoon.",
+    "exZH": "我明天下午会在家。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "one's own home",
+      "senseListed": false
     }
   },
   {
@@ -26419,12 +26905,24 @@
     "meanings": {
       "en": [
         "unit",
-        "denomination"
+        "denomination",
+        "credit (academic)"
       ],
       "zh": [
         "单位",
         "学分"
       ]
+    },
+    "exJP": "今学期は必要な単位を全て取った。",
+    "exEN": "I earned all the necessary credits this semester.",
+    "exZH": "我在这个学期修够了所需的全部学分。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "academic credit",
+      "senseListed": false
     }
   },
   {
@@ -26444,6 +26942,17 @@
         "团体",
         "组织"
       ]
+    },
+    "exJP": "団体で旅行を申し込むと割引がある。",
+    "exEN": "There is a discount if you apply for a trip as a group.",
+    "exZH": "以团体形式报名旅行会有折扣。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "tour group",
+      "senseListed": false
     }
   },
   {
@@ -26600,6 +27109,17 @@
         "中央",
         "中心"
       ]
+    },
+    "exJP": "部屋の中央に大きなテーブルを置いた。",
+    "exEN": "We placed a large table in the center of the room.",
+    "exZH": "我们在房间中央放了一张大桌子。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "center of a space",
+      "senseListed": false
     }
   },
   {
@@ -26619,6 +27139,17 @@
         "中心",
         "核心"
       ]
+    },
+    "exJP": "彼女はチームの中心となって活躍した。",
+    "exEN": "She played an active role as the core of the team.",
+    "exZH": "她作为团队的核心活跃着。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "central figure",
+      "senseListed": false
     }
   },
   {
@@ -26840,6 +27371,17 @@
         "堆积",
         "积压"
       ]
+    },
+    "exJP": "昨夜からの雪が庭に積もっている。",
+    "exEN": "The snow from last night is piling up in the garden.",
+    "exZH": "昨晚下的雪在院子里积了起来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "to accumulate",
+      "senseListed": false
     }
   },
   {
@@ -26920,6 +27462,17 @@
         "事件",
         "事情"
       ]
+    },
+    "exJP": "昨日、学校で面白い出来事があった。",
+    "exEN": "An interesting event happened at school yesterday.",
+    "exZH": "昨天学校里发生了一件有趣的事。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "event",
+      "senseListed": false
     }
   },
   {
@@ -26962,12 +27515,24 @@
     "meanings": {
       "en": [
         "helper",
-        "assistant"
+        "assistant",
+        "help"
       ],
       "zh": [
         "帮忙",
         "助手"
       ]
+    },
+    "exJP": "週末は家事の手伝いをした。",
+    "exEN": "I helped with housework over the weekend.",
+    "exZH": "周末我帮忙做了家务。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "help with tasks",
+      "senseListed": false
     }
   },
   {
@@ -27037,6 +27602,17 @@
         "试卷",
         "答案"
       ]
+    },
+    "exJP": "先生にテストの答案を提出した。",
+    "exEN": "I submitted my test answer sheet to the teacher.",
+    "exZH": "我给老师提交了考试答卷。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "examination answer sheet",
+      "senseListed": false
     }
   },
   {
@@ -27056,6 +27632,17 @@
       "zh": [
         "同时"
       ]
+    },
+    "exJP": "二人は同時にゴールに入った。",
+    "exEN": "The two crossed the finish line at the same time.",
+    "exZH": "两人同时到达了终点。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "at the same time",
+      "senseListed": false
     }
   },
   {
@@ -27402,6 +27989,17 @@
         "伙伴",
         "同伴"
       ]
+    },
+    "exJP": "休日に会社の仲間とサッカーをしました。",
+    "exEN": "I played soccer with my colleagues on my day off.",
+    "exZH": "我在休息日和公司同事一起踢了足球。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "colleagues or companions",
+      "senseListed": false
     }
   },
   {
@@ -27439,6 +28037,17 @@
         "谜",
         "谜团"
       ]
+    },
+    "exJP": "この古い建物の歴史には多くの謎があります。",
+    "exEN": "There are many mysteries surrounding the history of this old building.",
+    "exZH": "这座古老建筑的历史有很多谜团。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "mystery",
+      "senseListed": false
     }
   },
   {
@@ -27646,6 +28255,17 @@
         "热衷",
         "沉迷"
       ]
+    },
+    "exJP": "弟は今、ゲームに熱中しています。",
+    "exEN": "My younger brother is currently absorbed in video games.",
+    "exZH": "弟弟现在正沉迷于游戏。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "being absorbed in",
+      "senseListed": false
     }
   },
   {
@@ -27666,6 +28286,17 @@
         "全年",
         "总是"
       ]
+    },
+    "exJP": "この部屋は年中暖かくて過ごしやすいです。",
+    "exEN": "This room is warm all year round and comfortable to stay in.",
+    "exZH": "这个房间一年到头都很温暖，住起来很舒服。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "all year round",
+      "senseListed": false
     }
   },
   {
@@ -27992,6 +28623,17 @@
         "发表",
         "宣布"
       ]
+    },
+    "exJP": "明日の授業で研究の結果を発表します。",
+    "exEN": "I will present the results of my research in tomorrow's class.",
+    "exZH": "我将在明天的课上发表研究结果。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "to present or announce",
+      "senseListed": false
     }
   },
   {
@@ -28467,6 +29109,17 @@
         "不正当",
         "舞弊"
       ]
+    },
+    "exJP": "会社で不正が行われていないか調査します。",
+    "exEN": "We will investigate whether any wrongdoing is taking place in the company.",
+    "exZH": "调查公司内部是否存在不正当行为。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "dishonesty or wrongdoing",
+      "senseListed": false
     }
   },
   {
@@ -28879,6 +29532,17 @@
         "完全",
         "实在"
       ]
+    },
+    "exJP": "その問題については全く知りません。",
+    "exEN": "I know nothing at all about that issue.",
+    "exZH": "我对那个问题完全不知情。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "not at all",
+      "senseListed": false
     }
   },
   {
@@ -29269,6 +29933,17 @@
       "zh": [
         "目标"
       ]
+    },
+    "exJP": "今年の目標は試験に合格することだ。",
+    "exEN": "My goal for this year is to pass the exam.",
+    "exZH": "我今年的目标是考试合格。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "goal, objective",
+      "senseListed": false
     }
   },
   {
@@ -29893,6 +30568,17 @@
       "zh": [
         "联想"
       ]
+    },
+    "exJP": "赤い色から太陽を連想する。",
+    "exEN": "I associate the color red with the sun.",
+    "exZH": "看到红色会让人联想到太阳。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "mental association",
+      "senseListed": false
     }
   },
   {
@@ -30765,6 +31451,17 @@
         "议会",
         "国会"
       ]
+    },
+    "exJP": "市の議会で新しい計画が話し合われた。",
+    "exEN": "The new plan was discussed at the city council.",
+    "exZH": "市议会上讨论了新的计划。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "local council or parliament",
+      "senseListed": false
     }
   },
   {
@@ -30813,6 +31510,17 @@
       "zh": [
         "纪念"
       ]
+    },
+    "exJP": "卒業の記念にみんなで写真を撮った。",
+    "exEN": "We all took a photo to commemorate our graduation.",
+    "exZH": "大家一起拍照留作毕业纪念。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "memento or commemoration",
+      "senseListed": false
     }
   },
   {
@@ -31014,6 +31722,17 @@
         "禁烟",
         "戒烟"
       ]
+    },
+    "exJP": "この建物の中はすべて禁煙です。",
+    "exEN": "Smoking is completely prohibited inside this building.",
+    "exZH": "这栋建筑内部全面禁烟。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "prohibition of smoking",
+      "senseListed": false
     }
   },
   {
@@ -31108,6 +31827,17 @@
         "区别",
         "分别"
       ]
+    },
+    "exJP": "似ている二つの言葉を区別する。",
+    "exEN": "To distinguish between two similar words.",
+    "exZH": "区分两个相似的词语。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "distinguishing between things",
+      "senseListed": false
     }
   },
   {
@@ -31187,6 +31917,17 @@
       "zh": [
         "军队"
       ]
+    },
+    "exJP": "その国は大きな軍隊を持っている。",
+    "exEN": "That country has a large army.",
+    "exZH": "那个国家拥有庞大的军队。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "armed forces or military",
+      "senseListed": false
     }
   },
   {
@@ -31205,6 +31946,17 @@
       "zh": [
         "计算"
       ]
+    },
+    "exJP": "買い物のお釣りを計算する。",
+    "exEN": "Calculating the change from shopping.",
+    "exZH": "计算购物的找零。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "calculating or counting numbers",
+      "senseListed": false
     }
   },
   {
@@ -31253,6 +32005,17 @@
       "zh": [
         "决定"
       ]
+    },
+    "exJP": "次の会議の日時が決定した。",
+    "exEN": "The date and time for the next meeting have been decided.",
+    "exZH": "下次会议的时间已确定。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "settling or deciding something",
+      "senseListed": false
     }
   },
   {
@@ -31361,6 +32124,17 @@
       "zh": [
         "权利"
       ]
+    },
+    "exJP": "誰にも意見を言う権利がある。",
+    "exEN": "Everyone has the right to express their opinion.",
+    "exZH": "每个人都有发表意见的权利。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "legal or moral right",
+      "senseListed": false
     }
   },
   {
@@ -31472,6 +32246,17 @@
         "公平",
         "公正"
       ]
+    },
+    "exJP": "先生は生徒全員を公平に扱う。",
+    "exEN": "The teacher treats all students fairly.",
+    "exZH": "老师公平地对待每一位学生。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "impartial and fair treatment",
+      "senseListed": false
     }
   },
   {
@@ -31906,12 +32691,24 @@
     "meanings": {
       "en": [
         "furthermore",
-        "again"
+        "again",
+        "even more"
       ],
       "zh": [
         "更加",
         "进一步"
       ]
+    },
+    "exJP": "夜になって風が更に強くなった。",
+    "exEN": "The wind grew even stronger at night.",
+    "exZH": "到了晚上风变得更大了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "even more or further",
+      "senseListed": false
     }
   },
   {
@@ -32044,6 +32841,17 @@
         "实行",
         "执行"
       ]
+    },
+    "exJP": "自分の計画を確実に実行した。",
+    "exEN": "I reliably executed my plan.",
+    "exZH": "我切实地执行了自己的计划。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "carrying out a plan",
+      "senseListed": false
     }
   },
   {
@@ -32121,6 +32929,17 @@
       "zh": [
         "姐妹"
       ]
+    },
+    "exJP": "彼女たちは仲が良い姉妹です。",
+    "exEN": "They are sisters who get along well.",
+    "exZH": "她们是一对关系很好的姐妹。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-10",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "female siblings",
+      "senseListed": false
     }
   },
   {
@@ -32352,6 +33171,17 @@
         "顺利",
         "顺畅"
       ]
+    },
+    "exJP": "新しいプロジェクトは順調に進んでいる。",
+    "exEN": "The new project is progressing smoothly.",
+    "exZH": "新项目进展顺利。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "progressing smoothly",
+      "senseListed": false
     }
   },
   {
@@ -32418,6 +33248,17 @@
         "稍微",
         "一点"
       ]
+    },
+    "exJP": "準備に少々お時間がかかります。",
+    "exEN": "Preparation will take a little time.",
+    "exZH": "准备工作需要少许时间。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "a small amount of time",
+      "senseListed": false
     }
   },
   {
@@ -33031,6 +33872,17 @@
       "zh": [
         "政府"
       ]
+    },
+    "exJP": "政府は新しい経済政策を発表した。",
+    "exEN": "The government announced a new economic policy.",
+    "exZH": "政府公布了新的经济政策。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "governing body of a country",
+      "senseListed": false
     }
   },
   {
@@ -33283,6 +34135,17 @@
         "尽管如此",
         "仍然"
       ]
+    },
+    "exJP": "雨が降っていたが、それでも外に出た。",
+    "exEN": "It was raining, but even so, I went outside.",
+    "exZH": "虽然在下雨，但我还是出去了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "even so or nevertheless",
+      "senseListed": false
     }
   },
   {
@@ -33391,6 +34254,17 @@
         "面对",
         "针对"
       ]
+    },
+    "exJP": "彼の意見に対する質問を行う。",
+    "exEN": "I ask questions regarding his opinion.",
+    "exZH": "针对他的意见提出提问。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-11",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "regarding or in response to",
+      "senseListed": false
     }
   },
   {
@@ -33806,6 +34680,17 @@
         "午餐",
         "午饭"
       ]
+    },
+    "exJP": "友達と一緒に昼食を食べました。",
+    "exEN": "I ate lunch together with my friend.",
+    "exZH": "我和朋友一起吃了午餐。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "midday meal",
+      "senseListed": false
     }
   },
   {
@@ -33913,6 +34798,17 @@
         "接连不断",
         "陆续"
       ]
+    },
+    "exJP": "新しい問題が次々と出てきます。",
+    "exEN": "New problems are coming up one after another.",
+    "exZH": "新的问题接二连三地出现。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "one after another",
+      "senseListed": false
     }
   },
   {
@@ -33932,6 +34828,17 @@
         "包裹",
         "包袱"
       ]
+    },
+    "exJP": "テーブルの上に小さな包みがあります。",
+    "exEN": "There is a small package on the table.",
+    "exZH": "桌子上有一个小包裹。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "wrapped parcel or package",
+      "senseListed": false
     }
   },
   {
@@ -33952,6 +34859,17 @@
         "拴",
         "连接"
       ]
+    },
+    "exJP": "親と子供が手を繋いで歩いています。",
+    "exEN": "Parent and child are walking while holding hands.",
+    "exZH": "父母和孩子牵着手在散步。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "to hold or join hands",
+      "senseListed": false
     }
   },
   {
@@ -34095,6 +35013,17 @@
       "zh": [
         "彻底"
       ]
+    },
+    "exJP": "手洗いとうがいを徹底しています。",
+    "exEN": "We thoroughly enforce hand washing and gargling.",
+    "exZH": "我们彻底落实洗手和漱口。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "thorough implementation or practice",
+      "senseListed": false
     }
   },
   {
@@ -34174,6 +35103,17 @@
         "同一",
         "相同"
       ]
+    },
+    "exJP": "二つの事件は同一の人物によるものです。",
+    "exEN": "The two incidents were committed by the same person.",
+    "exZH": "这两起事件是由同一人所为。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "identical or same",
+      "senseListed": false
     }
   },
   {
@@ -34657,6 +35597,17 @@
         "入场",
         "进场"
       ]
+    },
+    "exJP": "チケットを買って会場に入場しました。",
+    "exEN": "I bought a ticket and entered the venue.",
+    "exZH": "买完票后进入了会场。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "entering a venue or admission",
+      "senseListed": false
     }
   },
   {
@@ -34736,6 +35687,17 @@
         "农家",
         "农民"
       ]
+    },
+    "exJP": "近くの農家から新鮮な野菜を買いました。",
+    "exEN": "I bought fresh vegetables from a nearby farm household.",
+    "exZH": "从附近的农户那里买了新鲜蔬菜。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "farm household or farmer",
+      "senseListed": false
     }
   },
   {
@@ -34755,6 +35717,17 @@
         "剩余",
         "剩下"
       ]
+    },
+    "exJP": "ケーキの残りは冷蔵庫に入れておきます。",
+    "exEN": "I will put the rest of the cake in the refrigerator.",
+    "exZH": "剩下的蛋糕我放进冰箱里。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "remainder or leftover",
+      "senseListed": false
     }
   },
   {
@@ -34774,6 +35747,17 @@
         "希望",
         "愿望"
       ]
+    },
+    "exJP": "まだ勝つ望みは捨てていません。",
+    "exEN": "I have not yet given up hope of winning.",
+    "exZH": "我还没有放弃获胜的希望。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "hope or wish",
+      "senseListed": false
     }
   },
   {
@@ -35007,6 +35991,17 @@
         "反抗",
         "抵抗"
       ]
+    },
+    "exJP": "彼は親に反抗して家を出ていきました。",
+    "exEN": "He rebelled against his parents and left home.",
+    "exZH": "他反抗父母离家出走了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "rebellion or resistance to authority",
+      "senseListed": false
     }
   },
   {
@@ -35026,6 +36021,17 @@
         "犯人",
         "罪犯"
       ]
+    },
+    "exJP": "警察はついに事件の犯人を捕まえました。",
+    "exEN": "The police finally caught the culprit of the incident.",
+    "exZH": "警方终于抓到了这起案件的罪犯。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "culprit or offender of a crime",
+      "senseListed": false
     }
   },
   {
@@ -35123,6 +36129,17 @@
         "批评",
         "评论"
       ]
+    },
+    "exJP": "新しい映画の批評を雑誌で読みました。",
+    "exEN": "I read a review of the new movie in a magazine.",
+    "exZH": "我在杂志上看了新电影的影评。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "critique or review",
+      "senseListed": false
     }
   },
   {
@@ -35225,11 +36242,24 @@
     "meanings": {
       "en": [
         "flute",
-        "pipe"
+        "pipe",
+        "whistle"
       ],
       "zh": [
-        "笛子"
+        "笛子",
+        "哨子"
       ]
+    },
+    "exJP": "審判が試合終了の笛をふきました。",
+    "exEN": "The referee blew the whistle for the end of the match.",
+    "exZH": "裁判吹响了比赛结束的哨声。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "whistle or flute instrument",
+      "senseListed": false
     }
   },
   {
@@ -35249,6 +36279,17 @@
         "服装",
         "衣着"
       ]
+    },
+    "exJP": "面接にはきちんとした服装で行きます。",
+    "exEN": "I will go to the interview in neat clothing.",
+    "exZH": "我会穿着整洁的服装去参加面试。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "clothing or attire",
+      "senseListed": false
     }
   },
   {
@@ -35269,6 +36310,17 @@
         "平安",
         "无事"
       ]
+    },
+    "exJP": "飛行機は無事に空港へ到着しました。",
+    "exEN": "The airplane arrived safely at the airport.",
+    "exZH": "飞机平安抵达了机场。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-12",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "safely without trouble",
+      "senseListed": false
     }
   },
   {
@@ -35722,6 +36774,17 @@
         "万一",
         "倘若"
       ]
+    },
+    "exJP": "万一の時に備えて保険に入る。",
+    "exEN": "Enroll in insurance to prepare for an emergency.",
+    "exZH": "投保以备万一。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "emergency, unlikely emergency event",
+      "senseListed": false
     }
   },
   {
@@ -36378,6 +37441,17 @@
         "轻松",
         "舒适"
       ]
+    },
+    "exJP": "新しい道具を使うと作業がとても楽だ。",
+    "exEN": "Using new tools makes the work very easy.",
+    "exZH": "使用新工具会让工作变得非常轻松。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-13",
+      "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
+      "sense": "easy, requiring little effort",
+      "senseListed": false
     }
   },
   {

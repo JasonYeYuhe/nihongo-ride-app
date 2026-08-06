@@ -1,0 +1,503 @@
+[
+ {
+  "id": "n3-b125",
+  "verdict": "paraphrase",
+  "reason": "EN 'just (now, at the moment)' is the same moment-of sense; ZH 刚一...就 is literally 'as soon as'."
+ },
+ {
+  "id": "n3-b135",
+  "verdict": "paraphrase",
+  "reason": "'tropics' and 'tropical zone' are the same sense."
+ },
+ {
+  "id": "n3-b143",
+  "verdict": "paraphrase",
+  "reason": "'issue' already covers issuance of a passport; the 'of documents' part is the sentence's object."
+ },
+ {
+  "id": "n3-b175",
+  "verdict": "new_sense",
+  "reason": "EN has only the physical face/mask/surface senses; 別の面 is the abstract 'aspect/facet' sense, a separate dictionary sense a learner cannot reach from 'surface'. ZH already covers it with 方面, so this is an EN-only gap.",
+  "glossEN": "aspect",
+  "glossZH": "方面"
+ },
+ {
+  "id": "n3-b177",
+  "verdict": "paraphrase",
+  "reason": "'sounds' is the same sense as 'noise or sound'."
+ },
+ {
+  "id": "n3-b182",
+  "verdict": "paraphrase",
+  "reason": "'factor' is already in the list verbatim."
+ },
+ {
+  "id": "n3-b202",
+  "verdict": "paraphrase",
+  "reason": "'clothes, garments' already covers 'clothing or garments'."
+ },
+ {
+  "id": "n3-b203",
+  "verdict": "paraphrase",
+  "reason": "'irritation' already covers being irritated/annoyed."
+ },
+ {
+  "id": "n3-b226",
+  "verdict": "paraphrase",
+  "reason": "'skillful, handy' is the same sense as 'dexterous or handy'."
+ },
+ {
+  "id": "n3-b232",
+  "verdict": "paraphrase",
+  "reason": "'stinking, smelly' is the same sense as 'foul-smelling'."
+ },
+ {
+  "id": "n3-b233",
+  "verdict": "paraphrase",
+  "reason": "'sound asleep, fast asleep' is exactly sleeping deeply."
+ },
+ {
+  "id": "n3-b236",
+  "verdict": "paraphrase",
+  "reason": "'via, through' is exactly 'going by way of'."
+ },
+ {
+  "id": "n3-b238",
+  "verdict": "paraphrase",
+  "reason": "'fault, defect, weakness' already covers 'flaw or shortcoming'."
+ },
+ {
+  "id": "n3-b251",
+  "verdict": "paraphrase",
+  "reason": "'congestion' is already in the list."
+ },
+ {
+  "id": "n3-b264",
+  "verdict": "paraphrase",
+  "reason": "Adverbial 実際に follows transparently from 'reality, actual state', and ZH 事实上 is already the adverbial gloss."
+ },
+ {
+  "id": "n3-b282",
+  "verdict": "paraphrase",
+  "reason": "The operative sense in 女子の生徒 is 'female/girl', already glossed; 'female students' comes from the sentence's noun phrase."
+ },
+ {
+  "id": "n3-b284",
+  "verdict": "paraphrase",
+  "reason": "'notice, notification' covers receiving news of a result."
+ },
+ {
+  "id": "n3-b306",
+  "verdict": "new_sense",
+  "reason": "粗末にする (to treat carelessly, to waste) is a distinct dictionary sense; 'crude, rough, plain' would give a learner 'don't make food crude'. ZH 粗糙/简陋 do not cover it either, so both lists have the gap.",
+  "glossEN": "wasteful",
+  "glossZH": "糟蹋"
+ },
+ {
+  "id": "n3-b323",
+  "verdict": "paraphrase",
+  "reason": "'sure, no mistake, certain' is exactly the に違いない modal."
+ },
+ {
+  "id": "n3-b345",
+  "verdict": "paraphrase",
+  "reason": "'one's strong point' is already in the list verbatim."
+ },
+ {
+  "id": "n3-b375",
+  "verdict": "paraphrase",
+  "reason": "'beautiful person, beauty' covers 'beautiful woman'."
+ },
+ {
+  "id": "n3-b382",
+  "verdict": "paraphrase",
+  "reason": "'improper' plus ZH 不可 (= may not) already reads as 'not allowed' on a sign."
+ },
+ {
+  "id": "n3-b383",
+  "verdict": "paraphrase",
+  "reason": "'misfortune' already covers an unfortunate event."
+ },
+ {
+  "id": "n3-b400",
+  "verdict": "new_sense",
+  "reason": "EN has only the degree sense ('quite, entirely, completely'); まるで〜のようだ is the separate simile sense, and a learner would read 'completely like the sun'. ZH already covers it with 宛如, so this is an EN-only gap.",
+  "glossEN": "as if",
+  "glossZH": "好像"
+ },
+ {
+  "id": "n3-b401",
+  "verdict": "paraphrase",
+  "reason": "'seeing one off' is already in the list."
+ },
+ {
+  "id": "n3-b405",
+  "verdict": "new_sense",
+  "reason": "EN 'daze, trance, ecstasy' is the involuntary-state sense; 〜に夢中になる 'absorbed in / crazy about' is a separate dictionary sense that 'trance' does not deliver for children playing games. ZH 沉迷/热衷 already cover it, so this is an EN-only gap.",
+  "glossEN": "absorbed in",
+  "glossZH": "入迷"
+ },
+ {
+  "id": "n3-b423",
+  "verdict": "paraphrase",
+  "reason": "'money exchange' is exactly exchanging bills."
+ },
+ {
+  "id": "n3-b425",
+  "verdict": "paraphrase",
+  "reason": "'old person' and 'elderly person' are the same sense."
+ },
+ {
+  "id": "n3-b431",
+  "verdict": "paraphrase",
+  "reason": "'to get tired of, to lose interest in' restated word for word."
+ },
+ {
+  "id": "n3-b438",
+  "verdict": "paraphrase",
+  "reason": "'someday' already covers 'sooner or later, eventually'."
+ },
+ {
+  "id": "n3-b441",
+  "verdict": "paraphrase",
+  "reason": "'anytime' is exactly 'at any time'."
+ },
+ {
+  "id": "n3-b464",
+  "verdict": "paraphrase",
+  "reason": "'welcome, reception' covers welcoming a person."
+ },
+ {
+  "id": "n3-b467",
+  "verdict": "paraphrase",
+  "reason": "'engineer, technician' covers 'technical specialist'."
+ },
+ {
+  "id": "n3-b471",
+  "verdict": "paraphrase",
+  "reason": "'absorption' covers it; 'liquids or nutrients' is the sentence's object."
+ },
+ {
+  "id": "n3-b472",
+  "verdict": "paraphrase",
+  "reason": "'game, match' covers a sports-day event."
+ },
+ {
+  "id": "n3-b493",
+  "verdict": "paraphrase",
+  "reason": "'lover, sweetheart' is exactly a romantic partner."
+ },
+ {
+  "id": "n3-b513",
+  "verdict": "paraphrase",
+  "reason": "'composition (music)' is the same sense in noun form."
+ },
+ {
+  "id": "n3-b535",
+  "verdict": "paraphrase",
+  "reason": "'publication' is the same sense in noun form."
+ },
+ {
+  "id": "n3-b543",
+  "verdict": "paraphrase",
+  "reason": "'superiority, first class' is exactly high quality."
+ },
+ {
+  "id": "n3-b559",
+  "verdict": "paraphrase",
+  "reason": "'not one bit' is already in the list."
+ },
+ {
+  "id": "n3-b566",
+  "verdict": "paraphrase",
+  "reason": "'manufactured goods' restated as singular."
+ },
+ {
+  "id": "n3-b574",
+  "verdict": "new_sense",
+  "reason": "EN has only the 'suitable/appropriate' sense; 相当なレベル is the separate degree sense 'considerable, quite', which 'suitable, fair' actively mis-cues. ZH 相当 already carries this sense, so this is an EN-only gap.",
+  "glossEN": "considerable",
+  "glossZH": "颇为"
+ },
+ {
+  "id": "n3-b582",
+  "verdict": "paraphrase",
+  "reason": "'considerable, great' negated gives exactly 'not a serious illness'."
+ },
+ {
+  "id": "n3-b587",
+  "verdict": "paraphrase",
+  "reason": "'house' already covers one's own home."
+ },
+ {
+  "id": "n3-b594",
+  "verdict": "new_sense",
+  "reason": "The university-credit sense is distinct from 'unit, denomination'; a learner reading 'unit' beside 必要な単位を取った gets nothing. ZH already has 学分, so this is an EN-only gap.",
+  "glossEN": "credit (academic)",
+  "glossZH": "学分"
+ },
+ {
+  "id": "n3-b595",
+  "verdict": "not_a_sense",
+  "reason": "'tour group' describes the sentence (applying for a trip); the word itself is the already-glossed 'organization/group', and ZH 团体 covers group booking."
+ },
+ {
+  "id": "n3-b601",
+  "verdict": "paraphrase",
+  "reason": "'centre, central' is exactly the centre of a room."
+ },
+ {
+  "id": "n3-b602",
+  "verdict": "paraphrase",
+  "reason": "'core' already covers being the core of a team."
+ },
+ {
+  "id": "n3-b610",
+  "verdict": "paraphrase",
+  "reason": "'to pile up' is exactly 'to accumulate'; ZH 堆积 too."
+ },
+ {
+  "id": "n3-b613",
+  "verdict": "paraphrase",
+  "reason": "'incident, happening' is the same sense as 'event'."
+ },
+ {
+  "id": "n3-b615",
+  "verdict": "new_sense",
+  "reason": "EN glosses only the person ('helper, assistant'); 手伝いをする is the separate act sense 'help, assistance', and 'I did the housework's assistant' is what the current line yields. ZH 帮忙 already covers the act, so this is an EN-only gap.",
+  "glossEN": "help",
+  "glossZH": "帮助"
+ },
+ {
+  "id": "n3-b618",
+  "verdict": "paraphrase",
+  "reason": "'examination paper, test paper' is the same sense."
+ },
+ {
+  "id": "n3-b619",
+  "verdict": "paraphrase",
+  "reason": "'simultaneous, concurrent' is exactly 'at the same time'."
+ },
+ {
+  "id": "n3-b632",
+  "verdict": "paraphrase",
+  "reason": "'company, fellow' covers colleagues/companions."
+ },
+ {
+  "id": "n3-b634",
+  "verdict": "paraphrase",
+  "reason": "'riddle, puzzle' covers 'mystery'; ZH 谜团 is literally that."
+ },
+ {
+  "id": "n3-b642",
+  "verdict": "paraphrase",
+  "reason": "'absorption' is already in the list."
+ },
+ {
+  "id": "n3-b643",
+  "verdict": "paraphrase",
+  "reason": "'whole year' is exactly 'all year round'."
+ },
+ {
+  "id": "n3-b654",
+  "verdict": "paraphrase",
+  "reason": "'announcement' covers presenting research results."
+ },
+ {
+  "id": "n3-b671",
+  "verdict": "paraphrase",
+  "reason": "Same sense band as 'injustice, unfairness'; ZH 舞弊 already names corporate wrongdoing."
+ },
+ {
+  "id": "n3-b687",
+  "verdict": "paraphrase",
+  "reason": "'entirely' under negation is exactly 'not at all'; ZH 完全 works the same way (完全不知情)."
+ },
+ {
+  "id": "n3-b701",
+  "verdict": "paraphrase",
+  "reason": "'target' already covers 'goal, objective'."
+ },
+ {
+  "id": "n3-b723",
+  "verdict": "paraphrase",
+  "reason": "'association of ideas' is exactly mental association."
+ },
+ {
+  "id": "n3-b756",
+  "verdict": "paraphrase",
+  "reason": "A city 議会 is a parliament/assembly at local level; 'congress, parliament' carries it."
+ },
+ {
+  "id": "n3-b758",
+  "verdict": "paraphrase",
+  "reason": "'commemoration' covers taking a photo to commemorate graduation."
+ },
+ {
+  "id": "n3-b765",
+  "verdict": "paraphrase",
+  "reason": "'no smoking' is exactly prohibition of smoking."
+ },
+ {
+  "id": "n3-b769",
+  "verdict": "paraphrase",
+  "reason": "'distinction, differentiation' restated as a gerund."
+ },
+ {
+  "id": "n3-b772",
+  "verdict": "paraphrase",
+  "reason": "'army, troops' is the same sense as 'armed forces'."
+ },
+ {
+  "id": "n3-b773",
+  "verdict": "paraphrase",
+  "reason": "'calculation, count' restated as a gerund."
+ },
+ {
+  "id": "n3-b775",
+  "verdict": "paraphrase",
+  "reason": "'decision, determination' covers a date being decided."
+ },
+ {
+  "id": "n3-b779",
+  "verdict": "paraphrase",
+  "reason": "'right, privilege' is exactly a legal/moral right."
+ },
+ {
+  "id": "n3-b783",
+  "verdict": "paraphrase",
+  "reason": "'fairness' is exactly impartial treatment."
+ },
+ {
+  "id": "n3-b799",
+  "verdict": "paraphrase",
+  "reason": "Degree intensification is arguably covered by 'furthermore/again', and ZH 更加/进一步 give it exactly."
+ },
+ {
+  "id": "n3-b805",
+  "verdict": "paraphrase",
+  "reason": "'execution, implementation' is exactly carrying out a plan."
+ },
+ {
+  "id": "n3-b808",
+  "verdict": "paraphrase",
+  "reason": "'sisters' is exactly female siblings."
+ },
+ {
+  "id": "n3-b817",
+  "verdict": "paraphrase",
+  "reason": "'favourable, doing well' covers progressing smoothly."
+ },
+ {
+  "id": "n3-b820",
+  "verdict": "paraphrase",
+  "reason": "'just a minute' is literally the small-amount-of-time use."
+ },
+ {
+  "id": "n3-b842",
+  "verdict": "paraphrase",
+  "reason": "'government' is exactly the governing body."
+ },
+ {
+  "id": "n3-b851",
+  "verdict": "paraphrase",
+  "reason": "'but (still), and yet' is exactly 'even so, nevertheless'."
+ },
+ {
+  "id": "n3-b855",
+  "verdict": "paraphrase",
+  "reason": "'to be in response to' is already in the list."
+ },
+ {
+  "id": "n3-b871",
+  "verdict": "paraphrase",
+  "reason": "'lunch' is exactly the midday meal."
+ },
+ {
+  "id": "n3-b875",
+  "verdict": "paraphrase",
+  "reason": "'in succession, one by one' is exactly 'one after another'."
+ },
+ {
+  "id": "n3-b876",
+  "verdict": "paraphrase",
+  "reason": "'bundle, package' covers a wrapped parcel."
+ },
+ {
+  "id": "n3-b877",
+  "verdict": "not_a_sense",
+  "reason": "'to hold or join hands' names the 手をつなぐ collocation in the sentence, not a sense of the verb; the underlying link/connect reading is already carried by ZH 连接."
+ },
+ {
+  "id": "n3-b883",
+  "verdict": "paraphrase",
+  "reason": "'thoroughness, completeness' covers thorough enforcement."
+ },
+ {
+  "id": "n3-b886",
+  "verdict": "paraphrase",
+  "reason": "'same' is already in the list."
+ },
+ {
+  "id": "n3-b903",
+  "verdict": "paraphrase",
+  "reason": "'entrance, admission' is exactly entering a venue."
+ },
+ {
+  "id": "n3-b906",
+  "verdict": "paraphrase",
+  "reason": "'farmer, farm family' restated as 'farm household'."
+ },
+ {
+  "id": "n3-b907",
+  "verdict": "paraphrase",
+  "reason": "'remnant, residue' covers the rest of the cake; ZH 剩下 too."
+ },
+ {
+  "id": "n3-b908",
+  "verdict": "paraphrase",
+  "reason": "'wish, desire' covers hope of winning; ZH 希望 is literally 'hope'."
+ },
+ {
+  "id": "n3-b917",
+  "verdict": "paraphrase",
+  "reason": "'opposition, resistance' covers rebelling against parents."
+ },
+ {
+  "id": "n3-b918",
+  "verdict": "paraphrase",
+  "reason": "'offender, criminal' is exactly the culprit."
+ },
+ {
+  "id": "n3-b922",
+  "verdict": "paraphrase",
+  "reason": "'criticism, review' is already the proposed gloss."
+ },
+ {
+  "id": "n3-b926",
+  "verdict": "new_sense",
+  "reason": "A referee's 笛 is the whistle sense, distinct from 'flute, pipe'; 'the referee blew the flute' is what the current line yields. ZH has only 笛子 (flute), so BOTH lists are missing it here.",
+  "glossEN": "whistle",
+  "glossZH": "哨子"
+ },
+ {
+  "id": "n3-b927",
+  "verdict": "paraphrase",
+  "reason": "'garments, attire' restated."
+ },
+ {
+  "id": "n3-b928",
+  "verdict": "paraphrase",
+  "reason": "'safety' covers arriving safely."
+ },
+ {
+  "id": "n3-b945",
+  "verdict": "paraphrase",
+  "reason": "'in the unlikely event' is already the nominal emergency sense."
+ },
+ {
+  "id": "n3-b968",
+  "verdict": "paraphrase",
+  "reason": "'ease' already covers work being easy; ZH 轻松 too."
+ }
+]

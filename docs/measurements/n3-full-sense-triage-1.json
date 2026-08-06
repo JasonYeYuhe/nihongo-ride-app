@@ -1,0 +1,507 @@
+[
+  {
+    "id": "n3-b125",
+    "verdict": "paraphrase",
+    "reason": "途端 has only the one 'the moment (that)' sense; currentEN 'just (now, at the moment)' is a compressed rendering of it and currentZH 刚一...就 states it exactly. The EN wording could be improved, but no sense is missing."
+  },
+  {
+    "id": "n3-b135",
+    "verdict": "paraphrase",
+    "reason": "'tropical zone or tropics' is literally the existing gloss 'tropics' / 热带."
+  },
+  {
+    "id": "n3-b143",
+    "verdict": "paraphrase",
+    "reason": "発行 = issue; passports, tickets and publications are all the same issuing sense. 'issuance of documents' just narrows it to the sentence's object."
+  },
+  {
+    "id": "n3-b175",
+    "verdict": "new_sense",
+    "reason": "面 as 'a side/aspect of a matter' is a distinct sense from 'face / mask / surface'; a learner reading those three beside 'another side to this problem' would try 'surface' and miss it. Note currentZH already has 方面, so this is an English-only gap.",
+    "glossEN": "aspect",
+    "glossZH": "方面"
+  },
+  {
+    "id": "n3-b177",
+    "verdict": "paraphrase",
+    "reason": "'noise or sound' is the existing 'sounds' / 声响."
+  },
+  {
+    "id": "n3-b182",
+    "verdict": "paraphrase",
+    "reason": "'element or factor' is the existing 'factor' / 因素."
+  },
+  {
+    "id": "n3-b202",
+    "verdict": "paraphrase",
+    "reason": "'clothing or garments' is the existing 'clothes / garments'."
+  },
+  {
+    "id": "n3-b203",
+    "verdict": "paraphrase",
+    "reason": "'irritated or annoyed' is the adjectival face of the existing 'irritation' / 烦躁."
+  },
+  {
+    "id": "n3-b226",
+    "verdict": "paraphrase",
+    "reason": "'dexterous or handy' repeats 'skillful / handy' / 灵巧 word for word."
+  },
+  {
+    "id": "n3-b232",
+    "verdict": "paraphrase",
+    "reason": "'foul-smelling or stinking' is the existing 'stinking / smelly'."
+  },
+  {
+    "id": "n3-b233",
+    "verdict": "paraphrase",
+    "reason": "'sleeping deeply and soundly' is the existing 'sound asleep' / 酣睡."
+  },
+  {
+    "id": "n3-b236",
+    "verdict": "paraphrase",
+    "reason": "'going by way of' is the existing 'via / through' / 经由."
+  },
+  {
+    "id": "n3-b238",
+    "verdict": "paraphrase",
+    "reason": "'flaw or shortcoming' is the existing 'fault / defect / weakness'."
+  },
+  {
+    "id": "n3-b251",
+    "verdict": "paraphrase",
+    "reason": "'crowding or congestion' is the existing 'congestion' / 拥挤."
+  },
+  {
+    "id": "n3-b264",
+    "verdict": "paraphrase",
+    "reason": "実際に 'actually / in practice' is the adverbial use of the same 'reality, actual state' sense, and currentZH 事实上 already reads as 'actually'; a POS shift, not a new sense."
+  },
+  {
+    "id": "n3-b282",
+    "verdict": "not_a_sense",
+    "reason": "'female students' comes from the sentence's 女子の生徒 compound; 女子 itself is still just 'girl / female', which the list already has."
+  },
+  {
+    "id": "n3-b284",
+    "verdict": "paraphrase",
+    "reason": "'news or notification' is the existing 'notice / notification' / 消息."
+  },
+  {
+    "id": "n3-b306",
+    "verdict": "new_sense",
+    "reason": "粗末にする 'to treat carelessly / to waste' is a separate sense from the quality adjective 'crude / rough / plain'; neither the EN nor the ZH list (粗糙 / 简陋) lets a learner get 'must not waste food' from this sentence.",
+    "glossEN": "treating carelessly, wasting",
+    "glossZH": "糟蹋、浪费"
+  },
+  {
+    "id": "n3-b323",
+    "verdict": "paraphrase",
+    "reason": "'must be / bound to be' is the existing 'sure / certain' / 一定."
+  },
+  {
+    "id": "n3-b345",
+    "verdict": "paraphrase",
+    "reason": "currentEN already lists \"one's strong point\" and currentZH 擅长."
+  },
+  {
+    "id": "n3-b375",
+    "verdict": "paraphrase",
+    "reason": "'beautiful woman' is the existing 'beautiful person / beauty' / 美女."
+  },
+  {
+    "id": "n3-b382",
+    "verdict": "paraphrase",
+    "reason": "不可 in signage ('not allowed') sits inside the existing 'improper / wrong' sense, and currentZH 不可 reads directly as 不可以 = not permitted."
+  },
+  {
+    "id": "n3-b383",
+    "verdict": "paraphrase",
+    "reason": "'unfortunate or unlucky event' is the existing 'misfortune' / 不幸."
+  },
+  {
+    "id": "n3-b400",
+    "verdict": "new_sense",
+    "reason": "まるで has two senses: with a negative 'entirely (not)', and with ようだ 'just like, as if'. currentEN carries only the first, so 'her smile is completely like the sun' misreads the sentence. currentZH 宛如 already covers the simile sense — English-only gap.",
+    "glossEN": "just like, as if",
+    "glossZH": "简直像"
+  },
+  {
+    "id": "n3-b401",
+    "verdict": "paraphrase",
+    "reason": "'seeing someone off' is the existing 'seeing one off / farewell'."
+  },
+  {
+    "id": "n3-b405",
+    "verdict": "new_sense",
+    "reason": "夢中 'absorbed in, crazy about' is a distinct sense from 'daze / trance / ecstasy'; a learner reading those beside 'the children are absorbed in games' would get the wrong picture. currentZH 沉迷 / 热衷 already covers it, so the gap is English-only.",
+    "glossEN": "absorbed in, engrossed",
+    "glossZH": "入迷、着迷"
+  },
+  {
+    "id": "n3-b423",
+    "verdict": "paraphrase",
+    "reason": "'exchanging currency or bills' is the existing 'money exchange' / 兑换."
+  },
+  {
+    "id": "n3-b425",
+    "verdict": "paraphrase",
+    "reason": "'elderly person' is the existing 'old person' / 老人."
+  },
+  {
+    "id": "n3-b431",
+    "verdict": "paraphrase",
+    "reason": "'to grow tired of or lose interest' is the existing gloss verbatim."
+  },
+  {
+    "id": "n3-b438",
+    "verdict": "paraphrase",
+    "reason": "'sooner or later, eventually' is the existing 'someday' / 早晚."
+  },
+  {
+    "id": "n3-b441",
+    "verdict": "paraphrase",
+    "reason": "'at any time' is the existing 'anytime' / 随时."
+  },
+  {
+    "id": "n3-b464",
+    "verdict": "paraphrase",
+    "reason": "'welcoming a person warmly' is the existing 'welcome' / 欢迎."
+  },
+  {
+    "id": "n3-b467",
+    "verdict": "paraphrase",
+    "reason": "'technical specialist or engineer' is the existing 'engineer / technician'."
+  },
+  {
+    "id": "n3-b471",
+    "verdict": "paraphrase",
+    "reason": "'absorbing liquids or nutrients' is the existing 'absorption' / 吸收, narrowed to the sentence's subject matter."
+  },
+  {
+    "id": "n3-b472",
+    "verdict": "paraphrase",
+    "reason": "'sports contest or event' is the existing 'game / match' / 竞技."
+  },
+  {
+    "id": "n3-b493",
+    "verdict": "paraphrase",
+    "reason": "'romantic partner' is the existing 'lover / sweetheart' / 恋人."
+  },
+  {
+    "id": "n3-b513",
+    "verdict": "paraphrase",
+    "reason": "'to compose music' is the verbal form of the existing 'composition (music)' / 作曲."
+  },
+  {
+    "id": "n3-b535",
+    "verdict": "paraphrase",
+    "reason": "'to publish a book' is the verbal form of the existing 'publication' / 出版."
+  },
+  {
+    "id": "n3-b543",
+    "verdict": "paraphrase",
+    "reason": "'high quality or superior' is the existing 'superiority / first class' / 上等."
+  },
+  {
+    "id": "n3-b559",
+    "verdict": "paraphrase",
+    "reason": "'not at all' is the existing 'not one bit' / 一点也不."
+  },
+  {
+    "id": "n3-b566",
+    "verdict": "paraphrase",
+    "reason": "'manufactured product' is the existing 'manufactured goods' / 产品."
+  },
+  {
+    "id": "n3-b574",
+    "verdict": "new_sense",
+    "reason": "相当 'considerable, quite a lot' is a separate sense from the 相応 'suitable / fair' sense the EN list carries; 'his Japanese is at a suitable level' misreads the sentence. currentZH 相当 already means 'considerably' in Chinese, so this is an English-only gap.",
+    "glossEN": "considerable, quite",
+    "glossZH": "相当、颇"
+  },
+  {
+    "id": "n3-b582",
+    "verdict": "paraphrase",
+    "reason": "大した病気 'a serious illness' is the existing 'considerable / great' / 了不起 sense applied to an illness."
+  },
+  {
+    "id": "n3-b587",
+    "verdict": "paraphrase",
+    "reason": "\"one's own home\" is the existing 'house' / 住宅."
+  },
+  {
+    "id": "n3-b594",
+    "verdict": "new_sense",
+    "reason": "単位 as an academic credit is a genuinely separate sense from 'unit / denomination' (a measurement unit); the sentence 'earned all the necessary credits' is unreadable from the EN list. currentZH already has 学分, so the gap is English-only.",
+    "glossEN": "credit (academic)",
+    "glossZH": "学分"
+  },
+  {
+    "id": "n3-b595",
+    "verdict": "not_a_sense",
+    "reason": "'tour group' is the sentence's 団体+旅行, not a sense of 団体; the word itself is the 'organization / group of people' the list already gives as 团体 / 组织."
+  },
+  {
+    "id": "n3-b601",
+    "verdict": "paraphrase",
+    "reason": "'center of a space' is the existing 'centre / central' / 中央."
+  },
+  {
+    "id": "n3-b602",
+    "verdict": "paraphrase",
+    "reason": "チームの中心 'the core of the team' is the existing 'core' / 核心 used figuratively."
+  },
+  {
+    "id": "n3-b610",
+    "verdict": "paraphrase",
+    "reason": "'to accumulate' is the existing 'to pile up' / 堆积."
+  },
+  {
+    "id": "n3-b613",
+    "verdict": "paraphrase",
+    "reason": "'event' is the existing 'incident / happening' / 事件."
+  },
+  {
+    "id": "n3-b615",
+    "verdict": "new_sense",
+    "reason": "currentEN gives only the person ('helper / assistant'), not the act; 家事の手伝いをした needs 'help, assistance', which 'helper' cannot supply. currentZH 帮忙 already has the act sense, so this is an English-only gap.",
+    "glossEN": "help, assistance",
+    "glossZH": "帮忙"
+  },
+  {
+    "id": "n3-b618",
+    "verdict": "paraphrase",
+    "reason": "'examination answer sheet' is the existing 'examination paper / test paper' / 答卷."
+  },
+  {
+    "id": "n3-b619",
+    "verdict": "paraphrase",
+    "reason": "'at the same time' is the existing 'simultaneous' / 同时."
+  },
+  {
+    "id": "n3-b632",
+    "verdict": "paraphrase",
+    "reason": "'colleagues or companions' is the existing 'fellow' / 伙伴 / 同伴."
+  },
+  {
+    "id": "n3-b634",
+    "verdict": "paraphrase",
+    "reason": "'mystery' is the existing 'riddle / puzzle' / 谜团."
+  },
+  {
+    "id": "n3-b642",
+    "verdict": "paraphrase",
+    "reason": "'being absorbed in' is the existing 'absorption' / 热衷."
+  },
+  {
+    "id": "n3-b643",
+    "verdict": "paraphrase",
+    "reason": "'all year round' is the existing 'whole year / always' / 全年."
+  },
+  {
+    "id": "n3-b654",
+    "verdict": "paraphrase",
+    "reason": "'to present or announce' is the existing 'announcement' / 发表; a class presentation is that sense in use."
+  },
+  {
+    "id": "n3-b671",
+    "verdict": "paraphrase",
+    "reason": "'dishonesty or wrongdoing' sits inside the existing 'injustice / unfairness', and currentZH 舞弊 already covers corporate wrongdoing."
+  },
+  {
+    "id": "n3-b687",
+    "verdict": "paraphrase",
+    "reason": "全く with a negative composes correctly from the existing 'entirely / completely' / 完全 ('completely don't know'); it is a polarity note, not a distinct sense."
+  },
+  {
+    "id": "n3-b701",
+    "verdict": "paraphrase",
+    "reason": "'goal, objective' is the existing 'target' / 目标."
+  },
+  {
+    "id": "n3-b723",
+    "verdict": "paraphrase",
+    "reason": "'mental association' is the existing 'association of ideas' / 联想."
+  },
+  {
+    "id": "n3-b756",
+    "verdict": "paraphrase",
+    "reason": "'local council' comes from the sentence's 市の; 議会 itself is the legislative assembly the list already gives as 'parliament' / 议会."
+  },
+  {
+    "id": "n3-b758",
+    "verdict": "paraphrase",
+    "reason": "'memento or commemoration' is the existing 'commemoration / memory' / 纪念."
+  },
+  {
+    "id": "n3-b765",
+    "verdict": "paraphrase",
+    "reason": "'prohibition of smoking' is the existing 'no smoking' / 禁烟."
+  },
+  {
+    "id": "n3-b769",
+    "verdict": "paraphrase",
+    "reason": "'distinguishing between things' is the existing 'distinction / differentiation' / 区别."
+  },
+  {
+    "id": "n3-b772",
+    "verdict": "paraphrase",
+    "reason": "'armed forces or military' is the existing 'army / troops' / 军队."
+  },
+  {
+    "id": "n3-b773",
+    "verdict": "paraphrase",
+    "reason": "'calculating or counting numbers' is the existing 'calculation / count' / 计算."
+  },
+  {
+    "id": "n3-b775",
+    "verdict": "paraphrase",
+    "reason": "'settling or deciding something' is the existing 'decision / determination' / 决定."
+  },
+  {
+    "id": "n3-b779",
+    "verdict": "paraphrase",
+    "reason": "'legal or moral right' is the existing 'right / privilege' / 权利."
+  },
+  {
+    "id": "n3-b783",
+    "verdict": "paraphrase",
+    "reason": "'impartial and fair treatment' is the existing 'fairness / justice' / 公平."
+  },
+  {
+    "id": "n3-b799",
+    "verdict": "new_sense",
+    "reason": "更に as the comparative intensifier 'even more, further' is missing from currentEN, which offers only the connective 'furthermore' and 'again' — 'the wind grew again stronger' is a wrong reading. currentZH 更加 already carries it, so the gap is English-only.",
+    "glossEN": "even more, further",
+    "glossZH": "更加"
+  },
+  {
+    "id": "n3-b805",
+    "verdict": "paraphrase",
+    "reason": "'carrying out a plan' is the existing 'execution / implementation' / 执行."
+  },
+  {
+    "id": "n3-b808",
+    "verdict": "paraphrase",
+    "reason": "'female siblings' is the existing 'sisters' / 姐妹."
+  },
+  {
+    "id": "n3-b817",
+    "verdict": "paraphrase",
+    "reason": "'progressing smoothly' is the existing 'favourable / doing well' / 顺利."
+  },
+  {
+    "id": "n3-b820",
+    "verdict": "paraphrase",
+    "reason": "'a small amount of time' is the existing 'just a minute' / 稍微."
+  },
+  {
+    "id": "n3-b842",
+    "verdict": "paraphrase",
+    "reason": "'governing body of a country' is the existing 'government' / 政府."
+  },
+  {
+    "id": "n3-b851",
+    "verdict": "paraphrase",
+    "reason": "'even so or nevertheless' is the existing 'but (still) / and yet' / 尽管如此."
+  },
+  {
+    "id": "n3-b855",
+    "verdict": "paraphrase",
+    "reason": "'regarding or in response to' is the existing 'to be in response to' / 针对."
+  },
+  {
+    "id": "n3-b871",
+    "verdict": "paraphrase",
+    "reason": "'midday meal' is the existing 'lunch' / 午餐."
+  },
+  {
+    "id": "n3-b875",
+    "verdict": "paraphrase",
+    "reason": "'one after another' is the existing 'in succession / one by one' / 接连不断."
+  },
+  {
+    "id": "n3-b876",
+    "verdict": "paraphrase",
+    "reason": "'wrapped parcel or package' is the existing 'bundle / package' / 包裹."
+  },
+  {
+    "id": "n3-b877",
+    "verdict": "new_sense",
+    "reason": "繋ぐ 'to connect, to join' is a separate dictionary sense from 'to tie / to fasten'; 手を繋いで歩く read against 'tie, fasten' suggests hands bound together rather than held. currentZH 连接 already covers the joining sense, so the gap is English-only.",
+    "glossEN": "to connect, to join",
+    "glossZH": "连接、牵手"
+  },
+  {
+    "id": "n3-b883",
+    "verdict": "paraphrase",
+    "reason": "'thorough implementation or practice' is the existing 'thoroughness / completeness' / 彻底."
+  },
+  {
+    "id": "n3-b886",
+    "verdict": "paraphrase",
+    "reason": "'identical or same' is the existing 'identity / same' / 同一."
+  },
+  {
+    "id": "n3-b903",
+    "verdict": "paraphrase",
+    "reason": "'entering a venue or admission' is the existing 'entrance / admission' / 入场."
+  },
+  {
+    "id": "n3-b906",
+    "verdict": "paraphrase",
+    "reason": "'farm household or farmer' is the existing 'farmer / farm family' / 农家."
+  },
+  {
+    "id": "n3-b907",
+    "verdict": "paraphrase",
+    "reason": "'remainder or leftover' is the existing 'remnant / residue' / 剩下."
+  },
+  {
+    "id": "n3-b908",
+    "verdict": "paraphrase",
+    "reason": "'hope or wish' is the existing 'wish / desire' / 希望."
+  },
+  {
+    "id": "n3-b917",
+    "verdict": "paraphrase",
+    "reason": "'rebellion or resistance to authority' is the existing 'opposition / resistance' / 反抗."
+  },
+  {
+    "id": "n3-b918",
+    "verdict": "paraphrase",
+    "reason": "'culprit or offender of a crime' is the existing 'offender / criminal' / 罪犯."
+  },
+  {
+    "id": "n3-b922",
+    "verdict": "paraphrase",
+    "reason": "'critique or review' is the existing 'criticism / review' / 评论."
+  },
+  {
+    "id": "n3-b926",
+    "verdict": "new_sense",
+    "reason": "A referee's whistle is a distinct object from the existing 'flute / pipe' / 笛子; a learner reading 'flute' beside 'the referee blew the whistle' gets the wrong instrument. Missing in both EN and ZH.",
+    "glossEN": "whistle",
+    "glossZH": "哨子"
+  },
+  {
+    "id": "n3-b927",
+    "verdict": "paraphrase",
+    "reason": "'clothing or attire' is the existing 'garments / attire' / 服装."
+  },
+  {
+    "id": "n3-b928",
+    "verdict": "paraphrase",
+    "reason": "無事に 'safely' is the adverbial use of the existing 'safety' / 平安."
+  },
+  {
+    "id": "n3-b945",
+    "verdict": "paraphrase",
+    "reason": "万一の時 'in case of emergency' is the existing 'in the unlikely event' / 万一 as a noun; same sense, different POS."
+  },
+  {
+    "id": "n3-b968",
+    "verdict": "paraphrase",
+    "reason": "'easy, requiring little effort' is the existing 'ease' / 轻松."
+  }
+]
