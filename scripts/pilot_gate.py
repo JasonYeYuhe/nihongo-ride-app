@@ -220,14 +220,36 @@ def target_tokens(tokenizer, sentence, entry):
                     out.append(tokens[i])
                     break
         if out:
-            break
-    return out
+            return out, mode
+    return out, None
+
+
+ARTIFACT = re.compile(r"\bNo,|\bactually,|\bwait\b|\bI mean\b|\bcorrection\b", re.I)
+
+
+def generation_artifact(text):
+    """A self-correction that leaked into a shipping field.
+
+    The 690-word batch produced a zh of "工厂的烟雾污染了大门? No, 工厂的烟雾污染了大气。" — a
+    wrong first attempt, an English retraction, then the real answer, all in the field the app
+    would display. No reviewer should have to catch that; it is a string test.
+    """
+    if not text:
+        return False
+    if ARTIFACT.search(text):
+        return True
+    # a Chinese/Japanese field that is more than a quarter ASCII letters is not a translation
+    letters = sum(1 for c in text if c.isascii() and c.isalpha())
+    return letters > max(4, len(text) // 4)
 
 
 def gates(item, entry, tokenizer, seen, levels):
     """→ list of reasons this sentence must not ship. Empty means it survived."""
     jp, en, zh = item.get("jp", ""), item.get("en", ""), item.get("zh", "")
     bad = []
+    for field, text in (("jp", jp), ("zh", zh)):
+        if generation_artifact(text):
+            bad.append(f"generation artifact in {field}: {text[:60]!r}")
     if not jp:
         return ["empty"]
     if not (5 <= len(jp) <= 40):
@@ -238,7 +260,18 @@ def gates(item, entry, tokenizer, seen, levels):
         bad.append("more than one sentence")
     if re.search(r"[a-zA-Z0-9]", jp):
         bad.append("latin characters")
-    present = target_tokens(tokenizer, jp, entry)
+    present, matched_mode = target_tokens(tokenizer, jp, entry)
+    # Mode A is required — 時代 lives inside 学生時代, 世界 inside 世界中 — but it also let
+    # 日曜 (にちよう) through a sentence writing 日曜日, which reads にちようび. When only the
+    # finer split finds the target, the word the learner actually sees may be a longer one
+    # with a different reading, so flag it for review rather than trusting or rejecting it:
+    # the 779-sentence calibration says 63 legitimate sentences need mode A, so a blanket
+    # rejection here would cost more than it saves.
+    if present and matched_mode is SplitMode.A:
+        coarse = [t.surface() for t in tokenizer.tokenize(jp, SplitMode.C)]
+        if any(entry["surface"] in c and c != entry["surface"] for c in coarse):
+            item.setdefault("reviewFlag", "")
+            item["reviewFlag"] = (item["reviewFlag"] + " embedded-in-longer-word").strip()
     if not present:
         # The substring fallback that used to sit here (`gen.contains_target`) passed any
         # sentence merely CONTAINING the characters, which is how a sentence about 学ぶ can
