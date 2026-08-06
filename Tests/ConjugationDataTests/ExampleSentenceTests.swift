@@ -138,7 +138,10 @@ struct ExampleSentenceTests {
             // ACCEPT from a model; it is not a statement about what good data looks like, and
             // eighteen shipped entries say so.
             if !(5...42).contains(jp.count) { bad.append("\(e.id): length \(jp.count)") }
-            if !"。!?！?".contains(jp.last ?? " ") { bad.append("\(e.id): no final punctuation") }
+            // 。 ! ? ！ ？ — the fullwidth question mark U+FF1F was missing here while the
+            // Python gate's JP_END has always had it, so 「…どうなったの？」 passed generation and
+            // failed this suite. Two spellings of the same rule drift; this one was wrong.
+            if !"。!?！？".contains(jp.last ?? " ") { bad.append("\(e.id): no final punctuation") }
             if jp.dropLast().contains(where: { "。!?".contains($0) }) { bad.append("\(e.id): multiple sentences") }
             if jp.contains(where: { $0.isASCII && $0.isLetter }) { bad.append("\(e.id): latin letters") }
         }

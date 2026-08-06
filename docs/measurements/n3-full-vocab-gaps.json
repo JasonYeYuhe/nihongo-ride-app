@@ -1,0 +1,1401 @@
+[
+  {
+    "id": "n3-b125",
+    "jp": "家を出た途端に雨が降り出した。",
+    "en": "It started raining as soon as I left the house.",
+    "zh": "我刚出门就下起雨来了。",
+    "sense": "as soon as or just when",
+    "surface": "途端",
+    "kana": "とたん",
+    "senseListed": false,
+    "entryGlosses": [
+      "just (now, at the moment)"
+    ]
+  },
+  {
+    "id": "n3-b135",
+    "jp": "この島には熱帯の植物が生えている。",
+    "en": "Tropical plants grow on this island.",
+    "zh": "这座岛上生长着热带植物。",
+    "sense": "tropical zone or tropics",
+    "surface": "熱帯",
+    "kana": "ねったい",
+    "senseListed": false,
+    "entryGlosses": [
+      "tropics"
+    ]
+  },
+  {
+    "id": "n3-b143",
+    "jp": "新しいパスポートが発行された。",
+    "en": "A new passport was issued.",
+    "zh": "新护照已经签发了。",
+    "sense": "issuance of documents",
+    "surface": "発行",
+    "kana": "はっこう",
+    "senseListed": false,
+    "entryGlosses": [
+      "issue",
+      "publishing"
+    ]
+  },
+  {
+    "id": "n3-b175",
+    "jp": "この問題には別の面もある。",
+    "en": "There is also another side to this problem.",
+    "zh": "这个问题还有另外一面。",
+    "sense": "aspect or side",
+    "surface": "面",
+    "kana": "めん",
+    "senseListed": false,
+    "entryGlosses": [
+      "face",
+      "mask",
+      "surface"
+    ]
+  },
+  {
+    "id": "n3-b177",
+    "jp": "隣の部屋から大きな物音が聞こえた。",
+    "en": "I heard a loud noise from the room next door.",
+    "zh": "隔壁房间传来很大的响声。",
+    "sense": "noise or sound",
+    "surface": "物音",
+    "kana": "ものおと",
+    "senseListed": false,
+    "entryGlosses": [
+      "sounds"
+    ]
+  },
+  {
+    "id": "n3-b182",
+    "jp": "成功には運も重要な要素だ。",
+    "en": "Luck is also an important factor in success.",
+    "zh": "运气也是成功的一个重要因素。",
+    "sense": "element or factor",
+    "surface": "要素",
+    "kana": "ようそ",
+    "senseListed": false,
+    "entryGlosses": [
+      "component",
+      "factor"
+    ]
+  },
+  {
+    "id": "n3-b202",
+    "jp": "季節に合わせて衣服を選ぶ。",
+    "en": "Choose clothing according to the season.",
+    "zh": "配合季节挑选服装。",
+    "sense": "clothing or garments",
+    "surface": "衣服",
+    "kana": "いふく",
+    "senseListed": false,
+    "entryGlosses": [
+      "clothes",
+      "garments"
+    ]
+  },
+  {
+    "id": "n3-b203",
+    "jp": "渋滞のせいでいらいらした。",
+    "en": "I felt irritated because of the traffic jam.",
+    "zh": "因为堵车而感到烦躁。",
+    "sense": "irritated or annoyed",
+    "surface": "いらいら",
+    "kana": "いらいら",
+    "senseListed": false,
+    "entryGlosses": [
+      "getting nervous",
+      "irritation"
+    ]
+  },
+  {
+    "id": "n3-b204",
+    "jp": "友人の結婚の祝いに花を贈った。",
+    "en": "I gave flowers as a celebration for my friend's wedding.",
+    "zh": "送了花作为朋友结婚的贺礼。",
+    "sense": "gift or celebration",
+    "surface": "祝い",
+    "kana": "いわい",
+    "senseListed": false,
+    "entryGlosses": [
+      "congratulation",
+      "celebration"
+    ]
+  },
+  {
+    "id": "n3-b226",
+    "jp": "彼女は手先が器用だ。",
+    "en": "She is dexterous with her hands.",
+    "zh": "她心灵手巧。",
+    "sense": "dexterous or handy",
+    "surface": "器用",
+    "kana": "きよう",
+    "senseListed": false,
+    "entryGlosses": [
+      "skillful",
+      "handy"
+    ]
+  },
+  {
+    "id": "n3-b232",
+    "jp": "この部屋は生ゴミの匂いで臭い。",
+    "en": "This room stinks of kitchen waste.",
+    "zh": "这个房间有一股厨余垃圾的臭味。",
+    "sense": "foul-smelling or stinking",
+    "surface": "臭い",
+    "kana": "くさい",
+    "senseListed": false,
+    "entryGlosses": [
+      "stinking",
+      "smelly"
+    ]
+  },
+  {
+    "id": "n3-b233",
+    "jp": "昨夜は疲れていたので、朝までぐっすり寝た。",
+    "en": "I was tired last night, so I slept soundly until morning.",
+    "zh": "我昨晚太累了，所以一觉睡到了天亮。",
+    "sense": "sleeping deeply and soundly",
+    "surface": "ぐっすり",
+    "kana": "ぐっすり",
+    "senseListed": false,
+    "entryGlosses": [
+      "sound asleep",
+      "fast asleep"
+    ]
+  },
+  {
+    "id": "n3-b236",
+    "jp": "東京経由で大阪に向かった。",
+    "en": "I headed to Osaka via Tokyo.",
+    "zh": "我途经东京前往大阪。",
+    "sense": "going by way of",
+    "surface": "経由",
+    "kana": "けいゆ",
+    "senseListed": false,
+    "entryGlosses": [
+      "via",
+      "through"
+    ]
+  },
+  {
+    "id": "n3-b238",
+    "jp": "誰にでも一つや二つの欠点はある。",
+    "en": "Everyone has one or two shortcomings.",
+    "zh": "每个人都会有一两个缺点。",
+    "sense": "flaw or shortcoming",
+    "surface": "欠点",
+    "kana": "けってん",
+    "senseListed": false,
+    "entryGlosses": [
+      "fault",
+      "defect",
+      "weakness"
+    ]
+  },
+  {
+    "id": "n3-b251",
+    "jp": "休日の駅はいつも大勢の人で混雑している。",
+    "en": "The station is always congested with many people on holidays.",
+    "zh": "假日的车站总是因人群而拥挤不堪。",
+    "sense": "crowding or congestion",
+    "surface": "混雑",
+    "kana": "こんざつ",
+    "senseListed": false,
+    "entryGlosses": [
+      "confusion",
+      "congestion"
+    ]
+  },
+  {
+    "id": "n3-b264",
+    "jp": "実際に試してみないと分からない。",
+    "en": "You won't know unless you actually try it.",
+    "zh": "不实际尝试一下的话是不会明白的。",
+    "sense": "in practice or actually",
+    "surface": "実際",
+    "kana": "じっさい",
+    "senseListed": false,
+    "entryGlosses": [
+      "reality",
+      "actual state"
+    ]
+  },
+  {
+    "id": "n3-b282",
+    "jp": "このクラスは女子の生徒が多い。",
+    "en": "This class has many female students.",
+    "zh": "这个班级的女生很多。",
+    "sense": "female students or girls",
+    "surface": "女子",
+    "kana": "じょし",
+    "senseListed": false,
+    "entryGlosses": [
+      "woman",
+      "girl"
+    ]
+  },
+  {
+    "id": "n3-b284",
+    "jp": "友人から合格の嬉しい知らせが届いた。",
+    "en": "Happy news of passing arrived from my friend.",
+    "zh": "我收到了朋友考试合格的好消息。",
+    "sense": "news or notification",
+    "surface": "知らせ",
+    "kana": "しらせ",
+    "senseListed": false,
+    "entryGlosses": [
+      "notice",
+      "notification"
+    ]
+  },
+  {
+    "id": "n3-b306",
+    "jp": "食べ物を粗末にしてはいけません。",
+    "en": "You must not waste food.",
+    "zh": "不能浪费食物。",
+    "sense": "wastefully / carelessly",
+    "surface": "粗末",
+    "kana": "そまつ",
+    "senseListed": false,
+    "entryGlosses": [
+      "crude",
+      "rough",
+      "plain"
+    ]
+  },
+  {
+    "id": "n3-b323",
+    "jp": "明日はきっと雨が降るに違いない。",
+    "en": "It is bound to rain tomorrow.",
+    "zh": "明天一定会下雨。",
+    "sense": "must be / bound to be",
+    "surface": "違いない",
+    "kana": "ちがいない",
+    "senseListed": false,
+    "entryGlosses": [
+      "sure",
+      "no mistake",
+      "certain"
+    ]
+  },
+  {
+    "id": "n3-b345",
+    "jp": "姉は英語が得意です。",
+    "en": "My older sister is good at English.",
+    "zh": "我姐姐擅长英语。",
+    "sense": "strong point / good at",
+    "surface": "得意",
+    "kana": "とくい",
+    "senseListed": false,
+    "entryGlosses": [
+      "triumph",
+      "prosperity",
+      "one's strong point"
+    ]
+  },
+  {
+    "id": "n3-b375",
+    "jp": "彼女は誰が見ても美人だ。",
+    "en": "She is a beauty in anyone's eyes.",
+    "zh": "无论谁看她都是个美人。",
+    "sense": "beautiful woman",
+    "surface": "美人",
+    "kana": "びじん",
+    "senseListed": false,
+    "entryGlosses": [
+      "beautiful person",
+      "beauty"
+    ]
+  },
+  {
+    "id": "n3-b382",
+    "jp": "この場所での写真撮影は不可です。",
+    "en": "Taking photos at this location is not allowed.",
+    "zh": "此场地禁止拍照。",
+    "sense": "prohibited or not allowed",
+    "surface": "不可",
+    "kana": "ふか",
+    "senseListed": false,
+    "entryGlosses": [
+      "wrong",
+      "bad",
+      "improper"
+    ]
+  },
+  {
+    "id": "n3-b383",
+    "jp": "事故に遭ったのは本当に不幸なことだ。",
+    "en": "Being involved in an accident is a truly unfortunate thing.",
+    "zh": "遭遇事故真是件不幸的事。",
+    "sense": "unfortunate or unlucky event",
+    "surface": "不幸",
+    "kana": "ふこう",
+    "senseListed": false,
+    "entryGlosses": [
+      "unhappiness",
+      "sorrow",
+      "misfortune"
+    ]
+  },
+  {
+    "id": "n3-b395",
+    "jp": "書類は本人が提出してください。",
+    "en": "Please have the applicant submit the documents in person.",
+    "zh": "请由本人提交文件。",
+    "sense": "the person in question",
+    "surface": "本人",
+    "kana": "ほんにん",
+    "senseListed": false,
+    "entryGlosses": [
+      "the person himself"
+    ]
+  },
+  {
+    "id": "n3-b400",
+    "jp": "彼女の笑顔はまるで太陽のようだ。",
+    "en": "Her smile is just like the sun.",
+    "zh": "她的笑容简直就像太阳一样。",
+    "sense": "just like or as if",
+    "surface": "まるで",
+    "kana": "まるで",
+    "senseListed": false,
+    "entryGlosses": [
+      "quite",
+      "entirely",
+      "completely"
+    ]
+  },
+  {
+    "id": "n3-b401",
+    "jp": "空港まで友達の見送りに行った。",
+    "en": "I went to the airport to see my friend off.",
+    "zh": "我去了机场为朋友送行。",
+    "sense": "seeing someone off",
+    "surface": "見送り",
+    "kana": "みおくり",
+    "senseListed": false,
+    "entryGlosses": [
+      "seeing one off",
+      "farewell"
+    ]
+  },
+  {
+    "id": "n3-b405",
+    "jp": "子供たちはゲームに夢中になっている。",
+    "en": "The children are absorbed in playing games.",
+    "zh": "孩子们沉迷于玩游戏。",
+    "sense": "absorbed in or obsessed with",
+    "surface": "夢中",
+    "kana": "むちゅう",
+    "senseListed": false,
+    "entryGlosses": [
+      "daze",
+      "trance",
+      "ecstasy"
+    ]
+  },
+  {
+    "id": "n3-b423",
+    "jp": "銀行で一万円札を千円札に両替した。",
+    "en": "I exchanged a ten-thousand-yen bill for one-thousand-yen bills at the bank.",
+    "zh": "我在银行把一万日元纸币换成了千日元纸币。",
+    "sense": "exchanging currency or bills",
+    "surface": "両替",
+    "kana": "りょうがえ",
+    "senseListed": false,
+    "entryGlosses": [
+      "change",
+      "money exchange"
+    ]
+  },
+  {
+    "id": "n3-b425",
+    "jp": "電車の中で老人に席を譲った。",
+    "en": "I offered my seat to an elderly person on the train.",
+    "zh": "我在列车上给老人让了座。",
+    "sense": "elderly person",
+    "surface": "老人",
+    "kana": "ろうじん",
+    "senseListed": false,
+    "entryGlosses": [
+      "the aged",
+      "old person"
+    ]
+  },
+  {
+    "id": "n3-b431",
+    "jp": "毎日同じ料理を食べると飽きてしまう。",
+    "en": "If I eat the same dish every day, I get tired of it.",
+    "zh": "每天吃同样的饭菜就会吃腻。",
+    "sense": "to grow tired of or lose interest",
+    "surface": "飽きる",
+    "kana": "あきる",
+    "senseListed": false,
+    "entryGlosses": [
+      "to get tired of",
+      "to lose interest in"
+    ]
+  },
+  {
+    "id": "n3-b438",
+    "jp": "いずれまたお会いしましょう。",
+    "en": "Let's meet again someday.",
+    "zh": "我们改天再见吧。",
+    "sense": "sooner or later, eventually",
+    "surface": "いずれ",
+    "kana": "いずれ",
+    "senseListed": false,
+    "entryGlosses": [
+      "someday",
+      "which"
+    ]
+  },
+  {
+    "id": "n3-b441",
+    "jp": "困ったときはいつでも連絡してね。",
+    "en": "Contact me anytime you are in trouble.",
+    "zh": "遇到困难时随时联系我。",
+    "sense": "at any time",
+    "surface": "いつでも",
+    "kana": "いつでも",
+    "senseListed": false,
+    "entryGlosses": [
+      "anytime",
+      "always"
+    ]
+  },
+  {
+    "id": "n3-b464",
+    "jp": "新しい仲間をみんなで歓迎した。",
+    "en": "We all welcomed our new member.",
+    "zh": "大家一起欢迎了新伙伴。",
+    "sense": "welcoming a person warmly",
+    "surface": "歓迎",
+    "kana": "かんげい",
+    "senseListed": false,
+    "entryGlosses": [
+      "welcome",
+      "reception"
+    ]
+  },
+  {
+    "id": "n3-b467",
+    "jp": "経験豊富な技師が機械を修理した。",
+    "en": "An experienced engineer repaired the machine.",
+    "zh": "经验丰富的工程师维修了机器。",
+    "sense": "technical specialist or engineer",
+    "surface": "技師",
+    "kana": "ぎし",
+    "senseListed": false,
+    "entryGlosses": [
+      "engineer",
+      "technician"
+    ]
+  },
+  {
+    "id": "n3-b471",
+    "jp": "植物は根から水を吸収する。",
+    "en": "Plants absorb water from their roots.",
+    "zh": "植物从根部吸收水分。",
+    "sense": "absorbing liquids or nutrients",
+    "surface": "吸収",
+    "kana": "きゅうしゅう",
+    "senseListed": false,
+    "entryGlosses": [
+      "absorption"
+    ]
+  },
+  {
+    "id": "n3-b472",
+    "jp": "明日は運動会で色々な競技がある。",
+    "en": "There will be various events at the sports day tomorrow.",
+    "zh": "明天的运动会有各种各样的比赛项目。",
+    "sense": "sports contest or event",
+    "surface": "競技",
+    "kana": "きょうぎ",
+    "senseListed": false,
+    "entryGlosses": [
+      "game",
+      "match"
+    ]
+  },
+  {
+    "id": "n3-b493",
+    "jp": "彼は週末に恋人とデートを楽しんだ。",
+    "en": "He enjoyed a date with his lover over the weekend.",
+    "zh": "他在周末和恋人享受了约会。",
+    "sense": "romantic partner",
+    "surface": "恋人",
+    "kana": "こいびと",
+    "senseListed": false,
+    "entryGlosses": [
+      "lover",
+      "sweetheart"
+    ]
+  },
+  {
+    "id": "n3-b513",
+    "jp": "彼は新しい曲を作曲している。",
+    "en": "He is composing a new song.",
+    "zh": "他正在创作一首新歌曲。",
+    "sense": "to compose music",
+    "surface": "作曲",
+    "kana": "さっきょく",
+    "senseListed": false,
+    "entryGlosses": [
+      "composition (music)"
+    ]
+  },
+  {
+    "id": "n3-b535",
+    "jp": "彼女は新しい本を出版した。",
+    "en": "She published a new book.",
+    "zh": "她出版了一本新书。",
+    "sense": "to publish a book",
+    "surface": "出版",
+    "kana": "しゅっぱん",
+    "senseListed": false,
+    "entryGlosses": [
+      "publication"
+    ]
+  },
+  {
+    "id": "n3-b543",
+    "jp": "これはとても上等な生地だ。",
+    "en": "This is very fine-quality fabric.",
+    "zh": "这是非常高级的面料。",
+    "sense": "high quality or superior",
+    "surface": "上等",
+    "kana": "じょうとう",
+    "senseListed": false,
+    "entryGlosses": [
+      "superiority",
+      "first class"
+    ]
+  },
+  {
+    "id": "n3-b559",
+    "jp": "彼の説明は少しも分からなかった。",
+    "en": "I didn't understand his explanation one bit.",
+    "zh": "我一点也不理解他的解释。",
+    "sense": "not at all",
+    "surface": "少しも",
+    "kana": "すこしも",
+    "senseListed": false,
+    "entryGlosses": [
+      "anything of",
+      "not one bit"
+    ]
+  },
+  {
+    "id": "n3-b566",
+    "jp": "新しい製品を市場に出す。",
+    "en": "Release a new manufactured product to the market.",
+    "zh": "将新产品推向市场。",
+    "sense": "manufactured product",
+    "surface": "製品",
+    "kana": "せいひん",
+    "senseListed": false,
+    "entryGlosses": [
+      "manufactured goods",
+      "finished goods"
+    ]
+  },
+  {
+    "id": "n3-b574",
+    "jp": "彼の日本語は相当なレベルだ。",
+    "en": "His Japanese is at a fairly high level.",
+    "zh": "他的日语水平相当高。",
+    "sense": "considerable",
+    "surface": "相当",
+    "kana": "そうとう",
+    "senseListed": false,
+    "entryGlosses": [
+      "suitable",
+      "fair"
+    ]
+  },
+  {
+    "id": "n3-b582",
+    "jp": "大した病気ではなさそうで安心した。",
+    "en": "I was relieved that it didn't seem to be a serious illness.",
+    "zh": "看起来并不是什么大病，让人放心了。",
+    "sense": "serious",
+    "surface": "大した",
+    "kana": "たいした",
+    "senseListed": false,
+    "entryGlosses": [
+      "considerable",
+      "great"
+    ]
+  },
+  {
+    "id": "n3-b587",
+    "jp": "明日の午後は宅におります。",
+    "en": "I will be at my home tomorrow afternoon.",
+    "zh": "我明天下午会在家。",
+    "sense": "one's own home",
+    "surface": "宅",
+    "kana": "たく",
+    "senseListed": false,
+    "entryGlosses": [
+      "house",
+      "husband"
+    ]
+  },
+  {
+    "id": "n3-b594",
+    "jp": "今学期は必要な単位を全て取った。",
+    "en": "I earned all the necessary credits this semester.",
+    "zh": "我在这个学期修够了所需的全部学分。",
+    "sense": "academic credit",
+    "surface": "単位",
+    "kana": "たんい",
+    "senseListed": false,
+    "entryGlosses": [
+      "unit",
+      "denomination"
+    ]
+  },
+  {
+    "id": "n3-b595",
+    "jp": "団体で旅行を申し込むと割引がある。",
+    "en": "There is a discount if you apply for a trip as a group.",
+    "zh": "以团体形式报名旅行会有折扣。",
+    "sense": "tour group",
+    "surface": "団体",
+    "kana": "だんたい",
+    "senseListed": false,
+    "entryGlosses": [
+      "organization",
+      "association"
+    ]
+  },
+  {
+    "id": "n3-b601",
+    "jp": "部屋の中央に大きなテーブルを置いた。",
+    "en": "We placed a large table in the center of the room.",
+    "zh": "我们在房间中央放了一张大桌子。",
+    "sense": "center of a space",
+    "surface": "中央",
+    "kana": "ちゅうおう",
+    "senseListed": false,
+    "entryGlosses": [
+      "centre",
+      "central"
+    ]
+  },
+  {
+    "id": "n3-b602",
+    "jp": "彼女はチームの中心となって活躍した。",
+    "en": "She played an active role as the core of the team.",
+    "zh": "她作为团队的核心活跃着。",
+    "sense": "central figure",
+    "surface": "中心",
+    "kana": "ちゅうしん",
+    "senseListed": false,
+    "entryGlosses": [
+      "center",
+      "core"
+    ]
+  },
+  {
+    "id": "n3-b610",
+    "jp": "昨夜からの雪が庭に積もっている。",
+    "en": "The snow from last night is piling up in the garden.",
+    "zh": "昨晚下的雪在院子里积了起来。",
+    "sense": "to accumulate",
+    "surface": "積もる",
+    "kana": "つもる",
+    "reviewFlag": "transitivity pair — check the particles: this verb has a partner one character away",
+    "senseListed": false,
+    "entryGlosses": [
+      "to pile up"
+    ]
+  },
+  {
+    "id": "n3-b613",
+    "jp": "昨日、学校で面白い出来事があった。",
+    "en": "An interesting event happened at school yesterday.",
+    "zh": "昨天学校里发生了一件有趣的事。",
+    "sense": "event",
+    "surface": "出来事",
+    "kana": "できごと",
+    "senseListed": false,
+    "entryGlosses": [
+      "incident",
+      "happening"
+    ]
+  },
+  {
+    "id": "n3-b615",
+    "jp": "週末は家事の手伝いをした。",
+    "en": "I helped with housework over the weekend.",
+    "zh": "周末我帮忙做了家务。",
+    "sense": "help with tasks",
+    "surface": "手伝い",
+    "kana": "てつだい",
+    "senseListed": false,
+    "entryGlosses": [
+      "helper",
+      "assistant"
+    ]
+  },
+  {
+    "id": "n3-b618",
+    "jp": "先生にテストの答案を提出した。",
+    "en": "I submitted my test answer sheet to the teacher.",
+    "zh": "我给老师提交了考试答卷。",
+    "sense": "examination answer sheet",
+    "surface": "答案",
+    "kana": "とうあん",
+    "senseListed": false,
+    "entryGlosses": [
+      "examination paper",
+      "test paper"
+    ]
+  },
+  {
+    "id": "n3-b619",
+    "jp": "二人は同時にゴールに入った。",
+    "en": "The two crossed the finish line at the same time.",
+    "zh": "两人同时到达了终点。",
+    "sense": "at the same time",
+    "surface": "同時",
+    "kana": "どうじ",
+    "senseListed": false,
+    "entryGlosses": [
+      "simultaneous",
+      "concurrent"
+    ]
+  },
+  {
+    "id": "n3-b632",
+    "jp": "休日に会社の仲間とサッカーをしました。",
+    "en": "I played soccer with my colleagues on my day off.",
+    "zh": "我在休息日和公司同事一起踢了足球。",
+    "sense": "colleagues or companions",
+    "surface": "仲間",
+    "kana": "なかま",
+    "senseListed": false,
+    "entryGlosses": [
+      "company",
+      "fellow"
+    ]
+  },
+  {
+    "id": "n3-b634",
+    "jp": "この古い建物の歴史には多くの謎があります。",
+    "en": "There are many mysteries surrounding the history of this old building.",
+    "zh": "这座古老建筑的历史有很多谜团。",
+    "sense": "mystery",
+    "surface": "謎",
+    "kana": "なぞ",
+    "senseListed": false,
+    "entryGlosses": [
+      "riddle",
+      "puzzle"
+    ]
+  },
+  {
+    "id": "n3-b642",
+    "jp": "弟は今、ゲームに熱中しています。",
+    "en": "My younger brother is currently absorbed in video games.",
+    "zh": "弟弟现在正沉迷于游戏。",
+    "sense": "being absorbed in",
+    "surface": "熱中",
+    "kana": "ねっちゅう",
+    "senseListed": false,
+    "entryGlosses": [
+      "going crazy over",
+      "absorption"
+    ]
+  },
+  {
+    "id": "n3-b643",
+    "jp": "この部屋は年中暖かくて過ごしやすいです。",
+    "en": "This room is warm all year round and comfortable to stay in.",
+    "zh": "这个房间一年到头都很温暖，住起来很舒服。",
+    "sense": "all year round",
+    "surface": "年中",
+    "kana": "ねんじゅう",
+    "senseListed": false,
+    "entryGlosses": [
+      "whole year",
+      "always"
+    ]
+  },
+  {
+    "id": "n3-b654",
+    "jp": "明日の授業で研究の結果を発表します。",
+    "en": "I will present the results of my research in tomorrow's class.",
+    "zh": "我将在明天的课上发表研究结果。",
+    "sense": "to present or announce",
+    "surface": "発表",
+    "kana": "はっぴょう",
+    "senseListed": false,
+    "entryGlosses": [
+      "announcement",
+      "publication"
+    ]
+  },
+  {
+    "id": "n3-b657",
+    "jp": "時計の針が１２時を指しています。",
+    "en": "The hands of the clock are pointing to twelve o'clock.",
+    "zh": "时钟的针指着十二点。",
+    "sense": "hand of a clock",
+    "surface": "針",
+    "kana": "はり",
+    "senseListed": false,
+    "entryGlosses": [
+      "needle",
+      "pin"
+    ]
+  },
+  {
+    "id": "n3-b671",
+    "jp": "会社で不正が行われていないか調査します。",
+    "en": "We will investigate whether any wrongdoing is taking place in the company.",
+    "zh": "调查公司内部是否存在不正当行为。",
+    "sense": "dishonesty or wrongdoing",
+    "surface": "不正",
+    "kana": "ふせい",
+    "senseListed": false,
+    "entryGlosses": [
+      "injustice",
+      "unfairness"
+    ]
+  },
+  {
+    "id": "n3-b687",
+    "jp": "その問題については全く知りません。",
+    "en": "I know nothing at all about that issue.",
+    "zh": "我对那个问题完全不知情。",
+    "sense": "not at all",
+    "surface": "全く",
+    "kana": "まったく",
+    "senseListed": false,
+    "entryGlosses": [
+      "really",
+      "entirely"
+    ]
+  },
+  {
+    "id": "n3-b701",
+    "jp": "今年の目標は試験に合格することだ。",
+    "en": "My goal for this year is to pass the exam.",
+    "zh": "我今年的目标是考试合格。",
+    "sense": "goal, objective",
+    "surface": "目標",
+    "kana": "もくひょう",
+    "senseListed": false,
+    "entryGlosses": [
+      "mark",
+      "target"
+    ]
+  },
+  {
+    "id": "n3-b723",
+    "jp": "赤い色から太陽を連想する。",
+    "en": "I associate the color red with the sun.",
+    "zh": "看到红色会让人联想到太阳。",
+    "sense": "mental association",
+    "surface": "連想",
+    "kana": "れんそう",
+    "senseListed": false,
+    "entryGlosses": [
+      "association of ideas"
+    ]
+  },
+  {
+    "id": "n3-b756",
+    "jp": "市の議会で新しい計画が話し合われた。",
+    "en": "The new plan was discussed at the city council.",
+    "zh": "市议会上讨论了新的计划。",
+    "sense": "local council or parliament",
+    "surface": "議会",
+    "kana": "ぎかい",
+    "senseListed": false,
+    "entryGlosses": [
+      "congress",
+      "parliament"
+    ]
+  },
+  {
+    "id": "n3-b758",
+    "jp": "卒業の記念にみんなで写真を撮った。",
+    "en": "We all took a photo to commemorate our graduation.",
+    "zh": "大家一起拍照留作毕业纪念。",
+    "sense": "memento or commemoration",
+    "surface": "記念",
+    "kana": "きねん",
+    "senseListed": false,
+    "entryGlosses": [
+      "commemoration",
+      "memory"
+    ]
+  },
+  {
+    "id": "n3-b765",
+    "jp": "この建物の中はすべて禁煙です。",
+    "en": "Smoking is completely prohibited inside this building.",
+    "zh": "这栋建筑内部全面禁烟。",
+    "sense": "prohibition of smoking",
+    "surface": "禁煙",
+    "kana": "きんえん",
+    "senseListed": false,
+    "entryGlosses": [
+      "no smoking",
+      "quitting smoking"
+    ]
+  },
+  {
+    "id": "n3-b769",
+    "jp": "似ている二つの言葉を区別する。",
+    "en": "To distinguish between two similar words.",
+    "zh": "区分两个相似的词语。",
+    "sense": "distinguishing between things",
+    "surface": "区別",
+    "kana": "くべつ",
+    "senseListed": false,
+    "entryGlosses": [
+      "distinction",
+      "differentiation"
+    ]
+  },
+  {
+    "id": "n3-b772",
+    "jp": "その国は大きな軍隊を持っている。",
+    "en": "That country has a large army.",
+    "zh": "那个国家拥有庞大的军队。",
+    "sense": "armed forces or military",
+    "surface": "軍隊",
+    "kana": "ぐんたい",
+    "senseListed": false,
+    "entryGlosses": [
+      "army",
+      "troops"
+    ]
+  },
+  {
+    "id": "n3-b773",
+    "jp": "買い物のお釣りを計算する。",
+    "en": "Calculating the change from shopping.",
+    "zh": "计算购物的找零。",
+    "sense": "calculating or counting numbers",
+    "surface": "計算",
+    "kana": "けいさん",
+    "senseListed": false,
+    "entryGlosses": [
+      "calculation",
+      "count"
+    ]
+  },
+  {
+    "id": "n3-b775",
+    "jp": "次の会議の日時が決定した。",
+    "en": "The date and time for the next meeting have been decided.",
+    "zh": "下次会议的时间已确定。",
+    "sense": "settling or deciding something",
+    "surface": "決定",
+    "kana": "けってい",
+    "senseListed": false,
+    "entryGlosses": [
+      "decision",
+      "determination"
+    ]
+  },
+  {
+    "id": "n3-b779",
+    "jp": "誰にも意見を言う権利がある。",
+    "en": "Everyone has the right to express their opinion.",
+    "zh": "每个人都有发表意见的权利。",
+    "sense": "legal or moral right",
+    "surface": "権利",
+    "kana": "けんり",
+    "senseListed": false,
+    "entryGlosses": [
+      "right",
+      "privilege"
+    ]
+  },
+  {
+    "id": "n3-b783",
+    "jp": "先生は生徒全員を公平に扱う。",
+    "en": "The teacher treats all students fairly.",
+    "zh": "老师公平地对待每一位学生。",
+    "sense": "impartial and fair treatment",
+    "surface": "公平",
+    "kana": "こうへい",
+    "senseListed": false,
+    "entryGlosses": [
+      "fairness",
+      "justice"
+    ]
+  },
+  {
+    "id": "n3-b799",
+    "jp": "夜になって風が更に強くなった。",
+    "en": "The wind grew even stronger at night.",
+    "zh": "到了晚上风变得更大了。",
+    "sense": "even more or further",
+    "surface": "更に",
+    "kana": "さらに",
+    "senseListed": false,
+    "entryGlosses": [
+      "furthermore",
+      "again"
+    ]
+  },
+  {
+    "id": "n3-b805",
+    "jp": "自分の計画を確実に実行した。",
+    "en": "I reliably executed my plan.",
+    "zh": "我切实地执行了自己的计划。",
+    "sense": "carrying out a plan",
+    "surface": "実行",
+    "kana": "じっこう",
+    "senseListed": false,
+    "entryGlosses": [
+      "execution",
+      "implementation"
+    ]
+  },
+  {
+    "id": "n3-b808",
+    "jp": "彼女たちは仲が良い姉妹です。",
+    "en": "They are sisters who get along well.",
+    "zh": "她们是一对关系很好的姐妹。",
+    "sense": "female siblings",
+    "surface": "姉妹",
+    "kana": "しまい",
+    "senseListed": false,
+    "entryGlosses": [
+      "sisters"
+    ]
+  },
+  {
+    "id": "n3-b817",
+    "jp": "新しいプロジェクトは順調に進んでいる。",
+    "en": "The new project is progressing smoothly.",
+    "zh": "新项目进展顺利。",
+    "sense": "progressing smoothly",
+    "surface": "順調",
+    "kana": "じゅんちょう",
+    "senseListed": false,
+    "entryGlosses": [
+      "favourable",
+      "doing well"
+    ]
+  },
+  {
+    "id": "n3-b820",
+    "jp": "準備に少々お時間がかかります。",
+    "en": "Preparation will take a little time.",
+    "zh": "准备工作需要少许时间。",
+    "sense": "a small amount of time",
+    "surface": "少々",
+    "kana": "しょうしょう",
+    "senseListed": false,
+    "entryGlosses": [
+      "just a minute",
+      "small quantity"
+    ]
+  },
+  {
+    "id": "n3-b842",
+    "jp": "政府は新しい経済政策を発表した。",
+    "en": "The government announced a new economic policy.",
+    "zh": "政府公布了新的经济政策。",
+    "sense": "governing body of a country",
+    "surface": "政府",
+    "kana": "せいふ",
+    "senseListed": false,
+    "entryGlosses": [
+      "government"
+    ]
+  },
+  {
+    "id": "n3-b851",
+    "jp": "雨が降っていたが、それでも外に出た。",
+    "en": "It was raining, but even so, I went outside.",
+    "zh": "虽然在下雨，但我还是出去了。",
+    "sense": "even so or nevertheless",
+    "surface": "それでも",
+    "kana": "それでも",
+    "senseListed": false,
+    "entryGlosses": [
+      "but (still)",
+      "and yet"
+    ]
+  },
+  {
+    "id": "n3-b855",
+    "jp": "彼の意見に対する質問を行う。",
+    "en": "I ask questions regarding his opinion.",
+    "zh": "针对他的意见提出提问。",
+    "sense": "regarding or in response to",
+    "surface": "対する",
+    "kana": "たいする",
+    "senseListed": false,
+    "entryGlosses": [
+      "to face",
+      "to be in response to"
+    ]
+  },
+  {
+    "id": "n3-b871",
+    "jp": "友達と一緒に昼食を食べました。",
+    "en": "I ate lunch together with my friend.",
+    "zh": "我和朋友一起吃了午餐。",
+    "sense": "midday meal",
+    "surface": "昼食",
+    "kana": "ちゅうしょく",
+    "senseListed": false,
+    "entryGlosses": [
+      "lunch"
+    ]
+  },
+  {
+    "id": "n3-b875",
+    "jp": "新しい問題が次々と出てきます。",
+    "en": "New problems are coming up one after another.",
+    "zh": "新的问题接二连三地出现。",
+    "sense": "one after another",
+    "surface": "次々",
+    "kana": "つぎつぎ",
+    "senseListed": false,
+    "entryGlosses": [
+      "in succession",
+      "one by one"
+    ]
+  },
+  {
+    "id": "n3-b876",
+    "jp": "テーブルの上に小さな包みがあります。",
+    "en": "There is a small package on the table.",
+    "zh": "桌子上有一个小包裹。",
+    "sense": "wrapped parcel or package",
+    "surface": "包み",
+    "kana": "つつみ",
+    "senseListed": false,
+    "entryGlosses": [
+      "bundle",
+      "package"
+    ]
+  },
+  {
+    "id": "n3-b877",
+    "jp": "親と子供が手を繋いで歩いています。",
+    "en": "Parent and child are walking while holding hands.",
+    "zh": "父母和孩子牵着手在散步。",
+    "sense": "to hold or join hands",
+    "surface": "繋ぐ",
+    "kana": "つなぐ",
+    "reviewFlag": "transitivity pair — check the particles: this verb has a partner one character away",
+    "senseListed": false,
+    "entryGlosses": [
+      "to tie",
+      "to fasten"
+    ]
+  },
+  {
+    "id": "n3-b883",
+    "jp": "手洗いとうがいを徹底しています。",
+    "en": "We thoroughly enforce hand washing and gargling.",
+    "zh": "我们彻底落实洗手和漱口。",
+    "sense": "thorough implementation or practice",
+    "surface": "徹底",
+    "kana": "てってい",
+    "senseListed": false,
+    "entryGlosses": [
+      "thoroughness",
+      "completeness"
+    ]
+  },
+  {
+    "id": "n3-b886",
+    "jp": "二つの事件は同一の人物によるものです。",
+    "en": "The two incidents were committed by the same person.",
+    "zh": "这两起事件是由同一人所为。",
+    "sense": "identical or same",
+    "surface": "同一",
+    "kana": "どういつ",
+    "senseListed": false,
+    "entryGlosses": [
+      "identity",
+      "same"
+    ]
+  },
+  {
+    "id": "n3-b903",
+    "jp": "チケットを買って会場に入場しました。",
+    "en": "I bought a ticket and entered the venue.",
+    "zh": "买完票后进入了会场。",
+    "sense": "entering a venue or admission",
+    "surface": "入場",
+    "kana": "にゅうじょう",
+    "senseListed": false,
+    "entryGlosses": [
+      "entrance",
+      "admission"
+    ]
+  },
+  {
+    "id": "n3-b906",
+    "jp": "近くの農家から新鮮な野菜を買いました。",
+    "en": "I bought fresh vegetables from a nearby farm household.",
+    "zh": "从附近的农户那里买了新鲜蔬菜。",
+    "sense": "farm household or farmer",
+    "surface": "農家",
+    "kana": "のうか",
+    "senseListed": false,
+    "entryGlosses": [
+      "farmer",
+      "farm family"
+    ]
+  },
+  {
+    "id": "n3-b907",
+    "jp": "ケーキの残りは冷蔵庫に入れておきます。",
+    "en": "I will put the rest of the cake in the refrigerator.",
+    "zh": "剩下的蛋糕我放进冰箱里。",
+    "sense": "remainder or leftover",
+    "surface": "残り",
+    "kana": "のこり",
+    "senseListed": false,
+    "entryGlosses": [
+      "remnant",
+      "residue"
+    ]
+  },
+  {
+    "id": "n3-b908",
+    "jp": "まだ勝つ望みは捨てていません。",
+    "en": "I have not yet given up hope of winning.",
+    "zh": "我还没有放弃获胜的希望。",
+    "sense": "hope or wish",
+    "surface": "望み",
+    "kana": "のぞみ",
+    "senseListed": false,
+    "entryGlosses": [
+      "wish",
+      "desire"
+    ]
+  },
+  {
+    "id": "n3-b917",
+    "jp": "彼は親に反抗して家を出ていきました。",
+    "en": "He rebelled against his parents and left home.",
+    "zh": "他反抗父母离家出走了。",
+    "sense": "rebellion or resistance to authority",
+    "surface": "反抗",
+    "kana": "はんこう",
+    "senseListed": false,
+    "entryGlosses": [
+      "opposition",
+      "resistance"
+    ]
+  },
+  {
+    "id": "n3-b918",
+    "jp": "警察はついに事件の犯人を捕まえました。",
+    "en": "The police finally caught the culprit of the incident.",
+    "zh": "警方终于抓到了这起案件的罪犯。",
+    "sense": "culprit or offender of a crime",
+    "surface": "犯人",
+    "kana": "はんにん",
+    "senseListed": false,
+    "entryGlosses": [
+      "offender",
+      "criminal"
+    ]
+  },
+  {
+    "id": "n3-b922",
+    "jp": "新しい映画の批評を雑誌で読みました。",
+    "en": "I read a review of the new movie in a magazine.",
+    "zh": "我在杂志上看了新电影的影评。",
+    "sense": "critique or review",
+    "surface": "批評",
+    "kana": "ひひょう",
+    "senseListed": false,
+    "entryGlosses": [
+      "criticism",
+      "review"
+    ]
+  },
+  {
+    "id": "n3-b926",
+    "jp": "審判が試合終了の笛をふきました。",
+    "en": "The referee blew the whistle for the end of the match.",
+    "zh": "裁判吹响了比赛结束的哨声。",
+    "sense": "whistle or flute instrument",
+    "surface": "笛",
+    "kana": "ふえ",
+    "senseListed": false,
+    "entryGlosses": [
+      "flute",
+      "pipe"
+    ]
+  },
+  {
+    "id": "n3-b927",
+    "jp": "面接にはきちんとした服装で行きます。",
+    "en": "I will go to the interview in neat clothing.",
+    "zh": "我会穿着整洁的服装去参加面试。",
+    "sense": "clothing or attire",
+    "surface": "服装",
+    "kana": "ふくそう",
+    "senseListed": false,
+    "entryGlosses": [
+      "garments",
+      "attire"
+    ]
+  },
+  {
+    "id": "n3-b928",
+    "jp": "飛行機は無事に空港へ到着しました。",
+    "en": "The airplane arrived safely at the airport.",
+    "zh": "飞机平安抵达了机场。",
+    "sense": "safely without trouble",
+    "surface": "無事",
+    "kana": "ぶじ",
+    "senseListed": false,
+    "entryGlosses": [
+      "safety",
+      "peace"
+    ]
+  },
+  {
+    "id": "n3-b945",
+    "jp": "万一の時に備えて保険に入る。",
+    "en": "Enroll in insurance to prepare for an emergency.",
+    "zh": "投保以备万一。",
+    "sense": "emergency, unlikely emergency event",
+    "surface": "万一",
+    "kana": "まんいち",
+    "senseListed": false,
+    "entryGlosses": [
+      "by some chance",
+      "in the unlikely event"
+    ]
+  },
+  {
+    "id": "n3-b968",
+    "jp": "新しい道具を使うと作業がとても楽だ。",
+    "en": "Using new tools makes the work very easy.",
+    "zh": "使用新工具会让工作变得非常轻松。",
+    "sense": "easy, requiring little effort",
+    "surface": "楽",
+    "kana": "らく",
+    "senseListed": false,
+    "entryGlosses": [
+      "comfort",
+      "ease"
+    ]
+  }
+]
