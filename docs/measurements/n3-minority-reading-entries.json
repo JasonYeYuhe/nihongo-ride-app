@@ -8,39 +8,46 @@
   "glosses": [
    "afterwards",
    "since then"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b162",
   "surface": "仏",
   "taughtReading": "ほとけ",
   "readingInNaturalSentence": "ふつ",
-  "sentence": "寺にいって仏に手を合わせました。",
+  "sentence": "仏の顔も三度までと言う。",
   "glosses": [
    "Buddha",
    "merciful person"
-  ]
+  ],
+  "status": "resolved by a forcing collocation",
+  "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 仏の顔も三度 is read ほとけのかおもさんど"
  },
  {
   "id": "n3-b190",
   "surface": "綿",
   "taughtReading": "わた",
   "readingInNaturalSentence": "めん",
-  "sentence": "このクッションには綿がたくさん詰まっている。",
+  "sentence": "古い布団の綿を交換する。",
   "glosses": [
    "cotton"
-  ]
+  ],
+  "status": "resolved by a forcing collocation",
+  "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 布団の綿 is read ふとんのわた"
  },
  {
   "id": "n3-b234",
   "surface": "暮れ",
   "taughtReading": "くれ",
   "readingInNaturalSentence": "としのくれ",
-  "sentence": "年の暮れはいつも仕事が忙しくなる。",
+  "sentence": "年の暮れは何かと忙しい。",
   "glosses": [
    "year end",
    "sunset"
-  ]
+  ],
+  "status": "resolved by a forcing collocation",
+  "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 年の暮れ is read としのくれ"
  },
  {
   "id": "n3-b235",
@@ -51,7 +58,8 @@
   "glosses": [
    "under",
    "below"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b361",
@@ -61,7 +69,8 @@
   "sentence": "この建物は長い年月をかけて建てられた。",
   "glosses": [
    "months and years"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b380",
@@ -72,28 +81,33 @@
   "glosses": [
    "elegance",
    "article"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b447",
   "surface": "魚",
   "taughtReading": "うお",
   "readingInNaturalSentence": "さかな",
-  "sentence": "空の鳥や海の魚を観察する。",
+  "sentence": "朝早く魚市場へ出かけた。",
   "glosses": [
    "fish"
-  ]
+  ],
+  "status": "resolved by a forcing collocation",
+  "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 魚市場 is read うおいちば"
  },
  {
   "id": "n3-b510",
   "surface": "盛り",
   "taughtReading": "さかり",
   "readingInNaturalSentence": "もり",
-  "sentence": "桜の花は今が盛りだ。",
+  "sentence": "父は今が働き盛りだ。",
   "glosses": [
    "peak",
    "prime"
-  ]
+  ],
+  "status": "resolved by a forcing collocation",
+  "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 働き盛り is read はたらきざかり"
  },
  {
   "id": "n3-b607",
@@ -104,7 +118,8 @@
   "glosses": [
    "to pour",
    "to fill"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b621",
@@ -114,7 +129,8 @@
   "sentence": "りんごを箱の中に十入れた。",
   "glosses": [
    "ten"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b639",
@@ -124,17 +140,20 @@
   "sentence": "私は将来、日本に住みたいです。",
   "glosses": [
    "Japan"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b680",
   "surface": "方々",
   "taughtReading": "ほうぼう",
   "readingInNaturalSentence": "かたがた",
-  "sentence": "街の方々を歩き回った。",
+  "sentence": "方々を歩き回って疲れた。",
   "glosses": [
    "here and there"
-  ]
+  ],
+  "status": "resolved by a forcing collocation",
+  "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 方々を歩き回る is read ほうぼうをあるきまわる"
  },
  {
   "id": "n3-b684",
@@ -145,7 +164,8 @@
   "glosses": [
    "space",
    "time"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b702",
@@ -156,17 +176,21 @@
   "glosses": [
    "letter of alphabet",
    "character"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b713",
   "surface": "曜日",
   "taughtReading": "ようび",
   "readingInNaturalSentence": "ひ",
-  "sentence": "何曜日にゴミを出すか確認します。",
+  "sentence": "ゴミを出す曜日を確認する。",
   "glosses": [
    "day of the week"
-  ]
+  ],
+  "status": "resolved by a forcing collocation",
+  "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 曜日 is read ようび",
+  "note": "MISCATEGORISED BY MY OWN DIAGNOSTIC: 曜日 has only one reading (ようび). It landed here because the tokenizer split 曜日 and I compared the 日 fragment. All three judges caught this independently."
  },
  {
   "id": "n3-b734",
@@ -177,7 +201,8 @@
   "glosses": [
    "to say",
    "to tell"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b735",
@@ -188,7 +213,8 @@
   "glosses": [
    "market",
    "marketplace"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b791",
@@ -199,7 +225,8 @@
   "glosses": [
    "today",
    "this day"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b801",
@@ -210,18 +237,21 @@
   "glosses": [
    "soon",
    "direct"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b809",
   "surface": "下",
   "taughtReading": "しも",
   "readingInNaturalSentence": "した",
-  "sentence": "この川の下には静かな村があります。",
+  "sentence": "百人一首の下の句を覚える。",
   "glosses": [
    "lower reaches",
    "bottom"
-  ]
+  ],
+  "status": "resolved by a forcing collocation",
+  "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 下の句 is read しものく"
  },
  {
   "id": "n3-b861",
@@ -232,7 +262,8 @@
   "glosses": [
    "only",
    "merely"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b909",
@@ -242,18 +273,21 @@
   "sentence": "梅雨前線の影響で大雨が続いています。",
   "glosses": [
    "rainy season"
-  ]
+  ],
+  "status": "still unteachable"
  },
  {
   "id": "n3-b919",
   "surface": "額",
   "taughtReading": "ひたい",
   "readingInNaturalSentence": "がく",
-  "sentence": "走った後、額に汗をかいていました。",
+  "sentence": "ハンカチで額の汗をぬぐう。",
   "glosses": [
    "forehead",
    "brow"
-  ]
+  ],
+  "status": "resolved by a forcing collocation",
+  "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 額の汗 is read ひたいのあせ"
  },
  {
   "id": "n3-b939",
@@ -263,6 +297,7 @@
   "sentence": "冷たい風が頬にあたって痛かった。",
   "glosses": [
    "cheek"
-  ]
+  ],
+  "status": "still unteachable"
  }
 ]

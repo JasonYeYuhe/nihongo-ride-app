@@ -12430,6 +12430,18 @@
         "佛",
         "慈悲的人"
       ]
+    },
+    "exJP": "仏の顔も三度までと言う。",
+    "exEN": "Even the patience of a saint has its limits.",
+    "exZH": "事不过三。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_forced_reading/2026-08-07",
+      "batch": "batch-n3-minority-reading",
+      "reviewer": "3-judge unanimous forced-reading verdict (v1.17 §F)",
+      "sense": "Buddha or a merciful person",
+      "senseListed": true,
+      "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 仏の顔も三度 is read ほとけのかおもさんど"
     }
   },
   {
@@ -13257,6 +13269,18 @@
       "zh": [
         "棉花"
       ]
+    },
+    "exJP": "古い布団の綿を交換する。",
+    "exEN": "Replace the cotton padding in the old futon.",
+    "exZH": "更换旧被子里面的棉花。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_forced_reading/2026-08-07",
+      "batch": "batch-n3-minority-reading",
+      "reviewer": "3-judge unanimous forced-reading verdict (v1.17 §F)",
+      "sense": "cotton padding / raw cotton fiber",
+      "senseListed": true,
+      "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 布団の綿 is read ふとんのわた"
     }
   },
   {
@@ -14566,6 +14590,19 @@
         "傍晚",
         "年底"
       ]
+    },
+    "exJP": "年の暮れは何かと忙しい。",
+    "exEN": "The end of the year is busy in many ways.",
+    "exZH": "年底总是非常忙碌。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_forced_reading/2026-08-07",
+      "batch": "batch-n3-minority-reading",
+      "reviewer": "3-judge unanimous forced-reading verdict (v1.17 §F)",
+      "sense": "year-end / closing of a year",
+      "senseListed": true,
+      "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 年の暮れ is read としのくれ",
+      "targetGateOverride": "target appears inside the compound that forces the reading (年の暮れ / 働き盛り / 下の句); the morphological matcher cannot see it there, but the surface is literally present"
     }
   },
   {
@@ -23021,6 +23058,18 @@
       "zh": [
         "鱼"
       ]
+    },
+    "exJP": "朝早く魚市場へ出かけた。",
+    "exEN": "I went to the fish market early in the morning.",
+    "exZH": "一大清早就去了鱼市场。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_forced_reading/2026-08-07",
+      "batch": "batch-n3-minority-reading",
+      "reviewer": "3-judge unanimous forced-reading verdict (v1.17 §F)",
+      "sense": "fish (in fish market)",
+      "senseListed": true,
+      "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 魚市場 is read うおいちば"
     }
   },
   {
@@ -24898,6 +24947,19 @@
         "顶峰",
         "全盛期"
       ]
+    },
+    "exJP": "父は今が働き盛りだ。",
+    "exEN": "My father is now in the prime of his working life.",
+    "exZH": "父亲现在正值壮年。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_forced_reading/2026-08-07",
+      "batch": "batch-n3-minority-reading",
+      "reviewer": "3-judge unanimous forced-reading verdict (v1.17 §F)",
+      "sense": "prime / peak of life",
+      "senseListed": true,
+      "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 働き盛り is read はたらきざかり",
+      "targetGateOverride": "target appears inside the compound that forces the reading (年の暮れ / 働き盛り / 下の句); the morphological matcher cannot see it there, but the surface is literally present"
     }
   },
   {
@@ -29851,6 +29913,18 @@
         "到处",
         "各处"
       ]
+    },
+    "exJP": "方々を歩き回って疲れた。",
+    "exEN": "I got tired from walking all over the place.",
+    "exZH": "到处走动走累了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_forced_reading/2026-08-07",
+      "batch": "batch-n3-minority-reading",
+      "reviewer": "3-judge unanimous forced-reading verdict (v1.17 §F)",
+      "sense": "here and there / various places",
+      "senseListed": true,
+      "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 方々を歩き回る is read ほうぼうをあるきまわる"
     }
   },
   {
@@ -30798,6 +30872,18 @@
       "zh": [
         "星期"
       ]
+    },
+    "exJP": "ゴミを出す曜日を確認する。",
+    "exEN": "Check the day of the week to put out the trash.",
+    "exZH": "确认倒垃圾的星期。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_forced_reading/2026-08-07",
+      "batch": "batch-n3-minority-reading",
+      "reviewer": "3-judge unanimous forced-reading verdict (v1.17 §F)",
+      "sense": "day of the week",
+      "senseListed": true,
+      "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 曜日 is read ようび"
     }
   },
   {
@@ -33542,6 +33628,19 @@
         "下部",
         "下游"
       ]
+    },
+    "exJP": "百人一首の下の句を覚える。",
+    "exEN": "Memorize the lower phrase of the Hyakunin Isshu poem.",
+    "exZH": "记住百人一首的下句。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_forced_reading/2026-08-07",
+      "batch": "batch-n3-minority-reading",
+      "reviewer": "3-judge unanimous forced-reading verdict (v1.17 §F)",
+      "sense": "latter half / lower phrase of a poem",
+      "senseListed": true,
+      "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 下の句 is read しものく",
+      "targetGateOverride": "target appears inside the compound that forces the reading (年の暮れ / 働き盛り / 下の句); the morphological matcher cannot see it there, but the surface is literally present"
     }
   },
   {
@@ -36688,6 +36787,18 @@
       "zh": [
         "额头"
       ]
+    },
+    "exJP": "ハンカチで額の汗をぬぐう。",
+    "exEN": "Wipe the sweat from your forehead with a handkerchief.",
+    "exZH": "用手帕擦去额头上的汗水。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_forced_reading/2026-08-07",
+      "batch": "batch-n3-minority-reading",
+      "reviewer": "3-judge unanimous forced-reading verdict (v1.17 §F)",
+      "sense": "forehead / brow",
+      "senseListed": true,
+      "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 額の汗 is read ひたいのあせ"
     }
   },
   {
