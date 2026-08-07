@@ -105,6 +105,12 @@ def check(path, base, allow_dedupe=False, manifest=None):
         for field in EXAMPLE_FIELDS:
             was, now = (a.get(field) or "").strip(), (b.get(field) or "").strip()
             if was and now != was:
+                declared = manifest.get(eid) if manifest else None
+                # A reviewed translation correction is still an overwrite, so it still has to
+                # be declared field by field. The guard does not care that the new text is
+                # better; it cares that somebody said in advance which fields would move.
+                if declared and field in (declared.get("rewrite") or []):
+                    continue
                 problems.append(f"{eid}: {field} OVERWRITTEN (was reviewed) {was!r} -> {now!r}")
     return problems
 

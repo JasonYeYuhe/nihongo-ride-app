@@ -11042,14 +11042,15 @@
     },
     "exJP": "バスに乗るとき定期を見せます。",
     "exEN": "I show my commuter pass when getting on the bus.",
-    "exZH": "乘公交车时出示了定期票。",
+    "exZH": "乘公交车时出示定期票。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-00",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "commuter pass",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -11464,14 +11465,15 @@
     },
     "exJP": "お風呂の水を流してください。",
     "exEN": "Please drain the bathwater.",
-    "exZH": "请把浴室的水放掉。",
+    "exZH": "请把浴缸里的水放掉。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-00",
       "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
       "sense": "to drain liquid",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -11928,14 +11930,15 @@
     },
     "exJP": "手間を省くために、新しいソフトを使う。",
     "exEN": "I use new software to save time and effort.",
-    "exZH": "为了省去麻烦，我使用了新软件。",
+    "exZH": "为了省去麻烦，我使用新软件。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-01",
       "reviewer": "3-lens agent review + card check + adjudication (v1.17 §B)",
       "sense": "to save or eliminate effort",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -12403,14 +12406,15 @@
     },
     "exJP": "近所の犬が夜遅くに激しく吠えた。",
     "exEN": "The neighborhood dog barked fiercely late at night.",
-    "exZH": "附近的狗在深夜激烈地吠叫。",
+    "exZH": "附近的狗在深夜狂吠。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-01",
       "reviewer": "3-lens agent review + card check + adjudication (v1.17 §B)",
       "sense": "barking of a dog",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -12524,14 +12528,15 @@
     },
     "exJP": "昨日の試合はチームの負けでした。",
     "exEN": "Yesterday's match was a loss for the team.",
-    "exZH": "昨天的比赛是我们队的败局。",
+    "exZH": "昨天的比赛，球队输了。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-00",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "defeat or loss in match",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -12712,14 +12717,15 @@
     },
     "exJP": "旅行の土産にお菓子を買いました。",
     "exEN": "I bought sweets as a souvenir from the trip.",
-    "exZH": "我买了点心作为旅行的特产。",
+    "exZH": "我买了点心作为旅行的伴手礼。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-02",
       "reviewer": "3-lens agent review + card check + adjudication (v1.17 §B)",
       "sense": "souvenir or gift",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -12912,14 +12918,15 @@
     },
     "exJP": "雨はやがて止むでしょう。",
     "exEN": "The rain will probably stop before long.",
-    "exZH": "雨过不久就会停吧。",
+    "exZH": "雨不久就会停了吧。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-01",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "before long or soon",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -15831,14 +15838,15 @@
     },
     "exJP": "社会人としての常識を身につけたい。",
     "exEN": "I want to acquire common sense as a working adult.",
-    "exZH": "我想掌握作为社会人的基本常识。",
+    "exZH": "我想掌握作为职场人应有的基本常识。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-02",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "common sense or basic etiquette",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -16191,14 +16199,15 @@
     },
     "exJP": "木の上に小さな鳥が巣を作っている。",
     "exEN": "A small bird is making a nest in the tree.",
-    "exZH": "小鸟在树上造了一个巢。",
+    "exZH": "一只小鸟正在树上筑巢。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-01",
       "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
       "sense": "nest / bird nest",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -16993,14 +17002,15 @@
     },
     "exJP": "電車で席を譲るためにたちあがった。",
     "exEN": "I stood up to give up my seat on the train.",
-    "exZH": "我站起身来在电车上让座。",
+    "exZH": "我在电车上为了让座站了起来。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-03",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "to stand up",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -18497,14 +18507,15 @@
     },
     "exJP": "その若い俳優はドラマで人気を集めている。",
     "exEN": "That young actor is gaining popularity in TV dramas.",
-    "exZH": "那位年轻演员在电视剧中聚集了很高的人气。",
+    "exZH": "那位年轻演员在电视剧中人气越来越高。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-03",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "actor",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -19658,14 +19669,15 @@
     },
     "exJP": "子供たちはゲームに夢中になっている。",
     "exEN": "The children are absorbed in playing games.",
-    "exZH": "孩子们沉迷于玩游戏。",
+    "exZH": "孩子们玩游戏玩得入迷。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-04",
       "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
       "sense": "absorbed in or obsessed with",
-      "senseListed": false
+      "senseListed": false,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -19838,14 +19850,15 @@
     },
     "exJP": "おばあさんが昔の物語を教えてくれた。",
     "exEN": "My grandmother told me an old story.",
-    "exZH": "老奶奶给我讲了从前的故事。",
+    "exZH": "奶奶给我讲了从前的故事。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-04",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "story or tale",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -20054,14 +20067,15 @@
     },
     "exJP": "黒い猫が急に目の前を横切った。",
     "exEN": "A black cat suddenly crossed right in front of me.",
-    "exZH": "一只黑猫突然横穿过我的眼前。",
+    "exZH": "一只黑猫突然从我眼前横穿过去。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-01",
       "reviewer": "3-lens agent review + card check + adjudication (v1.17 §B)",
       "sense": "to cross across someone's path",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -23603,14 +23617,15 @@
     },
     "exJP": "日本の歴史に関する本を読む。",
     "exEN": "I read a book concerning Japanese history.",
-    "exZH": "我读了一本关于日本历史的书。",
+    "exZH": "我读关于日本历史的书。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-00",
       "reviewer": "3-lens agent review + card check + adjudication (v1.17 §B)",
       "sense": "to concern or be related to",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -24177,14 +24192,15 @@
     },
     "exJP": "新しい仲間がチームに加わる。",
     "exEN": "A new member joins the team.",
-    "exZH": "新成员加入了团队。",
+    "exZH": "新成员加入团队。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-00",
       "reviewer": "3-lens agent review + card check + adjudication (v1.17 §B)",
       "sense": "to join or be added to",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -26677,14 +26693,15 @@
     },
     "exJP": "学者によって異なる説が主張されている。",
     "exEN": "Different theories are advocated by scholars.",
-    "exZH": "学者们主张着不同的学说。",
+    "exZH": "学者们主张不同的学说。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-03",
       "reviewer": "3-lens agent review + card check + adjudication (v1.17 §B)",
       "sense": "theory or hypothesis",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -27668,14 +27685,15 @@
     },
     "exJP": "彼女はチームの中心となって活躍した。",
     "exEN": "She played an active role as the core of the team.",
-    "exZH": "她作为团队的核心活跃着。",
+    "exZH": "她作为团队的核心十分活跃。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-07",
       "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
       "sense": "central figure",
-      "senseListed": false
+      "senseListed": false,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -28430,14 +28448,15 @@
     },
     "exJP": "次の休みは土曜と日曜です。",
     "exEN": "My next days off are Saturday and Sunday.",
-    "exZH": "下个假期是周六和周日。",
+    "exZH": "下次休息是周六和周日。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-08",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "Saturday",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -28627,14 +28646,15 @@
     },
     "exJP": "大きな荷物を太い縄で縛りました。",
     "exEN": "I tied the large package with a thick rope.",
-    "exZH": "我用粗绳子系紧了大包裹。",
+    "exZH": "我用粗绳子捆住了大包裹。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-02",
       "reviewer": "3-lens agent review + card check + adjudication (v1.17 §B)",
       "sense": "rope or cord",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -28687,14 +28707,15 @@
     },
     "exJP": "部屋に暖かい日光が入ってきます。",
     "exEN": "Warm sunlight is streaming into the room.",
-    "exZH": "温暖的阳光照进了房间。",
+    "exZH": "温暖的阳光照进房间里来。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-08",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "sunlight",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -28795,14 +28816,15 @@
     },
     "exJP": "弟は今、ゲームに熱中しています。",
     "exEN": "My younger brother is currently absorbed in video games.",
-    "exZH": "弟弟现在正沉迷于游戏。",
+    "exZH": "弟弟现在正热衷于打游戏。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-08",
       "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
       "sense": "being absorbed in",
-      "senseListed": false
+      "senseListed": false,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -30378,14 +30400,15 @@
     },
     "exJP": "叱られるどころか寧ろ褒められた。",
     "exEN": "Far from being scolded, I was rather praised.",
-    "exZH": "非但没挨骂，反而收到了表扬。",
+    "exZH": "非但没挨骂，反而受到了表扬。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-00",
       "reviewer": "3-lens review + card check + adjudication (v1.17 §E, final 126)",
       "sense": "rather, instead",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -30879,7 +30902,7 @@
     },
     "exJP": "ゴミを出す曜日を確認する。",
     "exEN": "Check the day of the week to put out the trash.",
-    "exZH": "确认倒垃圾的星期。",
+    "exZH": "确认倒垃圾是星期几。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_forced_reading/2026-08-07",
@@ -30887,7 +30910,8 @@
       "reviewer": "3-judge unanimous forced-reading verdict (v1.17 §F)",
       "sense": "day of the week",
       "senseListed": true,
-      "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 曜日 is read ようび"
+      "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 曜日 is read ようび",
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -30909,14 +30933,15 @@
     },
     "exJP": "夜中に急にお腹が痛くなって目が覚めた。",
     "exEN": "In the middle of the night, I suddenly woke up with a stomachache.",
-    "exZH": "半夜腹部突然疼痛醒了过来。",
+    "exZH": "半夜肚子突然疼起来，我就醒了。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-01",
       "reviewer": "3-lens agent review + card check + adjudication (v1.17 §B)",
       "sense": "middle of the night",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -32462,14 +32487,15 @@
     },
     "exJP": "犬を強い鎖でつないだ。",
     "exEN": "I tied the dog with a strong chain.",
-    "exZH": "用坚固的铁链栓住了狗。",
+    "exZH": "用坚固的铁链拴住了狗。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-10",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "metal chain",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -33017,14 +33043,15 @@
     },
     "exJP": "田舎の母から小包が届いた。",
     "exEN": "A parcel arrived from my mother in the countryside.",
-    "exZH": "收到了一封来自老家母亲寄来的包裹。",
+    "exZH": "收到了老家母亲寄来的包裹。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-10",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "postal parcel or package",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -34468,14 +34495,15 @@
     },
     "exJP": "毎月しっかり税金を払っている。",
     "exEN": "I pay taxes properly every month.",
-    "exZH": "每个月都如实缴纳税款。",
+    "exZH": "每个月都认真缴纳税款。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-11",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "tax paid to government",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -34730,14 +34758,15 @@
     },
     "exJP": "動物園で大きな象を見た。",
     "exEN": "I saw a big elephant at the zoo.",
-    "exZH": "在动物园看见了大象。",
+    "exZH": "在动物园看见了一头很大的大象。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-11",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "elephant",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -34967,14 +34996,15 @@
     },
     "exJP": "彼の意見に対する質問を行う。",
     "exEN": "I ask questions regarding his opinion.",
-    "exZH": "针对他的意见提出提问。",
+    "exZH": "针对他的意见提出问题。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-11",
       "reviewer": "2-lens review + card check + 3-vote sense triage + refutation (v1.17 §D gaps)",
       "sense": "regarding or in response to",
-      "senseListed": false
+      "senseListed": false,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -35432,14 +35462,15 @@
     },
     "exJP": "夏休みに長期の海外旅行に行く。",
     "exEN": "I am going on a long-term overseas trip during summer vacation.",
-    "exZH": "暑假期间打算去进行长期出国旅行。",
+    "exZH": "暑假期间要去海外长期旅行。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-04",
       "reviewer": "3-lens agent review + card check + adjudication (v1.17 §B)",
       "sense": "long period of time",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -36857,14 +36888,15 @@
     },
     "exJP": "日曜日の駅は人込みで大変でした。",
     "exEN": "The station on Sunday was tough due to the crowd of people.",
-    "exZH": "周日的车站人山人海，可真不容易。",
+    "exZH": "周日的车站人山人海，真是够受的。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-12",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "crowd of people",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -37357,14 +37389,15 @@
     },
     "exJP": "転んで足の骨を折ってしまった。",
     "exEN": "I fell down and broke a bone in my leg.",
-    "exZH": "我摔倒了，折断了脚骨。",
+    "exZH": "我摔倒了，摔断了腿骨。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-01",
       "reviewer": "3-lens agent review + card check + adjudication (v1.17 §B)",
       "sense": "bone in the body",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -37404,14 +37437,15 @@
     },
     "exJP": "窓の外をぼんやり眺めていた。",
     "exEN": "I was absent-mindedly gazing out the window.",
-    "exZH": "我发呆地望着窗外。",
+    "exZH": "我呆呆地望着窗外。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-13",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "absent-mindedly, vacantly",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {
@@ -37842,14 +37876,15 @@
     },
     "exJP": "重い箱を一人でもちあげる。",
     "exEN": "Lift up a heavy box by oneself.",
-    "exZH": "独自举起重箱子。",
+    "exZH": "独自举起很重的箱子。",
     "exMeta": {
       "model": "gemini-3.6-flash",
       "prompt": "gen_batch/2026-07-27",
       "batch": "batch-13",
       "reviewer": "2-lens review + card check + adjudication (v1.17 §D, 690-word batch)",
       "sense": "to lift up, to raise",
-      "senseListed": true
+      "senseListed": true,
+      "zhCorrected": "v1.17 §G — 8-reader Chinese review + adversarial confirm"
     }
   },
   {

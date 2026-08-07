@@ -1,0 +1,355 @@
+{
+ "reason": "35 shipped Chinese translations corrected. Reviewed by eight readers over all 816 sentences merged this session, then every proposed replacement was put to an adversary whose default was to refuse — 70 proposed, 35 upheld.",
+ "entries": [
+  {
+   "id": "n3-b115",
+   "surface": "定期",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "乘公交车时出示了定期票。",
+   "to": "乘公交车时出示定期票。",
+   "why": "The Japanese is habitual (乗るとき…見せます, \"whenever I get on the bus\"), but the Chinese has the perfective 了, turning it into a one-time past event. Also 定期票 is a Japanism; the Mandarin word for a commuter pass is 月票."
+  },
+  {
+   "id": "n3-b129",
+   "surface": "流す",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "请把浴室的水放掉。",
+   "to": "请把浴缸里的水放掉。",
+   "why": "お風呂の水 is the water in the bathtub (English: \"the bathwater\"), but 浴室的水 means the water of the bathroom in general — wrong referent."
+  },
+  {
+   "id": "n3-b145",
+   "surface": "省く",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "为了省去麻烦，我使用了新软件。",
+   "to": "为了省去麻烦，我使用新软件。",
+   "why": "The Japanese 使う is non-past/habitual (the software is used in order to save effort), but 使用了 makes it a completed past action."
+  },
+  {
+   "id": "n3-b161",
+   "surface": "吠える",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "附近的狗在深夜激烈地吠叫。",
+   "to": "附近的狗在深夜狂吠。",
+   "why": "激烈地吠叫 is not idiomatic Mandarin — 激烈 is used of fighting or debate, not of a dog barking; Chinese says 狂吠 or 叫得很凶."
+  },
+  {
+   "id": "n3-b165",
+   "surface": "負け",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "昨天的比赛是我们队的败局。",
+   "to": "昨天的比赛，球队输了。",
+   "why": "败局 means a losing situation still in progress, not a match result; and 我们队 adds a first-person team the Japanese (チームの負け) does not have."
+  },
+  {
+   "id": "n3-b171",
+   "surface": "土産",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "我买了点心作为旅行的特产。",
+   "to": "我买了点心作为旅行的伴手礼。",
+   "why": "作为旅行的特产 is unidiomatic — 特产 is a region's local produce, not a gift brought back; お土産 here is the souvenir gift itself."
+  },
+  {
+   "id": "n3-b178",
+   "surface": "やがて",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "雨过不久就会停吧。",
+   "to": "雨不久就会停了吧。",
+   "why": "雨过不久就会停吧 misparses: 雨过 reads as \"after the rain\", garbling the sentence. The subject needs to be separated from 不久."
+  },
+  {
+   "id": "n3-b316",
+   "surface": "たちあがる",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "我站起身来在电车上让座。",
+   "to": "我在电车上为了让座站了起来。",
+   "why": "Word order is broken Mandarin: the locative 在电车上 sits after the verb, so 我站起身来在电车上让座 reads as a garbled chain. The Japanese is 席を譲るために立ち上がった — stood up in order to give up the seat."
+  },
+  {
+   "id": "n3-b277",
+   "surface": "常識",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "我想掌握作为社会人的基本常识。",
+   "to": "我想掌握作为职场人应有的基本常识。",
+   "why": "社会人 is copied straight from Japanese. In Chinese 社会人 is not the neutral 'working adult' — it reads as slang for a streetwise/gangster type, so the sentence misfires."
+  },
+  {
+   "id": "n3-b289",
+   "surface": "巣",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "小鸟在树上造了一个巢。",
+   "to": "一只小鸟正在树上筑巢。",
+   "why": "Aspect mismatch: 巣を作っている (and the English 'is making a nest') is ongoing, but 造了一个巢 states a completed action."
+  },
+  {
+   "id": "n3-b405",
+   "surface": "夢中",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "孩子们沉迷于玩游戏。",
+   "to": "孩子们玩游戏玩得入迷。",
+   "why": "夢中になっている is neutral absorption, but 沉迷 in Chinese is clearly negative (addiction/losing oneself in something harmful). The Japanese and English ('absorbed in') carry no criticism."
+  },
+  {
+   "id": "n3-b411",
+   "surface": "物語",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "老奶奶给我讲了从前的故事。",
+   "to": "奶奶给我讲了从前的故事。",
+   "why": "おばあさん here (and the English 'my grandmother') is the speaker's own grandmother; 老奶奶 means an unrelated elderly woman."
+  },
+  {
+   "id": "n3-b366",
+   "surface": "俳優",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "那位年轻演员在电视剧中聚集了很高的人气。",
+   "to": "那位年轻演员在电视剧中人气越来越高。",
+   "why": "聚集人气 is not idiomatic Mandarin for 人気を集めている, and 聚集了很高的人气 is a broken collocation (聚集 does not take 高). Aspect is also ongoing in the Japanese."
+  },
+  {
+   "id": "n3-b418",
+   "surface": "横切る",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "一只黑猫突然横穿过我的眼前。",
+   "to": "一只黑猫突然从我眼前横穿过去。",
+   "why": "横穿过我的眼前 is unidiomatic; 横穿 takes the crossed space as object and needs 从…眼前."
+  },
+  {
+   "id": "n3-b465",
+   "surface": "関する",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "我读了一本关于日本历史的书。",
+   "to": "我读关于日本历史的书。",
+   "why": "日文「読む」是辞书形（习惯/一般动作），中文加了「了」变成已完成的过去事件，体貌不符。"
+  },
+  {
+   "id": "n3-b484",
+   "surface": "加わる",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "新成员加入了团队。",
+   "to": "新成员加入团队。",
+   "why": "日文「加わる」是非过去形（英文也是一般现在时 joins），中文的「加入了」变成了已完成事件。"
+  },
+  {
+   "id": "n3-b642",
+   "surface": "熱中",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "弟弟现在正沉迷于游戏。",
+   "to": "弟弟现在正热衷于打游戏。",
+   "why": "沉迷 is clearly negative (addiction, wasting oneself), while 熱中 / \"absorbed in\" is neutral. The Chinese turns a neutral statement about a hobby into a criticism."
+  },
+  {
+   "id": "n3-b569",
+   "surface": "説",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "学者们主张着不同的学说。",
+   "to": "学者们主张不同的学说。",
+   "why": "「主张着」is ungrammatical aspect marking; 主张 does not take 着. Also 学者によって異なる説 means different scholars hold different theories."
+  },
+  {
+   "id": "n3-b602",
+   "surface": "中心",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "她作为团队的核心活跃着。",
+   "to": "她作为团队的核心十分活跃。",
+   "why": "「活跃着」marks an ongoing state, while 活躍した is completed past narration."
+  },
+  {
+   "id": "n3-b636",
+   "surface": "縄",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "我用粗绳子系紧了大包裹。",
+   "to": "我用粗绳子捆住了大包裹。",
+   "why": "系紧 (\"fasten tightly\") is the wrong verb for roping up a package — Chinese uses 捆 — and it adds a \"tightly\" the Japanese 縛りました does not have."
+  },
+  {
+   "id": "n3-b638",
+   "surface": "日光",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "温暖的阳光照进了房间。",
+   "to": "温暖的阳光照进房间里来。",
+   "why": "入ってきます describes sunlight streaming in now/habitually, but 照进了 marks a completed past event."
+  },
+  {
+   "id": "n3-b629",
+   "surface": "土曜",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "下个假期是周六和周日。",
+   "to": "下次休息是周六和周日。",
+   "why": "休み here means days off (a weekend), while 假期 means a holiday/vacation period."
+  },
+  {
+   "id": "n3-b696",
+   "surface": "寧ろ",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "非但没挨骂，反而收到了表扬。",
+   "to": "非但没挨骂，反而受到了表扬。",
+   "why": "Wrong collocation: 表扬 takes 受到, not 收到 (收到 is for things one receives physically, e.g. mail). 「收到了表扬」is not correct Mandarin."
+  },
+  {
+   "id": "n3-b713",
+   "surface": "曜日",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "确认倒垃圾的星期。",
+   "to": "确认倒垃圾是星期几。",
+   "why": "「确认倒垃圾的星期」is not idiomatic Mandarin — 星期 cannot stand as a bare noun object here. The natural way to say 曜日を確認する is 是星期几."
+  },
+  {
+   "id": "n3-b714",
+   "surface": "夜中",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "半夜腹部突然疼痛醒了过来。",
+   "to": "半夜肚子突然疼起来，我就醒了。",
+   "why": "Run-on with a broken verb chain: 「突然疼痛醒了过来」has no connective, and 腹部 is clinical for 夜中にお腹が痛くなる. Reads as ungrammatical."
+  },
+  {
+   "id": "n3-b768",
+   "surface": "鎖",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "用坚固的铁链栓住了狗。",
+   "to": "用坚固的铁链拴住了狗。",
+   "why": "Wrong character: 栓 (a bolt/plug, noun) is used where the verb 拴 (to tie/tether) is required. 犬を鎖でつないだ = tied the dog with a chain."
+  },
+  {
+   "id": "n3-b787",
+   "surface": "小包",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "收到了一封来自老家母亲寄来的包裹。",
+   "to": "收到了老家母亲寄来的包裹。",
+   "why": "Wrong classifier: 一封 is for letters, not parcels (包裹). Also 来自…寄来的 is redundant, doubling the source marker."
+  },
+  {
+   "id": "n3-b855",
+   "surface": "対する",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "针对他的意见提出提问。",
+   "to": "针对他的意见提出问题。",
+   "why": "提出提问 is not a valid collocation (verb+verb); Chinese takes 提问 alone or 提出问题."
+  },
+  {
+   "id": "n3-b838",
+   "surface": "税金",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "每个月都如实缴纳税款。",
+   "to": "每个月都认真缴纳税款。",
+   "why": "如实 means 'truthfully/as declared' and shifts the sentence to honest tax reporting; しっかり払っている just means paying properly and without fail."
+  },
+  {
+   "id": "n3-b847",
+   "surface": "象",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "在动物园看见了大象。",
+   "to": "在动物园看见了一头很大的大象。",
+   "why": "大象 simply means 'elephant', so the 大きな ('big') of the Japanese is dropped — the sentence no longer says the elephant was large."
+  },
+  {
+   "id": "n3-b938",
+   "surface": "骨",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "我摔倒了，折断了脚骨。",
+   "to": "我摔倒了，摔断了腿骨。",
+   "why": "足 here is the leg (the English says \"a bone in my leg\"), but Chinese 脚骨 means the bones of the foot; 折断了脚骨 is also unidiomatic for an accidental break."
+  },
+  {
+   "id": "n3-b872",
+   "surface": "長期",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "暑假期间打算去进行长期出国旅行。",
+   "to": "暑假期间要去海外长期旅行。",
+   "why": "「去进行长期出国旅行」 is unidiomatic — 去 plus 进行 is redundant, and 出国旅行 as the object of 进行 does not collocate."
+  },
+  {
+   "id": "n3-b921",
+   "surface": "人込み",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "周日的车站人山人海，可真不容易。",
+   "to": "周日的车站人山人海，真是够受的。",
+   "why": "大変でした means it was exhausting/rough; 「可真不容易」 shifts this to \"it wasn't easy (to accomplish)\", a different sense."
+  },
+  {
+   "id": "n3-b940",
+   "surface": "ぼんやり",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "我发呆地望着窗外。",
+   "to": "我呆呆地望着窗外。",
+   "why": "发呆 is a verb phrase and cannot take 地 as a manner adverbial; 「发呆地望着」 is ungrammatical."
+  },
+  {
+   "id": "n3-b955",
+   "surface": "もちあげる",
+   "rewrite": [
+    "exZH"
+   ],
+   "from": "独自举起重箱子。",
+   "to": "独自举起很重的箱子。",
+   "why": "「重箱子」 is not idiomatic Mandarin — a monosyllabic 重 cannot directly modify 箱子 this way."
+  }
+ ]
+}

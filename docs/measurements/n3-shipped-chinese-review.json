@@ -1,0 +1,359 @@
+{
+ "reviewed": 816,
+ "proposed": 70,
+ "upheld": 35,
+ "fixes": [
+  {
+   "id": "n3-b115",
+   "problem": "The Japanese is habitual (乗るとき…見せます, \"whenever I get on the bus\"), but the Chinese has the perfective 了, turning it into a one-time past event. Also 定期票 is a Japanism; the Mandarin word for a commuter pass is 月票.",
+   "finalZH": "乘公交车时出示定期票。"
+  },
+  {
+   "id": "n3-b129",
+   "problem": "お風呂の水 is the water in the bathtub (English: \"the bathwater\"), but 浴室的水 means the water of the bathroom in general — wrong referent.",
+   "finalZH": "请把浴缸里的水放掉。"
+  },
+  {
+   "id": "n3-b145",
+   "problem": "The Japanese 使う is non-past/habitual (the software is used in order to save effort), but 使用了 makes it a completed past action.",
+   "finalZH": "为了省去麻烦，我使用新软件。"
+  },
+  {
+   "id": "n3-b161",
+   "problem": "激烈地吠叫 is not idiomatic Mandarin — 激烈 is used of fighting or debate, not of a dog barking; Chinese says 狂吠 or 叫得很凶.",
+   "finalZH": "附近的狗在深夜狂吠。"
+  },
+  {
+   "id": "n3-b165",
+   "problem": "败局 means a losing situation still in progress, not a match result; and 我们队 adds a first-person team the Japanese (チームの負け) does not have.",
+   "finalZH": "昨天的比赛，球队输了。"
+  },
+  {
+   "id": "n3-b171",
+   "problem": "作为旅行的特产 is unidiomatic — 特产 is a region's local produce, not a gift brought back; お土産 here is the souvenir gift itself.",
+   "finalZH": "我买了点心作为旅行的伴手礼。"
+  },
+  {
+   "id": "n3-b178",
+   "problem": "雨过不久就会停吧 misparses: 雨过 reads as \"after the rain\", garbling the sentence. The subject needs to be separated from 不久.",
+   "finalZH": "雨不久就会停了吧。"
+  },
+  {
+   "id": "n3-b316",
+   "problem": "Word order is broken Mandarin: the locative 在电车上 sits after the verb, so 我站起身来在电车上让座 reads as a garbled chain. The Japanese is 席を譲るために立ち上がった — stood up in order to give up the seat.",
+   "finalZH": "我在电车上为了让座站了起来。"
+  },
+  {
+   "id": "n3-b277",
+   "problem": "社会人 is copied straight from Japanese. In Chinese 社会人 is not the neutral 'working adult' — it reads as slang for a streetwise/gangster type, so the sentence misfires.",
+   "finalZH": "我想掌握作为职场人应有的基本常识。"
+  },
+  {
+   "id": "n3-b289",
+   "problem": "Aspect mismatch: 巣を作っている (and the English 'is making a nest') is ongoing, but 造了一个巢 states a completed action.",
+   "finalZH": "一只小鸟正在树上筑巢。"
+  },
+  {
+   "id": "n3-b405",
+   "problem": "夢中になっている is neutral absorption, but 沉迷 in Chinese is clearly negative (addiction/losing oneself in something harmful). The Japanese and English ('absorbed in') carry no criticism.",
+   "finalZH": "孩子们玩游戏玩得入迷。"
+  },
+  {
+   "id": "n3-b411",
+   "problem": "おばあさん here (and the English 'my grandmother') is the speaker's own grandmother; 老奶奶 means an unrelated elderly woman.",
+   "finalZH": "奶奶给我讲了从前的故事。"
+  },
+  {
+   "id": "n3-b366",
+   "problem": "聚集人气 is not idiomatic Mandarin for 人気を集めている, and 聚集了很高的人气 is a broken collocation (聚集 does not take 高). Aspect is also ongoing in the Japanese.",
+   "finalZH": "那位年轻演员在电视剧中人气越来越高。"
+  },
+  {
+   "id": "n3-b418",
+   "problem": "横穿过我的眼前 is unidiomatic; 横穿 takes the crossed space as object and needs 从…眼前.",
+   "finalZH": "一只黑猫突然从我眼前横穿过去。"
+  },
+  {
+   "id": "n3-b465",
+   "problem": "日文「読む」是辞书形（习惯/一般动作），中文加了「了」变成已完成的过去事件，体貌不符。",
+   "finalZH": "我读关于日本历史的书。"
+  },
+  {
+   "id": "n3-b484",
+   "problem": "日文「加わる」是非过去形（英文也是一般现在时 joins），中文的「加入了」变成了已完成事件。",
+   "finalZH": "新成员加入团队。"
+  },
+  {
+   "id": "n3-b642",
+   "problem": "沉迷 is clearly negative (addiction, wasting oneself), while 熱中 / \"absorbed in\" is neutral. The Chinese turns a neutral statement about a hobby into a criticism.",
+   "finalZH": "弟弟现在正热衷于打游戏。"
+  },
+  {
+   "id": "n3-b569",
+   "problem": "「主张着」is ungrammatical aspect marking; 主张 does not take 着. Also 学者によって異なる説 means different scholars hold different theories.",
+   "finalZH": "学者们主张不同的学说。"
+  },
+  {
+   "id": "n3-b602",
+   "problem": "「活跃着」marks an ongoing state, while 活躍した is completed past narration.",
+   "finalZH": "她作为团队的核心十分活跃。"
+  },
+  {
+   "id": "n3-b636",
+   "problem": "系紧 (\"fasten tightly\") is the wrong verb for roping up a package — Chinese uses 捆 — and it adds a \"tightly\" the Japanese 縛りました does not have.",
+   "finalZH": "我用粗绳子捆住了大包裹。"
+  },
+  {
+   "id": "n3-b638",
+   "problem": "入ってきます describes sunlight streaming in now/habitually, but 照进了 marks a completed past event.",
+   "finalZH": "温暖的阳光照进房间里来。"
+  },
+  {
+   "id": "n3-b629",
+   "problem": "休み here means days off (a weekend), while 假期 means a holiday/vacation period.",
+   "finalZH": "下次休息是周六和周日。"
+  },
+  {
+   "id": "n3-b696",
+   "problem": "Wrong collocation: 表扬 takes 受到, not 收到 (收到 is for things one receives physically, e.g. mail). 「收到了表扬」is not correct Mandarin.",
+   "finalZH": "非但没挨骂，反而受到了表扬。"
+  },
+  {
+   "id": "n3-b713",
+   "problem": "「确认倒垃圾的星期」is not idiomatic Mandarin — 星期 cannot stand as a bare noun object here. The natural way to say 曜日を確認する is 是星期几.",
+   "finalZH": "确认倒垃圾是星期几。"
+  },
+  {
+   "id": "n3-b714",
+   "problem": "Run-on with a broken verb chain: 「突然疼痛醒了过来」has no connective, and 腹部 is clinical for 夜中にお腹が痛くなる. Reads as ungrammatical.",
+   "finalZH": "半夜肚子突然疼起来，我就醒了。"
+  },
+  {
+   "id": "n3-b768",
+   "problem": "Wrong character: 栓 (a bolt/plug, noun) is used where the verb 拴 (to tie/tether) is required. 犬を鎖でつないだ = tied the dog with a chain.",
+   "finalZH": "用坚固的铁链拴住了狗。"
+  },
+  {
+   "id": "n3-b787",
+   "problem": "Wrong classifier: 一封 is for letters, not parcels (包裹). Also 来自…寄来的 is redundant, doubling the source marker.",
+   "finalZH": "收到了老家母亲寄来的包裹。"
+  },
+  {
+   "id": "n3-b855",
+   "problem": "提出提问 is not a valid collocation (verb+verb); Chinese takes 提问 alone or 提出问题.",
+   "finalZH": "针对他的意见提出问题。"
+  },
+  {
+   "id": "n3-b838",
+   "problem": "如实 means 'truthfully/as declared' and shifts the sentence to honest tax reporting; しっかり払っている just means paying properly and without fail.",
+   "finalZH": "每个月都认真缴纳税款。"
+  },
+  {
+   "id": "n3-b847",
+   "problem": "大象 simply means 'elephant', so the 大きな ('big') of the Japanese is dropped — the sentence no longer says the elephant was large.",
+   "finalZH": "在动物园看见了一头很大的大象。"
+  },
+  {
+   "id": "n3-b938",
+   "problem": "足 here is the leg (the English says \"a bone in my leg\"), but Chinese 脚骨 means the bones of the foot; 折断了脚骨 is also unidiomatic for an accidental break.",
+   "finalZH": "我摔倒了，摔断了腿骨。"
+  },
+  {
+   "id": "n3-b872",
+   "problem": "「去进行长期出国旅行」 is unidiomatic — 去 plus 进行 is redundant, and 出国旅行 as the object of 进行 does not collocate.",
+   "finalZH": "暑假期间要去海外长期旅行。"
+  },
+  {
+   "id": "n3-b921",
+   "problem": "大変でした means it was exhausting/rough; 「可真不容易」 shifts this to \"it wasn't easy (to accomplish)\", a different sense.",
+   "finalZH": "周日的车站人山人海，真是够受的。"
+  },
+  {
+   "id": "n3-b940",
+   "problem": "发呆 is a verb phrase and cannot take 地 as a manner adverbial; 「发呆地望着」 is ungrammatical.",
+   "finalZH": "我呆呆地望着窗外。"
+  },
+  {
+   "id": "n3-b955",
+   "problem": "「重箱子」 is not idiomatic Mandarin — a monosyllabic 重 cannot directly modify 箱子 this way.",
+   "finalZH": "独自举起很重的箱子。"
+  }
+ ],
+ "refused": [
+  {
+   "id": "n3-b133",
+   "problem": "可爱地甜甜微笑 stacks two adverbials and drops the 地 before 微笑; it is ungrammatical as written and redundant.",
+   "reason": "现行译文没有真实错误，替换方案反而更差。（1）\"缺 地\"的指控不成立：单音节形容词重叠式（AA）作状语在汉语中常规省略\"地\"——慢慢走、静静听、深深爱着、甜甜笑，\"甜甜微笑\"完全属于这一合法格式，不是病句。（2）\"叠加两个状语\"正是日文原句的结构：可愛く＋にっこり本身就是两个状语，\"可爱地＋甜甜\"忠实对应，对于以 にっこり 为教学词的例句是优点而非冗余。（3）替换句 婴儿可爱地微微一笑 改变了词义：にっこり 是绽开的、明朗的笑，而\"微微一笑\"是淡淡的、含蓄的浅笑，对应的是 微笑む/ほほえむ，把所教词条的语感调弱了；同时丢掉了英文 sweetly 一层，\"一笑\"还带完成体的单次动作味，与非过去/常态的 笑う 不合。字数也没有变短（同为 9 字），纯属改写而非纠错——已上线文案不值得为此churn。"
+  },
+  {
+   "id": "n3-b162",
+   "problem": "事不过三 means \"don't do the same thing more than three times\" — it drops both 仏 (the word being taught) and the idea of patience running out, so the card no longer illustrates its own headword.",
+   "reason": "现译「事不过三」正确、地道、合乎语法，无需改动。理由：(1)「事不过三」是汉语固有成语，义为同一件事最多容忍三次、第三次为限，与「仏の顔も三度まで」的语用力度完全对应，也是日汉谚语对照的常规配对；英文 gloss「patience has its limits」正是它的言外之意，并不冲突。不存在误译、错字、量词错误、假朋友汉字照搬或时态/褒贬错位。(2) 替换稿自带硬伤：「常言道」宣称后文是汉语俗语，但「佛的忍耐也只到三次」并非任何汉语说法，只是对日文的逐字直译——等于教给学习者一句不存在的中文谚语。(3) 搭配不通：汉语说「忍耐是有限度的／忍耐到头了」，不说「忍耐只到三次」。(4) 长度从 4 字变 12 字，打字练习的释义栏以简洁为要。(5) 审稿人唯一实质意见是 gloss 里没有「佛」字，但这属于口味偏好而非错误：谚语对译本就会丢弃源语意象（「顔」同样被丢弃，却无人要求补回），词头 仏 由日文例句与读音承担教学，不靠中文逐字对应。为一处正确的成语换上一句杜撰的俗语，不值得改动已上线文本。"
+  },
+  {
+   "id": "n3-b194",
+   "problem": "ボールが体に当たる is non-past/generic, but 打到了 marks a completed past event.",
+   "reason": "现行译文 球打到了身上。 意思准确、语法正确、表达地道，不构成需要改写已上线文本的真实错误。理由三点：(1) 汉语的「了」是体标记（实现/结果），不是时态标记；在 打到了 这样的动结式短句里，它主要标示结果达成，学习者不会据此推断日语的时态，因此与 当たる 的非过去形并不构成明确的时态冲突；「打到」也正是 当たる（球击中身体）最贴切的动结搭配。(2) 提议的 球打在身上。 自身有问题：单句独立使用时 打在身上 缺乏收尾感，读起来像未说完的分句（自然的说法是 球打在身上很疼），用一个不完整感的句子替换一个完整自然的句子并非改进。(3) 同一语料中至少有 39 条辞书形词条同样带「了」（如 n3-b465 読む→我读了一本关于日本历史的书、n3-b484 加わる→新成员加入了团队）。若判定此处为错，就应整体统一处理；只改这一条既扰动了学习者已见过的上线文本，又留下同型不一致。属于「可争议」情形，按默认不通过。"
+  },
+  {
+   "id": "n3-b273",
+   "problem": "作为日本首都的东京人很多 garden-paths: 东京人 parses as 'Tokyoites', so it reads 'there are many Tokyo people who are the capital of Japan'. The Japanese says Tokyo, the capital, has many people.",
+   "reason": "不成立，维持原译「作为日本首都的东京人很多。」\n\n1) 现译语义正确、语法合法。「作为日本首都的」只能修饰「东京」——「东京人（东京市民）」不可能「是日本的首都」，这条语义限制当场排除了所谓的花园小径读法，读者不会真的停在错误分析上。这是书面中文常见的「作为N的X……」结构，不是病句、错字、量词错误、和制汉语误抄，也没有时态或褒贬语感与日文不符的问题。\n\n2) 现译在信息结构上更贴合日文。原句「日本の首都である東京には人が多い。」中「首都である」是である连体修饰，属背景信息，句子的主张是「东京人多」。现译用「作为……的」连体化处理，正好对应。提议稿「东京是日本的首都，人很多。」把背景信息提升为独立主句断言，变成两件并列事实，偏离了日文的主从关系；而本条词条要教的正是「首都（しゅと）」出现在连体修饰中的用法，改后反而弱化了这一句型示范。\n\n3) 提议稿并不更短也不更优：13字对12字，几乎等长，只是换了一种说法。按「仅换措辞不值得改动已上线文案」的标准，这属于典型的 churn——学习者已经见过的译文被替换，收益为零。\n\n若确实担心断句，最多是加个逗号的标点级润色（「作为日本首都的东京，人很多。」），但这仍不构成需要重发已上线内容的错误修正。本次不采纳。"
+  },
+  {
+   "id": "n3-b225",
+   "problem": "救援 does not take a personal object this way in Mandarin; 大家救援了…的人 is unidiomatic. Natural Chinese uses 救出 / 救了 for rescuing a person.",
+   "reason": "条目 n3-b225（/tmp/zhrev/chunk-1.json）：jp「山で迷った人をみんなで救助した。」en「Everyone rescued the person who was lost in the mountains.」现行 zh「大家救援了在山上迷路的人。」\n\n拒绝该修改，理由如下：\n\n1. 「救援」带人称宾语并非不合语法。现代汉语（尤其新闻/救援语境）中「救援被困人员」「成功救援了三名群众」「救援受伤驴友」都是常见搭配，「救援＋人」属于已被广泛使用的及物用法，不是病句，也不是日语汉字直搬的假朋友——「救援」本身就是汉语固有词。评审所称「不能这样带人称宾语」是过度概括。\n\n2. 语义、时体、语域都对得上。「了」对应「した」的完成体；日语「救助」本身也偏书面/救援作业语域，用同属该语域的「救援」并无违和。词义没有偏离，学习者看到的释义完全正确。\n\n3. 提议句只是同义改写，且更长。「大家一起救出了在山上迷路的人。」比原句多两字（「一起」＋「出」），换来的只是措辞偏好上的细微提升。作为例句注释，现行译文已经达标；为此重写已上线文本会让学习者看到的内容平白变动（churn），代价大于收益。\n\n4. 「一起」虽更贴「みんなで」，但「大家」本身已含共同施事之义，原句并未丢失信息；这不构成误译。\n\n综上，不存在误译、错字、量词错误、语法错误、假朋友或语气/时态错配，属于可争议的措辞偏好，按默认判为不通过。"
+  },
+  {
+   "id": "n3-b371",
+   "problem": "宽度…狭窄 is a collocation error: 狭窄 describes a road, not its 宽度. Chinese needs 宽度很小 or simply 路很窄.",
+   "reason": "现行译文「这条路的宽度非常狭窄。」没有实质错误，不值得改动已上线文本。\n\n1. 搭配并非错误。「宽度狭窄」在汉语中是有据可查的常见说法，尤其在描述道路、河道、通道的书面/新闻语体中（如「因道路宽度狭窄，会车困难」）。「狭窄」本身兼有「宽度小」的义项，主语是「宽度」时属于同义强化，读起来略冗余但不违语法、不影响理解，学习者一眼即懂。\n\n2. 冗余来自日语原文，不是译者失误。日文本身就是「この道の幅はとても狭い」，英文 gloss 也照样是 \"The width of this road is very narrow.\"。三语并列时保持同一结构，正好让学习者把 幅→宽度、狭い→狭窄 一一对上。这是词条注释的功能，不是散文。\n\n3. 替换稿反而更差。「宽度非常小」是量测式、偏技术的说法，丢掉了 狭い 的「窄」这一核心语感，也切断了 狭い↔狭窄 的对应关系——而本词条正是在教 幅 与 狭い 的搭配。评审自己提的另一方案「路很窄」则删掉了 幅／宽度，直接把要教的词丢了。\n\n4. 剩下的差别属于风格偏好，不是「误译、错字、量词错误、不合语法、和製漢語直搬、语气/时态不符」中的任何一类。按只修真错的门槛，不改。"
+  },
+  {
+   "id": "n3-b337",
+   "problem": "表演了…给我看 is unidiomatic word order in Mandarin; the recipient goes before the verb.",
+   "reason": "现行译文「哥哥表演了精彩的魔术给我看。」没有错误，不构成需要改写已上线文本的理由。\n\n1. 语序指控不成立。汉语的与格成分既可前置（给我表演了…），也可后置为「V+O+给某人看/听」的目的补语结构，后者是完全地道的常用格式：「他唱了一首歌给我听」「变个魔术给我看」「写了封信给我看」。所谓「接受者必须在动词前」是把一种合法语序当成唯一语序，属于风格偏好而非语法规则。\n\n2. 后置式反而更贴日文。原句是「見せてくれた」，核心动词是「見せる（让我看）」+ くれる 的受益语气；「给我看」把「見せて」显性译出，替换稿的「给我表演了」把「看」吞掉，受益/展示的语义反而变淡。\n\n3. 替换稿没有修复任何东西：词汇（魔术＝手品，目标词保留）、时体（了＝た）、语气均与现行译文一致，长度也基本相同，属于同义改写。\n\n4. 学习者已经看过这条注释，为无差别的措辞偏好而改写线上文本，只会制造无谓的内容变动。\n\n结论：维持原译。（若日后确需微调，「哥哥表演了一个精彩的魔术给我看。」补个量词即可，但这也不足以构成改动理由。）"
+  },
+  {
+   "id": "n3-b328",
+   "problem": "带着 is for a person carrying something; a book bearing a signature takes 带有.",
+   "reason": "现行译文「这本书是带着作者签名出售的。」没有错误，不值得改动已上线文本。\\n\\n1) 「带着」并非只能用于人。汉语中无生命主语用「带着」表「附有／含有某种特征」是常见且合法的：「这封信带着一股香味」「他的话带着讽刺意味」。因此评审所称「带着只能用于人携带」不成立，「带有」只是略微更书面的同义选择，属于措辞偏好而非语法或语义错误。\\n\\n2) 提出的替换句自身更差。「这本书带有作者签名出售。」把「带有作者签名」和「出售」两个谓语直接并置，中间既无「是…的」框架也无「地／而」等连接，读起来是两个谓语硬接，语感不通；正常说法应是「这本书是带有作者签名出售的」或「这本书附有作者签名，正在出售」。替换等于用一个句法上更别扭的句子换掉一个通顺的句子。\\n\\n3) 语义也有损失。日文「売られている」是「正在被出售／处于在售状态」，现行译文用「是…的」判断框架恰好承载了这层「以此种方式出售」的状态义，与英文 \"is being sold\" 对应；替换句去掉该框架后，状态义被削弱。\\n\\n4) 本条教学目标是「著者（ちょしゃ）」这个词，译文对该词的处理（作者）两版完全相同，改动对学习点零收益，却会让已见过该例句的学习者面对无谓的文本变动。\\n\\n综上：无误译、无错字错量词、无病句、无汉字假朋友、无语气时态错配，不予采纳。"
+  },
+  {
+   "id": "n3-b327",
+   "problem": "注目されている is an ongoing state, but 受到了…关注 reads as a completed event.",
+   "reason": "No real error exists. The claimed tense/aspect mismatch misreads 了: in 受到了…关注 the 了 is perfective/realizational (the attention has come about and persists), not terminative. 受到了全世界的关注 / 受到了广泛关注 is a standard collocation routinely used for still-ongoing attention, so it matches 注目されている and the English \"is attracting attention\" without distortion. The proposed replacement also introduces its own weakness: a bare 受到 predicate in a standalone declarative (他的新电影受到全世界的关注。) reads unanchored and slightly generic/habitual in Mandarin — it wants aspectual or adverbial support (正受到…, 受到了…, 受到广泛关注). Dropping 了 therefore does not make the sentence more progressive. Meaning, character choice, and register are all sound: 注目 → 关注 is a correct gloss rather than a false-friend kanji copy, 世界中から → 全世界的 is accurate, and the sentence is grammatical and idiomatic for a learner gloss. This is a phrasing preference at best, and rewriting shipped text over it churns content learners have already seen."
+  },
+  {
+   "id": "n3-b325",
+   "problem": "Adverb order is off: 好好地自己做 is unnatural; 自己 (the agent restriction) precedes 好好.",
+   "reason": "条目 n3-b325（/tmp/zhrev/chunk-2.json）：jp「宿題はちゃんと自分でやりなさい。」/ en \"Do your homework properly by yourself.\" / 现行 zh「作业要好好地自己做。」\\n\\n1) 现行译文没有实质错误：语义完整（作业+要（命令/劝诫，对应やりなさい）+好好地（ちゃんと）+自己（自分で）+做），语法合法，用词无错字、无量词错误、无日语汉字直搬、无时态或语气偏差。「好好地」作状语后接「自己做」在普通话中完全可解析，日常也说得出口（如「这事你要好好地自己想一想」）。\\n2) 审校提出的只是语序偏好，不是错误。「自己好好做」确实更常见、更顺口，但「好好地自己做」属于可接受的次选语序，仅略显书面/强调「好好」在先。为一个纯风格差异重写已上线文案，正是本项目要避免的 churn——学习者已经见过的释义被改动，收益却只是\"稍微好一点\"。\\n3) 现行语序还有一个副作用上的好处：它与日语原句 ちゃんと → 自分で 的成分顺序逐一对应，而本条教的正是 ちゃんと 这个词。替换成「自己好好做」会把对应关系打乱，对照阅读时反而多一层错位。\\n4) 替换方案本身也不是无懈可击：去掉「地」后「自己好好做」把重音落在「自己」上，轻微偏向\"要靠自己\"而非日语句子里 ちゃんと（好好地/踏实地）与 自分で 并列的双重要求；长度、清晰度上也没有净改进。\\n\\n综上，属于\"可争议即维持原状\"的典型情形，不予采纳。"
+  },
+  {
+   "id": "n3-b433",
+   "problem": "「休息天」不是普通话说法（粤语/方言色彩），标准说法是「休息日」或「放假时」。",
+   "reason": "条目 n3-b433 教的是「あちこち」，日文 `休日に街のあちこちを歩いた。`，现译 `休息天我在城里的各处转了转。`\n\n驳回理由：\n\n1. 教学焦点未受影响。本条要教的词是「あちこち」＝各处／到处，现译用「各处」已经准确对上，替换方案在这一点上一字未改。争议只落在句首的时间状语「休日」这个边缘成分上。\n\n2. 现译在意义、语法、时体上都没有错。「休息天」＝休息的日子，与「休日」语义完全对应，没有误译；「转了转」用「了」+ 动词重叠，对应「歩いた」的过去、非正式、随意游逛的语感，也没有时体或语气错位；作为时间名词置于句首、后接主语「我」，句法成立。这不属于误译、错字、量词错误、汉字假朋友（日文是「休日」，译者并没有照抄成「休日」，而是主动换成了中文说法）或语法不通中的任何一类。\n\n3. 审校给出的病因判断本身不成立。「休息天」并非粤语说法——粤语表达休息日用「放假」「假期」「休息日」，不用「休息天」。「休息天」在口语中主要见于江浙沪一带（「我休息天」＝我休息的那天），属于口语／地域色彩偏强，但绝非粤语。病因既然误判，「必须改」的结论也就失去了依据，剩下的只是「标准书面说法更妥帖」这一层文体偏好。\n\n4. 「休息日」相对「休息天」确实更书面、更中性，但这是措辞优劣之差，不是对错之差。学习者注释只要求意思准确、读得懂、不别扭到误导，现译达标。为一个略胜一筹的同义表达去改动已上线、学习者已经反复见过的文本，收益不抵扰动成本。\n\n5. 替换方案顺带删掉「城里的各处」的「的」，改成「城里各处」。这个改动本身合理（「城里各处」更紧凑），但同样属于润色，且「城里的各处」并不违规，不足以单独支撑一次改写。\n\n按「有争议即维持原状」的原则，判定不改。"
+  },
+  {
+   "id": "n3-b460",
+   "problem": "「许多位人士」语法不通：量词「位」不能跟在「许多」后面直接修饰名词。",
+   "reason": "条目 n3-b460：日文「大勢の方々が集まってくれました。」（教学词 方々 かたがた，即「人们」的敬语复数），英文 \"A large number of people gathered.\"，现行中文「许多位人士聚集在了一起。」\n\n驳回理由：\n\n1. 所称语法规则不成立。「许多」并非只能直接带光杆名词——「许多 + 量词 + 名词」在普通话中是合法的：许多本书、许多件事、许多位老师、许多个问题。「位」跟在「许多」后面并不违反量词规则；它只是比「多位」「好几位」使用频率低、语体偏正式，属于风格问题而非语法错误。审校意见把「不常见」误判成「不通」。\n\n2. 语义没有偏离日文。「许多位人士」= 很多人（带敬意），正对应「大勢の方々」；量词「位」本身就是汉语中对人的敬称量词，恰好承接了「方々」相对「人たち」的敬语色彩。这正是本条要教的点。\n\n3. 替换稿反而丢失教学信息。「许多人聚集在了一起」把敬语层次完全抹平，等同于把「方々」译成「人たち」。对一条以 方々 为词头的词条来说，这是把词条存在的理由改掉了，不是修正错误。\n\n4. 两版共有的「聚集在了一起」并未被质疑，替换稿也没有修掉任何东西，只是换了一种说法——属于\"稍微顺一点的改写\"，不值得改动已上线、学习者已经见过的译文。\n\n结论：现译在意思、语法、地道程度上都可接受，无错译、无错字错量词、无假朋友汉字照搬、无时态语感错位。维持原文。"
+  },
+  {
+   "id": "n3-b473",
+   "problem": "「端正坐好」语序不自然，中文说「坐端正」或「坐得端正」。",
+   "reason": "现有译文「吃饭的时候要端正坐好。」没有任何实质错误，属于可接受的学习者释义，改动只是换一种说法，不值得动已上线文本。\\n\\n1) 语义准确：日文「食事のときに行儀良く座りなさい。」= 吃饭时要坐得有规矩/端正，なさい 的命令语气由「要」承担，时态、语气、语义与英文 \"Sit properly with good manners during meals.\" 完全对应。没有误译、错字、量词错误、和製漢字直搬或语气/时态错位。\\n\\n2) 语法成立：双音节形容词直接作状语修饰动词，在普通话里是常规结构（认真听讲、仔细观察、端正坐好），并非病句。「端正坐好」在课堂用语中真实存在（如「请同学们端正坐好」），并且「坐好」还多带出「坐稳、别乱动」的规训义，恰好贴合「行儀良く」这一礼仪层面的含义，而不仅是姿势。\\n\\n3) 提议方案并不更优：「吃饭的时候要坐端正。」把语义窄化为「坐姿端正」，反而弱化了 行儀（举止有规矩）这一本条要教的词义；长度也没有实质缩短，谈不上更简洁。审阅意见称「端正坐好」语序不自然，但这是把「状语+动补」误判成了「动补」结构，是可争议的语感偏好，不是错误。\\n\\n按「仅修正真实错误」的标准，此条应保留原文，不予替换。"
+  },
+  {
+   "id": "n3-b512",
+   "problem": "「发出了大声呼喊」搭配生硬，中文一般说「大声喊了起来」。",
+   "reason": "条目 /tmp/zhrev/chunk-3.json 中 n3-b512：jp「危険を感じて、大声で叫んだ。」en「Feeling danger, I shouted in a loud voice.」zh「感到危险，我发出了大声呼喊。」\n\n驳回理由：\n1. 现译没有任何硬错误。语义与日文完全对应（感到危险 = 危険を感じて；大声呼喊 = 大声で叫んだ），教学词 叫ぶ 用「呼喊」对译准确，无错字、无量词错误、无和制汉字直搬（未写成「叫んだ→叫了」之类的假朋友），时体也是完成体「发出了」，与日文过去式一致。\n2. 「发出+呼喊/呐喊/惨叫」本身是成立的常见搭配，「发出了大声呼喊」偏书面、略板，但可解、不违语法，作为学习者释义完全够用。这属于行文风味差异，不属于「真错误」，不值得改动已上线文本、让老学员看到的句子发生漂移。\n3. 提议稿自身还引入了一处与日文的细微不合：「大声喊了起来」的「起来」是起始体，含「(突然)喊了起来／开始喊」的意味，而日文「叫んだ」只是单纯过去式，英文也只是 \"shouted\"。用更漂亮的中文换来一个日文里没有的体标记，对以句子反推日语语法的学习者反而是负收益。\n\n综上：属于「只是换个说法」的改写，且替换稿自带体貌偏移，维持现状。"
+  },
+  {
+   "id": "n3-b549",
+   "problem": "「材料文件」is not a Chinese compound — 材料 and 文件 are two separate words piled together; a native gloss uses one or the other.",
+   "reason": "现行译文「我提交了所需的材料文件。」没有实质错误：①语义正确，書類→文件/材料 都是标准对译，不存在照搬汉字的假朋友（如误作「書類」）；②时态正确，「了」对应「提出した」的完成体；③「必要な」译作「所需的」准确无误；④语法成立，汉语名词+名词修饰结构是能产的，读者理解无歧义。评审者唯一站得住的观察是「材料文件」把两个近义词叠放，常规固定搭配是反序的「文件材料」，因此略显冗赘——但这是文体偏好而非错误。替换句「我提交了必要的文件。」只是另一种措辞，长度相当（9 字 vs 11 字），并未修正任何错误，却要改动已发布、学习者已见过的文本。承载考点词 書類 的「文件」在现行译文中已经出现，教学映射并未丢失。按「有争议即维持」的标准，不予采纳。"
+  },
+  {
+   "id": "n3-b552",
+   "problem": "Drops 大きく / \"greatly\" — the Japanese stresses the size of the change, the Chinese states only that it changed.",
+   "reason": "Entry at /tmp/zhrev/chunk-4.json — jp 「旅は私の人生を大きく変えた。」/ en \"Travel greatly changed my life.\" / zh 「旅行改变了我的人生。」. The shipped Chinese contains no error: 旅行 correctly renders 旅, 改变了 matches the past/perfective 変えた, 我的人生 preserves 私の人生, and the whole sentence is grammatical, natural Mandarin. The claimed defect is the omission of the degree adverb 大きく — that is a loss of emphasis, not a mistranslation, wrong character, tense mismatch, or connotation flip. Nothing in the gloss tells a learner something false about the Japanese, and the target vocabulary item this card teaches (人生 / じんせい) is glossed exactly right. The proposed 旅行大大改变了我的人生。is acceptable Mandarin but not clearly better: 大大 before 改变 reads somewhat stiff/journalistic; the natural intensifiers here would be 极大地改变 or 彻底改变, so the replacement is a lateral move at best. Rewriting shipped text that learners have already reviewed, in exchange for one adverb of emphasis and a debatable choice of intensifier, is not worth the churn. Arguable case, so it stays as shipped."
+  },
+  {
+   "id": "n3-b580",
+   "problem": "「一份大份拉面」stacks the measure word 份 twice — redundant and unnatural when ordering.",
+   "reason": "现译「请给我一份大份拉面。」语义、语法均无误，可以保留。理由如下：\n\n1. 不是错译。日文 ラーメンの大をお願いします 的教学点是名词用法的「大（だい）＝大份/大碗」，现译用「大份」准确对应，与英文 \"a large size ramen\" 一致；语气「请给我…」也与「お願いします」的礼貌请求相当，时态、语体都无偏差。\n\n2. 所谓「份」重复并非语病。前一个「一份」是量词，后一个「大份」是已经词汇化的规格词（大份/小份），两者词性和功能不同，口语点餐中「一份大份薯条」「来一份大份的」这类说法真实存在，只是略显啰嗦，属风格瑕疵而非语法错误、错字或错用量词。\n\n3. 改动没有触及教学点。新旧两版都用「大份」译「大」，替换实际只把量词「份」换成「碗」——学习者要记的那个词一字未变。为一个不影响理解的量词偏好去重写已经上线的译文，churn 大于收益。\n\n4. 「一碗」也并非严格更优。它把日文没有明说的容器（碗）写进了译文；若店家用的是大碗以外的容器，或语境是外带，「碗」反而多出一层信息。若日后确要润色，「请给我大份拉面。」或「拉面请给我大份的。」比「一碗大份」更贴近原句结构，但都不构成现在必须改的理由。\n\n结论：属于「稍好一点的另一种说法」，不是修错，维持现有译文。"
+  },
+  {
+   "id": "n3-b590",
+   "problem": "Aspect mismatch: 言葉を選んだ is completed past, but the bare 「选择措辞」reads as ongoing/general and leaves the sentence hanging.",
+   "reason": "现译「我考虑到对方的立场，选择措辞。」语义准确、语法正确、作为学习者释义足够地道，不构成需要改写已上线文本的真实错误。(1) 提议替换「我考虑到对方的立场，选择了措辞。」与现译逐字相同，只多一个「了」——这本身说明属于措辞偏好，而非误译、错字、量词错误、和制汉字直搬或语法不通。(2) 所谓体貌不匹配不成立：汉语动词不带时态，过去与否靠语境与体标记推断；前半「考虑到」的结果补语「到」已把整句锚定在已实现(realis)语境，后半「选择措辞」自然读作同一已完成事件的后续动作，这是连动式（考虑到…，选择…）的常规读法，不会「悬空」。(3) 「选择措辞」逐词对应「言葉を選んだ」，对 N3 学习者比「斟酌措辞」更透明，有助于把「選ぶ＝选择」「言葉＝措辞/用词」挂钩。加「了」顶多是微幅改善，却要改动学习者已见过的上线文本，收益远小于 churn 成本。属于可改可不改，按「有争议即维持」处理。条目位置：/tmp/zhrev/chunk-4.json，id n3-b590。"
+  },
+  {
+   "id": "n3-b609",
+   "problem": "「大翅膀」is an unidiomatic bare adjective+noun collocation in Mandarin; 大きな翼 needs 巨大的/大大的.",
+   "reason": "现有译文「鸟儿张开大翅膀飞走了。」在意义、语法、语体上都站得住，不构成需要改写已上线文本的真实错误。\n\n1) 意义准确：张开=広げて，飞走了=飛んでいった（含过去/离去义），鸟儿=鳥，翅膀=翼。没有误译、错字、量词错误、和制汉字直搬，时态与语感也与日文一致。\n\n2) 「大+名词」并非不合语法或不地道。汉语中单音节形容词直接修饰名词是常规组合（大眼睛、大嘴巴、大树、大房子），「大翅膀」同属此类，母语者完全可接受，只是偏口语、朴素，并非病句。审稿意见指出的是风格偏好，不是错误。\n\n3) 替换方案本身引入了语义偏移：日文是「大きな」（大的），英文是 \"large\"，而「巨大的」对应的是「巨大な/huge」，把中性的「大」抬升为「巨大、庞大」，反而离原文更远。若真要润色，最贴近的是「大大的翅膀」，而不是「巨大的」。\n\n4) 从学习者注释的角度，「大翅膀」与「大きな翼」逐语素对应，反而便于对照记忆；改成「巨大的」既不更准确，也不更短，属于以更差的对应换取一点点文采。\n\n结论：既然是可争议的风格偏好，且替换方案自带连带问题，按默认原则不改，保留已发布译文。"
+  },
+  {
+   "id": "n3-b628",
+   "problem": "「放飞得很高」mixes two patterns — 放飞 is already a complete verb and does not take 得很高 this way.",
+   "reason": "No error to fix. 「把纸飞机放飞得很高。」is grammatical, idiomatic, and semantically faithful.\n\n1) The stated grammar objection is wrong. 「放飞得很高」is not a mix of two patterns — it is the ordinary 把 + V + 得 + 补语 construction (把房间打扫得很干净 / 把风筝放飞得很高). Disyllabic verbs take 得-complements freely; 放飞 being \"a complete verb\" is exactly the precondition for taking a 得-complement, not an obstacle to it. Nothing here is ungrammatical.\n\n2) Meaning matches the Japanese precisely. 飛ばす is the causative/transitive \"make it fly, launch it,\" and 放飞 carries that launch-and-let-fly agency; 高く maps to 得很高. The 把 frame also mirrors 紙飛行機を, which is pedagogically useful in a gloss for 〜を〜飛ばす — the entry is teaching the transitive 飛ばす against intransitive 飛ぶ.\n\n3) The proposed replacement is a lateral move that loses something. 「让纸飞机飞得很高」swaps the transitive 飛ばす for 让 + intransitive 飞 — that is closer to 紙飛行機を高く飛ばせる / \"let it fly high\" and blurs the very transitive-vs-intransitive contrast the entry exists to teach. It is also a character longer and drops the 把-object framing that parallels を.\n\nRewriting shipped text that learners have already drilled, in exchange for a phrasing that is at best equal and arguably weaker on the teaching point, is not worth the churn."
+  },
+  {
+   "id": "n3-b680",
+   "problem": "「到处走动走累了」is clumsy — 走动 followed immediately by 走累了 duplicates the verb without a break, so the sentence does not parse cleanly.",
+   "reason": "条目 n3-b680（/tmp/zhrev/chunk-5.json）：日文「方々を歩き回って疲れた。」，英文 \"I got tired from walking all over the place.\"，现译「到处走动走累了。」\n\n现译没有真错误：语义与日文完全对应（方々=到处，歩き回る=走动，疲れた=累了），无误译、无错别字/量词错误、无和制汉字直搬（没有把「方々」照抄成「方方」），时体也对（「走累了」的「了」对应「疲れた」的完成体）。「到处走动走累了」是汉语常见的连动/因果连用小句，省略逗号可读，语法成立。审阅者提出的只是「走动」紧接「走累」听感重复，属于风格偏好，不是错误。\n\n而且替换稿并不更优：\n1. 走字更多——「到处走来走去，走累了」出现三个「走」，重复程度反而高于原译的两个。\n2. 语义漂移——「走来走去」的典型语感是在一处来回踱步（如屋里踱来踱去），而日文「方々を歩き回る」强调走遍多个地方；即便前加「到处」，重心仍偏向「来回」而非「遍历各处」，反而离原文更远。「走动」在这里是中性的、与「到处」搭配自然。\n3. 更长——从 8 字增至 11 字并多一个逗号，对一行学习释义来说是负担。\n\n既是可争议的润色而非改错，且替换稿自带缺陷，按规则不应改动已上线文案。建议维持「到处走动走累了。」不变。"
+  },
+  {
+   "id": "n3-b685",
+   "problem": "Adverb misplaced: 非常 belongs with 高兴, not before the 为…phrase. Also 孙辈 refers to a whole generation, while 孫 here is the grandfather's own grandchild.",
+   "reason": "条目 /tmp/zhrev/chunk-5.json 中 id \"n3-b685\"：日文「祖父は孫の成長をとても喜んでいます。」英文 \"My grandfather is very delighted by his grandchild's growth.\"，现有中文「祖父非常为孙辈的成长感到高兴。」两条指控都不成立。\n\n1) 语序：「非常为……感到高兴」是地道的普通话结构，程度副词可以整体前置于「为+NP+感到+A」这一谓语组合（「我非常为你感到高兴」「非常为他的进步感到欣慰」都是常见说法），并非误置。「为……感到非常高兴」只是另一种同样合法的位置，属于风格差异，不是语法错误。\n\n2) 孙辈 vs 孙子：日文「孫」和英文 \"grandchild\" 都不区分性别；「孙子」在标准普通话里首先指男性孙辈，替换后反而把语义收窄为「孙子（男）」，是把译文推离原文，而不是修正。「孙辈」虽略带书面/集合色彩，但可用于指自己的孙辈，语义不误、语法无误，作为学习者释义完全合格。\n\n现有译文在意义、语法、地道度上均达标，替换方案不修正任何真实错误且自身引入性别偏移，属于「换一种说法」而非「纠错」，不值得改动已上线文本。"
+  },
+  {
+   "id": "n3-b687",
+   "problem": "不知情 means being unaware of the facts of an affair (often implying one was kept out of it); 全く知りません about a topic is 完全不了解.",
+   "reason": "现行译文 我对那个问题完全不知情。 没有错误。「对…不知情」是标准且地道的普通话搭配（如「他对此事完全不知情」），语法正确，与日文「その問題については全く知りません」的语义一致——「問題」在此可理解为「那件事/那个议题」，正是「不知情」所搭配的名词类型。本条教学点是 全く → 完全，两种说法都同样保留。审校意见属于用词偏好而非纠错：「不了解」确实也可以，但同为五字谓语，属于平级替换，没有修正任何误译、错字、语病、汉字假友或时态/语气不符。为一个可争议的措辞改动去改写已上线、学习者已见过的文本不划算，故不采纳。"
+  },
+  {
+   "id": "n3-b732",
+   "problem": "「表示感谢的体现」is redundant — 表示 and 体现 double up on the same idea. 現れ alone is 体现/表现.",
+   "reason": "现有译文「他的微笑是表示感谢的体现。」没有真正的错误，只是略显啰嗦，属于风格偏好而非需要返工的问题。理由：(1) 语法成立——主流读法是「是［表示感谢的］体现」，「表示感谢」作定语修饰「体现」，是常见搭配，句子完全合乎普通话语法；(2) 语义准确——「体现」对应「現れ」，整句与日文「彼の笑顔は感謝の現れです」及英文 \"an expression of gratitude\" 意思一致，时态、语气、褒贬均无偏差；(3) 无假朋友汉字直搬、无错字、无量词错误；(4) 提议的「他的微笑是感谢的体现。」确实更紧凑，但只是换一种说法，不修复任何错误，而改动已发布文本会让学习者重复见到的内容产生无谓变动（churn）。按\"仅在存在实质错误时才改\"的标准，此条应保留原文。"
+  },
+  {
+   "id": "n3-b717",
+   "problem": "格外 (exceptionally) adds an intensity the Japanese 喜びを感じた does not have; also missing the comma after the subordinate clause.",
+   "reason": "现行译文「听到合格的通知我感到格外喜悦。」意思准确、语法正确、对学习者足够地道，不构成需要改写已上线文本的真实错误。(1) 核心词对应无误：日文教学词 喜び → 喜悦，完全对位，无误译、无错字量词、无汉字假朋友、无时态错配（感到／感じた 均为过去完成的一次性感受）。(2) 「格外」确实比中性的「喜びを感じた」略重，但这是程度副词的轻微加色，并未把词义引向别处，学习者读到的仍然是「喜悦＝喜び」；而提议的替换只是把一个程度副词换成另一个——「很喜悦」中的「很」在双音节形容词前基本是弱化的填充成分，并非真正的零强度译法，所以并没有解决它声称的问题，只是换了个说法。(3) 「缺逗号」不是语法错误：句首短小的「听到…」状语从句后加逗号在中文里是可选的行文习惯，不加并不产生歧义或病句。改动收益仅为风格偏好，却要让已经看过这条例句的学习者面对被改写的文本，得不偿失。"
+  },
+  {
+   "id": "n3-b694",
+   "problem": "美好 is added content — 明るい未来 is simply 光明的未来; 光明美好 stacks two praise words the Japanese does not have.",
+   "reason": "Entry n3-b694 (/tmp/zhrev/chunk-5.json): JP 子供たちの明るい未来を守りたいです。 / EN \"I want to protect the bright future of children.\" / current ZH 我想守护孩子们光明美好的未来。\n\nThe current Chinese contains no error of the kind that justifies rewriting shipped text. It is grammatically correct, the verb 守护 matches 守りたい, 我想 carries the ～たい volitional, and 孩子们 matches 子供たち. The target word 未来 — the whole point of the entry — is present and glossed identically in both versions.\n\nThe reviewer's only objection is that 美好 is unsupported additive praise. That is a stylistic judgment, not a mistranslation. 明るい未来 is not neutrally \"bright\" in the luminous sense; it is idiomatically hopeful/promising, and 光明美好的未来 is a standard, high-frequency Chinese collocation — not two praise words awkwardly stacked, but a fixed four-character-flavored pairing that renders exactly the optimistic connotation 明るい carries. Nothing in the gloss changes the meaning, tense, register, or connotation away from the Japanese. There is no wrong character, no false-friend kanji copy, no classifier problem, no ungrammatical Mandarin.\n\nThe proposed 光明的未来 is defensible and marginally tighter, but \"slightly leaner\" is precisely the case the churn rule exists to reject. Learners who have already drilled this sentence would see the gloss change under them for a difference that teaches nothing new about 未来 or about 明るい. Arguable at best — so it stays."
+  },
+  {
+   "id": "n3-b669",
+   "problem": "覚える is 记住 (memorize), not 学会 (master/learn how to); 学会…旋律 is an odd collocation in Mandarin.",
+   "reason": "现行译文没有错误，属于\"换个说法\"级别的改动，不值得改动已上线内容。\\n\\n条目：n3-b669（/tmp/zhrev/chunk-5.json）\\n- 日文：この歌の節を覚えるのは難しい。\\n- 英文：Learning the tune of this song is difficult.\\n- 现行中文：学会这首歌的旋律很难。\\n- 提议中文：记住这首歌的曲调很难。\\n\\n驳回理由：\\n1. 「覚える」≠只有\"记住\"。它同时覆盖\"记住\"和\"学会/掌握\"两义（仕事を覚える＝学会工作、コツを覚える＝掌握窍门）。歌の節を覚える 正是\"把调子学下来、能唱出来\"，用「学会」完全在词义范围内，不是误译。\\n2. 与已上线英文释义冲突。本条英文写的是 \"Learning the tune\"，现行中文的「学会」与之一致；改成「记住」反而让中／英两条注释出现语义偏移，等于用一处\"修正\"制造另一处不一致。\\n3. 「学会……旋律」并非病句。搭配上略不如「学会这首歌」紧，但语法正确、语义清晰，作为学习者注释的可读性没有问题；这属于风格偏好，不是错误。\\n4. 「旋律」用词准确。本条教的是「節（ふし）」＝曲调／旋律，「旋律」是标准词，与「曲调」等价，替换不带来任何信息增益。\\n5. 改动净收益为零，却要冲掉学习者已经见过的文本，churn 大于收益。\\n\\n结论：维持 学会这首歌的旋律很难。"
+  },
+  {
+   "id": "n3-b820",
+   "problem": "少许 quantifies substances, not time; 需要少许时间 is unidiomatic Mandarin for 少々お時間がかかります.",
+   "reason": "The premise is wrong. 少许 is not restricted to physical substances — 现代汉语词典 glosses it plainly as 少量、一点儿. Its recipe association (少许盐/少许水) is a usage-frequency effect, not a grammatical selectional restriction. 时间 is a mass noun, so 少许时间 is well-formed Mandarin: correct in meaning, grammatical, and slightly formal in a way that suits the polite service register of 少々お時間がかかります. No mistranslation, no wrong character or classifier, no false-friend kanji copy (少々 and 少许 are different words, not a graphic borrowing), no tense or connotation mismatch with the Japanese. The proposed 准备工作需要一点时间 is a bare phrasing preference: same length, no added clarity, and it costs something real — this entry teaches 少々, and 少许 is the tightest one-to-one Chinese counterpart for it, so swapping to 一点 dissolves the headword-to-gloss mapping the learner relies on while the surface form stays 少々. Rewriting shipped text that learners have already reviewed is not warranted by a stylistic tweak that arguably makes the gloss less useful."
+  },
+  {
+   "id": "n3-b827",
+   "problem": "摔倒了…摔到了屁股 repeats 摔 and 摔到屁股 is not idiomatic; 尻を強く打った means the bottom struck the ground hard.",
+   "reason": "原译无实质错误，仅属风格偏好，不值得重写已上线文本。日文「転んで尻を強く打ってしまった。」= 摔倒并重重撞到屁股；现译「我摔倒了，重重地摔到了屁股。」在语义、完成时态、语气上与日文/英文一致：摔倒=転んで，重重地=強く，摔到了屁股=尻を打った。无错字、无量词错误、无和制汉字直搬（「尻」正确译为「屁股」而非照抄）、无病句。「摔到+身体部位」在口语普通话中成立（摔到腰、摔到膝盖、摔到屁股），学习者读得懂，作词条注释足够。评审唯一的理由是「摔倒…摔到」重复用「摔」——这是措辞偏好而非错误。替换稿反而有自身代价：一，「磕在了地上」凭空补出日文和英文都没有的「地上」，属于向外增译；二，主语从「我」切换到「屁股」，而「屁股」正是本条教学目标「尻」的对应词，挪作次句主语削弱了词形对应的清晰度；三，句子更长、结构更笨重。按「只修真错误」的标准，此条属可争议的润色，不采纳。"
+  },
+  {
+   "id": "n3-b879",
+   "problem": "The Japanese 「梅雨に入ると雨の日が多くなります」 is a general/habitual statement (whenever the rainy season starts, rainy days increase), but the Chinese 「变多了」 with 了 turns it into a completed past event.",
+   "reason": "指控站不住脚：汉语没有时态，句末「了」标记的是状态变化（change of state），并非过去完成。日语原句谓语正是「多くなります」——なる本身就是状态变化动词，所以「变多了」在语义上恰好对应，而不是偏离。本语料库对なる类谓语一贯就是这么处理的（如「太阳升起，天空变亮了」「由于工厂减少，大气变得洁净了」「因下雨，河里的水量增加了」）。「进入梅雨季节后，下雨天变多了」在中文气象类表述中本就是常见的泛指说法，读者不会理解成\"今年某次已完成的事件\"。此外该词条教的目标词是「梅雨」，两个版本都译作「梅雨季节」，完全正确；用词（下雨天）、语法、语气均无问题，与英文 gloss 也一致。提案「一进入梅雨季节，下雨天就会变多」只是措辞偏好（一…就会 与 n3-b644 风格更一致），而且额外加进了一个日语原文并不要求的推测性助动词「会」，长度也更长。属于\"略微更好\"而非\"修错\"，不值得改动已经上线、学习者已经看过的文本。"
+  },
+  {
+   "id": "n3-b877",
+   "problem": "歩いています is just walking; 散步 adds the sense of a leisurely stroll that the Japanese does not have.",
+   "reason": "现行译文「父母和孩子牵着手在散步。」没有实质错误：语法正确、搭配自然，本条要教的 繋ぐ 已由「牵着手」准确对应，学习者不会被误导。歩いています→散步 只是把「走路」具体化为带闲适语气的「散步」，属于语气微调而非误译、错字、量词错误、和製漢字直搬或时态错位，且原句「手を繋いで歩く」的情景本来就与散步相容。提出的替换 \"父母和孩子牵着手走着。\" 反而更别扭：中文里句末单用「走着」读起来不完整（通常需要后续成分，如「走着走着…」「走着去…」），要成句得写成「走路」或「手牵着手走着」。用一个更生硬的句子替换已上线、学习者已看过的文本不划算，故驳回。"
+  },
+  {
+   "id": "n3-b892",
+   "problem": "「快点抓紧吧」 stacks two synonymous hurry-up words and reads unidiomatically.",
+   "reason": "现译「没时间了，总之快点抓紧吧。」在意思、语法、时体语气上都没有错：没时间了对应「時間がないので」，总之是「とにかく」的标准对译，句末「吧」准确承接「急ぎましょう」的劝诱语气，且和日语一样不出现主语。所谓问题只是「快点」与「抓紧」语义略有重叠，属于文风冗赘，不构成误译、错字、量词错误、汉字假朋友或语感/时态错位——「快点+动词」是正常的状语结构，「抓紧」在时间紧迫的语境下单用也说得通，口语中连用作强调并不罕见，学习者例句层面完全够用。提议稿「没时间了，总之我们快点吧。」字数相同、只是换了个说法，还多加了日语原文没有的「我们」，并非更贴近原句。为一个同长度、同正确度的改写去改动学习者已经练过的已发布文本，不值得。"
+  },
+  {
+   "id": "n3-b899",
+   "problem": "喜极而泣 already means crying from joy, so following it with 眼中流出了泪水 states the same thing twice; the Japanese has one clause.",
+   "reason": "现有译文没有错误，提出的问题是文体偏好而非硬伤。\n\n1. 语义正确、语法通顺。「嬉しさのあまり」＝因过于高兴，「目から涙があふれました」＝眼中涌出泪水。「喜极而泣，眼中流出了泪水」在意义、时态（了）、施动关系上都与日文一致，没有误译、错字、量词错误、和制汉字直搬或语感错位。\n\n2. 所谓「重复」是汉语常规修辞，不是错误。「成语＋具体描写」是标准写法，「他喜极而泣，泪水夺眶而出」这类搭配在中文里极常见。日文本身也是两段结构（原因状语＋主句谓语），并非只有一个小句；用成语概括原因、再用小句落到具体动作，反而对应得上。\n\n3. 这是词条 涙（なみだ）的释义句，泪水必须以独立词形出现，学习者才能把生词对上。若只保留「喜极而泣」，目标词就被埋进成语里了——这一句所谓的冗余正是教学功能所在。\n\n4. 替换稿反而带来退步：「〜のあまり」是书面语级的 N3 语法，「太高兴了」是口语，语体降级、与日文不匹配；「喜极而泣」在语体上更贴近原文。长度也没有精简（12 字 vs 13 字），只是换了个说法。\n\n已上线文案重写会让学习者已经见过的内容无谓变动，此条不值得改。"
+  },
+  {
+   "id": "n3-b917",
+   "problem": "「他反抗父母离家出走了」 runs two predicates together with no connective or comma, reading as a garbled single clause.",
+   "reason": "现行译文「他反抗父母离家出走了」并无实质错误。(1) 语法：这是标准的连动/连续事件结构（V1短语＋V2短语＋句末「了」），与「他吃完饭出门了」同型，汉语允许不加逗号；并非评审所说的「糅在一起的病句」。(2) 词义：「反抗」在汉语中是真实动词（非日语汉字假朋友），带名词宾语「父母」；「离家出走」正是「家を出ていく」在忤逆语境下的地道说法。(3) 时体：句末「了」对应「ました」，无时态或语气偏差。(4) 所谓「反抗[父母离家出走]」的歧义只是理论上的花园小径，「反抗」压倒性地接名词宾语，句末「了」也把切分定死了，学习者不会误读。提案仅是加一个逗号的标点风格偏好（原句 10 字，改后 11 字），修不掉任何错误，却要改动学习者已经见过的已发布文本，得不偿失。按「有争议即默认不改」的原则，维持原文。"
+  },
+  {
+   "id": "n3-b965",
+   "problem": "「进行浪费的购物」 is unidiomatic; 购物 does not take 进行, and 无駄な買い物 means buying things one does not need.",
+   "reason": "条目 n3-b965（/tmp/zhrev/chunk-7.json）：jp「無駄な買い物はもう止す。」/ en \"I will quit making wasteful purchases.\" / 现译「我不再进行浪费的购物了。」\n\n不采纳的理由：\n\n1. 现译没有真正的错误。语义与日文一一对应：もう→「不再…了」（含「今后不再」的中断义，正好承载本条要教的 止す＝よす 的「停止/作罢」语气）；無駄な→「浪费的」；買い物→「购物」。没有误译、没有错字量词、没有和製漢字直搬（「無駄」并未原样照抄），时态/语气也与日文一致。\n\n2. 「进行购物」并非不合语法。「进行」作为形式动词接双音节动名词是标准书面用法，「进行购物」在正式/商务语体中有实际用例（如「在本站进行购物」）。它偏书面、偏生硬，但结构合法、含义清楚，作为学习者对照用的字面 gloss 完全够用——gloss 的作用是帮学习者把日文成分对上，略偏直译反而有对照价值。\n\n3. 替换句本身有代价，而非纯粹改进。「我不再买没用的东西了」把 買い物（购物这一行为）换成「东西」（物品），把 無駄な（浪费、白花钱）换成「没用的」（无用途）。「白花钱买了但其实用得上的东西」也属 無駄な買い物，却不算「没用的东西」——这是语义漂移，不是纠错。同时也削弱了与 買い物 这个词的字面对应。\n\n4. 这属于「换个说法更顺口」的改写，不是修错。已上线文案的改动会让学习者已经见过的内容产生无谓变动（churn），标准是「有实错才改」。本条至多是语体偏硬，属可争议范畴，按默认判为不采纳。\n\n如果日后要做整体语体润色，可以在一次统一的文案 pass 里处理，而不是单条替换。"
+  }
+ ]
+}
