@@ -1,0 +1,94 @@
+{
+ "reason": "four entries carried glosses belonging to a DIFFERENT reading of the same kanji — in three cases the reading that already has its own entry. 下/げ shipped byte-identical glosses to 下/した, so the app defined two different words the same way. Three independent linguists proposed corrections and a fourth agent tried to refute each; 直/じき was refuted and is untouched.",
+ "entries": [
+  {
+   "id": "n3-b235",
+   "surface": "下",
+   "kana": "げ",
+   "removeEN": [
+    "under",
+    "below"
+   ],
+   "removeZH": [
+    "下",
+    "下部"
+   ],
+   "finalEN": [
+    "lowest grade",
+    "inferior",
+    "last volume"
+   ],
+   "finalZH": [
+    "下等",
+    "下卷"
+   ],
+   "why": "Verified against the repo, not just the argument. n3-b235 is 下/げ with EN [\"under\",\"below\"] / ZH [\"下\",\"下部\"], and n5-b080 下/した in n5.json ships the byte-identical EN [\"under\",\"below\"] — two different words with the same definition in the same app. Standalone げ is not the locative noun: the locative 下 is した (and しも for lower reaches), and 机の下 is never *つくえのげ, so the shipped gloss teaches a substituti"
+  },
+  {
+   "id": "n3-b380",
+   "surface": "品",
+   "kana": "ひん",
+   "removeEN": [
+    "article"
+   ],
+   "removeZH": [
+    "物品"
+   ],
+   "finalEN": [
+    "elegance",
+    "grace",
+    "refinement"
+   ],
+   "finalZH": [
+    "品格",
+    "优雅"
+   ],
+   "why": "Refutation attempted and failed on every available ground. (1) The gloss is not defensible at this entry's reading and POS: n3-b380 is pos [\"n\"] 品/ひん, and free-standing ひん means refinement/grace (品がある, 品のいい話し方). The 'an article of goods' sense is しな (品物, 品切れ, 品ぞろえ). ひん does carry article/item only as a bound suffix-counter (一品, 日用品), which is compound-internal and not what a noun card teaches. (2)"
+  },
+  {
+   "id": "n3-b684",
+   "surface": "間",
+   "kana": "ま",
+   "removeEN": [
+    "time"
+   ],
+   "removeZH": [
+    "间隔",
+    "时间"
+   ],
+   "finalEN": [
+    "pause",
+    "timing",
+    "space"
+   ],
+   "finalZH": [
+    "停顿",
+    "时机",
+    "空隙"
+   ],
+   "why": "Verified against /Users/jason/Documents/typing_app/Sources/VocabKit/Resources/n3.json (n3-b684 間/ま = en [\"space\",\"time\"], zh [\"间隔\",\"时间\"]) and n4.json (n4-b003 間/あいだ = en [\"space\",\"interval\",\"between\"], zh [\"之间\",\"期间\"]).\n\nI attempted refutation on three fronts and all failed:\n\n1. Is \"time\" defensible at ま's own reading? Only weakly. Dictionary gloss-lists for 【間】bundle \"time, pause\" for ま, so \"time\""
+  },
+  {
+   "id": "n3-b791",
+   "surface": "今日",
+   "kana": "こんにち",
+   "removeEN": [
+    "this day"
+   ],
+   "removeZH": [
+    "今天"
+   ],
+   "finalEN": [
+    "nowadays",
+    "these days",
+    "today"
+   ],
+   "finalZH": [
+    "如今",
+    "当今",
+    "今日"
+   ],
+   "why": "Upheld only in the shape of the proposer's first variant; the second and third variants are refused. Verified against the shipped data: n3-b791 has no exJP, so the gloss list IS the card, and it currently reads [\"today\",\"this day\"] / [\"今日\",\"今天\"] against n5-kyou's [\"today\"] / [\"今天\"] — a card that teaches nothing except a second reading, and mislicenses こんにちは休みです. The pipeline's own held sentence fo"
+  }
+ ]
+}

@@ -53,7 +53,7 @@ def dedupe(items):
     return out
 
 
-def check(path, base, allow_dedupe=False):
+def check(path, base, allow_dedupe=False, manifest=None):
     old = at_ref(base, path)
     if old is None:
         return []
@@ -75,6 +75,20 @@ def check(path, base, allow_dedupe=False):
 
         for lang, before in (a.get("meanings") or {}).items():
             after = (b.get("meanings") or {}).get(lang) or []
+            declared = manifest.get(eid) if manifest else None
+            if declared is not None:
+                removals = set(declared.get("remove" + lang.upper(), []))
+                unexpected = [g for g in before if g not in after and g not in removals]
+                if unexpected:
+                    problems.append(
+                        f"{eid}: meanings.{lang} lost {unexpected!r}, which the manifest "
+                        f"did not declare")
+                missed = [g for g in removals if g in after]
+                if missed:
+                    problems.append(
+                        f"{eid}: manifest promised to remove {missed!r} from meanings.{lang} "
+                        f"but they are still there")
+                continue
             # A duplicate is not a sense, so dropping one loses nothing a learner could read.
             # `--allow-dedupe` permits exactly that removal and nothing else: the comparison
             # still runs, just against the de-duplicated old list. Every other removal, edit
@@ -95,16 +109,41 @@ def check(path, base, allow_dedupe=False):
     return problems
 
 
+def load_manifest(path):
+    """A reviewed structural change declares itself up front.
+
+    The append-only rule exists to stop a batch merge from silently dropping content. It is not
+    meant to make a genuine correction impossible — 下/げ shipped with した's glosses, so the app
+    showed two different words the same definition, and fixing that REQUIRES a removal.
+
+    So a structural change is not exempted from the guard; it is checked against a manifest.
+    Every id it touches and every gloss it removes must be listed, and anything the diff does
+    that the manifest did not predict is still a failure. The guard gets stricter, not weaker:
+    it now also fails if the manifest promises a change that did not happen.
+    """
+    m = json.load(open(path))
+    return {e["id"]: e for e in m["entries"]}, m.get("reason", "")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", default="HEAD")
+    ap.add_argument("--manifest",
+                    help="JSON declaring a reviewed structural change: "
+                         '{"reason": "...", "entries": [{"id": ..., "removeEN": [...], '
+                         '"removeZH": [...]}]}')
     ap.add_argument("--allow-dedupe", action="store_true",
                     help="permit removing an EXACT duplicate gloss and nothing else")
     args = ap.parse_args()
 
+    manifest, reason = (load_manifest(args.manifest) if args.manifest else (None, ""))
+    if manifest:
+        print(f"structural change declared: {reason}")
+        print(f"  {len(manifest)} entries listed\n")
+
     total = 0
     for path in sorted((REPO / "Sources/VocabKit/Resources").glob("n[1-5].json")):
-        problems = check(path, args.base, args.allow_dedupe)
+        problems = check(path, args.base, args.allow_dedupe, manifest)
         total += len(problems)
         mark = "FAIL" if problems else "ok  "
         print(f"{mark} {path.name}: {len(problems)} problem(s)")

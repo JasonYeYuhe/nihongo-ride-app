@@ -14615,12 +14615,13 @@
     "jlpt": 3,
     "meanings": {
       "en": [
-        "under",
-        "below"
+        "lowest grade",
+        "inferior",
+        "last volume"
       ],
       "zh": [
-        "下",
-        "下部"
+        "下等",
+        "下卷"
       ]
     }
   },
@@ -18903,11 +18904,12 @@
     "meanings": {
       "en": [
         "elegance",
-        "article"
+        "grace",
+        "refinement"
       ],
       "zh": [
-        "物品",
-        "品格"
+        "品格",
+        "优雅"
       ]
     }
   },
@@ -30015,12 +30017,14 @@
     "jlpt": 3,
     "meanings": {
       "en": [
-        "space",
-        "time"
+        "pause",
+        "timing",
+        "space"
       ],
       "zh": [
-        "间隔",
-        "时间"
+        "停顿",
+        "时机",
+        "空隙"
       ]
     }
   },
@@ -33121,12 +33125,14 @@
     "jlpt": 3,
     "meanings": {
       "en": [
-        "today",
-        "this day"
+        "nowadays",
+        "these days",
+        "today"
       ],
       "zh": [
-        "今日",
-        "今天"
+        "如今",
+        "当今",
+        "今日"
       ]
     }
   },
