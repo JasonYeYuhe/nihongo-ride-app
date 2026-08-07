@@ -449,3 +449,46 @@ lifecycle §5 requires.
 | Codex | the audit percentages are not reproducible from the repo | **Accepted.** The 240 judgments and their limits are committed at `docs/measurements/n3-gloss-audit-2026-08-04.json`. |
 | Codex | "full sense set" contradicts a hard cap of five | **Accepted**; the cap is gone with `exSense`. §C appends what review accepts and §D decides display separately. |
 | Codex | verdict: **rework** | **Taken.** This revision is the rework; the design is smaller than the draft it replaces. |
+
+
+## Correction — the Chinese translations are not systematically worse than the English
+
+I reported, in the 690-word batch commit and again at submission, that "39 of 90 minor review
+flags were zh problems against 9 for English, all the same failure of copying the kanji where
+the senses diverge". Both halves are wrong, and the release notes inherited the framing.
+
+**The count.** I got 39 by grepping the findings for "zh", which matches any finding that
+merely mentions the Chinese line while faulting the English one — n3-b121, n3-b395 and n3-b150
+are all English defects counted as Chinese. Classifying by which language the defect is
+actually IN:
+
+| | count |
+|---|---|
+| defect in the Chinese | 25 |
+| defect in the English | 29 |
+| mentions both | 12 |
+| translation not involved (the Japanese itself) | 60 |
+
+So the English line is flagged slightly MORE often than the Chinese, not four times less.
+
+**The cause.** "All the same failure of copying the kanji" is 2 of 25. A mechanical sweep of
+the whole 3,714-sentence corpus — tokenise each Japanese sentence, convert each kanji word to
+Simplified via opencc, and look for it appearing verbatim in the Chinese — finds 1,564
+sentences that copy a word, of which only 8 copy a known false friend, and of those 8:
+
+- 部長 → 部长 (twice) is a genuine defect: a Chinese 部长 is a government minister, not a
+  company department manager
+- 犯人 → 犯人 (three times) is defensible Chinese
+- 新聞 → 新闻 is a FALSE POSITIVE of my own detector — the sentence correctly renders 新聞 as
+  报纸 and 新闻 is translating ニュース
+- 人気 → 人气 is also a false positive; 人气 is standard modern Chinese for popularity
+
+The first version of that sweep found only 3 hits because it compared characters directly, and
+Japanese shinjitai and Simplified Chinese are different glyphs — 部長 never matches 部长. The
+detector was blind to exactly the cases it was built for until opencc was added.
+
+What the Chinese flags actually are is ordinary translation imprecision spread thin: a tense
+that does not match the Japanese, a connotation that is too negative (沉迷 for 夢中), a phrase
+that reads as a different action (冲洗马桶 for flushing). Real, worth fixing, but not a
+systematic failure with one cause — which means there is no single gate that catches them, and
+the honest plan for them is review rather than a clever rule.
