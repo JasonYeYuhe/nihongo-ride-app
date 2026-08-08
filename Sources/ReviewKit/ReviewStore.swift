@@ -43,19 +43,38 @@ public struct ReviewStore: Codable, Sendable {
     /// scheduling is the SRS norm anyway. `DueReminderPlanner` had already hand-rolled this by
     /// passing an end-of-day instant — that workaround still lands on the same answer here.
     /// (v1.12 §B.)
+    /// - Parameter resolves: whether a card's entry still exists in the vocabulary. Cards
+    ///   whose entry has gone are skipped.
+    ///
+    ///   This parameter exists because the count and the run disagreed. `GameSession.make`
+    ///   builds its review queue with `compactMap { vocab.entry(id:) }`, silently dropping
+    ///   ids that no longer resolve, while this store counted every stored card. Retire or
+    ///   rename one vocabulary entry and the app sends a push saying "12 words are due",
+    ///   badges 12, and then hands the learner a run with 11 — the status lying about the
+    ///   work, which is the failure this project has fixed twice before elsewhere.
+    ///
+    ///   ReviewKit cannot ask VocabKit directly (it depends only on PersistKit), so the
+    ///   caller injects the check. The default keeps every existing call site behaving
+    ///   exactly as before.
     public func dueCards(on date: Date = Date(), limit: Int = 100,
-                         calendar: Calendar = .current) -> [SRSCard] {
+                         calendar: Calendar = .current,
+                         resolves: (String) -> Bool = { _ in true }) -> [SRSCard] {
         let cutoff = Self.dueCutoff(for: date, calendar: calendar)
         return cards.values
-            .filter { $0.dueDate < cutoff }
+            .filter { $0.dueDate < cutoff && resolves($0.id) }
             .sorted { $0.dueDate < $1.dueDate }
             .prefix(limit)
             .map { $0 }
     }
 
-    public func dueCount(on date: Date = Date(), calendar: Calendar = .current) -> Int {
+    /// - Parameter resolves: see ``dueCards(on:limit:calendar:resolves:)``. The badge and the
+    ///   daily reminder are built from this number, so it must not promise cards a run cannot
+    ///   produce.
+    public func dueCount(on date: Date = Date(), calendar: Calendar = .current,
+                         resolves: (String) -> Bool = { _ in true }) -> Int {
         let cutoff = Self.dueCutoff(for: date, calendar: calendar)
-        return cards.values.lazy.filter { $0.dueDate < cutoff }.count
+        // Not `.lazy` — the closure is non-escaping, so the filter must run now.
+        return cards.values.filter { $0.dueDate < cutoff && resolves($0.id) }.count
     }
 
     /// Midnight ending `date`'s day. Falls back to `date` itself if the calendar can't

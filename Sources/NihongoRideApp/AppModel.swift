@@ -833,7 +833,12 @@ final class AppModel {
     }
 
     /// Words currently waiting in the review deck (due now).
-    var dueReviewCount: Int { reviewStore.dueCount() }
+    /// Only counts cards whose word still exists — the badge and the daily reminder are built
+    /// from this, and a run drops unresolvable ids, so counting them here would promise work
+    /// the app cannot hand over.
+    var dueReviewCount: Int {
+        reviewStore.dueCount(resolves: { VocabStore.shared.entry(id: $0) != nil })
+    }
     var totalWordsSeen: Int { reviewStore.count }
     /// Words in the pool the next ride will actually draw new words from — i.e. the
     /// SELECTED level, or all levels when the picker is on "mixed" (`nil`), matching

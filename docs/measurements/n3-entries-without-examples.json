@@ -1,0 +1,700 @@
+{
+ "what": "every N3 entry with no example sentence, and why",
+ "total": 48,
+ "flaggedByReadingDiagnostic": [
+  {
+   "id": "n3-b138",
+   "surface": "後",
+   "taughtReading": "のち",
+   "readingInNaturalSentence": "あと",
+   "sentence": "今日の天気は晴れ後雨です。",
+   "glosses": [
+    "afterwards",
+    "since then"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b162",
+   "surface": "仏",
+   "taughtReading": "ほとけ",
+   "readingInNaturalSentence": "ふつ",
+   "sentence": "仏の顔も三度までと言う。",
+   "glosses": [
+    "Buddha",
+    "merciful person"
+   ],
+   "status": "resolved by a forcing collocation",
+   "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 仏の顔も三度 is read ほとけのかおもさんど"
+  },
+  {
+   "id": "n3-b190",
+   "surface": "綿",
+   "taughtReading": "わた",
+   "readingInNaturalSentence": "めん",
+   "sentence": "古い布団の綿を交換する。",
+   "glosses": [
+    "cotton"
+   ],
+   "status": "resolved by a forcing collocation",
+   "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 布団の綿 is read ふとんのわた"
+  },
+  {
+   "id": "n3-b234",
+   "surface": "暮れ",
+   "taughtReading": "くれ",
+   "readingInNaturalSentence": "としのくれ",
+   "sentence": "年の暮れは何かと忙しい。",
+   "glosses": [
+    "year end",
+    "sunset"
+   ],
+   "status": "resolved by a forcing collocation",
+   "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 年の暮れ is read としのくれ"
+  },
+  {
+   "id": "n3-b235",
+   "surface": "下",
+   "taughtReading": "げ",
+   "readingInNaturalSentence": "した",
+   "sentence": "この物語は上、中、下の三巻で構成されている。",
+   "glosses": [
+    "under",
+    "below"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b361",
+   "surface": "年月",
+   "taughtReading": "ねんげつ",
+   "readingInNaturalSentence": "としつき",
+   "sentence": "この建物は長い年月をかけて建てられた。",
+   "glosses": [
+    "months and years"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b380",
+   "surface": "品",
+   "taughtReading": "ひん",
+   "readingInNaturalSentence": "しな",
+   "sentence": "彼女の話し方には品がある。",
+   "glosses": [
+    "elegance",
+    "article"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b447",
+   "surface": "魚",
+   "taughtReading": "うお",
+   "readingInNaturalSentence": "さかな",
+   "sentence": "朝早く魚市場へ出かけた。",
+   "glosses": [
+    "fish"
+   ],
+   "status": "resolved by a forcing collocation",
+   "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 魚市場 is read うおいちば"
+  },
+  {
+   "id": "n3-b510",
+   "surface": "盛り",
+   "taughtReading": "さかり",
+   "readingInNaturalSentence": "もり",
+   "sentence": "父は今が働き盛りだ。",
+   "glosses": [
+    "peak",
+    "prime"
+   ],
+   "status": "resolved by a forcing collocation",
+   "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 働き盛り is read はたらきざかり"
+  },
+  {
+   "id": "n3-b607",
+   "surface": "注ぐ",
+   "taughtReading": "つぐ",
+   "readingInNaturalSentence": "そそぐ",
+   "sentence": "コップに冷たい水を注ぐ。",
+   "glosses": [
+    "to pour",
+    "to fill"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b621",
+   "surface": "十",
+   "taughtReading": "とお",
+   "readingInNaturalSentence": "じゅう",
+   "sentence": "りんごを箱の中に十入れた。",
+   "glosses": [
+    "ten"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b639",
+   "surface": "日本",
+   "taughtReading": "にほん",
+   "readingInNaturalSentence": "にっぽん",
+   "sentence": "私は将来、日本に住みたいです。",
+   "glosses": [
+    "Japan"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b680",
+   "surface": "方々",
+   "taughtReading": "ほうぼう",
+   "readingInNaturalSentence": "かたがた",
+   "sentence": "方々を歩き回って疲れた。",
+   "glosses": [
+    "here and there"
+   ],
+   "status": "resolved by a forcing collocation",
+   "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 方々を歩き回る is read ほうぼうをあるきまわる"
+  },
+  {
+   "id": "n3-b684",
+   "surface": "間",
+   "taughtReading": "ま",
+   "readingInNaturalSentence": "あいだ",
+   "sentence": "歌の途中で絶妙な間を取る。",
+   "glosses": [
+    "space",
+    "time"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b702",
+   "surface": "文字",
+   "taughtReading": "もんじ",
+   "readingInNaturalSentence": "もじ",
+   "sentence": "彼の言葉を文字通りに受け取る。",
+   "glosses": [
+    "letter of alphabet",
+    "character"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b713",
+   "surface": "曜日",
+   "taughtReading": "ようび",
+   "readingInNaturalSentence": "ひ",
+   "sentence": "ゴミを出す曜日を確認する。",
+   "glosses": [
+    "day of the week"
+   ],
+   "status": "resolved by a forcing collocation",
+   "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 曜日 is read ようび",
+   "note": "MISCATEGORISED BY MY OWN DIAGNOSTIC: 曜日 has only one reading (ようび). It landed here because the tokenizer split 曜日 and I compared the 日 fragment. All three judges caught this independently."
+  },
+  {
+   "id": "n3-b734",
+   "surface": "言う",
+   "taughtReading": "ゆう",
+   "readingInNaturalSentence": "いう",
+   "sentence": "自分の意見をはっきり言うことが大切です。",
+   "glosses": [
+    "to say",
+    "to tell"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b735",
+   "surface": "市場",
+   "taughtReading": "いちば",
+   "readingInNaturalSentence": "しじょう",
+   "sentence": "朝早く近くの市場へ野菜を買いに行った。",
+   "glosses": [
+    "market",
+    "marketplace"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b791",
+   "surface": "今日",
+   "taughtReading": "こんにち",
+   "readingInNaturalSentence": "きょう",
+   "sentence": "今日では多くの人がスマートフォンを使っています。",
+   "glosses": [
+    "today",
+    "this day"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b801",
+   "surface": "直",
+   "taughtReading": "じき",
+   "readingInNaturalSentence": "ちょく",
+   "sentence": "雨は直にやむでしょう。",
+   "glosses": [
+    "soon",
+    "direct"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b809",
+   "surface": "下",
+   "taughtReading": "しも",
+   "readingInNaturalSentence": "した",
+   "sentence": "百人一首の下の句を覚える。",
+   "glosses": [
+    "lower reaches",
+    "bottom"
+   ],
+   "status": "resolved by a forcing collocation",
+   "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 下の句 is read しものく"
+  },
+  {
+   "id": "n3-b861",
+   "surface": "唯",
+   "taughtReading": "たった",
+   "readingInNaturalSentence": "ただ",
+   "sentence": "会場には唯ひとりの客しかいなかった。",
+   "glosses": [
+    "only",
+    "merely"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b909",
+   "surface": "梅雨",
+   "taughtReading": "ばいう",
+   "readingInNaturalSentence": "つゆ",
+   "sentence": "梅雨前線の影響で大雨が続いています。",
+   "glosses": [
+    "rainy season"
+   ],
+   "status": "still unteachable"
+  },
+  {
+   "id": "n3-b919",
+   "surface": "額",
+   "taughtReading": "ひたい",
+   "readingInNaturalSentence": "がく",
+   "sentence": "ハンカチで額の汗をぬぐう。",
+   "glosses": [
+    "forehead",
+    "brow"
+   ],
+   "status": "resolved by a forcing collocation",
+   "forcedBy": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 額の汗 is read ひたいのあせ"
+  },
+  {
+   "id": "n3-b939",
+   "surface": "頬",
+   "taughtReading": "ほほ",
+   "readingInNaturalSentence": "ほお",
+   "sentence": "冷たい風が頬にあたって痛かった。",
+   "glosses": [
+    "cheek"
+   ],
+   "status": "still unteachable"
+  }
+ ],
+ "others": [
+  {
+   "id": "n3-b114",
+   "surface": "釣",
+   "taughtReading": "つり",
+   "glosses": [
+    "fishing",
+    "angling"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b174",
+   "surface": "命じる",
+   "taughtReading": "めいじる",
+   "glosses": [
+    "to order",
+    "to command"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b243",
+   "surface": "工場",
+   "taughtReading": "こうば",
+   "glosses": [
+    "factory",
+    "plant",
+    "workshop"
+   ],
+   "siblingEntries": [
+    {
+     "id": "n4-g135",
+     "kana": "こうじょう"
+    }
+   ],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b272",
+   "surface": "手段",
+   "taughtReading": "しゅだん",
+   "glosses": [
+    "means",
+    "way",
+    "measure"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b294",
+   "surface": "背",
+   "taughtReading": "せい",
+   "glosses": [
+    "height",
+    "stature",
+    "back"
+   ],
+   "siblingEntries": [
+    {
+     "id": "n5-b284",
+     "kana": "せ"
+    }
+   ],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b304",
+   "surface": "そこで",
+   "taughtReading": "そこで",
+   "glosses": [
+    "so",
+    "accordingly",
+    "now"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b386",
+   "surface": "打つ",
+   "taughtReading": "ぶつ",
+   "glosses": [
+    "to hit",
+    "to strike"
+   ],
+   "siblingEntries": [
+    {
+     "id": "n4-g033",
+     "kana": "うつ"
+    }
+   ],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b421",
+   "surface": "来",
+   "taughtReading": "らい",
+   "glosses": [
+    "next",
+    "since"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b459",
+   "surface": "学問",
+   "taughtReading": "がくもん",
+   "glosses": [
+    "scholarship",
+    "study"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b486",
+   "surface": "劇",
+   "taughtReading": "げき",
+   "glosses": [
+    "drama",
+    "play"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b527",
+   "surface": "資本",
+   "taughtReading": "しほん",
+   "glosses": [
+    "capital",
+    "funds"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b540",
+   "surface": "条件",
+   "taughtReading": "じょうけん",
+   "glosses": [
+    "conditions",
+    "terms"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b547",
+   "surface": "食物",
+   "taughtReading": "しょくもつ",
+   "glosses": [
+    "food",
+    "foodstuff"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b554",
+   "surface": "審判",
+   "taughtReading": "しんぱん",
+   "glosses": [
+    "refereeing",
+    "judgement"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b563",
+   "surface": "清潔",
+   "taughtReading": "せいけつ",
+   "glosses": [
+    "clean",
+    "hygienic"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b617",
+   "surface": "天然",
+   "taughtReading": "てんねん",
+   "glosses": [
+    "nature",
+    "spontaneity"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b633",
+   "surface": "なぜなら",
+   "taughtReading": "なぜなら",
+   "glosses": [
+    "because"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b657",
+   "surface": "針",
+   "taughtReading": "はり",
+   "glosses": [
+    "needle",
+    "pin"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b676",
+   "surface": "分析",
+   "taughtReading": "ぶんせき",
+   "glosses": [
+    "analysis"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b683",
+   "surface": "本当",
+   "taughtReading": "ほんと",
+   "glosses": [
+    "truth",
+    "reality"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b749",
+   "surface": "下す",
+   "taughtReading": "おろす",
+   "glosses": [
+    "to lower",
+    "to drop"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b785",
+   "surface": "国語",
+   "taughtReading": "こくご",
+   "glosses": [
+    "national language",
+    "Japanese"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b802",
+   "surface": "自殺",
+   "taughtReading": "じさつ",
+   "glosses": [
+    "suicide"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b826",
+   "surface": "処理",
+   "taughtReading": "しょり",
+   "glosses": [
+    "processing",
+    "dealing with"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b858",
+   "surface": "だが",
+   "taughtReading": "だが",
+   "glosses": [
+    "however",
+    "but"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b859",
+   "surface": "だけど",
+   "taughtReading": "だけど",
+   "glosses": [
+    "however"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b882",
+   "surface": "ですから",
+   "taughtReading": "ですから",
+   "glosses": [
+    "therefore",
+    "so"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b910",
+   "surface": "博士",
+   "taughtReading": "はかせ",
+   "glosses": [
+    "doctorate",
+    "PhD"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b933",
+   "surface": "触れる",
+   "taughtReading": "ふれる",
+   "glosses": [
+    "to touch",
+    "to be touched"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b948",
+   "surface": "明後日",
+   "taughtReading": "みょうごにち",
+   "glosses": [
+    "day after tomorrow"
+   ],
+   "siblingEntries": [],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  },
+  {
+   "id": "n3-b977",
+   "surface": "悪口",
+   "taughtReading": "わるくち",
+   "glosses": [
+    "abuse",
+    "insult"
+   ],
+   "siblingEntries": [
+    {
+     "id": "n1-b1356",
+     "kana": "あっこう"
+    }
+   ],
+   "status": "no example; not flagged by the reading diagnostic",
+   "note": "added when Codex pointed out the record covered only diagnostic hits"
+  }
+ ]
+}

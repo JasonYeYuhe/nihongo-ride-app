@@ -244,7 +244,10 @@ public final class GameSession {
         review: ReviewStore = ReviewStore(),
         now: @escaping () -> Date = Date.init
     ) -> GameSession {
-        let dueWords = review.dueCards(on: now(), limit: config.reviewWordCount)
+        // Ask for cards that still resolve, rather than asking for all of them and dropping
+        // the rest — otherwise a run silently returns fewer words than the badge promised.
+        let dueWords = review.dueCards(on: now(), limit: config.reviewWordCount,
+                                       resolves: { vocab.entry(id: $0) != nil })
             .compactMap { vocab.entry(id: $0.id) }
         let seen = Set(review.cards.keys)
         let newWords = vocab.ordered(level: config.level)
