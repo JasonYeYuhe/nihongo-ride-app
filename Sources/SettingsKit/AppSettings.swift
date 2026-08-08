@@ -55,6 +55,14 @@ public struct AppSettings: Codable, Equatable, Sendable {
     /// an `AVSpeechUtterance` rate — stored as a plain Float (0.5 = the platform default)
     /// so this type keeps no AVFoundation dependency; SpeechKit clamps it to the valid range.
     public var ttsEnabled: Bool
+    /// Show the reading above the kanji in the example sentence.
+    ///
+    /// On by default. v1.17 measured 25 N3 entries that teach a minority reading of a kanji
+    /// with a commoner alternative (工場 as こうば, 魚 as うお); without furigana a learner
+    /// reading the example has no way to tell which reading the card means, so the sentence
+    /// teaches the wrong association. Never shown on the sentence being TYPED — that would
+    /// hand over the answer.
+    public var exampleFurigana: Bool
     public var ttsRate: Float
 
     // v1.9 additions.
@@ -86,6 +94,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         conjugationForms: [String] = [],
         conjugationSRSEnabled: Bool = true,
         ttsEnabled: Bool = false,
+        exampleFurigana: Bool = true,
         ttsRate: Float = 0.5,
         conjSRSBackfilled: Bool = false,
         odometerBackfillDone: Bool = false
@@ -106,6 +115,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.conjugationForms = conjugationForms
         self.conjugationSRSEnabled = conjugationSRSEnabled
         self.ttsEnabled = ttsEnabled
+        self.exampleFurigana = exampleFurigana
         self.ttsRate = ttsRate
         self.conjSRSBackfilled = conjSRSBackfilled
         self.odometerBackfillDone = odometerBackfillDone
@@ -127,7 +137,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         case hasSeenOnboarding
         case conjugationForms
         case conjugationSRSEnabled
-        case ttsEnabled, ttsRate
+        case ttsEnabled, ttsRate, exampleFurigana
         case conjSRSBackfilled
         case odometerBackfillDone
     }
@@ -159,6 +169,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
         conjugationForms = try c.decodeIfPresent([String].self, forKey: .conjugationForms) ?? d.conjugationForms
         conjugationSRSEnabled = try c.decodeIfPresent(Bool.self, forKey: .conjugationSRSEnabled) ?? d.conjugationSRSEnabled
         ttsEnabled = try c.decodeIfPresent(Bool.self, forKey: .ttsEnabled) ?? d.ttsEnabled
+        exampleFurigana = try c.decodeIfPresent(Bool.self, forKey: .exampleFurigana)
+            ?? d.exampleFurigana
         ttsRate = try c.decodeIfPresent(Float.self, forKey: .ttsRate) ?? d.ttsRate
         conjSRSBackfilled = try c.decodeIfPresent(Bool.self, forKey: .conjSRSBackfilled) ?? d.conjSRSBackfilled
         odometerBackfillDone = try c.decodeIfPresent(Bool.self, forKey: .odometerBackfillDone) ?? d.odometerBackfillDone
@@ -185,6 +197,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         try c.encode(conjugationForms, forKey: .conjugationForms)
         try c.encode(conjugationSRSEnabled, forKey: .conjugationSRSEnabled)
         try c.encode(ttsEnabled, forKey: .ttsEnabled)
+        try c.encode(exampleFurigana, forKey: .exampleFurigana)
         try c.encode(ttsRate, forKey: .ttsRate)
         try c.encode(conjSRSBackfilled, forKey: .conjSRSBackfilled)
         try c.encode(odometerBackfillDone, forKey: .odometerBackfillDone)

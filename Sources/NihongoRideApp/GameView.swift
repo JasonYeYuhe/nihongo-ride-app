@@ -420,9 +420,18 @@ private struct WordCard: View {
 
             if !compact, let example = session.currentExampleJP {
                 VStack(spacing: 3) {
-                    Text(example)
-                        .scaledSystemFont(16, weight: .medium)
-                        .foregroundStyle(.white.opacity(0.7))
+                    // Furigana on the DISPLAYED example only. In sentence mode the example is
+                    // the thing being typed, so showing its reading would hand over the
+                    // answer — GameSession reports .sentence and the ruby stays off.
+                    if model.exampleFurigana,
+                       session.mode != .sentence,
+                       let tokens = session.currentExampleTokens, !tokens.isEmpty {
+                        FuriganaText(tokens: tokens, size: 16, color: .white.opacity(0.7))
+                    } else {
+                        Text(example)
+                            .scaledSystemFont(16, weight: .medium)
+                            .foregroundStyle(.white.opacity(0.7))
+                    }
                     if let translation = session.currentExampleTranslation {
                         Text(translation)
                             .scaledSystemFont(13)

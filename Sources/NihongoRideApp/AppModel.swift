@@ -119,6 +119,8 @@ final class AppModel {
     /// anything — but it should still agree with `AppSettings.default`, or a reader
     /// concludes the fresh-install default is "always" when it is "when stuck".
     var assistance: AssistanceMode = .afterStruggle { didSet { persistSettings() } }
+    /// Show the reading above the kanji in the displayed example sentence.
+    var exampleFurigana: Bool = true { didSet { persistSettings() } }
     var soundEnabled: Bool = true { didSet { persistSettings() } }
     var selectedMode: GameMode = .journey { didSet { persistSettings() } }
     /// Chosen JLPT level for new words; `nil` mixes all levels.
@@ -285,6 +287,7 @@ final class AppModel {
         assistance = AssistanceMode(rawValue: loaded.assistance)
             ?? (loaded.showRomajiHint ? .always : .off)
         soundEnabled = loaded.soundEnabled
+        exampleFurigana = loaded.exampleFurigana
         selectedMode = GameMode(rawValue: loaded.selectedMode) ?? .journey
         selectedLevel = loaded.selectedLevel.flatMap { JLPTLevel(rawValue: $0) }
         practicePassages = loaded.practicePassages
@@ -775,6 +778,7 @@ final class AppModel {
         settings.conjugationSRSEnabled = conjugationSRSEnabled
         settings.ttsEnabled = ttsEnabled
         settings.ttsRate = ttsRate
+        settings.exampleFurigana = exampleFurigana
         settings.save(to: .standard)
     }
 

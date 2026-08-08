@@ -297,3 +297,42 @@ struct SentenceModeTests {
                                                    + failed.prefix(8).joined(separator: "\n")))
     }
 }
+
+@Suite("Furigana — v1.18")
+struct FuriganaTests {
+
+    /// The red line: in sentence mode the example IS the typing target, so ruby over it would
+    /// hand the learner the answer. GameView gates on `session.mode != .sentence`; this
+    /// asserts the mode is reported truthfully so that gate can work.
+    @Test("sentence mode reports its mode, so the view can suppress ruby")
+    func sentenceModeIsVisible() {
+        var config = GameSession.Config()
+        config.mode = .sentence
+        let session = GameSession(
+            words: [VocabEntry(id: "s", surface: "犬だ。", kana: "いぬだ",
+                               partsOfSpeech: ["sentence"], jlpt: .n5, meanings: ["en": ["dog"]])],
+            config: config)
+        #expect(session.mode == .sentence)
+
+        var journey = GameSession.Config()
+        journey.mode = .journey
+        let other = GameSession(
+            words: [VocabEntry(id: "w", surface: "犬", kana: "いぬ",
+                               partsOfSpeech: ["n"], jlpt: .n5, meanings: ["en": ["dog"]])],
+            config: journey)
+        #expect(other.mode == .journey)
+    }
+
+    /// Tokens reach the view or there is nothing to render ruby from.
+    @Test("the session exposes the example's furigana tokens")
+    func tokensReachTheView() {
+        let entry = VocabEntry(id: "e", surface: "犬", kana: "いぬ", partsOfSpeech: ["n"],
+                               jlpt: .n5, meanings: ["en": ["dog"]],
+                               exampleJP: "犬だ。", exampleEN: "A dog.",
+                               exampleKana: "いぬだ",
+                               exampleTokens: [["犬", "いぬ"], ["だ", "だ"], ["。", "。"]])
+        let session = GameSession(words: [entry], config: GameSession.Config())
+        #expect(session.currentExampleTokens?.count == 3)
+        #expect(session.currentExampleTokens?.first == ["犬", "いぬ"])
+    }
+}

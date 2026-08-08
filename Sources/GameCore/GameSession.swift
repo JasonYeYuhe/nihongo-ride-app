@@ -302,6 +302,8 @@ public final class GameSession {
     public var wordList: [VocabEntry] { queue }
     public var currentLevelLabel: String { current?.jlpt.label ?? "" }
     public var currentExampleJP: String? { current?.exampleJP }
+    /// Surface/reading pairs for furigana over the example sentence.
+    public var currentExampleTokens: [[String]]? { current?.exampleTokens }
     public var currentExampleTranslation: String? { current?.exampleTranslation(for: config.languageCode) }
     public var typedRomaji: String { matcher?.typedRomaji ?? "" }
     public var expectedNextCharacters: Set<Character> { matcher?.expectedNextCharacters ?? [] }

@@ -96,6 +96,14 @@ struct SettingsView: View {
             }
 
             // Read-aloud (TTS) of the card kana.
+            settingsCard(title: zh ? "例句注音" : "Furigana") {
+                Toggle(isOn: $model.exampleFurigana) {
+                    rowLabel(icon: "textformat.superscript",
+                             text: zh ? "在例句汉字上标注读音" : "Show readings above kanji")
+                }
+                .toggleStyle(.switch)
+            }
+
             settingsCard(title: zh ? "假名朗读" : "Read Aloud") {
                 Toggle(isOn: $model.ttsEnabled) {
                     rowLabel(icon: "speaker.wave.2",

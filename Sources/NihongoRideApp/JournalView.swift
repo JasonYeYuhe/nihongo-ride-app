@@ -331,6 +331,7 @@ struct JournalView: View {
         switch record.mode {
         case "timeAttack": mode = zh ? "限时" : "Time Attack"
         case "practice":   mode = zh ? "练习" : "Practice"
+        case "sentence":   mode = zh ? "例句" : "Sentence"
         default:           mode = zh ? "环游" : "Journey"
         }
         let acc = Int(record.accuracy * 100)
@@ -383,6 +384,7 @@ struct JournalView: View {
         switch mode {
         case "timeAttack": ("timer", Theme.gold)
         case "practice": ("text.alignleft", Theme.done)
+        case "sentence": ("text.quote", Theme.gold)
         default: ("bicycle", Theme.accent2)
         }
     }

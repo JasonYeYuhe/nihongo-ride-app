@@ -62,6 +62,7 @@ struct MenuView: View {
                         Text(model.languageCode == "zh" ? "限时" : "Time").tag(GameMode.timeAttack)
                         Text(model.languageCode == "zh" ? "练习" : "Practice").tag(GameMode.practice)
                         Text(model.languageCode == "zh" ? "变形" : "Verbs").tag(GameMode.conjugation)
+                        Text(model.languageCode == "zh" ? "例句" : "Sentence").tag(GameMode.sentence)
                     }
                     .pickerStyle(.segmented)
                     .menuControlWidth(340)
