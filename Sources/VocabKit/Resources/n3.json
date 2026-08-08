@@ -75279,24 +75279,6 @@
     ]
   },
   {
-    "id": "n3-b702",
-    "surface": "文字",
-    "kana": "もんじ",
-    "pos": [
-      "n"
-    ],
-    "jlpt": 3,
-    "meanings": {
-      "en": [
-        "letter of alphabet",
-        "character"
-      ],
-      "zh": [
-        "文字"
-      ]
-    }
-  },
-  {
     "id": "n3-b703",
     "surface": "用いる",
     "kana": "もちいる",
@@ -77510,26 +77492,6 @@
         "。"
       ]
     ]
-  },
-  {
-    "id": "n3-b734",
-    "surface": "言う",
-    "kana": "ゆう",
-    "pos": [
-      "Verb"
-    ],
-    "vc": "godan_u",
-    "jlpt": 3,
-    "meanings": {
-      "en": [
-        "to say",
-        "to tell"
-      ],
-      "zh": [
-        "说",
-        "讲"
-      ]
-    }
   },
   {
     "id": "n3-b735",

@@ -1,0 +1,21 @@
+{
+ "reason": "two entries teach a reading of a word that another entry already teaches better. Neither is a different word: the glosses are byte-identical to their replacements. 言う/ゆう is a colloquial pronunciation that no IME converts to 言う, so it teaches a reading that does not work outside this app; 文字/もんじ is a rare reading of the word 文字/もじ, which ships with an example sentence while もんじ never could. Learners meet the same word twice with different answers.\n\nThe kana of the KEPT entries is untouched. Changing an existing entry's kana to the common reading would preserve its review schedule while silently swapping the answer being tested — the one thing Codex, Gemini and this repo's own data guard all refuse.",
+ "entries": [
+  {
+   "id": "n3-b734",
+   "surface": "言う",
+   "kana": "ゆう",
+   "retire": true,
+   "replacedBy": "n5-b014",
+   "why": "ゆう is a colloquial pronunciation; no IME produces 言う from it. n5-b014 言う/いう carries identical glosses."
+  },
+  {
+   "id": "n3-b702",
+   "surface": "文字",
+   "kana": "もんじ",
+   "retire": true,
+   "replacedBy": "n3-b954",
+   "why": "もんじ is a rare reading of the same word. n3-b954 文字/もじ has identical glosses and a typeable example sentence; もんじ has none and no sentence can force it."
+  }
+ ]
+}

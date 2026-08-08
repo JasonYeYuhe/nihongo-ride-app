@@ -63,6 +63,13 @@ def check(path, base, allow_dedupe=False, manifest=None):
     by_id_new = {e["id"]: e for e in new}
 
     for missing in sorted(set(by_id_old) - set(by_id_new)):
+        declared = manifest.get(missing) if manifest else None
+        # Retiring an entry is the most destructive change available: SRSCard.id IS
+        # VocabEntry.id, so the learner's card for it becomes unreachable. It is allowed only
+        # when the manifest names the id AND names the entry that replaces it, so the record
+        # always says where a retired word's learners are supposed to go.
+        if declared and declared.get("retire") and declared.get("replacedBy"):
+            continue
         problems.append(f"{missing}: entry DELETED")
     for added in sorted(set(by_id_new) - set(by_id_old)):
         problems.append(f"{added}: entry ADDED (this guard expects merges, not new words)")
