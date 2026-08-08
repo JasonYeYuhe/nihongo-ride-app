@@ -31642,7 +31642,77 @@
         "再次",
         "重新"
       ]
-    }
+    },
+    "exJP": "春が来て、公園に再び美しい花が咲いた。",
+    "exEN": "Spring arrived, and beautiful flowers bloomed in the park once again.",
+    "exZH": "春天来了，公园里再次开出了美丽的花朵。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.18 §D, last N3 residue)",
+      "sense": "once again, a second time",
+      "senseListed": true
+    },
+    "exKana": "はるがきてこうえんにふたたびうつくしいはながさいた",
+    "exTokens": [
+      [
+        "春",
+        "はる"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "来",
+        "き"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "公園",
+        "こうえん"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "再び",
+        "ふたたび"
+      ],
+      [
+        "美しい",
+        "うつくしい"
+      ],
+      [
+        "花",
+        "はな"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "咲い",
+        "さい"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b157",
@@ -34944,7 +35014,77 @@
         "祝贺",
         "庆祝"
       ]
-    }
+    },
+    "exJP": "友達の結婚の祝いに何を贈るか考えている。",
+    "exEN": "I am thinking about what to give as a wedding gift for my friend.",
+    "exZH": "我正在考虑送什么作为朋友的结婚贺礼。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.18 §D, last N3 residue)",
+      "sense": "congratulatory gift or celebration",
+      "senseListed": false
+    },
+    "exKana": "ともだちのけっこんのいわいになんをおくるかかんがえている",
+    "exTokens": [
+      [
+        "友達",
+        "ともだち"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "結婚",
+        "けっこん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "祝い",
+        "いわい"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "何",
+        "なん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "贈る",
+        "おくる"
+      ],
+      [
+        "か",
+        "か"
+      ],
+      [
+        "考え",
+        "かんがえ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b205",
@@ -37476,7 +37616,77 @@
       "zh": [
         "现状"
       ]
-    }
+    },
+    "exJP": "問題の解決に向けて、現状を詳しく確認した。",
+    "exEN": "To solve the problem, we checked the current status in detail.",
+    "exZH": "为了解决问题，我们详细确认了现状。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.18 §D, last N3 residue)",
+      "sense": "current status or situation",
+      "senseListed": false
+    },
+    "exKana": "もんだいのかいけつにむけてげんじょうをくわしくかくにんした",
+    "exTokens": [
+      [
+        "問題",
+        "もんだい"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "解決",
+        "かいけつ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "向け",
+        "むけ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "現状",
+        "げんじょう"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "詳しく",
+        "くわしく"
+      ],
+      [
+        "確認",
+        "かくにん"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b241",
@@ -37571,7 +37781,61 @@
         "光景",
         "情景"
       ]
-    }
+    },
+    "exJP": "山頂からの素晴らしい光景に感動した。",
+    "exEN": "I was moved by the wonderful scene from the mountain top.",
+    "exZH": "山顶上的壮丽景色让我深受感动。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.18 §D, last N3 residue)",
+      "sense": "scene or sight",
+      "senseListed": true
+    },
+    "exKana": "さんちょうからのすばらしいこうけいにかんどうした",
+    "exTokens": [
+      [
+        "山頂",
+        "さんちょう"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "素晴らしい",
+        "すばらしい"
+      ],
+      [
+        "光景",
+        "こうけい"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "感動",
+        "かんどう"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b243",
@@ -46178,7 +46442,73 @@
       "zh": [
         "星期日"
       ]
-    }
+    },
+    "exJP": "今週の日曜は家族と一緒に買い物をします。",
+    "exEN": "This Sunday, I am going shopping with my family.",
+    "exZH": "这周日我要和家人一起去买东西。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.18 §D, last N3 residue)",
+      "sense": "Sunday",
+      "senseListed": true
+    },
+    "exKana": "こんしゅうのにちようはかぞくといっしょにかいものをします",
+    "exTokens": [
+      [
+        "今週",
+        "こんしゅう"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "日曜",
+        "にちよう"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "家族",
+        "かぞく"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "一緒",
+        "いっしょ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "買い物",
+        "かいもの"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b358",
@@ -67668,7 +67998,61 @@
         "最近",
         "近来"
       ]
-    }
+    },
+    "exJP": "近頃は寒い日が続いています。",
+    "exEN": "Cold days have been continuing lately.",
+    "exZH": "最近接连几天都很冷。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.18 §D, last N3 residue)",
+      "sense": "lately / these days",
+      "senseListed": true
+    },
+    "exKana": "ちかごろはさむいひがつづいています",
+    "exTokens": [
+      [
+        "近頃",
+        "ちかごろ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "寒い",
+        "さむい"
+      ],
+      [
+        "日",
+        "ひ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "続い",
+        "つづい"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b599",
@@ -69344,7 +69728,61 @@
         "某处",
         "哪里"
       ]
-    }
+    },
+    "exJP": "休みの日にどこかへ出かけたい。",
+    "exEN": "I want to go somewhere on my day off.",
+    "exZH": "休息日想去什么地方走走。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.18 §D, last N3 residue)",
+      "sense": "somewhere",
+      "senseListed": true
+    },
+    "exKana": "やすみのひにどこかへでかけたい",
+    "exTokens": [
+      [
+        "休み",
+        "やすみ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "日",
+        "ひ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "どこ",
+        "どこ"
+      ],
+      [
+        "か",
+        "か"
+      ],
+      [
+        "へ",
+        "へ"
+      ],
+      [
+        "出かけ",
+        "でかけ"
+      ],
+      [
+        "たい",
+        "たい"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b625",
@@ -82694,7 +83132,65 @@
       "zh": [
         "乘客"
       ]
-    }
+    },
+    "exJP": "バスから多くの乗客が降りてきた。",
+    "exEN": "Many passengers got off the bus.",
+    "exZH": "许多乘客下了公交车。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.18 §D, last N3 residue)",
+      "sense": "passenger",
+      "senseListed": true
+    },
+    "exKana": "ばすからおおくのじょうきゃくがおりてきた",
+    "exTokens": [
+      [
+        "バス",
+        "ばす"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "多く",
+        "おおく"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "乗客",
+        "じょうきゃく"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "降り",
+        "おり"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "き",
+        "き"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b819",
