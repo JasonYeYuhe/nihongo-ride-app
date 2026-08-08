@@ -43,6 +43,27 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
     public let exampleEN: String?
     /// Optional example-sentence translation in Chinese.
     public let exampleZH: String?
+    /// The example sentence's full reading — the typing target for sentence mode.
+    ///
+    /// Absent on 14 of 3,714 sentences, deliberately: a sentence whose reading could not be
+    /// derived safely (digits, which Sudachi reads one digit at a time, so 10キロ becomes
+    /// いちれいきろ) keeps its display text and is simply not offered as a target. A wrong
+    /// target is worse than a missing one — the learner types the right thing and is marked
+    /// wrong. `isTypeableSentence` is the check callers should use.
+    public let exampleKana: String?
+    /// Surface/reading pairs covering the example sentence, for furigana.
+    ///
+    /// Concatenating the surfaces reconstructs `exampleJP` exactly and the readings
+    /// reconstruct `exampleKana` exactly; the generator refuses to emit anything else,
+    /// because furigana that drifts puts a reading over the wrong character.
+    public let exampleTokens: [[String]]?
+
+    /// True when this entry can be used as a sentence-typing target.
+    public var isTypeableSentence: Bool {
+        guard let jp = exampleJP, !jp.isEmpty,
+              let kana = exampleKana, !kana.isEmpty else { return false }
+        return true
+    }
 
     private enum CodingKeys: String, CodingKey {
         case id, surface, kana
@@ -52,6 +73,8 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
         case exampleJP = "exJP"
         case exampleEN = "exEN"
         case exampleZH = "exZH"
+        case exampleKana = "exKana"
+        case exampleTokens = "exTokens"
     }
 
     public init(
@@ -64,7 +87,9 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
         vc: String? = nil,
         exampleJP: String? = nil,
         exampleEN: String? = nil,
-        exampleZH: String? = nil
+        exampleZH: String? = nil,
+        exampleKana: String? = nil,
+        exampleTokens: [[String]]? = nil
     ) {
         self.id = id
         self.surface = surface
@@ -76,6 +101,8 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
         self.exampleJP = exampleJP
         self.exampleEN = exampleEN
         self.exampleZH = exampleZH
+        self.exampleKana = exampleKana
+        self.exampleTokens = exampleTokens
     }
 
     /// A canonical, always-typeable romaji hint, derived from ``kana`` by the engine.

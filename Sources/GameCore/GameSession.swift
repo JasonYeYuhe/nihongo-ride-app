@@ -18,6 +18,7 @@ public enum GameMode: String, Sendable, CaseIterable {
     case timeAttack    // sprint; ends when the timer (UI-driven) runs out
     case practice      // calm, distraction-free passage typing
     case conjugation   // verb-conjugation drill (driven by ConjugationSession, no SRS)
+    case sentence      // type a whole example sentence (v1.18); no SRS — see RunCompletion
 }
 
 /// What a finished run persists and where it lands — the single source of truth for
@@ -37,11 +38,18 @@ public struct RunCompletion: Equatable, Sendable {
     /// - a **weak-words cram** (`recordsSRS == false`) advances nothing — no SRS,
     ///   journal, odometer, or Game Center — but still shows its review-these results;
     /// - **practice** records no SRS but still logs a ride, and returns to the menu;
+    /// - **sentence** records no SRS either, and the reason is worth stating: a sentence run
+    ///   counts mistakes across the WHOLE sentence, so a typo in an unrelated clause would
+    ///   land on the review card of the one word the sentence teaches. That card is
+    ///   calibrated for typing a word; grading it on a whole sentence records an
+    ///   incomparable signal into the same scheduler. Sentence mode still logs a ride and
+    ///   still shows results — it is a real run, just not a review of anything.
     /// - every real ride persists everything and shows results.
     public init(mode: GameMode, recordsSRS: Bool) {
         let isCram = !recordsSRS
         let isPractice = mode == .practice
-        persistsSRS = !isPractice && !isCram
+        let isSentence = mode == .sentence
+        persistsSRS = !isPractice && !isSentence && !isCram
         logsRide = !isCram
         reportsGameCenter = !isPractice && !isCram
         showsResults = !isPractice
@@ -187,6 +195,46 @@ public final class GameSession {
         var practiceConfig = config
         practiceConfig.mode = .practice
         return GameSession(words: Array(words), config: practiceConfig, now: now)
+    }
+
+    /// Builds a sentence-typing run: the target is a whole example sentence's reading.
+    ///
+    /// Mechanically this is the same trick as `makePractice` — a synthetic `VocabEntry` whose
+    /// `kana` is what gets typed — but the surface stays the KANJI sentence, because that is
+    /// what the learner reads while typing, and the id stays the real entry's so the results
+    /// screen can say which word each sentence was teaching.
+    ///
+    /// Only entries with `isTypeableSentence` are eligible. Fourteen shipped sentences have
+    /// no reading on purpose (digits read one digit at a time), and offering one as a target
+    /// would mark a learner wrong for typing what the sentence actually says.
+    public static func makeSentence(
+        vocab: VocabStore = .shared,
+        config: Config = .init(),
+        now: @escaping () -> Date = Date.init
+    ) -> GameSession {
+        var pool = vocab.ordered(level: config.level).filter { $0.isTypeableSentence }
+        // Level-scoped first; if that level has no typeable sentence yet, fall back to the
+        // whole corpus rather than starting an empty run.
+        if pool.isEmpty { pool = vocab.ordered().filter { $0.isTypeableSentence } }
+        pool.shuffle()
+        let words = pool.prefix(max(5, config.newWordCount)).map { entry -> VocabEntry in
+            VocabEntry(
+                id: entry.id,
+                surface: entry.exampleJP ?? entry.surface,
+                kana: entry.exampleKana ?? entry.kana,
+                partsOfSpeech: ["sentence"],
+                jlpt: entry.jlpt,
+                meanings: entry.meanings,
+                exampleJP: entry.exampleJP,
+                exampleEN: entry.exampleEN,
+                exampleZH: entry.exampleZH,
+                exampleKana: entry.exampleKana,
+                exampleTokens: entry.exampleTokens
+            )
+        }
+        var sentenceConfig = config
+        sentenceConfig.mode = .sentence
+        return GameSession(words: Array(words), config: sentenceConfig, now: now)
     }
 
     /// Builds a session by mixing due review words with new words from the store.

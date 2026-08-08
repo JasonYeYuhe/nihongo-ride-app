@@ -20,7 +20,7 @@
     "exJP": "先生に挨拶する。",
     "exEN": "Greet the teacher.",
     "exZH": "向老师问好。",
-    "exKana": "せんせいにあいさつする。",
+    "exKana": "せんせいにあいさつする",
     "exTokens": [
       [
         "先生",
@@ -64,7 +64,7 @@
     "exJP": "赤ん坊が泣いている。",
     "exEN": "The baby is crying.",
     "exZH": "婴儿在哭。",
-    "exKana": "あかんぼうがないている。",
+    "exKana": "あかんぼうがないている",
     "exTokens": [
       [
         "赤ん坊",
@@ -114,7 +114,7 @@
     "exJP": "席が空く。",
     "exEN": "A seat becomes empty.",
     "exZH": "座位空出来了。",
-    "exKana": "せきがあく。",
+    "exKana": "せきがあく",
     "exTokens": [
       [
         "席",
@@ -154,7 +154,7 @@
     "exJP": "この川は浅い。",
     "exEN": "This river is shallow.",
     "exZH": "这条河很浅。",
-    "exKana": "このかわはあさい。",
+    "exKana": "このかわはあさい",
     "exTokens": [
       [
         "この",
@@ -198,7 +198,7 @@
     "exJP": "いい味がする。",
     "exEN": "It has a good flavor.",
     "exZH": "味道很好。",
-    "exKana": "いいあじがする。",
+    "exKana": "いいあじがする",
     "exTokens": [
       [
         "いい",
@@ -241,7 +241,7 @@
     "exJP": "明日また来ます。",
     "exEN": "I will come again tomorrow.",
     "exZH": "我明天再来。",
-    "exKana": "あすまたきます。",
+    "exKana": "あすまたきます",
     "exTokens": [
       [
         "明日",
@@ -286,7 +286,7 @@
     "exJP": "遊びに行こう。",
     "exEN": "Let's go play.",
     "exZH": "我们去玩吧。",
-    "exKana": "あそびにいこう。",
+    "exKana": "あそびにいこう",
     "exTokens": [
       [
         "遊び",
@@ -328,7 +328,7 @@
     "exJP": "切手を集める。",
     "exEN": "Collect stamps.",
     "exZH": "收集邮票。",
-    "exKana": "きってをあつめる。",
+    "exKana": "きってをあつめる",
     "exTokens": [
       [
         "切手",
@@ -368,7 +368,7 @@
     "exJP": "友達に謝る。",
     "exEN": "Apologize to a friend.",
     "exZH": "向朋友道歉。",
-    "exKana": "ともだちにあやまる。",
+    "exKana": "ともだちにあやまる",
     "exTokens": [
       [
         "友達",
@@ -410,7 +410,7 @@
     "exJP": "これで安心です。",
     "exEN": "I am relieved now.",
     "exZH": "这下我放心了。",
-    "exKana": "これであんしんです。",
+    "exKana": "これであんしんです",
     "exTokens": [
       [
         "これ",
@@ -455,7 +455,7 @@
     "exJP": "安全が第一だ。",
     "exEN": "Safety is first.",
     "exZH": "安全第一。",
-    "exKana": "あんぜんがだいいちだ。",
+    "exKana": "あんぜんがだいいちだ",
     "exTokens": [
       [
         "安全",
@@ -524,7 +524,7 @@
     "exJP": "彼以外は全員来た。",
     "exEN": "Everyone came except him.",
     "exZH": "除了他大家都来了。",
-    "exKana": "かれいがいはぜんいんきた。",
+    "exKana": "かれいがいはぜんいんきた",
     "exTokens": [
       [
         "彼",
@@ -576,7 +576,7 @@
     "exJP": "医学を勉強する。",
     "exEN": "Study medical science.",
     "exZH": "学习医学。",
-    "exKana": "いがくをべんきょうする。",
+    "exKana": "いがくをべんきょうする",
     "exTokens": [
       [
         "医学",
@@ -622,7 +622,7 @@
     "exJP": "長く生きたい。",
     "exEN": "I want to live long.",
     "exZH": "我想长寿。",
-    "exKana": "ながくいきたい。",
+    "exKana": "ながくいきたい",
     "exTokens": [
       [
         "長く",
@@ -663,7 +663,7 @@
     "exJP": "意見を言う。",
     "exEN": "Express an opinion.",
     "exZH": "发表意见。",
-    "exKana": "いけんをゆう。",
+    "exKana": "いけんをゆう",
     "exTokens": [
       [
         "意見",
@@ -702,7 +702,7 @@
     "exJP": "石を投げる。",
     "exEN": "Throw a stone.",
     "exZH": "扔石头。",
-    "exKana": "いしをなげる。",
+    "exKana": "いしをなげる",
     "exTokens": [
       [
         "石",
@@ -742,7 +742,7 @@
     "exJP": "期待以上だった。",
     "exEN": "It was more than expected.",
     "exZH": "超出了预期。",
-    "exKana": "きたいいじょうだった。",
+    "exKana": "きたいいじょうだった",
     "exTokens": [
       [
         "期待",
@@ -788,7 +788,7 @@
     "exJP": "急がないと遅れる。",
     "exEN": "If we don't hurry, we'll be late.",
     "exZH": "不快点就会迟到。",
-    "exKana": "いそがないとおくれる。",
+    "exKana": "いそがないとおくれる",
     "exTokens": [
       [
         "急が",
@@ -832,7 +832,7 @@
     "exJP": "私がいたします。",
     "exEN": "I will do it.",
     "exZH": "让我来做吧。",
-    "exKana": "わたくしがいたします。",
+    "exKana": "わたくしがいたします",
     "exTokens": [
       [
         "私",
@@ -876,7 +876,7 @@
     "exJP": "一度行ってみたい。",
     "exEN": "I want to go there once.",
     "exZH": "我想去一次。",
-    "exKana": "いちどいってみたい。",
+    "exKana": "いちどいってみたい",
     "exTokens": [
       [
         "一度",
@@ -924,7 +924,7 @@
     "exJP": "針に糸を通す。",
     "exEN": "Thread a needle.",
     "exZH": "穿针引线。",
-    "exKana": "はりにいとをとおす。",
+    "exKana": "はりにいとをとおす",
     "exTokens": [
       [
         "針",
@@ -972,7 +972,7 @@
     "exJP": "３日以内に返す。",
     "exEN": "Return within 3 days.",
     "exZH": "三天内归还。",
-    "exKana": "みっかいないにかえす。",
+    "exKana": "みっかいないにかえす",
     "exTokens": [
       [
         "３",
@@ -1021,7 +1021,7 @@
     "exJP": "田舎に帰る。",
     "exEN": "Return to the countryside.",
     "exZH": "回乡下。",
-    "exKana": "いなかにかえる。",
+    "exKana": "いなかにかえる",
     "exTokens": [
       [
         "田舎",
@@ -1063,7 +1063,7 @@
     "exJP": "平和を祈る。",
     "exEN": "Pray for peace.",
     "exZH": "祈求和平。",
-    "exKana": "へいわをいのる。",
+    "exKana": "へいわをいのる",
     "exTokens": [
       [
         "平和",
@@ -1105,7 +1105,7 @@
     "exJP": "先生がいらっしゃる。",
     "exEN": "The teacher is here.",
     "exZH": "老师在这里。",
-    "exKana": "せんせいがいらっしゃる。",
+    "exKana": "せんせいがいらっしゃる",
     "exTokens": [
       [
         "先生",
@@ -1146,7 +1146,7 @@
     "exJP": "木を植える。",
     "exEN": "Plant a tree.",
     "exZH": "种树。",
-    "exKana": "きをうえる。",
+    "exKana": "きをうえる",
     "exTokens": [
       [
         "木",
@@ -1187,7 +1187,7 @@
     "exJP": "受付で聞く。",
     "exEN": "Ask at the reception desk.",
     "exZH": "在接待处询问。",
-    "exKana": "うけつけできく。",
+    "exKana": "うけつけできく",
     "exTokens": [
       [
         "受付",
@@ -1229,7 +1229,7 @@
     "exJP": "試験を受ける。",
     "exEN": "Take an exam.",
     "exZH": "参加考试。",
-    "exKana": "しけんをうける。",
+    "exKana": "しけんをうける",
     "exTokens": [
       [
         "試験",
@@ -1271,7 +1271,7 @@
     "exJP": "動かないで。",
     "exEN": "Don't move.",
     "exZH": "别动。",
-    "exKana": "うごかないで。",
+    "exKana": "うごかないで",
     "exTokens": [
       [
         "動か",
@@ -1311,7 +1311,7 @@
     "exJP": "嘘をつかないで。",
     "exEN": "Don't tell a lie.",
     "exZH": "别说谎。",
-    "exKana": "うそをつかないで。",
+    "exKana": "うそをつかないで",
     "exTokens": [
       [
         "嘘",
@@ -1360,7 +1360,7 @@
     "exJP": "三つのうち一つを選ぶ。",
     "exEN": "Choose one from inside the three.",
     "exZH": "从三个当中选一个。",
-    "exKana": "みっつのうちひとつをえらぶ。",
+    "exKana": "みっつのうちひとつをえらぶ",
     "exTokens": [
       [
         "三",
@@ -1422,7 +1422,7 @@
     "exJP": "ボールを打つ。",
     "exEN": "Hit the ball.",
     "exZH": "打球。",
-    "exKana": "ぼーるをうつ。",
+    "exKana": "ぼーるをうつ",
     "exTokens": [
       [
         "ボール",
@@ -1462,7 +1462,7 @@
     "exJP": "美しい花ですね。",
     "exEN": "It's a beautiful flower.",
     "exZH": "好美的花啊。",
-    "exKana": "うつくしいはなですね。",
+    "exKana": "うつくしいはなですね",
     "exTokens": [
       [
         "美しい",
@@ -1508,7 +1508,7 @@
     "exJP": "黒板の字を写す。",
     "exEN": "Copy words from the blackboard.",
     "exZH": "抄写黑板上的字。",
-    "exKana": "こくばんのじをうつす。",
+    "exKana": "こくばんのじをうつす",
     "exTokens": [
       [
         "黒板",
@@ -1556,7 +1556,7 @@
     "exJP": "宴会を開く。",
     "exEN": "Hold a banquet.",
     "exZH": "举办宴会。",
-    "exKana": "えんかいをひらく。",
+    "exKana": "えんかいをひらく",
     "exTokens": [
       [
         "宴会",
@@ -1597,7 +1597,7 @@
     "exJP": "腕が痛い。",
     "exEN": "My arm hurts.",
     "exZH": "我的手臂痛。",
-    "exKana": "うでがいたい。",
+    "exKana": "うでがいたい",
     "exTokens": [
       [
         "腕",
@@ -1637,7 +1637,7 @@
     "exJP": "会えて嬉しい。",
     "exEN": "I'm happy to meet you.",
     "exZH": "很高兴见到你。",
-    "exKana": "あえてうれしい。",
+    "exKana": "あえてうれしい",
     "exTokens": [
       [
         "会え",
@@ -1677,7 +1677,7 @@
     "exJP": "タクシーの運転手。",
     "exEN": "Taxi driver.",
     "exZH": "出租车司机。",
-    "exKana": "たくしーのうんてんしゅ。",
+    "exKana": "たくしーのうんてんしゅ",
     "exTokens": [
       [
         "タクシー",
@@ -1717,7 +1717,7 @@
     "exJP": "木の枝を折る。",
     "exEN": "Break a tree branch.",
     "exZH": "折断树枝。",
-    "exKana": "きのえだをおる。",
+    "exKana": "きのえだをおる",
     "exTokens": [
       [
         "木",
@@ -1766,7 +1766,7 @@
     "exJP": "好きなのを選んで。",
     "exEN": "Choose the one you like.",
     "exZH": "选你喜欢的吧。",
-    "exKana": "すきなのをえらんで。",
+    "exKana": "すきなのをえらんで",
     "exTokens": [
       [
         "好き",
@@ -1819,7 +1819,7 @@
     "exJP": "遠慮しないでください。",
     "exEN": "Please do not hold back.",
     "exZH": "请别客气。",
-    "exKana": "えんりょしないでください。",
+    "exKana": "えんりょしないでください",
     "exTokens": [
       [
         "遠慮",
@@ -1869,7 +1869,7 @@
     "exJP": "社長がおいでになる。",
     "exEN": "The president will be here.",
     "exZH": "总经理会来。",
-    "exKana": "しゃちょうがおいでになる。",
+    "exKana": "しゃちょうがおいでになる",
     "exTokens": [
       [
         "社長",
@@ -1922,7 +1922,7 @@
     "exJP": "お祝いを贈る。",
     "exEN": "Give a celebration gift.",
     "exZH": "送庆祝礼物。",
-    "exKana": "おいわいをおくる。",
+    "exKana": "おいわいをおくる",
     "exTokens": [
       [
         "お祝い",
@@ -1963,7 +1963,7 @@
     "exJP": "プレゼントを贈る。",
     "exEN": "Give a present.",
     "exZH": "送礼物。",
-    "exKana": "ぷれぜんとをおくる。",
+    "exKana": "ぷれぜんとをおくる",
     "exTokens": [
       [
         "プレゼント",
@@ -2005,7 +2005,7 @@
     "exJP": "バスに遅れる。",
     "exEN": "Be late for the bus.",
     "exZH": "错过公交车。",
-    "exKana": "ばすにおくれる。",
+    "exKana": "ばすにおくれる",
     "exTokens": [
       [
         "バス",
@@ -2047,7 +2047,7 @@
     "exJP": "朝、子供を起こす。",
     "exEN": "Wake the child in the morning.",
     "exZH": "早上叫醒孩子。",
-    "exKana": "あさ、こどもをおこす。",
+    "exKana": "あさこどもをおこす",
     "exTokens": [
       [
         "朝",
@@ -2097,7 +2097,7 @@
     "exJP": "会議を行う。",
     "exEN": "Hold a meeting.",
     "exZH": "举行会议。",
-    "exKana": "かいぎをおこなう。",
+    "exKana": "かいぎをおこなう",
     "exTokens": [
       [
         "会議",
@@ -2137,7 +2137,7 @@
     "exJP": "父が怒る。",
     "exEN": "My father gets angry.",
     "exZH": "父亲生气了。",
-    "exKana": "ちちがおこる。",
+    "exKana": "ちちがおこる",
     "exTokens": [
       [
         "父",
@@ -2177,7 +2177,7 @@
     "exJP": "押し入れにしまう。",
     "exEN": "Put it away in the closet.",
     "exZH": "收进壁橱里。",
-    "exKana": "おしいれにしまう。",
+    "exKana": "おしいれにしまう",
     "exTokens": [
       [
         "押し入れ",
@@ -2218,7 +2218,7 @@
     "exJP": "お嬢さんはお元気ですか。",
     "exEN": "Is your daughter well?",
     "exZH": "令爱还好吗？",
-    "exKana": "おじょうさんはおげんきですか。",
+    "exKana": "おじょうさんはおげんきですか",
     "exTokens": [
       [
         "お嬢さん",
@@ -2271,7 +2271,7 @@
     "exJP": "お宅はどこですか。",
     "exEN": "Where is your house?",
     "exZH": "您的府上在哪里？",
-    "exKana": "おたくはどこですか。",
+    "exKana": "おたくはどこですか",
     "exTokens": [
       [
         "お宅",
@@ -2321,7 +2321,7 @@
     "exJP": "りんごが落ちる。",
     "exEN": "The apple falls.",
     "exZH": "苹果掉下来了。",
-    "exKana": "りんごがおちる。",
+    "exKana": "りんごがおちる",
     "exTokens": [
       [
         "りんご",
@@ -2360,7 +2360,7 @@
     "exJP": "夫は会社員です。",
     "exEN": "My husband is an office worker.",
     "exZH": "我丈夫是公司职员。",
-    "exKana": "おっとはかいしゃいんです。",
+    "exKana": "おっとはかいしゃいんです",
     "exTokens": [
       [
         "夫",
@@ -2406,7 +2406,7 @@
     "exJP": "財布を落とす。",
     "exEN": "Drop a wallet.",
     "exZH": "掉了钱包。",
-    "exKana": "さいふをおとす。",
+    "exKana": "さいふをおとす",
     "exTokens": [
       [
         "財布",
@@ -2446,7 +2446,7 @@
     "exJP": "踊りを見る。",
     "exEN": "Watch the dance.",
     "exZH": "看舞蹈。",
-    "exKana": "おどりをみる。",
+    "exKana": "おどりをみる",
     "exTokens": [
       [
         "踊り",
@@ -2486,7 +2486,7 @@
     "exJP": "みんなで踊る。",
     "exEN": "Dance together.",
     "exZH": "大家一起跳舞。",
-    "exKana": "みんなでおどる。",
+    "exKana": "みんなでおどる",
     "exTokens": [
       [
         "みんな",
@@ -2528,7 +2528,7 @@
     "exJP": "ニュースに驚く。",
     "exEN": "Be surprised by the news.",
     "exZH": "对新闻感到惊讶。",
-    "exKana": "にゅーすにおどろく。",
+    "exKana": "にゅーすにおどろく",
     "exTokens": [
       [
         "ニュース",
@@ -2568,7 +2568,7 @@
     "exJP": "お祭りに行く。",
     "exEN": "Go to the festival.",
     "exZH": "去参加节日庆典。",
-    "exKana": "おまつりにいく。",
+    "exKana": "おまつりにいく",
     "exTokens": [
       [
         "お祭り",
@@ -2610,7 +2610,7 @@
     "exJP": "昔を思い出す。",
     "exEN": "Recall the past.",
     "exZH": "回想起过去。",
-    "exKana": "むかしをおもいだす。",
+    "exKana": "むかしをおもいだす",
     "exTokens": [
       [
         "昔",
@@ -2652,7 +2652,7 @@
     "exJP": "私もそう思う。",
     "exEN": "I think so too.",
     "exZH": "我也这么想。",
-    "exKana": "わたくしもそうおもう。",
+    "exKana": "わたくしもそうおもう",
     "exTokens": [
       [
         "私",
@@ -2696,7 +2696,7 @@
     "exJP": "おもちゃで遊ぶ。",
     "exEN": "Play with a toy.",
     "exZH": "玩玩具。",
-    "exKana": "おもちゃであそぶ。",
+    "exKana": "おもちゃであそぶ",
     "exTokens": [
       [
         "おもちゃ",
@@ -2737,7 +2737,7 @@
     "exJP": "表を見る。",
     "exEN": "Look at the front.",
     "exZH": "看正面。",
-    "exKana": "ひょうをみる。",
+    "exKana": "ひょうをみる",
     "exTokens": [
       [
         "表",
@@ -2778,7 +2778,7 @@
     "exJP": "親を大切にする。",
     "exEN": "Value one's parents.",
     "exZH": "孝敬父母。",
-    "exKana": "おやをたいせつにする。",
+    "exKana": "おやをたいせつにする",
     "exTokens": [
       [
         "親",
@@ -2825,7 +2825,7 @@
     "exJP": "泳ぎが得意だ。",
     "exEN": "Good at swimming.",
     "exZH": "擅长游泳。",
-    "exKana": "およぎがとくいだ。",
+    "exKana": "およぎがとくいだ",
     "exTokens": [
       [
         "泳ぎ",
@@ -2870,7 +2870,7 @@
     "exJP": "電車を降りる。",
     "exEN": "Get off the train.",
     "exZH": "下火车。",
-    "exKana": "でんしゃをおりる。",
+    "exKana": "でんしゃをおりる",
     "exTokens": [
       [
         "電車",
@@ -2912,7 +2912,7 @@
     "exJP": "足の骨を折る。",
     "exEN": "Break a leg bone.",
     "exZH": "腿部骨折。",
-    "exKana": "あしのほねをおる。",
+    "exKana": "あしのほねをおる",
     "exTokens": [
       [
         "足",
@@ -2961,7 +2961,7 @@
     "exJP": "夏休みが終わりだ。",
     "exEN": "Summer vacation is over.",
     "exZH": "暑假结束了。",
-    "exKana": "なつやすみがおわりだ。",
+    "exKana": "なつやすみがおわりだ",
     "exTokens": [
       [
         "夏休み",
@@ -3006,7 +3006,7 @@
     "exJP": "海岸を歩く。",
     "exEN": "Walk along the coast.",
     "exZH": "在海岸边散步。",
-    "exKana": "かいがんをあるく。",
+    "exKana": "かいがんをあるく",
     "exTokens": [
       [
         "海岸",
@@ -3046,7 +3046,7 @@
     "exJP": "会議が始まる。",
     "exEN": "The meeting starts.",
     "exZH": "会议开始了。",
-    "exKana": "かいぎがはじまる。",
+    "exKana": "かいぎがはじまる",
     "exTokens": [
       [
         "会議",
@@ -3085,7 +3085,7 @@
     "exJP": "科学の進歩。",
     "exEN": "Progress of science.",
     "exZH": "科学的进步。",
-    "exKana": "かがくのしんぽ。",
+    "exKana": "かがくのしんぽ",
     "exTokens": [
       [
         "科学",
@@ -3124,7 +3124,7 @@
     "exJP": "鏡を見る。",
     "exEN": "Look in the mirror.",
     "exZH": "照镜子。",
-    "exKana": "かがみをみる。",
+    "exKana": "かがみをみる",
     "exTokens": [
       [
         "鏡",
@@ -3166,7 +3166,7 @@
     "exJP": "壁に絵を掛ける。",
     "exEN": "Hang a picture on the wall.",
     "exZH": "把画挂在墙上。",
-    "exKana": "かべにえをかける。",
+    "exKana": "かべにえをかける",
     "exTokens": [
       [
         "壁",
@@ -3215,7 +3215,7 @@
     "exJP": "部屋に花を飾る。",
     "exEN": "Decorate the room with flowers.",
     "exZH": "用花装饰房间。",
-    "exKana": "へやにはなをかざる。",
+    "exKana": "へやにはなをかざる",
     "exTokens": [
       [
         "部屋",
@@ -3263,7 +3263,7 @@
     "exJP": "火事になる。",
     "exEN": "A fire breaks out.",
     "exZH": "发生火灾。",
-    "exKana": "かじになる。",
+    "exKana": "かじになる",
     "exTokens": [
       [
         "火事",
@@ -3303,7 +3303,7 @@
     "exJP": "このパンは固い。",
     "exEN": "This bread is hard.",
     "exZH": "这面包很硬。",
-    "exKana": "このぱんはかたい。",
+    "exKana": "このぱんはかたい",
     "exTokens": [
       [
         "この",
@@ -3347,7 +3347,7 @@
     "exJP": "丸い形をする。",
     "exEN": "Have a round shape.",
     "exZH": "呈圆形。",
-    "exKana": "まるいかたちをする。",
+    "exKana": "まるいかたちをする",
     "exTokens": [
       [
         "丸い",
@@ -3393,7 +3393,7 @@
     "exJP": "部屋を片付ける。",
     "exEN": "Tidy up the room.",
     "exZH": "收拾房间。",
-    "exKana": "へやをかたづける。",
+    "exKana": "へやをかたづける",
     "exTokens": [
       [
         "部屋",
@@ -3433,7 +3433,7 @@
     "exJP": "課長に相談する。",
     "exEN": "Consult the section manager.",
     "exZH": "与科长商量。",
-    "exKana": "かちょうにそうだんする。",
+    "exKana": "かちょうにそうだんする",
     "exTokens": [
       [
         "課長",
@@ -3479,7 +3479,7 @@
     "exJP": "試合に勝つ。",
     "exEN": "Win the game.",
     "exZH": "赢得比赛。",
-    "exKana": "しあいにかつ。",
+    "exKana": "しあいにかつ",
     "exTokens": [
       [
         "試合",
@@ -3518,7 +3518,7 @@
     "exJP": "家内は留守です。",
     "exEN": "My wife is not at home.",
     "exZH": "我妻子不在家。",
-    "exKana": "かないはるすです。",
+    "exKana": "かないはるすです",
     "exTokens": [
       [
         "家内",
@@ -3562,7 +3562,7 @@
     "exJP": "悲しい映画を見る。",
     "exEN": "Watch a sad movie.",
     "exZH": "看悲伤的电影。",
-    "exKana": "かなしいえいがをみる。",
+    "exKana": "かなしいえいがをみる",
     "exTokens": [
       [
         "悲しい",
@@ -3607,7 +3607,7 @@
     "exJP": "必ず行く。",
     "exEN": "I will definitely go.",
     "exZH": "我一定会去。",
-    "exKana": "かならずいく。",
+    "exKana": "かならずいく",
     "exTokens": [
       [
         "必ず",
@@ -3644,7 +3644,7 @@
     "exJP": "彼はお金持ちだ。",
     "exEN": "He is a rich person.",
     "exZH": "他是个有钱人。",
-    "exKana": "かれはおかねもちだ。",
+    "exKana": "かれはおかねもちだ",
     "exTokens": [
       [
         "彼",
@@ -3691,7 +3691,7 @@
     "exJP": "彼女は髪が長い。",
     "exEN": "Her hair is long.",
     "exZH": "她头发很长。",
-    "exKana": "かのじょはかみがながい。",
+    "exKana": "かのじょはかみがながい",
     "exTokens": [
       [
         "彼女",
@@ -3741,7 +3741,7 @@
     "exJP": "よく噛んで食べる。",
     "exEN": "Chew well and eat.",
     "exZH": "细嚼慢咽。",
-    "exKana": "よくかんでたべる。",
+    "exKana": "よくかんでたべる",
     "exTokens": [
       [
         "よく",
@@ -3787,7 +3787,7 @@
     "exJP": "学校に通う。",
     "exEN": "Commute to school.",
     "exZH": "上学。",
-    "exKana": "がっこうにかよう。",
+    "exKana": "がっこうにかよう",
     "exTokens": [
       [
         "学校",
@@ -3828,7 +3828,7 @@
     "exJP": "服が乾く。",
     "exEN": "The clothes get dry.",
     "exZH": "衣服干了。",
-    "exKana": "ふくがかわく。",
+    "exKana": "ふくがかわく",
     "exTokens": [
       [
         "服",
@@ -3869,7 +3869,7 @@
     "exJP": "代わりに行く。",
     "exEN": "Go as a substitute.",
     "exZH": "代替去。",
-    "exKana": "かわりにいく。",
+    "exKana": "かわりにいく",
     "exTokens": [
       [
         "代わり",
@@ -3911,7 +3911,7 @@
     "exJP": "信号が変わる。",
     "exEN": "The traffic light changes.",
     "exZH": "信号灯变了。",
-    "exKana": "しんごうがかわる。",
+    "exKana": "しんごうがかわる",
     "exTokens": [
       [
         "信号",
@@ -3953,7 +3953,7 @@
     "exJP": "将来を考える。",
     "exEN": "Think about the future.",
     "exZH": "思考未来。",
-    "exKana": "しょうらいをかんがえる。",
+    "exKana": "しょうらいをかんがえる",
     "exTokens": [
       [
         "将来",
@@ -3993,7 +3993,7 @@
     "exJP": "彼とは関係がない。",
     "exEN": "I have no relationship with him.",
     "exZH": "和他没有关系。",
-    "exKana": "かれとはかんけいがない。",
+    "exKana": "かれとはかんけいがない",
     "exTokens": [
       [
         "彼",
@@ -4044,7 +4044,7 @@
     "exJP": "彼女は看護婦だ。",
     "exEN": "She is a female nurse.",
     "exZH": "她是护士。",
-    "exKana": "かのじょはかんごふだ。",
+    "exKana": "かのじょはかんごふだ",
     "exTokens": [
       [
         "彼女",
@@ -4088,7 +4088,7 @@
     "exJP": "簡単なテスト。",
     "exEN": "A simple test.",
     "exZH": "简单的测试。",
-    "exKana": "かんたんなてすと。",
+    "exKana": "かんたんなてすと",
     "exTokens": [
       [
         "簡単",
@@ -4128,7 +4128,7 @@
     "exJP": "いい機会だ。",
     "exEN": "It's a good opportunity.",
     "exZH": "是个好机会。",
-    "exKana": "いいきかいだ。",
+    "exKana": "いいきかいだ",
     "exTokens": [
       [
         "いい",
@@ -4169,7 +4169,7 @@
     "exJP": "危険な場所。",
     "exEN": "A dangerous place.",
     "exZH": "危险的地方。",
-    "exKana": "きけんなばしょ。",
+    "exKana": "きけんなばしょ",
     "exTokens": [
       [
         "危険",
@@ -4210,7 +4210,7 @@
     "exJP": "声が聞こえる。",
     "exEN": "A voice can be heard.",
     "exZH": "能听到声音。",
-    "exKana": "こえがきこえる。",
+    "exKana": "こえがきこえる",
     "exTokens": [
       [
         "声",
@@ -4250,7 +4250,7 @@
     "exJP": "汽車に乗る。",
     "exEN": "Ride a steam train.",
     "exZH": "乘火车。",
-    "exKana": "きしゃにのる。",
+    "exKana": "きしゃにのる",
     "exTokens": [
       [
         "汽車",
@@ -4290,7 +4290,7 @@
     "exJP": "最新の技術。",
     "exEN": "Latest technology.",
     "exZH": "最新技术。",
-    "exKana": "さいしんのぎじゅつ。",
+    "exKana": "さいしんのぎじゅつ",
     "exTokens": [
       [
         "最新",
@@ -4329,7 +4329,7 @@
     "exJP": "好きな季節は春です。",
     "exEN": "My favorite season is spring.",
     "exZH": "我最喜欢的季节是春天。",
-    "exKana": "すきなきせつははるです。",
+    "exKana": "すきなきせつははるです",
     "exTokens": [
       [
         "好き",
@@ -4382,7 +4382,7 @@
     "exJP": "規則を守る。",
     "exEN": "Follow the rules.",
     "exZH": "遵守规则。",
-    "exKana": "きそくをまもる。",
+    "exKana": "きそくをまもる",
     "exTokens": [
       [
         "規則",
@@ -4421,7 +4421,7 @@
     "exJP": "絹のスカーフ。",
     "exEN": "Silk scarf.",
     "exZH": "丝绸围巾。",
-    "exKana": "きぬのすかーふ。",
+    "exKana": "きぬのすかーふ",
     "exTokens": [
       [
         "絹",
@@ -4462,7 +4462,7 @@
     "exJP": "厳しい先生。",
     "exEN": "Strict teacher.",
     "exZH": "严厉的老师。",
-    "exKana": "きびしいせんせい。",
+    "exKana": "きびしいせんせい",
     "exTokens": [
       [
         "厳しい",
@@ -4499,7 +4499,7 @@
     "exJP": "気分が悪い。",
     "exEN": "Feeling sick.",
     "exZH": "身体不舒服。",
-    "exKana": "きぶんがわるい。",
+    "exKana": "きぶんがわるい",
     "exTokens": [
       [
         "気分",
@@ -4541,7 +4541,7 @@
     "exJP": "予定が決まる。",
     "exEN": "The plan is decided.",
     "exZH": "计划决定了。",
-    "exKana": "よていがきまる。",
+    "exKana": "よていがきまる",
     "exTokens": [
       [
         "予定",
@@ -4580,7 +4580,7 @@
     "exJP": "君の番だ。",
     "exEN": "It's your turn.",
     "exZH": "轮到你了。",
-    "exKana": "きみのばんだ。",
+    "exKana": "きみのばんだ",
     "exTokens": [
       [
         "君",
@@ -4625,7 +4625,7 @@
     "exJP": "日付を決める。",
     "exEN": "Decide the date.",
     "exZH": "决定日期。",
-    "exKana": "ひづけをきめる。",
+    "exKana": "ひづけをきめる",
     "exTokens": [
       [
         "日付",
@@ -4666,7 +4666,7 @@
     "exJP": "気持ちがいい。",
     "exEN": "It feels good.",
     "exZH": "感觉真好。",
-    "exKana": "きもちがいい。",
+    "exKana": "きもちがいい",
     "exTokens": [
       [
         "気持ち",
@@ -4707,7 +4707,7 @@
     "exJP": "着物を着る。",
     "exEN": "Wear a kimono.",
     "exZH": "穿和服。",
-    "exKana": "きものをきる。",
+    "exKana": "きものをきる",
     "exTokens": [
       [
         "着物",
@@ -4747,7 +4747,7 @@
     "exJP": "お客さんが来る。",
     "exEN": "A guest is coming.",
     "exZH": "有客人来。",
-    "exKana": "おきゃくさんがくる。",
+    "exKana": "おきゃくさんがくる",
     "exTokens": [
       [
         "お客さん",
@@ -4786,7 +4786,7 @@
     "exJP": "急行列車に乗る。",
     "exEN": "Take the express train.",
     "exZH": "乘坐快车。",
-    "exKana": "きゅうこうれっしゃにのる。",
+    "exKana": "きゅうこうれっしゃにのる",
     "exTokens": [
       [
         "急行列車",
@@ -4826,7 +4826,7 @@
     "exJP": "教育が大切だ。",
     "exEN": "Education is important.",
     "exZH": "教育很重要。",
-    "exKana": "きょういくがたいせつだ。",
+    "exKana": "きょういくがたいせつだ",
     "exTokens": [
       [
         "教育",
@@ -4870,7 +4870,7 @@
     "exJP": "教会へ行く。",
     "exEN": "Go to church.",
     "exZH": "去教堂。",
-    "exKana": "きょうかいへいく。",
+    "exKana": "きょうかいへいく",
     "exTokens": [
       [
         "教会",
@@ -4911,7 +4911,7 @@
     "exJP": "競争に勝つ。",
     "exEN": "Win the competition.",
     "exZH": "在竞争中获胜。",
-    "exKana": "きょうそうにかつ。",
+    "exKana": "きょうそうにかつ",
     "exTokens": [
       [
         "競争",
@@ -4950,7 +4950,7 @@
     "exJP": "歴史に興味がある。",
     "exEN": "I have an interest in history.",
     "exZH": "对历史感兴趣。",
-    "exKana": "れきしにきょうみがある。",
+    "exKana": "れきしにきょうみがある",
     "exTokens": [
       [
         "歴史",
@@ -4998,7 +4998,7 @@
     "exJP": "近所に住む。",
     "exEN": "Live in the neighborhood.",
     "exZH": "住在附近。",
-    "exKana": "きんじょにすむ。",
+    "exKana": "きんじょにすむ",
     "exTokens": [
       [
         "近所",
@@ -5039,7 +5039,7 @@
     "exJP": "体の具合が悪い。",
     "exEN": "Body condition is bad.",
     "exZH": "身体状况不好。",
-    "exKana": "からだのぐあいがわるい。",
+    "exKana": "からだのぐあいがわるい",
     "exTokens": [
       [
         "体",
@@ -5087,7 +5087,7 @@
     "exJP": "空気がきれいだ。",
     "exEN": "The air is clean.",
     "exZH": "空气很清新。",
-    "exKana": "くうきがきれいだ。",
+    "exKana": "くうきがきれいだ",
     "exTokens": [
       [
         "空気",
@@ -5131,7 +5131,7 @@
     "exJP": "首が痛い。",
     "exEN": "Neck hurts.",
     "exZH": "脖子疼。",
-    "exKana": "くびがいたい。",
+    "exKana": "くびがいたい",
     "exTokens": [
       [
         "首",
@@ -5170,7 +5170,7 @@
     "exJP": "空に雲がある。",
     "exEN": "There are clouds in the sky.",
     "exZH": "天上有些云。",
-    "exKana": "そらにくもがある。",
+    "exKana": "そらにくもがある",
     "exTokens": [
       [
         "空",
@@ -5224,7 +5224,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょねんとことしをくらべます。",
+    "exKana": "きょねんとことしをくらべます",
     "exTokens": [
       [
         "去年",
@@ -5302,7 +5302,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こまったときにけいさつへいきました。",
+    "exKana": "こまったときにけいさつへいきました",
     "exTokens": [
       [
         "困っ",
@@ -5373,7 +5373,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "やまのうえからのけしきがきれいです。",
+    "exKana": "やまのうえからのけしきがきれいです",
     "exTokens": [
       [
         "山",
@@ -5444,7 +5444,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "だいがくのちかくでげしゅくをしています。",
+    "exKana": "だいがくのちかくでげしゅくをしています",
     "exTokens": [
       [
         "大学",
@@ -5519,7 +5519,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このひみつはけっしていいません。",
+    "exKana": "このひみつはけっしていいません",
     "exTokens": [
       [
         "この",
@@ -5581,7 +5581,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "じこのげんいんをしらべています。",
+    "exKana": "じこのげんいんをしらべています",
     "exTokens": [
       [
         "事故",
@@ -5650,7 +5650,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうだいでけんかをしてはいけません。",
+    "exKana": "きょうだいでけんかをしてはいけません",
     "exTokens": [
       [
         "兄弟",
@@ -5726,7 +5726,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "だいがくでにっぽんのれきしをけんきゅうします。",
+    "exKana": "だいがくでにっぽんのれきしをけんきゅうします",
     "exTokens": [
       [
         "大学",
@@ -5799,7 +5799,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうとのまちをけんぶつしました。",
+    "exKana": "きょうとのまちをけんぶつしました",
     "exTokens": [
       [
         "京都",
@@ -5865,7 +5865,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしはしずかなこうがいにすんでいます。",
+    "exKana": "わたくしはしずかなこうがいにすんでいます",
     "exTokens": [
       [
         "私",
@@ -5939,7 +5939,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすのこうぎはごぜんちゅうにあります。",
+    "exKana": "あすのこうぎはごぜんちゅうにあります",
     "exTokens": [
       [
         "明日",
@@ -6005,7 +6005,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このまちはこうぎょうがさかんです。",
+    "exKana": "このまちはこうぎょうがさかんです",
     "exTokens": [
       [
         "この",
@@ -6066,7 +6066,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あにはこうこうにかよっています。",
+    "exKana": "あにはこうこうにかよっています",
     "exTokens": [
       [
         "兄",
@@ -6132,7 +6132,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ちちはじどうしゃのこうじょうではたらいています。",
+    "exKana": "ちちはじどうしゃのこうじょうではたらいています",
     "exTokens": [
       [
         "父",
@@ -6206,7 +6206,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こうちょうせんせいのおはなしをききました。",
+    "exKana": "こうちょうせんせいのおはなしをききました",
     "exTokens": [
       [
         "校長",
@@ -6276,7 +6276,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このあたりはこうつうがべんりです。",
+    "exKana": "このあたりはこうつうがべんりです",
     "exTokens": [
       [
         "この",
@@ -6339,7 +6339,7 @@
       "batch": "batch-07",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ぜんこうせいとがこうどうにあつまりました。",
+    "exKana": "ぜんこうせいとがこうどうにあつまりました",
     "exTokens": [
       [
         "全校",
@@ -6404,7 +6404,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あねはちかくのこうとうがっこうにかよっています。",
+    "exKana": "あねはちかくのこうとうがっこうにかよっています",
     "exTokens": [
       [
         "姉",
@@ -6478,7 +6478,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ちちはこうむいんとしてはたらいています。",
+    "exKana": "ちちはこうむいんとしてはたらいています",
     "exTokens": [
       [
         "父",
@@ -6554,7 +6554,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "せんせいのしつもんにこたえます。",
+    "exKana": "せんせいのしつもんにこたえます",
     "exTokens": [
       [
         "先生",
@@ -6613,7 +6613,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうはおいしいごちそうをたべました。",
+    "exKana": "きょうはおいしいごちそうをたべました",
     "exTokens": [
       [
         "今日",
@@ -6678,7 +6678,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "にわでかわいいことりがないています。",
+    "exKana": "にわでかわいいことりがないています",
     "exTokens": [
       [
         "庭",
@@ -6749,7 +6749,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こまかいおかねをもっていません。",
+    "exKana": "こまかいおかねをもっていません",
     "exTokens": [
       [
         "細かい",
@@ -6853,7 +6853,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このえいがはすこしこわいです。",
+    "exKana": "このえいがはすこしこわいです",
     "exTokens": [
       [
         "この",
@@ -6913,7 +6913,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おとうとがとけいをこわしました。",
+    "exKana": "おとうとがとけいをこわしました",
     "exTokens": [
       [
         "弟",
@@ -6977,7 +6977,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このぱそこんはこわれています。",
+    "exKana": "このぱそこんはこわれています",
     "exTokens": [
       [
         "この",
@@ -7040,7 +7040,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "さいごのぺーじまでよみました。",
+    "exKana": "さいごのぺーじまでよみました",
     "exTokens": [
       [
         "最後",
@@ -7104,7 +7104,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "さいきんとてもいそがしいです。",
+    "exKana": "さいきんとてもいそがしいです",
     "exTokens": [
       [
         "最近",
@@ -7156,7 +7156,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "へやでかぎをさがしています。",
+    "exKana": "へやでかぎをさがしています",
     "exTokens": [
       [
         "部屋",
@@ -7224,7 +7224,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ゆうがたになるときおんがさがります。",
+    "exKana": "ゆうがたになるときおんがさがります",
     "exTokens": [
       [
         "夕方",
@@ -7291,7 +7291,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このまちではさっかーがさかんです。",
+    "exKana": "このまちではさっかーがさかんです",
     "exTokens": [
       [
         "この",
@@ -7359,7 +7359,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こえをさげてはなしてください。",
+    "exKana": "こえをさげてはなしてください",
     "exTokens": [
       [
         "声",
@@ -7423,7 +7423,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "とけいのはりがじゅうにじをさしています。",
+    "exKana": "とけいのはりがじゅうにじをさしています",
     "exTokens": [
       [
         "時計",
@@ -7503,7 +7503,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "としょかんでさわいではいけません。",
+    "exKana": "としょかんでさわいではいけません",
     "exTokens": [
       [
         "図書館",
@@ -7569,7 +7569,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすのさっかーのしあいがたのしみです。",
+    "exKana": "あすのさっかーのしあいがたのしみです",
     "exTokens": [
       [
         "明日",
@@ -7636,7 +7636,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "りょうりのしかたをほんでしらべました。",
+    "exKana": "りょうりのしかたをほんでしらべました",
     "exTokens": [
       [
         "料理",
@@ -7708,7 +7708,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ははにちこくしたことをしかられました。",
+    "exKana": "ははにちこくしたことをしかられました",
     "exTokens": [
       [
         "母",
@@ -7785,7 +7785,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きのうおおきなじしんがありました。",
+    "exKana": "きのうおおきなじしんがありました",
     "exTokens": [
       [
         "昨日",
@@ -7848,7 +7848,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "がくせいじだいにりょこうへいきました。",
+    "exKana": "がくせいじだいにりょこうへいきました",
     "exTokens": [
       [
         "学生時代",
@@ -7909,7 +7909,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あたらしいしたぎをかいにいきます。",
+    "exKana": "あたらしいしたぎをかいにいきます",
     "exTokens": [
       [
         "新しい",
@@ -7972,7 +7972,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "どあをしっかりしめてください。",
+    "exKana": "どあをしっかりしめてください",
     "exTokens": [
       [
         "ドア",
@@ -8032,7 +8032,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "へんじがおそくなってしつれいしました。",
+    "exKana": "へんじがおそくなってしつれいしました",
     "exTokens": [
       [
         "返事",
@@ -8102,7 +8102,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "としょかんでおおきなじてんをつかいました。",
+    "exKana": "としょかんでおおきなじてんをつかいました",
     "exTokens": [
       [
         "図書館",
@@ -8169,7 +8169,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "みせにはいろいろなしなものがならんでいます。",
+    "exKana": "みせにはいろいろなしなものがならんでいます",
     "exTokens": [
       [
         "店",
@@ -8248,7 +8248,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "れじでげんきんでしはらいました。",
+    "exKana": "れじでげんきんでしはらいました",
     "exTokens": [
       [
         "レジ",
@@ -8309,7 +8309,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "なつやすみにきれいなしまへいきました。",
+    "exKana": "なつやすみにきれいなしまへいきました",
     "exTokens": [
       [
         "夏休み",
@@ -8379,7 +8379,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おおくのしみんがこうえんにあつまりました。",
+    "exKana": "おおくのしみんがこうえんにあつまりました",
     "exTokens": [
       [
         "多く",
@@ -8449,7 +8449,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かれのじむしょはびるのさんかいにあります。",
+    "exKana": "かれのじむしょはびるのさんかいにあります",
     "exTokens": [
       [
         "彼",
@@ -8546,7 +8546,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しゃちょうにあたらしいけいかくをはなしました。",
+    "exKana": "しゃちょうにあたらしいけいかくをはなしました",
     "exTokens": [
       [
         "社長",
@@ -8614,7 +8614,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "べんきょうのじゃまをしないでください。",
+    "exKana": "べんきょうのじゃまをしないでください",
     "exTokens": [
       [
         "勉強",
@@ -8681,7 +8681,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こうえんでじゆうにあそぶことができます。",
+    "exKana": "こうえんでじゆうにあそぶことができます",
     "exTokens": [
       [
         "公園",
@@ -8752,7 +8752,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "まいあさはしるのがわたくしのしゅうかんです。",
+    "exKana": "まいあさはしるのがわたくしのしゅうかんです",
     "exTokens": [
       [
         "毎朝",
@@ -8819,7 +8819,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ここにじゅうしょとなまえをかいてください。",
+    "exKana": "ここにじゅうしょとなまえをかいてください",
     "exTokens": [
       [
         "ここ",
@@ -8891,7 +8891,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "じかんはじゅうぶんにあるのであんしんしてください。",
+    "exKana": "じかんはじゅうぶんにあるのであんしんしてください",
     "exTokens": [
       [
         "時間",
@@ -8972,7 +8972,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすのかいぎにしゅっせきするよていです。",
+    "exKana": "あすのかいぎにしゅっせきするよていです",
     "exTokens": [
       [
         "明日",
@@ -9040,7 +9040,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "でんしゃはきゅうじにしゅっぱつします。",
+    "exKana": "でんしゃはきゅうじにしゅっぱつします",
     "exTokens": [
       [
         "電車",
@@ -9107,7 +9107,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしのしゅみはしゃしんをとることです。",
+    "exKana": "わたくしのしゅみはしゃしんをとることです",
     "exTokens": [
       [
         "私",
@@ -9177,7 +9177,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おしょうがつにはかぞくといっしょにすごします。",
+    "exKana": "おしょうがつにはかぞくといっしょにすごします",
     "exTokens": [
       [
         "お",
@@ -9251,7 +9251,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おとうとはらいねんからしょうがっこうにかよいます。",
+    "exKana": "おとうとはらいねんからしょうがっこうにかよいます",
     "exTokens": [
       [
         "弟",
@@ -9317,7 +9317,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しゅうまつにおもしろいしょうせつをよみました。",
+    "exKana": "しゅうまつにおもしろいしょうせつをよみました",
     "exTokens": [
       [
         "週末",
@@ -9385,7 +9385,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ともだちをたんじょうびのぱーてぃーにしょうたいしました。",
+    "exKana": "ともだちをたんじょうびのぱーてぃーにしょうたいしました",
     "exTokens": [
       [
         "友達",
@@ -9481,7 +9481,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しょうらいはいしゃになりたいです。",
+    "exKana": "しょうらいはいしゃになりたいです",
     "exTokens": [
       [
         "将来",
@@ -9546,7 +9546,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ともだちといっしょにしょくじをたのしみたいです。",
+    "exKana": "ともだちといっしょにしょくじをたのしみたいです",
     "exTokens": [
       [
         "友達",
@@ -9617,7 +9617,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "すーぱーでいちしゅうかんぶんのしょくりょうをかいました。",
+    "exKana": "すーぱーでいちしゅうかんぶんのしょくりょうをかいました",
     "exTokens": [
       [
         "スーパー",
@@ -9716,7 +9716,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "よていがきまったらしらせてください。",
+    "exKana": "よていがきまったらしらせてください",
     "exTokens": [
       [
         "予定",
@@ -9784,7 +9784,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わからないことばをじしょでしらべました。",
+    "exKana": "わからないことばをじしょでしらべました",
     "exTokens": [
       [
         "わから",
@@ -9853,7 +9853,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このまちのじんこうはまいとしふえています。",
+    "exKana": "このまちのじんこうはまいとしふえています",
     "exTokens": [
       [
         "この",
@@ -9926,7 +9926,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "はつもうでゆうめいなじんじゃへいきました。",
+    "exKana": "はつもうでゆうめいなじんじゃへいきました",
     "exTokens": [
       [
         "初詣で",
@@ -9994,7 +9994,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かれはいつもしんせつにてつだってくれます。",
+    "exKana": "かれはいつもしんせつにてつだってくれます",
     "exTokens": [
       [
         "彼",
@@ -10068,7 +10068,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすのてすとがすこししんぱいです。",
+    "exKana": "あすのてすとがすこししんぱいです",
     "exTokens": [
       [
         "明日",
@@ -10129,7 +10129,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あにはおおきなしんぶんしゃではたらいています。",
+    "exKana": "あにはおおきなしんぶんしゃではたらいています",
     "exTokens": [
       [
         "兄",
@@ -10200,7 +10200,7 @@
       "batch": "batch-08",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "なつやすみにすいえいのれんしゅうをします。",
+    "exKana": "なつやすみにすいえいのれんしゅうをします",
     "exTokens": [
       [
         "夏休み",
@@ -10266,7 +10266,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こうじのためにすいどうがとまっています。",
+    "exKana": "こうじのためにすいどうがとまっています",
     "exTokens": [
       [
         "工事",
@@ -10341,7 +10341,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうはずいぶんさむくなりましたね。",
+    "exKana": "きょうはずいぶんさむくなりましたね",
     "exTokens": [
       [
         "今日",
@@ -10406,7 +10406,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしはこうこうのとき、すうがくがいちばんすきでした。",
+    "exKana": "わたくしはこうこうのときすうがくがいちばんすきでした",
     "exTokens": [
       [
         "私",
@@ -10490,7 +10490,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ばすのじかんがすぎてしまいました。",
+    "exKana": "ばすのじかんがすぎてしまいました",
     "exTokens": [
       [
         "バス",
@@ -10581,7 +10581,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かぜはもうすっかりよくなりました。",
+    "exKana": "かぜはもうすっかりよくなりました",
     "exTokens": [
       [
         "風邪",
@@ -10649,7 +10649,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このみちをまっすぐすすむとえきがあります。",
+    "exKana": "このみちをまっすぐすすむとえきがあります",
     "exTokens": [
       [
         "この",
@@ -10725,7 +10725,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ふるいきょうかしょをごみばこにすてました。",
+    "exKana": "ふるいきょうかしょをごみばこにすてました",
     "exTokens": [
       [
         "古い",
@@ -10791,7 +10791,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "くつのなかにすながはいってしまいました。",
+    "exKana": "くつのなかにすながはいってしまいました",
     "exTokens": [
       [
         "靴",
@@ -10871,7 +10871,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "みちがこおっていてすべりやすいです。",
+    "exKana": "みちがこおっていてすべりやすいです",
     "exTokens": [
       [
         "道",
@@ -10942,7 +10942,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "へやのすみにちいさなつくえをおきました。",
+    "exKana": "へやのすみにちいさなつくえをおきました",
     "exTokens": [
       [
         "部屋",
@@ -11018,7 +11018,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しゅくだいがはやくすんだのでえいがをみました。",
+    "exKana": "しゅくだいがはやくすんだのでえいがをみました",
     "exTokens": [
       [
         "宿題",
@@ -11139,7 +11139,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "にっぽんでのせいかつにもうなれましたか。",
+    "exKana": "にっぽんでのせいかつにもうなれましたか",
     "exTokens": [
       [
         "日本",
@@ -11216,7 +11216,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このこうじょうではくるまをせいさんしています。",
+    "exKana": "このこうじょうではくるまをせいさんしています",
     "exTokens": [
       [
         "この",
@@ -11295,7 +11295,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしはせいようのれきしにきょうみがあります。",
+    "exKana": "わたくしはせいようのれきしにきょうみがあります",
     "exTokens": [
       [
         "私",
@@ -11368,7 +11368,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しょうらいはせかいじゅうをりょこうしたいです。",
+    "exKana": "しょうらいはせかいじゅうをりょこうしたいです",
     "exTokens": [
       [
         "将来",
@@ -11435,7 +11435,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "どうぞこちらのあいているせきにすわってください。",
+    "exKana": "どうぞこちらのあいているせきにすわってください",
     "exTokens": [
       [
         "どうぞ",
@@ -11515,7 +11515,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "せんせいがつかいかたのせつめいをしてくれました。",
+    "exKana": "せんせいがつかいかたのせつめいをしてくれました",
     "exTokens": [
       [
         "先生",
@@ -11593,7 +11593,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "にもつがおもくてせなかがいたいです。",
+    "exKana": "にもつがおもくてせなかがいたいです",
     "exTokens": [
       [
         "荷物",
@@ -11660,7 +11660,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こんどぜひわたくしのいえにもあそびにきてください。",
+    "exKana": "こんどぜひわたくしのいえにもあそびにきてください",
     "exTokens": [
       [
         "今度",
@@ -11745,7 +11745,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "まいにちぺっとのいぬのせわをしています。",
+    "exKana": "まいにちぺっとのいぬのせわをしています",
     "exTokens": [
       [
         "毎日",
@@ -11824,7 +11824,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "のーとにあかいせんをひきましょう。",
+    "exKana": "のーとにあかいせんをひきましょう",
     "exTokens": [
       [
         "ノート",
@@ -11887,7 +11887,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きのうはいそがしくてぜんぜんねられませんでした。",
+    "exKana": "きのうはいそがしくてぜんぜんねられませんでした",
     "exTokens": [
       [
         "昨日",
@@ -11966,7 +11966,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "むかしのせんそうについてほんをよみました。",
+    "exKana": "むかしのせんそうについてほんをよみました",
     "exTokens": [
       [
         "昔",
@@ -12065,7 +12065,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "にわできれいなはなをそだてています。",
+    "exKana": "にわできれいなはなをそだてています",
     "exTokens": [
       [
         "庭",
@@ -12140,7 +12140,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "らいねんこうこうをそつぎょうしたらだいがくにはいります。",
+    "exKana": "らいねんこうこうをそつぎょうしたらだいがくにはいります",
     "exTokens": [
       [
         "来年",
@@ -12214,7 +12214,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしのそふはまいにちさんぽをしています。",
+    "exKana": "わたくしのそふはまいにちさんぽをしています",
     "exTokens": [
       [
         "私",
@@ -12330,7 +12330,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このみせはやすいですし、それにおいしいです。",
+    "exKana": "このみせはやすいですしそれにおいしいです",
     "exTokens": [
       [
         "この",
@@ -12409,7 +12409,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうのてすとはそれほどむずかしくなかったです。",
+    "exKana": "きょうのてすとはそれほどむずかしくなかったです",
     "exTokens": [
       [
         "今日",
@@ -12484,7 +12484,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "もうくらくなったのでそろそろかえりましょう。",
+    "exKana": "もうくらくなったのでそろそろかえりましょう",
     "exTokens": [
       [
         "もう",
@@ -12555,7 +12555,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "そんなにたくさんたべられません。",
+    "exKana": "そんなにたくさんたべられません",
     "exTokens": [
       [
         "そんな",
@@ -12619,7 +12619,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "けががよくなったのであすたいいんします。",
+    "exKana": "けががよくなったのであすたいいんします",
     "exTokens": [
       [
         "怪我",
@@ -12716,7 +12716,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "これはははからもらっただいじなとけいです。",
+    "exKana": "これはははからもらっただいじなとけいです",
     "exTokens": [
       [
         "これ",
@@ -12792,7 +12792,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうのしゅくだいはだいたいおわりました。",
+    "exKana": "きょうのしゅくだいはだいたいおわりました",
     "exTokens": [
       [
         "今日",
@@ -12859,7 +12859,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ねつがさがり、からだがだいぶらくになりました。",
+    "exKana": "ねつがさがりからだがだいぶらくになりました",
     "exTokens": [
       [
         "熱",
@@ -12940,7 +12940,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おおきなたいふうがちかづいています。",
+    "exKana": "おおきなたいふうがちかづいています",
     "exTokens": [
       [
         "大きな",
@@ -13004,7 +13004,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "つよいかぜでにわのきがたおれてしまいました。",
+    "exKana": "つよいかぜでにわのきがたおれてしまいました",
     "exTokens": [
       [
         "強い",
@@ -13107,7 +13107,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あのひとはたしかたなかさんのおとうとさんです。",
+    "exKana": "あのひとはたしかたなかさんのおとうとさんです",
     "exTokens": [
       [
         "あの",
@@ -13183,7 +13183,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "すーぷにすこししおをたしました。",
+    "exKana": "すーぷにすこししおをたしました",
     "exTokens": [
       [
         "スープ",
@@ -13251,7 +13251,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "やすみにきょうとのともだちのいえをたずねました。",
+    "exKana": "やすみにきょうとのともだちのいえをたずねました",
     "exTokens": [
       [
         "休み",
@@ -13330,7 +13330,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ただしいこたえをひとつえらんでください。",
+    "exKana": "ただしいこたえをひとつえらんでください",
     "exTokens": [
       [
         "正しい",
@@ -13415,7 +13415,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "つくえのうえにほんをたてておきました。",
+    "exKana": "つくえのうえにほんをたてておきました",
     "exTokens": [
       [
         "机",
@@ -13513,7 +13513,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "たなのうえにあたらしいほんをならべました。",
+    "exKana": "たなのうえにあたらしいほんをならべました",
     "exTokens": [
       [
         "棚",
@@ -13588,7 +13588,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "らいしゅうのりょこうをとてもたのしみにしています。",
+    "exKana": "らいしゅうのりょこうをとてもたのしみにしています",
     "exTokens": [
       [
         "来週",
@@ -13668,7 +13668,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ともだちにひっこしのてつだいをたのみました。",
+    "exKana": "ともだちにひっこしのてつだいをたのみました",
     "exTokens": [
       [
         "友達",
@@ -13740,7 +13740,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かいものをしたが、おかねがたりなかった。",
+    "exKana": "かいものをしたがおかねがたりなかった",
     "exTokens": [
       [
         "買い物",
@@ -13819,7 +13819,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あちらのせのたかいだんせいはだれですか。",
+    "exKana": "あちらのせのたかいだんせいはだれですか",
     "exTokens": [
       [
         "あちら",
@@ -13895,7 +13895,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "へやがさむいのでだんぼうをつけました。",
+    "exKana": "へやがさむいのでだんぼうをつけました",
     "exTokens": [
       [
         "部屋",
@@ -13969,7 +13969,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ころんでひざからちがでました。",
+    "exKana": "ころんでひざからちがでました",
     "exTokens": [
       [
         "転ん",
@@ -14040,7 +14040,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おもいにもつをもつにはちからがひつようです。",
+    "exKana": "おもいにもつをもつにはちからがひつようです",
     "exTokens": [
       [
         "重い",
@@ -14115,7 +14115,7 @@
       "batch": "batch-09",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このほんはちっともおもしろくないです。",
+    "exKana": "このほんはちっともおもしろくないです",
     "exTokens": [
       [
         "この",
@@ -14176,7 +14176,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おとうとはらいねんからちゅうがっこうにかよいます。",
+    "exKana": "おとうとはらいねんからちゅうがっこうにかよいます",
     "exTokens": [
       [
         "弟",
@@ -14261,7 +14261,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このびるにはひろいちゅうしゃじょうがあります。",
+    "exKana": "このびるにはひろいちゅうしゃじょうがあります",
     "exTokens": [
       [
         "この",
@@ -14330,7 +14330,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしはこうこうのときちりのじゅぎょうがすきでした。",
+    "exKana": "わたくしはこうこうのときちりのじゅぎょうがすきでした",
     "exTokens": [
       [
         "私",
@@ -14414,7 +14414,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こうえんできれいなちょうをつかまえました。",
+    "exKana": "こうえんできれいなちょうをつかまえました",
     "exTokens": [
       [
         "公園",
@@ -14485,7 +14485,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こんやはつきがとてもきれいにみえます。",
+    "exKana": "こんやはつきがとてもきれいにみえます",
     "exTokens": [
       [
         "今夜",
@@ -14577,7 +14577,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "やさいをしおにしばらくつけます。",
+    "exKana": "やさいをしおにしばらくつけます",
     "exTokens": [
       [
         "野菜",
@@ -14641,7 +14641,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすのよていをともだちにつたえました。",
+    "exKana": "あすのよていをともだちにつたえました",
     "exTokens": [
       [
         "明日",
@@ -14713,7 +14713,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こんしゅうはあついひがずっとつづいています。",
+    "exKana": "こんしゅうはあついひがずっとつづいています",
     "exTokens": [
       [
         "今週",
@@ -14789,7 +14789,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしはまいにちにほんごのべんきょうをつづけています。",
+    "exKana": "わたくしはまいにちにほんごのべんきょうをつづけています",
     "exTokens": [
       [
         "私",
@@ -14869,7 +14869,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ぷれぜんとをきれいなかみでつつみました。",
+    "exKana": "ぷれぜんとをきれいなかみでつつみました",
     "exTokens": [
       [
         "プレゼント",
@@ -14938,7 +14938,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きゅうじつにはつまといっしょにかいものへいきます。",
+    "exKana": "きゅうじつにはつまといっしょにかいものへいきます",
     "exTokens": [
       [
         "休日",
@@ -15017,7 +15017,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "らいしゅうのしゅうまつはいえでやすむつもりです。",
+    "exKana": "らいしゅうのしゅうまつはいえでやすむつもりです",
     "exTokens": [
       [
         "来週",
@@ -15089,7 +15089,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "いもうとをつれてさんぽにでかけました。",
+    "exKana": "いもうとをつれてさんぽにでかけました",
     "exTokens": [
       [
         "妹",
@@ -15160,7 +15160,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かれはいつもていねいなことばをつかいます。",
+    "exKana": "かれはいつもていねいなことばをつかいます",
     "exTokens": [
       [
         "彼",
@@ -15232,7 +15232,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ははのりょうりをすこしてつだいました。",
+    "exKana": "ははのりょうりをすこしてつだいました",
     "exTokens": [
       [
         "母",
@@ -15352,7 +15352,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "てんいんさんがえがおでむかえてくれました。",
+    "exKana": "てんいんさんがえがおでむかえてくれました",
     "exTokens": [
       [
         "店員",
@@ -15425,7 +15425,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あさのにゅーすでてんきよほうをかくにんします。",
+    "exKana": "あさのにゅーすでてんきよほうをかくにんします",
     "exTokens": [
       [
         "朝",
@@ -15494,7 +15494,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "けっこんしきのおいわいにでんぽうをおくりました。",
+    "exKana": "けっこんしきのおいわいにでんぽうをおくりました",
     "exTokens": [
       [
         "結婚式",
@@ -15582,7 +15582,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "とうきょうとのじんこうはとてもおおいです。",
+    "exKana": "とうきょうとのじんこうはとてもおおいです",
     "exTokens": [
       [
         "東京都",
@@ -15645,7 +15645,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "そうじのどうぐをおしいれからだしました。",
+    "exKana": "そうじのどうぐをおしいれからだしました",
     "exTokens": [
       [
         "掃除",
@@ -15714,7 +15714,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かぞくでどうぶつえんへあそびにいきました。",
+    "exKana": "かぞくでどうぶつえんへあそびにいきました",
     "exTokens": [
       [
         "家族",
@@ -15785,7 +15785,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あかちゃんがきもちよさそうにねています。",
+    "exKana": "あかちゃんがきもちよさそうにねています",
     "exTokens": [
       [
         "赤ちゃん",
@@ -15861,7 +15861,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かいだんをあがってにかいへいきました。",
+    "exKana": "かいだんをあがってにかいへいきました",
     "exTokens": [
       [
         "階段",
@@ -15936,7 +15936,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ゆめをあきらめずにどりょくをつづけます。",
+    "exKana": "ゆめをあきらめずにどりょくをつづけます",
     "exTokens": [
       [
         "夢",
@@ -16005,7 +16005,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうはあさねぼうをしてちこくしそうでした。",
+    "exKana": "きょうはあさねぼうをしてちこくしそうでした",
     "exTokens": [
       [
         "今日",
@@ -16083,7 +16083,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "くつしたにちいさなあながひらいていました。",
+    "exKana": "くつしたにちいさなあながひらいていました",
     "exTokens": [
       [
         "靴下",
@@ -16160,7 +16160,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ともだちにまちのおいしいおみせをあんないしました。",
+    "exKana": "ともだちにまちのおいしいおみせをあんないしました",
     "exTokens": [
       [
         "友達",
@@ -16240,7 +16240,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "どうぶつをいじめてはいけません。",
+    "exKana": "どうぶつをいじめてはいけません",
     "exTokens": [
       [
         "動物",
@@ -16308,7 +16308,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "せんせいからきれいなほんをいただきました。",
+    "exKana": "せんせいからきれいなほんをいただきました",
     "exTokens": [
       [
         "先生",
@@ -16378,7 +16378,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "くすりをのむとあしのいたみがきえました。",
+    "exKana": "くすりをのむとあしのいたみがきえました",
     "exTokens": [
       [
         "薬",
@@ -16455,7 +16455,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "としのちかいいとこといっしょにあそんでいます。",
+    "exKana": "としのちかいいとこといっしょにあそんでいます",
     "exTokens": [
       [
         "歳",
@@ -16532,7 +16532,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あきになるときいろいいねがかぜにゆれます。",
+    "exKana": "あきになるときいろいいねがかぜにゆれます",
     "exTokens": [
       [
         "秋",
@@ -16612,7 +16612,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすのごごにごじたくへうかがいます。",
+    "exKana": "あすのごごにごじたくへうかがいます",
     "exTokens": [
       [
         "明日",
@@ -16679,7 +16679,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あにはだいがくのしけんにうかりました。",
+    "exKana": "あにはだいがくのしけんにうかりました",
     "exTokens": [
       [
         "兄",
@@ -16750,7 +16750,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "みずのうえにきいろいはがういています。",
+    "exKana": "みずのうえにきいろいはがういています",
     "exTokens": [
       [
         "水",
@@ -16830,7 +16830,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ゆうびんはいたついんからにもつをうけとりました。",
+    "exKana": "ゆうびんはいたついんからにもつをうけとりました",
     "exTokens": [
       [
         "郵便",
@@ -16897,7 +16897,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おもいつくえをへやのすみへうごかしました。",
+    "exKana": "おもいつくえをへやのすみへうごかしました",
     "exTokens": [
       [
         "重い",
@@ -16970,7 +16970,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こうえんでかわいいしろいうさぎをみました。",
+    "exKana": "こうえんでかわいいしろいうさぎをみました",
     "exTokens": [
       [
         "公園",
@@ -17060,7 +17060,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ともだちはとなりのまちへうつりました。",
+    "exKana": "ともだちはとなりのまちへうつりました",
     "exTokens": [
       [
         "友達",
@@ -17131,7 +17131,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ははがつくったりょうりはとてもうまいです。",
+    "exKana": "ははがつくったりょうりはとてもうまいです",
     "exTokens": [
       [
         "母",
@@ -17202,7 +17202,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かみのうらにめもをかきました。",
+    "exKana": "かみのうらにめもをかきました",
     "exTokens": [
       [
         "紙",
@@ -17273,7 +17273,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "でぱーとのくつうりばであたらしいくつをかいました。",
+    "exKana": "でぱーとのくつうりばであたらしいくつをかいました",
     "exTokens": [
       [
         "デパート",
@@ -17351,7 +17351,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうはうんがよくてたからくじがあたりました。",
+    "exKana": "きょうはうんがよくてたからくじがあたりました",
     "exTokens": [
       [
         "今日",
@@ -17431,7 +17431,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "けんこうのためにまいにちこうえんでうんどうしています。",
+    "exKana": "けんこうのためにまいにちこうえんでうんどうしています",
     "exTokens": [
       [
         "健康",
@@ -17513,7 +17513,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あたらしいえのぐをつかってえをえがきました。",
+    "exKana": "あたらしいえのぐをつかってえをえがきました",
     "exTokens": [
       [
         "新しい",
@@ -17587,7 +17587,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おきゃくさまをおうせつまへおとおししました。",
+    "exKana": "おきゃくさまをおうせつまへおとおししました",
     "exTokens": [
       [
         "お客様",
@@ -17675,7 +17675,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "にっぽんのじんこうはいちおくにんをこえています。",
+    "exKana": "にっぽんのじんこうはいちおくにんをこえています",
     "exTokens": [
       [
         "日本",
@@ -17752,7 +17752,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "びるのおくじょうからきれいなけしきがみえます。",
+    "exKana": "びるのおくじょうからきれいなけしきがみえます",
     "exTokens": [
       [
         "ビル",
@@ -17826,7 +17826,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "たんじょうびにこころのこもったおくりものをもらいました。",
+    "exKana": "たんじょうびにこころのこもったおくりものをもらいました",
     "exTokens": [
       [
         "誕生日",
@@ -17903,7 +17903,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "たなかさんのおこさんはげんきにあそんでいます。",
+    "exKana": "たなかさんのおこさんはげんきにあそんでいます",
     "exTokens": [
       [
         "田中",
@@ -17981,7 +17981,7 @@
       "batch": "batch-10",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしのおじはやまでくだものをそだてています。",
+    "exKana": "わたくしのおじはやまでくだものをそだてています",
     "exTokens": [
       [
         "私",
@@ -18079,7 +18079,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おなかがすいたのでぱんをたべました。",
+    "exKana": "おなかがすいたのでぱんをたべました",
     "exTokens": [
       [
         "お腹",
@@ -18157,7 +18157,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしのおばはきょうとにすんでいます。",
+    "exKana": "わたくしのおばはきょうとにすんでいます",
     "exTokens": [
       [
         "私",
@@ -18250,7 +18250,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "つよいかぜできのえだがおれました。",
+    "exKana": "つよいかぜできのえだがおれました",
     "exTokens": [
       [
         "強い",
@@ -18323,7 +18323,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おゆのおんどをたしかめてください。",
+    "exKana": "おゆのおんどをたしかめてください",
     "exTokens": [
       [
         "お",
@@ -18390,7 +18390,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうのかいはごごにじにはじまります。",
+    "exKana": "きょうのかいはごごにじにはじまります",
     "exTokens": [
       [
         "今日",
@@ -18464,7 +18464,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かいじょうにはたくさんのひとがあつまりました。",
+    "exKana": "かいじょうにはたくさんのひとがあつまりました",
     "exTokens": [
       [
         "会場",
@@ -18540,7 +18540,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "まいにちにほんごでかいわをれんしゅうしています。",
+    "exKana": "まいにちにほんごでかいわをれんしゅうしています",
     "exTokens": [
       [
         "毎日",
@@ -18630,7 +18630,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あきになるとあまいかきをたべます。",
+    "exKana": "あきになるとあまいかきをたべます",
     "exTokens": [
       [
         "秋",
@@ -18699,7 +18699,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かのじょのうたがすきでかしゅになりたいです。",
+    "exKana": "かのじょのうたがすきでかしゅになりたいです",
     "exTokens": [
       [
         "彼女",
@@ -18778,7 +18778,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かれはあたたかいかっこうをしてでかけました。",
+    "exKana": "かれはあたたかいかっこうをしてでかけました",
     "exTokens": [
       [
         "彼",
@@ -18853,7 +18853,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おてらのかねのおとがとおくからきこえます。",
+    "exKana": "おてらのかねのおとがとおくからきこえます",
     "exTokens": [
       [
         "お",
@@ -18930,7 +18930,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "へやのかべにあたらしいえをかざりました。",
+    "exKana": "へやのかべにあたらしいえをかざりました",
     "exTokens": [
       [
         "部屋",
@@ -19006,7 +19006,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしのことはかまわないでください。",
+    "exKana": "わたくしのことはかまわないでください",
     "exTokens": [
       [
         "私",
@@ -19071,7 +19071,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "やさしいかんごしさんがしんせつにしてくれました。",
+    "exKana": "やさしいかんごしさんがしんせつにしてくれました",
     "exTokens": [
       [
         "優しい",
@@ -19170,7 +19170,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "すばらしいえいがをみてふかくかんどうしました。",
+    "exKana": "すばらしいえいがをみてふかくかんどうしました",
     "exTokens": [
       [
         "素晴らしい",
@@ -19246,7 +19246,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "みんなでぐらすをもってかんぱいしました。",
+    "exKana": "みんなでぐらすをもってかんぱいしました",
     "exTokens": [
       [
         "みんな",
@@ -19321,7 +19321,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすのしけんのためにさいごまでがんばります。",
+    "exKana": "あすのしけんのためにさいごまでがんばります",
     "exTokens": [
       [
         "明日",
@@ -19395,7 +19395,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "なつやすみのきかんにりょこうへいくよていです。",
+    "exKana": "なつやすみのきかんにりょこうへいくよていです",
     "exTokens": [
       [
         "夏休み",
@@ -19465,7 +19465,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "らじおからあかるいきょくがきこえます。",
+    "exKana": "らじおからあかるいきょくがきこえます",
     "exTokens": [
       [
         "ラジオ",
@@ -19526,7 +19526,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしはむかしからすこしきんがんです。",
+    "exKana": "わたくしはむかしからすこしきんがんです",
     "exTokens": [
       [
         "私",
@@ -19587,7 +19587,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ちいさなすいそうできんぎょをかっています。",
+    "exKana": "ちいさなすいそうできんぎょをかっています",
     "exTokens": [
       [
         "小さな",
@@ -19677,7 +19677,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "にわのくさをきれいにぬきました。",
+    "exKana": "にわのくさをきれいにぬきました",
     "exTokens": [
       [
         "庭",
@@ -19748,7 +19748,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "なつはたべものがくさりやすいです。",
+    "exKana": "なつはたべものがくさりやすいです",
     "exTokens": [
       [
         "夏",
@@ -19831,7 +19831,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ともだちとうでをくんであるきました。",
+    "exKana": "ともだちとうでをくんであるきました",
     "exTokens": [
       [
         "友達",
@@ -19902,7 +19902,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "たくさんはしったのでいきがくるしいです。",
+    "exKana": "たくさんはしったのでいきがくるしいです",
     "exTokens": [
       [
         "たくさん",
@@ -19972,7 +19972,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かれのそふはわかいころにぐんじんでした。",
+    "exKana": "かれのそふはわかいころにぐんじんでした",
     "exTokens": [
       [
         "彼",
@@ -20047,7 +20047,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ころんであしにかるいけがをしました。",
+    "exKana": "ころんであしにかるいけがをしました",
     "exTokens": [
       [
         "転ん",
@@ -20122,7 +20122,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "けんこうのためにまいにちうんどうをしています。",
+    "exKana": "けんこうのためにまいにちうんどうをしています",
     "exTokens": [
       [
         "健康",
@@ -20199,7 +20199,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "せかいにはおおくのげんごがあります。",
+    "exKana": "せかいにはおおくのげんごがあります",
     "exTokens": [
       [
         "世界",
@@ -20271,7 +20271,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "えきのまえでどうろのこうじをしています。",
+    "exKana": "えきのまえでどうろのこうじをしています",
     "exTokens": [
       [
         "駅",
@@ -20355,7 +20355,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "がんばってだいがくのしけんにごうかくしました。",
+    "exKana": "がんばってだいがくのしけんにごうかくしました",
     "exTokens": [
       [
         "頑張っ",
@@ -20428,7 +20428,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "らいしゅうこのまちでこくさいかいぎがひらかれます。",
+    "exKana": "らいしゅうこのまちでこくさいかいぎがひらかれます",
     "exTokens": [
       [
         "来週",
@@ -20501,7 +20501,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "せんせいがこくばんにかんじをかきました。",
+    "exKana": "せんせいがこくばんにかんじをかきました",
     "exTokens": [
       [
         "先生",
@@ -20571,7 +20571,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こくみんぜんいんがへいわをねがっています。",
+    "exKana": "こくみんぜんいんがへいわをねがっています",
     "exTokens": [
       [
         "国民",
@@ -20641,7 +20641,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かれのやさしいことばにこころがあたたかくなりました。",
+    "exKana": "かれのやさしいことばにこころがあたたかくなりました",
     "exTokens": [
       [
         "彼",
@@ -20718,7 +20718,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "たなかさんのごしゅじんはかいしゃいんです。",
+    "exKana": "たなかさんのごしゅじんはかいしゃいんです",
     "exTokens": [
       [
         "田中",
@@ -20784,7 +20784,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすのかいぎについてたいせつなことをききました。",
+    "exKana": "あすのかいぎについてたいせつなことをききました",
     "exTokens": [
       [
         "明日",
@@ -20889,7 +20889,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "へやのごみをあつめてすてました。",
+    "exKana": "へやのごみをあつめてすてました",
     "exTokens": [
       [
         "部屋",
@@ -20961,7 +20961,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こんどのしゅうまつにともだちとえいがをみます。",
+    "exKana": "こんどのしゅうまつにともだちとえいがをみます",
     "exTokens": [
       [
         "今度",
@@ -21034,7 +21034,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こんやはそらがはれてほしがよくみえます。",
+    "exKana": "こんやはそらがはれてほしがよくみえます",
     "exTokens": [
       [
         "今夜",
@@ -21113,7 +21113,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "さいしょのぺーじをしずかにめくりました。",
+    "exKana": "さいしょのぺーじをしずかにめくりました",
     "exTokens": [
       [
         "最初",
@@ -21184,7 +21184,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あめでりょこうがちゅうしになってざんねんです。",
+    "exKana": "あめでりょこうがちゅうしになってざんねんです",
     "exTokens": [
       [
         "雨",
@@ -21276,7 +21276,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすのあさからそつぎょうしきがはじまります。",
+    "exKana": "あすのあさからそつぎょうしきがはじまります",
     "exTokens": [
       [
         "明日",
@@ -21341,7 +21341,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "でんしゃがじこでおくれています。",
+    "exKana": "でんしゃがじこでおくれています",
     "exTokens": [
       [
         "電車",
@@ -21408,7 +21408,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "でかけるまえにりょこうのしたくをします。",
+    "exKana": "でかけるまえにりょこうのしたくをします",
     "exTokens": [
       [
         "出かける",
@@ -21477,7 +21477,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "はなのちょうしがわるいのでじびかにいきます。",
+    "exKana": "はなのちょうしがわるいのでじびかにいきます",
     "exTokens": [
       [
         "鼻",
@@ -21554,7 +21554,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かれはまいしゅうどようびにじゅうどうをならっています。",
+    "exKana": "かれはまいしゅうどようびにじゅうどうをならっています",
     "exTokens": [
       [
         "彼",
@@ -21633,7 +21633,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "だいがくでのわたくしのせんもんはれきしです。",
+    "exKana": "だいがくでのわたくしのせんもんはれきしです",
     "exTokens": [
       [
         "大学",
@@ -21722,7 +21722,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ながいじかんがかかりましたがとうとうかんせいしました。",
+    "exKana": "ながいじかんがかかりましたがとうとうかんせいしました",
     "exTokens": [
       [
         "長い",
@@ -21804,7 +21804,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かみがのびたのでとこやへいきました。",
+    "exKana": "かみがのびたのでとこやへいきました",
     "exTokens": [
       [
         "髪",
@@ -21883,7 +21883,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうはおいわいにとくべつなりょうりをつくりました。",
+    "exKana": "きょうはおいわいにとくべつなりょうりをつくりました",
     "exTokens": [
       [
         "今日",
@@ -21960,7 +21960,7 @@
       "batch": "batch-11",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "とっきゅうにのるとつぎのえきまでいちじかんでいけます。",
+    "exKana": "とっきゅうにのるとつぎのえきまでいちじかんでいけます",
     "exTokens": [
       [
         "特急",
@@ -22048,7 +22048,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "てがみをともだちのいえにとどけました。",
+    "exKana": "てがみをともだちのいえにとどけました",
     "exTokens": [
       [
         "手紙",
@@ -22119,7 +22119,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しゅうまつはゆうめいなほてるにとまります。",
+    "exKana": "しゅうまつはゆうめいなほてるにとまります",
     "exTokens": [
       [
         "週末",
@@ -22206,7 +22206,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ちちはこわれたとけいをなおしてくれました。",
+    "exKana": "ちちはこわれたとけいをなおしてくれました",
     "exTokens": [
       [
         "父",
@@ -22286,7 +22286,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ぱそこんがすぐになおってよかったです。",
+    "exKana": "ぱそこんがすぐになおってよかったです",
     "exTokens": [
       [
         "パソコン",
@@ -22358,7 +22358,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "つくえのうえにあったかぎがなくなりました。",
+    "exKana": "つくえのうえにあったかぎがなくなりました",
     "exTokens": [
       [
         "机",
@@ -22456,7 +22456,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "せんせいはしゅうまつになんをなさいますか。",
+    "exKana": "せんせいはしゅうまつになんをなさいますか",
     "exTokens": [
       [
         "先生",
@@ -22525,7 +22525,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすはなるべくはやくきてください。",
+    "exKana": "あすはなるべくはやくきてください",
     "exTokens": [
       [
         "明日",
@@ -22588,7 +22588,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あたらしいせいかつにすっかりなれました。",
+    "exKana": "あたらしいせいかつにすっかりなれました",
     "exTokens": [
       [
         "新しい",
@@ -22651,7 +22651,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ねこがどあからそとへにげました。",
+    "exKana": "ねこがどあからそとへにげました",
     "exTokens": [
       [
         "猫",
@@ -22720,7 +22720,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしはまいにちよるににっきをかきます。",
+    "exKana": "わたくしはまいにちよるににっきをかきます",
     "exTokens": [
       [
         "私",
@@ -22791,7 +22791,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "そぼがせんしゅうからにゅういんしています。",
+    "exKana": "そぼがせんしゅうからにゅういんしています",
     "exTokens": [
       [
         "祖母",
@@ -22862,7 +22862,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おとうとはらいげつだいがくににゅうがくします。",
+    "exKana": "おとうとはらいげつだいがくににゅうがくします",
     "exTokens": [
       [
         "弟",
@@ -22930,7 +22930,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "いもうとはははによくにています。",
+    "exKana": "いもうとはははによくにています",
     "exTokens": [
       [
         "妹",
@@ -23001,7 +23001,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かわいいにんぎょうをいもうとにあげました。",
+    "exKana": "かわいいにんぎょうをいもうとにあげました",
     "exTokens": [
       [
         "かわいい",
@@ -23068,7 +23068,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ぱんにばたーをぬってたべます。",
+    "exKana": "ぱんにばたーをぬってたべます",
     "exTokens": [
       [
         "パン",
@@ -23134,7 +23134,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あめがふってふくがぬれてしまいました。",
+    "exKana": "あめがふってふくがぬれてしまいました",
     "exTokens": [
       [
         "雨",
@@ -23211,7 +23211,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このみかんはすこしすっぱいです。",
+    "exKana": "このみかんはすこしすっぱいです",
     "exTokens": [
       [
         "この",
@@ -23270,7 +23270,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あかちゃんがきもちよさそうにねむっています。",
+    "exKana": "あかちゃんがきもちよさそうにねむっています",
     "exTokens": [
       [
         "赤ちゃん",
@@ -23345,7 +23345,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あ、でんしゃのなかにかさをわすれました。",
+    "exKana": "あでんしゃのなかにかさをわすれました",
     "exTokens": [
       [
         "あ",
@@ -23445,7 +23445,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ほんだなとつくえのあいだにかばんをおきました。",
+    "exKana": "ほんだなとつくえのあいだにかばんをおきました",
     "exTokens": [
       [
         "本棚",
@@ -23543,7 +23543,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あんなにひろいへやにすんでみたいです。",
+    "exKana": "あんなにひろいへやにすんでみたいです",
     "exTokens": [
       [
         "あんな",
@@ -23620,7 +23620,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "てすとのためにいっしょうけんめいべんきょうしました。",
+    "exKana": "てすとのためにいっしょうけんめいべんきょうしました",
     "exTokens": [
       [
         "テスト",
@@ -23692,7 +23692,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こうえんにはきれいなはながいっぱいさいています。",
+    "exKana": "こうえんにはきれいなはながいっぱいさいています",
     "exTokens": [
       [
         "公園",
@@ -23777,7 +23777,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ちちはまいにちくるまをうんてんしてかいしゃへいきます。",
+    "exKana": "ちちはまいにちくるまをうんてんしてかいしゃへいきます",
     "exTokens": [
       [
         "父",
@@ -23860,7 +23860,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "せんせいのおかげでしけんにごうかくできました。",
+    "exKana": "せんせいのおかげでしけんにごうかくできました",
     "exTokens": [
       [
         "先生",
@@ -23934,7 +23934,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しゃちょうはなんとおっしゃいましたか。",
+    "exKana": "しゃちょうはなんとおっしゃいましたか",
     "exTokens": [
       [
         "社長",
@@ -24017,7 +24017,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "そとからおおきなおとがきこえました。",
+    "exKana": "そとからおおきなおとがきこえました",
     "exTokens": [
       [
         "外",
@@ -24083,7 +24083,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "なつやすみにおまつりへいきました。",
+    "exKana": "なつやすみにおまつりへいきました",
     "exTokens": [
       [
         "夏休み",
@@ -24146,7 +24146,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "りょこうさきでかぞくにおみやげをかいました。",
+    "exKana": "りょこうさきでかぞくにおみやげをかいました",
     "exTokens": [
       [
         "旅行先",
@@ -24221,7 +24221,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "てつだってくれたともだちにおれいをいいました。",
+    "exKana": "てつだってくれたともだちにおれいをいいました",
     "exTokens": [
       [
         "手伝っ",
@@ -24298,7 +24298,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "みんなでかいぎしつにはいりました。",
+    "exKana": "みんなでかいぎしつにはいりました",
     "exTokens": [
       [
         "みんな",
@@ -24361,7 +24361,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しごとのかえりにすーぱーでかいものをしました。",
+    "exKana": "しごとのかえりにすーぱーでかいものをしました",
     "exTokens": [
       [
         "仕事",
@@ -24439,7 +24439,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かれらはほうかごにさっかーをしています。",
+    "exKana": "かれらはほうかごにさっかーをしています",
     "exTokens": [
       [
         "彼",
@@ -24518,7 +24518,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすはきっといいてんきになります。",
+    "exKana": "あすはきっといいてんきになります",
     "exTokens": [
       [
         "明日",
@@ -24583,7 +24583,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ばすでくうこうまでいきました。",
+    "exKana": "ばすでくうこうまでいきました",
     "exTokens": [
       [
         "バス",
@@ -24646,7 +24646,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "せんせいがほんをかしてくださいました。",
+    "exKana": "せんせいがほんをかしてくださいました",
     "exTokens": [
       [
         "先生",
@@ -24716,7 +24716,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "たなかくんはいつもげんきです。",
+    "exKana": "たなかくんはいつもげんきです",
     "exTokens": [
       [
         "田中",
@@ -24774,7 +24774,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このせーたーはいぬのけがつきやすいです。",
+    "exKana": "このせーたーはいぬのけがつきやすいです",
     "exTokens": [
       [
         "この",
@@ -24849,7 +24849,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "むずかしいけれどおもしろいほんです。",
+    "exKana": "むずかしいけれどおもしろいほんです",
     "exTokens": [
       [
         "難しい",
@@ -24904,7 +24904,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あめがふっているけれどもでかけます。",
+    "exKana": "あめがふっているけれどもでかけます",
     "exTokens": [
       [
         "雨",
@@ -24992,7 +24992,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あそこにかわいいこがいます。",
+    "exKana": "あそこにかわいいこがいます",
     "exTokens": [
       [
         "あそこ",
@@ -25054,7 +25054,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こうやっておりがみをおります。",
+    "exKana": "こうやっておりがみをおります",
     "exTokens": [
       [
         "こう",
@@ -25115,7 +25115,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あねはこうこうせいになりました。",
+    "exKana": "あねはこうこうせいになりました",
     "exTokens": [
       [
         "姉",
@@ -25178,7 +25178,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あのせんせいのなまえをごぞんじですか。",
+    "exKana": "あのせんせいのなまえをごぞんじですか",
     "exTokens": [
       [
         "あの",
@@ -25245,7 +25245,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このもんだいのこたえがわかりません。",
+    "exKana": "このもんだいのこたえがわかりません",
     "exTokens": [
       [
         "この",
@@ -25313,7 +25313,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このあいだでぱーとでともだちにあいました。",
+    "exKana": "このあいだでぱーとでともだちにあいました",
     "exTokens": [
       [
         "この",
@@ -25385,7 +25385,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このごろすこしさむくなりました。",
+    "exKana": "このごろすこしさむくなりました",
     "exTokens": [
       [
         "このごろ",
@@ -25444,7 +25444,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "せんせいはこのえいがをごらんになりましたか。",
+    "exKana": "せんせいはこのえいがをごらんになりましたか",
     "exTokens": [
       [
         "先生",
@@ -25544,7 +25544,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "せんせいにおはなをさしあげました。",
+    "exKana": "せんせいにおはなをさしあげました",
     "exTokens": [
       [
         "先生",
@@ -25610,7 +25610,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "さっきたなかさんからでんわがありました。",
+    "exKana": "さっきたなかさんからでんわがありました",
     "exTokens": [
       [
         "さっき",
@@ -25681,7 +25681,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ともだちがかえってしまってさびしいです。",
+    "exKana": "ともだちがかえってしまってさびしいです",
     "exTokens": [
       [
         "友達",
@@ -25746,7 +25746,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "さらいげつかぞくでりょこうにいきます。",
+    "exKana": "さらいげつかぞくでりょこうにいきます",
     "exTokens": [
       [
         "さ",
@@ -25811,7 +25811,7 @@
       "batch": "batch-12",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "さらいしゅうのきんようびにてすとがあります。",
+    "exKana": "さらいしゅうのきんようびにてすとがあります",
     "exTokens": [
       [
         "さ",
@@ -25881,7 +25881,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きれいにじをかきます。",
+    "exKana": "きれいにじをかきます",
     "exTokens": [
       [
         "綺麗",
@@ -25942,7 +25942,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすにほんごのしけんがあります。",
+    "exKana": "あすにほんごのしけんがあります",
     "exTokens": [
       [
         "明日",
@@ -26005,7 +26005,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しばらくここでまってください。",
+    "exKana": "しばらくここでまってください",
     "exTokens": [
       [
         "しばらく",
@@ -26063,7 +26063,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "すーぱーでしょくりょうひんをかいました。",
+    "exKana": "すーぱーでしょくりょうひんをかいました",
     "exTokens": [
       [
         "スーパー",
@@ -26145,7 +26145,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かれはすっとたちあがりました。",
+    "exKana": "かれはすっとたちあがりました",
     "exTokens": [
       [
         "彼",
@@ -26208,7 +26208,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしもそうおもいます。",
+    "exKana": "わたくしもそうおもいます",
     "exTokens": [
       [
         "私",
@@ -26263,7 +26263,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "そんなにいそがなくてもいいです。",
+    "exKana": "そんなにいそがなくてもいいです",
     "exTokens": [
       [
         "そんな",
@@ -26331,7 +26331,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "やすみのひはたいていいえにいます。",
+    "exKana": "やすみのひはたいていいえにいます",
     "exTokens": [
       [
         "休み",
@@ -26421,7 +26421,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "たまにえいがかんにいきます。",
+    "exKana": "たまにえいがかんにいきます",
     "exTokens": [
       [
         "たまに",
@@ -26477,7 +26477,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かぞくのためにりょうりをつくります。",
+    "exKana": "かぞくのためにりょうりをつくります",
     "exTokens": [
       [
         "家族",
@@ -26545,7 +26545,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ここでたばこをすってはだめです。",
+    "exKana": "ここでたばこをすってはだめです",
     "exTokens": [
       [
         "ここ",
@@ -26614,7 +26614,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "はなこちゃんはこうえんであそんでいます。",
+    "exKana": "はなこちゃんはこうえんであそんでいます",
     "exTokens": [
       [
         "花子",
@@ -26685,7 +26685,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすはつごうがわるいです。",
+    "exKana": "あすはつごうがわるいです",
     "exTokens": [
       [
         "明日",
@@ -26743,7 +26743,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "できるだけはやくきてください。",
+    "exKana": "できるだけはやくきてください",
     "exTokens": [
       [
         "できるだけ",
@@ -26797,7 +26797,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "とおくのやまがきれいにみえます。",
+    "exKana": "とおくのやまがきれいにみえます",
     "exTokens": [
       [
         "遠く",
@@ -26865,7 +26865,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "まいあさこのみちをとおります。",
+    "exKana": "まいあさこのみちをとおります",
     "exTokens": [
       [
         "毎朝",
@@ -26924,7 +26924,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "くだものがすきで、とくにりんごがすきです。",
+    "exKana": "くだものがすきでとくにりんごがすきです",
     "exTokens": [
       [
         "果物",
@@ -26999,7 +26999,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かえるとちゅうでほんをかいました。",
+    "exKana": "かえるとちゅうでほんをかいました",
     "exTokens": [
       [
         "帰る",
@@ -27067,7 +27067,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "くるまをここにとめました。",
+    "exKana": "くるまをここにとめました",
     "exTokens": [
       [
         "車",
@@ -27151,7 +27151,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ばすがなかなかきません。",
+    "exKana": "ばすがなかなかきません",
     "exTokens": [
       [
         "バス",
@@ -27230,7 +27230,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "でんわがなっています。",
+    "exKana": "でんわがなっています",
     "exTokens": [
       [
         "電話",
@@ -27290,7 +27290,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "なるほど、よくわかりました。",
+    "exKana": "なるほどよくわかりました",
     "exTokens": [
       [
         "なるほど",
@@ -27349,7 +27349,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ぱんやからいいにおいがします。",
+    "exKana": "ぱんやからいいにおいがします",
     "exTokens": [
       [
         "パン屋",
@@ -27410,7 +27410,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしのいえはにかいだてです。",
+    "exKana": "わたくしのいえはにかいだてです",
     "exTokens": [
       [
         "私",
@@ -27476,7 +27476,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このしゃつのねだんはたかいです。",
+    "exKana": "このしゃつのねだんはたかいです",
     "exTokens": [
       [
         "この",
@@ -27539,7 +27539,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうはねつがあります。",
+    "exKana": "きょうはねつがあります",
     "exTokens": [
       [
         "今日",
@@ -27600,7 +27600,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうはねぼうしてしまいました。",
+    "exKana": "きょうはねぼうしてしまいました",
     "exTokens": [
       [
         "今日",
@@ -27666,7 +27666,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "よるおそいのでとてもねむいです。",
+    "exKana": "よるおそいのでとてもねむいです",
     "exTokens": [
       [
         "夜",
@@ -27730,7 +27730,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "けーきがすこしのこっています。",
+    "exKana": "けーきがすこしのこっています",
     "exTokens": [
       [
         "ケーキ",
@@ -27791,7 +27791,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "のどがかわいたのでみずをのみます。",
+    "exKana": "のどがかわいたのでみずをのみます",
     "exTokens": [
       [
         "のど",
@@ -27866,7 +27866,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "つぎのえきででんしゃをのりかえます。",
+    "exKana": "つぎのえきででんしゃをのりかえます",
     "exTokens": [
       [
         "次",
@@ -27933,7 +27933,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "どんなのりものがすきですか。",
+    "exKana": "どんなのりものがすきですか",
     "exTokens": [
       [
         "どんな",
@@ -27992,7 +27992,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あめのばあいはちゅうしにします。",
+    "exKana": "あめのばあいはちゅうしにします",
     "exTokens": [
       [
         "雨",
@@ -28060,7 +28060,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おおきさはまえのにばいです。",
+    "exKana": "おおきさはまえのにばいです",
     "exTokens": [
       [
         "大きさ",
@@ -28124,7 +28124,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おてがみをはいけんいたしました。",
+    "exKana": "おてがみをはいけんいたしました",
     "exTokens": [
       [
         "お",
@@ -28185,7 +28185,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすはいしゃにいきます。",
+    "exKana": "あすはいしゃにいきます",
     "exTokens": [
       [
         "明日",
@@ -28240,7 +28240,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "これからかいぎをはじめます。",
+    "exKana": "これからかいぎをはじめます",
     "exTokens": [
       [
         "これ",
@@ -28318,7 +28318,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かれもきょうくるはずです。",
+    "exKana": "かれもきょうくるはずです",
     "exTokens": [
       [
         "彼",
@@ -28377,7 +28377,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おおぜいのまえではなすのははずかしいです。",
+    "exKana": "おおぜいのまえではなすのははずかしいです",
     "exTokens": [
       [
         "大勢",
@@ -28448,7 +28448,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かのじょのにほんごのはつおんはきれいです。",
+    "exKana": "かのじょのにほんごのはつおんはきれいです",
     "exTokens": [
       [
         "彼女",
@@ -28515,7 +28515,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ふじやまがはっきりみえます。",
+    "exKana": "ふじやまがはっきりみえます",
     "exTokens": [
       [
         "富士山",
@@ -28570,7 +28570,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ともだちといっしょにはなみにいきました。",
+    "exKana": "ともだちといっしょにはなみにいきました",
     "exTokens": [
       [
         "友達",
@@ -28640,7 +28640,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "はやしのなかにちいさないえがあります。",
+    "exKana": "はやしのなかにちいさないえがあります",
     "exTokens": [
       [
         "林",
@@ -28727,7 +28727,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おもしろいてれびばんぐみをみました。",
+    "exKana": "おもしろいてれびばんぐみをみました",
     "exTokens": [
       [
         "面白い",
@@ -28790,7 +28790,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "てんきがよくてひがあたたかかったです。",
+    "exKana": "てんきがよくてひがあたたかかったです",
     "exTokens": [
       [
         "天気",
@@ -28862,7 +28862,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こんやはあしがひえます。",
+    "exKana": "こんやはあしがひえます",
     "exTokens": [
       [
         "今夜",
@@ -28920,7 +28920,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "へやにつよいひかりがはいってきます。",
+    "exKana": "へやにつよいひかりがはいってきます",
     "exTokens": [
       [
         "部屋",
@@ -28992,7 +28992,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "よぞらにほしがきれいにひかっています。",
+    "exKana": "よぞらにほしがきれいにひかっています",
     "exTokens": [
       [
         "夜空",
@@ -29067,7 +29067,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "つくえのひきだしにかぎがあります。",
+    "exKana": "つくえのひきだしにかぎがあります",
     "exTokens": [
       [
         "机",
@@ -29135,7 +29135,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ぎんこうでおかねをひきだしました。",
+    "exKana": "ぎんこうでおかねをひきだしました",
     "exTokens": [
       [
         "銀行",
@@ -29197,7 +29197,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ばすでひこうじょうへむかいます。",
+    "exKana": "ばすでひこうじょうへむかいます",
     "exTokens": [
       [
         "バス",
@@ -29255,7 +29255,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ひさしぶりにともだちとあいました。",
+    "exKana": "ひさしぶりにともだちとあいました",
     "exTokens": [
       [
         "久しぶり",
@@ -29318,7 +29318,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "そのもんだいはひじょうにむずかしいです。",
+    "exKana": "そのもんだいはひじょうにむずかしいです",
     "exTokens": [
       [
         "その",
@@ -29381,7 +29381,7 @@
       "batch": "batch-13",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おおきなおとにびっくりしました。",
+    "exKana": "おおきなおとにびっくりしました",
     "exTokens": [
       [
         "大きな",
@@ -29443,7 +29443,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "らいげつ、あたらしいいえにひっこします。",
+    "exKana": "らいげつあたらしいいえにひっこします",
     "exTokens": [
       [
         "来月",
@@ -29507,7 +29507,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "りょこうのまえにじゅんびがひつようです。",
+    "exKana": "りょこうのまえにじゅんびがひつようです",
     "exTokens": [
       [
         "旅行",
@@ -29574,7 +29574,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうはひどいあめがふっています。",
+    "exKana": "きょうはひどいあめがふっています",
     "exTokens": [
       [
         "今日",
@@ -29646,7 +29646,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ほんのごじゅうぺーじをひらいてください。",
+    "exKana": "ほんのごじゅうぺーじをひらいてください",
     "exTokens": [
       [
         "本",
@@ -29712,7 +29712,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ひるまはあたたかくてきもちがいいです。",
+    "exKana": "ひるまはあたたかくてきもちがいいです",
     "exTokens": [
       [
         "昼間",
@@ -29777,7 +29777,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ひるやすみにともだちとおしゃべりしました。",
+    "exKana": "ひるやすみにともだちとおしゃべりしました",
     "exTokens": [
       [
         "昼休み",
@@ -29845,7 +29845,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "さいきん、にほんごをまなぶひとがふえています。",
+    "exKana": "さいきんにほんごをまなぶひとがふえています",
     "exTokens": [
       [
         "最近",
@@ -29944,7 +29944,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "じゅぎょうのあとでまいにちふくしゅうします。",
+    "exKana": "じゅぎょうのあとでまいにちふくしゅうします",
     "exTokens": [
       [
         "授業",
@@ -30011,7 +30011,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ぶちょうにしょるいをだしました。",
+    "exKana": "ぶちょうにしょるいをだしました",
     "exTokens": [
       [
         "部長",
@@ -30072,7 +30072,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あまくておいしいぶどうをかいました。",
+    "exKana": "あまくておいしいぶどうをかいました",
     "exTokens": [
       [
         "甘く",
@@ -30140,7 +30140,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "さいきんあまいものをたべすぎてふとりました。",
+    "exKana": "さいきんあまいものをたべすぎてふとりました",
     "exTokens": [
       [
         "最近",
@@ -30230,7 +30230,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ちいさいふねでかわをわたりました。",
+    "exKana": "ちいさいふねでかわをわたりました",
     "exTokens": [
       [
         "小さい",
@@ -30296,7 +30296,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このまちはでんしゃがなくてふべんです。",
+    "exKana": "このまちはでんしゃがなくてふべんです",
     "exTokens": [
       [
         "この",
@@ -30368,7 +30368,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "でんしゃのなかでひとのあしをふんでしまいました。",
+    "exKana": "でんしゃのなかでひとのあしをふんでしまいました",
     "exTokens": [
       [
         "電車",
@@ -30455,7 +30455,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "いえをでたときにあめがふりだしました。",
+    "exKana": "いえをでたときにあめがふりだしました",
     "exTokens": [
       [
         "家",
@@ -30554,7 +30554,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "だいがくでにっぽんのぶんがくをべんきょうしています。",
+    "exKana": "だいがくでにっぽんのぶんがくをべんきょうしています",
     "exTokens": [
       [
         "大学",
@@ -30631,7 +30631,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このきょうかしょはぶんぽうがわかりやすいです。",
+    "exKana": "このきょうかしょはぶんぽうがわかりやすいです",
     "exTokens": [
       [
         "この",
@@ -30699,7 +30699,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このもんだいはべつのほうほうでときましょう。",
+    "exKana": "このもんだいはべつのほうほうでときましょう",
     "exTokens": [
       [
         "この",
@@ -30771,7 +30771,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "へんなおとがしてめがさめました。",
+    "exKana": "へんなおとがしてめがさめました",
     "exTokens": [
       [
         "変",
@@ -30852,7 +30852,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "めーるをおくったのにへんじがきません。",
+    "exKana": "めーるをおくったのにへんじがきません",
     "exTokens": [
       [
         "メール",
@@ -30951,7 +30951,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ぼくもそのえいがをみたいです。",
+    "exKana": "ぼくもそのえいがをみたいです",
     "exTokens": [
       [
         "僕",
@@ -31016,7 +31016,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こんやはそらがきれいでほしがよくみえます。",
+    "exKana": "こんやはそらがきれいでほしがよくみえます",
     "exTokens": [
       [
         "今夜",
@@ -31097,7 +31097,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "えきからいえまでじゅうふんほどあるきます。",
+    "exKana": "えきからいえまでじゅうふんほどあるきます",
     "exTokens": [
       [
         "駅",
@@ -31169,7 +31169,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しゅくだいはほとんどおわりました。",
+    "exKana": "しゅくだいはほとんどおわりました",
     "exTokens": [
       [
         "宿題",
@@ -31229,7 +31229,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "せんせいがわたくしのさくぶんをほめてくれました。",
+    "exKana": "せんせいがわたくしのさくぶんをほめてくれました",
     "exTokens": [
       [
         "先生",
@@ -31309,7 +31309,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あすのじゅうじにそちらへまいります。",
+    "exKana": "あすのじゅうじにそちらへまいります",
     "exTokens": [
       [
         "明日",
@@ -31401,7 +31401,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かれはいつもまじめにはたらいています。",
+    "exKana": "かれはいつもまじめにはたらいています",
     "exTokens": [
       [
         "彼",
@@ -31472,7 +31472,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "いえについたら、まずてをあらいましょう。",
+    "exKana": "いえについたらまずてをあらいましょう",
     "exTokens": [
       [
         "家",
@@ -31547,7 +31547,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "でんわまたはめーるでれんらくしてください。",
+    "exKana": "でんわまたはめーるでれんらくしてください",
     "exTokens": [
       [
         "電話",
@@ -31618,7 +31618,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かんじのかきかたをまちがえました。",
+    "exKana": "かんじのかきかたをまちがえました",
     "exTokens": [
       [
         "漢字",
@@ -31681,7 +31681,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "いそいではしったのででんしゃにまにあいました。",
+    "exKana": "いそいではしったのででんしゃにまにあいました",
     "exTokens": [
       [
         "急い",
@@ -31760,7 +31760,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こうえんのまわりをゆっくりさんぽしました。",
+    "exKana": "こうえんのまわりをゆっくりさんぽしました",
     "exTokens": [
       [
         "公園",
@@ -31850,7 +31850,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "やすみのひはへやでまんがをよみます。",
+    "exKana": "やすみのひはへやでまんがをよみます",
     "exTokens": [
       [
         "休み",
@@ -31944,7 +31944,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "へやのまどからきれいなうみがみえます。",
+    "exKana": "へやのまどからきれいなうみがみえます",
     "exTokens": [
       [
         "部屋",
@@ -32017,7 +32017,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "みずうみのちかくでしゃしんをとりました。",
+    "exKana": "みずうみのちかくでしゃしんをとりました",
     "exTokens": [
       [
         "湖",
@@ -32088,7 +32088,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "まいあさあたたかいみそしるをのみます。",
+    "exKana": "まいあさあたたかいみそしるをのみます",
     "exTokens": [
       [
         "毎朝",
@@ -32148,7 +32148,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "なくしたかぎがかばんからみつかりました。",
+    "exKana": "なくしたかぎがかばんからみつかりました",
     "exTokens": [
       [
         "なくし",
@@ -32220,7 +32220,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "としょかんでさがしていたほんをみつけました。",
+    "exKana": "としょかんでさがしていたほんをみつけました",
     "exTokens": [
       [
         "図書館",
@@ -32300,7 +32300,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "くらすのみなでりょこうにいきました。",
+    "exKana": "くらすのみなでりょこうにいきました",
     "exTokens": [
       [
         "クラス",
@@ -32371,7 +32371,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "みなとにおおきなふねがとまっています。",
+    "exKana": "みなとにおおきなふねがとまっています",
     "exTokens": [
       [
         "港",
@@ -32442,7 +32442,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ここはむかしとてもしずかなまちでした。",
+    "exKana": "ここはむかしとてもしずかなまちでした",
     "exTokens": [
       [
         "ここ",
@@ -32530,7 +32530,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "むすめはぴあのをれんしゅうするのがすきです。",
+    "exKana": "むすめはぴあのをれんしゅうするのがすきです",
     "exTokens": [
       [
         "娘",
@@ -32626,7 +32626,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "どうぞあたたかいおちゃをめしあがってください。",
+    "exKana": "どうぞあたたかいおちゃをめしあがってください",
     "exTokens": [
       [
         "どうぞ",
@@ -32694,7 +32694,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こころからおれいをもうしあげます。",
+    "exKana": "こころからおれいをもうしあげます",
     "exTokens": [
       [
         "心",
@@ -32754,7 +32754,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしはたなかともうします。",
+    "exKana": "わたくしはたなかともうします",
     "exTokens": [
       [
         "私",
@@ -32813,7 +32813,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "もうすぐはるがやってきます。",
+    "exKana": "もうすぐはるがやってきます",
     "exTokens": [
       [
         "もう",
@@ -32881,7 +32881,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "もしじかんがあればいっしょにいきましょう。",
+    "exKana": "もしじかんがあればいっしょにいきましょう",
     "exTokens": [
       [
         "もし",
@@ -32990,7 +32990,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "もめんのしゃつはきごこちがいいです。",
+    "exKana": "もめんのしゃつはきごこちがいいです",
     "exTokens": [
       [
         "木綿",
@@ -33058,7 +33058,7 @@
       "batch": "batch-14",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "たんじょうびにともだちからぷれぜんとをもらいました。",
+    "exKana": "たんじょうびにともだちからぷれぜんとをもらいました",
     "exTokens": [
       [
         "誕生日",
@@ -33127,7 +33127,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しずかなもりのなかをさんぽしました。",
+    "exKana": "しずかなもりのなかをさんぽしました",
     "exTokens": [
       [
         "静か",
@@ -33203,7 +33203,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きょうはあさからぱんをやきました。",
+    "exKana": "きょうはあさからぱんをやきました",
     "exTokens": [
       [
         "今日",
@@ -33276,7 +33276,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ともだちとあすあうやくそくをしました。",
+    "exKana": "ともだちとあすあうやくそくをしました",
     "exTokens": [
       [
         "友達",
@@ -33349,7 +33349,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このじしょはとてもやくにたちます。",
+    "exKana": "このじしょはとてもやくにたちます",
     "exTokens": [
       [
         "この",
@@ -33417,7 +33417,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ぱんがきれいにやけました。",
+    "exKana": "ぱんがきれいにやけました",
     "exTokens": [
       [
         "パン",
@@ -33480,7 +33480,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "さいきんすこしやせました。",
+    "exKana": "さいきんすこしやせました",
     "exTokens": [
       [
         "最近",
@@ -33535,7 +33535,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "やっとしゅくだいがおわりました。",
+    "exKana": "やっとしゅくだいがおわりました",
     "exTokens": [
       [
         "やっと",
@@ -33594,7 +33594,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "やはりこのみせのおかしはおいしいです。",
+    "exKana": "やはりこのみせのおかしはおいしいです",
     "exTokens": [
       [
         "やはり",
@@ -33665,7 +33665,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "やっぱりきょうのおべんとうもおいしいです。",
+    "exKana": "やっぱりきょうのおべんとうもおいしいです",
     "exTokens": [
       [
         "やっぱり",
@@ -33751,7 +33751,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "このにくはとてもやわらかいです。",
+    "exKana": "このにくはとてもやわらかいです",
     "exTokens": [
       [
         "この",
@@ -33810,7 +33810,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おふろのおゆがあついです。",
+    "exKana": "おふろのおゆがあついです",
     "exTokens": [
       [
         "お",
@@ -33876,7 +33876,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かのじょのゆびはほそくてきれいです。",
+    "exKana": "かのじょのゆびはほそくてきれいです",
     "exTokens": [
       [
         "彼女",
@@ -33941,7 +33941,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "たんじょうびにすてきなゆびわをもらいました。",
+    "exKana": "たんじょうびにすてきなゆびわをもらいました",
     "exTokens": [
       [
         "誕生日",
@@ -34011,7 +34011,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きのうのよる、たのしいゆめをみました。",
+    "exKana": "きのうのよるたのしいゆめをみました",
     "exTokens": [
       [
         "昨日",
@@ -34087,7 +34087,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "かぜでこのはがゆれています。",
+    "exKana": "かぜでこのはがゆれています",
     "exTokens": [
       [
         "風",
@@ -34154,7 +34154,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "きゅうなようができたのでしつれいします。",
+    "exKana": "きゅうなようができたのでしつれいします",
     "exTokens": [
       [
         "急",
@@ -34233,7 +34233,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ごごはようじがあるのででかけます。",
+    "exKana": "ごごはようじがあるのででかけます",
     "exTokens": [
       [
         "午後",
@@ -34303,7 +34303,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "こうえんであそんでふくがよごれました。",
+    "exKana": "こうえんであそんでふくがよごれました",
     "exTokens": [
       [
         "公園",
@@ -34374,7 +34374,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "まいばん、つぎのひのじゅぎょうをよしゅうします。",
+    "exKana": "まいばんつぎのひのじゅぎょうをよしゅうします",
     "exTokens": [
       [
         "毎晩",
@@ -34447,7 +34447,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "らいしゅうのよていをかれんだーにかきました。",
+    "exKana": "らいしゅうのよていをかれんだーにかきました",
     "exTokens": [
       [
         "来週",
@@ -34520,7 +34520,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "れすとらんのせきをよやくしました。",
+    "exKana": "れすとらんのせきをよやくしました",
     "exTokens": [
       [
         "レストラン",
@@ -34588,7 +34588,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ぷれぜんとをわたしたらとてもよろこびました。",
+    "exKana": "ぷれぜんとをわたしたらとてもよろこびました",
     "exTokens": [
       [
         "プレゼント",
@@ -34655,7 +34655,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おなまえをおしえていただいてもよろしいですか。",
+    "exKana": "おなまえをおしえていただいてもよろしいですか",
     "exTokens": [
       [
         "お",
@@ -34734,7 +34734,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "けーきとくっきーのりょうほうをかいました。",
+    "exKana": "けーきとくっきーのりょうほうをかいました",
     "exTokens": [
       [
         "ケーキ",
@@ -34822,7 +34822,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ともだちのいえにいきましたがるすでした。",
+    "exKana": "ともだちのいえにいきましたがるすでした",
     "exTokens": [
       [
         "友達",
@@ -34903,7 +34903,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "へやがあついのでれいぼうをつけました。",
+    "exKana": "へやがあついのでれいぼうをつけました",
     "exTokens": [
       [
         "部屋",
@@ -34976,7 +34976,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "わたくしはにっぽんのれきしについてべんきょうしています。",
+    "exKana": "わたくしはにっぽんのれきしについてべんきょうしています",
     "exTokens": [
       [
         "私",
@@ -35064,7 +35064,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "おちゃをのむためにおゆをわかしました。",
+    "exKana": "おちゃをのむためにおゆをわかしました",
     "exTokens": [
       [
         "お",
@@ -35148,7 +35148,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "えきのまえでともだちとわかれました。",
+    "exKana": "えきのまえでともだちとわかれました",
     "exTokens": [
       [
         "駅",
@@ -35220,7 +35220,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "もうすぐおゆがわきます。",
+    "exKana": "もうすぐおゆがわきます",
     "exTokens": [
       [
         "もう",
@@ -35283,7 +35283,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "ちこくしたわけをはなしてください。",
+    "exKana": "ちこくしたわけをはなしてください",
     "exTokens": [
       [
         "遅刻",
@@ -35350,7 +35350,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "でんしゃのなかにわすれものをしました。",
+    "exKana": "でんしゃのなかにわすれものをしました",
     "exTokens": [
       [
         "電車",
@@ -35480,7 +35480,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "しゅうまつにひとりでびじゅつかんへいきました。",
+    "exKana": "しゅうまつにひとりでびじゅつかんへいきました",
     "exTokens": [
       [
         "週末",
@@ -35551,7 +35551,7 @@
       "batch": "batch-15",
       "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
     },
-    "exKana": "あににおよぎかたをおしえてもらいました。",
+    "exKana": "あににおよぎかたをおしえてもらいました",
     "exTokens": [
       [
         "兄",
@@ -35620,7 +35620,7 @@
     "exJP": "可愛いアクセサリーを買った。",
     "exEN": "I bought a cute accessory.",
     "exZH": "我买了一个可爱的首饰。",
-    "exKana": "かわいいあくせさりーをかった。",
+    "exKana": "かわいいあくせさりーをかった",
     "exTokens": [
       [
         "可愛い",
@@ -35667,7 +35667,7 @@
     "exJP": "アジアの国へ旅行したい。",
     "exEN": "I want to travel to Asian countries.",
     "exZH": "我想去亚洲国家旅行。",
-    "exKana": "あじあのくにへりょこうしたい。",
+    "exKana": "あじあのくにへりょこうしたい",
     "exTokens": [
       [
         "アジア",
@@ -35723,7 +35723,7 @@
     "exJP": "彼は有名なアナウンサーです。",
     "exEN": "He is a famous announcer.",
     "exZH": "他是一位著名的播音员。",
-    "exKana": "かれはゆうめいなあなうんさーです。",
+    "exKana": "かれはゆうめいなあなうんさーです",
     "exTokens": [
       [
         "彼",
@@ -35774,7 +35774,7 @@
     "exJP": "アフリカには多くの野生動物がいる。",
     "exEN": "There are many wild animals in Africa.",
     "exZH": "非洲有很多野生动物。",
-    "exKana": "あふりかにはおおくのやせいどうぶつがいる。",
+    "exKana": "あふりかにはおおくのやせいどうぶつがいる",
     "exTokens": [
       [
         "アフリカ",
@@ -35838,7 +35838,7 @@
     "exJP": "アメリカへ留学する予定です。",
     "exEN": "I plan to study abroad in America.",
     "exZH": "我计划去美国留学。",
-    "exKana": "あめりかへりゅうがくするよていです。",
+    "exKana": "あめりかへりゅうがくするよていです",
     "exTokens": [
       [
         "アメリカ",
@@ -35890,7 +35890,7 @@
     "exJP": "アルコールは飲めません。",
     "exEN": "I cannot drink alcohol.",
     "exZH": "我不能喝酒。",
-    "exKana": "あるこーるはのめません。",
+    "exKana": "あるこーるはのめません",
     "exTokens": [
       [
         "アルコール",
@@ -35940,7 +35940,7 @@
     "exJP": "明日からアルバイトを始めます。",
     "exEN": "I will start a part-time job tomorrow.",
     "exZH": "我明天开始打工。",
-    "exKana": "あすからあるばいとをはじめます。",
+    "exKana": "あすからあるばいとをはじめます",
     "exTokens": [
       [
         "明日",
@@ -35991,7 +35991,7 @@
     "exJP": "エスカレーターで二階へ行く。",
     "exEN": "Go to the second floor by escalator.",
     "exZH": "乘自动扶梯去二楼。",
-    "exKana": "えすかれーたーでにかいへいく。",
+    "exKana": "えすかれーたーでにかいへいく",
     "exTokens": [
       [
         "エスカレーター",
@@ -36043,7 +36043,7 @@
     "exJP": "新しいオートバイが欲しい。",
     "exEN": "I want a new motorcycle.",
     "exZH": "我想要一辆新摩托车。",
-    "exKana": "あたらしいおーとばいがほしい。",
+    "exKana": "あたらしいおーとばいがほしい",
     "exTokens": [
       [
         "新しい",
@@ -36086,7 +36086,7 @@
     "exJP": "カーテンを開けてください。",
     "exEN": "Please open the curtain.",
     "exZH": "请拉开窗帘。",
-    "exKana": "かーてんをあけてください。",
+    "exKana": "かーてんをあけてください",
     "exTokens": [
       [
         "カーテン",
@@ -36134,7 +36134,7 @@
     "exJP": "ガスの火を消した。",
     "exEN": "I turned off the gas.",
     "exZH": "我关掉了煤气。",
-    "exKana": "がすのひをけした。",
+    "exKana": "がすのひをけした",
     "exTokens": [
       [
         "ガス",
@@ -36186,7 +36186,7 @@
     "exJP": "ガソリンが高くなった。",
     "exEN": "Gasoline has become expensive.",
     "exZH": "汽油变贵了。",
-    "exKana": "がそりんがたかくなった。",
+    "exKana": "がそりんがたかくなった",
     "exTokens": [
       [
         "ガソリン",
@@ -36234,7 +36234,7 @@
     "exJP": "ガソリンスタンドはどこですか。",
     "exEN": "Where is the gas station?",
     "exZH": "加油站在哪里？",
-    "exKana": "がそりんすたんどはどこですか。",
+    "exKana": "がそりんすたんどはどこですか",
     "exTokens": [
       [
         "ガソリンスタンド",
@@ -36282,7 +36282,7 @@
     "exJP": "ガラスのコップが割れた。",
     "exEN": "The glass cup broke.",
     "exZH": "玻璃杯碎了。",
-    "exKana": "がらすのこっぷがわれた。",
+    "exKana": "がらすのこっぷがわれた",
     "exTokens": [
       [
         "ガラス",
@@ -36333,7 +36333,7 @@
     "exJP": "美味しいケーキを食べた。",
     "exEN": "I ate a delicious cake.",
     "exZH": "吃了美味的蛋糕。",
-    "exKana": "おいしいけーきをたべた。",
+    "exKana": "おいしいけーきをたべた",
     "exTokens": [
       [
         "美味しい",
@@ -36380,7 +36380,7 @@
     "exJP": "けしゴムを貸してください。",
     "exEN": "Please lend me an eraser.",
     "exZH": "请借给我一块橡皮。",
-    "exKana": "けしごむをかしてください。",
+    "exKana": "けしごむをかしてください",
     "exTokens": [
       [
         "けし",
@@ -36432,7 +36432,7 @@
     "exJP": "明日コンサートに行きます。",
     "exEN": "I will go to a concert tomorrow.",
     "exZH": "我明天去听音乐会。",
-    "exKana": "あすこんさーとにいきます。",
+    "exKana": "あすこんさーとにいきます",
     "exTokens": [
       [
         "明日",
@@ -36480,7 +36480,7 @@
     "exJP": "新しいコンピュータを買った。",
     "exEN": "I bought a new computer.",
     "exZH": "买了一台新电脑。",
-    "exKana": "あたらしいこんぴゅーたをかった。",
+    "exKana": "あたらしいこんぴゅーたをかった",
     "exTokens": [
       [
         "新しい",
@@ -36528,7 +36528,7 @@
     "exJP": "コンピューターが壊れた。",
     "exEN": "The computer broke down.",
     "exZH": "电脑坏了。",
-    "exKana": "こんぴゅーたーがこわれた。",
+    "exKana": "こんぴゅーたーがこわれた",
     "exTokens": [
       [
         "コンピューター",
@@ -36571,7 +36571,7 @@
     "exJP": "毎日サラダを食べる。",
     "exEN": "I eat salad every day.",
     "exZH": "每天吃沙拉。",
-    "exKana": "まいにちさらだをたべる。",
+    "exKana": "まいにちさらだをたべる",
     "exTokens": [
       [
         "毎日",
@@ -36615,7 +36615,7 @@
     "exJP": "夏はサンダルを履く。",
     "exEN": "I wear sandals in the summer.",
     "exZH": "夏天穿凉鞋。",
-    "exKana": "なつはさんだるをはく。",
+    "exKana": "なつはさんだるをはく",
     "exTokens": [
       [
         "夏",
@@ -36662,7 +36662,7 @@
     "exJP": "朝ごはんはサンドイッチです。",
     "exEN": "Breakfast is a sandwich.",
     "exZH": "早餐是三明治。",
-    "exKana": "あさごはんはさんどいっちです。",
+    "exKana": "あさごはんはさんどいっちです",
     "exTokens": [
       [
         "朝ごはん",
@@ -36705,7 +36705,7 @@
     "exJP": "パンにジャムを塗る。",
     "exEN": "I spread jam on bread.",
     "exZH": "在面包上涂果酱。",
-    "exKana": "ぱんにじゃむをぬる。",
+    "exKana": "ぱんにじゃむをぬる",
     "exTokens": [
       [
         "パン",
@@ -36753,7 +36753,7 @@
     "exJP": "黒いスーツを着ている。",
     "exEN": "I am wearing a black suit.",
     "exZH": "穿着黑色的西装。",
-    "exKana": "くろいすーつをきている。",
+    "exKana": "くろいすーつをきている",
     "exTokens": [
       [
         "黒い",
@@ -36805,7 +36805,7 @@
     "exJP": "重いスーツケースを運ぶ。",
     "exEN": "I carry a heavy suitcase.",
     "exZH": "搬运沉重的手提箱。",
-    "exKana": "おもいすーつけーすをはこぶ。",
+    "exKana": "おもいすーつけーすをはこぶ",
     "exTokens": [
       [
         "重い",
@@ -36849,7 +36849,7 @@
     "exJP": "スクリーンが大きいです。",
     "exEN": "The screen is big.",
     "exZH": "屏幕很大。",
-    "exKana": "すくりーんがおおきいです。",
+    "exKana": "すくりーんがおおきいです",
     "exTokens": [
       [
         "スクリーン",
@@ -36892,7 +36892,7 @@
     "exJP": "夕食にステーキを食べた。",
     "exEN": "I ate steak for dinner.",
     "exZH": "晚饭吃了牛排。",
-    "exKana": "ゆうしょくにすてーきをたべた。",
+    "exKana": "ゆうしょくにすてーきをたべた",
     "exTokens": [
       [
         "夕食",
@@ -36943,7 +36943,7 @@
     "exJP": "ステレオで音楽を聴く。",
     "exEN": "I listen to music on the stereo.",
     "exZH": "用立体声音响听音乐。",
-    "exKana": "すてれおでおんがくをきく。",
+    "exKana": "すてれおでおんがくをきく",
     "exTokens": [
       [
         "ステレオ",
@@ -36993,7 +36993,7 @@
     "exJP": "このソフトは便利です。",
     "exEN": "This software is useful.",
     "exZH": "这个软件很方便。",
-    "exKana": "このそふとはべんりです。",
+    "exKana": "このそふとはべんりです",
     "exTokens": [
       [
         "この",
@@ -37044,7 +37044,7 @@
     "exJP": "彼は私のタイプではない。",
     "exEN": "He is not my type.",
     "exZH": "他不是我喜欢的类型。",
-    "exKana": "かれはわたくしのたいぷではない。",
+    "exKana": "かれはわたくしのたいぷではない",
     "exTokens": [
       [
         "彼",
@@ -37107,7 +37107,7 @@
     "exJP": "答えをチェックする。",
     "exEN": "I check the answers.",
     "exZH": "检查答案。",
-    "exKana": "こたえをちぇっくする。",
+    "exKana": "こたえをちぇっくする",
     "exTokens": [
       [
         "答え",
@@ -37152,7 +37152,7 @@
     "exJP": "テキストを開いてください。",
     "exEN": "Please open your textbook.",
     "exZH": "请打开课本。",
-    "exKana": "てきすとをひらいてください。",
+    "exKana": "てきすとをひらいてください",
     "exTokens": [
       [
         "テキスト",
@@ -37199,7 +37199,7 @@
     "exJP": "週末にテニスをした。",
     "exEN": "I played tennis on the weekend.",
     "exZH": "周末打网球了。",
-    "exKana": "しゅうまつにてにすをした。",
+    "exKana": "しゅうまつにてにすをした",
     "exTokens": [
       [
         "週末",
@@ -37252,7 +37252,7 @@
     "exJP": "母はパートで働いている。",
     "exEN": "My mother works part-time.",
     "exZH": "我妈妈做兼职工作。",
-    "exKana": "はははぱーとではたらいている。",
+    "exKana": "はははぱーとではたらいている",
     "exTokens": [
       [
         "母",
@@ -37309,7 +37309,7 @@
     "exJP": "パソコンを毎日使います。",
     "exEN": "I use a PC every day.",
     "exZH": "每天使用个人电脑。",
-    "exKana": "ぱそこんをまいにちつかいます。",
+    "exKana": "ぱそこんをまいにちつかいます",
     "exTokens": [
       [
         "パソコン",
@@ -37356,7 +37356,7 @@
     "exJP": "そのハンドバッグは高い。",
     "exEN": "That handbag is expensive.",
     "exZH": "那个手提包很贵。",
-    "exKana": "そのはんどばっぐはたかい。",
+    "exKana": "そのはんどばっぐはたかい",
     "exTokens": [
       [
         "その",
@@ -37399,7 +37399,7 @@
     "exJP": "ピアノを弾くのが好きです。",
     "exEN": "I like playing the piano.",
     "exZH": "我喜欢弹钢琴。",
-    "exKana": "ぴあのをひくのがすきです。",
+    "exKana": "ぴあのをひくのがすきです",
     "exTokens": [
       [
         "ピアノ",
@@ -37455,7 +37455,7 @@
     "exJP": "高いビルがたくさんある。",
     "exEN": "There are many tall buildings.",
     "exZH": "有很多高楼。",
-    "exKana": "たかいびるがたくさんある。",
+    "exKana": "たかいびるがたくさんある",
     "exTokens": [
       [
         "高い",
@@ -37505,7 +37505,7 @@
     "exJP": "ファックスを送ります。",
     "exEN": "I will send a fax.",
     "exZH": "我要发传真。",
-    "exKana": "ふぁっくすをおくります。",
+    "exKana": "ふぁっくすをおくります",
     "exTokens": [
       [
         "ファックス",
@@ -37551,7 +37551,7 @@
     "exJP": "誕生日にプレゼントをもらった。",
     "exEN": "I got a present for my birthday.",
     "exZH": "生日收到了礼物。",
-    "exKana": "たんじょうびにぷれぜんとをもらった。",
+    "exKana": "たんじょうびにぷれぜんとをもらった",
     "exTokens": [
       [
         "誕生日",
@@ -37603,7 +37603,7 @@
     "exJP": "ドアのベルが鳴った。",
     "exEN": "The doorbell rang.",
     "exZH": "门铃响了。",
-    "exKana": "どあのべるがなった。",
+    "exKana": "どあのべるがなった",
     "exTokens": [
       [
         "ドア",
@@ -37656,7 +37656,7 @@
     "exJP": "レジでお金を払う。",
     "exEN": "I pay money at the cash register.",
     "exZH": "在收银台付款。",
-    "exKana": "れじでおかねをはらう。",
+    "exKana": "れじでおかねをはらう",
     "exTokens": [
       [
         "レジ",
@@ -37707,7 +37707,7 @@
     "exJP": "レポートを明日提出します。",
     "exEN": "I will submit the report tomorrow.",
     "exZH": "我明天提交报告。",
-    "exKana": "れぽーとをあすていしゅつします。",
+    "exKana": "れぽーとをあすていしゅつします",
     "exTokens": [
       [
         "レポート",
@@ -37761,7 +37761,7 @@
     "exJP": "ニュースのリポートを見る。",
     "exEN": "I watch a news report.",
     "exZH": "看新闻报道。",
-    "exKana": "にゅーすのりぽーとをみる。",
+    "exKana": "にゅーすのりぽーとをみる",
     "exTokens": [
       [
         "ニュース",
@@ -37808,7 +37808,7 @@
     "exJP": "ワープロで手紙を書く。",
     "exEN": "I write a letter on a word processor.",
     "exZH": "用文字处理机写信。",
-    "exKana": "わーぷろでてがみをかく。",
+    "exKana": "わーぷろでてがみをかく",
     "exTokens": [
       [
         "ワープロ",

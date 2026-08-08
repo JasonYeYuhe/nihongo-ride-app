@@ -159,4 +159,73 @@ struct ExampleSentenceTests {
         #expect(missing.isEmpty, Comment(rawValue: "\(missing.count) missing:\n"
                                                     + missing.prefix(12).joined(separator: "\n")))
     }
+
+    // MARK: v1.18 — the reading that makes a sentence typeable
+
+    /// A typing target that is not pure kana cannot be typed at all: `KanaInputMatcher`
+    /// compiles romaji paths for kana, so a stray kanji in `exKana` is an unreachable state
+    /// and the learner can never finish the sentence.
+    @Test("every sentence reading is pure kana")
+    func readingIsKana() {
+        let allowed = Set("ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとど"
+                          + "なにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんー"
+                          )
+        var bad: [String] = []
+        for e in withExamples {
+            guard let kana = e.exampleKana else { continue }
+            let stray = kana.filter { !allowed.contains($0) }
+            if !stray.isEmpty { bad.append("\(e.id): \(String(stray)) in \(kana)") }
+        }
+        #expect(bad.isEmpty, Comment(rawValue: "\(bad.count) unreadable:\n"
+                                                + bad.prefix(12).joined(separator: "\n")))
+    }
+
+    /// Furigana renders each token's reading above that token's surface, so the two lists
+    /// must reconstruct the sentence and its reading EXACTLY. Drift by one character and the
+    /// reading sits over the wrong kanji, which is worse than showing none.
+    @Test("furigana tokens reconstruct both the sentence and its reading")
+    func tokensAlign() {
+        var bad: [String] = []
+        for e in withExamples {
+            guard let tokens = e.exampleTokens, let jp = e.exampleJP else { continue }
+            let surfaces = tokens.compactMap(\.first).joined()
+            // exKana is the TYPING target and carries no punctuation (。 and 、 cannot be
+            // produced by romaji, so a target containing them can never be completed —
+            // Passage.kana has had this rule since Practice shipped). exTokens keeps the
+            // punctuation because furigana renders the sentence as written, so the readings
+            // reconstruct exKana only after the punctuation is dropped.
+            let punctuation = Set("、。！？「」")
+            let readings = tokens.compactMap(\.last).joined().filter { !punctuation.contains($0) }
+            if surfaces != jp { bad.append("\(e.id): surfaces rebuild \(surfaces), not \(jp)") }
+            if let kana = e.exampleKana, readings != kana {
+                bad.append("\(e.id): readings rebuild \(readings), not \(kana)")
+            }
+            if tokens.contains(where: { $0.count != 2 }) { bad.append("\(e.id): malformed token pair") }
+        }
+        #expect(bad.isEmpty, Comment(rawValue: "\(bad.count) misaligned:\n"
+                                                + bad.prefix(12).joined(separator: "\n")))
+    }
+
+    /// The two fields are useless apart: a reading with no tokens cannot be furigana'd, and
+    /// tokens with no reading have no typing target. Either both or neither.
+    @Test("reading and tokens travel together")
+    func pairedFields() {
+        var bad: [String] = []
+        for e in withExamples {
+            let hasKana = !(e.exampleKana ?? "").isEmpty
+            let hasTokens = !(e.exampleTokens ?? []).isEmpty
+            if hasKana != hasTokens { bad.append("\(e.id): kana=\(hasKana) tokens=\(hasTokens)") }
+        }
+        #expect(bad.isEmpty, Comment(rawValue: bad.prefix(12).joined(separator: "\n")))
+    }
+
+    /// Sentence mode needs enough material to be worth shipping. This is a floor, not a
+    /// target: if it trips, the fix is to find out which sentences lost their reading, not to
+    /// lower the number.
+    @Test("enough sentences are typeable for the mode to exist")
+    func coverage() {
+        let typeable = withExamples.filter(\.isTypeableSentence).count
+        #expect(typeable > 3_000,
+                Comment(rawValue: "only \(typeable) of \(withExamples.count) are typeable"))
+    }
 }

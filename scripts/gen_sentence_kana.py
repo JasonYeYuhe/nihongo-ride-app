@@ -77,7 +77,13 @@ def read_sentence(tokenizer, jp):
             reading = to_hiragana(t.reading_form())
         tokens.append([surface, reading])
 
-    kana = "".join(r for _, r in tokens)
+    # The typing target carries NO punctuation. `Passage.kana` has said "pure kana, no
+    # punctuation" since Practice mode shipped, for the plain reason that 。 and 、 cannot be
+    # produced by romaji — a target containing them can never be completed. exKana follows the
+    # same rule; exTokens keeps the punctuation, because furigana renders the sentence as
+    # written.
+    kana = "".join(r for _, r in tokens if r not in PUNCT)
+    kana = "".join(c for c in kana if c not in PUNCT)
     if not is_kana_only(kana):
         stray = sorted({c for c in kana if c not in KANA and c not in PUNCT})
         return None, f"reading still contains {''.join(stray)}"

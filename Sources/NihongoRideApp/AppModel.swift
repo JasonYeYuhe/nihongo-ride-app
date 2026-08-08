@@ -1127,9 +1127,16 @@ final class AppModel {
             break
         case .conjugation:
             break   // handled by the early return above
+        case .sentence:
+            // A sentence is many words' worth of keystrokes, so a run of the usual 30 would
+            // be enormous. Five is roughly a word run's length in characters.
+            config.newWordCount = 5
+            config.reviewWordCount = 0
         }
         let built: GameSession
-        if selectedMode == .practice && practicePassages {
+        if selectedMode == .sentence {
+            built = GameSession.makeSentence(vocab: .shared, config: config)
+        } else if selectedMode == .practice && practicePassages {
             built = GameSession.makePractice(level: practicePassageLevel, config: config)
         } else {
             built = GameSession.make(config: config, vocab: .shared, review: reviewStore)

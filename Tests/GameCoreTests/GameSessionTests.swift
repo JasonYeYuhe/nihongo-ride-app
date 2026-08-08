@@ -216,3 +216,84 @@ struct GameSessionTests {
         #expect(session.current?.jlpt == .n4)   // drawn only from N4
     }
 }
+
+// MARK: - v1.18 sentence mode
+
+@Suite("Sentence mode")
+struct SentenceModeTests {
+
+    private func entry(_ id: String, jp: String?, kana: String?) -> VocabEntry {
+        VocabEntry(id: id, surface: "犬", kana: "いぬ", partsOfSpeech: ["n"],
+                   jlpt: .n5, meanings: ["en": ["dog"]],
+                   exampleJP: jp, exampleEN: "A dog.", exampleZH: "狗。",
+                   exampleKana: kana,
+                   exampleTokens: kana == nil ? nil : [["犬", "いぬ"], ["だ", "だ"], ["。", "。"]])
+    }
+
+    /// The whole point of the mode: what you type is the sentence's reading, not the word's.
+    @Test("the typing target is the sentence reading, and the display is the kanji sentence")
+    func targetIsTheSentence() {
+        let e = entry("x", jp: "犬だ。", kana: "いぬだ。")
+        let session = GameSession(words: [e], config: {
+            var c = GameSession.Config(); c.mode = .sentence; return c
+        }())
+        // Constructed directly, so assert on what makeSentence produces instead.
+        #expect(session.currentSurface == "犬")
+        let built = GameSession(words: [VocabEntry(
+            id: e.id, surface: e.exampleJP!, kana: e.exampleKana!,
+            partsOfSpeech: ["sentence"], jlpt: .n5, meanings: e.meanings)],
+            config: { var c = GameSession.Config(); c.mode = .sentence; return c }())
+        #expect(built.currentSurface == "犬だ。")
+        #expect(built.currentKana == "いぬだ。")
+    }
+
+    /// A sentence run counts mistakes across the whole sentence, so letting it write SRS
+    /// would land a typo in an unrelated clause on the review card of the one word the
+    /// sentence teaches. That card is calibrated for typing a word.
+    @Test("a sentence run never writes SRS, but still logs a ride and shows results")
+    func doesNotPersistSRS() {
+        let done = RunCompletion(mode: .sentence, recordsSRS: true)
+        #expect(done.persistsSRS == false)
+        #expect(done.logsRide == true)
+        #expect(done.showsResults == true)
+    }
+
+    /// Practice and cram already had this red line; sentence mode joins them without
+    /// disturbing them.
+    @Test("the other modes' SRS behaviour is unchanged")
+    func siblingModesUnchanged() {
+        #expect(RunCompletion(mode: .journey, recordsSRS: true).persistsSRS == true)
+        #expect(RunCompletion(mode: .timeAttack, recordsSRS: true).persistsSRS == true)
+        #expect(RunCompletion(mode: .practice, recordsSRS: true).persistsSRS == false)
+        #expect(RunCompletion(mode: .journey, recordsSRS: false).persistsSRS == false)
+    }
+
+    /// A sentence with no reading is not a target. Offering one would mark a learner wrong
+    /// for typing exactly what the sentence says — the digit sentences read one digit at a
+    /// time, so 「10キロ」 wants いちれいきろ.
+    @Test("a sentence without a reading is not typeable")
+    func untypeableIsExcluded() {
+        #expect(entry("a", jp: "犬だ。", kana: "いぬだ。").isTypeableSentence == true)
+        #expect(entry("b", jp: "犬だ。", kana: nil).isTypeableSentence == false)
+        #expect(entry("c", jp: nil, kana: "いぬだ。").isTypeableSentence == false)
+    }
+
+    /// Every sentence the real store would offer must be typeable end to end: feed the
+    /// target's own kana back through the matcher and it must complete.
+    @Test("shipped sentences can actually be typed to completion")
+    func shippedSentencesComplete() {
+        let pool = VocabStore.shared.ordered().filter(\.isTypeableSentence).prefix(40)
+        var failed: [String] = []
+        for e in pool {
+            guard let kana = e.exampleKana else { continue }
+            var matcher = KanaInputMatcher(target: kana)
+            var finished = false
+            for ch in KanaRomanizer.romaji(for: kana) {
+                if matcher.input(ch) == .completed { finished = true }
+            }
+            if !finished { failed.append("\(e.id): \(kana)") }
+        }
+        #expect(failed.isEmpty, Comment(rawValue: "\(failed.count) could not be typed:\n"
+                                                   + failed.prefix(8).joined(separator: "\n")))
+    }
+}

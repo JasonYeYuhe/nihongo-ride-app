@@ -23,7 +23,7 @@
     "exJP": "費用は私が負担します。",
     "exEN": "I will bear the cost.",
     "exZH": "费用由我承担。",
-    "exKana": "ひようはわたくしがふたんします。",
+    "exKana": "ひようはわたくしがふたんします",
     "exTokens": [
       [
         "費用",
@@ -81,7 +81,7 @@
     "exJP": "社会に貢献したい。",
     "exEN": "I want to contribute to society.",
     "exZH": "我想为社会做贡献。",
-    "exKana": "しゃかいにこうけんしたい。",
+    "exKana": "しゃかいにこうけんしたい",
     "exTokens": [
       [
         "社会",
@@ -132,7 +132,7 @@
     "exJP": "水の供給が止まる。",
     "exEN": "The water supply will stop.",
     "exZH": "供水停止。",
-    "exKana": "みずのきょうきゅうがとまる。",
+    "exKana": "みずのきょうきゅうがとまる",
     "exTokens": [
       [
         "水",
@@ -182,7 +182,7 @@
     "exJP": "新しい態勢で臨む。",
     "exEN": "Face it with a new attitude.",
     "exZH": "以新姿态面对。",
-    "exKana": "あたらしいたいせいでのぞむ。",
+    "exKana": "あたらしいたいせいでのぞむ",
     "exTokens": [
       [
         "新しい",
@@ -228,7 +228,7 @@
     "exJP": "世界の情勢が変わる。",
     "exEN": "The state of the world changes.",
     "exZH": "世界局势改变。",
-    "exKana": "せかいのじょうせいがかわる。",
+    "exKana": "せかいのじょうせいがかわる",
     "exTokens": [
       [
         "世界",
@@ -278,7 +278,7 @@
     "exJP": "専門の領域を超える。",
     "exEN": "Exceed one's area of expertise.",
     "exZH": "超出专业领域。",
-    "exKana": "せんもんのりょういきをこえる。",
+    "exKana": "せんもんのりょういきをこえる",
     "exTokens": [
       [
         "専門",
@@ -327,7 +327,7 @@
     "exJP": "新しい規格を作る。",
     "exEN": "Create a new standard.",
     "exZH": "制定新标准。",
-    "exKana": "あたらしいきかくをつくる。",
+    "exKana": "あたらしいきかくをつくる",
     "exTokens": [
       [
         "新しい",
@@ -373,7 +373,7 @@
     "exJP": "生活の基盤を築く。",
     "exEN": "Build a foundation for life.",
     "exZH": "建立生活基础。",
-    "exKana": "せいかつのきばんをきずく。",
+    "exKana": "せいかつのきばんをきずく",
     "exTokens": [
       [
         "生活",
@@ -424,7 +424,7 @@
     "exJP": "世界平和を渇望する。",
     "exEN": "Crave for world peace.",
     "exZH": "渴望世界和平。",
-    "exKana": "せかいへいわをかつぼうする。",
+    "exKana": "せかいへいわをかつぼうする",
     "exTokens": [
       [
         "世界",
@@ -476,7 +476,7 @@
     "exJP": "書類審査を通る。",
     "exEN": "Pass the document judging.",
     "exZH": "通过文件审查。",
-    "exKana": "しょるいしんさをとおる。",
+    "exKana": "しょるいしんさをとおる",
     "exTokens": [
       [
         "書類",
@@ -523,7 +523,7 @@
     "exJP": "会員登録をする。",
     "exEN": "Do member registration.",
     "exZH": "进行会员注册。",
-    "exKana": "かいいんとうろくをする。",
+    "exKana": "かいいんとうろくをする",
     "exTokens": [
       [
         "会員",
@@ -571,7 +571,7 @@
     "exJP": "映画の監督になる。",
     "exEN": "Become a movie supervisor.",
     "exZH": "成为电影导演。",
-    "exKana": "えいがのかんとくになる。",
+    "exKana": "えいがのかんとくになる",
     "exTokens": [
       [
         "映画",
@@ -622,7 +622,7 @@
     "exJP": "原因の究明を急ぐ。",
     "exEN": "Hurry the investigation of the cause.",
     "exZH": "加紧查明原因。",
-    "exKana": "げんいんのきゅうめいをいそぐ。",
+    "exKana": "げんいんのきゅうめいをいそぐ",
     "exTokens": [
       [
         "原因",
@@ -672,7 +672,7 @@
     "exJP": "現代の若者は忙しい。",
     "exEN": "Nowadays youth are busy.",
     "exZH": "现代的年轻人很忙。",
-    "exKana": "げんだいのわかものはいそがしい。",
+    "exKana": "げんだいのわかものはいそがしい",
     "exTokens": [
       [
         "現代",
@@ -724,7 +724,7 @@
     "exJP": "問題の認識が甘い。",
     "exEN": "The recognition of the problem is naive.",
     "exZH": "对问题的认识不足。",
-    "exKana": "もんだいのにんしきがあまい。",
+    "exKana": "もんだいのにんしきがあまい",
     "exTokens": [
       [
         "問題",
@@ -773,7 +773,7 @@
     "exJP": "知性を感じる文章だ。",
     "exEN": "It's a text where you feel intelligence.",
     "exZH": "能感受到智慧的文章。",
-    "exKana": "ちせいをかんじるぶんしょうだ。",
+    "exKana": "ちせいをかんじるぶんしょうだ",
     "exTokens": [
       [
         "知性",
@@ -822,7 +822,7 @@
     "exJP": "職業倫理を守る。",
     "exEN": "Protect professional ethics.",
     "exZH": "遵守职业道德。",
-    "exKana": "しょくぎょうりんりをまもる。",
+    "exKana": "しょくぎょうりんりをまもる",
     "exTokens": [
       [
         "職業",
@@ -869,7 +869,7 @@
     "exJP": "結果は前回と同様だ。",
     "exEN": "The result is identical to last time.",
     "exZH": "结果和上次一样。",
-    "exKana": "けっかはぜんかいとどうようだ。",
+    "exKana": "けっかはぜんかいとどうようだ",
     "exTokens": [
       [
         "結果",
@@ -922,7 +922,7 @@
     "exJP": "大企業に就職する。",
     "exEN": "Get a job at a large enterprise.",
     "exZH": "在大企业就职。",
-    "exKana": "だいきぎょうにしゅうしょくする。",
+    "exKana": "だいきぎょうにしゅうしょくする",
     "exTokens": [
       [
         "大企業",
@@ -966,7 +966,7 @@
     "exJP": "自動車産業が発展する。",
     "exEN": "The automobile industry develops.",
     "exZH": "汽车产业发展。",
-    "exKana": "じどうしゃさんぎょうがはってんする。",
+    "exKana": "じどうしゃさんぎょうがはってんする",
     "exTokens": [
       [
         "自動車",
@@ -1015,7 +1015,7 @@
     "exJP": "商業の盛んな町だ。",
     "exEN": "It's a town with thriving commerce.",
     "exZH": "是一个商业繁荣的城镇。",
-    "exKana": "しょうぎょうのさかんなまちだ。",
+    "exKana": "しょうぎょうのさかんなまちだ",
     "exTokens": [
       [
         "商業",
@@ -1067,7 +1067,7 @@
     "exJP": "国の経済が成長する。",
     "exEN": "The country's economy grows.",
     "exZH": "国家经济增长。",
-    "exKana": "くにのけいざいがせいちょうする。",
+    "exKana": "くにのけいざいがせいちょうする",
     "exTokens": [
       [
         "国",
@@ -1119,7 +1119,7 @@
     "exJP": "彼は政治に興味がある。",
     "exEN": "He is interested in politics.",
     "exZH": "他对政治感兴趣。",
-    "exKana": "かれはせいじにきょうみがある。",
+    "exKana": "かれはせいじにきょうみがある",
     "exTokens": [
       [
         "彼",
@@ -1175,7 +1175,7 @@
     "exJP": "新しい政策を発表する。",
     "exEN": "Announce new political measures.",
     "exZH": "发表新政策。",
-    "exKana": "あたらしいせいさくをはっぴょうする。",
+    "exKana": "あたらしいせいさくをはっぴょうする",
     "exTokens": [
       [
         "新しい",
@@ -1224,7 +1224,7 @@
     "exJP": "教育制度を見直す。",
     "exEN": "Review the education system.",
     "exZH": "重新审视教育制度。",
-    "exKana": "きょういくせいどをみなおす。",
+    "exKana": "きょういくせいどをみなおす",
     "exTokens": [
       [
         "教育",
@@ -1272,7 +1272,7 @@
     "exJP": "大きな組織に属する。",
     "exEN": "Belong to a large organization.",
     "exZH": "属于大组织。",
-    "exKana": "おおきなそしきにぞくする。",
+    "exKana": "おおきなそしきにぞくする",
     "exTokens": [
       [
         "大きな",
@@ -1317,7 +1317,7 @@
     "exJP": "建物の構造を調べる。",
     "exEN": "Examine the building's structure.",
     "exZH": "调查建筑物的结构。",
-    "exKana": "たてもののこうぞうをしらべる。",
+    "exKana": "たてもののこうぞうをしらべる",
     "exTokens": [
       [
         "建物",
@@ -1367,7 +1367,7 @@
     "exJP": "男女の比率が同じだ。",
     "exEN": "The ratio of men and women is the same.",
     "exZH": "男女比例相同。",
-    "exKana": "だんじょのひりつがおなじだ。",
+    "exKana": "だんじょのひりつがおなじだ",
     "exTokens": [
       [
         "男女",
@@ -1419,7 +1419,7 @@
     "exJP": "会社の利潤を追求する。",
     "exEN": "Pursue the company's profit.",
     "exZH": "追求公司利润。",
-    "exKana": "かいしゃのりじゅんをついきゅうする。",
+    "exKana": "かいしゃのりじゅんをついきゅうする",
     "exTokens": [
       [
         "会社",
@@ -1471,7 +1471,7 @@
     "exJP": "会員の特権を利用する。",
     "exEN": "Use member privileges.",
     "exZH": "利用会员特权。",
-    "exKana": "かいいんのとっけんをりようする。",
+    "exKana": "かいいんのとっけんをりようする",
     "exTokens": [
       [
         "会員",
@@ -1524,7 +1524,7 @@
     "exJP": "納税は国民の義務だ。",
     "exEN": "Paying taxes is a citizen's duty.",
     "exZH": "纳税是国民的义务。",
-    "exKana": "のうぜいはこくみんのぎむだ。",
+    "exKana": "のうぜいはこくみんのぎむだ",
     "exTokens": [
       [
         "納税",
@@ -1577,7 +1577,7 @@
     "exJP": "任務を無事に終える。",
     "exEN": "Finish the duty safely.",
     "exZH": "顺利完成任务。",
-    "exKana": "にんむをぶじにおえる。",
+    "exKana": "にんむをぶじにおえる",
     "exTokens": [
       [
         "任務",
@@ -1627,7 +1627,7 @@
     "exJP": "正しい姿勢を保つ。",
     "exEN": "Maintain a correct posture.",
     "exZH": "保持正确的姿势。",
-    "exKana": "ただしいしせいをたもつ。",
+    "exKana": "ただしいしせいをたもつ",
     "exTokens": [
       [
         "正しい",
@@ -1673,7 +1673,7 @@
     "exJP": "子供の情緒が不安定だ。",
     "exEN": "The child's emotion is unstable.",
     "exZH": "孩子的情绪不稳定。",
-    "exKana": "こどものじょうちょがふあんていだ。",
+    "exKana": "こどものじょうちょがふあんていだ",
     "exTokens": [
       [
         "子供",
@@ -1725,7 +1725,7 @@
     "exJP": "広い人脈を持つ。",
     "exEN": "Have wide personal connections.",
     "exZH": "拥有广阔的人脉。",
-    "exKana": "ひろいじんみゃくをもつ。",
+    "exKana": "ひろいじんみゃくをもつ",
     "exTokens": [
       [
         "広い",
@@ -1770,7 +1770,7 @@
     "exJP": "事態が悪化する。",
     "exEN": "The situation worsens.",
     "exZH": "事态恶化。",
-    "exKana": "じたいがあっかする。",
+    "exKana": "じたいがあっかする",
     "exTokens": [
       [
         "事態",
@@ -1816,7 +1816,7 @@
     "exJP": "あの店は評判が良い。",
     "exEN": "That shop has a good reputation.",
     "exZH": "那家店评价很好。",
-    "exKana": "あのみせはひょうばんがよい。",
+    "exKana": "あのみせはひょうばんがよい",
     "exTokens": [
       [
         "あの",
@@ -1872,7 +1872,7 @@
     "exJP": "心理の描写が細かい。",
     "exEN": "The psychological depiction is detailed.",
     "exZH": "心理描写很细腻。",
-    "exKana": "しんりのびょうしゃがこまかい。",
+    "exKana": "しんりのびょうしゃがこまかい",
     "exTokens": [
       [
         "心理",
@@ -1921,7 +1921,7 @@
     "exJP": "別の側面から見る。",
     "exEN": "Look from another side.",
     "exZH": "从另一个侧面看。",
-    "exKana": "べつのそくめんからみる。",
+    "exKana": "べつのそくめんからみる",
     "exTokens": [
       [
         "別",
@@ -1973,7 +1973,7 @@
     "exJP": "結婚を披露する。",
     "exEN": "Make a marriage announcement.",
     "exZH": "宣布结婚。",
-    "exKana": "けっこんをひろうする。",
+    "exKana": "けっこんをひろうする",
     "exTokens": [
       [
         "結婚",
@@ -2021,7 +2021,7 @@
     "exJP": "宇宙の真理を探求する。",
     "exEN": "Search for the truth of the universe.",
     "exZH": "探求宇宙的真理。",
-    "exKana": "うちゅうのしんりをたんきゅうする。",
+    "exKana": "うちゅうのしんりをたんきゅうする",
     "exTokens": [
       [
         "宇宙",
@@ -2077,7 +2077,7 @@
     "exJP": "売上が飛躍的に伸びる。",
     "exEN": "Sales increase leaping.",
     "exZH": "销售额飞跃性增长。",
-    "exKana": "うりあげがひやくてきにのびる。",
+    "exKana": "うりあげがひやくてきにのびる",
     "exTokens": [
       [
         "売上",
@@ -2127,7 +2127,7 @@
     "exJP": "派生した問題が生じる。",
     "exEN": "A derivation problem arises.",
     "exZH": "产生了派生问题。",
-    "exKana": "はせいしたもんだいがしょうじる。",
+    "exKana": "はせいしたもんだいがしょうじる",
     "exTokens": [
       [
         "派生",
@@ -2183,7 +2183,7 @@
     "exJP": "人材の育成に努める。",
     "exEN": "Strive for rearing human resources.",
     "exZH": "努力培养人才。",
-    "exKana": "じんざいのいくせいにつとめる。",
+    "exKana": "じんざいのいくせいにつとめる",
     "exTokens": [
       [
         "人材",
@@ -2235,7 +2235,7 @@
     "exJP": "彼女の願いが成就した。",
     "exEN": "Her wish reached fulfillment.",
     "exZH": "她的愿望实现了。",
-    "exKana": "かのじょのねがいがじょうじゅした。",
+    "exKana": "かのじょのねがいがじょうじゅした",
     "exTokens": [
       [
         "彼女",
@@ -2295,7 +2295,7 @@
     "exJP": "計画が途中で挫折する。",
     "exEN": "The plan suffers a setback midway.",
     "exZH": "计划中途受挫。",
-    "exKana": "けいかくがとちゅうでざせつする。",
+    "exKana": "けいかくがとちゅうでざせつする",
     "exTokens": [
       [
         "計画",
@@ -2349,7 +2349,7 @@
     "exJP": "彼の経歴を調べる。",
     "exEN": "Check his personal history.",
     "exZH": "调查他的经历。",
-    "exKana": "かれのけいれきをしらべる。",
+    "exKana": "かれのけいれきをしらべる",
     "exTokens": [
       [
         "彼",
@@ -2398,7 +2398,7 @@
     "exJP": "貴重な体験をした。",
     "exEN": "Had a precious personal experience.",
     "exZH": "拥有了宝贵的体验。",
-    "exKana": "きちょうなたいけんをした。",
+    "exKana": "きちょうなたいけんをした",
     "exTokens": [
       [
         "貴重",
@@ -2451,7 +2451,7 @@
     "exJP": "理科の実験をする。",
     "exEN": "Do a science experiment.",
     "exZH": "做理科实验。",
-    "exKana": "りかのじっけんをする。",
+    "exKana": "りかのじっけんをする",
     "exTokens": [
       [
         "理科",
@@ -2503,7 +2503,7 @@
     "exJP": "工場が稼働する。",
     "exEN": "The factory begins operation.",
     "exZH": "工厂开始运转。",
-    "exKana": "こうじょうがかどうする。",
+    "exKana": "こうじょうがかどうする",
     "exTokens": [
       [
         "工場",
@@ -2548,7 +2548,7 @@
     "exJP": "成長の過程を記録する。",
     "exEN": "Record the process of growth.",
     "exZH": "记录成长的过程。",
-    "exKana": "せいちょうのかていをきろくする。",
+    "exKana": "せいちょうのかていをきろくする",
     "exTokens": [
       [
         "成長",
@@ -2602,7 +2602,7 @@
     "exJP": "理論を実践に移す。",
     "exEN": "Put theory into practice.",
     "exZH": "将理论付诸实践。",
-    "exKana": "りろんをじっせんにうつす。",
+    "exKana": "りろんをじっせんにうつす",
     "exTokens": [
       [
         "理論",
@@ -2654,7 +2654,7 @@
     "exJP": "新しい法律が施行される。",
     "exEN": "A new law is put into execution.",
     "exZH": "新法律实施。",
-    "exKana": "あたらしいほうりつがしこうされる。",
+    "exKana": "あたらしいほうりつがしこうされる",
     "exTokens": [
       [
         "新しい",
@@ -2707,7 +2707,7 @@
     "exJP": "現実は非常に厳しい。",
     "exEN": "Reality is very harsh.",
     "exZH": "现实非常严酷。",
-    "exKana": "げんじつはひじょうにきびしい。",
+    "exKana": "げんじつはひじょうにきびしい",
     "exTokens": [
       [
         "現実",
@@ -2758,7 +2758,7 @@
     "exJP": "彼は誠実な人だ。",
     "exEN": "He is a sincere person.",
     "exZH": "他是个诚实的人。",
-    "exKana": "かれはせいじつなひとだ。",
+    "exKana": "かれはせいじつなひとだ",
     "exTokens": [
       [
         "彼",
@@ -2809,7 +2809,7 @@
     "exJP": "大学で哲学を学ぶ。",
     "exEN": "Study philosophy at university.",
     "exZH": "在大学学习哲学。",
-    "exKana": "だいがくでてつがくをまなぶ。",
+    "exKana": "だいがくでてつがくをまなぶ",
     "exTokens": [
       [
         "大学",
@@ -2858,7 +2858,7 @@
     "exJP": "西洋の思想を研究する。",
     "exEN": "Study Western thought.",
     "exZH": "研究西方思想。",
-    "exKana": "せいようのしそうをけんきゅうする。",
+    "exKana": "せいようのしそうをけんきゅうする",
     "exTokens": [
       [
         "西洋",
@@ -2914,7 +2914,7 @@
     "exJP": "私の予想が外れた。",
     "exEN": "My expectation was wrong.",
     "exZH": "我的预想落空了。",
-    "exKana": "わたくしのよそうがはずれた。",
+    "exKana": "わたくしのよそうがはずれた",
     "exTokens": [
       [
         "私",
@@ -2968,7 +2968,7 @@
     "exJP": "嫌な予感がする。",
     "exEN": "I have a bad presentiment.",
     "exZH": "有种不祥的预感。",
-    "exKana": "いやなよかんがする。",
+    "exKana": "いやなよかんがする",
     "exTokens": [
       [
         "嫌",
@@ -3018,7 +3018,7 @@
     "exJP": "彼の推測は正しい。",
     "exEN": "His guess is correct.",
     "exZH": "他的推测是正确的。",
-    "exKana": "かれのすいそくはただしい。",
+    "exKana": "かれのすいそくはただしい",
     "exTokens": [
       [
         "彼",
@@ -3069,7 +3069,7 @@
     "exJP": "手洗いで風邪を予防する。",
     "exEN": "Prevent a cold by washing hands.",
     "exZH": "通过洗手预防感冒。",
-    "exKana": "てあらいでかぜをよぼうする。",
+    "exKana": "てあらいでかぜをよぼうする",
     "exTokens": [
       [
         "手洗い",
@@ -3121,7 +3121,7 @@
     "exJP": "旅行の予算が足りない。",
     "exEN": "The travel estimate is insufficient.",
     "exZH": "旅行的预算不足。",
-    "exKana": "りょこうのよさんがたりない。",
+    "exKana": "りょこうのよさんがたりない",
     "exTokens": [
       [
         "旅行",
@@ -3176,7 +3176,7 @@
     "exJP": "会社の決算を行う。",
     "exEN": "Do the company's settlement of accounts.",
     "exZH": "进行公司结算。",
-    "exKana": "かいしゃのけっさんをおこなう。",
+    "exKana": "かいしゃのけっさんをおこなう",
     "exTokens": [
       [
         "会社",
@@ -3228,7 +3228,7 @@
     "exJP": "新しいビルの構想を練る。",
     "exEN": "Work on the plan for a new building.",
     "exZH": "构思新大楼的计划。",
-    "exKana": "あたらしいびるのこうそうをねる。",
+    "exKana": "あたらしいびるのこうそうをねる",
     "exTokens": [
       [
         "新しい",
@@ -3280,7 +3280,7 @@
     "exJP": "販売の戦略を立てる。",
     "exEN": "Make a sales strategy.",
     "exZH": "制定销售战略。",
-    "exKana": "はんばいのせんりゃくをたてる。",
+    "exKana": "はんばいのせんりゃくをたてる",
     "exTokens": [
       [
         "販売",
@@ -3328,7 +3328,7 @@
     "exJP": "作業の効率を上げる。",
     "exEN": "Increase the efficiency of work.",
     "exZH": "提高工作效率。",
-    "exKana": "さぎょうのこうりつをあげる。",
+    "exKana": "さぎょうのこうりつをあげる",
     "exTokens": [
       [
         "作業",
@@ -3378,7 +3378,7 @@
     "exJP": "親から独立する。",
     "exEN": "Establish independence from parents.",
     "exZH": "从父母那里独立。",
-    "exKana": "おやからどくりつする。",
+    "exKana": "おやからどくりつする",
     "exTokens": [
       [
         "親",
@@ -3424,7 +3424,7 @@
     "exJP": "孤立した村を救う。",
     "exEN": "Save a village in isolation.",
     "exZH": "拯救孤立的村庄。",
-    "exKana": "こりつしたむらをすくう。",
+    "exKana": "こりつしたむらをすくう",
     "exTokens": [
       [
         "孤立",
@@ -3480,7 +3480,7 @@
     "exJP": "世界新記録を樹立する。",
     "exEN": "Establish a new world record.",
     "exZH": "创造新的世界纪录。",
-    "exKana": "せかいしんきろくをじゅりつする。",
+    "exKana": "せかいしんきろくをじゅりつする",
     "exTokens": [
       [
         "世界",
@@ -3527,7 +3527,7 @@
     "exJP": "抽象的な表現を避ける。",
     "exEN": "Avoid abstraction in expression.",
     "exZH": "避免抽象的表达。",
-    "exKana": "ちゅうしょうてきなひょうげんをさける。",
+    "exKana": "ちゅうしょうてきなひょうげんをさける",
     "exTokens": [
       [
         "抽象的",
@@ -3578,7 +3578,7 @@
     "exJP": "患者の精神が安定している。",
     "exEN": "The patient's mind is in stability.",
     "exZH": "病人的精神稳定。",
-    "exKana": "かんじゃのせいしんがあんていしている。",
+    "exKana": "かんじゃのせいしんがあんていしている",
     "exTokens": [
       [
         "患者",
@@ -3640,7 +3640,7 @@
     "exJP": "典型的な日本の家だ。",
     "exEN": "It's a typical type of Japanese house.",
     "exZH": "这是典型的日本房子。",
-    "exKana": "てんけいてきなにっぽんのいえだ。",
+    "exKana": "てんけいてきなにっぽんのいえだ",
     "exTokens": [
       [
         "典型的",
@@ -3696,7 +3696,7 @@
     "exJP": "経済への影響を懸念する。",
     "exEN": "Worry about the impact on the economy.",
     "exZH": "担忧对经济的影响。",
-    "exKana": "けいざいへのえいきょうをけねんする。",
+    "exKana": "けいざいへのえいきょうをけねんする",
     "exTokens": [
       [
         "経済",
@@ -3754,7 +3754,7 @@
     "exJP": "客から苦情が来る。",
     "exEN": "A complaint comes from a customer.",
     "exZH": "收到客人的投诉。",
-    "exKana": "きゃくからくじょうがくる。",
+    "exKana": "きゃくからくじょうがくる",
     "exTokens": [
       [
         "客",
@@ -3806,7 +3806,7 @@
     "exJP": "食糧が欠乏している。",
     "exEN": "Food is in want.",
     "exZH": "粮食缺乏。",
-    "exKana": "しょくりょうがけつぼうしている。",
+    "exKana": "しょくりょうがけつぼうしている",
     "exTokens": [
       [
         "食糧",
@@ -3860,7 +3860,7 @@
     "exJP": "膨大なデータを集める。",
     "exEN": "Collect a huge amount of data.",
     "exZH": "收集庞大的数据。",
-    "exKana": "ぼうだいなでーたをあつめる。",
+    "exKana": "ぼうだいなでーたをあつめる",
     "exTokens": [
       [
         "膨大",
@@ -3909,7 +3909,7 @@
     "exJP": "貧しい生活を送る。",
     "exEN": "Live a poor life.",
     "exZH": "过着贫穷的生活。",
-    "exKana": "まずしいせいかつをおくる。",
+    "exKana": "まずしいせいかつをおくる",
     "exTokens": [
       [
         "貧しい",
@@ -3955,7 +3955,7 @@
     "exJP": "単純なミスをした。",
     "exEN": "Made a mistake out of simplicity.",
     "exZH": "犯了单纯的错误。",
-    "exKana": "たんじゅんなみすをした。",
+    "exKana": "たんじゅんなみすをした",
     "exTokens": [
       [
         "単純",
@@ -4009,7 +4009,7 @@
     "exJP": "失敗の理由は明白だ。",
     "exEN": "The reason for failure is obvious.",
     "exZH": "失败的理由很明显。",
-    "exKana": "しっぱいのりゆうはめいはくだ。",
+    "exKana": "しっぱいのりゆうはめいはくだ",
     "exTokens": [
       [
         "失敗",
@@ -4062,7 +4062,7 @@
     "exJP": "困難を乗り越える。",
     "exEN": "Overcome difficulty.",
     "exZH": "克服困难。",
-    "exKana": "こんなんをのりこえる。",
+    "exKana": "こんなんをのりこえる",
     "exTokens": [
       [
         "困難",
@@ -4104,7 +4104,7 @@
     "exJP": "この本は難解だ。",
     "exEN": "This book is difficult to understand.",
     "exZH": "这本书很难懂。",
-    "exKana": "このほんはなんかいだ。",
+    "exKana": "このほんはなんかいだ",
     "exTokens": [
       [
         "この",
@@ -4155,7 +4155,7 @@
     "exJP": "容易に解決できない。",
     "exEN": "Cannot be easy to resolve.",
     "exZH": "无法轻易解决。",
-    "exKana": "よういにかいけつできない。",
+    "exKana": "よういにかいけつできない",
     "exTokens": [
       [
         "容易",
@@ -4204,7 +4204,7 @@
     "exJP": "貴重な時間を過ごす。",
     "exEN": "Spend precious time.",
     "exZH": "度过宝贵的时间。",
-    "exKana": "きちょうなじかんをすごす。",
+    "exKana": "きちょうなじかんをすごす",
     "exTokens": [
       [
         "貴重",
@@ -4254,7 +4254,7 @@
     "exJP": "深刻な問題だ。",
     "exEN": "It's a serious problem.",
     "exZH": "这是个严重的问题。",
-    "exKana": "しんこくなもんだいだ。",
+    "exKana": "しんこくなもんだいだ",
     "exTokens": [
       [
         "深刻",
@@ -4298,7 +4298,7 @@
     "exJP": "真剣に話を聞く。",
     "exEN": "Listen to the story in a serious manner.",
     "exZH": "认真听讲。",
-    "exKana": "しんけんにはなしをきく。",
+    "exKana": "しんけんにはなしをきく",
     "exTokens": [
       [
         "真剣",
@@ -4348,7 +4348,7 @@
     "exJP": "彼は体力で劣る。",
     "exEN": "He falls behind in physical strength.",
     "exZH": "他在体力上逊色。",
-    "exKana": "かれはたいりょくでおとる。",
+    "exKana": "かれはたいりょくでおとる",
     "exTokens": [
       [
         "彼",
@@ -4399,7 +4399,7 @@
     "exJP": "彼は兄より勝る。",
     "exEN": "He excels his older brother.",
     "exZH": "他比哥哥更胜一筹。",
-    "exKana": "かれはあによりまさる。",
+    "exKana": "かれはあによりまさる",
     "exTokens": [
       [
         "彼",
@@ -4450,7 +4450,7 @@
     "exJP": "事実と異なる。",
     "exEN": "It differs from the fact.",
     "exZH": "与事实不符。",
-    "exKana": "じじつとことなる。",
+    "exKana": "じじつとことなる",
     "exTokens": [
       [
         "事実",
@@ -4493,7 +4493,7 @@
     "exJP": "類似した商品が多い。",
     "exEN": "There are many resemblance products.",
     "exZH": "类似商品很多。",
-    "exKana": "るいじしたしょうひんがおおい。",
+    "exKana": "るいじしたしょうひんがおおい",
     "exTokens": [
       [
         "類似",
@@ -4547,7 +4547,7 @@
     "exJP": "適切な指示を出す。",
     "exEN": "Give pertinent instructions.",
     "exZH": "给出适当的指示。",
-    "exKana": "てきせつなしじをだす。",
+    "exKana": "てきせつなしじをだす",
     "exTokens": [
       [
         "適切",
@@ -4597,7 +4597,7 @@
     "exJP": "適当な服を選ぶ。",
     "exEN": "Choose suitable clothes.",
     "exZH": "挑选合适的衣服。",
-    "exKana": "てきとうなふくをえらぶ。",
+    "exKana": "てきとうなふくをえらぶ",
     "exTokens": [
       [
         "適当",
@@ -4646,7 +4646,7 @@
     "exJP": "愉快な仲間たちだ。",
     "exEN": "They are pleasant companions.",
     "exZH": "是一群愉快的伙伴。",
-    "exKana": "ゆかいななかまたちだ。",
+    "exKana": "ゆかいななかまたちだ",
     "exTokens": [
       [
         "愉快",
@@ -4696,7 +4696,7 @@
     "exJP": "爽やかな風が吹く。",
     "exEN": "A fresh breeze blows.",
     "exZH": "吹拂着清爽的风。",
-    "exKana": "さわやかなかぜがふく。",
+    "exKana": "さわやかなかぜがふく",
     "exTokens": [
       [
         "爽やか",
@@ -4746,7 +4746,7 @@
     "exJP": "穏やかな海を見る。",
     "exEN": "Look at the calm sea.",
     "exZH": "看着平静的大海。",
-    "exKana": "おだやかなうみをみる。",
+    "exKana": "おだやかなうみをみる",
     "exTokens": [
       [
         "穏やか",
@@ -4796,7 +4796,7 @@
     "exJP": "鮮やかな色が好きだ。",
     "exEN": "I like vivid colors.",
     "exZH": "喜欢鲜艳的颜色。",
-    "exKana": "あざやかないろがすきだ。",
+    "exKana": "あざやかないろがすきだ",
     "exTokens": [
       [
         "鮮やか",
@@ -4850,7 +4850,7 @@
     "exJP": "曖昧な返事をする。",
     "exEN": "Give a vague reply.",
     "exZH": "做出含糊的回答。",
-    "exKana": "あいまいなへんじをする。",
+    "exKana": "あいまいなへんじをする",
     "exTokens": [
       [
         "曖昧",
@@ -4899,7 +4899,7 @@
     "exJP": "目的を明確にする。",
     "exEN": "Make the purpose clear.",
     "exZH": "明确目的。",
-    "exKana": "もくてきをめいかくにする。",
+    "exKana": "もくてきをめいかくにする",
     "exTokens": [
       [
         "目的",
@@ -4949,7 +4949,7 @@
     "exJP": "正確な時間を計る。",
     "exEN": "Measure accurate time.",
     "exZH": "测量准确的时间。",
-    "exKana": "せいかくなじかんをはかる。",
+    "exKana": "せいかくなじかんをはかる",
     "exTokens": [
       [
         "正確",
@@ -5000,7 +5000,7 @@
     "exJP": "妥当な判断だと思う。",
     "exEN": "I think it's a valid judgment.",
     "exZH": "我认为是妥当的判断。",
-    "exKana": "だとうなはんだんだとおもう。",
+    "exKana": "だとうなはんだんだとおもう",
     "exTokens": [
       [
         "妥当",
@@ -5055,7 +5055,7 @@
     "exJP": "部屋の半分を占める。",
     "exEN": "It occupies half of the room.",
     "exZH": "占据了房间的一半。",
-    "exKana": "へやのはんぶんをしめる。",
+    "exKana": "へやのはんぶんをしめる",
     "exTokens": [
       [
         "部屋",
@@ -5106,7 +5106,7 @@
     "exJP": "心を込めて歌う。",
     "exEN": "Sing to include heart.",
     "exZH": "用心歌唱。",
-    "exKana": "こころをこめてうたう。",
+    "exKana": "こころをこめてうたう",
     "exTokens": [
       [
         "心",
@@ -5157,7 +5157,7 @@
     "exJP": "泣く子供を慰める。",
     "exEN": "To comfort a crying child.",
     "exZH": "安慰哭泣的孩子。",
-    "exKana": "なくこどもをなぐさめる。",
+    "exKana": "なくこどもをなぐさめる",
     "exTokens": [
       [
         "泣く",
@@ -5204,7 +5204,7 @@
     "exJP": "自分の失敗を責める。",
     "exEN": "To condemn my own failure.",
     "exZH": "责备自己的失败。",
-    "exKana": "じぶんのしっぱいをせめる。",
+    "exKana": "じぶんのしっぱいをせめる",
     "exTokens": [
       [
         "自分",
@@ -5254,7 +5254,7 @@
     "exJP": "遠くの山を眺める。",
     "exEN": "To view the distant mountains.",
     "exZH": "眺望远处的山。",
-    "exKana": "とおくのやまをながめる。",
+    "exKana": "とおくのやまをながめる",
     "exTokens": [
       [
         "遠く",
@@ -5326,7 +5326,7 @@
     "exJP": "税金を含む価格だ。",
     "exEN": "It's a price to include tax.",
     "exZH": "是包含税金的价格。",
-    "exKana": "ぜいきんをふくむかかくだ。",
+    "exKana": "ぜいきんをふくむかかくだ",
     "exTokens": [
       [
         "税金",
@@ -5377,7 +5377,7 @@
     "exJP": "私を含めて五人です。",
     "exEN": "There are five people to include me.",
     "exZH": "包括我在内一共五个人。",
-    "exKana": "わたくしをふくめてごにんです。",
+    "exKana": "わたくしをふくめてごにんです",
     "exTokens": [
       [
         "私",
@@ -5436,7 +5436,7 @@
     "exJP": "友達に本を勧める。",
     "exEN": "To recommend a book to a friend.",
     "exZH": "向朋友推荐书。",
-    "exKana": "ともだちにほんをすすめる。",
+    "exKana": "ともだちにほんをすすめる",
     "exTokens": [
       [
         "友達",
@@ -5487,7 +5487,7 @@
     "exJP": "危険を避ける。",
     "exEN": "To avoid danger.",
     "exZH": "避开危险。",
-    "exKana": "きけんをさける。",
+    "exKana": "きけんをさける",
     "exTokens": [
       [
         "危険",
@@ -5530,7 +5530,7 @@
     "exJP": "親の意見に逆らう。",
     "exEN": "To go against parents' opinions.",
     "exZH": "违抗父母的意见。",
-    "exKana": "おやのいけんにさからう。",
+    "exKana": "おやのいけんにさからう",
     "exTokens": [
       [
         "親",
@@ -5581,7 +5581,7 @@
     "exJP": "先生の指示に従う。",
     "exEN": "To abide by the teacher's instructions.",
     "exZH": "遵从老师的指示。",
-    "exKana": "せんせいのしじにしたがう。",
+    "exKana": "せんせいのしじにしたがう",
     "exTokens": [
       [
         "先生",
@@ -5632,7 +5632,7 @@
     "exJP": "危険を伴う仕事だ。",
     "exEN": "It's a job to accompany danger.",
     "exZH": "是伴随危险的工作。",
-    "exKana": "きけんをともなうしごとだ。",
+    "exKana": "きけんをともなうしごとだ",
     "exTokens": [
       [
         "危険",
@@ -5683,7 +5683,7 @@
     "exJP": "予定が狂う。",
     "exEN": "The schedule is to go mad.",
     "exZH": "计划被打乱。",
-    "exKana": "よていがくるう。",
+    "exKana": "よていがくるう",
     "exTokens": [
       [
         "予定",
@@ -5726,7 +5726,7 @@
     "exJP": "永遠の愛を誓う。",
     "exEN": "To swear eternal love.",
     "exZH": "誓言永恒的爱。",
-    "exKana": "えいえんのあいをちかう。",
+    "exKana": "えいえんのあいをちかう",
     "exTokens": [
       [
         "永遠",
@@ -5776,7 +5776,7 @@
     "exJP": "命を奪う。",
     "exEN": "To snatch away a life.",
     "exZH": "夺走生命。",
-    "exKana": "いのちをうばう。",
+    "exKana": "いのちをうばう",
     "exTokens": [
       [
         "命",
@@ -5818,7 +5818,7 @@
     "exJP": "栄養を補う。",
     "exEN": "To compensate for nutrition.",
     "exZH": "补充营养。",
-    "exKana": "えいようをおぎなう。",
+    "exKana": "えいようをおぎなう",
     "exTokens": [
       [
         "栄養",
@@ -5861,7 +5861,7 @@
     "exJP": "壊れやすい品を扱う。",
     "exEN": "To handle fragile goods.",
     "exZH": "处理易碎物品。",
-    "exKana": "こわれやすいしなをあつかう。",
+    "exKana": "こわれやすいしなをあつかう",
     "exTokens": [
       [
         "壊れ",
@@ -5910,7 +5910,7 @@
     "exJP": "新しい社員を雇う。",
     "exEN": "To employ a new employee.",
     "exZH": "雇佣新员工。",
-    "exKana": "あたらしいしゃいんをやとう。",
+    "exKana": "あたらしいしゃいんをやとう",
     "exTokens": [
       [
         "新しい",
@@ -5957,7 +5957,7 @@
     "exJP": "彼の言葉を疑う。",
     "exEN": "To doubt his words.",
     "exZH": "怀疑他的话。",
-    "exKana": "かれのことばをうたがう。",
+    "exKana": "かれのことばをうたがう",
     "exTokens": [
       [
         "彼",
@@ -6008,7 +6008,7 @@
     "exJP": "鉛筆を削る。",
     "exEN": "To shave a pencil.",
     "exZH": "削铅笔。",
-    "exKana": "えんぴつをけずる。",
+    "exKana": "えんぴつをけずる",
     "exTokens": [
       [
         "鉛筆",
@@ -6050,7 +6050,7 @@
     "exJP": "古新聞を紐で縛る。",
     "exEN": "Tie the old newspapers with string.",
     "exZH": "用绳子把旧报纸绑起来。",
-    "exKana": "こしんぶんをひもでしばる。",
+    "exKana": "こしんぶんをひもでしばる",
     "exTokens": [
       [
         "古",
@@ -6104,7 +6104,7 @@
     "exJP": "レモンを絞って汁を出す。",
     "exEN": "Squeeze the lemon to get the juice.",
     "exZH": "挤柠檬出汁。",
-    "exKana": "れもんをしぼってしるをだす。",
+    "exKana": "れもんをしぼってしるをだす",
     "exTokens": [
       [
         "レモン",
@@ -6163,7 +6163,7 @@
     "exJP": "試験の日が迫っている。",
     "exEN": "The exam day is approaching.",
     "exZH": "考试的日子逼近了。",
-    "exKana": "しけんのひがせまっている。",
+    "exKana": "しけんのひがせまっている",
     "exTokens": [
       [
         "試験",
@@ -6221,7 +6221,7 @@
     "exJP": "彼は怒って壁を殴った。",
     "exEN": "He hit the wall in anger.",
     "exZH": "他生气地揍了墙壁。",
-    "exKana": "かれはおこってかべをなぐった。",
+    "exKana": "かれはおこってかべをなぐった",
     "exTokens": [
       [
         "彼",
@@ -6282,7 +6282,7 @@
     "exJP": "雨で川の水が濁る。",
     "exEN": "The river water becomes muddy due to rain.",
     "exZH": "河水因下雨变浑浊。",
-    "exKana": "あめでかわのみずがにごる。",
+    "exKana": "あめでかわのみずがにごる",
     "exTokens": [
       [
         "雨",
@@ -6340,7 +6340,7 @@
     "exJP": "血液が体内を巡る。",
     "exEN": "Blood circulates through the body.",
     "exZH": "血液在体内循环。",
-    "exKana": "けつえきがたいないをめぐる。",
+    "exKana": "けつえきがたいないをめぐる",
     "exTokens": [
       [
         "血液",
@@ -6391,7 +6391,7 @@
     "exJP": "海に潜って魚を見る。",
     "exEN": "Dive into the sea and see fish.",
     "exZH": "潜入海中看鱼。",
-    "exKana": "うみにもぐってさかなをみる。",
+    "exKana": "うみにもぐってさかなをみる",
     "exTokens": [
       [
         "海",
@@ -6450,7 +6450,7 @@
     "exJP": "お年寄りに席を譲る。",
     "exEN": "Give up the seat to an elderly person.",
     "exZH": "把座位让给老人。",
-    "exKana": "おとしよりにせきをゆずる。",
+    "exKana": "おとしよりにせきをゆずる",
     "exTokens": [
       [
         "お",
@@ -6504,7 +6504,7 @@
     "exJP": "コップから水が溢れる。",
     "exEN": "Water overflows from the cup.",
     "exZH": "水从杯子里溢出。",
-    "exKana": "こっぷからみずがあふれる。",
+    "exKana": "こっぷからみずがあふれる",
     "exTokens": [
       [
         "コップ",
@@ -6555,7 +6555,7 @@
     "exJP": "遺産を巡って争う。",
     "exEN": "Dispute over an inheritance.",
     "exZH": "围绕遗产发生争执。",
-    "exKana": "いさんをめぐってあらそう。",
+    "exKana": "いさんをめぐってあらそう",
     "exTokens": [
       [
         "遺産",
@@ -6605,7 +6605,7 @@
     "exJP": "彼は新しい本を著した。",
     "exEN": "He wrote a new book.",
     "exZH": "他写了一本新书。",
-    "exKana": "かれはあたらしいほんをあらわした。",
+    "exKana": "かれはあたらしいほんをあらわした",
     "exTokens": [
       [
         "彼",
@@ -6664,7 +6664,7 @@
     "exJP": "悪い習慣を改める。",
     "exEN": "Alter bad habits.",
     "exZH": "改正坏习惯。",
-    "exKana": "わるいしゅうかんをあらためる。",
+    "exKana": "わるいしゅうかんをあらためる",
     "exTokens": [
       [
         "悪い",
@@ -6709,7 +6709,7 @@
     "exJP": "その言葉の意義を調べる。",
     "exEN": "Look up the meaning of that word.",
     "exZH": "查那个词的意义。",
-    "exKana": "そのことばのいぎをしらべる。",
+    "exKana": "そのことばのいぎをしらべる",
     "exTokens": [
       [
         "その",
@@ -6764,7 +6764,7 @@
     "exJP": "健康を維持するために運動する。",
     "exEN": "Exercise to maintain health.",
     "exZH": "为了维持健康而运动。",
-    "exKana": "けんこうをいじするためにうんどうする。",
+    "exKana": "けんこうをいじするためにうんどうする",
     "exTokens": [
       [
         "健康",
@@ -6824,7 +6824,7 @@
     "exJP": "船が運河を通る。",
     "exEN": "A ship passes through the canal.",
     "exZH": "船通过运河。",
-    "exKana": "ふねがうんがをとおる。",
+    "exKana": "ふねがうんがをとおる",
     "exTokens": [
       [
         "船",
@@ -6874,7 +6874,7 @@
     "exJP": "この平和が永久に続くことを願う。",
     "exEN": "I hope this peace lasts for eternity.",
     "exZH": "希望这种和平能永久持续。",
-    "exKana": "このへいわがえいきゅうにつづくことをねがう。",
+    "exKana": "このへいわがえいきゅうにつづくことをねがう",
     "exTokens": [
       [
         "この",
@@ -6938,7 +6938,7 @@
     "exJP": "この食べ物は栄養が豊富だ。",
     "exEN": "This food is rich in nutrition.",
     "exZH": "这种食物营养丰富。",
-    "exKana": "このたべものはえいようがほうふだ。",
+    "exKana": "このたべものはえいようがほうふだ",
     "exTokens": [
       [
         "この",
@@ -6997,7 +6997,7 @@
     "exJP": "客の要求に応じる。",
     "exEN": "Respond to the customer's request.",
     "exZH": "回应客人的要求。",
-    "exKana": "きゃくのようきゅうにおうじる。",
+    "exKana": "きゃくのようきゅうにおうじる",
     "exTokens": [
       [
         "客",
@@ -7047,7 +7047,7 @@
     "exJP": "計画を大幅に変更する。",
     "exEN": "Change the plan drastically.",
     "exZH": "大幅度变更计划。",
-    "exKana": "けいかくをおおはばにへんこうする。",
+    "exKana": "けいかくをおおはばにへんこうする",
     "exTokens": [
       [
         "計画",
@@ -7101,7 +7101,7 @@
     "exJP": "失敗を恐れるな。",
     "exEN": "Do not fear failure.",
     "exZH": "不要害怕失败。",
-    "exKana": "しっぱいをおそれるな。",
+    "exKana": "しっぱいをおそれるな",
     "exTokens": [
       [
         "失敗",
@@ -7146,7 +7146,7 @@
     "exJP": "この地域は温暖な気候だ。",
     "exEN": "This region has a warm climate.",
     "exZH": "这个地区气候温暖。",
-    "exKana": "このちいきはおんだんなきこうだ。",
+    "exKana": "このちいきはおんだんなきこうだ",
     "exTokens": [
       [
         "この",
@@ -7202,7 +7202,7 @@
     "exJP": "浜辺で貝殻を拾う。",
     "exEN": "Pick up shells on the beach.",
     "exZH": "在海滩捡贝壳。",
-    "exKana": "はまべでかいがらをひろう。",
+    "exKana": "はまべでかいがらをひろう",
     "exTokens": [
       [
         "浜辺",
@@ -7251,7 +7251,7 @@
     "exJP": "家の周りに垣根を作る。",
     "exEN": "Make a hedge around the house.",
     "exZH": "在房子周围建篱笆。",
-    "exKana": "いえのまわりにかきねをつくる。",
+    "exKana": "いえのまわりにかきねをつくる",
     "exTokens": [
       [
         "家",
@@ -7310,7 +7310,7 @@
     "exJP": "架空の電線が切れた。",
     "exEN": "The aerial wire broke.",
     "exZH": "架空电线断了。",
-    "exKana": "かくうのでんせんがきれた。",
+    "exKana": "かくうのでんせんがきれた",
     "exTokens": [
       [
         "架空",
@@ -7364,7 +7364,7 @@
     "exJP": "自信過剰は危険だ。",
     "exEN": "Excess confidence is dangerous.",
     "exZH": "过度自信是危险的。",
-    "exKana": "じしんかじょうはきけんだ。",
+    "exKana": "じしんかじょうはきけんだ",
     "exTokens": [
       [
         "自信",
@@ -7414,7 +7414,7 @@
     "exJP": "食事が偏る。",
     "exEN": "The diet is one-sided.",
     "exZH": "饮食不均衡。",
-    "exKana": "しょくじがかたよる。",
+    "exKana": "しょくじがかたよる",
     "exTokens": [
       [
         "食事",
@@ -7455,7 +7455,7 @@
     "exJP": "町に活気が戻った。",
     "exEN": "Energy returned to the town.",
     "exZH": "小镇恢复了活力。",
-    "exKana": "まちにかっきがもどった。",
+    "exKana": "まちにかっきがもどった",
     "exTokens": [
       [
         "町",
@@ -7509,7 +7509,7 @@
     "exJP": "社長と会長を兼ねる。",
     "exEN": "Hold multiple roles as president and chairman.",
     "exZH": "兼任总裁和董事长。",
-    "exKana": "しゃちょうとかいちょうをかねる。",
+    "exKana": "しゃちょうとかいちょうをかねる",
     "exTokens": [
       [
         "社長",
@@ -7558,7 +7558,7 @@
     "exJP": "株式会社を設立する。",
     "exEN": "Establish a joint-stock company.",
     "exZH": "设立股份公司。",
-    "exKana": "かぶしきがいしゃをせつりつする。",
+    "exKana": "かぶしきがいしゃをせつりつする",
     "exTokens": [
       [
         "株式会社",
@@ -7605,7 +7605,7 @@
     "exJP": "財布の中が空っぽだ。",
     "exEN": "The inside of the wallet is empty.",
     "exZH": "钱包里空空如也。",
-    "exKana": "さいふのなかがからっぽだ。",
+    "exKana": "さいふのなかがからっぽだ",
     "exTokens": [
       [
         "財布",
@@ -7656,7 +7656,7 @@
     "exJP": "雨が降らず飢饉になった。",
     "exEN": "It didn't rain and a famine occurred.",
     "exZH": "不下雨导致了饥荒。",
-    "exKana": "あめがふらずききんになった。",
+    "exKana": "あめがふらずききんになった",
     "exTokens": [
       [
         "雨",
@@ -7718,7 +7718,7 @@
     "exJP": "春の兆しを感じる。",
     "exEN": "Feel the sign of spring.",
     "exZH": "感受到了春天的前兆。",
-    "exKana": "はるのきざしをかんじる。",
+    "exKana": "はるのきざしをかんじる",
     "exTokens": [
       [
         "春",
@@ -7766,7 +7766,7 @@
     "exJP": "奇跡が起こった。",
     "exEN": "A miracle happened.",
     "exZH": "奇迹发生了。",
-    "exKana": "きせきがおこった。",
+    "exKana": "きせきがおこった",
     "exTokens": [
       [
         "奇跡",
@@ -7811,7 +7811,7 @@
     "exJP": "多くの犠牲を払う。",
     "exEN": "Make many sacrifices.",
     "exZH": "付出很多牺牲。",
-    "exKana": "おおくのぎせいをはらう。",
+    "exKana": "おおくのぎせいをはらう",
     "exTokens": [
       [
         "多く",
@@ -7861,7 +7861,7 @@
     "exJP": "社会の規範に従う。",
     "exEN": "Follow the model of society.",
     "exZH": "遵守社会规范。",
-    "exKana": "しゃかいのきはんにしたがう。",
+    "exKana": "しゃかいのきはんにしたがう",
     "exTokens": [
       [
         "社会",
@@ -7911,7 +7911,7 @@
     "exJP": "夏に休暇をとる。",
     "exEN": "Take a holiday in summer.",
     "exZH": "夏天休假。",
-    "exKana": "なつにきゅうかをとる。",
+    "exKana": "なつにきゅうかをとる",
     "exTokens": [
       [
         "夏",
@@ -7963,7 +7963,7 @@
     "exJP": "難民を救済する。",
     "exEN": "Provide relief to refugees.",
     "exZH": "救济难民。",
-    "exKana": "なんみんをきゅうさいする。",
+    "exKana": "なんみんをきゅうさいする",
     "exTokens": [
       [
         "難民",
@@ -8009,7 +8009,7 @@
     "exJP": "ご迷惑をかけて恐縮です。",
     "exEN": "I am feeling obliged for causing trouble.",
     "exZH": "给您添麻烦了，非常抱歉。",
-    "exKana": "ごめいわくをかけてきょうしゅくです。",
+    "exKana": "ごめいわくをかけてきょうしゅくです",
     "exTokens": [
       [
         "ご",
@@ -8068,7 +8068,7 @@
     "exJP": "勤労感謝の日を祝う。",
     "exEN": "Celebrate Labor Thanksgiving Day.",
     "exZH": "庆祝勤劳感谢日。",
-    "exKana": "きんろうかんしゃのひをいわう。",
+    "exKana": "きんろうかんしゃのひをいわう",
     "exTokens": [
       [
         "勤労感謝の日",
@@ -8112,7 +8112,7 @@
     "exJP": "空想の世界に浸る。",
     "exEN": "Immerse in a daydream world.",
     "exZH": "沉浸在幻想的世界中。",
-    "exKana": "くうそうのせかいにひたる。",
+    "exKana": "くうそうのせかいにひたる",
     "exTokens": [
       [
         "空想",
@@ -8161,7 +8161,7 @@
     "exJP": "ひどい苦痛を感じる。",
     "exEN": "Feel a terrible pain.",
     "exZH": "感到剧烈的痛苦。",
-    "exKana": "ひどいくつうをかんじる。",
+    "exKana": "ひどいくつうをかんじる",
     "exTokens": [
       [
         "ひどい",
@@ -8206,7 +8206,7 @@
     "exJP": "彼に敬意を払う。",
     "exEN": "Pay respect to him.",
     "exZH": "对他表示敬意。",
-    "exKana": "かれにけいいをはらう。",
+    "exKana": "かれにけいいをはらう",
     "exTokens": [
       [
         "彼",
@@ -8256,7 +8256,7 @@
     "exJP": "医者の警告を無視する。",
     "exEN": "Ignore the doctor's warning.",
     "exZH": "无视医生的警告。",
-    "exKana": "いしゃのけいこくをむしする。",
+    "exKana": "いしゃのけいこくをむしする",
     "exTokens": [
       [
         "医者",
@@ -8309,7 +8309,7 @@
     "exJP": "刑事事件として扱う。",
     "exEN": "Treat it as a detective case.",
     "exZH": "作为刑事案件处理。",
-    "exKana": "けいじじけんとしてあつかう。",
+    "exKana": "けいじじけんとしてあつかう",
     "exTokens": [
       [
         "刑事",
@@ -8360,7 +8360,7 @@
     "exJP": "これは彼の最高傑作だ。",
     "exEN": "This is his best masterpiece.",
     "exZH": "这是他最优秀的杰作。",
-    "exKana": "これはかれのさいこうけっさくだ。",
+    "exKana": "これはかれのさいこうけっさくだ",
     "exTokens": [
       [
         "これ",
@@ -8420,7 +8420,7 @@
     "exJP": "彼女は謙遜して答えた。",
     "exEN": "She answered with modesty.",
     "exZH": "她谦虚地回答了。",
-    "exKana": "かのじょはけんそんしてこたえた。",
+    "exKana": "かのじょはけんそんしてこたえた",
     "exTokens": [
       [
         "彼女",
@@ -8478,7 +8478,7 @@
     "exJP": "故郷が恋しい。",
     "exEN": "My hometown is longed for.",
     "exZH": "思念故乡。",
-    "exKana": "こきょうがこいしい。",
+    "exKana": "こきょうがこいしい",
     "exTokens": [
       [
         "故郷",
@@ -8521,7 +8521,7 @@
     "exJP": "二つの道が交差する。",
     "exEN": "Two roads intersect.",
     "exZH": "两条路交叉。",
-    "exKana": "ふたつのみちがこうさする。",
+    "exKana": "ふたつのみちがこうさする",
     "exTokens": [
       [
         "二",
@@ -8580,7 +8580,7 @@
     "exJP": "深く呼吸をする。",
     "exEN": "Take a deep breath.",
     "exZH": "深呼吸。",
-    "exKana": "ふかくこきゅうをする。",
+    "exKana": "ふかくこきゅうをする",
     "exTokens": [
       [
         "深く",
@@ -8626,7 +8626,7 @@
     "exJP": "事件を克明に記録する。",
     "exEN": "Keep a detailed record of the incident.",
     "exZH": "详细记录事件。",
-    "exKana": "じけんをこくめいにきろくする。",
+    "exKana": "じけんをこくめいにきろくする",
     "exTokens": [
       [
         "事件",
@@ -8678,7 +8678,7 @@
     "exJP": "古代の遺跡を発見する。",
     "exEN": "Discover ruins of ancient times.",
     "exZH": "发现古代遗迹。",
-    "exKana": "こだいのいせきをはっけんする。",
+    "exKana": "こだいのいせきをはっけんする",
     "exTokens": [
       [
         "古代",
@@ -8732,7 +8732,7 @@
     "exJP": "話が少し誇張されている。",
     "exEN": "The story is a little exaggeration.",
     "exZH": "故事有点被夸大了。",
-    "exKana": "はなしがすこしこちょうされている。",
+    "exKana": "はなしがすこしこちょうされている",
     "exTokens": [
       [
         "話",
@@ -8795,7 +8795,7 @@
     "exJP": "トマトを栽培する。",
     "exEN": "Cultivate tomatoes.",
     "exZH": "栽培番茄。",
-    "exKana": "とまとをさいばいする。",
+    "exKana": "とまとをさいばいする",
     "exTokens": [
       [
         "トマト",
@@ -8838,7 +8838,7 @@
     "exJP": "砂漠でラクダに乗る。",
     "exEN": "Ride a camel in the desert.",
     "exZH": "在沙漠里骑骆驼。",
-    "exKana": "さばくでらくだにのる。",
+    "exKana": "さばくでらくだにのる",
     "exTokens": [
       [
         "砂漠",
@@ -8886,7 +8886,7 @@
     "exJP": "事業の資金を集める。",
     "exEN": "Gather funds for the business.",
     "exZH": "筹集事业资金。",
-    "exKana": "じぎょうのしきんをあつめる。",
+    "exKana": "じぎょうのしきんをあつめる",
     "exTokens": [
       [
         "事業",
@@ -8936,7 +8936,7 @@
     "exJP": "彼は小説を執筆中だ。",
     "exEN": "He is in the middle of writing a novel.",
     "exZH": "他正在执笔写小说。",
-    "exKana": "かれはしょうせつをしっぴつちゅうだ。",
+    "exKana": "かれはしょうせつをしっぴつちゅうだ",
     "exTokens": [
       [
         "彼",
@@ -8992,7 +8992,7 @@
     "exJP": "庭の芝生を刈る。",
     "exEN": "Mow the lawn in the garden.",
     "exZH": "修剪院子里的草坪。",
-    "exKana": "にわのしばふをかる。",
+    "exKana": "にわのしばふをかる",
     "exTokens": [
       [
         "庭",
@@ -9041,7 +9041,7 @@
     "exJP": "山の斜面を登る。",
     "exEN": "Climb the slope of the mountain.",
     "exZH": "爬山坡。",
-    "exKana": "やまのしゃめんをのぼる。",
+    "exKana": "やまのしゃめんをのぼる",
     "exTokens": [
       [
         "山",
@@ -9092,7 +9092,7 @@
     "exJP": "秋に米を収穫する。",
     "exEN": "Harvest rice in autumn.",
     "exZH": "秋天收获大米。",
-    "exKana": "あきにべいをしゅうかくする。",
+    "exKana": "あきにべいをしゅうかくする",
     "exTokens": [
       [
         "秋",
@@ -9148,7 +9148,7 @@
     "exJP": "名詞を形容詞で修飾する。",
     "exEN": "Apply modification to a noun with an adjective.",
     "exZH": "用形容词修饰名词。",
-    "exKana": "めいしをけいようしでしゅうしょくする。",
+    "exKana": "めいしをけいようしでしゅうしょくする",
     "exTokens": [
       [
         "名詞",
@@ -9203,7 +9203,7 @@
     "exJP": "彼がプロジェクトを主導する。",
     "exEN": "He takes leadership of the project.",
     "exZH": "他主导这个项目。",
-    "exKana": "かれがぷろじぇくとをしゅどうする。",
+    "exKana": "かれがぷろじぇくとをしゅどうする",
     "exTokens": [
       [
         "彼",
@@ -9257,7 +9257,7 @@
     "exJP": "課長に昇進した。",
     "exEN": "Got a promotion to section manager.",
     "exZH": "晋升为课长。",
-    "exKana": "かちょうにしょうしんした。",
+    "exKana": "かちょうにしょうしんした",
     "exTokens": [
       [
         "課長",
@@ -9308,7 +9308,7 @@
     "exJP": "車と自転車が衝突した。",
     "exEN": "A car and a bicycle had a collision.",
     "exZH": "汽车和自行车相撞了。",
-    "exKana": "くるまとじてんしゃがしょうとつした。",
+    "exKana": "くるまとじてんしゃがしょうとつした",
     "exTokens": [
       [
         "車",
@@ -9364,7 +9364,7 @@
     "exJP": "問題の焦点がずれている。",
     "exEN": "The focus of the problem is off.",
     "exZH": "问题的焦点偏离了。",
-    "exKana": "もんだいのしょうてんがずれている。",
+    "exKana": "もんだいのしょうてんがずれている",
     "exTokens": [
       [
         "問題",
@@ -9423,7 +9423,7 @@
     "exJP": "厳しい処罰を受ける。",
     "exEN": "Receive a severe punishment.",
     "exZH": "受到严厉的处罚。",
-    "exKana": "きびしいしょばつをうける。",
+    "exKana": "きびしいしょばつをうける",
     "exTokens": [
       [
         "厳しい",
@@ -9469,7 +9469,7 @@
     "exJP": "書類に署名する。",
     "exEN": "Put a signature on the document.",
     "exZH": "在文件上签名。",
-    "exKana": "しょるいにしょめいする。",
+    "exKana": "しょるいにしょめいする",
     "exTokens": [
       [
         "書類",
@@ -9514,7 +9514,7 @@
     "exJP": "病院で診断を受ける。",
     "exEN": "Receive a diagnosis at the hospital.",
     "exZH": "在医院接受诊断。",
-    "exKana": "びょういんでしんだんをうける。",
+    "exKana": "びょういんでしんだんをうける",
     "exTokens": [
       [
         "病院",
@@ -9564,7 +9564,7 @@
     "exJP": "他国を侵略する。",
     "exEN": "Carry out an invasion of another country.",
     "exZH": "侵略他国。",
-    "exKana": "たこくをしんりゃくする。",
+    "exKana": "たこくをしんりゃくする",
     "exTokens": [
       [
         "他国",
@@ -9608,7 +9608,7 @@
     "exJP": "質問は随時受け付けます。",
     "exEN": "We accept questions at any time.",
     "exZH": "随时接受提问。",
-    "exKana": "しつもんはずいじうけつけます。",
+    "exKana": "しつもんはずいじうけつけます",
     "exTokens": [
       [
         "質問",
@@ -9659,7 +9659,7 @@
     "exJP": "推理小説を読むのが好きだ。",
     "exEN": "I like reading reasoning novels.",
     "exZH": "我喜欢读推理小说。",
-    "exKana": "すいりしょうせつをよむのがすきだ。",
+    "exKana": "すいりしょうせつをよむのがすきだ",
     "exTokens": [
       [
         "推理",
@@ -9722,7 +9722,7 @@
     "exJP": "正規のルートで買う。",
     "exEN": "Buy through a regular route.",
     "exZH": "通过正规途径购买。",
-    "exKana": "せいきのるーとでかう。",
+    "exKana": "せいきのるーとでかう",
     "exTokens": [
       [
         "正規",
@@ -9774,7 +9774,7 @@
     "exJP": "車の整備をする。",
     "exEN": "Do maintenance on the car.",
     "exZH": "对汽车进行保养维修。",
-    "exKana": "くるまのせいびをする。",
+    "exKana": "くるまのせいびをする",
     "exTokens": [
       [
         "車",
@@ -9821,7 +9821,7 @@
     "exJP": "その本は絶版になった。",
     "exEN": "That book went out of print.",
     "exZH": "那本书绝版了。",
-    "exKana": "そのほんはぜっぱんになった。",
+    "exKana": "そのほんはぜっぱんになった",
     "exTokens": [
       [
         "その",
@@ -9878,7 +9878,7 @@
     "exJP": "食物繊維をたくさん摂る。",
     "exEN": "Consume a lot of dietary fibre.",
     "exZH": "摄取很多膳食纤维。",
-    "exKana": "しょくもつせんいをたくさんとる。",
+    "exKana": "しょくもつせんいをたくさんとる",
     "exTokens": [
       [
         "食物",
@@ -9929,7 +9929,7 @@
     "exJP": "敵の領土を占領する。",
     "exEN": "Complete the occupation of enemy territory.",
     "exZH": "占领敌人的领土。",
-    "exKana": "てきのりょうどをせんりょうする。",
+    "exKana": "てきのりょうどをせんりょうする",
     "exTokens": [
       [
         "敵",
@@ -9984,7 +9984,7 @@
     "exJP": "記憶を喪失した。",
     "exEN": "Suffered memory loss.",
     "exZH": "丧失了记忆。",
-    "exKana": "きおくをそうしつした。",
+    "exKana": "きおくをそうしつした",
     "exTokens": [
       [
         "記憶",
@@ -10034,7 +10034,7 @@
     "exJP": "部屋を花で装飾する。",
     "exEN": "Use flowers as an ornament for the room.",
     "exZH": "用花装饰房间。",
-    "exKana": "へやをはなでそうしょくする。",
+    "exKana": "へやをはなでそうしょくする",
     "exTokens": [
       [
         "部屋",
@@ -10090,7 +10090,7 @@
     "exJP": "販売を促進する。",
     "exEN": "Do sales promotion.",
     "exZH": "促进销售。",
-    "exKana": "はんばいをそくしんする。",
+    "exKana": "はんばいをそくしんする",
     "exTokens": [
       [
         "販売",
@@ -10138,7 +10138,7 @@
     "exJP": "敵の侵入を阻止する。",
     "exEN": "Cause obstruction of enemy invasion.",
     "exZH": "阻止敌人的入侵。",
-    "exKana": "てきのしんにゅうをそしする。",
+    "exKana": "てきのしんにゅうをそしする",
     "exTokens": [
       [
         "敵",
@@ -10192,7 +10192,7 @@
     "exJP": "ストレスが蓄積する。",
     "exEN": "There is an accumulation of stress.",
     "exZH": "压力积累。",
-    "exKana": "すとれすがちくせきする。",
+    "exKana": "すとれすがちくせきする",
     "exTokens": [
       [
         "ストレス",
@@ -10237,7 +10237,7 @@
     "exJP": "人工知能を研究する。",
     "exEN": "Research artificial intelligence.",
     "exZH": "研究人工智能。",
-    "exKana": "じんこうちのうをけんきゅうする。",
+    "exKana": "じんこうちのうをけんきゅうする",
     "exTokens": [
       [
         "人工知能",
@@ -10285,7 +10285,7 @@
     "exJP": "工事に着手する。",
     "exEN": "Make an embarkation on the construction.",
     "exZH": "着手施工。",
-    "exKana": "こうじにちゃくしゅする。",
+    "exKana": "こうじにちゃくしゅする",
     "exTokens": [
       [
         "工事",
@@ -10332,7 +10332,7 @@
     "exJP": "親の忠告を聞く。",
     "exEN": "Listen to parents' advice.",
     "exZH": "听取父母的忠告。",
-    "exKana": "おやのちゅうこくをきく。",
+    "exKana": "おやのちゅうこくをきく",
     "exTokens": [
       [
         "親",
@@ -10383,7 +10383,7 @@
     "exJP": "木で彫刻を作る。",
     "exEN": "Make a carving out of wood.",
     "exZH": "用木头做雕刻。",
-    "exKana": "きでちょうこくをつくる。",
+    "exKana": "きでちょうこくをつくる",
     "exTokens": [
       [
         "木",
@@ -10435,7 +10435,7 @@
     "exJP": "事件の真相を追及する。",
     "exEN": "Keep gaining on the truth of the incident.",
     "exZH": "追查事件的真相。",
-    "exKana": "じけんのしんそうをついきゅうする。",
+    "exKana": "じけんのしんそうをついきゅうする",
     "exTokens": [
       [
         "事件",
@@ -10489,7 +10489,7 @@
     "exJP": "飛行機が墜落した。",
     "exEN": "The airplane suffered a falling.",
     "exZH": "飞机坠毁了。",
-    "exKana": "ひこうきがついらくした。",
+    "exKana": "ひこうきがついらくした",
     "exTokens": [
       [
         "飛行機",
@@ -10540,7 +10540,7 @@
     "exJP": "経済が停滞している。",
     "exEN": "The economy is in stagnation.",
     "exZH": "经济停滞。",
-    "exKana": "けいざいがていたいしている。",
+    "exKana": "けいざいがていたいしている",
     "exTokens": [
       [
         "経済",
@@ -10596,7 +10596,7 @@
     "exJP": "気分を転換する。",
     "exEN": "Convert one's mood.",
     "exZH": "转换心情。",
-    "exKana": "きぶんをてんかんする。",
+    "exKana": "きぶんをてんかんする",
     "exTokens": [
       [
         "気分",
@@ -10644,7 +10644,7 @@
     "exJP": "犯人が逃亡した。",
     "exEN": "The criminal made an escape.",
     "exZH": "犯人逃跑了。",
-    "exKana": "はんにんがとうぼうした。",
+    "exKana": "はんにんがとうぼうした",
     "exTokens": [
       [
         "犯人",
@@ -10692,7 +10692,7 @@
     "exJP": "彼が殺人を犯した動機は何だ。",
     "exEN": "What is his motive for murder?",
     "exZH": "他杀人的动机是什么？",
-    "exKana": "かれがさつじんをおかしたどうきはなんだ。",
+    "exKana": "かれがさつじんをおかしたどうきはなんだ",
     "exTokens": [
       [
         "彼",
@@ -10763,7 +10763,7 @@
     "exJP": "激しい討論が続いた。",
     "exEN": "The fierce debate continued.",
     "exZH": "激烈的讨论持续着。",
-    "exKana": "はげしいとうろんがつづいた。",
+    "exKana": "はげしいとうろんがつづいた",
     "exTokens": [
       [
         "激しい",
@@ -10811,7 +10811,7 @@
     "exJP": "匿名で寄付をする。",
     "exEN": "Donate as an anonymous person.",
     "exZH": "匿名捐款。",
-    "exKana": "とくめいできふをする。",
+    "exKana": "とくめいできふをする",
     "exTokens": [
       [
         "匿名",
@@ -10860,7 +10860,7 @@
     "exJP": "駅まで徒歩で行く。",
     "exEN": "Go to the station by walking.",
     "exZH": "步行去车站。",
-    "exKana": "えきまでとほでいく。",
+    "exKana": "えきまでとほでいく",
     "exTokens": [
       [
         "駅",
@@ -10910,7 +10910,7 @@
     "exJP": "日本は資源が乏しい。",
     "exEN": "Resources are scarce in Japan.",
     "exZH": "日本资源匮乏。",
-    "exKana": "にっぽんはしげんがとぼしい。",
+    "exKana": "にっぽんはしげんがとぼしい",
     "exTokens": [
       [
         "日本",
@@ -10958,7 +10958,7 @@
     "exJP": "内臓の病気を治す。",
     "exEN": "Cure the disease of internal organs.",
     "exZH": "治愈内脏的疾病。",
-    "exKana": "ないぞうのびょうきをなおす。",
+    "exKana": "ないぞうのびょうきをなおす",
     "exTokens": [
       [
         "内臓",
@@ -11008,7 +11008,7 @@
     "exJP": "会議が長引く。",
     "exEN": "The meeting is to be prolonged.",
     "exZH": "会议拖长了。",
-    "exKana": "かいぎがながびく。",
+    "exKana": "かいぎがながびく",
     "exTokens": [
       [
         "会議",
@@ -11051,7 +11051,7 @@
     "exJP": "自分の不運を嘆く。",
     "exEN": "Sigh over one's bad luck.",
     "exZH": "感叹自己的不幸。",
-    "exKana": "じぶんのふうんをなげく。",
+    "exKana": "じぶんのふうんをなげく",
     "exTokens": [
       [
         "自分",
@@ -11101,7 +11101,7 @@
     "exJP": "この包丁は切れ味が鈍い。",
     "exEN": "This knife has a dull edge.",
     "exZH": "这把菜刀很钝。",
-    "exKana": "このほうちょうはきれあじがにぶい。",
+    "exKana": "このほうちょうはきれあじがにぶい",
     "exTokens": [
       [
         "この",
@@ -11155,7 +11155,7 @@
     "exJP": "最後まで諦めずに粘る。",
     "exEN": "Persevere until the end without giving up.",
     "exZH": "坚持到最后不放弃。",
-    "exKana": "さいごまであきらめずにねばる。",
+    "exKana": "さいごまであきらめずにねばる",
     "exTokens": [
       [
         "最後",
@@ -11209,7 +11209,7 @@
     "exJP": "脂肪が燃焼する。",
     "exEN": "Fat is burning.",
     "exZH": "脂肪燃烧。",
-    "exKana": "しぼうがねんしょうする。",
+    "exKana": "しぼうがねんしょうする",
     "exTokens": [
       [
         "脂肪",
@@ -11253,7 +11253,7 @@
     "exJP": "農薬を使わずに野菜を育てる。",
     "exEN": "Grow vegetables without agricultural chemical.",
     "exZH": "不使用农药种植蔬菜。",
-    "exKana": "のうやくをつかわずにやさいをそだてる。",
+    "exKana": "のうやくをつかわずにやさいをそだてる",
     "exTokens": [
       [
         "農薬",
@@ -11315,7 +11315,7 @@
     "exJP": "危険から逃れる。",
     "exEN": "Escape from danger.",
     "exZH": "逃离危险。",
-    "exKana": "きけんからのがれる。",
+    "exKana": "きけんからのがれる",
     "exTokens": [
       [
         "危険",
@@ -11357,7 +11357,7 @@
     "exJP": "自然を破壊してはいけない。",
     "exEN": "Do not cause destruction of nature.",
     "exZH": "不能破坏自然。",
-    "exKana": "しぜんをはかいしてはいけない。",
+    "exKana": "しぜんをはかいしてはいけない",
     "exTokens": [
       [
         "自然",
@@ -11419,7 +11419,7 @@
     "exJP": "会社が破産した。",
     "exEN": "The company went into bankruptcy.",
     "exZH": "公司破产了。",
-    "exKana": "かいしゃがはさんした。",
+    "exKana": "かいしゃがはさんした",
     "exTokens": [
       [
         "会社",
@@ -11471,7 +11471,7 @@
     "exJP": "実力を発揮する。",
     "exEN": "Make an exhibition of one's ability.",
     "exZH": "发挥实力。",
-    "exKana": "じつりょくをはっきする。",
+    "exKana": "じつりょくをはっきする",
     "exTokens": [
       [
         "実力",
@@ -11518,7 +11518,7 @@
     "exJP": "鏡が光を反射する。",
     "exEN": "The mirror makes a reflection of light.",
     "exZH": "镜子反射光。",
-    "exKana": "かがみがひかりをはんしゃする。",
+    "exKana": "かがみがひかりをはんしゃする",
     "exTokens": [
       [
         "鏡",
@@ -11573,7 +11573,7 @@
     "exJP": "国の繁栄を願う。",
     "exEN": "Wish for the prosperity of the country.",
     "exZH": "祈愿国家繁荣。",
-    "exKana": "くにのはんえいをねがう。",
+    "exKana": "くにのはんえいをねがう",
     "exTokens": [
       [
         "国",
@@ -11620,7 +11620,7 @@
     "exJP": "社長の秘書になる。",
     "exEN": "Become the president's secretary.",
     "exZH": "成为总裁的秘书。",
-    "exKana": "しゃちょうのひしょになる。",
+    "exKana": "しゃちょうのひしょになる",
     "exTokens": [
       [
         "社長",
@@ -11670,7 +11670,7 @@
     "exJP": "事実の否認はできない。",
     "exEN": "Denial of facts is not possible.",
     "exZH": "无法否认事实。",
-    "exKana": "じじつのひにんはできない。",
+    "exKana": "じじつのひにんはできない",
     "exTokens": [
       [
         "事実",
@@ -11722,7 +11722,7 @@
     "exJP": "畑に肥料をまく。",
     "exEN": "Spread manure on the field.",
     "exZH": "在田里撒肥料。",
-    "exKana": "はたけにひりょうをまく。",
+    "exKana": "はたけにひりょうをまく",
     "exTokens": [
       [
         "畑",
@@ -11773,7 +11773,7 @@
     "exJP": "反乱軍が武装する。",
     "exEN": "The rebel army takes up arms.",
     "exZH": "叛军武装起来了。",
-    "exKana": "はんらんぐんがぶそうする。",
+    "exKana": "はんらんぐんがぶそうする",
     "exTokens": [
       [
         "反乱軍",
@@ -11817,7 +11817,7 @@
     "exJP": "偏見を持たずに人を見る。",
     "exEN": "Look at people without prejudice.",
     "exZH": "不带偏见地看待别人。",
-    "exKana": "へんけんをもたずにひとをみる。",
+    "exKana": "へんけんをもたずにひとをみる",
     "exTokens": [
       [
         "偏見",
@@ -11880,7 +11880,7 @@
     "exJP": "借金を返済する。",
     "exEN": "Make repayment for the debt.",
     "exZH": "偿还借款。",
-    "exKana": "しゃっきんをへんさいする。",
+    "exKana": "しゃっきんをへんさいする",
     "exTokens": [
       [
         "借金",
@@ -11928,7 +11928,7 @@
     "exJP": "国を防衛する。",
     "exEN": "Take up defense of the country.",
     "exZH": "防卫国家。",
-    "exKana": "くにをぼうえいする。",
+    "exKana": "くにをぼうえいする",
     "exTokens": [
       [
         "国",
@@ -11976,7 +11976,7 @@
     "exJP": "古い体制が崩壊した。",
     "exEN": "The old system suffered a collapse.",
     "exZH": "旧体制崩溃了。",
-    "exKana": "ふるいたいせいがほうかいした。",
+    "exKana": "ふるいたいせいがほうかいした",
     "exTokens": [
       [
         "古い",
@@ -12031,7 +12031,7 @@
     "exJP": "新しい世界へ冒険に出る。",
     "exEN": "Take a risk to explore a new world.",
     "exZH": "去新世界冒险。",
-    "exKana": "あたらしいせかいへぼうけんにでる。",
+    "exKana": "あたらしいせかいへぼうけんにでる",
     "exTokens": [
       [
         "新しい",
@@ -12082,7 +12082,7 @@
     "exJP": "手術の前に麻酔をかける。",
     "exEN": "Apply anesthesia before surgery.",
     "exZH": "手术前打麻醉。",
-    "exKana": "しゅじゅつのまえにますいをかける。",
+    "exKana": "しゅじゅつのまえにますいをかける",
     "exTokens": [
       [
         "手術",
@@ -12141,7 +12141,7 @@
     "exJP": "元恋人に未練がある。",
     "exEN": "Have lingering affection for an ex-lover.",
     "exZH": "对前任还有眷恋。",
-    "exKana": "もとこいびとにみれんがある。",
+    "exKana": "もとこいびとにみれんがある",
     "exTokens": [
       [
         "元",
@@ -12194,7 +12194,7 @@
     "exJP": "彼は無言で立ち去った。",
     "exEN": "He left in silence.",
     "exZH": "他默默地离开了。",
-    "exKana": "かれはむごんでたちさった。",
+    "exKana": "かれはむごんでたちさった",
     "exTokens": [
       [
         "彼",
@@ -12249,7 +12249,7 @@
     "exJP": "古代帝国が滅亡した。",
     "exEN": "The ancient empire faced its downfall.",
     "exZH": "古代帝国灭亡了。",
-    "exKana": "こだいていこくがめつぼうした。",
+    "exKana": "こだいていこくがめつぼうした",
     "exTokens": [
       [
         "古代",
@@ -12301,7 +12301,7 @@
     "exJP": "空港で免税品をいくつか買った。",
     "exEN": "I bought some tax-free goods at the airport.",
     "exZH": "我在机场买了一些免税商品。",
-    "exKana": "くうこうでめんぜいひんをいくつかかった。",
+    "exKana": "くうこうでめんぜいひんをいくつかかった",
     "exTokens": [
       [
         "空港",
@@ -12368,7 +12368,7 @@
     "exJP": "子供は親の行動を模倣して成長する。",
     "exEN": "Children grow by imitating their parents' behavior.",
     "exZH": "孩子们通过模仿父母的行为来成长。",
-    "exKana": "こどもはおやのこうどうをもほうしてせいちょうする。",
+    "exKana": "こどもはおやのこうどうをもほうしてせいちょうする",
     "exTokens": [
       [
         "子供",
@@ -12442,7 +12442,7 @@
     "exJP": "彼は政治家になるという野心を抱いている。",
     "exEN": "He harbors an ambition to become a politician.",
     "exZH": "他怀有成为一名政治家的野心。",
-    "exKana": "かれはせいじかになるというやしんをいだいている。",
+    "exKana": "かれはせいじかになるというやしんをいだいている",
     "exTokens": [
       [
         "彼",
@@ -12522,7 +12522,7 @@
     "exJP": "相手に対する優越感は捨てた方がいい。",
     "exEN": "You should get rid of your sense of superiority over others.",
     "exZH": "最好抛弃对别人的优越感。",
-    "exKana": "あいてにたいするゆうえつかんはすてたほうがいい。",
+    "exKana": "あいてにたいするゆうえつかんはすてたほうがいい",
     "exTokens": [
       [
         "相手",
@@ -12590,7 +12590,7 @@
     "exJP": "この地域では酪農が盛んに行われている。",
     "exEN": "Dairy farming is actively practiced in this region.",
     "exZH": "这个地区的乳业很发达。",
-    "exKana": "このちいきではらくのうがさかんにおこなわれている。",
+    "exKana": "このちいきではらくのうがさかんにおこなわれている",
     "exTokens": [
       [
         "この",
@@ -12668,7 +12668,7 @@
     "exJP": "薬の乱用は体に大きな負担をかける。",
     "exEN": "The abuse of medicine puts a heavy burden on the body.",
     "exZH": "滥用药物会给身体带来巨大的负担。",
-    "exKana": "くすりのらんようはからだにおおきなふたんをかける。",
+    "exKana": "くすりのらんようはからだにおおきなふたんをかける",
     "exTokens": [
       [
         "薬",
@@ -12738,7 +12738,7 @@
     "exJP": "メールで送る前にファイルを圧縮してください。",
     "exEN": "Please compress the file before sending it by email.",
     "exZH": "请在通过电子邮件发送前将文件压缩。",
-    "exKana": "めーるでおくるまえにふぁいるをあっしゅくしてください。",
+    "exKana": "めーるでおくるまえにふぁいるをあっしゅくしてください",
     "exTokens": [
       [
         "メール",
@@ -12811,7 +12811,7 @@
     "exJP": "顧客の意向を十分に確認してから作業を始めます。",
     "exEN": "I will start working after fully confirming the client's intentions.",
     "exZH": "我会在充分确认客户意向后再开始工作。",
-    "exKana": "こきゃくのいこうをじゅうぶんにかくにんしてからさぎょうをはじめます。",
+    "exKana": "こきゃくのいこうをじゅうぶんにかくにんしてからさぎょうをはじめます",
     "exTokens": [
       [
         "顧客",
@@ -12895,7 +12895,7 @@
     "exJP": "彼の考えは当時は異端とされていた。",
     "exEN": "His ideas were considered heretical at the time.",
     "exZH": "他的想法在当时被视为异端。",
-    "exKana": "かれのかんがえはとうじはいたんとされていた。",
+    "exKana": "かれのかんがえはとうじはいたんとされていた",
     "exTokens": [
       [
         "彼",
@@ -12979,7 +12979,7 @@
     "exJP": "クレジットカードで一括払いにしました。",
     "exEN": "I paid in a lump sum with my credit card.",
     "exZH": "我用信用卡一次性付清了。",
-    "exKana": "くれじっとかーどでいっかつばらいにしました。",
+    "exKana": "くれじっとかーどでいっかつばらいにしました",
     "exTokens": [
       [
         "クレジットカード",
@@ -13036,7 +13036,7 @@
     "exJP": "このナイフはとても鋭いので気をつけて。",
     "exEN": "This knife is very sharp, so be careful.",
     "exZH": "这把刀很锋利，所以要小心。",
-    "exKana": "このないふはとてもするどいのできをつけて。",
+    "exKana": "このないふはとてもするどいのできをつけて",
     "exTokens": [
       [
         "この",
@@ -13109,7 +13109,7 @@
     "exJP": "彼女はベッドの縁に静かに座った。",
     "exEN": "She sat quietly on the edge of the bed.",
     "exZH": "她静静地坐在床边。",
-    "exKana": "かのじょはべっどのえんにしずかにすわった。",
+    "exKana": "かのじょはべっどのえんにしずかにすわった",
     "exTokens": [
       [
         "彼女",
@@ -13179,7 +13179,7 @@
     "exJP": "彼は映画で主役を演じることになった。",
     "exEN": "He was chosen to play the lead role in the movie.",
     "exZH": "他被选定在电影中扮演主角。",
-    "exKana": "かれはえいがでしゅやくをえんじることになった。",
+    "exKana": "かれはえいがでしゅやくをえんじることになった",
     "exTokens": [
       [
         "彼",
@@ -13253,7 +13253,7 @@
     "exJP": "うちの犬は体が大きいのにとても臆病だ。",
     "exEN": "Our dog is very timid despite its large size.",
     "exZH": "我家的狗虽然个头大，但非常胆小。",
-    "exKana": "うちのいぬはからだがおおきいのにとてもおくびょうだ。",
+    "exKana": "うちのいぬはからだがおおきいのにとてもおくびょうだ",
     "exTokens": [
       [
         "うち",
@@ -13330,7 +13330,7 @@
     "exJP": "結婚式は厳かな雰囲気の中で行われた。",
     "exEN": "The wedding ceremony was held in a solemn atmosphere.",
     "exZH": "婚礼在庄严的气氛中举行。",
-    "exKana": "けっこんしきはおごそかなふんいきのなかでおこなわれた。",
+    "exKana": "けっこんしきはおごそかなふんいきのなかでおこなわれた",
     "exTokens": [
       [
         "結婚式",
@@ -13404,7 +13404,7 @@
     "exJP": "日々の努力を怠ると、目標は達成できない。",
     "exEN": "If you neglect your daily efforts, you won't achieve your goal.",
     "exZH": "如果懈怠了每天的努力，就无法实现目标。",
-    "exKana": "ひびのどりょくをおこたると、もくひょうはたっせいできない。",
+    "exKana": "ひびのどりょくをおこたるともくひょうはたっせいできない",
     "exTokens": [
       [
         "日々",
@@ -13481,7 +13481,7 @@
     "exJP": "あと少しで勝てたのに、惜しい試合だった。",
     "exEN": "We almost won; it was a regrettable match.",
     "exZH": "就差一点点就能赢了，真是可惜的比赛。",
-    "exKana": "あとすこしでかてたのに、おしいしあいだった。",
+    "exKana": "あとすこしでかてたのにおしいしあいだった",
     "exTokens": [
       [
         "あと",
@@ -13558,7 +13558,7 @@
     "exJP": "会議の前にプロジェクトの概略を説明します。",
     "exEN": "I will explain the outline of the project before the meeting.",
     "exZH": "我会在开会前说明项目的概况。",
-    "exKana": "かいぎのまえにぷろじぇくとのがいりゃくをせつめいします。",
+    "exKana": "かいぎのまえにぷろじぇくとのがいりゃくをせつめいします",
     "exTokens": [
       [
         "会議",
@@ -13633,7 +13633,7 @@
     "exJP": "災害に備えて十分な食料を確保しておく。",
     "exEN": "We secure enough food in preparation for disasters.",
     "exZH": "为防备灾害，我们确保备足了食物。",
-    "exKana": "さいがいにそなえてじゅうぶんなしょくりょうをかくほしておく。",
+    "exKana": "さいがいにそなえてじゅうぶんなしょくりょうをかくほしておく",
     "exTokens": [
       [
         "災害",
@@ -13710,7 +13710,7 @@
     "exJP": "質問事項を箇条書きにしてメールで送ります。",
     "exEN": "I will itemize the questions and send them by email.",
     "exZH": "我会将问题列成清单并通过电子邮件发送。",
-    "exKana": "しつもんじこうをかじょうがきにしてめーるでおくります。",
+    "exKana": "しつもんじこうをかじょうがきにしてめーるでおくります",
     "exTokens": [
       [
         "質問",
@@ -13783,7 +13783,7 @@
     "exJP": "遠くから微かに音楽が聞こえてくる。",
     "exEN": "I can hear faint music coming from afar.",
     "exZH": "从远处隐约传来微弱的音乐声。",
-    "exKana": "とおくからかすかにおんがくがきこえてくる。",
+    "exKana": "とおくからかすかにおんがくがきこえてくる",
     "exTokens": [
       [
         "遠く",
@@ -13848,7 +13848,7 @@
     "exJP": "そんな堅苦しい挨拶は抜きにして楽しみましょう。",
     "exEN": "Let's skip such stiff greetings and enjoy ourselves.",
     "exZH": "省去那些拘谨的客套话，我们好好玩吧。",
-    "exKana": "そんなかたくるしいあいさつはぬきにしてたのしみましょう。",
+    "exKana": "そんなかたくるしいあいさつはぬきにしてたのしみましょう",
     "exTokens": [
       [
         "そんな",
@@ -13917,7 +13917,7 @@
     "exJP": "冷蔵庫に大きな肉の塊が入っている。",
     "exEN": "There is a large lump of meat in the refrigerator.",
     "exZH": "冰箱里有一大块肉。",
-    "exKana": "れいぞうこにおおきなにくのかたまりがはいっている。",
+    "exKana": "れいぞうこにおおきなにくのかたまりがはいっている",
     "exTokens": [
       [
         "冷蔵庫",
@@ -13984,7 +13984,7 @@
     "exJP": "公園の花壇には色鮮やかなチューリップが咲いている。",
     "exEN": "Colorful tulips are blooming in the park's flower bed.",
     "exZH": "公园的花坛里开着鲜艳的郁金香。",
-    "exKana": "こうえんのかだんにはいろあざやかなちゅーりっぷがさいている。",
+    "exKana": "こうえんのかだんにはいろあざやかなちゅーりっぷがさいている",
     "exTokens": [
       [
         "公園",
@@ -14061,7 +14061,7 @@
     "exJP": "私は画面よりも活字で本を読むほうが好きだ。",
     "exEN": "I prefer reading books in print rather than on a screen.",
     "exZH": "相比屏幕，我更喜欢阅读印刷本的书籍。",
-    "exKana": "わたくしはがめんよりもかつじでほんをよむほうがすきだ。",
+    "exKana": "わたくしはがめんよりもかつじでほんをよむほうがすきだ",
     "exTokens": [
       [
         "私",
@@ -14147,7 +14147,7 @@
     "exJP": "ペットの死を家族全員が深く悲しんだ。",
     "exEN": "The whole family deeply grieved the death of our pet.",
     "exZH": "全家人都为宠物的离世感到非常悲痛。",
-    "exKana": "ぺっとのしをかぞくぜんいんがふかくかなしんだ。",
+    "exKana": "ぺっとのしをかぞくぜんいんがふかくかなしんだ",
     "exTokens": [
       [
         "ペット",
@@ -14215,7 +14215,7 @@
     "exJP": "彼は過労で倒れて入院することになった。",
     "exEN": "He collapsed from overwork and had to be hospitalized.",
     "exZH": "他因劳累过度晕倒而住院了。",
-    "exKana": "かれはかろうでたおれてにゅういんすることになった。",
+    "exKana": "かれはかろうでたおれてにゅういんすることになった",
     "exTokens": [
       [
         "彼",
@@ -14292,7 +14292,7 @@
     "exJP": "大学でシェイクスピアの戯曲を研究している。",
     "exEN": "I am studying Shakespeare's plays at university.",
     "exZH": "我在大学里研究莎士比亚的戏剧。",
-    "exKana": "だいがくでしぇいくすぴあのぎきょくをけんきゅうしている。",
+    "exKana": "だいがくでしぇいくすぴあのぎきょくをけんきゅうしている",
     "exTokens": [
       [
         "大学",
@@ -14361,7 +14361,7 @@
     "exJP": "履歴書には未婚か既婚かを記入する欄がある。",
     "exEN": "The resume has a section to fill in whether you are unmarried or married.",
     "exZH": "简历上有填写未婚还是已婚的栏目。",
-    "exKana": "りれきしょにはみこんかきこんかをきにゅうするらんがある。",
+    "exKana": "りれきしょにはみこんかきこんかをきにゅうするらんがある",
     "exTokens": [
       [
         "履歴書",
@@ -14444,7 +14444,7 @@
     "exJP": "書類に記載された内容をもう一度確認してください。",
     "exEN": "Please check the information mentioned in the document again.",
     "exZH": "请再次确认文件中记载的内容。",
-    "exKana": "しょるいにきさいされたないようをもういちどかくにんしてください。",
+    "exKana": "しょるいにきさいされたないようをもういちどかくにんしてください",
     "exTokens": [
       [
         "書類",
@@ -14531,7 +14531,7 @@
     "exJP": "今後、ドローンの飛行に対する規制が厳しくなる。",
     "exEN": "Regulations on flying drones will become stricter from now on.",
     "exZH": "今后对无人机飞行的管制将会变得更加严格。",
-    "exKana": "こんご、どろーんのひこうにたいするきせいがきびしくなる。",
+    "exKana": "こんごどろーんのひこうにたいするきせいがきびしくなる",
     "exTokens": [
       [
         "今後",
@@ -14603,7 +14603,7 @@
     "exJP": "彼女はヨーロッパの貴族のような生活に憧れている。",
     "exEN": "She yearns for a life like that of a European noble.",
     "exZH": "她向往像欧洲贵族那样的生活。",
-    "exKana": "かのじょはよーろっぱのきぞくのようなせいかつにあこがれている。",
+    "exKana": "かのじょはよーろっぱのきぞくのようなせいかつにあこがれている",
     "exTokens": [
       [
         "彼女",
@@ -14685,7 +14685,7 @@
     "exJP": "毎朝ジムに通って筋肉を鍛えている。",
     "exEN": "I go to the gym every morning to train my muscles.",
     "exZH": "我每天早上去健身房锻炼肌肉。",
-    "exKana": "まいあさじむにかよってきんにくをきたえている。",
+    "exKana": "まいあさじむにかよってきんにくをきたえている",
     "exTokens": [
       [
         "毎朝",
@@ -14754,7 +14754,7 @@
     "exJP": "過去の失敗を教訓にして、次のプロジェクトに活かす。",
     "exEN": "I will learn a lesson from my past failures and apply it to the next project.",
     "exZH": "我将吸取过去失败的教训，并将其应用于下一个项目。",
-    "exKana": "かこのしっぱいをきょうくんにして、つぎのぷろじぇくとにいかす。",
+    "exKana": "かこのしっぱいをきょうくんにしてつぎのぷろじぇくとにいかす",
     "exTokens": [
       [
         "過去",
@@ -14841,7 +14841,7 @@
     "exJP": "チームで働くには協調性が非常に重要だ。",
     "exEN": "Cooperativeness is extremely important for working in a team.",
     "exZH": "在团队中工作，协调性非常重要。",
-    "exKana": "ちーむではたらくにはきょうちょうせいがひじょうにじゅうようだ。",
+    "exKana": "ちーむではたらくにはきょうちょうせいがひじょうにじゅうようだ",
     "exTokens": [
       [
         "チーム",
@@ -14914,7 +14914,7 @@
     "exJP": "お祭りで郷土の伝統的な踊りを楽しむ。",
     "exEN": "We enjoy traditional local dances at the festival.",
     "exZH": "我们在节日里欣赏家乡的传统舞蹈。",
-    "exKana": "おまつりできょうどのでんとうてきなおどりをたのしむ。",
+    "exKana": "おまつりできょうどのでんとうてきなおどりをたのしむ",
     "exTokens": [
       [
         "お祭り",
@@ -14981,7 +14981,7 @@
     "exJP": "彼は恐喝の疑いで警察に逮捕された。",
     "exEN": "He was arrested by the police on suspicion of extortion.",
     "exZH": "他因涉嫌恐吓勒索被警察逮捕了。",
-    "exKana": "かれはきょうかつのうたがいでけいさつにたいほされた。",
+    "exKana": "かれはきょうかつのうたがいでけいさつにたいほされた",
     "exTokens": [
       [
         "彼",
@@ -15058,7 +15058,7 @@
     "exJP": "街の中心に巨大なショッピングモールが建設された。",
     "exEN": "A huge shopping mall was built in the center of the city.",
     "exZH": "城市中心建起了一座巨大的购物中心。",
-    "exKana": "まちのちゅうしんにきょだいなしょっぴんぐもーるがけんせつされた。",
+    "exKana": "まちのちゅうしんにきょだいなしょっぴんぐもーるがけんせつされた",
     "exTokens": [
       [
         "街",
@@ -15137,7 +15137,7 @@
     "exJP": "不審な電話からの着信はすべて拒否している。",
     "exEN": "I am rejecting all incoming calls from suspicious numbers.",
     "exZH": "我拒接所有可疑号码的来电。",
-    "exKana": "ふしんなでんわからのちゃくしんはすべてきょひしている。",
+    "exKana": "ふしんなでんわからのちゃくしんはすべてきょひしている",
     "exTokens": [
       [
         "不審",
@@ -15214,7 +15214,7 @@
     "exJP": "山の奥には清らかな水が流れる川がある。",
     "exEN": "Deep in the mountains, there is a river with pure water flowing.",
     "exZH": "深山里有一条流淌着清澈河水的河流。",
-    "exKana": "やまのおくにはきよらかなみずがながれるかわがある。",
+    "exKana": "やまのおくにはきよらかなみずがながれるかわがある",
     "exTokens": [
       [
         "山",
@@ -15295,7 +15295,7 @@
     "exJP": "彼の証言によって新たな疑惑が生まれた。",
     "exEN": "His testimony created new doubts.",
     "exZH": "他的证词引发了新的疑惑。",
-    "exKana": "かれのしょうげんによってあらたなぎわくがうまれた。",
+    "exKana": "かれのしょうげんによってあらたなぎわくがうまれた",
     "exTokens": [
       [
         "彼",
@@ -15372,7 +15372,7 @@
     "exJP": "今の仕事をやめても、悔いはありません。",
     "exEN": "Even if I quit my current job, I have no regrets.",
     "exZH": "即使辞去现在的工作，我也并不后悔。",
-    "exKana": "いまのしごとをやめても、くいはありません。",
+    "exKana": "いまのしごとをやめてもくいはありません",
     "exTokens": [
       [
         "今",
@@ -15452,7 +15452,7 @@
     "exJP": "このカフェはとても落ち着く空間ですね。",
     "exEN": "This cafe is a very relaxing space.",
     "exZH": "这家咖啡馆是一个非常令人放松的空间。",
-    "exKana": "このかふぇはとてもおちつくくうかんですね。",
+    "exKana": "このかふぇはとてもおちつくくうかんですね",
     "exTokens": [
       [
         "この",
@@ -15514,7 +15514,7 @@
     "exJP": "雨のせいで、山の一部が崩れました。",
     "exEN": "Part of the mountain collapsed due to the rain.",
     "exZH": "因为下雨，山体发生了一部分崩塌。",
-    "exKana": "あめのせいで、やまのいちぶがくずれました。",
+    "exKana": "あめのせいでやまのいちぶがくずれました",
     "exTokens": [
       [
         "雨",
@@ -15591,7 +15591,7 @@
     "exJP": "商店街のくじ引きで一等が当たりました。",
     "exEN": "I won first prize in the shopping district's lottery.",
     "exZH": "我在商业街的抽奖中中了一等奖。",
-    "exKana": "しょうてんがいのくじびきでいちとうがあたりました。",
+    "exKana": "しょうてんがいのくじびきでいちとうがあたりました",
     "exTokens": [
       [
         "商店街",
@@ -15660,7 +15660,7 @@
     "exJP": "出張の経費は会社が負担してくれます。",
     "exEN": "The company will cover the business trip expenses.",
     "exZH": "出差的经费由公司承担。",
-    "exKana": "しゅっちょうのけいひはかいしゃがふたんしてくれます。",
+    "exKana": "しゅっちょうのけいひはかいしゃがふたんしてくれます",
     "exTokens": [
       [
         "出張",
@@ -15733,7 +15733,7 @@
     "exJP": "その犯罪には重い刑罰が科せられます。",
     "exEN": "A severe punishment will be imposed for that crime.",
     "exZH": "那种犯罪会被处以重刑。",
-    "exKana": "そのはんざいにはおもいけいばつがかせられます。",
+    "exKana": "そのはんざいにはおもいけいばつがかせられます",
     "exTokens": [
       [
         "その",
@@ -15802,7 +15802,7 @@
     "exJP": "賄賂を受け取るなんて、本当に汚らわしい。",
     "exEN": "Taking bribes is truly filthy.",
     "exZH": "收受贿赂真是太肮脏了。",
-    "exKana": "わいろをうけとるなんて、ほんとうにけがらわしい。",
+    "exKana": "わいろをうけとるなんてほんとうにけがらわしい",
     "exTokens": [
       [
         "賄賂",
@@ -15862,7 +15862,7 @@
     "exJP": "彼女は有名な劇団のオーディションを受けた。",
     "exEN": "She auditioned for a famous theatrical troupe.",
     "exZH": "她参加了一个著名剧团的试镜。",
-    "exKana": "かのじょはゆうめいなげきだんのおーでぃしょんをうけた。",
+    "exKana": "かのじょはゆうめいなげきだんのおーでぃしょんをうけた",
     "exTokens": [
       [
         "彼女",
@@ -15930,7 +15930,7 @@
     "exJP": "ピアノ教室の月謝は毎月一万です。",
     "exEN": "The monthly tuition fee for the piano class is ten thousand.",
     "exZH": "钢琴课的月学费是每月一万。",
-    "exKana": "ぴあのきょうしつのげっしゃはまいつきいちまんです。",
+    "exKana": "ぴあのきょうしつのげっしゃはまいつきいちまんです",
     "exTokens": [
       [
         "ピアノ",
@@ -15993,7 +15993,7 @@
     "exJP": "会社を辞めるという大きな決断を下した。",
     "exEN": "I made the big decision to quit the company.",
     "exZH": "我做出了辞职这个重大的决定。",
-    "exKana": "かいしゃをやめるというおおきなけつだんをくだした。",
+    "exKana": "かいしゃをやめるというおおきなけつだんをくだした",
     "exTokens": [
       [
         "会社",
@@ -16064,7 +16064,7 @@
     "exJP": "彼は会社員と農家を兼業しています。",
     "exEN": "He holds two jobs as an office worker and a farmer.",
     "exZH": "他兼职做公司职员和农民。",
-    "exKana": "かれはかいしゃいんとのうかをけんぎょうしています。",
+    "exKana": "かれはかいしゃいんとのうかをけんぎょうしています",
     "exTokens": [
       [
         "彼",
@@ -16136,7 +16136,7 @@
     "exJP": "この機械が動く原理を説明してください。",
     "exEN": "Please explain the principle of how this machine works.",
     "exZH": "请说明一下这台机器运行的原理。",
-    "exKana": "このきかいがうごくげんりをせつめいしてください。",
+    "exKana": "このきかいがうごくげんりをせつめいしてください",
     "exTokens": [
       [
         "この",
@@ -16206,7 +16206,7 @@
     "exJP": "二人の選手が交互にボールを打った。",
     "exEN": "The two players hit the ball alternately.",
     "exZH": "两名选手交替击球。",
-    "exKana": "ふたりのせんしゅがこうごにぼーるをうった。",
+    "exKana": "ふたりのせんしゅがこうごにぼーるをうった",
     "exTokens": [
       [
         "二人",
@@ -16277,7 +16277,7 @@
     "exJP": "子供の頃は図画工作の時間が大好きでした。",
     "exEN": "When I was a child, I loved arts and crafts time.",
     "exZH": "小时候我非常喜欢手工课。",
-    "exKana": "こどものころはずがこうさくのじかんがだいすきでした。",
+    "exKana": "こどものころはずがこうさくのじかんがだいすきでした",
     "exTokens": [
       [
         "子供",
@@ -16351,7 +16351,7 @@
     "exJP": "敵の軍隊はついに降伏を宣言しました。",
     "exEN": "The enemy army finally declared their surrender.",
     "exZH": "敌军终于宣布了投降。",
-    "exKana": "てきのぐんたいはついにこうふくをせんげんしました。",
+    "exKana": "てきのぐんたいはついにこうふくをせんげんしました",
     "exTokens": [
       [
         "敵",
@@ -16425,7 +16425,7 @@
     "exJP": "天候を考慮して、今日の試合は中止します。",
     "exEN": "In consideration of the weather, today's game will be canceled.",
     "exZH": "考虑到天气情况，今天的比赛取消。",
-    "exKana": "てんこうをこうりょして、きょうのしあいはちゅうしします。",
+    "exKana": "てんこうをこうりょしてきょうのしあいはちゅうしします",
     "exTokens": [
       [
         "天候",
@@ -16506,7 +16506,7 @@
     "exJP": "このソファは座り心地がとても良いですね。",
     "exEN": "This sofa is very comfortable to sit on.",
     "exZH": "这个沙发坐起来感觉非常舒服。",
-    "exKana": "このそふぁはすわりごこちがとてもよいですね。",
+    "exKana": "このそふぁはすわりごこちがとてもよいですね",
     "exTokens": [
       [
         "この",
@@ -16571,7 +16571,7 @@
     "exJP": "新しい事業への試みは失敗に終わった。",
     "exEN": "The trial for the new business ended in failure.",
     "exZH": "对新事业的尝试以失败告终。",
-    "exKana": "あたらしいじぎょうへのこころみはしっぱいにおわった。",
+    "exKana": "あたらしいじぎょうへのこころみはしっぱいにおわった",
     "exTokens": [
       [
         "新しい",
@@ -16639,7 +16639,7 @@
     "exJP": "この時計は一日に数秒の誤差が生じる。",
     "exEN": "This clock has an error of a few seconds a day.",
     "exZH": "这块手表每天会产生几秒钟的误差。",
-    "exKana": "このとけいはついたちにすうびょうのごさがしょうじる。",
+    "exKana": "このとけいはついたちにすうびょうのごさがしょうじる",
     "exTokens": [
       [
         "この",
@@ -16714,7 +16714,7 @@
     "exJP": "彼女は長いリハビリで怪我を克服した。",
     "exEN": "She overcame her injury through long rehabilitation.",
     "exZH": "她通过漫长的康复治疗克服了伤病。",
-    "exKana": "かのじょはながいりはびりでけがをこくふくした。",
+    "exKana": "かのじょはながいりはびりでけがをこくふくした",
     "exTokens": [
       [
         "彼女",
@@ -16784,7 +16784,7 @@
     "exJP": "彼は医者を志して、一生懸命勉強している。",
     "exEN": "He is studying hard, aspiring to become a doctor.",
     "exZH": "他立志成为一名医生，正在拼命学习。",
-    "exKana": "かれはいしゃをこころざして、いっしょうけんめいべんきょうしている。",
+    "exKana": "かれはいしゃをこころざしていっしょうけんめいべんきょうしている",
     "exTokens": [
       [
         "彼",
@@ -16861,7 +16861,7 @@
     "exJP": "暦の上ではもう春ですが、まだ寒いです。",
     "exEN": "It is already spring on the calendar, but it's still cold.",
     "exZH": "按照日历虽然已经是春天了，但还是有些冷。",
-    "exKana": "こよみのうえではもうはるですが、まださむいです。",
+    "exKana": "こよみのうえではもうはるですがまださむいです",
     "exTokens": [
       [
         "暦",
@@ -16941,7 +16941,7 @@
     "exJP": "銀行は倒産した企業に対する債権を放棄した。",
     "exEN": "The bank waived its claims against the bankrupt company.",
     "exZH": "银行放弃了对破产企业的债权。",
-    "exKana": "ぎんこうはとうさんしたきぎょうにたいするさいけんをほうきした。",
+    "exKana": "ぎんこうはとうさんしたきぎょうにたいするさいけんをほうきした",
     "exTokens": [
       [
         "銀行",
@@ -17022,7 +17022,7 @@
     "exJP": "この値段で売っては、採算が取れません。",
     "exEN": "If we sell it at this price, it won't be profitable.",
     "exZH": "如果按这个价格出售，就不划算了。",
-    "exKana": "このねだんでうっては、さいさんがとれません。",
+    "exKana": "このねだんでうってはさいさんがとれません",
     "exTokens": [
       [
         "この",
@@ -17101,7 +17101,7 @@
     "exJP": "この指輪には見事な細工が施されている。",
     "exEN": "This ring features splendid craftsmanship.",
     "exZH": "这枚戒指上施有精湛的工艺。",
-    "exKana": "このゆびわにはみごとなさいくがほどこされている。",
+    "exKana": "このゆびわにはみごとなさいくがほどこされている",
     "exTokens": [
       [
         "この",
@@ -17178,7 +17178,7 @@
     "exJP": "最近は高齢者を狙った詐欺が増えている。",
     "exEN": "Frauds targeting the elderly are increasing lately.",
     "exZH": "最近针对老年人的诈骗变多了。",
-    "exKana": "さいきんはこうれいしゃをねらったさぎがふえている。",
+    "exKana": "さいきんはこうれいしゃをねらったさぎがふえている",
     "exTokens": [
       [
         "最近",
@@ -17252,7 +17252,7 @@
     "exJP": "ポケットを探ったが、鍵が見つからなかった。",
     "exEN": "I searched my pockets but couldn't find the keys.",
     "exZH": "我摸了摸口袋，但没找到钥匙。",
-    "exKana": "ぽけっとをさぐったが、かぎがみつからなかった。",
+    "exKana": "ぽけっとをさぐったがかぎがみつからなかった",
     "exTokens": [
       [
         "ポケット",
@@ -17326,7 +17326,7 @@
     "exJP": "彼は私の耳元で愛の言葉を囁いた。",
     "exEN": "He whispered words of love into my ear.",
     "exZH": "他在我的耳边轻声低语着爱意。",
-    "exKana": "かれはわたくしのみみもとであいのことばをささやいた。",
+    "exKana": "かれはわたくしのみみもとであいのことばをささやいた",
     "exTokens": [
       [
         "彼",
@@ -17404,7 +17404,7 @@
     "exJP": "先生は優秀な生徒に賞状を授けた。",
     "exEN": "The teacher granted certificates to the outstanding students.",
     "exZH": "老师向优秀的学生颁发了奖状。",
-    "exKana": "せんせいはゆうしゅうなせいとにしょうじょうをさずけた。",
+    "exKana": "せんせいはゆうしゅうなせいとにしょうじょうをさずけた",
     "exTokens": [
       [
         "先生",
@@ -17474,7 +17474,7 @@
     "exJP": "法律で定められたルールを守りましょう。",
     "exEN": "Let's follow the rules stipulated by law.",
     "exZH": "让我们遵守法律规定的规则吧。",
-    "exKana": "ほうりつでさだめられたるーるをまもりましょう。",
+    "exKana": "ほうりつでさだめられたるーるをまもりましょう",
     "exTokens": [
       [
         "法律",
@@ -17541,7 +17541,7 @@
     "exJP": "情報が錯綜していて、真実が分からない。",
     "exEN": "The information is complicated, so the truth is unknown.",
     "exZH": "信息错综复杂，无法得知真相。",
-    "exKana": "じょうほうがさくそうしていて、しんじつがわからない。",
+    "exKana": "じょうほうがさくそうしていてしんじつがわからない",
     "exTokens": [
       [
         "情報",
@@ -17618,7 +17618,7 @@
     "exJP": "お客さんを奥の座敷へ案内しました。",
     "exEN": "I guided the guest to the tatami room in the back.",
     "exZH": "我把客人领到了里面的榻榻米房间。",
-    "exKana": "おきゃくさんをおくのざしきへあんないしました。",
+    "exKana": "おきゃくさんをおくのざしきへあんないしました",
     "exTokens": [
       [
         "お客さん",
@@ -17686,7 +17686,7 @@
     "exJP": "山岳地帯は天候が変わりやすいので危険だ。",
     "exEN": "The mountain region is dangerous because the weather changes easily.",
     "exZH": "山岳地带天气变化无常，很危险。",
-    "exKana": "さんがくちたいはてんこうがかわりやすいのできけんだ。",
+    "exKana": "さんがくちたいはてんこうがかわりやすいのできけんだ",
     "exTokens": [
       [
         "山岳",
@@ -17760,7 +17760,7 @@
     "exJP": "人々は大自然の美しさを賛美した。",
     "exEN": "People praised the beauty of nature.",
     "exZH": "人们赞美大自然之美。",
-    "exKana": "ひとびとはだいしぜんのうつくしさをさんびした。",
+    "exKana": "ひとびとはだいしぜんのうつくしさをさんびした",
     "exTokens": [
       [
         "人々",
@@ -17829,7 +17829,7 @@
     "exJP": "このスーツの仕上がりはとても綺麗です。",
     "exEN": "The finish of this suit is very beautiful.",
     "exZH": "这套西装的做工非常漂亮。",
-    "exKana": "このすーつのしあがりはとてもきれいです。",
+    "exKana": "このすーつのしあがりはとてもきれいです",
     "exTokens": [
       [
         "この",
@@ -17891,7 +17891,7 @@
     "exJP": "動物園で珍しい鳥の飼育を担当している。",
     "exEN": "I am in charge of raising rare birds at the zoo.",
     "exZH": "我在动物园负责饲养稀有鸟类。",
-    "exKana": "どうぶつえんでめずらしいとりのしいくをたんとうしている。",
+    "exKana": "どうぶつえんでめずらしいとりのしいくをたんとうしている",
     "exTokens": [
       [
         "動物園",
@@ -17965,7 +17965,7 @@
     "exJP": "嫌がる子供に無理やり勉強を強いるのはよくない。",
     "exEN": "It is not good to force an unwilling child to study.",
     "exZH": "强迫不情愿的孩子学习是不好的。",
-    "exKana": "いやがるこどもにむりやりべんきょうをしいるのはよくない。",
+    "exKana": "いやがるこどもにむりやりべんきょうをしいるのはよくない",
     "exTokens": [
       [
         "嫌",
@@ -18041,7 +18041,7 @@
     "exJP": "彼は自我が強すぎて、チームに馴染めない。",
     "exEN": "His ego is too strong, so he can't fit into the team.",
     "exZH": "他的自我意识太强，无法融入团队。",
-    "exKana": "かれはじががつよすぎて、ちーむになじめない。",
+    "exKana": "かれはじががつよすぎてちーむになじめない",
     "exTokens": [
       [
         "彼",
@@ -18117,7 +18117,7 @@
     "exJP": "この絵の色彩はとても鮮やかで美しい。",
     "exEN": "The colors in this painting are very vivid and beautiful.",
     "exZH": "这幅画的色彩非常鲜艳美丽。",
-    "exKana": "このえのしきさいはとてもあざやかでうつくしい。",
+    "exKana": "このえのしきさいはとてもあざやかでうつくしい",
     "exTokens": [
       [
         "この",
@@ -18182,7 +18182,7 @@
     "exJP": "梅雨の時期は部屋の湿気がひどい。",
     "exEN": "The moisture in the room is terrible during the rainy season.",
     "exZH": "梅雨时期房间里的湿气很重。",
-    "exKana": "つゆのじきはへやのしっけがひどい。",
+    "exKana": "つゆのじきはへやのしっけがひどい",
     "exTokens": [
       [
         "梅雨",
@@ -18248,7 +18248,7 @@
     "exJP": "冷蔵庫の奥で野菜が萎びてしまった。",
     "exEN": "The vegetables withered at the back of the refrigerator.",
     "exZH": "蔬菜在冰箱深处蔫了。",
-    "exKana": "れいぞうこのおくでやさいがしなびてしまった。",
+    "exKana": "れいぞうこのおくでやさいがしなびてしまった",
     "exTokens": [
       [
         "冷蔵庫",
@@ -18317,7 +18317,7 @@
     "exJP": "週末は友人と一緒に小さな劇場で芝居を見た。",
     "exEN": "I watched a play at a small theater with my friend over the weekend.",
     "exZH": "周末我和朋友一起在小剧场看了一场戏。",
-    "exKana": "しゅうまつはゆうじんといっしょにちいさなげきじょうでしばいをみた。",
+    "exKana": "しゅうまつはゆうじんといっしょにちいさなげきじょうでしばいをみた",
     "exTokens": [
       [
         "週末",
@@ -18396,7 +18396,7 @@
     "exJP": "彼は大学で司法試験の勉強に専念している。",
     "exEN": "He is devoting himself to studying for the bar exam at university.",
     "exZH": "他在大学里专心准备司法考试。",
-    "exKana": "かれはだいがくでしほうしけんのべんきょうにせんねんしている。",
+    "exKana": "かれはだいがくでしほうしけんのべんきょうにせんねんしている",
     "exTokens": [
       [
         "彼",
@@ -18475,7 +18475,7 @@
     "exJP": "古い自転車の車輪が錆びて回らなくなった。",
     "exEN": "The wheels of the old bicycle rusted and stopped turning.",
     "exZH": "旧自行车的车轮生锈转不动了。",
-    "exKana": "ふるいじてんしゃのしゃりんがさびてまわらなくなった。",
+    "exKana": "ふるいじてんしゃのしゃりんがさびてまわらなくなった",
     "exTokens": [
       [
         "古い",
@@ -18549,7 +18549,7 @@
     "exJP": "彼女は語学において特に秀でた才能を持っている。",
     "exEN": "She has a particularly excelling talent in languages.",
     "exZH": "她在语言方面拥有尤为出众的才华。",
-    "exKana": "かのじょはごがくにおいてとくにひいでたさいのうをもっている。",
+    "exKana": "かのじょはごがくにおいてとくにひいでたさいのうをもっている",
     "exTokens": [
       [
         "彼女",
@@ -18632,7 +18632,7 @@
     "exJP": "世界にはさまざまな宗教を信じる人がいる。",
     "exEN": "There are people who believe in various religions in the world.",
     "exZH": "世界上有信仰各种宗教的人。",
-    "exKana": "せかいにはさまざまなしゅうきょうをしんじるひとがいる。",
+    "exKana": "せかいにはさまざまなしゅうきょうをしんじるひとがいる",
     "exTokens": [
       [
         "世界",
@@ -18707,7 +18707,7 @@
     "exJP": "毎日新しいことを学んで、充実した生活を送っている。",
     "exEN": "I am living a full life by learning new things every day.",
     "exZH": "每天学习新事物，过着充实的生活。",
-    "exKana": "まいにちあたらしいことをまなんで、じゅうじつしたせいかつをおくっている。",
+    "exKana": "まいにちあたらしいことをまなんでじゅうじつしたせいかつをおくっている",
     "exTokens": [
       [
         "毎日",
@@ -18798,7 +18798,7 @@
     "exJP": "美術館で古い絵画の修復作業が行われている。",
     "exEN": "Restoration work on old paintings is being carried out at the museum.",
     "exZH": "美术馆正在进行古画的修复工作。",
-    "exKana": "びじゅつかんでふるいかいがのしゅうふくさぎょうがおこなわれている。",
+    "exKana": "びじゅつかんでふるいかいがのしゅうふくさぎょうがおこなわれている",
     "exTokens": [
       [
         "美術館",
@@ -18874,7 +18874,7 @@
     "exJP": "宇宙空間では地球のような重力を感じない。",
     "exEN": "You don't feel gravity like on Earth in outer space.",
     "exZH": "在太空中感受不到像地球一样的重力。",
-    "exKana": "うちゅうくうかんではちきゅうのようなじゅうりょくをかんじない。",
+    "exKana": "うちゅうくうかんではちきゅうのようなじゅうりょくをかんじない",
     "exTokens": [
       [
         "宇宙",
@@ -18952,7 +18952,7 @@
     "exJP": "この工芸品は熟練した職人の手で作られている。",
     "exEN": "This craftwork is made by the hands of a skilled artisan.",
     "exZH": "这件工艺品是由熟练的工匠手工制作的。",
-    "exKana": "このこうげいひんはじゅくれんしたしょくにんのてでつくられている。",
+    "exKana": "このこうげいひんはじゅくれんしたしょくにんのてでつくられている",
     "exTokens": [
       [
         "この",
@@ -19039,7 +19039,7 @@
     "exJP": "明日のイベントは地元の企業が主催する。",
     "exEN": "Tomorrow's event is sponsored by a local company.",
     "exZH": "明天的活动由当地企业主办。",
-    "exKana": "あすのいべんとはじもとのきぎょうがしゅさいする。",
+    "exKana": "あすのいべんとはじもとのきぎょうがしゅさいする",
     "exTokens": [
       [
         "明日",
@@ -19108,7 +19108,7 @@
     "exJP": "彼の小説には独特の表現手法が使われている。",
     "exEN": "A unique expressive technique is used in his novels.",
     "exZH": "他的小说中使用了独特的表现手法。",
-    "exKana": "かれのしょうせつにはどくとくのひょうげんしゅほうがつかわれている。",
+    "exKana": "かれのしょうせつにはどくとくのひょうげんしゅほうがつかわれている",
     "exTokens": [
       [
         "彼",
@@ -19191,7 +19191,7 @@
     "exJP": "この公園には多くの珍しい樹木が植えられている。",
     "exEN": "Many rare trees and shrubs are planted in this park.",
     "exZH": "这个公园里种植了许多珍稀树木。",
-    "exKana": "このこうえんにはおおくのめずらしいじゅもくがうえられている。",
+    "exKana": "このこうえんにはおおくのめずらしいじゅもくがうえられている",
     "exTokens": [
       [
         "この",
@@ -19272,7 +19272,7 @@
     "exJP": "今年の国民の平均所得は少し上昇したそうだ。",
     "exEN": "I heard that the average national income has risen slightly this year.",
     "exZH": "听说今年国民的平均收入略有上升。",
-    "exKana": "ことしのこくみんのへいきんしょとくはすこしじょうしょうしたそうだ。",
+    "exKana": "ことしのこくみんのへいきんしょとくはすこしじょうしょうしたそうだ",
     "exTokens": [
       [
         "今年",
@@ -19353,7 +19353,7 @@
     "exJP": "この食堂は安くて美味しく、庶民の味方だ。",
     "exEN": "This diner is cheap and delicious, an ally of the masses.",
     "exZH": "这家食堂物美价廉，是平民百姓的好去处。",
-    "exKana": "このしょくどうはやすくておいしく、しょみんのみかただ。",
+    "exKana": "このしょくどうはやすくておいしくしょみんのみかただ",
     "exTokens": [
       [
         "この",
@@ -19427,7 +19427,7 @@
     "exJP": "在宅勤務では自律して働くことが求められる。",
     "exEN": "Autonomy in working is required when telecommuting.",
     "exZH": "居家办公需要自律工作。",
-    "exKana": "ざいたくきんむではじりつしてはたらくことがもとめられる。",
+    "exKana": "ざいたくきんむではじりつしてはたらくことがもとめられる",
     "exTokens": [
       [
         "在宅勤務",
@@ -19498,7 +19498,7 @@
     "exJP": "暗い部屋で本を読んでいたら視力が落ちた。",
     "exEN": "My eyesight worsened from reading books in a dark room.",
     "exZH": "在昏暗的房间里看书导致视力下降了。",
-    "exKana": "くらいへやでほんをよんでいたらしりょくがおちた。",
+    "exKana": "くらいへやでほんをよんでいたらしりょくがおちた",
     "exTokens": [
       [
         "暗い",
@@ -19579,7 +19579,7 @@
     "exJP": "本部からの司令を受けてすぐに出発した。",
     "exEN": "Receiving the command from headquarters, they departed immediately.",
     "exZH": "接到本部的司令后立即出发了。",
-    "exKana": "ほんぶからのしれいをうけてすぐにしゅっぱつした。",
+    "exKana": "ほんぶからのしれいをうけてすぐにしゅっぱつした",
     "exTokens": [
       [
         "本部",
@@ -19658,7 +19658,7 @@
     "exJP": "スマートフォンの技術は日々進化している。",
     "exEN": "Smartphone technology is evolving day by day.",
     "exZH": "智能手机技术日新月异地进化着。",
-    "exKana": "すまーとふぉんのぎじゅつはひびしんかしている。",
+    "exKana": "すまーとふぉんのぎじゅつはひびしんかしている",
     "exTokens": [
       [
         "スマートフォン",
@@ -19725,7 +19725,7 @@
     "exJP": "新しい法案についての審議が国会で始まった。",
     "exEN": "Deliberation on the new bill has started in the Diet.",
     "exZH": "国会开始审议新法案。",
-    "exKana": "あたらしいほうあんについてのしんぎがこっかいではじまった。",
+    "exKana": "あたらしいほうあんについてのしんぎがこっかいではじまった",
     "exTokens": [
       [
         "新しい",
@@ -19806,7 +19806,7 @@
     "exJP": "彼は素晴らしい人格の持ち主で、みんなから慕われている。",
     "exEN": "He has a wonderful personality and is adored by everyone.",
     "exZH": "他拥有极佳的人格，备受大家敬慕。",
-    "exKana": "かれはすばらしいじんかくのもちぬしで、みんなからしたわれている。",
+    "exKana": "かれはすばらしいじんかくのもちぬしでみんなからしたわれている",
     "exTokens": [
       [
         "彼",
@@ -19892,7 +19892,7 @@
     "exJP": "クレームに対して迅速に対応することが大切だ。",
     "exEN": "It is important to respond quickly to complaints.",
     "exZH": "对投诉进行迅速的应对非常重要。",
-    "exKana": "くれーむにたいしてじんそくにたいおうすることがたいせつだ。",
+    "exKana": "くれーむにたいしてじんそくにたいおうすることがたいせつだ",
     "exTokens": [
       [
         "クレーム",
@@ -19969,7 +19969,7 @@
     "exJP": "この事故は人為的なミスが原因だった。",
     "exEN": "This accident was caused by an artificial mistake.",
     "exZH": "这起事故是人为失误造成的。",
-    "exKana": "このじこはじんいてきなみすがげんいんだった。",
+    "exKana": "このじこはじんいてきなみすがげんいんだった",
     "exTokens": [
       [
         "この",
@@ -20037,7 +20037,7 @@
     "exJP": "この川の水源は遠い山の奥にあるそうです。",
     "exEN": "They say the source of this river is deep in the distant mountains.",
     "exZH": "听说这条河的水源在遥远的深山里。",
-    "exKana": "このかわのすいげんはとおいやまのおくにあるそうです。",
+    "exKana": "このかわのすいげんはとおいやまのおくにあるそうです",
     "exTokens": [
       [
         "この",
@@ -20120,7 +20120,7 @@
     "exJP": "パスワードは定期的に変更することが推奨されている。",
     "exEN": "It is a recommendation to change passwords regularly.",
     "exZH": "建议定期更改密码。",
-    "exKana": "ぱすわーどはていきてきにへんこうすることがすいしょうされている。",
+    "exKana": "ぱすわーどはていきてきにへんこうすることがすいしょうされている",
     "exTokens": [
       [
         "パスワード",
@@ -20203,7 +20203,7 @@
     "exJP": "彼は与えられた任務を最後まで遂行した。",
     "exEN": "He accomplished the assigned mission to the very end.",
     "exZH": "他把交给他的任务执行到底。",
-    "exKana": "かれはあたえられたにんむをさいごまですいこうした。",
+    "exKana": "かれはあたえられたにんむをさいごまですいこうした",
     "exTokens": [
       [
         "彼",
@@ -20280,7 +20280,7 @@
     "exJP": "壁に絵を掛けるために、垂直な線を引いた。",
     "exEN": "I drew a vertical line to hang the picture on the wall.",
     "exZH": "为了在墙上挂画，我画了一条垂直线。",
-    "exKana": "かべにえをかけるために、すいちょくなせんをひいた。",
+    "exKana": "かべにえをかけるためにすいちょくなせんをひいた",
     "exTokens": [
       [
         "壁",
@@ -20366,7 +20366,7 @@
     "exJP": "洗剤で洗った後、水でしっかり濯いでください。",
     "exEN": "After washing with detergent, please rinse thoroughly with water.",
     "exZH": "用洗涤剂清洗后，请用水彻底冲洗。",
-    "exKana": "せんざいであらったあと、みずでしっかりすすいでください。",
+    "exKana": "せんざいであらったあとみずでしっかりすすいでください",
     "exTokens": [
       [
         "洗剤",
@@ -20442,7 +20442,7 @@
     "exJP": "彼はあいかわらず忙しそうに働いている。",
     "exEN": "He is working looking busy as usual.",
     "exZH": "他还是和往常一样忙碌地工作着。",
-    "exKana": "かれはあいかわらずいそがしそうにはたらいている。",
+    "exKana": "かれはあいかわらずいそがしそうにはたらいている",
     "exTokens": [
       [
         "彼",
@@ -20505,7 +20505,7 @@
     "exJP": "雪の上に動物の足跡が残っていた。",
     "exEN": "Animal footprints were left on the snow.",
     "exZH": "雪地上留下了动物的脚印。",
-    "exKana": "ゆきのうえにどうぶつのあしあとがのこっていた。",
+    "exKana": "ゆきのうえにどうぶつのあしあとがのこっていた",
     "exTokens": [
       [
         "雪",
@@ -20581,7 +20581,7 @@
     "exJP": "初対面でお金を借りようとするなんて厚かましい。",
     "exEN": "It is impudent to try to borrow money at a first meeting.",
     "exZH": "第一次见面就想借钱，真是厚颜无耻。",
-    "exKana": "しょたいめんでおかねをかりようとするなんてあつかましい。",
+    "exKana": "しょたいめんでおかねをかりようとするなんてあつかましい",
     "exTokens": [
       [
         "初対面",
@@ -20646,7 +20646,7 @@
     "exJP": "子供をあまり甘やかすのは良くないと思う。",
     "exEN": "I think it's not good to pamper a child too much.",
     "exZH": "我认为过于溺爱孩子是不好的。",
-    "exKana": "こどもをあまりあまやかすのはよくないとおもう。",
+    "exKana": "こどもをあまりあまやかすのはよくないとおもう",
     "exTokens": [
       [
         "子供",
@@ -20714,7 +20714,7 @@
     "exJP": "公園で子供たちが生き生きと遊んでいる。",
     "exEN": "Children are playing vividly in the park.",
     "exZH": "孩子们在公园里生龙活虎地玩耍。",
-    "exKana": "こうえんでこどもたちがいきいきとあそんでいる。",
+    "exKana": "こうえんでこどもたちがいきいきとあそんでいる",
     "exTokens": [
       [
         "公園",
@@ -20777,7 +20777,7 @@
     "exJP": "人間にとって衣食住は生活の基本だ。",
     "exEN": "Food, clothing, and shelter are the basics of life for human beings.",
     "exZH": "对人类来说，衣食住是生活的基础。",
-    "exKana": "にんげんにとっていしょくじゅうはせいかつのきほんだ。",
+    "exKana": "にんげんにとっていしょくじゅうはせいかつのきほんだ",
     "exTokens": [
       [
         "人間",
@@ -20846,7 +20846,7 @@
     "exJP": "先生の合図で生徒たちは一斉に立ち上がった。",
     "exEN": "The students stood up simultaneously at the teacher's signal.",
     "exZH": "听到老师的信号，学生们一齐站了起来。",
-    "exKana": "せんせいのあいずでせいとたちはいっせいにたちあがった。",
+    "exKana": "せんせいのあいずでせいとたちはいっせいにたちあがった",
     "exTokens": [
       [
         "先生",
@@ -20918,7 +20918,7 @@
     "exJP": "玄関で「いってまいります」と言って仕事に出かけた。",
     "exEN": "I said \"I will go and come back\" at the entrance and left for work.",
     "exZH": "我在玄关说了句“我出门了”，然后就去上班了。",
-    "exKana": "げんかんで「いってまいります」といってしごとにでかけた。",
+    "exKana": "げんかんでいってまいりますといってしごとにでかけた",
     "exTokens": [
       [
         "玄関",
@@ -21007,7 +21007,7 @@
     "exJP": "台風が近づき、風がいよいよ強くなってきた。",
     "exEN": "The typhoon is approaching, and the wind has become more and more strong.",
     "exZH": "台风逼近，风越来越大了。",
-    "exKana": "たいふうがちかづき、かぜがいよいよつよくなってきた。",
+    "exKana": "たいふうがちかづきかぜがいよいよつよくなってきた",
     "exTokens": [
       [
         "台風",
@@ -21083,7 +21083,7 @@
     "exJP": "夕方になり、部屋の中が少し薄暗くなってきた。",
     "exEN": "It became evening, and the inside of the room got slightly dim.",
     "exZH": "到了傍晚，房间里变得有些昏暗了。",
-    "exKana": "ゆうがたになり、へやのなかがすこしうすぐらくなってきた。",
+    "exKana": "ゆうがたになりへやのなかがすこしうすぐらくなってきた",
     "exTokens": [
       [
         "夕方",
@@ -21167,7 +21167,7 @@
     "exJP": "正面が混んでいたので裏口から建物に入った。",
     "exEN": "The front was crowded, so I entered the building through the backdoor.",
     "exZH": "因为正门很拥挤，所以我从后门进了建筑物。",
-    "exKana": "しょうめんがこんでいたのでうらぐちからたてものにはいった。",
+    "exKana": "しょうめんがこんでいたのでうらぐちからたてものにはいった",
     "exTokens": [
       [
         "正面",
@@ -21252,7 +21252,7 @@
     "exJP": "昨日はうんと寝たから、今日は元気だ。",
     "exEN": "I slept a great deal yesterday, so I'm full of energy today.",
     "exZH": "昨天睡得很多，所以今天精神很好。",
-    "exKana": "きのうはうんとねたから、きょうはげんきだ。",
+    "exKana": "きのうはうんとねたからきょうはげんきだ",
     "exTokens": [
       [
         "昨日",
@@ -21327,7 +21327,7 @@
     "exJP": "明日の遠足はお弁当を持参してください。",
     "exEN": "Please bring a packed lunch for tomorrow's excursion.",
     "exZH": "明天的郊游请自带午餐。",
-    "exKana": "あすのえんそくはおべんとうをじさんしてください。",
+    "exKana": "あすのえんそくはおべんとうをじさんしてください",
     "exTokens": [
       [
         "明日",
@@ -21401,7 +21401,7 @@
     "exJP": "この理論は実際のビジネスに応用できる。",
     "exEN": "This theory can be applied to actual business.",
     "exZH": "这个理论可以应用到实际商业中。",
-    "exKana": "このりろんはじっさいのびじねすにおうようできる。",
+    "exKana": "このりろんはじっさいのびじねすにおうようできる",
     "exTokens": [
       [
         "この",
@@ -21466,7 +21466,7 @@
     "exJP": "今日のおかずは唐揚げとサラダです。",
     "exEN": "Today's side dishes are fried chicken and salad.",
     "exZH": "今天的配菜是炸鸡块和沙拉。",
-    "exKana": "きょうのおかずはからあげとさらだです。",
+    "exKana": "きょうのおかずはからあげとさらだです",
     "exTokens": [
       [
         "今日",
@@ -21526,7 +21526,7 @@
     "exJP": "遠くへ行っても、どうぞおげんきで。",
     "exEN": "Even if you go far away, please take care.",
     "exZH": "即使去到远方，也请多保重。",
-    "exKana": "とおくへいっても、どうぞおげんきで。",
+    "exKana": "とおくへいってもどうぞおげんきで",
     "exTokens": [
       [
         "遠く",
@@ -21595,7 +21595,7 @@
     "exJP": "先生に正しい敬語の使い方を教わった。",
     "exEN": "I was taught the correct way to use honorifics by my teacher.",
     "exZH": "老师教了我正确的敬语用法。",
-    "exKana": "せんせいにただしいけいごのつかいかたをおそわった。",
+    "exKana": "せんせいにただしいけいごのつかいかたをおそわった",
     "exTokens": [
       [
         "先生",
@@ -21659,7 +21659,7 @@
     "exJP": "駅の窓口で落し物がないか尋ねた。",
     "exEN": "I asked at the station counter if there was any lost property.",
     "exZH": "我在车站窗口询问了是否有失物。",
-    "exKana": "えきのまどぐちでおとしものがないかたずねた。",
+    "exKana": "えきのまどぐちでおとしものがないかたずねた",
     "exTokens": [
       [
         "駅",
@@ -21728,7 +21728,7 @@
     "exJP": "家族で近所の神社へお参りに行った。",
     "exEN": "My family went visiting the neighborhood shrine.",
     "exZH": "全家去附近的神社参拜了。",
-    "exKana": "かぞくできんじょのじんじゃへおまいりにいった。",
+    "exKana": "かぞくできんじょのじんじゃへおまいりにいった",
     "exTokens": [
       [
         "家族",
@@ -21797,7 +21797,7 @@
     "exJP": "休日は海で思いっ切り遊びたい。",
     "exEN": "I want to play with all my might at the beach on my day off.",
     "exZH": "休息日我想在海边尽情玩耍。",
-    "exKana": "きゅうじつはうみでおもいっきりあそびたい。",
+    "exKana": "きゅうじつはうみでおもいっきりあそびたい",
     "exTokens": [
       [
         "休日",
@@ -21852,7 +21852,7 @@
     "exJP": "寒い冬は温かい温泉に入るのが一番だ。",
     "exEN": "Entering a warm hot spring is the best in cold winter.",
     "exZH": "寒冷的冬天泡温泉是最好的。",
-    "exKana": "さむいふゆはあたたかいおんせんにはいるのがいちばんだ。",
+    "exKana": "さむいふゆはあたたかいおんせんにはいるのがいちばんだ",
     "exTokens": [
       [
         "寒い",
@@ -21925,7 +21925,7 @@
     "exJP": "急いで改札を抜けて電車に飛び乗った。",
     "exEN": "I hurried through the ticket gate and jumped on the train.",
     "exZH": "我急忙穿过检票口跳上了电车。",
-    "exKana": "いそいでかいさつをぬけてでんしゃにとびのった。",
+    "exKana": "いそいでかいさつをぬけてでんしゃにとびのった",
     "exTokens": [
       [
         "急い",
@@ -21995,7 +21995,7 @@
     "exJP": "彼は古い自転車をスポーツ用に改造した。",
     "exEN": "He remodeled an old bicycle for sports.",
     "exZH": "他把一辆旧自行车改装成了运动用。",
-    "exKana": "かれはふるいじてんしゃをすぽーつようにかいぞうした。",
+    "exKana": "かれはふるいじてんしゃをすぽーつようにかいぞうした",
     "exTokens": [
       [
         "彼",
@@ -22068,7 +22068,7 @@
     "exJP": "図書館の設備がさらに拡充される予定だ。",
     "exEN": "The library facilities are scheduled for further expansion.",
     "exZH": "图书馆的设施计划将进一步扩充。",
-    "exKana": "としょかんのせつびがさらにかくじゅうされるよていだ。",
+    "exKana": "としょかんのせつびがさらにかくじゅうされるよていだ",
     "exTokens": [
       [
         "図書館",
@@ -22139,7 +22139,7 @@
     "exJP": "汗をかいた後のビールは格別に美味しい。",
     "exEN": "The beer after sweating is exceptionally delicious.",
     "exZH": "出汗后喝的啤酒格外好喝。",
-    "exKana": "あせをかいたあとのびーるはかくべつにおいしい。",
+    "exKana": "あせをかいたあとのびーるはかくべつにおいしい",
     "exTokens": [
       [
         "汗",
@@ -22211,7 +22211,7 @@
     "exJP": "クリスマスツリーに綺麗な飾りをつけた。",
     "exEN": "I put beautiful decorations on the Christmas tree.",
     "exZH": "我在圣诞树上挂了漂亮的装饰。",
-    "exKana": "くりすますつりーにきれいなかざりをつけた。",
+    "exKana": "くりすますつりーにきれいなかざりをつけた",
     "exTokens": [
       [
         "クリスマスツリー",
@@ -22273,7 +22273,7 @@
     "exJP": "輸入品には高い税率で課税される。",
     "exEN": "Imported goods are taxed at a high rate.",
     "exZH": "进口商品按高税率征税。",
-    "exKana": "ゆにゅうひんにはたかいぜいりつでかぜいされる。",
+    "exKana": "ゆにゅうひんにはたかいぜいりつでかぜいされる",
     "exTokens": [
       [
         "輸入品",
@@ -22336,7 +22336,7 @@
     "exJP": "ここから東京まで片道二時間かかります。",
     "exEN": "It takes two hours one way from here to Tokyo.",
     "exZH": "从这里到东京单程需要两小时。",
-    "exKana": "ここからとうきょうまでかたみちにじかんかかります。",
+    "exKana": "ここからとうきょうまでかたみちにじかんかかります",
     "exTokens": [
       [
         "ここ",
@@ -22400,7 +22400,7 @@
     "exJP": "朝のジョギングは一日の活力を与えてくれる。",
     "exEN": "Morning jogging gives me vitality for the day.",
     "exZH": "晨跑为我提供了一天的活力。",
-    "exKana": "あさのじょぎんぐはついたちのかつりょくをあたえてくれる。",
+    "exKana": "あさのじょぎんぐはついたちのかつりょくをあたえてくれる",
     "exTokens": [
       [
         "朝",
@@ -22471,7 +22471,7 @@
     "exJP": "机の上の紙屑をごみ箱に捨ててください。",
     "exEN": "Please throw the wastepaper on the desk into the trash can.",
     "exZH": "请把桌上的废纸扔进垃圾桶。",
-    "exKana": "つくえのうえのかみくずをごみばこにすててください。",
+    "exKana": "つくえのうえのかみくずをごみばこにすててください",
     "exTokens": [
       [
         "机",
@@ -22545,7 +22545,7 @@
     "exJP": "祖父は猫をとてもかわいがっている。",
     "exEN": "My grandfather loves his cat very much.",
     "exZH": "祖父非常疼爱他的猫。",
-    "exKana": "そふはねこをとてもかわいがっている。",
+    "exKana": "そふはねこをとてもかわいがっている",
     "exTokens": [
       [
         "祖父",
@@ -22608,7 +22608,7 @@
     "exJP": "来週から関西へ出張することになった。",
     "exEN": "I am going on a business trip to the Kansai region from next week.",
     "exZH": "下周起我要去关西地区出差。",
-    "exKana": "らいしゅうからかんさいへしゅっちょうすることになった。",
+    "exKana": "らいしゅうからかんさいへしゅっちょうすることになった",
     "exTokens": [
       [
         "来週",
@@ -22677,7 +22677,7 @@
     "exJP": "この辺りには多くの官庁が集中している。",
     "exEN": "Many government offices are concentrated in this area.",
     "exZH": "这一带集中了许多政府机关。",
-    "exKana": "このあたりにはおおくのかんちょうがしゅうちゅうしている。",
+    "exKana": "このあたりにはおおくのかんちょうがしゅうちゅうしている",
     "exTokens": [
       [
         "この",
@@ -22756,7 +22756,7 @@
     "exJP": "母親は一晩中、熱を出した妹の看病をした。",
     "exEN": "My mother nursed my feverish younger sister all night long.",
     "exZH": "母亲照顾了发烧的妹妹一整夜。",
-    "exKana": "ははおやはいちばんちゅう、ねつをだしたいもうとのかんびょうをした。",
+    "exKana": "ははおやはいちばんちゅうねつをだしたいもうとのかんびょうをした",
     "exTokens": [
       [
         "母親",
@@ -22849,7 +22849,7 @@
     "exJP": "地図上のこの記号は郵便局を表している。",
     "exEN": "This symbol on the map represents a post office.",
     "exZH": "地图上的这个符号代表邮局。",
-    "exKana": "ちずじょうのこのきごうはゆうびんきょくをあらわしている。",
+    "exKana": "ちずじょうのこのきごうはゆうびんきょくをあらわしている",
     "exTokens": [
       [
         "地図",
@@ -22922,7 +22922,7 @@
     "exJP": "劇場は満員で、客席には空きがなかった。",
     "exEN": "The theater was full, and there was no empty guest seating.",
     "exZH": "剧场爆满，观众席上没有空位。",
-    "exKana": "げきじょうはまんいんで、きゃくせきにはあきがなかった。",
+    "exKana": "げきじょうはまんいんできゃくせきにはあきがなかった",
     "exTokens": [
       [
         "劇場",
@@ -23001,7 +23001,7 @@
     "exJP": "チームの守備力を強化するための訓練をした。",
     "exEN": "We trained for strengthening the team's defense.",
     "exZH": "我们进行了强化球队防守能力的训练。",
-    "exKana": "ちーむのしゅびりょくをきょうかするためのくんれんをした。",
+    "exKana": "ちーむのしゅびりょくをきょうかするためのくんれんをした",
     "exTokens": [
       [
         "チーム",
@@ -23076,7 +23076,7 @@
     "exJP": "毎朝、鏡の前で櫛を使って髪をとかす。",
     "exEN": "I comb my hair with a comb in front of the mirror every morning.",
     "exZH": "每天早上我都会在镜子前用梳子梳头。",
-    "exKana": "まいあさ、かがみのまえでくしをつかってかみをとかす。",
+    "exKana": "まいあさかがみのまえでくしをつかってかみをとかす",
     "exTokens": [
       [
         "毎朝",
@@ -23158,7 +23158,7 @@
     "exJP": "グラスが床に落ちて粉々に砕けた。",
     "exEN": "The glass fell to the floor and broke into pieces.",
     "exZH": "玻璃杯掉在地上碎成了碎片。",
-    "exKana": "ぐらすがゆかにおちてこなごなにくだけた。",
+    "exKana": "ぐらすがゆかにおちてこなごなにくだけた",
     "exTokens": [
       [
         "グラス",
@@ -23228,7 +23228,7 @@
     "exJP": "割れたお皿を接着剤でくっつけた。",
     "exEN": "I attached the broken plate with glue.",
     "exZH": "我用胶水把碎盘子粘了起来。",
-    "exKana": "われたおさらをせっちゃくざいでくっつけた。",
+    "exKana": "われたおさらをせっちゃくざいでくっつけた",
     "exTokens": [
       [
         "割れ",
@@ -23293,7 +23293,7 @@
     "exJP": "試合に負けてしまって本当に悔しい。",
     "exEN": "It is really frustrating to have lost the match.",
     "exZH": "输了比赛真的好不甘心。",
-    "exKana": "しあいにまけてしまってほんとうにくやしい。",
+    "exKana": "しあいにまけてしまってほんとうにくやしい",
     "exTokens": [
       [
         "試合",
@@ -23358,7 +23358,7 @@
     "exJP": "レポートは指定された形式で提出してください。",
     "exEN": "Please submit your report in the specified form.",
     "exZH": "请按规定的格式提交报告。",
-    "exKana": "れぽーとはしていされたけいしきでていしゅつしてください。",
+    "exKana": "れぽーとはしていされたけいしきでていしゅつしてください",
     "exTokens": [
       [
         "レポート",
@@ -23437,7 +23437,7 @@
     "exJP": "イベント会場の周囲は厳重に警備されている。",
     "exEN": "The surroundings of the event venue are strictly secured.",
     "exZH": "活动会场周围受到严密警备。",
-    "exKana": "いべんとかいじょうのしゅういはげんじゅうにけいびされている。",
+    "exKana": "いべんとかいじょうのしゅういはげんじゅうにけいびされている",
     "exTokens": [
       [
         "イベント",
@@ -23512,7 +23512,7 @@
     "exJP": "十月下旬になると、急に寒くなる。",
     "exEN": "It suddenly gets cold in the last third of October.",
     "exZH": "一到十月下旬，天气就会突然变冷。",
-    "exKana": "じゅうがつげじゅんになると、きゅうにさむくなる。",
+    "exKana": "じゅうがつげじゅんになるときゅうにさむくなる",
     "exTokens": [
       [
         "十",
@@ -23583,7 +23583,7 @@
     "exJP": "毎月月末は支払いのために銀行へ行く。",
     "exEN": "I go to the bank to make payments at the end of every month.",
     "exZH": "每个月末我都会去银行付款。",
-    "exKana": "まいつきげつまつはしはらいのためにぎんこうへいく。",
+    "exKana": "まいつきげつまつはしはらいのためにぎんこうへいく",
     "exTokens": [
       [
         "毎月",
@@ -23652,7 +23652,7 @@
     "exJP": "このトマトは南アメリカが原産です。",
     "exEN": "This tomato's place of origin is South America.",
     "exZH": "这种番茄的原产地是南美洲。",
-    "exKana": "このとまとはみなみあめりかがげんさんです。",
+    "exKana": "このとまとはみなみあめりかがげんさんです",
     "exTokens": [
       [
         "この",
@@ -23711,7 +23711,7 @@
     "exJP": "理科の授業で顕微鏡を使って細胞を見た。",
     "exEN": "I looked at cells using a microscope in science class.",
     "exZH": "在理科课上，我们用显微镜观察了细胞。",
-    "exKana": "りかのじゅぎょうでけんびきょうをつかってさいぼうをみた。",
+    "exKana": "りかのじゅぎょうでけんびきょうをつかってさいぼうをみた",
     "exTokens": [
       [
         "理科",
@@ -23787,7 +23787,7 @@
     "exJP": "祖母は伝統的な工芸品を集めるのが好きだ。",
     "exEN": "My grandmother likes to collect traditional crafts.",
     "exZH": "祖母喜欢收集传统工艺品。",
-    "exKana": "そぼはでんとうてきなこうげいひんをあつめるのがすきだ。",
+    "exKana": "そぼはでんとうてきなこうげいひんをあつめるのがすきだ",
     "exTokens": [
       [
         "祖母",
@@ -23858,7 +23858,7 @@
     "exJP": "彼女はいつもほのかに甘い香水をつけている。",
     "exEN": "She always wears a faintly sweet perfume.",
     "exZH": "她总是喷着淡淡的甜味香水。",
-    "exKana": "かのじょはいつもほのかにあまいこうすいをつけている。",
+    "exKana": "かのじょはいつもほのかにあまいこうすいをつけている",
     "exTokens": [
       [
         "彼女",
@@ -23931,7 +23931,7 @@
     "exJP": "昼休みには校庭でたくさんの子供が遊んでいる。",
     "exEN": "During lunch break, many children are playing in the schoolyard.",
     "exZH": "午休时有许多孩子在校园里玩耍。",
-    "exKana": "ひるやすみにはこうていでたくさんのこどもがあそんでいる。",
+    "exKana": "ひるやすみにはこうていでたくさんのこどもがあそんでいる",
     "exTokens": [
       [
         "昼休み",
@@ -24007,7 +24007,7 @@
     "exJP": "市長は公務で海外へ出張しています。",
     "exEN": "The mayor is on a business trip overseas for official business.",
     "exZH": "市长因公出差去了海外。",
-    "exKana": "しちょうはこうむでかいがいへしゅっちょうしています。",
+    "exKana": "しちょうはこうむでかいがいへしゅっちょうしています",
     "exTokens": [
       [
         "市長",
@@ -24081,7 +24081,7 @@
     "exJP": "魚を焼きすぎて、真っ黒に焦がしてしまった。",
     "exEN": "I overcooked the fish and burned it pitch black.",
     "exZH": "我把鱼烤得太久，烤得漆黑。",
-    "exKana": "さかなをやきすぎて、まっくろにこがしてしまった。",
+    "exKana": "さかなをやきすぎてまっくろにこがしてしまった",
     "exTokens": [
       [
         "魚",
@@ -24158,7 +24158,7 @@
     "exJP": "疲れたので、公園の腰掛けで少し休んだ。",
     "exEN": "I was tired, so I rested a bit on a seat in the park.",
     "exZH": "我累了，所以在公园的座位上休息了一会儿。",
-    "exKana": "つかれたので、こうえんのこしかけですこしやすんだ。",
+    "exKana": "つかれたのでこうえんのこしかけですこしやすんだ",
     "exTokens": [
       [
         "疲れ",
@@ -24234,7 +24234,7 @@
     "exJP": "この動物は個体によって模様が異なります。",
     "exEN": "The patterns on this animal vary by individual.",
     "exZH": "这种动物的斑纹因个体而异。",
-    "exKana": "このどうぶつはこたいによってもようがことなります。",
+    "exKana": "このどうぶつはこたいによってもようがことなります",
     "exTokens": [
       [
         "この",
@@ -24308,7 +24308,7 @@
     "exJP": "上司に対しては、丁寧な言葉遣いを心がけましょう。",
     "exEN": "Try to use polite speech with your boss.",
     "exZH": "对待上司要注意使用礼貌的措辞。",
-    "exKana": "じょうしにたいしては、ていねいなことばづかいをこころがけましょう。",
+    "exKana": "じょうしにたいしてはていねいなことばづかいをこころがけましょう",
     "exTokens": [
       [
         "上司",
@@ -24379,7 +24379,7 @@
     "exJP": "ドアにぶつかって、右手の小指を怪我した。",
     "exEN": "I bumped into the door and injured the little finger of my right hand.",
     "exZH": "我撞到了门，弄伤了右手的小指。",
-    "exKana": "どあにぶつかって、みぎてのこゆびをけがした。",
+    "exKana": "どあにぶつかってみぎてのこゆびをけがした",
     "exTokens": [
       [
         "ドア",
@@ -24456,7 +24456,7 @@
     "exJP": "毎日の晩ご飯の献立を考えるのは大変だ。",
     "exEN": "It's hard to think of a menu for dinner every day.",
     "exZH": "每天考虑晚饭的菜单很费劲。",
-    "exKana": "まいにちのばんごはんのこんだてをかんがえるのはたいへんだ。",
+    "exKana": "まいにちのばんごはんのこんだてをかんがえるのはたいへんだ",
     "exTokens": [
       [
         "毎日",
@@ -24530,7 +24530,7 @@
     "exJP": "彼女は裁縫が得意で、自分の服を作っている。",
     "exEN": "She is good at sewing and makes her own clothes.",
     "exZH": "她很擅长缝纫，自己做衣服。",
-    "exKana": "かのじょはさいほうがとくいで、じぶんのふくをつくっている。",
+    "exKana": "かのじょはさいほうがとくいでじぶんのふくをつくっている",
     "exTokens": [
       [
         "彼女",
@@ -24614,7 +24614,7 @@
     "exJP": "本の後ろにある索引から、調べたい単語を探した。",
     "exEN": "I looked for the word I wanted to look up from the index at the back of the book.",
     "exZH": "我从书后面的索引中寻找想查的单词。",
-    "exKana": "ほんのうしろにあるさくいんから、しらべたいたんごをさがした。",
+    "exKana": "ほんのうしろにあるさくいんからしらべたいたんごをさがした",
     "exTokens": [
       [
         "本",
@@ -24699,7 +24699,7 @@
     "exJP": "給料から税金などが差し引きされて振り込まれる。",
     "exEN": "Taxes and other fees are deducted from the salary before it is transferred.",
     "exZH": "工资扣除税金等之后再打入账户。",
-    "exKana": "きゅうりょうからぜいきんなどがさしひきされてふりこまれる。",
+    "exKana": "きゅうりょうからぜいきんなどがさしひきされてふりこまれる",
     "exTokens": [
       [
         "給料",
@@ -24772,7 +24772,7 @@
     "exJP": "長い間外に置いていた自転車に錆が出てしまった。",
     "exEN": "The bicycle that was left outside for a long time has developed rust.",
     "exZH": "长时间放在外面的自行车生锈了。",
-    "exKana": "ながいあいだそとにおいていたじてんしゃにさびがでてしまった。",
+    "exKana": "ながいあいだそとにおいていたじてんしゃにさびがでてしまった",
     "exTokens": [
       [
         "長い",
@@ -24866,7 +24866,7 @@
     "exJP": "注文していたスーツが、ついに綺麗に仕上がった。",
     "exEN": "The suit I ordered is finally beautifully finished.",
     "exZH": "我订做的西装终于漂亮地做好了。",
-    "exKana": "ちゅうもんしていたすーつが、ついにきれいにしあがった。",
+    "exKana": "ちゅうもんしていたすーつがついにきれいにしあがった",
     "exTokens": [
       [
         "注文",
@@ -24947,7 +24947,7 @@
     "exJP": "新しい学期の時間割が配られた。",
     "exEN": "The timetable for the new semester was distributed.",
     "exZH": "新学期的课程表发下来了。",
-    "exKana": "あたらしいがっきのじかんわりがくばられた。",
+    "exKana": "あたらしいがっきのじかんわりがくばられた",
     "exTokens": [
       [
         "新しい",
@@ -25008,7 +25008,7 @@
     "exJP": "先生が休みなので、この時間は自習になった。",
     "exEN": "Since the teacher is absent, this period has become a self-study session.",
     "exZH": "因为老师请假，这节课变成了自习。",
-    "exKana": "せんせいがやすみなので、このじかんはじしゅうになった。",
+    "exKana": "せんせいがやすみなのでこのじかんはじしゅうになった",
     "exTokens": [
       [
         "先生",
@@ -25093,7 +25093,7 @@
     "exJP": "彼は東京の下町で生まれ育ちました。",
     "exEN": "He was born and raised in downtown Tokyo.",
     "exZH": "他在东京的平民区出生并长大。",
-    "exKana": "かれはとうきょうのしたまちでうまれそだちました。",
+    "exKana": "かれはとうきょうのしたまちでうまれそだちました",
     "exTokens": [
       [
         "彼",
@@ -25156,7 +25156,7 @@
     "exJP": "日本の夏は湿度が高くて蒸し暑いですね。",
     "exEN": "Summers in Japan have high humidity and are very muggy.",
     "exZH": "日本的夏天湿度高，非常闷热。",
-    "exKana": "にっぽんのなつはしつどがたかくてむしあついですね。",
+    "exKana": "にっぽんのなつはしつどがたかくてむしあついですね",
     "exTokens": [
       [
         "日本",
@@ -25230,7 +25230,7 @@
     "exJP": "書類は指定された期限までに提出してください。",
     "exEN": "Please submit the documents by the designated deadline.",
     "exZH": "请在指定的期限内提交文件。",
-    "exKana": "しょるいはしていされたきげんまでにていしゅつしてください。",
+    "exKana": "しょるいはしていされたきげんまでにていしゅつしてください",
     "exTokens": [
       [
         "書類",
@@ -25312,7 +25312,7 @@
     "exJP": "面接の時は、地味な服を着ていくのが普通です。",
     "exEN": "It is normal to wear plain clothes to a job interview.",
     "exZH": "面试时穿朴素的衣服是正常的。",
-    "exKana": "めんせつのときは、じみなふくをきていくのがふつうです。",
+    "exKana": "めんせつのときはじみなふくをきていくのがふつうです",
     "exTokens": [
       [
         "面接",
@@ -25404,7 +25404,7 @@
     "exJP": "蛇口をひねると、冷たい水が勢いよく出た。",
     "exEN": "When I turned the faucet, cold water came rushing out.",
     "exZH": "拧开水龙头，冷水猛地喷了出来。",
-    "exKana": "じゃぐちをひねると、つめたいみずがいきおいよくでた。",
+    "exKana": "じゃぐちをひねるとつめたいみずがいきおいよくでた",
     "exTokens": [
       [
         "蛇口",
@@ -25483,7 +25483,7 @@
     "exJP": "部長のつまらない洒落に、みんな苦笑いをした。",
     "exEN": "Everyone forced a smile at the manager's boring joke.",
     "exZH": "大家都对部长的冷笑话苦笑了一下。",
-    "exKana": "ぶちょうのつまらないしゃらくに、みんなにがわらいをした。",
+    "exKana": "ぶちょうのつまらないしゃらくにみんなにがわらいをした",
     "exTokens": [
       [
         "部長",
@@ -25562,7 +25562,7 @@
     "exJP": "台風で壊れた屋根の修繕にはお金がかかる。",
     "exEN": "The repair of the roof damaged by the typhoon will cost a lot of money.",
     "exZH": "修理台风弄坏的屋顶要花很多钱。",
-    "exKana": "たいふうでこわれたやねのしゅうぜんにはおかねがかかる。",
+    "exKana": "たいふうでこわれたやねのしゅうぜんにはおかねがかかる",
     "exTokens": [
       [
         "台風",
@@ -25639,7 +25639,7 @@
     "exJP": "漢字のテストに向けて、四字熟語をたくさん暗記した。",
     "exEN": "I memorized many four-character idioms for the kanji test.",
     "exZH": "为了汉字考试，我背诵了许多四字熟语。",
-    "exKana": "かんじのてすとにむけて、よんじじゅくごをたくさんあんきした。",
+    "exKana": "かんじのてすとにむけてよんじじゅくごをたくさんあんきした",
     "exTokens": [
       [
         "漢字",
@@ -25728,7 +25728,7 @@
     "exJP": "彼女はこのドラマの主役に抜擢された。",
     "exEN": "She was selected for the leading part in this drama.",
     "exZH": "她被提拔为这部剧的主角。",
-    "exKana": "かのじょはこのどらまのしゅやくにばってきされた。",
+    "exKana": "かのじょはこのどらまのしゅやくにばってきされた",
     "exTokens": [
       [
         "彼女",
@@ -25802,7 +25802,7 @@
     "exJP": "子供たちの純粋な笑顔を見ると、心が癒される。",
     "exEN": "Seeing the pure smiles of the children soothes my heart.",
     "exZH": "看到孩子们纯真无邪的笑容，我的心得到了治愈。",
-    "exKana": "こどもたちのじゅんすいなえがおをみると、こころがいやされる。",
+    "exKana": "こどもたちのじゅんすいなえがおをみるとこころがいやされる",
     "exTokens": [
       [
         "子供たち",
@@ -25883,7 +25883,7 @@
     "exJP": "今月から、日本語の上級クラスに入りました。",
     "exEN": "From this month, I joined the advanced Japanese class.",
     "exZH": "从这个月起，我进入了日语高级班。",
-    "exKana": "こんげつから、にほんごのじょうきゅうくらすにはいりました。",
+    "exKana": "こんげつからにほんごのじょうきゅうくらすにはいりました",
     "exTokens": [
       [
         "今月",
@@ -25954,7 +25954,7 @@
     "exJP": "桜の花は、来月の上旬に見頃を迎えるでしょう。",
     "exEN": "The cherry blossoms will likely be at their best in the first ten days of next month.",
     "exZH": "樱花大概会在下个月上旬迎来最佳观赏期。",
-    "exKana": "さくらのはなは、らいげつのじょうじゅんにみごろをむかえるでしょう。",
+    "exKana": "さくらのはなはらいげつのじょうじゅんにみごろをむかえるでしょう",
     "exTokens": [
       [
         "桜",
@@ -26037,7 +26037,7 @@
     "exJP": "最後の最後まで、どちらが勝つか勝負が分からなかった。",
     "exEN": "Until the very end, the outcome of the match was unknown.",
     "exZH": "直到最后，胜负都还无法知晓。",
-    "exKana": "さいごのさいごまで、どちらがかつかしょうぶがわからなかった。",
+    "exKana": "さいごのさいごまでどちらがかつかしょうぶがわからなかった",
     "exTokens": [
       [
         "最後",
@@ -26123,7 +26123,7 @@
     "exJP": "詳しい説明は省略して、結論だけ言います。",
     "exEN": "I will omit the detailed explanation and just state the conclusion.",
     "exZH": "详细的说明我就省略了，只说结论。",
-    "exKana": "くわしいせつめいはしょうりゃくして、けつろんだけいいます。",
+    "exKana": "くわしいせつめいはしょうりゃくしてけつろんだけいいます",
     "exTokens": [
       [
         "詳しい",
@@ -26194,7 +26194,7 @@
     "exJP": "晩ご飯を食べた後、急いで食器を洗った。",
     "exEN": "After eating dinner, I quickly washed the tableware.",
     "exZH": "吃过晚饭后，我赶紧洗了餐具。",
-    "exKana": "ばんごはんをたべたあと、いそいでしょっきをあらった。",
+    "exKana": "ばんごはんをたべたあといそいでしょっきをあらった",
     "exTokens": [
       [
         "晩ご飯",
@@ -26271,7 +26271,7 @@
     "exJP": "料理は全くの素人なので、簡単にできるレシピが知りたい。",
     "exEN": "I'm a complete amateur at cooking, so I want to know an easy recipe.",
     "exZH": "我做饭完全是个外行，所以想知道简单的食谱。",
-    "exKana": "りょうりはまったくのしろうとなので、かんたんにできるれしぴがしりたい。",
+    "exKana": "りょうりはまったくのしろうとなのでかんたんにできるれしぴがしりたい",
     "exTokens": [
       [
         "料理",
@@ -26363,7 +26363,7 @@
     "exJP": "この服は人造の繊維で作られているので、とても軽い。",
     "exEN": "These clothes are made of man-made fibers, so they are very light.",
     "exZH": "这件衣服是人造纤维做的，所以很轻。",
-    "exKana": "このふくはじんぞうのせんいでつくられているので、とてもかるい。",
+    "exKana": "このふくはじんぞうのせんいでつくられているのでとてもかるい",
     "exTokens": [
       [
         "この",
@@ -26456,7 +26456,7 @@
     "exJP": "お正月には、たくさんの親類が実家に集まった。",
     "exEN": "During the New Year, many relatives gathered at my parents' house.",
     "exZH": "过年的时候，许多亲戚聚集在老家。",
-    "exKana": "おしょうがつには、たくさんのしんるいがじっかにあつまった。",
+    "exKana": "おしょうがつにはたくさんのしんるいがじっかにあつまった",
     "exTokens": [
       [
         "お",
@@ -26539,7 +26539,7 @@
     "exJP": "この古いお寺は、約千年前の建築だと推定されている。",
     "exEN": "It is estimated that this old temple was built about a thousand years ago.",
     "exZH": "据推测，这座古庙是大约一千年前建造的。",
-    "exKana": "このふるいおてらは、やくせんねんまえのけんちくだとすいていされている。",
+    "exKana": "このふるいおてらはやくせんねんまえのけんちくだとすいていされている",
     "exTokens": [
       [
         "この",
@@ -26642,7 +26642,7 @@
     "exJP": "水曜の午後は、会議が入っているので忙しいです。",
     "exEN": "Wednesday afternoons are busy because I have meetings scheduled.",
     "exZH": "星期三下午有会议，所以很忙。",
-    "exKana": "すいようのごごは、かいぎがはいっているのでいそがしいです。",
+    "exKana": "すいようのごごはかいぎがはいっているのでいそがしいです",
     "exTokens": [
       [
         "水曜",
@@ -26725,7 +26725,7 @@
     "exJP": "コーヒーに砂糖を入れるかどうかは、人の好き好きだ。",
     "exEN": "Whether to put sugar in coffee or not is a matter of taste.",
     "exZH": "咖啡里放不放糖，全凭个人喜好。",
-    "exKana": "こーひーにさとうをいれるかどうかは、ひとのすきずきだ。",
+    "exKana": "こーひーにさとうをいれるかどうかはひとのすきずきだ",
     "exTokens": [
       [
         "コーヒー",
@@ -26810,7 +26810,7 @@
     "exJP": "部屋を綺麗に掃除して、気分がすっきりした。",
     "exEN": "I cleaned my room beautifully and felt refreshed.",
     "exZH": "房间打扫得干干净净，心情也变得很舒畅。",
-    "exKana": "へやをきれいにそうじして、きぶんがすっきりした。",
+    "exKana": "へやをきれいにそうじしてきぶんがすっきりした",
     "exTokens": [
       [
         "部屋",
@@ -26892,7 +26892,7 @@
     "exJP": "重い机を少しだけ壁のほうへずらしてください。",
     "exEN": "Please shift the heavy desk a little bit toward the wall.",
     "exZH": "请把沉重的桌子向墙边挪一点。",
-    "exKana": "おもいつくえをすこしだけかべのほうへずらしてください。",
+    "exKana": "おもいつくえをすこしだけかべのほうへずらしてください",
     "exTokens": [
       [
         "重い",
@@ -26970,7 +26970,7 @@
     "exJP": "下書きが終わったら、別の紙に清書してください。",
     "exEN": "Once you finish the rough draft, please make a clean copy on another piece of paper.",
     "exZH": "草稿写完后，请在另一张纸上誊写清楚。",
-    "exKana": "したがきがおわったら、べつのかみにせいしょしてください。",
+    "exKana": "したがきがおわったらべつのかみにせいしょしてください",
     "exTokens": [
       [
         "下書き",
@@ -27051,7 +27051,7 @@
     "exJP": "このパソコンは値段が高いだけあって、性能が素晴らしい。",
     "exEN": "This computer has wonderful performance, as one would expect from its high price.",
     "exZH": "这台电脑价格昂贵，性能也确实非常出色。",
-    "exKana": "このぱそこんはねだんがたかいだけあって、せいのうがすばらしい。",
+    "exKana": "このぱそこんはねだんがたかいだけあってせいのうがすばらしい",
     "exTokens": [
       [
         "この",
@@ -27133,7 +27133,7 @@
     "exJP": "重いリュックを背負って、山道を歩き続けた。",
     "exEN": "I continued walking on the mountain trail carrying a heavy backpack.",
     "exZH": "我背着沉重的双肩包，继续在山路上行走。",
-    "exKana": "おもいりゅっくをせおって、さんどうをあるきつづけた。",
+    "exKana": "おもいりゅっくをせおってさんどうをあるきつづけた",
     "exTokens": [
       [
         "重い",
@@ -27208,7 +27208,7 @@
     "exJP": "インターネットの接続が悪くて、動画が途中で止まる。",
     "exEN": "The internet connection is bad, so the video keeps stopping halfway.",
     "exZH": "网络连接不好，视频播到一半就卡住了。",
-    "exKana": "いんたーねっとのせつぞくがわるくて、どうががとちゅうでとまる。",
+    "exKana": "いんたーねっとのせつぞくがわるくてどうががとちゅうでとまる",
     "exTokens": [
       [
         "インターネット",
@@ -27286,7 +27286,7 @@
     "exJP": "彼は列の先頭に立っている。",
     "exEN": "He is standing at the head of the line.",
     "exZH": "他站在队伍的最前面。",
-    "exKana": "かれはれつのせんとうにたっている。",
+    "exKana": "かれはれつのせんとうにたっている",
     "exTokens": [
       [
         "彼",
@@ -27352,7 +27352,7 @@
     "exJP": "今月の売上は増減が激しい。",
     "exEN": "Sales have fluctuated wildly this month.",
     "exZH": "这个月的销售额增减起伏很大。",
-    "exKana": "こんげつのうりあげはぞうげんがはげしい。",
+    "exKana": "こんげつのうりあげはぞうげんがはげしい",
     "exTokens": [
       [
         "今月",
@@ -27409,7 +27409,7 @@
     "exJP": "工事の音がとても騒々しい。",
     "exEN": "The sound of the construction is very noisy.",
     "exZH": "施工的声音非常吵闹。",
-    "exKana": "こうじのおとがとてもそうぞうしい。",
+    "exKana": "こうじのおとがとてもそうぞうしい",
     "exTokens": [
       [
         "工事",
@@ -27479,7 +27479,7 @@
     "exJP": "人類の祖先はどこから来たのか。",
     "exEN": "Where did human ancestors come from?",
     "exZH": "人类的祖先是从哪里来的？",
-    "exKana": "じんるいのそせんはどこからきたのか。",
+    "exKana": "じんるいのそせんはどこからきたのか",
     "exTokens": [
       [
         "人類",
@@ -27548,7 +27548,7 @@
     "exJP": "毎朝髭をきれいに剃ります。",
     "exEN": "I shave my beard cleanly every morning.",
     "exZH": "我每天早上把胡子刮得干干净净。",
-    "exKana": "まいあさひげをきれいにそります。",
+    "exKana": "まいあさひげをきれいにそります",
     "exTokens": [
       [
         "毎朝",
@@ -27625,7 +27625,7 @@
     "exJP": "地震に対する対策が必要です。",
     "exEN": "Measures against earthquakes are necessary.",
     "exZH": "必须采取应对地震的措施。",
-    "exKana": "じしんにたいするたいさくがひつようです。",
+    "exKana": "じしんにたいするたいさくがひつようです",
     "exTokens": [
       [
         "地震",
@@ -27681,7 +27681,7 @@
     "exJP": "この映画の題名を忘れてしまった。",
     "exEN": "I have forgotten the title of this movie.",
     "exZH": "我忘了这部电影的名字。",
-    "exKana": "このえいがのだいめいをわすれてしまった。",
+    "exKana": "このえいがのだいめいをわすれてしまった",
     "exTokens": [
       [
         "この",
@@ -27747,7 +27747,7 @@
     "exJP": "春になったら畑を耕します。",
     "exEN": "I will till the field when spring comes.",
     "exZH": "到了春天就去耕地。",
-    "exKana": "はるになったらはたけをたがやします。",
+    "exKana": "はるになったらはたけをたがやします",
     "exTokens": [
       [
         "春",
@@ -27809,7 +27809,7 @@
     "exJP": "洗濯物が乾いたら畳んでください。",
     "exEN": "Please fold the laundry when it is dry.",
     "exZH": "衣服干了之后请把它们叠起来。",
-    "exKana": "せんたくものがかわいたらたたんでください。",
+    "exKana": "せんたくものがかわいたらたたんでください",
     "exTokens": [
       [
         "洗濯物",
@@ -27867,7 +27867,7 @@
     "exJP": "彼は私をだまして金を奪った。",
     "exEN": "He tricked me and stole my money.",
     "exZH": "他骗走了我的钱。",
-    "exKana": "かれはわたくしをだましてきんをうばった。",
+    "exKana": "かれはわたくしをだましてきんをうばった",
     "exTokens": [
       [
         "彼",
@@ -27937,7 +27937,7 @@
     "exJP": "次の段階に進む準備ができました。",
     "exEN": "We are ready to move on to the next stage.",
     "exZH": "准备好进入下一个阶段了。",
-    "exKana": "つぎのだんかいにすすむじゅんびができました。",
+    "exKana": "つぎのだんかいにすすむじゅんびができました",
     "exTokens": [
       [
         "次",
@@ -28004,7 +28004,7 @@
     "exJP": "英語の単数と複数は間違えやすい。",
     "exEN": "It is easy to make mistakes with singular and plural in English.",
     "exZH": "英语的单数和复数很容易弄错。",
-    "exKana": "えいごのたんすうとふくすうはまちがえやすい。",
+    "exKana": "えいごのたんすうとふくすうはまちがえやすい",
     "exTokens": [
       [
         "英語",
@@ -28065,7 +28065,7 @@
     "exJP": "彼の応援はとても力強いです。",
     "exEN": "His support is very reassuring.",
     "exZH": "他的声援让人感到非常可靠。",
-    "exKana": "かれのおうえんはとてもちからづよいです。",
+    "exKana": "かれのおうえんはとてもちからづよいです",
     "exTokens": [
       [
         "彼",
@@ -28121,7 +28121,7 @@
     "exJP": "事故の発生地点はここです。",
     "exEN": "The spot where the accident occurred is right here.",
     "exZH": "事故发生的地点就是这里。",
-    "exKana": "じこのはっせいちてんはここです。",
+    "exKana": "じこのはっせいちてんはここです",
     "exTokens": [
       [
         "事故",
@@ -28177,7 +28177,7 @@
     "exJP": "ヨーロッパの中世の歴史を勉強する。",
     "exEN": "I study the history of the Middle Ages in Europe.",
     "exZH": "我学习欧洲中世纪的历史。",
-    "exKana": "よーろっぱのちゅうせいのれきしをべんきょうする。",
+    "exKana": "よーろっぱのちゅうせいのれきしをべんきょうする",
     "exTokens": [
       [
         "ヨーロッパ",
@@ -28241,7 +28241,7 @@
     "exJP": "エアコンの温度を調節してください。",
     "exEN": "Please adjust the temperature of the air conditioner.",
     "exZH": "请调节一下空调的温度。",
-    "exKana": "えあこんのおんどをちょうせつしてください。",
+    "exKana": "えあこんのおんどをちょうせつしてください",
     "exTokens": [
       [
         "エアコン",
@@ -28300,7 +28300,7 @@
     "exJP": "定規を使って直線を引きます。",
     "exEN": "I draw a straight line using a ruler.",
     "exZH": "用尺子画一条直线。",
-    "exKana": "じょうぎをつかってちょくせんをひきます。",
+    "exKana": "じょうぎをつかってちょくせんをひきます",
     "exTokens": [
       [
         "定規",
@@ -28362,7 +28362,7 @@
     "exJP": "おもちゃを散らかすのはやめなさい。",
     "exEN": "Stop scattering your toys around.",
     "exZH": "不要把玩具到处乱扔。",
-    "exKana": "おもちゃをちらかすのはやめなさい。",
+    "exKana": "おもちゃをちらかすのはやめなさい",
     "exTokens": [
       [
         "おもちゃ",
@@ -28420,7 +28420,7 @@
     "exJP": "彼と長く付合うつもりはありません。",
     "exEN": "I have no intention of associating with him for a long time.",
     "exZH": "我不打算和他长期交往。",
-    "exKana": "かれとながくつきあうつもりはありません。",
+    "exKana": "かれとながくつきあうつもりはありません",
     "exTokens": [
       [
         "彼",
@@ -28484,7 +28484,7 @@
     "exJP": "この太い綱で荷物を結びます。",
     "exEN": "I will tie the luggage with this thick rope.",
     "exZH": "用这根粗绳子绑行李。",
-    "exKana": "このふといつなでにもつをむすびます。",
+    "exKana": "このふといつなでにもつをむすびます",
     "exTokens": [
       [
         "この",
@@ -28546,7 +28546,7 @@
     "exJP": "暗い道で石につまずいて転んだ。",
     "exEN": "I stumbled over a stone on the dark path and fell.",
     "exZH": "在黑漆漆的路上被石头绊倒了。",
-    "exKana": "くらいみちでいしにつまずいてころんだ。",
+    "exKana": "くらいみちでいしにつまずいてころんだ",
     "exTokens": [
       [
         "暗い",
@@ -28611,7 +28611,7 @@
     "exJP": "窓のそばに風鈴を吊す。",
     "exEN": "I hang a wind chime near the window.",
     "exZH": "在窗户旁边挂一个风铃。",
-    "exKana": "まどのそばにふうりんをつるす。",
+    "exKana": "まどのそばにふうりんをつるす",
     "exTokens": [
       [
         "窓",
@@ -28670,7 +28670,7 @@
     "exJP": "信号が赤になり、車が停止した。",
     "exEN": "The traffic light turned red and the car stopped.",
     "exZH": "信号灯变红，车子停了下来。",
-    "exKana": "しんごうがあかになり、くるまがていしした。",
+    "exKana": "しんごうがあかになりくるまがていしした",
     "exTokens": [
       [
         "信号",
@@ -28743,7 +28743,7 @@
     "exJP": "美味しいケーキの出来上がりです。",
     "exEN": "The delicious cake is finished.",
     "exZH": "美味的蛋糕做好了。",
-    "exKana": "おいしいけーきのできあがりです。",
+    "exKana": "おいしいけーきのできあがりです",
     "exTokens": [
       [
         "美味しい",
@@ -28792,7 +28792,7 @@
     "exJP": "予定はいつも手帳に書いています。",
     "exEN": "I always write my schedule in my notebook.",
     "exZH": "我总是把行程写在记事本上。",
-    "exKana": "よていはいつもてちょうにかいています。",
+    "exKana": "よていはいつもてちょうにかいています",
     "exTokens": [
       [
         "予定",
@@ -28857,7 +28857,7 @@
     "exJP": "空港まで友人を出迎える予定だ。",
     "exEN": "I plan to meet my friend at the airport.",
     "exZH": "我打算去机场迎接朋友。",
-    "exKana": "くうこうまでゆうじんをでむかえるよていだ。",
+    "exKana": "くうこうまでゆうじんをでむかえるよていだ",
     "exTokens": [
       [
         "空港",
@@ -28912,7 +28912,7 @@
     "exJP": "リモコンの電池が切れてしまった。",
     "exEN": "The remote control's battery has run out.",
     "exZH": "遥控器的电池没电了。",
-    "exKana": "りもこんのでんちがきれてしまった。",
+    "exKana": "りもこんのでんちがきれてしまった",
     "exTokens": [
       [
         "リモコン",
@@ -28973,7 +28973,7 @@
     "exJP": "メールでの問い合わせが増えている。",
     "exEN": "Enquiries by email are increasing.",
     "exZH": "通过邮件的咨询在增加。",
-    "exKana": "めーるでのといあわせがふえている。",
+    "exKana": "めーるでのといあわせがふえている",
     "exTokens": [
       [
         "メール",
@@ -29033,7 +29033,7 @@
     "exJP": "ロシアは東西に長い国です。",
     "exEN": "Russia is a country that stretches far from east to west.",
     "exZH": "俄罗斯是一个东西狭长的国家。",
-    "exKana": "ろしあはとうざいにながいくにです。",
+    "exKana": "ろしあはとうざいにながいくにです",
     "exTokens": [
       [
         "ロシア",
@@ -29089,7 +29089,7 @@
     "exJP": "今日の掃除当番は誰ですか。",
     "exEN": "Who is on cleaning duty today?",
     "exZH": "今天的值日生是谁？",
-    "exKana": "きょうのそうじとうばんはだれですか。",
+    "exKana": "きょうのそうじとうばんはだれですか",
     "exTokens": [
       [
         "今日",
@@ -29151,7 +29151,7 @@
     "exJP": "フライパンでバターを溶かす。",
     "exEN": "I melt butter in a frying pan.",
     "exZH": "在平底锅里把黄油融化。",
-    "exKana": "ふらいぱんでばたーをとかす。",
+    "exKana": "ふらいぱんでばたーをとかす",
     "exTokens": [
       [
         "フライパン",
@@ -29200,7 +29200,7 @@
     "exJP": "この製品の最大の特長は軽さです。",
     "exEN": "The biggest forte of this product is its lightness.",
     "exZH": "这款产品最大的特点就是轻。",
-    "exKana": "このせいひんのさいだいのとくちょうはかるさです。",
+    "exKana": "このせいひんのさいだいのとくちょうはかるさです",
     "exTokens": [
       [
         "この",
@@ -29267,7 +29267,7 @@
     "exJP": "都心はマンションの家賃が高い。",
     "exEN": "Apartment rents are high in the city centre.",
     "exZH": "市中心的公寓租金很高。",
-    "exKana": "としんはまんしょんのやちんがたかい。",
+    "exKana": "としんはまんしょんのやちんがたかい",
     "exTokens": [
       [
         "都心",
@@ -29325,7 +29325,7 @@
     "exJP": "暑かったのでプールに飛び込んだ。",
     "exEN": "It was hot, so I jumped into the pool.",
     "exZH": "因为太热了，所以我跳进了游泳池。",
-    "exKana": "あつかったのでぷーるにとびこんだ。",
+    "exKana": "あつかったのでぷーるにとびこんだ",
     "exTokens": [
       [
         "暑かっ",
@@ -29387,7 +29387,7 @@
     "exJP": "かばんから財布を取り出した。",
     "exEN": "I took my wallet out of my bag.",
     "exZH": "我从包里拿出了钱包。",
-    "exKana": "かばんからさいふをとりだした。",
+    "exKana": "かばんからさいふをとりだした",
     "exTokens": [
       [
         "かばん",
@@ -29438,7 +29438,7 @@
     "exJP": "ドアに挟んで中指を怪我した。",
     "exEN": "I injured my middle finger by catching it in the door.",
     "exZH": "我的中指被门夹伤了。",
-    "exKana": "どあにはさんでなかゆびをけがした。",
+    "exKana": "どあにはさんでなかゆびをけがした",
     "exTokens": [
       [
         "ドア",
@@ -29504,7 +29504,7 @@
     "exJP": "道路を斜めに横切るのは危険だ。",
     "exEN": "It is dangerous to cross the road diagonally.",
     "exZH": "斜穿马路很危险。",
-    "exKana": "どうろをななめによこぎるのはきけんだ。",
+    "exKana": "どうろをななめによこぎるのはきけんだ",
     "exTokens": [
       [
         "道路",
@@ -29570,7 +29570,7 @@
     "exJP": "彼女の香水がほのかに匂う。",
     "exEN": "Her perfume is faintly fragrant.",
     "exZH": "她的香水散发着淡淡的香味。",
-    "exKana": "かのじょのこうすいがほのかににおう。",
+    "exKana": "かのじょのこうすいがほのかににおう",
     "exTokens": [
       [
         "彼女",
@@ -35456,7 +35456,7 @@
     "exJP": "良いアイデアですね。",
     "exEN": "That's a good idea.",
     "exZH": "真是个好主意。",
-    "exKana": "よいあいであですね。",
+    "exKana": "よいあいであですね",
     "exTokens": [
       [
         "良い",
@@ -35522,7 +35522,7 @@
     "exJP": "彼女はアクセントが強い。",
     "exEN": "She has a strong accent.",
     "exZH": "她的口音很重。",
-    "exKana": "かのじょはあくせんとがつよい。",
+    "exKana": "かのじょはあくせんとがつよい",
     "exTokens": [
       [
         "彼女",
@@ -35569,7 +35569,7 @@
     "exJP": "アンテナを立てる。",
     "exEN": "Set up an antenna.",
     "exZH": "立起天线。",
-    "exKana": "あんてなをたてる。",
+    "exKana": "あんてなをたてる",
     "exTokens": [
       [
         "アンテナ",
@@ -35631,7 +35631,7 @@
     "exJP": "インキが切れた。",
     "exEN": "The ink ran out.",
     "exZH": "墨水用完了。",
-    "exKana": "いんきがきれた。",
+    "exKana": "いんきがきれた",
     "exTokens": [
       [
         "インキ",
@@ -35677,7 +35677,7 @@
     "exJP": "インタビューを受ける。",
     "exEN": "Take an interview.",
     "exZH": "接受采访。",
-    "exKana": "いんたびゅーをうける。",
+    "exKana": "いんたびゅーをうける",
     "exTokens": [
       [
         "インタビュー",
@@ -35717,7 +35717,7 @@
     "exJP": "彼女はキャリアウーマンだ。",
     "exEN": "She is a career woman.",
     "exZH": "她是个职业女性。",
-    "exKana": "かのじょはきゃりあうーまんだ。",
+    "exKana": "かのじょはきゃりあうーまんだ",
     "exTokens": [
       [
         "彼女",
@@ -35761,7 +35761,7 @@
     "exJP": "これはウールのセーターです。",
     "exEN": "This is a wool sweater.",
     "exZH": "这是一件羊毛毛衣。",
-    "exKana": "これはうーるのせーたーです。",
+    "exKana": "これはうーるのせーたーです",
     "exTokens": [
       [
         "これ",
@@ -35813,7 +35813,7 @@
     "exJP": "それはエチケット違反です。",
     "exEN": "That's a breach of etiquette.",
     "exZH": "那违反了礼仪。",
-    "exKana": "それはえちけっといはんです。",
+    "exKana": "それはえちけっといはんです",
     "exTokens": [
       [
         "それ",
@@ -35860,7 +35860,7 @@
     "exJP": "エプロンをつける。",
     "exEN": "Put on an apron.",
     "exZH": "穿上围裙。",
-    "exKana": "えぷろんをつける。",
+    "exKana": "えぷろんをつける",
     "exTokens": [
       [
         "エプロン",
@@ -35900,7 +35900,7 @@
     "exJP": "オイルを交換する。",
     "exEN": "Change the oil.",
     "exZH": "换机油。",
-    "exKana": "おいるをこうかんする。",
+    "exKana": "おいるをこうかんする",
     "exTokens": [
       [
         "オイル",
@@ -35943,7 +35943,7 @@
     "exJP": "オーケストラを聴く。",
     "exEN": "Listen to the orchestra.",
     "exZH": "听管弦乐。",
-    "exKana": "おーけすとらをきく。",
+    "exKana": "おーけすとらをきく",
     "exTokens": [
       [
         "オーケストラ",
@@ -35982,7 +35982,7 @@
     "exJP": "「ン」はカタカナです。",
     "exEN": "'N' is katakana.",
     "exZH": "“ン”是片假名。",
-    "exKana": "「ん」はかたかなです。",
+    "exKana": "んはかたかなです",
     "exTokens": [
       [
         "「",
@@ -36034,7 +36034,7 @@
     "exJP": "オーバーコートを着る。",
     "exEN": "Wear an overcoat.",
     "exZH": "穿大衣。",
-    "exKana": "おーばーこーとをきる。",
+    "exKana": "おーばーこーとをきる",
     "exTokens": [
       [
         "オーバーコート",
@@ -36073,7 +36073,7 @@
     "exJP": "オルガンを弾く。",
     "exEN": "Play the organ.",
     "exZH": "弹风琴。",
-    "exKana": "おるがんをひく。",
+    "exKana": "おるがんをひく",
     "exTokens": [
       [
         "オルガン",
@@ -36115,7 +36115,7 @@
     "exJP": "急なカーブに気をつけて。",
     "exEN": "Watch out for the sharp curve.",
     "exZH": "小心急转弯。",
-    "exKana": "きゅうなかーぶにきをつけて。",
+    "exKana": "きゅうなかーぶにきをつけて",
     "exTokens": [
       [
         "急",
@@ -36174,7 +36174,7 @@
     "exJP": "カセットを再生する。",
     "exEN": "Play the cassette.",
     "exZH": "播放磁带。",
-    "exKana": "かせっとをさいせいする。",
+    "exKana": "かせっとをさいせいする",
     "exTokens": [
       [
         "カセット",
@@ -36217,7 +36217,7 @@
     "exJP": "ガムを噛む。",
     "exEN": "Chew gum.",
     "exZH": "嚼口香糖。",
-    "exKana": "がむをかむ。",
+    "exKana": "がむをかむ",
     "exTokens": [
       [
         "ガム",
@@ -36258,7 +36258,7 @@
     "exJP": "好きなカラーは何ですか。",
     "exEN": "What is your favorite color?",
     "exZH": "你最喜欢什么颜色？",
-    "exKana": "すきなからーはなんですか。",
+    "exKana": "すきなからーはなんですか",
     "exTokens": [
       [
         "好き",
@@ -36314,7 +36314,7 @@
     "exJP": "カロリーが高い。",
     "exEN": "It is high in calories.",
     "exZH": "热量很高。",
-    "exKana": "かろりーがたかい。",
+    "exKana": "かろりーがたかい",
     "exTokens": [
       [
         "カロリー",
@@ -36354,7 +36354,7 @@
     "exJP": "ギャング映画を見る。",
     "exEN": "Watch a gang movie.",
     "exZH": "看黑帮电影。",
-    "exKana": "ぎゃんぐえいがをみる。",
+    "exKana": "ぎゃんぐえいがをみる",
     "exTokens": [
       [
         "ギャング",
@@ -36397,7 +36397,7 @@
     "exJP": "大学のキャンパスを歩く。",
     "exEN": "Walk on the college campus.",
     "exZH": "在大学校园里散步。",
-    "exKana": "だいがくのきゃんぱすをあるく。",
+    "exKana": "だいがくのきゃんぱすをあるく",
     "exTokens": [
       [
         "大学",
@@ -36446,7 +36446,7 @@
     "exJP": "クーラーをつける。",
     "exEN": "Turn on the cooler.",
     "exZH": "打开冷气。",
-    "exKana": "くーらーをつける。",
+    "exKana": "くーらーをつける",
     "exTokens": [
       [
         "クーラー",
@@ -36489,7 +36489,7 @@
     "exJP": "シャツをクリーニングに出す。",
     "exEN": "Take the shirt for cleaning.",
     "exZH": "把衬衫送去干洗。",
-    "exKana": "しゃつをくりーにんぐにだす。",
+    "exKana": "しゃつをくりーにんぐにだす",
     "exTokens": [
       [
         "シャツ",
@@ -36538,7 +36538,7 @@
     "exJP": "コースを走る。",
     "exEN": "Run the course.",
     "exZH": "跑路线。",
-    "exKana": "こーすをはしる。",
+    "exKana": "こーすをはしる",
     "exTokens": [
       [
         "コース",
@@ -36578,7 +36578,7 @@
     "exJP": "コーラス部に参加する。",
     "exEN": "Join the chorus club.",
     "exZH": "加入合唱团。",
-    "exKana": "こーらすぶにさんかする。",
+    "exKana": "こーらすぶにさんかする",
     "exTokens": [
       [
         "コーラス",
@@ -36627,7 +36627,7 @@
     "exJP": "彼は優秀なコックだ。",
     "exEN": "He is an excellent cook.",
     "exZH": "他是个优秀的厨师。",
-    "exKana": "かれはゆうしゅうなこっくだ。",
+    "exKana": "かれはゆうしゅうなこっくだ",
     "exTokens": [
       [
         "彼",
@@ -36679,7 +36679,7 @@
     "exJP": "切手コレクションを見せる。",
     "exEN": "Show the stamp collection.",
     "exZH": "展示邮票收藏。",
-    "exKana": "きってこれくしょんをみせる。",
+    "exKana": "きってこれくしょんをみせる",
     "exTokens": [
       [
         "切手",
@@ -36724,7 +36724,7 @@
     "exJP": "ピアノのコンクールに出る。",
     "exEN": "Enter a piano competition.",
     "exZH": "参加钢琴比赛。",
-    "exKana": "ぴあののこんくーるにでる。",
+    "exKana": "ぴあののこんくーるにでる",
     "exTokens": [
       [
         "ピアノ",
@@ -36771,7 +36771,7 @@
     "exJP": "コンクリートの壁。",
     "exEN": "A concrete wall.",
     "exZH": "混凝土墙。",
-    "exKana": "こんくりーとのかべ。",
+    "exKana": "こんくりーとのかべ",
     "exTokens": [
       [
         "コンクリート",
@@ -36810,7 +36810,7 @@
     "exJP": "コンセントを抜く。",
     "exEN": "Unplug from the outlet.",
     "exZH": "拔掉插头。",
-    "exKana": "こんせんとをぬく。",
+    "exKana": "こんせんとをぬく",
     "exTokens": [
       [
         "コンセント",
@@ -36851,7 +36851,7 @@
     "exJP": "テニスサークルに入る。",
     "exEN": "Join a tennis circle.",
     "exZH": "加入网球社团。",
-    "exKana": "てにすさーくるにはいる。",
+    "exKana": "てにすさーくるにはいる",
     "exTokens": [
       [
         "テニス",
@@ -36894,7 +36894,7 @@
     "exJP": "サイレンが鳴る。",
     "exEN": "The siren sounds.",
     "exZH": "警报器响了。",
-    "exKana": "さいれんがなる。",
+    "exKana": "さいれんがなる",
     "exTokens": [
       [
         "サイレン",
@@ -36935,7 +36935,7 @@
     "exJP": "彼は普通のサラリーマンだ。",
     "exEN": "He is an ordinary salaryman.",
     "exZH": "他是个普通的上班族。",
-    "exKana": "かれはふつうのさらりーまんだ。",
+    "exKana": "かれはふつうのさらりーまんだ",
     "exTokens": [
       [
         "彼",
@@ -36987,7 +36987,7 @@
     "exJP": "サンプルをもらう。",
     "exEN": "Get a sample.",
     "exZH": "拿到样品。",
-    "exKana": "さんぷるをもらう。",
+    "exKana": "さんぷるをもらう",
     "exTokens": [
       [
         "サンプル",
@@ -37027,7 +37027,7 @@
     "exJP": "野球のシーズンが開幕した。",
     "exEN": "The baseball season has opened.",
     "exZH": "棒球赛季开幕了。",
-    "exKana": "やきゅうのしーずんがかいまくした。",
+    "exKana": "やきゅうのしーずんがかいまくした",
     "exTokens": [
       [
         "野球",
@@ -37082,7 +37082,7 @@
     "exJP": "シーツを洗う。",
     "exEN": "Wash the sheets.",
     "exZH": "洗床单。",
-    "exKana": "しーつをあらう。",
+    "exKana": "しーつをあらう",
     "exTokens": [
       [
         "シーツ",
@@ -37122,7 +37122,7 @@
     "exJP": "シャッターを押す。",
     "exEN": "Press the shutter.",
     "exZH": "按下快门。",
-    "exKana": "しゃったーをおす。",
+    "exKana": "しゃったーをおす",
     "exTokens": [
       [
         "シャッター",
@@ -37162,7 +37162,7 @@
     "exJP": "新しいショップがオープンした。",
     "exEN": "A new shop has opened.",
     "exZH": "一家新店开张了。",
-    "exKana": "あたらしいしょっぷがおーぷんした。",
+    "exKana": "あたらしいしょっぷがおーぷんした",
     "exTokens": [
       [
         "新しい",
@@ -37214,7 +37214,7 @@
     "exJP": "このシリーズは面白い。",
     "exEN": "This series is interesting.",
     "exZH": "这个系列很有趣。",
-    "exKana": "このしりーずはおもしろい。",
+    "exKana": "このしりーずはおもしろい",
     "exTokens": [
       [
         "この",
@@ -37258,7 +37258,7 @@
     "exJP": "スカーフを巻く。",
     "exEN": "Wear a scarf.",
     "exZH": "系围巾。",
-    "exKana": "すかーふをまく。",
+    "exKana": "すかーふをまく",
     "exTokens": [
       [
         "スカーフ",
@@ -37297,7 +37297,7 @@
     "exJP": "英会話スクールに通う。",
     "exEN": "Go to an English school.",
     "exZH": "上英语会话学校。",
-    "exKana": "えいかいわすくーるにかよう。",
+    "exKana": "えいかいわすくーるにかよう",
     "exTokens": [
       [
         "英会話",
@@ -37341,7 +37341,7 @@
     "exJP": "スケジュールを確認する。",
     "exEN": "Check the schedule.",
     "exZH": "确认日程。",
-    "exKana": "すけじゅーるをかくにんする。",
+    "exKana": "すけじゅーるをかくにんする",
     "exTokens": [
       [
         "スケジュール",
@@ -37387,7 +37387,7 @@
     "exJP": "試合がスタートする。",
     "exEN": "The match starts.",
     "exZH": "比赛开始。",
-    "exKana": "しあいがすたーとする。",
+    "exKana": "しあいがすたーとする",
     "exTokens": [
       [
         "試合",
@@ -37431,7 +37431,7 @@
     "exJP": "彼女はスチュワーデスだ。",
     "exEN": "She is a stewardess.",
     "exZH": "她是一名空姐。",
-    "exKana": "かのじょはすちゅわーですだ。",
+    "exKana": "かのじょはすちゅわーですだ",
     "exTokens": [
       [
         "彼女",
@@ -37475,7 +37475,7 @@
     "exJP": "ステージに上がる。",
     "exEN": "Go up on stage.",
     "exZH": "上台。",
-    "exKana": "すてーじにあがる。",
+    "exKana": "すてーじにあがる",
     "exTokens": [
       [
         "ステージ",
@@ -37514,7 +37514,7 @@
     "exJP": "ストッキングをはく。",
     "exEN": "Wear stockings.",
     "exZH": "穿丝袜。",
-    "exKana": "すとっきんぐをはく。",
+    "exKana": "すとっきんぐをはく",
     "exTokens": [
       [
         "ストッキング",
@@ -37554,7 +37554,7 @@
     "exJP": "スピーカーから音が鳴る。",
     "exEN": "Sound comes from the speaker.",
     "exZH": "声音从扬声器里出来。",
-    "exKana": "すぴーかーからおとがなる。",
+    "exKana": "すぴーかーからおとがなる",
     "exTokens": [
       [
         "スピーカー",
@@ -37603,7 +37603,7 @@
     "exJP": "彼はスマートだ。",
     "exEN": "He is smart.",
     "exZH": "他很聪明/苗条。",
-    "exKana": "かれはすまーとだ。",
+    "exKana": "かれはすまーとだ",
     "exTokens": [
       [
         "彼",
@@ -37649,7 +37649,7 @@
     "exJP": "スライドを見せる。",
     "exEN": "Show the slides.",
     "exZH": "展示幻灯片。",
-    "exKana": "すらいどをみせる。",
+    "exKana": "すらいどをみせる",
     "exTokens": [
       [
         "スライド",
@@ -37689,7 +37689,7 @@
     "exJP": "ゼミの発表がある。",
     "exEN": "There is a seminar presentation.",
     "exZH": "有研讨会的发表。",
-    "exKana": "ぜみのはっぴょうがある。",
+    "exKana": "ぜみのはっぴょうがある",
     "exTokens": [
       [
         "ゼミ",
@@ -37736,7 +37736,7 @@
     "exJP": "セメントを混ぜる。",
     "exEN": "Mix the cement.",
     "exZH": "混合水泥。",
-    "exKana": "せめんとをまぜる。",
+    "exKana": "せめんとをまぜる",
     "exTokens": [
       [
         "セメント",
@@ -37796,7 +37796,7 @@
     "exJP": "タイアがパンクした。",
     "exEN": "The tire went flat.",
     "exZH": "轮胎爆了。",
-    "exKana": "たいあがぱんくした。",
+    "exKana": "たいあがぱんくした",
     "exTokens": [
       [
         "タイア",
@@ -37844,7 +37844,7 @@
     "exJP": "列車のダイヤグラムを見る。",
     "exEN": "Look at the train diagram.",
     "exZH": "看列车时刻表。",
-    "exKana": "れっしゃのだいやぐらむをみる。",
+    "exKana": "れっしゃのだいやぐらむをみる",
     "exTokens": [
       [
         "列車",
@@ -37892,7 +37892,7 @@
     "exJP": "ダイヤモンドの指輪。",
     "exEN": "A diamond ring.",
     "exZH": "钻石戒指。",
-    "exKana": "だいやもんどのゆびわ。",
+    "exKana": "だいやもんどのゆびわ",
     "exTokens": [
       [
         "ダイヤモンド",
@@ -37934,7 +37934,7 @@
     "exJP": "ダイヤルを回す。",
     "exEN": "Turn the dial.",
     "exZH": "转动拨盘。",
-    "exKana": "だいやるをまわす。",
+    "exKana": "だいやるをまわす",
     "exTokens": [
       [
         "ダイヤル",
@@ -37974,7 +37974,7 @@
     "exJP": "ダムを建設する。",
     "exEN": "Construct a dam.",
     "exZH": "建设水坝。",
-    "exKana": "だむをけんせつする。",
+    "exKana": "だむをけんせつする",
     "exTokens": [
       [
         "ダム",
@@ -38019,7 +38019,7 @@
     "exJP": "チップを渡す。",
     "exEN": "Give a tip.",
     "exZH": "给小费。",
-    "exKana": "ちっぷをわたす。",
+    "exKana": "ちっぷをわたす",
     "exTokens": [
       [
         "チップ",
@@ -38058,7 +38058,7 @@
     "exJP": "チョークで字を書く。",
     "exEN": "Write with chalk.",
     "exZH": "用粉笔写字。",
-    "exKana": "ちょーくでじをかく。",
+    "exKana": "ちょーくでじをかく",
     "exTokens": [
       [
         "チョーク",
@@ -38106,7 +38106,7 @@
     "exJP": "今日のテーマは何ですか。",
     "exEN": "What is today's theme?",
     "exZH": "今天的主题是什么？",
-    "exKana": "きょうのてーまはなんですか。",
+    "exKana": "きょうのてーまはなんですか",
     "exTokens": [
       [
         "今日",
@@ -38161,7 +38161,7 @@
     "exJP": "テニスコートを予約する。",
     "exEN": "Book a tennis court.",
     "exZH": "预订网球场。",
-    "exKana": "てにすこーとをよやくする。",
+    "exKana": "てにすこーとをよやくする",
     "exTokens": [
       [
         "テニスコート",
@@ -38205,7 +38205,7 @@
     "exJP": "テンポが速い。",
     "exEN": "The tempo is fast.",
     "exZH": "节奏很快。",
-    "exKana": "てんぽがはやい。",
+    "exKana": "てんぽがはやい",
     "exTokens": [
       [
         "テンポ",
@@ -38247,7 +38247,7 @@
     "exJP": "毎日トレーニングをする。",
     "exEN": "Train every day.",
     "exZH": "每天训练。",
-    "exKana": "まいにちとれーにんぐをする。",
+    "exKana": "まいにちとれーにんぐをする",
     "exTokens": [
       [
         "毎日",
@@ -38290,7 +38290,7 @@
     "exJP": "ナイロンの袋。",
     "exEN": "A nylon bag.",
     "exZH": "尼龙袋。",
-    "exKana": "ないろんのふくろ。",
+    "exKana": "ないろんのふくろ",
     "exTokens": [
       [
         "ナイロン",
@@ -38330,7 +38330,7 @@
     "exJP": "ナンバーを覚える。",
     "exEN": "Remember the number.",
     "exZH": "记住号码。",
-    "exKana": "なんばーをおぼえる。",
+    "exKana": "なんばーをおぼえる",
     "exTokens": [
       [
         "ナンバー",
@@ -38369,7 +38369,7 @@
     "exJP": "ネックレスを買う。",
     "exEN": "Buy a necklace.",
     "exZH": "买项链。",
-    "exKana": "ねっくれすをかう。",
+    "exKana": "ねっくれすをかう",
     "exTokens": [
       [
         "ネックレス",
@@ -38408,7 +38408,7 @@
     "exJP": "バケツに水を入れる。",
     "exEN": "Put water in the bucket.",
     "exZH": "把水装进水桶里。",
-    "exKana": "ばけつにみずをいれる。",
+    "exKana": "ばけつにみずをいれる",
     "exTokens": [
       [
         "バケツ",
@@ -38456,7 +38456,7 @@
     "exJP": "行動パターンを分析する。",
     "exEN": "Analyze behavior patterns.",
     "exZH": "分析行为模式。",
-    "exKana": "こうどうぱたーんをぶんせきする。",
+    "exKana": "こうどうぱたーんをぶんせきする",
     "exTokens": [
       [
         "行動パターン",
@@ -38503,7 +38503,7 @@
     "exJP": "車をバックさせる。",
     "exEN": "Back up the car.",
     "exZH": "倒车。",
-    "exKana": "くるまをばっくさせる。",
+    "exKana": "くるまをばっくさせる",
     "exTokens": [
       [
         "車",
@@ -38551,7 +38551,7 @@
     "exJP": "バランスが大事だ。",
     "exEN": "Balance is important.",
     "exZH": "平衡很重要。",
-    "exKana": "ばらんすがだいじだ。",
+    "exKana": "ばらんすがだいじだ",
     "exTokens": [
       [
         "バランス",
@@ -38596,7 +38596,7 @@
     "exJP": "新しいパンツを買う。",
     "exEN": "Buy new pants.",
     "exZH": "买新裤子。",
-    "exKana": "あたらしいぱんつをかう。",
+    "exKana": "あたらしいぱんつをかう",
     "exTokens": [
       [
         "新しい",
@@ -38640,7 +38640,7 @@
     "exJP": "ロックバンドを組む。",
     "exEN": "Form a rock band.",
     "exZH": "组建摇滚乐队。",
-    "exKana": "ろっくばんどをくむ。",
+    "exKana": "ろっくばんどをくむ",
     "exTokens": [
       [
         "ロック",
@@ -38685,7 +38685,7 @@
     "exJP": "車のハンドルを握る。",
     "exEN": "Grip the car's handle.",
     "exZH": "握住汽车方向盘。",
-    "exKana": "くるまのはんどるをにぎる。",
+    "exKana": "くるまのはんどるをにぎる",
     "exTokens": [
       [
         "車",
@@ -38732,7 +38732,7 @@
     "exJP": "ピストルを撃つ。",
     "exEN": "Shoot a pistol.",
     "exZH": "开手枪。",
-    "exKana": "ぴすとるをうつ。",
+    "exKana": "ぴすとるをうつ",
     "exTokens": [
       [
         "ピストル",
@@ -38771,7 +38771,7 @@
     "exJP": "ビタミンをとる。",
     "exEN": "Take vitamins.",
     "exZH": "摄取维生素。",
-    "exKana": "びたみんをとる。",
+    "exKana": "びたみんをとる",
     "exTokens": [
       [
         "ビタミン",
@@ -38812,7 +38812,7 @@
     "exJP": "ビニール袋をもらう。",
     "exEN": "Get a vinyl bag.",
     "exZH": "拿到塑料袋。",
-    "exKana": "びにーるふくろをもらう。",
+    "exKana": "びにーるふくろをもらう",
     "exTokens": [
       [
         "ビニール",
@@ -38856,7 +38856,7 @@
     "exJP": "ピンクの花が咲く。",
     "exEN": "Pink flowers bloom.",
     "exZH": "粉色的花开了。",
-    "exKana": "ぴんくのはながさく。",
+    "exKana": "ぴんくのはながさく",
     "exTokens": [
       [
         "ピンク",
@@ -38905,7 +38905,7 @@
     "exJP": "ファスナーを閉める。",
     "exEN": "Close the fastener.",
     "exZH": "拉上拉链。",
-    "exKana": "ふぁすなーをしめる。",
+    "exKana": "ふぁすなーをしめる",
     "exTokens": [
       [
         "ファスナー",
@@ -38945,7 +38945,7 @@
     "exJP": "フライパンで焼く。",
     "exEN": "Cook in a frying pan.",
     "exZH": "用平底锅煎。",
-    "exKana": "ふらいぱんでやく。",
+    "exKana": "ふらいぱんでやく",
     "exTokens": [
       [
         "フライパン",
@@ -38984,7 +38984,7 @@
     "exJP": "白いブラウスを着る。",
     "exEN": "Wear a white blouse.",
     "exZH": "穿白衬衫。",
-    "exKana": "しろいぶらうすをきる。",
+    "exKana": "しろいぶらうすをきる",
     "exTokens": [
       [
         "白い",
@@ -39028,7 +39028,7 @@
     "exJP": "ブラシで髪をとかす。",
     "exEN": "Comb hair with a brush.",
     "exZH": "用梳子梳头。",
-    "exKana": "ぶらしでかみをとかす。",
+    "exKana": "ぶらしでかみをとかす",
     "exTokens": [
       [
         "ブラシ",
@@ -39075,7 +39075,7 @@
     "exJP": "プラスチックのゴミ。",
     "exEN": "Plastic trash.",
     "exZH": "塑料垃圾。",
-    "exKana": "ぷらすちっくのごみ。",
+    "exKana": "ぷらすちっくのごみ",
     "exTokens": [
       [
         "プラスチック",
@@ -39115,7 +39115,7 @@
     "exJP": "プラットホームで待つ。",
     "exEN": "Wait on the platform.",
     "exZH": "在月台等候。",
-    "exKana": "ぷらっとほーむでまつ。",
+    "exKana": "ぷらっとほーむでまつ",
     "exTokens": [
       [
         "プラットホーム",
@@ -39156,7 +39156,7 @@
     "exJP": "今日はフリーです。",
     "exEN": "I am free today.",
     "exZH": "今天我有空。",
-    "exKana": "きょうはふりーです。",
+    "exKana": "きょうはふりーです",
     "exTokens": [
       [
         "今日",
@@ -39203,7 +39203,7 @@
     "exJP": "プリントを配る。",
     "exEN": "Distribute the prints.",
     "exZH": "分发打印件。",
-    "exKana": "ぷりんとをくばる。",
+    "exKana": "ぷりんとをくばる",
     "exTokens": [
       [
         "プリント",
@@ -39242,7 +39242,7 @@
     "exJP": "胸にブローチをつける。",
     "exEN": "Wear a brooch on the chest.",
     "exZH": "在胸前别上胸针。",
-    "exKana": "むねにぶろーちをつける。",
+    "exKana": "むねにぶろーちをつける",
     "exTokens": [
       [
         "胸",
@@ -39290,7 +39290,7 @@
     "exJP": "彼はベテランの俳優だ。",
     "exEN": "He is a veteran actor.",
     "exZH": "他是个资深演员。",
-    "exKana": "かれはべてらんのはいゆうだ。",
+    "exKana": "かれはべてらんのはいゆうだ",
     "exTokens": [
       [
         "彼",
@@ -39341,7 +39341,7 @@
     "exJP": "ヘリコプターが飛ぶ。",
     "exEN": "A helicopter flies.",
     "exZH": "直升机飞过。",
-    "exKana": "へりこぷたーがとぶ。",
+    "exKana": "へりこぷたーがとぶ",
     "exTokens": [
       [
         "ヘリコプター",
@@ -39380,7 +39380,7 @@
     "exJP": "ペンチで針金を切る。",
     "exEN": "Cut the wire with pliers.",
     "exZH": "用钳子剪断铁丝。",
-    "exKana": "ぺんちではりがねをきる。",
+    "exKana": "ぺんちではりがねをきる",
     "exTokens": [
       [
         "ペンチ",
@@ -39428,7 +39428,7 @@
     "exJP": "ボーナスが出た。",
     "exEN": "The bonus was paid.",
     "exZH": "发奖金了。",
-    "exKana": "ぼーなすがでた。",
+    "exKana": "ぼーなすがでた",
     "exTokens": [
       [
         "ボーナス",
@@ -39471,7 +39471,7 @@
     "exJP": "壁にポスターを貼る。",
     "exEN": "Put a poster on the wall.",
     "exZH": "把海报贴在墙上。",
-    "exKana": "かべにぽすたーをはる。",
+    "exKana": "かべにぽすたーをはる",
     "exTokens": [
       [
         "壁",
@@ -39520,7 +39520,7 @@
     "exJP": "気温がマイナスになる。",
     "exEN": "The temperature drops to minus.",
     "exZH": "气温降到零下。",
-    "exKana": "きおんがまいなすになる。",
+    "exKana": "きおんがまいなすになる",
     "exTokens": [
       [
         "気温",
@@ -39568,7 +39568,7 @@
     "exJP": "マスクをする。",
     "exEN": "Wear a mask.",
     "exZH": "戴口罩。",
-    "exKana": "ますくをする。",
+    "exKana": "ますくをする",
     "exTokens": [
       [
         "マスク",
@@ -39609,7 +39609,7 @@
     "exJP": "マフラーを巻く。",
     "exEN": "Wrap a muffler.",
     "exZH": "围围巾。",
-    "exKana": "まふらーをまく。",
+    "exKana": "まふらーをまく",
     "exTokens": [
       [
         "マフラー",
@@ -39648,7 +39648,7 @@
     "exJP": "マラソンに参加する。",
     "exEN": "Participate in a marathon.",
     "exZH": "参加马拉松。",
-    "exKana": "まらそんにさんかする。",
+    "exKana": "まらそんにさんかする",
     "exTokens": [
       [
         "マラソン",
@@ -39691,7 +39691,7 @@
     "exJP": "新しいマンションに住む。",
     "exEN": "Live in a new apartment.",
     "exZH": "住在新公寓。",
-    "exKana": "あたらしいまんしょんにすむ。",
+    "exKana": "あたらしいまんしょんにすむ",
     "exTokens": [
       [
         "新しい",
@@ -39735,7 +39735,7 @@
     "exJP": "メーターを確認する。",
     "exEN": "Check the meter.",
     "exZH": "检查仪表。",
-    "exKana": "めーたーをかくにんする。",
+    "exKana": "めーたーをかくにんする",
     "exTokens": [
       [
         "メーター",
@@ -39778,7 +39778,7 @@
     "exJP": "メニューを見る。",
     "exEN": "Look at the menu.",
     "exZH": "看菜单。",
-    "exKana": "めにゅーをみる。",
+    "exKana": "めにゅーをみる",
     "exTokens": [
       [
         "メニュー",
@@ -39818,7 +39818,7 @@
     "exJP": "モーターが回る。",
     "exEN": "The motor spins.",
     "exZH": "马达在转。",
-    "exKana": "もーたーがまわる。",
+    "exKana": "もーたーがまわる",
     "exTokens": [
       [
         "モーター",
@@ -39859,7 +39859,7 @@
     "exJP": "モダンなデザインだ。",
     "exEN": "It is a modern design.",
     "exZH": "这是现代的设计。",
-    "exKana": "もだんなでざいんだ。",
+    "exKana": "もだんなでざいんだ",
     "exTokens": [
       [
         "モダン",
@@ -39903,7 +39903,7 @@
     "exJP": "彼女はモデルだ。",
     "exEN": "She is a model.",
     "exZH": "她是个模特。",
-    "exKana": "かのじょはもでるだ。",
+    "exKana": "かのじょはもでるだ",
     "exTokens": [
       [
         "彼女",
@@ -39946,7 +39946,7 @@
     "exJP": "モノレールに乗る。",
     "exEN": "Ride the monorail.",
     "exZH": "乘坐单轨列车。",
-    "exKana": "ものれーるにのる。",
+    "exKana": "ものれーるにのる",
     "exTokens": [
       [
         "モノレール",
@@ -39985,7 +39985,7 @@
     "exJP": "ラッシュアワーを避ける。",
     "exEN": "Avoid the rush hour.",
     "exZH": "避开高峰时间。",
-    "exKana": "らっしゅあわーをさける。",
+    "exKana": "らっしゅあわーをさける",
     "exTokens": [
       [
         "ラッシュアワー",
@@ -40024,7 +40024,7 @@
     "exJP": "一緒にランチを食べよう。",
     "exEN": "Let's eat lunch together.",
     "exZH": "一起吃午餐吧。",
-    "exKana": "いっしょにらんちをたべよう。",
+    "exKana": "いっしょにらんちをたべよう",
     "exTokens": [
       [
         "一緒",
@@ -40073,7 +40073,7 @@
     "exJP": "毎朝ランニングをする。",
     "exEN": "Go running every morning.",
     "exZH": "每天早上跑步。",
-    "exKana": "まいあさらんにんぐをする。",
+    "exKana": "まいあさらんにんぐをする",
     "exTokens": [
       [
         "毎朝",
@@ -40117,7 +40117,7 @@
     "exJP": "リズムに乗る。",
     "exEN": "Ride the rhythm.",
     "exZH": "跟上节奏。",
-    "exKana": "りずむにのる。",
+    "exKana": "りずむにのる",
     "exTokens": [
       [
         "リズム",
@@ -40157,7 +40157,7 @@
     "exJP": "髪にリボンをつける。",
     "exEN": "Put a ribbon in hair.",
     "exZH": "在头发上系丝带。",
-    "exKana": "かみにりぼんをつける。",
+    "exKana": "かみにりぼんをつける",
     "exTokens": [
       [
         "髪",
@@ -40204,7 +40204,7 @@
     "exJP": "レインコートを着る。",
     "exEN": "Wear a raincoat.",
     "exZH": "穿雨衣。",
-    "exKana": "れいんこーとをきる。",
+    "exKana": "れいんこーとをきる",
     "exTokens": [
       [
         "レインコート",
@@ -40244,7 +40244,7 @@
     "exJP": "レジャーを楽しむ。",
     "exEN": "Enjoy leisure.",
     "exZH": "享受休闲。",
-    "exKana": "れじゃーをたのしむ。",
+    "exKana": "れじゃーをたのしむ",
     "exTokens": [
       [
         "レジャー",
@@ -40284,7 +40284,7 @@
     "exJP": "彼のレベルは高い。",
     "exEN": "His level is high.",
     "exZH": "他的水平很高。",
-    "exKana": "かれのれべるはたかい。",
+    "exKana": "かれのれべるはたかい",
     "exTokens": [
       [
         "彼",
@@ -40332,7 +40332,7 @@
     "exJP": "カメラのレンズを拭く。",
     "exEN": "Wipe the camera lens.",
     "exZH": "擦拭相机镜头。",
-    "exKana": "かめらのれんずをふく。",
+    "exKana": "かめらのれんずをふく",
     "exTokens": [
       [
         "カメラ",
@@ -40381,7 +40381,7 @@
     "exJP": "ローマじで名前を書く。",
     "exEN": "Write the name in romaji.",
     "exZH": "用罗马字写名字。",
-    "exKana": "ろーまじでなまえをかく。",
+    "exKana": "ろーまじでなまえをかく",
     "exTokens": [
       [
         "ローマ",
@@ -40432,7 +40432,7 @@
     "exJP": "荷物をロッカーに入れる。",
     "exEN": "Put luggage in the locker.",
     "exZH": "把行李放进储物柜。",
-    "exKana": "にもつをろっかーにいれる。",
+    "exKana": "にもつをろっかーにいれる",
     "exTokens": [
       [
         "荷物",
@@ -40480,7 +40480,7 @@
     "exJP": "ホテルのロビーで待つ。",
     "exEN": "Wait in the hotel lobby.",
     "exZH": "在酒店大堂等候。",
-    "exKana": "ほてるのろびーでまつ。",
+    "exKana": "ほてるのろびーでまつ",
     "exTokens": [
       [
         "ホテル",
