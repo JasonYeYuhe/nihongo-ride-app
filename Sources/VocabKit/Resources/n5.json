@@ -5644,7 +5644,57 @@
         "妈妈",
         "母亲"
       ]
-    }
+    },
+    "exJP": "母は毎日美味しい料理を作ります。",
+    "exEN": "My mother makes delicious meals every day.",
+    "exZH": "我妈妈每天都做美味的饭菜。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "one's own mother",
+      "senseListed": true
+    },
+    "exKana": "はははまいにちおいしいりょうりをつくります",
+    "exTokens": [
+      [
+        "母",
+        "はは"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "毎日",
+        "まいにち"
+      ],
+      [
+        "美味しい",
+        "おいしい"
+      ],
+      [
+        "料理",
+        "りょうり"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "作り",
+        "つくり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g050",
@@ -5662,7 +5712,57 @@
         "爸爸",
         "父亲"
       ]
-    }
+    },
+    "exJP": "父は毎朝六時に起きます。",
+    "exEN": "My father gets up at six every morning.",
+    "exZH": "我爸爸每天早上六点起床。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "one's own father",
+      "senseListed": true
+    },
+    "exKana": "ちちはまいあさろくじにおきます",
+    "exTokens": [
+      [
+        "父",
+        "ちち"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "毎朝",
+        "まいあさ"
+      ],
+      [
+        "六",
+        "ろく"
+      ],
+      [
+        "時",
+        "じ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "起き",
+        "おき"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g051",
@@ -6987,7 +7087,73 @@
       "zh": [
         "伞"
       ]
-    }
+    },
+    "exJP": "外は雨なので傘を持っていきます。",
+    "exEN": "It is raining outside, so I will bring an umbrella.",
+    "exZH": "外面在下雨，所以我要带伞。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "umbrella for rain",
+      "senseListed": true
+    },
+    "exKana": "そとはあめなのでかさをもっていきます",
+    "exTokens": [
+      [
+        "外",
+        "そと"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "雨",
+        "あめ"
+      ],
+      [
+        "な",
+        "な"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "傘",
+        "かさ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "持っ",
+        "もっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いき",
+        "いき"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g072",
@@ -7005,7 +7171,61 @@
       "zh": [
         "钱包"
       ]
-    }
+    },
+    "exJP": "カバンの中から財布を出しました。",
+    "exEN": "I took my wallet out of my bag.",
+    "exZH": "我从包里拿出了钱包。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "wallet for money",
+      "senseListed": true
+    },
+    "exKana": "かばんのなかからさいふをだしました",
+    "exTokens": [
+      [
+        "カバン",
+        "かばん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "中",
+        "なか"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "財布",
+        "さいふ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "出し",
+        "だし"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g073",
@@ -7400,7 +7620,49 @@
       "zh": [
         "睡觉"
       ]
-    }
+    },
+    "exJP": "昨日は早く寝ました。",
+    "exEN": "I went to sleep early yesterday.",
+    "exZH": "我昨天很早就睡了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to go to sleep",
+      "senseListed": true
+    },
+    "exKana": "きのうははやくねました",
+    "exTokens": [
+      [
+        "昨日",
+        "きのう"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "早く",
+        "はやく"
+      ],
+      [
+        "寝",
+        "ね"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g081",
@@ -7483,7 +7745,61 @@
         "结束",
         "完"
       ]
-    }
+    },
+    "exJP": "今日の授業は五時に終わります。",
+    "exEN": "Today's class ends at five o'clock.",
+    "exZH": "今天的课在五点结束。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to come to an end",
+      "senseListed": true
+    },
+    "exKana": "きょうのじゅぎょうはごじにおわります",
+    "exTokens": [
+      [
+        "今日",
+        "きょう"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "授業",
+        "じゅぎょう"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "五",
+        "ご"
+      ],
+      [
+        "時",
+        "じ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "終わり",
+        "おわり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g083",
@@ -7503,7 +7819,61 @@
         "休息",
         "请假"
       ]
-    }
+    },
+    "exJP": "少し疲れたのでここで休みましょう。",
+    "exEN": "I'm a bit tired, so let's rest here.",
+    "exZH": "有点累了，我们在这里休息一下吧。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to take a rest",
+      "senseListed": true
+    },
+    "exKana": "すこしつかれたのでここでやすみましょう",
+    "exTokens": [
+      [
+        "少し",
+        "すこし"
+      ],
+      [
+        "疲れ",
+        "つかれ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "ここ",
+        "ここ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "休み",
+        "やすみ"
+      ],
+      [
+        "ましょう",
+        "ましょう"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g084",
@@ -7907,7 +8277,65 @@
         "出去",
         "离开"
       ]
-    }
+    },
+    "exJP": "今朝は八時に家を出ました。",
+    "exEN": "I left home at eight o'clock this morning.",
+    "exZH": "我今天早上八点出了家门。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to leave a place",
+      "senseListed": true
+    },
+    "exKana": "けさははちじにいえをでました",
+    "exTokens": [
+      [
+        "今朝",
+        "けさ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "八",
+        "はち"
+      ],
+      [
+        "時",
+        "じ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "家",
+        "いえ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "出",
+        "で"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g091",
@@ -9430,7 +9858,61 @@
         "不擅长",
         "笨拙"
       ]
-    }
+    },
+    "exJP": "私は歌を歌うのが下手です。",
+    "exEN": "I am bad at singing.",
+    "exZH": "我不太擅长唱歌。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "unskillful or bad at",
+      "senseListed": true
+    },
+    "exKana": "わたくしはうたをうたうのがへたです",
+    "exTokens": [
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "歌",
+        "うた"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "歌う",
+        "うたう"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "下手",
+        "へた"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g115",
@@ -9449,7 +9931,61 @@
         "精神",
         "健康"
       ]
-    }
+    },
+    "exJP": "おばあさんは今もとても元気です。",
+    "exEN": "My grandmother is still very healthy.",
+    "exZH": "奶奶现在依然非常健康。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "healthy and full of energy",
+      "senseListed": true
+    },
+    "exKana": "おばあさんはいまもとてもげんきです",
+    "exTokens": [
+      [
+        "お",
+        "お"
+      ],
+      [
+        "ばあ",
+        "ばあ"
+      ],
+      [
+        "さん",
+        "さん"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "今",
+        "いま"
+      ],
+      [
+        "も",
+        "も"
+      ],
+      [
+        "とても",
+        "とても"
+      ],
+      [
+        "元気",
+        "げんき"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g116",
@@ -9924,7 +10460,53 @@
         "真的",
         "的确"
       ]
-    }
+    },
+    "exJP": "このケーキは本当に美味しいです。",
+    "exEN": "This cake is truly delicious.",
+    "exZH": "这个蛋糕真的很好吃。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "truly or really",
+      "senseListed": true
+    },
+    "exKana": "このけーきはほんとうにおいしいです",
+    "exTokens": [
+      [
+        "この",
+        "この"
+      ],
+      [
+        "ケーキ",
+        "けーき"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "本当",
+        "ほんとう"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "美味しい",
+        "おいしい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g124",
@@ -11011,7 +11593,53 @@
       "zh": [
         "忙碌的"
       ]
-    }
+    },
+    "exJP": "今週は仕事がとても忙しいです。",
+    "exEN": "I am very busy with work this week.",
+    "exZH": "这周工作非常忙碌。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "busy with work or tasks",
+      "senseListed": true
+    },
+    "exKana": "こんしゅうはしごとがとてもいそがしいです",
+    "exTokens": [
+      [
+        "今週",
+        "こんしゅう"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "仕事",
+        "しごと"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "とても",
+        "とても"
+      ],
+      [
+        "忙しい",
+        "いそがしい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b018",
@@ -11031,7 +11659,53 @@
         "一天",
         "一整天"
       ]
-    }
+    },
+    "exJP": "一日は二十四時間あります。",
+    "exEN": "One day consists of twenty-four hours.",
+    "exZH": "一天有二十四个小时。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "one full day",
+      "senseListed": true
+    },
+    "exKana": "いちにちはにじゅうよんじかんあります",
+    "exTokens": [
+      [
+        "一",
+        "いち"
+      ],
+      [
+        "日",
+        "にち"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "二十四",
+        "にじゅうよん"
+      ],
+      [
+        "時間",
+        "じかん"
+      ],
+      [
+        "あり",
+        "あり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b019",
@@ -11245,7 +11919,49 @@
       "zh": [
         "妹妹"
       ]
-    }
+    },
+    "exJP": "私の妹は高校生です。",
+    "exEN": "My younger sister is a high school student.",
+    "exZH": "我的妹妹是高中生。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "one's own younger sister",
+      "senseListed": true
+    },
+    "exKana": "わたくしのいもうとはこうこうせいです",
+    "exTokens": [
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "妹",
+        "いもうと"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "高校生",
+        "こうこうせい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b023",
@@ -13509,7 +14225,45 @@
       "zh": [
         "请"
       ]
-    }
+    },
+    "exJP": "お水を一杯ください。",
+    "exEN": "Please give me a glass of water.",
+    "exZH": "请给我一杯水。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "please give me",
+      "senseListed": true
+    },
+    "exKana": "おみずをいっぱいください",
+    "exTokens": [
+      [
+        "お",
+        "お"
+      ],
+      [
+        "水",
+        "みず"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "一杯",
+        "いっぱい"
+      ],
+      [
+        "ください",
+        "ください"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b061",
@@ -13726,7 +14480,49 @@
       "zh": [
         "今天早上"
       ]
-    }
+    },
+    "exJP": "今朝はとても寒かったです。",
+    "exEN": "It was very cold this morning.",
+    "exZH": "今天早上非常冷。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "this morning",
+      "senseListed": true
+    },
+    "exKana": "けさはとてもさむかったです",
+    "exTokens": [
+      [
+        "今朝",
+        "けさ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "とても",
+        "とても"
+      ],
+      [
+        "寒かっ",
+        "さむかっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b065",
@@ -14497,7 +15293,65 @@
       "zh": [
         "散步"
       ]
-    }
+    },
+    "exJP": "毎朝犬と一緒に公園を散歩します。",
+    "exEN": "I take a walk in the park with my dog every morning.",
+    "exZH": "我每天早上和狗一起在公园散步。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to take a walk",
+      "senseListed": true
+    },
+    "exKana": "まいあさいぬといっしょにこうえんをさんぽします",
+    "exTokens": [
+      [
+        "毎朝",
+        "まいあさ"
+      ],
+      [
+        "犬",
+        "いぬ"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "一緒",
+        "いっしょ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "公園",
+        "こうえん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "散歩",
+        "さんぽ"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b079",
@@ -14911,7 +15765,53 @@
         "课",
         "上课"
       ]
-    }
+    },
+    "exJP": "日本語の授業はとても面白いです。",
+    "exEN": "The Japanese class is very interesting.",
+    "exZH": "日语课非常有意思。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "school class or lesson",
+      "senseListed": true
+    },
+    "exKana": "にほんごのじゅぎょうはとてもおもしろいです",
+    "exTokens": [
+      [
+        "日本語",
+        "にほんご"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "授業",
+        "じゅぎょう"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "とても",
+        "とても"
+      ],
+      [
+        "面白い",
+        "おもしろい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b087",
@@ -15463,7 +16363,65 @@
       "zh": [
         "洗衣服"
       ]
-    }
+    },
+    "exJP": "天気がいいので洗濯をしました。",
+    "exEN": "The weather was good, so I did the laundry.",
+    "exZH": "因为天气很好，所以我洗了衣服。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "washing clothes or laundry",
+      "senseListed": true
+    },
+    "exKana": "てんきがいいのでせんたくをしました",
+    "exTokens": [
+      [
+        "天気",
+        "てんき"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "いい",
+        "いい"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "洗濯",
+        "せんたく"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b095",
@@ -15483,7 +16441,61 @@
         "打扫",
         "清洁"
       ]
-    }
+    },
+    "exJP": "週末に自分の部屋を掃除します。",
+    "exEN": "I clean my room on weekends.",
+    "exZH": "我周末打扫自己的房间。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to clean a room",
+      "senseListed": true
+    },
+    "exKana": "しゅうまつにじぶんのへやをそうじします",
+    "exTokens": [
+      [
+        "週末",
+        "しゅうまつ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "自分",
+        "じぶん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "部屋",
+        "へや"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "掃除",
+        "そうじ"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b096",
@@ -15955,7 +16967,65 @@
       "zh": [
         "厨房"
       ]
-    }
+    },
+    "exJP": "母は台所で夕飯を作っています。",
+    "exEN": "My mother is making dinner in the kitchen.",
+    "exZH": "妈妈正在厨房做晚饭。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "kitchen in a house",
+      "senseListed": true
+    },
+    "exKana": "はははだいどころでゆうはんをつくっています",
+    "exTokens": [
+      [
+        "母",
+        "はは"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "台所",
+        "だいどころ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "夕飯",
+        "ゆうはん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "作っ",
+        "つくっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b104",
@@ -16039,7 +17109,61 @@
         "高度",
         "竖"
       ]
-    }
+    },
+    "exJP": "この箱はたてが二十センチあります。",
+    "exEN": "This box is twenty centimeters in vertical length.",
+    "exZH": "这个盒子的纵向长度是二十厘米。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "vertical length or height",
+      "senseListed": true
+    },
+    "exKana": "このばこはたてがにじゅうせんちあります",
+    "exTokens": [
+      [
+        "この",
+        "この"
+      ],
+      [
+        "箱",
+        "ばこ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "たて",
+        "たて"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "二十",
+        "にじゅう"
+      ],
+      [
+        "センチ",
+        "せんち"
+      ],
+      [
+        "あり",
+        "あり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b106",
@@ -16056,7 +17180,57 @@
       "zh": [
         "食物"
       ]
-    }
+    },
+    "exJP": "日本の食べ物はどれも美味しいです。",
+    "exEN": "Japanese food is all delicious.",
+    "exZH": "日本的食物都很好吃。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "food or things to eat",
+      "senseListed": true
+    },
+    "exKana": "にっぽんのたべものはどれもおいしいです",
+    "exTokens": [
+      [
+        "日本",
+        "にっぽん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "食べ物",
+        "たべもの"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "どれ",
+        "どれ"
+      ],
+      [
+        "も",
+        "も"
+      ],
+      [
+        "美味しい",
+        "おいしい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b107",
@@ -16949,7 +18123,57 @@
       "zh": [
         "请"
       ]
-    }
+    },
+    "exJP": "どうぞこのお茶を飲んでください。",
+    "exEN": "Please drink this tea.",
+    "exZH": "请喝这杯茶。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "please",
+      "senseListed": true
+    },
+    "exKana": "どうぞこのおちゃをのんでください",
+    "exTokens": [
+      [
+        "どうぞ",
+        "どうぞ"
+      ],
+      [
+        "この",
+        "この"
+      ],
+      [
+        "お",
+        "お"
+      ],
+      [
+        "茶",
+        "ちゃ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "飲ん",
+        "のん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "ください",
+        "ください"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b122",
@@ -17028,7 +18252,57 @@
       "zh": [
         "远的"
       ]
-    }
+    },
+    "exJP": "私の家は駅から遠いです。",
+    "exEN": "My house is far from the station.",
+    "exZH": "我家离车站很远。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "far away",
+      "senseListed": true
+    },
+    "exKana": "わたくしのいえはえきからとおいです",
+    "exTokens": [
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "家",
+        "いえ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "駅",
+        "えき"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "遠い",
+        "とおい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b124",
@@ -17185,7 +18459,61 @@
         "哪边",
         "哪个"
       ]
-    }
+    },
+    "exJP": "りんごとみかん、どっちが好きですか。",
+    "exEN": "Which do you like better, apples or oranges?",
+    "exZH": "苹果和柑橘，你喜欢哪一个？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "which one",
+      "senseListed": true
+    },
+    "exKana": "りんごとみかんどっちがすきですか",
+    "exTokens": [
+      [
+        "りんご",
+        "りんご"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "みかん",
+        "みかん"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "どっち",
+        "どっち"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "好き",
+        "すき"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "か",
+        "か"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b127",
@@ -17272,7 +18600,61 @@
         "飞",
         "跳"
       ]
-    }
+    },
+    "exJP": "空を大きな鳥が飛んでいます。",
+    "exEN": "A big bird is flying in the sky.",
+    "exZH": "一只大鸟在空中飞翔。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to fly",
+      "senseListed": true
+    },
+    "exKana": "そらをおおきなとりがとんでいます",
+    "exTokens": [
+      [
+        "空",
+        "そら"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "大きな",
+        "おおきな"
+      ],
+      [
+        "鳥",
+        "とり"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "飛ん",
+        "とん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b129",
@@ -17438,7 +18820,61 @@
         "丢失",
         "弄丢"
       ]
-    }
+    },
+    "exJP": "昨日、自転車のカギを無くしました。",
+    "exEN": "I lost my bicycle key yesterday.",
+    "exZH": "我昨天把自行车钥匙弄丢了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to lose something",
+      "senseListed": true
+    },
+    "exKana": "きのうじてんしゃのかぎをなくしました",
+    "exTokens": [
+      [
+        "昨日",
+        "きのう"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "自転車",
+        "じてんしゃ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "カギ",
+        "かぎ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "無くし",
+        "なくし"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b132",
@@ -17455,7 +18891,53 @@
       "zh": [
         "夏天"
       ]
-    }
+    },
+    "exJP": "日本の夏はとても暑いです。",
+    "exEN": "Summer in Japan is very hot.",
+    "exZH": "日本的夏天非常热。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "summer season",
+      "senseListed": true
+    },
+    "exKana": "にっぽんのなつはとてもあついです",
+    "exTokens": [
+      [
+        "日本",
+        "にっぽん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "夏",
+        "なつ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "とても",
+        "とても"
+      ],
+      [
+        "暑い",
+        "あつい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b133",
@@ -17762,7 +19244,61 @@
         "西",
         "西方"
       ]
-    }
+    },
+    "exJP": "学校の西に大きな公園があります。",
+    "exEN": "There is a large park to the west of the school.",
+    "exZH": "学校西边有一个大公园。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "west direction",
+      "senseListed": true
+    },
+    "exKana": "がっこうのにしにおおきなこうえんがあります",
+    "exTokens": [
+      [
+        "学校",
+        "がっこう"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "西",
+        "にし"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "大きな",
+        "おおきな"
+      ],
+      [
+        "公園",
+        "こうえん"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "あり",
+        "あり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b138",
@@ -18483,7 +20019,65 @@
         "晚",
         "晚上"
       ]
-    }
+    },
+    "exJP": "明日の晩、友達とご飯を食べます。",
+    "exEN": "Tomorrow evening, I will have a meal with a friend.",
+    "exZH": "明天晚上我要和朋友一起吃饭。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "evening",
+      "senseListed": true
+    },
+    "exKana": "あすのばんともだちとごはんをたべます",
+    "exTokens": [
+      [
+        "明日",
+        "あす"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "晩",
+        "ばん"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "友達",
+        "ともだち"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "ご飯",
+        "ごはん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "食べ",
+        "たべ"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b151",
@@ -18560,7 +20154,65 @@
         "东",
         "东方"
       ]
-    }
+    },
+    "exJP": "私の家は駅の東にあります。",
+    "exEN": "My house is to the east of the station.",
+    "exZH": "我家在车站的东边。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "east direction",
+      "senseListed": true
+    },
+    "exKana": "わたくしのいえはえきのひがしにあります",
+    "exTokens": [
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "家",
+        "いえ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "駅",
+        "えき"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "東",
+        "ひがし"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "あり",
+        "あり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b153",
@@ -18994,7 +20646,53 @@
         "二日",
         "两天"
       ]
-    }
+    },
+    "exJP": "二日休みがありました。",
+    "exEN": "I had two days off.",
+    "exZH": "我休息了两天。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "two days",
+      "senseListed": true
+    },
+    "exKana": "ふたかやすみがありました",
+    "exTokens": [
+      [
+        "二",
+        "ふた"
+      ],
+      [
+        "日",
+        "か"
+      ],
+      [
+        "休み",
+        "やすみ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "あり",
+        "あり"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b161",
@@ -19011,7 +20709,53 @@
       "zh": [
         "冬天"
       ]
-    }
+    },
+    "exJP": "今年の冬はとても寒いです。",
+    "exEN": "This winter is very cold.",
+    "exZH": "今年冬天非常冷。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "winter season",
+      "senseListed": true
+    },
+    "exKana": "ことしのふゆはとてもさむいです",
+    "exTokens": [
+      [
+        "今年",
+        "ことし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "冬",
+        "ふゆ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "とても",
+        "とても"
+      ],
+      [
+        "寒い",
+        "さむい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b162",
@@ -19386,7 +21130,57 @@
         "转弯",
         "弯曲"
       ]
-    }
+    },
+    "exJP": "次の角を右へ曲ります。",
+    "exEN": "I will turn right at the next corner.",
+    "exZH": "在下一个拐角向右拐。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to turn",
+      "senseListed": true
+    },
+    "exKana": "つぎのかどをみぎへまがります",
+    "exTokens": [
+      [
+        "次",
+        "つぎ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "角",
+        "かど"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "右",
+        "みぎ"
+      ],
+      [
+        "へ",
+        "へ"
+      ],
+      [
+        "曲り",
+        "まがり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b170",
@@ -19528,7 +21322,45 @@
       "zh": [
         "圆的"
       ]
-    }
+    },
+    "exJP": "月がとても丸いです。",
+    "exEN": "The moon is very round.",
+    "exZH": "月亮非常圆。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "round",
+      "senseListed": true
+    },
+    "exKana": "つきがとてもまるいです",
+    "exTokens": [
+      [
+        "月",
+        "つき"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "とても",
+        "とても"
+      ],
+      [
+        "丸い",
+        "まるい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b173",
@@ -20278,7 +22110,53 @@
       "zh": [
         "问题"
       ]
-    }
+    },
+    "exJP": "この問題はとても難しかったです。",
+    "exEN": "This problem was very difficult.",
+    "exZH": "这个问题非常难。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "problem",
+      "senseListed": true
+    },
+    "exKana": "このもんだいはとてもむずかしかったです",
+    "exTokens": [
+      [
+        "この",
+        "この"
+      ],
+      [
+        "問題",
+        "もんだい"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "とても",
+        "とても"
+      ],
+      [
+        "難しかっ",
+        "むずかしかっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b185",
@@ -20507,7 +22385,57 @@
       "zh": [
         "慢慢地"
       ]
-    }
+    },
+    "exJP": "電車はゆっくりと動いています。",
+    "exEN": "The train is moving slowly.",
+    "exZH": "电车正在缓慢行驶。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "slowly",
+      "senseListed": true
+    },
+    "exKana": "でんしゃはゆっくりとうごいています",
+    "exTokens": [
+      [
+        "電車",
+        "でんしゃ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "ゆっくり",
+        "ゆっくり"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "動い",
+        "うごい"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b190",
@@ -20792,7 +22720,65 @@
       "zh": [
         "留学生"
       ]
-    }
+    },
+    "exJP": "私の大学には留学生がたくさんいます。",
+    "exEN": "There are many international students at my university.",
+    "exZH": "我的大学里有很多留学生。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "international student",
+      "senseListed": true
+    },
+    "exKana": "わたくしのだいがくにはりゅうがくせいがたくさんいます",
+    "exTokens": [
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "大学",
+        "だいがく"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "留学生",
+        "りゅうがくせい"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "たくさん",
+        "たくさん"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b195",
@@ -20907,7 +22893,57 @@
       "zh": [
         "练习"
       ]
-    }
+    },
+    "exJP": "毎日ピアノを練習しています。",
+    "exEN": "I practice the piano every day.",
+    "exZH": "我每天都在练习弹钢琴。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to practice",
+      "senseListed": true
+    },
+    "exKana": "まいにちぴあのをれんしゅうしています",
+    "exTokens": [
+      [
+        "毎日",
+        "まいにち"
+      ],
+      [
+        "ピアノ",
+        "ぴあの"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "練習",
+        "れんしゅう"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b198",
@@ -21138,7 +23174,57 @@
       "zh": [
         "早餐"
       ]
-    }
+    },
+    "exJP": "毎朝七時に朝御飯を食べます。",
+    "exEN": "I eat breakfast at seven o'clock every morning.",
+    "exZH": "我每天早上七点吃早餐。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "breakfast",
+      "senseListed": true
+    },
+    "exKana": "まいあさしちじにあさごはんをたべます",
+    "exTokens": [
+      [
+        "毎朝",
+        "まいあさ"
+      ],
+      [
+        "七",
+        "しち"
+      ],
+      [
+        "時",
+        "じ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "朝御飯",
+        "あさごはん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "食べ",
+        "たべ"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b203",
@@ -21766,7 +23852,57 @@
       "zh": [
         "怎么样"
       ]
-    }
+    },
+    "exJP": "お茶をもう一杯いかがですか。",
+    "exEN": "Would you like another cup of tea?",
+    "exZH": "要不要再喝一杯茶？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "how about",
+      "senseListed": true
+    },
+    "exKana": "おちゃをもういっぱいいかがですか",
+    "exTokens": [
+      [
+        "お",
+        "お"
+      ],
+      [
+        "茶",
+        "ちゃ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "もう",
+        "もう"
+      ],
+      [
+        "一杯",
+        "いっぱい"
+      ],
+      [
+        "いかが",
+        "いかが"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "か",
+        "か"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b213",
@@ -23096,7 +25232,65 @@
       "zh": [
         "前年"
       ]
-    }
+    },
+    "exJP": "私は一昨年、日本へ来ました。",
+    "exEN": "I came to Japan the year before last.",
+    "exZH": "我前年来到了日本。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "the year before last",
+      "senseListed": true
+    },
+    "exKana": "わたくしはいっさくねんにっぽんへきました",
+    "exTokens": [
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "一昨",
+        "いっさく"
+      ],
+      [
+        "年",
+        "ねん"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "日本",
+        "にっぽん"
+      ],
+      [
+        "へ",
+        "へ"
+      ],
+      [
+        "来",
+        "き"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b238",
@@ -23529,7 +25723,61 @@
         "拐角",
         "角落"
       ]
-    }
+    },
+    "exJP": "次の角を左に曲がってください。",
+    "exEN": "Please turn left at the next corner.",
+    "exZH": "请在下一个拐角向左转。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "street corner",
+      "senseListed": true
+    },
+    "exKana": "つぎのかどをひだりにまがってください",
+    "exTokens": [
+      [
+        "次",
+        "つぎ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "角",
+        "かど"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "左",
+        "ひだり"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "曲がっ",
+        "まがっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "ください",
+        "ください"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b247",
@@ -24121,7 +26369,53 @@
       "zh": [
         "警察"
       ]
-    }
+    },
+    "exJP": "警官に道を聞きました。",
+    "exEN": "I asked a police officer for directions.",
+    "exZH": "我向警察问了路。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "police officer",
+      "senseListed": true
+    },
+    "exKana": "けいかんにみちをききました",
+    "exTokens": [
+      [
+        "警官",
+        "けいかん"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "道",
+        "みち"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "聞き",
+        "きき"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b259",
@@ -26698,7 +28992,57 @@
         "恰好",
         "正好"
       ]
-    }
+    },
+    "exJP": "ちょうど今、駅に着きました。",
+    "exEN": "I have just arrived at the station right now.",
+    "exZH": "我刚到车站。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "just right now",
+      "senseListed": true
+    },
+    "exKana": "ちょうどいまえきにつきました",
+    "exTokens": [
+      [
+        "ちょうど",
+        "ちょうど"
+      ],
+      [
+        "今",
+        "いま"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "駅",
+        "えき"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "着き",
+        "つき"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b303",
@@ -27461,7 +29805,49 @@
         "哪位",
         "谁"
       ]
-    }
+    },
+    "exJP": "あの方はどなたですか。",
+    "exEN": "Who is that person?",
+    "exZH": "那位是谁？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "who",
+      "senseListed": true
+    },
+    "exKana": "あのかたはどなたですか",
+    "exTokens": [
+      [
+        "あの",
+        "あの"
+      ],
+      [
+        "方",
+        "かた"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "どなた",
+        "どなた"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "か",
+        "か"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b316",
@@ -28034,7 +30420,61 @@
       "zh": [
         "脱（衣服）"
       ]
-    }
+    },
+    "exJP": "部屋に入る前に靴を脱ぎます。",
+    "exEN": "I take off my shoes before entering the room.",
+    "exZH": "进入房间前要脱鞋。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to take off clothing",
+      "senseListed": true
+    },
+    "exKana": "へやにはいるまえにくつをぬぎます",
+    "exTokens": [
+      [
+        "部屋",
+        "へや"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "入る",
+        "はいる"
+      ],
+      [
+        "前",
+        "まえ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "靴",
+        "くつ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "脱ぎ",
+        "ぬぎ"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b326",
@@ -28294,7 +30734,49 @@
       "zh": [
         "第一次"
       ]
-    }
+    },
+    "exJP": "初めて日本へ行きました。",
+    "exEN": "I went to Japan for the first time.",
+    "exZH": "我第一次去了日本。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "for the first time",
+      "senseListed": true
+    },
+    "exKana": "はじめてにっぽんへいきました",
+    "exTokens": [
+      [
+        "初めて",
+        "はじめて"
+      ],
+      [
+        "日本",
+        "にっぽん"
+      ],
+      [
+        "へ",
+        "へ"
+      ],
+      [
+        "行き",
+        "いき"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b331",
@@ -28673,7 +31155,57 @@
         "拉",
         "抽"
       ]
-    }
+    },
+    "exJP": "このドアを引いて開けてください。",
+    "exEN": "Please pull this door to open it.",
+    "exZH": "请拉开这扇门。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to pull",
+      "senseListed": true
+    },
+    "exKana": "このどあをひいてあけてください",
+    "exTokens": [
+      [
+        "この",
+        "この"
+      ],
+      [
+        "ドア",
+        "どあ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "引い",
+        "ひい"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "開け",
+        "あけ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "ください",
+        "ください"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b338",
@@ -30079,7 +32611,65 @@
         "门",
         "大门"
       ]
-    }
+    },
+    "exJP": "学校の門の前で友達を待ちます。",
+    "exEN": "I wait for my friend in front of the school gate.",
+    "exZH": "我在学校大门前等朋友。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "gate",
+      "senseListed": true
+    },
+    "exKana": "がっこうのもんのまえでともだちをまちます",
+    "exTokens": [
+      [
+        "学校",
+        "がっこう"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "門",
+        "もん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "前",
+        "まえ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "友達",
+        "ともだち"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "待ち",
+        "まち"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b364",

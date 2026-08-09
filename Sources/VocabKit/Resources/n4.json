@@ -6824,7 +6824,57 @@
         "米",
         "大米"
       ]
-    }
+    },
+    "exJP": "日本人は毎日お米を食べます。",
+    "exEN": "Japanese people eat rice every day.",
+    "exZH": "日本人每天吃大米。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "uncooked rice",
+      "senseListed": true
+    },
+    "exKana": "にほんじんはまいにちおこめをたべます",
+    "exTokens": [
+      [
+        "日本人",
+        "にほんじん"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "毎日",
+        "まいにち"
+      ],
+      [
+        "お",
+        "お"
+      ],
+      [
+        "米",
+        "こめ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "食べ",
+        "たべ"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g147",
@@ -9686,7 +9736,69 @@
         "女性",
         "妇女"
       ]
-    }
+    },
+    "exJP": "あそこに立っている女性は私の姉です。",
+    "exEN": "The woman standing over there is my older sister.",
+    "exZH": "站在那里的女性是我的姐姐。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "woman",
+      "senseListed": true
+    },
+    "exKana": "あそこにたっているじょせいはわたくしのあねです",
+    "exTokens": [
+      [
+        "あそこ",
+        "あそこ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "立っ",
+        "たっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "女性",
+        "じょせい"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "姉",
+        "あね"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g191",
@@ -11090,7 +11202,73 @@
         "扒手",
         "小偷"
       ]
-    }
+    },
+    "exJP": "電車の中で掏摸に財布をとられました。",
+    "exEN": "My wallet was stolen by a pickpocket on the train.",
+    "exZH": "我在电车里被扒手偷了钱包。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "pickpocket",
+      "senseListed": true
+    },
+    "exKana": "でんしゃのなかですりにさいふをとられました",
+    "exTokens": [
+      [
+        "電車",
+        "でんしゃ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "中",
+        "なか"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "掏摸",
+        "すり"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "財布",
+        "さいふ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "とら",
+        "とら"
+      ],
+      [
+        "れ",
+        "れ"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g212",
@@ -12282,7 +12460,73 @@
         "祖母",
         "外祖母"
       ]
-    }
+    },
+    "exJP": "私の祖母は今も元気で暮らしています。",
+    "exEN": "My grandmother is still living in good health.",
+    "exZH": "我的祖母现在依然健康地生活着。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "grandmother (own)",
+      "senseListed": true
+    },
+    "exKana": "わたくしのそぼはいまもげんきでくらしています",
+    "exTokens": [
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "祖母",
+        "そぼ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "今",
+        "いま"
+      ],
+      [
+        "も",
+        "も"
+      ],
+      [
+        "元気",
+        "げんき"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "暮らし",
+        "くらし"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g230",
@@ -12686,7 +12930,69 @@
       "zh": [
         "大学生"
       ]
-    }
+    },
+    "exJP": "兄は今年の春から大学生になりました。",
+    "exEN": "My older brother became a university student this spring.",
+    "exZH": "哥哥从今年春天开始成了大学生。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "university student",
+      "senseListed": true
+    },
+    "exKana": "あにはことしのはるからだいがくせいになりました",
+    "exTokens": [
+      [
+        "兄",
+        "あに"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "今年",
+        "ことし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "春",
+        "はる"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "大学生",
+        "だいがくせい"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "なり",
+        "なり"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g237",
@@ -13385,7 +13691,73 @@
       "zh": [
         "榻榻米"
       ]
-    }
+    },
+    "exJP": "日本の古い家には畳の部屋があります。",
+    "exEN": "Old Japanese houses have rooms with tatami mats.",
+    "exZH": "日本的老房子里有榻榻米房间。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "tatami mat",
+      "senseListed": true
+    },
+    "exKana": "にっぽんのふるいいえにはたたみのへやがあります",
+    "exTokens": [
+      [
+        "日本",
+        "にっぽん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "古い",
+        "ふるい"
+      ],
+      [
+        "家",
+        "いえ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "畳",
+        "たたみ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "部屋",
+        "へや"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "あり",
+        "あり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g248",
@@ -13484,7 +13856,73 @@
         "例如",
         "譬如"
       ]
-    }
+    },
+    "exJP": "例えば、りんごやバナナのような果物が好きです。",
+    "exEN": "For example, I like fruits such as apples and bananas.",
+    "exZH": "例如，我喜欢像苹果和香蕉这样的水果。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "for example",
+      "senseListed": true
+    },
+    "exKana": "たとえばりんごやばななのようなくだものがすきです",
+    "exTokens": [
+      [
+        "例えば",
+        "たとえば"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "りんご",
+        "りんご"
+      ],
+      [
+        "や",
+        "や"
+      ],
+      [
+        "バナナ",
+        "ばなな"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "よう",
+        "よう"
+      ],
+      [
+        "な",
+        "な"
+      ],
+      [
+        "果物",
+        "くだもの"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "好き",
+        "すき"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g250",
@@ -14547,7 +14985,73 @@
         "附带",
         "沾上"
       ]
-    }
+    },
+    "exJP": "白いシャツにインクの汚れが付いてしまいました。",
+    "exEN": "An ink stain got on my white shirt.",
+    "exZH": "白衬衫上沾上了墨水污渍。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to stick to",
+      "senseListed": true
+    },
+    "exKana": "しろいしゃつにいんくのよごれがついてしまいました",
+    "exTokens": [
+      [
+        "白い",
+        "しろい"
+      ],
+      [
+        "シャツ",
+        "しゃつ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "インク",
+        "いんく"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "汚れ",
+        "よごれ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "付い",
+        "つい"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "しまい",
+        "しまい"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g266",
@@ -15553,7 +16057,81 @@
       "zh": [
         "展览会"
       ]
-    }
+    },
+    "exJP": "市立美術館で有名画家の展覧会が開かれています。",
+    "exEN": "An exhibition by a famous painter is being held at the municipal art museum.",
+    "exZH": "市立美术馆正在举办著名画家的展览。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "art exhibition",
+      "senseListed": true
+    },
+    "exKana": "しりつびじゅつかんでゆうめいがかのてんらんかいがひらかれています",
+    "exTokens": [
+      [
+        "市",
+        "し"
+      ],
+      [
+        "立",
+        "りつ"
+      ],
+      [
+        "美術館",
+        "びじゅつかん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "有名",
+        "ゆうめい"
+      ],
+      [
+        "画家",
+        "がか"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "展覧会",
+        "てんらんかい"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "開か",
+        "ひらか"
+      ],
+      [
+        "れ",
+        "れ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g283",
@@ -17648,7 +18226,57 @@
         "好笑的",
         "奇怪的"
       ]
-    }
+    },
+    "exJP": "このラジオの音が少しおかしいです。",
+    "exEN": "The sound from this radio is a bit strange.",
+    "exZH": "这台收音机的声音有点奇怪。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "strange or abnormal",
+      "senseListed": true
+    },
+    "exKana": "このらじおのおとがすこしおかしいです",
+    "exTokens": [
+      [
+        "この",
+        "この"
+      ],
+      [
+        "ラジオ",
+        "らじお"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "音",
+        "おと"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "少し",
+        "すこし"
+      ],
+      [
+        "おかしい",
+        "おかしい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g313",
@@ -18603,7 +19231,69 @@
       "zh": [
         "学者"
       ]
-    }
+    },
+    "exJP": "あの人は有名な日本の歴史の学者です。",
+    "exEN": "That person is a famous scholar of Japanese history.",
+    "exZH": "那个人是著名的日本历史学者。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "scholar or academic",
+      "senseListed": true
+    },
+    "exKana": "あのひとはゆうめいなにっぽんのれきしのがくしゃです",
+    "exTokens": [
+      [
+        "あの",
+        "あの"
+      ],
+      [
+        "人",
+        "ひと"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "有名",
+        "ゆうめい"
+      ],
+      [
+        "な",
+        "な"
+      ],
+      [
+        "日本",
+        "にっぽん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "歴史",
+        "れきし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "学者",
+        "がくしゃ"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g328",
@@ -19141,7 +19831,65 @@
         "感觉",
         "觉得"
       ]
-    }
+    },
+    "exJP": "部屋に入ると、少し寒さを感じた。",
+    "exEN": "When I entered the room, I felt a bit of coldness.",
+    "exZH": "一进房间，就感到有些寒意。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to feel or perceive",
+      "senseListed": true
+    },
+    "exKana": "へやにはいるとすこしさむさをかんじた",
+    "exTokens": [
+      [
+        "部屋",
+        "へや"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "入る",
+        "はいる"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "少し",
+        "すこし"
+      ],
+      [
+        "寒さ",
+        "さむさ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "感じ",
+        "かんじ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g336",
@@ -19649,7 +20397,73 @@
       "zh": [
         "禁止"
       ]
-    }
+    },
+    "exJP": "この公園ではボール遊びが禁止されている。",
+    "exEN": "Playing with balls is prohibited in this park.",
+    "exZH": "这个公园里禁止玩球。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "prohibition or ban",
+      "senseListed": true
+    },
+    "exKana": "このこうえんではぼーるあそびがきんしされている",
+    "exTokens": [
+      [
+        "この",
+        "この"
+      ],
+      [
+        "公園",
+        "こうえん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "ボール",
+        "ぼーる"
+      ],
+      [
+        "遊び",
+        "あそび"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "禁止",
+        "きんし"
+      ],
+      [
+        "さ",
+        "さ"
+      ],
+      [
+        "れ",
+        "れ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g344",
@@ -20861,7 +21675,61 @@
         "粉末",
         "面粉"
       ]
-    }
+    },
+    "exJP": "服に白い粉がついています。",
+    "exEN": "There is white powder on your clothes.",
+    "exZH": "衣服上粘着白色的粉末。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "powder or fine particles",
+      "senseListed": true
+    },
+    "exKana": "ふくにしろいこながついています",
+    "exTokens": [
+      [
+        "服",
+        "ふく"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "白い",
+        "しろい"
+      ],
+      [
+        "粉",
+        "こな"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "つい",
+        "つい"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g362",
@@ -22176,7 +23044,77 @@
         "不断地",
         "连续地"
       ]
-    }
+    },
+    "exJP": "雨がやんで、空がどんどん明るくなってきた。",
+    "exEN": "The rain stopped and the sky steadily brightened up.",
+    "exZH": "雨停了，天空渐渐变得明亮起来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "steadily or rapidly",
+      "senseListed": true
+    },
+    "exKana": "あめがやんでそらがどんどんあかるくなってきた",
+    "exTokens": [
+      [
+        "雨",
+        "あめ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "やん",
+        "やん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "空",
+        "そら"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "どんどん",
+        "どんどん"
+      ],
+      [
+        "明るく",
+        "あかるく"
+      ],
+      [
+        "なっ",
+        "なっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "き",
+        "き"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g382",
@@ -22428,7 +23366,61 @@
         "扔",
         "投"
       ]
-    }
+    },
+    "exJP": "公園で犬にボールを投げました。",
+    "exEN": "I threw a ball to the dog in the park.",
+    "exZH": "我在公园里给狗扔了球。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to throw or pitch",
+      "senseListed": true
+    },
+    "exKana": "こうえんでいぬにぼーるをなげました",
+    "exTokens": [
+      [
+        "公園",
+        "こうえん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "犬",
+        "いぬ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "ボール",
+        "ぼーる"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "投げ",
+        "なげ"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g386",
@@ -23989,7 +24981,65 @@
       "zh": [
         "找零"
       ]
-    }
+    },
+    "exJP": "千円を払って、おつりをもらった。",
+    "exEN": "I paid one thousand yen and received the change.",
+    "exZH": "我付了一千日元，接过了找零。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "change from a payment",
+      "senseListed": true
+    },
+    "exKana": "せんえんをはらっておつりをもらった",
+    "exTokens": [
+      [
+        "千",
+        "せん"
+      ],
+      [
+        "円",
+        "えん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "払っ",
+        "はらっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "おつり",
+        "おつり"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "もらっ",
+        "もらっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b012",
@@ -24965,7 +26015,57 @@
         "研究室",
         "实验室"
       ]
-    }
+    },
+    "exJP": "教授は今、研究室にいます。",
+    "exEN": "The professor is in his office right now.",
+    "exZH": "教授现在在研究室里。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "professor's office or laboratory",
+      "senseListed": true
+    },
+    "exKana": "きょうじゅはいまけんきゅうしつにいます",
+    "exTokens": [
+      [
+        "教授",
+        "きょうじゅ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "今",
+        "いま"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "研究室",
+        "けんきゅうしつ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b027",
@@ -25514,7 +26614,65 @@
         "从今以后",
         "接下来"
       ]
-    }
+    },
+    "exJP": "これから友達と映画を見に行きます。",
+    "exEN": "I am going to see a movie with my friend now.",
+    "exZH": "接下来我要和朋友去看电影。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "from now on or after this",
+      "senseListed": true
+    },
+    "exKana": "これからともだちとえいがをみにいきます",
+    "exTokens": [
+      [
+        "これ",
+        "これ"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "友達",
+        "ともだち"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "映画",
+        "えいが"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "見",
+        "み"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "行き",
+        "いき"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b036",
@@ -26116,7 +27274,61 @@
         "厉害",
         "了不起"
       ]
-    }
+    },
+    "exJP": "彼のピアノの演奏は本当に凄い。",
+    "exEN": "His piano performance is really amazing.",
+    "exZH": "他的钢琴演奏真的很厉害。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "amazing or extraordinary",
+      "senseListed": true
+    },
+    "exKana": "かれのぴあののえんそうはほんとうにすごい",
+    "exTokens": [
+      [
+        "彼",
+        "かれ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "ピアノ",
+        "ぴあの"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "演奏",
+        "えんそう"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "本当",
+        "ほんとう"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "凄い",
+        "すごい"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b046",
@@ -27200,7 +28412,61 @@
       "zh": [
         "哭泣"
       ]
-    }
+    },
+    "exJP": "赤ん坊が大きな声で泣いています。",
+    "exEN": "The baby is crying loudly.",
+    "exZH": "婴儿正在大声哭泣。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to cry or weep",
+      "senseListed": true
+    },
+    "exKana": "あかんぼうがおおきなこえでないています",
+    "exTokens": [
+      [
+        "赤ん坊",
+        "あかんぼう"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "大きな",
+        "おおきな"
+      ],
+      [
+        "声",
+        "こえ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "泣い",
+        "ない"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b065",
@@ -28289,7 +29555,61 @@
         "场所",
         "地方"
       ]
-    }
+    },
+    "exJP": "約束の場所に時間通りに到着した。",
+    "exEN": "I arrived at the meeting place on time.",
+    "exZH": "我按时到达了约定的地点。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "place or location",
+      "senseListed": true
+    },
+    "exKana": "やくそくのばしょにじかんどおりにとうちゃくした",
+    "exTokens": [
+      [
+        "約束",
+        "やくそく"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "場所",
+        "ばしょ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "時間通り",
+        "じかんどおり"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "到着",
+        "とうちゃく"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b083",
@@ -28700,7 +30020,65 @@
       "zh": [
         "支付"
       ]
-    }
+    },
+    "exJP": "レジで品物の代金を現金で払った。",
+    "exEN": "I paid for the item in cash at the register.",
+    "exZH": "我在收银台用现金支付了商品款项。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to pay money",
+      "senseListed": true
+    },
+    "exKana": "れじでしなもののだいきんをげんきんではらった",
+    "exTokens": [
+      [
+        "レジ",
+        "れじ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "品物",
+        "しなもの"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "代金",
+        "だいきん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "現金",
+        "げんきん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "払っ",
+        "はらっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b090",
@@ -31822,7 +33200,61 @@
         "旋转",
         "巡回"
       ]
-    }
+    },
+    "exJP": "地球は太陽の周りを回っている。",
+    "exEN": "The Earth revolves around the sun.",
+    "exZH": "地球绕着太阳旋转。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to revolve or rotate",
+      "senseListed": true
+    },
+    "exKana": "ちきゅうはたいようのまわりをまわっている",
+    "exTokens": [
+      [
+        "地球",
+        "ちきゅう"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "太陽",
+        "たいよう"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "周り",
+        "まわり"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "回っ",
+        "まわっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b139",
@@ -32501,7 +33933,69 @@
       "zh": [
         "儿子"
       ]
-    }
+    },
+    "exJP": "私の息子は今年高校に入学しました。",
+    "exEN": "My son entered high school this year.",
+    "exZH": "我的儿子今年升入了高中。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "one's own son",
+      "senseListed": true
+    },
+    "exKana": "わたくしのむすこはことしこうこうににゅうがくしました",
+    "exTokens": [
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "息子",
+        "むすこ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "今年",
+        "ことし"
+      ],
+      [
+        "高校",
+        "こうこう"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "入学",
+        "にゅうがく"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b150",
@@ -32596,7 +34090,69 @@
         "无理",
         "勉强"
       ]
-    }
+    },
+    "exJP": "一日でこの本を全部読むのは無理だ。",
+    "exEN": "Reading this entire book in one day is impossible.",
+    "exZH": "一天内读完这本书是不可能的。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "impossible or unfeasible",
+      "senseListed": true
+    },
+    "exKana": "ついたちでこのほんをぜんぶよむのはむりだ",
+    "exTokens": [
+      [
+        "一日",
+        "ついたち"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "この",
+        "この"
+      ],
+      [
+        "本",
+        "ほん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "全部",
+        "ぜんぶ"
+      ],
+      [
+        "読む",
+        "よむ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "無理",
+        "むり"
+      ],
+      [
+        "だ",
+        "だ"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b152",
@@ -32942,7 +34498,61 @@
         "当然",
         "不用说"
       ]
-    }
+    },
+    "exJP": "明日のパーティーにはもちろん参加します。",
+    "exEN": "Of course I will attend tomorrow's party.",
+    "exZH": "我当然会参加明天的派对。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "of course or naturally",
+      "senseListed": true
+    },
+    "exKana": "あすのぱーてぃーにはもちろんさんかします",
+    "exTokens": [
+      [
+        "明日",
+        "あす"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "パーティー",
+        "ぱーてぃー"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "もちろん",
+        "もちろん"
+      ],
+      [
+        "参加",
+        "さんか"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b158",
@@ -34794,7 +36404,65 @@
       "zh": [
         "旅馆"
       ]
-    }
+    },
+    "exJP": "京都の古い旅館に一晩泊まりました。",
+    "exEN": "I stayed overnight at an old Japanese inn in Kyoto.",
+    "exZH": "我在京都的一家古老日式旅馆里住了一晚。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "traditional Japanese inn",
+      "senseListed": true
+    },
+    "exKana": "きょうとのふるいりょかんにいちばんとまりました",
+    "exTokens": [
+      [
+        "京都",
+        "きょうと"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "古い",
+        "ふるい"
+      ],
+      [
+        "旅館",
+        "りょかん"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "一",
+        "いち"
+      ],
+      [
+        "晩",
+        "ばん"
+      ],
+      [
+        "泊まり",
+        "とまり"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b187",
@@ -35411,7 +37079,57 @@
       "zh": [
         "笑"
       ]
-    }
+    },
+    "exJP": "赤ん坊が楽しそうに笑っている。",
+    "exEN": "The baby is smiling happily.",
+    "exZH": "婴儿正在开心地笑。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to smile or laugh",
+      "senseListed": true
+    },
+    "exKana": "あかんぼうがたのしそうにわらっている",
+    "exTokens": [
+      [
+        "赤ん坊",
+        "あかんぼう"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "楽し",
+        "たのし"
+      ],
+      [
+        "そう",
+        "そう"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "笑っ",
+        "わらっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b196",
@@ -35432,7 +37150,57 @@
         "比例",
         "比较"
       ]
-    }
+    },
+    "exJP": "この学校は女子の割合が高い。",
+    "exEN": "The proportion of female students at this school is high.",
+    "exZH": "这所学校女生所占的比例很高。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "ratio or proportion",
+      "senseListed": true
+    },
+    "exKana": "このがっこうはじょしのわりあいがたかい",
+    "exTokens": [
+      [
+        "この",
+        "この"
+      ],
+      [
+        "学校",
+        "がっこう"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "女子",
+        "じょし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "割合",
+        "わりあい"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "高い",
+        "たかい"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b197",
@@ -35452,7 +37220,57 @@
         "碎裂",
         "裂开"
       ]
-    }
+    },
+    "exJP": "手から滑り落ちてコップが割れた。",
+    "exEN": "The glass slipped from my hand and broke.",
+    "exZH": "杯子从手里滑落摔碎了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + adjudication (v1.19 §A, N5/N4)",
+      "sense": "to break or shatter",
+      "senseListed": true
+    },
+    "exKana": "てからすべりおちてこっぷがわれた",
+    "exTokens": [
+      [
+        "手",
+        "て"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "滑り落ち",
+        "すべりおち"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "コップ",
+        "こっぷ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "割れ",
+        "われ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b198",

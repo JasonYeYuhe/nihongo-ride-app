@@ -1,0 +1,146 @@
+{
+ "reviewed": 111,
+ "flagged": 26,
+ "wrong": 2,
+ "wrongItems": [
+  {
+   "id": "n5-b155",
+   "severity": "wrong",
+   "problem": "「この旅行には一月かかります。」 does not force the taught reading ひとつき. Written as 一月 in a duration slot with かかる, a reader defaults to いっかげつ (or reads 一月 as the month name いちがつ). To force ひとつき the writing needs to be ひと月 (or the sentence rewritten with 一か月). As typing practice the learner is shown 一月 and asked to produce ひとつき, which the context does not license."
+  },
+  {
+   "id": "n4-g374",
+   "severity": "wrong",
+   "problem": "zh invents a quantity the Japanese never states and contradicts en: 「大きな魚を釣りました」/ \"I caught a big fish\" vs 中文「钓到了两条大鱼」(caught TWO big fish). A learner comparing the three lines gets a direct contradiction on the object of the target verb."
+  }
+ ],
+ "minorItems": [
+  {
+   "id": "n5-b079",
+   "severity": "minor",
+   "problem": "「雨が降ってきましたが、しかし試合は続きました。」doubles the contrastive marker: the clause-final が already carries 'but', so adding しかし on top is redundant and reads as a learner error. Standard Japanese uses one or the other — 「雨が降ってきましたが、試合は続きました」or 「雨が降ってきました。しかし、試合は続きました」. Since the target word IS しかし, the second form is the right fix (split into two sentences and drop が)."
+  },
+  {
+   "id": "n5-b096",
+   "severity": "minor",
+   "problem": "「朝起きて、そして顔を洗いました。」stacks the て-form connective and そして, which both do the joining work; the result is redundant. For a sentence whose point is to teach そして, the て-form should be resolved: 「朝起きました。そして顔を洗いました。」"
+  },
+  {
+   "id": "n4-b002",
+   "severity": "minor",
+   "problem": "「ああやって動かすと動きますよ。」repeats 動かす／動きます in a seven-word sentence, which is clumsy for a model sentence. Something like 「ああやってボタンを押すと動きますよ」keeps ああ in the same demonstrative slot without the echo."
+  },
+  {
+   "id": "n5-b071",
+   "severity": "minor",
+   "problem": "The target 午前 never appears standalone — it occurs only inside the compound 午前中 (ごぜんちゅう), which is what the embedded-in-longer-word flag warns about. The reading ごぜん is at least preserved inside the compound, so this is not a wrong reading, but the learner never sees the word itself. 「午前十時に図書館で勉強しました」would show 午前 as its own unit."
+  },
+  {
+   "id": "n5-b196",
+   "severity": "minor",
+   "problem": "「テストの点が零でした。」 is unnatural. Modern Japanese writes a test score as 0点 and says ゼロてん / れいてん; the kanji 零 is confined to formal or set expressions (零下, 零点). Also, because 零 is itself commonly read ゼロ, the sentence does not clearly push the learner toward れい. 「テストの点は零点でした」 would be at least idiomatic."
+  },
+  {
+   "id": "n5-b266",
+   "severity": "minor",
+   "problem": "「どうぞこちらへお入りください。」 uses the honorific お＋連用形＋ください pattern, which is N4-level keigo — well above the N5 target word こちら and above what a first-months learner reads. Something like 「どうぞこちらへ来てください」 or 「入り口はこちらです」 keeps the grammar at the word's level."
+  },
+  {
+   "id": "n4-g282",
+   "severity": "minor",
+   "problem": "「有名画家の展覧会」 uses the compressed journalistic compound 有名画家; natural (and level-appropriate) Japanese here is 「有名な画家の展覧会」. The sentence is otherwise correct."
+  },
+  {
+   "id": "n4-g327",
+   "severity": "minor",
+   "problem": "「有名な日本の歴史の学者です」 stacks three modifiers with two の and lets 有名な attach ambiguously to 日本; natural phrasing would be 「日本の歴史の有名な学者です」 or 「日本史の有名な学者です」."
+  },
+  {
+   "id": "n4-b118",
+   "severity": "minor",
+   "problem": "異国 is a literary, well-above-N4 word for a beginner sentence; 「留学して外国の文化を学びたい」 says the same thing at level. Grammar itself is fine."
+  },
+  {
+   "id": "n4-b124",
+   "severity": "minor",
+   "problem": "「ニュースの放送を聞いた」 is redundant in Japanese — one normally says 「ラジオでニュースを聞いた」. To keep the target word, 「ラジオのニュース放送を聞いた」 or 「今朝の放送でニュースを聞いた」 reads naturally."
+  },
+  {
+   "id": "n4-b140",
+   "severity": "minor",
+   "problem": "Spelling: modern standard orthography for まんなか is 真ん中; the okurigana-less 真中 is a dated variant that most IMEs will not produce from まんなか, which is a problem in a typing drill (and 真中 can also be read まなか)."
+  },
+  {
+   "id": "n4-b197",
+   "severity": "minor",
+   "problem": "Word order is awkward: 「手から滑り落ちてコップが割れた」 puts the subject of 滑り落ちる after the subordinate clause. Natural is 「コップが手から滑り落ちて割れた」."
+  },
+  {
+   "id": "n5-g067",
+   "severity": "minor",
+   "problem": "en and zh pick different referents for 時計: en says \"This clock is running a little slow\" while zh says 这块手表有点慢 — 这块 + 手表 is specifically a wristwatch. A learner seeing both renderings gets contradictory pictures of what この時計 is; pick one (either 这个钟 / clock, or watch / 手表) so en and zh agree."
+  },
+  {
+   "id": "n5-b216",
+   "severity": "minor",
+   "problem": "en does not render the target. jp 一年の中で春がいちばん好きです is \"of the whole year I like spring the best\"; en \"Spring is my favorite season of the year\" both invents a noun not in the Japanese (季節/season) and dissolves いちばん into the word \"favorite\", so the learner never sees what いちばん contributes. zh 一年之中我最喜欢春天 gets it right with 最, leaving en the odd one out."
+  },
+  {
+   "id": "n5-b044",
+   "severity": "minor",
+   "problem": "Tense/frequency mismatch between en and jp/zh: jp says 毎日 (every day) and zh matches with 每天, but en says \"every night\". Minor factual drift in the English against both the Japanese and the Chinese; should be \"every day before going to bed\"."
+  },
+  {
+   "id": "n5-b239",
+   "severity": "minor",
+   "problem": "zh copies the kanji where the senses diverge, twice. 親切 (kind, helpful) is rendered 亲切, which in Chinese means cordial/warm-mannered, not kind — en says \"a kind person\", zh says \"一个亲切的人\", so the two translations do not agree on the trait being described (好心/热心 would match). 伯母 is also a kanji copy: Japanese 伯母さん is any aunt older than one's parent on either side, while Chinese 伯母 is specifically the wife of one's father's elder brother, narrowing the relation the sentence states (姑妈/姨妈/伯母 distinction)."
+  },
+  {
+   "id": "n4-g122",
+   "severity": "minor",
+   "problem": "Both translations render 日が暮れる as a sunset event — en \"before the sun sets\", zh \"在太阳落山前\" — which maps onto 日が沈む rather than the taught sense of 暮れる (to get dark / for the day to draw to a close). The one sentence a learner sees for this word therefore teaches them to equate 暮れる with \"set (of the sun)\"; \"before it gets dark\" / 天黑前 would show the declared sense."
+  },
+  {
+   "id": "n4-g146",
+   "severity": "minor",
+   "problem": "The word the learner actually sees is お米 (おこめ), not the surface 米 with the taught reading こめ, so the displayed/typed form carries a prefix the entry does not teach. The sentence also pushes against the declared sense: 「お米を食べます」 with en \"eat rice\" and zh \"吃大米\" reads as eating the cooked staple (ご飯/米饭), which is exactly the distinction 米 = uncooked rice is supposed to draw; a buying/cooking/harvest context would carry the sense the item declares."
+  },
+  {
+   "id": "n4-g225",
+   "severity": "minor",
+   "problem": "en mistranslates the collocation: 「勉強を教えてもらいました」means a senior helped me with my schoolwork/taught me the material, not \"taught me how to study\" (that would be 勉強の仕方). zh also drifts the other way, adding a request 「我请…教我学习」that the てもらう form doesn't require. en and zh end up describing two different events (being taught study methods vs. asking to be taught)."
+  },
+  {
+   "id": "n4-b131",
+   "severity": "minor",
+   "problem": "Subject disagreement between the two translations: en says \"We ended up losing yesterday's soccer match\" while zh says 「我…输了」(I lost). The Japanese leaves the subject unstated, so the two glosses shouldn't commit to different ones. zh also drops the てしまった regret nuance that en renders as \"ended up\"."
+  },
+  {
+   "id": "n4-g260",
+   "severity": "minor",
+   "problem": "zh recasts the target word out of the sentence: 注射 (injection / a shot) becomes 「接种了流感疫苗」(got vaccinated), which is 接种/疫苗 vocabulary, not 注射/打针. The Chinese line no longer shows the learner what 注射 means, and it also drops the 打ってもらいました (had it administered) framing that en keeps as \"I received\"."
+  },
+  {
+   "id": "n4-g278",
+   "severity": "minor",
+   "problem": "en/zh diverge on the target noun's sense and en is unidiomatic: 「良い点を取る」is getting a good score/grade, rendered in zh correctly as 得高分 but in en as \"get good points on tests\", which reads as points in a discussion rather than a test score. For an N4 learner the English gloss is what anchors 点 = score, and it misses."
+  },
+  {
+   "id": "n4-g381",
+   "severity": "minor",
+   "problem": "zh 「渐渐」means gradually/little by little, which is the opposite end of the scale from どんどん (rapidly, at an increasing pace) and from the app's own glosses \"rapidly, steadily\". 越来越亮 or 迅速 would carry the target adverb; as written the Chinese teaches the wrong intensity."
+  },
+  {
+   "id": "n4-g211",
+   "severity": "minor",
+   "problem": "Teaching fit: 掏摸 is rare ateji — すり is written スリ (or すり) in virtually all modern Japanese, including anything an N4 learner would ever read. Presenting the kanji form in the example sentence trains a spelling learners will not encounter and may not be able to produce from the reading."
+  }
+ ],
+ "misleadingCards": [
+  {
+   "id": "n4-b158",
+   "misleading": true,
+   "why": "もっとも glossed 'quite right, however' (the conjunction/concession sense), but the sentence 富士山は日本でもっとも高い山です uses the superlative adverb 'most'. The gloss line does not cover that sense at all — a learner cannot derive 'the highest mountain' from 'quite right, however'."
+  }
+ ]
+}
