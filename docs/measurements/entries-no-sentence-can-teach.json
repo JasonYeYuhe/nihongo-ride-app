@@ -1,0 +1,3117 @@
+{
+ "what": "entries no generated sentence can teach, and why",
+ "total": 216,
+ "why": "A sentence for these words is written naturally, the kanji is read the COMMON way, and the reading gate correctly rejects it. Regenerating does not help: the generator and the gate share the assumption that a spelling has one likely reading, which is exactly what these entries violate. v1.18 furigana removes the harm wherever a sentence DOES exist, but these have none.",
+ "entries": [
+  {
+   "id": "n1-b132",
+   "surface": "鼠",
+   "taughtReading": "ねず",
+   "glosses": [
+    "mouse",
+    "rat"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b360",
+     "kana": "ねずみ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b151",
+   "surface": "文",
+   "taughtReading": "ふみ",
+   "glosses": [
+    "letter",
+    "writings"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ぶん",
+   "siblings": []
+  },
+  {
+   "id": "n1-b164",
+   "surface": "真に",
+   "taughtReading": "まことに",
+   "glosses": [
+    "truly",
+    "really"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "しんに",
+   "siblings": []
+  },
+  {
+   "id": "n1-b177",
+   "surface": "夜中",
+   "taughtReading": "やちゅう",
+   "glosses": [
+    "middle of the night"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b714",
+     "kana": "よなか",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b188",
+   "surface": "明白",
+   "taughtReading": "あからさま",
+   "glosses": [
+    "plain",
+    "frank",
+    "open"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-g079",
+     "kana": "めいはく",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b199",
+   "surface": "一定",
+   "taughtReading": "いちじょう",
+   "glosses": [
+    "fixed",
+    "settled",
+    "certainly"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b451",
+     "kana": "いってい",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b202",
+   "surface": "上下",
+   "taughtReading": "うえした",
+   "glosses": [
+    "up and down",
+    "top and bottom"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b850",
+     "kana": "じょうげ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b203",
+   "surface": "潮",
+   "taughtReading": "うしお",
+   "glosses": [
+    "tide",
+    "current"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "しお",
+   "siblings": []
+  },
+  {
+   "id": "n1-b214",
+   "surface": "面",
+   "taughtReading": "おも",
+   "glosses": [
+    "face",
+    "mask",
+    "surface"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b175",
+     "kana": "めん",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b220",
+   "surface": "火傷",
+   "taughtReading": "かしょう",
+   "glosses": [
+    "burn",
+    "scald"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b1015",
+     "kana": "やけど",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b224",
+   "surface": "瓶",
+   "taughtReading": "かめ",
+   "glosses": [
+    "earthenware pot",
+    "jar",
+    "vase"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b666",
+     "kana": "びん",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b239",
+   "surface": "近々",
+   "taughtReading": "きんきん",
+   "glosses": [
+    "soon",
+    "before long"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b1172",
+     "kana": "ちかぢか",
+     "hasExample": false
+    }
+   ]
+  },
+  {
+   "id": "n1-b246",
+   "surface": "汚す",
+   "taughtReading": "けがす",
+   "glosses": [
+    "to disgrace",
+    "to dishonor",
+    "to defile"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b187",
+     "kana": "よごす",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b285",
+   "surface": "地方",
+   "taughtReading": "じかた",
+   "glosses": [
+    "rural area",
+    "countryside",
+    "land"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b107",
+     "kana": "ちほう",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b320",
+   "surface": "中指",
+   "taughtReading": "ちゅうし",
+   "glosses": [
+    "middle finger"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b129",
+     "kana": "なかゆび",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b328",
+   "surface": "摘む",
+   "taughtReading": "つまむ",
+   "glosses": [
+    "to pinch",
+    "to hold"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "つむ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b346",
+   "surface": "土産",
+   "taughtReading": "どさん",
+   "glosses": [
+    "local product"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b171",
+     "kana": "みやげ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b373",
+   "surface": "歩",
+   "taughtReading": "ふ",
+   "glosses": [
+    "pawn (shogi)",
+    "step",
+    "walk"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "あゆみ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b408",
+   "surface": "基",
+   "taughtReading": "もとい",
+   "glosses": [
+    "basis",
+    "foundation"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "もと",
+   "siblings": []
+  },
+  {
+   "id": "n1-b410",
+   "surface": "夜行",
+   "taughtReading": "やぎょう",
+   "glosses": [
+    "walking around at night",
+    "night train"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b719",
+     "kana": "やこう",
+     "hasExample": false
+    }
+   ]
+  },
+  {
+   "id": "n1-b431",
+   "surface": "天",
+   "taughtReading": "あまつ",
+   "glosses": [
+    "heavenly",
+    "imperial"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "てん",
+   "siblings": []
+  },
+  {
+   "id": "n1-b433",
+   "surface": "彼此",
+   "taughtReading": "あれこれ",
+   "glosses": [
+    "this and that",
+    "various"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "かれこれ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b436",
+   "surface": "軍",
+   "taughtReading": "いくさ",
+   "glosses": [
+    "war",
+    "battle"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b038",
+     "kana": "ぐん",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b437",
+   "surface": "依存",
+   "taughtReading": "いそん",
+   "glosses": [
+    "dependence",
+    "reliance"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n1-g017",
+     "kana": "いぞん",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b438",
+   "surface": "一見",
+   "taughtReading": "いちげん",
+   "glosses": [
+    "first meeting",
+    "unfamiliar"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "いっけん",
+   "siblings": []
+  },
+  {
+   "id": "n1-b450",
+   "surface": "黄色",
+   "taughtReading": "おうしょく",
+   "glosses": [
+    "yellow"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b249",
+     "kana": "きいろ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b451",
+   "surface": "公",
+   "taughtReading": "おおやけ",
+   "glosses": [
+    "public",
+    "official"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "こう",
+   "siblings": []
+  },
+  {
+   "id": "n1-b464",
+   "surface": "敵",
+   "taughtReading": "かたき",
+   "glosses": [
+    "enemy",
+    "rival"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-g221",
+     "kana": "てき",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b477",
+   "surface": "贋物",
+   "taughtReading": "がんぶつ",
+   "glosses": [
+    "fake",
+    "forgery"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "にせもの",
+   "siblings": []
+  },
+  {
+   "id": "n1-b479",
+   "surface": "寄贈",
+   "taughtReading": "きそう",
+   "glosses": [
+    "donation",
+    "presentation"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "きぞう",
+   "siblings": []
+  },
+  {
+   "id": "n1-b484",
+   "surface": "共存",
+   "taughtReading": "きょうそん",
+   "glosses": [
+    "coexistence"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "きょうぞん",
+   "siblings": []
+  },
+  {
+   "id": "n1-b506",
+   "surface": "凝る",
+   "taughtReading": "こごる",
+   "glosses": [
+    "to congeal",
+    "to freeze"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "こる",
+   "siblings": []
+  },
+  {
+   "id": "n1-b508",
+   "surface": "骨",
+   "taughtReading": "こつ",
+   "glosses": [
+    "knack",
+    "skill"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b938",
+     "kana": "ほね",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b516",
+   "surface": "三味線",
+   "taughtReading": "さみせん",
+   "glosses": [
+    "shamisen"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "しゃみせん",
+   "siblings": []
+  },
+  {
+   "id": "n1-b523",
+   "surface": "認める",
+   "taughtReading": "したためる",
+   "glosses": [
+    "to write up",
+    "to have a meal"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-g261",
+     "kana": "みとめる",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b533",
+   "surface": "諸",
+   "taughtReading": "しょ",
+   "glosses": [
+    "various",
+    "many"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "もろ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b580",
+   "surface": "父母",
+   "taughtReading": "ちちはは",
+   "glosses": [
+    "father and mother",
+    "parents"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b977",
+     "kana": "ふぼ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b618",
+   "surface": "七日",
+   "taughtReading": "なぬか",
+   "glosses": [
+    "seventh day",
+    "seven days"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b134",
+     "kana": "なのか",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b619",
+   "surface": "鈍る",
+   "taughtReading": "なまる",
+   "glosses": [
+    "to become blunt",
+    "to grow dull"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "にぶる",
+   "siblings": []
+  },
+  {
+   "id": "n1-b623",
+   "surface": "二人",
+   "taughtReading": "ににん",
+   "glosses": [
+    "two persons"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b343",
+     "kana": "ふたり",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b641",
+   "surface": "罰",
+   "taughtReading": "ばち",
+   "glosses": [
+    "punishment",
+    "divine retribution"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ばつ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b672",
+   "surface": "藍褸",
+   "taughtReading": "ぼろ",
+   "glosses": [
+    "rag",
+    "scrap"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "あい褸",
+   "siblings": []
+  },
+  {
+   "id": "n1-b691",
+   "surface": "若しくは",
+   "taughtReading": "もしくは",
+   "glosses": [
+    "or",
+    "otherwise"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "もしくわ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b696",
+   "surface": "奴",
+   "taughtReading": "やっこ",
+   "glosses": [
+    "servant",
+    "fellow"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "やつ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b710",
+   "surface": "相対",
+   "taughtReading": "あいたい",
+   "glosses": [
+    "relative",
+    "relativity"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "そうたい",
+   "siblings": []
+  },
+  {
+   "id": "n1-b715",
+   "surface": "天地",
+   "taughtReading": "あめつち",
+   "glosses": [
+    "heaven and earth",
+    "the universe"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "てんち",
+   "siblings": []
+  },
+  {
+   "id": "n1-b724",
+   "surface": "暇",
+   "taughtReading": "いとま",
+   "glosses": [
+    "free time",
+    "leisure",
+    "leave"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-g116",
+     "kana": "ひま",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b725",
+   "surface": "厭々",
+   "taughtReading": "いやいや",
+   "glosses": [
+    "reluctantly",
+    "unwillingly"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "厭々",
+   "siblings": []
+  },
+  {
+   "id": "n1-b749",
+   "surface": "華奢",
+   "taughtReading": "かしゃ",
+   "glosses": [
+    "luxury",
+    "pomp"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "きゃしゃ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b753",
+   "surface": "下品",
+   "taughtReading": "かひん",
+   "glosses": [
+    "inferior article",
+    "low grade"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b509",
+     "kana": "げひん",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b773",
+   "surface": "際",
+   "taughtReading": "きわ",
+   "glosses": [
+    "edge",
+    "brink",
+    "verge"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b051",
+     "kana": "さい",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b777",
+   "surface": "国境",
+   "taughtReading": "くにざかい",
+   "glosses": [
+    "national or state border"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b247",
+     "kana": "こっきょう",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b802",
+   "surface": "盛る",
+   "taughtReading": "さかる",
+   "glosses": [
+    "to prosper",
+    "to flourish",
+    "to copulate (animals)"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b716",
+     "kana": "もる",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b805",
+   "surface": "然も",
+   "taughtReading": "さも",
+   "glosses": [
+    "with visible appetite",
+    "really",
+    "evidently"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "しかも",
+   "siblings": []
+  },
+  {
+   "id": "n1-b826",
+   "surface": "殿",
+   "taughtReading": "しんがり",
+   "glosses": [
+    "rear",
+    "rear guard"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "との",
+   "siblings": []
+  },
+  {
+   "id": "n1-b834",
+   "surface": "重宝",
+   "taughtReading": "じゅうほう",
+   "glosses": [
+    "priceless treasure",
+    "convenience",
+    "usefulness"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ちょうほう",
+   "siblings": []
+  },
+  {
+   "id": "n1-b836",
+   "surface": "情緒",
+   "taughtReading": "じょうしょ",
+   "glosses": [
+    "emotion",
+    "feeling",
+    "atmosphere"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-g034",
+     "kana": "じょうちょ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b858",
+   "surface": "類",
+   "taughtReading": "たぐい",
+   "glosses": [
+    "kind",
+    "sort",
+    "type"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "るい",
+   "siblings": []
+  },
+  {
+   "id": "n1-b870",
+   "surface": "仲人",
+   "taughtReading": "ちゅうにん",
+   "glosses": [
+    "go-between",
+    "matchmaker"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "なこうど",
+   "siblings": []
+  },
+  {
+   "id": "n1-b896",
+   "surface": "灯",
+   "taughtReading": "ともしび",
+   "glosses": [
+    "light"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "あかり",
+   "siblings": []
+  },
+  {
+   "id": "n1-b923",
+   "surface": "発足",
+   "taughtReading": "はっそく",
+   "glosses": [
+    "starting",
+    "inauguration",
+    "launch"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n1-g204",
+     "kana": "ほっそく",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b943",
+   "surface": "不便",
+   "taughtReading": "ふびん",
+   "glosses": [
+    "pitiful",
+    "pitiable",
+    "poor"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n4-b115",
+     "kana": "ふべん",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b956",
+   "surface": "辺り",
+   "taughtReading": "ほとり",
+   "glosses": [
+    "neighborhood",
+    "vicinity",
+    "banks"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b731",
+     "kana": "あたり",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b963",
+   "surface": "正しく",
+   "taughtReading": "まさしく",
+   "glosses": [
+    "surely",
+    "no doubt",
+    "evidently"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ただしく",
+   "siblings": []
+  },
+  {
+   "id": "n1-b964",
+   "surface": "瞬き",
+   "taughtReading": "またたき",
+   "glosses": [
+    "blink",
+    "wink",
+    "twinkle"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "まばたき",
+   "siblings": []
+  },
+  {
+   "id": "n1-b991",
+   "surface": "葦",
+   "taughtReading": "よし",
+   "glosses": [
+    "reed"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "あし",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1002",
+   "surface": "銅",
+   "taughtReading": "あかがね",
+   "glosses": [
+    "copper"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "どう",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1004",
+   "surface": "東",
+   "taughtReading": "あずま",
+   "glosses": [
+    "east",
+    "Eastern Japan"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b152",
+     "kana": "ひがし",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1012",
+   "surface": "雷",
+   "taughtReading": "いかずち",
+   "glosses": [
+    "thunder"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-g358",
+     "kana": "かみなり",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1020",
+   "surface": "入口",
+   "taughtReading": "いりくち",
+   "glosses": [
+    "entrance"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b023",
+     "kana": "いりぐち",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1026",
+   "surface": "海路",
+   "taughtReading": "うみじ",
+   "glosses": [
+    "sea route"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "かいろ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1036",
+   "surface": "少女",
+   "taughtReading": "おとめ",
+   "glosses": [
+    "little girl",
+    "maiden"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b541",
+     "kana": "しょうじょ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1049",
+   "surface": "傾く",
+   "taughtReading": "かたぶく",
+   "glosses": [
+    "to incline",
+    "to tilt"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b481",
+     "kana": "かたむく",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1051",
+   "surface": "鉄棒",
+   "taughtReading": "かなぼう",
+   "glosses": [
+    "iron rod",
+    "horizontal bar"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "てつぼう",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1062",
+   "surface": "月日",
+   "taughtReading": "がっぴ",
+   "glosses": [
+    "date",
+    "days and months"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b911",
+     "kana": "つきひ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1066",
+   "surface": "来る",
+   "taughtReading": "きたる",
+   "glosses": [
+    "coming",
+    "next"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-kuru",
+     "kana": "くる",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1068",
+   "surface": "気配",
+   "taughtReading": "きはい",
+   "glosses": [
+    "sign",
+    "indication"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n1-g314",
+     "kana": "けはい",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1079",
+   "surface": "玉",
+   "taughtReading": "ぎょく",
+   "glosses": [
+    "precious stone",
+    "king (shogi)"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b102",
+     "kana": "たま",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1081",
+   "surface": "件",
+   "taughtReading": "くだん",
+   "glosses": [
+    "the aforementioned",
+    "the usual"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "けん",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1087",
+   "surface": "傑",
+   "taughtReading": "けつ",
+   "glosses": [
+    "excellence",
+    "masterpiece"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "すぐる",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1105",
+   "surface": "堪える",
+   "taughtReading": "こらえる",
+   "glosses": [
+    "to bear",
+    "to endure"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "こたえる",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1126",
+   "surface": "僕",
+   "taughtReading": "しもべ",
+   "glosses": [
+    "manservant",
+    "servant"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n4-b125",
+     "kana": "ぼく",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1148",
+   "surface": "重複",
+   "taughtReading": "じゅうふく",
+   "glosses": [
+    "duplication",
+    "repetition"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ちょうふく",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1149",
+   "surface": "助",
+   "taughtReading": "じょ",
+   "glosses": [
+    "help",
+    "assistance"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "すけ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1152",
+   "surface": "人",
+   "taughtReading": "じん",
+   "glosses": [
+    "person"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-g044",
+     "kana": "ひと",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1153",
+   "surface": "水気",
+   "taughtReading": "すいき",
+   "glosses": [
+    "moisture",
+    "vapor"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "みずけ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1180",
+   "surface": "尊ぶ",
+   "taughtReading": "たっとぶ",
+   "glosses": [
+    "to value",
+    "to prize"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "とうとぶ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1181",
+   "surface": "掌",
+   "taughtReading": "たなごころ",
+   "glosses": [
+    "palm of the hand"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "てのひら",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1183",
+   "surface": "弛む",
+   "taughtReading": "たるむ",
+   "glosses": [
+    "to slacken",
+    "to loosen"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "たゆむ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1193",
+   "surface": "中腹",
+   "taughtReading": "ちゅうっぱら",
+   "glosses": [
+    "irritation",
+    "anger"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ちゅうふく",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1197",
+   "surface": "塵取り",
+   "taughtReading": "ちりとり",
+   "glosses": [
+    "dustpan"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ごみとり",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1223",
+   "surface": "幕",
+   "taughtReading": "とばり",
+   "glosses": [
+    "curtain",
+    "veil"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "まく",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1227",
+   "surface": "取り分",
+   "taughtReading": "とりわけ",
+   "glosses": [
+    "especially",
+    "particularly"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "とりぶん",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1232",
+   "surface": "何々",
+   "taughtReading": "どれどれ",
+   "glosses": [
+    "let me see",
+    "which one"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b1207",
+     "kana": "なになに",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1268",
+   "surface": "一向",
+   "taughtReading": "ひたすら",
+   "glosses": [
+    "earnestly",
+    "devotedly"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "いっこう",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1330",
+   "surface": "社",
+   "taughtReading": "やしろ",
+   "glosses": [
+    "Shinto shrine"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "しゃ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1345",
+   "surface": "輪",
+   "taughtReading": "りん",
+   "glosses": [
+    "counter for wheels/flowers"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b725",
+     "kana": "わ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1353",
+   "surface": "商人",
+   "taughtReading": "あきうど",
+   "glosses": [
+    "merchant",
+    "trader"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "しょうにん",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1355",
+   "surface": "私",
+   "taughtReading": "あたし",
+   "glosses": [
+    "I (used by females)"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-g012",
+     "kana": "わたし",
+     "hasExample": true
+    },
+    {
+     "id": "n5-b378",
+     "kana": "わたくし",
+     "hasExample": false
+    }
+   ]
+  },
+  {
+   "id": "n1-b1356",
+   "surface": "悪口",
+   "taughtReading": "あっこう",
+   "glosses": [
+    "abuse",
+    "insult",
+    "slander"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b977",
+     "kana": "わるくち",
+     "hasExample": false
+    }
+   ]
+  },
+  {
+   "id": "n1-b1366",
+   "surface": "碑",
+   "taughtReading": "いしぶみ",
+   "glosses": [
+    "stone monument"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ひ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1368",
+   "surface": "一日",
+   "taughtReading": "いちじつ",
+   "glosses": [
+    "one day",
+    "first of month"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b018",
+     "kana": "いちにち",
+     "hasExample": true
+    },
+    {
+     "id": "n5-b303",
+     "kana": "ついたち",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1376",
+   "surface": "埋まる",
+   "taughtReading": "うずまる",
+   "glosses": [
+    "to be buried",
+    "to be surrounded"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "うまる",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1380",
+   "surface": "上手",
+   "taughtReading": "うわて",
+   "glosses": [
+    "upper part",
+    "superiority"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-g113",
+     "kana": "じょうず",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1392",
+   "surface": "女子",
+   "taughtReading": "おなご",
+   "glosses": [
+    "woman",
+    "girl"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b282",
+     "kana": "じょし",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1405",
+   "surface": "気質",
+   "taughtReading": "かたぎ",
+   "glosses": [
+    "disposition",
+    "nature"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "きしつ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1422",
+   "surface": "眼鏡",
+   "taughtReading": "がんきょう",
+   "glosses": [
+    "glasses",
+    "spectacles"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b361",
+     "kana": "めがね",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1442",
+   "surface": "種々",
+   "taughtReading": "くさぐさ",
+   "glosses": [
+    "various",
+    "variety of"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "しゅじゅ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1448",
+   "surface": "汚れ",
+   "taughtReading": "けがれ",
+   "glosses": [
+    "uncleanness",
+    "impurity"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "よごれ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1453",
+   "surface": "原",
+   "taughtReading": "げん",
+   "glosses": [
+    "original",
+    "primitive"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "はら",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1484",
+   "surface": "雑木",
+   "taughtReading": "ざつぼく",
+   "glosses": [
+    "miscellaneous trees"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ぞうき",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1494",
+   "surface": "洒落",
+   "taughtReading": "しゃらく",
+   "glosses": [
+    "free and easy",
+    "unconstrained"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b070",
+     "kana": "しゃれ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1545",
+   "surface": "外方",
+   "taughtReading": "そっぽ",
+   "glosses": [
+    "look the other way",
+    "face away"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "がいほう",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1547",
+   "surface": "沿い",
+   "taughtReading": "ぞい",
+   "glosses": [
+    "along"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "そい",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1553",
+   "surface": "高",
+   "taughtReading": "たか",
+   "glosses": [
+    "quantity",
+    "amount",
+    "volume"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "こう",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1559",
+   "surface": "誰",
+   "taughtReading": "たれ",
+   "glosses": [
+    "who"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-g020",
+     "kana": "だれ",
+     "hasExample": true
+    },
+    {
+     "id": "n5-b107",
+     "kana": "だれか",
+     "hasExample": false
+    }
+   ]
+  },
+  {
+   "id": "n1-b1562",
+   "surface": "丈",
+   "taughtReading": "だけ",
+   "glosses": [
+    "only",
+    "just",
+    "as much as"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n1-b1178",
+     "kana": "たけ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1586",
+   "surface": "手数",
+   "taughtReading": "てかず",
+   "glosses": [
+    "trouble",
+    "bother",
+    "effort"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "てすう",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1588",
+   "surface": "手近",
+   "taughtReading": "てぢか",
+   "glosses": [
+    "near",
+    "close by",
+    "familiar"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "てじか",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1604",
+   "surface": "留める",
+   "taughtReading": "とどめる",
+   "glosses": [
+    "to keep",
+    "to leave (behind)",
+    "to stop"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "とめる",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1641",
+   "surface": "弾く",
+   "taughtReading": "はじく",
+   "glosses": [
+    "to flip",
+    "to snap",
+    "to repel"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ひく",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1652",
+   "surface": "万人",
+   "taughtReading": "ばんじん",
+   "glosses": [
+    "all people",
+    "everybody"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ばんにん",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1658",
+   "surface": "単",
+   "taughtReading": "ひとえ",
+   "glosses": [
+    "one layer",
+    "single"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "たん",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1668",
+   "surface": "仏",
+   "taughtReading": "ふつ",
+   "glosses": [
+    "French",
+    "France"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b162",
+     "kana": "ほとけ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1707",
+   "surface": "身近",
+   "taughtReading": "みぢか",
+   "glosses": [
+    "near oneself",
+    "close to one",
+    "familiar"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "みじか",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1754",
+   "surface": "他人",
+   "taughtReading": "あだびと",
+   "glosses": [
+    "stranger",
+    "outsider"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b862",
+     "kana": "たにん",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1762",
+   "surface": "家主",
+   "taughtReading": "いえぬし",
+   "glosses": [
+    "landlord",
+    "house owner"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b720",
+     "kana": "やぬし",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1763",
+   "surface": "歪む",
+   "taughtReading": "いがむ",
+   "glosses": [
+    "to warp",
+    "to swerve",
+    "to deflect"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ゆがむ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1764",
+   "surface": "経緯",
+   "taughtReading": "いきさつ",
+   "glosses": [
+    "details",
+    "particulars"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "けいい",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1771",
+   "surface": "厭やらしい",
+   "taughtReading": "いやらしい",
+   "glosses": [
+    "unpleasant",
+    "indecent"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "いややらしい",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1772",
+   "surface": "印",
+   "taughtReading": "いん",
+   "glosses": [
+    "seal",
+    "stamp",
+    "mark"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b550",
+     "kana": "しるし",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1774",
+   "surface": "氏",
+   "taughtReading": "うじ",
+   "glosses": [
+    "family name",
+    "lineage"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "し",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1784",
+   "surface": "長",
+   "taughtReading": "おさ",
+   "glosses": [
+    "head",
+    "chief",
+    "leader"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "なが",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1824",
+   "surface": "甲",
+   "taughtReading": "きのえ",
+   "glosses": [
+    "first sign of Chinese calendar"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "こう",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1839",
+   "surface": "旧事",
+   "taughtReading": "くじ",
+   "glosses": [
+    "past events",
+    "bygones"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "きゅうじ",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1860",
+   "surface": "凝らす",
+   "taughtReading": "こごらす",
+   "glosses": [
+    "to freeze",
+    "to congeal"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "こらす",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1872",
+   "surface": "作物",
+   "taughtReading": "さくぶつ",
+   "glosses": [
+    "literary work"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b053",
+     "kana": "さくもつ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1876",
+   "surface": "桟橋",
+   "taughtReading": "さんきょう",
+   "glosses": [
+    "wharf",
+    "bridge",
+    "jetty"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "さんばし",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1891",
+   "surface": "執着",
+   "taughtReading": "しゅうじゃく",
+   "glosses": [
+    "attachment",
+    "adhesion",
+    "tenacity"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n1-g118",
+     "kana": "しゅうちゃく",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1916",
+   "surface": "丈夫",
+   "taughtReading": "じょうふ",
+   "glosses": [
+    "hero",
+    "gentleman",
+    "warrior"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b087",
+     "kana": "じょうぶ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1920",
+   "surface": "天皇",
+   "taughtReading": "すめらぎ",
+   "glosses": [
+    "Emperor of Japan"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b923",
+     "kana": "てんのう",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1930",
+   "surface": "世論",
+   "taughtReading": "せろん",
+   "glosses": [
+    "public opinion"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "よろん",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1947",
+   "surface": "館",
+   "taughtReading": "たち",
+   "glosses": [
+    "mansion",
+    "small castle"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "やかた",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1948",
+   "surface": "尊い",
+   "taughtReading": "たっとい",
+   "glosses": [
+    "precious",
+    "valuable"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "とうとい",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1972",
+   "surface": "突く",
+   "taughtReading": "つつく",
+   "glosses": [
+    "poke",
+    "peck"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "つく",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1976",
+   "surface": "体",
+   "taughtReading": "てい",
+   "glosses": [
+    "appearance",
+    "state"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b052",
+     "kana": "からだ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b1987",
+   "surface": "問屋",
+   "taughtReading": "といや",
+   "glosses": [
+    "wholesale store"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "とんや",
+   "siblings": []
+  },
+  {
+   "id": "n1-b1993",
+   "surface": "刺",
+   "taughtReading": "とげ",
+   "glosses": [
+    "thorn",
+    "splinter"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "さし",
+   "siblings": []
+  },
+  {
+   "id": "n1-b2029",
+   "surface": "果ない",
+   "taughtReading": "はかない",
+   "glosses": [
+    "fleeting",
+    "transient"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "はてない",
+   "siblings": []
+  },
+  {
+   "id": "n1-b2036",
+   "surface": "流行",
+   "taughtReading": "はやり",
+   "glosses": [
+    "fashion",
+    "fad"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b971",
+     "kana": "りゅうこう",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n1-b2090",
+   "surface": "免れる",
+   "taughtReading": "まぬかれる",
+   "glosses": [
+    "escape from",
+    "be rescued from"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "まぬがれる",
+   "siblings": []
+  },
+  {
+   "id": "n1-b2092",
+   "surface": "真ん丸い",
+   "taughtReading": "まんまるい",
+   "glosses": [
+    "perfectly circular"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "まんまりい",
+   "siblings": []
+  },
+  {
+   "id": "n1-b2125",
+   "surface": "余程",
+   "taughtReading": "よっぽど",
+   "glosses": [
+    "very",
+    "greatly"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "よほど",
+   "siblings": []
+  },
+  {
+   "id": "n1-b2133",
+   "surface": "連中",
+   "taughtReading": "れんじゅう",
+   "glosses": [
+    "company",
+    "lot",
+    "bunch"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "れんちゅう",
+   "siblings": []
+  },
+  {
+   "id": "n2-b146",
+   "surface": "陽射",
+   "taughtReading": "ひざし",
+   "glosses": [
+    "sunlight",
+    "rays of the sun"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ようしゃ",
+   "siblings": []
+  },
+  {
+   "id": "n2-b173",
+   "surface": "蒸す",
+   "taughtReading": "むす",
+   "glosses": [
+    "to steam",
+    "to poultice",
+    "to be sultry"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ふかす",
+   "siblings": []
+  },
+  {
+   "id": "n2-b357",
+   "surface": "留まる",
+   "taughtReading": "とどまる",
+   "glosses": [
+    "to remain",
+    "to stay"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "とまる",
+   "siblings": []
+  },
+  {
+   "id": "n2-b366",
+   "surface": "捩る",
+   "taughtReading": "ねじる",
+   "glosses": [
+    "to twist",
+    "to wrench"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "もじる",
+   "siblings": []
+  },
+  {
+   "id": "n2-b424",
+   "surface": "紅葉",
+   "taughtReading": "もみじ",
+   "glosses": [
+    "autumn colors",
+    "maple"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-b518",
+     "kana": "こうよう",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n2-b522",
+   "surface": "擦る",
+   "taughtReading": "こする",
+   "glosses": [
+    "to rub",
+    "to chafe"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "する",
+   "siblings": []
+  },
+  {
+   "id": "n2-b524",
+   "surface": "言付ける",
+   "taughtReading": "ことづける",
+   "glosses": [
+    "to send a word",
+    "to send a message"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "いいつける",
+   "siblings": []
+  },
+  {
+   "id": "n2-b634",
+   "surface": "退ける",
+   "taughtReading": "どける",
+   "glosses": [
+    "to remove",
+    "to take away"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n1-b1902",
+     "kana": "しりぞける",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n2-b649",
+   "surface": "鈍い",
+   "taughtReading": "のろい",
+   "glosses": [
+    "slow",
+    "sluggish"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-g218",
+     "kana": "にぶい",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n2-b653",
+   "surface": "斜",
+   "taughtReading": "はす",
+   "glosses": [
+    "oblique",
+    "slanting"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "しゃ",
+   "siblings": []
+  },
+  {
+   "id": "n2-b668",
+   "surface": "日日",
+   "taughtReading": "ひにち",
+   "glosses": [
+    "number of days",
+    "date"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "にちにち",
+   "siblings": []
+  },
+  {
+   "id": "n2-b719",
+   "surface": "夜行",
+   "taughtReading": "やこう",
+   "glosses": [
+    "night train",
+    "night travel"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n1-b410",
+     "kana": "やぎょう",
+     "hasExample": false
+    }
+   ]
+  },
+  {
+   "id": "n2-b834",
+   "surface": "湿気",
+   "taughtReading": "しっき",
+   "glosses": [
+    "moisture",
+    "humidity",
+    "dampness"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n2-g321",
+     "kana": "しっけ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n2-b856",
+   "surface": "白髪",
+   "taughtReading": "しらが",
+   "glosses": [
+    "white hair",
+    "grey hair"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "はくはつ",
+   "siblings": []
+  },
+  {
+   "id": "n2-b887",
+   "surface": "田ぼ",
+   "taughtReading": "たんぼ",
+   "glosses": [
+    "paddy field",
+    "farm"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "たぼ",
+   "siblings": []
+  },
+  {
+   "id": "n2-b889",
+   "surface": "大分",
+   "taughtReading": "だいぶん",
+   "glosses": [
+    "considerably",
+    "greatly",
+    "a lot"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n4-g239",
+     "kana": "だいぶ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n2-b1040",
+   "surface": "一昨日",
+   "taughtReading": "いっさくじつ",
+   "glosses": [
+    "day before yesterday"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b040",
+     "kana": "おととい",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n2-b1172",
+   "surface": "近々",
+   "taughtReading": "ちかぢか",
+   "glosses": [
+    "soon",
+    "before long"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n1-b239",
+     "kana": "きんきん",
+     "hasExample": false
+    }
+   ]
+  },
+  {
+   "id": "n2-b1257",
+   "surface": "混じる",
+   "taughtReading": "まじる",
+   "glosses": [
+    "to be mixed",
+    "to be blended"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "こんじる",
+   "siblings": []
+  },
+  {
+   "id": "n3-b138",
+   "surface": "後",
+   "taughtReading": "のち",
+   "glosses": [
+    "afterwards",
+    "since then"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b205",
+     "kana": "あと",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b235",
+   "surface": "下",
+   "taughtReading": "げ",
+   "glosses": [
+    "lowest grade",
+    "inferior",
+    "last volume"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b809",
+     "kana": "しも",
+     "hasExample": true
+    },
+    {
+     "id": "n5-b080",
+     "kana": "した",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b243",
+   "surface": "工場",
+   "taughtReading": "こうば",
+   "glosses": [
+    "factory",
+    "plant",
+    "workshop"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n4-g135",
+     "kana": "こうじょう",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b294",
+   "surface": "背",
+   "taughtReading": "せい",
+   "glosses": [
+    "height",
+    "stature",
+    "back"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b284",
+     "kana": "せ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b361",
+   "surface": "年月",
+   "taughtReading": "ねんげつ",
+   "glosses": [
+    "months and years"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b625",
+     "kana": "としつき",
+     "hasExample": false
+    }
+   ]
+  },
+  {
+   "id": "n3-b380",
+   "surface": "品",
+   "taughtReading": "ひん",
+   "glosses": [
+    "elegance",
+    "grace",
+    "refinement"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b807",
+     "kana": "しな",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b386",
+   "surface": "打つ",
+   "taughtReading": "ぶつ",
+   "glosses": [
+    "to hit",
+    "to strike"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n4-g033",
+     "kana": "うつ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b421",
+   "surface": "来",
+   "taughtReading": "らい",
+   "glosses": [
+    "next",
+    "since"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "き",
+   "siblings": []
+  },
+  {
+   "id": "n3-b607",
+   "surface": "注ぐ",
+   "taughtReading": "つぐ",
+   "glosses": [
+    "to pour",
+    "to fill"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-g206",
+     "kana": "そそぐ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b621",
+   "surface": "十",
+   "taughtReading": "とお",
+   "glosses": [
+    "ten"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-g010",
+     "kana": "じゅう",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b625",
+   "surface": "年月",
+   "taughtReading": "としつき",
+   "glosses": [
+    "months and years"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b361",
+     "kana": "ねんげつ",
+     "hasExample": false
+    }
+   ]
+  },
+  {
+   "id": "n3-b639",
+   "surface": "日本",
+   "taughtReading": "にほん",
+   "glosses": [
+    "Japan"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b358",
+     "kana": "にっぽん",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b683",
+   "surface": "本当",
+   "taughtReading": "ほんと",
+   "glosses": [
+    "truth",
+    "reality"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ほんとう",
+   "siblings": []
+  },
+  {
+   "id": "n3-b684",
+   "surface": "間",
+   "taughtReading": "ま",
+   "glosses": [
+    "pause",
+    "timing",
+    "space"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n4-b003",
+     "kana": "あいだ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b735",
+   "surface": "市場",
+   "taughtReading": "いちば",
+   "glosses": [
+    "market",
+    "marketplace"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "しじょう",
+   "siblings": []
+  },
+  {
+   "id": "n3-b749",
+   "surface": "下す",
+   "taughtReading": "おろす",
+   "glosses": [
+    "to lower",
+    "to drop"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "くだす",
+   "siblings": []
+  },
+  {
+   "id": "n3-b791",
+   "surface": "今日",
+   "taughtReading": "こんにち",
+   "glosses": [
+    "nowadays",
+    "these days",
+    "today"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-kyou",
+     "kana": "きょう",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b801",
+   "surface": "直",
+   "taughtReading": "じき",
+   "glosses": [
+    "soon",
+    "direct"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "じか",
+   "siblings": []
+  },
+  {
+   "id": "n3-b861",
+   "surface": "唯",
+   "taughtReading": "たった",
+   "glosses": [
+    "only",
+    "merely"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ただ",
+   "siblings": []
+  },
+  {
+   "id": "n3-b909",
+   "surface": "梅雨",
+   "taughtReading": "ばいう",
+   "glosses": [
+    "rainy season"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b879",
+     "kana": "つゆ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b939",
+   "surface": "頬",
+   "taughtReading": "ほほ",
+   "glosses": [
+    "cheek"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b394",
+     "kana": "ほお",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n3-b977",
+   "surface": "悪口",
+   "taughtReading": "わるくち",
+   "glosses": [
+    "abuse",
+    "insult"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n1-b1356",
+     "kana": "あっこう",
+     "hasExample": false
+    }
+   ]
+  },
+  {
+   "id": "n4-g145",
+   "surface": "込む",
+   "taughtReading": "こむ",
+   "glosses": [
+    "to be crowded",
+    "to be packed"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ごむ",
+   "siblings": []
+  },
+  {
+   "id": "n4-g203",
+   "surface": "空く",
+   "taughtReading": "すく",
+   "glosses": [
+    "to become empty",
+    "to be less crowded"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n4-g003",
+     "kana": "あく",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n4-b004",
+   "surface": "集る",
+   "taughtReading": "あつまる",
+   "glosses": [
+    "to gather",
+    "to collect"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "たかる",
+   "siblings": []
+  },
+  {
+   "id": "n4-b050",
+   "surface": "楽む",
+   "taughtReading": "たのしむ",
+   "glosses": [
+    "to enjoy"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "らくむ",
+   "siblings": []
+  },
+  {
+   "id": "n4-b108",
+   "surface": "深い",
+   "taughtReading": "ふかい",
+   "glosses": [
+    "deep",
+    "profound"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ぶかい",
+   "siblings": []
+  },
+  {
+   "id": "n4-b140",
+   "surface": "真中",
+   "taughtReading": "まんなか",
+   "glosses": [
+    "middle",
+    "center"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "まなか",
+   "siblings": []
+  },
+  {
+   "id": "n4-b170",
+   "surface": "止める",
+   "taughtReading": "やめる",
+   "glosses": [
+    "to stop",
+    "to quit"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n4-b061",
+     "kana": "とめる",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n5-b014",
+   "surface": "言う",
+   "taughtReading": "いう",
+   "glosses": [
+    "to say",
+    "to tell"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ゆう",
+   "siblings": []
+  },
+  {
+   "id": "n5-b057",
+   "surface": "九",
+   "taughtReading": "く",
+   "glosses": [
+    "nine"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-g009",
+     "kana": "きゅう",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n5-b107",
+   "surface": "誰",
+   "taughtReading": "だれか",
+   "glosses": [
+    "someone",
+    "somebody"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n1-b1559",
+     "kana": "たれ",
+     "hasExample": false
+    },
+    {
+     "id": "n5-g020",
+     "kana": "だれ",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n5-b139",
+   "surface": "温い",
+   "taughtReading": "ぬるい",
+   "glosses": [
+    "lukewarm",
+    "tepid"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ぬくい",
+   "siblings": []
+  },
+  {
+   "id": "n5-b144",
+   "surface": "箱",
+   "taughtReading": "はこ",
+   "glosses": [
+    "box"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "ばこ",
+   "siblings": []
+  },
+  {
+   "id": "n5-b155",
+   "surface": "一月",
+   "taughtReading": "ひとつき",
+   "glosses": [
+    "one month"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "いちがつ",
+   "siblings": []
+  },
+  {
+   "id": "n5-b167",
+   "surface": "毎月",
+   "taughtReading": "まいげつ",
+   "glosses": [
+    "every month",
+    "monthly"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-g036",
+     "kana": "まいつき",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n5-b188",
+   "surface": "昨夜",
+   "taughtReading": "ゆうべ",
+   "glosses": [
+    "last night"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "さくや",
+   "siblings": []
+  },
+  {
+   "id": "n5-b201",
+   "surface": "明い",
+   "taughtReading": "あかるい",
+   "glosses": [
+    "bright",
+    "cheerful"
+   ],
+   "kind": "reading differs from the default for this spelling",
+   "defaultReading": "あい",
+   "siblings": []
+  },
+  {
+   "id": "n5-b247",
+   "surface": "辛い",
+   "taughtReading": "からい",
+   "glosses": [
+    "spicy",
+    "hot"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n3-b334",
+     "kana": "つらい",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n5-b275",
+   "surface": "七",
+   "taughtReading": "しち",
+   "glosses": [
+    "seven"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-g007",
+     "kana": "なな",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n5-b349",
+   "surface": "毎年",
+   "taughtReading": "まいねん",
+   "glosses": [
+    "every year"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-b168",
+     "kana": "まいとし",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n5-b368",
+   "surface": "行く",
+   "taughtReading": "ゆく",
+   "glosses": [
+    "to go"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n5-iku",
+     "kana": "いく",
+     "hasExample": true
+    }
+   ]
+  },
+  {
+   "id": "n5-b378",
+   "surface": "私",
+   "taughtReading": "わたくし",
+   "glosses": [
+    "I",
+    "myself"
+   ],
+   "kind": "minority reading; the common one has its own entry",
+   "siblings": [
+    {
+     "id": "n1-b1355",
+     "kana": "あたし",
+     "hasExample": false
+    },
+    {
+     "id": "n5-g012",
+     "kana": "わたし",
+     "hasExample": true
+    }
+   ]
+  }
+ ]
+}
