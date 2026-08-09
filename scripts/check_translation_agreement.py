@@ -30,10 +30,6 @@ import sys
 REPO = pathlib.Path(__file__).resolve().parent.parent
 
 # English number words up to twelve cover essentially every example sentence.
-EN_NUM = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
-          "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12}
-ZH_NUM = {"一": 1, "两": 2, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7,
-          "八": 8, "九": 9, "十": 10}
 
 # Time-of-day words that are NOT interchangeable. Each entry is (english regex, chinese set).
 TIME_WORDS = [
@@ -47,47 +43,26 @@ TIME_WORDS = [
 ]
 
 
-def numbers_in(en, zh):
-    # Clock times and dates are not quantities. "8:30" is one time, not the numbers 8 and 30,
-    # and 四月 is April, not four of something — the first version reported 「毎朝八時半までに」
-    # against 八点半 as a disagreement, and matched an English article against the 4 in 四月.
-    en = re.sub(r"\b\d{1,2}:\d{2}\b", " ", en)
-    en = re.sub(r"\b(January|February|March|April|May|June|July|August|September|October"
-                r"|November|December)\b", " ", en, flags=re.I)
-    zh = re.sub(r"[一二三四五六七八九十百]+[点時]半?", " ", zh)
-    zh = re.sub(r"[一二三四五六七八九十]+月", " ", zh)
-    en_nums = {int(m) for m in re.findall(r"\b(\d+)\b", en)}
-    en_nums |= {EN_NUM[w] for w in re.findall(r"[a-z]+", en.lower()) if w in EN_NUM}
-    # English marks "one" with an article, so 「大きな魚を釣りました」 / "I caught a big fish"
-    # against 「钓到了两条大鱼」 is a real contradiction the number scan missed entirely — it
-    # was the batch's second "wrong" verdict. Count a/an as 1, but only when the Chinese
-    # states a count, so plain articles do not manufacture a disagreement everywhere.
-    if not en_nums and re.search(r"\b(a|an)\s+\w", en, re.I):
-        en_nums = {1}
-    zh_nums = {int(m) for m in re.findall(r"(\d+)", zh)}
-    # A bare 一/两 before a classifier is a quantity; 一 inside 一起/一样 is not.
-    for ch, val in ZH_NUM.items():
-        # 一 + classifier is Chinese's indefinite article, not a count — 一个圆 is "a circle".
-        # Treating it as the number 1 made 「直径十センチの円」 / "a diameter of ten
-        # centimeters" / 请画一个直径十厘米的圆 look like 10-versus-1. English "a" is dropped
-        # for the same reason, so the two sides stay symmetric.
-        if val == 1:
-            continue
-        if re.search(ch + r"[个只条件本张位杯瓶次天年月日点头把块份]", zh):
-            zh_nums.add(val)
-    # 一两个 is "one or two", not "two" — without this the check reported en [1,2] against
-    # zh [2] on 「誰にでも一つや二つの欠点はある」, where the two renderings agree exactly.
-    if "一两" in zh:
-        zh_nums |= {1, 2}
-    return en_nums, zh_nums
+# The number comparison used to live here and has been REMOVED. It caught exactly one real
+# defect across three corpora — "I caught a big fish" against 钓到了两条大鱼 — and produced
+# about eight false positives, and each fix opened a new hole:
+#
+#   一个圆      一 plus a classifier is Chinese's indefinite article, not a count
+#   8:30        one clock time, not the numbers 8 and 30
+#   四月        April, not four of something
+#   三到四个小时  a range written with 到, which the range patterns did not cover
+#   乱七八糟     七八 inside an idiom meaning "in a mess" — a false positive the range fix
+#               itself created
+#   一周に二回    "a week" made the article rule fire against a genuine count of 2
+#
+# Chinese numerals appear in idioms, approximations, classifiers and dates in ways a regex
+# cannot separate from quantities, and a check that mostly fires on good material trains
+# people to ignore it. The subject and day-part comparisons below have been stable across
+# every corpus, so those stay.
 
 
 def disagreements(en, zh):
     out = []
-    en_nums, zh_nums = numbers_in(en, zh)
-    if en_nums and zh_nums and en_nums != zh_nums:
-        out.append(f"numbers differ: en {sorted(en_nums)} vs zh {sorted(zh_nums)}")
-
     # Only the day-part words, and only when the Chinese names a DIFFERENT day part. The
     # first version also compared yesterday/tomorrow against morning/night and reported
     # 「明日は朝から」 / 「明天一早」 as a disagreement, though both say tomorrow morning.
