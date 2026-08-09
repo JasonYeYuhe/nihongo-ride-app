@@ -46,11 +46,24 @@ struct ExampleSentenceTests {
         // both, because it asks Sudachi whether a token's dictionary form IS the target rather
         // than matching substrings; without this the two halves contradict each other, and the
         // stricter one is the one that is wrong.
+        // The data uses BOTH "adj-i" and "i-adjective" for the same class, and this check
+        // only knew the first spelling — so 「今日の海は波が荒くて危険だ。」 was reported as not
+        // containing 荒い, because no stem was ever offered for it. Match on "adj" so either
+        // tag works.
         if inflecting.contains(e.vc ?? "")
             || e.partsOfSpeech.contains(where: { $0.lowercased().hasPrefix("v") })
-            || e.partsOfSpeech.contains(where: { $0.lowercased().contains("adj-i") }) {
+            || e.partsOfSpeech.contains(where: { $0.lowercased().contains("adj") }) {
             out.append(String(e.surface.dropLast()))
             out.append(String(e.kana.dropLast()))
+        }
+        // A -ずる verb conjugates on a じ stem: 存ずる → 存じております, 命ずる → 命じた,
+        // 論ずる → 論じている. Dropping one character leaves 存ず, which appears in none of
+        // them. Drop the whole ずる instead. The Python matcher already handles this class
+        // through Sudachi's normalized_form; this half did not, and the stricter half was
+        // the wrong one — the same drift that put a fullwidth ？ out of reach in v1.18.
+        if e.vc == "zuru" {
+            if e.surface.hasSuffix("ずる") { out.append(String(e.surface.dropLast(2))) }
+            if e.kana.hasSuffix("ずる") { out.append(String(e.kana.dropLast(2))) }
         }
         // A one-character stem is allowed here, unlike in the generator, and the difference is
         // deliberate. The generator must reject anything doubtful because it decides what to
