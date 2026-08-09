@@ -1,0 +1,44 @@
+{
+ "reason": "two entries carry glosses that belong to a DIFFERENT WORD, not to the reading they teach. 強請る is filed at ねだる (to pester, to beg for) but its entire English line reads \"to extort, to demand\", which is the ゆする entry — a learner sees 妹は誕生日に新しいバッグを強請った beside \"to extort\" and reads it as the sister extorting a bag. 退ける is the transitive しりぞける but its Chinese leads with 退却, the intransitive 退く. Found by the reading-mismatch check added to the N1 triage brief after 博士/はくし survived an earlier pass.",
+ "entries": [
+  {
+   "id": "n1-b1245",
+   "surface": "強請る",
+   "kana": "ねだる",
+   "removeEN": [
+    "to extort",
+    "to demand"
+   ],
+   "removeZH": [],
+   "finalEN": [
+    "to pester for",
+    "to beg for"
+   ],
+   "finalZH": [
+    "强求",
+    "死乞白赖地要",
+    "央求"
+   ],
+   "why": "both English glosses belong to the ゆする reading; the Chinese was already right"
+  },
+  {
+   "id": "n1-b1902",
+   "surface": "退ける",
+   "kana": "しりぞける",
+   "removeEN": [],
+   "removeZH": [
+    "退却"
+   ],
+   "finalEN": [
+    "to repel",
+    "to drive away",
+    "to reject"
+   ],
+   "finalZH": [
+    "拒绝",
+    "击退"
+   ],
+   "why": "退却 is the intransitive 退く, not the transitive しりぞける"
+  }
+ ]
+}
