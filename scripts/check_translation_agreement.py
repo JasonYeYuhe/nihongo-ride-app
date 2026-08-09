@@ -48,6 +48,14 @@ TIME_WORDS = [
 
 
 def numbers_in(en, zh):
+    # Clock times and dates are not quantities. "8:30" is one time, not the numbers 8 and 30,
+    # and 四月 is April, not four of something — the first version reported 「毎朝八時半までに」
+    # against 八点半 as a disagreement, and matched an English article against the 4 in 四月.
+    en = re.sub(r"\b\d{1,2}:\d{2}\b", " ", en)
+    en = re.sub(r"\b(January|February|March|April|May|June|July|August|September|October"
+                r"|November|December)\b", " ", en, flags=re.I)
+    zh = re.sub(r"[一二三四五六七八九十百]+[点時]半?", " ", zh)
+    zh = re.sub(r"[一二三四五六七八九十]+月", " ", zh)
     en_nums = {int(m) for m in re.findall(r"\b(\d+)\b", en)}
     en_nums |= {EN_NUM[w] for w in re.findall(r"[a-z]+", en.lower()) if w in EN_NUM}
     # English marks "one" with an article, so 「大きな魚を釣りました」 / "I caught a big fish"
@@ -59,6 +67,12 @@ def numbers_in(en, zh):
     zh_nums = {int(m) for m in re.findall(r"(\d+)", zh)}
     # A bare 一/两 before a classifier is a quantity; 一 inside 一起/一样 is not.
     for ch, val in ZH_NUM.items():
+        # 一 + classifier is Chinese's indefinite article, not a count — 一个圆 is "a circle".
+        # Treating it as the number 1 made 「直径十センチの円」 / "a diameter of ten
+        # centimeters" / 请画一个直径十厘米的圆 look like 10-versus-1. English "a" is dropped
+        # for the same reason, so the two sides stay symmetric.
+        if val == 1:
+            continue
         if re.search(ch + r"[个只条件本张位杯瓶次天年月日点头把块份]", zh):
             zh_nums.add(val)
     # 一两个 is "one or two", not "two" — without this the check reported en [1,2] against
@@ -91,7 +105,11 @@ def disagreements(en, zh):
     # 「Our dog is timid」 against 「我家的狗…」 is noise. Only an explicit subject pronoun
     # counts.
     en_we = bool(re.search(r"\bwe\b", en, re.I))
-    en_i = bool(re.search(r"\bI\b|\bmy\b|\bme\b", en))
+    # "Let me see" is a discourse filler, not a first-person subject — it made 「ええと、次の
+    # 予定は何でしたっけ」 look like a disagreement with 我们接下来的计划, where both
+    # renderings in fact say "our".
+    en_i = bool(re.search(r"\bI\b|\bmy\b", en)) or bool(
+        re.search(r"\bme\b", en) and not re.search(r"\blet me\b", en, re.I))
     zh_we = "我们" in zh
     zh_i = bool(re.search(r"我(?!们)", zh))
     if en_we and zh_i and not zh_we:
