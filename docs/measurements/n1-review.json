@@ -1,0 +1,1966 @@
+{
+ "reviewed": 1759,
+ "flagged": 375,
+ "wrong": 56,
+ "wrongItems": [
+  {
+   "id": "n1-b318",
+   "severity": "wrong",
+   "problem": "「約束を違える」 is the fixed collocation read たがえる (約束をたがえる = to break a promise). The taught reading ちがえる belongs to the 'alter / do differently' sense (寝違える, 言い違える, 図面と違える). This sentence actively forces the OTHER reading, so the learner is drilled into typing ちがえる for a phrase every native reads たがえる. Needs a ちがえる-forcing context, e.g. 「彼はいつもと寝る向きを違えた」 or 「予定を違えて別の道を通った」."
+  },
+  {
+   "id": "n1-b287",
+   "severity": "wrong",
+   "problem": "「彼の発言には実がある」 does not force じつ. In the 'has substance / is sincere' sense the standard reading is み — 実(み)のある話, 中身に実がある — so a native reads this み, not じつ. じつ as a bare noun survives mainly in 実を言うと / 実のところ / 実の親 (じつのおや). The sentence is also thin and generic (four-word frame, any abstract noun fits). Rewrite to force じつ, e.g. 「実を言うと、彼の発言には裏があった」."
+  },
+  {
+   "id": "n1-b164",
+   "severity": "wrong",
+   "problem": "In a formulaic 「〜ありがとうございます」 the orthography a real writer (and every IME's first candidate in this frame) produces is 誠にありがとうございます. 真に in this slot is nonstandard and, worse, 真に is normally read しんに (真に迫る, 真に必要な) — the sentence does not force まことに at all. Either switch the sentence to a 誠に-appropriate greeting or, to keep 真に, use a しんに-blocking context; as written it teaches the wrong reading in the app's most-typed register."
+  },
+  {
+   "id": "n1-b257",
+   "severity": "wrong",
+   "problem": "「鳥が高に梢に止まって鳴いている。」— 「高に」 is a typo/broken fragment; no such adverbial exists. It must be 高い梢に (or 高い木の梢に). As written the sentence is ungrammatical and un-typeable as intended, and it also duplicates the に particle."
+  },
+  {
+   "id": "n1-b242",
+   "severity": "wrong",
+   "problem": "擽ぐったい is not a real orthography. くすぐったい is written 擽ったい (擽る = くすぐる supplies the stem; the extra ぐ is redundant). No IME converts くすぐったい to 擽ぐったい, so the learner is asked to type a form that cannot be produced and that no writer uses."
+  },
+  {
+   "id": "n1-b316",
+   "severity": "wrong",
+   "problem": "「バターの代わりにマーガリンを代用する。」— double defect: (1) 代わりに + 代用する is tautological; (2) 代用する marks the substitute with で, not を — natural forms are バターをマーガリンで代用する or バターの代わりにマーガリンを使う. As written the particle frame is wrong."
+  },
+  {
+   "id": "n1-b688",
+   "severity": "wrong",
+   "problem": "庭に咲いた美しい花を愛でたい = the verb 愛でる + ~たい (\"I want to admire\"), not the i-adjective めでたい (auspicious/happy) that the entry teaches. The learner meets a completely different lexeme that merely happens to share the string; nothing in the sentence exhibits the adjective. Needs e.g. 「めでたい席にふさわしい料理が並んだ」."
+  },
+  {
+   "id": "n1-b373",
+   "severity": "wrong",
+   "problem": "歩を進める is the ordinary idiom read ほをすすめる (\"to advance\"). 「将棋で歩を進めて相手の駒を取った」 parses perfectly under that reading (\"advancing in the shogi game, I took his piece\"), so the taught minority reading ふ is not forced at all. Force it with a shogi-specific collocation, e.g. 「歩を一枚犠牲にして飛車を取った」 or 「歩と金が交換になった」."
+  },
+  {
+   "id": "n1-b805",
+   "severity": "wrong",
+   "problem": "然も is read しかも at least as often as さも, and 「彼は然も嬉しそうに話した」 reads fully naturally as しかも嬉しそうに話した (\"moreover, he spoke happily\"). The context does not force さも. Either write さも in kana or use a frame only さも fits, e.g. 「さも当然だと言わんばかりの態度だった」."
+  },
+  {
+   "id": "n1-b405",
+   "severity": "wrong",
+   "problem": "「家族に合わせる面目がない」 is a blend of two separate idioms: 合わせる顔がない and 面目がない/面目が立たない. 面目 does not take 合わせる. Correct: 「家族に対して面目がない」 or 「面目が立たない」."
+  },
+  {
+   "id": "n1-b827",
+   "severity": "wrong",
+   "problem": "「いっそう期待の新人」 is ungrammatical — いっそう is a degree adverb over predicates (いっそう期待される), it cannot modify the noun phrase 期待の新人. Natural: 「今年は期待の新人が入社した」 or 「例年にも増して期待される新人が入社した」."
+  },
+  {
+   "id": "n1-b400",
+   "severity": "wrong",
+   "problem": "民主 is a bound morpheme in modern Japanese (民主主義・民主的・民主化); 「民主の原則」 is not a collocation a native writer produces — it reads as a translationese calque. Use 「民主主義の原則」 or 「民主的な手続き」."
+  },
+  {
+   "id": "n1-b717",
+   "severity": "wrong",
+   "problem": "en and zh name different activities. 音の合わせ before 本番 is performers putting parts together; zh 「声音的合练」 (joint rehearsal) matches, but en 'sound check' is the engineer's technical level check. For a word glossed 'joint, matching' the two translations teach two different scenes."
+  },
+  {
+   "id": "n1-b1200",
+   "severity": "wrong",
+   "problem": "月並み is a na-adjective, so it cannot attach directly to a noun: 「月並み表現だが」 is ungrammatical. It must be 「月並みな表現だが」(or 月並みの表現). As written it also reads like a broken compound no IME/native writer would produce."
+  },
+  {
+   "id": "n1-b618",
+   "severity": "wrong",
+   "problem": "七日 in 「事故から七日が経過した。」 is read なのか by every native reader in this context; nothing forces the taught minority reading なぬか. A learner typing this sentence would produce なのか, so the item teaches the wrong reading association. Needs a context that actually selects なぬか (essentially none in modern prose) or the reading should be reconsidered."
+  },
+  {
+   "id": "n1-b1404",
+   "severity": "wrong",
+   "problem": "化する takes と, not に: 「水の泡に化した」 is not Japanese a native would write. Standard forms are 「水の泡と化した」 or 「水の泡になった」 (cf. 廃墟と化す, 灰と化す). The particle as written is a defect."
+  },
+  {
+   "id": "n1-b1704",
+   "severity": "wrong",
+   "problem": "「親の勧目で」 contains a non-word: 勧目 does not exist. It must be 勧め (親の勧めで). No IME produces 勧目 from すすめ — a plain typo that makes the sentence unreadable."
+  },
+  {
+   "id": "n1-b1645",
+   "severity": "wrong",
+   "problem": "Wrong collocation: 阻む takes 行く手 (the way ahead), not 行き先 (destination). 「行き先を阻んだ」 is not Japanese; the idiom is 悪天候が登山隊の行く手を阻んだ. (激しい悪天候 is also pleonastic — 悪天候 already carries the severity.)"
+  },
+  {
+   "id": "n1-b672",
+   "severity": "wrong",
+   "problem": "藍褸 is not a writing of ぼろ — the ateji is 襤褸 (藍 = indigo, and no IME converts ぼろ to 藍褸). As written the sentence forces no reading at all; a native writer would use kana ぼろ/ボロ here anyway."
+  },
+  {
+   "id": "n1-b1658",
+   "severity": "wrong",
+   "problem": "Bare 単 does not force ひとえ — the overwhelmingly common reading is たん, and 「単の着物」 gives the learner nothing to override it. The unlined-kimono term is normally written 単衣 (and 単衣の着物 is itself semi-redundant; 夏場には単衣がよく似合う)."
+  },
+  {
+   "id": "n1-b1919",
+   "severity": "wrong",
+   "problem": "en and zh disagree on the object's number and kind: en 'a large heavy shelf' (one 棚) vs zh 一排沉重的大柜子 = 'a row of heavy large cabinets' (plural, cabinets not shelf). zh also renders 据える as 摆放 ('placed/laid out'), which is the light casual verb and loses the 'install/set firmly in place' sense this entry is teaching."
+  },
+  {
+   "id": "n1-b853",
+   "severity": "wrong",
+   "problem": "努力を怠った、其れ故に試験に落第してしまった。— two finite clauses spliced with a 読点; a writer would end the first sentence (努力を怠った。それゆえ、…) or subordinate it (怠ったので). Also 試験に落第する is a collocation clash (落第する is about failing a year/course; for an exam it is 試験に落ちる), and the fully-kanji 其れ故 is archaic — no modern writer or IME conversion of それゆえ produces it (それゆえ / それ故 is what appears)."
+  },
+  {
+   "id": "n1-b877",
+   "severity": "wrong",
+   "problem": "自分の主張を突っ張った is not Japanese a native would produce. In the 'insist stubbornly' sense 突っ張る takes 意地・我 (意地を突っ張る) or stands alone (最後まで突っ張った); 主張 pairs with 押し通す (自分の主張を押し通した). As written the を-object is wrong for this verb."
+  },
+  {
+   "id": "n1-b1057",
+   "severity": "wrong",
+   "problem": "Typo in the typing string: 「会会社の幹部が集まって会議を開いた。」 — 会会社 should be 会社. The learner would have to type a non-existent word."
+  },
+  {
+   "id": "n1-b977",
+   "severity": "wrong",
+   "problem": "「何か温かいお飲み物でも召しますか。」 is not modern Japanese. In the eat/drink sense 召す survives essentially only in 召し上がる; as a bare honorific it also requires お〜になる (お召しになる, used for wearing/catching a cold). 「召しますか」 is ungrammatical as a polite offer — 召し上がりますか / お飲みになりますか is what a native says. As written it teaches an impossible form."
+  },
+  {
+   "id": "n1-b1019",
+   "severity": "wrong",
+   "problem": "「提案に対する返答は未だ届いていない。」 does not force いまだ. 未だ before a plain 〜ていない is read まだ at least as readily (まだ届いていない is the default parse), so the sentence teaches the wrong reading association. 未だに届いていない or 未だかつて〜ない would force いまだ."
+  },
+  {
+   "id": "n1-b1120",
+   "severity": "wrong",
+   "problem": "Tense conflict between the two glosses. jp 分解して調べる is non-past; zh 拆解并研究… is non-past; but en 'I disassembled the watch to investigate' is past. en also inverts the structure (jp = disassemble in order to examine, en reads as already done)."
+  },
+  {
+   "id": "n1-b998",
+   "severity": "wrong",
+   "problem": "en and zh translate the first clause differently. jp 無駄遣いをして = 'spending money wastefully'; zh 我乱花钱 renders that correctly, but en says 'by fooling around', which is a different cause entirely and drops the money. A learner reading both is taught two incompatible readings of 無駄遣い."
+  },
+  {
+   "id": "n1-b1494",
+   "severity": "wrong",
+   "problem": "祖父は洒脱で洒落な性格をしている。The taught minority reading しゃらく is not forced at all — modern readers read 洒落 as しゃれ/おしゃれ, and 「洒落な性格」 will be parsed as a mistake for 洒落た性格 (しゃれた). The sentence also pairs 洒落 with its near-synonym 洒脱 in the same clause, so it is circular (洒脱 already means 'free and easy, unconstrained') and teaches nothing about the target word. Needs a context that can only be しゃらく, e.g. 「洒落な人柄で誰にでも気さくに接する」 is still ambiguous — a rewrite that drops 洒脱 and forces the sense is required."
+  },
+  {
+   "id": "n1-b1654",
+   "severity": "wrong",
+   "problem": "「重いスーツケースを床の上に引きずって運んだ」— 引きずる takes the traversed surface with を (or nothing at all), not に. 「床の上に引きずる」 reads as dragging *onto* the floor, which is not the intended meaning. Natural: 「重いスーツケースを引きずって運んだ」 or 「床をこするように引きずって運んだ」."
+  },
+  {
+   "id": "n1-b1771",
+   "severity": "wrong",
+   "problem": "送り仮名 no IME produces: いやらしい is written 嫌らしい or 厭らしい; 厭やらしい (with や spelled out) is not a form any IME yields from いやらしい, so the learner cannot type the string the app shows. The sentence itself (厭やらしい目つきで笑った) is otherwise fine — only the orthography is defective."
+  },
+  {
+   "id": "n1-b1833",
+   "severity": "wrong",
+   "problem": "Wrong member of the 切れ目/切れ間 pair. A lull in rain (or clouds) is 雨の切れ間・雲の切れ間・雨の合間; 切れ目 is a cut/gap in a continuum (話の切れ目, 金の切れ目). 「雨の切れ目を狙って」 reads to a native as a mistake for 切れ間, so the sentence teaches the target word in a collocation that belongs to a different word."
+  },
+  {
+   "id": "n1-b1819",
+   "severity": "wrong",
+   "problem": "転がっていた here means the rock WAS LYING on the path (having come to rest), not that it was in motion. The en \"A large rock was rolling on the mountain path\" asserts ongoing motion the Japanese does not, and diverges from the zh resultative 滚落着 (lies there having rolled down). en should be \"A large rock lay on the mountain path.\""
+  },
+  {
+   "id": "n1-b2029",
+   "severity": "wrong",
+   "problem": "「果ない」 is not an orthography a real writer or IME produces for はかない. Standard is 儚い (or kana はかない); 果敢ない/果無い are the rare literary variants — 果ない with that 送り仮名 is not offered by macOS/Windows IMEs, so in a typing app the learner cannot convert to it. Sentence itself (人生は桜のように〜ものだ) is fine; the surface/orthography is the defect."
+  },
+  {
+   "id": "n1-b2063",
+   "severity": "wrong",
+   "problem": "The context does not force the taught reading ぶち. 「白い毛に黒い斑がある猫」 is read まだら by default (斑 alone = まだら; 斑 in 黒い斑 also invites はん as in 斑点). ぶち is the minority reading and normally appears as ブチ／ぶち in kana or in 「白黒のぶち」「ぶち猫」. As written the sentence teaches 斑=まだら."
+  },
+  {
+   "id": "n1-b2009",
+   "severity": "wrong",
+   "problem": "The dog's name contradicts itself across languages: jp names it チロ, en says \"Chiro\", but zh writes 千代 — which reads Chiyo, a different name entirely (and a human female name at that, not a transliteration of チロ). A learner reading both glosses is taught two different names for the same dog."
+  },
+  {
+   "id": "n1-b237",
+   "severity": "wrong",
+   "problem": "en and zh parse the sentence differently. 誰にも is the dative object of 強制する (\"you may not force participation on anyone\"), which is what zh says (不能强制任何人参加). en makes 誰にも the subject — \"No one can force anyone to participate\" — which asserts nobody has the power to compel, a different proposition. A learner reading both gets two contradictory readings of the same clause."
+  },
+  {
+   "id": "n1-b612",
+   "severity": "wrong",
+   "problem": "zh renders 堂々と as 光明正大地, which in Chinese means \"aboveboard / with nothing to hide\" (moral transparency), not \"confidently, with dignity\" — a different sense from en's \"confidently\" and from the declared sense. zh also turns 大勢の前 (in front of a crowd) into 大众面前 (before the masses/public), a further drift. The learner reading both glosses gets two different meanings for the target adverb."
+  },
+  {
+   "id": "n1-b333",
+   "severity": "wrong",
+   "problem": "Agency reversed between the two glosses. jp 転任することになった marks an externally decided posting; zh 「田中老师决定下个月调任」 makes Tanaka himself the decider (that would be ことにした), while en 'has been assigned to transfer' correctly makes it external. The learner reads two contradictory accounts of who decided."
+  },
+  {
+   "id": "n1-b790",
+   "severity": "wrong",
+   "problem": "zh 「水电煤气费」 includes water, but 光熱費 is fuel and light only (electricity + gas; water is 水道代 / 水道光熱費). The Chinese teaches a wider referent than the word has, and en 'utility bills' is vague enough that the learner will settle on the wrong, wider zh reading."
+  },
+  {
+   "id": "n1-b926",
+   "severity": "wrong",
+   "problem": "en mistranslates the modifier: 注意を促す張り紙 is a notice urging caution, but 'A poster drawing attention' reads in English as attention-grabbing/eye-catching. zh 「提醒注意的告示」 is correct, so en and zh disagree, and en sets up a false equation 注意を促す = draw attention."
+  },
+  {
+   "id": "n1-b451",
+   "severity": "wrong",
+   "problem": "en and zh disagree on the seriousness of 不正行為. en says \"His illegal act became public\" — 不正行為 is misconduct/wrongdoing, not necessarily anything criminal — while zh correctly has 不正当行为 (improper conduct). A learner reading both is taught two different accusations from one sentence; en should be \"misconduct/wrongdoing\"."
+  },
+  {
+   "id": "n1-b591",
+   "severity": "wrong",
+   "problem": "zh contradicts jp and en on the sentence's logic. jp 夢ではないかと自分の頬を抓った = pinched the cheek in order to check whether this might be a dream; en gets it right (\"to see if I was dreaming\"). zh 我掐了自己的脸颊，以为是在做梦 asserts the speaker BELIEVED he was dreaming, and puts the belief after the pinch — a learner reading both glosses gets two different mental states. Needs 以为 → 心想会不会是在做梦 / 想确认是不是在做梦, placed before the pinch."
+  },
+  {
+   "id": "n1-b556",
+   "severity": "wrong",
+   "problem": "zh mistranslates the target word itself. 世代 = generation (of people); zh renders it 超越时代 = transcending eras/periods, which is 時代, not 世代 — and it directly contradicts en \"loved across generations\". The learner sees 世代 equated with 时代, exactly the confusion this pair invites. Should be 跨越世代／超越世代."
+  },
+  {
+   "id": "n1-b758",
+   "severity": "wrong",
+   "problem": "en and zh contradict each other on both the object and the outcome. jp 駅前でスポーツクラブの勧誘を受けた = was approached/solicited (no consent implied); en 'I was solicited to join a sports club' keeps that, but zh 我在车站前接受了推销邀请 says the speaker ACCEPTED the invitation (接受了…邀请 reads as agreeing, not merely receiving), and drops スポーツクラブ entirely, turning it into a generic 推销 (sales pitch). A learner reads 'I was pitched at' in English and 'I accepted a sales offer' in Chinese."
+  },
+  {
+   "id": "n1-b2001",
+   "severity": "wrong",
+   "problem": "zh copies the kanji into a false friend: Chinese 动员 means \"mobilize/rally people to act\" (动员群众), it is not used for an event drawing an audience. 「演唱会动员了数万名观众」 reads as the concert rallying spectators for some cause, not attracting them. en (\"drew tens of thousands of spectators\") and zh therefore teach two different senses of the target word; zh should be 吸引了数万名观众 / 观众人数达数万."
+  },
+  {
+   "id": "n1-b1093",
+   "severity": "wrong",
+   "problem": "zh is corrupted: 我无法抑制作对她的爱慕之情 contains a stray 作 (抑制作对她). Should be 我无法抑制对她的爱慕之情. The line is ungrammatical as shipped."
+  },
+  {
+   "id": "n1-b1014",
+   "severity": "wrong",
+   "problem": "zh copies the Japanese kanji: 防犯用品 is not a Chinese word (Chinese uses 防盗用品 / 安防用品; 防犯 exists only as a Japanese loan). Also 为了防止万一 is unidiomatic for いざという時に備えて — 以防万一 is the set phrase."
+  },
+  {
+   "id": "n1-b1125",
+   "severity": "wrong",
+   "problem": "zh 煎饼 is a kanji copy that names a different food: Chinese 煎饼 is a savory crepe, not せんべい (rice cracker = 仙贝 / 米果). zh also renders 渋い as 浓涩 ('strong and astringent'), adding strength that the jp does not state, while en says only 'astringent'."
+  },
+  {
+   "id": "n1-b1428",
+   "severity": "wrong",
+   "problem": "zh mistranslates the target: 自由な気風 = a free ethos/風気, but zh says 自由的风情 — 风情 in Chinese means charm, local flavour, or amorous feeling, not a prevailing spirit. en (\"A free ethos still remains in this town\") and zh therefore disagree on what remains, and the zh teaches the wrong word for 気風 (should be 风气)."
+  },
+  {
+   "id": "n1-b1352",
+   "severity": "wrong",
+   "problem": "Connotation reversal between en and zh on the target adverb. en \"I daringly take on the challenge\" matches 敢えて (deliberate boldness); zh 硬着头皮去挑战 means forcing oneself through something one is reluctant/afraid to do. A learner reading both is taught that 敢えて marks grudging self-compulsion. Natural: 仍敢于挑战 / 依然勇于挑战."
+  },
+  {
+   "id": "n1-b1587",
+   "severity": "wrong",
+   "problem": "zh renders 適性 as 适应性 = \"adaptability / ability to adapt\", a different concept from aptitude. Japanese 適性 and en \"aptitude for sales work\" mean innate suitability/talent; Chinese 适应性 means how well one adjusts to circumstances. A learner reading both glosses gets two different senses of the headword. Correct zh would be 她适合从事销售工作 / 她有做销售的资质."
+  },
+  {
+   "id": "n1-b1630",
+   "severity": "wrong",
+   "problem": "zh downgrades 熱湯 to 热水 (merely hot water) while en says \"boiling water\". The headword's whole content is the boiling temperature; 热水 is exactly the word 熱湯 is taught to contrast with (お湯/热水). Should be 开水 (or 滚水). en and zh disagree on the defining property of the target."
+  },
+  {
+   "id": "n1-b1777",
+   "severity": "wrong",
+   "problem": "呆れている means dumbfounded/exasperated/fed up — a negative reaction. The en \"Everyone is amazed by his conceit\" reads as admiration or neutral astonishment, reversing the connotation, while the zh 大家都对他的自负感到无语 correctly conveys exasperation. en and zh teach opposite attitudes toward the same sentence. en should be e.g. \"Everyone is exasperated by his conceit.\""
+  },
+  {
+   "id": "n1-b2013",
+   "severity": "wrong",
+   "problem": "zh 「过于轻熟」 does not mean 馴れ馴れしい. 轻熟 in Chinese means \"slightly mature / lightly sophisticated\" (as in 轻熟女 fashion register), not \"overly familiar\". The zh therefore fails to render the target word at all and contradicts en \"overly familiar attitude\"; natural renderings would be 自来熟／过分亲昵／过于自来熟."
+  },
+  {
+   "id": "n1-b2010",
+   "severity": "wrong",
+   "problem": "zh 「佩戴在制服胸前的名牌去上学」 is broken: it is a bare noun phrase (\"the name tag worn on the uniform's chest\") followed by 去上学, with no subject or 把 — it does not state that someone wears the tag, unlike en \"I wear a name tag ... when going to school\". Also 名牌 in Mandarin is read first as \"famous brand\"; 胸牌／姓名牌 is the name-tag word."
+  }
+ ],
+ "minorItems": [
+  {
+   "id": "n1-b159",
+   "severity": "minor",
+   "problem": "「水分をしっかり補充しよう」 — 水分 collocates with 補給 (水分補給), not 補充; 補充 is for replenishing stock, staff, or a consumed inventory (在庫を補充する, 欠員を補充する). Compounded by n1-b386 in the same batch, which uses the correct 「水分を補給する」 for 補給, so the two entries currently teach the same collocation under two words. Suggest 「品切れの商品を棚に補充した」."
+  },
+  {
+   "id": "n1-b273",
+   "severity": "minor",
+   "problem": "「食べた温かいスープ」 — スープ takes 飲む in Japanese (スープを飲む); 食べる is only used for chunky, spoon-eaten soup and reads oddly with 温かいスープ in this generic sentence. Change to 「寒い日に飲んだ温かいスープが心に染みた」. (Particle usage 心に染みる itself is correct intransitive.)"
+  },
+  {
+   "id": "n1-b375",
+   "severity": "minor",
+   "problem": "「あいにく留守中で不在だった」 is redundant — 留守中 and 不在 say the same thing, so the target word carries no work in its own sentence. Natural: 「荷物が届いたが、あいにく不在で受け取れなかった」."
+  },
+  {
+   "id": "n1-b245",
+   "severity": "minor",
+   "problem": "Metalinguistic sentence — it explains how the word is used rather than using it, which is the 'dictionary definition dressed as a sentence' pattern. The collocation is also off: 敬具 is 書く/結ぶ, not 添える, and it belongs to 手紙 rather than ビジネス文書 generally. Better: 「拝啓で書き始めた手紙を敬具で結んだ」."
+  },
+  {
+   "id": "n1-b384",
+   "severity": "minor",
+   "problem": "「清掃活動に奉仕している」 — 奉仕する takes the beneficiary (社会に奉仕する, 顧客に奉仕する), not the activity itself; an activity takes 参加する. Natural: 「彼女は清掃活動を通じて地域に奉仕している」."
+  },
+  {
+   "id": "n1-b186",
+   "severity": "minor",
+   "problem": "「新しい国際連盟を結成した」 — 国際連盟 is the proper name of the historical League of Nations, so this reads as re-founding that body rather than 'a new international league'. It is also circular: 加盟国 (member states) are the product of forming the league, not its pre-existing agents. Suggest 「各国のサッカー協会が新しい連盟を結成した」."
+  },
+  {
+   "id": "n1-b309",
+   "severity": "minor",
+   "problem": "「大部な辞書を調べた」 — 大部 is standardly used as 大部の (大部の書物/大部の辞典); 大部な is marginal. 辞書を調べる is also off for looking something up (that is 辞書を引く / 辞書で調べる); 辞書を調べる reads as examining the dictionary itself. Natural: 「図書館で大部の辞書を引いた」."
+  },
+  {
+   "id": "n1-b152",
+   "severity": "minor",
+   "problem": "Adverb placement invites a garden path: 「火山から激しく黒い煙が噴出した」 momentarily parses 激しく as modifying 黒い ('intensely black'). Put it next to the verb: 「火山から黒い煙が激しく噴出した」."
+  },
+  {
+   "id": "n1-b167",
+   "severity": "minor",
+   "problem": "「言い訳ばかりするのは見苦しい態度だ」 equates a nominalized action (〜のは) with 態度, a category mismatch. Either 「言い訳ばかりするのは見苦しい」 or 「言い訳ばかりする態度は見苦しい」."
+  },
+  {
+   "id": "n1-b269",
+   "severity": "minor",
+   "problem": "「湿気でせんべいが湿気ってしまった。」puts 湿気 in one sentence with two different readings — しっけ (noun) then しけ (verb) — which is exactly the wrong association to burn in for a word whose whole difficulty is the reading. It is also clumsy repetition; a native would write 湿気でせんべいがしけってしまった."
+  },
+  {
+   "id": "n1-b552",
+   "severity": "minor",
+   "problem": "「研究の成果がついに実を結んだ。」is circular: 実を結ぶ takes 努力・研究・苦労 as subject, and 成果 already IS the fruit. Natural: 長年の研究がついに実を結んだ or 長年の研究の成果がついに現れた."
+  },
+  {
+   "id": "n1-b292",
+   "severity": "minor",
+   "problem": "「数詞の数え方を勉強した」is semantically off — one does not count numerals. Intended is ものの数え方 / 数詞の使い方. 「文法の中で」is also clunky for 授業で / 文法の授業で."
+  },
+  {
+   "id": "n1-b293",
+   "severity": "minor",
+   "problem": "「工事の進みが遅れている。」— 進み as a bare noun is marginal, and 進みが遅れる is an odd pairing. Natives say 工事の進み具合が遅い / 進捗が遅れている / 工事の進みが遅い."
+  },
+  {
+   "id": "n1-b301",
+   "severity": "minor",
+   "problem": "「今が全盛の時期だ」— the set noun is 全盛期; 全盛の時期 is redundant and reads translated. Natural: その歌手は今が全盛期だ."
+  },
+  {
+   "id": "n1-b582",
+   "severity": "minor",
+   "problem": "「彼は指示に忠実にしたがった。」— したがった in kana inside an otherwise kanji-normal sentence is orthography no writer would choose here; 従った is expected. (The sentence is also near-tautological: 指示に従う + 忠実に.)"
+  },
+  {
+   "id": "n1-b596",
+   "severity": "minor",
+   "problem": "てっきり presupposes a mistaken belief and collocates with 思う/思い込む: てっきり彼が来るものと思い込んでいた（が来なかった）. 「〜と信じていた」with no contradicting clause loses the required 'wrongly assumed' nuance, which the English gloss ('I was certain') confirms."
+  },
+  {
+   "id": "n1-b605",
+   "severity": "minor",
+   "problem": "「バスで年寄りに席を譲った。」— bare 年寄り about a specific person one is being courteous to reads impolite; the natural register here is お年寄り (お年寄りに席を譲った)."
+  },
+  {
+   "id": "n1-b332",
+   "severity": "minor",
+   "problem": "手回し in the \"advance preparation\" sense lives almost exclusively in 手回しがいい/悪い/手回しよく; 「手回しをしておく」 as a suru-object is not idiomatic (手配をしておく would be). Rewrite as 「彼は手回しがよく、旅行の準備はもう済んでいる」."
+  },
+  {
+   "id": "n1-b705",
+   "severity": "minor",
+   "problem": "「完全な両極にある」 is unnatural. 両極 collocates as 意見が両極に分かれる or 両極端; a native would write 「彼の意見と私の意見は両極に分かれている」 or 「まったく正反対だ」."
+  },
+  {
+   "id": "n1-b754",
+   "severity": "minor",
+   "problem": "Meaning-selected kanji: tough/hard meat is 硬い肉; 固い is for things that are firmly fastened or set (固い結び目・決意が固い). 「固い肉」 is the wrong 同訓異字 choice here."
+  },
+  {
+   "id": "n1-b766",
+   "severity": "minor",
+   "problem": "断る takes を for the thing refused (誘いを断る). 「不正な誘いに対して…断った」 leaves the verb without its object and reads awkwardly. Natural: 「不正な誘いをきっぱりと断った」."
+  },
+  {
+   "id": "n1-b371",
+   "severity": "minor",
+   "problem": "Tense mismatch and an odd frame: nonpast 「買うつもりはないが」 against past 楽しんだ should be 「買うつもりはなかったが」, and 「冷やかすだけで楽しんだ」 is stiff. Natural: 「買うつもりはなかったが、服屋を冷やかして楽しんだ」."
+  },
+  {
+   "id": "n1-b404",
+   "severity": "minor",
+   "problem": "送り仮名: the standard modern form is 目覚ましい (per the 送り仮名 rules and what IMEs offer first); 目覚しい is an older variant a typing learner may not be able to produce. Prefer 目覚ましい in the sentence."
+  },
+  {
+   "id": "n1-b785",
+   "severity": "minor",
+   "problem": "「公式に訪問した」 is incomplete — 訪問する needs a destination, and the fixed expression is 公式訪問(する). Natural: 「国家の元首が我が国を公式訪問した」. As written the sentence is also close to contentless."
+  },
+  {
+   "id": "n1-b396",
+   "severity": "minor",
+   "problem": "「満場から拍手が起きた」 is off: 満場 collocates as 満場の拍手 / 満場一致, not as a source marked by から (that would be 会場から). Use 「満場の拍手が起きた」 or 「会場から拍手が起きた」."
+  },
+  {
+   "id": "n1-b420",
+   "severity": "minor",
+   "problem": "混迷 describes situations, not places (混迷する政局・情勢). 「混迷する地域」 is unnatural; use 「混乱した地域」 or 「情勢が混迷する地域」."
+  },
+  {
+   "id": "n1-b791",
+   "severity": "minor",
+   "problem": "Plain nonpast 扱う to describe a shop's standing practice is unnatural; Japanese uses the resultative-habitual 扱っている (「このスーパーは国産の野菜を扱っている」). The sentence is also very thin content-wise for N1."
+  },
+  {
+   "id": "n1-b813",
+   "severity": "minor",
+   "problem": "「裁縫で布地を仮に仕付ける」 reads like a dictionary gloss rather than a sentence: 裁縫で as a bare adjunct is clumsy, 仮に collides with the 仮縫い sense, and the plain nonpast has no subject or situation. Better: 「母は縫う前に布地をしつけ糸で仕付けた」."
+  },
+  {
+   "id": "n1-b668",
+   "severity": "minor",
+   "problem": "「戦争は国を滅ぼす原因となる」 is a circular, definition-shaped generality — 原因となる adds nothing over the verb itself. A concrete frame teaches more: 「度重なる内乱がその王朝を滅ぼした」."
+  },
+  {
+   "id": "n1-b406",
+   "severity": "minor",
+   "problem": "浅い池 undercuts 必死に藻掻いた — in a shallow pond one simply stands up, so the desperate struggling reads incongruous. Drop 浅い or move it to a plausible setting (川の深みに落ちて必死にもがいた)."
+  },
+  {
+   "id": "n1-b820",
+   "severity": "minor",
+   "problem": "出生 is read both しゅっしょう and しゅっせい in current usage, and 「子供の出生を届け出た」 forces neither. The compound that pins the taught reading is 出生届(しゅっしょうとどけ): 「役所に子供の出生届を出した」."
+  },
+  {
+   "id": "n1-b768",
+   "severity": "minor",
+   "problem": "The headword 客観 never appears on its own — it surfaces only inside 客観的な, so the learner practices the derived adjective rather than the entry. Reading is preserved, but a sentence with bare 客観 (e.g. 主観と客観を切り離して考える) would actually exhibit the target."
+  },
+  {
+   "id": "n1-b1013",
+   "severity": "minor",
+   "problem": "「指定された域外へは出荷できない」 misattaches the modifier: what is designated is the 区域/地域, not the 域外. A native would write 「指定された地域の域外へは出荷できない」 or 「指定区域外へは出荷できない」. As written the phrase is semantically incoherent even though the syntax parses."
+  },
+  {
+   "id": "n1-b975",
+   "severity": "minor",
+   "problem": "「立ち入り無用だ」 is archaic signboard language (cf. 小便無用) used as a sentence predicate; modern Japanese for this content is 「関係者以外立ち入り禁止だ」. The 'forbidden' sense of 無用 survives mainly in fixed sign phrases, and ending it with だ in a descriptive sentence is stilted."
+  },
+  {
+   "id": "n1-b934",
+   "severity": "minor",
+   "problem": "「ひと段落」 is a nonstandard mixed spelling; the standard orthography is 一段落（いちだんらく）. In a typing app it teaches a spelling a careful writer would not use, and the kana-plus-kanji 一/ひと inconsistency sits awkwardly next to the target 一息 in the same sentence."
+  },
+  {
+   "id": "n1-b992",
+   "severity": "minor",
+   "problem": "「静かな音を立てて雨が降り始めた」 is self-contradictory — 音を立てる means to make an audible noise, so 'making a quiet noise' reads oddly. A native would write 夜更けに静かに雨が降り始めた or 夜更けに雨がひそやかな音を立てて降り始めた."
+  },
+  {
+   "id": "n1-b444",
+   "severity": "minor",
+   "problem": "「疑惑の打ち消しにはならなかった」 is an unnatural nominalization; the idiomatic phrasing is 疑惑を打ち消すことにはならなかった or 疑惑の払拭にはならなかった. 打ち消し as a free noun taking の-complement of this kind is not something a native writer produces."
+  },
+  {
+   "id": "n1-b949",
+   "severity": "minor",
+   "problem": "The collocation is へりくだった態度をとる (ta-form attributive); 「謙る態度をとる」 with the plain non-past attributive is unidiomatic for describing a habitual demeanor."
+  },
+  {
+   "id": "n1-b1040",
+   "severity": "minor",
+   "problem": "Bare 織 as a free noun is not the orthography a writer would use — it should be 織り (or 織り方/織り目): 「緻密な織りが特徴です」. Without 送り仮名 the single kanji also invites the on-reading (しょく) rather than the taught おり, so the context does not cleanly force the reading."
+  },
+  {
+   "id": "n1-b456",
+   "severity": "minor",
+   "problem": "おむつ is written おむつ／オムツ in virtually all real writing; 「お襁褓」 is an ateji nobody types (襁褓 by itself is むつき/おしめ). Requiring the learner to produce this string is an orthography defect in a typing app."
+  },
+  {
+   "id": "n1-b470",
+   "severity": "minor",
+   "problem": "Register mismatch: 勧告 is authoritative/official advice (政府の勧告, 退職勧告, 避難勧告). Advice from one's doctor about lifestyle is 忠告 or 助言／指導; 「医師から…勧告を受けた」 sounds like an official directive."
+  },
+  {
+   "id": "n1-b441",
+   "severity": "minor",
+   "problem": "衣料 is an industry/collective term (衣料産業, 衣料の生産). For an individual buying winter clothes a native writes 衣料品 — 「冬の衣料をまとめて購入した」 reads like wholesale-trade prose applied to a personal shopping trip."
+  },
+  {
+   "id": "n1-b449",
+   "severity": "minor",
+   "problem": "沿線 refers to land along a rail line, so it pairs with a 路線/線 rather than with a train: 「この路線の沿線には」 or 「この電車が走る路線の沿線には」. 「この電車の沿線」 is loose."
+  },
+  {
+   "id": "n1-b469",
+   "severity": "minor",
+   "problem": "Empty frame: 「彼女は可愛らしい服を着ている」 is a slot into which almost any adjective fits and gives the learner no context that distinguishes 可愛らしい from 可愛い/素敵な/きれいな. At N1 the sentence should show what makes the word specific (e.g. a small, endearing quality)."
+  },
+  {
+   "id": "n1-b1139",
+   "severity": "minor",
+   "problem": "The sentence is the dictionary definition dressed as a sentence — 「礼儀正しい紳士だ」 simply restates the gloss, so nothing in it teaches a use of 紳士 the gloss did not already give."
+  },
+  {
+   "id": "n1-b460",
+   "severity": "minor",
+   "problem": "「冬も暖かだ」 uses the stilted na-adjective predicate form; modern prose writes 冬も暖かい. Combined with 暖かい海流 earlier in the same sentence, the repetition plus the 暖か/暖かい alternation reads awkwardly."
+  },
+  {
+   "id": "n1-b1271",
+   "severity": "minor",
+   "problem": "「彼は毎日忙しい日々を過ごしている。」 doubles 毎日 and 日々 — a native writer would drop one (「忙しい日々を過ごしている」 or 「毎日忙しく過ごしている」). The redundancy makes the target word look like filler."
+  },
+  {
+   "id": "n1-b574",
+   "severity": "minor",
+   "problem": "「ロープの弛みをしっかり締め直した。」 has an impossible object-verb pair: you 弛みを取る/なくす, and you 締め直す the ロープ itself. 「弛みを締め直す」 is not a collocation a native produces."
+  },
+  {
+   "id": "n1-b1406",
+   "severity": "minor",
+   "problem": "「グラスを傾けてお茶を飲んだ。」 mismatches vessel and drink — お茶 goes in 湯呑み/カップ, and グラスを傾ける idiomatically evokes alcohol. Natural: 「湯呑みを傾けてお茶を飲んだ」 or 「グラスを傾けてワインを飲んだ」."
+  },
+  {
+   "id": "n1-b554",
+   "severity": "minor",
+   "problem": "「静的なデータではなく動的な表示が求められる。」 contrasts two non-parallel nouns (データ vs 表示), so the 静的/動的 opposition reads incoherently. Parallel it: 「静的な表示ではなく動的な表示が求められる」."
+  },
+  {
+   "id": "n1-b1272",
+   "severity": "minor",
+   "problem": "「ひょっと横を見ると」 is archaic/literary; standalone adverbial ひょっと is essentially dead in modern Japanese, where a native writes ふと横を見ると. Today ひょっと survives almost only in ひょっとすると/ひょっとしたら."
+  },
+  {
+   "id": "n1-b1305",
+   "severity": "minor",
+   "problem": "「彼の誠の気持ちが彼女に伝わった。」 — 誠の+noun is stiff and archaic in modern prose; a native would write 真心が伝わった or 彼の誠意が伝わった."
+  },
+  {
+   "id": "n1-b578",
+   "severity": "minor",
+   "problem": "「サイズがだぶだぶだった」 predicates だぶだぶ of サイズ; だぶだぶ describes the garment, not the size. Natural: 「兄の服を着たらだぶだぶだった」 or 「服がだぶだぶだった」."
+  },
+  {
+   "id": "n1-b587",
+   "severity": "minor",
+   "problem": "「映画の通として知られている」 — the natural form is the compound 映画通(えいがつう); inserting の (映画の通) is awkward. Standalone 通 normally appears as その道の通 or in 〜通 compounds."
+  },
+  {
+   "id": "n1-b1274",
+   "severity": "minor",
+   "problem": "「この水には微量の鉱物が含まれている。」 — 鉱物 means mineral as a rock/ore; what dissolves in water is ミネラル or 鉱物質. A native writes 微量のミネラルが含まれている."
+  },
+  {
+   "id": "n1-b1299",
+   "severity": "minor",
+   "problem": "「本の少しだけ砂糖を入れてください。」 — real writers spell this ほんの少し in kana; the kanji form 本の invites a garden-path reading as 本(book)の and is orthography almost no published text uses."
+  },
+  {
+   "id": "n1-b1343",
+   "severity": "minor",
+   "problem": "「この単語は長い言葉の略語です。」 is a definition of 略語 dressed as a sentence — no actual abbreviation, no context, and この単語 has no antecedent. A concrete instance (e.g. 「『バイト』はアルバイトの略語です。」) would carry meaning."
+  },
+  {
+   "id": "n1-b1260",
+   "severity": "minor",
+   "problem": "「紙に色を刷って」 is an odd collocation; the object of 刷る in printmaking is the print itself (版画を刷る) or one uses 色を刷り重ねる. Natural: 「版木に色をつけて紙に刷り、綺麗な版画を完成させた」."
+  },
+  {
+   "id": "n1-b1521",
+   "severity": "minor",
+   "problem": "城下 almost never stands alone in modern prose; the word for the town/area around a castle is 城下町. 「古い城下に歴史ある建物が残っている」 reads as an artificial back-formation — 古い城下町には… is what a writer would produce."
+  },
+  {
+   "id": "n1-b652",
+   "severity": "minor",
+   "problem": "Collocation mismatch: modern laws are 公布される, not 布告される (布告 survives mainly in 宣戦布告 and historic 太政官布告). 「政府は新しい法律を全国に布告した」 teaches a usage no contemporary writer would produce."
+  },
+  {
+   "id": "n1-b1531",
+   "severity": "minor",
+   "problem": "「興奮する観客」 reads as a generic habitual (audiences that get excited); for this specific past scene it must be 興奮した観客 / 興奮している観客. 手振りで also sits oddly — 身振りで／手で制した is the natural phrasing."
+  },
+  {
+   "id": "n1-b1607",
+   "severity": "minor",
+   "problem": "The idiom is adverbial 取り立てて: 取り立てて言うほどの被害はなかった. The attributive 「取り立てるほどの被害」 is marginal at best, and 取り立てる in its plain form is normally read as 'collect (debts)/promote', so the mention-worthy sense is not cleanly carried."
+  },
+  {
+   "id": "n1-b679",
+   "severity": "minor",
+   "problem": "未開 modifies land, regions or peoples (未開の地, 未開の民族), not 自然. 「未開の自然」 is an odd pairing; 手つかずの自然 is what a native would write for 'untouched nature'."
+  },
+  {
+   "id": "n1-b699",
+   "severity": "minor",
+   "problem": "Stacked i-adjectives without linking: 「暗い古い建物」 should be 暗くて古い建物 (or 古くて暗い建物). As written it reads as a proofreading slip."
+  },
+  {
+   "id": "n1-b1692",
+   "severity": "minor",
+   "problem": "膨脹 is the pre-reform orthography; the 常用漢字 form used by every modern writer is 膨張. In a typing app the learner is being drilled on a spelling normal text no longer uses."
+  },
+  {
+   "id": "n1-b1719",
+   "severity": "minor",
+   "problem": "送り仮名: the ordinary writing is 申し出; bare 申出 is legal/administrative form-speak and is not the primary IME output for もうしで. 有難く is likewise usually kana (ありがたく) in this register."
+  },
+  {
+   "id": "n1-b1698",
+   "severity": "minor",
+   "problem": "Clumsy: 「痛みが引いた分だけ昨日より増しだ」 double-marks the comparison (分だけ + より). Natural is 痛みが引いた分、昨日よりましだ — and in the 'less bad' sense まし is normally written in kana, 増し being reserved for the 'extra' sense (五割増し)."
+  },
+  {
+   "id": "n1-b1717",
+   "severity": "minor",
+   "problem": "「困っている人に食べ物を恵む。」 is a bare dictionary-form frame with no situation — a gloss dressed as a sentence, and 恵む's condescending nuance makes the contextless plain form read as a definition rather than something anyone would say."
+  },
+  {
+   "id": "n1-b729",
+   "severity": "minor",
+   "problem": "「手を動かして団扇で風を送った」— 手を動かして is redundant filler; fanning already implies hand motion. A native would write 団扇で扇いだ or simply 団扇で風を送った."
+  },
+  {
+   "id": "n1-b731",
+   "severity": "minor",
+   "problem": "「特別売り出しを開催する」— collocation mismatch: 開催する is for events (展示会・大会). A sale is 実施する/行う, and the idiomatic noun is 大売り出し, not 特別売り出し."
+  },
+  {
+   "id": "n1-b733",
+   "severity": "minor",
+   "problem": "「この新聞は英字で書かれています」conflates 英字 (Roman letters) with 英語 (the language). 英字 lives almost exclusively in fixed compounds (英字新聞・英字表記); saying a newspaper is 英字で書かれている reads oddly to a native. Natural: これは英字新聞です／英語で書かれています."
+  },
+  {
+   "id": "n1-b1730",
+   "severity": "minor",
+   "problem": "「人々が遊牧を行っている」is stiff and off-collocation. 遊牧 normally appears as 遊牧民／遊牧生活を営む・送る; 遊牧を行う reads like bureaucratic paraphrase, and the agent would be 遊牧民, not 人々."
+  },
+  {
+   "id": "n1-b1760",
+   "severity": "minor",
+   "problem": "Particles are correct (手を), but 「手を合わした」clashes with the solemn register of 胸の前で静かに. In written/reverent contexts a native writes 手を合わせた; 合わした is colloquial/dialectal-leaning."
+  },
+  {
+   "id": "n1-b765",
+   "severity": "minor",
+   "problem": "「港に…入港してきた」is redundant — 入港 already contains 港. The pattern only works with a named port (横浜港に入港); with bare 港に it reads as 重言. Natural: 大きな汽船がゆっくりと入港してきた."
+  },
+  {
+   "id": "n1-b776",
+   "severity": "minor",
+   "problem": "「〜のは義理だ」is not how 義理 predicates; natives say 義理を欠く／義理がある／それが義理というものだ. The sentence is also a dictionary gloss dressed as a sentence (it defines 義理 rather than using it in a situation)."
+  },
+  {
+   "id": "n1-b1829",
+   "severity": "minor",
+   "problem": "「今年のお米は凶作だ」— 凶作 predicates on the year or the crop harvest (今年は米が凶作だ／今年の米作は凶作だった), and the colloquial お米 clashes with the formal 凶作."
+  },
+  {
+   "id": "n1-b807",
+   "severity": "minor",
+   "problem": "新人社員 is not the standard term; a Japanese company writes 新入社員 (or just 新人)."
+  },
+  {
+   "id": "n1-b817",
+   "severity": "minor",
+   "problem": "Flagged item: 就業 never stands alone — the learner only ever sees and types the lexicalized compound 就業規則, so the sentence exercises the compound rather than 就業 in its taught sense of employment/starting work."
+  },
+  {
+   "id": "n1-b819",
+   "severity": "minor",
+   "problem": "Register clash: the polite/softened お米 inside a written 〜である sentence. Either 日本人の主食は米である or 日本人の主食はお米です."
+  },
+  {
+   "id": "n1-b793",
+   "severity": "minor",
+   "problem": "吹き抜ける normally takes a path or space (部屋を／木立を吹き抜けた); with no traversed object the sentence dangles. Also 心地よい風 is the far commoner collocation, 快い being mostly 快く引き受ける."
+  },
+  {
+   "id": "n1-b795",
+   "severity": "minor",
+   "problem": "「古い骨董品」is redundant — 骨董品 is old by definition. Natural: 祖父の部屋には骨董品がいくつもある."
+  },
+  {
+   "id": "n1-b1868",
+   "severity": "minor",
+   "problem": "古いギリシャ語 is not the term; the language is 古代ギリシャ語. 古い modifying a language name reads as a mistranslation of \"ancient Greek\"."
+  },
+  {
+   "id": "n1-b1875",
+   "severity": "minor",
+   "problem": "「その様は言葉にならなかった」— 言葉にならない takes feelings as its subject; for a scene a native writes 言葉にできなかった／言葉を失った. The idiomatic noun here would also be 有様/ありさま rather than bare 様."
+  },
+  {
+   "id": "n1-b1866",
+   "severity": "minor",
+   "problem": "もっと sits badly on 根本から; the natural pairing is もっと根本的に解決する (or simply 根本から解決する必要がある)."
+  },
+  {
+   "id": "n1-b1894",
+   "severity": "minor",
+   "problem": "「会社へ出社する」is 重言 — 出社 already means going in to the company. Works only with a specific site (本社に出社する). Natural: 毎朝八時半までに出社する."
+  },
+  {
+   "id": "n1-b1934",
+   "severity": "minor",
+   "problem": "過去に + 前例 is redundant (前例 is by definition prior). Natural: そのような前例はありません／過去に例がありません."
+  },
+  {
+   "id": "n1-b1856",
+   "severity": "minor",
+   "problem": "Okurigana inconsistency within one clause: 卸売り (with り) beside 小売 (without). A real writer would match them — 卸売と小売 or 卸売りと小売り."
+  },
+  {
+   "id": "n1-b1950",
+   "severity": "minor",
+   "problem": "彼は学問に励む他方で、… — a verb clause cannot comfortably take 他方 as its head. 他方 works as a sentence-initial connective (…。他方、…); the clause-linking form is 一方で (学問に励む一方で). The contrast is also weak, since studying and sports are not opposed."
+  },
+  {
+   "id": "n1-b829",
+   "severity": "minor",
+   "problem": "医師が患者の診療を行う。is a dictionary definition dressed as a sentence — subject + cognate object + 行う, with no situation. Any 〜する noun could fill the same frame."
+  },
+  {
+   "id": "n1-b844",
+   "severity": "minor",
+   "problem": "単なる世辞 — in modern Japanese this noun is virtually always お世辞 (お世辞を言う, お世辞にも). Bare 世辞 reads as clipped/archaic; 単なるお世辞 is what a native writes."
+  },
+  {
+   "id": "n1-b847",
+   "severity": "minor",
+   "problem": "先だってはおいしいお土産をいただき感謝します。— register mismatch: the 先だっては…いただき frame is set-phrase polite correspondence, which closes with ありがとうございました (or 御礼申し上げます). 感謝します is flat/blunt and would not be written after いただき."
+  },
+  {
+   "id": "n1-b2005",
+   "severity": "minor",
+   "problem": "土俵の上に上がった doubles 上; the fixed expression is 土俵に上がる. Either 土俵に上がった or 土俵の上に立った."
+  },
+  {
+   "id": "n1-b849",
+   "severity": "minor",
+   "problem": "前途には明るい未来が広がっている is tautological — 前途 already means the future/road ahead, so it says 'ahead of them a bright future lies ahead'. Natural: 前途は明るい / 前途には希望が広がっている."
+  },
+  {
+   "id": "n1-b874",
+   "severity": "minor",
+   "problem": "沈黙を守ったままでいた stacks two statives on an already stative idiom. 沈黙を守った / 沈黙を守っていた, or 黙ったままでいた."
+  },
+  {
+   "id": "n1-b875",
+   "severity": "minor",
+   "problem": "近所の店へ遣いに行った — for the errand sense a writer uses 使い, almost always with お (お使いに行く); 遣い is reserved for compounds (言葉遣い, 金遣い). Bare 遣いに行く is an orthography no one produces in this context."
+  },
+  {
+   "id": "n1-b884",
+   "severity": "minor",
+   "problem": "旅行の準備はすべて手筈が整っている — 準備 and 手筈 are the same thing, so the double-subject reads redundantly. Natural: 旅行の手筈はすべて整っている."
+  },
+  {
+   "id": "n1-b859",
+   "severity": "minor",
+   "problem": "人気の商品が出されると — the passive of 出す is awkward for a product going on sale; 発売されると / 店頭に並ぶと is what a native writes."
+  },
+  {
+   "id": "n1-b924",
+   "severity": "minor",
+   "problem": "長い旅がようやく果てた — 果てる carries a nuance of expiring/perishing (命が果てる) and is literary; a journey ending is 長い旅がようやく終わった. As written it reads as if the trip died."
+  },
+  {
+   "id": "n1-b940",
+   "severity": "minor",
+   "problem": "いくつかの複合的な要因が重なった — 複合的 and 重なった say the same thing, and counting 'several composite factors' is muddled. Natural: いくつかの要因が複合的に重なった."
+  },
+  {
+   "id": "n1-b930",
+   "severity": "minor",
+   "problem": "料理にも使えて万能だ — the も presupposes another use that the sentence never mentions, and cooking is a knife's default use, so the logic reads backwards. 料理から工作まで使えて万能だ or キャンプでも料理に使えて万能だ."
+  },
+  {
+   "id": "n1-b950",
+   "severity": "minor",
+   "problem": "「弁護士が被告人の立場を弁護した。」 — 立場を弁護する is off-collocation (弁護 takes the person: 被告人を弁護した; 立場 pairs with 擁護する), and 弁護士…弁護した is a tautological frame that carries no information about the word."
+  },
+  {
+   "id": "n1-b1065",
+   "severity": "minor",
+   "problem": "「腹から笑った」 is not an idiom. The set phrase is 腹の底から笑う (or 大笑いした/腹を抱えて笑った); 腹から笑う reads as a broken version of it."
+  },
+  {
+   "id": "n1-b1061",
+   "severity": "minor",
+   "problem": "「その古い茶室には風流で雅致がある。」 is awkward: with 〜には…がある the predicate 風流で dangles (its subject is the room, not the existential clause). A native would write 〜は風流で雅致がある or 〜には風流さと雅致がある. 風流 and 雅致 are also near-synonyms stacked with no contrast."
+  },
+  {
+   "id": "n1-b1052",
+   "severity": "minor",
+   "problem": "「金融市場で新しい貨幣が流通している。」 — 貨幣 circulates 市中/経済/国内で, not 金融市場で (that is where securities and funds trade). The locative collocation is off."
+  },
+  {
+   "id": "n1-b1034",
+   "severity": "minor",
+   "problem": "「明日の夕方遅くとも五時までに到着する。」 reads clumsily: 夕方 immediately followed by 遅くとも五時 stacks two time frames with no break, and 五時 sits at the boundary of 夕方. 明日は遅くとも五時までに到着する (or a comma after 夕方) is what a writer would produce."
+  },
+  {
+   "id": "n1-b985",
+   "severity": "minor",
+   "problem": "「仕事に役立つ有益な情報」 is tautological — 役立つ and 有益 say the same thing, so the modifier does nothing to show what 有益 means."
+  },
+  {
+   "id": "n1-b967",
+   "severity": "minor",
+   "problem": "「読み終えた紙を丸めて」 — 紙 alone as the thing one finished reading is unnatural; a native would name the object (読み終えた新聞／書類／プリントを丸めて)."
+  },
+  {
+   "id": "n1-b1203",
+   "severity": "minor",
+   "problem": "唾を呑んだ is the wrong collocation for salivating at food. For appetite the fixed expression is 生唾を飲み込む/生唾が出る; 唾を呑む on its own reads as a bare 'swallowed spit' and collides with the idiom 固唾を呑む (hold one's breath in suspense), which is what a reader primes on with 呑む. Natural: 美味しそうな料理を見て生唾を飲み込んだ。"
+  },
+  {
+   "id": "n1-b1182",
+   "severity": "minor",
+   "problem": "落ち葉の溜まり is unnatural. 溜まり does not stand alone as 'an accumulation of X' — it lives in compounds (水溜まり, 吹き溜まり, 溜まり場). A native would write 庭の隅に吹き溜まった落ち葉 or 庭の隅に溜まった落ち葉を掃除した。"
+  },
+  {
+   "id": "n1-b1209",
+   "severity": "minor",
+   "problem": "鉄鋼産業が盛んに行われている is a collocation clash: 盛んに行われる takes activities (研究/議論/取引), not an industry. 産業 pairs with 盛んだ/発達している. Natural: この地域では鉄鋼産業が盛んだ。Note also the topic particle should be では, not は, with a locative."
+  },
+  {
+   "id": "n1-b1248",
+   "severity": "minor",
+   "problem": "税金を…納入する is off-register. Taxes are 納める/納付する (納税); 納入 collocates with 授業料・会費・部品などの納入. 正しく納入する is also an odd adverb for payment — 期限までに税金をきちんと納付する reads naturally."
+  },
+  {
+   "id": "n1-b1252",
+   "severity": "minor",
+   "problem": "Particle: the verb 配慮する takes に, not へ. 〜への配慮 is fine as a noun phrase, but 「お年寄りや体に障がいのある方へ配慮する」 should be 〜に配慮する。"
+  },
+  {
+   "id": "n1-b1300",
+   "severity": "minor",
+   "problem": "仕事の妨害をされて is awkwardly nominalized. Standard is the direct passive 騒音で仕事を妨害されて困っている。The given form makes 妨害 an object of する rather than the action done to the speaker."
+  },
+  {
+   "id": "n1-b1318",
+   "severity": "minor",
+   "problem": "無線のネットワーク is translation-ese. Japanese says 無線LAN (or Wi-Fi); 部屋で無線LANに接続した。The genitive phrase is not how the word is used in this domain."
+  },
+  {
+   "id": "n1-b1319",
+   "severity": "minor",
+   "problem": "悔しく無念な気持ち stacks two near-synonyms (悔しい ≒ 無念) and the bare ku-form linking an i-adj to a na-adj before the noun reads clumsily. Natural: 試合に負けて無念な気持ちになった or 負けて悔しく、無念だった。"
+  },
+  {
+   "id": "n1-b1280",
+   "severity": "minor",
+   "problem": "普遍である is stiff/marginal as a predicate. 普遍 is a bare noun; the ordinary predicate is 普遍的だ. Natural: その道徳観は時代を超えて普遍的である。"
+  },
+  {
+   "id": "n1-b1293",
+   "severity": "minor",
+   "problem": "Bare 褒美をもらった is stilted in a modern everyday sentence about a school test; natives say ご褒美をもらった almost without exception in this register."
+  },
+  {
+   "id": "n1-b1198",
+   "severity": "minor",
+   "problem": "海に沈没した is redundant — 沈没 already means going under the water, so the goal phrase adds nothing and sounds padded. 嵐で大きな船が沈没した (or 海に沈んだ) is what a writer produces."
+  },
+  {
+   "id": "n1-b1279",
+   "severity": "minor",
+   "problem": "Placement: 不図昔の友人 produces an unbroken four-kanji run that misparses on first read (不図昔 looks like a compound), and ふと is virtually always written in kana. Move it or write it in kana: 散歩の途中でふと昔の友人を思い出した。"
+  },
+  {
+   "id": "n1-b1445",
+   "severity": "minor",
+   "problem": "駅の前に大きな群集ができていた。「群集ができる」 is not a collocation a native writer would use — ができる goes with 人だかり (人だかりができていた) or 列; a crowd 群衆/群集 is 集まる・押し寄せる. Also, for a mass of people the orthography an ordinary writer uses is 群衆; 群集 reads as the assembling/ecological-community sense."
+  },
+  {
+   "id": "n1-b1466",
+   "severity": "minor",
+   "problem": "彼のコミカルな演技はとても滑稽だった。Tautological — コミカル and 滑稽 are the same word (loanword/native doublet), so the sentence says 'his comical performance was comical' and gives the learner no context that fixes the meaning of 滑稽."
+  },
+  {
+   "id": "n1-b1372",
+   "severity": "minor",
+   "problem": "今日は静かでいやに気味が悪い。Word order is off: いやに attaches to the property perceived as unusual, i.e. 「今日はいやに静かで気味が悪い」. Modifying 気味が悪い (already an evaluative predicate) reads awkwardly; やけに/いやに + 静か is the natural frame."
+  },
+  {
+   "id": "n1-b1492",
+   "severity": "minor",
+   "problem": "公園の芝に座って昼食を食べた。For sitting on a lawn a native writer says 芝生に座る; bare 芝 refers to the grass plant/turf material (芝を張る), so 公園の芝に座って is unnatural."
+  },
+  {
+   "id": "n1-b1507",
+   "severity": "minor",
+   "problem": "屋敷には多くの使用人が働いていた。Particle mismatch: 働く takes で for the place of activity — 屋敷では多くの使用人が働いていた, or keep には and change the verb (屋敷には多くの使用人がいた). 場所には…働いていた is the classic に/で error."
+  },
+  {
+   "id": "n1-b1485",
+   "severity": "minor",
+   "problem": "今日中に提出レポートを仕上げる予定だ。「提出レポート」 is not a word — it should be 提出するレポート / 提出用のレポート (or just レポートを今日中に仕上げる)."
+  },
+  {
+   "id": "n1-b1417",
+   "severity": "minor",
+   "problem": "二国間の首脳会談に向けて外相が話し合った。話し合う needs two named parties; bare 外相が話し合った leaves no counterpart. A writer would say 両国の外相が会談した／両国の外相が話し合った."
+  },
+  {
+   "id": "n1-b1371",
+   "severity": "minor",
+   "problem": "家族の平和を願って祈りを捧げる。願う and 祈り are redundant in one clause, and 平和 is the wrong noun for a family (国家の平和 vs 家族の安全・無事・平安). Natural: 家族の無事を祈って祈りを捧げる — better still 家族の平安を願って手を合わせる."
+  },
+  {
+   "id": "n1-b1473",
+   "severity": "minor",
+   "problem": "西の空に綺麗な夕日が出ていますから御覧なさい。「夕日が出ています」 is unnatural — 夕日 is 沈む/見える (夕焼けが出ている is the phrase that takes 出る). Also the ですから + ご覧なさい chain is stiff; 「西の空に綺麗な夕日が見えますよ、ご覧なさい」."
+  },
+  {
+   "id": "n1-b1347",
+   "severity": "minor",
+   "problem": "複数の州が合わさって連邦を形成する。This is the dictionary definition of 連邦 dressed as a sentence — no situation, no speaker. 州が合わさる is also the wrong verb (things 合わさる are parts/edges); 複数の州が集まって／結びついて connects better."
+  },
+  {
+   "id": "n1-b1349",
+   "severity": "minor",
+   "problem": "煩わしい手続きを短縮する。短縮 collocates with time/length (時間・工期を短縮), not with 手続き — a procedure is 簡略化する・省く・簡素化する. The fragment also has no context (no subject, no situation) at N1 level."
+  },
+  {
+   "id": "n1-b1384",
+   "severity": "minor",
+   "problem": "怪我をした場所に応急の手当をする。場所 reads as the location where the injury happened, not the body part; for a wound a writer uses 患部・傷口・怪我をした箇所. Also 応急手当 is the established compound — 応急の手当 sounds like the compound pried apart."
+  },
+  {
+   "id": "n1-b1566",
+   "severity": "minor",
+   "problem": "「洗濯したら服のサイズが縮まった」— for clothes shrinking in the wash the verb is 縮む (服が縮んだ). 縮まる belongs to gaps/distances/times (差が縮まる、距離が縮まる、寿命が縮まる). Given the flagged 縮む/縮める partners, this sentence pushes the learner toward exactly the collocation 縮まる does not own."
+  },
+  {
+   "id": "n1-b1535",
+   "severity": "minor",
+   "problem": "「車が電柱と軽微な接触をした」— with a stationary object the particle is に (車が電柱に接触した); と implies a mutual party (対向車と接触した). Also 「接触をした」 is clunky next to the ordinary 「軽く接触した」/「接触事故を起こした」."
+  },
+  {
+   "id": "n1-b1537",
+   "severity": "minor",
+   "problem": "「宣教の活動を行った」— 宣教活動 is a fixed compound; inserting の (宣教の活動) is not what a writer would produce. Natural: 「海外で宣教活動を行った」."
+  },
+  {
+   "id": "n1-b1538",
+   "severity": "minor",
+   "problem": "「先着の方から順番にご案内します」— 先着 lives in 先着順/先着◯名様; 「先着の方」 is not idiomatic. Natural: 「先着順にご案内します」 or 「先にお越しになった方から順にご案内します」."
+  },
+  {
+   "id": "n1-b1589",
+   "severity": "minor",
+   "problem": "「工場から小さな鉄片が落ちてきた」— から makes the whole factory the point the fragment fell from, which no native would write. Natural: 「工場の天井から小さな鉄片が落ちてきた」 or 「工場で小さな鉄片が落ちてきた」."
+  },
+  {
+   "id": "n1-b1601",
+   "severity": "minor",
+   "problem": "「包丁をきれいに研いだ」— きれいに belongs to cleaning, not to sharpening. The adverbs used with 研ぐ are よく/しっかり/丁寧に: 「包丁をよく研いだ」."
+  },
+  {
+   "id": "n1-b1609",
+   "severity": "minor",
+   "problem": "「温かい鍋に入れたチーズが柔らかく蕩けた」— 温かい is mild warmth and will not melt cheese; 熱い鍋 is what a writer would use here (the 温/暖 choice itself is right, the word is not)."
+  },
+  {
+   "id": "n1-b1629",
+   "severity": "minor",
+   "problem": "「長いコードが複雑に捻じれて解けなくなった」— 解けなくなる presupposes tangling/knotting, i.e. 絡まる/こんがらがる; 捻じれる is torsion and does not produce something you 解く. Verb and result clause pull in different directions."
+  },
+  {
+   "id": "n1-b1646",
+   "severity": "minor",
+   "problem": "「腹立ちを覚えた」is not a live collocation — 覚える pairs with 腹立たしさ/憤り (腹立たしさを覚えた、憤りを覚えた), while 腹立ち survives mainly in 腹立ち紛れ. Natural: 「彼の不躾な態度に腹が立った」."
+  },
+  {
+   "id": "n1-b1628",
+   "severity": "minor",
+   "problem": "「他人の物を無断で持ち去る盗みは犯罪行為だ」is a dictionary definition dressed as a sentence: the relative clause defines 盗み and the predicate classifies it, so nothing is said about any situation. Give the word a scene instead (e.g. 「店の商品を持ち去る盗みが相次いでいる」)."
+  },
+  {
+   "id": "n1-b1812",
+   "severity": "minor",
+   "problem": "「音がよく入るように感度が高い」 — a ように purpose clause cannot take a stative property predicate as its main clause. Natural: 「このマイクは感度が高く、音がよく入る」 or 「音がよく入るように感度を高めてある」."
+  },
+  {
+   "id": "n1-b1821",
+   "severity": "minor",
+   "problem": "「木造の床」 is off: 木造 describes building construction (木造家屋・木造建築), not a floor surface. Natural: 古い木の床 / 板張りの床が足音で軋む."
+  },
+  {
+   "id": "n1-b1858",
+   "severity": "minor",
+   "problem": "「強い力で自転車を漕いだ」 is translationese. A native would write 力いっぱい／力強く／勢いよく自転車を漕いだ; 強い力で collocates with machinery, not with pedalling."
+  },
+  {
+   "id": "n1-b1889",
+   "severity": "minor",
+   "problem": "「綺麗に洒落た服を着ている」 — the adverb 綺麗に modifying the attributive 洒落た is unnatural (a calque of 'beautifully stylish'). Natural: いつも洒落た服を着ている / おしゃれな服を着ている."
+  },
+  {
+   "id": "n1-b1924",
+   "severity": "minor",
+   "problem": "「高校時代は私の青春の思い出だ」 equates a period with a memory. Natural: 高校時代は私の青春だった／高校時代は青春の思い出でいっぱいだ."
+  },
+  {
+   "id": "n1-b1937",
+   "severity": "minor",
+   "problem": "「現場の現実に即した」 — the fixed collocation is 現場の実情／実態に即した. 現場の現実 is redundant and not what a writer would produce."
+  },
+  {
+   "id": "n1-b1941",
+   "severity": "minor",
+   "problem": "筋力 does not 退化. 退化 is evolutionary/organic degeneration (退化した器官); unused strength 衰える, muscles 萎縮する. Natural: 使わない筋肉は次第に衰えていく."
+  },
+  {
+   "id": "n1-b1981",
+   "severity": "minor",
+   "problem": "「先輩の素晴らしい発表を全員の手本にした」 is awkward: 〜を手本にする takes the follower as subject, so the natural phrasing is 「先輩の素晴らしい発表を全員が手本にした」 or 「〜を全員の手本とした」. As written the agent of した is unstated and the 全員の modifier clashes with the にする frame."
+  },
+  {
+   "id": "n1-b2000",
+   "severity": "minor",
+   "problem": "「日頃の元気を取り戻した」 is an off collocation; a native writes 「いつもの元気を取り戻した」 (or 「元気を取り戻した」). 日頃の modifies habitual behavior (日頃の行い／日頃の努力), not a state one recovers."
+  },
+  {
+   "id": "n1-b2011",
+   "severity": "minor",
+   "problem": "「鉛は重くて柔らかい金属の一種だ」 is a dictionary definition dressed as a sentence — it states the entry's own definition rather than showing 鉛 in use (e.g. 鉛の管, 鉛を含む塗料). Grammatically flawless but empty as an N1 example."
+  },
+  {
+   "id": "n1-b2016",
+   "severity": "minor",
+   "problem": "「日当は一万円支払われた」 mixes two frames: 日当 is itself the amount, so either 「アルバイトの日当は一万円だった」 or 「アルバイトの日当として一万円が支払われた」. Topic-は plus a bare amount plus 支払われた reads redundantly/awkwardly."
+  },
+  {
+   "id": "n1-b2071",
+   "severity": "minor",
+   "problem": "「太陽からの強い光が、全方向に放射されている」 doubles the source marking — 〜からの光 plus 放射される is redundant. Natural: 「太陽から強い光が四方に放射されている」. 全方向に is also technical/stiff where 四方(八方)に is the ordinary choice."
+  },
+  {
+   "id": "n1-b171",
+   "severity": "minor",
+   "problem": "zh misspells the idiom: 一榻糊涂 should be 一塌糊涂. As written it is not a Chinese word."
+  },
+  {
+   "id": "n1-b223",
+   "severity": "minor",
+   "problem": "zh 预谋已久 renders 兼ねてからの as a premeditated plot — 预谋 in Chinese is reserved for crimes and conspiracies. en has the neutral \"long-standing plan\". The Chinese teaches 兼ねて a criminal connotation the Japanese does not carry (筹划已久 would be neutral)."
+  },
+  {
+   "id": "n1-b227",
+   "severity": "minor",
+   "problem": "zh copies the kanji where the senses diverge: Japanese 官僚 is the neutral term for an elite civil servant, but Chinese 官僚 is a pejorative mass noun (官僚主义) and is not used as \"a bureaucrat\" role title — 作为一名官僚为国家效力 reads as derogatory. en's \"bureaucrat\" is neutral, so en and zh disagree in register. 官员/公务员 is the Chinese equivalent."
+  },
+  {
+   "id": "n1-b153",
+   "severity": "minor",
+   "problem": "Connotation drift between the two glosses: jp 眺めた and en \"looked at\" are neutral gazing, but zh 瞻仰 means to view with reverence (used for remains, monuments). The Chinese adds devotional attitude the Japanese sentence does not state."
+  },
+  {
+   "id": "n1-b169",
+   "severity": "minor",
+   "problem": "en says \"large gestures\" for 大きな身振り; zh says 夸张的手势 (\"exaggerated gestures\"), which in Chinese carries a mocking/theatrical judgement. The two glosses disagree on whether the gesturing is neutral or excessive."
+  },
+  {
+   "id": "n1-b183",
+   "severity": "minor",
+   "problem": "zh 腿脚发软 describes a momentary weakness in the legs (from fear, hunger, fatigue), while jp 足腰が弱って and en \"has become weak in his legs\" describe an age-related lasting decline. The Chinese loses the chronic aspect that motivates 外出を控えている."
+  },
+  {
+   "id": "n1-b184",
+   "severity": "minor",
+   "problem": "zh 自学成才 is a set phrase describing a person who became accomplished through self-study; applied to 料理 (做着自学成才的…料理) it is a collocation error. It also renders 自分流 as 独创风格 (\"original/inventive style\"), while en says \"his own self-taught style\" — the two glosses attribute different properties to the dish."
+  },
+  {
+   "id": "n1-b347",
+   "severity": "minor",
+   "problem": "zh 令人心烦 means annoying/irritating, but 億劫 is \"too much bother, can't be bothered\" — en's \"all the more bothersome\" is right. The Chinese swaps a reluctance-to-exert-oneself sense for an emotional-irritation sense (麻烦/懒得 would match)."
+  },
+  {
+   "id": "n1-b138",
+   "severity": "minor",
+   "problem": "zh 新球弹性很好 converts the target verb into a noun property (\"the new ball has good elasticity\"), so the Chinese never shows 弾む as an action; en \"The new ball bounces well\" keeps the verb. The two glosses teach different parts of speech for the headword."
+  },
+  {
+   "id": "n1-b197",
+   "severity": "minor",
+   "problem": "en and zh name different objects for 荷物: en \"the luggage\", zh 包裹 (\"the package\"). A learner reading both gets two different things being delayed."
+  },
+  {
+   "id": "n1-b146",
+   "severity": "minor",
+   "problem": "en \"When the metal was shaved\" is not what 金属を削る means here (grinding/cutting metal), and it disagrees with zh 打磨金属时 (\"when polishing/grinding metal\"). zh also pairs 剧烈 with 火花, which is not a Chinese collocation (激烈/四处飞溅 would be)."
+  },
+  {
+   "id": "n1-b217",
+   "severity": "minor",
+   "problem": "zh 这座山小屋 copies the Japanese compound: 山小屋 is not a Chinese word (山间小屋/山中小屋 is). The Chinese gloss leaves the setting opaque to a Chinese reader."
+  },
+  {
+   "id": "n1-b226",
+   "severity": "minor",
+   "problem": "zh 没有浪费的朴素简朴的生活 stacks two synonyms (朴素 and 简朴) for the single 簡素, producing a redundant, ungrammatical-sounding modifier chain; en has the clean \"a simple lifestyle without waste\"."
+  },
+  {
+   "id": "n1-b313",
+   "severity": "minor",
+   "problem": "Both translations add \"encouragement\" (鼓励) that jp お言葉 does not state, and zh 我收到了老师给我的… uses the flat neutral 收到, erasing the humble/honorific force of 賜る (to be graciously granted by a superior) that is the whole point of the entry."
+  },
+  {
+   "id": "n1-b254",
+   "severity": "minor",
+   "problem": "en \"I received the issuance of a new certificate\" is not idiomatic English for 交付を受けた (\"I was issued a new certificate\"); it reads as a nominalized calque, and it does not match zh's natural 领取了新的证明书."
+  },
+  {
+   "id": "n1-b145",
+   "severity": "minor",
+   "problem": "zh 温暖的人品 mismatches: Chinese 人品 means moral integrity and does not collocate with 温暖, while jp 人柄 and en \"personality\" are about overall disposition. 为人/性格 would match; as written the two glosses attribute different qualities to her."
+  },
+  {
+   "id": "n1-b175",
+   "severity": "minor",
+   "problem": "Aspect mismatch: jp 持ち切りだった and en \"was abuzz\" are past/completed, but zh 镇上到处都在热议那个话题 reads as an ongoing present state with no past marker."
+  },
+  {
+   "id": "n1-b606",
+   "severity": "minor",
+   "problem": "zh copies the kanji 市役所, which is not a Chinese word (Chinese is 市政府 / 市政厅). en correctly says \"city hall\", so the two glosses do not match and the zh line is opaque to a Chinese reader."
+  },
+  {
+   "id": "n1-b253",
+   "severity": "minor",
+   "problem": "zh leaves 公団住宅 as 公团住宅, a Japanese institutional term with no meaning in Chinese, while en generalizes to \"public housing\". The zh gloss teaches nothing about what 公団 is and disagrees with en."
+  },
+  {
+   "id": "n1-b282",
+   "severity": "minor",
+   "problem": "zh 抚平了身上的褶皱 attaches the wrinkles to the speaker's body (身上 = on one's person), not to the shirt; jp/en put them on the shirt (シャツの皺 / \"the wrinkles\" of the shirt). Object of the verb differs between the two glosses."
+  },
+  {
+   "id": "n1-b432",
+   "severity": "minor",
+   "problem": "Aspect mismatch: jp 荒らして困っている is an ongoing/recurring nuisance and en keeps it progressive (\"are troubled by wild boars ruining our fields\"), but zh 野猪糟蹋了农田 with 了 reports a single completed past event."
+  },
+  {
+   "id": "n1-b577",
+   "severity": "minor",
+   "problem": "zh renders 打開する as 改变 (\"change\"), a bland verb that drops the \"break through / force open a deadlock\" force the target word carries and that en preserves with \"break through\". The zh sentence no longer teaches 打開."
+  },
+  {
+   "id": "n1-b629",
+   "severity": "minor",
+   "problem": "zh 接管了公司 (\"assumed management of the company\") is neutral and loses the hostile-seizure connotation of 乗っ取る that en's \"hostile shareholder took over\" partly keeps; Chinese would need 强行夺取/强行收购 for the same connotation."
+  },
+  {
+   "id": "n1-b247",
+   "severity": "minor",
+   "problem": "en \"I kicked the ball near my feet hard\" drops the away/send-flying component of 蹴飛ばす, which zh 踢飞了 does render; the two glosses give the learner different verbs (kick hard vs kick away)."
+  },
+  {
+   "id": "n1-b457",
+   "severity": "minor",
+   "problem": "Tense split: jp あげる is non-past and zh 我给孩子们分发点心 keeps it non-past/habitual, but en uses the past \"I gave the children a snack\"."
+  },
+  {
+   "id": "n1-b429",
+   "severity": "minor",
+   "problem": "en and zh pick different components of 呆気ない: en \"unexpectedly quick end\" foregrounds surprise, zh 令人感到不过瘾的仓促结尾 foregrounds dissatisfaction. Neither alone matches the declared \"disappointingly quick\", and together they teach two different feelings."
+  },
+  {
+   "id": "n1-b561",
+   "severity": "minor",
+   "problem": "en \"Honest citizens\" narrows 善良 to truthfulness, while zh 善良的市民 keeps the good-natured/kind sense; the two glosses give conflicting readings of the adjective being taught."
+  },
+  {
+   "id": "n1-b409",
+   "severity": "minor",
+   "problem": "en \"towards the end of the match\" and zh 在比赛后半段 (\"in the second half\") name different points in time for 終盤 (closing stage)."
+  },
+  {
+   "id": "n1-b331",
+   "severity": "minor",
+   "problem": "犯人 (the perpetrator, already identified as the culprit) is rendered 'suspect' in en and 嫌疑犯 in zh. Both consistently shift to 容疑者/suspect, dropping the presumption of guilt the Japanese carries."
+  },
+  {
+   "id": "n1-b683",
+   "severity": "minor",
+   "problem": "zh 「性格一向沉稳寡言」 adds 沉稳 (composed, steady, self-possessed), a favourable trait not present in 無口 or in en 'quiet'. The idiom being reached for is 沉默寡言; as written the Chinese teaches a connotation the entry does not have."
+  },
+  {
+   "id": "n1-b745",
+   "severity": "minor",
+   "problem": "zh 「这条老干道」 moves 'old' onto the road, but the jp says only the townscape is old, not the 街道. zh 街景 (street view) also weakens 町並み (rows of traditional houses) against en 'old townscapes'."
+  },
+  {
+   "id": "n1-b774",
+   "severity": "minor",
+   "problem": "Force mismatch on the target word. 禁物 (absolutely forbidden, taboo) is emphatic; en 'Carelessness is a bad idea' badly understates it and never shows the 'forbidden' gloss, while zh 「切忌麻痹大意」 is correctly emphatic. en and zh disagree on how strong the prohibition is."
+  },
+  {
+   "id": "n1-b775",
+   "severity": "minor",
+   "problem": "zh 「专业商家」 (merchant/shop) does not match en 'specialized contractor' or the declared sense. 業者 hired to clean an air conditioner is a service provider (专业公司/服务商); 商家 in Chinese means a seller of goods."
+  },
+  {
+   "id": "n1-b787",
+   "severity": "minor",
+   "problem": "素直に受け取った is rendered en 'I honestly accepted her goodwill' — 'honestly' is unnatural here and suggests truthfulness rather than accepting graciously, without suspicion or reserve. zh 「坦然接受」 is right, so the two glosses diverge on what 素直に modifies."
+  },
+  {
+   "id": "n1-b388",
+   "severity": "minor",
+   "problem": "服の裾 is the hem of clothing generally (en 'hem of the clothes'), but zh 「衣服裙摆」 specifies a skirt/dress hem. The Chinese narrows the garment the Japanese leaves open."
+  },
+  {
+   "id": "n1-b390",
+   "severity": "minor",
+   "problem": "zh 「纺织业」 is the textile industry (spinning plus weaving), broader than 紡績 'spinning (yarn)' and than en 'spinning industry'; it also collapses 紡績 into Japanese 紡織. 纺纱业 would preserve the distinction the entry exists to teach."
+  },
+  {
+   "id": "n1-b841",
+   "severity": "minor",
+   "problem": "Aspect mismatch. jp ずれている is a present resulting state (the clock is out of position); en 'The clock on the wall shifted slightly' reports a past event, while zh 「稍微有些偏离位置」 keeps the state. en and zh teach different aspects of the same sentence."
+  },
+  {
+   "id": "n1-b422",
+   "severity": "minor",
+   "problem": "en 'her free romance in her youth' is misleading English for 自由な恋愛 — it reads as free-of-charge or 'free love' rather than a freely chosen romance as opposed to an arranged match. zh 「自由的恋爱经历」 conveys it correctly, so the en gloss is the outlier."
+  },
+  {
+   "id": "n1-b1234",
+   "severity": "minor",
+   "problem": "zh renders the predicate with the frozen idiom 人之常情 (\"only natural / normal human feeling\"), which shifts 情け from compassion/mercy to naturalness. en has \"basic human kindness\". The target's own meaning is swallowed by the Chinese idiom, and the two glosses assert different things about the act."
+  },
+  {
+   "id": "n1-b1112",
+   "severity": "minor",
+   "problem": "zh 出示 means \"showed/displayed\" (an ID to be inspected), whereas 差し出す is holding out/handing over. en \"presented\" is compatible with the Japanese; the Chinese teaches the wrong action for a word the app glosses \"to present, to submit\" — 递上/递交 would match."
+  },
+  {
+   "id": "n1-b1015",
+   "severity": "minor",
+   "problem": "zh 「好好调理一下身体」 means recuperate/treat the body medicinally, implying something is wrong; jp 体を労る and en \"take good care of my body\" are about being kind to oneself, no illness implied. Connotation drift, and en/zh no longer describe the same intention (爱惜/善待身体 would match)."
+  },
+  {
+   "id": "n1-b519",
+   "severity": "minor",
+   "problem": "Tense disagreement: jp 確認する is non-past (habitual/about to do), zh 「确认表示屏幕上位置的坐标」 is likewise unmarked/non-past, but en is past — \"I checked the coordinates\". The learner sees the same Japanese sentence glossed as an action done and an action being done."
+  },
+  {
+   "id": "n1-b1215",
+   "severity": "minor",
+   "problem": "jp 「重要な連絡を全員に正しく伝達した」 is active with an implied agent (I/we conveyed it); both en (\"Important information was correctly conveyed\") and zh (「被准确传达给了所有人」, with an explicit 被) flip it to passive, deleting the doer. For a word whose point is somebody transmitting information, the agentless rendering misrepresents the sentence structure the learner is typing."
+  },
+  {
+   "id": "n1-b1255",
+   "severity": "minor",
+   "problem": "お世辞 is flattery/an empty compliment; en neutralizes it to \"a compliment\" while zh keeps the negative 奉承. The two glosses disagree on whether the praise was sincere, which changes why she was bashful."
+  },
+  {
+   "id": "n1-b1167",
+   "severity": "minor",
+   "problem": "zh uses the military idiom 全军覆没 (\"the whole army was wiped out\") for crops destroyed by a typhoon — wrong register and collocation in Chinese (颗粒无收/全部绝收), and it does not line up with en's plain \"completely destroyed\". The idiom also masks the plain 全滅 = total loss sense being taught."
+  },
+  {
+   "id": "n1-b495",
+   "severity": "minor",
+   "problem": "zh renders 殿様 as 城主 (\"castle lord\"), inventing a castle that is not in the Japanese; en has the correct generic \"the lord\" (老爷/主公/领主 in Chinese). en and zh name different figures."
+  },
+  {
+   "id": "n1-b1225",
+   "severity": "minor",
+   "problem": "zh 「进入了神殿境内」 copies kanji where the senses diverge: Chinese 境内 means \"inside a country's/region's borders\", not shrine precincts, and 神殿 is a temple hall rather than the 神社 of the Japanese. en's \"entered the grounds\" is right; the Chinese reads as entering a temple hall's territory."
+  },
+  {
+   "id": "n1-b1138",
+   "severity": "minor",
+   "problem": "en \"retire from active duty\" imports a military connotation that 現役を退く does not carry for a company head, while zh 退休 says he retires outright — 現役を退く can mean stepping back from the front line without full retirement. The two glosses describe different departures. (zh 社长 also reads as head of a press/association in Chinese rather than company president.)"
+  },
+  {
+   "id": "n1-b960",
+   "severity": "minor",
+   "problem": "en and zh pick different senses of ぼつぼつ: en \"Let's slowly start getting ready\" (gradually, unhurriedly) vs zh 「差不多开始准备出门吧」 (it's about time to start). One says how to do it, the other says when; the learner gets two incompatible readings of the headword."
+  },
+  {
+   "id": "n1-b430",
+   "severity": "minor",
+   "problem": "en \"Apply this rule to actual situations when considering it\" is garbled and turns the descriptive jp 「〜に当てはめて考える」 (one thinks about it by applying the rule) into an imperative with a dangling \"when considering it\"; zh 「结合实际情况来应用这条规则」 also inverts the head (applies the rule in light of the situation, rather than applying the rule to the situation). Neither cleanly renders what is applied to what — the exact relation this transitive verb teaches."
+  },
+  {
+   "id": "n1-b567",
+   "severity": "minor",
+   "problem": "en and zh disagree on the strength of the target word. en flattens 対決 to a neutral \"match\" (\"The match against a powerful team is scheduled for tomorrow\"), which loses the showdown/confrontation sense entirely; zh escalates it to 决战 (decisive battle). One reader learns 対決 = ordinary game, the other learns 対決 = final decisive battle. Align on \"showdown/confrontation\" vs 对决／决战 consistently."
+  },
+  {
+   "id": "n1-b548",
+   "severity": "minor",
+   "problem": "Chinese copies the kanji where the senses diverge. jp 薬品 here means a chemical substance, and en says so (\"this chemical\"); zh 药品 in Chinese means medicine/pharmaceuticals. The two glosses describe tests on different kinds of substance. zh should be 化学药剂／化学物质."
+  },
+  {
+   "id": "n1-b541",
+   "severity": "minor",
+   "problem": "zh carries the Japanese compound 満員電車 over untranslated, producing 挤满员电车上班, which parses badly in Chinese (満員電車 is not a Chinese word, and 挤 + 满员电车 collides). en's \"packed trains\" is correct; zh should read 挤在拥挤的电车里通勤／搭乘拥挤的电车上班."
+  },
+  {
+   "id": "n1-b1313",
+   "severity": "minor",
+   "problem": "Connotation added in zh only. jp 見せ物にする / en \"make a spectacle of\" is neutral-to-negative display; zh 变成供人观赏的笑柄 adds 笑柄 (laughingstock/object of ridicule), a stronger, mocking connotation absent from jp and en."
+  },
+  {
+   "id": "n1-b1325",
+   "severity": "minor",
+   "problem": "zh adds content and shifts tone. jp/en are a neutral tentative question (もしかして / \"By any chance, were you at yesterday's party?\"); zh 难不成你昨天也参加了派对吗 inserts 也 (\"also\", no counterpart in jp) and 难不成 carries an incredulous \"don't tell me…\" accusation. Prefer 你昨天是不是也…→ 该不会…吧／莫非 without 也."
+  },
+  {
+   "id": "n1-b539",
+   "severity": "minor",
+   "problem": "en and zh reverse the means/result relation and disagree on aspect. jp 親善試合を行って交流を深めた states a completed result (they deepened exchanges by holding the match), which en renders correctly; zh 两国举行亲善比赛以加深交流 recasts it as an unrealized purpose (\"in order to deepen\"), dropping the completed past. Also 亲善比赛 is a kanji carry-over; standard Chinese is 友谊赛."
+  },
+  {
+   "id": "n1-b1411",
+   "severity": "minor",
+   "problem": "en is ungrammatical: \"I owe him a huge favor in work\" — should be \"at work\" (or \"a big favor from work\"). zh 在工作上我欠了他一个很大的人情 is correct, so the English is the odd one out."
+  },
+  {
+   "id": "n1-b1465",
+   "severity": "minor",
+   "problem": "zh 谈判变得恶化复杂了 stacks two predicates unnaturally (恶化 and 复杂 cannot both hang off 变得 this way) and over-translates: en has the single \"became strained\". Natural rendering would be 谈判陷入了僵局／变得复杂棘手."
+  },
+  {
+   "id": "n1-b650",
+   "severity": "minor",
+   "problem": "zh turns the target noun into a different object: 封 (the seal) becomes 信封 (the envelope) in 「拆开信封」, while en keeps \"opened the seal of the letter\". A learner reading both is taught 封 = envelope on the Chinese side and 封 = seal on the English side."
+  },
+  {
+   "id": "n1-b653",
+   "severity": "minor",
+   "problem": "zh 「气候不顺」 copies the Japanese kanji into a collocation Chinese does not use (natural: 天气不佳/气候异常), and shifts 天候 (weather) to 气候 (climate); en correctly has \"unseasonable weather\". en and zh disagree on weather vs climate."
+  },
+  {
+   "id": "n1-b656",
+   "severity": "minor",
+   "problem": "zh 「发现太松垮垮了」 is ungrammatical — the reduplicated 松垮垮 cannot take 太…了 (needs 太松垮了 or 松松垮垮的). zh also adds 「发现」 (discovered), which is not in the jp or en."
+  },
+  {
+   "id": "n1-b667",
+   "severity": "minor",
+   "problem": "en \"the test ended safely\" mistranslates 無事に, which here means \"without a hitch / uneventfully\", not physical safety; zh 「顺利结束」 gets it right, so en and zh diverge. zh also adds 「终于」 (finally), absent from jp and en."
+  },
+  {
+   "id": "n1-b670",
+   "severity": "minor",
+   "problem": "zh 「被突然的消息发呆地愣在原地」 is broken Chinese: 被 cannot govern the intransitive 发呆, and 发呆地 cannot modify 愣. Natural: 「听到突然的消息，我呆呆地愣在原地」. en (\"I stood frozen, stunned by the sudden news\") is fine, so the pair is inconsistent in quality and structure."
+  },
+  {
+   "id": "n1-b680",
+   "severity": "minor",
+   "problem": "en \"my own skill is still inexperienced\" is a broken collocation — a skill cannot be inexperienced (needs \"my skills are still immature/underdeveloped\" or \"I am still inexperienced\"). zh 「技术还不够成熟」 renders it correctly, so the two glosses do not match."
+  },
+  {
+   "id": "n1-b690",
+   "severity": "minor",
+   "problem": "Connotation drift between the two glosses: en \"His plan\" is neutral, zh 「他的企图」 is strongly pejorative (a scheme/ulterior attempt). 目論見 sits between the two, but the learner reading both is taught contradictory affect for the same word."
+  },
+  {
+   "id": "n1-b702",
+   "severity": "minor",
+   "problem": "zh 「野党」 is a raw kanji copy that is not a Chinese word — Chinese requires 在野党 or 反对党. The sentence pairs the correctly localized 执政党 with the untranslated 野党, so half the contrast is left in Japanese."
+  },
+  {
+   "id": "n1-b713",
+   "severity": "minor",
+   "problem": "en and zh pick different properties for 繊細: en \"this machine is delicate\" (fragile), zh 「这台机器很精密」 (high-precision). Precision and fragility are different claims, and only \"delicate\" translates 繊細."
+  },
+  {
+   "id": "n1-b1498",
+   "severity": "minor",
+   "problem": "en asserts \"crime scene\" while zh keeps the neutral 「事件现场」 (scene of the incident). jp 事件現場 does not commit to a crime, so en over-specifies and the two glosses disagree on whether a crime occurred."
+  },
+  {
+   "id": "n1-b1572",
+   "severity": "minor",
+   "problem": "en \"feature-length novel\" is a wrong collocation — \"feature-length\" applies to films; a 長編小説 is a full-length novel. zh 「长篇小说」 is correct, so en is the outlier."
+  },
+  {
+   "id": "n1-b1672",
+   "severity": "minor",
+   "problem": "en \"Fierce disputes\" (verbal/legal disagreements) and zh 「剧烈的冲突」 (violent clashes) describe different events for the same 紛争; near a border the jp reads as armed conflict, which en understates. zh also mis-collocates 剧烈 with 冲突 (should be 激烈)."
+  },
+  {
+   "id": "n1-b1686",
+   "severity": "minor",
+   "problem": "zh 「袖口裂开了一点缝合线」 is unidiomatic — the seam does not \"tear open a stitch line\" as its object; Chinese says 袖口开线了/绽线了. en renders it correctly as \"come apart at the seams\", so only zh is defective."
+  },
+  {
+   "id": "n1-b649",
+   "severity": "minor",
+   "problem": "en and zh render 静かに differently: en \"quietly wore a gentle smile\" keeps the manner adverb, zh 「浮现出淡淡的微笑」 drops it and instead makes the smile 淡淡的 (faint) — an attribute not stated in the jp. The two glosses describe different things about the smile."
+  },
+  {
+   "id": "n1-b1785",
+   "severity": "minor",
+   "problem": "zh 他不惜努力地勤奋练习 is a kanji copy of 惜しまず that does not work in Chinese — 不惜 takes a cost one accepts (不惜代价/不惜一切), so 不惜努力 is ungrammatical-sounding and can even be misparsed as 'not sparing himself effort' vs. 'begrudging effort'. Idiomatic renderings are 不遗余力 or 毫不吝惜付出努力."
+  },
+  {
+   "id": "n1-b1786",
+   "severity": "minor",
+   "problem": "Connotation drift between the two glosses: en 'There is a risk that the typhoon will approach' keeps the apprehension in 恐れ, while zh 今晚台风有靠近的可能 is a flat neutral 'there is a possibility'. 恐れ is only used for undesirable outcomes; zh should be 恐怕会/有…之虞/有…的危险."
+  },
+  {
+   "id": "n1-b756",
+   "severity": "minor",
+   "problem": "Two divergences. (1) 無事に回復した = recovered safely/without complications; en says 'I FULLY recovered' (degree, not safety) while zh says 顺利康复 (smoothly) — different claims. (2) zh translates the target 看護 as 照顾 (generic looking-after), so the Chinese gloss never shows the nursing/sickbed-care sense the item teaches; 看护/护理 is the counterpart."
+  },
+  {
+   "id": "n1-b1857",
+   "severity": "minor",
+   "problem": "zh 他向她坦白了自己的真实想法 diverges from en 'confessed his honest feelings' twice: 想法 = thoughts, not 気持ち/feelings; and 坦白 in Chinese is the confession of a wrongdoing or something concealed (坦白从宽), whereas 素直な気持ちを告白する here is a declaration of affection — Chinese would be 表白. The Chinese teaches a guilt connotation the Japanese does not have."
+  },
+  {
+   "id": "n1-b1888",
+   "severity": "minor",
+   "problem": "en and zh pick different meanings for 堂々と: en 'behaves confidently', zh 表现得很得体 = 'behaves appropriately/with propriety'. Poise-and-dignity vs. correct-etiquette are different traits; zh should be 落落大方/从容自信."
+  },
+  {
+   "id": "n1-b1918",
+   "severity": "minor",
+   "problem": "en mistranslates 生活: 人民の生活を守る is protecting people's livelihoods/way of life (which zh 保护人民的生活 gets right), but en 'protect the LIVES of the people' reads as protecting them from death. en and zh therefore state different government duties."
+  },
+  {
+   "id": "n1-b1907",
+   "severity": "minor",
+   "problem": "zh copies 社会人 straight into Chinese, where it is a false friend: modern Chinese 社会人 is either meaningless as a fixed term or reads as internet slang for a street/gangster type, not Japanese 社会人 = a working member of society (which en renders correctly as 'working adult'). zh should be 步入社会的成年人/职场人."
+  },
+  {
+   "id": "n1-b732",
+   "severity": "minor",
+   "problem": "en and zh pick different objects: en 'the transport of the LUGGAGE' (travel bags) vs zh 物品的运输 (goods/items). The context — consigning to a 専門業者 for freight — is goods/a shipment, and the entry's declaredSense is 'transport or shipping of goods', so the en choice is both the odd one out and the wrong register."
+  },
+  {
+   "id": "n1-b728",
+   "severity": "minor",
+   "problem": "Aspect mismatch between the two glosses: jp できていた = a whirlpool HAD FORMED / was there. en makes it progressive ('was forming', i.e. still coming into being) while zh makes it completed (形成了一个…漩涡). The learner gets an in-progress event in English and a finished one in Chinese."
+  },
+  {
+   "id": "n1-b1813",
+   "severity": "minor",
+   "problem": "Aspect mismatch: jp 深く関与している and en 'He IS deeply involved' are an ongoing state, but zh 他深度参与了那个新事业的计划 with 了 reads perfective — he took part (and it is done). Chinese should be 正深度参与着/一直深度参与."
+  },
+  {
+   "id": "n1-b1809",
+   "severity": "minor",
+   "problem": "en 'a simplified tent' is a kanji-literal rendering of 簡易 that is not English — a 簡易テント is a simple/basic/pop-up tent. zh 简易帐篷 is correct, so only the English is off, and it reads as a tent that was simplified from something."
+  },
+  {
+   "id": "n1-b738",
+   "severity": "minor",
+   "problem": "The target is swallowed by a frozen formula: 恐れ入りますが is a fixed politeness opener, and both glosses render it purely functionally (en 'Excuse me, but', zh 不好意思) so nothing in either translation carries any of 恐れ入る's own meaning (to be obliged / abashed / awed). The learner cannot connect the word to its glosses from this sentence."
+  },
+  {
+   "id": "n1-b799",
+   "severity": "minor",
+   "problem": "jp 護衛に当たる (non-past) states a general/assigned duty; zh 警官负责保卫要人 keeps that generic reading, but en 'Police officers ARE GUARDING THE VIP' turns it into one specific ongoing event with a definite VIP. en and zh differ in both aspect and definiteness."
+  },
+  {
+   "id": "n1-b1884",
+   "severity": "minor",
+   "problem": "en is ungrammatical and mistenses the sentence: 'She has a foundation in music since childhood' should be 'has had a grounding in music since childhood'. zh 她从小就有音乐的基础 correctly conveys the continuing-from-childhood reading that the English drops."
+  },
+  {
+   "id": "n1-b2033",
+   "severity": "minor",
+   "problem": "zh 「发掘出了土器」 keeps the Japanese 土器; Chinese for earthenware is 陶器 (土器 is not standard Chinese and reads as \"earth implement\"). en correctly says \"earthenware\", so the two glosses do not name the same object for the learner."
+  },
+  {
+   "id": "n1-b869",
+   "severity": "minor",
+   "problem": "zh renders the target 宙返り as 翻滚, which in Chinese means tumbling/rolling (typically on the ground) and does not specify an aerial somersault; the correct term is 空翻. en's \"somersault\" and zh's \"翻滚\" thus teach different motions for the very word being drilled."
+  },
+  {
+   "id": "n1-b2038",
+   "severity": "minor",
+   "problem": "en \"a strict verdict\" mistranslates 厳しい判決 — a verdict is not \"strict\"; the sense is harsh/severe sentencing, which is what zh 严厉的判决 correctly says. en and zh disagree on the adjective a learner reads."
+  },
+  {
+   "id": "n1-b2074",
+   "severity": "minor",
+   "problem": "zh 「丰富的自然资源」 (abundant natural resources — timber, minerals, economic assets) drifts from 豊かな自然 / en \"rich nature\" (unspoilt scenery, greenery). The thing the town 誇る differs between the two translations."
+  },
+  {
+   "id": "n1-b899",
+   "severity": "minor",
+   "problem": "en and zh each keep a different half of とんだ: en \"an awful misfortune\" (terrible only), zh 「意想不到的灾祸」 (unexpected only). Since the declared sense is \"unforeseen and terrible\", the two glosses contradict rather than reinforce each other."
+  },
+  {
+   "id": "n1-b909",
+   "severity": "minor",
+   "problem": "zh 「请随时询问」 renders 何なりと as 随时 (\"at any time\"), shifting the target word from quantity/kind (\"anything whatsoever\") to time; the target's own meaning is lost on the Chinese side. en meanwhile is malformed by repetition — \"If there is anything you don't understand, please ask anything\" (should be \"please ask anything at all\" / \"feel free to ask\")."
+  },
+  {
+   "id": "n1-b911",
+   "severity": "minor",
+   "problem": "貴重な本 is a precious/valuable book; en says \"the rare book\" while zh says 「珍贵的书」 (precious). Rarity and preciousness are different claims, so the two glosses disagree on what made the book worth 入手."
+  },
+  {
+   "id": "n1-b919",
+   "severity": "minor",
+   "problem": "不安要素 means risk/uncertainty factors, but en \"the sources of anxiety\" reads as emotional distress being eliminated. zh 「不安因素」 is also a calque (Chinese uses 不稳定因素/隐患). Both glosses drift from the business-risk reading the sentence intends for 排除."
+  },
+  {
+   "id": "n1-b1995",
+   "severity": "minor",
+   "problem": "jp 家賃の支払いが滞る is intransitive — payment falls into arrears — matching en \"if rent payments fall behind\". zh 「如果拖欠房租」 makes the tenant an agent deliberately defaulting on rent, so zh teaches an agentive transitive frame the target verb 滞る does not have, and diverges from en."
+  },
+  {
+   "id": "n1-b2128",
+   "severity": "minor",
+   "problem": "zh 「不是平面画」 specifies a painting, which jp 平面 and en \"on a flat surface\" do not; the two glosses contrast 立体 with different things (a flat medium vs. a flat picture)."
+  },
+  {
+   "id": "n1-b980",
+   "severity": "minor",
+   "problem": "en and zh pick different connotations and both miss the entry sense. 物好き = odd/eccentric taste, a mild tease ('you're a strange one'). en 'whimsical of you' = capricious; zh 特别有兴致 = 'really in the mood / enthusiastic', a positive reading. The two glosses teach opposite characterizations of the speaker's attitude."
+  },
+  {
+   "id": "n1-b1130",
+   "severity": "minor",
+   "problem": "Aspect drift in zh: jp 通っている is ongoing/habitual attendance, but zh 参加了手工课 is perfective and reads as a class attended once. en 'attends … as a hobby' is correct, so en and zh disagree on aspect."
+  },
+  {
+   "id": "n1-b1083",
+   "severity": "minor",
+   "problem": "en 'celebrated the birth of the new monarch' reads as a literal infant being born; jp 新しい君主の誕生 is the metaphorical 誕生 = accession/emergence of a new monarch (cf. 新政権の誕生). zh 诞生 carries the metaphorical sense natively, so only en misleads."
+  },
+  {
+   "id": "n1-b1103",
+   "severity": "minor",
+   "problem": "en attaches 悉く to the wrong element: 'All the plans I proposed were entirely rejected' makes 悉く modify the degree of rejection ('entirely'), on top of an already-present 'All'. jp/zh mean every one of them was rejected (zh 被全部否决了 is right). en should be 'Every plan I proposed was rejected.'"
+  },
+  {
+   "id": "n1-b1017",
+   "severity": "minor",
+   "problem": "en 'The survey results' mistranslates 調査結果 in an incident context — this is an investigation's findings, not a survey. zh 调查结果 is correct, so the pair disagrees on what kind of inquiry took place."
+  },
+  {
+   "id": "n1-b1090",
+   "severity": "minor",
+   "problem": "zh 我坏了肚子拉稀了 is unidiomatic (should be 吃坏了肚子 / 闹肚子) and 拉稀 is colloquial slang, while the taught word 下痢 is clinical (Chinese 腹泻). en 'after upsetting my stomach' is also off — お腹を壊す is 'my stomach was upset', not something the speaker did."
+  },
+  {
+   "id": "n1-b1053",
+   "severity": "minor",
+   "problem": "en collocation error: 'an overcrowded schedule' — 過密なスケジュール is a packed/tight schedule in English. zh 过于紧凑的日程安排 is right. en 'My body got tired' is also a literal calque of 体が疲れた."
+  },
+  {
+   "id": "n1-b953",
+   "severity": "minor",
+   "problem": "en 'my taken-off clothes' is not idiomatic English for 脱いだ服 ('the clothes I had taken off'). zh 脱下的衣服 is correct."
+  },
+  {
+   "id": "n1-b976",
+   "severity": "minor",
+   "problem": "en 'awarded an honorable prize by the country' misrenders 名誉ある賞 (a prestigious/distinguished award) and 国から (by the state/nation, not 'the country' as agent). zh 国家颁发的荣誉奖项 is closer, so the pair does not agree on what kind of award it was."
+  },
+  {
+   "id": "n1-b1045",
+   "severity": "minor",
+   "problem": "zh 抄写 means to copy out from an existing written text, which is not what 書き取る does with a spoken 講義 — Chinese would be 记录/记下. zh 讲座 also shifts 講義 (university class lecture) to a public talk. en 'write down the lecture content' is correct, so the two diverge."
+  },
+  {
+   "id": "n1-b1195",
+   "severity": "minor",
+   "problem": "en and zh disagree on the object of 挑戦. jp 「新しい仕事に積極的に挑戦したい」 = wanting to take on a NEW JOB/new line of work; zh matches it (\"我想积极挑战新的工作\"), but en relocates it to \"take on new challenges at work\", which reads as new challenges inside an existing job. A learner reading both gets two different situations."
+  },
+  {
+   "id": "n1-b1244",
+   "severity": "minor",
+   "problem": "zh false friend on 布団: \"把婴儿放在被子上睡下\" puts the baby ON TOP OF a quilt (Chinese 被子 = the cover you sleep under), while jp 布団に寝かせる = laying the baby down on the bedding/futon, and en correctly says \"on the futon\". Chinese should be 被褥/褥子/床铺."
+  },
+  {
+   "id": "n1-b1263",
+   "severity": "minor",
+   "problem": "zh copies the kanji: \"解除了炸弹\" is not Chinese for defusing a bomb — 解除 in Chinese means to lift/cancel (a restriction, a contract). en has the right verb (\"disarmed the bomb\"); zh should be 拆除了炸弹/解除了炸弹的引信."
+  },
+  {
+   "id": "n1-b1190",
+   "severity": "minor",
+   "problem": "Connotation drift between en and zh on the target word 知的. en \"She is intellectual\"; zh \"她很有智慧\" = she is wise/has wisdom, a different quality (life-wisdom, not intellect/refinement). 知性/有知性的 would match. The target word is exactly what the two glosses diverge on."
+  },
+  {
+   "id": "n1-b1212",
+   "severity": "minor",
+   "problem": "Aspect and number mismatch. jp 展示されている is an ongoing state (currently on display); zh \"美术馆展出了…\" with 了 reads as a completed act, while en uses the ongoing \"are displayed\". Also jp 有名な画家の作品 (one famous painter) is pluralized only in en (\"famous painters\"); zh keeps it singular-neutral."
+  },
+  {
+   "id": "n1-b1218",
+   "severity": "minor",
+   "problem": "zh adds a contrastive not in jp or en: \"完全不在意，反而笑着\" (\"…on the contrary, is laughing\"). jp 全く気にせずに笑っている and en simply coordinate the two clauses. 反而 injects a rhetorical turn the source does not have."
+  },
+  {
+   "id": "n1-b1170",
+   "severity": "minor",
+   "problem": "zh renders 時間を束縛される with time itself as the thing constrained: \"我不想让时间受到束缚\" = I don't want time to be tied down. jp/en mean the speaker does not want HIS time tied up by others (en \"have my time restricted\"). Natural zh would be 我不想被时间束缚 or 我不想让别人占用/束缚我的时间 — and those two are themselves different meanings, so the current line teaches neither."
+  },
+  {
+   "id": "n1-b1132",
+   "severity": "minor",
+   "problem": "Subject/person mismatch: jp 困った and en \"I was in trouble\" are first-person past, but zh \"令人吃不消\" is an impersonal generic (\"it is more than one can bear\"), which also intensifies 困った into something stronger."
+  },
+  {
+   "id": "n1-b1241",
+   "severity": "minor",
+   "problem": "en is malformed: \"The letters of the letter got blurred after getting wet with water\" — 手紙の文字 needs \"the writing/characters on the letter\", and \"wet with water\" is redundant. zh (\"信上的字因为浸水而晕开了\") is correct, so only the English is defective."
+  },
+  {
+   "id": "n1-b1206",
+   "severity": "minor",
+   "problem": "Both glosses are redundant renderings of 体裁を整える. en \"I formatted the appearance of the document\" (format + appearance doubled; natural: \"tidied up the layout of the document\"), zh \"把资料的版面排版整齐\" doubles 版面 and 排版. The target word's meaning is blurred rather than shown."
+  },
+  {
+   "id": "n1-b1205",
+   "severity": "minor",
+   "problem": "zh coins \"吊环手柄\" for 吊り革 — a redundant compound (吊环 already is the strap/loop; 手柄 is a handle/grip), and 吊环 alone in Chinese first reads as gymnastic rings. en \"the strap\" is fine; zh should be 拉手/吊环拉手/吊带."
+  },
+  {
+   "id": "n1-b1312",
+   "severity": "minor",
+   "problem": "zh drops 様子 and a required 的: \"他对自己言论一点后悔的意思都没有\" says he has no INTENTION of regretting, where jp 後悔する様子が微塵もない and en \"shows not the slightest sign of regretting\" are about outward signs. Should be 对自己的言论…没有一丝后悔的样子."
+  },
+  {
+   "id": "n1-b1363",
+   "severity": "minor",
+   "problem": "zh 跑出了家门 = ran out of the house (a momentary storming out); it loses the headword's meaning of running away from home, which en states correctly (\"ran away from home\"). Chinese for 家出 is 离家出走."
+  },
+  {
+   "id": "n1-b1359",
+   "severity": "minor",
+   "problem": "Tense mismatch between the two glosses: jp 雨具を用意する is non-past intention and en keeps it (\"I prepare rain gear\"), but zh adds 了 (准备了雨具 = already prepared). The learner sees a plan in English and a completed act in Chinese."
+  },
+  {
+   "id": "n1-b1418",
+   "severity": "minor",
+   "problem": "Aspect mismatch: jp 概説する is non-past and en renders it as a non-finite \"Outlining the overall flow…\", while zh uses 概述了 (completed). en and zh disagree on whether the outlining has happened. en is also a headless fragment with no subject."
+  },
+  {
+   "id": "n1-b1377",
+   "severity": "minor",
+   "problem": "Both glosses drift from 訴えを認めた. en \"accepted the residents' appeal\" reads in English legal usage as an appellate ruling, whereas jp is the court finding for the plaintiffs in their suit; zh 认可了居民的诉求 uses 诉求 (a demand/request, not necessarily legal). Natural: \"ruled in the residents' favour\" / 法院支持了居民的诉讼请求."
+  },
+  {
+   "id": "n1-b1481",
+   "severity": "minor",
+   "problem": "zh adds a verb the jp and en do not have: 该地区开采并产出丰富的石油 inserts 开采 (extracts/mines) alongside 产出, while jp is just 石油を産出している and en just \"produces\". The extra verb also narrows 産出 to mining."
+  },
+  {
+   "id": "n1-b1486",
+   "severity": "minor",
+   "problem": "zh has a duplicated particle typo: 从高地上将美丽的的市街风景尽收眼底 (美丽的的). Also 市街 is carried over unchanged from the Japanese; in modern Chinese 市区风景 / 街景 is the natural rendering."
+  },
+  {
+   "id": "n1-b1501",
+   "severity": "minor",
+   "problem": "en is ungrammatical: \"Police officers dispatched to the scene upon receiving a report\" has no auxiliary — as written, \"dispatched\" reads as a transitive past tense with a missing object. Should be \"were dispatched to\" (or \"rushed to\"). zh 警察出动赶往现场 is correct, so the two glosses do not match in grammatical shape."
+  },
+  {
+   "id": "n1-b1527",
+   "severity": "minor",
+   "problem": "en is barely parseable and misleading: \"missing my family due to conflicting schedules continues\" — \"missing my family\" is idiomatically read as longing for them, the opposite of 擦れ違い (never crossing paths). zh 我和家人总是错开时间没法相聚 is correct; the en should be rebuilt on that reading, e.g. \"I'm so busy that my family and I keep missing each other.\""
+  },
+  {
+   "id": "n1-b1648",
+   "severity": "minor",
+   "problem": "zh 裁判的判决 uses the judicial term: Chinese 判决 is a court verdict handed down by a judge, not a referee's call in a match (that is 判罚 or 判定). Kanji-copy drift that shifts the sentence out of the sports register en (\"the referee's decision\") keeps."
+  },
+  {
+   "id": "n1-b1729",
+   "severity": "minor",
+   "problem": "zh 事业资金 is a kanji copy of 事業資金; in Chinese 事业 means a career or a public-sector undertaking, not a commercial business, so 事业资金的融资贷款 does not read as \"business funding\". Natural zh would be 经营资金 / 创业资金. Also 融资贷款 doubles up two words for the one target."
+  },
+  {
+   "id": "n1-b1631",
+   "severity": "minor",
+   "problem": "Connotation drift in zh: 疏通打点 means greasing palms / pulling strings, with a bribery implication. 根回し and en \"laid the groundwork with stakeholders\" are neutral legitimate prior consultation (zh 事先沟通 / 打招呼). The two glosses teach opposite ethical colouring."
+  },
+  {
+   "id": "n1-b1605",
+   "severity": "minor",
+   "problem": "en and zh pick different objects: jp 豊かな自然と観光資源 → en \"rich in natural beauty and tourist resources\" vs zh 富有自然资源和旅游资源 (\"natural resources\"). Natural beauty and natural resources are not the same thing, and zh also drops 豊かな."
+  },
+  {
+   "id": "n1-b1673",
+   "severity": "minor",
+   "problem": "zh moves the も: jp 部下の意見にも = \"even to subordinates' opinions\", but zh 上司也虚心听取了 attaches 也 to the boss (\"the boss too listened\"), changing what is being contrasted. zh 虚心 (humbly) also replaces 熱心 (attentively/eagerly), which en renders correctly."
+  },
+  {
+   "id": "n1-b1718",
+   "severity": "minor",
+   "problem": "en says \"the opponent\" where jp 相手 is simply the other person; zh 对方 is correct. en narrows the scene to a confrontation the Japanese does not state, so en and zh disagree on who is being stared at."
+  },
+  {
+   "id": "n1-b1688",
+   "severity": "minor",
+   "problem": "en \"The child ate deliciously\" mistranslates 美味しそうに — that adverb describes the child looking as if enjoying it, not the manner being delicious. zh 吃得津津有味 is right; en is not idiomatic English and teaches the wrong reading of 美味しそうに."
+  },
+  {
+   "id": "n1-b1722",
+   "severity": "minor",
+   "problem": "en is a nominal fragment (\"Hospitality warmly provided to guests coming from afar\") and never renders 持て成す as a verb, while jp and zh (用心款待…客人) are verbal sentences. The learner sees the target verb glossed as a noun."
+  },
+  {
+   "id": "n1-b1557",
+   "severity": "minor",
+   "problem": "en \"I accepted a favor for a friend\" reads most naturally as receiving a favor, reversing the direction of 頼みを引き受けた (taking on the friend's request). zh 我答应了朋友的请求 gets it right, so en and zh point in opposite directions."
+  },
+  {
+   "id": "n1-b1567",
+   "severity": "minor",
+   "problem": "en adds \"artificially\", which is nowhere in jp 着色されている and nowhere in zh 经过了着色. It also imports a negative connotation the neutral Japanese lacks; en and zh no longer say the same thing."
+  },
+  {
+   "id": "n1-b1695",
+   "severity": "minor",
+   "problem": "zh drops 重ねて: 我决定穿两件衬衫 just means wearing two shirts, losing the layering that en (\"layer two shirts\") and jp 二枚重ねて着る both carry."
+  },
+  {
+   "id": "n1-b1571",
+   "severity": "minor",
+   "problem": "en \"attended the lecture\" and zh 旁听 diverge on the headword's sense: 旁听 specifically means auditing as a non-enrolled listener, en \"attended\" is plain attendance. Since 聴講 is precisely the auditing word, the two glosses teach different things."
+  },
+  {
+   "id": "n1-b1644",
+   "severity": "minor",
+   "problem": "zh 经过一番讨论 (\"after some discussion\") leaves 果て untranslated — it flattens \"at the end of a long drawn-out process\" into ordinary sequence, while en keeps \"at the end of the discussion\". The target word has no counterpart in zh."
+  },
+  {
+   "id": "n1-b1712",
+   "severity": "minor",
+   "problem": "Aspect mismatch: jp 安心感を生む is a general/habitual statement and en \"foster a sense of security\" matches it, but zh 带来了安全感 with 了 reports a completed past event. zh also swaps 安心感 for 安全感 (sense of physical safety)."
+  },
+  {
+   "id": "n1-b1684",
+   "severity": "minor",
+   "problem": "Tense mismatch: jp 飽和状態になり、売上が伸び悩む is non-past/generic and zh 处于饱和状态…增长停滞 keeps that, but en puts it in the past (\"reached saturation\", \"sales growth stalled\"), turning a standing condition into a finished event."
+  },
+  {
+   "id": "n1-b1533",
+   "severity": "minor",
+   "problem": "zh 威力 (destructive might) is not the sense of 勢力 here; a typhoon's 勢力 is its intensity/scale, rendered in Chinese weather usage as 强度 (en \"strength\" is right). 威力 shifts to how much damage it can do."
+  },
+  {
+   "id": "n1-b1593",
+   "severity": "minor",
+   "problem": "zh 欣赏了绝佳的视野 is off: 视野 is one's field of vision, not the scenery viewed, and 欣赏视野 is not a Chinese collocation. en \"wonderful view\" means the vista (zh 景色 / 眺望), so the two glosses name different things."
+  },
+  {
+   "id": "n1-b1706",
+   "severity": "minor",
+   "problem": "zh 令人害羞 means makes one bashful/shy, not embarrassed-about-appearance (恥ずかしい here = 丢人 / 难为情), and 穿着破旧潦草地出门 is malformed. en \"embarrassing\" carries the right feeling, so the two glosses give different emotions."
+  },
+  {
+   "id": "n1-b1739",
+   "severity": "minor",
+   "problem": "The target is swallowed by the frozen greeting: in 今後とも宜しくお願いいたします nothing of 宜しく's own meaning (\"well, properly, suitably\") survives, and neither gloss renders the word at all. en also changes the speech act — \"We look forward to working with you\" is a statement, while jp お願いいたします and zh 请多多关照 are requests."
+  },
+  {
+   "id": "n1-b1842",
+   "severity": "minor",
+   "problem": "昔の兵士の軍服 = the uniform of a soldier of former times. The en \"An old soldier's military uniform\" is naturally read as belonging to an elderly/veteran soldier, attaching 昔 to the person's age rather than the era. The zh 昔日士兵的军服 gets it right, so en and zh disagree. Suggest \"A military uniform worn by soldiers of the past.\""
+  },
+  {
+   "id": "n1-b1808",
+   "severity": "minor",
+   "problem": "The jp has no stated subject and, with 毎日運動しているので…になった, defaults to the speaker. The en assigns a third person (\"gave him a solid physique\") while the zh leaves it subjectless (因为每天运动，身体变得很健壮). A learner reading both gets two different people; en should match with \"I got a solid physique from working out every day.\""
+  },
+  {
+   "id": "n1-b1892",
+   "severity": "minor",
+   "problem": "創立記念 is generic founding (company, organization, institution). The zh narrows it to a school with 建校周年纪念, while the en keeps the generic \"anniversary of foundation\" — the two glosses disagree about what was founded. zh should be 创立纪念 / 成立周年纪念."
+  },
+  {
+   "id": "n1-b1923",
+   "severity": "minor",
+   "problem": "Kanji copied where the senses diverge: Chinese 政权 means regime / state power (as in 政权更迭), so 新政权诞生了 reads as a new regime coming into being, far stronger than the jp 新しい政権 = a new government/administration formed after an election, which the en renders correctly as \"a new administration\". zh should be 新政府 / 新一届政府成立."
+  },
+  {
+   "id": "n1-b1752",
+   "severity": "minor",
+   "problem": "zh 放弃的表情 renders 諦め as the act of giving up (an odd collocation in Chinese), whereas the en \"expression of resignation\" captures the settled acceptance sense the item declares. The two glosses point at different emotions; zh should be 无奈的表情 / 死心的表情."
+  },
+  {
+   "id": "n1-b1859",
+   "severity": "minor",
+   "problem": "zh 我每天都留心进行适度运动 uses 留心 (to watch out for / be careful of), which is not what 心掛ける means here and is unnatural Chinese; the en \"keep in mind to do\" points at making a point of doing it. zh should be 我平时注意每天做适度运动 / 我尽量每天做适度运动."
+  },
+  {
+   "id": "n1-b1775",
+   "severity": "minor",
+   "problem": "The en \"Discuss about next week's meeting.\" is ungrammatical — \"discuss\" takes a direct object. Should be \"Discuss next week's meeting\" or \"We'll talk over the arrangements for next week's meeting\"; the zh 商讨下周会议的事宜 is fine."
+  },
+  {
+   "id": "n1-b2069",
+   "severity": "minor",
+   "problem": "Aspect disagreement: jp 「価格が変わる」 is a generic/habitual non-past and en matches it (\"Prices ... change\"), but zh 「价格发生了变化」 with 了 reports a completed past event. The learner is shown a general truth in English and a one-off past change in Chinese."
+  },
+  {
+   "id": "n1-b1982",
+   "severity": "minor",
+   "problem": "zh leaves 市役所 untranslated as a Japanese kanji compound; 市役所 is not a Chinese word (Mandarin would be 市政府／市政厅), while en correctly says \"city hall\". Chinese readers get an opaque Japanese term where en gives the meaning."
+  },
+  {
+   "id": "n1-b1998",
+   "severity": "minor",
+   "problem": "zh 「事业课题」 copies the kanji where the senses diverge: Japanese 事業 here means business/commercial operations, but Chinese 事业 means a cause or (public-sector) undertaking/career — en correctly says \"business challenges\". 业务课题／经营课题 is the matching Chinese. 应对 (\"cope with\") also softens 取り組む/\"tackle, work on\"."
+  },
+  {
+   "id": "n1-b2040",
+   "severity": "minor",
+   "problem": "zh 「竞争倍率」 is a kanji copy of 倍率; Chinese does not use 倍率 for exam competition, which is 竞争率 or 报录比 (倍率 in Chinese means an optical/numeric magnification factor). en's \"competition ratio\" is right; the zh reads as a Japanism."
+  },
+  {
+   "id": "n1-b2052",
+   "severity": "minor",
+   "problem": "zh 「觉醒了对美术的兴趣」 is ungrammatical — 觉醒 is intransitive in Chinese and cannot take 兴趣 as an object — and it swaps 魅力/\"charm\" for 兴趣/\"interest\", so en (\"awakened to the charm of fine arts\") and zh state different things. 领略到美术的魅力 would match."
+  },
+  {
+   "id": "n1-b2067",
+   "severity": "minor",
+   "problem": "zh 「街市」 means a street market / market area in Mandarin, not the town; jp 街 and en \"the town returned to normal\" refer to the town as a whole. 街道／城市／市区 would agree with en."
+  },
+  {
+   "id": "n1-b2037",
+   "severity": "minor",
+   "problem": "Number and referent disagree: jp 「美しい山が見える」 is one mountain and en says \"a beautiful mountain\", but zh 「美丽的山脉」 is a mountain range. zh also doubles the distance (远处遥远) redundantly."
+  },
+  {
+   "id": "n1-b2080",
+   "severity": "minor",
+   "problem": "zh 「建筑物规定了严格的防火标准」 makes the building the agent that sets the standards; jp 「建物には…定められている」 and en \"standards are set for the building\" make it the target. Should be 对建筑物规定了… or 建筑物须符合严格的防火标准."
+  },
+  {
+   "id": "n1-b2076",
+   "severity": "minor",
+   "problem": "en and zh describe different symptoms: en adds \"making it hard to breathe\", zh says 「感到很难受」 (felt very unwell), for jp 「苦しくなった」. zh also dissolves the target noun 発作 into the adverbial 阵发, so the Chinese gloss no longer shows the learner a \"fit/attack\" as a thing."
+  },
+  {
+   "id": "n1-b2062",
+   "severity": "minor",
+   "problem": "en \"I am making a dish\" is first-person progressive while jp 「料理を作る」 is a plain non-past/generic statement and zh 「制作…料理」 is subjectless and generic. The two glosses give the learner different subjects and aspects for the same sentence."
+  },
+  {
+   "id": "n1-b2091",
+   "severity": "minor",
+   "problem": "zh adds 「一口气」 (in one go / in one breath), which is not in jp 「丸ごと一つ食べた」 or in en \"ate a fresh apple whole\" — it shifts the point from wholeness to speed, which is precisely the sense 丸ごと does not carry."
+  },
+  {
+   "id": "n1-b2022",
+   "severity": "minor",
+   "problem": "The target is swallowed by the frozen adverbial 念のため: both en (\"just to be sure\") and zh (「以防万一」) translate the idiom as a unit, so 念 itself is rendered by nothing in either gloss and the learner sees no evidence of its \"care/attention\" meaning."
+  },
+  {
+   "id": "n1-b2058",
+   "severity": "minor",
+   "problem": "zh 「在一家房产公司工作了」 with sentence-final 了 reads as \"worked at a real-estate company (for a while / and that's over)\", whereas jp 就職した and en \"got a job at a real estate company\" denote entering employment. 进了一家房地产公司工作／就职于… would match."
+  },
+  {
+   "id": "n1-b2051",
+   "severity": "minor",
+   "problem": "Connotation drift: jp 噂 and en \"rumor\" are neutral, but zh 「谣言」 specifically means a false or malicious rumor. 传闻／流言 would keep the neutral reading the Japanese has."
+  }
+ ],
+ "misleadingCards": [
+  {
+   "id": "n1-b231",
+   "misleading": true,
+   "why": "Gloss line is only 'cheerful, lighthearted', but 気軽にご質問ください uses the 'feel free / without hesitation / casually' sense. Nothing on the card explains why a word meaning 'cheerful' appears before 'please ask questions'."
+  },
+  {
+   "id": "n1-b337",
+   "misleading": true,
+   "why": "Gloss line is 'anyhow, in various ways', but the sentence uses the 'apt to / tends to' sense (忘れがちだ). A learner would read 兎角 as 'anyhow' and the sentence's 'tends to' would be unexplained."
+  },
+  {
+   "id": "n1-b382",
+   "misleading": true,
+   "why": "Gloss line is 'shrinking back, being baffled', but the sentence means being fed up/exasperated with a boastful story. A learner would take 辟易 as intimidated or confused; the disgust/fed-up sense the sentence needs is absent."
+  },
+  {
+   "id": "n1-b688",
+   "misleading": true,
+   "why": "Sentence is 花を愛でたい 'want to admire the flowers' — the verb 愛でる + たい. The gloss line only gives めでたい 'happy, auspicious', a different word entirely; nothing on the card explains 'admire'."
+  },
+  {
+   "id": "n1-b692",
+   "misleading": true,
+   "why": "持てる力をすべて発揮 uses 持てる as 'the strength one possesses'. Gloss line gives only 'to be well liked, to be popular', which cannot explain the sentence at all."
+  },
+  {
+   "id": "n1-b813",
+   "misleading": true,
+   "why": "Sentence is the sewing sense — basting/tacking fabric temporarily. The gloss line offers 'to train, to discipline, to plant', none of which explains 仮に仕付ける in 裁縫."
+  },
+  {
+   "id": "n1-b961",
+   "misleading": true,
+   "why": "Gloss is nouns 'buried property, treasure trove', but the sentence is 天然ガスが埋蔵されている — buried natural-resource reserves used verbally. Neither 'deposits/reserves' nor the verbal 'to be deposited underground' sense is in the gloss line; 'treasure trove' actively points the learner away from natural gas."
+  },
+  {
+   "id": "n1-b1015",
+   "misleading": true,
+   "why": "Sentence is 体を労りたい = take good care of one's body, but the gloss line only offers 'to pity, to console'. Neither covers caring for/being gentle with one's health — the learner would read it as pitying their own body."
+  },
+  {
+   "id": "n1-b1088",
+   "misleading": true,
+   "why": "Sentence uses 煙る for distant mountains looking hazy/misty in rain, but the gloss line only says 'to smoke, to smolder'. The haze/blurred-by-moisture sense is absent, so the definition does not explain the sentence."
+  },
+  {
+   "id": "n1-b1539",
+   "misleading": true,
+   "why": "Gloss line is purely military ('war potential, military capability'), but the sentence uses 戦力 figuratively for a new player being a valuable asset to a sports team — that sense is absent, so the definition does not explain the sentence."
+  },
+  {
+   "id": "n1-b1607",
+   "misleading": true,
+   "why": "Gloss line offers only 'to collect, to extort, to appoint', but the sentence uses 取り立てるほどの (worth special mention) — the 'single out / mention specially' sense is missing, so none of the three glosses parses the sentence."
+  },
+  {
+   "id": "n1-b738",
+   "misleading": true,
+   "why": "Sentence uses the formulaic apologetic preface 恐れ入りますが = \"excuse me / sorry to trouble you\"; the line offers only \"filled with awe, amazed, obliged\", none of which explains the polite-request usage in front of the learner."
+  },
+  {
+   "id": "n1-b1786",
+   "misleading": true,
+   "why": "Sentence is 台風が接近する恐れがある — the \"risk / danger that something bad may happen\" sense; the gloss line gives only the emotion (fear, horror, anxiety), so it does not explain ~恐れがある."
+  },
+  {
+   "id": "n1-b1919",
+   "misleading": true,
+   "why": "Sentence is 大きな重い棚を据えた = installing/setting a heavy shelf firmly in place; both glosses are narrowed by parentheticals to unrelated collocations (\"to set (table)\", \"to lay (foundation)\"), so the line does not explain the sentence."
+  },
+  {
+   "id": "n1-b1936",
+   "misleading": true,
+   "why": "Sentence is a neighborhood 騒動 = a commotion/disturbance, but the line offers only \"rebellion, mutiny, riot\", which pushes the learner to read it as a violent uprising next door."
+  },
+  {
+   "id": "n1-b1014",
+   "misleading": true,
+   "why": "Sentence uses the fixed phrase いざという時 = \"should the need arise / in an emergency\", but the gloss line offers only the interjection sense \"now, come\"; a learner cannot get \"when the time comes\" out of that."
+  }
+ ]
+}
