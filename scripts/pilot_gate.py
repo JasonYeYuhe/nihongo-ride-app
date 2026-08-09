@@ -10,6 +10,7 @@ Usage:
     .venv-jp/bin/python scripts/pilot_gate.py /tmp/pilot_words.json /tmp/gen_out.txt
 """
 import importlib.util
+import functools
 import json
 import pathlib
 import re
@@ -243,6 +244,40 @@ def generation_artifact(text):
     return letters > max(4, len(text) // 4)
 
 
+@functools.lru_cache(maxsize=None)
+def proven_at(target_level):
+    """Words already used in a REVIEWED, SHIPPED sentence at this level or easier.
+
+    The level table records where this app's deck files a word, not how hard the word is.
+    It puts 茶, 日本, どんな and 時 at N3, so the gate faults 「お茶を飲みます。」 and
+    「日本へ行きます。」 — sentences that shipped, were reviewed, and are unimpeachably N5.
+
+    Rather than loosen the threshold globally, which would let genuinely hard vocabulary into
+    beginner sentences, a word earns an exemption by DEMONSTRATION: if it already appears in a
+    shipped sentence at this level, a reviewer has already accepted it there. The allowlist is
+    derived from the corpus, not from anyone's opinion about difficulty, and it shrinks or
+    grows automatically as the corpus does.
+
+    Measured before adding: the gate rejected 15 of 1,128 shipped N5/N4 sentences (1.3%) — low
+    enough that the gate is broadly right and only its blind spot needed fixing.
+    """
+    words = set()
+    tk = Dictionary().create()
+    for path in (REPO / "Sources/VocabKit/Resources").glob("n[1-5].json"):
+        for e in json.load(path.open()):
+            jp = (e.get("exJP") or "").strip()
+            if not jp:
+                continue
+            # Only a sentence AT this level or easier vouches for a word: an N1 sentence
+            # using 資料 says nothing about whether 資料 belongs in an N5 sentence.
+            if int(e.get("jlpt") or 5) < target_level:
+                continue
+            for t in tk.tokenize(jp, SplitMode.C):
+                words.add(t.surface())
+                words.add(t.dictionary_form())
+    return words
+
+
 def gates(item, entry, tokenizer, seen, levels):
     """→ list of reasons this sentence must not ship. Empty means it survived."""
     jp, en, zh = item.get("jp", ""), item.get("en", ""), item.get("zh", "")
@@ -299,13 +334,23 @@ def gates(item, entry, tokenizer, seen, levels):
     # wraps an N5 word in N1 vocabulary is useless to the learner who needs it.
     target_level = level_of(entry)
     target_surfaces = {t.surface() for t in present} | {entry["surface"], entry["kana"]}
-    for token in tokenizer.tokenize(jp, SplitMode.C):
+    tokens = list(tokenizer.tokenize(jp, SplitMode.C))
+    for i, token in enumerate(tokens):
         if token.part_of_speech()[0] not in CONTENT_POS:
+            continue
+        # A token straight after a numeral is a COUNTER, not the noun that shares its spelling.
+        # Sudachi splits 七時 into 七 + 時 and the level table then looks up 時 — the standalone
+        # noun とき, filed N3 — so 「私は毎朝七時に起きます。」 was rejected as too hard for an N5
+        # word. The 時 in 七時 is じ, a different morpheme entirely, and telling the time is
+        # among the first things an N5 learner is taught. Same for センチ in 二十センチ.
+        if i > 0 and tokens[i - 1].part_of_speech()[1] == "数詞":
             continue
         if token.surface() in target_surfaces or token.dictionary_form() in target_surfaces:
             continue   # the word being taught is allowed to be as hard as it is
         lvl = levels.get(token.dictionary_form()) or levels.get(token.surface())
-        if lvl is not None and lvl < target_level - 1:
+        if lvl is not None and lvl < target_level - 1 \
+                and token.surface() not in proven_at(target_level) \
+                and token.dictionary_form() not in proven_at(target_level):
             bad.append(f"vocabulary above level: {token.surface()} is N{lvl}, "
                        f"target is N{target_level}")
             break
