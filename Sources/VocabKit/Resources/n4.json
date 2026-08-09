@@ -8567,7 +8567,57 @@
       "zh": [
         "社会"
       ]
-    }
+    },
+    "exJP": "大学を卒業して社会に出る。",
+    "exEN": "Graduate from university and step out into society.",
+    "exZH": "大学毕业后步入社会。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "society or general public",
+      "senseListed": true
+    },
+    "exKana": "だいがくをそつぎょうしてしゃかいにでる",
+    "exTokens": [
+      [
+        "大学",
+        "だいがく"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "卒業",
+        "そつぎょう"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "社会",
+        "しゃかい"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "出る",
+        "でる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g173",
@@ -9502,7 +9552,69 @@
         "同意",
         "知晓"
       ]
-    }
+    },
+    "exJP": "その計画の危険性は十分に承知している。",
+    "exEN": "I am fully aware of the danger of that plan.",
+    "exZH": "我充分了解那个计划的危险性。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "awareness or understanding",
+      "senseListed": true
+    },
+    "exKana": "そのけいかくのきけんせいはじゅうぶんにしょうちしている",
+    "exTokens": [
+      [
+        "その",
+        "その"
+      ],
+      [
+        "計画",
+        "けいかく"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "危険性",
+        "きけんせい"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "十分",
+        "じゅうぶん"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "承知",
+        "しょうち"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g187",
@@ -11287,7 +11399,85 @@
         "于是",
         "这么说"
       ]
-    }
+    },
+    "exJP": "部屋の電気を消した、すると辺りが真っ暗になった。",
+    "exEN": "I turned off the light in the room, whereupon it became pitch dark around me.",
+    "exZH": "我关了房间的灯，接着四周变得一片漆黑。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "thereupon or right after that",
+      "senseListed": true
+    },
+    "exKana": "へやのでんきをけしたするとあたりがまっくらになった",
+    "exTokens": [
+      [
+        "部屋",
+        "へや"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "電気",
+        "でんき"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "消し",
+        "けし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "する",
+        "する"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "辺り",
+        "あたり"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "真っ暗",
+        "まっくら"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "なっ",
+        "なっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g213",
@@ -12213,7 +12403,65 @@
         "前辈",
         "学长"
       ]
-    }
+    },
+    "exJP": "部活の先輩に仕事の相談をした。",
+    "exEN": "I consulted a senior member of the club about work.",
+    "exZH": "向社团的前辈咨询了工作的事。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "senior member",
+      "senseListed": true
+    },
+    "exKana": "ぶかつのせんぱいにしごとのそうだんをした",
+    "exTokens": [
+      [
+        "部活",
+        "ぶかつ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "先輩",
+        "せんぱい"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "仕事",
+        "しごと"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "相談",
+        "そうだん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g226",
@@ -12545,7 +12793,85 @@
         "因此",
         "所以"
       ]
-    }
+    },
+    "exJP": "昨夜遅くまで勉強をした、それで今朝は寝坊した。",
+    "exEN": "I studied until late last night, and so I overslept this morning.",
+    "exZH": "昨晚学习到很晚，因此今天早上睡过了头。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "and so or because of that",
+      "senseListed": true
+    },
+    "exKana": "さくやおそくまでべんきょうをしたそれでけさはねぼうした",
+    "exTokens": [
+      [
+        "昨夜",
+        "さくや"
+      ],
+      [
+        "遅く",
+        "おそく"
+      ],
+      [
+        "まで",
+        "まで"
+      ],
+      [
+        "勉強",
+        "べんきょう"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "それ",
+        "それ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "今朝",
+        "けさ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "寝坊",
+        "ねぼう"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g231",
@@ -13383,7 +13709,81 @@
         "所以",
         "因此"
       ]
-    }
+    },
+    "exJP": "今日は体調が悪い、だから家で休むことにする。",
+    "exEN": "I am not feeling well today, so I will rest at home.",
+    "exZH": "今天身体不舒服，所以决定在家休息。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "so or therefore",
+      "senseListed": true
+    },
+    "exKana": "きょうはたいちょうがわるいだからいえでやすむことにする",
+    "exTokens": [
+      [
+        "今日",
+        "きょう"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "体調",
+        "たいちょう"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "悪い",
+        "わるい"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "だ",
+        "だ"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "家",
+        "いえ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "休む",
+        "やすむ"
+      ],
+      [
+        "こと",
+        "こと"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "する",
+        "する"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g243",
@@ -15809,7 +16209,69 @@
       "zh": [
         "寺庙"
       ]
-    }
+    },
+    "exJP": "京都の古い寺を訪ねて静かに過ごした。",
+    "exEN": "I visited an old temple in Kyoto and spent a quiet time.",
+    "exZH": "拜访了京都的古寺，安静地度过了时间。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "Buddhist temple",
+      "senseListed": true
+    },
+    "exKana": "きょうとのふるいてらをたずねてしずかにすごした",
+    "exTokens": [
+      [
+        "京都",
+        "きょうと"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "古い",
+        "ふるい"
+      ],
+      [
+        "寺",
+        "てら"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "訪ね",
+        "たずね"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "静か",
+        "しずか"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "過ごし",
+        "すごし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g278",
@@ -22615,7 +23077,57 @@
       "zh": [
         "钓鱼"
       ]
-    }
+    },
+    "exJP": "川で大きな魚を釣りました。",
+    "exEN": "I caught a big fish in the river.",
+    "exZH": "我在河里钓到了大鱼。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to catch fish with a hook",
+      "senseListed": true
+    },
+    "exKana": "かわでおおきなさかなをつりました",
+    "exTokens": [
+      [
+        "川",
+        "かわ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "大きな",
+        "おおきな"
+      ],
+      [
+        "魚",
+        "さかな"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "釣り",
+        "つり"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g375",
@@ -31683,7 +32195,53 @@
         "被褥",
         "棉被"
       ]
-    }
+    },
+    "exJP": "暖かい布団でゆっくり寝ました。",
+    "exEN": "I slept comfortably under a warm futon.",
+    "exZH": "我盖着温暖的被子舒服地睡了一觉。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "Japanese bedding set",
+      "senseListed": true
+    },
+    "exKana": "あたたかいふとんでゆっくりねました",
+    "exTokens": [
+      [
+        "暖かい",
+        "あたたかい"
+      ],
+      [
+        "布団",
+        "ふとん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "ゆっくり",
+        "ゆっくり"
+      ],
+      [
+        "寝",
+        "ね"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b114",
@@ -32405,7 +32963,61 @@
         "广播",
         "播放"
       ]
-    }
+    },
+    "exJP": "テレビでニュースの放送が始まりました。",
+    "exEN": "The news broadcast started on TV.",
+    "exZH": "电视上开始了新闻节目的播放。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "broadcasting of a television program",
+      "senseListed": true
+    },
+    "exKana": "てれびでにゅーすのほうそうがはじまりました",
+    "exTokens": [
+      [
+        "テレビ",
+        "てれび"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "ニュース",
+        "にゅーす"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "放送",
+        "ほうそう"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "始まり",
+        "はじまり"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b125",
@@ -32853,7 +33465,61 @@
         "输",
         "打败"
       ]
-    }
+    },
+    "exJP": "昨日のサッカーの試合に負けました。",
+    "exEN": "We lost yesterday's soccer match.",
+    "exZH": "我们输掉了昨天的足球比赛。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to be defeated in a match",
+      "senseListed": true
+    },
+    "exKana": "きのうのさっかーのしあいにまけました",
+    "exTokens": [
+      [
+        "昨日",
+        "きのう"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "サッカー",
+        "さっかー"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "試合",
+        "しあい"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "負け",
+        "まけ"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b132",

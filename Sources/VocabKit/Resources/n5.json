@@ -10745,7 +10745,65 @@
         "蓝色",
         "青色"
       ]
-    }
+    },
+    "exJP": "晴れた日の空はきれいな青です。",
+    "exEN": "The sky on a clear day is a beautiful blue.",
+    "exZH": "晴天时的天空是漂亮的蓝色。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "color blue",
+      "senseListed": true
+    },
+    "exKana": "はれたひのそらはきれいなあおです",
+    "exTokens": [
+      [
+        "晴れ",
+        "はれ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "日",
+        "ひ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "空",
+        "そら"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "きれい",
+        "きれい"
+      ],
+      [
+        "な",
+        "な"
+      ],
+      [
+        "青",
+        "あお"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b002",
@@ -12921,7 +12979,73 @@
         "叔叔",
         "伯伯"
       ]
-    }
+    },
+    "exJP": "親切なおじさんが道をおしえてくれました。",
+    "exEN": "A kind middle-aged man gave me directions.",
+    "exZH": "一个热心的大叔给我指了路。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "middle-aged man",
+      "senseListed": true
+    },
+    "exKana": "しんせつなおじさんがみちをおしえてくれました",
+    "exTokens": [
+      [
+        "親切",
+        "しんせつ"
+      ],
+      [
+        "な",
+        "な"
+      ],
+      [
+        "おじ",
+        "おじ"
+      ],
+      [
+        "さん",
+        "さん"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "道",
+        "みち"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "おしえ",
+        "おしえ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "くれ",
+        "くれ"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b038",
@@ -13365,7 +13489,65 @@
         "洗澡",
         "浴缸"
       ]
-    }
+    },
+    "exJP": "毎日、寝る前にお風呂に入ります。",
+    "exEN": "Every day, I take a bath before going to sleep.",
+    "exZH": "我每天睡觉前都会泡澡。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "hot bath for washing oneself",
+      "senseListed": true
+    },
+    "exKana": "まいにちねるまえにおふろにはいります",
+    "exTokens": [
+      [
+        "毎日",
+        "まいにち"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "寝る",
+        "ねる"
+      ],
+      [
+        "前",
+        "まえ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "お",
+        "お"
+      ],
+      [
+        "風呂",
+        "ふろ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "入り",
+        "はいり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b045",
@@ -14849,7 +15031,61 @@
         "派出所",
         "交番"
       ]
-    }
+    },
+    "exJP": "駅の前に小さな交番があります。",
+    "exEN": "There is a small police box in front of the station.",
+    "exZH": "车站前有一个小警亭。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "local police box",
+      "senseListed": true
+    },
+    "exKana": "えきのまえにちいさなこうばんがあります",
+    "exTokens": [
+      [
+        "駅",
+        "えき"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "前",
+        "まえ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "小さな",
+        "ちいさな"
+      ],
+      [
+        "交番",
+        "こうばん"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "あり",
+        "あり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b069",
@@ -26789,7 +27025,73 @@
       "zh": [
         "公园"
       ]
-    }
+    },
+    "exJP": "天気がいいので、公園を散歩しました。",
+    "exEN": "The weather was nice, so I took a walk in the park.",
+    "exZH": "因为天气很好，我在公园里散步了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "public park",
+      "senseListed": true
+    },
+    "exKana": "てんきがいいのでこうえんをさんぽしました",
+    "exTokens": [
+      [
+        "天気",
+        "てんき"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "いい",
+        "いい"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "公園",
+        "こうえん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "散歩",
+        "さんぽ"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b262",
@@ -27052,7 +27354,53 @@
       "zh": [
         "这边"
       ]
-    }
+    },
+    "exJP": "どうぞ、こちらへお入りください。",
+    "exEN": "Please come in this way.",
+    "exZH": "请从这边进来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "this way or this direction",
+      "senseListed": true
+    },
+    "exKana": "どうぞこちらへおはいりください",
+    "exTokens": [
+      [
+        "どうぞ",
+        "どうぞ"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "こちら",
+        "こちら"
+      ],
+      [
+        "へ",
+        "へ"
+      ],
+      [
+        "お",
+        "お"
+      ],
+      [
+        "入り",
+        "はいり"
+      ],
+      [
+        "ください",
+        "ください"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b267",
@@ -29072,7 +29420,65 @@
         "不同",
         "错"
       ]
-    }
+    },
+    "exJP": "私の答えと友達の答えは違います。",
+    "exEN": "My answer and my friend's answer are different.",
+    "exZH": "我的答案和朋友的答案不一样。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to be different",
+      "senseListed": true
+    },
+    "exKana": "わたくしのこたえとともだちのこたえはちがいます",
+    "exTokens": [
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "答え",
+        "こたえ"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "友達",
+        "ともだち"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "答え",
+        "こたえ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "違い",
+        "ちがい"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b300",
@@ -29610,7 +30016,69 @@
       "zh": [
         "但是"
       ]
-    }
+    },
+    "exJP": "少し難しい、でも面白い本を読みました。",
+    "exEN": "I read a book that was a little difficult, but interesting.",
+    "exZH": "我读了一本有点难但是很有趣的书。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "however or but",
+      "senseListed": true
+    },
+    "exKana": "すこしむずかしいでもおもしろいほんをよみました",
+    "exTokens": [
+      [
+        "少し",
+        "すこし"
+      ],
+      [
+        "難しい",
+        "むずかしい"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "も",
+        "も"
+      ],
+      [
+        "面白い",
+        "おもしろい"
+      ],
+      [
+        "本",
+        "ほん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "読み",
+        "よみ"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b309",

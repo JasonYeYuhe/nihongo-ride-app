@@ -1,7 +1,7 @@
 {
  "what": "entries no generated sentence can teach, and why",
- "total": 216,
- "why": "A sentence for these words is written naturally, the kanji is read the COMMON way, and the reading gate correctly rejects it. Regenerating does not help: the generator and the gate share the assumption that a spelling has one likely reading, which is exactly what these entries violate. v1.18 furigana removes the harm wherever a sentence DOES exist, but these have none.",
+ "total": 225,
+ "why": "A sentence for these words is written naturally, the kanji is read the COMMON way, and the reading gate correctly rejects it. Regenerating does not help: the generator and the gate share the assumption that a spelling has one likely reading, which is exactly what these entries violate. v1.18 furigana removes the harm wherever a sentence DOES exist, but these have none. A second class was identified by retrying 398 held entries: an entry that fails TWO independent generation rounds with the same defect — a reading the context cannot force, or an orthography no IME produces — is blocked rather than unlucky. 釣, 博士, 明後日, 違える and 未だ each failed twice for exactly the reason they failed the first time.",
  "entries": [
   {
    "id": "n1-b132",
@@ -3112,6 +3112,97 @@
      "hasExample": true
     }
    ]
+  }
+ ],
+ "alsoBlockedByRepeatedFailure": [
+  {
+   "id": "n1-b242",
+   "surface": "擽ぐったい",
+   "taughtReading": "くすぐったい",
+   "glosses": [
+    "ticklish",
+    "embarrassing"
+   ],
+   "failedTwiceBecause": "擽ぐったい is not an okurigana form any IME or writer produces. The kanji form of くすぐったい is 擽ったい (stem 擽る=くすぐ-る); the extra ぐ duplicates the stem. Sentence 「足の裏を触られると擽ぐったい。」 is otherwise fine, but the taught orthography is un"
+  },
+  {
+   "id": "n1-b318",
+   "surface": "違える",
+   "taughtReading": "ちがえる",
+   "glosses": [
+    "to change",
+    "to violate",
+    "to make a mistake"
+   ],
+   "failedTwiceBecause": "「待ち合わせの時間と場所を違えてしまった。」 does not force ちがえる. 時間・場所・約束 as objects of 違える pull the reading たがえる (to deviate from / break what was agreed) — exactly the 約束を違える case. For 'got the time and place wrong' a real writer uses 間違える"
+  },
+  {
+   "id": "n2-b145",
+   "surface": "引受る",
+   "taughtReading": "ひきうける",
+   "glosses": [
+    "to undertake",
+    "to take up"
+   ],
+   "failedTwiceBecause": "送り仮名 defect: 「頼まれた仕事を喜んで引受る。」 The verb ひきうける must be written 引き受ける (at minimum 引受ける). The string 引受る cannot yield ひきうける — as written it parses as ひきうる/ひきう-る, and no IME produces 引受る from ひきうける. In a typing app the learne"
+  },
+  {
+   "id": "n1-b1019",
+   "surface": "未だ",
+   "taughtReading": "いまだ",
+   "glosses": [
+    "not yet"
+   ],
+   "failedTwiceBecause": "The context does not force the taught reading いまだ. 「その問題は未だ解決していない。」 is read most naturally as まだ解決していない — 未だ is the standard kanji spelling of まだ, and this plain 〜ていない frame is the まだ frame. いまだ is forced only by 未だに / "
+  },
+  {
+   "id": "n3-b304",
+   "surface": "そこで",
+   "taughtReading": "そこで",
+   "glosses": [
+    "so",
+    "accordingly",
+    "now"
+   ],
+   "failedTwiceBecause": "「準備が整ったので、そこで作業を開始した。」 doubles the causal marking: ので already states the reason, so the conjunctive そこで is redundant and ungrammatical here. Worse, after a ので-clause and a comma, そこで is most naturally parsed as the locat"
+  },
+  {
+   "id": "n2-b984",
+   "surface": "ぺん",
+   "taughtReading": "ぺん",
+   "glosses": [
+    "pen"
+   ],
+   "failedTwiceBecause": "「このぺんは描き心地が良い」— two orthography defects. A loanword written in hiragana (ぺん) is something no real writer or IME output produces; it must be ペン. And for a writing pen the collocation is 書き心地; 描き心地 is 'drawing feel' and co"
+  },
+  {
+   "id": "n3-b114",
+   "surface": "釣",
+   "taughtReading": "つり",
+   "glosses": [
+    "fishing",
+    "angling"
+   ],
+   "failedTwiceBecause": "「釣を楽しんだ」— 送り仮名 defect. Typing つり yields 釣り; bare 釣 only occurs in compounds (釣具, 釣銭). Should be 釣りを楽しんだ, which a typing app cannot accept from the given surface."
+  },
+  {
+   "id": "n3-b910",
+   "surface": "博士",
+   "taughtReading": "はかせ",
+   "glosses": [
+    "doctorate",
+    "PhD"
+   ],
+   "failedTwiceBecause": "Reading not forced: 「鈴木博士は植物の研究で有名だ」— 博士 after a surname in an academic-research context is read はくし by many speakers (博士号/博士課程 sense) as readily as the taught はかせ. Nothing in the sentence selects はかせ; a 物知り博士 / 恐竜博士 sty"
+  },
+  {
+   "id": "n3-b948",
+   "surface": "明後日",
+   "taughtReading": "みょうごにち",
+   "glosses": [
+    "day after tomorrow"
+   ],
+   "failedTwiceBecause": "Reading not forced: 「明後日の正午までに書類を提出してください」— 明後日 defaults to あさって for nearly every reader; the taught みょうごにち is the formal-announcement reading and the mildly polite request is not enough to force it (it needs a 公文書/館内放送 "
   }
  ]
 }

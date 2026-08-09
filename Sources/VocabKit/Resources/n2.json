@@ -34639,7 +34639,57 @@
       "zh": [
         "有无"
       ]
-    }
+    },
+    "exJP": "経験の有無を問わず応募できる。",
+    "exEN": "You can apply regardless of whether you have experience.",
+    "exZH": "不论有无经验均可申请。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "presence or absence",
+      "senseListed": true
+    },
+    "exKana": "けいけんのうむをとわずおうぼできる",
+    "exTokens": [
+      [
+        "経験",
+        "けいけん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "有無",
+        "うむ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "問わ",
+        "とわ"
+      ],
+      [
+        "ず",
+        "ず"
+      ],
+      [
+        "応募",
+        "おうぼ"
+      ],
+      [
+        "できる",
+        "できる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b207",
@@ -34810,7 +34860,53 @@
         "响应",
         "适应"
       ]
-    }
+    },
+    "exJP": "客の要求に柔軟に応ずる。",
+    "exEN": "Flexibly accommodate customer requests.",
+    "exZH": "灵活满足客人的要求。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to comply with or meet",
+      "senseListed": true
+    },
+    "exKana": "きゃくのようきゅうにじゅうなんにおうずる",
+    "exTokens": [
+      [
+        "客",
+        "きゃく"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "要求",
+        "ようきゅう"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "柔軟",
+        "じゅうなん"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "応ずる",
+        "おうずる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b210",
@@ -37108,7 +37204,53 @@
         "活动",
         "仪式"
       ]
-    }
+    },
+    "exJP": "学校の年間行事を確認する。",
+    "exEN": "Confirm the school's annual events.",
+    "exZH": "确认学校的年度活动日程。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "scheduled event or function",
+      "senseListed": true
+    },
+    "exKana": "がっこうのねんかんぎょうじをかくにんする",
+    "exTokens": [
+      [
+        "学校",
+        "がっこう"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "年間",
+        "ねんかん"
+      ],
+      [
+        "行事",
+        "ぎょうじ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "確認",
+        "かくにん"
+      ],
+      [
+        "する",
+        "する"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b241",
@@ -37302,7 +37444,57 @@
         "碎屑",
         "垃圾"
       ]
-    }
+    },
+    "exJP": "消しゴムの屑を綺麗に掃除する。",
+    "exEN": "Clean up the eraser shavings neatly.",
+    "exZH": "把橡皮擦的碎屑清理干净。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "scraps or shavings",
+      "senseListed": true
+    },
+    "exKana": "けしごむのくずをきれいにそうじする",
+    "exTokens": [
+      [
+        "消しゴム",
+        "けしごむ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "屑",
+        "くず"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "綺麗",
+        "きれい"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "掃除",
+        "そうじ"
+      ],
+      [
+        "する",
+        "する"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b244",
@@ -37624,7 +37816,65 @@
       "zh": [
         "经度"
       ]
-    }
+    },
+    "exJP": "地図でその都市の緯度と経度を調べる。",
+    "exEN": "Look up the latitude and longitude of that city on the map.",
+    "exZH": "在地图上查找那个城市的纬度和经度。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "geographic longitude",
+      "senseListed": true
+    },
+    "exKana": "ちずでそのとしのいどとけいどをしらべる",
+    "exTokens": [
+      [
+        "地図",
+        "ちず"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "その",
+        "その"
+      ],
+      [
+        "都市",
+        "とし"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "緯度",
+        "いど"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "経度",
+        "けいど"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "調べる",
+        "しらべる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b249",
@@ -37916,7 +38166,57 @@
         "险峻的",
         "严厉的"
       ]
-    }
+    },
+    "exJP": "険しい山道を気をつけて登る。",
+    "exEN": "Climb the steep mountain trail carefully.",
+    "exZH": "小心地攀登陡峭的山路。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "steep and rugged",
+      "senseListed": true
+    },
+    "exKana": "けわしいさんどうをきをつけてのぼる",
+    "exTokens": [
+      [
+        "険しい",
+        "けわしい"
+      ],
+      [
+        "山道",
+        "さんどう"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "気",
+        "き"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "つけ",
+        "つけ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "登る",
+        "のぼる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b253",
@@ -38226,7 +38526,61 @@
       "zh": [
         "功绩"
       ]
-    }
+    },
+    "exJP": "彼の多大な功績が称えられた。",
+    "exEN": "His great achievements were praised.",
+    "exZH": "他的巨大功绩得到了表彰。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "meritorious achievements",
+      "senseListed": true
+    },
+    "exKana": "かれのただいなこうせきがたたえられた",
+    "exTokens": [
+      [
+        "彼",
+        "かれ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "多大",
+        "ただい"
+      ],
+      [
+        "な",
+        "な"
+      ],
+      [
+        "功績",
+        "こうせき"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "称え",
+        "たたえ"
+      ],
+      [
+        "られ",
+        "られ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b257",
@@ -38911,7 +39265,69 @@
         "藏青色",
         "深蓝色"
       ]
-    }
+    },
+    "exJP": "面接には紺のスーツを着て行った。",
+    "exEN": "I wore a navy blue suit to the interview.",
+    "exZH": "穿藏青色西装去参加了面试。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "navy blue color",
+      "senseListed": true
+    },
+    "exKana": "めんせつにはこんのすーつをきていった",
+    "exTokens": [
+      [
+        "面接",
+        "めんせつ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "紺",
+        "こん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "スーツ",
+        "すーつ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "着",
+        "き"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "行っ",
+        "いっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b267",
@@ -39470,7 +39886,61 @@
         "吵闹的",
         "喧嚣的"
       ]
-    }
+    },
+    "exJP": "外が急に騒がしくなってきた。",
+    "exEN": "It suddenly became noisy outside.",
+    "exZH": "外面突然变得喧闹起来。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "noisy or loud",
+      "senseListed": true
+    },
+    "exKana": "そとがきゅうにさわがしくなってきた",
+    "exTokens": [
+      [
+        "外",
+        "そと"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "急",
+        "きゅう"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "騒がしく",
+        "さわがしく"
+      ],
+      [
+        "なっ",
+        "なっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "き",
+        "き"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b274",
@@ -41085,7 +41555,53 @@
       "zh": [
         "正面"
       ]
-    }
+    },
+    "exJP": "建物の正面に入口がある。",
+    "exEN": "The entrance is at the front of the building.",
+    "exZH": "建筑物的正面有入口。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-05",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "front facade of a building",
+      "senseListed": true
+    },
+    "exKana": "たてもののしょうめんにいりぐちがある",
+    "exTokens": [
+      [
+        "建物",
+        "たてもの"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "正面",
+        "しょうめん"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "入口",
+        "いりぐち"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "ある",
+        "ある"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b295",
@@ -47954,7 +48470,53 @@
         "使膨胀",
         "鼓起"
       ]
-    }
+    },
+    "exJP": "息を吹き込んで風船を膨らます。",
+    "exEN": "Blow air to inflate the balloon.",
+    "exZH": "用嘴吹气把气球吹大。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to inflate something",
+      "senseListed": true
+    },
+    "exKana": "いきをふきこんでふうせんをふくらます",
+    "exTokens": [
+      [
+        "息",
+        "いき"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "吹き込ん",
+        "ふきこん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "風船",
+        "ふうせん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "膨らます",
+        "ふくらます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b392",
@@ -49322,7 +49884,53 @@
       "zh": [
         "俯视"
       ]
-    }
+    },
+    "exJP": "山の頂上から街を見下ろす。",
+    "exEN": "Look down at the town from the mountain top.",
+    "exZH": "从山顶俯瞰小镇。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to look down at",
+      "senseListed": true
+    },
+    "exKana": "やまのちょうじょうからまちをみおろす",
+    "exTokens": [
+      [
+        "山",
+        "やま"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "頂上",
+        "ちょうじょう"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "街",
+        "まち"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "見下ろす",
+        "みおろす"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b413",
@@ -59791,7 +60399,61 @@
         "冠",
         "皇冠"
       ]
-    }
+    },
+    "exJP": "王様が金色の冠をかぶっている。",
+    "exEN": "The king is wearing a golden crown.",
+    "exZH": "国王戴着金色的王冠。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "crown worn on head",
+      "senseListed": true
+    },
+    "exKana": "おうさまがきんいろのかんむりをかぶっている",
+    "exTokens": [
+      [
+        "王様",
+        "おうさま"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "金色",
+        "きんいろ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "冠",
+        "かんむり"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "かぶっ",
+        "かぶっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b491",
@@ -60973,7 +61635,61 @@
       "zh": [
         "木屐"
       ]
-    }
+    },
+    "exJP": "浴衣を着て木の下駄をはく。",
+    "exEN": "Put on a yukata and wear wooden geta clogs.",
+    "exZH": "穿上浴衣，踏上木屐。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "traditional wooden clogs",
+      "senseListed": true
+    },
+    "exKana": "ゆかたをきてきのげたをはく",
+    "exTokens": [
+      [
+        "浴衣",
+        "ゆかた"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "着",
+        "き"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "木",
+        "き"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "下駄",
+        "げた"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "はく",
+        "はく"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b509",
@@ -69287,7 +70003,57 @@
         "做",
         "达成"
       ]
-    }
+    },
+    "exJP": "努力を重ねて大きな事業を為す。",
+    "exEN": "Accomplish a great enterprise through repeated effort.",
+    "exZH": "通过不断努力成就伟大事业。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to accomplish or achieve",
+      "senseListed": true
+    },
+    "exKana": "どりょくをかさねておおきなじぎょうをなす",
+    "exTokens": [
+      [
+        "努力",
+        "どりょく"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "重ね",
+        "かさね"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "大きな",
+        "おおきな"
+      ],
+      [
+        "事業",
+        "じぎょう"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "為す",
+        "なす"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b640",
@@ -69871,7 +70637,73 @@
         "瞄准",
         "企图"
       ]
-    }
+    },
+    "exJP": "猫が木の上の鳥をじっと狙っている。",
+    "exEN": "The cat is intently aiming at the bird in the tree.",
+    "exZH": "猫目不转睛地盯紧树上的鸟。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to aim at a target",
+      "senseListed": true
+    },
+    "exKana": "ねこがきのうえのとりをじっとねらっている",
+    "exTokens": [
+      [
+        "猫",
+        "ねこ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "木",
+        "き"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "上",
+        "うえ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "鳥",
+        "とり"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "じっと",
+        "じっと"
+      ],
+      [
+        "狙っ",
+        "ねらっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b648",
@@ -73031,7 +73863,49 @@
         "抛",
         "放弃"
       ]
-    }
+    },
+    "exJP": "ボールを遠くまで強く放る。",
+    "exEN": "Throw the ball strongly far away.",
+    "exZH": "用力把球扔到远处。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to throw a ball",
+      "senseListed": true
+    },
+    "exKana": "ぼーるをとおくまでつよくほうる",
+    "exTokens": [
+      [
+        "ボール",
+        "ぼーる"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "遠く",
+        "とおく"
+      ],
+      [
+        "まで",
+        "まで"
+      ],
+      [
+        "強く",
+        "つよく"
+      ],
+      [
+        "放る",
+        "ほうる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b691",
@@ -74096,7 +74970,61 @@
         "剥",
         "削"
       ]
-    }
+    },
+    "exJP": "ナイフでりんごの皮を綺麗に剥く。",
+    "exEN": "Neatly peel the apple skin with a knife.",
+    "exZH": "用小刀把苹果皮削得很漂亮。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to peel fruit skin",
+      "senseListed": true
+    },
+    "exKana": "ないふでりんごのかわをきれいにむく",
+    "exTokens": [
+      [
+        "ナイフ",
+        "ないふ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "りんご",
+        "りんご"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "皮",
+        "かわ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "綺麗",
+        "きれい"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "剥く",
+        "むく"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b706",
@@ -75494,7 +76422,77 @@
         "要领",
         "诀窍"
       ]
-    }
+    },
+    "exJP": "彼の話は要領がはっきりしていて分かりやすい。",
+    "exEN": "His explanation has a clear point and is easy to understand.",
+    "exZH": "他的话要点很清晰，容易理解。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "main point or gist",
+      "senseListed": true
+    },
+    "exKana": "かれのはなしはようりょうがはっきりしていてわかりやすい",
+    "exTokens": [
+      [
+        "彼",
+        "かれ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "話",
+        "はなし"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "要領",
+        "ようりょう"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "はっきり",
+        "はっきり"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "分かり",
+        "わかり"
+      ],
+      [
+        "やすい",
+        "やすい"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b727",
@@ -75514,7 +76512,57 @@
         "寄来",
         "递交"
       ]
-    }
+    },
+    "exJP": "友達が久しぶりに手紙をよこした。",
+    "exEN": "My friend sent me a letter after a long time.",
+    "exZH": "朋友很久违地给我寄来了一封信。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to send a letter to me",
+      "senseListed": true
+    },
+    "exKana": "ともだちがひさしぶりにてがみをよこした",
+    "exTokens": [
+      [
+        "友達",
+        "ともだち"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "久しぶり",
+        "ひさしぶり"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "手紙",
+        "てがみ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "よこし",
+        "よこし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b728",
@@ -78200,7 +79248,65 @@
         "次数",
         "频次"
       ]
-    }
+    },
+    "exJP": "ジムに通う回数を週に二回増やす。",
+    "exEN": "Increase the frequency of visiting the gym by twice a week.",
+    "exZH": "把去健身房的次数每周增加两次。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "number of times or frequency",
+      "senseListed": true
+    },
+    "exKana": "じむにかようかいすうをしゅうににかいふやす",
+    "exTokens": [
+      [
+        "ジム",
+        "じむ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "通う",
+        "かよう"
+      ],
+      [
+        "回数",
+        "かいすう"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "週",
+        "しゅう"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "二",
+        "に"
+      ],
+      [
+        "回",
+        "かい"
+      ],
+      [
+        "増やす",
+        "ふやす"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b765",
@@ -78384,7 +79490,61 @@
       "zh": [
         "挂号信"
       ]
-    }
+    },
+    "exJP": "大切な書類を郵便局から書留で送る。",
+    "exEN": "Send important documents by registered mail from the post office.",
+    "exZH": "从邮局用挂号信寄出重要文件。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "registered mail service",
+      "senseListed": true
+    },
+    "exKana": "たいせつなしょるいをゆうびんきょくからかきとめでおくる",
+    "exTokens": [
+      [
+        "大切",
+        "たいせつ"
+      ],
+      [
+        "な",
+        "な"
+      ],
+      [
+        "書類",
+        "しょるい"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "郵便局",
+        "ゆうびんきょく"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "書留",
+        "かきとめ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "送る",
+        "おくる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b768",
@@ -78901,7 +80061,53 @@
       "zh": [
         "片假名"
       ]
-    }
+    },
+    "exJP": "外来語は基本的に片仮名で書く。",
+    "exEN": "Loanwords are basically written in katakana.",
+    "exZH": "外来词基本上用片假名书写。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "katakana Japanese script",
+      "senseListed": true
+    },
+    "exKana": "がいらいごはきほんてきにかたかなでかく",
+    "exTokens": [
+      [
+        "外来語",
+        "がいらいご"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "基本的",
+        "きほんてき"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "片仮名",
+        "かたかな"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "書く",
+        "かく"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b775",
@@ -79186,7 +80392,61 @@
         "剃须刀",
         "刮胡刀"
       ]
-    }
+    },
+    "exJP": "父は毎朝鋭い剃刀で髭を剃る。",
+    "exEN": "My father shaves his beard every morning with a sharp razor.",
+    "exZH": "父亲每天早晨用锋利的剃须刀刮胡子。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-06",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "razor for shaving",
+      "senseListed": true
+    },
+    "exKana": "ちちはまいあさするどいかみそりでひげをそる",
+    "exTokens": [
+      [
+        "父",
+        "ちち"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "毎朝",
+        "まいあさ"
+      ],
+      [
+        "鋭い",
+        "するどい"
+      ],
+      [
+        "剃刀",
+        "かみそり"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "髭",
+        "ひげ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "剃る",
+        "そる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b779",
@@ -81825,7 +83085,53 @@
       "zh": [
         "五十音"
       ]
-    }
+    },
+    "exJP": "日本語の五十音を覚えました。",
+    "exEN": "I learned the Japanese syllabary.",
+    "exZH": "我记住了日语的五十音。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "Japanese syllabary",
+      "senseListed": true
+    },
+    "exKana": "にほんごのごじゅうおんをおぼえました",
+    "exTokens": [
+      [
+        "日本語",
+        "にほんご"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "五十音",
+        "ごじゅうおん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "覚え",
+        "おぼえ"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b815",
@@ -83697,7 +85003,57 @@
         "枯萎",
         "瘪掉"
       ]
-    }
+    },
+    "exJP": "夕方になると花がしぼんだ。",
+    "exEN": "The flower withered when evening came.",
+    "exZH": "到了傍晚，花儿凋谢了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to wither",
+      "senseListed": true
+    },
+    "exKana": "ゆうがたになるとはながしぼんだ",
+    "exTokens": [
+      [
+        "夕方",
+        "ゆうがた"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "なる",
+        "なる"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "花",
+        "はな"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "しぼん",
+        "しぼん"
+      ],
+      [
+        "だ",
+        "だ"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b839",
@@ -83794,7 +85150,65 @@
         "乘务员",
         "列车员"
       ]
-    }
+    },
+    "exJP": "車掌さんが切符を確認しに来た。",
+    "exEN": "The conductor came to check the tickets.",
+    "exZH": "列车员过来查票了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "train conductor",
+      "senseListed": true
+    },
+    "exKana": "しゃしょうさんがきっぷをかくにんしにきた",
+    "exTokens": [
+      [
+        "車掌",
+        "しゃしょう"
+      ],
+      [
+        "さん",
+        "さん"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "切符",
+        "きっぷ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "確認",
+        "かくにん"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "来",
+        "き"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b841",
@@ -86409,7 +87823,65 @@
         "务必",
         "一定"
       ]
-    }
+    },
+    "exJP": "ぜひともその本を読んでみたいです。",
+    "exEN": "I would love to read that book by all means.",
+    "exZH": "我非常想读读那本书。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "by all means",
+      "senseListed": true
+    },
+    "exKana": "ぜひともそのほんをよんでみたいです",
+    "exTokens": [
+      [
+        "ぜひ",
+        "ぜひ"
+      ],
+      [
+        "とも",
+        "とも"
+      ],
+      [
+        "その",
+        "その"
+      ],
+      [
+        "本",
+        "ほん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "読ん",
+        "よん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "み",
+        "み"
+      ],
+      [
+        "たい",
+        "たい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b876",
@@ -87171,7 +88643,65 @@
         "因此",
         "为此"
       ]
-    }
+    },
+    "exJP": "大雨が降り、そのため電車が遅れた。",
+    "exEN": "It rained heavily, and therefore the train was delayed.",
+    "exZH": "下了大雨，因此电车晚点了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "for that reason",
+      "senseListed": true
+    },
+    "exKana": "おおあめがふりそのためでんしゃがおくれた",
+    "exTokens": [
+      [
+        "大雨",
+        "おおあめ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "降り",
+        "ふり"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "その",
+        "その"
+      ],
+      [
+        "ため",
+        "ため"
+      ],
+      [
+        "電車",
+        "でんしゃ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "遅れ",
+        "おくれ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b886",
@@ -87525,7 +89055,57 @@
         "省事",
         "得到帮助"
       ]
-    }
+    },
+    "exJP": "手伝ってもらえると本当に助かります。",
+    "exEN": "It would be a real help if you could assist me.",
+    "exZH": "如果你能帮忙就太好了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to be helped",
+      "senseListed": true
+    },
+    "exKana": "てつだってもらえるとほんとうにたすかります",
+    "exTokens": [
+      [
+        "手伝っ",
+        "てつだっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "もらえる",
+        "もらえる"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "本当",
+        "ほんとう"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "助かり",
+        "たすかり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b893",
@@ -87830,7 +89410,53 @@
       "zh": [
         "淡水"
       ]
-    }
+    },
+    "exJP": "この湖の水は淡水です。",
+    "exEN": "The water in this lake is fresh water.",
+    "exZH": "这个湖里的水是淡水。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "fresh water",
+      "senseListed": true
+    },
+    "exKana": "このみずうみのみずはたんすいです",
+    "exTokens": [
+      [
+        "この",
+        "この"
+      ],
+      [
+        "湖",
+        "みずうみ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "水",
+        "みず"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "淡水",
+        "たんすい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b898",
@@ -87849,7 +89475,61 @@
       "zh": [
         "短篇"
       ]
-    }
+    },
+    "exJP": "有名な短編をいくつか読みました。",
+    "exEN": "I read several famous short stories.",
+    "exZH": "我读了几篇著名的短篇小说。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "short literary work",
+      "senseListed": true
+    },
+    "exKana": "ゆうめいなたんぺんをいくつかよみました",
+    "exTokens": [
+      [
+        "有名",
+        "ゆうめい"
+      ],
+      [
+        "な",
+        "な"
+      ],
+      [
+        "短編",
+        "たんぺん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "いくつ",
+        "いくつ"
+      ],
+      [
+        "か",
+        "か"
+      ],
+      [
+        "読み",
+        "よみ"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b899",
@@ -90380,7 +92060,57 @@
         "捕捉",
         "逮捕"
       ]
-    }
+    },
+    "exJP": "警察が逃げた犯人を捕えた。",
+    "exEN": "The police captured the fleeing culprit.",
+    "exZH": "警察抓住了逃跑的罪犯。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to capture or catch",
+      "senseListed": true
+    },
+    "exKana": "けいさつがにげたはんにんをとらえた",
+    "exTokens": [
+      [
+        "警察",
+        "けいさつ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "逃げ",
+        "にげ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "犯人",
+        "はんにん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "捕え",
+        "とらえ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b934",
@@ -91123,7 +92853,49 @@
         "发热",
         "激动"
       ]
-    }
+    },
+    "exJP": "フライパンをよく熱してください。",
+    "exEN": "Please heat the frying pan thoroughly.",
+    "exZH": "请把平底锅充分加热。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to heat up",
+      "senseListed": true
+    },
+    "exKana": "ふらいぱんをよくねっしてください",
+    "exTokens": [
+      [
+        "フライパン",
+        "ふらいぱん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "よく",
+        "よく"
+      ],
+      [
+        "熱し",
+        "ねっし"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "ください",
+        "ください"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b944",
@@ -92686,7 +94458,61 @@
         "瞳孔",
         "黑眼珠"
       ]
-    }
+    },
+    "exJP": "彼女の瞳は澄んでいて美しい。",
+    "exEN": "Her pupils are clear and beautiful.",
+    "exZH": "她的瞳孔清澈而美丽。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "pupil of the eye",
+      "senseListed": true
+    },
+    "exKana": "かのじょのひとみはすんでいてうつくしい",
+    "exTokens": [
+      [
+        "彼女",
+        "かのじょ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "瞳",
+        "ひとみ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "澄ん",
+        "すん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "い",
+        "い"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "美しい",
+        "うつくしい"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b965",
@@ -94745,7 +96571,61 @@
         "张皇失措",
         "磨蹭"
       ]
-    }
+    },
+    "exJP": "道に迷ってまごまごしてしまった。",
+    "exEN": "I got lost and was flurried at a loss.",
+    "exZH": "我迷路了，感到手足无措。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to be at a loss",
+      "senseListed": true
+    },
+    "exKana": "みちにまよってまごまごしてしまった",
+    "exTokens": [
+      [
+        "道",
+        "みち"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "迷っ",
+        "まよっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "まごまご",
+        "まごまご"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "しまっ",
+        "しまっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b993",
@@ -95415,7 +97295,61 @@
         "民间",
         "私营"
       ]
-    }
+    },
+    "exJP": "彼は民間の企業で働いている。",
+    "exEN": "He works at a private company.",
+    "exZH": "他在一家民营企业工作。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "private or non-governmental",
+      "senseListed": true
+    },
+    "exKana": "かれはみんかんのきぎょうではたらいている",
+    "exTokens": [
+      [
+        "彼",
+        "かれ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "民間",
+        "みんかん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "企業",
+        "きぎょう"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "働い",
+        "はたらい"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b1002",
@@ -100675,7 +102609,65 @@
         "给穿衣",
         "使穿上"
       ]
-    }
+    },
+    "exJP": "母親が幼い子供に暖かい服を着せた。",
+    "exEN": "The mother dressed her young child in warm clothes.",
+    "exZH": "母亲给幼小的孩子穿上了保暖的衣服。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to put clothes on someone",
+      "senseListed": true
+    },
+    "exKana": "ははおやがおさないこどもにあたたかいふくをきせた",
+    "exTokens": [
+      [
+        "母親",
+        "ははおや"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "幼い",
+        "おさない"
+      ],
+      [
+        "子供",
+        "こども"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "暖かい",
+        "あたたかい"
+      ],
+      [
+        "服",
+        "ふく"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "着せ",
+        "きせ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b1076",
@@ -102249,7 +104241,57 @@
         "公众",
         "大众"
       ]
-    }
+    },
+    "exJP": "公園は公衆のための場所です。",
+    "exEN": "The park is a place for the general public.",
+    "exZH": "公园是供大众使用的场所。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "the general public",
+      "senseListed": true
+    },
+    "exKana": "こうえんはこうしゅうのためのばしょです",
+    "exTokens": [
+      [
+        "公園",
+        "こうえん"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "公衆",
+        "こうしゅう"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "ため",
+        "ため"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "場所",
+        "ばしょ"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b1096",
@@ -102586,7 +104628,73 @@
         "线索",
         "头绪"
       ]
-    }
+    },
+    "exJP": "その件について何か心当たりはありますか。",
+    "exEN": "Do you have any idea about that matter?",
+    "exZH": "关于那件事你有什么头绪吗？",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "having an idea or clue",
+      "senseListed": true
+    },
+    "exKana": "そのけんについてなんかこころあたりはありますか",
+    "exTokens": [
+      [
+        "その",
+        "その"
+      ],
+      [
+        "件",
+        "けん"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "つい",
+        "つい"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "何",
+        "なん"
+      ],
+      [
+        "か",
+        "か"
+      ],
+      [
+        "心当たり",
+        "こころあたり"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "あり",
+        "あり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "か",
+        "か"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b1101",
@@ -104911,7 +107019,69 @@
       "zh": [
         "消毒"
       ]
-    }
+    },
+    "exJP": "食事の前に手指を丁寧に消毒した。",
+    "exEN": "I disinfected my hands thoroughly before eating.",
+    "exZH": "吃饭前我仔细消毒了双手。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "disinfection or sterilization",
+      "senseListed": true
+    },
+    "exKana": "しょくじのまえにしゅしをていねいにしょうどくした",
+    "exTokens": [
+      [
+        "食事",
+        "しょくじ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "前",
+        "まえ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "手指",
+        "しゅし"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "丁寧",
+        "ていねい"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "消毒",
+        "しょうどく"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b1133",
@@ -105537,7 +107707,61 @@
       "zh": [
         "氢"
       ]
-    }
+    },
+    "exJP": "水は水素と酸素からできている。",
+    "exEN": "Water is made of hydrogen and oxygen.",
+    "exZH": "水是由氢和氧组成的。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "hydrogen element",
+      "senseListed": true
+    },
+    "exKana": "みずはすいそとさんそからできている",
+    "exTokens": [
+      [
+        "水",
+        "みず"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "水素",
+        "すいそ"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "酸素",
+        "さんそ"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "でき",
+        "でき"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b1142",
@@ -110152,7 +112376,69 @@
         "憎恨",
         "讨厌"
       ]
-    }
+    },
+    "exJP": "彼は嘘をつく人を強く憎んでいる。",
+    "exEN": "He strongly hates people who lie.",
+    "exZH": "他非常憎恨说谎的人。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to hate or detest",
+      "senseListed": true
+    },
+    "exKana": "かれはうそをつくひとをつよくにくんでいる",
+    "exTokens": [
+      [
+        "彼",
+        "かれ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "嘘",
+        "うそ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "つく",
+        "つく"
+      ],
+      [
+        "人",
+        "ひと"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "強く",
+        "つよく"
+      ],
+      [
+        "憎ん",
+        "にくん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b1210",
@@ -113516,7 +115802,57 @@
         "弯曲",
         "扭曲"
       ]
-    }
+    },
+    "exJP": "膝を曲げてストレッチを行った。",
+    "exEN": "I bent my knees and performed stretches.",
+    "exZH": "我弯曲膝盖做伸展运动。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-07",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to bend",
+      "senseListed": true
+    },
+    "exKana": "ひざをまげてすとれっちをおこなった",
+    "exTokens": [
+      [
+        "膝",
+        "ひざ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "曲げ",
+        "まげ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "ストレッチ",
+        "すとれっち"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "行っ",
+        "おこなっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b1257",
@@ -114521,7 +116857,57 @@
         "面试",
         "面谈"
       ]
-    }
+    },
+    "exJP": "明日、会社で面接を受けます。",
+    "exEN": "I will have an interview at the company tomorrow.",
+    "exZH": "我明天要在公司参加面试。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "job interview",
+      "senseListed": true
+    },
+    "exKana": "あすかいしゃでめんせつをうけます",
+    "exTokens": [
+      [
+        "明日",
+        "あす"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "会社",
+        "かいしゃ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "面接",
+        "めんせつ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "受け",
+        "うけ"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b1272",
@@ -114631,7 +117017,61 @@
         "尺子",
         "衡量标准"
       ]
-    }
+    },
+    "exJP": "物差しを使って線の長さを測る。",
+    "exEN": "Measure the length of the line using a ruler.",
+    "exZH": "用直尺测量线的长度。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "measuring ruler",
+      "senseListed": true
+    },
+    "exKana": "ものさしをつかってせんのながさをはかる",
+    "exTokens": [
+      [
+        "物差し",
+        "ものさし"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "使っ",
+        "つかっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "線",
+        "せん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "長さ",
+        "ながさ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "測る",
+        "はかる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n2-b1275",

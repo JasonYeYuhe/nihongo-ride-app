@@ -40057,7 +40057,69 @@
         "手段",
         "方法"
       ]
-    }
+    },
+    "exJP": "問題を解決するために別の手段を試す。",
+    "exEN": "I will try another means to solve the problem.",
+    "exZH": "尝试其他手段来解决问题。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "means or method",
+      "senseListed": true
+    },
+    "exKana": "もんだいをかいけつするためにべつのしゅだんをためす",
+    "exTokens": [
+      [
+        "問題",
+        "もんだい"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "解決",
+        "かいけつ"
+      ],
+      [
+        "する",
+        "する"
+      ],
+      [
+        "ため",
+        "ため"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "別",
+        "べつ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "手段",
+        "しゅだん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "試す",
+        "ためす"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b273",
@@ -63960,7 +64022,61 @@
       "zh": [
         "条件"
       ]
-    }
+    },
+    "exJP": "契約の条件を詳しく確認してください。",
+    "exEN": "Please check the terms of the contract carefully.",
+    "exZH": "请仔细确认合同的条件。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "terms or conditions",
+      "senseListed": true
+    },
+    "exKana": "けいやくのじょうけんをくわしくかくにんしてください",
+    "exTokens": [
+      [
+        "契約",
+        "けいやく"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "条件",
+        "じょうけん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "詳しく",
+        "くわしく"
+      ],
+      [
+        "確認",
+        "かくにん"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "ください",
+        "ください"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b541",
@@ -64401,7 +64517,65 @@
         "食物",
         "食品"
       ]
-    }
+    },
+    "exJP": "動物は生きるために食物を必要とする。",
+    "exEN": "Animals need food in order to live.",
+    "exZH": "动物为了生存需要食物。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "food or nourishment",
+      "senseListed": true
+    },
+    "exKana": "どうぶつはいきるためにしょくもつをひつようとする",
+    "exTokens": [
+      [
+        "動物",
+        "どうぶつ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "生きる",
+        "いきる"
+      ],
+      [
+        "ため",
+        "ため"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "食物",
+        "しょくもつ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "必要",
+        "ひつよう"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "する",
+        "する"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b548",
@@ -73523,7 +73697,57 @@
       "zh": [
         "分析"
       ]
-    }
+    },
+    "exJP": "調査の結果を慎重に分析する。",
+    "exEN": "We carefully analyze the survey results.",
+    "exZH": "仔细分析调查结果。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "analysis of data",
+      "senseListed": true
+    },
+    "exKana": "ちょうさのけっかをしんちょうにぶんせきする",
+    "exTokens": [
+      [
+        "調査",
+        "ちょうさ"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "結果",
+        "けっか"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "慎重",
+        "しんちょう"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "分析",
+        "ぶんせき"
+      ],
+      [
+        "する",
+        "する"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b677",
@@ -83658,7 +83882,65 @@
         "处理",
         "办理"
       ]
-    }
+    },
+    "exJP": "たまった書類を順番に処理していく。",
+    "exEN": "I process the accumulated documents in order.",
+    "exZH": "按顺序处理积压的文件。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "processing or handling tasks",
+      "senseListed": true
+    },
+    "exKana": "たまったしょるいをじゅんばんにしょりしていく",
+    "exTokens": [
+      [
+        "たまっ",
+        "たまっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "書類",
+        "しょるい"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "順番",
+        "じゅんばん"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "処理",
+        "しょり"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いく",
+        "いく"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b827",
@@ -85945,7 +86227,77 @@
         "但是",
         "可是"
       ]
-    }
+    },
+    "exJP": "彼は走った、だが試合には間に合わなかった。",
+    "exEN": "He ran, but he did not make it in time for the match.",
+    "exZH": "他奔跑了，但是没赶上比赛。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "however or but",
+      "senseListed": true
+    },
+    "exKana": "かれははしっただがしあいにはまにあわなかった",
+    "exTokens": [
+      [
+        "彼",
+        "かれ"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "走っ",
+        "はしっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "だ",
+        "だ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "試合",
+        "しあい"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "間に合わ",
+        "まにあわ"
+      ],
+      [
+        "なかっ",
+        "なかっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b859",
@@ -85962,7 +86314,77 @@
       "zh": [
         "但是"
       ]
-    }
+    },
+    "exJP": "行きたい気持ちはある、だけど今日は時間がない。",
+    "exEN": "I feel like going, but I do not have time today.",
+    "exZH": "虽然想去，但是今天没有时间。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "however or but",
+      "senseListed": true
+    },
+    "exKana": "いきたいきもちはあるだけどきょうはじかんがない",
+    "exTokens": [
+      [
+        "行き",
+        "いき"
+      ],
+      [
+        "たい",
+        "たい"
+      ],
+      [
+        "気持ち",
+        "きもち"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "ある",
+        "ある"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "だ",
+        "だ"
+      ],
+      [
+        "けど",
+        "けど"
+      ],
+      [
+        "今日",
+        "きょう"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "時間",
+        "じかん"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "ない",
+        "ない"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b860",
@@ -87546,7 +87968,81 @@
         "所以",
         "因此"
       ]
-    }
+    },
+    "exJP": "外はとても寒いです、ですから暖かい服を着てください。",
+    "exEN": "It is very cold outside, so please wear warm clothes.",
+    "exZH": "外面非常冷，所以请穿上保暖的衣服。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "therefore or so",
+      "senseListed": true
+    },
+    "exKana": "そとはとてもさむいですですからあたたかいふくをきてください",
+    "exTokens": [
+      [
+        "外",
+        "そと"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "とても",
+        "とても"
+      ],
+      [
+        "寒い",
+        "さむい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "から",
+        "から"
+      ],
+      [
+        "暖かい",
+        "あたたかい"
+      ],
+      [
+        "服",
+        "ふく"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "着",
+        "き"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "ください",
+        "ください"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b883",
@@ -91228,7 +91724,61 @@
         "接触",
         "触及"
       ]
-    }
+    },
+    "exJP": "美術館の作品に触れてはいけない。",
+    "exEN": "You must not touch the artworks in the museum.",
+    "exZH": "不能触摸美术馆的艺术品。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + adjudication (v1.20 retry)",
+      "sense": "to physically touch",
+      "senseListed": true
+    },
+    "exKana": "びじゅつかんのさくひんにふれてはいけない",
+    "exTokens": [
+      [
+        "美術館",
+        "びじゅつかん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "作品",
+        "さくひん"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "触れ",
+        "ふれ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "いけ",
+        "いけ"
+      ],
+      [
+        "ない",
+        "ない"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b934",
