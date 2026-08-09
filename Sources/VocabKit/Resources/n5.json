@@ -7601,7 +7601,57 @@
         "起床",
         "起来"
       ]
-    }
+    },
+    "exJP": "私は毎朝七時に起きます。",
+    "exEN": "I get up at seven every morning.",
+    "exZH": "我每天早上七点起床。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + sense triage (v1.19 §A gaps)",
+      "sense": "to get out of bed",
+      "senseListed": false
+    },
+    "exKana": "わたくしはまいあさしちじにおきます",
+    "exTokens": [
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "毎朝",
+        "まいあさ"
+      ],
+      [
+        "七",
+        "しち"
+      ],
+      [
+        "時",
+        "じ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "起き",
+        "おき"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g080",
@@ -8122,7 +8172,65 @@
         "知道",
         "认识"
       ]
-    }
+    },
+    "exJP": "私はそのニュースを新聞で知りました。",
+    "exEN": "I learned of that news from the newspaper.",
+    "exZH": "我在报纸上知道了那个消息。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-00",
+      "reviewer": "3-lens review + card check + sense triage (v1.19 §A gaps)",
+      "sense": "to learn of information",
+      "senseListed": false
+    },
+    "exKana": "わたくしはそのにゅーすをしんぶんでしりました",
+    "exTokens": [
+      [
+        "私",
+        "わたくし"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "その",
+        "その"
+      ],
+      [
+        "ニュース",
+        "にゅーす"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "新聞",
+        "しんぶん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "知り",
+        "しり"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g088",
@@ -17617,7 +17725,41 @@
         "稍微",
         "一点点"
       ]
-    }
+    },
+    "exJP": "ちょっと待ってください。",
+    "exEN": "Please wait a moment.",
+    "exZH": "请稍等一下。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + sense triage (v1.19 §A gaps)",
+      "sense": "for a short time",
+      "senseListed": false
+    },
+    "exKana": "ちょっとまってください",
+    "exTokens": [
+      [
+        "ちょっと",
+        "ちょっと"
+      ],
+      [
+        "待っ",
+        "まっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "ください",
+        "ください"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b114",
@@ -20841,7 +20983,49 @@
         "文章",
         "句子"
       ]
-    }
+    },
+    "exJP": "この文章を読んでください。",
+    "exEN": "Please read this passage.",
+    "exZH": "请读一下这段文字。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + sense triage (v1.19 §A gaps)",
+      "sense": "text",
+      "senseListed": false
+    },
+    "exKana": "このぶんしょうをよんでください",
+    "exTokens": [
+      [
+        "この",
+        "この"
+      ],
+      [
+        "文章",
+        "ぶんしょう"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "読ん",
+        "よん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "ください",
+        "ください"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b164",
@@ -24462,7 +24646,57 @@
         "上",
         "上面"
       ]
-    }
+    },
+    "exJP": "本はテーブルの上にあります。",
+    "exEN": "The book is on the table.",
+    "exZH": "书在桌子上。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-01",
+      "reviewer": "3-lens review + card check + sense triage (v1.19 §A gaps)",
+      "sense": "on top of",
+      "senseListed": false
+    },
+    "exKana": "ほんはてーぶるのうえにあります",
+    "exTokens": [
+      [
+        "本",
+        "ほん"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "テーブル",
+        "てーぶる"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "上",
+        "うえ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "あり",
+        "あり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b223",
@@ -32749,7 +32983,49 @@
         "休息",
         "假期"
       ]
-    }
+    },
+    "exJP": "明日は会社が休みです。",
+    "exEN": "Tomorrow is a day off at the company.",
+    "exZH": "明天公司休息。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-02",
+      "reviewer": "3-lens review + card check + sense triage (v1.19 §A gaps)",
+      "sense": "day off",
+      "senseListed": false
+    },
+    "exKana": "あすはかいしゃがやすみです",
+    "exTokens": [
+      [
+        "明日",
+        "あす"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "会社",
+        "かいしゃ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "休み",
+        "やすみ"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b366",

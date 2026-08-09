@@ -18848,7 +18848,61 @@
       "zh": [
         "探望(病人)"
       ]
-    }
+    },
+    "exJP": "病気の友達のお見舞いに行きました。",
+    "exEN": "I went to visit my sick friend.",
+    "exZH": "我去探望了生病的朋友。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + card check + sense triage (v1.19 §A gaps)",
+      "sense": "visit to someone who is ill",
+      "senseListed": false
+    },
+    "exKana": "びょうきのともだちのおみまいにいきました",
+    "exTokens": [
+      [
+        "病気",
+        "びょうき"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "友達",
+        "ともだち"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "お見舞い",
+        "おみまい"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "行き",
+        "いき"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g322",
@@ -24407,7 +24461,57 @@
         "那样",
         "啊"
       ]
-    }
+    },
+    "exJP": "ああやって動かすと動きますよ。",
+    "exEN": "If you move it in that way, it will work.",
+    "exZH": "那样去弄的话就能动了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-03",
+      "reviewer": "3-lens review + card check + sense triage (v1.19 §A gaps)",
+      "sense": "in that way or manner",
+      "senseListed": false
+    },
+    "exKana": "ああやってうごかすとうごきますよ",
+    "exTokens": [
+      [
+        "ああ",
+        "ああ"
+      ],
+      [
+        "やっ",
+        "やっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "動かす",
+        "うごかす"
+      ],
+      [
+        "と",
+        "と"
+      ],
+      [
+        "動き",
+        "うごき"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "よ",
+        "よ"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b003",

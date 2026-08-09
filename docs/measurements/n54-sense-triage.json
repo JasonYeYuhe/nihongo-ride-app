@@ -1,0 +1,72 @@
+[
+  {
+    "id": "n5-g079",
+    "verdict": "paraphrase",
+    "reason": "\"to get out of bed\" is a restatement of the existing \"to get up\" / 起床; the evidence sentence 毎朝七時に起きます is exactly that sense.",
+    "glossEN": null,
+    "glossZH": null
+  },
+  {
+    "id": "n5-g087",
+    "verdict": "paraphrase",
+    "reason": "\"to learn of\" is the inceptive reading of \"to know\" (知りました = came to know) — an aspect of the verb form, not a separate lexical sense. 知道 covers 得知 in Chinese too, and a learner reading \"to know\" beside 新聞で知りました understands it.",
+    "glossEN": null,
+    "glossZH": null
+  },
+  {
+    "id": "n5-b113",
+    "verdict": "paraphrase",
+    "reason": "\"for a short time\" is \"a little\" applied to a duration; 稍微/一点点 already yield 稍等一下 for ちょっと待ってください. Transparent from the current line.",
+    "glossEN": null,
+    "glossZH": null
+  },
+  {
+    "id": "n5-b163",
+    "verdict": "paraphrase",
+    "reason": "\"text\"/\"passage\" sits inside the existing \"sentence, article\" / 文章・句子 range; a learner reading the current line beside この文章を読んでください understands it.",
+    "glossEN": null,
+    "glossZH": null
+  },
+  {
+    "id": "n5-b222",
+    "verdict": "paraphrase",
+    "reason": "\"on top of\" is already carried by 上面 (桌子上面) and by \"above\"; テーブルの上にあります is fully readable from the current line.",
+    "glossEN": null,
+    "glossZH": null
+  },
+  {
+    "id": "n5-b250",
+    "verdict": "wrong",
+    "reason": "\"to turn off\" is transitive — that is 消す (けす), the transitive partner, not 消える (きえる), which is intransitive. The evidence sentence 電気が消えました is the intransitive \"went out\", already covered by \"to go out\"/熄滅. Adding this gloss would teach 電気を消える.",
+    "glossEN": null,
+    "glossZH": null
+  },
+  {
+    "id": "n5-b365",
+    "verdict": "paraphrase",
+    "reason": "\"day off\" is the existing \"rest, vacation\" / 休息・假期 applied to a company day; 会社が休みです is readable from the current line.",
+    "glossEN": null,
+    "glossZH": null
+  },
+  {
+    "id": "n4-g321",
+    "verdict": "paraphrase",
+    "reason": "\"visit to someone who is ill\" is a word-for-word restatement of \"visiting ill person\" / 探望(病人).",
+    "glossEN": null,
+    "glossZH": null
+  },
+  {
+    "id": "n4-b002",
+    "verdict": "paraphrase",
+    "reason": "\"in that way or manner\" is the existing \"like that\" / 那样 spelled out; ああやって is exactly that.",
+    "glossEN": null,
+    "glossZH": null
+  },
+  {
+    "id": "n4-b158",
+    "verdict": "wrong",
+    "reason": "Homophone: \"most, to the highest degree\" is 最も (superlative adverb, as in 日本でもっとも高い山). The entry's glosses \"quite right / however\" are 尤も, a different word sharing the reading もっとも.",
+    "glossEN": null,
+    "glossZH": null
+  }
+]
