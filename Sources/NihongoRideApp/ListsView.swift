@@ -268,6 +268,7 @@ struct ListDetailView: View {
             header
             if let list, !list.deleted {
                 playButton(list)
+                sentenceButton(list)
                 if list.ids.isEmpty {
                     emptyState
                 } else {
@@ -322,6 +323,42 @@ struct ListDetailView: View {
         .foregroundStyle(playable ? .white : Theme.dim)
         .disabled(!playable)
         .accessibilityIdentifier("practiceListButton")
+    }
+
+    /// Sentence-mode launcher for this list (PLAN-V1.21 §B).
+    ///
+    /// It states the count instead of just enabling or disabling, because the count is the
+    /// surprising part: a list of twenty words is not a run of twenty sentences, and a
+    /// learner who is not told that will read a short run as a bug. When it is zero the
+    /// button says why rather than sitting greyed out with no explanation, and nothing is
+    /// ever padded in from the level pool to hide the shortfall.
+    private func sentenceButton(_ list: WordList) -> some View {
+        let count = model.sentenceCount(in: list)
+        let enabled = count > 0
+        return VStack(spacing: 6) {
+            Button { model.startSentenceList(list.id) } label: {
+                Label(zh ? "例句练习 · \(count) 句" : "Sentences · \(count)",
+                      systemImage: "text.quote")
+                    .scaledSystemFont(16, weight: .bold)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: playButtonHeight)
+                    .padding(.vertical, 4)
+            }
+            .buttonStyle(.plain)
+            .background(enabled ? Theme.accent2 : Theme.card, in: Capsule())
+            .foregroundStyle(enabled ? .white : Theme.dim)
+            .disabled(!enabled)
+            .accessibilityIdentifier("sentenceListButton")
+            .accessibilityLabel(zh ? "用这个词单的 \(count) 个例句练习"
+                                   : "Practise \(count) sentence\(count == 1 ? "" : "s") from this list")
+            if !enabled && !list.ids.isEmpty {
+                Text(zh ? "这个词单里的词还没有可打字的例句。"
+                        : "None of this list's words has a typeable example sentence yet.")
+                    .font(.caption).foregroundStyle(Theme.dim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
     }
 
     private var unplayableHint: some View {

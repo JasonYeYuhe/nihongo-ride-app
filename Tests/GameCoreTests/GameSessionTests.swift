@@ -278,6 +278,107 @@ struct SentenceModeTests {
         #expect(entry("c", jp: nil, kana: "いぬだ。").isTypeableSentence == false)
     }
 
+    // MARK: v1.21 §B — sentence runs that follow what the learner is studying
+
+    private var pool: VocabStore {
+        VocabStore(entries: [
+            entry("has-1", jp: "犬だ。", kana: "いぬだ。"),
+            entry("has-2", jp: "猫だ。", kana: "ねこだ。"),
+            entry("no-kana", jp: "10キロ。", kana: nil),
+            entry("no-sentence", jp: nil, kana: nil),
+        ])
+    }
+
+    private func sentenceConfig(_ n: Int = 5) -> GameSession.Config {
+        var c = GameSession.Config(); c.newWordCount = n; return c
+    }
+
+    /// A saved list is a list of WORDS. Five percent of the corpus has no sentence, and an
+    /// id synced from a newer device may not resolve here at all — so the run is built from
+    /// the intersection, and the count the menu shows must be that same intersection.
+    @Test("a list-sourced run keeps only the ids that resolve to a typeable sentence")
+    func listSourcedPool() {
+        let ids = ["has-1", "missing", "no-kana", "no-sentence", "has-2", "has-1"]
+        let kept = GameSession.sentenceEntries(ids: ids, vocab: pool).map(\.id)
+        #expect(kept == ["has-1", "has-2"])   // deduped, and in the list's own order
+
+        let session = GameSession.makeSentence(ids: ids, vocab: pool, config: sentenceConfig())
+        #expect(session.mode == .sentence)
+        #expect(session.wordCount == 2)
+        #expect(session.wordList.allSatisfy { $0.partsOfSpeech == ["sentence"] })
+    }
+
+    /// The regression this guards is silent padding. `makeSentence` falls back to the whole
+    /// corpus when a level has nothing, which is right for a content gap and wrong here: a
+    /// learner who asked for their list's sentences and got two of someone else's has no way
+    /// to tell which two. A short run is honest; a padded one lies.
+    @Test("a list-sourced run is never padded from the corpus")
+    func listSourcedNeverPads() {
+        let one = GameSession.makeSentence(ids: ["has-1"], vocab: pool, config: sentenceConfig())
+        #expect(one.wordCount == 1)
+
+        let none = GameSession.makeSentence(ids: ["no-kana", "missing"], vocab: pool,
+                                            config: sentenceConfig())
+        #expect(none.wordCount == 0)
+        // Empty at construction, so the caller's build-then-guard keeps the learner on the
+        // menu instead of flashing a results screen for a run with no keystrokes (v1.15 §D).
+        #expect(none.isFinished == true)
+
+        // …while the level-scoped builder still has its fallback, deliberately.
+        let level = GameSession.makeSentence(vocab: pool, config: sentenceConfig())
+        #expect(level.wordCount == 2)
+    }
+
+    /// Due-scoped runs ask the SRS store for cards that can carry a sentence, rather than
+    /// asking for five and dropping the ones that cannot — the difference between a run of
+    /// five and a run of one when the due stack is mostly sentence-less words.
+    @Test("a due-sourced run draws only from due cards that have a sentence")
+    func dueSourcedPool() {
+        var review = ReviewStore()
+        let now = Date()
+        for id in ["has-1", "no-kana", "no-sentence", "has-2"] {
+            review.record(entryID: id, outcome: TypingOutcome(completed: false, mistakes: 3), on: now)
+        }
+        let tomorrow = now.addingTimeInterval(24 * 3600)
+        #expect(GameSession.dueSentenceCount(review: review, on: tomorrow, vocab: pool) == 2)
+
+        let session = GameSession.makeSentence(due: review, on: tomorrow, vocab: pool,
+                                               config: sentenceConfig())
+        #expect(session.mode == .sentence)
+        #expect(session.wordCount == 2)
+        #expect(Set(session.wordList.map(\.id)) == ["has-1", "has-2"])
+    }
+
+    /// Nothing due is not an error and must not become a hollow run.
+    @Test("a due-sourced run with nothing due is empty, not padded")
+    func dueSourcedEmpty() {
+        let session = GameSession.makeSentence(due: ReviewStore(), vocab: pool,
+                                               config: sentenceConfig())
+        #expect(session.wordCount == 0)
+        #expect(session.isFinished == true)
+    }
+
+    /// The structural half of the sentence-mode SRS red line. `RunCompletion` refuses the
+    /// merge downstream, but a due-sourced run is the first sentence run built FROM a review
+    /// store, so it is the first one that could plausibly be handed that store to write back
+    /// into. It is not, and this locks that in: type a sentence to completion and the store
+    /// the run was sourced from is untouched.
+    @Test("a due-sourced run cannot write back into the store it was drawn from")
+    func dueSourcedWritesNothingBack() {
+        var review = ReviewStore()
+        let now = Date()
+        review.record(entryID: "has-1", outcome: TypingOutcome(completed: false, mistakes: 3), on: now)
+        let before = review.card(for: "has-1")
+
+        let session = GameSession.makeSentence(due: review, on: now.addingTimeInterval(24 * 3600),
+                                               vocab: pool, config: sentenceConfig())
+        for ch in KanaRomanizer.romaji(for: session.currentKana ?? "") { session.input(ch) }
+
+        #expect(review.card(for: "has-1") == before)
+        #expect(RunCompletion(mode: session.mode, recordsSRS: session.config.recordsSRS)
+                    .persistsSRS == false)
+    }
+
     /// Every sentence the real store would offer must be typeable end to end: feed the
     /// target's own kana back through the matcher and it must complete.
     @Test("shipped sentences can actually be typed to completion")

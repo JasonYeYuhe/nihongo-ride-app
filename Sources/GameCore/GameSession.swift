@@ -217,7 +217,92 @@ public final class GameSession {
         // whole corpus rather than starting an empty run.
         if pool.isEmpty { pool = vocab.ordered().filter { $0.isTypeableSentence } }
         pool.shuffle()
-        let words = pool.prefix(max(5, config.newWordCount)).map { entry -> VocabEntry in
+        return sentenceSession(from: Array(pool.prefix(max(5, config.newWordCount))),
+                               config: config, now: now)
+    }
+
+    /// The entries from `ids` that can actually carry a sentence run, in the given order and
+    /// de-duplicated. Ids that no longer resolve are dropped, and so are entries with no
+    /// typeable sentence — a saved list is a list of WORDS, and 5% of the corpus has no
+    /// sentence to type.
+    ///
+    /// Exposed so the menu can show the real number before the run starts rather than
+    /// after: "this list has 20 words and 6 of them have a sentence" is a different fact
+    /// from "this list has 20 words", and the learner is entitled to the first one.
+    public static func sentenceEntries(ids: [String], vocab: VocabStore = .shared) -> [VocabEntry] {
+        var seen = Set<String>()
+        return ids.compactMap { id in
+            guard seen.insert(id).inserted, let entry = vocab.entry(id: id),
+                  entry.isTypeableSentence else { return nil }
+            return entry
+        }
+    }
+
+    /// Builds a sentence run from a chosen set of vocab ids — a saved word list, or the
+    /// due-review stack (PLAN-V1.21 §B).
+    ///
+    /// **It never falls back to the level or corpus pool.** `makeSentence` does, because
+    /// "this level has no sentences yet" was a content gap with a sensible substitute. Here
+    /// the ids ARE the request: padding a three-sentence list up to five with unrelated
+    /// corpus sentences would answer a question the learner did not ask, and they would have
+    /// no way to tell which two were not theirs. A short run is the honest outcome, and an
+    /// empty one leaves `isFinished` true at construction so the caller's build-then-guard
+    /// keeps them on the menu (the v1.15 empty-pool lesson).
+    ///
+    /// Like `makeSentence` it is handed no `ReviewStore`: a sentence run counts mistakes
+    /// across a whole sentence, so it must not be able to reach the real SM-2 schedule even
+    /// if `RunCompletion`'s gate were ever loosened.
+    public static func makeSentence(
+        ids: [String],
+        vocab: VocabStore = .shared,
+        config: Config = .init(),
+        now: @escaping () -> Date = Date.init
+    ) -> GameSession {
+        var pool = sentenceEntries(ids: ids, vocab: vocab)
+        pool.shuffle()
+        return sentenceSession(from: Array(pool.prefix(max(5, config.newWordCount))),
+                               config: config, now: now)
+    }
+
+    /// Builds a sentence run from the words whose SRS review is due (PLAN-V1.21 §B), so the
+    /// run doubles as review reading even though — like every sentence run — it writes no SRS.
+    ///
+    /// The due query filters on "has a typeable sentence" rather than filtering afterwards,
+    /// for the same reason `make` filters on "still resolves": asking for `limit` cards and
+    /// then dropping most of them returns a run shorter than the badge promised.
+    public static func makeSentence(
+        due review: ReviewStore,
+        on date: Date = Date(),
+        vocab: VocabStore = .shared,
+        config: Config = .init(),
+        now: @escaping () -> Date = Date.init
+    ) -> GameSession {
+        let ids = review.dueCards(
+            on: date,
+            limit: max(5, config.newWordCount),
+            resolves: { vocab.entry(id: $0)?.isTypeableSentence == true }
+        ).map(\.id)
+        return makeSentence(ids: ids, vocab: vocab, config: config, now: now)
+    }
+
+    /// How many due cards could carry a sentence right now — the menu's honest count.
+    public static func dueSentenceCount(
+        review: ReviewStore,
+        on date: Date = Date(),
+        vocab: VocabStore = .shared
+    ) -> Int {
+        review.dueCount(on: date, resolves: { vocab.entry(id: $0)?.isTypeableSentence == true })
+    }
+
+    /// Wraps chosen entries as sentence-typing cards. The surface stays the KANJI sentence
+    /// (that is what the learner reads while typing) and the id stays the real entry's, so
+    /// the results screen can still say which word each sentence was teaching.
+    private static func sentenceSession(
+        from entries: [VocabEntry],
+        config: Config,
+        now: @escaping () -> Date
+    ) -> GameSession {
+        let words = entries.map { entry in
             VocabEntry(
                 id: entry.id,
                 surface: entry.exampleJP ?? entry.surface,
@@ -234,7 +319,7 @@ public final class GameSession {
         }
         var sentenceConfig = config
         sentenceConfig.mode = .sentence
-        return GameSession(words: Array(words), config: sentenceConfig, now: now)
+        return GameSession(words: words, config: sentenceConfig, now: now)
     }
 
     /// Builds a session by mixing due review words with new words from the store.

@@ -3,18 +3,24 @@ import Foundation
 /// In-memory vocabulary repository, loaded from a bundled word pack.
 public struct VocabStore: Sendable {
     public let entries: [VocabEntry]
+    /// Id lookup index. `entry(id:)` used to be a linear scan of 7,072 entries, which was
+    /// fine while its callers were one-shot; it is not fine now that pool counts are read
+    /// per menu render and per id in a saved list. First-wins on a duplicate id, matching
+    /// the `entries.first` it replaces (the shipped corpus has none).
+    private let byID: [String: VocabEntry]
 
     /// The shared store, loaded once from the bundled N5 starter pack.
     public static let shared = VocabStore.loadBundled()
 
     public init(entries: [VocabEntry]) {
         self.entries = entries
+        self.byID = Dictionary(entries.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
     }
 
     public var isEmpty: Bool { entries.isEmpty }
 
     public func entry(id: String) -> VocabEntry? {
-        entries.first { $0.id == id }
+        byID[id]
     }
 
     public func entries(level: JLPTLevel) -> [VocabEntry] {

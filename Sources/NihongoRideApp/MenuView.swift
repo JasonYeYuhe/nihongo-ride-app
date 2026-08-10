@@ -154,6 +154,40 @@ struct MenuView: View {
                     }
                     .menuControlWidth(340)
                 }
+                // Sentence mode can follow what the learner is actually studying rather than
+                // a level pool (PLAN-V1.21 §B). Due-scoped sentences get a launcher here,
+                // mirroring the conjugation due-review entry above; list-scoped ones live on
+                // the list itself, next to the word-practice button. Shown only when there is
+                // something due WITH a sentence — a live count, never a stale flag.
+                if model.selectedMode == .sentence {
+                    let zh = model.languageCode == "zh"
+                    let due = model.dueSentenceCount
+                    VStack(spacing: 6) {
+                        if due > 0 {
+                            Button(action: model.startSentenceDue) {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "arrow.triangle.2.circlepath")
+                                        .accessibilityHidden(true)
+                                    Text(zh ? "到期词的例句 \(due) 句" : "\(countLabel(due, "due sentence"))")
+                                        .scaledSystemFont(14, weight: .semibold, design: .rounded)
+                                        .lineLimit(1)
+                                }
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 16).padding(.vertical, 8)
+                                .background(Theme.accent2, in: Capsule())
+                            }
+                            .buttonStyle(.plain)
+                            .fixedSize()
+                            .accessibilityIdentifier("dueSentencesButton")
+                            .accessibilityLabel(zh ? "练习 \(due) 个到期词的例句"
+                                                   : "Practise \(due) sentences for words due today")
+                        }
+                        Text(zh ? "词单里的例句在「词单」里开始" : "Sentences for a saved list start from Word Lists")
+                            .font(.caption2).foregroundStyle(Theme.dim.opacity(0.8))
+                            .multilineTextAlignment(.center)
+                    }
+                    .menuControlWidth(340)
+                }
                 if model.selectedMode == .practice {
                     HStack(spacing: 12) {
                         Image(systemName: "text.alignleft").accessibilityHidden(true)

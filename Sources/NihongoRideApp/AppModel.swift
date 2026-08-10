@@ -912,6 +912,14 @@ final class AppModel {
         list.ids.reduce(0) { $0 + (VocabStore.shared.entry(id: $1) != nil ? 1 : 0) }
     }
 
+    /// How many of a list's words have an example sentence that can be TYPED — a smaller
+    /// number than `playableCount`, and a different question. A fully playable list can
+    /// still have too few sentences to make a sentence run, so the sentence launcher needs
+    /// its own count rather than reusing the word one. (PLAN-V1.21 §B.)
+    func sentenceCount(in list: WordList) -> Int {
+        GameSession.sentenceEntries(ids: list.ids, vocab: .shared).count
+    }
+
     /// Toggles a word in the default ★ list and persists. All word-list writes run
     /// synchronously on the main actor (small file) so they stay ordered with the
     /// sync-merge writes to the same file — `Task.detached` raced last-writer-wins.
@@ -1070,6 +1078,54 @@ final class AppModel {
         screen = .playing
     }
 
+    /// Starts a SENTENCE run drawn from a list's words (PLAN-V1.21 §B). Same
+    /// resolve-then-guard shape as `startListGame`, but the resolution test is stricter:
+    /// a word only counts if it has a typeable sentence. The pool is never padded from the
+    /// level pool — see `GameSession.makeSentence(ids:)` for why.
+    func startSentenceList(_ listID: String) {
+        guard let list = wordLists.list(id: listID), !list.deleted else { return }
+        var config = GameSession.Config()
+        config.languageCode = languageCode
+        config.assistance = assistance
+        config.newWordCount = Self.sentenceRunSize
+        config.reviewWordCount = 0
+        let built = GameSession.makeSentence(ids: list.ids, vocab: .shared, config: config)
+        guard !built.isFinished else { return }
+        startSentenceRun(built)
+    }
+
+    /// How many due review words could carry a sentence right now (menu gating).
+    var dueSentenceCount: Int {
+        GameSession.dueSentenceCount(review: reviewStore, vocab: .shared)
+    }
+
+    /// Starts a SENTENCE run over the words whose review is due, so the run doubles as
+    /// review reading. It still writes no SRS — a whole-sentence mistake count is not a
+    /// signal one word's card can carry (see `RunCompletion`).
+    func startSentenceDue() {
+        var config = GameSession.Config()
+        config.languageCode = languageCode
+        config.assistance = assistance
+        config.newWordCount = Self.sentenceRunSize
+        config.reviewWordCount = 0
+        let built = GameSession.makeSentence(due: reviewStore, vocab: .shared, config: config)
+        guard !built.isFinished else { return }
+        startSentenceRun(built)
+    }
+
+    /// A sentence is many words' worth of keystrokes, so a run of the usual 30 would be
+    /// enormous. Five is roughly a word run's length in characters.
+    static let sentenceRunSize = 5
+
+    private func startSentenceRun(_ built: GameSession) {
+        session = built
+        conjugationSession = nil   // defensive: a sentence run must not route to the conjugation screen
+        emptyPoolNotice = false
+        runClock = RunClock(startedAt: Date())
+        resolveRideStage()
+        screen = .playing
+    }
+
     // MARK: Legacy deck mirror + sync snapshots
 
     /// All list ids including tombstoned ones — so a deletion also enqueues its
@@ -1137,9 +1193,7 @@ final class AppModel {
         case .conjugation:
             break   // handled by the early return above
         case .sentence:
-            // A sentence is many words' worth of keystrokes, so a run of the usual 30 would
-            // be enormous. Five is roughly a word run's length in characters.
-            config.newWordCount = 5
+            config.newWordCount = Self.sentenceRunSize
             config.reviewWordCount = 0
         }
         let built: GameSession
