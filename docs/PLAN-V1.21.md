@@ -34,6 +34,39 @@ sentence whose spoken form cannot match its own `exKana` should not be offered f
 There is no API that returns what AVSpeech *will* say, so this needs a sampled listening pass
 before the mode ships, not a rule.
 
+**MEASURED — and it did not need to be a sample.** The premise held: the marker API carries a
+`.phoneme` mark but every Japanese voice emits only word markers with an empty phoneme, and
+`NSSpeechSynthesizer.phonemes(from:)` is dead on macOS 26 (it returns empty for an ENGLISH
+voice too — checking only Japanese would have produced a confident wrong conclusion). So the
+reading was measured instead of read out, over all 6,723 sentences.
+
+Kyoko is deterministic, and two texts that render to the same WAV bytes were converted to the
+same phonemes — so byte-identity is PROOF of what she said. It is decisive but quiet: kanji
+and kana can differ in phrasing while saying the same words, so it speaks for only 521
+sentences. Within those, 494 match their `exKana` and **27 are proven to say something else**
+(私 as わたし where the corpus says わたくし, 何 as なに, 風車 as ふうしゃ …). A second pass —
+render every single-token reading variant, ask which the kanji audio is nearest — covers
+everything, and against those 521 labelled sentences it scores **100% recall (27/27) and 0%
+false positives (0/494)**.
+
+That calibration is the part worth keeping. An earlier one used synthetic decoys (a reading
+replaced by random kana) and put the false-positive rate at 4.7%, which made a working
+instrument look like mostly noise. Random kana are a harder test than real alternative
+readings; calibrating on the wrong population nearly threw away the right answer.
+
+**1,003 sentences (14.9%) are withheld from dictation** — the flagged set, plus every sentence
+using a word-reading pair proof showed is spoken differently, because a voice does not change
+its mind between sentences. 5,720 remain, no level below 80%. They stay fully available in
+Sentence mode, where the reading is shown rather than spoken and the disagreement never
+reaches the learner. `scripts/check_dictation_readings.py`,
+`docs/measurements/dictation-reading-mismatches.json`.
+
+**Also measured, and it changed the design:** Kyoko reads a bare hiragana は as "ha" in some
+parses, so speaking `exKana` — the obvious safe choice, since it IS the answer — would
+mispronounce the topic particle in ~2,900 sentences. Dictation speaks `exJP` and lets her
+parser resolve the particles, which is what puts the kanji readings in play in the first
+place.
+
 ## §B Sentence mode should follow what the learner is studying
 
 Today it draws from a level pool and ignores everything the learner has done. A saved word

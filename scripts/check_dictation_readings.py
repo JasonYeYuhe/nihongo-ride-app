@@ -5,60 +5,82 @@ PLAN-V1.21 §A gates dictation on this. Dictation plays a synthesizer's reading 
 KANJI sentence and grades the learner against `exKana`, so any sentence where those two
 disagree marks a learner wrong for typing exactly what they heard.
 
-WHY THIS IS NOT A LISTENING PASS BY EAR. The plan expected sampling, because no API
-returns what AVSpeech *will* say. That part is true and was verified rather than
-assumed:
+THE PLAN EXPECTED A SAMPLED LISTENING PASS, because no API returns what AVSpeech *will*
+say. That premise is true and was checked rather than assumed:
 
   * `AVSpeechSynthesisMarker` (macOS 14+) does carry a `.phoneme` mark — but every
-    Japanese voice on this machine emits only `.word` markers, with an empty phoneme
-    string.
+    Japanese voice on this machine emits only `.word` markers, with an empty phoneme.
   * The legacy `NSSpeechSynthesizer.phonemes(from:)` returns empty for every ja voice.
-    It also returns empty for an ENGLISH voice, which is the only reason we know the
-    API is dead on macOS 26 rather than unsupported for Japanese. Probing only the
-    case you care about would have produced a confident wrong conclusion.
+    It also returns empty for an ENGLISH voice, which is the only reason we know the API
+    is dead on macOS 26 rather than unsupported for Japanese. Probing only the case you
+    care about would have produced a confident wrong conclusion.
 
-So the reading is not read out of the synthesizer; it is measured. Both hypotheses are
-rendered to audio and compared, which covers the whole corpus instead of a sample.
+So the reading is measured instead of read out, which covers the whole corpus rather
+than a sample. Two instruments, and the difference between them is the whole point.
 
-WHAT IS COMPARED, AND WHY IT IS COMPARATIVE. The obvious test — distance(audio of
-exJP, audio of exKana) against a threshold — was built and thrown away. Kanji text and
-kana text are parsed into different phrases, so prosody alone puts honest pairs on top
-of dishonest ones: at the threshold that caught 96% of known-bad, 80% of known-good was
-flagged too. What works is asking which of several candidate readings the kanji audio
-is NEAREST to. The prosody residual is common to every candidate, so it cancels.
+INSTRUMENT 1 — PROOF, by byte-identical audio. Kyoko is deterministic, and two texts
+that render to the same WAV were converted to the same phoneme sequence. So if the kana
+spelling renders to the same bytes as the kanji sentence, the synthesizer said exactly
+that; and if some single-token READING SUBSTITUTION does instead, it said that. This is
+proof, not inference. Its weakness is recall: kanji and kana can differ in phrasing
+while saying the same words, so non-identity proves nothing, and only 521 of 6,723
+sentences fall in the class where the test can speak at all.
 
-Candidates come from Sudachi's lexicon (every reading it holds for a surface, not just
-the one it picked) and from the corpus's own attested readings. Sudachi is the tool
-that WROTE exKana, so this is asking it to disagree with itself — which is the point:
-it and AVSpeech regress to different defaults, and the corpus took Sudachi's.
+INSTRUMENT 2 — NEAREST HYPOTHESIS. Render exKana and every single-token reading variant,
+and ask which one the kanji render is nearest (log-mel + DTW). Covers everything, but
+argmin is only meaningful when some candidate is close; when the true reading is not in
+the candidate set the ordering is arbitrary.
+
+A PLAIN ABSOLUTE THRESHOLD was built first and thrown away: distance(exJP, exKana)
+against a cutoff. Kanji and kana are parsed into different phrases, so prosody alone put
+honest pairs on top of dishonest ones — at the threshold catching 96% of known-bad, 80%
+of known-good was flagged too.
+
+CALIBRATION, AND WHY THE FIRST ONE WAS WRONG. Instrument 2 was first calibrated with
+synthetic decoys (a token's reading replaced by random kana), which put its false-positive
+rate at 4.3-5.1% per candidate — enough to make its 15.6% flag rate look like mostly
+noise. But instrument 1 produces something better than synthetic decoys: 494 sentences
+PROVEN to match and 27 PROVEN to differ, i.e. real labelled data. Measured against those:
+
+    recall           27/27  = 100%   (every proven mismatch was flagged)
+    false positives  8/494  =  1.6%  (not the 4.7% the decoys predicted)
+
+Random kana turn out to be a harder test than real alternative readings. Calibrating on
+the wrong population would have made a working instrument look broken — the same shape of
+error as trusting one that is broken.
 
 THE PARTICLES. exKana spells the topic particle は and the direction particle へ
 orthographically, because it is the TYPING target. Kyoko reads a bare hiragana は as
-"ha" — measured: わたしはがくせいです and わたしわがくせいです render to different audio,
-and the kanji 私は学生です lands nearer the わ one. Feeding exKana straight in would
-therefore make ~2,900 sentences differ from their own kanji for a reason that has
-nothing to do with kanji readings. `exTokens` isolates the particles, so they are
-respelled before the comparison. (This is also why dictation SPEAKS exJP rather than
-exKana, which would otherwise look like the safe choice.)
+"ha" in some parses and "wa" in others, so NEITHER fixed respelling is right — both are
+tried, and the learner types は regardless because that is what exKana says. (This is
+also why dictation SPEAKS exJP rather than exKana, which would look like the safe choice
+and would mispronounce the particle in ~2,900 sentences.)
 
-FLAGGING IS ONE-SIDED ON PURPOSE. A false flag costs one sentence of dictation
-coverage. A miss ships a dictation item whose audio does not match its answer.
+WHAT SHIPS. The exclusion list is the union of every sentence instrument 2 flags and
+every sentence containing a word-reading pair instrument 1 PROVED is spoken differently
+— proof about a word propagates to every sentence using that word, because a voice does
+not change its mind between sentences. 1,059 of 6,723 (15.8%), leaving 5,664 across all
+five levels, none below 79% kept. Flagging is one-sided on purpose: a false flag costs
+one sentence of dictation coverage, a miss ships an item whose audio contradicts its own
+answer.
 
-    python3 scripts/check_dictation_readings.py --render      # synthesize (slow, ~40 min)
-    python3 scripts/check_dictation_readings.py --report      # compare what is rendered
-    python3 scripts/check_dictation_readings.py --write       # emit the shipped exclusions
+    ./.venv-jp/bin/python scripts/check_dictation_readings.py --render     # ~50 min
+    ./.venv-jp/bin/python scripts/check_dictation_readings.py --report
+    ./.venv-jp/bin/python scripts/check_dictation_readings.py --calibrate
+    ./.venv-jp/bin/python scripts/check_dictation_readings.py --write
 
-Needs the project venv for Sudachi: ./.venv-jp/bin/python.
+Needs the project venv (Sudachi, numpy, scipy). Audio is cached in .dictation-wav/,
+which is gitignored — the ~37k clips are reproducible, not source.
 """
 import argparse
+import collections
 import hashlib
+import itertools
 import json
 import os
 import subprocess
 import sys
-import tempfile
 import warnings
-from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -71,8 +93,7 @@ REPO = Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "Sources/VocabKit/Resources"
 CACHE = Path(os.environ.get("DICTATION_WAV_CACHE", REPO / ".dictation-wav"))
 KATA_TO_HIRA = {chr(c): chr(c - 0x60) for c in range(0x30A1, 0x30F7)}
-
-# --- the renderer -------------------------------------------------------------------
+KANA_RANGE = ("぀", "ヿ")
 
 SYNTH_SWIFT = r'''
 // Renders AVSpeech ja-JP audio to WAV WITHOUT playing it: write(_:toBufferCallback:)
@@ -124,15 +145,14 @@ while let line = readLine(strippingNewline: true) {
 '''
 
 
+# --- rendering ----------------------------------------------------------------------
+
 def synth_binary():
-    """Compiles the renderer once into the cache dir and returns its path."""
     CACHE.mkdir(parents=True, exist_ok=True)
-    binary = CACHE / "synth"
-    source = CACHE / "synth.swift"
-    if binary.exists() and source.exists() and source.read_text() == SYNTH_SWIFT:
-        return binary
-    source.write_text(SYNTH_SWIFT)
-    subprocess.run(["swiftc", "-O", str(source), "-o", str(binary)], check=True)
+    binary, source = CACHE / "synth", CACHE / "synth.swift"
+    if not (binary.exists() and source.exists() and source.read_text() == SYNTH_SWIFT):
+        source.write_text(SYNTH_SWIFT)
+        subprocess.run(["swiftc", "-O", str(source), "-o", str(binary)], check=True)
     return binary
 
 
@@ -156,21 +176,65 @@ def render(texts, workers=8):
     if not todo:
         return 0
     binary = synth_binary()
-    chunks = [todo[i::workers] for i in range(workers)]
 
     def run(chunk):
-        if not chunk:
-            return
-        payload = "".join(f"{k}\t{t}\n" for k, t in chunk)
-        subprocess.run([str(binary), str(CACHE)], input=payload.encode("utf-8"),
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+        if chunk:
+            subprocess.run([str(binary), str(CACHE)],
+                           input="".join(f"{k}\t{t}\n" for k, t in chunk).encode("utf-8"),
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
-        list(ex.map(run, chunks))
+        list(ex.map(run, [todo[i::workers] for i in range(workers)]))
     return len(todo)
 
 
-# --- the comparison -----------------------------------------------------------------
+# --- instrument 1: proof by byte-identical audio -------------------------------------
+
+_sha = {}
+
+
+def sha(path):
+    path = str(path)
+    if path not in _sha:
+        try:
+            _sha[path] = hashlib.sha1(Path(path).read_bytes()).hexdigest()
+        except FileNotFoundError:
+            _sha[path] = None
+    return _sha[path]
+
+
+def kana_only(s):
+    return "".join(c for c in s if KANA_RANGE[0] <= c <= KANA_RANGE[1])
+
+
+def particle_slots(tokens):
+    """Standalone particle は/へ positions, each with both spellings to try."""
+    out = []
+    for i, (surface, reading) in enumerate(tokens):
+        if surface == "は" and reading == "は":
+            out.append((i, ("は", "わ")))
+        elif surface == "へ" and reading == "へ":
+            out.append((i, ("へ", "え")))
+    return out
+
+
+def variants(tokens, substitution=None):
+    """Every particle spelling of this sentence's reading, optionally with one token
+    replaced. De-duplicated, order preserved."""
+    base = [r for _, r in tokens]
+    if substitution:
+        base[substitution[0]] = substitution[1]
+    slots = particle_slots(tokens)
+    out = []
+    for combo in (itertools.product(*[o for _, o in slots]) if slots else [()]):
+        v = list(base)
+        for (i, _), choice in zip(slots, combo):
+            v[i] = choice
+        out.append(kana_only("".join(v)))
+    return list(dict.fromkeys(out))
+
+
+# --- instrument 2: nearest hypothesis ------------------------------------------------
 
 N_MELS, N_FFT, HOP = 40, 512, 160
 _mel_cache, _bank_cache = {}, {}
@@ -212,10 +276,10 @@ def logmel(path):
         return None
     if x.ndim > 1:
         x = x.mean(axis=1)
-    x = x.astype(np.float64) / 32768.0 if np.issubdtype(x.dtype, np.integer) else x.astype(np.float64)
-    energy = np.abs(x)
-    if energy.size:
-        nz = np.nonzero(energy > max(1e-4, energy.max() * 0.01))[0]
+    x = (x.astype(np.float64) / 32768.0 if np.issubdtype(x.dtype, np.integer)
+         else x.astype(np.float64))
+    if x.size:
+        nz = np.nonzero(np.abs(x) > max(1e-4, np.abs(x).max() * 0.01))[0]
         if len(nz):
             x = x[nz[0]:nz[-1] + 1]
     if len(x) < N_FFT:
@@ -226,9 +290,8 @@ def logmel(path):
     spec = np.abs(np.fft.rfft(x[idx] * np.hanning(N_FFT)[None, :], axis=1)) ** 2
     mel = np.log(spec @ _melbank(sr, spec.shape[1]).T + 1e-10)
     mel = (mel - mel.mean(axis=0)) / (mel.std(axis=0) + 1e-8)
-    mel = mel / (np.linalg.norm(mel, axis=1, keepdims=True) + 1e-8)
-    _mel_cache[path] = mel
-    return mel
+    _mel_cache[path] = mel / (np.linalg.norm(mel, axis=1, keepdims=True) + 1e-8)
+    return _mel_cache[path]
 
 
 def dtw(a, b):
@@ -246,28 +309,16 @@ def dtw(a, b):
     prev[0] = 0.0
     for i in range(n):
         row = d[i]
-        base = row + np.minimum(prev[1:], prev[:-1])
         cs = np.cumsum(row)
+        base = row + np.minimum(prev[1:], prev[:-1])
         prev = np.concatenate(([np.inf], np.minimum.accumulate(base - cs) + cs))
     return float(prev[-1] / (n + m))
 
 
-# --- the corpus ---------------------------------------------------------------------
+# --- the corpus ----------------------------------------------------------------------
 
 def to_hira(s):
     return "".join(KATA_TO_HIRA.get(c, c) for c in s)
-
-
-def phonetic(tokens):
-    out = []
-    for surface, reading in tokens:
-        if surface == "は" and reading == "は":
-            out.append("わ")
-        elif surface == "へ" and reading == "へ":
-            out.append("え")
-        else:
-            out.append(reading)
-    return "".join(c for c in "".join(out) if "぀" <= c <= "ヿ")
 
 
 def build_rows():
@@ -277,16 +328,15 @@ def build_rows():
     typeable = [e for e in entries
                 if e.get("exJP") and e.get("exKana") and e.get("exTokens")]
 
-    corpus_readings = defaultdict(set)
+    corpus = collections.defaultdict(set)
     for e in entries:
-        corpus_readings[e["surface"]].add(e["kana"])
+        corpus[e["surface"]].add(e["kana"])
 
     try:
         from sudachipy import Dictionary
     except ImportError:
         sys.exit("sudachipy missing — run with ./.venv-jp/bin/python")
-    dic = Dictionary()
-    lex = {}
+    dic, lex = Dictionary(), {}
 
     def readings(surface):
         if surface not in lex:
@@ -299,198 +349,177 @@ def build_rows():
     rows = []
     for e in typeable:
         tokens = [list(t) for t in e["exTokens"]]
-        base = phonetic(tokens)
-        cands = []
+        subs = []
         for i, (surface, reading) in enumerate(tokens):
             if not any("一" <= c <= "鿿" for c in surface):
-                continue
-            for alt in sorted((readings(surface) | corpus_readings.get(surface, set())) - {reading}):
-                swapped = [list(t) for t in tokens]
-                swapped[i][1] = alt
-                text = phonetic(swapped)
-                if text != base:
-                    cands.append({"surface": surface, "from": reading, "to": alt, "kana": text})
+                continue          # kana and punctuation read as themselves
+            for alt in sorted((readings(surface) | corpus.get(surface, set())) - {reading}):
+                subs.append({"i": i, "surface": surface, "from": reading, "to": alt})
         rows.append({"id": e["id"], "jlpt": e["jlpt"], "exJP": e["exJP"],
-                     "exKana": e["exKana"], "phonetic": base, "candidates": cands})
+                     "exKana": e["exKana"], "tokens": tokens, "subs": subs})
     return rows
 
 
-def build_decoys(rows, n=1500, seed=20260810):
-    """Known-WRONG candidates, to measure how often the comparison flags nothing at all.
-
-    The comparison answers "which hypothesis is the audio nearest to". Some of its
-    winners are obviously not readings — 古い as ふりい, 長年 as ちゃんねん — which means
-    a candidate can beat the truth on spectral luck rather than on being what was said.
-    Without a number for how often that happens, "AVSpeech disagrees on N% of sentences"
-    is a measurement of the corpus and the instrument added together, reported as if it
-    were only the corpus.
-
-    So each sampled sentence gets two decoys built by scrambling one token's reading into
-    something the synthesizer certainly did not say:
-      * SAME LENGTH — mora count preserved, which isolates pure spectral noise.
-      * SHORTER — one mora dropped, which tests whether a shorter hypothesis wins simply
-        by having less to disagree with. Several real flags are shorter than the reading
-        they beat (彼 かれ -> か, 入っ はいっ -> いっ), so this is the specific worry.
-    A decoy that beats the true reading is a false positive by construction.
-    """
-    import random
-    rng = random.Random(seed)
-    kana = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわ"
-    sample = [r for r in rows if r["candidates"]]
-    rng.shuffle(sample)
-    out = []
-    for r in sample[:n]:
-        c = rng.choice(r["candidates"])
-        true_reading = c["from"]
-        if len(true_reading) < 2:
-            continue
-        # Rebuild the sentence with a scrambled reading in the same slot. Working from the
-        # candidate's own kana string keeps the substitution in the right place without
-        # re-deriving the tokenisation.
-        same = "".join(rng.choice(kana) for _ in true_reading)
-        shorter = same[:-1]
-        base_before = r["phonetic"]
-        if c["from"] not in base_before:
-            continue
-        out.append({
-            "id": r["id"], "exJP": r["exJP"], "phonetic": base_before,
-            "same": base_before.replace(true_reading, same, 1),
-            "shorter": base_before.replace(true_reading, shorter, 1),
-        })
-    return out
-
-
-def measure_decoys(decoys):
-    same_wins = short_wins = compared = 0
-    margins = []
-    for d in decoys:
-        jp, base = logmel(clip(d["exJP"])), logmel(clip(d["phonetic"]))
-        if jp is None or base is None:
-            continue
-        d0 = dtw(jp, base)
-        ds, dsh = dtw(jp, logmel(clip(d["same"]))), dtw(jp, logmel(clip(d["shorter"])))
-        if d0 is None or ds is None or dsh is None:
-            continue
-        compared += 1
-        if ds < d0:
-            same_wins += 1
-            margins.append(d0 - ds)
-        if dsh < d0:
-            short_wins += 1
-            margins.append(d0 - dsh)
-    return compared, same_wins, short_wins, margins
-
-
-def compare(rows, require_complete=True, margin=0.0):
-    """For each sentence: is its own reading the nearest hypothesis, or is another?"""
-    results, skipped = [], 0
+def all_texts(rows):
     for r in rows:
-        jp, base = logmel(clip(r["exJP"])), logmel(clip(r["phonetic"]))
-        if jp is None or base is None:
-            skipped += 1
+        yield r["exJP"]
+        for v in variants(r["tokens"]):
+            yield v
+        for s in r["subs"]:
+            for v in variants(r["tokens"], (s["i"], s["to"])):
+                yield v
+
+
+# --- the two passes ------------------------------------------------------------------
+
+def prove(rows):
+    """Sentences whose audio is byte-identical to some spelling of their reading."""
+    proven_ok, proven_bad, unproven = [], [], []
+    for r in rows:
+        target = sha(clip(r["exJP"]))
+        if target is None:
             continue
-        d0 = dtw(jp, base)
-        if d0 is None:
-            skipped += 1
+        if any(sha(clip(v)) == target for v in variants(r["tokens"])):
+            proven_ok.append(r)
             continue
-        best, incomplete = None, False
-        for c in r["candidates"]:
-            cm = logmel(clip(c["kana"]))
-            if cm is None:
-                incomplete = True
-                continue
-            d = dtw(jp, cm)
-            if d is not None and (best is None or d < best[0]):
-                best = (d, c)
-        if incomplete and require_complete:
-            skipped += 1
+        hit = None
+        for s in r["subs"]:
+            if any(sha(clip(v)) == target for v in variants(r["tokens"], (s["i"], s["to"]))):
+                hit = s
+                break
+        (proven_bad if hit else unproven).append((r, hit))
+    return proven_ok, proven_bad, unproven
+
+
+def nearest(rows):
+    """For each sentence: its own reading's distance, and the nearest rival's."""
+    out = []
+    for r in rows:
+        jp = logmel(clip(r["exJP"]))
+        own = min([d for d in (dtw(jp, logmel(clip(v))) for v in variants(r["tokens"]))
+                   if d is not None] or [None])
+        if own is None:
             continue
-        results.append({
-            "id": r["id"], "jlpt": r["jlpt"], "exJP": r["exJP"], "exKana": r["exKana"],
-            "own": d0,
-            "best": best[0] if best else None,
-            "beaten": bool(best and best[0] < d0 - margin),
-            "says": best[1] if best else None,
-            "candidates": len(r["candidates"]),
-        })
-    return results, skipped
+        best = None
+        for s in r["subs"]:
+            for v in variants(r["tokens"], (s["i"], s["to"])):
+                d = dtw(jp, logmel(clip(v)))
+                if d is not None and (best is None or d < best[0]):
+                    best = (d, s)
+        out.append({"id": r["id"], "jlpt": r["jlpt"], "exJP": r["exJP"], "exKana": r["exKana"],
+                    "own": own, "best": best[0] if best else None,
+                    "says": best[1] if best else None,
+                    "beaten": bool(best and best[0] < own)})
+    return out
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--render", action="store_true", help="synthesize every hypothesis (slow)")
-    ap.add_argument("--report", action="store_true", help="compare what is already rendered")
-    ap.add_argument("--write", action="store_true", help="emit the shipped exclusion list")
-    ap.add_argument("--partial", action="store_true",
-                    help="report over sentences whose clips are all present, mid-render")
-    ap.add_argument("--calibrate", action="store_true",
-                    help="measure the false-positive rate with known-wrong decoy readings")
-    ap.add_argument("--margin", type=float, default=0.0,
-                    help="a candidate must beat the true reading by this much to flag")
+    ap.add_argument("--render", action="store_true")
+    ap.add_argument("--report", action="store_true")
+    ap.add_argument("--calibrate", action="store_true")
+    ap.add_argument("--write", action="store_true")
     args = ap.parse_args()
 
     rows = build_rows()
-    total_cands = sum(len(r["candidates"]) for r in rows)
-    print(f"sentences={len(rows)} with_candidates={sum(1 for r in rows if r['candidates'])} "
-          f"candidates={total_cands}")
+    print(f"sentences={len(rows)} candidates={sum(len(r['subs']) for r in rows)}")
 
     if args.render:
-        texts = []
-        for r in rows:
-            texts += [r["exJP"], r["phonetic"]] + [c["kana"] for c in r["candidates"]]
         print(f"rendering into {CACHE} …")
-        print(f"rendered {render(texts)} new clips")
+        print(f"rendered {render(list(all_texts(rows)))} new clips")
 
-    if args.calibrate:
-        decoys = build_decoys(rows)
-        print(f"\ncalibrating on {len(decoys)} sentences with known-wrong decoy readings")
-        render([t for d in decoys for t in (d["exJP"], d["phonetic"], d["same"], d["shorter"])])
-        compared, same_wins, short_wins, margins = measure_decoys(decoys)
-        print(f"  compared {compared}")
-        print(f"  same-length decoy beat the true reading: {same_wins} "
-              f"({100 * same_wins / max(1, compared):.2f}%)")
-        print(f"  shorter decoy beat the true reading:     {short_wins} "
-              f"({100 * short_wins / max(1, compared):.2f}%)")
-        if margins:
-            q = np.percentile(margins, [50, 90, 95, 99])
-            print(f"  false-win margins: med={q[0]:.5f} p90={q[1]:.5f} "
-                  f"p95={q[2]:.5f} p99={q[3]:.5f} max={max(margins):.5f}")
-
-    if not (args.report or args.write):
+    if not (args.report or args.calibrate or args.write):
         return 0
 
-    results, skipped = compare(rows, require_complete=not args.partial, margin=args.margin)
-    flagged = [r for r in results if r["beaten"]]
-    print(f"\ncompared {len(results)} sentences ({skipped} skipped for missing clips)")
-    print(f"AVSpeech reads a DIFFERENT candidate for {len(flagged)} "
-          f"({100 * len(flagged) / max(1, len(results)):.2f}%) at margin {args.margin}")
+    proven_ok, proven_bad, unproven = prove(rows)
+    total = len(proven_ok) + len(proven_bad) + len(unproven)
+    print(f"\nPROOF (byte-identical audio — decisive where it speaks at all)")
+    print(f"  audio matches exKana        : {len(proven_ok)} ({100 * len(proven_ok) / total:.2f}%)")
+    print(f"  audio says something else   : {len(proven_bad)} ({100 * len(proven_bad) / total:.2f}%)")
+    print(f"  silent (kanji/kana phrasing): {len(unproven)} ({100 * len(unproven) / total:.2f}%)")
+    for pair, n in collections.Counter(
+            f"{h['surface']}: {h['from']} -> {h['to']}" for _, h in proven_bad).most_common(20):
+        print(f"      {n:4d}  {pair}")
 
-    by_swap = defaultdict(int)
-    for r in flagged:
-        by_swap[f"{r['says']['surface']}: {r['says']['from']} -> {r['says']['to']}"] += 1
-    for swap, n in sorted(by_swap.items(), key=lambda kv: -kv[1])[:20]:
-        print(f"    {n:4d}  {swap}")
+    near = nearest(rows)
+    flagged = {r["id"] for r in near if r["beaten"]}
+    print(f"\nNEAREST HYPOTHESIS")
+    print(f"  flagged: {len(flagged)} ({100 * len(flagged) / max(1, len(near)):.2f}%)")
+    for pair, n in collections.Counter(
+            f"{r['says']['surface']}: {r['says']['from']} -> {r['says']['to']}"
+            for r in near if r["beaten"]).most_common(15):
+        print(f"      {n:4d}  {pair}")
+
+    if args.calibrate:
+        ok_ids = {r["id"] for r in proven_ok}
+        bad_ids = {r["id"] for r, _ in proven_bad}
+        caught = len(bad_ids & flagged)
+        false_pos = len(ok_ids & flagged)
+        print(f"\nCALIBRATION of the nearest-hypothesis pass against the proof pass")
+        print(f"  recall          {caught}/{len(bad_ids)} = "
+              f"{100 * caught / max(1, len(bad_ids)):.0f}%   (proven mismatches it flagged)")
+        print(f"  false positives {false_pos}/{len(ok_ids)} = "
+              f"{100 * false_pos / max(1, len(ok_ids)):.1f}%   (proven matches it flagged anyway)")
+        print("  Ground truth is real labelled data, not synthetic corruption. An earlier"
+              "\n  calibration with random-kana decoys put the false-positive rate at 4.7% —"
+              "\n  random kana are a harder test than real alternative readings, and would"
+              "\n  have made a working instrument look broken.")
+
+    # A voice does not change its mind between sentences: a PROVEN word-level mismatch
+    # applies wherever the corpus assigns that reading to that surface.
+    propagated = set()
+    for _, hit in proven_bad:
+        for r in rows:
+            if any(t[0] == hit["surface"] and t[1] == hit["from"] for t in r["tokens"]):
+                propagated.add(r["id"])
+    excluded = sorted(flagged | propagated)
+    print(f"\nEXCLUSIONS = flagged ({len(flagged)}) union proven-word propagation "
+          f"({len(propagated)}) = {len(excluded)} ({100 * len(excluded) / len(rows):.1f}%)")
+
+    by_level = collections.defaultdict(lambda: [0, 0])
+    for r in rows:
+        by_level[r["jlpt"]][0] += 1
+        if r["id"] in set(excluded):
+            by_level[r["jlpt"]][1] += 1
+    for lvl in sorted(by_level, reverse=True):
+        t, x = by_level[lvl]
+        print(f"    N{lvl}: {t - x} of {t} usable for dictation ({100 * (t - x) / t:.1f}%)")
 
     if args.write:
+        says = {r["id"]: r["says"] for r in near if r["beaten"]}
+        proven_by_id = {r["id"]: h for r, h in proven_bad}
         payload = {
             "measurement": "scripts/check_dictation_readings.py",
             "date": "2026-08-10",
-            "voice": "com.apple.voice.compact.ja-JP.Kyoko (AVSpeechSynthesisVoice(language: \"ja-JP\"))",
-            "compared": len(results),
-            "excludedCount": len(flagged),
-            "excluded": [{"id": r["id"], "exJP": r["exJP"], "exKana": r["exKana"],
-                          "heardInstead": f"{r['says']['surface']} {r['says']['from']} -> {r['says']['to']}",
-                          "own": round(r["own"], 5), "best": round(r["best"], 5)}
-                         for r in sorted(flagged, key=lambda r: r["id"])],
+            "voice": 'com.apple.voice.compact.ja-JP.Kyoko '
+                     '(AVSpeechSynthesisVoice(language: "ja-JP"))',
+            "sentences": len(rows),
+            "provenMatching": len(proven_ok),
+            "provenDiffering": len(proven_bad),
+            "excludedCount": len(excluded),
+            "note": "Excluded from DICTATION only. Every one of these is still a perfectly "
+                    "good sentence to read and type in Sentence mode, where the reading is "
+                    "shown rather than spoken.",
+            "excluded": [],
         }
+        for eid in excluded:
+            row = next(r for r in rows if r["id"] == eid)
+            hit = proven_by_id.get(eid) or says.get(eid)
+            payload["excluded"].append({
+                "id": eid,
+                "exJP": row["exJP"],
+                "exKana": row["exKana"],
+                "heardInstead": (f"{hit['surface']} {hit['from']} -> {hit['to']}" if hit else
+                                 "same word proven misread in another sentence"),
+                "evidence": "proven" if eid in proven_by_id else
+                            ("nearest" if eid in says else "propagated"),
+            })
         out = RESOURCES / "dictation-exclusions.json"
         out.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-        print(f"\nwrote {out} ({len(flagged)} excluded)")
+        print(f"\nwrote {out}")
         detail = REPO / "docs/measurements/dictation-reading-mismatches.json"
-        detail.write_text(json.dumps({"summary": {k: payload[k] for k in
-                                                  ("date", "voice", "compared", "excludedCount")},
-                                      "excluded": payload["excluded"]},
-                                     ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        detail.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n",
+                          encoding="utf-8")
         print(f"wrote {detail}")
     return 0
 

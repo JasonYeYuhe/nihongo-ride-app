@@ -22,3 +22,7 @@ DerivedData/
 __pycache__/
 *.pyc
 .venv-jp/
+
+# Rendered AVSpeech audio for scripts/check_dictation_readings.py — ~37k clips,
+# reproducible from the corpus, not source.
+.dictation-wav/
