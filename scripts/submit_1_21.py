@@ -71,7 +71,7 @@ CONTACT = {"contactFirstName": "Yuhe", "contactLastName": "Ye",
            "contactPhone": "+81 80-3526-7088", "contactEmail": "yyyyy.yeyuhe@gmail.com"}
 
 
-def asc(method, ep, body=None):
+def asc(method, ep, body=None, allow_empty=False):
     """One ASC call. An empty or non-JSON response is a FAILURE, not an empty success.
 
     Every submit script from 1.10 to 1.21 returned `{}` here when the helper exited
@@ -98,11 +98,20 @@ def asc(method, ep, body=None):
             "Nothing was assumed to have succeeded. Fix the call and re-run; the script "
             "is idempotent up to this point.")
     if not out.strip():
-        # A genuine 204 No Content, which is what a successful PATCH (attach the build,
-        # set the release type) returns. The exit code is the failure signal here, not the
-        # empty body — an earlier version of this guard raised on emptiness and would have
-        # aborted every successful attach before reaching the submission step.
-        return {}
+        # Exactly ONE call in either phase answers with no body: PATCH on the version's
+        # build relationship, which is 204 No Content on success. Every other endpoint here
+        # returns 200 or 201 with a payload, so an empty body from any of them is a failure
+        # that must not be read as an empty success — which is the bug this helper was
+        # rewritten to stop. So emptiness is permitted per call site, never globally.
+        #
+        # (The first attempt at this rewrite raised on every empty body. It would have
+        # aborted the attach — the one moment something HAD reached Apple — while printing
+        # "nothing was assumed to have succeeded".)
+        if allow_empty:
+            return {}
+        raise SystemExit(
+            f"ASC returned an EMPTY body for {method} {ep}, which this call does not "
+            "expect. Treating that as success is how a failed run reports OK twelve times.")
     try:
         return json.loads(out)
     except Exception:
@@ -240,8 +249,9 @@ def do_submit():
         if battr.get("usesNonExemptEncryption") is None:
             asc("PATCH", f"/v1/builds/{bid}", {"data": {"type": "builds", "id": bid,
                 "attributes": {"usesNonExemptEncryption": False}}})
+        # The only 204-answering call in the script — see asc()'s allow_empty.
         r = asc("PATCH", f"/v1/appStoreVersions/{vid}/relationships/build",
-                {"data": {"type": "builds", "id": bid}})
+                {"data": {"type": "builds", "id": bid}}, allow_empty=True)
         print("  attach build:", "OK" if not r.get("errors") else r["errors"])
         if r.get("errors"):
             # The attach is the real gate. If it failed, do NOT create a submission container —
