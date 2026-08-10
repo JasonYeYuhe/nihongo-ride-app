@@ -315,12 +315,6 @@ struct MenuView: View {
                     .font(.caption).foregroundStyle(Theme.accent)
                     .multilineTextAlignment(.center)
             }
-            // The ride equivalent, but a FLAG rather than a live count: "is there anything to
-            // ride" depends on the SRS schedule and the mode's own queue rules, so the only
-            // honest test is the one startGame already performs. Set when a start attempt
-            // finds an empty queue, cleared by the next successful one. Without it that tap
-            // did nothing visible except flash a results screen claiming 100% accuracy on a
-            // run with no keystrokes. (v1.15 §D.)
             // Dictation's live-count sibling to the conjugation one. Its pool is smaller
             // than sentence mode's (the withheld readings), so "there is nothing here" is a
             // different sentence from the level-pool message below — which says "come back
@@ -332,6 +326,12 @@ struct MenuView: View {
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 420)
             }
+            // The ride equivalent, but a FLAG rather than a live count: "is there anything to
+            // ride" depends on the SRS schedule and the mode's own queue rules, so the only
+            // honest test is the one startGame already performs. Set when a start attempt
+            // finds an empty queue, cleared by the next successful one. Without it that tap
+            // did nothing visible except flash a results screen claiming 100% accuracy on a
+            // run with no keystrokes. (v1.15 §D.)
             if !isConjugation && !isDictation && model.emptyPoolNotice {
                 Text(zhLang ? "这个等级的词今天都复习完了,换个等级或明天再来。"
                             : "Nothing due at this level today — try another level, or come back tomorrow.")
