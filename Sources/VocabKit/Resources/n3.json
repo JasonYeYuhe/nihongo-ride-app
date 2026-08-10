@@ -65022,13 +65022,72 @@
     "meanings": {
       "en": [
         "refereeing",
-        "judgement"
+        "judgement",
+        "referee, umpire (the person)"
       ],
       "zh": [
         "裁判",
         "审判"
       ]
-    }
+    },
+    "exJP": "審判が笛を吹いて試合が始まった。",
+    "exEN": "The referee blew the whistle and the match started.",
+    "exZH": "裁判吹响哨子，比赛开始了。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "sports referee",
+      "senseListed": false
+    },
+    "exKana": "しんぱんがふえをふいてしあいがはじまった",
+    "exTokens": [
+      [
+        "審判",
+        "しんぱん"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "笛",
+        "ふえ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "吹い",
+        "ふい"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "試合",
+        "しあい"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "始まっ",
+        "はじまっ"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b555",
@@ -69500,7 +69559,73 @@
         "天然",
         "自然"
       ]
-    }
+    },
+    "exJP": "この石鹸は天然の成分だけで作られている。",
+    "exEN": "This soap is made with natural ingredients only.",
+    "exZH": "这款肥皂仅由天然成分制成。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "naturally derived",
+      "senseListed": false
+    },
+    "exKana": "このせっけんはてんねんのせいぶんだけでつくられている",
+    "exTokens": [
+      [
+        "この",
+        "この"
+      ],
+      [
+        "石鹸",
+        "せっけん"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "天然",
+        "てんねん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "成分",
+        "せいぶん"
+      ],
+      [
+        "だけ",
+        "だけ"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "作ら",
+        "つくら"
+      ],
+      [
+        "れ",
+        "れ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "いる",
+        "いる"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n3-b618",

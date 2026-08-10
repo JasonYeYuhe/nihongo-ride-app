@@ -6866,7 +6866,61 @@
         "钟表",
         "手表"
       ]
-    }
+    },
+    "exJP": "部屋の壁に大きな時計があります。",
+    "exEN": "There is a large clock on the wall of the room.",
+    "exZH": "房间的墙上挂着一个大钟。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "instrument for measuring time",
+      "senseListed": false
+    },
+    "exKana": "へやのかべにおおきなとけいがあります",
+    "exTokens": [
+      [
+        "部屋",
+        "へや"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "壁",
+        "かべ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "大きな",
+        "おおきな"
+      ],
+      [
+        "時計",
+        "とけい"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "あり",
+        "あり"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g068",
@@ -7313,7 +7367,69 @@
         "信",
         "信件"
       ]
-    }
+    },
+    "exJP": "昨日の夜、友達に手紙を書きました。",
+    "exEN": "I wrote a letter to a friend yesterday evening.",
+    "exZH": "昨天晚上我给朋友写了一封信。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "written message sent by mail",
+      "senseListed": false
+    },
+    "exKana": "きのうのよるともだちにてがみをかきました",
+    "exTokens": [
+      [
+        "昨日",
+        "きのう"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "夜",
+        "よる"
+      ],
+      [
+        "、",
+        "、"
+      ],
+      [
+        "友達",
+        "ともだち"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "手紙",
+        "てがみ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "書き",
+        "かき"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-g075",
@@ -12205,7 +12321,57 @@
         "放入",
         "装入"
       ]
-    }
+    },
+    "exJP": "カバンにお財布を入れました。",
+    "exEN": "I put my wallet into the bag.",
+    "exZH": "我把钱包放进了包里。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "to place inside a container",
+      "senseListed": false
+    },
+    "exKana": "かばんにおさいふをいれました",
+    "exTokens": [
+      [
+        "カバン",
+        "かばん"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "お",
+        "お"
+      ],
+      [
+        "財布",
+        "さいふ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "入れ",
+        "いれ"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b025",
@@ -13764,7 +13930,49 @@
       "zh": [
         "楼梯"
       ]
-    }
+    },
+    "exJP": "階段をゆっくり上がりました。",
+    "exEN": "I walked up the stairs slowly.",
+    "exZH": "我慢慢走上了楼梯。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "set of steps between floors",
+      "senseListed": false
+    },
+    "exKana": "かいだんをゆっくりあがりました",
+    "exTokens": [
+      [
+        "階段",
+        "かいだん"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "ゆっくり",
+        "ゆっくり"
+      ],
+      [
+        "上がり",
+        "あがり"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b049",
@@ -15237,7 +15445,65 @@
       "zh": [
         "上午"
       ]
-    }
+    },
+    "exJP": "明日の午前九時に病院へ行きます。",
+    "exEN": "I will go to the hospital at nine in the morning tomorrow.",
+    "exZH": "明天上午九点我要去医院。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "time period before noon",
+      "senseListed": false
+    },
+    "exKana": "あすのごぜんきゅうじにびょういんへいきます",
+    "exTokens": [
+      [
+        "明日",
+        "あす"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "午前",
+        "ごぜん"
+      ],
+      [
+        "九",
+        "きゅう"
+      ],
+      [
+        "時",
+        "じ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "病院",
+        "びょういん"
+      ],
+      [
+        "へ",
+        "へ"
+      ],
+      [
+        "行き",
+        "いき"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b072",
@@ -16023,7 +16289,61 @@
       "zh": [
         "自己"
       ]
-    }
+    },
+    "exJP": "自分の部屋は自分で掃除します。",
+    "exEN": "I clean my own room by myself.",
+    "exZH": "我自己打扫自己的房间。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "one's own self",
+      "senseListed": false
+    },
+    "exKana": "じぶんのへやはじぶんでそうじします",
+    "exTokens": [
+      [
+        "自分",
+        "じぶん"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "部屋",
+        "へや"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "自分",
+        "じぶん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "掃除",
+        "そうじ"
+      ],
+      [
+        "し",
+        "し"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b085",
@@ -24535,7 +24855,61 @@
         "第一",
         "最"
       ]
-    }
+    },
+    "exJP": "果物のなかでりんごがいちばん好きです。",
+    "exEN": "Among fruits, I like apples the best.",
+    "exZH": "水果当中我最喜欢苹果。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "most or to the greatest extent",
+      "senseListed": false
+    },
+    "exKana": "くだもののなかでりんごがいちばんすきです",
+    "exTokens": [
+      [
+        "果物",
+        "くだもの"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "なか",
+        "なか"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "りんご",
+        "りんご"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "いちばん",
+        "いちばん"
+      ],
+      [
+        "好き",
+        "すき"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b217",
@@ -25490,7 +25864,69 @@
         "爷爷",
         "老爷爷"
       ]
-    }
+    },
+    "exJP": "公園で親切なおじいさんに会いました。",
+    "exEN": "I met a kind elderly man in the park.",
+    "exZH": "我在公园遇到了一位友善的老爷爷。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "elderly man",
+      "senseListed": false
+    },
+    "exKana": "こうえんでしんせつなおじいさんにあいました",
+    "exTokens": [
+      [
+        "公園",
+        "こうえん"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "親切",
+        "しんせつ"
+      ],
+      [
+        "な",
+        "な"
+      ],
+      [
+        "お",
+        "お"
+      ],
+      [
+        "じい",
+        "じい"
+      ],
+      [
+        "さん",
+        "さん"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "会い",
+        "あい"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n5-b234",

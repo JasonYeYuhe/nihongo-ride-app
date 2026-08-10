@@ -5274,7 +5274,61 @@
         "天黑",
         "（年、月等）结束"
       ]
-    }
+    },
+    "exJP": "日が暮れる前に家に帰りましょう。",
+    "exEN": "Let's go home before the sun sets.",
+    "exZH": "在天黑之前回家吧。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-08",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "to grow dark",
+      "senseListed": false
+    },
+    "exKana": "ひがくれるまえにいえにかえりましょう",
+    "exTokens": [
+      [
+        "日",
+        "ひ"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "暮れる",
+        "くれる"
+      ],
+      [
+        "前",
+        "まえ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "家",
+        "いえ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "帰り",
+        "かえり"
+      ],
+      [
+        "ましょう",
+        "ましょう"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g123",
@@ -21131,7 +21185,61 @@
         "分配",
         "分发"
       ]
-    }
+    },
+    "exJP": "先生がテストの紙を配りました。",
+    "exEN": "The teacher handed out the test papers.",
+    "exZH": "老师分发了试卷。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "to hand out to people",
+      "senseListed": false
+    },
+    "exKana": "せんせいがてすとのかみをくばりました",
+    "exTokens": [
+      [
+        "先生",
+        "せんせい"
+      ],
+      [
+        "が",
+        "が"
+      ],
+      [
+        "テスト",
+        "てすと"
+      ],
+      [
+        "の",
+        "の"
+      ],
+      [
+        "紙",
+        "かみ"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "配り",
+        "くばり"
+      ],
+      [
+        "まし",
+        "まし"
+      ],
+      [
+        "た",
+        "た"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g347",
@@ -22631,7 +22739,65 @@
       "zh": [
         "死亡"
       ]
-    }
+    },
+    "exJP": "死はだれにでもやってきます。",
+    "exEN": "Death comes to everyone.",
+    "exZH": "死亡终会降临到每个人身上。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "end of life",
+      "senseListed": false
+    },
+    "exKana": "しはだれにでもやってきます",
+    "exTokens": [
+      [
+        "死",
+        "し"
+      ],
+      [
+        "は",
+        "は"
+      ],
+      [
+        "だれ",
+        "だれ"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "で",
+        "で"
+      ],
+      [
+        "も",
+        "も"
+      ],
+      [
+        "やっ",
+        "やっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "き",
+        "き"
+      ],
+      [
+        "ます",
+        "ます"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-g368",
@@ -32567,7 +32733,65 @@
       "zh": [
         "文化"
       ]
-    }
+    },
+    "exJP": "外国に行って新しい文化を学びたいです。",
+    "exEN": "I want to go abroad and learn about a new culture.",
+    "exZH": "我想去国外学习新的文化。",
+    "exMeta": {
+      "model": "gemini-3.6-flash",
+      "prompt": "gen_batch/2026-07-27",
+      "batch": "batch-09",
+      "reviewer": "3-lens review + card check + sense triage + refutation (v1.20 gaps)",
+      "sense": "customs and values of a society",
+      "senseListed": false
+    },
+    "exKana": "がいこくにいってあたらしいぶんかをまなびたいです",
+    "exTokens": [
+      [
+        "外国",
+        "がいこく"
+      ],
+      [
+        "に",
+        "に"
+      ],
+      [
+        "行っ",
+        "いっ"
+      ],
+      [
+        "て",
+        "て"
+      ],
+      [
+        "新しい",
+        "あたらしい"
+      ],
+      [
+        "文化",
+        "ぶんか"
+      ],
+      [
+        "を",
+        "を"
+      ],
+      [
+        "学び",
+        "まなび"
+      ],
+      [
+        "たい",
+        "たい"
+      ],
+      [
+        "です",
+        "です"
+      ],
+      [
+        "。",
+        "。"
+      ]
+    ]
   },
   {
     "id": "n4-b119",
