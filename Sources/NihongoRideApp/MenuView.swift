@@ -55,20 +55,43 @@ struct MenuView: View {
             }
 
             VStack(spacing: 18) {
-                HStack(spacing: 12) {
-                    Image(systemName: "gamecontroller").accessibilityHidden(true)
-                    Picker("", selection: $model.selectedMode) {
-                        Text(model.languageCode == "zh" ? "环游" : "Journey").tag(GameMode.journey)
-                        Text(model.languageCode == "zh" ? "限时" : "Time").tag(GameMode.timeAttack)
-                        Text(model.languageCode == "zh" ? "练习" : "Practice").tag(GameMode.practice)
-                        Text(model.languageCode == "zh" ? "变形" : "Verbs").tag(GameMode.conjugation)
-                        Text(model.languageCode == "zh" ? "例句" : "Sentence").tag(GameMode.sentence)
-                        Text(model.languageCode == "zh" ? "听写" : "Listen").tag(GameMode.dictation)
+                // Six modes, and a segmented control cannot label six. It divides its width
+                // evenly and truncates, so "Sentence" and "Practice" become "Sente…" on an
+                // iPhone — and the labels only get longer at large Dynamic Type. This is the
+                // wrapping capsule layout the conjugation-form picker on this same screen
+                // already uses: it reflows instead of shrinking, so a seventh mode would cost
+                // a row rather than the words. Buttons are fine here — the keyboard-capture
+                // red line applies to GAME screens, and the menu suppresses the keyboard.
+                VStack(spacing: 8) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "gamecontroller").accessibilityHidden(true)
+                        Text(model.languageCode == "zh" ? "模式" : "Mode")
+                            .scaledSystemFont(14, weight: .semibold, design: .rounded)
+                            .foregroundStyle(Theme.dim)
+                        Spacer()
                     }
-                    .pickerStyle(.segmented)
-                    .menuControlWidth(340)
-                    .accessibilityLabel(model.languageCode == "zh" ? "游戏模式" : "Game mode")
+                    MenuFlow(spacing: 8, rowSpacing: 8) {
+                        ForEach(modeOptions, id: \.mode) { option in
+                            let on = model.selectedMode == option.mode
+                            Button(action: { model.selectedMode = option.mode }) {
+                                Text(option.label)
+                                    .scaledSystemFont(14, weight: .semibold, design: .rounded)
+                                    .lineLimit(1)
+                                    .foregroundStyle(on ? .white : Theme.dim)
+                                    .padding(.horizontal, 12).padding(.vertical, 6)
+                                    .background(on ? Theme.accent : Theme.card, in: Capsule())
+                                    .overlay(Capsule().strokeBorder(on ? Color.clear : Theme.cardStroke))
+                            }
+                            .buttonStyle(.plain)
+                            .fixedSize()
+                            .accessibilityLabel(option.label)
+                            .accessibilityAddTraits(on ? [.isSelected] : [])
+                        }
+                    }
                 }
+                .menuControlWidth(340)
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(model.languageCode == "zh" ? "游戏模式" : "Game mode")
                 HStack(spacing: 12) {
                     Image(systemName: "globe").accessibilityHidden(true)
                     Picker("", selection: $model.languageCode) {
@@ -169,7 +192,8 @@ struct MenuView: View {
                                 HStack(spacing: 8) {
                                     Image(systemName: "arrow.triangle.2.circlepath")
                                         .accessibilityHidden(true)
-                                    Text(zh ? "到期词的例句 \(due) 句" : "\(countLabel(due, "due sentence"))")
+                                    Text(zh ? "到期词的例句 · 可用 \(due) 句"
+                                            : "Due sentences · \(due) available")
                                         .scaledSystemFont(14, weight: .semibold, design: .rounded)
                                         .lineLimit(1)
                                 }
@@ -180,8 +204,8 @@ struct MenuView: View {
                             .buttonStyle(.plain)
                             .fixedSize()
                             .accessibilityIdentifier("dueSentencesButton")
-                            .accessibilityLabel(zh ? "练习 \(due) 个到期词的例句"
-                                                   : "Practise \(due) sentences for words due today")
+                            .accessibilityLabel(zh ? "练习到期词的例句,有 \(due) 句可用"
+                                                   : "Practise sentences for words due today, \(due) available")
                         }
                         Text(zh ? "词单里的例句在「词单」里开始" : "Sentences for a saved list start from Word Lists")
                             .font(.caption2).foregroundStyle(Theme.dim.opacity(0.8))
@@ -297,7 +321,18 @@ struct MenuView: View {
             // finds an empty queue, cleared by the next successful one. Without it that tap
             // did nothing visible except flash a results screen claiming 100% accuracy on a
             // run with no keystrokes. (v1.15 §D.)
-            if !isConjugation && model.emptyPoolNotice {
+            // Dictation's live-count sibling to the conjugation one. Its pool is smaller
+            // than sentence mode's (the withheld readings), so "there is nothing here" is a
+            // different sentence from the level-pool message below — which says "come back
+            // tomorrow", the remedy for an exhausted SRS queue and not for this.
+            if isDictation, model.dictationAvailable, model.dictationPoolCount == 0 {
+                Text(zhLang ? "这个等级暂时没有可用于听写的句子,换个等级试试。"
+                            : "No sentences are available for dictation at this level — try another.")
+                    .font(.caption).foregroundStyle(Theme.accent)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 420)
+            }
+            if !isConjugation && !isDictation && model.emptyPoolNotice {
                 Text(zhLang ? "这个等级的词今天都复习完了,换个等级或明天再来。"
                             : "Nothing due at this level today — try another level, or come back tomorrow.")
                     .font(.caption).foregroundStyle(Theme.accent)
@@ -424,6 +459,19 @@ struct MenuView: View {
                 )
             }
         }
+    }
+
+    /// The mode picker's entries, in the order they were added to the app.
+    private var modeOptions: [(mode: GameMode, label: String)] {
+        let zh = model.languageCode == "zh"
+        return [
+            (.journey, zh ? "环游" : "Journey"),
+            (.timeAttack, zh ? "限时" : "Time"),
+            (.practice, zh ? "练习" : "Practice"),
+            (.conjugation, zh ? "变形" : "Verbs"),
+            (.sentence, zh ? "例句" : "Sentence"),
+            (.dictation, zh ? "听写" : "Listen"),
+        ]
     }
 
     private var streak: Int { model.journal.streakDays() }

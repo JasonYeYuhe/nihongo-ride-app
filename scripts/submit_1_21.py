@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
-"""Create the 1.20 App Store versions, set What's New + review notes, then attach
+"""Create the 1.21 App Store versions, set What's New + review notes, then attach
 the processed builds and submit both platforms for review.
 
-v1.20 = the last of the example-sentence work. Coverage goes 91% to 95%; every
-level is now at or above 91%, and 6,723 of 6,737 sentences are typeable in
-Sentence mode.
-
-Also 28 vocabulary definitions corrected or extended, including two that were
-teaching learners to produce wrong Japanese: てっきり glossed "surely" without its
-obligatory I-was-mistaken sense, and 素直 glossed only "obedient" where the
-sentence needs "frank".
+v1.21 spends the example-sentence corpus instead of growing it. Dictation is a new
+mode: the sentence is spoken by the system Japanese voice and the learner types what
+they heard, with the sentences whose spoken form was measured to disagree with the
+app's own reading withheld. Sentence mode can now draw from a saved word list or from
+the words due for review.
 
 Two phases:
-  scripts/submit_1_20.py --metadata   # create versions + What's New + review detail
-  scripts/submit_1_20.py --submit     # attach VALID builds (mac 38 / iOS 39) + submit
+  python3 scripts/submit_1_21.py --metadata   # create versions + What's New + review detail
+  python3 scripts/submit_1_21.py --submit     # attach VALID builds (mac 40 / iOS 41) + submit
+
+NOTE: --metadata cannot run while a previous version is WAITING_FOR_REVIEW. ASC refuses
+to create 1.21 until 1.20 reaches READY_FOR_SALE. Uploading builds 40/41 is fine at any
+time; this is the step that fails.
 """
 import json, subprocess, sys, os
 
@@ -73,7 +74,7 @@ CONTACT = {"contactFirstName": "Yuhe", "contactLastName": "Ye",
 def asc(method, ep, body=None):
     """One ASC call. An empty or non-JSON response is a FAILURE, not an empty success.
 
-    Every submit script from 1.10 to 1.20 returned `{}` here when the helper exited
+    Every submit script from 1.10 to 1.21 returned `{}` here when the helper exited
     non-zero — a missing key, a locked keychain, a network blip. `{}` has no "errors"
     key, and every call site reads a missing "errors" key as OK, so a run in which
     nothing at all reached Apple printed OK at every step. That is the same failure this
@@ -88,7 +89,7 @@ def asc(method, ep, body=None):
     proc = subprocess.run(["scripts/asc_api.sh", method, ep],
                           capture_output=True, text=True, env=env)
     out = proc.stdout
-    if proc.returncode != 0 or not out.strip():
+    if proc.returncode != 0:
         raise SystemExit(
             f"ASC call FAILED: {method} {ep}\n"
             f"  exit={proc.returncode}\n"
@@ -96,6 +97,12 @@ def asc(method, ep, body=None):
             f"  stderr={proc.stderr.strip()[:400]!r}\n"
             "Nothing was assumed to have succeeded. Fix the call and re-run; the script "
             "is idempotent up to this point.")
+    if not out.strip():
+        # A genuine 204 No Content, which is what a successful PATCH (attach the build,
+        # set the release type) returns. The exit code is the failure signal here, not the
+        # empty body — an earlier version of this guard raised on emptiness and would have
+        # aborted every successful attach before reaching the submission step.
+        return {}
     try:
         return json.loads(out)
     except Exception:

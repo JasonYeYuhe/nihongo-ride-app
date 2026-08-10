@@ -79,11 +79,15 @@ public final class SpeechSynthesizer {
     public static func beginSpokenPrompts() -> Bool {
         #if os(iOS)
         let session = AVAudioSession.sharedInstance()
+        if previousCategory == nil {
+            previousCategory = (session.category, session.mode, session.categoryOptions)
+        }
         do {
             try session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
             try session.setActive(true)
             return true
         } catch {
+            previousCategory = nil
             return false
         }
         #else
@@ -91,10 +95,28 @@ public final class SpeechSynthesizer {
         #endif
     }
 
-    /// Releases the session claimed by `beginSpokenPrompts`, letting other audio back up.
+    /// Releases the session claimed by `beginSpokenPrompts` and puts the category back.
+    ///
+    /// Deactivating alone is not enough. The category is a process-wide setting that
+    /// survives deactivation, so a run that only called `setActive(false)` would leave the
+    /// WHOLE APP on `.playback` for the rest of the launch — after which the read-aloud
+    /// button and the typing sound effects would ignore the Ring/Silent switch, on screens
+    /// that never asked for that. Dictation is allowed to override the mute switch for its
+    /// own duration and no longer.
     public static func endSpokenPrompts() {
         #if os(iOS)
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        let session = AVAudioSession.sharedInstance()
+        try? session.setActive(false, options: .notifyOthersOnDeactivation)
+        if let (category, mode, options) = previousCategory {
+            try? session.setCategory(category, mode: mode, options: options)
+            previousCategory = nil
+        }
         #endif
     }
+
+    #if os(iOS)
+    /// What the audio session looked like before dictation claimed it.
+    private static var previousCategory:
+        (AVAudioSession.Category, AVAudioSession.Mode, AVAudioSession.CategoryOptions)?
+    #endif
 }

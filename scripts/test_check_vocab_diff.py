@@ -62,6 +62,38 @@ def run_guard(entries, manifest=None, extra=()):
                            capture_output=True, text=True)
 
 
+# Every structural vocabulary change this project has actually shipped, with the commit
+# that made it. Each must still pass the guard as it stands today.
+HISTORICAL = [
+    ("f0762d43b374bd52ff6a33bb7e1950856ee13696", "n3-conflated-gloss-manifest"),
+    ("8823a3abd5582f5706014c4487c8ef1d31b3ad27", "n1-gloss-fix-manifest"),
+    ("fea5435dd01bc9554a008c3d423509b22eb05ec2", "n3-chinese-fix-manifest"),
+    ("78eeadbe6a71d9811738c1634a9c0fe0ca3ddbd5", "n3-retirement-manifest"),
+]
+
+
+def replay(commit, manifest_name):
+    """Re-runs a shipped structural change through the CURRENT guard."""
+    with tempfile.TemporaryDirectory() as tmp:
+        wt = Path(tmp) / "wt"
+        add = subprocess.run(["git", "-C", str(REPO), "worktree", "add", "--detach",
+                              str(wt), commit], capture_output=True, text=True)
+        if add.returncode != 0:
+            return False, f"could not check out {commit}: {add.stderr}"
+        try:
+            (wt / "scripts/check_vocab_diff.py").write_text(
+                GUARD.read_text(encoding="utf-8"), encoding="utf-8")
+            out = subprocess.run(
+                [sys.executable, str(wt / "scripts/check_vocab_diff.py"),
+                 "--base", f"{commit}^",
+                 "--manifest", str(wt / f"docs/measurements/{manifest_name}.json")],
+                capture_output=True, text=True, cwd=str(wt))
+            return out.returncode == 0, out.stdout + out.stderr
+        finally:
+            subprocess.run(["git", "-C", str(REPO), "worktree", "remove", "--force", str(wt)],
+                           capture_output=True, text=True)
+
+
 def main():
     base = json.loads(SOURCE.read_text(encoding="utf-8"))
     by_id = {e["id"]: e for e in base}
@@ -134,7 +166,21 @@ def main():
                  lambda e: e.__setitem__("exEN", "probe rewrite")),
           must_fail=True, expect_text="exEN OVERWRITTEN")
 
-    failures = []
+    # --- and the changes this project HAS made must all still pass ---------------------
+    # A guard is only as good as the legitimate work it lets through. Tightening the
+    # manifest rules in v1.21 rejected n3-conflated-gloss-manifest — a reviewed correction
+    # that shipped in v1.18 — because correcting a wrong gloss list is exactly the case
+    # where the surviving glosses get reordered around the removal. Nothing would have said
+    # so; every synthetic probe passed. So the real history is a probe now.
+    replay_failures = []
+    for commit, manifest_name in HISTORICAL:
+        ok, out = replay(commit, manifest_name)
+        print(f"{'ok  ' if ok else 'FAIL'}  must allow   shipped manifest {manifest_name} "
+              f"({commit[:8]})")
+        if not ok:
+            replay_failures.append((manifest_name, out))
+
+    failures = list(replay_failures)
     for name, entries, must_fail, manifest, extra, expect_text in probes:
         code, out = run_guard(entries, manifest, extra)
         fired = code != 0
@@ -168,9 +214,12 @@ def _fill_from(base, eid):
         if e.get("exJP") and not e.get("exKana"):
             e["exKana"] = "ぷろーぶ"
             return entries
-    # No such entry in this file — fall back to a no-op tree so the probe stays honest
-    # rather than silently testing something else.
-    return entries
+    # No such entry in this file. A no-op tree would PASS the must-allow probe while
+    # testing nothing, which is the exact failure this whole file exists to prevent — so
+    # say so instead.
+    raise SystemExit("probe setup failed: n5.json has no entry with exJP and no exKana, "
+                     "so the fill-an-empty-field case cannot be exercised. Point _fill_from "
+                     "at a file that does, or drop the probe deliberately.")
 
 
 if __name__ == "__main__":

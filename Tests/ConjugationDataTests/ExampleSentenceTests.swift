@@ -330,5 +330,14 @@ struct ExampleSentenceTests {
             "\(stale.count) excluded ids do not name a typeable sentence: "
             + stale.prefix(10).joined(separator: ", ")))
         #expect(DictationSafety.isLoaded, "the exclusion list must load, or dictation cannot be honest")
+        // A list that loaded but is EMPTY passes every assertion above while meaning the
+        // opposite of what they check — every sentence would be offered for dictation,
+        // including the 27 proven to be spoken differently from their own exKana. The
+        // measured list is ~15% of the corpus; a floor well under that catches a truncated
+        // or regenerated-from-nothing file without pinning an exact number the next
+        // measurement is allowed to move.
+        #expect(DictationSafety.excludedIDs.count > 300, Comment(rawValue:
+            "only \(DictationSafety.excludedIDs.count) exclusions — the shipped measurement "
+            + "found 1,003. An empty or truncated list silently makes dictation dishonest."))
     }
 }

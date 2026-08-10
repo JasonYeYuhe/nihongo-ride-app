@@ -465,7 +465,12 @@ private struct WordCard: View {
                             .scaledSystemFont(compact ? 14 : 16, weight: .medium)
                             .foregroundStyle(.white.opacity(0.85))
                     }
-                    if let translation = session.currentExampleTranslation {
+                    // The translation is dropped in the compact layout for the reason the
+                    // sibling block below drops the whole example there: with the software
+                    // keyboard up the card has room for about two lines, and this reveal
+                    // already spends them on the sentence and its ruby. The sentence is what
+                    // the learner needs; the translation is what they can go back for.
+                    if !compact, let translation = session.currentExampleTranslation {
                         Text(translation)
                             .scaledSystemFont(13)
                             .foregroundStyle(Theme.dim)
@@ -573,6 +578,17 @@ private struct WordCard: View {
             Text(zh ? "把听到的句子打出来" : "Type the sentence you hear")
                 .scaledSystemFont(compact ? 13 : 16, weight: .medium, design: .rounded)
                 .foregroundStyle(Theme.dim)
+
+            // The app could not claim the audio session, so on iOS the prompt may be muted
+            // by the Ring/Silent switch. Said HERE, in the run, because that is where a
+            // learner meets the silence — a notice they only see after backing out to the
+            // menu is a notice that arrives after they have concluded the mode is broken.
+            if !model.dictationAudioSessionOK {
+                Text(zh ? "听不到?检查静音开关和音量。" : "Hear nothing? Check the silent switch and volume.")
+                    .font(.caption2)
+                    .foregroundStyle(Theme.accent)
+                    .multilineTextAlignment(.center)
+            }
 
             if session.currentReplays > 0 {
                 Text(zh ? "重听 \(session.currentReplays) 次"

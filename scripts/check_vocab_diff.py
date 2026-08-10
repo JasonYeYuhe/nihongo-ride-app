@@ -99,8 +99,13 @@ def check(path, base, allow_dedupe=False, manifest=None):
         for lang, before in (a.get("meanings") or {}).items():
             after = (b.get("meanings") or {}).get(lang) or []
             declared = manifest.get(eid) if manifest else None
+            # A language is DECLARED only when the manifest names glosses to remove from it.
+            # An entry named for a Chinese fix has not said anything about its English, and
+            # an empty `removeEN: []` says nothing either — before v1.21 both switched the
+            # append-only and duplicate rules OFF for that language, so a reorder or a
+            # duplicated gloss on a declared entry passed clean (measured).
             removals = set(declared.get("remove" + lang.upper(), [])) if declared else set()
-            if declared is not None:
+            if removals:
                 unexpected = [g for g in before if g not in after and g not in removals]
                 if unexpected:
                     problems.append(
@@ -116,16 +121,19 @@ def check(path, base, allow_dedupe=False, manifest=None):
             # still runs, just against the de-duplicated old list. Every other removal, edit
             # or reorder stays a failure.
             #
-            # This runs for manifest-declared entries TOO, minus the glosses they declared.
-            # It used to `continue` past this point, which meant naming an entry in a manifest
-            # for a Chinese fix silently switched OFF the append-only and duplicate rules for
-            # its English — a reorder or a duplicated gloss on a declared entry passed clean.
-            # A manifest is permission for the changes it names, not an exemption from the
-            # guard. (Measured and closed in v1.21 §D.)
-            expect = [g for g in (dedupe(before) if allow_dedupe else before)
-                      if g not in removals]
-            trimmed = [g for g in after if g not in removals]
-            if trimmed[:len(expect)] != expect:
+            # A declared language is exempt from what follows, and has to be: correcting a
+            # wrong gloss list is exactly the case where the REMAINING glosses get reordered
+            # and rewritten around the removal — n3-b791 went from ["今日","今天"] to
+            # ["如今","当今","今日"] under a reviewed manifest in v1.18, and a rule that
+            # demanded the survivors keep their order would have refused it. (Replayed: that
+            # commit and the three other shipped manifests all pass, and
+            # scripts/test_check_vocab_diff.py keeps replaying them.)
+            #
+            # An UNdeclared language is not exempt, which is the hole this closes.
+            if removals:
+                continue
+            expect = dedupe(before) if allow_dedupe else before
+            if after[:len(expect)] != expect:
                 problems.append(
                     f"{eid}: meanings.{lang} is not append-only — was {before!r}, now {after!r}")
             if len(after) != len(set(after)):

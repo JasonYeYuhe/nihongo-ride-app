@@ -337,7 +337,7 @@ struct ListDetailView: View {
         let enabled = count > 0
         return VStack(spacing: 6) {
             Button { model.startSentenceList(list.id) } label: {
-                Label(zh ? "例句练习 · \(count) 句" : "Sentences · \(count)",
+                Label(zh ? "例句练习 · 可用 \(count) 句" : "Sentences · \(count) available",
                       systemImage: "text.quote")
                     .scaledSystemFont(16, weight: .bold)
                     .multilineTextAlignment(.center)
@@ -350,8 +350,8 @@ struct ListDetailView: View {
             .foregroundStyle(enabled ? .white : Theme.dim)
             .disabled(!enabled)
             .accessibilityIdentifier("sentenceListButton")
-            .accessibilityLabel(zh ? "用这个词单的 \(count) 个例句练习"
-                                   : "Practise \(count) sentence\(count == 1 ? "" : "s") from this list")
+            .accessibilityLabel(zh ? "练习例句,这个词单里有 \(count) 句可用"
+                                   : "Practise sentences from this list, \(count) available")
             if !enabled && !list.ids.isEmpty {
                 Text(zh ? "这个词单里的词还没有可打字的例句。"
                         : "None of this list's words has a typeable example sentence yet.")

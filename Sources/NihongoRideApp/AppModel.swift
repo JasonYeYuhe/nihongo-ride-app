@@ -1258,12 +1258,17 @@ final class AppModel {
         case .dictation:
             config.newWordCount = Self.sentenceRunSize
             config.reviewWordCount = 0
-            // "Hints on" means the romaji answer is on screen from the first keystroke. In
-            // every other mode that is a study aid; here it is the answer to a listening
-            // question, printed before the question is asked. Dictation therefore reads
-            // "always" as "when stuck" — help stays available, it just stops arriving
-            // before the learner has listened.
-            if config.assistance == .always { config.assistance = .afterStruggle }
+            // Dictation runs at "when stuck" whichever way the setting is turned, and both
+            // directions are deliberate.
+            //
+            // "Hints on" would print the romaji answer to a listening question before the
+            // question was asked. "Off" is the worse one: in every other mode the target is
+            // on the card, so a learner who cannot manage it can still copy it — but a
+            // dictation card shows NOTHING, there is no skip control on the game screen, and
+            // the struggle detector that offers the reveal only runs under `.afterStruggle`.
+            // A learner who genuinely cannot make out the sentence would be stuck on it with
+            // no way forward at all.
+            config.assistance = .afterStruggle
         }
         let built: GameSession
         if selectedMode == .dictation {
