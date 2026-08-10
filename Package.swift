@@ -51,6 +51,7 @@ let package = Package(
                 .copy("Resources/n2.json"),
                 .copy("Resources/n1.json"),
                 .copy("Resources/passages.json"),
+                .copy("Resources/dictation-exclusions.json"),
             ]
         ),
         .testTarget(name: "VocabKitTests", dependencies: ["VocabKit"]),

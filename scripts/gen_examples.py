@@ -62,7 +62,10 @@ def gloss_of(entry):
 INFLECTING_VC = {"godan_u", "godan_k", "godan_g", "godan_s", "godan_t",
                  "godan_n", "godan_b", "godan_m", "godan_r", "ichidan", "zuru"}
 SURU_VC = {"suru", "kuru"}
-INFLECTING_POS = {"adj-i", "i-adjective", "I-adjective"}
+# One spelling, since v1.21 §D collapsed the tag vocabulary and a Swift data test now fails
+# on any other. This used to enumerate "i-adjective" and "I-adjective" too, which worked
+# only for as long as somebody remembered to add the next spelling a reviewer invented.
+INFLECTING_POS = {"adj-i"}
 # A stem shorter than this is not evidence. 行く's stem is 行, which appears in 銀行, 旅行,
 # 行事 … — matching on it would call almost anything an example of 行く.
 MIN_STEM = 2

@@ -18,8 +18,15 @@ is ever added — changes which glosses are visible at all. An entry that alread
 example has that example explained by its glosses in their current order; reordering them
 re-explains a sentence nobody re-reviewed.
 
-Examples are write-once: a batch may fill an empty exJP/exEN/exZH, never overwrite a non-empty
-one, because an overwrite replaces reviewed content with unreviewed content.
+Examples are write-once: a batch may fill an empty exJP/exEN/exZH/exKana/exTokens, never
+overwrite a non-empty one, because an overwrite replaces reviewed content with unreviewed
+content.
+
+`exKana` and `exTokens` were unguarded until v1.21 and should not have been. `exKana` is not
+decoration: it is the string sentence mode grades a learner's typing against, and — as of
+v1.21 §A — the answer a DICTATION prompt is marked against. A silent rewrite there marks a
+learner wrong for typing what they were correctly told to type, which is the same class of
+harm as a rewritten `kana` and was the only field of that class with no rule at all.
 
     python3 scripts/check_vocab_diff.py                 # working tree vs HEAD
     python3 scripts/check_vocab_diff.py --base <ref>    # vs another commit
@@ -32,7 +39,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 FROZEN = ("surface", "kana", "jlpt", "vc")
-EXAMPLE_FIELDS = ("exJP", "exEN", "exZH")
+EXAMPLE_FIELDS = ("exJP", "exEN", "exZH", "exKana", "exTokens")
 
 
 def at_ref(ref, path):
@@ -42,6 +49,15 @@ def at_ref(ref, path):
     if out.returncode != 0:
         return None                       # new file: nothing to compare against
     return json.loads(out.stdout)
+
+
+def _normalised(value):
+    """A field value reduced to something comparable, for both strings and token lists."""
+    if value is None:
+        return None
+    if isinstance(value, str):
+        return value.strip() or None
+    return value or None
 
 
 def dedupe(items):
@@ -83,8 +99,8 @@ def check(path, base, allow_dedupe=False, manifest=None):
         for lang, before in (a.get("meanings") or {}).items():
             after = (b.get("meanings") or {}).get(lang) or []
             declared = manifest.get(eid) if manifest else None
+            removals = set(declared.get("remove" + lang.upper(), [])) if declared else set()
             if declared is not None:
-                removals = set(declared.get("remove" + lang.upper(), []))
                 unexpected = [g for g in before if g not in after and g not in removals]
                 if unexpected:
                     problems.append(
@@ -95,13 +111,21 @@ def check(path, base, allow_dedupe=False, manifest=None):
                     problems.append(
                         f"{eid}: manifest promised to remove {missed!r} from meanings.{lang} "
                         f"but they are still there")
-                continue
             # A duplicate is not a sense, so dropping one loses nothing a learner could read.
             # `--allow-dedupe` permits exactly that removal and nothing else: the comparison
             # still runs, just against the de-duplicated old list. Every other removal, edit
             # or reorder stays a failure.
-            expect = dedupe(before) if allow_dedupe else before
-            if after[:len(expect)] != expect:
+            #
+            # This runs for manifest-declared entries TOO, minus the glosses they declared.
+            # It used to `continue` past this point, which meant naming an entry in a manifest
+            # for a Chinese fix silently switched OFF the append-only and duplicate rules for
+            # its English — a reorder or a duplicated gloss on a declared entry passed clean.
+            # A manifest is permission for the changes it names, not an exemption from the
+            # guard. (Measured and closed in v1.21 §D.)
+            expect = [g for g in (dedupe(before) if allow_dedupe else before)
+                      if g not in removals]
+            trimmed = [g for g in after if g not in removals]
+            if trimmed[:len(expect)] != expect:
                 problems.append(
                     f"{eid}: meanings.{lang} is not append-only — was {before!r}, now {after!r}")
             if len(after) != len(set(after)):
@@ -110,7 +134,10 @@ def check(path, base, allow_dedupe=False, manifest=None):
             problems.append(f"{eid}: meanings gained a whole new language {lang!r}")
 
         for field in EXAMPLE_FIELDS:
-            was, now = (a.get(field) or "").strip(), (b.get(field) or "").strip()
+            # exTokens is a list of [surface, reading] pairs; the rest are strings. Normalise
+            # both to "empty or not, and equal or not" rather than assuming a string, because
+            # a .strip() on the token list is a TypeError, not a passing check.
+            was, now = _normalised(a.get(field)), _normalised(b.get(field))
             if was and now != was:
                 declared = manifest.get(eid) if manifest else None
                 # A reviewed translation correction is still an overwrite, so it still has to

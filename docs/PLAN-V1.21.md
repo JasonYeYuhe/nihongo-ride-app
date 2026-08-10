@@ -62,15 +62,34 @@ in this release depends on the answer, but the queue does not shrink on its own:
 
 ## §D Maintenance the corpus work left behind
 
-- `check_translation_agreement.py` now only compares subjects and day-part words; its number
-  half was deleted after seven failed attempts. The eight sentences it still flags across the
-  corpus are unreviewed.
-- The `i-adjective`/`adj-i` tag spelling is inconsistent in the vocabulary data (nine variants
-  seen). The test now matches loosely, but the data itself is untidy and the next thing to
-  read it will hit the same wall.
+- ~~`check_translation_agreement.py` … the eight sentences it still flags are unreviewed.~~
+  **Done.** All eight reviewed by three independent lenses plus an adversary, against a
+  negative control that proved the panel fires (12/12 on deliberately-broken pairs). None
+  changed: every one has a zero-subject Japanese sentence, so the two translations differ
+  only inside the space the source leaves open — and the app shows one translation at a
+  time, so the "disagreement" is never on screen together. Three of the eight are the
+  checker's `\bmy\b` clause firing on a possessive. Record:
+  `docs/measurements/translation-agreement-adjudication.json`.
+- ~~The `i-adjective`/`adj-i` tag spelling is inconsistent (nine variants seen).~~
+  **Done, and the plan had the number wrong**: three spellings across nine entries, not nine
+  variants. It was also the smallest of six families with the same problem — `noun`/`Noun`
+  against `n` alone accounts for 620 occurrences. All 42 spellings collapsed to a canonical
+  26-tag vocabulary (`scripts/normalize_pos_tags.py`, 770 entries), and a data test now
+  fails on any tag outside it — `check_vocab_diff.py` never looked at `pos` and still does
+  not, so the test is the only thing holding this.
 - 14 sentences have no `exKana` on purpose (12 contain digits, which Sudachi reads one digit
   at a time; 2 contain the katakana middle dot). They are display-only forever unless the
-  reading is hand-written.
+  reading is hand-written — and six of the twelve are unit words (キロ, グラム, メートル…) where
+  writing it means committing to じゅっキロ over じっキロ, which is the contested-reading
+  judgment that put 225 entries beyond teaching. **Now pinned by id in a test**, failing in
+  both directions, so neither a fifteenth nor a thirteenth can appear unnoticed.
+- **Added on measurement, not in the original plan:** `exKana` and `exTokens` were guarded by
+  nothing. `check_vocab_diff.py` froze identity and made examples write-once, but its
+  example set was `exJP`/`exEN`/`exZH` — so the string sentence mode grades typing against,
+  and the answer a dictation prompt is marked against, could be silently rewritten. Both are
+  now write-once, the manifest hole that switched off the append-only rule for a declared
+  entry's other languages is closed, and `scripts/test_check_vocab_diff.py` proves each rule
+  fires (and that the permitted changes still pass) instead of trusting the word "clean".
 
 ## Stop rule
 

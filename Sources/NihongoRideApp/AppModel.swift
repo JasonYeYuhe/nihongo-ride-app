@@ -28,6 +28,13 @@ struct GameSummary: Equatable {
     /// The run's refused keystrokes, carried so the results screen can coach from them.
     /// In memory with the summary; never persisted (see RomajiKana.MistakeTrace).
     var mistakes: MistakeTrace
+    /// Which mode produced this run — the results screen shows a dictation run a stat the
+    /// others do not have.
+    var mode: GameMode
+    /// Times the learner asked to hear a sentence again (dictation). Never scored: a run
+    /// that needed twelve replays and one that needed none score identically, and that is
+    /// exactly why the number is reported separately instead of folded into the score.
+    var replays: Int
 
     init(from session: GameSession) {
         score = session.score
@@ -35,6 +42,8 @@ struct GameSummary: Equatable {
         wordsCompleted = session.wordsCompleted
         accuracy = session.accuracy
         distanceMeters = session.distanceMeters
+        mode = session.mode
+        replays = session.replays
         var seen = Set<String>()
         reviewWords = session.lapsedEntries.filter { seen.insert($0.id).inserted }
         mistakes = session.mistakes
@@ -794,6 +803,22 @@ final class AppModel {
     /// Cancels any in-flight utterance (call when leaving a game screen).
     func stopSpeaking() { speech.stop() }
 
+    /// Speaks a DICTATION prompt. Deliberately not `speak(_:)`: that one is gated on
+    /// `ttsEnabled`, which is the "show a read-aloud button on cards" preference — a
+    /// different question from "play the prompt in the mode whose entire premise is
+    /// listening". A learner who chose dictation has asked for audio; asking them to also
+    /// find a settings toggle would be a trap. Availability is still respected, and the
+    /// menu refuses to start the mode at all without a voice.
+    func speakPrompt(_ text: String?) {
+        guard let text, !text.isEmpty, ttsAvailable else { return }
+        speech.speak(text, rate: ttsRate)
+    }
+
+    /// Whether the last dictation run got the audio session it asked for. False means the
+    /// prompt may be inaudible on a muted iPhone, and the run says so rather than leaving
+    /// the learner staring at silence.
+    private(set) var dictationAudioSessionOK = true
+
     // MARK: Stats screen (v1.9 §B) — pure reads over the journal + conjugation store.
     var statsDailyWords: [(day: Date, words: Int)] { journal.dailyWords() }
     var statsAccuracySeries: [(date: Date, accuracy: Double)] { journal.accuracySeries() }
@@ -1117,6 +1142,41 @@ final class AppModel {
     /// enormous. Five is roughly a word run's length in characters.
     static let sentenceRunSize = 5
 
+    // MARK: Dictation (v1.21 §A)
+
+    /// Whether the dictation mode can run at all. A whole mode cannot degrade the way the
+    /// read-aloud button does — that button hides itself and a learner who never saw it
+    /// loses nothing. Pick dictation with no Japanese voice installed and you get a run of
+    /// silence you cannot tell from a bug, so the menu says why and refuses to start
+    /// instead of hiding the entry.
+    var dictationAvailable: Bool { ttsAvailable && DictationSafety.isLoaded }
+
+    /// How many sentences dictation may draw from at the chosen level — smaller than the
+    /// sentence-mode pool, because sentences the synthesizer was measured to read
+    /// differently from their own `exKana` are withheld (see `DictationSafety`).
+    var dictationPoolCount: Int {
+        let excluded = DictationSafety.excludedIDs
+        let pool = selectedLevel.map { VocabStore.shared.entries(level: $0) }
+            ?? VocabStore.shared.entries
+        return pool.lazy.filter { $0.isTypeableSentence && !excluded.contains($0.id) }.count
+    }
+
+    /// True while a dictation run holds the audio session (iOS), so it is released exactly
+    /// once no matter which of the three exits the run takes.
+    private var holdingAudioSession = false
+
+    private func beginDictationAudio() {
+        guard !holdingAudioSession else { return }
+        holdingAudioSession = true
+        dictationAudioSessionOK = SpeechSynthesizer.beginSpokenPrompts()
+    }
+
+    private func endDictationAudio() {
+        guard holdingAudioSession else { return }
+        holdingAudioSession = false
+        SpeechSynthesizer.endSpokenPrompts()
+    }
+
     private func startSentenceRun(_ built: GameSession) {
         session = built
         conjugationSession = nil   // defensive: a sentence run must not route to the conjugation screen
@@ -1195,9 +1255,21 @@ final class AppModel {
         case .sentence:
             config.newWordCount = Self.sentenceRunSize
             config.reviewWordCount = 0
+        case .dictation:
+            config.newWordCount = Self.sentenceRunSize
+            config.reviewWordCount = 0
+            // "Hints on" means the romaji answer is on screen from the first keystroke. In
+            // every other mode that is a study aid; here it is the answer to a listening
+            // question, printed before the question is asked. Dictation therefore reads
+            // "always" as "when stuck" — help stays available, it just stops arriving
+            // before the learner has listened.
+            if config.assistance == .always { config.assistance = .afterStruggle }
         }
         let built: GameSession
-        if selectedMode == .sentence {
+        if selectedMode == .dictation {
+            guard dictationAvailable else { return }
+            built = GameSession.makeDictation(vocab: .shared, config: config)
+        } else if selectedMode == .sentence {
             built = GameSession.makeSentence(vocab: .shared, config: config)
         } else if selectedMode == .practice && practicePassages {
             built = GameSession.makePractice(level: practicePassageLevel, config: config)
@@ -1218,6 +1290,7 @@ final class AppModel {
         }
         emptyPoolNotice = false
         session = built
+        if built.mode == .dictation { beginDictationAudio() }
         runClock = RunClock(startedAt: Date())
         resolveRideStage()
         screen = .playing
@@ -1398,6 +1471,7 @@ final class AppModel {
     func finishGame() {
         guard let session else { return }
         stopSpeaking()   // cancel any in-flight read-aloud when a run ends (parity with finishConjugation)
+        endDictationAudio()
         // Single source of truth for the side-effect gating (tested in GameCore).
         let completion = RunCompletion(mode: session.mode, recordsSRS: session.config.recordsSRS)
         var changedSRS: [String] = []
@@ -1437,6 +1511,7 @@ final class AppModel {
         conjugationSession = nil
         runClock = nil
         stopSpeaking()
+        endDictationAudio()
         screen = .menu
     }
 

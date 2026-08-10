@@ -280,12 +280,26 @@ struct SentenceModeTests {
 
     // MARK: v1.21 §B — sentence runs that follow what the learner is studying
 
+    /// Shaped like the shipped data: `exJP` keeps its 。 and `exKana` does not, because the
+    /// typing target cannot contain punctuation a romaji keyboard has no way to produce.
+    /// A fixture that punctuated the kana would make every "type it to completion" assertion
+    /// vacuously pass — the word would simply never finish.
+    private func sentenceEntry(_ id: String, jp: String?, kana: String?,
+                               tokens: [[String]]? = nil) -> VocabEntry {
+        VocabEntry(id: id, surface: "犬", kana: "いぬ", partsOfSpeech: ["n"],
+                   jlpt: .n5, meanings: ["en": ["dog"]],
+                   exampleJP: jp, exampleEN: "A dog.", exampleZH: "狗。",
+                   exampleKana: kana, exampleTokens: kana == nil ? nil : tokens)
+    }
+
     private var pool: VocabStore {
         VocabStore(entries: [
-            entry("has-1", jp: "犬だ。", kana: "いぬだ。"),
-            entry("has-2", jp: "猫だ。", kana: "ねこだ。"),
-            entry("no-kana", jp: "10キロ。", kana: nil),
-            entry("no-sentence", jp: nil, kana: nil),
+            sentenceEntry("has-1", jp: "犬だ。", kana: "いぬだ",
+                          tokens: [["犬", "いぬ"], ["だ", "だ"], ["。", "。"]]),
+            sentenceEntry("has-2", jp: "猫だ。", kana: "ねこだ",
+                          tokens: [["猫", "ねこ"], ["だ", "だ"], ["。", "。"]]),
+            sentenceEntry("no-kana", jp: "10キロ。", kana: nil),
+            sentenceEntry("no-sentence", jp: nil, kana: nil),
         ])
     }
 
@@ -377,6 +391,83 @@ struct SentenceModeTests {
         #expect(review.card(for: "has-1") == before)
         #expect(RunCompletion(mode: session.mode, recordsSRS: session.config.recordsSRS)
                     .persistsSRS == false)
+    }
+
+    // MARK: v1.21 §A — dictation
+
+    /// Dictation inherits sentence mode's answer to the SRS question, and for a stronger
+    /// reason: a listening failure charged to one word's review card is even further from
+    /// what that card measures than a typing failure across a whole sentence.
+    @Test("a dictation run never writes SRS, but still logs a ride and shows results")
+    func dictationDoesNotPersistSRS() {
+        let done = RunCompletion(mode: .dictation, recordsSRS: true)
+        #expect(done.persistsSRS == false)
+        #expect(done.logsRide == true)
+        #expect(done.showsResults == true)
+        // …and the modes that DO persist still do.
+        #expect(RunCompletion(mode: .journey, recordsSRS: true).persistsSRS == true)
+        #expect(RunCompletion(mode: .timeAttack, recordsSRS: true).persistsSRS == true)
+    }
+
+    /// The whole honesty of the mode rests on this filter. A sentence the synthesizer was
+    /// measured to read differently from its own `exKana` would play one thing and grade
+    /// another, so it must never be drawn — while staying perfectly usable in sentence mode,
+    /// where the reading is shown rather than spoken.
+    @Test("dictation never draws a sentence whose audio was measured to disagree with it")
+    func dictationExcludesMismatches() {
+        let all = GameSession.makeDictation(vocab: pool, excluding: [], config: sentenceConfig())
+        #expect(Set(all.wordList.map(\.id)) == ["has-1", "has-2"])
+
+        let filtered = GameSession.makeDictation(vocab: pool, excluding: ["has-1"],
+                                                 config: sentenceConfig())
+        #expect(Set(filtered.wordList.map(\.id)) == ["has-2"])
+        #expect(filtered.mode == .dictation)
+
+        // Excluding everything leaves an empty run, not a run padded with the excluded ones.
+        let none = GameSession.makeDictation(vocab: pool, excluding: ["has-1", "has-2"],
+                                             config: sentenceConfig())
+        #expect(none.wordCount == 0)
+        #expect(none.isFinished == true)
+
+        // Sentence mode is untouched by the dictation exclusions — the sentence is still
+        // perfectly good to READ, and withholding it there would be a silent content loss.
+        let sentence = GameSession.makeSentence(vocab: pool, config: sentenceConfig())
+        #expect(Set(sentence.wordList.map(\.id)) == ["has-1", "has-2"])
+    }
+
+    /// The typing target is the same one sentence mode uses. What changes is that nothing
+    /// on screen shows it — but the card the engine hands the view still carries the kanji
+    /// sentence, because the reveal needs it.
+    @Test("a dictation card carries the sentence to be typed and the kanji to reveal")
+    func dictationCardShape() {
+        let session = GameSession.makeDictation(vocab: pool, excluding: ["has-2"],
+                                                config: sentenceConfig())
+        #expect(session.currentKana == "いぬだ")
+        #expect(session.currentExampleJP == "犬だ。")
+        #expect(session.currentExampleTokens?.isEmpty == false)
+    }
+
+    /// Replays are counted but never priced. If hearing a sentence again cost score or
+    /// combo, the cheapest strategy would be to guess rather than listen — the opposite of
+    /// what the mode is for. The count exists so the results can say what the score cannot.
+    @Test("replays are counted, reset per sentence, and never affect the score")
+    func replaysAreCountedNotCharged() {
+        let session = GameSession.makeDictation(vocab: pool, excluding: [], config: sentenceConfig())
+        session.noteReplay()
+        session.noteReplay()
+        #expect(session.replays == 2)
+        #expect(session.currentReplays == 2)
+
+        let scoreBefore = session.score
+        let comboBefore = session.combo
+        session.noteReplay()
+        #expect(session.score == scoreBefore)
+        #expect(session.combo == comboBefore)
+
+        // Finishing a sentence carries the run total forward and restarts the per-card count.
+        for ch in KanaRomanizer.romaji(for: session.currentKana ?? "") { session.input(ch) }
+        #expect(session.replays == 3)
+        #expect(session.currentReplays == 0)
     }
 
     /// Every sentence the real store would offer must be typeable end to end: feed the

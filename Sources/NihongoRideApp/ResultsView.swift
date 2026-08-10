@@ -191,12 +191,23 @@ struct ResultsView: View {
 
     /// Six stat cards: 3×2 rows on roomy screens, a 2-column grid on iPhone.
     private func scoreGrid(_ summary: GameSummary) -> some View {
+        // Dictation trades the distance tile for the replay count. The grid is a fixed 3+3,
+        // and of the six, distance is the one a listening exercise says least with — while
+        // the replay count is the one thing about a dictation run the score cannot express:
+        // twelve replays and none score the same. The ride is still journalled with its
+        // distance either way; this is what the learner is shown, not what is recorded.
+        let secondCard: (icon: String, tint: Color, value: String, label: String, spoken: String?) =
+            summary.mode == .dictation
+            ? (icon: "arrow.clockwise", tint: Theme.accent2,
+               value: "\(summary.replays)", label: zh ? "重听" : "Replays",
+               spoken: zh ? "重听 \(summary.replays) 次" : countLabel(summary.replays, "replay"))
+            : (icon: "bicycle", tint: Theme.accent2,
+               value: "\(Int(summary.distanceMeters)) m", label: zh ? "距离" : "Distance",
+               spoken: zh ? "\(Int(summary.distanceMeters)) 米" : "\(Int(summary.distanceMeters)) meters")
         let cards: [(icon: String, tint: Color, value: String, label: String, spoken: String?)] = [
             (icon: "star.fill", tint: Theme.gold,
              value: "\(summary.score)", label: zh ? "得分" : "Score", spoken: nil),
-            (icon: "bicycle", tint: Theme.accent2,
-             value: "\(Int(summary.distanceMeters)) m", label: zh ? "距离" : "Distance",
-             spoken: zh ? "\(Int(summary.distanceMeters)) 米" : "\(Int(summary.distanceMeters)) meters"),
+            secondCard,
             (icon: "flame.fill", tint: Theme.accent,
              value: "×\(summary.maxCombo)", label: zh ? "最高连击" : "Best combo",
              spoken: "\(summary.maxCombo)"),

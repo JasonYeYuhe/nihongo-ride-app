@@ -1,0 +1,85 @@
+{
+  "date": "2026-08-10",
+  "release": "v1.21 §D",
+  "subject": "the 8 sentences check_translation_agreement.py still flags across the shipped corpus",
+  "outcome": "all 8 reviewed, 0 changed",
+  "method": {
+    "shape": "three independent lenses per sentence (Japanese correctness, learner harm, translation fidelity), then an adversary whose default is to refuse the change — the review shape that has held for six content batches",
+    "lensVotes": "24 votes: 9 false-positive, 15 harmless-variation, 0 real-defect. The adversary overruled nobody; it agreed with a unanimous panel.",
+    "negativeControl": "REQUIRED, and run. A panel that returns 'nothing to fix' is indistinguishable from a broken panel until it is shown to fire. The same three lenses were given four deliberately-corrupted pairs (a verb flipped bought->sold, a stated number 三人 rendered as 五个, an explicit 私は一人で rendered as 'we all together', a dropped negation) plus one clean shipped pair. Result: 12/12 corrupted votes returned real-defect AND named the correct defective side; 3/3 clean votes returned harmless-variation. The panel discriminates."
+  },
+  "whyNoneWereChanged": [
+    "In all eight, the Japanese has a ZERO SUBJECT. Neither translation contradicts the source, because the source does not state what they differ about — both are fillings of a slot Japanese leaves empty, and back-translating either produces correct Japanese for the same scene.",
+    "Three of the eight are not disagreements at all: the checker's first-person regex includes the possessive \\bmy\\b, so 'The family celebrated my grandfather's 60th birthday' trips a rule about SUBJECTS while its subject is 'the family'. (n1-b664, n1-b1814, n5-g083.)",
+    "The app shows ONE translation at a time — VocabEntry.exampleTranslation(for:) returns the zh string or the en string, never both — so a learner has to switch interface language and re-draw the same card to see any difference at all. The contradiction the checker describes is not visible to the reader it was meant to protect.",
+    "The typing target carries no pronoun in any of the eight, so no learner ever practises the disputed word.",
+    "Correcting a shipped translation is an overwrite of reviewed content: it costs a manifest and a re-review. Nicer wording is not the bar."
+  ],
+  "flags": [
+    {
+      "id": "n1-b664",
+      "level": "N1",
+      "headword": "葬る / ほうむる",
+      "objection": "subject differs: en says I, zh says 我们",
+      "verdict": "false-positive",
+      "note": "Both sides say 'we'. The regex fired on the possessive in 'my deceased grandfather'; bare 祖父 is the humble in-group form, so the possessor is licensed on both sides."
+    },
+    {
+      "id": "n1-b1814",
+      "level": "N1",
+      "headword": "還暦 / かんれき",
+      "objection": "subject differs: en says I, zh says 我们",
+      "verdict": "false-positive",
+      "note": "Subject is 'The family' / 我们一家人 — the same referent. Fired on 'my grandfather'."
+    },
+    {
+      "id": "n2-b047",
+      "level": "N2",
+      "headword": "顕微鏡 / けんびきょう",
+      "objection": "subject differs: en says I, zh says 我们",
+      "verdict": "harmless-variation",
+      "note": "A genuine surface difference, not an artifact — but the JP states no subject at all, and a classroom scene reads naturally either per-student or collectively."
+    },
+    {
+      "id": "n2-b1016",
+      "level": "N2",
+      "headword": "やっつける",
+      "objection": "subject differs: en says we, zh says 我",
+      "verdict": "harmless-variation",
+      "note": "仲間と一緒に fixes the COMPOSITION of the acting party, not its number. The English 'We … together with friends' is mildly redundant; wording, not meaning."
+    },
+    {
+      "id": "n3-b672",
+      "level": "N3",
+      "headword": "双子 / ふたご",
+      "objection": "subject differs: en says I, zh says 我们",
+      "verdict": "harmless-variation",
+      "note": "The subject of います is 双子 on all three sides; the person marker is only the possessor of the class. 我们班 is the obligatory Chinese rendering of 私のクラス — 我的班 is unnatural."
+    },
+    {
+      "id": "n3-b711",
+      "level": "N3",
+      "headword": "要求 / ようきゅう",
+      "objection": "subject differs: en says we, zh says 我",
+      "verdict": "harmless-variation",
+      "note": "Zero subject in the JP; plain-past 要求した encodes neither person nor number. This one was also used as the CLEAN control in the negative-control run, and all three lenses independently returned harmless there too."
+    },
+    {
+      "id": "n5-g083",
+      "level": "N5",
+      "headword": "休む / やすむ",
+      "objection": "subject differs: en says I, zh says 我们",
+      "verdict": "false-positive",
+      "note": "Two clauses. The English 'I'm' belongs to the tired clause, the Chinese 我们 to the ましょう clause; both renderings are correct."
+    },
+    {
+      "id": "n5-b254",
+      "level": "N5",
+      "headword": "兄弟 / きょうだい",
+      "objection": "subject differs: en says I, zh says 我们",
+      "verdict": "harmless-variation",
+      "note": "The Chinese reframes 私は三人兄弟です as 我们家有三兄弟姐妹 — a recast, and the widest gap of the eight. Still not a contradiction: the family described is the same one, and the count is preserved."
+    }
+  ],
+  "checkerNote": "The \\bmy\\b clause in check_translation_agreement.py's en_i regex causes 3 of its 8 flags. It was NOT removed. That file already documents seven failed refinements and one deletion; a change calibrated on eight sentences and shipped against 6,737 is how the number half of this checker died. If it is ever revisited, calibrate on the full corpus first."
+}

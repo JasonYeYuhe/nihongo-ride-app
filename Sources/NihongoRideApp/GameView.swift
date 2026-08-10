@@ -108,7 +108,13 @@ struct GameView: View {
             // (e.g. an empty queue) would otherwise strand here — onChange won't
             // fire for a value that never changes. Finish it immediately.
             if session.isFinished { model.finishGame() }
+            playPrompt(session)
         }
+        // The app's ONE auto-playing sound, and the exception is principled: everywhere else
+        // audio is an aid a learner opts into per card, so it waits to be asked. In dictation
+        // the audio is the question — a card that waited to be asked would be a blank screen
+        // demanding you type what you had not been told.
+        .onChange(of: session.index) { _, _ in playPrompt(session) }
         .onReceive(ticker) { _ in
             // Sheet open → pause the time-attack clock too (it's a modal interruption).
             guard session.mode == .timeAttack, !isPaused, addToListsID == nil,
@@ -179,6 +185,18 @@ struct GameView: View {
     }
 
     /// Pedalling speed for the ride scene — always moving, faster on a combo.
+    /// Speaks the current dictation prompt. It reads `exampleJP` — the KANJI sentence —
+    /// and not `exKana`, which is the string the learner is typing and would look like the
+    /// safer choice. It is not: Kyoko reads a bare hiragana は as "ha", so feeding it the
+    /// typing target would mispronounce the topic particle in roughly 2,900 of the corpus's
+    /// sentences. Reading the kanji lets the synthesizer's own parser resolve the particles,
+    /// at the cost of it also choosing the kanji readings — which is the thing
+    /// `DictationSafety` was measured for, and why some sentences never reach this function.
+    private func playPrompt(_ session: GameSession) {
+        guard session.mode == .dictation, !session.isFinished, !Screenshotter.isCapturing else { return }
+        model.speakPrompt(session.currentExampleJP ?? session.currentSurface)
+    }
+
     private func rideSpeed(_ session: GameSession) -> Double {
         1.0 + Double(min(session.combo, 12)) * 0.12
     }
@@ -400,25 +418,59 @@ private struct WordCard: View {
     /// Owned by GameView so it can suspend game input while the sheet is up.
     var onLongPressStar: (String) -> Void = { _ in }
 
+    private var isDictation: Bool { session.mode == .dictation }
+
     var body: some View {
         VStack(spacing: compact ? 10 : 18) {
-            Text(session.currentSurface ?? "")
-                .scaledSystemFont(compact ? 40 : 64, weight: .bold, relativeTo: .largeTitle)
-                .foregroundStyle(.white)
-                .lineLimit(1)
-                .minimumScaleFactor(0.4)   // long compounds shrink instead of clipping (narrow screens)
+            if isDictation {
+                // The prompt IS the audio. Nothing that would answer the question — not the
+                // sentence, not its reading, not the word's meaning — appears before the
+                // learner asks to be shown.
+                replayControl
+            } else {
+                Text(session.currentSurface ?? "")
+                    .scaledSystemFont(compact ? 40 : 64, weight: .bold, relativeTo: .largeTitle)
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.4)   // long compounds shrink instead of clipping (narrow screens)
 
-            kanaReading
+                kanaReading
 
-            Text(session.currentGloss ?? "")
-                .scaledSystemFont(compact ? 15 : 20, weight: .medium, design: .rounded)
-                .foregroundStyle(Theme.dim)
+                Text(session.currentGloss ?? "")
+                    .scaledSystemFont(compact ? 15 : 20, weight: .medium, design: .rounded)
+                    .foregroundStyle(Theme.dim)
+            }
 
             Divider().background(Theme.cardStroke).frame(maxWidth: compact ? 300 : 360)
 
             romaji
 
-            if !compact, let example = session.currentExampleJP {
+            // The dictation reveal, and the one place furigana earns the most: the learner
+            // has just been told what they could not hear, and the ruby is the bridge from
+            // the kanji they are now seeing to the kana they were being asked to type. It
+            // renders even in the compact (keyboard-up) layout, because a reveal you cannot
+            // see is not a reveal.
+            if isDictation, session.isRevealed, let example = session.currentExampleJP {
+                VStack(spacing: 3) {
+                    if model.exampleFurigana,
+                       let tokens = session.currentExampleTokens, !tokens.isEmpty {
+                        FuriganaText(tokens: tokens, size: compact ? 14 : 16, color: .white.opacity(0.85))
+                    } else {
+                        Text(example)
+                            .scaledSystemFont(compact ? 14 : 16, weight: .medium)
+                            .foregroundStyle(.white.opacity(0.85))
+                    }
+                    if let translation = session.currentExampleTranslation {
+                        Text(translation)
+                            .scaledSystemFont(13)
+                            .foregroundStyle(Theme.dim)
+                    }
+                }
+                .multilineTextAlignment(.center)
+                .padding(.top, 4)
+            }
+
+            if !compact, !isDictation, let example = session.currentExampleJP {
                 VStack(spacing: 3) {
                     // Furigana on the DISPLAYED example only. In sentence mode the example is
                     // the thing being typed, so showing its reading would hand over the
@@ -449,7 +501,12 @@ private struct WordCard: View {
         .overlay(RoundedRectangle(cornerRadius: compact ? 20 : 28).strokeBorder(.white.opacity(0.12)))
         .overlay(alignment: .topTrailing) { saveStar }
         .overlay(alignment: .topLeading) {
-            SpeakButton(kana: session.currentKana, compact: compact, language: language)
+            // Not in dictation: that button reads `currentKana`, which here IS the answer.
+            // The replay control on the card is the audio affordance, and it plays the
+            // kanji sentence, not its reading.
+            if !isDictation {
+                SpeakButton(kana: session.currentKana, compact: compact, language: language)
+            }
         }
     }
 
@@ -473,6 +530,52 @@ private struct WordCard: View {
                 .accessibilityLabel(saved ? (zh ? "已收藏,点按取消" : "Saved, tap to remove")
                                           : (zh ? "收藏此词" : "Save this word"))
                 .accessibilityAction(named: Text(zh ? "加入词单" : "Add to lists")) { onLongPressStar(id) }
+        }
+    }
+
+    /// The dictation prompt: a big replay control and the count of how often it was used.
+    ///
+    /// Replaying is free and unlimited — the mode trains listening, not memory, and a
+    /// learner who has to hear a sentence four times has still done the exercise. The count
+    /// is shown anyway, live and then again in the results, because it is the part of the
+    /// outcome the score cannot express.
+    ///
+    /// A tap gesture and NOT a Button, for the reason the ★ and the stuck-offer are not
+    /// Buttons either: this sits on the live typing screen where KeyCaptureView must hold
+    /// first responder, and a focusable control here takes it away — dropping keys on
+    /// macOS, dismissing the software keyboard on iOS.
+    @ViewBuilder
+    private var replayControl: some View {
+        let zh = language == "zh"
+        VStack(spacing: compact ? 6 : 10) {
+            Image(systemName: "speaker.wave.3.fill")
+                .scaledSystemFont(compact ? 34 : 52, weight: .semibold, relativeTo: .largeTitle)
+                .foregroundStyle(Theme.accent2)
+                .padding(compact ? 10 : 18)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    session.noteReplay()
+                    model.speakPrompt(session.currentExampleJP ?? session.currentSurface)
+                    #if os(iOS)
+                    KeyboardSummon.summon()
+                    #endif
+                }
+                .accessibilityElement()
+                .accessibilityAddTraits(.isButton)
+                .accessibilityIdentifier("replayButton")
+                .accessibilityLabel(zh ? "再听一遍" : "Play the sentence again")
+
+            Text(zh ? "把听到的句子打出来" : "Type the sentence you hear")
+                .scaledSystemFont(compact ? 13 : 16, weight: .medium, design: .rounded)
+                .foregroundStyle(Theme.dim)
+
+            if session.currentReplays > 0 {
+                Text(zh ? "重听 \(session.currentReplays) 次"
+                        : countLabel(session.currentReplays, "replay"))
+                    .font(.caption2)
+                    .foregroundStyle(Theme.dim.opacity(0.8))
+                    .accessibilityIdentifier("replayCount")
+            }
         }
     }
 

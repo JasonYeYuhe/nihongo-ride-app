@@ -241,4 +241,94 @@ struct ExampleSentenceTests {
         #expect(typeable > 3_000,
                 Comment(rawValue: "only \(typeable) of \(withExamples.count) are typeable"))
     }
+
+    // MARK: v1.21 §D — the tidying the corpus work left behind
+
+    /// The part-of-speech vocabulary, after v1.21 §D collapsed 42 spellings down to these.
+    ///
+    /// Six families had been written three ways each — `n`/`noun`/`Noun`, `v`/`verb`/`Verb`,
+    /// and so on — because every generation batch and every reviewer round-trip spelled them
+    /// its own way. `import_review_sheets.py` still writes back whatever a reviewer types
+    /// with no normalisation, so the pipe that produced the mess is still open; this test is
+    /// what closes it. `check_vocab_diff.py` cannot: it does not look at `pos` at all.
+    private let canonicalPOS: Set<String> = [
+        "n", "v", "adj-i", "adj-na", "adj-no", "adj-t", "adj-f",
+        "adv", "adv-to", "conj", "pron", "suf", "pref", "num", "exp", "int",
+        "vs", "vt", "vi", "v1", "v5r", "v5s", "v5m", "v5g", "v5u", "v5t",
+    ]
+
+    @Test("every part-of-speech tag is spelled the one canonical way")
+    func posTagsAreCanonical() {
+        var offenders: [String] = []
+        for entry in VocabStore.shared.entries {
+            for tag in entry.partsOfSpeech where !canonicalPOS.contains(tag) {
+                offenders.append("\(entry.id) \(entry.surface): \(tag)")
+            }
+        }
+        #expect(offenders.isEmpty, Comment(rawValue:
+            "\(offenders.count) entries carry a non-canonical pos tag — run "
+            + "scripts/normalize_pos_tags.py, and add the tag to BOTH lists if it is a "
+            + "genuinely new class:\n" + offenders.prefix(10).joined(separator: "\n")))
+    }
+
+    /// A tag list is a set written as an array; the same class twice is a merge artifact,
+    /// not two senses. Normalising `['n', 'Noun']` would have produced `['n', 'n']` if the
+    /// script had not de-duplicated, and nothing else in the pipeline would have noticed.
+    @Test("no entry carries the same part-of-speech tag twice")
+    func posTagsAreUnique() {
+        let dupes = VocabStore.shared.entries.filter {
+            Set($0.partsOfSpeech).count != $0.partsOfSpeech.count
+        }
+        #expect(dupes.isEmpty, Comment(rawValue: "\(dupes.count) entries repeat a pos tag: "
+                                                 + dupes.prefix(5).map(\.id).joined(separator: ", ")))
+    }
+
+    /// The fourteen sentences that will never have a reading, pinned by id.
+    ///
+    /// Twelve contain digits, which Sudachi reads one digit at a time — 「荷物は10キロあります」
+    /// becomes いちれいきろ, "one-zero kilos" — and two contain the katakana middle dot, which
+    /// survives into the reading where no romaji keystroke can produce it. They ship as
+    /// display-only sentences, which is correct: a wrong typing target marks a learner wrong
+    /// for typing exactly what the sentence says.
+    ///
+    /// The list is exact rather than a count so the failure says WHICH one moved. It fails in
+    /// both directions on purpose: a fifteenth means the reading generator started refusing
+    /// something new, and a thirteenth means one of these silently gained a hand-written
+    /// reading — and six of them are unit words (キロ, グラム, メートル…) where writing the
+    /// reading means committing to じゅっキロ over じっキロ, which is the contested-reading
+    /// judgment that put 225 entries beyond teaching.
+    @Test("exactly the known fourteen sentences have no typeable reading")
+    func sentencesWithoutReadings() {
+        let expected: Set<String> = [
+            "n5-k008", "n5-k009", "n5-k010", "n5-k012", "n5-k058",
+            "n4-g012", "n3-g084", "n3-g085", "n3-g108", "n3-g241",
+            "n2-k003", "n2-k006", "n2-k056", "n1-k102",
+        ]
+        let actual = Set(withExamples.filter { !$0.isTypeableSentence }.map(\.id))
+        #expect(actual == expected, Comment(rawValue:
+            "gained: \(actual.subtracting(expected).sorted())  "
+            + "lost: \(expected.subtracting(actual).sorted())"))
+    }
+
+    /// Dictation plays a synthesizer's reading of `exJP` and grades against `exKana`, so a
+    /// sentence it is offered must have both plus the tokens the reveal draws its furigana
+    /// from. Every id withheld from dictation must also still BE a sentence — an exclusion
+    /// list that drifts onto ids the corpus no longer has looks like a shrinking safe pool
+    /// and is really a stale file.
+    @Test("every dictation exclusion names a real, otherwise-typeable sentence")
+    func dictationExclusionsResolve() {
+        let byID = Dictionary(VocabStore.shared.entries.map { ($0.id, $0) },
+                              uniquingKeysWith: { a, _ in a })
+        var stale: [String] = []
+        for id in DictationSafety.excludedIDs {
+            guard let entry = byID[id], entry.isTypeableSentence else {
+                stale.append(id)
+                continue
+            }
+        }
+        #expect(stale.isEmpty, Comment(rawValue:
+            "\(stale.count) excluded ids do not name a typeable sentence: "
+            + stale.prefix(10).joined(separator: ", ")))
+        #expect(DictationSafety.isLoaded, "the exclusion list must load, or dictation cannot be honest")
+    }
 }

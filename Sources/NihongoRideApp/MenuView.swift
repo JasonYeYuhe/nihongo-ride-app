@@ -63,6 +63,7 @@ struct MenuView: View {
                         Text(model.languageCode == "zh" ? "练习" : "Practice").tag(GameMode.practice)
                         Text(model.languageCode == "zh" ? "变形" : "Verbs").tag(GameMode.conjugation)
                         Text(model.languageCode == "zh" ? "例句" : "Sentence").tag(GameMode.sentence)
+                        Text(model.languageCode == "zh" ? "听写" : "Listen").tag(GameMode.dictation)
                     }
                     .pickerStyle(.segmented)
                     .menuControlWidth(340)
@@ -240,20 +241,48 @@ struct MenuView: View {
             .frame(maxWidth: 420)
 
             let isConjugation = model.selectedMode == .conjugation
+            let isDictation = model.selectedMode == .dictation
             let zhLang = model.languageCode == "zh"
+            // Disabled rather than hidden, and paired with the notice below: a start button
+            // that silently does nothing is the failure this mode is most likely to ship.
+            let startable = !isDictation || model.dictationAvailable
             Button(action: model.startGame) {
                 Text(isConjugation ? (zhLang ? "开始变形 ▶" : "Start drill ▶")
+                     : isDictation ? (zhLang ? "开始听写 ▶" : "Start dictation ▶")
                                    : (zhLang ? "出发 ▶" : "Start ride ▶"))
                     .scaledSystemFont(20, weight: .bold, design: .rounded)
                     .ctaLabel(minWidth: 240, minHeight: 54)
             }
             .buttonStyle(.plain)
-            .background(Theme.accent, in: Capsule())
-            .foregroundStyle(.white)
-            .shadow(color: Theme.accent.opacity(0.5), radius: 16, y: 6)
+            .background(startable ? Theme.accent : Theme.card, in: Capsule())
+            .foregroundStyle(startable ? .white : Theme.dim)
+            .shadow(color: Theme.accent.opacity(startable ? 0.5 : 0), radius: 16, y: 6)
+            .disabled(!startable)
             .accessibilityIdentifier("startButton")
             .accessibilityLabel(isConjugation ? (zhLang ? "开始动词变形练习" : "Start conjugation drill")
+                                : isDictation ? (zhLang ? "开始听写练习" : "Start dictation")
                                               : (zhLang ? "出发,开始骑行" : "Start ride"))
+            // A whole mode cannot degrade the way the read-aloud button does. That button
+            // hides itself when no Japanese voice is installed and a learner who never saw
+            // it loses nothing; pick dictation on the same device and you get a run of
+            // silence that is indistinguishable from a bug. So the entry stays visible and
+            // says what is wrong and where to fix it. (PLAN-V1.21 §A.)
+            if model.selectedMode == .dictation, !model.dictationAvailable {
+                Text(zhLang ? "未检测到日语语音,无法听写。请在系统「设置 › 辅助功能 › 朗读内容」中下载日语语音。"
+                            : "Dictation needs a Japanese voice. Add one in System Settings › Accessibility › Spoken Content.")
+                    .font(.caption).foregroundStyle(Theme.accent)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 420)
+                    .accessibilityIdentifier("dictationUnavailableNotice")
+            } else if model.selectedMode == .dictation, !model.dictationAudioSessionOK {
+                // Only ever shown after a run has actually tried and failed to claim the
+                // session — a guess about the mute switch would be noise on every launch.
+                Text(zhLang ? "如果听不到声音,请检查手机的静音开关和音量。"
+                            : "If you hear nothing, check the silent switch and the volume.")
+                    .font(.caption).foregroundStyle(Theme.dim)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 420)
+            }
             // Derived live from the pool (never a stale flag): updates as the level
             // changes. With shipped data every level has verbs, so this stays hidden.
             if isConjugation && model.conjugationPoolCount == 0 {

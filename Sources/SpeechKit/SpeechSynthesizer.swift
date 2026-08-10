@@ -48,4 +48,46 @@ public final class SpeechSynthesizer {
             synthesizer.stopSpeaking(at: .immediate)
         }
     }
+
+    // MARK: Audio session (iOS) — v1.21 §A
+
+    /// Claims the audio session for spoken prompts, and returns whether it worked.
+    ///
+    /// The app has never configured an `AVAudioSession`, so it runs under the default
+    /// category — which the iPhone Ring/Silent switch mutes. For the read-aloud BUTTON that
+    /// is a minor annoyance a user can diagnose by flicking the switch. For dictation it is
+    /// fatal and undiagnosable: the whole mode becomes a silent screen asking you to type
+    /// what you heard, which is indistinguishable from a bug. So a dictation run claims
+    /// `.playback` (the category that ignores the mute switch) for its duration only, and
+    /// gives it back on the way out. Nothing else in the app's audio behaviour changes,
+    /// because nothing else calls this.
+    ///
+    /// `.duckOthers` rather than plain `.playback`: someone practising with music on should
+    /// keep their music, quietened, rather than have it stopped.
+    ///
+    /// Failure is reported, not thrown. A refused session is not a reason to refuse the run
+    /// — the audio may well still be audible — but it IS a reason to tell the learner where
+    /// to look if they hear nothing, which the caller does.
+    @discardableResult
+    public static func beginSpokenPrompts() -> Bool {
+        #if os(iOS)
+        let session = AVAudioSession.sharedInstance()
+        do {
+            try session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
+            try session.setActive(true)
+            return true
+        } catch {
+            return false
+        }
+        #else
+        return true
+        #endif
+    }
+
+    /// Releases the session claimed by `beginSpokenPrompts`, letting other audio back up.
+    public static func endSpokenPrompts() {
+        #if os(iOS)
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        #endif
+    }
 }

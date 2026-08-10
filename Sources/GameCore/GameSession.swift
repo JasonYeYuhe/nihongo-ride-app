@@ -19,6 +19,7 @@ public enum GameMode: String, Sendable, CaseIterable {
     case practice      // calm, distraction-free passage typing
     case conjugation   // verb-conjugation drill (driven by ConjugationSession, no SRS)
     case sentence      // type a whole example sentence (v1.18); no SRS — see RunCompletion
+    case dictation     // hear a sentence and type it (v1.21); no SRS, same reason as .sentence
 }
 
 /// What a finished run persists and where it lands — the single source of truth for
@@ -44,11 +45,15 @@ public struct RunCompletion: Equatable, Sendable {
     ///   calibrated for typing a word; grading it on a whole sentence records an
     ///   incomparable signal into the same scheduler. Sentence mode still logs a ride and
     ///   still shows results — it is a real run, just not a review of anything.
+    /// - **dictation** is sentence mode with the sentence heard instead of seen, so it
+    ///   inherits the same answer — mistakes are still counted across a whole sentence, and
+    ///   a listening failure is an even worse thing to charge to one word's card than a
+    ///   typing one.
     /// - every real ride persists everything and shows results.
     public init(mode: GameMode, recordsSRS: Bool) {
         let isCram = !recordsSRS
         let isPractice = mode == .practice
-        let isSentence = mode == .sentence
+        let isSentence = mode == .sentence || mode == .dictation
         persistsSRS = !isPractice && !isSentence && !isCram
         logsRide = !isCram
         reportsGameCenter = !isPractice && !isCram
@@ -119,6 +124,13 @@ public final class GameSession {
     public private(set) var distanceMeters = 0.0
     /// Words that lapsed this run (skipped, hinted, or many typos) — worth reviewing.
     public private(set) var lapsedEntries: [VocabEntry] = []
+    /// How many times the learner asked to hear a sentence again, across the whole run
+    /// (dictation only). Replaying is free and never scored — this trains listening, not
+    /// memory — but the count is kept and shown, because a run that needed twelve replays
+    /// and a run that needed none are different outcomes and the score alone hides that.
+    public private(set) var replays = 0
+    /// Replays spent on the sentence currently playing, so the card can show them live.
+    public private(set) var currentReplays = 0
     public private(set) var isFinished = false
     /// The assistance policy for this run (v1.16 §A — one policy, not two hint systems).
     public var assistance: AssistanceMode { config.assistance }
@@ -294,12 +306,38 @@ public final class GameSession {
         review.dueCount(on: date, resolves: { vocab.entry(id: $0)?.isTypeableSentence == true })
     }
 
+    /// Builds a DICTATION run (PLAN-V1.21 §A): the sentence is spoken, not shown, and the
+    /// target is the same `exKana` sentence mode types.
+    ///
+    /// The pool is narrower than sentence mode's by design. A dictation item is only honest
+    /// if the audio a learner hears matches the answer they are graded against, and the
+    /// synthesizer resolves a kanji sentence's readings by itself — it agrees with `exKana`
+    /// most of the time and not always. `DictationSafety` carries the ids where a measured
+    /// comparison said it does not; they stay in sentence mode, where the reading is shown
+    /// rather than spoken, and are simply never offered here. A smaller honest set is the
+    /// same call that was made for `exKana` itself.
+    public static func makeDictation(
+        vocab: VocabStore = .shared,
+        excluding excluded: Set<String> = DictationSafety.excludedIDs,
+        config: Config = .init(),
+        now: @escaping () -> Date = Date.init
+    ) -> GameSession {
+        var pool = vocab.ordered(level: config.level)
+            .filter { $0.isTypeableSentence && !excluded.contains($0.id) }
+        // No whole-corpus fallback: an empty level pool must leave the run empty so the
+        // caller's build-then-guard can say so, rather than quietly drilling another level.
+        pool.shuffle()
+        return sentenceSession(from: Array(pool.prefix(max(5, config.newWordCount))),
+                               config: config, mode: .dictation, now: now)
+    }
+
     /// Wraps chosen entries as sentence-typing cards. The surface stays the KANJI sentence
     /// (that is what the learner reads while typing) and the id stays the real entry's, so
     /// the results screen can still say which word each sentence was teaching.
     private static func sentenceSession(
         from entries: [VocabEntry],
         config: Config,
+        mode: GameMode = .sentence,
         now: @escaping () -> Date
     ) -> GameSession {
         let words = entries.map { entry in
@@ -318,7 +356,7 @@ public final class GameSession {
             )
         }
         var sentenceConfig = config
-        sentenceConfig.mode = .sentence
+        sentenceConfig.mode = mode
         return GameSession(words: words, config: sentenceConfig, now: now)
     }
 
@@ -459,6 +497,14 @@ public final class GameSession {
         combo = 0
     }
 
+    /// Records that the current sentence was played again. Deliberately NOT scored and not
+    /// an SRS signal: charging for replays would train a learner to guess rather than listen,
+    /// which is the opposite of what dictation is for.
+    public func noteReplay() {
+        replays += 1
+        currentReplays += 1
+    }
+
     /// A pause or backgrounding makes the struggle signal stale: the learner had time to
     /// think, so the count starts over. (v1.16 §A.)
     public func resetStruggle() {
@@ -530,6 +576,7 @@ public final class GameSession {
     private func advance() {
         index += 1
         currentMistakes = 0
+        currentReplays = 0
         currentRevealed = false
         struggle.reset()
         assistanceOffered = false

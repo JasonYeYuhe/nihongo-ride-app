@@ -78173,7 +78173,7 @@
     "surface": "飽くまで",
     "kana": "あくまで",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -78252,7 +78252,7 @@
     "surface": "暖まる",
     "kana": "あたたまる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -78326,7 +78326,7 @@
     "surface": "雨戸",
     "kana": "あまど",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -78407,7 +78407,7 @@
     "surface": "荒い",
     "kana": "あらい",
     "pos": [
-      "i-adjective"
+      "adj-i"
     ],
     "jlpt": 2,
     "meanings": {
@@ -78486,7 +78486,7 @@
     "surface": "あわただしい",
     "kana": "あわただしい",
     "pos": [
-      "i-adjective"
+      "adj-i"
     ],
     "jlpt": 2,
     "meanings": {
@@ -78561,7 +78561,7 @@
     "surface": "言い付ける",
     "kana": "いいつける",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -78645,7 +78645,7 @@
     "surface": "生け花",
     "kana": "いけばな",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -78717,7 +78717,7 @@
     "surface": "いちいち",
     "kana": "いちいち",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -78796,8 +78796,8 @@
     "surface": "一旦",
     "kana": "いったん",
     "pos": [
-      "adverb",
-      "noun"
+      "adv",
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -78892,7 +78892,7 @@
     "surface": "威張る",
     "kana": "いばる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -78976,7 +78976,7 @@
     "surface": "引力",
     "kana": "いんりょく",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -79066,7 +79066,7 @@
     "surface": "受取",
     "kana": "うけとり",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -79147,7 +79147,7 @@
     "surface": "うっかり",
     "kana": "うっかり",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -79230,7 +79230,7 @@
     "surface": "羨む",
     "kana": "うらやむ",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_m",
     "jlpt": 2,
@@ -79316,8 +79316,8 @@
     "surface": "うろうろ",
     "kana": "うろうろ",
     "pos": [
-      "adverb",
-      "verb"
+      "adv",
+      "v"
     ],
     "jlpt": 2,
     "meanings": {
@@ -79408,7 +79408,7 @@
     "surface": "液体",
     "kana": "えきたい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -79488,7 +79488,7 @@
     "surface": "王女",
     "kana": "おうじょ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -79572,8 +79572,8 @@
     "surface": "往復",
     "kana": "おうふく",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -79643,8 +79643,8 @@
     "surface": "大凡",
     "kana": "おおよそ",
     "pos": [
-      "adverb",
-      "noun"
+      "adv",
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -79719,7 +79719,7 @@
     "surface": "拝む",
     "kana": "おがむ",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_m",
     "jlpt": 2,
@@ -79811,7 +79811,7 @@
     "surface": "送り仮名",
     "kana": "おくりがな",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -79899,8 +79899,8 @@
     "surface": "お出掛け",
     "kana": "おでかけ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -79990,7 +79990,7 @@
     "surface": "おどかす",
     "kana": "おどかす",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_s",
     "jlpt": 2,
@@ -80069,7 +80069,7 @@
     "surface": "おまちどおさま",
     "kana": "おまちどおさま",
     "pos": [
-      "expression"
+      "exp"
     ],
     "jlpt": 2,
     "meanings": {
@@ -80086,7 +80086,7 @@
     "surface": "重たい",
     "kana": "おもたい",
     "pos": [
-      "i-adjective"
+      "adj-i"
     ],
     "jlpt": 2,
     "meanings": {
@@ -80156,7 +80156,7 @@
     "surface": "温帯",
     "kana": "おんたい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -80235,7 +80235,7 @@
     "surface": "会館",
     "kana": "かいかん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -80316,7 +80316,7 @@
     "surface": "回数",
     "kana": "かいすう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -80393,8 +80393,8 @@
     "surface": "開通",
     "kana": "かいつう",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -80480,7 +80480,7 @@
     "surface": "海洋",
     "kana": "かいよう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -80560,7 +80560,7 @@
     "surface": "書留",
     "kana": "かきとめ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -80631,7 +80631,7 @@
     "surface": "各地",
     "kana": "かくち",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -80716,7 +80716,7 @@
     "surface": "学力",
     "kana": "がくりょく",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -80797,7 +80797,7 @@
     "surface": "掛け算",
     "kana": "かけざん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -80876,7 +80876,7 @@
     "surface": "重ねる",
     "kana": "かさねる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -80960,7 +80960,7 @@
     "surface": "過失",
     "kana": "かしつ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -81042,7 +81042,7 @@
     "surface": "下線",
     "kana": "かせん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -81131,7 +81131,7 @@
     "surface": "片仮名",
     "kana": "かたかな",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -81194,7 +81194,7 @@
     "surface": "学科",
     "kana": "がっか",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -81280,8 +81280,8 @@
     "surface": "活躍",
     "kana": "かつやく",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -81376,7 +81376,7 @@
     "surface": "過半数",
     "kana": "かはんすう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -81461,7 +81461,7 @@
     "surface": "剃刀",
     "kana": "かみそり",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -81533,7 +81533,7 @@
     "surface": "枯れる",
     "kana": "かれる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -81621,7 +81621,7 @@
     "surface": "瓦",
     "kana": "かわら",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -81701,7 +81701,7 @@
     "surface": "間接",
     "kana": "かんせつ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -81784,8 +81784,8 @@
     "surface": "乾燥",
     "kana": "かんそう",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -81856,7 +81856,7 @@
     "surface": "缶詰",
     "kana": "かんづめ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -81942,7 +81942,7 @@
     "surface": "看板",
     "kana": "かんばん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -82020,8 +82020,8 @@
     "surface": "着替え",
     "kana": "きがえ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -82095,7 +82095,7 @@
     "surface": "儀式",
     "kana": "ぎしき",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -82169,7 +82169,7 @@
     "surface": "ぎっしり",
     "kana": "ぎっしり",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -82243,8 +82243,8 @@
     "surface": "給与",
     "kana": "きゅうよ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -82320,7 +82320,7 @@
     "surface": "教養",
     "kana": "きょうよう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -82391,7 +82391,7 @@
     "surface": "曲線",
     "kana": "きょくせん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -82467,7 +82467,7 @@
     "surface": "偶数",
     "kana": "ぐうすう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -82527,7 +82527,7 @@
     "surface": "くしゃみ",
     "kana": "くしゃみ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -82598,8 +82598,8 @@
     "surface": "苦心",
     "kana": "くしん",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -82675,7 +82675,7 @@
     "surface": "砕く",
     "kana": "くだく",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_k",
     "jlpt": 2,
@@ -82750,7 +82750,7 @@
     "surface": "唇",
     "kana": "くちびる",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -82829,7 +82829,7 @@
     "surface": "句読点",
     "kana": "くとうてん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -82896,7 +82896,7 @@
     "surface": "組み立てる",
     "kana": "くみたてる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -82972,8 +82972,8 @@
     "surface": "稽古",
     "kana": "けいこ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -83057,7 +83057,7 @@
     "surface": "毛糸",
     "kana": "けいと",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -83125,7 +83125,7 @@
     "surface": "競馬",
     "kana": "けいば",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -83208,7 +83208,7 @@
     "surface": "毛皮",
     "kana": "けがわ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -83286,7 +83286,7 @@
     "surface": "桁",
     "kana": "けた",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -83364,7 +83364,7 @@
     "surface": "月給",
     "kana": "げっきゅう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -83439,7 +83439,7 @@
     "surface": "蹴る",
     "kana": "ける",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -83513,7 +83513,7 @@
     "surface": "原始",
     "kana": "げんし",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -83595,7 +83595,7 @@
     "surface": "限度",
     "kana": "げんど",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -83668,8 +83668,8 @@
     "surface": "高級",
     "kana": "こうきゅう",
     "pos": [
-      "noun",
-      "na-adjective"
+      "n",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -83746,7 +83746,7 @@
     "surface": "口実",
     "kana": "こうじつ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -83823,7 +83823,7 @@
     "surface": "耕地",
     "kana": "こうち",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -83899,7 +83899,7 @@
     "surface": "鉱物",
     "kana": "こうぶつ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -83966,8 +83966,8 @@
     "surface": "交流",
     "kana": "こうりゅう",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -84046,7 +84046,7 @@
     "surface": "国王",
     "kana": "こくおう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -84125,7 +84125,7 @@
     "surface": "焦げる",
     "kana": "こげる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -84204,7 +84204,7 @@
     "surface": "五十音",
     "kana": "ごじゅうおん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -84268,7 +84268,7 @@
     "surface": "こしらえる",
     "kana": "こしらえる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -84352,7 +84352,7 @@
     "surface": "ごちそうさま",
     "kana": "ごちそうさま",
     "pos": [
-      "expression"
+      "exp"
     ],
     "jlpt": 2,
     "meanings": {
@@ -84437,7 +84437,7 @@
     "surface": "古典",
     "kana": "こてん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -84518,7 +84518,7 @@
     "surface": "こぼれる",
     "kana": "こぼれる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -84606,7 +84606,7 @@
     "surface": "娯楽",
     "kana": "ごらく",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -84684,8 +84684,8 @@
     "surface": "混合",
     "kana": "こんごう",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -84768,7 +84768,7 @@
     "surface": "祭日",
     "kana": "さいじつ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -84853,8 +84853,8 @@
     "surface": "逆様",
     "kana": "さかさま",
     "pos": [
-      "noun",
-      "na-adjective"
+      "n",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -84933,8 +84933,8 @@
     "surface": "先程",
     "kana": "さきほど",
     "pos": [
-      "noun",
-      "adverb"
+      "n",
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -85012,7 +85012,7 @@
     "surface": "刺さる",
     "kana": "ささる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -85092,8 +85092,8 @@
     "surface": "流石",
     "kana": "さすが",
     "pos": [
-      "adverb",
-      "na-adjective"
+      "adv",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -85184,7 +85184,7 @@
     "surface": "早速",
     "kana": "さっそく",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -85271,7 +85271,7 @@
     "surface": "錆びる",
     "kana": "さびる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -85348,7 +85348,7 @@
     "surface": "算数",
     "kana": "さんすう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -85425,7 +85425,7 @@
     "surface": "寺院",
     "kana": "じいん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -85506,8 +85506,8 @@
     "surface": "司会",
     "kana": "しかい",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -85586,8 +85586,8 @@
     "surface": "持参",
     "kana": "じさん",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -85670,7 +85670,7 @@
     "surface": "静まる",
     "kana": "しずまる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -85749,7 +85749,7 @@
     "surface": "死体",
     "kana": "したい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -85825,7 +85825,7 @@
     "surface": "湿気",
     "kana": "しっき",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -85845,7 +85845,7 @@
     "surface": "実物",
     "kana": "じつぶつ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -85923,7 +85923,7 @@
     "surface": "実力",
     "kana": "じつりょく",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -86021,7 +86021,7 @@
     "surface": "紙幣",
     "kana": "しへい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -86119,7 +86119,7 @@
     "surface": "しぼむ",
     "kana": "しぼむ",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_m",
     "jlpt": 2,
@@ -86190,7 +86190,7 @@
     "surface": "社会科学",
     "kana": "しゃかいかがく",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -86269,7 +86269,7 @@
     "surface": "車掌",
     "kana": "しゃしょう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -86345,7 +86345,7 @@
     "surface": "しゃぶる",
     "kana": "しゃぶる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -86435,8 +86435,8 @@
     "surface": "集合",
     "kana": "しゅうごう",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -86531,7 +86531,7 @@
     "surface": "重点",
     "kana": "じゅうてん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -86625,7 +86625,7 @@
     "surface": "重量",
     "kana": "じゅうりょう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -86710,8 +86710,8 @@
     "surface": "出勤",
     "kana": "しゅっきん",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -86797,8 +86797,8 @@
     "surface": "循環",
     "kana": "じゅんかん",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -86888,8 +86888,8 @@
     "surface": "純情",
     "kana": "じゅんじょう",
     "pos": [
-      "noun",
-      "na-adjective"
+      "n",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -86991,7 +86991,7 @@
     "surface": "将棋",
     "kana": "しょうぎ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -87075,8 +87075,8 @@
     "surface": "上下",
     "kana": "じょうげ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -87155,7 +87155,7 @@
     "surface": "生ずる",
     "kana": "しょうずる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "zuru",
     "jlpt": 2,
@@ -87235,7 +87235,7 @@
     "surface": "勝敗",
     "kana": "しょうはい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -87316,7 +87316,7 @@
     "surface": "消防署",
     "kana": "しょうぼうしょ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -87334,7 +87334,7 @@
     "surface": "初級",
     "kana": "しょきゅう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -87414,7 +87414,7 @@
     "surface": "初旬",
     "kana": "しょじゅん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -87485,7 +87485,7 @@
     "surface": "白髪",
     "kana": "しらが",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -87503,7 +87503,7 @@
     "surface": "真空",
     "kana": "しんくう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -87591,7 +87591,7 @@
     "surface": "寝台",
     "kana": "しんだい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -87677,7 +87677,7 @@
     "surface": "深夜",
     "kana": "しんや",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -87753,7 +87753,7 @@
     "surface": "神話",
     "kana": "しんわ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -87841,8 +87841,8 @@
     "surface": "炊事",
     "kana": "すいじ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -87928,7 +87928,7 @@
     "surface": "水筒",
     "kana": "すいとう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -88029,8 +88029,8 @@
     "surface": "水平",
     "kana": "すいへい",
     "pos": [
-      "noun",
-      "na-adjective"
+      "n",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -88120,7 +88120,7 @@
     "surface": "杉",
     "kana": "すぎ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -88212,7 +88212,7 @@
     "surface": "隙間",
     "kana": "すきま",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -88292,7 +88292,7 @@
     "surface": "涼む",
     "kana": "すずむ",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_m",
     "jlpt": 2,
@@ -88312,7 +88312,7 @@
     "surface": "住まい",
     "kana": "すまい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -88398,7 +88398,7 @@
     "surface": "狡い",
     "kana": "ずるい",
     "pos": [
-      "i-adjective"
+      "adj-i"
     ],
     "jlpt": 2,
     "meanings": {
@@ -88418,7 +88418,7 @@
     "surface": "寸法",
     "kana": "すんぽう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -88508,7 +88508,7 @@
     "surface": "青少年",
     "kana": "せいしょうねん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -88588,7 +88588,7 @@
     "surface": "生年月日",
     "kana": "せいねんがっぴ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -88671,7 +88671,7 @@
     "surface": "正門",
     "kana": "せいもん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -88764,8 +88764,8 @@
     "surface": "成立",
     "kana": "せいりつ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -88861,8 +88861,8 @@
     "surface": "接近",
     "kana": "せっきん",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -88941,7 +88941,7 @@
     "surface": "ぜひとも",
     "kana": "ぜひとも",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -89018,7 +89018,7 @@
     "surface": "扇子",
     "kana": "せんす",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -89097,7 +89097,7 @@
     "surface": "先端",
     "kana": "せんたん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -89175,7 +89175,7 @@
     "surface": "線路",
     "kana": "せんろ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -89256,7 +89256,7 @@
     "surface": "倉庫",
     "kana": "そうこ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -89340,7 +89340,7 @@
     "surface": "葬式",
     "kana": "そうしき",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -89428,7 +89428,7 @@
     "surface": "そうっと",
     "kana": "そうっと",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -89510,7 +89510,7 @@
     "surface": "送料",
     "kana": "そうりょう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -89596,8 +89596,8 @@
     "surface": "測量",
     "kana": "そくりょう",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -89675,8 +89675,8 @@
     "surface": "そのころ",
     "kana": "そのころ",
     "pos": [
-      "noun",
-      "adverb"
+      "n",
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -89761,7 +89761,7 @@
     "surface": "そのため",
     "kana": "そのため",
     "pos": [
-      "conjunction"
+      "conj"
     ],
     "jlpt": 2,
     "meanings": {
@@ -89838,7 +89838,7 @@
     "surface": "揃える",
     "kana": "そろえる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -89914,7 +89914,7 @@
     "surface": "田ぼ",
     "kana": "たんぼ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -89933,7 +89933,7 @@
     "surface": "太鼓",
     "kana": "たいこ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -90006,7 +90006,7 @@
     "surface": "大分",
     "kana": "だいぶん",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -90027,8 +90027,8 @@
     "surface": "対立",
     "kana": "たいりつ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -90103,7 +90103,7 @@
     "surface": "高める",
     "kana": "たかめる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -90170,7 +90170,7 @@
     "surface": "助かる",
     "kana": "たすかる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -90242,7 +90242,7 @@
     "surface": "例える",
     "kana": "たとえる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -90309,7 +90309,7 @@
     "surface": "溜息",
     "kana": "ためいき",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -90389,7 +90389,7 @@
     "surface": "足る",
     "kana": "たる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -90459,7 +90459,7 @@
     "surface": "短期",
     "kana": "たんき",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -90530,7 +90530,7 @@
     "surface": "淡水",
     "kana": "たんすい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -90593,7 +90593,7 @@
     "surface": "短編",
     "kana": "たんぺん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -90666,7 +90666,7 @@
     "surface": "近寄る",
     "kana": "ちかよる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -90744,7 +90744,7 @@
     "surface": "知人",
     "kana": "ちじん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -90825,7 +90825,7 @@
     "surface": "地名",
     "kana": "ちめい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -90896,7 +90896,7 @@
     "surface": "中旬",
     "kana": "ちゅうじゅん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -90968,7 +90968,7 @@
     "surface": "長所",
     "kana": "ちょうしょ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -91050,7 +91050,7 @@
     "surface": "頂点",
     "kana": "ちょうてん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -91128,7 +91128,7 @@
     "surface": "直後",
     "kana": "ちょくご",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -91208,7 +91208,7 @@
     "surface": "直流",
     "kana": "ちょくりゅう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -91284,7 +91284,7 @@
     "surface": "散らかる",
     "kana": "ちらかる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -91358,7 +91358,7 @@
     "surface": "散る",
     "kana": "ちる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -91442,8 +91442,8 @@
     "surface": "通知",
     "kana": "つうち",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -91518,8 +91518,8 @@
     "surface": "通用",
     "kana": "つうよう",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -91595,7 +91595,7 @@
     "surface": "月日",
     "kana": "つきひ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -91666,7 +91666,7 @@
     "surface": "繋がり",
     "kana": "つながり",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -91737,7 +91737,7 @@
     "surface": "潰す",
     "kana": "つぶす",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_s",
     "jlpt": 2,
@@ -91813,7 +91813,7 @@
     "surface": "爪",
     "kana": "つめ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -91887,7 +91887,7 @@
     "surface": "釣り合う",
     "kana": "つりあう",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_u",
     "jlpt": 2,
@@ -91959,7 +91959,7 @@
     "surface": "定価",
     "kana": "ていか",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -92028,8 +92028,8 @@
     "surface": "停電",
     "kana": "ていでん",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -92107,7 +92107,7 @@
     "surface": "出来上がる",
     "kana": "できあがる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -92167,8 +92167,8 @@
     "surface": "凸凹",
     "kana": "でこぼこ",
     "pos": [
-      "noun",
-      "na-adjective"
+      "n",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -92246,7 +92246,7 @@
     "surface": "手続き",
     "kana": "てつづき",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -92320,7 +92320,7 @@
     "surface": "手前",
     "kana": "てまえ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -92399,7 +92399,7 @@
     "surface": "電球",
     "kana": "でんきゅう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -92478,7 +92478,7 @@
     "surface": "天皇",
     "kana": "てんのう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -92553,8 +92553,8 @@
     "surface": "統一",
     "kana": "とういつ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -92629,8 +92629,8 @@
     "surface": "動作",
     "kana": "どうさ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -92702,7 +92702,7 @@
     "surface": "どうせ",
     "kana": "どうせ",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -92773,8 +92773,8 @@
     "surface": "等分",
     "kana": "とうぶん",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -92856,7 +92856,7 @@
     "surface": "東洋",
     "kana": "とうよう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -92933,8 +92933,8 @@
     "surface": "特定",
     "kana": "とくてい",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -93007,7 +93007,7 @@
     "surface": "溶け込む",
     "kana": "とけこむ",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_m",
     "jlpt": 2,
@@ -93083,7 +93083,7 @@
     "surface": "戸棚",
     "kana": "とだな",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -93157,7 +93157,7 @@
     "surface": "整う",
     "kana": "ととのう",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_u",
     "jlpt": 2,
@@ -93229,7 +93229,7 @@
     "surface": "捕える",
     "kana": "とらえる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -93301,7 +93301,7 @@
     "surface": "内科",
     "kana": "ないか",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -93380,7 +93380,7 @@
     "surface": "仲良し",
     "kana": "なかよし",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -93454,7 +93454,7 @@
     "surface": "撫でる",
     "kana": "なでる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -93529,7 +93529,7 @@
     "surface": "何分",
     "kana": "なにぶん",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -93616,7 +93616,7 @@
     "surface": "南極",
     "kana": "なんきょく",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -93688,7 +93688,7 @@
     "surface": "南北",
     "kana": "なんぼく",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -93767,7 +93767,7 @@
     "surface": "憎らしい",
     "kana": "にくらしい",
     "pos": [
-      "i-adjective"
+      "adj-i"
     ],
     "jlpt": 2,
     "meanings": {
@@ -93841,7 +93841,7 @@
     "surface": "虹",
     "kana": "にじ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -93932,8 +93932,8 @@
     "surface": "入社",
     "kana": "にゅうしゃ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -94023,7 +94023,7 @@
     "surface": "熱する",
     "kana": "ねっする",
     "pos": [
-      "verb"
+      "v"
     ],
     "jlpt": 2,
     "meanings": {
@@ -94086,7 +94086,7 @@
     "surface": "農村",
     "kana": "のうそん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -94168,7 +94168,7 @@
     "surface": "のこぎり",
     "kana": "のこぎり",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -94239,7 +94239,7 @@
     "surface": "乗換",
     "kana": "のりかえ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -94320,7 +94320,7 @@
     "surface": "灰色",
     "kana": "はいいろ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -94398,7 +94398,7 @@
     "surface": "這う",
     "kana": "はう",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_u",
     "jlpt": 2,
@@ -94480,8 +94480,8 @@
     "surface": "はきはき",
     "kana": "はきはき",
     "pos": [
-      "adverb",
-      "verb"
+      "adv",
+      "v"
     ],
     "jlpt": 2,
     "meanings": {
@@ -94560,7 +94560,7 @@
     "surface": "はじめまして",
     "kana": "はじめまして",
     "pos": [
-      "expression"
+      "exp"
     ],
     "jlpt": 2,
     "meanings": {
@@ -94641,7 +94641,7 @@
     "surface": "肌着",
     "kana": "はだぎ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -94727,8 +94727,8 @@
     "surface": "発電",
     "kana": "はつでん",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -94808,7 +94808,7 @@
     "surface": "話合い",
     "kana": "はなしあい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -94895,7 +94895,7 @@
     "surface": "花嫁",
     "kana": "はなよめ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -94970,7 +94970,7 @@
     "surface": "早口",
     "kana": "はやくち",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -95051,7 +95051,7 @@
     "surface": "張り切る",
     "kana": "はりきる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -95129,8 +95129,8 @@
     "surface": "万歳",
     "kana": "ばんざい",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -95151,7 +95151,7 @@
     "surface": "日当たり",
     "kana": "ひあたり",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -95220,9 +95220,9 @@
     "surface": "ぴかぴか",
     "kana": "ぴかぴか",
     "pos": [
-      "adverb",
-      "na-adjective",
-      "verb"
+      "adv",
+      "adj-na",
+      "v"
     ],
     "jlpt": 2,
     "meanings": {
@@ -95304,8 +95304,8 @@
     "surface": "卑怯",
     "kana": "ひきょう",
     "pos": [
-      "noun",
-      "na-adjective"
+      "n",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -95395,7 +95395,7 @@
     "surface": "引っ掛かる",
     "kana": "ひっかかる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -95475,7 +95475,7 @@
     "surface": "ひっくりかえる",
     "kana": "ひっくりかえる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -95547,7 +95547,7 @@
     "surface": "人通り",
     "kana": "ひとどおり",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -95631,7 +95631,7 @@
     "surface": "瞳",
     "kana": "ひとみ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -95703,8 +95703,8 @@
     "surface": "皮肉",
     "kana": "ひにく",
     "pos": [
-      "noun",
-      "na-adjective"
+      "n",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -95794,7 +95794,7 @@
     "surface": "日の出",
     "kana": "ひので",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -95869,7 +95869,7 @@
     "surface": "冷やす",
     "kana": "ひやす",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_s",
     "jlpt": 2,
@@ -95949,7 +95949,7 @@
     "surface": "標準",
     "kana": "ひょうじゅん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -96035,7 +96035,7 @@
     "surface": "広げる",
     "kana": "ひろげる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -96111,7 +96111,7 @@
     "surface": "広める",
     "kana": "ひろめる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -96199,7 +96199,7 @@
     "surface": "深まる",
     "kana": "ふかまる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -96282,7 +96282,7 @@
     "surface": "複数",
     "kana": "ふくすう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -96359,7 +96359,7 @@
     "surface": "符号",
     "kana": "ふごう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -96445,7 +96445,7 @@
     "surface": "無沙汰",
     "kana": "ぶさた",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -96526,7 +96526,7 @@
     "surface": "ぶつかる",
     "kana": "ぶつかる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -96606,7 +96606,7 @@
     "surface": "物騒",
     "kana": "ぶっそう",
     "pos": [
-      "na-adjective"
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -96681,7 +96681,7 @@
     "surface": "父母",
     "kana": "ふぼ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -96757,7 +96757,7 @@
     "surface": "振舞う",
     "kana": "ふるまう",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_u",
     "jlpt": 2,
@@ -96837,8 +96837,8 @@
     "surface": "分解",
     "kana": "ぶんかい",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -96917,7 +96917,7 @@
     "surface": "文体",
     "kana": "ぶんたい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -96996,7 +96996,7 @@
     "surface": "分量",
     "kana": "ぶんりょう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -97074,9 +97074,9 @@
     "surface": "並行",
     "kana": "へいこう",
     "pos": [
-      "noun",
-      "verb",
-      "na-adjective"
+      "n",
+      "v",
+      "adj-na"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -97160,7 +97160,7 @@
     "surface": "凹む",
     "kana": "へこむ",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_m",
     "jlpt": 2,
@@ -97236,7 +97236,7 @@
     "surface": "ぺん",
     "kana": "ぺん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -97254,7 +97254,7 @@
     "surface": "方言",
     "kana": "ほうげん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -97335,7 +97335,7 @@
     "surface": "包帯",
     "kana": "ほうたい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -97411,7 +97411,7 @@
     "surface": "方程式",
     "kana": "ほうていしき",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -97487,7 +97487,7 @@
     "surface": "朗らか",
     "kana": "ほがらか",
     "pos": [
-      "na-adjective"
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -97566,8 +97566,8 @@
     "surface": "募集",
     "kana": "ぼしゅう",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -97643,7 +97643,7 @@
     "surface": "盆地",
     "kana": "ぼんち",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -97722,7 +97722,7 @@
     "surface": "枚数",
     "kana": "まいすう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -97740,8 +97740,8 @@
     "surface": "まごまご",
     "kana": "まごまご",
     "pos": [
-      "adverb",
-      "verb"
+      "adv",
+      "v"
     ],
     "jlpt": 2,
     "meanings": {
@@ -97816,7 +97816,7 @@
     "surface": "待合室",
     "kana": "まちあいしつ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -97888,8 +97888,8 @@
     "surface": "真っ黒",
     "kana": "まっくろ",
     "pos": [
-      "noun",
-      "na-adjective"
+      "n",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -97961,7 +97961,7 @@
     "surface": "祭る",
     "kana": "まつる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -98048,8 +98048,8 @@
     "surface": "回り道",
     "kana": "まわりみち",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -98139,7 +98139,7 @@
     "surface": "見掛け",
     "kana": "みかけ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -98215,7 +98215,7 @@
     "surface": "みじめ",
     "kana": "みじめ",
     "pos": [
-      "na-adjective"
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -98305,7 +98305,7 @@
     "surface": "みっともない",
     "kana": "みっともない",
     "pos": [
-      "i-adjective"
+      "adj-i"
     ],
     "jlpt": 2,
     "meanings": {
@@ -98380,7 +98380,7 @@
     "surface": "身分",
     "kana": "みぶん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -98466,7 +98466,7 @@
     "surface": "民間",
     "kana": "みんかん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -98540,8 +98540,8 @@
     "surface": "無限",
     "kana": "むげん",
     "pos": [
-      "noun",
-      "na-adjective"
+      "n",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -98619,7 +98619,7 @@
     "surface": "紫",
     "kana": "むらさき",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -98699,7 +98699,7 @@
     "surface": "名刺",
     "kana": "めいし",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -98775,7 +98775,7 @@
     "surface": "銘々",
     "kana": "めいめい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -98857,7 +98857,7 @@
     "surface": "目印",
     "kana": "めじるし",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -98940,7 +98940,7 @@
     "surface": "めまい",
     "kana": "めまい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -99014,7 +99014,7 @@
     "surface": "儲かる",
     "kana": "もうかる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -99076,7 +99076,7 @@
     "surface": "もしかしたら",
     "kana": "もしかしたら",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
@@ -99166,7 +99166,7 @@
     "surface": "もたれる",
     "kana": "もたれる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -99250,7 +99250,7 @@
     "surface": "物語る",
     "kana": "ものがたる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_r",
     "jlpt": 2,
@@ -99330,7 +99330,7 @@
     "surface": "揉む",
     "kana": "もむ",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_m",
     "jlpt": 2,
@@ -99418,7 +99418,7 @@
     "surface": "やかましい",
     "kana": "やかましい",
     "pos": [
-      "i-adjective"
+      "adj-i"
     ],
     "jlpt": 2,
     "meanings": {
@@ -99497,7 +99497,7 @@
     "surface": "訳す",
     "kana": "やくす",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "godan_s",
     "jlpt": 2,
@@ -99566,8 +99566,8 @@
     "surface": "火傷",
     "kana": "やけど",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -99653,7 +99653,7 @@
     "surface": "やっつける",
     "kana": "やっつける",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -99737,7 +99737,7 @@
     "surface": "夕刊",
     "kana": "ゆうかん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -99812,7 +99812,7 @@
     "surface": "有料",
     "kana": "ゆうりょう",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -99878,8 +99878,8 @@
     "surface": "輸血",
     "kana": "ゆけつ",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -99959,7 +99959,7 @@
     "surface": "緩い",
     "kana": "ゆるい",
     "pos": [
-      "i-adjective"
+      "adj-i"
     ],
     "jlpt": 2,
     "meanings": {
@@ -99980,8 +99980,8 @@
     "surface": "幼稚",
     "kana": "ようち",
     "pos": [
-      "noun",
-      "na-adjective"
+      "n",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -100063,7 +100063,7 @@
     "surface": "洋品店",
     "kana": "ようひんてん",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -100081,8 +100081,8 @@
     "surface": "欲張り",
     "kana": "よくばり",
     "pos": [
-      "noun",
-      "na-adjective"
+      "n",
+      "adj-na"
     ],
     "jlpt": 2,
     "meanings": {
@@ -100164,7 +100164,7 @@
     "surface": "余所",
     "kana": "よそ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -100227,7 +100227,7 @@
     "surface": "予備",
     "kana": "よび",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -100305,8 +100305,8 @@
     "surface": "来日",
     "kana": "らいにち",
     "pos": [
-      "noun",
-      "verb"
+      "n",
+      "v"
     ],
     "vc": "suru",
     "jlpt": 2,
@@ -100326,7 +100326,7 @@
     "surface": "利害",
     "kana": "りがい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -100412,7 +100412,7 @@
     "surface": "領事",
     "kana": "りょうじ",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -100479,7 +100479,7 @@
     "surface": "例外",
     "kana": "れいがい",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -100546,7 +100546,7 @@
     "surface": "蝋燭",
     "kana": "ろうそく",
     "pos": [
-      "noun"
+      "n"
     ],
     "jlpt": 2,
     "meanings": {
@@ -100621,7 +100621,7 @@
     "surface": "詫びる",
     "kana": "わびる",
     "pos": [
-      "verb"
+      "v"
     ],
     "vc": "ichidan",
     "jlpt": 2,
@@ -100703,7 +100703,7 @@
     "surface": "割と",
     "kana": "わりと",
     "pos": [
-      "adverb"
+      "adv"
     ],
     "jlpt": 2,
     "meanings": {
