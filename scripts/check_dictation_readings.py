@@ -43,7 +43,7 @@ noise. But instrument 1 produces something better than synthetic decoys: 494 sen
 PROVEN to match and 27 PROVEN to differ, i.e. real labelled data. Measured against those:
 
     recall           27/27  = 100%   (every proven mismatch was flagged)
-    false positives  8/494  =  1.6%  (not the 4.7% the decoys predicted)
+    false positives   0/494 =   0%   (not the 4.7% the decoys predicted)
 
 Random kana turn out to be a harder test than real alternative readings. Calibrating on
 the wrong population would have made a working instrument look broken — the same shape of
@@ -59,8 +59,8 @@ and would mispronounce the particle in ~2,900 sentences.)
 WHAT SHIPS. The exclusion list is the union of every sentence instrument 2 flags and
 every sentence containing a word-reading pair instrument 1 PROVED is spoken differently
 — proof about a word propagates to every sentence using that word, because a voice does
-not change its mind between sentences. 1,059 of 6,723 (15.8%), leaving 5,664 across all
-five levels, none below 79% kept. Flagging is one-sided on purpose: a false flag costs
+not change its mind between sentences. 1,003 of 6,723 (14.9%), leaving 5,720 across all
+five levels, none below 80% kept. Flagging is one-sided on purpose: a false flag costs
 one sentence of dictation coverage, a miss ships an item whose audio contradicts its own
 answer.
 
@@ -514,13 +514,22 @@ def main():
                 "evidence": "proven" if eid in proven_by_id else
                             ("nearest" if eid in says else "propagated"),
             })
+        # The SHIPPED resource carries ids and nothing else. The app only ever asks "is this
+        # id excluded"; the 240 KB of evidence behind each answer is for the repo, not for
+        # 5,000 devices, and duplicating it into the bundle would put a measurement artifact
+        # on the critical path of an app launch.
+        shipped = {k: payload[k] for k in
+                   ("measurement", "date", "voice", "sentences", "provenMatching",
+                    "provenDiffering", "excludedCount", "note")}
+        shipped["evidence"] = "docs/measurements/dictation-reading-mismatches.json"
+        shipped["excluded"] = [{"id": e["id"]} for e in payload["excluded"]]
         out = RESOURCES / "dictation-exclusions.json"
-        out.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-        print(f"\nwrote {out}")
+        out.write_text(json.dumps(shipped, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        print(f"\nwrote {out} ({out.stat().st_size // 1024} KB, ids only)")
         detail = REPO / "docs/measurements/dictation-reading-mismatches.json"
         detail.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n",
                           encoding="utf-8")
-        print(f"wrote {detail}")
+        print(f"wrote {detail} (full evidence)")
     return 0
 
 

@@ -35,10 +35,10 @@ WHATS_NEW = {
         "sentences for a saved word list, or for the words due for review today. It tells "
         "you how many sentences it found instead of quietly padding the run out with "
         "unrelated ones.\n"
-        "\u2022 Dictation only offers sentences the built-in voice was measured to read the "
-        "way the app writes them. Where the voice and the app disagree about how a kanji is "
-        "read, that sentence stays in Sentence mode, where you can see the reading, rather "
-        "than being played to you and then marked wrong."
+        "\u2022 Dictation leaves out the sentences where the built-in voice was measured to "
+        "read a kanji differently from the way the app writes it. Those stay in Sentence "
+        "mode, where you can see the reading, rather than being played to you and then "
+        "marked wrong for typing what you heard."
     ),
     "zh-Hans": (
         "\u2022 新增听写模式:句子只朗读、不显示,你把听到的打出来。重听免费且不限次数 "
@@ -46,9 +46,9 @@ WHATS_NEW = {
         "因为这是分数说不出来的部分。\n"
         "\u2022 例句模式现在能跟着你正在学的走:可以练某个词单里的词的例句,也可以练今天到期"
         "复习的词的例句。找到几句就说几句,不会拿无关的句子悄悄凑数。\n"
-        "\u2022 听写只会出那些经过实测、系统语音的读法与 App 标注一致的句子。凡是语音和 App "
-        "对某个汉字读法有分歧的句子,都留在例句模式里 \u2014\u2014 那里你看得见读音 "
-        "\u2014\u2014 而不会念给你听完再判你错。"
+        "\u2022 经实测,凡是系统语音把某个汉字读成与 App 标注不同读法的句子,听写都不会出 "
+        "\u2014\u2014 它们留在例句模式里,那里你看得见读音,而不会念给你听完、再判你"
+        "照着听到的打是错的。"
     ),
 }
 

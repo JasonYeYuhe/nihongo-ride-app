@@ -17,8 +17,15 @@ public final class SpeechSynthesizer {
     /// Whether an offline Japanese voice is available on this device. Used for graceful
     /// degradation — the UI can hide/disable the speak button when false rather than
     /// firing an utterance that produces nothing.
+    ///
+    /// It asks the SAME question `speak` asks. It used to scan `speechVoices()` for a
+    /// language starting "ja", which is a different predicate from the one the speak path
+    /// depends on, and nothing reconciled them — so a device could pass the gate and still
+    /// produce silence. That was survivable for a button that hides itself. It is not
+    /// survivable for v1.21's dictation mode, where this value decides whether a whole mode
+    /// is offered at all.
     public static var isJapaneseAvailable: Bool {
-        AVSpeechSynthesisVoice.speechVoices().contains { $0.language.hasPrefix("ja") }
+        AVSpeechSynthesisVoice(language: "ja-JP") != nil
     }
 
     /// Clamps a stored rate into AVSpeech's valid range. Exposed for testing; the stored

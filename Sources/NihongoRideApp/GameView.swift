@@ -89,16 +89,21 @@ struct GameView: View {
         // (v1.15 §D — before this, paused/sheet/backgrounded time was recorded as riding.)
         .onChange(of: isPaused) { _, paused in
             paused ? model.pauseRunClock() : model.resumeRunClock()
-            // A pause gives the learner time to think, so the struggle count restarts —
-            // the offer should mean "stuck NOW", not "was stuck before dinner". (v1.16 §A.)
-            if paused { session.resetStruggle() }
+            if paused {
+                // A pause gives the learner time to think, so the struggle count restarts —
+                // the offer should mean "stuck NOW", not "was stuck before dinner". (v1.16 §A.)
+                session.resetStruggle()
+                // And a dictation prompt is a question, which a paused game is not asking.
+                // Nothing else in the app needed this, because nothing else auto-plays.
+                model.stopSpeaking()
+            }
         }
         .onChange(of: addToListsID != nil) { _, open in
             open ? model.pauseRunClock() : model.resumeRunClock()
         }
         .onChange(of: scenePhase) { _, phase in
             phase == .active ? model.resumeRunClock() : model.pauseRunClock()
-            if phase != .active { session.resetStruggle() }
+            if phase != .active { session.resetStruggle(); model.stopSpeaking() }
         }
         .onAppear {
             Sound.enabled = model.soundEnabled
