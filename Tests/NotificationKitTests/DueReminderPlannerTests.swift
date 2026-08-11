@@ -91,3 +91,28 @@ struct DueReminderPlannerTests {
         #expect(plan.allSatisfy { tokyo.component(.hour, from: $0.fireDate) == 23 })
     }
 }
+
+// MARK: - v1.21 §C
+
+/// The reminder body is planned here, and NotificationKit cannot see the vocabulary, so the
+/// "does this card's entry still exist" check arrives as a closure. It defaulted to "yes"
+/// and no caller overrode it — so after v1.18 retired two entries, a learner who had studied
+/// them was told at 9pm that N words were waiting and handed a run with N-1. The run had
+/// been filtering all along; only the promise was wrong.
+@Suite("Reminders count the run the learner will actually get")
+struct ReminderOrphanTests {
+    @Test("a card whose vocabulary entry is gone is not promised")
+    func retiredEntryIsNotCounted() {
+        let now = Date()
+        var store = ReviewStore()
+        store.record(entryID: "live", outcome: TypingOutcome(completed: false, mistakes: 3), on: now)
+        store.record(entryID: "retired", outcome: TypingOutcome(completed: false, mistakes: 3), on: now)
+
+        let unfiltered = DueReminderPlanner.plan(store: store, from: now, hour: 21)
+        let filtered = DueReminderPlanner.plan(store: store,
+                                               vocabResolves: { $0 != "retired" },
+                                               from: now, hour: 21)
+        #expect(unfiltered.first?.vocabCount == 2)
+        #expect(filtered.first?.vocabCount == 1)
+    }
+}

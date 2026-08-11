@@ -92,9 +92,50 @@ def check(path, base, allow_dedupe=False, manifest=None):
 
     for eid in sorted(set(by_id_old) & set(by_id_new)):
         a, b = by_id_old[eid], by_id_new[eid]
+        declared_entry = manifest.get(eid) if manifest else None
         for field in FROZEN:
-            if a.get(field) != b.get(field):
-                problems.append(f"{eid}: {field} changed {a.get(field)!r} -> {b.get(field)!r}")
+            if a.get(field) == b.get(field):
+                continue
+            # `surface` is the ONE frozen field a manifest may move, and only to a value it
+            # names. It is frozen for a different reason from the others: `kana` is the
+            # answer the learner types and the SM-2 card was scheduled on, `jlpt`/`vc` change
+            # what the entry IS, but `surface` is the cue shown beside a reading that does
+            # not move. Three shipped headwords are not spellings any writer or IME produces
+            # (擽ぐったい, 引受る) — leaving them is teaching wrong orthography, and there is no
+            # correct-spelling entry to retire toward.
+            #
+            # The permission is deliberately narrow: the manifest must name the id AND the
+            # exact new surface, and `kana` must not move in the same edit. A change of both
+            # is the kana rewrite two external reviewers refused in v1.19, wearing a hat.
+            if field == "surface" and declared_entry is not None:
+                intended = declared_entry.get("rewriteSurface")
+                if intended is None:
+                    problems.append(f"{eid}: surface changed {a.get(field)!r} -> "
+                                    f"{b.get(field)!r}, and the manifest declared no "
+                                    f"rewriteSurface for it")
+                elif intended != b.get(field):
+                    problems.append(f"{eid}: surface changed to {b.get(field)!r} but the "
+                                    f"manifest declared {intended!r}")
+                elif a.get("kana") != b.get("kana"):
+                    problems.append(f"{eid}: surface and kana moved TOGETHER — a declared "
+                                    f"surface correction must leave the typed answer alone")
+                continue
+            problems.append(f"{eid}: {field} changed {a.get(field)!r} -> {b.get(field)!r}")
+
+    # A manifest that promises a surface rewrite and does not deliver one is a manifest
+    # nobody re-read. `retire` has no such assertion (measured in v1.21 §D) and this one is
+    # cheap, so it gets it.
+    if manifest:
+        for eid, declared in manifest.items():
+            intended = declared.get("rewriteSurface")
+            if intended is None or eid not in by_id_new or eid not in by_id_old:
+                continue
+            if by_id_new[eid].get("surface") != intended:
+                problems.append(f"{eid}: manifest promised surface -> {intended!r} but the "
+                                f"entry still reads {by_id_new[eid].get('surface')!r}")
+
+    for eid in sorted(set(by_id_old) & set(by_id_new)):
+        a, b = by_id_old[eid], by_id_new[eid]
 
         for lang, before in (a.get("meanings") or {}).items():
             after = (b.get("meanings") or {}).get(lang) or []

@@ -137,6 +137,35 @@ def main():
                                                                    "removeZH": []}]},
           expect_text="duplicate gloss")
 
+    # --- v1.21 §C: the one frozen field a manifest may move, and its four fences --------
+    surf = with_kana
+    probe("surface rewritten with NO manifest",
+          mutate(surf["id"], lambda e: e.__setitem__("surface", e["surface"] + "々")),
+          must_fail=True, expect_text="surface changed")
+    probe("surface rewritten to a value the manifest did NOT name",
+          mutate(surf["id"], lambda e: e.__setitem__("surface", e["surface"] + "々")),
+          must_fail=True,
+          manifest={"reason": "probe", "entries": [{"id": surf["id"],
+                                                    "rewriteSurface": "something-else"}]},
+          expect_text="manifest declared")
+    probe("surface and kana moved TOGETHER under a manifest (the refused kana edit in a hat)",
+          mutate(surf["id"], lambda e: (e.__setitem__("surface", e["surface"] + "々"),
+                                        e.__setitem__("kana", e["kana"] + "ん"))),
+          must_fail=True,
+          manifest={"reason": "probe", "entries": [{"id": surf["id"],
+                                                    "rewriteSurface": surf["surface"] + "々"}]},
+          expect_text="TOGETHER")
+    probe("manifest promises a surface rewrite that did not happen",
+          copy.deepcopy(base), must_fail=True,
+          manifest={"reason": "probe", "entries": [{"id": surf["id"],
+                                                    "rewriteSurface": "never-applied"}]},
+          expect_text="manifest promised surface")
+    probe("a DECLARED surface rewrite, kana untouched, is allowed",
+          mutate(surf["id"], lambda e: e.__setitem__("surface", e["surface"] + "々")),
+          must_fail=False,
+          manifest={"reason": "probe", "entries": [{"id": surf["id"],
+                                                    "rewriteSurface": surf["surface"] + "々"}]})
+
     # --- the permitted counterparts: a guard that rejects everything is not a guard ----
     probe("filling an ABSENT exKana is still allowed (write-once, not frozen)",
           mutate(with_kana["id"], lambda e: e.pop("exKana", None)) and None or

@@ -35,6 +35,10 @@ public enum DueReminderPlanner {
 
     /// - Parameters:
     ///   - store: current vocab SRS state (its cards' `dueDate`s drive the counts).
+    ///   - vocabResolves: whether a card's vocabulary entry still exists. NotificationKit
+    ///     cannot see VocabKit, so the caller injects it — the same shape `ReviewStore`
+    ///     uses. Defaulting to "everything resolves" is what let this path keep counting
+    ///     retired entries after the check existed.
     ///   - conjugationDue: how many CONJUGATION cards are due by a given instant, **in the
     ///     calendar passed as the second argument**. A closure, not a store, so this module
     ///     keeps depending on ReviewKit alone — the conjugation SRS is a deliberately separate
@@ -54,6 +58,7 @@ public enum DueReminderPlanner {
     public static func plan(
         store: ReviewStore,
         conjugationDue: (Date, Calendar) -> Int = { _, _ in 0 },
+        vocabResolves: @escaping (String) -> Bool = { _ in true },
         from now: Date,
         hour: Int,
         days: Int = 7,
@@ -76,7 +81,10 @@ public enum DueReminderPlanner {
 
             // Cards due by the end of this calendar day (one second before midnight).
             let endOfDay = nextDay.addingTimeInterval(-1)
-            let vocab = store.dueCount(on: endOfDay, calendar: calendar)
+            // Same orphan filter the run itself applies. A reminder that counts a card the
+            // run will drop tells the learner about work that does not exist, which is the
+            // failure `resolves:` was added for — and this call site never got it.
+            let vocab = store.dueCount(on: endOfDay, calendar: calendar, resolves: vocabResolves)
             let conj = conjugationDue(endOfDay, calendar)
             if vocab + conj > 0 {
                 reminders.append(DueReminder(fireDate: fire, vocabCount: vocab, conjugationCount: conj))

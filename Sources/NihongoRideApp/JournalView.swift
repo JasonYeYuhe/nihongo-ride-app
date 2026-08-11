@@ -1,4 +1,5 @@
 import SwiftUI
+import VocabKit
 import JournalKit
 import ReviewKit
 
@@ -177,7 +178,8 @@ struct JournalView: View {
     // MARK: SRS forecast
 
     private var forecastCard: some View {
-        let forecast = model.reviewStore.dueForecast()
+        let forecast = model.reviewStore.dueForecast(
+            resolves: { VocabStore.shared.entry(id: $0) != nil })
         let spoken = zh
             ? "今天 \(forecast.today),明天 \(forecast.tomorrow),本周 \(forecast.thisWeek)"
             : "Today \(forecast.today), tomorrow \(forecast.tomorrow), this week \(forecast.thisWeek)"

@@ -448,7 +448,8 @@ final class AppModel {
         }
         let snapshot = WidgetSnapshot(
             generatedAt: now,
-            vocabDueByDay: reviewStore.dueByDay(asOf: now, horizon: h),
+            vocabDueByDay: reviewStore.dueByDay(asOf: now, horizon: h,
+                                                resolves: { VocabStore.shared.entry(id: $0) != nil }),
             conjugationDueByDay: conjugationReviewStore.dueByDay(asOf: now, horizon: h),
             streakByDay: streakByDay,
             lifetimeWords: lifetimeWords,

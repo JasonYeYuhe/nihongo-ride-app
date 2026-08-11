@@ -2,6 +2,7 @@ import Foundation
 import ReviewKit
 import ConjugationReviewKit
 import NotificationKit
+import VocabKit
 import UserNotifications
 
 /// The impure side of SRS due-reminders: it talks to `UNUserNotificationCenter`.
@@ -54,6 +55,7 @@ enum ReminderScheduler {
         let reminders = DueReminderPlanner.plan(
             store: store,
             conjugationDue: { conjugationStore.dueCount(on: $0, calendar: $1) },
+            vocabResolves: { VocabStore.shared.entry(id: $0) != nil },
             from: Date(), hour: hour)
         for (index, reminder) in reminders.enumerated() {
             let content = UNMutableNotificationContent()
@@ -70,7 +72,9 @@ enum ReminderScheduler {
             try? await center.add(request)
         }
         // Keep the app icon badge honest with what's due right now — both kinds.
-        try? await center.setBadgeCount(store.dueCount() + conjugationStore.dueCount())
+        try? await center.setBadgeCount(
+            store.dueCount(resolves: { VocabStore.shared.entry(id: $0) != nil })
+                + conjugationStore.dueCount())
         return true
     }
 

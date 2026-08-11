@@ -1,0 +1,35 @@
+{
+  "reason": "v1.21 §C — the three headwords that are not spellings, resolved three different ways",
+  "entries": [
+    {
+      "id": "n2-b984",
+      "surface": "ぺん",
+      "kana": "ぺん",
+      "retire": true,
+      "replacedBy": "n5-k051",
+      "why": "Not an orthography to correct — a duplicate. ぺん is a loanword written in hiragana, which no writer or IME produces; the correct form ペン already ships as n5-k051 WITH a reviewed example sentence, at a level (N5) where a learner meets it far sooner. Correcting this surface to ペン would create two entries with the same surface, the same reading and the same word, which is worse than either the defect or the removal. So it retires with a real target — the case `retire` + `replacedBy` was built for. No learner loses the word: they gain the N5 card that teaches it properly."
+    },
+    {
+      "id": "n1-b242",
+      "surface": "擽ぐったい",
+      "kana": "くすぐったい",
+      "rewriteSurface": "擽ったい",
+      "why": "擽ぐったい is not an okurigana form any writer or IME produces: the stem is 擽る (くすぐ-る), so the adjective is 擽ったい and the extra ぐ duplicates the stem. Nothing in the corpus carries the correct spelling, so unlike ぺん there is nothing to retire toward. The correction moves `surface` only. `kana` — the string the learner types and the string the SM-2 card was built on — does not move, so the review schedule keeps testing exactly the answer it was scheduled for."
+    },
+    {
+      "id": "n2-b145",
+      "surface": "引受る",
+      "kana": "ひきうける",
+      "rewriteSurface": "引き受ける",
+      "why": "引受る cannot yield ひきうける: as written it parses as ひきう-る, and no IME produces it from ひきうける. The verb is 引き受ける. Same shape as 擽ったい — no correct-spelling sibling exists, and the correction moves `surface` only, leaving the typed answer untouched."
+    }
+  ],
+  "notOnThisList": [
+    {
+      "id": "n3-b114",
+      "surface": "釣",
+      "kana": "つり",
+      "why": "Left alone deliberately. Codex proposed 釣 → 釣り alongside the three above, and it would read better and probably unblock an example sentence. But 釣 CAN be read つり — it is an attested headword variant — whereas 引受る cannot be read ひきうける at all. The bar for touching a frozen field is that the current value is wrong, not that another value would be better. Recorded here as a candidate for a reviewed content batch, not acted on."
+    }
+  ]
+}

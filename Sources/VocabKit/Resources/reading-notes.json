@@ -1,0 +1,530 @@
+{
+ "measurement": "scripts/gen_reading_notes.py",
+ "source": "docs/measurements/entries-no-sentence-can-teach.json",
+ "date": "2026-08-11",
+ "what": "the reading each of these cards teaches is not the everyday reading of its spelling — the note says which one is, so two cards with the same kanji and the same gloss are no longer indistinguishable",
+ "notes": [
+  {
+   "id": "n1-b1004",
+   "kind": "commonIs",
+   "common": "ひがし",
+   "siblingID": "n5-b152"
+  },
+  {
+   "id": "n1-b1012",
+   "kind": "commonIs",
+   "common": "かみなり",
+   "siblingID": "n3-g358"
+  },
+  {
+   "id": "n1-b1020",
+   "kind": "commonIs",
+   "common": "いりぐち",
+   "siblingID": "n5-b023"
+  },
+  {
+   "id": "n1-b1036",
+   "kind": "commonIs",
+   "common": "しょうじょ",
+   "siblingID": "n3-b541"
+  },
+  {
+   "id": "n1-b1049",
+   "kind": "commonIs",
+   "common": "かたむく",
+   "siblingID": "n2-b481"
+  },
+  {
+   "id": "n1-b1062",
+   "kind": "commonIs",
+   "common": "つきひ",
+   "siblingID": "n2-b911"
+  },
+  {
+   "id": "n1-b1066",
+   "kind": "commonIs",
+   "common": "くる",
+   "siblingID": "n5-kuru"
+  },
+  {
+   "id": "n1-b1068",
+   "kind": "commonIs",
+   "common": "けはい",
+   "siblingID": "n1-g314"
+  },
+  {
+   "id": "n1-b1079",
+   "kind": "commonIs",
+   "common": "たま",
+   "siblingID": "n3-b102"
+  },
+  {
+   "id": "n1-b1126",
+   "kind": "commonIs",
+   "common": "ぼく",
+   "siblingID": "n4-b125"
+  },
+  {
+   "id": "n1-b1152",
+   "kind": "commonIs",
+   "common": "ひと",
+   "siblingID": "n5-g044"
+  },
+  {
+   "id": "n1-b1232",
+   "kind": "commonIs",
+   "common": "なになに",
+   "siblingID": "n2-b1207"
+  },
+  {
+   "id": "n1-b132",
+   "kind": "commonIs",
+   "common": "ねずみ",
+   "siblingID": "n3-b360"
+  },
+  {
+   "id": "n1-b1345",
+   "kind": "commonIs",
+   "common": "わ",
+   "siblingID": "n3-b725"
+  },
+  {
+   "id": "n1-b1355",
+   "kind": "commonIs",
+   "common": "わたし",
+   "siblingID": "n5-g012"
+  },
+  {
+   "id": "n1-b1368",
+   "kind": "commonIs",
+   "common": "いちにち",
+   "siblingID": "n5-b018"
+  },
+  {
+   "id": "n1-b1380",
+   "kind": "commonIs",
+   "common": "じょうず",
+   "siblingID": "n5-g113"
+  },
+  {
+   "id": "n1-b1392",
+   "kind": "commonIs",
+   "common": "じょし",
+   "siblingID": "n3-b282"
+  },
+  {
+   "id": "n1-b1422",
+   "kind": "commonIs",
+   "common": "めがね",
+   "siblingID": "n5-b361"
+  },
+  {
+   "id": "n1-b1494",
+   "kind": "commonIs",
+   "common": "しゃれ",
+   "siblingID": "n2-b070"
+  },
+  {
+   "id": "n1-b1559",
+   "kind": "commonIs",
+   "common": "だれ",
+   "siblingID": "n5-g020"
+  },
+  {
+   "id": "n1-b1562",
+   "kind": "commonIs",
+   "common": "たけ",
+   "siblingID": "n1-b1178"
+  },
+  {
+   "id": "n1-b1754",
+   "kind": "commonIs",
+   "common": "たにん",
+   "siblingID": "n3-b862"
+  },
+  {
+   "id": "n1-b1762",
+   "kind": "commonIs",
+   "common": "やぬし",
+   "siblingID": "n2-b720"
+  },
+  {
+   "id": "n1-b177",
+   "kind": "commonIs",
+   "common": "よなか",
+   "siblingID": "n3-b714"
+  },
+  {
+   "id": "n1-b1772",
+   "kind": "commonIs",
+   "common": "しるし",
+   "siblingID": "n3-b550"
+  },
+  {
+   "id": "n1-b1872",
+   "kind": "commonIs",
+   "common": "さくもつ",
+   "siblingID": "n3-b053"
+  },
+  {
+   "id": "n1-b188",
+   "kind": "commonIs",
+   "common": "めいはく",
+   "siblingID": "n2-g079"
+  },
+  {
+   "id": "n1-b1891",
+   "kind": "commonIs",
+   "common": "しゅうちゃく",
+   "siblingID": "n1-g118"
+  },
+  {
+   "id": "n1-b1916",
+   "kind": "commonIs",
+   "common": "じょうぶ",
+   "siblingID": "n5-b087"
+  },
+  {
+   "id": "n1-b1920",
+   "kind": "commonIs",
+   "common": "てんのう",
+   "siblingID": "n2-b923"
+  },
+  {
+   "id": "n1-b1976",
+   "kind": "commonIs",
+   "common": "からだ",
+   "siblingID": "n5-b052"
+  },
+  {
+   "id": "n1-b199",
+   "kind": "commonIs",
+   "common": "いってい",
+   "siblingID": "n2-b451"
+  },
+  {
+   "id": "n1-b202",
+   "kind": "commonIs",
+   "common": "じょうげ",
+   "siblingID": "n2-b850"
+  },
+  {
+   "id": "n1-b2036",
+   "kind": "commonIs",
+   "common": "りゅうこう",
+   "siblingID": "n3-b971"
+  },
+  {
+   "id": "n1-b214",
+   "kind": "commonIs",
+   "common": "めん",
+   "siblingID": "n3-b175"
+  },
+  {
+   "id": "n1-b220",
+   "kind": "commonIs",
+   "common": "やけど",
+   "siblingID": "n2-b1015"
+  },
+  {
+   "id": "n1-b224",
+   "kind": "commonIs",
+   "common": "びん",
+   "siblingID": "n3-b666"
+  },
+  {
+   "id": "n1-b246",
+   "kind": "commonIs",
+   "common": "よごす",
+   "siblingID": "n2-b187"
+  },
+  {
+   "id": "n1-b285",
+   "kind": "commonIs",
+   "common": "ちほう",
+   "siblingID": "n3-b107"
+  },
+  {
+   "id": "n1-b320",
+   "kind": "commonIs",
+   "common": "なかゆび",
+   "siblingID": "n2-b129"
+  },
+  {
+   "id": "n1-b346",
+   "kind": "commonIs",
+   "common": "みやげ",
+   "siblingID": "n3-b171"
+  },
+  {
+   "id": "n1-b436",
+   "kind": "commonIs",
+   "common": "ぐん",
+   "siblingID": "n3-b038"
+  },
+  {
+   "id": "n1-b437",
+   "kind": "commonIs",
+   "common": "いぞん",
+   "siblingID": "n1-g017"
+  },
+  {
+   "id": "n1-b450",
+   "kind": "commonIs",
+   "common": "きいろ",
+   "siblingID": "n5-b249"
+  },
+  {
+   "id": "n1-b464",
+   "kind": "commonIs",
+   "common": "てき",
+   "siblingID": "n3-g221"
+  },
+  {
+   "id": "n1-b508",
+   "kind": "commonIs",
+   "common": "ほね",
+   "siblingID": "n3-b938"
+  },
+  {
+   "id": "n1-b523",
+   "kind": "commonIs",
+   "common": "みとめる",
+   "siblingID": "n3-g261"
+  },
+  {
+   "id": "n1-b580",
+   "kind": "commonIs",
+   "common": "ふぼ",
+   "siblingID": "n2-b977"
+  },
+  {
+   "id": "n1-b618",
+   "kind": "commonIs",
+   "common": "なのか",
+   "siblingID": "n5-b134"
+  },
+  {
+   "id": "n1-b623",
+   "kind": "commonIs",
+   "common": "ふたり",
+   "siblingID": "n5-b343"
+  },
+  {
+   "id": "n1-b724",
+   "kind": "commonIs",
+   "common": "ひま",
+   "siblingID": "n5-g116"
+  },
+  {
+   "id": "n1-b753",
+   "kind": "commonIs",
+   "common": "げひん",
+   "siblingID": "n2-b509"
+  },
+  {
+   "id": "n1-b773",
+   "kind": "commonIs",
+   "common": "さい",
+   "siblingID": "n3-b051"
+  },
+  {
+   "id": "n1-b777",
+   "kind": "commonIs",
+   "common": "こっきょう",
+   "siblingID": "n3-b247"
+  },
+  {
+   "id": "n1-b802",
+   "kind": "commonIs",
+   "common": "もる",
+   "siblingID": "n2-b716"
+  },
+  {
+   "id": "n1-b836",
+   "kind": "commonIs",
+   "common": "じょうちょ",
+   "siblingID": "n2-g034"
+  },
+  {
+   "id": "n1-b923",
+   "kind": "commonIs",
+   "common": "ほっそく",
+   "siblingID": "n1-g204"
+  },
+  {
+   "id": "n1-b943",
+   "kind": "commonIs",
+   "common": "ふべん",
+   "siblingID": "n4-b115"
+  },
+  {
+   "id": "n1-b956",
+   "kind": "commonIs",
+   "common": "あたり",
+   "siblingID": "n3-b731"
+  },
+  {
+   "id": "n2-b1040",
+   "kind": "commonIs",
+   "common": "おととい",
+   "siblingID": "n5-b040"
+  },
+  {
+   "id": "n2-b424",
+   "kind": "commonIs",
+   "common": "こうよう",
+   "siblingID": "n2-b518"
+  },
+  {
+   "id": "n2-b634",
+   "kind": "commonIs",
+   "common": "しりぞける",
+   "siblingID": "n1-b1902"
+  },
+  {
+   "id": "n2-b649",
+   "kind": "commonIs",
+   "common": "にぶい",
+   "siblingID": "n2-g218"
+  },
+  {
+   "id": "n2-b834",
+   "kind": "commonIs",
+   "common": "しっけ",
+   "siblingID": "n2-g321"
+  },
+  {
+   "id": "n2-b889",
+   "kind": "commonIs",
+   "common": "だいぶ",
+   "siblingID": "n4-g239"
+  },
+  {
+   "id": "n3-b138",
+   "kind": "commonIs",
+   "common": "あと",
+   "siblingID": "n5-b205"
+  },
+  {
+   "id": "n3-b235",
+   "kind": "commonIs",
+   "common": "しも",
+   "siblingID": "n3-b809"
+  },
+  {
+   "id": "n3-b243",
+   "kind": "commonIs",
+   "common": "こうじょう",
+   "siblingID": "n4-g135"
+  },
+  {
+   "id": "n3-b294",
+   "kind": "commonIs",
+   "common": "せ",
+   "siblingID": "n5-b284"
+  },
+  {
+   "id": "n3-b380",
+   "kind": "commonIs",
+   "common": "しな",
+   "siblingID": "n3-b807"
+  },
+  {
+   "id": "n3-b386",
+   "kind": "commonIs",
+   "common": "うつ",
+   "siblingID": "n4-g033"
+  },
+  {
+   "id": "n3-b607",
+   "kind": "commonIs",
+   "common": "そそぐ",
+   "siblingID": "n3-g206"
+  },
+  {
+   "id": "n3-b621",
+   "kind": "commonIs",
+   "common": "じゅう",
+   "siblingID": "n5-g010"
+  },
+  {
+   "id": "n3-b639",
+   "kind": "commonIs",
+   "common": "にっぽん",
+   "siblingID": "n3-b358"
+  },
+  {
+   "id": "n3-b684",
+   "kind": "commonIs",
+   "common": "あいだ",
+   "siblingID": "n4-b003"
+  },
+  {
+   "id": "n3-b791",
+   "kind": "commonIs",
+   "common": "きょう",
+   "siblingID": "n5-kyou"
+  },
+  {
+   "id": "n3-b909",
+   "kind": "commonIs",
+   "common": "つゆ",
+   "siblingID": "n3-b879"
+  },
+  {
+   "id": "n3-b939",
+   "kind": "commonIs",
+   "common": "ほお",
+   "siblingID": "n3-b394"
+  },
+  {
+   "id": "n4-b170",
+   "kind": "commonIs",
+   "common": "とめる",
+   "siblingID": "n4-b061"
+  },
+  {
+   "id": "n4-g203",
+   "kind": "commonIs",
+   "common": "あく",
+   "siblingID": "n4-g003"
+  },
+  {
+   "id": "n5-b057",
+   "kind": "commonIs",
+   "common": "きゅう",
+   "siblingID": "n5-g009"
+  },
+  {
+   "id": "n5-b167",
+   "kind": "commonIs",
+   "common": "まいつき",
+   "siblingID": "n5-g036"
+  },
+  {
+   "id": "n5-b247",
+   "kind": "commonIs",
+   "common": "つらい",
+   "siblingID": "n3-b334"
+  },
+  {
+   "id": "n5-b275",
+   "kind": "commonIs",
+   "common": "なな",
+   "siblingID": "n5-g007"
+  },
+  {
+   "id": "n5-b349",
+   "kind": "commonIs",
+   "common": "まいとし",
+   "siblingID": "n5-b168"
+  },
+  {
+   "id": "n5-b368",
+   "kind": "commonIs",
+   "common": "いく",
+   "siblingID": "n5-iku"
+  }
+ ]
+}

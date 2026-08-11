@@ -84,14 +84,58 @@ list and a stack of due SRS cards both exist, and neither reaches Sentence mode.
 
 225 entries cannot carry an honest example. The list, the causes and both external opinions
 are in `docs/measurements/entries-no-sentence-can-teach.json` and the v1.19 commits. Nothing
-in this release depends on the answer, but the queue does not shrink on its own:
+in this release depends on the answer, but the queue does not shrink on its own.
 
-- If they keep their readings: mark them in the data so the UI can say "no example — this
-  entry teaches the less common reading of 鼠", which is more honest than a blank.
-- If any are retired: the retirement path exists and is tested (`--manifest` with `retire` +
-  `replacedBy`, and the orphaned-card fix that stops a retired entry inflating the due badge).
-- Three are not readings at all but invalid headword spellings — 擽ぐったい, 引受る, ぺん — and
-  those are a straightforward data fix in any scenario.
+**DECIDED (2026-08-11).** Codex and Gemini were both asked again, and both said retire. Both
+argued from the same premise: that a card asks "given this spelling, what reading?" and these
+cards leave that underdetermined, so drilling them teaches over-application of a minority
+reading. **That premise is false for this app**, which is why neither answer was taken. Every
+mode PRINTS the reading beside the spelling — the word card renders `kanaReading`
+unconditionally (assistance gates the romaji, not the kana), the conjugation drill prints the
+dictionary reading, and dictation cannot draw these entries at all because it needs an example
+sentence they do not have. A learner types a reading they can see; they are never asked to
+choose one. Retiring 222 entries and every learner's progress on them, to fix a problem the
+interface already prevents, is the more expensive mistake.
+
+What the reviewers' critique DID earn is the shape of the fix. Codex: "a sentence could not
+be generated is implementation history, not information useful to the learner." So the notes
+say nothing about sentences. They say the thing measurement showed was actually missing:
+**29 of the 98 sibling pairs ship byte-identical English glosses** — 鼠/ねず and 鼠/ねずみ are
+two cards with the same kanji and the same definition, and nothing on either says which one an
+ordinary sentence would use.
+
+- **87 cards gain a reading note** (`Sources/VocabKit/Resources/reading-notes.json`), rendered
+  under the gloss: "Usually read ねずみ — that reading has its own card."
+- **129 do not, and the cut is the point.** A second note kind was built from the measurement
+  file's `defaultReading` and thrown away: the field name promises "the everyday reading of
+  this spelling" and holds whatever the pipeline's tokenizer produced. On the first six N5
+  cards it was backwards three times — it would have printed "言う is usually read ゆう" on the
+  very card v1.18 created by RETIRING 言う/ゆう as the colloquial form. Checking those claims
+  against the corpus's own 6,737 reviewed sentences contradicted only one outright and had no
+  evidence at all for 99 of 118, so "one contradiction" was not a pass. A note ships only when
+  a sibling ENTRY attests the reading AND that sibling carries a reviewed sentence reading the
+  spelling that way.
+- **Three headwords resolved as data**, three different ways
+  (`docs/measurements/v121-section-c-manifest.json`):
+  - `ぺん` **retired**, `replacedBy` the N5 `ペン` that already ships with an example. Not an
+    orthography to correct — a duplicate whose correct form was already in the app at an
+    easier level. This is the case `retire` + `replacedBy` exists for.
+  - `擽ぐったい → 擽ったい` and `引受る → 引き受ける`: `surface` corrections. `kana` does not
+    move, so the SM-2 card keeps testing exactly the answer it was scheduled on — categorically
+    unlike the kana edit both reviewers refused in v1.19. The guard now permits a
+    manifest-declared surface change and refuses one where `surface` and `kana` move together.
+  - `釣 → 釣り` was proposed by Codex and **not** taken: 釣 CAN be read つり, where 引受る cannot
+    be read ひきうける. The bar for moving a frozen field is that the value is wrong, not that
+    another is better.
+
+**And the thing this section actually found.** Checking whether a retirement was safe showed
+it was not: `resolves:` — the check that stops a retired entry counting toward work that no
+longer exists — was added to `dueCards`/`dueCount` in v1.12 and wired into ONE of the five
+places that count due cards. The app badge, the widget histogram, the reminder body and the
+Ride Log forecast all still counted every stored card, so the two entries **v1.18 already
+retired** have been inflating those numbers for every learner who studied them, permanently,
+because a card whose entry is gone can never be reviewed away. `ReviewStore`'s own doc comment
+describes this exact failure. All five call sites now filter, and a test holds each one.
 
 ## §D Maintenance the corpus work left behind
 

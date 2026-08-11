@@ -2,6 +2,7 @@ import SwiftUI
 import SceneryKit
 import GameCore
 import RomajiKana
+import VocabKit
 
 struct GameView: View {
     @Environment(AppModel.self) private var model
@@ -444,6 +445,8 @@ private struct WordCard: View {
                 Text(session.currentGloss ?? "")
                     .scaledSystemFont(compact ? 15 : 20, weight: .medium, design: .rounded)
                     .foregroundStyle(Theme.dim)
+
+                readingNote
             }
 
             Divider().background(Theme.cardStroke).frame(maxWidth: compact ? 300 : 360)
@@ -540,6 +543,33 @@ private struct WordCard: View {
                 .accessibilityLabel(saved ? (zh ? "已收藏,点按取消" : "Saved, tap to remove")
                                           : (zh ? "收藏此词" : "Save this word"))
                 .accessibilityAction(named: Text(zh ? "加入词单" : "Add to lists")) { onLongPressStar(id) }
+        }
+    }
+
+    /// Says so when the reading on this card is NOT the everyday reading of its spelling.
+    ///
+    /// 87 cards carry one, every one of them corroborated by a sibling entry that ships a
+    /// reviewed sentence reading that spelling that way. 25 of the 87 sit beside a sibling
+    /// with a byte-identical gloss — 鼠/ねず next to 鼠/ねずみ, both "mouse, rat" — where
+    /// without this line the two cards are indistinguishable. (PLAN-V1.21 §C.)
+    ///
+    /// It states the reading fact and nothing about why the card has no example: that is
+    /// pipeline history and no use to anyone typing.
+    ///
+    /// Shown in the compact (keyboard-up) layout too, unlike the example block below it. On
+    /// an iPhone the keyboard is up for the whole run, so compact IS the normal state there —
+    /// hiding it would mean an entire platform never sees it. It is one caption line and it
+    /// replaces nothing.
+    @ViewBuilder
+    private var readingNote: some View {
+        if let id = session.current?.id, let note = ReadingNotes.note(for: id) {
+            let zh = language == "zh"
+            Text(zh ? "这个写法平常读作 \(note.common),那个读音有自己的卡片"
+                    : "Usually read \(note.common) — that reading has its own card")
+            .font(.caption2)
+            .foregroundStyle(Theme.gold.opacity(0.85))
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 

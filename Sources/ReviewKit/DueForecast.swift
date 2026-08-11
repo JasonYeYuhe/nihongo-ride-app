@@ -32,11 +32,21 @@ extension ReviewStore {
     ///
     /// DST-safe: day offsets come from `dateComponents([.day])` between start-of-day
     /// values, never `+86400`.
-    public func dueByDay(asOf date: Date = Date(), horizon: Int, calendar: Calendar = .current) -> [Int] {
+    /// - Parameter resolves: whether a card's entry still exists in the vocabulary, the same
+    ///   injected check `dueCards`/`dueCount` take. It is here because it was missing: the
+    ///   parameter was added to those two in v1.12 to stop a retired entry making the status
+    ///   lie about the work, and then wired into exactly ONE of the five places that count
+    ///   due cards. The widget, the app badge, the reminder body and the journal forecast
+    ///   all still counted every stored card — so the two entries v1.18 retired have been
+    ///   inflating those numbers ever since, for every learner who had studied them, with
+    ///   no way to ever clear them. (v1.21 §C, found while checking whether a retirement was
+    ///   safe to make.)
+    public func dueByDay(asOf date: Date = Date(), horizon: Int, calendar: Calendar = .current,
+                         resolves: (String) -> Bool = { _ in true }) -> [Int] {
         precondition(horizon > 0, "horizon must be positive")
         let start = calendar.startOfDay(for: date)
         var hist = [Int](repeating: 0, count: horizon)
-        for card in cards.values {
+        for card in cards.values where resolves(card.id) {
             let cardDay = calendar.startOfDay(for: card.dueDate)
             guard let off = calendar.dateComponents([.day], from: start, to: cardDay).day else { continue }
             let bucket = max(0, off)        // overdue (off < 0) counts as due today
@@ -46,7 +56,10 @@ extension ReviewStore {
     }
 
     /// Buckets every card's due date relative to `date`'s calendar day.
-    public func dueForecast(asOf date: Date = Date(), calendar: Calendar = .current) -> DueForecast {
+    ///
+    /// Takes the same `resolves` check as `dueByDay`, for the same reason.
+    public func dueForecast(asOf date: Date = Date(), calendar: Calendar = .current,
+                            resolves: (String) -> Bool = { _ in true }) -> DueForecast {
         let startOfToday = calendar.startOfDay(for: date)
         guard let endOfToday = calendar.date(byAdding: .day, value: 1, to: startOfToday),
               let endOfTomorrow = calendar.date(byAdding: .day, value: 2, to: startOfToday),
@@ -54,7 +67,7 @@ extension ReviewStore {
         else { return DueForecast() }
 
         var forecast = DueForecast()
-        for card in cards.values {
+        for card in cards.values where resolves(card.id) {
             if card.dueDate < endOfToday {
                 forecast.today += 1
             } else if card.dueDate < endOfTomorrow {

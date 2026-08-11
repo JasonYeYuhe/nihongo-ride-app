@@ -131,3 +131,44 @@ struct DueByDayTests {
         #expect(ReviewStore().dueByDay(asOf: noon, horizon: 5, calendar: tokyo) == [0, 0, 0, 0, 0])
     }
 }
+
+// MARK: - v1.21 §C — the orphan filter that existed but was only wired to one caller
+
+@Suite("Retired entries must not inflate any due count")
+struct OrphanedCardCountTests {
+
+    /// A store with one live card and one whose vocabulary entry has been retired.
+    private func store(now: Date) -> ReviewStore {
+        var s = ReviewStore()
+        s.record(entryID: "live", outcome: TypingOutcome(completed: false, mistakes: 3), on: now)
+        s.record(entryID: "retired", outcome: TypingOutcome(completed: false, mistakes: 3), on: now)
+        return s
+    }
+
+    private let resolves: (String) -> Bool = { $0 != "retired" }
+
+    /// The bug this locks out shipped for three releases and is described, exactly, in
+    /// `ReviewStore.dueCards`'s own doc comment: "the app sends a push saying 12 words are
+    /// due, badges 12, and then hands the learner a run with 11". The `resolves:` parameter
+    /// was added to fix it and then wired into ONE of the five places that count due cards —
+    /// so the two entries v1.18 retired kept inflating the badge, the widget, the reminder
+    /// body and the journal forecast for anyone who had studied them, permanently, because
+    /// a card whose entry is gone can never be reviewed away.
+    @Test("every due count drops a card whose entry is gone")
+    func everyCountFiltersOrphans() {
+        let now = Date()
+        let s = store(now: now)
+        let tomorrow = now.addingTimeInterval(24 * 3600)
+
+        #expect(s.dueCount(on: tomorrow) == 2)                          // unfiltered: both
+        #expect(s.dueCount(on: tomorrow, resolves: resolves) == 1)      // filtered: the live one
+
+        // The widget histogram — bucket 0 absorbs everything overdue.
+        #expect(s.dueByDay(asOf: tomorrow, horizon: 7).first == 2)
+        #expect(s.dueByDay(asOf: tomorrow, horizon: 7, resolves: resolves).first == 1)
+
+        // The Ride Log forecast.
+        #expect(s.dueForecast(asOf: tomorrow).today == 2)
+        #expect(s.dueForecast(asOf: tomorrow, resolves: resolves).today == 1)
+    }
+}

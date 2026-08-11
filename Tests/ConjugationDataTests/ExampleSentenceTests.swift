@@ -310,6 +310,66 @@ struct ExampleSentenceTests {
             + "lost: \(expected.subtracting(actual).sorted())"))
     }
 
+    // MARK: v1.21 §C — the reading notes
+
+    /// Every note must name a real entry that still has no example, and must not point a
+    /// learner at a sibling that has since gone. The list is generated from a measurement
+    /// file, so it can drift away from the corpus in three directions and none of them
+    /// would be visible in the app — the note would simply not appear, or would name a card
+    /// the learner cannot find.
+    @Test("every reading note resolves, and points somewhere real")
+    func readingNotesResolve() {
+        let byID = Dictionary(VocabStore.shared.entries.map { ($0.id, $0) },
+                              uniquingKeysWith: { a, _ in a })
+        var problems: [String] = []
+        for (id, note) in ReadingNotes.all {
+            guard let entry = byID[id] else {
+                problems.append("\(id): note for an entry that is not in the corpus")
+                continue
+            }
+            if !(entry.exampleJP ?? "").isEmpty {
+                problems.append("\(id): has an example now — the note is stale")
+            }
+            if note.common.isEmpty {
+                problems.append("\(id): note names no everyday reading")
+            }
+            if note.common == entry.kana {
+                problems.append("\(id): note says the everyday reading is \(note.common), "
+                                + "which is what this card already teaches")
+            }
+            if let sibling = note.siblingID {
+                if let other = byID[sibling] {
+                    if other.kana != note.common {
+                        problems.append("\(id): points at \(sibling) for \(note.common), "
+                                        + "but that entry reads \(other.kana)")
+                    }
+                    if other.surface != entry.surface {
+                        problems.append("\(id): points at \(sibling), a different spelling "
+                                        + "(\(other.surface) vs \(entry.surface))")
+                    }
+                } else {
+                    problems.append("\(id): points at \(sibling), which is not in the corpus")
+                }
+            }
+        }
+        #expect(problems.isEmpty, Comment(rawValue: "\(problems.count) bad reading note(s):\n"
+                                                    + problems.prefix(10).joined(separator: "\n")))
+        #expect(ReadingNotes.isLoaded, "the notes must load, or 216 cards silently lose them")
+        #expect(ReadingNotes.all.count > 60, Comment(rawValue:
+            "only \(ReadingNotes.all.count) notes — the generator kept 87 of 216 after "
+            + "dropping every claim with no second source. A truncated file makes the cards "
+            + "it covers indistinguishable from their siblings again."))
+        // Every shipped note must be the corroborated kind: the sibling exists AND carries a
+        // reviewed sentence in which that spelling is read that way. A note without a
+        // sibling is the uncorroborated claim this release deliberately cut.
+        let uncorroborated = ReadingNotes.all.filter { _, note in
+            note.siblingID.flatMap { byID[$0]?.exampleJP } == nil
+        }
+        #expect(uncorroborated.isEmpty, Comment(rawValue:
+            "\(uncorroborated.count) note(s) name an everyday reading nothing else attests: "
+            + uncorroborated.keys.sorted().prefix(8).joined(separator: ", ")))
+    }
+
     /// Dictation plays a synthesizer's reading of `exJP` and grades against `exKana`, so a
     /// sentence it is offered must have both plus the tokens the reveal draws its furigana
     /// from. Every id withheld from dictation must also still BE a sentence — an exclusion
