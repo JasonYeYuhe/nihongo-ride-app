@@ -20,6 +20,25 @@ import Foundation
 /// The measurement is `scripts/check_dictation_readings.py`; `docs/measurements/
 /// dictation-reading-mismatches.json` carries the evidence for every id here, including
 /// what the audio was measured to say instead.
+///
+/// **What this list is calibrated to, exactly.** One voice: whatever
+/// `AVSpeechSynthesisVoice(language: "ja-JP")` returns, which is the same call `speak`
+/// makes, and which resolved to compact Kyoko on the measuring machine even with eight
+/// other Japanese voices installed. It is not a claim about Japanese; it is a claim about
+/// that voice.
+///
+/// How far it travels was measured rather than assumed: replaying the 27 proven mismatches
+/// through two Eloquence voices — a different synthesis engine entirely — reproduced 16 of
+/// them, one (弄る as いじる) again by byte-identical audio. So the reading decisions are
+/// substantially a property of Apple's shared Japanese text front-end and only partly of
+/// the voice. A learner whose default ja-JP voice is not the measured one may therefore see
+/// this list over-exclude (a sentence withheld that their voice would have read correctly)
+/// or under-exclude (a sentence offered that their voice reads differently). The first
+/// costs coverage; the second is the risk the whole mode carries, unchanged.
+///
+/// Pinning Kyoko by identifier would make the list exact and was rejected: it would refuse
+/// a learner the enhanced voice they chose to download, and break entirely on a device
+/// where compact Kyoko is absent.
 public enum DictationSafety {
     /// Ids withheld from dictation. Loaded from the bundled measurement; an unreadable or
     /// absent file yields an EMPTY set on purpose — see `excludedIDs`.

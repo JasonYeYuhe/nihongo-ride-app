@@ -213,6 +213,39 @@ struct MenuView: View {
                     }
                     .menuControlWidth(340)
                 }
+                // Dictation's own due launcher, the sibling of the sentence one above.
+                // Its count is smaller than the sentence count for a reason the learner
+                // cannot see, so it gets its own number rather than reusing that one.
+                if model.selectedMode == .dictation, model.dictationAvailable {
+                    let zh = model.languageCode == "zh"
+                    let due = model.dueDictationCount
+                    VStack(spacing: 6) {
+                        if due > 0 {
+                            Button(action: model.startDictationDue) {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "arrow.triangle.2.circlepath")
+                                        .accessibilityHidden(true)
+                                    Text(zh ? "到期词的听写 · 可用 \(due) 句"
+                                            : "Due sentences · \(due) available")
+                                        .scaledSystemFont(14, weight: .semibold, design: .rounded)
+                                        .lineLimit(1)
+                                }
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 16).padding(.vertical, 8)
+                                .background(Theme.accent2, in: Capsule())
+                            }
+                            .buttonStyle(.plain)
+                            .fixedSize()
+                            .accessibilityIdentifier("dueDictationButton")
+                            .accessibilityLabel(zh ? "听写 \(due) 个到期词的例句"
+                                                   : "Dictation for \(due) words due today")
+                        }
+                        Text(zh ? "词单里的听写在「词单」里开始" : "Dictation for a saved list starts from Word Lists")
+                            .font(.caption2).foregroundStyle(Theme.dim.opacity(0.8))
+                            .multilineTextAlignment(.center)
+                    }
+                    .menuControlWidth(340)
+                }
                 if model.selectedMode == .practice {
                     HStack(spacing: 12) {
                         Image(systemName: "text.alignleft").accessibilityHidden(true)

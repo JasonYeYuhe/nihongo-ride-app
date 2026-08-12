@@ -470,6 +470,73 @@ struct SentenceModeTests {
         #expect(session.currentReplays == 0)
     }
 
+    // MARK: v1.22 §A — dictation follows the learner too
+
+    /// Two filters stack and the second is invisible from the first: a word can have a
+    /// perfectly good sentence and still be unusable for dictation. The count the menu shows
+    /// has to be the second number, not the first, or it promises a run it cannot give.
+    @Test("a list-sourced dictation pool drops both the sentence-less and the withheld")
+    func dictationFromListStacksBothFilters() {
+        let ids = ["has-1", "has-2", "no-kana", "missing"]
+        #expect(GameSession.sentenceEntries(ids: ids, vocab: pool).map(\.id) == ["has-1", "has-2"])
+        #expect(GameSession.dictationEntries(ids: ids, vocab: pool, excluding: ["has-2"])
+                    .map(\.id) == ["has-1"])
+
+        let session = GameSession.makeDictation(ids: ids, vocab: pool, excluding: ["has-2"],
+                                                config: sentenceConfig())
+        #expect(session.mode == .dictation)
+        #expect(session.wordCount == 1)
+
+        // …and it is never padded back up to the run size from elsewhere.
+        let none = GameSession.makeDictation(ids: ids, vocab: pool,
+                                             excluding: ["has-1", "has-2"],
+                                             config: sentenceConfig())
+        #expect(none.wordCount == 0)
+        #expect(none.isFinished == true)
+    }
+
+    /// The due query has to apply BOTH filters itself rather than asking for five cards and
+    /// discarding the ones it cannot use — the difference between a run of two and a run of
+    /// one when half the due stack is withheld.
+    @Test("a due-sourced dictation run asks only for cards it can actually play")
+    func dictationFromDueFiltersInTheQuery() {
+        var review = ReviewStore()
+        let now = Date()
+        for id in ["has-1", "has-2", "no-kana", "no-sentence"] {
+            review.record(entryID: id, outcome: TypingOutcome(completed: false, mistakes: 3), on: now)
+        }
+        let tomorrow = now.addingTimeInterval(24 * 3600)
+
+        #expect(GameSession.dueSentenceCount(review: review, on: tomorrow, vocab: pool) == 2)
+        #expect(GameSession.dueDictationCount(review: review, on: tomorrow, vocab: pool,
+                                              excluding: ["has-2"]) == 1)
+
+        let session = GameSession.makeDictation(due: review, on: tomorrow, vocab: pool,
+                                                excluding: ["has-2"], config: sentenceConfig())
+        #expect(session.wordCount == 1)
+        #expect(session.wordList.first?.id == "has-1")
+        #expect(session.mode == .dictation)
+    }
+
+    /// Same red line as every other sentence run: the store it was drawn from is not the
+    /// store it can write to. Dictation grades a whole heard sentence; that must not land
+    /// on the review card of the one word it teaches.
+    @Test("a due-sourced dictation run writes nothing back into the store it came from")
+    func dictationFromDueWritesNothingBack() {
+        var review = ReviewStore()
+        let now = Date()
+        review.record(entryID: "has-1", outcome: TypingOutcome(completed: false, mistakes: 3), on: now)
+        let before = review.card(for: "has-1")
+
+        let session = GameSession.makeDictation(due: review, on: now.addingTimeInterval(24 * 3600),
+                                                vocab: pool, excluding: [], config: sentenceConfig())
+        for ch in KanaRomanizer.romaji(for: session.currentKana ?? "") { session.input(ch) }
+
+        #expect(review.card(for: "has-1") == before)
+        #expect(RunCompletion(mode: session.mode, recordsSRS: session.config.recordsSRS)
+                    .persistsSRS == false)
+    }
+
     /// Every sentence the real store would offer must be typeable end to end: feed the
     /// target's own kana back through the matcher and it must complete.
     @Test("shipped sentences can actually be typed to completion")

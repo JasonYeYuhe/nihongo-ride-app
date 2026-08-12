@@ -269,6 +269,7 @@ struct ListDetailView: View {
             if let list, !list.deleted {
                 playButton(list)
                 sentenceButton(list)
+                dictationButton(list)
                 if list.ids.isEmpty {
                     emptyState
                 } else {
@@ -357,6 +358,47 @@ struct ListDetailView: View {
                         : "None of this list's words has a typeable example sentence yet.")
                     .font(.caption).foregroundStyle(Theme.dim)
                     .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    /// Dictation launcher for this list (PLAN-V1.22 §A).
+    ///
+    /// Its count is a THIRD number, below the word count and the sentence count, and it has
+    /// to be its own: a sentence the app will happily show you is not necessarily one the
+    /// built-in voice reads the way the app writes it, and those are withheld. Shown only
+    /// when dictation is available at all — with no Japanese voice the whole mode is
+    /// unavailable and a button here would be a second dead end.
+    @ViewBuilder
+    private func dictationButton(_ list: WordList) -> some View {
+        if model.dictationAvailable {
+            let count = model.dictationCount(in: list)
+            let enabled = count > 0
+            VStack(spacing: 6) {
+                Button { model.startDictationList(list.id) } label: {
+                    Label(zh ? "听写 · 可用 \(count) 句" : "Dictation · \(count) available",
+                          systemImage: "ear")
+                        .scaledSystemFont(16, weight: .bold)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
+                        .frame(minHeight: playButtonHeight)
+                        .padding(.vertical, 4)
+                }
+                .buttonStyle(.plain)
+                .background(enabled ? Theme.gold.opacity(0.9) : Theme.card, in: Capsule())
+                .foregroundStyle(enabled ? .black : Theme.dim)
+                .disabled(!enabled)
+                .accessibilityIdentifier("dictationListButton")
+                .accessibilityLabel(zh ? "听写这个词单的例句,有 \(count) 句可用"
+                                       : "Dictation from this list, \(count) available")
+                if !enabled, model.sentenceCount(in: list) > 0 {
+                    // The distinction worth drawing: the list HAS sentences, they just are
+                    // not ones the voice can be trusted with.
+                    Text(zh ? "这个词单的例句都不适合听写(语音读法与标注不一致)。"
+                            : "None of this list's sentences is one the built-in voice reads the way the app writes it.")
+                        .font(.caption).foregroundStyle(Theme.dim)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
     }

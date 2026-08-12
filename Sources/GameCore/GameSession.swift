@@ -331,6 +331,72 @@ public final class GameSession {
                                config: config, mode: .dictation, now: now)
     }
 
+    /// The entries from `ids` a DICTATION run may use: a typeable sentence, and one the
+    /// synthesizer was not measured to read differently from it.
+    ///
+    /// Two filters stack, and the second is invisible from the first. A word can have a
+    /// perfectly good sentence and still be unusable here — which is why the count the menu
+    /// shows for dictation has to be its own number and not the sentence one. "20 words, 14
+    /// sentences, 11 you can hear" is three facts, and only the last one describes the run
+    /// the learner is about to get.
+    public static func dictationEntries(
+        ids: [String],
+        vocab: VocabStore = .shared,
+        excluding excluded: Set<String> = DictationSafety.excludedIDs
+    ) -> [VocabEntry] {
+        sentenceEntries(ids: ids, vocab: vocab).filter { !excluded.contains($0.id) }
+    }
+
+    /// Builds a dictation run from a chosen set of vocab ids — a saved list, or the due
+    /// stack (PLAN-V1.22 §A). Never padded, for the reason `makeSentence(ids:)` is not: the
+    /// ids ARE the request, and a learner who asked to hear their own list and got two of
+    /// somebody else's cannot tell which two.
+    public static func makeDictation(
+        ids: [String],
+        vocab: VocabStore = .shared,
+        excluding excluded: Set<String> = DictationSafety.excludedIDs,
+        config: Config = .init(),
+        now: @escaping () -> Date = Date.init
+    ) -> GameSession {
+        var pool = dictationEntries(ids: ids, vocab: vocab, excluding: excluded)
+        pool.shuffle()
+        return sentenceSession(from: Array(pool.prefix(max(5, config.newWordCount))),
+                               config: config, mode: .dictation, now: now)
+    }
+
+    /// Builds a dictation run over the words whose review is due. Asks the store for cards
+    /// that can carry a dictation prompt rather than asking for five and discarding four.
+    public static func makeDictation(
+        due review: ReviewStore,
+        on date: Date = Date(),
+        vocab: VocabStore = .shared,
+        excluding excluded: Set<String> = DictationSafety.excludedIDs,
+        config: Config = .init(),
+        now: @escaping () -> Date = Date.init
+    ) -> GameSession {
+        let ids = review.dueCards(
+            on: date,
+            limit: max(5, config.newWordCount),
+            resolves: { id in
+                !excluded.contains(id) && vocab.entry(id: id)?.isTypeableSentence == true
+            }
+        ).map(\.id)
+        return makeDictation(ids: ids, vocab: vocab, excluding: excluded, config: config, now: now)
+    }
+
+    /// How many due cards could carry a dictation prompt right now — smaller than the
+    /// sentence count, and the menu must show this one.
+    public static func dueDictationCount(
+        review: ReviewStore,
+        on date: Date = Date(),
+        vocab: VocabStore = .shared,
+        excluding excluded: Set<String> = DictationSafety.excludedIDs
+    ) -> Int {
+        review.dueCount(on: date, resolves: { id in
+            !excluded.contains(id) && vocab.entry(id: id)?.isTypeableSentence == true
+        })
+    }
+
     /// Wraps chosen entries as sentence-typing cards. The surface stays the KANJI sentence
     /// (that is what the learner reads while typing) and the id stays the real entry's, so
     /// the results screen can still say which word each sentence was teaching.

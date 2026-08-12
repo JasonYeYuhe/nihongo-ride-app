@@ -7029,5 +7029,11 @@
    "heardInstead": "鳥 とり -> どり",
    "evidence": "nearest"
   }
- ]
+ ],
+ "calibratedTo": {
+  "voice": "whatever AVSpeechSynthesisVoice(language: \"ja-JP\") returns — the same call the app makes",
+  "resolvedOnTheMeasuringMachine": "com.apple.voice.compact.ja-JP.Kyoko, chosen over 8 other installed ja voices",
+  "crossVoiceCheck": "the 27 proven mismatches replayed through com.apple.eloquence.ja-JP.Eddy and .Flo — a different synthesis engine — reproduced 16 of 27 on each, one (弄る -> いじる) again by byte-identical audio. The reading decisions are substantially a shared-front-end property and only partly per-voice.",
+  "limitation": "a learner whose default ja-JP voice differs may see this list over-exclude or under-exclude. Pinning a voice by identifier was rejected: it would refuse a downloaded enhanced voice and break where compact Kyoko is absent."
+ }
 }

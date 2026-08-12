@@ -938,6 +938,47 @@ final class AppModel {
         list.ids.reduce(0) { $0 + (VocabStore.shared.entry(id: $1) != nil ? 1 : 0) }
     }
 
+    /// How many of a list's words dictation can actually use — smaller again than
+    /// `sentenceCount`, because a sentence also has to have survived the reading
+    /// measurement. Three numbers describe a list ("20 words, 14 sentences, 11 you can
+    /// hear") and only this one describes the run the learner is about to get.
+    func dictationCount(in list: WordList) -> Int {
+        GameSession.dictationEntries(ids: list.ids, vocab: .shared).count
+    }
+
+    /// Starts a DICTATION run drawn from a list's words (PLAN-V1.22 §A).
+    func startDictationList(_ listID: String) {
+        guard dictationAvailable, let list = wordLists.list(id: listID), !list.deleted else { return }
+        var config = GameSession.Config()
+        config.languageCode = languageCode
+        config.assistance = .afterStruggle   // see startGame: dictation always keeps a way out
+        config.newWordCount = Self.sentenceRunSize
+        config.reviewWordCount = 0
+        let built = GameSession.makeDictation(ids: list.ids, vocab: .shared, config: config)
+        guard !built.isFinished else { return }
+        beginDictationAudio()
+        startSentenceRun(built)
+    }
+
+    /// How many due review words could carry a dictation prompt right now (menu gating).
+    var dueDictationCount: Int {
+        GameSession.dueDictationCount(review: reviewStore, vocab: .shared)
+    }
+
+    /// Starts a DICTATION run over the words whose review is due.
+    func startDictationDue() {
+        guard dictationAvailable else { return }
+        var config = GameSession.Config()
+        config.languageCode = languageCode
+        config.assistance = .afterStruggle
+        config.newWordCount = Self.sentenceRunSize
+        config.reviewWordCount = 0
+        let built = GameSession.makeDictation(due: reviewStore, vocab: .shared, config: config)
+        guard !built.isFinished else { return }
+        beginDictationAudio()
+        startSentenceRun(built)
+    }
+
     /// How many of a list's words have an example sentence that can be TYPED — a smaller
     /// number than `playableCount`, and a different question. A fully playable list can
     /// still have too few sentences to make a sentence run, so the sentence launcher needs
