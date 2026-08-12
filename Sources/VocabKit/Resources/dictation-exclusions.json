@@ -2,10 +2,10 @@
  "measurement": "scripts/check_dictation_readings.py",
  "date": "2026-08-10",
  "voice": "com.apple.voice.compact.ja-JP.Kyoko (AVSpeechSynthesisVoice(language: \"ja-JP\"))",
- "sentences": 6723,
+ "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 1003,
+ "excludedCount": 1004,
  "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken.",
  "evidence": "docs/measurements/dictation-reading-mismatches.json",
  "excluded": [
@@ -74,6 +74,9 @@
   },
   {
    "id": "n1-b1015"
+  },
+  {
+   "id": "n1-b1019"
   },
   {
    "id": "n1-b1029"

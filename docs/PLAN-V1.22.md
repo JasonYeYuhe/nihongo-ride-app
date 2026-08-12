@@ -52,6 +52,33 @@ Six sentences is a small batch. It is also the first content work in this projec
 the class of entries the pipeline is structurally unable to serve, so the write-up matters
 more than the yield.
 
+**DONE — 1 rescued, 1 false rescue, 4 still blocked.**
+`docs/measurements/v122-blocked-entry-rescue.json`, tool `scripts/check_forces_reading.py`.
+
+- **未だ/いまだ RESCUED.** 「その古代文字は未だに解読されていない。」 Both parsers agree, and the
+  reason is stronger than either: まだ cannot take に (*まだに is not a word), so 未だに admits
+  only いまだに. Three lenses accepted it against three defective controls they rejected 9/9.
+- **違える was a FALSE rescue.** The audio proved ちがえ by byte-identity, but Sudachi tokenises
+  寝違え as one word: the sentence uses a different verb that merely contains the headword.
+  That is the substring trap `ExampleSentenceTests` exists for, arriving from the other
+  direction, and no check that reasons about READINGS can see it.
+- **博士 and 明後日 stay blocked, now on two parsers disagreeing** rather than one tool's
+  verdict — Sudachi takes the taught reading, the voice takes the rival, by wide margins.
+- **そこで was never a reading problem**: Sudachi still parses 「そこで、」 as そこ+で, the
+  locative, in Codex's frame as in the original. The conjunction is homographic and no
+  context disambiguates it for a parser.
+- **釣 stays as §C decided it.**
+
+The rule survives, narrowed: it is a shipping gate, not a claim about the language, and an
+entry can now be appealed with evidence from a parser the pipeline does not share. The other
+216 were NOT retried — their blocking reason is structural, and the one rescue worked because
+未だに is a fixed form that excludes the rival grammatically, not because the old verdict was
+careless.
+
+And the review caught, twice, what no reading oracle could: the first accepted candidate was
+a near-duplicate of shipped n1-b1136 down to subject and predicate, and its Chinese used 查明,
+importing an investigating agent that the stative 分かっていない does not have.
+
 ## §C 釣 → 釣り, decided rather than deferred
 
 Left alone in §C on the rule that a frozen field moves only when the current value is wrong,

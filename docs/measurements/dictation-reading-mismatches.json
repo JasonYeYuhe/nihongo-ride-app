@@ -2,10 +2,10 @@
  "measurement": "scripts/check_dictation_readings.py",
  "date": "2026-08-10",
  "voice": "com.apple.voice.compact.ja-JP.Kyoko (AVSpeechSynthesisVoice(language: \"ja-JP\"))",
- "sentences": 6723,
+ "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 1003,
+ "excludedCount": 1004,
  "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken.",
  "excluded": [
   {
@@ -160,6 +160,13 @@
    "exJP": "疲れた体を温かいお風呂で労る。",
    "exKana": "つかれたからだをあたたかいおふろでいたわる",
    "heardInstead": "疲れ つかれ -> づかれ",
+   "evidence": "nearest"
+  },
+  {
+   "id": "n1-b1019",
+   "exJP": "その古代文字は未だに解読されていない。",
+   "exKana": "そのこだいもじはいまだにかいどくされていない",
+   "heardInstead": "文字 もじ -> もんじ",
    "evidence": "nearest"
   },
   {
@@ -7029,11 +7036,5 @@
    "heardInstead": "鳥 とり -> どり",
    "evidence": "nearest"
   }
- ],
- "calibratedTo": {
-  "voice": "whatever AVSpeechSynthesisVoice(language: \"ja-JP\") returns — the same call the app makes",
-  "resolvedOnTheMeasuringMachine": "com.apple.voice.compact.ja-JP.Kyoko, chosen over 8 other installed ja voices",
-  "crossVoiceCheck": "the 27 proven mismatches replayed through com.apple.eloquence.ja-JP.Eddy and .Flo — a different synthesis engine — reproduced 16 of 27 on each, one (弄る -> いじる) again by byte-identical audio. The reading decisions are substantially a shared-front-end property and only partly per-voice.",
-  "limitation": "a learner whose default ja-JP voice differs may see this list over-exclude or under-exclude. Pinning a voice by identifier was rejected: it would refuse a downloaded enhanced voice and break where compact Kyoko is absent."
- }
+ ]
 }

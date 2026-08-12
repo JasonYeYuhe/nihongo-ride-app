@@ -1,0 +1,63 @@
+{
+ "date": "2026-08-12",
+ "release": "v1.22 §B",
+ "question": "Is the rule 'an entry failing two independent generation rounds with the same defect is blocked, not unlucky' too strict?",
+ "why now": "Codex challenged it during v1.21 §C: two failures are strong evidence of a systematic generator failure, not proof that an honest example is impossible. The reason not to simply retry is equally real — the generator and the gate that judged it are both Sudachi-shaped, so 'generate and re-check' cannot decide this. v1.21 §A produced a SECOND parser that did not exist when these were blocked: Apple's Japanese speech front-end, which is a different implementation and which can be asked decisively (Kyoko is deterministic, so byte-identical audio proves what she read).",
+ "instrument": "scripts/check_forces_reading.py — asks both parsers and states which one is speaking. The proof half (byte-identical audio) is decisive but quiet; a no-match is the instrument being SILENT, not the voice disagreeing. The first version of the script printed those as 'the voice reads it another way', which was wrong and would have condemned three candidates on nothing.",
+ "outcome": "1 of 6 rescued, 1 false rescue caught by review, 4 stay blocked — two of them now on two parsers disagreeing rather than one tool's verdict.",
+ "entries": [
+  {
+   "id": "n1-b1019",
+   "word": "未だ / いまだ",
+   "verdict": "RESCUED",
+   "candidate": "その古代文字は未だに解読されていない。",
+   "evidence": "Both parsers agree, and the linguistic reason is stronger than either: まだ cannot take に (*まだに is not a word), so 未だに admits only いまだに. The negated continuative delivers the entry's glossed 'not yet' sense; the affirmative frame (未だに人気がある) would not and would have been a rejection.",
+   "note": "The first accepted candidate — 彼の行方は未だに分かっていない。 — was replaced after review. It was a near-duplicate of shipped n1-b1136 (所在: 「彼の現在の所在はまだ分かっていない。」) down to the subject and predicate, and its Chinese used 查明 ('ascertain by investigation'), importing an agent the stative 分かっていない does not have.",
+   "shipped": {
+    "exJP": "その古代文字は未だに解読されていない。",
+    "exKana": "そのこだいもじはいまだにかいどくされていない",
+    "exEN": "That ancient script has still not been deciphered.",
+    "exZH": "那种古代文字至今仍未被破译。",
+    "review": "three lenses, all accept, against three defective controls that all three lenses rejected 9/9. Chinese 解读 was changed to 破译 on two reviewers' note that 解读 leans 'interpret' where the standard term for cracking a script is 破译.",
+    "dictation": "EXCLUDED, and the reason is an instrument artifact rather than a defect: the nearest-hypothesis check flags 文字 もじ -> もんじ here, exactly as it already does for 2 of the 3 shipped sentences containing 文字. The reviewer ran that negative control before raising it. The entry gains a sentence it never had in Sentence mode; it simply does not reach dictation."
+   }
+  },
+  {
+   "id": "n1-b318",
+   "word": "違える / ちがえる",
+   "verdict": "FALSE RESCUE — still blocked",
+   "candidate": "朝から寝違えて首が回らない。",
+   "evidence": "The audio PROVES ちがえ (byte-identical) and the reading is not in doubt. But Sudachi tokenises 寝違え as ONE token: the sentence uses 寝違える, a different verb that merely contains the headword. This is the substring trap ExampleSentenceTests was written for — 学校 reduced to 学 — arriving from the other direction, and no machine check for READINGS can see it. It is why this feeds a review rather than replacing one."
+  },
+  {
+   "id": "n3-b910",
+   "word": "博士 / はかせ",
+   "verdict": "still blocked, now on two parsers",
+   "candidate": "近所の子供たちは彼を昆虫博士と呼んでいる。",
+   "evidence": "Codex proposed the 物知り博士 sense and it is the right idea, but the parsers split on it: Sudachi reads 昆虫博士 as こんちゅうはかせ, the voice is markedly nearer はくし (0.0157 vs 0.0317). Two independent implementations disagreeing about the reading is exactly the condition that blocks an entry — the difference from before is that it is now two opinions rather than one."
+  },
+  {
+   "id": "n3-b948",
+   "word": "明後日 / みょうごにち",
+   "verdict": "still blocked, now on two parsers",
+   "candidate": "明後日、当館は臨時休館とさせていただきます。",
+   "evidence": "The formal-announcement register Codex proposed. Sudachi reads みょうごにち; the voice reads あさって by a wide margin (0.0319 vs 0.0762). Register is not something a text-to-speech front-end infers, which is precisely the point: a reading that only a human's sense of register can select is not one a typing card can safely test."
+  },
+  {
+   "id": "n3-b304",
+   "word": "そこで / そこで",
+   "verdict": "still blocked, and the reason is now clear",
+   "candidate": "雨が降り始めた。そこで、試合を中止することにした。",
+   "evidence": "Codex's two-clause frame does remove the ので-doubling that killed the original. It does not help, and could not: Sudachi still tokenises 「そこで、」 as そこ + で, the locative. The conjunction そこで is homographic with そこ+で and no amount of context disambiguates it for a parser. This was never a reading problem."
+  },
+  {
+   "id": "n3-b114",
+   "word": "釣 / つり",
+   "verdict": "still blocked — and the §C decision stands",
+   "evidence": "Codex proposed correcting the surface to 釣り, which would resolve it. Declined in v1.21 §C on the rule that a frozen field moves only when the current value is WRONG, and 釣 can be read つり — unlike 引受る, which cannot be read ひきうける. Recorded here so the candidate is neither taken nor silently rediscovered."
+  }
+ ],
+ "whatThisSaysAboutTheRule": "The blocking rule is sound as a shipping gate and was never proof about the language — Codex was right about that. But loosening it wholesale would be wrong: of six entries with a fair hearing and a new independent oracle, one produced an honest sentence. The other five failed for five different reasons, and only two of them were the reading problem the rule describes. The rule stays; what changes is that an entry can now be appealed with evidence from a parser the pipeline does not share, and the appeal costs one script run.",
+ "notRetried": "The other 216 were not put through this. Their blocking reason is the structural one — a naturally-written sentence for that spelling takes the common reading — and nothing here suggests that is wrong. The one rescue worked because 未だに is a fixed form that excludes the rival reading grammatically, not because the old verdict was careless.",
+ "methodNote": "The review caught what the machines could not, twice. The first accepted candidate was a near-duplicate of shipped n1-b1136 down to subject and predicate, and its Chinese imported an agent the stative Japanese lacks. Neither is visible to a reading check. A reading oracle decides whether a sentence FORCES a reading; it says nothing about whether the sentence is worth shipping."
+}
