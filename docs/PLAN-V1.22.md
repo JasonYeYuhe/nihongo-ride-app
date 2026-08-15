@@ -125,6 +125,14 @@ manifest relies on. The guard now checks it across the whole corpus, because the
 case (ぺん in n2 pointing at ペン in n5) crosses files and a per-file check would have
 rejected it.
 
+One finding was resolved by reading rather than by running, and it is worth saying which:
+whether the reading note fits the compact (keyboard-up) card. Reaching a noted card on a
+device needs two full runs — the earliest one sits at rank 15 of its level pool, and N5/N4
+have none at all by construction — and the simulator here has its software keyboard off. It
+does not need a device: the compact layout DROPS the whole example block (two lines plus
+furigana, ~50pt) and the note is one caption line (~14pt), so compact-with-a-note is
+strictly shorter than the full layout with a note, which was verified on an iPhone 17.
+
 ## §D What v1.21 measured and could not finish
 
 - The dictation exclusion list is calibrated to one voice — the one
