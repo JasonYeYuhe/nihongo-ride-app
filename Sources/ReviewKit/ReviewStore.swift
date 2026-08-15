@@ -90,6 +90,18 @@ public struct ReviewStore: Codable, Sendable {
 
     /// Cards reviewed at least once — the pool the weak-words cram draws from
     /// (fresh, never-reviewed cards aren't "weak"). Cheap count for menu gating.
+    /// - Parameter resolves: the same injected "does this card's entry still exist" check
+    ///   `dueCards`/`dueCount` take, and it is here for the reason it is there. This count
+    ///   gates the weak-words cram in the menu while the cram itself drops ids that no
+    ///   longer resolve — so a learner with a withdrawn word among their reviewed ones was
+    ///   offered a cram of N and handed N-1. It is the same defect v1.22 fixed in the badge,
+    ///   the widget, the reminder and the forecast, in the one counting path that was not
+    ///   part of that sweep. (Found reviewing that sweep.)
+    public func reviewedCount(resolves: (String) -> Bool = { _ in true }) -> Int {
+        cards.values.filter { $0.totalReviews > 0 && resolves($0.id) }.count
+    }
+
+    @available(*, deprecated, message: "pass resolves: so the count matches the run")
     public var reviewedCount: Int {
         cards.values.lazy.filter { $0.totalReviews > 0 }.count
     }

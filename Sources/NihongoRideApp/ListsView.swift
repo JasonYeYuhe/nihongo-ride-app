@@ -415,15 +415,21 @@ struct ListDetailView: View {
         let entry = VocabStore.shared.entry(id: id)
         return HStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(entry?.surface ?? id)
+                // A word whose entry is gone showed its raw internal id — "n2-b984" where a
+                // learner expects 「ペン」. That was only reachable via a list synced from a
+                // newer device until v1.22, which withdraws an entry outright, so it is now
+                // a thing a learner can actually meet. An id is not a word; say so instead.
+                Text(entry?.surface ?? (zh ? "已移除的词" : "Removed word"))
                     .scaledSystemFont(16, weight: .semibold)
                     .foregroundStyle(entry == nil ? Theme.dim : .white)
                 if let entry {
                     Text(entry.gloss(for: model.languageCode))
                         .font(.caption).foregroundStyle(Theme.dim).lineLimit(1)
                 } else {
-                    Text(zh ? "(此词条不可用)" : "(unavailable)")
+                    Text(zh ? "此词已从词库中移除,可以删掉这一行"
+                            : "No longer in the dictionary — you can remove it")
                         .font(.caption2).foregroundStyle(Theme.dim.opacity(0.7))
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

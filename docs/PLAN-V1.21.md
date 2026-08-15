@@ -104,7 +104,7 @@ say nothing about sentences. They say the thing measurement showed was actually 
 two cards with the same kanji and the same definition, and nothing on either says which one an
 ordinary sentence would use.
 
-- **87 cards gain a reading note** (`Sources/VocabKit/Resources/reading-notes.json`), rendered
+- **64 cards gain a reading note** (87 at first; three were found printing the claim backwards and the rule was tightened — see PLAN-V1.22) (`Sources/VocabKit/Resources/reading-notes.json`), rendered
   under the gloss: "Usually read ねずみ — that reading has its own card."
 - **129 do not, and the cut is the point.** A second note kind was built from the measurement
   file's `defaultReading` and thrown away: the field name promises "the everyday reading of

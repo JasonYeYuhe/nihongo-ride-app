@@ -166,6 +166,20 @@ def main():
           manifest={"reason": "probe", "entries": [{"id": surf["id"],
                                                     "rewriteSurface": surf["surface"] + "々"}]})
 
+    # --- v1.22: a retirement has to say where its learners actually go -----------------
+    retiree = base[0]
+    probe("a retirement whose replacedBy names nothing in the corpus",
+          [e for e in copy.deepcopy(base) if e["id"] != retiree["id"]],
+          must_fail=True,
+          manifest={"reason": "probe", "entries": [{"id": retiree["id"], "retire": True,
+                                                    "replacedBy": "n9-does-not-exist"}]},
+          expect_text="not an entry anywhere in the corpus")
+    probe("a retirement whose replacedBy names an entry in ANOTHER level file is allowed",
+          [e for e in copy.deepcopy(base) if e["id"] != retiree["id"]],
+          must_fail=False,
+          manifest={"reason": "probe", "entries": [{"id": retiree["id"], "retire": True,
+                                                    "replacedBy": _any_id_in("n1")}]})
+
     # --- the permitted counterparts: a guard that rejects everything is not a guard ----
     probe("filling an ABSENT exKana is still allowed (write-once, not frozen)",
           mutate(with_kana["id"], lambda e: e.pop("exKana", None)) and None or
@@ -228,6 +242,13 @@ def main():
         return 1
     print(f"\nall {len(probes)} probes behaved: the guard rejects what it must and allows what it must.")
     return 0
+
+
+def _any_id_in(level):
+    """An id from a DIFFERENT level file — the cross-file case a per-file check would have
+    rejected, and which is exactly what ぺん -> ペン did."""
+    path = REPO / f"Sources/VocabKit/Resources/{level}.json"
+    return json.loads(path.read_text(encoding="utf-8"))[0]["id"]
 
 
 def _fill_from(base, eid):

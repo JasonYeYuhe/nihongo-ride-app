@@ -9,14 +9,23 @@ import Foundation
 /// a learner cannot tell apart, and nothing on either says which one an ordinary sentence
 /// would use. That is the gap this fills.
 ///
-/// **87 of the 216 carry a note, and the cut is the point.** The rest claimed an everyday
-/// reading sourced only from the measurement file's `defaultReading`, a field whose name
-/// promises more than it holds — on the first six N5 cards it was backwards three times,
-/// and it would have printed "言う is usually read ゆう" on the very card v1.18 created by
-/// retiring 言う/ゆう as the colloquial form. A note ships only when a SECOND source agrees:
-/// the everyday reading it names is a sibling ENTRY that exists with the same spelling, that
-/// sibling carries a reviewed example sentence in which the spelling really is read that
-/// way, and the corpus's own token readings do not contradict it.
+/// **64 of the 216 carry a note, and the cut is the point.** Two rounds of cutting, both
+/// for the same reason and both caught before shipping.
+///
+/// The first round dropped every note whose everyday reading came only from the measurement
+/// file's `defaultReading`, a field whose name promises more than it holds — on the first
+/// six N5 cards it was backwards three times, and it would have printed "言う is usually read
+/// ゆう" on the very card v1.18 created by retiring 言う/ゆう as the colloquial form.
+///
+/// The second round dropped the notes whose sibling was chosen by CIRCULAR evidence. The
+/// rule had been "name the sibling that carries a reviewed sentence, and check it against
+/// how often the corpus reads that spelling each way" — but the corpus only contains
+/// sentences for the entry that got one, so 日本 read にっぽん 52 times says nothing about
+/// Japanese and everything about which entry the pipeline served. Three notes were backwards
+/// because of it. The signal that is not circular is the JLPT level, which comes from the
+/// JLPT lists and not from this pipeline: a note now ships only when the sibling it names is
+/// STRICTLY EASIER than the card and is the easiest reading of that spelling in the corpus.
+/// Same level means no signal, and no signal means no note.
 ///
 /// **Why these entries were kept rather than retired.** Both external reviewers consulted
 /// on §C said retire, and both argued from the premise that the card asks "given this

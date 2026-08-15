@@ -226,7 +226,7 @@ struct MenuView: View {
                                     Image(systemName: "arrow.triangle.2.circlepath")
                                         .accessibilityHidden(true)
                                     Text(zh ? "到期词的听写 · 可用 \(due) 句"
-                                            : "Due sentences · \(due) available")
+                                            : "Due dictation · \(due) available")
                                         .scaledSystemFont(14, weight: .semibold, design: .rounded)
                                         .lineLimit(1)
                                 }

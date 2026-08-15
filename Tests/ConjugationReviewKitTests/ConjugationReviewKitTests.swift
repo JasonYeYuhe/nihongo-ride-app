@@ -195,3 +195,53 @@ struct ConjugationReviewKitTests {
         }
     }
 }
+
+// MARK: - v1.22 — the conjugation half of the orphan fix
+
+/// The v1.22 sweep filtered every count on the VOCABULARY side and left this one, which is
+/// half a fix: the app badge is `vocab + conjugation`, and 言う/ゆう — one of the two entries
+/// v1.18 retired — is a verb. A learner who had drilled its forms carried conjugation cards
+/// that could never be reviewed away and never stopped counting.
+@Suite("Retired verbs must not inflate the conjugation counts either")
+struct ConjugationOrphanCountTests {
+
+    private func store(now: Date) -> ConjugationReviewStore {
+        var s = ConjugationReviewStore()
+        _ = s.record(promptID: "live#te", outcome: .init(completed: false, mistakes: 3), on: now)
+        _ = s.record(promptID: "retired#te", outcome: .init(completed: false, mistakes: 3), on: now)
+        return s
+    }
+
+    private let resolves: (String) -> Bool = { $0 != "retired" }
+
+    @Test("every conjugation due count drops a card whose verb is gone")
+    func everyCountFiltersOrphans() {
+        let now = Date()
+        let s = store(now: now)
+        let tomorrow = now.addingTimeInterval(24 * 3600)
+
+        #expect(s.dueCount(on: tomorrow) == 2)
+        #expect(s.dueCount(on: tomorrow, resolves: resolves) == 1)
+
+        #expect(s.dueCards(on: tomorrow).count == 2)
+        #expect(s.dueCards(on: tomorrow, resolves: resolves).count == 1)
+
+        #expect(s.dueByDay(asOf: tomorrow, horizon: 7).first == 2)
+        #expect(s.dueByDay(asOf: tomorrow, horizon: 7, resolves: resolves).first == 1)
+
+        #expect(s.dueForecast(asOf: tomorrow).today == 2)
+        #expect(s.dueForecast(asOf: tomorrow, resolves: resolves).today == 1)
+    }
+
+    /// The card id is `sourceID#form`, so the filter has to be given the SOURCE id and not
+    /// the prompt id — passing the whole key would match nothing and silently drop every
+    /// card, which looks like a fix and is a different bug.
+    @Test("the filter is asked about the verb, not the prompt key")
+    func filterReceivesTheSourceID() {
+        let now = Date()
+        var seen: [String] = []
+        _ = store(now: now).dueCount(on: now.addingTimeInterval(24 * 3600),
+                                     resolves: { seen.append($0); return true })
+        #expect(Set(seen) == ["live", "retired"], Comment(rawValue: "got \(seen)"))
+    }
+}

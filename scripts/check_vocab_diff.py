@@ -69,7 +69,22 @@ def dedupe(items):
     return out
 
 
-def check(path, base, allow_dedupe=False, manifest=None):
+def all_ids(base):
+    """Every id in the whole corpus, both sides of the diff.
+
+    A retirement's `replacedBy` routinely points into ANOTHER level file — ぺん retired
+    from n2 toward the ペン that ships in n5 — so validating it per file would reject the
+    correct case. Measured against that exact commit before shipping the rule.
+    """
+    ids = set()
+    for path in sorted((REPO / "Sources/VocabKit/Resources").glob("n[1-5].json")):
+        for side in (at_ref(base, path), json.load(open(path))):
+            for entry in side or []:
+                ids.add(entry["id"])
+    return ids
+
+
+def check(path, base, allow_dedupe=False, manifest=None, corpus_ids=None):
     old = at_ref(base, path)
     if old is None:
         return []
@@ -85,6 +100,14 @@ def check(path, base, allow_dedupe=False, manifest=None):
         # when the manifest names the id AND names the entry that replaces it, so the record
         # always says where a retired word's learners are supposed to go.
         if declared and declared.get("retire") and declared.get("replacedBy"):
+            # …and the replacement has to BE somewhere. The rule exists so the record always
+            # says where a retired word's learners are supposed to go; a `replacedBy` naming
+            # an id that is in neither side of the diff says nothing and was accepted.
+            target = declared["replacedBy"]
+            if corpus_ids is not None and target not in corpus_ids:
+                problems.append(f"{missing}: retired with replacedBy {target!r}, which is "
+                                f"not an entry anywhere in the corpus — a retirement has to "
+                                f"say where its learners actually go")
             continue
         problems.append(f"{missing}: entry DELETED")
     for added in sorted(set(by_id_new) - set(by_id_old)):
@@ -231,8 +254,9 @@ def main():
         print(f"  {len(manifest)} entries listed\n")
 
     total = 0
+    corpus_ids = all_ids(args.base)
     for path in sorted((REPO / "Sources/VocabKit/Resources").glob("n[1-5].json")):
-        problems = check(path, args.base, args.allow_dedupe, manifest)
+        problems = check(path, args.base, args.allow_dedupe, manifest, corpus_ids)
         total += len(problems)
         mark = "FAIL" if problems else "ok  "
         print(f"{mark} {path.name}: {len(problems)} problem(s)")

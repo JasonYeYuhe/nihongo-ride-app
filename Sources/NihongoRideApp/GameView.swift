@@ -548,10 +548,13 @@ private struct WordCard: View {
 
     /// Says so when the reading on this card is NOT the everyday reading of its spelling.
     ///
-    /// 87 cards carry one, every one of them corroborated by a sibling entry that ships a
-    /// reviewed sentence reading that spelling that way. 25 of the 87 sit beside a sibling
-    /// with a byte-identical gloss — 鼠/ねず next to 鼠/ねずみ, both "mouse, rat" — where
-    /// without this line the two cards are indistinguishable. (PLAN-V1.21 §C.)
+    /// 64 cards carry one. Each names a reading taught at an EASIER JLPT level than the
+    /// card's own, which is the only non-circular evidence available for "this is the
+    /// everyday one" — the corpus's own token readings cannot supply it, because the corpus
+    /// only contains sentences for whichever entry the pipeline served. Several sit beside a
+    /// sibling with a byte-identical gloss (鼠/ねず next to 鼠/ねずみ, both "mouse, rat"), where
+    /// without this line the two cards are indistinguishable. (PLAN-V1.21 §C, tightened in
+    /// v1.22 after three notes were found printing the claim backwards.)
     ///
     /// It states the reading fact and nothing about why the card has no example: that is
     /// pipeline history and no use to anyone typing.

@@ -42,10 +42,26 @@ problem says nothing about the other 99.
 
 `commonIs` survives because it has a second source: the everyday reading it names is
 not asserted, it is a sibling ENTRY that exists in the corpus with that spelling and
-that reading. A note ships only when that sibling also carries a reviewed example
-sentence — a native-checked sentence in which the spelling really is read that way —
-and the corpus's own token readings do not contradict it. 87 of 98 clear that bar; the
-other 11 are dropped rather than guessed at.
+that reading.
+
+WHICH sibling, though, is where the first version of this got it WRONG and shipped three
+false statements into review. It named whichever sibling carried a reviewed sentence, and
+checked that against how often the corpus reads that spelling each way. That check is
+CIRCULAR: the corpus's token readings only count sentences that exist, and sentences only
+exist for the entry that got one. 日本 read にっぽん 52 times in the corpus says nothing
+about Japanese and everything about which of the two 日本 entries the pipeline served — so
+the にほん card was told its reading was the unusual one, which is backwards. 辛い/からい at
+N5 was told the usual reading is つらい. 下/げ was pointed at しも while した ships at N5.
+
+The signal that is NOT circular is the JLPT level. The corpus's levels come from the JLPT
+lists, which are built from what learners meet first, and nothing about them depends on
+which entry this pipeline happened to give a sentence to. So a note ships only when the
+sibling it names is STRICTLY EASIER than the card, and is the easiest reading of that
+spelling in the corpus. Same level means no signal, and no signal means no note — 日本 is
+exactly that case and now gets nothing instead of getting it backwards.
+
+The token-frequency check is kept, but demoted to a VETO: it can contradict a note (the
+corpus reads this spelling the card's way more often), never support one.
 
     python3 scripts/gen_reading_notes.py            # report
     python3 scripts/gen_reading_notes.py --write
@@ -71,6 +87,9 @@ def main():
     for f in sorted(RESOURCES.glob("n[1-5].json")):
         entries += json.loads(f.read_text(encoding="utf-8"))
     by_id = {e["id"]: e for e in entries}
+    by_surface = collections.defaultdict(list)
+    for e in entries:
+        by_surface[e["surface"]].append(e)
     # How each spelling is ACTUALLY read across every reviewed example sentence — the
     # second source a note has to survive.
     corpus_readings = collections.defaultdict(collections.Counter)
@@ -91,7 +110,11 @@ def main():
             # not hold what its name says, and nothing corroborates it.
             skipped.append((x["id"], "no second source for the claimed everyday reading"))
             continue
-        sibling = next((s for s in x["siblings"] if s.get("kana")), None)
+        # The EASIEST recorded sibling, not the first one listed. 下 records both しも and
+        # した; taking the first meant naming しも as the everyday reading of a spelling whose
+        # everyday reading ships at N5.
+        candidates = [s for s in x["siblings"] if s.get("kana") and s["id"] in by_id]
+        sibling = max(candidates, key=lambda s: by_id[s["id"]]["jlpt"], default=None)
         if not sibling:
             skipped.append((x["id"], "no sibling reading recorded"))
             continue
@@ -104,9 +127,29 @@ def main():
             # rests on the measurement file alone — which is what was cut above.
             skipped.append((x["id"], f"sibling {sibling['id']} has no reviewed sentence"))
             continue
-        mine = by_id[x["id"]]["kana"]
-        seen = corpus_readings.get(by_id[x["id"]]["surface"], {})
-        if seen.get(mine, 0) > seen.get(sibling["kana"], 0):
+
+        me = by_id[x["id"]]
+        # A bigger `jlpt` number is an EASIER level (N5 = 5). The named sibling has to be
+        # strictly easier than this card, and the easiest reading of the spelling there is —
+        # otherwise the note points at a reading that is not the everyday one, which is
+        # worse than saying nothing.
+        family = by_surface.get(me["surface"], [])
+        easiest = max((f["jlpt"] for f in family), default=me["jlpt"])
+        if other["jlpt"] <= me["jlpt"]:
+            skipped.append((x["id"], f"sibling {sibling['id']} is not at an easier level "
+                                     f"(N{other['jlpt']} vs N{me['jlpt']}) — no evidence "
+                                     f"which reading is the everyday one"))
+            continue
+        if other["jlpt"] < easiest:
+            other_easiest = [f for f in family if f["jlpt"] == easiest]
+            skipped.append((x["id"], f"sibling {sibling['id']} is not the easiest reading of "
+                                     f"{me['surface']} — {other_easiest[0]['id']} "
+                                     f"({other_easiest[0]['kana']}) is at N{easiest}"))
+            continue
+
+        seen = corpus_readings.get(me["surface"], {})
+        if seen.get(me["kana"], 0) > seen.get(sibling["kana"], 0):
+            # A veto, never support: these counts only cover sentences that exist.
             skipped.append((x["id"], "the corpus's own sentences read this spelling the "
                                      "card's way more often than the sibling's"))
             continue

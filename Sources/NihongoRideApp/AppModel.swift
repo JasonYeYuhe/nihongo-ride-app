@@ -450,7 +450,9 @@ final class AppModel {
             generatedAt: now,
             vocabDueByDay: reviewStore.dueByDay(asOf: now, horizon: h,
                                                 resolves: { VocabStore.shared.entry(id: $0) != nil }),
-            conjugationDueByDay: conjugationReviewStore.dueByDay(asOf: now, horizon: h),
+            conjugationDueByDay: conjugationReviewStore.dueByDay(
+                asOf: now, horizon: h,
+                resolves: { VocabStore.shared.entry(id: $0) != nil }),
             streakByDay: streakByDay,
             lifetimeWords: lifetimeWords,
             languageCode: languageCode)
@@ -828,7 +830,9 @@ final class AppModel {
     var statsBestWPM: Double? { journal.bestWPM }
     var statsHasRides: Bool { !journal.isEmpty }
     /// Near-term conjugation due buckets (surfaces the v1.8 conjugation SRS on the Stats screen).
-    var conjugationDueForecast: ConjugationReviewStore.Forecast { conjugationReviewStore.dueForecast() }
+    var conjugationDueForecast: ConjugationReviewStore.Forecast {
+        conjugationReviewStore.dueForecast(resolves: { VocabStore.shared.entry(id: $0) != nil })
+    }
     var conjugationReviewedCount: Int { conjugationReviewStore.reviewedCount }
     var conjugationLeechCount: Int { conjugationReviewStore.leeches().count }
 
@@ -1352,7 +1356,9 @@ final class AppModel {
     private static let weakWordsRunSize = 15
 
     /// How many reviewed words are available to cram (menu gating).
-    var weakWordsPoolCount: Int { reviewStore.reviewedCount }
+    var weakWordsPoolCount: Int {
+        reviewStore.reviewedCount(resolves: { VocabStore.shared.entry(id: $0) != nil })
+    }
 
     /// Starts a weak-words cram: the user's hardest reviewed words, run through the
     /// same journey loop but recording **NO SRS** (`makeWeak` → `recordsSRS = false`;
@@ -1422,7 +1428,9 @@ final class AppModel {
     }
 
     /// How many (verb, form) cards are due for conjugation review right now (menu gating).
-    var conjugationDueCount: Int { conjugationReviewStore.dueCount() }
+    var conjugationDueCount: Int {
+        conjugationReviewStore.dueCount(resolves: { VocabStore.shared.entry(id: $0) != nil })
+    }
 
     /// Starts a **due-review** conjugation drill: the due (verb, form) cards first, then
     /// fresh forms filled in (weak-form weighted). Resolve-then-guard like `startConjugation`

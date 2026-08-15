@@ -355,10 +355,32 @@ struct ExampleSentenceTests {
         #expect(problems.isEmpty, Comment(rawValue: "\(problems.count) bad reading note(s):\n"
                                                     + problems.prefix(10).joined(separator: "\n")))
         #expect(ReadingNotes.isLoaded, "the notes must load, or 216 cards silently lose them")
-        #expect(ReadingNotes.all.count > 60, Comment(rawValue:
-            "only \(ReadingNotes.all.count) notes — the generator kept 87 of 216 after "
-            + "dropping every claim with no second source. A truncated file makes the cards "
-            + "it covers indistinguishable from their siblings again."))
+        #expect(ReadingNotes.all.count > 40, Comment(rawValue:
+            "only \(ReadingNotes.all.count) notes — the generator kept 64 of 216 after "
+            + "dropping every claim it could not corroborate without circular evidence. A "
+            + "truncated file makes the cards it covers indistinguishable from their "
+            + "siblings again. The floor is well below 64 on purpose: tightening the rule "
+            + "SHOULD be able to drop notes without failing the suite, and it already has "
+            + "once."))
+        // Every note must name a reading taught at an EASIER level than the card's own.
+        // Without that the note can be backwards, and three of them were: the にほん card
+        // was told にっぽん is the everyday reading, 辛い/からい at N5 was pointed at つらい,
+        // and 下/げ at しも while した ships at N5. The check that let them through was
+        // circular — it counted how often the corpus reads a spelling each way, and the
+        // corpus only contains sentences for the entry that got one.
+        var backwards: [String] = []
+        for (id, note) in ReadingNotes.all {
+            guard let card = byID[id], let sibling = note.siblingID.flatMap({ byID[$0] })
+            else { continue }
+            if sibling.jlpt.rawValue <= card.jlpt.rawValue {
+                backwards.append("\(id) \(card.surface)/\(card.kana) N\(card.jlpt.rawValue) "
+                                 + "-> \(sibling.kana) N\(sibling.jlpt.rawValue)")
+            }
+        }
+        #expect(backwards.isEmpty, Comment(rawValue:
+            "\(backwards.count) note(s) name a reading that is NOT taught at an easier level, "
+            + "so nothing supports calling it the everyday one:\n"
+            + backwards.sorted().prefix(8).joined(separator: "\n")))
         // Every shipped note must be the corroborated kind: the sibling exists AND carries a
         // reviewed sentence in which that spelling is read that way. A note without a
         // sibling is the uncorroborated claim this release deliberately cut.

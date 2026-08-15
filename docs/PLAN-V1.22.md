@@ -88,6 +88,43 @@ already got, and a corrected 釣り would unblock an example sentence. Decide it
 batch, on evidence, and record the answer either way — a candidate that is neither taken nor
 refused just gets rediscovered.
 
+## §E What the pre-submission review caught
+
+Sixteen findings, ten survived a skeptic. The three that mattered were all the same defect
+wearing different words, and all three were mine:
+
+**The reading notes were corroborated circularly.** The rule was "name the sibling that
+carries a reviewed sentence, and check it against how often the corpus reads that spelling
+each way". Both halves are Sudachi output, and the corpus only contains sentences for the
+entry the pipeline happened to serve — so 日本 reading にっぽん 52 times out of 52 says
+nothing about Japanese. Three notes shipped backwards: the にほん card was told にっぽん is
+the everyday reading, 辛い/からい (N5, "spicy") was pointed at つらい ("painful"), and 下/げ at
+しも while した ships at N5. The non-circular signal is the JLPT level, which comes from the
+JLPT lists and not from this pipeline. A note now ships only when the sibling it names is
+STRICTLY EASIER than the card and is the easiest reading of that spelling; same level means
+no signal and no note. 87 notes became 64, and a data test now fails on any note naming a
+reading that is not taught earlier — the check that would have caught all three.
+
+**The orphan fix was half a fix.** The conjugation side of every due count was still
+unfiltered, and the app badge is `vocab + conjugation` — while 言う/ゆう, one of the two
+entries v1.18 retired, is a verb. `ConjugationReviewStore` now takes the same injected
+check on `dueCards`/`dueCount`/`dueByDay`/`dueForecast`, all four call sites pass it, and a
+test asserts the filter is asked about the VERB and not the prompt key (passing the whole
+`sourceID#form` would match nothing, drop every card, and look like a fix).
+
+**And the weak-words cram** was the one counting path outside that sweep with the same
+shape: the menu gated on how many words had been reviewed while the cram itself dropped
+unresolvable ids, so a learner was offered a cram of N and handed N-1.
+
+Smaller, all fixed: the due-dictation launcher wore the sentence launcher's English label;
+a saved word whose entry is gone printed its raw internal id ("n2-b984") where a learner
+expects a word — newly reachable because this release withdraws an entry; the note
+generator took the first recorded sibling rather than the easiest; and a retirement's
+`replacedBy` was never checked to name an entry that exists, which this release's own
+manifest relies on. The guard now checks it across the whole corpus, because the correct
+case (ぺん in n2 pointing at ペン in n5) crosses files and a per-file check would have
+rejected it.
+
 ## §D What v1.21 measured and could not finish
 
 - The dictation exclusion list is calibrated to one voice — the one

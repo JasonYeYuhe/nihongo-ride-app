@@ -171,4 +171,18 @@ struct OrphanedCardCountTests {
         #expect(s.dueForecast(asOf: tomorrow).today == 2)
         #expect(s.dueForecast(asOf: tomorrow, resolves: resolves).today == 1)
     }
+
+    /// The weak-words cram was the one counting path the v1.22 sweep missed, and it has the
+    /// same shape as the four it fixed: the menu gates on how many words have been reviewed,
+    /// the cram itself drops ids that no longer resolve, so a learner with a withdrawn word
+    /// among theirs was offered a cram of N and handed N-1.
+    @Test("the weak-words pool count matches the cram the learner will get")
+    func weakWordsCountFiltersOrphans() {
+        let now = Date()
+        var s = ReviewStore()
+        s.record(entryID: "live", outcome: TypingOutcome(completed: true, mistakes: 0), on: now)
+        s.record(entryID: "retired", outcome: TypingOutcome(completed: true, mistakes: 0), on: now)
+        #expect(s.reviewedCount(resolves: { _ in true }) == 2)
+        #expect(s.reviewedCount(resolves: { $0 != "retired" }) == 1)
+    }
 }

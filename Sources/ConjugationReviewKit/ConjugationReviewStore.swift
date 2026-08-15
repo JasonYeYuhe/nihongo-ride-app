@@ -35,19 +35,30 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     /// The same split existed here: `dueForecast` (Stats, the widget) bucketed by calendar
     /// day while this compared instants, so the menu's "Review N due" button could sit
     /// hidden at 0 while Stats said cards were due today. (v1.12 §B.)
+    /// - Parameter resolves: whether a card's VERB still exists in the vocabulary, given its
+    ///   `sourceID`. Injected because this module is deliberately zero-dependency and cannot
+    ///   see VocabKit — the same shape `ReviewKit` uses.
+    ///
+    ///   It is here for the reason v1.22 added it across the vocabulary side: a card whose
+    ///   entry has been withdrawn can never be reviewed away, so it inflates every count it
+    ///   appears in, forever. The v1.22 sweep fixed the vocabulary half and left this one,
+    ///   which is half a fix — the app badge is `vocab + conjugation`, and 言う/ゆう, one of
+    ///   the two entries v1.18 retired, is a VERB.
     public func dueCards(on date: Date = Date(), limit: Int = 100,
-                         calendar: Calendar = .current) -> [ConjugationSRSCard] {
+                         calendar: Calendar = .current,
+                         resolves: (String) -> Bool = { _ in true }) -> [ConjugationSRSCard] {
         let cutoff = Self.dueCutoff(for: date, calendar: calendar)
         return cards.values
-            .filter { $0.dueDate < cutoff }
+            .filter { $0.dueDate < cutoff && resolves($0.sourceID) }
             .sorted { $0.dueDate < $1.dueDate }
             .prefix(limit)
             .map { $0 }
     }
 
-    public func dueCount(on date: Date = Date(), calendar: Calendar = .current) -> Int {
+    public func dueCount(on date: Date = Date(), calendar: Calendar = .current,
+                         resolves: (String) -> Bool = { _ in true }) -> Int {
         let cutoff = Self.dueCutoff(for: date, calendar: calendar)
-        return cards.values.lazy.filter { $0.dueDate < cutoff }.count
+        return cards.values.filter { $0.dueDate < cutoff && resolves($0.sourceID) }.count
     }
 
     /// Midnight ending `date`'s day (see `ReviewStore.dueCutoff`).
@@ -121,11 +132,12 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     /// (Option A parallel types). `result[0]` absorbs everything overdue; cards `horizon`+
     /// days out are omitted. See `ReviewStore.dueByDay` for the full rationale (why a
     /// histogram, not a relative forecast). DST-safe via `dateComponents([.day])`.
-    public func dueByDay(asOf date: Date = Date(), horizon: Int, calendar: Calendar = .current) -> [Int] {
+    public func dueByDay(asOf date: Date = Date(), horizon: Int, calendar: Calendar = .current,
+                         resolves: (String) -> Bool = { _ in true }) -> [Int] {
         precondition(horizon > 0, "horizon must be positive")
         let start = calendar.startOfDay(for: date)
         var hist = [Int](repeating: 0, count: horizon)
-        for card in cards.values {
+        for card in cards.values where resolves(card.sourceID) {
             let cardDay = calendar.startOfDay(for: card.dueDate)
             guard let off = calendar.dateComponents([.day], from: start, to: cardDay).day else { continue }
             let bucket = max(0, off)
@@ -138,14 +150,15 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     /// `ReviewKit.DueForecast` but defined here to keep ConjugationReviewKit zero-dependency.
     /// Disjoint: `today` includes anything overdue, `tomorrow` = next day, `thisWeek` = the 5 days
     /// after that.
-    public func dueForecast(asOf date: Date = Date(), calendar: Calendar = .current) -> Forecast {
+    public func dueForecast(asOf date: Date = Date(), calendar: Calendar = .current,
+                            resolves: (String) -> Bool = { _ in true }) -> Forecast {
         let start = calendar.startOfDay(for: date)
         guard let endToday = calendar.date(byAdding: .day, value: 1, to: start),
               let endTomorrow = calendar.date(byAdding: .day, value: 2, to: start),
               let endWeek = calendar.date(byAdding: .day, value: 7, to: start)
         else { return Forecast() }
         var f = Forecast()
-        for card in cards.values {
+        for card in cards.values where resolves(card.sourceID) {
             if card.dueDate < endToday { f.today += 1 }
             else if card.dueDate < endTomorrow { f.tomorrow += 1 }
             else if card.dueDate < endWeek { f.thisWeek += 1 }
