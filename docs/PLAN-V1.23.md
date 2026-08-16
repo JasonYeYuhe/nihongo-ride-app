@@ -85,7 +85,30 @@ survive that step in the form they were reported.
    weigh the claim, and a silently capped number is not something they can weigh. It now says "at
    least N times" when the run out-typed the trace.
 
-4. **Form tokens pinned.** The badge counts a conjugation card if its VERB still exists; the
+4. **The weak-words cram rode short.** `weakestCards(limit: 15)` capped and the caller filtered
+   after — cap-then-drop, which the audit's own method names as the killer. The population that
+   breaks it is exactly the one the filter is for: a card whose word has been withdrawn can never
+   be reviewed away, so it stays a leech, and `weakestCards` sorts leeches to the front. The
+   unusable ids sat at the very front of the fifteen and the ride came back with twelve.
+   `resolves:` now applies before the limit. The old shape is kept as a contrast test, returning
+   10 where the new one returns 15 — without it, "15 == 15" proves only that 15 cards exist.
+
+5. **Due-conjugation review had the same shape.** The menu counts with `resolves:`; the run
+   called `dueCards(limit:)` without it. Orphans are maximally overdue by construction, so they
+   sort first, spend slots inside the cap, and are then dropped by `makeReview` and padded over
+   with fresh prompts — the learner is promised N due and rides fewer, while the orphans stay
+   due forever. Not currently reachable (no retired entry is a verb), fixed anyway: it is one
+   argument, and "not reachable yet" is how the vocabulary half sat for three releases.
+
+6. **A dead tap on the results screen.** `startGame`'s empty-pool guard sets `emptyPoolNotice`
+   and returns, and its comment says "staying on the menu is the honest outcome; the menu
+   explains why." That is true when the menu is where you are. The results screen calls
+   `startGame` too — the "ride again" button and the Return key — so a learner who had just
+   typed the last word at their level pressed Return and got nothing: no run, no screen change,
+   no explanation, the notice set on a screen that does not render it. The guard now returns to
+   the menu, which is where its own explanation lives.
+
+7. **Form tokens pinned.** The badge counts a conjugation card if its VERB still exists; the
    drill additionally needs `ConjugationForm(rawValue:)` to parse. See below for why that is not
    currently a bug — the pin is what keeps it from becoming one silently.
 
@@ -100,6 +123,11 @@ survive that step in the form they were reported.
   gap for real. So the only live route is renaming a case, and a test now pins the seven raw
   values as storage. Widening `resolves:` to carry the form was rejected: a signature change
   across four methods and every call site, to close a hole nothing can currently walk through.
+
+- **A word list's row says "20 words" while the ride plays 13.** The play button is already
+  gated on the resolvable count, and the list-detail screen already explains the gap ("these
+  words are unavailable on this device"). The row is counting what the learner saved, which is
+  what a list's size means. Left as is.
 
 - **"N available" against a run of 5.** Reported repeatedly across the menu and list screens.
   The count is the pool; the run is the first five. That is how spaced repetition is supposed to

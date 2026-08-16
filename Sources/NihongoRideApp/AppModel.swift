@@ -1337,6 +1337,12 @@ final class AppModel {
         guard !built.isFinished else {
             session = nil
             emptyPoolNotice = true
+            // …and the menu is where that explanation lives (MenuView). This is also reached
+            // from the results screen's "ride again" — Return, or the button — which is the
+            // most likely moment for the pool to be exhausted, since the learner just typed
+            // the last of it. Setting a notice on a screen that does not render it made that
+            // tap do nothing at all. (v1.23 §B.)
+            screen = .menu
             return
         }
         emptyPoolNotice = false
@@ -1366,8 +1372,13 @@ final class AppModel {
     /// bails if nothing resolves (the menu gates proactively via `weakWordsPoolCount`,
     /// so a silent no-op here can't strand the player on a blank screen).
     func startWeakWords() {
-        let ids = reviewStore.weakestCards(limit: Self.weakWordsRunSize).map(\.id)
-        let resolvable = ids.filter { VocabStore.shared.entry(id: $0) != nil }
+        // Filter INSIDE the cap. Capping first and filtering after is what shortened this run:
+        // weakestCards sorts leeches to the front, and a withdrawn entry's card is a permanent
+        // leech — it can never be reviewed away — so the unusable ids sat at the very front of
+        // the fifteen and the ride came back with twelve. (v1.23 §B.)
+        let resolvable = reviewStore.weakestCards(
+            limit: Self.weakWordsRunSize,
+            resolves: { VocabStore.shared.entry(id: $0) != nil }).map(\.id)
         guard !resolvable.isEmpty else { return }
         var config = GameSession.Config()
         config.languageCode = languageCode
@@ -1437,7 +1448,14 @@ final class AppModel {
     /// — a run that resolves to nothing (all due cards point at removed vocab) does NOT enter
     /// the screen. Due review spans all levels (the due cards define its scope).
     func startConjugationReview() {
-        let due = conjugationReviewStore.dueCards(limit: Self.conjugationRunSize)
+        // Same predicate the menu label counts with (`conjugationDueCount`). Without it the
+        // orphans sort FIRST — a card whose verb is gone is never reviewed away, so it stays
+        // maximally overdue — spend slots inside the limit, and are then dropped by makeReview
+        // and padded over with fresh prompts. The learner is promised N due and rides fewer,
+        // and the orphans stay due forever. (v1.23 §B.)
+        let due = conjugationReviewStore.dueCards(
+            limit: Self.conjugationRunSize,
+            resolves: { VocabStore.shared.entry(id: $0) != nil })
             .map { (entryID: $0.sourceID, formToken: $0.formToken) }
         var config = ConjugationSession.Config()
         config.languageCode = languageCode

@@ -121,9 +121,14 @@ public struct ReviewStore: Codable, Sendable {
     /// **Pure read — never mutates the store.** The weak-words feature is a *cram*:
     /// it must NEVER write SRS (early-reviewing not-yet-due cards would corrupt the
     /// SM-2 interval/ease schedule). This function only ranks; it schedules nothing.
-    public func weakestCards(limit: Int = 100) -> [SRSCard] {
+    /// - Parameter resolves: whether a card's word still exists. Applied BEFORE `limit`,
+    ///   which is the whole point: withdrawn entries sort to the very front (a card whose word
+    ///   is gone can never be reviewed away, so it is a permanent leech), so capping first and
+    ///   filtering after hands back a run shorter than the menu promised. (v1.23 §B.)
+    public func weakestCards(limit: Int = 100,
+                             resolves: (String) -> Bool = { _ in true }) -> [SRSCard] {
         cards.values
-            .filter { $0.totalReviews > 0 }
+            .filter { $0.totalReviews > 0 && resolves($0.id) }
             .sorted { a, b in
                 if a.isLeech != b.isLeech { return a.isLeech }                       // leeches first
                 if a.easeFactor != b.easeFactor { return a.easeFactor < b.easeFactor } // weaker ease first

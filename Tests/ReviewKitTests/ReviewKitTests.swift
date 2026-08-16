@@ -211,3 +211,48 @@ struct WeakestCardsTests {
         #expect(store.reviewedCount == 0)
     }
 }
+
+// MARK: - The weak-words cram, capped after filtering
+
+/// The menu promises `weakWordsPoolCount` weak words and the cram used to ride fewer, because
+/// the cap came first and the filter after. Withdrawn entries are the exact population that
+/// breaks it: a card whose word is gone can never be reviewed away, so it stays a leech, and
+/// `weakestCards` sorts leeches to the front. The unusable ids therefore sit at the very front
+/// of the fifteen rather than being spread through them.
+@Suite("Weakest cards resolve inside the cap")
+struct WeakestCardsResolveTests {
+
+    /// `count` cards, the first `orphans` of them leeches pointing at words that are gone.
+    private func store(count: Int, orphans: Int) -> ReviewStore {
+        var cards: [String: SRSCard] = [:]
+        for i in 0..<count {
+            var card = SRSCard(id: i < orphans ? "gone-\(i)" : "live-\(i)", createdAt: Date())
+            card.totalReviews = 5
+            card.lapses = i < orphans ? 9 : 1
+            card.easeFactor = i < orphans ? 1.3 : 2.5   // leech territory
+            cards[card.id] = card
+        }
+        return ReviewStore(cards: cards)
+    }
+
+    private let live: (String) -> Bool = { !$0.hasPrefix("gone-") }
+
+    @Test("the run is as long as the cap when enough words resolve")
+    func capIsFilled() {
+        let cards = store(count: 20, orphans: 5).weakestCards(limit: 15, resolves: live)
+        #expect(cards.count == 15)
+        #expect(cards.allSatisfy { !$0.id.hasPrefix("gone-") })
+    }
+
+    @Test("filtering after the cap is what used to shorten it")
+    func capThenFilterIsShorter() {
+        // The old shape, kept as the contrast: same store, same limit, five slots burned.
+        let old = store(count: 20, orphans: 5).weakestCards(limit: 15).filter { live($0.id) }
+        #expect(old.count == 10)
+    }
+
+    @Test("a short pool still returns everything it has")
+    func shortPool() {
+        #expect(store(count: 8, orphans: 3).weakestCards(limit: 15, resolves: live).count == 5)
+    }
+}
