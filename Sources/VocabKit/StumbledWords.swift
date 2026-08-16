@@ -41,12 +41,26 @@ public enum StumbledWords {
     ///   - minimumRefusals: words refused fewer times than this are dropped. One slip inside
     ///     a word is a typo; the point of this list is the words that actually stopped the
     ///     learner, and a list of every word they ever fumbled is a list nobody reads.
+    ///   - includesParticles: whether a single-kana particle can be named. The sentence screen
+    ///     passes `false` and dictation `true`, because the same を means two different things.
+    ///     On screen the learner can SEE it, so a refusal there is the wa/ha spelling trap —
+    ///     which the coach already explains with a rule one line above, making this list a
+    ///     duplicate that relabels a spelling slip as a word they do not know. In dictation
+    ///     nothing is on screen, so hearing の and typing に is a listening result, and one of
+    ///     the more useful things this list can report.
     ///
     /// Ties break on the reading so the order is stable — a results screen that reshuffles
     /// between two identical runs looks broken.
+    /// Single-kana grammatical particles, which are a stumble in one mode and noise in the
+    /// other. Matched on the SURFACE, so a content word that merely reads like one — 歯 for は,
+    /// 戸 for と — is written in kanji in the sentence and never matches.
+    private static let particles: Set<String> = ["を", "は", "へ", "が", "に", "で", "と",
+                                                 "も", "の", "や", "ね", "よ", "か"]
+
     public static func from(_ trace: MistakeTrace,
                             vocab: VocabStore = .shared,
-                            minimumRefusals: Int = 2) -> [Stumble] {
+                            minimumRefusals: Int = 2,
+                            includesParticles: Bool = true) -> [Stumble] {
         var counts: [String: (surface: String, reading: String, n: Int)] = [:]
         for event in trace.events {
             guard let id = event.entryID, let entry = vocab.entry(id: id),
@@ -56,6 +70,7 @@ public enum StumbledWords {
                   entry.exampleKana == event.targetKana,
                   let token = entry.exampleToken(atReadingIndex: event.kanaIndex)
             else { continue }
+            if !includesParticles, Self.particles.contains(token.surface) { continue }
             let key = token.surface + "\u{1F}" + token.reading
             counts[key, default: (token.surface, token.reading, 0)].n += 1
         }

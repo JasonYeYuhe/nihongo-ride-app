@@ -595,3 +595,115 @@ struct FuriganaTests {
         #expect(session.currentExampleTokens?.first == ["犬", "いぬ"])
     }
 }
+
+// MARK: - The stumbled-word list, driven through a real run
+
+/// Everything else about `StumbledWords` is tested against hand-built traces, which proves the
+/// arithmetic and proves nothing about the wiring. A `MistakeEvent` carries only what the
+/// session puts in it, and the attribution needs two fields to survive the trip: `entryID`, and
+/// a `targetKana` that IS the sentence's reading. A sentence run rebuilds its items with
+/// `kana: exampleKana`, so both hold — but that is a fact about `sentenceSession`, not a law,
+/// and nothing else in the suite would notice if it changed. These play a run instead.
+@Suite("Stumbled words, end to end")
+struct StumbledWordsRunTests {
+
+    /// Types a session for real, refusing twice at kana index `mistypeAt`.
+    ///
+    /// Correct keys come from `expectedNextCharacters` and wrong ones from its complement, so
+    /// the typist never guesses — a brute-force typist would record every wrong guess as a
+    /// mistake and the trace under test would be its own noise.
+    private func play(_ session: GameSession, mistypeAt kanaIndex: Int) -> MistakeTrace {
+        let session = session
+        var injected = 0
+        var steps = 0
+        while !session.isFinished, steps < 4_000 {
+            steps += 1
+            let expected = session.expectedNextCharacters
+            guard !expected.isEmpty else { session.skip(); continue }
+            if session.completedKanaCount == kanaIndex, injected < 2,
+               let wrong = "aiueokstnhmyrwgzdbpj".first(where: { !expected.contains($0) }) {
+                _ = session.input(wrong)
+                injected += 1
+                continue
+            }
+            _ = session.input(expected.sorted()[0])
+        }
+        return session.mistakes
+    }
+
+    /// A shipped entry whose sentence has at least three content tokens, so aiming at the
+    /// second one makes an off-by-one walk visible.
+    private func sentenceEntry() throws -> VocabEntry {
+        try #require(VocabStore.shared.entries.first {
+            $0.isTypeableSentence && ($0.exampleTokens?.filter { $0[1].count > 0 }.count ?? 0) >= 3
+        })
+    }
+
+    /// Same shape as `cleanEntry`, but the second token must BE a particle.
+    private func cleanParticleEntry() throws -> (entry: VocabEntry, index: Int, expected: String) {
+        let particles = Set(["を", "は", "へ", "が", "に", "で", "と", "も", "の"])
+        let entry = try #require(VocabStore.shared.entries.first { e in
+            guard e.isTypeableSentence, let t = e.exampleTokens, t.count >= 3,
+                  t[0].count >= 2, t[1].count >= 2 else { return false }
+            return !t[0][1].isEmpty && particles.contains(t[1][0])
+        })
+        let tokens = try #require(entry.exampleTokens)
+        return (entry, tokens[0][1].count, tokens[1][0])
+    }
+
+    /// The two modes disagree about particles on purpose, and the disagreement is the test:
+    /// one run, one set of refusals, one flag apart.
+    @Test("a particle is a listening stumble in dictation and coach material on screen")
+    func particlesSplitByMode() throws {
+        let vocab = VocabStore.shared
+        let (entry, index, expected) = try cleanParticleEntry()
+        var config = GameSession.Config()
+        config.newWordCount = 1
+        let trace = play(GameSession.makeDictation(ids: [entry.id], vocab: vocab, config: config),
+                         mistypeAt: index)
+        #expect(StumbledWords.from(trace, vocab: vocab, includesParticles: true)
+                    .map(\.surface) == [expected])
+        #expect(StumbledWords.from(trace, vocab: vocab, includesParticles: false).isEmpty)
+    }
+
+    @Test("a real sentence run names the word the refusals landed in")
+    func sentenceRunNamesTheWord() throws {
+        let vocab = VocabStore.shared
+        let entry = try sentenceEntry()
+        var config = GameSession.Config()
+        config.newWordCount = 1
+        let index = try #require(entry.exampleTokens?.first?[1].count)
+        let target = try #require(entry.exampleToken(atReadingIndex: index))
+
+        let session = GameSession.makeSentence(ids: [entry.id], vocab: vocab, config: config)
+        let stumbles = StumbledWords.from(play(session, mistypeAt: index), vocab: vocab)
+        #expect(stumbles.map(\.surface) == [target.surface])
+        #expect(stumbles.first?.refusals == 2)
+    }
+
+    @Test("a dictation run reports the same way — the mode does not change the attribution")
+    func dictationRunNamesTheWord() throws {
+        let vocab = VocabStore.shared
+        let entry = try sentenceEntry()
+        var config = GameSession.Config()
+        config.newWordCount = 1
+        let index = try #require(entry.exampleTokens?.first?[1].count)
+        let target = try #require(entry.exampleToken(atReadingIndex: index))
+
+        let session = GameSession.makeDictation(ids: [entry.id], vocab: vocab, config: config)
+        #expect(StumbledWords.from(play(session, mistypeAt: index), vocab: vocab)
+                    .map(\.surface) == [target.surface])
+    }
+
+    @Test("a word run over the same entry produces nothing")
+    func wordRunStaysOut() throws {
+        let vocab = VocabStore.shared
+        let entry = try sentenceEntry()
+        var config = GameSession.Config()
+        config.newWordCount = 1
+        // Same entry, ordinary word run: the target is the WORD's reading, so indexing
+        // exTokens with these events would name a word at random.
+        let session = GameSession.makeWeak(ids: [entry.id], vocab: vocab, config: config)
+        #expect(StumbledWords.from(play(session, mistypeAt: 1), vocab: vocab).isEmpty)
+    }
+}

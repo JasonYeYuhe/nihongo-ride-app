@@ -204,7 +204,13 @@ struct ResultsView: View {
     private var stumbledWords: some View {
         if let summary = model.lastSummary,
            summary.mode == .sentence || summary.mode == .dictation {
-            let stumbles = StumbledWords.from(summary.mistakes)
+            // Particles count in dictation and not on screen: a を the learner could SEE and
+            // still refused is the wa/ha spelling trap, which the coach explains a line above
+            // with an actual rule. Naming it here as well would relabel a spelling slip as a
+            // word they do not know. Heard rather than seen, missing it is a listening result
+            // and worth saying.
+            let stumbles = StumbledWords.from(summary.mistakes,
+                                              includesParticles: summary.mode == .dictation)
             if !stumbles.isEmpty {
                 VStack(spacing: 6) {
                     Text(summary.mode == .dictation

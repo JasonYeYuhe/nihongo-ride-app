@@ -285,3 +285,31 @@ struct StumbledWordsTests {
                       StumbledWords.Stumble(surface: "潜入", reading: "せんにゅう", refusals: 2)])
     }
 }
+
+// MARK: - What keeps sentence mistakes and word mistakes apart
+
+@Suite("Sentence/word attribution guard")
+struct AttributionGuardTests {
+
+    /// `StumbledWords` tells a sentence run's mistakes from a word run's by comparing the
+    /// event's target against `exampleKana`. That works because a word's reading and its
+    /// sentence's reading differ — which is true of 6,723 of the 6,724 shipped sentences and
+    /// is a property of the DATA, not of the code.
+    ///
+    /// The exception is こんにちは, whose example sentence is the word. The guard misfires
+    /// there, and harmlessly: the sentence is one content token, so the walk names こんにちは
+    /// — the word the learner was in fact typing. That is what this pins. A future entry
+    /// whose sentence equals its reading but splits into several tokens would name the wrong
+    /// one, and this is where it stops.
+    @Test("any entry whose sentence reads like its word must be a single token")
+    func collisionsAreSingleToken() throws {
+        let colliding = VocabStore.shared.entries.filter { $0.exampleKana == $0.kana }
+        #expect(!colliding.isEmpty, "no collisions at all means the probe stopped measuring")
+        for entry in colliding {
+            let content = try #require(entry.exampleTokens).filter { !$0[1].isEmpty && $0[1] != "。" }
+            #expect(content.count == 1,
+                    "\(entry.id): sentence reads like the word but splits into \(content.count) tokens")
+            #expect(content.first?[0] == entry.surface, "\(entry.id): token is not the word itself")
+        }
+    }
+}
