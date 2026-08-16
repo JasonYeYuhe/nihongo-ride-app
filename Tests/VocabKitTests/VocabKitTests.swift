@@ -193,3 +193,95 @@ struct ExampleTokenLocationTests {
                                                   + broken.prefix(5).joined(separator: "\n")))
     }
 }
+
+// MARK: - Which words stopped the learner
+
+@Suite("Stumbled words")
+struct StumbledWordsTests {
+
+    private let sentence = VocabEntry(
+        id: "s1", surface: "潜入", kana: "せんにゅう", partsOfSpeech: ["n"], jlpt: .n1,
+        meanings: ["en": ["infiltration"]],
+        exampleJP: "警官が潜入した。", exampleKana: "けいかんがせんにゅうした",
+        exampleTokens: [["警官", "けいかん"], ["が", "が"], ["潜入", "せんにゅう"],
+                        ["し", "し"], ["た", "た"], ["。", "。"]])
+
+    private var store: VocabStore {
+        VocabStore(entries: [sentence,
+                             VocabEntry(id: "w1", surface: "水", kana: "みず",
+                                        partsOfSpeech: ["n"], jlpt: .n5,
+                                        meanings: ["en": ["water"]])])
+    }
+
+    private func refusal(_ id: String?, target: String, at index: Int, order: Int) -> MistakeEvent {
+        MistakeEvent(targetKana: target, entryID: id, acceptedRomaji: "",
+                     rejected: "x", expectedNext: ["n"], kanaIndex: index, order: order)
+    }
+
+    /// The whole point: a sentence run can now name the word instead of counting.
+    @Test("refusals inside a word are attributed to that word")
+    func attributesToTheWord() {
+        var trace = MistakeTrace()
+        // three refusals inside せんにゅう (indices 5,6,7 of けいかんがせんにゅうした)
+        for (i, index) in [5, 6, 7].enumerated() {
+            trace.record(refusal("s1", target: sentence.exampleKana!, at: index, order: i))
+        }
+        let stumbles = StumbledWords.from(trace, vocab: store)
+        #expect(stumbles.count == 1)
+        #expect(stumbles.first?.surface == "潜入")
+        #expect(stumbles.first?.reading == "せんにゅう")
+        #expect(stumbles.first?.refusals == 3)
+    }
+
+    /// A word run's mistakes already name their own word, and its `targetKana` is the word's
+    /// reading — not the sentence's. Indexing exTokens with it would name a word at random,
+    /// so those events must be ignored entirely. This is the guard that keeps the two
+    /// explanations from contaminating each other.
+    @Test("a word run's refusals are not attributed to sentence words")
+    func wordRunsAreIgnored() {
+        var trace = MistakeTrace()
+        for i in 0..<3 {
+            trace.record(refusal("w1", target: "みず", at: 0, order: i))
+            // …and an event whose id IS a sentence entry but whose target is the WORD, which
+            // is what a journey run over that same entry produces.
+            trace.record(refusal("s1", target: "せんにゅう", at: 0, order: 10 + i))
+        }
+        #expect(StumbledWords.from(trace, vocab: store).isEmpty)
+    }
+
+    /// One slip inside a word is a typo. The list is meant to be the words that actually
+    /// stopped the learner, and a list of everything they ever fumbled is a list nobody reads.
+    @Test("a single slip is not a stumble")
+    func singleSlipDropped() {
+        var trace = MistakeTrace()
+        trace.record(refusal("s1", target: sentence.exampleKana!, at: 0, order: 0))
+        #expect(StumbledWords.from(trace, vocab: store).isEmpty)
+        #expect(StumbledWords.from(trace, vocab: store, minimumRefusals: 1).count == 1)
+    }
+
+    /// Unresolvable ids and passages (no id at all) must not crash or invent a word.
+    @Test("events with no resolvable entry are skipped")
+    func unresolvableSkipped() {
+        var trace = MistakeTrace()
+        trace.record(refusal(nil, target: "あいう", at: 0, order: 0))
+        trace.record(refusal("gone", target: "あいう", at: 1, order: 1))
+        #expect(StumbledWords.from(trace, vocab: store).isEmpty)
+    }
+
+    /// Two runs with the same refusals must produce the same order — a results list that
+    /// reshuffles between identical runs looks broken.
+    @Test("the order is stable")
+    func stableOrder() {
+        var trace = MistakeTrace()
+        for (i, index) in [0, 1, 5, 6].enumerated() {   // 警官 twice, 潜入 twice
+            trace.record(refusal("s1", target: sentence.exampleKana!, at: index, order: i))
+        }
+        let a = StumbledWords.from(trace, vocab: store)
+        let b = StumbledWords.from(trace, vocab: store)
+        #expect(a == b)
+        // Two words, two refusals each — so the tie-break decides the order, and it has to
+        // decide it the same way every time. Ties break on the reading, ascending.
+        #expect(a == [StumbledWords.Stumble(surface: "警官", reading: "けいかん", refusals: 2),
+                      StumbledWords.Stumble(surface: "潜入", reading: "せんにゅう", refusals: 2)])
+    }
+}
