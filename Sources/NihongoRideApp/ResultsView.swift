@@ -94,6 +94,7 @@ struct ResultsView: View {
                     }
                     stageLine
                     coachEntry
+                    stumbledWords
                 }
                 .arrivalPanel(compact: isPhoneIdiom)
             }
@@ -186,6 +187,52 @@ struct ResultsView: View {
             .accessibilityIdentifier("coachEntryButton")
             .accessibilityLabel(zh ? "打字教练:\(advice.title)" : "Typing coach: \(advice.title)")
             .accessibilityHint(zh ? "查看这次反复出错的地方" : "See what kept going wrong this ride")
+        }
+    }
+
+    /// The WORDS a sentence or dictation run stopped the learner on.
+    ///
+    /// The coach line above explains typing mechanics — the rule that keeps going wrong. It
+    /// is silent, correctly, when the refusals have no rule behind them, and in a sentence
+    /// run that is the common case: the learner did not know the word, or in dictation did
+    /// not hear it. Until now the app answered that with a number. This answers it with the
+    /// words.
+    ///
+    /// Sentence and dictation runs only. A word run's results already list the words that
+    /// lapsed, and repeating them here would say nothing new. (PLAN-V1.23 §A.)
+    @ViewBuilder
+    private var stumbledWords: some View {
+        if let summary = model.lastSummary,
+           summary.mode == .sentence || summary.mode == .dictation {
+            let stumbles = StumbledWords.from(summary.mistakes)
+            if !stumbles.isEmpty {
+                VStack(spacing: 6) {
+                    Text(summary.mode == .dictation
+                         ? (zh ? "这些词没听出来" : "The words you could not catch")
+                         : (zh ? "这些词卡住了你" : "The words that stopped you"))
+                        .scaledSystemFont(13, weight: .semibold, design: .rounded)
+                        .foregroundStyle(Theme.dim)
+                    MenuFlow(spacing: 8, rowSpacing: 8) {
+                        ForEach(stumbles.prefix(6), id: \.reading) { stumble in
+                            VStack(spacing: 1) {
+                                Text(stumble.reading)
+                                    .font(.caption2).foregroundStyle(Theme.dim)
+                                Text(stumble.surface)
+                                    .scaledSystemFont(15, weight: .semibold)
+                                    .foregroundStyle(.white)
+                            }
+                            .padding(.horizontal, 12).padding(.vertical, 6)
+                            .background(Theme.card, in: RoundedRectangle(cornerRadius: 10))
+                            .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Theme.cardStroke))
+                            .fixedSize()
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel("\(stumble.surface), \(stumble.reading)")
+                        }
+                    }
+                    .frame(maxWidth: 460)
+                }
+                .accessibilityIdentifier("stumbledWords")
+            }
         }
     }
 
