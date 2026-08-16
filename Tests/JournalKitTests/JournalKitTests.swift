@@ -275,3 +275,75 @@ struct StatsAggregationTests {
         #expect(j.runsByMode().isEmpty)
     }
 }
+
+// MARK: - The streak number and the strip beside it
+
+/// The Ride Log answers "was this day ridden?" twice on one card: once as the streak number and
+/// once as a strip of 14 studs. Until v1.23 it answered it with two different predicates — the
+/// number back-dated a ride by its duration, the strip used the end timestamp alone — so a rider
+/// who crossed midnight read a number the picture next to it contradicted.
+///
+/// These cases are the ones that used to disagree. They are written against `riddenDays` because
+/// that is now the single predicate; the point of the suite is that there is nothing left for a
+/// second copy to drift away from.
+@Suite("Streak and studs agree")
+struct RiddenDaysTests {
+
+    private var tokyo: Calendar {
+        var c = Calendar(identifier: .gregorian)
+        c.timeZone = TimeZone(identifier: "Asia/Tokyo")!
+        c.locale = Locale(identifier: "en_US_POSIX")
+        return c
+    }
+
+    private func at(_ day: Int, _ hour: Int, _ minute: Int = 0) -> Date {
+        tokyo.date(from: DateComponents(year: 2026, month: 3, day: day, hour: hour, minute: minute))!
+    }
+
+    private func ride(end: Date, duration: TimeInterval) -> RideRecord {
+        RideRecord(date: end, mode: "journey", level: "N5", score: 120, wpm: 35,
+                   accuracy: 0.94, wordsCompleted: 11, lapsed: 0,
+                   distanceMeters: 220, duration: duration)
+    }
+
+    /// How many of the trailing 14 studs light — the strip's own arithmetic, over `riddenDays`.
+    private func lit(_ journal: RideJournal, now: Date) -> [Bool] {
+        let ridden = journal.riddenDays(calendar: tokyo)
+        let today = tokyo.startOfDay(for: now)
+        return (0..<14).reversed().compactMap { offset in
+            tokyo.date(byAdding: .day, value: -offset, to: today).map { ridden.contains($0) }
+        }
+    }
+
+    @Test("three nights of 23:47→00:04 light every day the number counts")
+    func nightRider() {
+        let journal = RideJournal(records: [6, 7, 8].map { ride(end: at($0, 0, 4), duration: 17 * 60) })
+        let now = at(8, 9)
+        #expect(journal.streakDays(asOf: now, calendar: tokyo) == 4)
+        #expect(lit(journal, now: now).filter { $0 }.count == 4)
+    }
+
+    @Test("a midnight-spanning ride leaves no hole in the strip")
+    func noHoleInTheChain() {
+        // 20:00 on the 1st and 2nd; 23:50 on the 3rd finishing 00:05 on the 4th; 20:00 on the 5th.
+        // Nothing happens ON the 4th after that ride, and nothing is missing on the 3rd either.
+        let journal = RideJournal(records: [
+            ride(end: at(1, 20), duration: 15 * 60),
+            ride(end: at(2, 20), duration: 15 * 60),
+            ride(end: at(4, 0, 5), duration: 15 * 60),
+            ride(end: at(5, 20), duration: 15 * 60),
+        ])
+        let now = at(5, 21)
+        #expect(journal.streakDays(asOf: now, calendar: tokyo) == 5)
+        #expect(lit(journal, now: now).suffix(5) == [true, true, true, true, true])
+    }
+
+    @Test("a day genuinely not ridden is still dark")
+    func realGapStaysDark() {
+        // The fix must not light everything: nothing at all on the 3rd.
+        let journal = RideJournal(records: [1, 2, 4, 5].map { ride(end: at($0, 20), duration: 15 * 60) })
+        let now = at(5, 21)
+        #expect(lit(journal, now: now).suffix(5) == [true, true, false, true, true])
+        #expect(journal.streakDays(asOf: now, calendar: tokyo) == 2)
+    }
+}

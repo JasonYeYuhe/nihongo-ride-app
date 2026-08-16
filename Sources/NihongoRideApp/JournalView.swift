@@ -121,7 +121,8 @@ struct JournalView: View {
     private var dayStuds: some View {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
-        let ridden = Set(model.journal.records.map { calendar.startOfDay(for: $0.date) })
+        // The same answer the streak number is computed from — see RideJournal.riddenDays.
+        let ridden = model.journal.riddenDays(calendar: calendar)
         let days: [(date: Date, lit: Bool)] = (0..<14).reversed().compactMap { offset in
             guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { return nil }
             return (day, ridden.contains(day))

@@ -83,14 +83,22 @@ public struct RideJournal: Codable, Sendable {
     /// Consecutive calendar days with at least one ride, counting back from
     /// `date`'s day. A quiet "today" doesn't break the streak — it just isn't
     /// counted yet (the chain only breaks once a full day passes with no ride).
-    public func streakDays(asOf date: Date = Date(), calendar: Calendar = .current) -> Int {
-        guard !records.isEmpty else { return 0 }
-        // A ride counts for every day it was RIDDEN ON, not only the day it ended. A record
-        // stores when it finished plus its duration, so a session begun at 23:50 and finished
-        // at 00:02 covers both days — and a rider who does exactly that at the end of a long
-        // chain used to see the streak reset to 1, having ridden without missing a day.
-        // `dailyWords` deliberately keeps attributing the words to the end day; this is only
-        // about whether the day was ridden at all. (v1.15 §D.)
+    /// Every calendar day the rider actually rode on.
+    ///
+    /// A ride counts for every day it was RIDDEN ON, not only the day it ended. A record stores
+    /// when it finished plus its duration, so a session begun at 23:50 and finished at 00:02
+    /// covers both days — and a rider who does exactly that at the end of a long chain used to
+    /// see the streak reset to 1, having ridden without missing a day. `dailyWords` deliberately
+    /// keeps attributing the WORDS to the end day; this is only about whether the day was
+    /// ridden at all. (v1.15 §D.)
+    ///
+    /// This is public because the Ride Log draws the same answer twice: the streak number, and
+    /// the strip of studs beside it. It used to be written twice as well, and the two copies
+    /// disagreed — the strip was built from the end timestamp alone, so a rider who crossed
+    /// midnight three nights running read "Streak 4" above three lit studs, and one who rode
+    /// 23:50→00:05 saw a dark stud punched into the middle of a chain they had not broken.
+    /// One predicate, used twice. (v1.23 §B.)
+    public func riddenDays(calendar: Calendar = .current) -> Set<Date> {
         var days = Set<Date>()
         for record in records {
             days.insert(calendar.startOfDay(for: record.date))
@@ -98,6 +106,12 @@ public struct RideJournal: Codable, Sendable {
                 days.insert(calendar.startOfDay(for: record.date.addingTimeInterval(-record.duration)))
             }
         }
+        return days
+    }
+
+    public func streakDays(asOf date: Date = Date(), calendar: Calendar = .current) -> Int {
+        guard !records.isEmpty else { return 0 }
+        let days = riddenDays(calendar: calendar)
         let today = calendar.startOfDay(for: date)
 
         var cursor: Date
