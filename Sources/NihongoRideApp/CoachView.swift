@@ -148,8 +148,15 @@ struct CoachView: View {
     /// How much evidence there is. Shown because "twice, on two words" is a very different
     /// claim from "eleven times", and the learner should be able to judge it themselves.
     private func evidence(_ d: Diagnosis) -> some View {
-        Text(zh ? "本程出现 \(d.occurrences) 次,涉及 \(d.distinctWords) 个词。"
-                : "\(countLabel(d.occurrences, "time")) this ride, across \(countLabel(d.distinctWords, "word")).")
+        // "at least" when the run out-typed the trace: see Diagnosis.sampleTruncated. The point
+        // of this line is that the learner can judge the evidence, which they cannot do if a
+        // capped number is presented as a total.
+        Text(zh ? (d.sampleTruncated
+                   ? "本程至少出现 \(d.occurrences) 次,涉及 \(d.distinctWords) 个词。"
+                   : "本程出现 \(d.occurrences) 次,涉及 \(d.distinctWords) 个词。")
+                : (d.sampleTruncated
+                   ? "at least \(countLabel(d.occurrences, "time")) this ride, across \(countLabel(d.distinctWords, "word"))."
+                   : "\(countLabel(d.occurrences, "time")) this ride, across \(countLabel(d.distinctWords, "word"))."))
             .font(.caption).foregroundStyle(Theme.dim.opacity(0.85))
     }
 

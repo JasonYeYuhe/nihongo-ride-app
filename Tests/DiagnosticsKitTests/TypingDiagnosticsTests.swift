@@ -157,3 +157,57 @@ struct TypingDiagnosticsTests {
         #expect(t.dropped == 50)
     }
 }
+
+// MARK: - The evidence line when the run out-typed the trace
+
+/// `MistakeTrace` keeps 200 events and counts the rest as `dropped`, and has said since v1.15
+/// that the count exists "so the coach can say the trace is partial rather than quietly
+/// reasoning about a truncated sample". Nothing read it until v1.23, so the coach reported a
+/// capped number as a total — and on a Time Attack queued to 300 words, a struggling learner
+/// can reach the cap.
+@Suite("Truncated evidence")
+struct TruncatedEvidenceTests {
+
+    /// One real refusal, produced by typing `romaji` at `target` until the matcher says no.
+    private func refusal(of target: String, typing romaji: String, order: Int) -> MistakeEvent {
+        var matcher = KanaInputMatcher(target: target)
+        for character in romaji {
+            let before = matcher.typedRomaji
+            let expected = matcher.expectedNextCharacters
+            let index = matcher.completedKanaCount
+            if matcher.input(character) == .rejected {
+                return MistakeEvent(targetKana: target, entryID: nil, acceptedRomaji: before,
+                                    rejected: character, expectedNext: expected,
+                                    kanaIndex: index, order: order)
+            }
+        }
+        fatalError("\(romaji) does not fail against \(target)")
+    }
+
+    private func trace(refusals: Int) -> MistakeTrace {
+        var trace = MistakeTrace()
+        for order in 0..<refusals {
+            // Alternate two words so the pattern clears the two-distinct-words bar.
+            let even = order.isMultiple(of: 2)
+            trace.record(refusal(of: even ? "がっこう" : "きって",
+                                 typing: even ? "gakou" : "kite", order: order))
+        }
+        return trace
+    }
+
+    @Test("a run inside the cap reports a total")
+    func withinCap() throws {
+        let d = try #require(TypingDiagnostics.diagnose(trace(refusals: 40)).first)
+        #expect(d.occurrences == 40)
+        #expect(!d.sampleTruncated)
+    }
+
+    @Test("a run past the cap is marked as a floor, not a total")
+    func pastCap() throws {
+        let d = try #require(TypingDiagnostics.diagnose(trace(refusals: 260)).first)
+        // The true number is unrecoverable — those events are gone. What IS recoverable, and
+        // what the learner needs in order to weigh the claim, is that it is a floor.
+        #expect(d.occurrences == MistakeTrace.capacity)
+        #expect(d.sampleTruncated)
+    }
+}

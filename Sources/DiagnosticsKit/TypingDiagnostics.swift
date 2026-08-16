@@ -76,7 +76,8 @@ public enum TypingDiagnostics {
             guard let example = events.first else { return nil }
             let words = Set(events.map(\.targetKana))
             return Diagnosis(pattern: pattern, occurrences: events.count,
-                             distinctWords: words.count, example: example)
+                             distinctWords: words.count, example: example,
+                             sampleTruncated: trace.dropped > 0)
         }
         .sorted {
             // Distinct words first (that is what makes a pattern real), then raw count, then

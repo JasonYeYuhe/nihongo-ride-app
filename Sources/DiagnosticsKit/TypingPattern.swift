@@ -38,12 +38,24 @@ public struct Diagnosis: Equatable, Sendable {
     public let distinctWords: Int
     /// The clearest single instance, for the character-level replay.
     public let example: MistakeEvent
+    /// Whether the run produced more refusals than the trace keeps (`MistakeTrace.capacity`),
+    /// which makes `occurrences` a floor rather than a total.
+    ///
+    /// `MistakeTrace` has counted the overflow since v1.15, with a comment saying it exists
+    /// "so the coach can say the trace is partial rather than quietly reasoning about a
+    /// truncated sample" — and until v1.23 nothing read it, so the coach did exactly the thing
+    /// the comment ruled out. The evidence line is the whole reason this matters: it is shown
+    /// so the learner can weigh the claim themselves, and a number silently capped at 200 is
+    /// not something they can weigh.
+    public let sampleTruncated: Bool
 
-    public init(pattern: TypingPattern, occurrences: Int, distinctWords: Int, example: MistakeEvent) {
+    public init(pattern: TypingPattern, occurrences: Int, distinctWords: Int,
+                example: MistakeEvent, sampleTruncated: Bool = false) {
         self.pattern = pattern
         self.occurrences = occurrences
         self.distinctWords = distinctWords
         self.example = example
+        self.sampleTruncated = sampleTruncated
     }
 
     /// Whether this is worth telling the learner about as a PATTERN.
