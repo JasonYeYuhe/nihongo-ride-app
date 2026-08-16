@@ -121,6 +121,37 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
         meanings(for: languageCode, fallback: fallback).joined(separator: ", ")
     }
 
+    /// The token of the example sentence whose READING covers `index` in `exampleKana`.
+    ///
+    /// Sentence and dictation runs type a whole sentence, so a mistake's `kanaIndex` is a
+    /// position in that sentence rather than in a word — which is why the app can count a
+    /// learner's mistakes in those modes and still not name what they got wrong. The tokens
+    /// already carry the answer: their readings concatenate to `exampleKana` exactly (the
+    /// generator refuses to emit anything else), so a cumulative walk turns a position back
+    /// into a word.
+    ///
+    /// Punctuation tokens contribute nothing to the reading and are skipped, which keeps the
+    /// walk aligned with `exampleKana` — that string has no punctuation, because a romaji
+    /// keyboard cannot produce 。
+    ///
+    /// Returns nil when the entry has no tokens, or when `index` is past the end — a caller
+    /// holding a stale index should get nothing rather than the last word by accident.
+    public func exampleToken(atReadingIndex index: Int) -> (surface: String, reading: String)? {
+        guard index >= 0, let tokens = exampleTokens else { return nil }
+        var consumed = 0
+        for token in tokens where token.count >= 2 {
+            let reading = token[1].filter { !Self.punctuation.contains($0) }
+            if reading.isEmpty { continue }
+            let next = consumed + reading.count
+            if index < next { return (surface: token[0], reading: token[1]) }
+            consumed = next
+        }
+        return nil
+    }
+
+    /// The characters `exKana` drops, so the token walk stays aligned with it.
+    private static let punctuation: Set<Character> = ["。", "、", "！", "？", "「", "」", "・"]
+
     /// The example-sentence translation for `languageCode` (Chinese when "zh", else English).
     public func exampleTranslation(for languageCode: String) -> String? {
         languageCode == "zh" ? (exampleZH ?? exampleEN) : (exampleEN ?? exampleZH)
