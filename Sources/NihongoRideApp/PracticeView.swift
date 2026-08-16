@@ -88,6 +88,11 @@ struct PracticeView: View {
         // to think, so coming back to a "Stuck?" button from before the interruption is the
         // app claiming to know something it no longer knows. (v1.16 §A.)
         .onChange(of: scenePhase) { _, phase in
+            // The RunClock measures RIDDEN time, not wall clock, and the passage screen was the
+            // one run screen that never told it when the riding stopped — so a learner who put
+            // the app down mid-passage came back to a Ride Log row that had been counting the
+            // whole time, with the WPM diluted to match. (v1.23 §B.)
+            phase == .active ? model.resumeRunClock() : model.pauseRunClock()
             if phase != .active { model.session?.resetStruggle() }
         }
         .onReceive(ticker) { now = $0 }
