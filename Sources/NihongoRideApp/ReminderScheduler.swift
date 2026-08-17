@@ -55,8 +55,8 @@ enum ReminderScheduler {
         let reminders = DueReminderPlanner.plan(
             store: store,
             conjugationDue: { conjugationStore.dueCount(on: $0, calendar: $1,
-                                              resolves: { VocabStore.shared.entry(id: $0) != nil }) },
-            vocabResolves: { VocabStore.shared.entry(id: $0) != nil },
+                                              resolves: VocabStore.shared.resolvesID) },
+            vocabResolves: VocabStore.shared.resolvesID,
             from: Date(), hour: hour)
         for (index, reminder) in reminders.enumerated() {
             let content = UNMutableNotificationContent()
@@ -74,8 +74,8 @@ enum ReminderScheduler {
         }
         // Keep the app icon badge honest with what's due right now — both kinds.
         try? await center.setBadgeCount(
-            store.dueCount(resolves: { VocabStore.shared.entry(id: $0) != nil })
-                + conjugationStore.dueCount(resolves: { VocabStore.shared.entry(id: $0) != nil }))
+            store.dueCount(resolves: VocabStore.shared.resolvesID)
+                + conjugationStore.dueCount(resolves: VocabStore.shared.resolvesID))
         return true
     }
 

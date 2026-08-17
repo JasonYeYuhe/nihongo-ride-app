@@ -180,7 +180,7 @@ struct JournalView: View {
 
     private var forecastCard: some View {
         let forecast = model.reviewStore.dueForecast(
-            resolves: { VocabStore.shared.entry(id: $0) != nil })
+            resolves: VocabStore.shared.resolvesID)
         let spoken = zh
             ? "今天 \(forecast.today),明天 \(forecast.tomorrow),本周 \(forecast.thisWeek)"
             : "Today \(forecast.today), tomorrow \(forecast.tomorrow), this week \(forecast.thisWeek)"

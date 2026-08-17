@@ -449,10 +449,10 @@ final class AppModel {
         let snapshot = WidgetSnapshot(
             generatedAt: now,
             vocabDueByDay: reviewStore.dueByDay(asOf: now, horizon: h,
-                                                resolves: { VocabStore.shared.entry(id: $0) != nil }),
+                                                resolves: VocabStore.shared.resolvesID),
             conjugationDueByDay: conjugationReviewStore.dueByDay(
                 asOf: now, horizon: h,
-                resolves: { VocabStore.shared.entry(id: $0) != nil }),
+                resolves: VocabStore.shared.resolvesID),
             streakByDay: streakByDay,
             lifetimeWords: lifetimeWords,
             languageCode: languageCode)
@@ -831,7 +831,7 @@ final class AppModel {
     var statsHasRides: Bool { !journal.isEmpty }
     /// Near-term conjugation due buckets (surfaces the v1.8 conjugation SRS on the Stats screen).
     var conjugationDueForecast: ConjugationReviewStore.Forecast {
-        conjugationReviewStore.dueForecast(resolves: { VocabStore.shared.entry(id: $0) != nil })
+        conjugationReviewStore.dueForecast(resolves: VocabStore.shared.resolvesID)
     }
     var conjugationReviewedCount: Int { conjugationReviewStore.reviewedCount }
     var conjugationLeechCount: Int { conjugationReviewStore.leeches().count }
@@ -867,7 +867,7 @@ final class AppModel {
     /// from this, and a run drops unresolvable ids, so counting them here would promise work
     /// the app cannot hand over.
     var dueReviewCount: Int {
-        reviewStore.dueCount(resolves: { VocabStore.shared.entry(id: $0) != nil })
+        reviewStore.dueCount(resolves: VocabStore.shared.resolvesID)
     }
     var totalWordsSeen: Int { reviewStore.count }
     /// Words in the pool the next ride will actually draw new words from — i.e. the
@@ -1135,7 +1135,7 @@ final class AppModel {
     /// player on a blank, already-finished game screen (v1.4 regression, per list).
     func startListGame(_ listID: String) {
         guard let list = wordLists.list(id: listID), !list.deleted else { return }
-        let resolvable = list.ids.filter { VocabStore.shared.entry(id: $0) != nil }
+        let resolvable = list.ids.filter(VocabStore.shared.resolvesID)
         guard !resolvable.isEmpty else { return }
         var config = GameSession.Config()
         config.languageCode = languageCode
@@ -1363,7 +1363,7 @@ final class AppModel {
 
     /// How many reviewed words are available to cram (menu gating).
     var weakWordsPoolCount: Int {
-        reviewStore.reviewedCount(resolves: { VocabStore.shared.entry(id: $0) != nil })
+        reviewStore.reviewedCount(resolves: VocabStore.shared.resolvesID)
     }
 
     /// Starts a weak-words cram: the user's hardest reviewed words, run through the
@@ -1378,7 +1378,7 @@ final class AppModel {
         // the fifteen and the ride came back with twelve. (v1.23 §B.)
         let resolvable = reviewStore.weakestCards(
             limit: Self.weakWordsRunSize,
-            resolves: { VocabStore.shared.entry(id: $0) != nil }).map(\.id)
+            resolves: VocabStore.shared.resolvesID).map(\.id)
         guard !resolvable.isEmpty else { return }
         var config = GameSession.Config()
         config.languageCode = languageCode
@@ -1440,7 +1440,7 @@ final class AppModel {
 
     /// How many (verb, form) cards are due for conjugation review right now (menu gating).
     var conjugationDueCount: Int {
-        conjugationReviewStore.dueCount(resolves: { VocabStore.shared.entry(id: $0) != nil })
+        conjugationReviewStore.dueCount(resolves: VocabStore.shared.resolvesID)
     }
 
     /// Starts a **due-review** conjugation drill: the due (verb, form) cards first, then
@@ -1455,7 +1455,7 @@ final class AppModel {
         // and the orphans stay due forever. (v1.23 §B.)
         let due = conjugationReviewStore.dueCards(
             limit: Self.conjugationRunSize,
-            resolves: { VocabStore.shared.entry(id: $0) != nil })
+            resolves: VocabStore.shared.resolvesID)
             .map { (entryID: $0.sourceID, formToken: $0.formToken) }
         var config = ConjugationSession.Config()
         config.languageCode = languageCode

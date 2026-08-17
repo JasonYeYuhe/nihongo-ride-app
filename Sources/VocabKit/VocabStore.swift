@@ -23,6 +23,19 @@ public struct VocabStore: Sendable {
         byID[id]
     }
 
+    /// Whether an id still names a word in this store — the predicate every due count and every
+    /// run builder has to agree on.
+    ///
+    /// It exists as one value because it was written out by hand in fifteen places, and twice
+    /// somebody wrote a count without it: a card whose word has been withdrawn can never be
+    /// reviewed away, so it inflates whatever it appears in, forever. v1.22 found four such
+    /// sites, v1.23 found two more. The `resolves:` parameters take a closure precisely so the
+    /// review modules can stay ignorant of VocabKit; this is the one closure they should be
+    /// handed. (v1.23 §B.)
+    public var resolvesID: (String) -> Bool {
+        { [byID] id in byID[id] != nil }
+    }
+
     public func entries(level: JLPTLevel) -> [VocabEntry] {
         entries.filter { $0.jlpt == level }
     }
