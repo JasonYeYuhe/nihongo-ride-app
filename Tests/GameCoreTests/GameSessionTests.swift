@@ -695,6 +695,52 @@ struct StumbledWordsRunTests {
                     .map(\.surface) == [target.surface])
     }
 
+    /// Found by the pre-submission review, not by any test: the results screen keyed its chips
+    /// by `reading`, and 35 shipped sentences carry two spellings of one reading. Two stumbles
+    /// that read alike must stay two distinct values, or the ForEach drawing them has duplicate
+    /// ids and renders whichever it likes.
+    @Test("two words that read alike are two stumbles, distinguishable")
+    func sameReadingDifferentSurface() throws {
+        let vocab = VocabStore.shared
+        // A real sentence containing two spellings of one reading.
+        let kana = CharacterSet(charactersIn: "\u{3041}"..."\u{30FF}")
+        let entry = try #require(vocab.entries.first { e in
+            guard e.isTypeableSentence, let tokens = e.exampleTokens else { return false }
+            var byReading: [String: Set<String>] = [:]
+            for token in tokens where token.count >= 2 && !token[1].isEmpty
+                && token[1].unicodeScalars.allSatisfy(kana.contains) {
+                byReading[token[1], default: []].insert(token[0])
+            }
+            return byReading.values.contains { $0.count > 1 }
+        })
+        let tokens = try #require(entry.exampleTokens)
+        var byReading: [String: [Int]] = [:]     // reading -> reading-index of each occurrence
+        var consumed = 0
+        for token in tokens where token.count >= 2 {
+            let reading = token[1].filter { !"。、!?「」・".contains($0) }
+            if reading.isEmpty { continue }
+            byReading[reading, default: []].append(consumed)
+            consumed += reading.count
+        }
+        let collidingIndices = try #require(byReading.values.first { $0.count > 1 })
+
+        var trace = MistakeTrace()
+        var order = 0
+        for index in collidingIndices.prefix(2) {
+            for _ in 0..<2 {          // two refusals each, so both clear minimumRefusals
+                trace.record(MistakeEvent(targetKana: entry.exampleKana!, entryID: entry.id,
+                                          acceptedRomaji: "", rejected: "q",
+                                          expectedNext: [], kanaIndex: index, order: order))
+                order += 1
+            }
+        }
+        let stumbles = StumbledWords.from(trace, vocab: vocab)
+        #expect(stumbles.count == 2)
+        #expect(Set(stumbles).count == 2, "two stumbles collapsed into one identity")
+        // …and this is what the screen used to key on, which is why it had to change.
+        #expect(Set(stumbles.map(\.reading)).count == 1)
+    }
+
     @Test("a word run over the same entry produces nothing")
     func wordRunStaysOut() throws {
         let vocab = VocabStore.shared

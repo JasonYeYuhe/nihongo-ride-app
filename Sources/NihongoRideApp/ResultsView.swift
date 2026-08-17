@@ -219,7 +219,7 @@ struct ResultsView: View {
                         .scaledSystemFont(13, weight: .semibold, design: .rounded)
                         .foregroundStyle(Theme.dim)
                     MenuFlow(spacing: 8, rowSpacing: 8) {
-                        ForEach(stumbles.prefix(6), id: \.reading) { stumble in
+                        ForEach(Array(stumbles.prefix(6)), id: \.self) { stumble in
                             VStack(spacing: 1) {
                                 Text(stumble.reading)
                                     .font(.caption2).foregroundStyle(Theme.dim)

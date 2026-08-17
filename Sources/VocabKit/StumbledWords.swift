@@ -22,7 +22,12 @@ import RomajiKana
 public enum StumbledWords {
 
     /// One word the learner was refused on, and how often.
-    public struct Stumble: Equatable, Sendable {
+    /// Hashable because the results screen identifies chips by the whole value. Keying a
+    /// SwiftUI ForEach by the reading alone collides: 35 shipped sentences contain two
+    /// spellings of one reading (五 and 語 both ご), and in dictation, where particles are
+    /// kept, て beside 手 does it too. Duplicate ForEach ids render unpredictably, which on a
+    /// list whose entire job is naming the right word is the worst place to have them.
+    public struct Stumble: Hashable, Sendable {
         /// The word as written in the sentence — 潜入, not せんにゅう.
         public let surface: String
         /// Its reading, which is what the learner was actually typing.
