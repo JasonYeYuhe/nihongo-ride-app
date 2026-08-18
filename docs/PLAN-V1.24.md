@@ -172,3 +172,101 @@ evidence, not a verdict, and its numbers need re-measuring even when its conclus
   (verified with a probe) and it is not needed, because the executable is importable as is.
 - **Missed by all three:** that importability is not the blocker — arrangement is. The dead-tap
   test compiles, runs, and passes vacuously.
+
+---
+
+# What was actually built, and where the plan was wrong
+
+Written after the work, from measurements taken during it. The plan above is left unedited so
+the difference stays visible.
+
+## §A — the resolution rule is narrower than the plan, and the plan's layer 2 was unsafe
+
+The plan proposed resolving "by surface then by reading". Both halves were measured against
+the shipped corpus before either was built, and both failed:
+
+* **By surface alone**: 1,362 tokens hit an entry whose reading disagrees with the token's.
+  That is *100%* of the surface-only hits, and it is a tautology rather than bad luck — a
+  token whose reading agreed would already have matched the pair. It names 二 for ふた, 来 for
+  き, 時 for じ, 箱 for ばこ.
+* **By reading alone** is worse, and worse in the direction that looks safest. A kana-only
+  token has no written form that could contradict a reading match, so it reads like the safe
+  case. In Japanese a kana-only token is usually a function morpheme, and the reading index
+  always finds some rare noun spelled that way: て→手 2,130 times, し→死 1,202, ます→増す 655,
+  な→名 563, から→空 297. Offering to save 死 because the learner stumbled on the し of します
+  is the ない/無い trap the plan named, with three orders of magnitude more instances — and it
+  is ~19% of all tokens, i.e. the bulk of what layer 2 claimed to buy.
+
+**The rule that shipped: the written form and the reading must both agree.** Measured 58.4% of
+content tokens and 74.1% of tokens containing kanji, with a residue that is almost entirely
+function morphemes — the correct answer for them. It fails safe by construction.
+
+Two consequences the plan did not anticipate:
+
+* **The function-word blocklist is unnecessary.** だ, です, ない, まで, れ are not entry
+  surfaces, so the pair rule already refuses them. Particles are still blocked explicitly,
+  because the corpus contains exactly one entry whose surface is a bare particle — `n3-b612`,
+  で/で, "and, then" — and a misheard で would otherwise be handed a conjunction card.
+* **Layer 1 collapses into the same rule.** Requiring only the surface would name 生/せい for
+  a token read なま whenever a sentence teaching one contains the other. Its net gain over the
+  pair index was 7 tokens out of 41,222, every one a euphonic stem whose lemma is genuinely
+  ambiguous. It survives as the *priority* path — the taught word's id is known rather than
+  inferred, so it stays correct if a future entry makes a pair key ambiguous — but it checks
+  both halves like everything else.
+
+The plan's own numbers reproduced to the digit (83.8% of sentences contain their taught word
+bare; 59.2/22.9/17.9 for surface/reading/none), so the disagreement is about what those
+numbers *permit*, not about the arithmetic.
+
+## §B — the arrangement problem was real, and there was a second one
+
+`executableTarget` is `@testable import`-able, as the plan said, and the test target is four
+lines. `AppModel` reached for `VocabStore.shared` in sixteen places **and handed `.shared` to
+eighteen builders** — thirty-four sites, not sixteen; a model whose own store differs from the
+store its runs are built from is a count-vs-run split by construction.
+
+The plan missed a second blocker, and it is not cosmetic: **`AppModel()` reads the machine's
+real Application Support directory, and `finishGame` writes back to it.** An app test target
+without a redirect would assert against the owner's live, iCloud-synced review schedule and
+log invented rides into it. `supportDirectoryOverride` exists for that, and
+`AppModelTests.sandboxed` is the only way the target constructs a model.
+
+## §C — removing the defaults found two live defects the rule could not see
+
+Production needed none of the ten defaults; the app compiled unchanged. Removing them
+surfaced `ConjugationReviewStore.reviewedCount` (an unfiltered public *property*) and
+`.leeches()` (an unfiltered function), both read by the Stats screen, neither visible to a
+scan that matches `.name(` with a parenthesis. Two more were latent and fixed:
+`weakestFormCards` capped before filtering (the v1.23 weak-words bug verbatim) and
+`reviewedIDs` handed the coach drill a pool that was correct only because its one caller
+happened to filter afterwards.
+
+## What the calibration cost, and what it caught
+
+Every new test was shown to fail before being believed: 9 mutations on the resolution rule, 6
+on the app layer, 3 on the §C gates, 0 undetected. Three findings came from that discipline
+rather than from the code under test:
+
+1. **The mutation harness reported a hole that was its own blind spot** — a `--filter` silently
+   matched no tests and "the expected test did not go red" was indistinguishable from "the
+   expected test never ran". It now runs the whole suite and asserts the test appeared.
+2. **`try!` on `#require` aborts the process**, so one failing app test took twelve unrelated
+   ones down and made the run unreadable.
+3. **The sandbox assertion graded itself** — it read a shared static that a parallel test had
+   also set, so it would have passed even if `makeModel` set nothing. It now asserts against
+   its own directory.
+
+And one that cost about an hour: adding a stored property to `VocabStore` changed the struct's
+layout and left SPM's incremental build inconsistent, producing a SIGSEGV inside an unrelated
+v1.23 test. `rm -rf .build` fixed it. Recorded under Traps in `STATE-2026-08-18.md`.
+
+## Deferred, deliberately
+
+The dictation tension the plan raised is answered by *treatment*, not by filtering: an
+unresolvable chip keeps its place and offers nothing — no star, no gestures, a dimmer stroke.
+The dictation diagnostic v1.23 shipped is intact.
+
+"To review: N" was fixed as the **label**, not the behaviour, on the owner's decision.
+`GameSummary` now carries `persistsSRS` from `RunCompletion` — the same value `finishGame`
+gates the merge on — so a mode check in the view cannot drift. The first wording ("Missed")
+was replaced after the headless render showed it reading as a contradiction beside the chips.
