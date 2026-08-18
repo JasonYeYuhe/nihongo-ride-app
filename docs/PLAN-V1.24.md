@@ -1,120 +1,174 @@
-# v1.24 — do something about the word, and make the app layer checkable
+# v1.24 — do something about the word, and make the app layer arrangeable
 
 v1.23 taught the app to say which word stopped the learner. It says it and stops there: the
 chips are text. Every other place the app names a word it can also act on it — the lapsed-word
 rows on a journey results screen carry a star and an add-to-list sheet — and the one screen
 where the learner has just been shown their own gap is the one screen that offers nothing.
 
-The second half of this release is the debt v1.23 shipped with. Six defects were fixed and one
-of them, the dead tap on the results screen, went to the App Store with no execution evidence
-at all, because the app layer has no test target. That is not a gap in a test suite; it is a
-whole layer nobody can check.
+The second half is the debt v1.23 shipped with: the dead-tap fix went to the App Store with no
+execution evidence, because nothing can arrange `AppModel` into the state that would prove it.
+
+**This plan was rewritten after review.** The first draft was sent to Codex and to Gemini 3.1
+Pro and 3.7 Flash. Both of its central premises were wrong, and the corrections below are the
+ones that survived being re-measured here — two reviewer claims did not. What each got right
+and wrong is recorded at the end, because the pattern is more useful than the verdicts.
 
 ## §A The named word becomes a word you can do something with
 
 A chip should offer what the lapsed-word rows already offer — save it, add it to a list — and
-one thing they do not: ride these words now, which is the reason a learner reads the list at
-all. `GameSession.makeSaved(ids:)` and `makeWeak(ids:)` already build a run from arbitrary ids,
-and `AddToListsSheet` already exists, so none of that is new machinery. One thing is.
+one thing they do not: ride these words now. `GameSession.makeSaved(ids:)` and `makeWeak(ids:)`
+already build a run from arbitrary ids and `AddToListsSheet` already exists, so none of that is
+new machinery. Turning a chip into an id is.
 
-**A stumble is not an entry.** `StumbledWords` produces `(surface, reading)` read out of
-`exTokens`. Saving or drilling needs a `VocabEntry.id`. Measured over all 41,224 content tokens
-in the shipped corpus (particles excluded):
+### Resolution has three layers, and the first one is free
 
-| | tokens | share |
-|---|---|---|
-| resolve by surface (食べ物 → the 食べ物 entry) | 24,389 | 59.2% |
-| resolve by reading only (kana spelling differs) | 9,436 | 22.9% |
-| do not resolve | 7,399 | 17.9% |
+`StumbledWords` produces `(surface, reading)` read out of `exTokens`; saving or drilling needs a
+`VocabEntry.id`.
 
-The 17.9% is not random. Sorted by frequency it is auxiliaries and inflected stems: だ (504),
-です (441), ない (240), れ (240), なっ (134), しまっ (85), あり (84), 食べ (66), まで (63),
-つい (59).
+**Layer 1 — the word the sentence was written to teach.** `StumbledWords.from` already resolves
+`event.entryID` to the owning entry on the line where it validates the event. If the stumbled
+token IS that entry's word, the id is in hand: exact, unambiguous, zero new code. Measured over
+the 6,724 shipped sentences, the taught word appears as a bare token in **83.6%** by surface and
+0.2% more by reading — **83.8%**. In the remaining 16.2% the taught word appears only inflected,
+and the entry id is still known; what is missing is knowing that the stumble fell inside it.
 
-That splits into two different problems and they should not be solved the same way:
+**Layer 2 — other content words, by surface then reading.** Over all 41,224 content tokens
+(particles excluded): **59.2%** resolve by surface, **22.9%** by reading only, **17.9%** do not.
 
-- **だ / です / ない / まで** are function words. They are not vocabulary a learner studies, and
-  offering to add です to a word list is offering nonsense. Treat them like particles are
-  already treated — filtered, not failed.
-- **なっ / しまっ / 食べ / あり** are inflected forms of entries the corpus HAS. 食べ is the
-  ren'yōkei of 食べる, which is an N5 card. These are the ones worth recovering, and recovering
-  them is the actual engineering in this release.
+**Layer 3 — do not build the inverse-conjugation index.** The first draft proposed generating
+every form of every conjugable entry and indexing them. Measured before building, which is the
+only reason it is not in this release: all 7 forms of all 2,317 conjugable entries produce
+16,063 strings, and they cover **270 of the 7,399 unresolved tokens — 3.65%**.
 
-`ConjugationKit` conjugates forward — `Conjugator.conjugate(kana:verbClass:lemma:form:)`. The
-obvious move is to invert it, and the obvious move should be measured before it is built:
-generate every form of every conjugable entry, index the results, and see what fraction of the
-unresolved tokens that index covers. If it is most of them, the inverse index is the answer and
-it is cheap and exact. If it is not, say so and ship the 82% honestly rather than adding a
-deinflection heuristic that is right most of the time — this app has been bitten twice by
-components that regress to the common answer.
+The reason is structural and worth stating so nobody proposes it again. `exTokens` comes from
+Sudachi in `SplitMode.C`, which emits bare morphological stems plus separate auxiliary tokens:
+食べ + た. `Conjugator` emits complete words: たべた. The two never meet. An index built from a
+forward conjugator cannot resolve stems it never generates.
 
-**The rule that governs the UI, and it is not negotiable.** Resolve first, render second. A chip
-that cannot be saved must not show a star; a "ride these" button must count what it will
-actually ride. Showing six words and riding four is the defect class this project has now hit
-fourteen times, wearing a new costume — and it would be the first instance introduced AFTER the
-sweep that was supposed to end it. `ResolvesCallSiteTests` will not catch it: there is no
-`resolves:` keyword here, which is exactly the blind spot the audit's own calibration named.
+### What the 17.9% actually is, and what to do with each part
 
-## §B The app layer stops being unverifiable
+Sorted by frequency: だ (504), です (441), ない (240), れ (240), なっ (134), しまっ (85),
+あり (84), 食べ (66), まで (63), つい (59).
 
-`NihongoRideApp` is an `executableTarget`. Nothing can `@testable import` it, so `AppModel` —
-which owns every screen transition, every start path, and every count the menu shows — has zero
-unit tests. v1.23 fixed a dead tap by adding one line to a guard and shipped it on a reading.
+- **Function words and auxiliary fragments** — だ, です, まで, れ, しまっ. Not vocabulary anyone
+  studies. Filter them, the way particles are already filtered in sentence mode. Note the trap:
+  the auxiliary ない collides with the N5 i-adjective 無い, so a naive index will offer to save
+  an adjective when the learner stumbled on a verb suffix. Filtering by token, not by lookup.
+- **Inflected stems of entries the corpus has** — なっ, あり, 食べ. Layer 1 covers these when
+  they belong to the taught word. When they do not, leave them unresolved rather than guessing:
+  euphonic stems are genuinely ambiguous (かっ is 買う, 勝つ, 刈る and 飼う; いっ is 行く, 言う
+  and 要る), and this app has twice been burned by a component that resolves ambiguity by
+  regressing to the common answer.
 
-The XCUITest scaffolding does work: `StumbledWordsFlowTests` drives a real run in the simulator
-and was calibrated by mutation. But a UI test costs ~30 seconds and a simulator, and cannot
-reach a state like "every word at this level has been typed" without hours of setup.
+### The rule that governs the UI
 
-Two ways out, and this release should pick one on evidence rather than taste:
+**Resolve first, render second, and count what the run will contain.** A chip that cannot be
+saved must not show a star. A "ride these" button must apply *the run builder's own predicates*
+— `resolves`, and `isTypeableSentence` if the drill is a sentence run — because a chip can
+resolve to an id that the builder then drops, and 335 entries have no sentence at all.
 
-1. **Extract the model.** Move `AppModel` (or the part of it that is not SwiftUI) into a library
-   target that a test target can import. Cost: a real refactor of the largest file in the app,
-   touching every view. Benefit: the screen-transition and start-path logic becomes ordinary
-   unit-testable code, and defects like the dead tap become one-line tests.
-2. **Grow the UI suite.** Keep the executable as is and cover the transitions through XCUITest.
-   Cost: slow, and some states are unreachable. Benefit: no refactor risk to a shipping app.
+Showing six words and riding four would be the fifteenth instance of this project's recurring
+defect, and the first one introduced *after* the sweep that was supposed to end it.
+`ResolvesCallSiteTests` will not catch it: there is no `resolves:` keyword on this path, which
+is precisely the blind spot the v1.23 audit's own calibration named.
 
-Before choosing, measure: how much of `AppModel` is SwiftUI-coupled and how much is plain logic?
-Count the members that touch `View`, `@Environment`, or SwiftUI types versus those that do not.
-If the plain-logic share is large, (1) is smaller than it looks and worth the risk. If AppModel
-is SwiftUI all the way down, (1) is a rewrite pretending to be a refactor and (2) is the answer.
+### The dictation tension, which has no obvious answer
 
-The concrete debts this pays off, in order:
+Dictation deliberately keeps particles (`includesParticles: true`) because mishearing に for の
+is a real listening result. But particles are exactly what cannot be saved or drilled. So a
+dictation results screen will hold two kinds of chip — diagnostic-only and actionable — and the
+plan does not get to pretend otherwise. Decide the visual treatment deliberately; do not solve
+it by filtering, which would gut the dictation diagnostic v1.23 shipped.
 
-- The dead tap (`startGame`'s guard now sets `screen = .menu`) has no test.
-- **"To review: N" on a sentence or dictation results screen counts words nothing will review.**
-  Found by the v1.23 audit, deliberately not fixed then, and it belongs here: `persistsSRS` is
-  false for sentence, dictation and the weak-words cram, so `finishGame` merges nothing, while
-  `lapsedEntries` is appended with no `recordsSRS` gate. The tile uses the menu's own icon and
-  wording for a number that means something different. §A will put actionable chips directly
-  beside that tile, which makes the contradiction louder, so it should not survive this release.
+## §B The app layer becomes arrangeable
 
-## §C Not in this release, and why
+The first draft said `AppModel` cannot be tested because `NihongoRideApp` is an
+`executableTarget`, and proposed choosing between extracting a library and growing the XCUITest
+suite. That framing was wrong twice over.
+
+**It is already importable.** On Swift 6.3.3 a test target can `@testable import` an
+`executableTarget`, `@main` and all. Verified against this package, not a toy: adding
+`.testTarget(name: "NihongoRideAppTests", dependencies: ["NihongoRideApp"])` compiles and runs,
+and `AppModel()` constructs inside a test. Four lines of `Package.swift`.
+
+**The real obstacle is arrangement, not access.** A test that constructs `AppModel` and calls
+`startGame()` to prove the dead-tap fix passes — and passes for nothing, because a fresh model
+at N5 has a full pool, so the guard never fires and `screen != .results` is true for the wrong
+reason. `AppModel` reaches for `VocabStore.shared` in 16 places. It can be imported and it
+cannot be arranged, and only the second one is what a test needs.
+
+So the work is:
+
+1. Add the test target. Four lines.
+2. Make the state worth testing reachable — inject the vocabulary store (and whatever else the
+   guards read) rather than reading the global. Scope it to what the untested guards actually
+   need; a general dependency-injection pass on a 1,600-line model is not this release.
+3. Cover, with mutation calibration on each: the empty-pool guard's `screen = .menu` (revert the
+   line, watch the test go red), and the §A count-vs-run contract.
+
+The other debt this pays off: **"To review: N" on a sentence or dictation results screen counts
+words nothing will review.** Found by the v1.23 audit and deliberately left: `persistsSRS` is
+false for sentence, dictation and the weak-words cram, so `finishGame` merges nothing, while
+`lapsedEntries` is appended with no `recordsSRS` gate. §A puts actionable chips directly beside
+that tile, which makes the contradiction louder. Note the knock-on the reviewers caught: a
+sentence results screen currently renders both `reviewList(summary.reviewWords)` and
+`stumbledWords`, so fixing the tile changes that layout — decide what replaces it rather than
+leaving a gap.
+
+## §C Now included, having been wrongly deferred
+
+**Make `resolves:` required in production.** v1.23 kept the `{ _ in true }` default and rejected
+removing it on a count: 57 of 75 call sites are tests that build stores where everything
+resolves. All three reviewers called that wrong, and they are right — the default is the trap
+itself, since omitting the argument compiles clean and silently returns an unfiltered number.
+The compiler is a stronger gate than a source-scanning lint, and the test noise has an answer
+neither the lint nor the default needed: a test-only convenience (`dueCardsForTesting(...)` or
+an extension in a test helper) so production APIs can require the argument.
+
+Keep `ResolvesCallSiteTests` afterwards. It covers what the signature cannot: a *new* counting
+method that never had the parameter.
+
+## §D Not in this release, and why
 
 - **The other 110 entries with no example.** Unchanged from v1.21 and v1.23: the corpus push was
   concluded on purpose, and four releases of spending what already exists have each found more
   than another content batch would.
-- **釣 → 釣り.** Decided and declined three times now. If it comes up again, read the earlier
-  entries before re-deciding.
-- **The dictation exclusion list is voice-calibrated.** Measured, documented in `DictationSafety`,
-  not fixable without pinning a voice — which would refuse a learner the enhanced voice they
+- **釣 → 釣り.** Decided and declined three times. Read the earlier entries before re-deciding.
+- **The dictation exclusion list is voice-calibrated.** Documented in `DictationSafety`, not
+  fixable without pinning a voice — which would refuse a learner the enhanced voice they
   downloaded.
-- **Removing the `resolves:` default.** Considered in v1.23 and rejected on a count: 57 of the 75
-  call sites are tests that build stores where everything resolves. Revisit only if a production
-  site forgets it again despite the lint.
 
 ## Stop rule
 
-Ships when: `swift test` is green; the §A resolution numbers are re-measured against the shipped
-corpus and stated in the release notes' terms (what the learner can and cannot act on);
-`check_vocab_diff` is clean and its self-check passes all 18 probes; the pre-submission
-adversarial review has run and its blockers are fixed; `scripts/launch_gate.sh` passes on the
-signed archive with the Mac signed into iCloud; and — new this release — at least one of §B's
-two paths is in place, with the dead tap covered by an executable test.
+Ships when:
 
-## Before starting, read
+- `swift test` is green, and every new test has been shown to fail: the dead-tap test with the
+  guard's `screen = .menu` reverted, and the §A count-vs-run test with one filter removed. A new
+  test that has never been red is not evidence.
+- The §A resolution numbers are re-measured against the shipped corpus at build time, not quoted
+  from this document.
+- A check exists for `Sources/**/* [0-9]*.swift` — the Finder/iCloud duplicate trap that turned
+  the build red on 2026-08-18 and would have failed a release build silently earlier in the day.
+- `check_vocab_diff` is clean and its self-check passes all 18 probes.
+- The pre-submission adversarial review has run and its blockers are fixed.
+- `scripts/launch_gate.sh` passes on the signed archive with the Mac signed into iCloud.
 
-- `docs/STATE-2026-08-18.md` — especially "The one class of defect this project keeps hitting"
-  (fourteen instances, and what is and is not in place against it) and "Traps this project has
-  already paid for".
-- `scripts/check_vocab_diff.py` — the vocabulary rules, if any data is touched at all.
+## What the review got right and wrong
+
+Worth keeping, because it is the same lesson this project keeps relearning: an outside review is
+evidence, not a verdict, and its numbers need re-measuring even when its conclusions are sound.
+
+- **Right, and decisive:** the inverse-conjugation index is useless (Gemini 3.7 Flash) — though
+  it reported 0.3% coverage and the real figure measured here is 3.65%, an order of magnitude
+  out, with the conclusion unaffected. And `executableTarget` is already test-importable
+  (Codex) — the one claim that collapsed §B from a refactor to four lines, and the only one of
+  the three reviews to get that right.
+- **Right in substance, wrong in detail:** Gemini 3.1 Pro said the sentence's parent entry id is
+  already available via a field called `exMeta`. No such field exists. The substance is correct
+  and simpler than claimed: `event.entryID` is already resolved inside `StumbledWords.from`.
+- **Right, and both Geminis converged on it:** the SwiftUI-coupling measurement §B proposed was
+  measuring a known zero — `AppModel` imports SwiftUI nowhere.
+- **Proposed but unnecessary:** both Geminis recommended extracting a library target. It works
+  (verified with a probe) and it is not needed, because the executable is importable as is.
+- **Missed by all three:** that importability is not the blocker — arrangement is. The dead-tap
+  test compiles, runs, and passes vacuously.
