@@ -162,7 +162,7 @@ struct WeakestCardsTests {
             "fresh": card("fresh", reviews: 0),
             "seen": card("seen", reviews: 3),
         ])
-        #expect(store.reviewedCount == 1)
+        #expect(store.reviewedCount() == 1)
         #expect(store.weakestCards().map(\.id) == ["seen"])
     }
 
@@ -200,7 +200,7 @@ struct WeakestCardsTests {
         ])
         let before = store.cards
         _ = store.weakestCards()
-        _ = store.reviewedCount
+        _ = store.reviewedCount()
         #expect(store.cards == before)
     }
 
@@ -208,7 +208,7 @@ struct WeakestCardsTests {
     func empty() {
         let store = ReviewStore()
         #expect(store.weakestCards().isEmpty)
-        #expect(store.reviewedCount == 0)
+        #expect(store.reviewedCount() == 0)
     }
 }
 

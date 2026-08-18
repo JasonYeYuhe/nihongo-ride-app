@@ -46,7 +46,7 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     ///   the two entries v1.18 retired, is a VERB.
     public func dueCards(on date: Date = Date(), limit: Int = 100,
                          calendar: Calendar = .current,
-                         resolves: (String) -> Bool = { _ in true }) -> [ConjugationSRSCard] {
+                         resolves: (String) -> Bool) -> [ConjugationSRSCard] {
         let cutoff = Self.dueCutoff(for: date, calendar: calendar)
         return cards.values
             .filter { $0.dueDate < cutoff && resolves($0.sourceID) }
@@ -56,7 +56,7 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     }
 
     public func dueCount(on date: Date = Date(), calendar: Calendar = .current,
-                         resolves: (String) -> Bool = { _ in true }) -> Int {
+                         resolves: (String) -> Bool) -> Int {
         let cutoff = Self.dueCutoff(for: date, calendar: calendar)
         return cards.values.filter { $0.dueDate < cutoff && resolves($0.sourceID) }.count
     }
@@ -67,12 +67,27 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     }
 
     /// Cards reviewed at least once (the pool weak-form weighting can rank).
-    public var reviewedCount: Int {
-        cards.values.lazy.filter { $0.totalReviews > 0 }.count
+    ///
+    /// - Parameter resolves: see ``dueCards(on:limit:calendar:resolves:)``. Required rather
+    ///   than defaulted, for the reason v1.24 §C removed every such default: omitting it
+    ///   compiles clean and silently returns a number counted over cards whose verb no longer
+    ///   exists. This one reached the Stats screen as "Forms practiced" while the vocabulary
+    ///   side of the very same screen was already filtered — the two halves disagreed, which
+    ///   is "a fix applied to one call site is not a fix" in its purest form.
+    public func reviewedCount(resolves: (String) -> Bool) -> Int {
+        cards.values.filter { $0.totalReviews > 0 && resolves($0.sourceID) }.count
     }
 
-    public func leeches() -> [ConjugationSRSCard] {
-        cards.values.filter(\.isLeech).sorted { $0.lapses > $1.lapses }
+    /// Cards the learner keeps failing.
+    ///
+    /// - Parameter resolves: as above, and here it is not merely a count being inflated. A
+    ///   leech is a promise of work: the Stats screen says "N tough forms" and the learner is
+    ///   meant to be able to drill N down. A card whose verb has been withdrawn can never be
+    ///   reviewed away, so it is a leech that no amount of practice can retire — and 言う/ゆう,
+    ///   one of the two entries v1.18 retired, is a verb.
+    public func leeches(resolves: (String) -> Bool) -> [ConjugationSRSCard] {
+        cards.values.filter { $0.isLeech && resolves($0.sourceID) }
+            .sorted { $0.lapses > $1.lapses }
     }
 
     /// The user's weakest *reviewed* (verb, form) cards, worst-first, capped at `limit`.
@@ -80,9 +95,16 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     /// lapses, higher mistake-rate; id breaks ties for determinism. Only cards with
     /// `totalReviews > 0`. **Pure read — never mutates the store** (weak-form weighting
     /// only ranks; SRS is written solely via ``record(promptID:outcome:on:)``).
-    public func weakestFormCards(limit: Int = 100) -> [ConjugationSRSCard] {
+    /// - Parameter resolves: applied BEFORE `limit`, exactly as in `ReviewStore.weakestCards`.
+    ///   Capping first and filtering after is the v1.23 weak-words bug verbatim: this sort puts
+    ///   leeches at the FRONT, and a withdrawn verb's card is a permanent leech, so the unusable
+    ///   ids would occupy the first places of the cap and the drill would come back short.
+    ///   Nothing calls this yet — which is why it is worth fixing now, while the shape is a
+    ///   latent copy of a bug rather than a live one.
+    public func weakestFormCards(limit: Int = 100,
+                                 resolves: (String) -> Bool) -> [ConjugationSRSCard] {
         cards.values
-            .filter { $0.totalReviews > 0 }
+            .filter { $0.totalReviews > 0 && resolves($0.sourceID) }
             .sorted { a, b in
                 if a.isLeech != b.isLeech { return a.isLeech }
                 if a.easeFactor != b.easeFactor { return a.easeFactor < b.easeFactor }
@@ -133,7 +155,7 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     /// days out are omitted. See `ReviewStore.dueByDay` for the full rationale (why a
     /// histogram, not a relative forecast). DST-safe via `dateComponents([.day])`.
     public func dueByDay(asOf date: Date = Date(), horizon: Int, calendar: Calendar = .current,
-                         resolves: (String) -> Bool = { _ in true }) -> [Int] {
+                         resolves: (String) -> Bool) -> [Int] {
         precondition(horizon > 0, "horizon must be positive")
         let start = calendar.startOfDay(for: date)
         var hist = [Int](repeating: 0, count: horizon)
@@ -151,7 +173,7 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     /// Disjoint: `today` includes anything overdue, `tomorrow` = next day, `thisWeek` = the 5 days
     /// after that.
     public func dueForecast(asOf date: Date = Date(), calendar: Calendar = .current,
-                            resolves: (String) -> Bool = { _ in true }) -> Forecast {
+                            resolves: (String) -> Bool) -> Forecast {
         let start = calendar.startOfDay(for: date)
         guard let endToday = calendar.date(byAdding: .day, value: 1, to: start),
               let endTomorrow = calendar.date(byAdding: .day, value: 2, to: start),

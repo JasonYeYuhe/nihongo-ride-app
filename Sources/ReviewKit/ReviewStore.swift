@@ -58,7 +58,7 @@ public struct ReviewStore: Codable, Sendable {
     ///   exactly as before.
     public func dueCards(on date: Date = Date(), limit: Int = 100,
                          calendar: Calendar = .current,
-                         resolves: (String) -> Bool = { _ in true }) -> [SRSCard] {
+                         resolves: (String) -> Bool) -> [SRSCard] {
         let cutoff = Self.dueCutoff(for: date, calendar: calendar)
         return cards.values
             .filter { $0.dueDate < cutoff && resolves($0.id) }
@@ -71,7 +71,7 @@ public struct ReviewStore: Codable, Sendable {
     ///   daily reminder are built from this number, so it must not promise cards a run cannot
     ///   produce.
     public func dueCount(on date: Date = Date(), calendar: Calendar = .current,
-                         resolves: (String) -> Bool = { _ in true }) -> Int {
+                         resolves: (String) -> Bool) -> Int {
         let cutoff = Self.dueCutoff(for: date, calendar: calendar)
         // Not `.lazy` — the closure is non-escaping, so the filter must run now.
         return cards.values.filter { $0.dueDate < cutoff && resolves($0.id) }.count
@@ -84,7 +84,10 @@ public struct ReviewStore: Codable, Sendable {
         calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: date)) ?? date
     }
 
-    public func leeches() -> [SRSCard] {
+    /// - Parameter resolves: required for the same reason as everywhere else — a withdrawn
+    ///   entry's card can never be reviewed away, so it is a leech forever. Nothing in the app
+    ///   reads this yet; it takes the argument so that whatever reads it next cannot forget.
+    public func leeches(resolves: (String) -> Bool) -> [SRSCard] {
         cards.values.filter(\.isLeech).sorted { $0.lapses > $1.lapses }
     }
 
@@ -97,20 +100,19 @@ public struct ReviewStore: Codable, Sendable {
     ///   offered a cram of N and handed N-1. It is the same defect v1.22 fixed in the badge,
     ///   the widget, the reminder and the forecast, in the one counting path that was not
     ///   part of that sweep. (Found reviewing that sweep.)
-    public func reviewedCount(resolves: (String) -> Bool = { _ in true }) -> Int {
+    public func reviewedCount(resolves: (String) -> Bool) -> Int {
         cards.values.filter { $0.totalReviews > 0 && resolves($0.id) }.count
-    }
-
-    @available(*, deprecated, message: "pass resolves: so the count matches the run")
-    public var reviewedCount: Int {
-        cards.values.lazy.filter { $0.totalReviews > 0 }.count
     }
 
     /// Ids of cards reviewed at least once, sorted for a deterministic drill order.
     /// The pool a coaching drill draws from: words the learner already knows, so the drill
     /// isolates the typing problem instead of testing vocabulary at the same time. (v1.15.)
-    public var reviewedIDs: [String] {
-        cards.values.lazy.filter { $0.totalReviews > 0 }.map(\.id).sorted()
+    /// - Parameter resolves: the drill builds its prompts from these ids, so a withdrawn entry
+    ///   here is an id the drill will drop — the count/run split again, one step earlier. The
+    ///   only caller happens to filter afterwards; requiring the argument means the next one
+    ///   does not have to happen to.
+    public func reviewedIDs(resolves: (String) -> Bool) -> [String] {
+        cards.values.filter { $0.totalReviews > 0 && resolves($0.id) }.map(\.id).sorted()
     }
 
     /// The user's weakest *reviewed* cards, worst-first, capped at `limit`. Ranking:
@@ -126,7 +128,7 @@ public struct ReviewStore: Codable, Sendable {
     ///   is gone can never be reviewed away, so it is a permanent leech), so capping first and
     ///   filtering after hands back a run shorter than the menu promised. (v1.23 §B.)
     public func weakestCards(limit: Int = 100,
-                             resolves: (String) -> Bool = { _ in true }) -> [SRSCard] {
+                             resolves: (String) -> Bool) -> [SRSCard] {
         cards.values
             .filter { $0.totalReviews > 0 && resolves($0.id) }
             .sorted { a, b in

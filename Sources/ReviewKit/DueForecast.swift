@@ -42,7 +42,7 @@ extension ReviewStore {
     ///   no way to ever clear them. (v1.21 §C, found while checking whether a retirement was
     ///   safe to make.)
     public func dueByDay(asOf date: Date = Date(), horizon: Int, calendar: Calendar = .current,
-                         resolves: (String) -> Bool = { _ in true }) -> [Int] {
+                         resolves: (String) -> Bool) -> [Int] {
         precondition(horizon > 0, "horizon must be positive")
         let start = calendar.startOfDay(for: date)
         var hist = [Int](repeating: 0, count: horizon)
@@ -59,7 +59,7 @@ extension ReviewStore {
     ///
     /// Takes the same `resolves` check as `dueByDay`, for the same reason.
     public func dueForecast(asOf date: Date = Date(), calendar: Calendar = .current,
-                            resolves: (String) -> Bool = { _ in true }) -> DueForecast {
+                            resolves: (String) -> Bool) -> DueForecast {
         let startOfToday = calendar.startOfDay(for: date)
         guard let endOfToday = calendar.date(byAdding: .day, value: 1, to: startOfToday),
               let endOfTomorrow = calendar.date(byAdding: .day, value: 2, to: startOfToday),

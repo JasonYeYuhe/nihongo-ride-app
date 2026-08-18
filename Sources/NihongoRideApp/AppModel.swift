@@ -655,10 +655,15 @@ final class AppModel {
     /// Already-reviewed on purpose: a drill is meant to isolate the keyboard problem, and an
     /// unfamiliar word adds a second reason to fail on top of the one being fixed.
     func coachDrillIDs(for pattern: TypingPattern) -> [String] {
-        let known = reviewStore.reviewedIDs.compactMap { id -> (id: String, kana: String)? in
-            guard let e = vocab.entry(id: id) else { return nil }
-            return (id: e.id, kana: e.kana)
-        }
+        // The `resolves:` and the `entry(id:)` below are the same question asked twice, and
+        // that is deliberate rather than redundant: the store filters so the POOL is right, and
+        // this maps because the drill needs the kana. Before v1.24 §C only the second existed,
+        // so the pool was correct by accident of the caller rather than by the API.
+        let known = reviewStore.reviewedIDs(resolves: vocab.resolvesID)
+            .compactMap { id -> (id: String, kana: String)? in
+                guard let e = vocab.entry(id: id) else { return nil }
+                return (id: e.id, kana: e.kana)
+            }
         return CoachContent.drillCandidates(for: pattern, from: known)
     }
 
@@ -857,8 +862,18 @@ final class AppModel {
     var conjugationDueForecast: ConjugationReviewStore.Forecast {
         conjugationReviewStore.dueForecast(resolves: vocab.resolvesID)
     }
-    var conjugationReviewedCount: Int { conjugationReviewStore.reviewedCount }
-    var conjugationLeechCount: Int { conjugationReviewStore.leeches().count }
+    // Both filtered on the verb still existing, matching the vocabulary side of the same
+    // Stats card, which has been filtered since v1.21. Unfiltered, "Forms practiced" counted
+    // drills of withdrawn verbs and "Tough forms" promised the learner work they could never
+    // finish — a leech whose verb is gone can never be reviewed away. Found in v1.24 §C by
+    // removing the `resolves:` defaults: neither of these is a call with parentheses, so
+    // `ResolvesCallSiteTests` never saw them. (Fifteenth instance of the same defect.)
+    var conjugationReviewedCount: Int {
+        conjugationReviewStore.reviewedCount(resolves: vocab.resolvesID)
+    }
+    var conjugationLeechCount: Int {
+        conjugationReviewStore.leeches(resolves: vocab.resolvesID).count
+    }
 
     /// Capture-only: seed demo journal + conjugation data so the Stats screenshot has content
     /// (the real journal is empty in a fresh render). No-op outside capture mode, where all file
