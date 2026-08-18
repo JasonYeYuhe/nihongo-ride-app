@@ -209,9 +209,14 @@ struct ResultsView: View {
             // with an actual rule. Naming it here as well would relabel a spelling slip as a
             // word they do not know. Heard rather than seen, missing it is a listening result
             // and worth saying.
-            let stumbles = StumbledWords.from(summary.mistakes,
+            let stumbles = StumbledWords.from(summary.mistakes, vocab: model.vocab,
                                               includesParticles: summary.mode == .dictation)
-            if !stumbles.isEmpty {
+            // Resolve first, render second, and count what the run will contain. The displayed
+            // slice is computed ONCE and both the chips and the ride button are derived from
+            // it, so the screen cannot promise a word it will not ride. (v1.24 §A.)
+            let displayed = Array(stumbles.prefix(6))
+            let rideable = model.rideableStumbles(displayed)
+            if !displayed.isEmpty {
                 VStack(spacing: 6) {
                     Text(summary.mode == .dictation
                          ? (zh ? "这些词没听出来" : "The words you could not catch")
@@ -219,27 +224,107 @@ struct ResultsView: View {
                         .scaledSystemFont(13, weight: .semibold, design: .rounded)
                         .foregroundStyle(Theme.dim)
                     MenuFlow(spacing: 8, rowSpacing: 8) {
-                        ForEach(Array(stumbles.prefix(6)), id: \.self) { stumble in
-                            VStack(spacing: 1) {
-                                Text(stumble.reading)
-                                    .font(.caption2).foregroundStyle(Theme.dim)
-                                Text(stumble.surface)
-                                    .scaledSystemFont(15, weight: .semibold)
-                                    .foregroundStyle(.white)
-                            }
-                            .padding(.horizontal, 12).padding(.vertical, 6)
-                            .background(Theme.card, in: RoundedRectangle(cornerRadius: 10))
-                            .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Theme.cardStroke))
-                            .fixedSize()
-                            .accessibilityElement(children: .combine)
-                            .accessibilityLabel("\(stumble.surface), \(stumble.reading)")
+                        ForEach(displayed, id: \.self) { stumble in
+                            stumbleChip(stumble)
                         }
                     }
                     .frame(maxWidth: 460)
+                    if !rideable.isEmpty {
+                        rideTheseButton(displayed, count: rideable.count)
+                    }
                 }
                 .accessibilityIdentifier("stumbledWords")
             }
         }
+    }
+
+    /// One stumbled word, actionable when the app can say which word it is.
+    ///
+    /// Two kinds of chip on one screen, which the plan chose deliberately rather than papering
+    /// over. Dictation keeps particles because mishearing に for の is a real listening result,
+    /// and a particle is exactly the thing that cannot be saved or drilled; filtering those out
+    /// would gut the diagnostic v1.23 shipped. So an unresolvable chip stays, reads the same,
+    /// and simply offers nothing — no star, no gestures, and a dimmer border to say why without
+    /// a sentence of explanation.
+    ///
+    /// The star and the long-press mirror the lapsed-word rows above exactly (tap = save,
+    /// long-press = add to lists), because a learner who has used one should not have to
+    /// discover the other.
+    @ViewBuilder
+    private func stumbleChip(_ stumble: StumbledWords.Stumble) -> some View {
+        let saved = stumble.entryID.map(model.isSaved) ?? false
+        VStack(spacing: 1) {
+            Text(stumble.reading)
+                .font(.caption2).foregroundStyle(Theme.dim)
+            HStack(spacing: 4) {
+                if stumble.entryID != nil {
+                    Image(systemName: saved ? "star.fill" : "star")
+                        .scaledSystemFont(9)
+                        .foregroundStyle(saved ? Theme.gold : Theme.dim)
+                }
+                Text(stumble.surface)
+                    .scaledSystemFont(15, weight: .semibold)
+                    .foregroundStyle(.white)
+            }
+        }
+        .padding(.horizontal, 12).padding(.vertical, 6)
+        .background(saved ? Theme.gold.opacity(0.14) : Theme.card,
+                    in: RoundedRectangle(cornerRadius: 10))
+        .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(
+            saved ? Theme.gold.opacity(0.5)
+                  : (stumble.entryID == nil ? Theme.cardStroke.opacity(0.4) : Theme.cardStroke)))
+        .fixedSize()
+        .contentShape(Rectangle())
+        // Composed tap + long-press rather than Button + simultaneousGesture, which lets a
+        // long-press also toggle the ★ (the bug the review list already documents).
+        .onTapGesture { if let id = stumble.entryID { model.toggleSaved(id) } }
+        .onLongPressGesture { if let id = stumble.entryID { addToListsTarget = id } }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel(for: stumble, saved: saved))
+        .accessibilityAddTraits(stumble.entryID == nil ? [] : .isButton)
+        .accessibilityActions {
+            if let id = stumble.entryID {
+                Button(zh ? "加入词单" : "Add to lists") { addToListsTarget = id }
+            }
+        }
+    }
+
+    /// VoiceOver has to distinguish the two kinds of chip, because visually the difference is a
+    /// missing star and a paler stroke — neither of which it can convey.
+    private func accessibilityLabel(for stumble: StumbledWords.Stumble, saved: Bool) -> String {
+        let word = "\(stumble.surface), \(stumble.reading)"
+        guard stumble.entryID != nil else { return word }
+        if saved { return zh ? "\(word),已收藏" : "\(word), saved" }
+        return zh ? "\(word),收藏" : "Save \(word)"
+    }
+
+    /// Rides the words this screen just named, as a word run that records no SRS.
+    ///
+    /// The number is `rideableIDs`' own count, not `displayed.count` and not a fresh filter
+    /// written here: showing six words and riding four would be the fifteenth instance of this
+    /// project's recurring defect, and the first one introduced *after* the sweep meant to end
+    /// it. `ResolvesCallSiteTests` cannot catch it — there is no `resolves:` keyword on this
+    /// path — which is precisely the blind spot the v1.23 audit's own calibration named.
+    private func rideTheseButton(_ displayed: [StumbledWords.Stumble], count: Int) -> some View {
+        Button { model.startStumbledWords(displayed) } label: {
+            HStack(spacing: 6) {
+                Image(systemName: "bicycle").accessibilityHidden(true)
+                Text(zh ? "骑这 \(count) 个词" : rideLabel(count))
+                    .scaledSystemFont(13, weight: .semibold, design: .rounded)
+            }
+            .foregroundStyle(.white)
+            .padding(.horizontal, 14).padding(.vertical, 8)
+            .background(Theme.accent, in: Capsule())
+        }
+        .buttonStyle(.plain)
+        .padding(.top, 2)
+        .accessibilityIdentifier("rideStumbledButton")
+        .accessibilityHint(zh ? "只练这些词,不计入复习进度"
+                              : "Practise just these words. Nothing is added to your review schedule.")
+    }
+
+    private func rideLabel(_ count: Int) -> String {
+        count == 1 ? "Ride this word" : "Ride these \(count) words"
     }
 
     /// Six stat cards: 3×2 rows on roomy screens, a 2-column grid on iPhone.
@@ -268,8 +353,16 @@ struct ResultsView: View {
              value: "\(summary.wordsCompleted)", label: zh ? "完成词数" : "Words", spoken: nil),
             (icon: "scope", tint: Color.white,
              value: "\(Int(summary.accuracy * 100))%", label: zh ? "准确率" : "Accuracy", spoken: nil),
-            (icon: "brain.head.profile", tint: Theme.accent,
-             value: "\(summary.reviewWords.count)", label: zh ? "待复习" : "To review", spoken: nil),
+            // "To review" is a promise, and on a run that persists no SRS it is a false one:
+            // sentence, dictation and the weak-words cram all merge nothing into the schedule,
+            // so nothing here will ever come back for review. The words are still worth naming
+            // — they are what went wrong — so the tile keeps them and stops promising.
+            // (v1.24 §B; the fix is the label, not the behaviour.)
+            (icon: summary.persistsSRS ? "brain.head.profile" : "exclamationmark.triangle.fill",
+             tint: Theme.accent,
+             value: "\(summary.reviewWords.count)",
+             label: summary.persistsSRS ? (zh ? "待复习" : "To review")
+                                        : (zh ? "失误" : "Missed"), spoken: nil),
         ]
         // Width-driven, not idiom-driven — see ConjugationResultsView.scoreGrid for the bug
         // this replaces (iPad portrait treated as roomy, tiles off both screen edges).
@@ -357,8 +450,13 @@ struct ResultsView: View {
     }
 
     private func reviewList(_ words: [VocabEntry]) -> some View {
-        VStack(spacing: 8) {
-            Text(zh ? "复习这些词(点 ★ 收藏):" : "Review these (tap ★ to save):")
+        // Same correction as the tile above, for the same reason: on a run that persists no
+        // SRS these words are not queued for review, and "review these" says they are. Saving
+        // them still works, and is now the only thing that will actually bring them back.
+        let persists = model.lastSummary?.persistsSRS ?? true
+        return VStack(spacing: 8) {
+            Text(persists ? (zh ? "复习这些词(点 ★ 收藏):" : "Review these (tap ★ to save):")
+                          : (zh ? "这些让你吃力(点 ★ 收藏):" : "These gave you trouble (tap ★ to save):"))
                 .font(.caption).foregroundStyle(Theme.dim)
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 116), spacing: 8)], spacing: 8) {
                 ForEach(words.prefix(12)) { word in

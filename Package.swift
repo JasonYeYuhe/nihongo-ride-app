@@ -144,5 +144,16 @@ let package = Package(
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]
         ),
+
+        // MARK: The app layer, finally arrangeable (v1.24 §B).
+        //
+        // An `executableTarget` IS `@testable import`-able — `@main` and all — so this costs
+        // four lines rather than the library extraction three reviewers proposed. Importing was
+        // never the obstacle: ARRANGING was. `AppModel` reached for `VocabStore.shared` in
+        // sixteen places, so a test could construct it and could not put it in the state worth
+        // testing — a fresh model at N5 has a full pool, so a dead-tap test would exercise the
+        // empty-pool guard by never reaching it and pass for the wrong reason. `init(vocab:)`
+        // is what makes this target worth having.
+        .testTarget(name: "NihongoRideAppTests", dependencies: ["NihongoRideApp"]),
     ]
 )

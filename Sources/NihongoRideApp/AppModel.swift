@@ -35,6 +35,19 @@ struct GameSummary: Equatable {
     /// that needed twelve replays and one that needed none score identically, and that is
     /// exactly why the number is reported separately instead of folded into the score.
     var replays: Int
+    /// Whether this run's outcomes were merged into the SM-2 schedule.
+    ///
+    /// Carried on the summary so the results screen can ask the question `finishGame` already
+    /// answered instead of re-deriving it from the mode. It is false for sentence, dictation
+    /// and the weak-words cram, and the screen was calling `reviewWords` "To review" in all
+    /// three — a tile counting words that nothing would ever review. Found by the v1.23 audit
+    /// and left; §A puts actionable chips directly beside it, which makes the contradiction
+    /// louder. (v1.24 §B.)
+    ///
+    /// Derived from `RunCompletion`, the same value `finishGame` gates the SRS merge on, so the
+    /// label and the behaviour cannot drift apart — which is what a mode check in the view
+    /// would have allowed the moment a fourth non-persisting mode appeared.
+    var persistsSRS: Bool
 
     init(from session: GameSession) {
         score = session.score
@@ -44,6 +57,8 @@ struct GameSummary: Equatable {
         distanceMeters = session.distanceMeters
         mode = session.mode
         replays = session.replays
+        persistsSRS = RunCompletion(mode: session.mode,
+                                    recordsSRS: session.config.recordsSRS).persistsSRS
         var seen = Set<String>()
         reviewWords = session.lapsedEntries.filter { seen.insert($0.id).inserted }
         mistakes = session.mistakes
@@ -98,6 +113,10 @@ final class AppModel {
     /// otherwise the dying screen (still hit-testable for ~0.4s) swallows taps
     /// meant for the new screen's buttons.
     private(set) var navCount = 0
+
+    /// The vocabulary this model reads. Injected rather than reached for, so a test can hand it
+    /// a store it arranged. (v1.24 §B — see `init(vocab:)`.)
+    let vocab: VocabStore
 
     /// The last start attempt found nothing to ride — every word at this level is already
     /// scheduled beyond today. Shown on the menu instead of a fake arrival screen. (v1.15 §D.)
@@ -252,7 +271,12 @@ final class AppModel {
     /// Until the initial load is applied, skip per-field persistence.
     private var settingsLoaded = false
 
-    init() {
+    /// - Parameter vocab: the vocabulary to read. Defaults to the shared store, so every
+    ///   existing call site is unchanged; a test passes one it arranged, which is the whole
+    ///   point of the parameter — see `startGame`'s empty-pool guard, which cannot be reached
+    ///   at all from a model whose store is full. (v1.24 §B.)
+    init(vocab: VocabStore = .shared) {
+        self.vocab = vocab
         storeURL = Self.supportFileURL("review.json")
         conjugationReviewURL = Self.supportFileURL("conjugation-review.json")
         journalURL = Self.supportFileURL("history.json")
@@ -449,10 +473,10 @@ final class AppModel {
         let snapshot = WidgetSnapshot(
             generatedAt: now,
             vocabDueByDay: reviewStore.dueByDay(asOf: now, horizon: h,
-                                                resolves: VocabStore.shared.resolvesID),
+                                                resolves: vocab.resolvesID),
             conjugationDueByDay: conjugationReviewStore.dueByDay(
                 asOf: now, horizon: h,
-                resolves: VocabStore.shared.resolvesID),
+                resolves: vocab.resolvesID),
             streakByDay: streakByDay,
             lifetimeWords: lifetimeWords,
             languageCode: languageCode)
@@ -571,12 +595,12 @@ final class AppModel {
             // coach screen can be looked at. It drills words with っ and types each one's own
             // correct romaji with ONE half of the doubled consonant removed — which is
             // precisely the dropped-sokuon mistake, derived from the data rather than faked.
-            let sokuonIDs = VocabStore.shared.entries
+            let sokuonIDs = vocab.entries
                 .filter { $0.kana.contains("っ") }.prefix(3).map(\.id)
             var config = GameSession.Config()
             config.languageCode = languageCode
             config.mode = .journey
-            session = GameSession.makeSaved(ids: Array(sokuonIDs), vocab: .shared,
+            session = GameSession.makeSaved(ids: Array(sokuonIDs), vocab: vocab,
                                             review: reviewStore, config: config)
             runClock = RunClock(startedAt: Date())
             while let romaji = session?.currentRomaji, session?.isFinished == false {
@@ -632,7 +656,7 @@ final class AppModel {
     /// unfamiliar word adds a second reason to fail on top of the one being fixed.
     func coachDrillIDs(for pattern: TypingPattern) -> [String] {
         let known = reviewStore.reviewedIDs.compactMap { id -> (id: String, kana: String)? in
-            guard let e = VocabStore.shared.entry(id: id) else { return nil }
+            guard let e = vocab.entry(id: id) else { return nil }
             return (id: e.id, kana: e.kana)
         }
         return CoachContent.drillCandidates(for: pattern, from: known)
@@ -673,7 +697,7 @@ final class AppModel {
             let ids = coachDrillIDs(for: pattern)
             guard !ids.isEmpty else { return }
             config.mode = .journey
-            built = GameSession.makeSaved(ids: ids, vocab: .shared, review: reviewStore, config: config)
+            built = GameSession.makeSaved(ids: ids, vocab: vocab, review: reviewStore, config: config)
         }
         guard !built.isFinished else { return }
         session = built
@@ -831,7 +855,7 @@ final class AppModel {
     var statsHasRides: Bool { !journal.isEmpty }
     /// Near-term conjugation due buckets (surfaces the v1.8 conjugation SRS on the Stats screen).
     var conjugationDueForecast: ConjugationReviewStore.Forecast {
-        conjugationReviewStore.dueForecast(resolves: VocabStore.shared.resolvesID)
+        conjugationReviewStore.dueForecast(resolves: vocab.resolvesID)
     }
     var conjugationReviewedCount: Int { conjugationReviewStore.reviewedCount }
     var conjugationLeechCount: Int { conjugationReviewStore.leeches().count }
@@ -867,7 +891,7 @@ final class AppModel {
     /// from this, and a run drops unresolvable ids, so counting them here would promise work
     /// the app cannot hand over.
     var dueReviewCount: Int {
-        reviewStore.dueCount(resolves: VocabStore.shared.resolvesID)
+        reviewStore.dueCount(resolves: vocab.resolvesID)
     }
     var totalWordsSeen: Int { reviewStore.count }
     /// Words in the pool the next ride will actually draw new words from — i.e. the
@@ -879,8 +903,8 @@ final class AppModel {
     /// advertised at 7074 words when N5 has 646, and the number never moved when you
     /// switched level.
     var wordsAvailableAtLevel: Int {
-        guard let level = selectedLevel else { return VocabStore.shared.entries.count }
-        return VocabStore.shared.entries(level: level).count
+        guard let level = selectedLevel else { return vocab.entries.count }
+        return vocab.entries(level: level).count
     }
 
     /// Label for the pool above — the selected level, or "mixed", worded to match the
@@ -939,7 +963,7 @@ final class AppModel {
     /// non-empty yet have 0 playable words — the play button must reflect that
     /// instead of being a silent dead tap.
     func playableCount(in list: WordList) -> Int {
-        list.ids.reduce(0) { $0 + (VocabStore.shared.entry(id: $1) != nil ? 1 : 0) }
+        list.ids.reduce(0) { $0 + (vocab.entry(id: $1) != nil ? 1 : 0) }
     }
 
     /// How many of a list's words dictation can actually use — smaller again than
@@ -947,7 +971,7 @@ final class AppModel {
     /// measurement. Three numbers describe a list ("20 words, 14 sentences, 11 you can
     /// hear") and only this one describes the run the learner is about to get.
     func dictationCount(in list: WordList) -> Int {
-        GameSession.dictationEntries(ids: list.ids, vocab: .shared).count
+        GameSession.dictationEntries(ids: list.ids, vocab: vocab).count
     }
 
     /// Starts a DICTATION run drawn from a list's words (PLAN-V1.22 §A).
@@ -958,7 +982,7 @@ final class AppModel {
         config.assistance = .afterStruggle   // see startGame: dictation always keeps a way out
         config.newWordCount = Self.sentenceRunSize
         config.reviewWordCount = 0
-        let built = GameSession.makeDictation(ids: list.ids, vocab: .shared, config: config)
+        let built = GameSession.makeDictation(ids: list.ids, vocab: vocab, config: config)
         guard !built.isFinished else { return }
         beginDictationAudio()
         startSentenceRun(built)
@@ -966,7 +990,7 @@ final class AppModel {
 
     /// How many due review words could carry a dictation prompt right now (menu gating).
     var dueDictationCount: Int {
-        GameSession.dueDictationCount(review: reviewStore, vocab: .shared)
+        GameSession.dueDictationCount(review: reviewStore, vocab: vocab)
     }
 
     /// Starts a DICTATION run over the words whose review is due.
@@ -977,7 +1001,7 @@ final class AppModel {
         config.assistance = .afterStruggle
         config.newWordCount = Self.sentenceRunSize
         config.reviewWordCount = 0
-        let built = GameSession.makeDictation(due: reviewStore, vocab: .shared, config: config)
+        let built = GameSession.makeDictation(due: reviewStore, vocab: vocab, config: config)
         guard !built.isFinished else { return }
         beginDictationAudio()
         startSentenceRun(built)
@@ -988,7 +1012,7 @@ final class AppModel {
     /// still have too few sentences to make a sentence run, so the sentence launcher needs
     /// its own count rather than reusing the word one. (PLAN-V1.21 §B.)
     func sentenceCount(in list: WordList) -> Int {
-        GameSession.sentenceEntries(ids: list.ids, vocab: .shared).count
+        GameSession.sentenceEntries(ids: list.ids, vocab: vocab).count
     }
 
     /// Toggles a word in the default ★ list and persists. All word-list writes run
@@ -1135,14 +1159,14 @@ final class AppModel {
     /// player on a blank, already-finished game screen (v1.4 regression, per list).
     func startListGame(_ listID: String) {
         guard let list = wordLists.list(id: listID), !list.deleted else { return }
-        let resolvable = list.ids.filter(VocabStore.shared.resolvesID)
+        let resolvable = list.ids.filter(vocab.resolvesID)
         guard !resolvable.isEmpty else { return }
         var config = GameSession.Config()
         config.languageCode = languageCode
         config.assistance = assistance
         config.mode = .journey
         session = GameSession.makeSaved(
-            ids: resolvable, vocab: .shared, review: reviewStore, config: config)
+            ids: resolvable, vocab: vocab, review: reviewStore, config: config)
         conjugationSession = nil   // defensive: a list/saved run must not route to the conjugation screen
         runClock = RunClock(startedAt: Date())
         resolveRideStage()
@@ -1160,14 +1184,14 @@ final class AppModel {
         config.assistance = assistance
         config.newWordCount = Self.sentenceRunSize
         config.reviewWordCount = 0
-        let built = GameSession.makeSentence(ids: list.ids, vocab: .shared, config: config)
+        let built = GameSession.makeSentence(ids: list.ids, vocab: vocab, config: config)
         guard !built.isFinished else { return }
         startSentenceRun(built)
     }
 
     /// How many due review words could carry a sentence right now (menu gating).
     var dueSentenceCount: Int {
-        GameSession.dueSentenceCount(review: reviewStore, vocab: .shared)
+        GameSession.dueSentenceCount(review: reviewStore, vocab: vocab)
     }
 
     /// Starts a SENTENCE run over the words whose review is due, so the run doubles as
@@ -1179,7 +1203,7 @@ final class AppModel {
         config.assistance = assistance
         config.newWordCount = Self.sentenceRunSize
         config.reviewWordCount = 0
-        let built = GameSession.makeSentence(due: reviewStore, vocab: .shared, config: config)
+        let built = GameSession.makeSentence(due: reviewStore, vocab: vocab, config: config)
         guard !built.isFinished else { return }
         startSentenceRun(built)
     }
@@ -1202,8 +1226,8 @@ final class AppModel {
     /// differently from their own `exKana` are withheld (see `DictationSafety`).
     var dictationPoolCount: Int {
         let excluded = DictationSafety.excludedIDs
-        let pool = selectedLevel.map { VocabStore.shared.entries(level: $0) }
-            ?? VocabStore.shared.entries
+        let pool = selectedLevel.map { vocab.entries(level: $0) }
+            ?? vocab.entries
         return pool.lazy.filter { $0.isTypeableSentence && !excluded.contains($0.id) }.count
     }
 
@@ -1319,13 +1343,13 @@ final class AppModel {
         let built: GameSession
         if selectedMode == .dictation {
             guard dictationAvailable else { return }
-            built = GameSession.makeDictation(vocab: .shared, config: config)
+            built = GameSession.makeDictation(vocab: vocab, config: config)
         } else if selectedMode == .sentence {
-            built = GameSession.makeSentence(vocab: .shared, config: config)
+            built = GameSession.makeSentence(vocab: vocab, config: config)
         } else if selectedMode == .practice && practicePassages {
             built = GameSession.makePractice(level: practicePassageLevel, config: config)
         } else {
-            built = GameSession.make(config: config, vocab: .shared, review: reviewStore)
+            built = GameSession.make(config: config, vocab: vocab, review: reviewStore)
         }
         // Build-then-guard, like every sibling start path (startListGame, the weak-words
         // cram, the conjugation drill). This one had no guard, and Time Attack sets
@@ -1363,7 +1387,7 @@ final class AppModel {
 
     /// How many reviewed words are available to cram (menu gating).
     var weakWordsPoolCount: Int {
-        reviewStore.reviewedCount(resolves: VocabStore.shared.resolvesID)
+        reviewStore.reviewedCount(resolves: vocab.resolvesID)
     }
 
     /// Starts a weak-words cram: the user's hardest reviewed words, run through the
@@ -1378,13 +1402,54 @@ final class AppModel {
         // the fifteen and the ride came back with twelve. (v1.23 §B.)
         let resolvable = reviewStore.weakestCards(
             limit: Self.weakWordsRunSize,
-            resolves: VocabStore.shared.resolvesID).map(\.id)
+            resolves: vocab.resolvesID).map(\.id)
         guard !resolvable.isEmpty else { return }
         var config = GameSession.Config()
         config.languageCode = languageCode
         config.assistance = assistance
-        session = GameSession.makeWeak(ids: resolvable, vocab: .shared, config: config)
+        session = GameSession.makeWeak(ids: resolvable, vocab: vocab, config: config)
         conjugationSession = nil   // defensive: a cram must not route to the conjugation screen
+        runClock = RunClock(startedAt: Date())
+        resolveRideStage()
+        screen = .playing
+    }
+
+    // MARK: Riding the words that stopped you (v1.24 §A)
+
+    /// The words a sentence or dictation run stopped the learner on, resolved to ids.
+    ///
+    /// **The only way to ask this question.** The results screen shows a count and offers a
+    /// run, and this project's recurring defect — fourteen instances — is a count and a run
+    /// computed by different predicates that each looked right on their own. So both go
+    /// through here, and here goes through `StumbledWords.rideableIDs`, which applies the run
+    /// builder's own `resolves` test rather than a copy of it.
+    ///
+    /// - Parameter stumbles: the chips **as displayed**, not the full list. A screen that shows
+    ///   six words and rides nine is the same broken promise as one that shows six and rides
+    ///   four; "what you see is what you ride" is the version a screenshot can falsify.
+    func rideableStumbles(_ stumbles: [StumbledWords.Stumble]) -> [String] {
+        StumbledWords.rideableIDs(in: stumbles, resolves: vocab.resolvesID)
+    }
+
+    /// Rides the stumbled words as a word run, recording **no SRS**.
+    ///
+    /// `makeWeak`, not `makeSaved`, and the reason is that sentence and dictation runs
+    /// deliberately do not persist SRS (`RunCompletion.persistsSRS` is false for both). These
+    /// words were failed inside a sentence, not answered wrong as isolated cards, so letting
+    /// the follow-up ride advance the SM-2 schedule would walk around that decision by the side
+    /// door — and it would do it with a lapse signal that has never been calibrated for it.
+    ///
+    /// Resolve-then-guard, like every sibling start path: the ids were filtered before the
+    /// button was drawn, and they are filtered again here, because the store can change between
+    /// a render and a tap and a run of nothing is a blank screen.
+    func startStumbledWords(_ stumbles: [StumbledWords.Stumble]) {
+        let ids = rideableStumbles(stumbles)
+        guard !ids.isEmpty else { return }
+        var config = GameSession.Config()
+        config.languageCode = languageCode
+        config.assistance = assistance
+        session = GameSession.makeWeak(ids: ids, vocab: vocab, config: config)
+        conjugationSession = nil   // defensive: this must not route to the conjugation screen
         runClock = RunClock(startedAt: Date())
         resolveRideStage()
         screen = .playing
@@ -1392,7 +1457,7 @@ final class AppModel {
 
     /// How many verbs are available to drill at the chosen level (menu gating).
     var conjugationPoolCount: Int {
-        ConjugationSession.playableCount(vocab: .shared, level: selectedLevel)
+        ConjugationSession.playableCount(vocab: vocab, level: selectedLevel)
     }
 
     /// The drillable conjugation forms (for the menu form-picker), localized.
@@ -1425,7 +1490,7 @@ final class AppModel {
         config.promptCount = 12
         config.setForms(rawValues: conjugationForms)   // empty / unknown → all forms
         let chooser = ConjugationSession.weightedFormChooser(weakBiasedPick: conjugationWeakFormPick())
-        let built = ConjugationSession.make(vocab: .shared, config: config, chooseForm: chooser)
+        let built = ConjugationSession.make(vocab: vocab, config: config, chooseForm: chooser)
         // Resolve-then-guard: an empty pool must not enter the (already-finished) screen.
         // The menu surfaces this proactively via `conjugationPoolCount == 0`, so a no-op
         // here is never silent.
@@ -1440,7 +1505,7 @@ final class AppModel {
 
     /// How many (verb, form) cards are due for conjugation review right now (menu gating).
     var conjugationDueCount: Int {
-        conjugationReviewStore.dueCount(resolves: VocabStore.shared.resolvesID)
+        conjugationReviewStore.dueCount(resolves: vocab.resolvesID)
     }
 
     /// Starts a **due-review** conjugation drill: the due (verb, form) cards first, then
@@ -1455,7 +1520,7 @@ final class AppModel {
         // and the orphans stay due forever. (v1.23 §B.)
         let due = conjugationReviewStore.dueCards(
             limit: Self.conjugationRunSize,
-            resolves: VocabStore.shared.resolvesID)
+            resolves: vocab.resolvesID)
             .map { (entryID: $0.sourceID, formToken: $0.formToken) }
         var config = ConjugationSession.Config()
         config.languageCode = languageCode
@@ -1463,7 +1528,7 @@ final class AppModel {
         config.level = nil                      // review pulls from the whole due set / pool
         config.promptCount = Self.conjugationRunSize
         let chooser = ConjugationSession.weightedFormChooser(weakBiasedPick: conjugationWeakFormPick())
-        let built = ConjugationSession.makeReview(due: due, vocab: .shared, config: config,
+        let built = ConjugationSession.makeReview(due: due, vocab: vocab, config: config,
                                                   chooseForm: chooser)
         guard built.promptCount > 0 else { return }
         built.onOutcome = conjugationOutcomeSink()
@@ -1666,6 +1731,20 @@ final class AppModel {
         journal = demo
     }
 
+    /// Redirects every persisted store somewhere harmless. Nil in the shipping app.
+    ///
+    /// `AppModel()` reads — and once a run finishes, writes — the machine's real
+    /// `Application Support/NihongoRide`: the owner's review schedule, ride journal, odometer
+    /// and word lists, all of it iCloud-synced. An app-layer test target that constructed a
+    /// model without this would assert against live data and log invented rides into it, on
+    /// the owner's own machine, and the damage would sync. So the test target sets this before
+    /// it constructs anything, and `AppModelTests.makeModel` is the only way it does.
+    ///
+    /// Screenshot capture needed the same escape first and got a FIXED temp path; this one is
+    /// chosen by the caller, because tests run in parallel and a shared directory would let
+    /// them read each other's stores. (v1.24 §B.)
+    static var supportDirectoryOverride: URL?
+
     static func supportFileURL(_ name: String) -> URL {
         let fm = FileManager.default
         // Screenshot capture redirects ALL file I/O to a throwaway temp dir, so a
@@ -1673,9 +1752,10 @@ final class AppModel {
         // models mint a fresh deviceID and run startGame/finishGame, which would
         // otherwise pollute the real, iCloud-synced odometer/journal/word-lists —
         // and leak the real review queue into store screenshots.)
-        let base: URL = Screenshotter.isCapturing
-            ? fm.temporaryDirectory.appendingPathComponent("NihongoRideCapture", isDirectory: true)
-            : (fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first ?? fm.temporaryDirectory)
+        let base: URL = supportDirectoryOverride
+            ?? (Screenshotter.isCapturing
+                ? fm.temporaryDirectory.appendingPathComponent("NihongoRideCapture", isDirectory: true)
+                : (fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first ?? fm.temporaryDirectory))
         let dir = base.appendingPathComponent("NihongoRide", isDirectory: true)
         try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir.appendingPathComponent(name)
