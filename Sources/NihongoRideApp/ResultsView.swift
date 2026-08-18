@@ -358,11 +358,16 @@ struct ResultsView: View {
             // so nothing here will ever come back for review. The words are still worth naming
             // — they are what went wrong — so the tile keeps them and stops promising.
             // (v1.24 §B; the fix is the label, not the behaviour.)
-            (icon: summary.persistsSRS ? "brain.head.profile" : "exclamationmark.triangle.fill",
+            (icon: summary.persistsSRS ? "brain.head.profile" : "figure.strengthtraining.functional",
              tint: Theme.accent,
              value: "\(summary.reviewWords.count)",
+             // "Missed" was the first attempt and it read as a contradiction beside the chips:
+             // the tile counts whole words that LAPSED (skipped, hinted, heavily mistyped) while
+             // the chips count words a refused key landed in, so a sentence ride shows "Missed 0"
+             // above four words that plainly stopped the learner. Seen in the headless render,
+             // not reasoned about. This wording matches the list directly below it instead.
              label: summary.persistsSRS ? (zh ? "待复习" : "To review")
-                                        : (zh ? "失误" : "Missed"), spoken: nil),
+                                        : (zh ? "吃力" : "Struggled"), spoken: nil),
         ]
         // Width-driven, not idiom-driven — see ConjugationResultsView.scoreGrid for the bug
         // this replaces (iPad portrait treated as roomy, tiles off both screen edges).

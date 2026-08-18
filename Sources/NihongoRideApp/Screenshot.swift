@@ -88,6 +88,28 @@ enum Screenshotter {
         results.finishGame()
         render(RootView().environment(results), size: size, to: directory + "/results.png")
 
+        // Sentence results — the only screen the stumbled-word chips appear on, and the only
+        // way to LOOK at v1.24 §A without riding a sentence by hand. The unit tests prove the
+        // attribution and prove the count matches the run; neither can show that the chips fit
+        // the panel, that a starred chip and a bare one read as different things, or that the
+        // ride button does not crowd the buttons below it. v1.23 shipped a fix to this screen
+        // with no execution evidence at all, which is the habit this replaces.
+        let sentenceResults = makeModel()
+        sentenceResults.selectedMode = .sentence
+        sentenceResults.startGame()
+        for _ in 0 ..< 4 {
+            // Two refused keys first: the matcher does not advance on a rejection, so both land
+            // inside the same word, which is what makes it a stumble rather than two slips
+            // (`minimumRefusals` is 2). "q" has no romaji mapping in any IME table.
+            _ = sentenceResults.session?.input("q")
+            _ = sentenceResults.session?.input("q")
+            guard let romaji = sentenceResults.session?.currentRomaji else { break }
+            for character in romaji { _ = sentenceResults.session?.input(character) }
+        }
+        sentenceResults.finishGame()
+        render(RootView().environment(sentenceResults), size: size,
+               to: directory + "/results-sentence.png")
+
         // Every stretch of road, as a contact sheet (v1.12 §D). The palettes are the one
         // part of the scenery a person has to LOOK at to judge, and there is no other way
         // to see seven of them without riding 25 km. NIHONGO_SHOT_STAGES=1 opts in.
