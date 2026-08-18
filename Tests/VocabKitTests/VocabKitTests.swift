@@ -281,8 +281,140 @@ struct StumbledWordsTests {
         #expect(a == b)
         // Two words, two refusals each — so the tie-break decides the order, and it has to
         // decide it the same way every time. Ties break on the reading, ascending.
-        #expect(a == [StumbledWords.Stumble(surface: "警官", reading: "けいかん", refusals: 2),
-                      StumbledWords.Stumble(surface: "潜入", reading: "せんにゅう", refusals: 2)])
+        #expect(a == [StumbledWords.Stumble(surface: "警官", reading: "けいかん", refusals: 2, entryID: nil),
+                      StumbledWords.Stumble(surface: "潜入", reading: "せんにゅう", refusals: 2, entryID: "s1")])
+    }
+}
+
+// MARK: - Turning a stumbled word back into a word you can do something with
+
+/// v1.24 §A. A chip is a surface and a reading; saving, listing or riding it needs a
+/// `VocabEntry.id`. Everything here is about the rule that turns one into the other, and every
+/// case that must NOT turn into one — which is the half that decides whether the feature is
+/// honest, because a wrong id offers the learner a card for a word they never saw.
+@Suite("Resolving a stumbled word to an entry")
+struct StumbledWordResolutionTests {
+
+    /// 生 is the homograph this rule exists for: one written form, two entries, two readings.
+    private let namaEntry = VocabEntry(id: "nama", surface: "生", kana: "なま",
+                                       partsOfSpeech: ["n"], jlpt: .n3, meanings: ["en": ["raw"]])
+    private let seiEntry = VocabEntry(id: "sei", surface: "生", kana: "せい",
+                                      partsOfSpeech: ["n"], jlpt: .n2, meanings: ["en": ["life"]])
+    private let team = VocabEntry(id: "team", surface: "チーム", kana: "チーム",
+                                  partsOfSpeech: ["n"], jlpt: .n3, meanings: ["en": ["team"]])
+    private let hand = VocabEntry(id: "hand", surface: "手", kana: "て",
+                                  partsOfSpeech: ["n"], jlpt: .n5, meanings: ["en": ["hand"]])
+    /// The one shipped entry whose surface is a bare particle (n3-b612 で/で, "and, then").
+    private let deConjunction = VocabEntry(id: "de", surface: "で", kana: "で",
+                                           partsOfSpeech: ["conj"], jlpt: .n3,
+                                           meanings: ["en": ["and", "then"]])
+
+    private var store: VocabStore {
+        VocabStore(entries: [namaEntry, seiEntry, team, hand, deConjunction])
+    }
+
+    @Test("both halves must agree — an exact pair resolves")
+    func exactPairResolves() {
+        #expect(store.entry(surface: "手", reading: "て")?.id == "hand")
+    }
+
+    /// The failure this whole design is built around. 手 is written 手 and read て; a token
+    /// written 手 but read something else is not this entry, and naming it anyway is how
+    /// "resolve the ambiguity by regressing to the common answer" gets into a release.
+    @Test("a surface match with a disagreeing reading resolves to nothing")
+    func surfaceOnlyIsRefused() {
+        #expect(store.entry(surface: "手", reading: "しゅ") == nil)
+    }
+
+    /// The measured trap: kana-only tokens are usually function morphemes, and a reading index
+    /// always finds some noun spelled that way. て is the te-form connective 2,130 times in the
+    /// shipped corpus; 手 is a hand. The learner stumbled on the first and must not be offered
+    /// the second.
+    @Test("a reading match with no written form behind it resolves to nothing")
+    func readingOnlyIsRefused() {
+        #expect(store.entry(surface: "て", reading: "て") == nil)
+    }
+
+    /// `exTokens` writes a loanword's reading in hiragana while the entry stores katakana.
+    /// They are one word — 33 shipped sentences say so — and the folding is `KanaScript`'s,
+    /// the same one the typing matcher uses, not a second copy of the rule.
+    @Test("katakana and hiragana readings are the same reading")
+    func katakanaFolds() {
+        #expect(store.entry(surface: "チーム", reading: "ちーむ")?.id == "team")
+        #expect(store.entry(surface: "チーム", reading: "チーム")?.id == "team")
+    }
+
+    /// An ambiguous key has no right answer, so it gets none. First-wins would be a coin toss
+    /// dressed as a lookup.
+    @Test("a pair claimed by two entries resolves to neither")
+    func ambiguousPairIsDropped() {
+        let twins = VocabStore(entries: [
+            VocabEntry(id: "a", surface: "同", kana: "どう", partsOfSpeech: ["n"], jlpt: .n3,
+                       meanings: ["en": ["same"]]),
+            VocabEntry(id: "b", surface: "同", kana: "どう", partsOfSpeech: ["n"], jlpt: .n1,
+                       meanings: ["en": ["ditto"]])])
+        #expect(twins.entry(surface: "同", reading: "どう") == nil)
+    }
+
+    /// Blocked on the token, not on the lookup — the corpus really does contain で/で, and a
+    /// learner who misheard the で of 電車で would otherwise be handed a conjunction card.
+    @Test("a grammatical particle never resolves, even when the corpus has an entry for it")
+    func particlesNeverResolve() {
+        #expect(store.entry(surface: "で", reading: "で") == nil)
+        // …and the entry is genuinely there, so this test is measuring the block and not an
+        // empty store.
+        #expect(store.entry(id: "de") != nil)
+    }
+
+    // MARK: Layer 1 — the word the sentence was written to teach
+
+    private func sentence(teaching entry: VocabEntry, tokens: [[String]], kana: String) -> VocabEntry {
+        VocabEntry(id: entry.id, surface: entry.surface, kana: entry.kana,
+                   partsOfSpeech: entry.partsOfSpeech, jlpt: entry.jlpt, meanings: entry.meanings,
+                   exampleJP: tokens.map { $0[0] }.joined(), exampleKana: kana, exampleTokens: tokens)
+    }
+
+    @Test("the taught word resolves to its own entry without consulting the index")
+    func taughtWordResolves() {
+        let taught = sentence(teaching: namaEntry,
+                              tokens: [["生", "なま"], ["の", "の"], ["魚", "さかな"]],
+                              kana: "なまのさかな")
+        // A store that does NOT contain the taught entry: the id can only have come from the
+        // entry in hand, which is the property this path is for.
+        let bare = VocabStore(entries: [hand])
+        #expect(StumbledWords.entryID(for: (surface: "生", reading: "なま"),
+                                      taughtBy: taught, in: bare) == "nama")
+    }
+
+    /// The reason layer 1 checks the reading too. A sentence teaching 生/なま that contains
+    /// 生 read せい must not have the せい token attributed to the なま entry just because the
+    /// characters match — that is the surface-only failure wearing a different hat.
+    @Test("the taught word's id is not applied to a homograph read differently")
+    func taughtWordDoesNotSwallowItsHomograph() {
+        let taught = sentence(teaching: namaEntry,
+                              tokens: [["生", "せい"], ["活", "かつ"]], kana: "せいかつ")
+        #expect(StumbledWords.entryID(for: (surface: "生", reading: "せい"),
+                                      taughtBy: taught, in: VocabStore(entries: [namaEntry])) == nil)
+        // With the せい entry present it resolves — to せい, via the pair index, not to なま.
+        #expect(StumbledWords.entryID(for: (surface: "生", reading: "せい"),
+                                      taughtBy: taught, in: store) == "sei")
+    }
+
+    // MARK: What the run will contain
+
+    /// The count-vs-run contract in its smallest form: the ids come from one function, so a
+    /// caller cannot compute the number one way and the ride another.
+    @Test("rideableIDs drops the chips that name nothing and applies the run's own predicate")
+    func rideableIDsFilter() {
+        let chips = [
+            StumbledWords.Stumble(surface: "手", reading: "て", refusals: 3, entryID: "hand"),
+            StumbledWords.Stumble(surface: "て", reading: "て", refusals: 2, entryID: nil),
+            StumbledWords.Stumble(surface: "生", reading: "なま", refusals: 2, entryID: "nama"),
+        ]
+        #expect(StumbledWords.rideableIDs(in: chips, resolves: store.resolvesID) == ["hand", "nama"])
+        // A withdrawn entry is dropped by the run builder, so it must be dropped by the count.
+        let withoutNama = VocabStore(entries: [hand, team])
+        #expect(StumbledWords.rideableIDs(in: chips, resolves: withoutNama.resolvesID) == ["hand"])
     }
 }
 
@@ -311,5 +443,106 @@ struct AttributionGuardTests {
                     "\(entry.id): sentence reads like the word but splits into \(content.count) tokens")
             #expect(content.first?[0] == entry.surface, "\(entry.id): token is not the word itself")
         }
+    }
+}
+
+// MARK: - The resolution rule, measured against the corpus it will actually run on
+
+/// The stop rule for v1.24 §A: the resolution numbers are re-measured here, at build time,
+/// rather than quoted from the plan. A number in a document is a number that was true once.
+///
+/// Two of these assert a floor and one asserts an invariant, and the invariant is the one that
+/// matters. A coverage floor tells you the feature still does something; the invariant tells
+/// you that everything it does is *right*, exhaustively, over all 41,000-odd tokens the
+/// shipped sentences contain — which is the property a learner's saved-word list depends on.
+@Suite("Stumbled-word resolution over the shipped corpus")
+struct ShippedResolutionTests {
+
+    private static let punctuation: Set<Character> = ["。", "、", "！", "？", "「", "」", "・"]
+
+    /// Every (token, owning entry) pair in the shipped sentences.
+    private static var corpusTokens: [(token: (surface: String, reading: String), owner: VocabEntry)] {
+        var out: [(token: (surface: String, reading: String), owner: VocabEntry)] = []
+        for entry in VocabStore.shared.entries where entry.isTypeableSentence {
+            for token in entry.exampleTokens ?? [] where token.count >= 2 {
+                guard !token[1].allSatisfy({ Self.punctuation.contains($0) }), !token[1].isEmpty
+                else { continue }
+                out.append(((surface: token[0], reading: token[1]), entry))
+            }
+        }
+        return out
+    }
+
+    /// The safety invariant, and the reason the rule refuses so much.
+    ///
+    /// Whatever a token resolves to, that entry must be written the way the token is written
+    /// AND read the way the token is read. Not "usually" — every single time, or the app is
+    /// offering somebody a card for a word that was never on their screen. This is the one
+    /// property that makes it safe to hang a ★ off a chip.
+    @Test("a token never resolves to an entry that is written or read differently")
+    func resolutionNeverNamesADifferentWord() {
+        var checked = 0
+        for (token, owner) in Self.corpusTokens {
+            guard let id = StumbledWords.entryID(for: token, taughtBy: owner, in: .shared),
+                  let named = VocabStore.shared.entry(id: id) else { continue }
+            checked += 1
+            #expect(named.surface == token.surface,
+                    "\(owner.id): token \(token.surface)/\(token.reading) resolved to \(named.surface)/\(named.kana)")
+            #expect(KanaScript.katakanaToHiragana(named.kana)
+                        == KanaScript.katakanaToHiragana(token.reading),
+                    "\(owner.id): token \(token.surface)/\(token.reading) resolved to \(named.surface)/\(named.kana)")
+        }
+        // An invariant that inspected nothing is not an invariant. This is the shape of the
+        // "clean number from an untested instrument" failure this project keeps logging.
+        #expect(checked > 20_000, "only \(checked) tokens resolved — the walk stopped measuring")
+    }
+
+    /// Particles are blocked on the token in every mode, and the corpus contains an entry that
+    /// would otherwise be matched (で/で). Exhaustive rather than sampled, because the block is
+    /// one `contains` away from being deleted by accident.
+    @Test("no grammatical particle anywhere in the corpus resolves to a word")
+    func noParticleResolves() {
+        var particleTokens = 0
+        for (token, owner) in Self.corpusTokens
+        where JapaneseParticles.single.contains(token.surface) {
+            particleTokens += 1
+            #expect(StumbledWords.entryID(for: token, taughtBy: owner, in: .shared) == nil,
+                    "\(owner.id): particle \(token.surface) resolved")
+        }
+        #expect(particleTokens > 5_000, "only \(particleTokens) particle tokens seen — the scan is wrong")
+        // …and the entry that makes this a real block rather than a vacuous one is still there.
+        // If it is ever retired this test keeps passing for the wrong reason, so say so here.
+        #expect(VocabStore.shared.entries.contains(where: { JapaneseParticles.single.contains($0.surface) }),
+                "no entry has a particle surface any more, so the block above is vacuous and proves nothing")
+    }
+
+    /// Coverage, re-measured. The floors are set well below what was measured (58.4% of content
+    /// tokens, 74.1% of the ones containing kanji) so that ordinary corpus maintenance does not
+    /// turn the suite red, and high enough that the feature silently degrading does.
+    @Test("the rule still resolves most of the vocabulary a learner would want to save")
+    func coverageFloorsHold() {
+        var content = 0, contentResolved = 0, kanji = 0, kanjiResolved = 0
+        for (token, owner) in Self.corpusTokens {
+            if JapaneseParticles.single.contains(token.surface) { continue }
+            let resolved = StumbledWords.entryID(for: token, taughtBy: owner, in: .shared) != nil
+            content += 1
+            if resolved { contentResolved += 1 }
+            if token.surface.contains(where: { $0.isKanji }) {
+                kanji += 1
+                if resolved { kanjiResolved += 1 }
+            }
+        }
+        #expect(content > 40_000, "only \(content) content tokens — the corpus walk is wrong")
+        let contentRate = Double(contentResolved) / Double(content)
+        let kanjiRate = Double(kanjiResolved) / Double(kanji)
+        #expect(contentRate > 0.50, "content-token resolution fell to \(contentRate)")
+        #expect(kanjiRate > 0.65, "kanji-token resolution fell to \(kanjiRate)")
+    }
+}
+
+private extension Character {
+    /// CJK unified ideographs. Deliberately not `isIdeographic`, which also takes kana marks.
+    var isKanji: Bool {
+        unicodeScalars.allSatisfy { (0x4E00...0x9FFF).contains($0.value) }
     }
 }

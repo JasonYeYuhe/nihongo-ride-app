@@ -1,5 +1,5 @@
 /// Small kana-script utilities.
-enum KanaScript {
+public enum KanaScript {
     /// Converts katakana letters (U+30A1…U+30F4, ァ…ヴ) to their hiragana
     /// equivalents, leaving the prolonged-sound mark `ー` (U+30FC) and every other
     /// character unchanged. This lets the hiragana-based romaji table match
@@ -8,7 +8,7 @@ enum KanaScript {
     /// Small `ヵ` (U+30F5) and `ヶ` (U+30F6) are deliberately *not* converted: their
     /// hiragana forms `ゕ`/`ゖ` have no romaji producer, whereas the katakana forms
     /// do (`xka`/`xke` → `ヵ`/`ヶ` in the Mozc table), so leaving them keeps them typeable.
-    static func katakanaToHiragana(_ string: String) -> String {
+    public static func katakanaToHiragana(_ string: String) -> String {
         var scalars = String.UnicodeScalarView()
         for scalar in string.unicodeScalars {
             if (0x30A1...0x30F4).contains(scalar.value),

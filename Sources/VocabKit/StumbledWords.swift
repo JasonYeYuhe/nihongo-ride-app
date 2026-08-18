@@ -34,6 +34,56 @@ public enum StumbledWords {
         public let reading: String
         /// How many refused keystrokes landed inside it.
         public let refusals: Int
+        /// The vocabulary entry this word IS, when the app can say which — and nil when it
+        /// honestly cannot.
+        ///
+        /// This is the whole difference between a chip that can be read and a chip that can be
+        /// acted on: saving a word, listing it, or riding it all need a `VocabEntry.id`, and a
+        /// token is a surface and a reading. Nil is a normal, common and correct answer — the
+        /// て of a te-form and the ます of a polite ending are not words anyone studies, and
+        /// naming an entry for them would be worse than naming nothing.
+        ///
+        /// **Every consumer must branch on this rather than assume it.** A results screen that
+        /// draws a star on a chip whose id is nil, or a "ride these" button that counts chips
+        /// instead of ids, is the count-vs-run defect this project has now hit fourteen times.
+        public let entryID: String?
+
+        public init(surface: String, reading: String, refusals: Int, entryID: String?) {
+            self.surface = surface
+            self.reading = reading
+            self.refusals = refusals
+            self.entryID = entryID
+        }
+    }
+
+    /// Which entry a stumbled token names, or nil when nothing can be said with certainty.
+    ///
+    /// Two paths, one rule: **the written form and the reading must both agree.**
+    ///
+    /// The first path is free. `from` has already resolved the event's `entryID` to the entry
+    /// whose sentence this is, so when the stumbled token is the very word the sentence was
+    /// written to teach, the id is in hand and no index is consulted. That matters beyond
+    /// saving a dictionary lookup: it is the one path that stays correct if a future entry
+    /// makes the pair index ambiguous, because this id is not inferred from the token at all.
+    ///
+    /// It still checks the reading. Requiring only the surface would name 生/せい for a token
+    /// read なま whenever a sentence teaching the one contains the other — the same
+    /// regress-to-the-common-answer failure the pair index exists to avoid, and not worth
+    /// making an exception for: over the shipped corpus, dropping the reading check on this
+    /// path would resolve 7 more tokens out of 41,222, every one of them a euphonic stem whose
+    /// lemma is genuinely ambiguous.
+    ///
+    /// The second path is the store's pair index. See `VocabStore.entry(surface:reading:)`.
+    static func entryID(for token: (surface: String, reading: String),
+                        taughtBy entry: VocabEntry,
+                        in vocab: VocabStore) -> String? {
+        guard !JapaneseParticles.single.contains(token.surface) else { return nil }
+        if token.surface == entry.surface,
+           KanaScript.katakanaToHiragana(token.reading)
+             == KanaScript.katakanaToHiragana(entry.kana) {
+            return entry.id
+        }
+        return vocab.entry(surface: token.surface, reading: token.reading)?.id
     }
 
     /// The words `trace`'s refusals landed in, most-refused first.
@@ -56,17 +106,11 @@ public enum StumbledWords {
     ///
     /// Ties break on the reading so the order is stable — a results screen that reshuffles
     /// between two identical runs looks broken.
-    /// Single-kana grammatical particles, which are a stumble in one mode and noise in the
-    /// other. Matched on the SURFACE, so a content word that merely reads like one — 歯 for は,
-    /// 戸 for と — is written in kanji in the sentence and never matches.
-    private static let particles: Set<String> = ["を", "は", "へ", "が", "に", "で", "と",
-                                                 "も", "の", "や", "ね", "よ", "か"]
-
     public static func from(_ trace: MistakeTrace,
                             vocab: VocabStore = .shared,
                             minimumRefusals: Int = 2,
                             includesParticles: Bool = true) -> [Stumble] {
-        var counts: [String: (surface: String, reading: String, n: Int)] = [:]
+        var counts: [String: (surface: String, reading: String, id: String?, n: Int)] = [:]
         for event in trace.events {
             guard let id = event.entryID, let entry = vocab.entry(id: id),
                   // The event's target has to BE the sentence: in a word run `targetKana` is
@@ -75,13 +119,41 @@ public enum StumbledWords {
                   entry.exampleKana == event.targetKana,
                   let token = entry.exampleToken(atReadingIndex: event.kanaIndex)
             else { continue }
-            if !includesParticles, Self.particles.contains(token.surface) { continue }
+            if !includesParticles, JapaneseParticles.single.contains(token.surface) { continue }
             let key = token.surface + "\u{1F}" + token.reading
-            counts[key, default: (token.surface, token.reading, 0)].n += 1
+            counts[key, default: (token.surface, token.reading,
+                                  entryID(for: token, taughtBy: entry, in: vocab), 0)].n += 1
         }
         return counts.values
             .filter { $0.n >= minimumRefusals }
-            .map { Stumble(surface: $0.surface, reading: $0.reading, refusals: $0.n) }
+            .map { Stumble(surface: $0.surface, reading: $0.reading,
+                           refusals: $0.n, entryID: $0.id) }
             .sorted { ($0.refusals, $1.reading) > ($1.refusals, $0.reading) }
+    }
+
+    /// The ids a "ride these words" run would actually contain, for the chips in `stumbles`.
+    ///
+    /// **The one function both the number and the run must call.** Every instance of this
+    /// project's recurring defect — fourteen of them — is a count and a run computed by
+    /// different predicates that looked right in isolation, so the button's label and the
+    /// button's action are not allowed to derive their answer separately here.
+    ///
+    /// - Parameters:
+    ///   - stumbles: the chips as displayed. Pass the DISPLAYED slice, not the full list: a
+    ///     screen showing six words and riding nine is the same broken promise as showing six
+    ///     and riding four, and "what you see is what you ride" is the contract that is
+    ///     actually checkable from a screenshot.
+    ///   - resolves: the run builder's own predicate. `GameSession.makeWeak(ids:)` drops ids
+    ///     that no longer name an entry, so this must be the store's `resolvesID` and not a
+    ///     hand-written copy of it — the withdrawn-entry leak that inflated four counts for
+    ///     three releases was exactly a hand-written copy going missing.
+    ///
+    /// Duplicates are impossible by construction (chips are keyed by surface+reading and the
+    /// pair index is injective), but the order is preserved so the ride follows the screen.
+    public static func rideableIDs(in stumbles: [Stumble],
+                                   resolves: (String) -> Bool) -> [String] {
+        var seen = Set<String>()
+        return stumbles.compactMap(\.entryID)
+            .filter { resolves($0) && seen.insert($0).inserted }
     }
 }

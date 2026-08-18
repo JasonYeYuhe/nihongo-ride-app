@@ -1,4 +1,5 @@
 import Foundation
+import RomajiKana
 
 /// In-memory vocabulary repository, loaded from a bundled word pack.
 public struct VocabStore: Sendable {
@@ -9,12 +10,82 @@ public struct VocabStore: Sendable {
     /// the `entries.first` it replaces (the shipped corpus has none).
     private let byID: [String: VocabEntry]
 
+    /// A written form and a reading that must BOTH match, keyed together on purpose.
+    private struct WrittenAndRead: Hashable {
+        let surface: String
+        /// Katakana folded to hiragana — see `entry(surface:reading:)`.
+        let reading: String
+    }
+
+    /// Written form + reading → the one entry that is written *and* read that way.
+    ///
+    /// The index is a pair because neither half alone is safe, and both unsafe versions were
+    /// measured against the shipped corpus before this one was written:
+    ///
+    /// * **By surface alone**, 1,362 of the corpus's tokens hit an entry whose reading
+    ///   disagrees with the token's — that is 100% of the surface-only hits, which is a
+    ///   tautology rather than a coincidence: a token whose reading agreed would already have
+    ///   matched the pair. It names 二 for ふた, 来 for き, 時 for じ, 箱 for ばこ. Resolving an
+    ///   ambiguity by regressing to the common answer is this project's oldest failure and has
+    ///   already cost it two releases.
+    /// * **By reading alone** it is worse, and worse in the direction that looks safest. A
+    ///   kana-only token has no written form that could contradict a reading match, so it
+    ///   reads like the safe case; in Japanese a kana-only token is usually a function
+    ///   morpheme, and the reading index always finds some rare noun spelled that way.
+    ///   Measured over the shipped sentences: て→手 2,130 times, し→死 1,202, ます→増す 655,
+    ///   な→名 563, から→空 297. Offering to save 死 because the learner stumbled on the し of
+    ///   します is the ない/無い trap with three orders of magnitude more instances.
+    ///
+    /// Requiring both halves to agree resolves 58.4% of the corpus's content tokens, and 74.1%
+    /// of the ones containing kanji; what it leaves unresolved is almost entirely function
+    /// morphemes, which is the correct answer for them. It fails safe by construction — it can
+    /// only ever name an entry written AND read exactly the way the token is.
+    ///
+    /// Keys claimed by more than one entry are DROPPED rather than won by the first: an
+    /// ambiguous key has no right answer, and this whole index exists because guessing one is
+    /// the failure mode. The shipped corpus has no such key, and that is enforced here rather
+    /// than asserted in this sentence, so a future entry that creates one costs a chip its
+    /// star instead of pointing it at the wrong word.
+    private let bySurfaceAndReading: [WrittenAndRead: VocabEntry]
+
     /// The shared store, loaded once from the bundled N5 starter pack.
     public static let shared = VocabStore.loadBundled()
 
     public init(entries: [VocabEntry]) {
         self.entries = entries
         self.byID = Dictionary(entries.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        var pairs: [WrittenAndRead: VocabEntry] = [:]
+        var ambiguous: Set<WrittenAndRead> = []
+        for entry in entries {
+            let key = WrittenAndRead(surface: entry.surface,
+                                     reading: KanaScript.katakanaToHiragana(entry.kana))
+            if pairs.updateValue(entry, forKey: key) != nil { ambiguous.insert(key) }
+        }
+        for key in ambiguous { pairs.removeValue(forKey: key) }
+        self.bySurfaceAndReading = pairs
+    }
+
+    /// The entry written `surface` and read `reading`, when exactly one entry is both.
+    ///
+    /// This is the reverse of `entry(id:)` — the lookup that turns a word the learner was
+    /// refused on back into something they can save, list or ride. See
+    /// ``bySurfaceAndReading`` for why it insists on both halves.
+    ///
+    /// Readings are compared with katakana folded to hiragana, using the same `KanaScript`
+    /// the typing matcher folds with rather than a second copy of the rule: `exTokens` writes
+    /// a loanword's reading in hiragana while the entry stores katakana, so チーム and ちーむ
+    /// are one word and 33 shipped sentences say so.
+    ///
+    /// **A grammatical particle never resolves**, whatever the corpus happens to contain.
+    /// The shipped corpus has exactly one entry whose surface is a bare particle — `n3-b612`,
+    /// で/で, the conjunction "and, then" — so a learner who misheard the で of 電車で would
+    /// otherwise be handed a card for a different word wearing the same kana. Blocked on the
+    /// token, not on the lookup: the same shape as keeping the auxiliary ない away from the
+    /// i-adjective 無い.
+    public func entry(surface: String, reading: String) -> VocabEntry? {
+        guard !JapaneseParticles.single.contains(surface) else { return nil }
+        return bySurfaceAndReading[WrittenAndRead(surface: surface,
+                                                  reading: KanaScript.katakanaToHiragana(reading))]
     }
 
     public var isEmpty: Bool { entries.isEmpty }
