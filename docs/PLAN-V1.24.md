@@ -322,3 +322,52 @@ Emptying `inflectionalTails` blinds the rule and its property test at the same m
 the test reads the same constant. Measured: only the concrete named cases went red. A property
 test parameterised by the value it polices is a gate sharing a blind spot with the thing it
 gates — the concrete cases exist for exactly that, and the mutation harness is what showed it.
+
+
+---
+
+# The completeness pass, and the lesson it cost
+
+The five lenses were followed by one agent asked a different question: **what did nobody look
+at?** It found three more, one of which meant the release's headline fix did not work on the
+content it most needed to.
+
+## The fix for the wrong-word bug was itself validated the wrong way
+
+`inflectionalTails` — the list of auxiliaries that mark a preceding token as a stem — was
+written from linguistic intuition. It was then "validated" by measuring what it blocked: 12.8%
+of resolutions, 2,695 past-tense た, a clean-looking number recorded in this document as
+evidence.
+
+Nobody measured whether its members occur. **Two of them appear zero times in the corpus** —
+`ましょ` and `させ`, because Sudachi emits the long forms — and the forms that do occur were
+absent. So `少し疲れたのでここで休みましょう。`, the sentence that teaches 休む, still put a star
+on 休み and offered to save the noun. ましょう is N5 grammar: the defect fired hardest on
+beginners, in the release whose headline was fixing that exact class.
+
+This is the project's own standing lesson, applied to me rather than to a content gate:
+**an obvious-feeling rule measures the tokenizer, not the language, until the data says
+otherwise.** Measuring a rule's EFFECT is not measuring its CORRECTNESS.
+
+The repair was to stop listing and start deriving. The harmful class is one thing — a noun that
+is also a verb's 連用形 — and the corpus can be asked directly: replace the final い-row kana
+with the う-row one, or append る, and see whether that is a verb the store holds. 353 tokens,
+no list. The list survives only for what derivation cannot reach, and now carries a test that
+every member occurs — which went red on its first run and caught a third dead form.
+
+## The other two are the same shape as everything else in this release
+
+- A chip's entry was decided by whichever sentence it was first refused in, because
+  `Dictionary`'s `default:` is an `@autoclosure` and resolution is per-occurrence while chips
+  aggregate. Identical mistakes in a different order produced a different screen; 111 tokens can
+  flip. Now unanimous or nothing.
+- The scan added specifically to keep `{ _ in true }` out of NotificationKit could not see that
+  file: it matched the lowercase literal `resolves:` and the parameter is `vocabResolves:`. The
+  commit message claims the file is now covered. It was not.
+
+## What this says about the process
+
+Every pass in this release found something the previous pass had missed, and the last pass found
+a defect **in the fix produced by the pass before it**. The fixes are new, unreviewed code; that
+is the argument for reviewing them as a diff in their own right, which is what the completeness
+agent was asked to do and how it found all three.
