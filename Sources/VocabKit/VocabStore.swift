@@ -36,10 +36,17 @@ public struct VocabStore: Sendable {
     ///   な→名 563, から→空 297. Offering to save 死 because the learner stumbled on the し of
     ///   します is the ない/無い trap with three orders of magnitude more instances.
     ///
-    /// Requiring both halves to agree resolves 58.4% of the corpus's content tokens, and 74.1%
-    /// of the ones containing kanji; what it leaves unresolved is almost entirely function
-    /// morphemes, which is the correct answer for them. It fails safe by construction — it can
-    /// only ever name an entry written AND read exactly the way the token is.
+    /// Requiring both halves to agree resolves 58.4% of the corpus's content tokens and leaves
+    /// a residue that is almost entirely function morphemes, which is the correct answer for
+    /// them.
+    ///
+    /// **It does not make the answer right, and an earlier version of this comment said it
+    /// did.** "Can only name an entry written AND read exactly the way the token is" is true
+    /// and is a weaker property than "names the word the learner stumbled on": an inflected
+    /// form is written and read exactly like its homographic lemma. 読み matched the noun
+    /// 読み "reading" in 本を読みます, and た matched "past tense marker" in 2,695 sentences.
+    /// This index cannot tell them apart, because nothing about a token in isolation can —
+    /// see `StumbledWords.entryID`, which asks the surrounding sentence.
     ///
     /// Keys claimed by more than one entry are DROPPED rather than won by the first: an
     /// ambiguous key has no right answer, and this whole index exists because guessing one is
@@ -103,7 +110,10 @@ public struct VocabStore: Sendable {
     /// sites, v1.23 found two more. The `resolves:` parameters take a closure precisely so the
     /// review modules can stay ignorant of VocabKit; this is the one closure they should be
     /// handed. (v1.23 §B.)
-    public var resolvesID: (String) -> Bool {
+    /// `@Sendable` because it crosses actor boundaries: the reminder scheduler is handed this
+    /// predicate from the main actor and runs it on a Task. It captures only the id index,
+    /// which is a dictionary of value types, so the guarantee is real rather than asserted.
+    public var resolvesID: @Sendable (String) -> Bool {
         { [byID] id in byID[id] != nil }
     }
 

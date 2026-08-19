@@ -129,7 +129,7 @@ struct CoachView: View {
     /// key, where the surrounding kana make the point instead.
     private func correctSpelling(for replay: MistakeReplay) -> String {
         if let id = model.coachHeadline?.example.entryID,
-           let entry = VocabStore.shared.entry(id: id), !entry.romaji.isEmpty {
+           let entry = model.vocab.entry(id: id), !entry.romaji.isEmpty {
             return entry.romaji
         }
         return replay.typedPrefix + (replay.accepted.first.map(String.init) ?? "")

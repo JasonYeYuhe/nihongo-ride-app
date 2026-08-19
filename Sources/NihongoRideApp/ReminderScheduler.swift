@@ -33,7 +33,12 @@ enum ReminderScheduler {
     /// app (v1.12), and until v1.14 a learner who drilled only conjugations was never
     /// reminded and saw a zero badge while the menu offered them reviews.
     @discardableResult
+    /// - Parameter resolves: the vocabulary predicate, handed in rather than fetched from the
+    ///   global store. The model that owns `store` also owns the vocabulary it should be
+    ///   filtered by; reading `.shared` here meant the badge and the menu could be computed
+    ///   from two different vocabularies the moment a model held anything else. (v1.24.)
     static func apply(enabled: Bool, store: ReviewStore, conjugationStore: ConjugationReviewStore,
+                      resolves: @escaping @Sendable (String) -> Bool,
                       hour: Int, languageCode: String) async -> Bool {
         let center = UNUserNotificationCenter.current()
 
@@ -55,8 +60,8 @@ enum ReminderScheduler {
         let reminders = DueReminderPlanner.plan(
             store: store,
             conjugationDue: { conjugationStore.dueCount(on: $0, calendar: $1,
-                                              resolves: VocabStore.shared.resolvesID) },
-            vocabResolves: VocabStore.shared.resolvesID,
+                                              resolves: resolves) },
+            vocabResolves: resolves,
             from: Date(), hour: hour)
         for (index, reminder) in reminders.enumerated() {
             let content = UNMutableNotificationContent()
@@ -74,8 +79,8 @@ enum ReminderScheduler {
         }
         // Keep the app icon badge honest with what's due right now — both kinds.
         try? await center.setBadgeCount(
-            store.dueCount(resolves: VocabStore.shared.resolvesID)
-                + conjugationStore.dueCount(resolves: VocabStore.shared.resolvesID))
+            store.dueCount(resolves: resolves)
+                + conjugationStore.dueCount(resolves: resolves))
         return true
     }
 

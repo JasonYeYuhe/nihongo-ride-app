@@ -435,10 +435,13 @@ final class AppModel {
         let conjStore = conjugationReviewStore
         let hour = dueReminderHour
         let lang = languageCode
+        // Captured before the hop, like every other value here: `vocab` is the model's own
+        // store and the Task must not reach back into the model for it.
+        let resolves = vocab.resolvesID
         Task { [weak self] in
             let scheduled = await ReminderScheduler.apply(
                 enabled: enabled, store: store, conjugationStore: conjStore,
-                hour: hour, languageCode: lang)
+                resolves: resolves, hour: hour, languageCode: lang)
             if enabled && !scheduled {
                 self?.dueReminderEnabled = false   // denied / unavailable
             }

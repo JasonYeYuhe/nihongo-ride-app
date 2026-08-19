@@ -159,7 +159,7 @@ struct AboutView: View {
     }
 
     private var stats: some View {
-        let vocab = VocabStore.shared.entries.count
+        let vocab = model.vocab.entries.count
         let passages = PassageStore.shared.passages.count
         return HStack(spacing: 20) {
             stat(label: zh ? "词汇" : "Words", value: "\(vocab)")

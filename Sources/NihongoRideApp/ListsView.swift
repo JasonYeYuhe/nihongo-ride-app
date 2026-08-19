@@ -412,7 +412,7 @@ struct ListDetailView: View {
     }
 
     private func wordRow(id: String, listID: String) -> some View {
-        let entry = VocabStore.shared.entry(id: id)
+        let entry = model.vocab.entry(id: id)
         return HStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 2) {
                 // A word whose entry is gone showed its raw internal id — "n2-b984" where a
