@@ -339,8 +339,15 @@ struct ResolvesCallSiteTests {
             for file in try FileManager.default.contentsOfDirectory(atPath: url.path)
                     .filter({ $0.hasSuffix(".swift") }) {
                 let source = try String(contentsOf: url.appendingPathComponent(file), encoding: .utf8)
+                // Case-INSENSITIVE, and not anchored to a bare "resolves:". The first version
+                // matched the literal lowercase string, so `vocabResolves:` in NotificationKit
+                // was invisible — in the very file this scan was extended to cover, added by
+                // the commit whose message says that file was the one place a default survived.
+                // Restoring the default there left all 510 tests green. Found by the
+                // completeness pass of the pre-submission review.
                 for (index, line) in source.components(separatedBy: "\n").enumerated()
-                where line.contains("resolves:") && line.contains("-> Bool") {
+                where line.lowercased().contains("resolves:")
+                        && (line.contains("-> Bool") || line.contains("-> Int")) {
                     inspected += 1
                     if line.contains("=") {
                         offenders.append("\(directory)/\(file):\(index + 1) — resolves: has a default")

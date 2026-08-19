@@ -543,6 +543,10 @@ struct ShippedResolutionTests {
             ("n1-b062", "切れ", "きれ", "て"),        // 在庫が切れております。
             ("n1-b097", "あっ", "あっ", "た"),        // 助けがあったおかげで…
             ("n1-b037", "読み", "よみ", "ください"),   // お読みください。
+            // Found by the completeness pass, on N5 grammar: the tail list said ましょ, the
+            // corpus says ましょう, so every one of these was still offering the noun.
+            ("n5-g083", "休み", "やすみ", "ましょう"),   // 少し疲れたので…休みましょう。
+            ("n5-g083", "疲れ", "つかれ", "た"),        // …の 疲れた
         ]
         for (owner, surface, reading, next) in cases {
             let entry = try #require(VocabStore.shared.entry(id: owner))
@@ -558,6 +562,109 @@ struct ShippedResolutionTests {
     }
 
     /// The positive control. A rule that refuses everything would pass every test above.
+    /// A chip aggregates across sentences; resolution is per sentence. When they disagree the
+    /// chip must not be starred, and — the part that actually broke — the answer must not
+    /// depend on which sentence was refused first.
+    ///
+    /// `counts[key, default:]` takes an @autoclosure, so the first version evaluated the id once
+    /// on first insertion. 疲れ is the noun in 温泉に入って疲れが取れました and the stem of 疲れた
+    /// in 少し疲れたので…: identical mistakes in a different order gave a different screen. 111
+    /// distinct tokens in the corpus can flip this way.
+    @Test("a stumbled word resolved differently in two sentences is not starred")
+    func disagreementIsNotStarred() throws {
+        let noun = try #require(VocabStore.shared.entry(id: "n3-b111"))     // 疲れが取れました
+        let stem = try #require(VocabStore.shared.entry(id: "n5-g083"))     // 疲れたので…
+        func trace(_ order: [(VocabEntry, Int)]) -> MistakeTrace {
+            var t = MistakeTrace()
+            for (n, (entry, index)) in order.enumerated() {
+                t.record(MistakeEvent(targetKana: entry.exampleKana!, entryID: entry.id,
+                                      acceptedRomaji: "", rejected: "x", expectedNext: ["n"],
+                                      kanaIndex: index, order: n))
+            }
+            return t
+        }
+        let nounIndex = try #require(noun.exampleKana!.range(of: "つかれ"))
+        let stemIndex = try #require(stem.exampleKana!.range(of: "つかれ"))
+        let a = noun.exampleKana!.distance(from: noun.exampleKana!.startIndex, to: nounIndex.lowerBound)
+        let b = stem.exampleKana!.distance(from: stem.exampleKana!.startIndex, to: stemIndex.lowerBound)
+        let forward = StumbledWords.from(trace([(noun, a), (stem, b)]), minimumRefusals: 2)
+        let backward = StumbledWords.from(trace([(stem, b), (noun, a)]), minimumRefusals: 2)
+        #expect(forward == backward, "the chip depends on which sentence came first")
+        let chip = forward.first { $0.surface == "疲れ" }
+        #expect(chip != nil, "the arrangement produced no 疲れ chip — the test is measuring nothing")
+        #expect(chip?.entryID == nil, "a word two sentences disagree about must not be starred")
+    }
+
+    /// The derivation, on its own terms — no successor involved, so only
+    /// `isInflectedFormOfAVerb` can satisfy it.
+    ///
+    /// Separate from the resolution cases because the tail list and the derivation overlap:
+    /// 休みましょう is refused by either, so a regression case using it proves neither. These
+    /// pass `followedBy: nil`, which every tail rule lets through.
+    @Test("a noun that is also a verb stem is refused with no successor to go on")
+    func derivationStandsAlone() throws {
+        let owner = try #require(VocabStore.shared.entry(id: "n5-hon"))
+        // godan (休む), and ichidan (考える) — the two arms of the derivation.
+        for (surface, reading) in [("休み", "やすみ"), ("帰り", "かえり"), ("読み", "よみ"),
+                                   ("考え", "かんがえ"), ("教え", "おしえ"), ("調べ", "しらべ")] {
+            #expect(VocabStore.shared.isInflectedFormOfAVerb(surface: surface, reading: reading),
+                    "\(surface) is the 連用形 of a verb this corpus contains")
+            #expect(StumbledWords.entryID(for: (surface: surface, reading: reading),
+                                          followedBy: nil, taughtBy: owner, in: .shared) == nil,
+                    "\(surface) resolved with nothing but the derivation to stop it")
+        }
+        // …and it must not swallow ordinary nouns, or it would refuse everything.
+        for (surface, reading) in [("公園", "こうえん"), ("手紙", "てがみ"), ("必要", "ひつよう")] {
+            #expect(!VocabStore.shared.isInflectedFormOfAVerb(surface: surface, reading: reading),
+                    "\(surface) is not a verb stem")
+        }
+    }
+
+    /// **The test that would have caught the list being wrong.**
+    ///
+    /// `inflectionalTails` was written from linguistic intuition and validated by measuring what
+    /// it BLOCKED — 12.8% of resolutions, which reads like evidence and is not. Two of its
+    /// members occur ZERO times in the corpus (`ましょ`, `させ`: Sudachi emits `ましょう` and
+    /// `させる`), and the forms that do occur were absent, so 休みましょう went on offering the
+    /// noun 休み to a learner typing 休む — on N5 grammar, in the release that claimed to fix
+    /// exactly that class. A list of forms is a claim about the data; this checks it against
+    /// the data.
+    @Test("every inflectional tail actually occurs in the shipped corpus")
+    func everyInflectionalTailOccurs() {
+        var seen: Set<String> = []
+        for entry in VocabStore.shared.entries {
+            for token in entry.exampleTokens ?? [] where token.count >= 2 { seen.insert(token[0]) }
+        }
+        #expect(seen.count > 5_000, "only \(seen.count) distinct token surfaces — the walk is wrong")
+        let dead = JapaneseParticles.inflectionalTails.subtracting(seen).sorted()
+        #expect(dead.isEmpty, "tails that never occur, so they block nothing: \(dead)")
+    }
+
+    /// The other half: the tails that DO occur must be the ones a stem is actually followed by.
+    ///
+    /// Bounds the residue rather than claiming there is none. Measured at 66 tokens across the
+    /// corpus; the floor is set above that so ordinary corpus growth does not redden it and a
+    /// rule that stops working does.
+    @Test("few resolutions survive with an inflection immediately after them")
+    func residualStemResolutionsAreBounded() {
+        var residual: [String] = []
+        for (token, next, owner) in Self.corpusTokens {
+            guard let next, JapaneseParticles.inflectionalTails.contains(next),
+                  let id = StumbledWords.entryID(for: token, followedBy: nil,
+                                                 taughtBy: owner, in: .shared),
+                  id != owner.id
+            else { continue }
+            // Resolved ignoring the successor, but a real inflection follows it: this is the
+            // shape the rule exists to refuse, so count how many slip through the other checks.
+            if StumbledWords.entryID(for: token, followedBy: next,
+                                     taughtBy: owner, in: .shared) != nil {
+                residual.append("\(owner.id): \(token.surface)+\(next)")
+            }
+        }
+        #expect(residual.count < 120,
+                "\(residual.count) stems still resolve: \(residual.prefix(10))")
+    }
+
     /// The positive control, and it needs to be more than one case: a rule that refuses
     /// everything satisfies every negative test above, and the narrowing this suite polices
     /// works by refusing more.
@@ -618,8 +725,8 @@ struct ShippedResolutionTests {
         #expect(content > 40_000, "only \(content) content tokens — the corpus walk is wrong")
         let contentRate = Double(contentResolved) / Double(content)
         let kanjiRate = Double(kanjiResolved) / Double(kanji)
-        #expect(contentRate > 0.44, "content-token resolution fell to \(contentRate)")
-        #expect(kanjiRate > 0.58, "kanji-token resolution fell to \(kanjiRate)")
+        #expect(contentRate > 0.44, "content-token resolution fell to \(contentRate)")   // measured 50.7%
+        #expect(kanjiRate > 0.58, "kanji-token resolution fell to \(kanjiRate)")     // measured 72.2%
     }
 }
 

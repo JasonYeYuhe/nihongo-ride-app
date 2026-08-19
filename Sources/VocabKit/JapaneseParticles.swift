@@ -19,22 +19,26 @@ public enum JapaneseParticles {
 
     /// Tails that only ever attach to a verb or adjective stem — never the start of a word.
     ///
-    /// Their job here is to tell a free word from a bound stem, which is the one thing a
-    /// token cannot say about itself. Sudachi's `SplitMode.C` splits 読みます into 読み + ます,
-    /// and 読み is written and read exactly like the N3 noun 読み "reading"; the pair index
-    /// matches it with full confidence and the results screen offers to save the wrong word.
-    /// The successor is the evidence that settles it.
+    /// A SECOND line, behind `VocabStore.isInflectedFormOfAVerb`, which is derived and does the
+    /// bulk of the work. This list covers what derivation cannot see: euphonic stems whose
+    /// dictionary form is not reachable by the 連用形 rule (あっ for ある), adjective stems
+    /// (よく for 良い), and verbs the corpus happens not to contain (楽しみ, since 楽しむ is
+    /// absent). Measured residue without it: 66 tokens, of which about 39 are genuinely wrong.
     ///
-    /// **だ, です, で and ん are deliberately absent.** They follow NOUNS perfectly well, and
-    /// an earlier draft that included them blocked 公園, 大学, 授業, 好き, 予定 — measured, and
-    /// exactly the words the feature exists to offer. で is worse than useless here because it
-    /// is also the commonest particle. The list is the closed set of verb/adjective inflection
-    /// only, and it is measured: it costs 12.8% of resolutions and what it removes is 2,695
-    /// past-tense た plus the 連用形 stems that homograph with nouns — 教え, 調べ, 疲れ, 読み,
-    /// 合わせ, 遅れ, 切れ, 始まり, 帰り, 作り. (v1.24.)
+    /// **Every member of this list is asserted to occur in the shipped corpus.** The first
+    /// version was written from intuition and contained two forms that appear zero times —
+    /// `ましょ` and `させ`, because Sudachi emits `ましょう` and `させる` — while the forms that
+    /// do occur were missing. It measured what it blocked, which looked like validation and was
+    /// not, and 休みましょう went on offering the noun 休み to a learner typing 休む. The test
+    /// `everyInflectionalTailOccurs` is what makes this list evidence rather than a guess.
+    ///
+    /// **だ, です, で and ん are deliberately absent.** They follow NOUNS perfectly well, and an
+    /// early draft that included them blocked 公園, 大学, 授業, 好き, 予定 — measured, and
+    /// exactly the words the feature exists to offer.
     public static let inflectionalTails: Set<String> = [
-        "ます", "まし", "ませ", "ましょ", "た", "て", "ない", "なく", "なかっ", "ず",
-        "れ", "られ", "せ", "させ", "たい", "たかっ", "よう", "ば", "ください"
+        "ます", "まし", "ませ", "ましょう", "た", "て", "ない", "なく", "なかっ", "ず",
+        "れ", "られ", "られる", "せ", "たい", "たかっ", "よう", "ば", "ください",
+        "ながら", "やすい", "にくい", "すぎ", "そう", "始め", "終え", "終わっ", "切っ",
     ]
 
     /// Part-of-speech tags marking an entry that is not a free-standing word.

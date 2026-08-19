@@ -108,6 +108,12 @@ public enum StumbledWords {
             return entry.id
         }
         if let successor, JapaneseParticles.inflectionalTails.contains(successor) { return nil }
+        // Derived, not listed: 休み is the noun "rest" AND the stem of 休む, and no list of
+        // auxiliaries can be trusted to enumerate what may follow it. See
+        // `VocabStore.isInflectedFormOfAVerb`.
+        if vocab.isInflectedFormOfAVerb(surface: token.surface, reading: token.reading) {
+            return nil
+        }
         guard let named = vocab.entry(surface: token.surface, reading: token.reading),
               Set(named.partsOfSpeech).isDisjoint(with: JapaneseParticles.boundPartsOfSpeech)
         else { return nil }
@@ -138,7 +144,22 @@ public enum StumbledWords {
                             vocab: VocabStore = .shared,
                             minimumRefusals: Int = 2,
                             includesParticles: Bool = true) -> [Stumble] {
-        var counts: [String: (surface: String, reading: String, id: String?, n: Int)] = [:]
+        // Resolution is per OCCURRENCE and the chip aggregates across sentences, so the two
+        // have to be reconciled rather than assumed equal. They are not: the same token can be
+        // the noun 疲れ in one sentence and the stem of 疲れた in another, and 111 distinct
+        // (surface, reading) pairs in the shipped corpus resolve differently depending on which
+        // sentence they came from.
+        //
+        // The first version wrote the id into `counts[key, default:]`, whose argument is an
+        // @autoclosure — so it was evaluated once, on FIRST insertion, and the chip's star
+        // depended on which sentence happened to be refused first. Identical mistakes in a
+        // different order gave a different screen.
+        //
+        // Unanimity or nothing, which is the same rule the pair index uses for an ambiguous
+        // key: if the occurrences disagree, or any of them could not be resolved, the chip is
+        // diagnostic only. Deterministic, and it never stars a word on the strength of one
+        // reading of it.
+        var counts: [String: (surface: String, reading: String, ids: [String?], n: Int)] = [:]
         for event in trace.events {
             guard let id = event.entryID, let entry = vocab.entry(id: id),
                   // The event's target has to BE the sentence: in a word run `targetKana` is
@@ -150,14 +171,18 @@ public enum StumbledWords {
             let token = located.token
             if !includesParticles, JapaneseParticles.single.contains(token.surface) { continue }
             let key = token.surface + "\u{1F}" + token.reading
-            counts[key, default: (token.surface, token.reading,
-                                  entryID(for: token, followedBy: located.next,
-                                          taughtBy: entry, in: vocab), 0)].n += 1
+            let resolved = entryID(for: token, followedBy: located.next,
+                                   taughtBy: entry, in: vocab)
+            counts[key, default: (token.surface, token.reading, [], 0)].n += 1
+            counts[key]?.ids.append(resolved)
         }
         return counts.values
             .filter { $0.n >= minimumRefusals }
-            .map { Stumble(surface: $0.surface, reading: $0.reading,
-                           refusals: $0.n, entryID: $0.id) }
+            .map { entry in
+                let unanimous = Set(entry.ids).count == 1 ? entry.ids.first ?? nil : nil
+                return Stumble(surface: entry.surface, reading: entry.reading,
+                               refusals: entry.n, entryID: unanimous)
+            }
             .sorted { ($0.refusals, $1.reading) > ($1.refusals, $0.reading) }
     }
 
