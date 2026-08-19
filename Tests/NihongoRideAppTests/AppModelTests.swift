@@ -2,6 +2,7 @@ import Testing
 import Foundation
 import VocabKit
 import GameCore
+import WidgetSharedKit
 @testable import NihongoRideApp
 
 /// The app layer, under test for the first time.
@@ -64,6 +65,63 @@ struct AppModelTests {
         let real = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
             .first?.appendingPathComponent("NihongoRide").path
         if let real { #expect(!path.hasPrefix(real), "the tests are writing to the real store") }
+    }
+
+    /// Every file this process could reach that belongs to the person running the tests,
+    /// with the modification date it had when we looked.
+    ///
+    /// Two locations, because the sandbox only ever covered one of them and that is precisely
+    /// how this got out: `supportDirectoryOverride` redirects `supportFileURL`, and the widget
+    /// snapshot is written to the **App Group container**, which `supportFileURL` never names.
+    static func realUserFileStamps() -> [String: Date] {
+        var stamps: [String: Date] = [:]
+        var roots: [URL] = []
+        if let support = FileManager.default.urls(for: .applicationSupportDirectory,
+                                                  in: .userDomainMask).first {
+            roots.append(support.appendingPathComponent("NihongoRide", isDirectory: true))
+        }
+        if let group = AppGroup.containerURL() { roots.append(group) }
+        for root in roots {
+            let files = (try? FileManager.default.contentsOfDirectory(
+                at: root, includingPropertiesForKeys: [.contentModificationDateKey])) ?? []
+            for file in files {
+                let date = (try? file.resourceValues(forKeys: [.contentModificationDateKey]))?
+                    .contentModificationDate
+                stamps[file.path] = date ?? .distantPast
+            }
+        }
+        return stamps
+    }
+
+    /// **The test that would have caught the one this suite shipped.**
+    ///
+    /// v1.24 added this target, and every model it built wrote a snapshot computed from an
+    /// EMPTY sandbox store onto the owner's real home-screen widget — fourteen days of zeros
+    /// over their actual due counts and streak, once per `swift test`, on their own machine.
+    /// It had already happened by the time the pre-submission review found it.
+    ///
+    /// `harnessIsSandboxed` could not see it: it asserts a path under Application Support and
+    /// the leak was in the App Group container. So this asserts the property that actually
+    /// matters — **running the tests changes nothing that belongs to the user** — rather than
+    /// the one mechanism that was known about when the harness was written. Anything new that
+    /// escapes the sandbox trips this without anyone having to predict which door it used.
+    @Test("running the app-layer tests writes nothing outside the sandbox")
+    func nothingOutsideTheSandboxIsWritten() {
+        let before = Self.realUserFileStamps()
+        // A model plus the events that persist: a finished run merges SRS, logs a ride,
+        // refreshes the widget snapshot and saves settings.
+        let model = Self.makeModel(vocab: VocabStore(entries: [
+            Self.entry("a", "水", "みず"), Self.entry("b", "火", "ひ")]))
+        model.startGame()
+        model.session?.skip()
+        model.finishGame()
+        model.refreshWidgetSnapshot()
+        let after = Self.realUserFileStamps()
+        let touched = after.filter { before[$0.key] != $0.value }.keys.sorted()
+        #expect(touched.isEmpty, "the tests wrote to the user's own data: \(touched)")
+        // The probe has to be able to SEE those files, or it proves nothing by finding nothing.
+        #expect(!before.isEmpty,
+                "no real user files were visible — this check cannot detect a leak it cannot see")
     }
 
     // MARK: The dead tap (v1.23 §B, shipped with no execution evidence)

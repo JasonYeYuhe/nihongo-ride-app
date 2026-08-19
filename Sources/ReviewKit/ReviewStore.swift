@@ -88,7 +88,8 @@ public struct ReviewStore: Codable, Sendable {
     ///   entry's card can never be reviewed away, so it is a leech forever. Nothing in the app
     ///   reads this yet; it takes the argument so that whatever reads it next cannot forget.
     public func leeches(resolves: (String) -> Bool) -> [SRSCard] {
-        cards.values.filter(\.isLeech).sorted { $0.lapses > $1.lapses }
+        cards.values.filter { $0.isLeech && resolves($0.id) }
+            .sorted { $0.lapses > $1.lapses }
     }
 
     /// Cards reviewed at least once — the pool the weak-words cram draws from

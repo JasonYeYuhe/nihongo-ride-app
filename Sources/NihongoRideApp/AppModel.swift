@@ -457,10 +457,23 @@ final class AppModel {
     ///
     /// The write is tiny (a few fields + two 14-int arrays) and atomic, so it runs
     /// inline like `settings.save`. A failure is logged, never alerted: the widget is
-    /// a convenience, and `containerUnavailable` is simply the normal state under
-    /// `swift run` (no entitlement), not an error worth surfacing.
+    /// a convenience.
+    ///
+    /// 🔴 Also skipped with no bundle identifier, which is the half this guard was missing
+    /// and the half that mattered. The comment here used to say `containerUnavailable` was
+    /// "simply the normal state under `swift run` (no entitlement)" — that is FALSE on macOS:
+    /// `containerURL(forSecurityApplicationGroupIdentifier:)` resolves for an unbundled
+    /// process, so the write SUCCEEDS and stamps whatever stores that process happens to hold
+    /// onto the real widget. Latent since v1.11 because nothing unbundled built an `AppModel`
+    /// except the screenshot renderer, which the capture guard already covered. v1.24's app
+    /// test target made it live: seven models per `swift test`, each computed from an empty
+    /// sandbox, each overwriting the owner's real home-screen widget with zeros. Caught by the
+    /// pre-submission review, after it had already happened on this machine.
+    ///
+    /// `Bundle.main.bundleIdentifier != nil` is the same test `GameCenterManager`,
+    /// `ReminderScheduler` and `CloudKitSyncController` already use, for the same reason.
     func refreshWidgetSnapshot(now: Date = Date()) {
-        guard !Screenshotter.isCapturing else { return }
+        guard Bundle.main.bundleIdentifier != nil, !Screenshotter.isCapturing else { return }
         let h = WidgetSnapshot.horizon
         let cal = Calendar.current
         let startToday = cal.startOfDay(for: now)
@@ -484,7 +497,7 @@ final class AppModel {
         case .success:
             WidgetCenter.shared.reloadAllTimelines()
         case .failure(.containerUnavailable):
-            break   // no App Group in this context (e.g. swift run) — nothing to do
+            break   // no App Group entitlement in this context — nothing to do
         case .failure(let error):
             PersistLog.failure("widget snapshot write", error)
         }

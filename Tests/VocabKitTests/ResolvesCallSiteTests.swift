@@ -166,14 +166,31 @@ struct ResolvesCallSiteTests {
             let name = String(afterKeyword.prefix { $0.isLetter || $0.isNumber || $0 == "_" })
             let lowered = name.lowercased()
             guard countingPrefixes.contains(where: { lowered.hasPrefix($0) }) else { continue }
-            // The declaration may wrap over several lines; read to the body brace.
+            // Read the declaration AND its body: brace-balanced from the first `{`.
+            //
+            // Reading only to the first brace is what let the shipped `ReviewStore.leeches`
+            // through — it declared `resolves:` and never called it, so the signature check
+            // passed while the filter did nothing. A parameter that is accepted and ignored is
+            // worse than a missing one: the call site reads as guarded, the doc comment
+            // promises the filter, and every test passes `{ _ in true }`, under which an
+            // ignored filter and an applied one are indistinguishable. Found by the v1.24
+            // pre-submission review, in code this very rule had just declared clean.
             var declaration = ""
+            var depth = 0
+            var opened = false
             for continuation in lines[index...] {
-                declaration += continuation
-                if continuation.contains("{") { break }
+                declaration += continuation + "\n"
+                for character in continuation {
+                    if character == "{" { depth += 1; opened = true }
+                    if character == "}" { depth -= 1 }
+                }
+                if opened && depth <= 0 { break }
             }
-            if !declaration.contains("resolves:") {
+            let signature = declaration.components(separatedBy: "{").first ?? declaration
+            if !signature.contains("resolves:") {
                 found.append("\(file):\(index + 1) \(name) — counts work without a resolves:")
+            } else if !declaration.contains("resolves(") {
+                found.append("\(file):\(index + 1) \(name) — takes resolves: and never calls it")
             }
         }
         return found
@@ -226,8 +243,33 @@ struct ResolvesCallSiteTests {
         public func dueCards(on date: Date = Date(), limit: Int = 100,
                              calendar: Calendar = .current,
                              resolves: (String) -> Bool) -> [ConjugationSRSCard] {
+            cards.values.filter { $0.dueDate < cutoff && resolves($0.sourceID) }
+        }
+        }
         """
         #expect(Self.undeclaredGuards(in: after, file: "x").isEmpty)
+
+        // The shape that got through the first version of this rule: declared and ignored.
+        let declaredButIgnored = """
+        public struct ReviewStore {
+        public func leeches(resolves: (String) -> Bool) -> [SRSCard] {
+            cards.values.filter(\\.isLeech).sorted { $0.lapses > $1.lapses }
+        }
+        }
+        """
+        #expect(Self.undeclaredGuards(in: declaredButIgnored, file: "x").count == 1,
+                "a resolves: that is accepted and never called must be flagged")
+
+        // …and the fix must clear it, including the nested closure braces in the sort.
+        let declaredAndUsed = """
+        public struct ReviewStore {
+        public func leeches(resolves: (String) -> Bool) -> [SRSCard] {
+            cards.values.filter { $0.isLeech && resolves($0.id) }
+                .sorted { $0.lapses > $1.lapses }
+        }
+        }
+        """
+        #expect(Self.undeclaredGuards(in: declaredAndUsed, file: "x").isEmpty)
 
         // Members that are not counts of outstanding work must not be dragged in.
         let unrelated = """
