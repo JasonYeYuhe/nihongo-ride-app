@@ -178,8 +178,13 @@ public enum StumbledWords {
     ///     hand-written copy of it — the withdrawn-entry leak that inflated four counts for
     ///     three releases was exactly a hand-written copy going missing.
     ///
-    /// Duplicates are impossible by construction (chips are keyed by surface+reading and the
-    /// pair index is injective), but the order is preserved so the ride follows the screen.
+    /// Duplicates ARE possible and are dropped here: two chips that differ as text can resolve
+    /// to one entry, and the run would otherwise contain the same word twice while the button
+    /// counted it once.
+    ///
+    /// The order is screen order, and that is where the guarantee stops: `GameSession.makeWeak`
+    /// shuffles, deliberately, like every other run builder. An earlier version of this comment
+    /// claimed the ride follows the screen — it does not, and nothing was keeping it.
     public static func rideableIDs(in stumbles: [Stumble],
                                    resolves: (String) -> Bool) -> [String] {
         var seen = Set<String>()

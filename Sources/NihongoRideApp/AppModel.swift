@@ -314,7 +314,7 @@ final class AppModel {
         // make subsequent capture runs non-deterministic.
         let loaded = Screenshotter.isCapturing
             ? AppSettings.default.sanitized()
-            : AppSettings.load(from: .standard)
+            : AppSettings.load(from: Self.settingsStore)
         settings = loaded
         languageCode = loaded.languageCode
         assistance = AssistanceMode(rawValue: loaded.assistance)
@@ -407,7 +407,7 @@ final class AppModel {
 
         // Persist once so a fresh install writes back its minted deviceID (and the
         // onboarding flag above for upgrading users). Never in capture mode.
-        if !Screenshotter.isCapturing { settings.save(to: .standard) }
+        if !Screenshotter.isCapturing { settings.save(to: Self.settingsStore) }
         // Refresh the reminder schedule for the days ahead (no-op when off).
         refreshReminders()
         refreshWidgetSnapshot()   // v1.11: publish the current due counts to the widget
@@ -420,7 +420,7 @@ final class AppModel {
     /// reminders stay opt-in from the settings screen.
     func finishOnboarding() {
         settings.hasSeenOnboarding = true
-        settings.save(to: .standard)
+        settings.save(to: Self.settingsStore)
         screen = .menu
     }
 
@@ -493,7 +493,8 @@ final class AppModel {
             streakByDay: streakByDay,
             lifetimeWords: lifetimeWords,
             languageCode: languageCode)
-        switch WidgetSnapshotStore.write(snapshot) {
+        switch WidgetSnapshotStore.write(snapshot,
+                                         to: Self.widgetContainerOverride ?? AppGroup.containerURL()) {
         case .success:
             WidgetCenter.shared.reloadAllTimelines()
         case .failure(.containerUnavailable):
@@ -743,7 +744,7 @@ final class AppModel {
     /// Marks the one-time conjugation-SRS back-fill as done (persisted).
     func markConjSRSBackfilled() {
         settings.conjSRSBackfilled = true
-        if !Screenshotter.isCapturing { settings.save(to: .standard) }
+        if !Screenshotter.isCapturing { settings.save(to: Self.settingsStore) }
     }
 
     /// Merges cloud changes into the local stores (via the tested SyncKit merges)
@@ -833,7 +834,7 @@ final class AppModel {
         settings.ttsEnabled = ttsEnabled
         settings.ttsRate = ttsRate
         settings.exampleFurigana = exampleFurigana
-        settings.save(to: .standard)
+        settings.save(to: Self.settingsStore)
     }
 
     /// Speaks `text` (a kana string) aloud if TTS is enabled and text is present. Owned by
@@ -1772,6 +1773,31 @@ final class AppModel {
     /// chosen by the caller, because tests run in parallel and a shared directory would let
     /// them read each other's stores. (v1.24 §B.)
     static var supportDirectoryOverride: URL?
+
+    /// Where the widget snapshot goes. Nil in the shipping app, meaning the real App Group.
+    ///
+    /// `supportDirectoryOverride` covers `supportFileURL` and nothing else, and the widget
+    /// snapshot is written OUTSIDE it — which is how the app tests came to overwrite the
+    /// owner's real home-screen widget with zeros. That was first closed by refusing to write
+    /// when `Bundle.main.bundleIdentifier` is nil, and the review then measured that this is a
+    /// PROXY rather than the property: under XCTest hosting the identifier is
+    /// "com.apple.dt.xctest.tool" and the container still resolves, so one `import XCTest` test
+    /// that builds an AppModel reopens the identical hole. This is the property itself — the
+    /// test says where the snapshot may land, and no runner detail can move it. (v1.24.)
+    static var widgetContainerOverride: URL?
+
+    /// Where settings persist. Nil in the shipping app, meaning `UserDefaults.standard`.
+    ///
+    /// The third location outside `supportFileURL`, and the third time the answer was "add
+    /// another override": settings are the one store this model writes that is neither a file
+    /// under Application Support nor the App Group. In the test process `.standard` is the
+    /// runner's own domain, so each run left `NihongoRide.settings.v1` behind for the next one
+    /// to read — languageCode, selectedMode, selectedLevel, hasSeenOnboarding, deviceID. Not
+    /// damage (the shipping app is sandboxed and keeps its own), but a suite whose result can
+    /// depend on what a previous run happened to persist is not a suite worth trusting.
+    static var settingsDefaults: UserDefaults?
+
+    static var settingsStore: UserDefaults { settingsDefaults ?? .standard }
 
     static func supportFileURL(_ name: String) -> URL {
         let fm = FileManager.default

@@ -35,6 +35,13 @@ struct AppModelTests {
         let dir = FileManager.default.temporaryDirectory
             .appendingPathComponent("NihongoRideAppTests-\(UUID().uuidString)", isDirectory: true)
         AppModel.supportDirectoryOverride = dir
+        // The App Group container is a SECOND location outside supportFileURL, and it is the
+        // one the tests actually clobbered. Redirected explicitly rather than relying on the
+        // bundle-identifier guard, which the review measured to be non-nil under XCTest hosting.
+        AppModel.widgetContainerOverride = dir.appendingPathComponent("group", isDirectory: true)
+        // …and settings, which live in UserDefaults rather than in either directory. A private
+        // suite per model, so one test cannot inherit what another persisted.
+        AppModel.settingsDefaults = UserDefaults(suiteName: "NihongoRideTests-\(UUID().uuidString)")
         return (AppModel(vocab: vocab), dir)
     }
 
@@ -73,14 +80,18 @@ struct AppModelTests {
     /// Two locations, because the sandbox only ever covered one of them and that is precisely
     /// how this got out: `supportDirectoryOverride` redirects `supportFileURL`, and the widget
     /// snapshot is written to the **App Group container**, which `supportFileURL` never names.
-    static func realUserFileStamps() -> [String: Date] {
-        var stamps: [String: Date] = [:]
+    static var realUserRoots: [URL] {
         var roots: [URL] = []
         if let support = FileManager.default.urls(for: .applicationSupportDirectory,
                                                   in: .userDomainMask).first {
             roots.append(support.appendingPathComponent("NihongoRide", isDirectory: true))
         }
         if let group = AppGroup.containerURL() { roots.append(group) }
+        return roots
+    }
+
+    static func fileStamps(in roots: [URL]) -> [String: Date] {
+        var stamps: [String: Date] = [:]
         for root in roots {
             let files = (try? FileManager.default.contentsOfDirectory(
                 at: root, includingPropertiesForKeys: [.contentModificationDateKey])) ?? []
@@ -92,6 +103,8 @@ struct AppModelTests {
         }
         return stamps
     }
+
+    static func realUserFileStamps() -> [String: Date] { fileStamps(in: realUserRoots) }
 
     /// **The test that would have caught the one this suite shipped.**
     ///
@@ -119,9 +132,38 @@ struct AppModelTests {
         let after = Self.realUserFileStamps()
         let touched = after.filter { before[$0.key] != $0.value }.keys.sorted()
         #expect(touched.isEmpty, "the tests wrote to the user's own data: \(touched)")
-        // The probe has to be able to SEE those files, or it proves nothing by finding nothing.
-        #expect(!before.isEmpty,
-                "no real user files were visible — this check cannot detect a leak it cannot see")
+    }
+
+    /// The instrument, calibrated on a directory we own.
+    ///
+    /// The first version of the test above ended with `#expect(!before.isEmpty)` — a self-check
+    /// so it could not report "nothing was touched" while seeing nothing at all. It was the
+    /// right instinct aimed at the wrong thing: on a fresh clone, a CI box or a second Mac,
+    /// nobody has run the shipped app, both roots are empty, and that assertion fails for a
+    /// reason unrelated to the property. The predictable repair is to delete it, which would
+    /// leave a null instrument behind. So the detection is proven HERE instead, where the files
+    /// are ours and always exist. (Found by the v1.24 pre-submission review.)
+    @Test("the write detector actually detects a write")
+    func writeDetectorIsCalibrated() throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("NihongoRideProbe-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let file = root.appendingPathComponent("snapshot.json")
+        try Data("before".utf8).write(to: file)
+
+        let before = Self.fileStamps(in: [root])
+        #expect(before.count == 1, "the walk did not see a file that is definitely there")
+        // A different date, not merely different bytes: the comparison is on mtime, and a same
+        // -second rewrite would otherwise look unchanged and make this pass for the wrong reason.
+        try FileManager.default.setAttributes(
+            [.modificationDate: Date(timeIntervalSince1970: 1)], ofItemAtPath: file.path)
+        let after = Self.fileStamps(in: [root])
+        let changed = after.filter { before[$0.key] != $0.value }.keys.sorted()
+        // Compared on the last component: /var is a symlink to /private/var on macOS, so the
+        // path the walk reports and the path we wrote are the same file under two names.
+        #expect(changed.map { ($0 as NSString).lastPathComponent } == ["snapshot.json"],
+                "the detector missed a write it was looking straight at: \(changed)")
     }
 
     // MARK: The dead tap (v1.23 §B, shipped with no execution evidence)

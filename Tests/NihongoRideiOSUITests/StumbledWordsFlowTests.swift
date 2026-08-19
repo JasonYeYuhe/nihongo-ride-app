@@ -77,14 +77,27 @@ final class StumbledWordsFlowTests: XCTestCase {
         // The heading alone would render above an empty list. Each chip combines into one
         // element labelled "surface, reading" — that pairing IS the feature, so assert it, and
         // assert it is Japanese so an English label elsewhere on the screen cannot stand in.
-        let chips = app.staticTexts.allElementsBoundByIndex.map(\.label).filter { label in
-            let parts = label.components(separatedBy: ", ")
-            guard parts.count == 2, !parts[0].isEmpty, !parts[1].isEmpty else { return false }
-            return parts.allSatisfy { $0.unicodeScalars.allSatisfy { $0.value > 0x3000 } }
+        // Both collections, and the LEADING pair rather than the whole label.
+        //
+        // v1.24 made a resolvable chip actionable, which changed two things this query used to
+        // depend on without saying so: the chip gained `.isButton`, so it is enumerated under
+        // `buttons` and no longer under `staticTexts`, and its label gained a saved-state
+        // suffix. An earlier draft also PREFIXED the label with "Save", which made every chip
+        // invisible here — the test would have failed on a screen that rendered perfectly, and
+        // only a simulator run would have said so. The label rule now lives in
+        // `StumbleChipLabel` with unit tests (`StumbleChipLabelTests`) asserting exactly the
+        // property matched below, so `swift test` catches the next such change.
+        let labels = (app.staticTexts.allElementsBoundByIndex
+                      + app.buttons.allElementsBoundByIndex).map(\.label)
+        let chips = labels.filter { label in
+            let parts = label.components(separatedBy: ",")
+                .map { $0.trimmingCharacters(in: .whitespaces) }
+            guard parts.count >= 2, !parts[0].isEmpty, !parts[1].isEmpty else { return false }
+            return parts.prefix(2).allSatisfy { $0.unicodeScalars.allSatisfy { $0.value > 0x3000 } }
         }
         XCTAssertFalse(chips.isEmpty,
-                       "the section rendered with no words in it. STATIC TEXTS: " +
-                       app.staticTexts.allElementsBoundByIndex.map(\.label).joined(separator: " | "))
+                       "the section rendered with no words in it. ELEMENTS: " +
+                       labels.joined(separator: " | "))
     }
 
     /// Types the current word's remaining romaji, once per word, until the run ends or the hint

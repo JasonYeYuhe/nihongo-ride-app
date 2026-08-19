@@ -35,7 +35,14 @@ struct ResolvesCallSiteTests {
                           "reviewedCount", "weakestCards", "leeches"]
 
     /// The modules those methods are DECLARED in.
-    static let countingModules = ["Sources/ReviewKit", "Sources/ConjugationReviewKit"]
+    ///
+    /// NotificationKit is here because it was the one place a `{ _ in true }` default survived
+    /// v1.24 §C, while `STATE-2026-08-18.md` claimed all ten were gone — a doc asserting a
+    /// property nothing checked, which is this project's own cheapest defect. All three scanners
+    /// reported that file clean: two never opened the directory, and the third matched only
+    /// call sites, where the argument IS passed.
+    static let countingModules = ["Sources/ReviewKit", "Sources/ConjugationReviewKit",
+                                  "Sources/NotificationKit"]
 
     /// Name prefixes that make a member a count of outstanding work. Anything matching one of
     /// these has to take `resolves:`, because every one of them is a number a learner reads or
@@ -151,15 +158,32 @@ struct ResolvesCallSiteTests {
         // Only members of a STORE are counts over a collection. `SRSCard.dueDate` is one card's
         // own date, and asking it what resolves is meaningless — the first version of this rule
         // flagged it, which is what a calibration pass is for.
-        var enclosingType = ""
+        //
+        // A STACK, not a running variable. The first version kept one name and never restored
+        // it when a nested type closed: `ConjugationReviewStore.Forecast` is declared near the
+        // end of its file, so from that line onward the enclosing type read "Forecast", the
+        // Store test failed, and everything after it was silently exempt — including the end of
+        // the file, which is where a new method actually gets appended. A rule whose coverage
+        // depends on where in the file you type is not a rule. (v1.24, pre-submission review.)
+        var stack: [(name: String, depth: Int)] = []
+        var depth = 0
         for (index, line) in lines.enumerated() {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
-            for keyword in ["public struct ", "public final class ", "public class ", "extension "]
-            where trimmed.hasPrefix(keyword) {
-                enclosingType = String(trimmed.dropFirst(keyword.count)
+            var declared: String?
+            for keyword in ["public struct ", "public final class ", "public class ", "extension ",
+                            "struct ", "final class ", "class "]
+            where trimmed.hasPrefix(keyword) && declared == nil {
+                declared = String(trimmed.dropFirst(keyword.count)
                     .prefix { $0.isLetter || $0.isNumber || $0 == "_" })
             }
-            guard enclosingType.hasSuffix("Store") else { continue }
+            let depthBefore = depth
+            for character in line {
+                if character == "{" { depth += 1 }
+                if character == "}" { depth -= 1 }
+            }
+            if let declared { stack.append((declared, depthBefore)) }
+            while let top = stack.last, depth <= top.depth, declared == nil { stack.removeLast() }
+            guard stack.last?.name.hasSuffix("Store") == true else { continue }
             guard trimmed.hasPrefix("public func ") || trimmed.hasPrefix("public var ") else { continue }
             let isFunc = trimmed.hasPrefix("public func ")
             let afterKeyword = trimmed.dropFirst(isFunc ? "public func ".count : "public var ".count)
@@ -270,6 +294,24 @@ struct ResolvesCallSiteTests {
         }
         """
         #expect(Self.undeclaredGuards(in: declaredAndUsed, file: "x").isEmpty)
+
+        // A counting method appended AFTER a nested type must still be seen. This is the exact
+        // shape that made the rule placement-dependent.
+        let afterNestedType = """
+        public struct ConjugationReviewStore {
+            public func dueCount(resolves: (String) -> Bool) -> Int {
+                cards.count { resolves($0.sourceID) }
+            }
+
+            public struct Forecast: Sendable {
+                public let today: Int
+            }
+
+            public func dueSoonCount(within days: Int) -> Int { cards.count }
+        }
+        """
+        #expect(Self.undeclaredGuards(in: afterNestedType, file: "x").count == 1,
+                "a method after a nested type is still a member of the Store")
 
         // Members that are not counts of outstanding work must not be dragged in.
         let unrelated = """

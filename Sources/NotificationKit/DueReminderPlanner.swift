@@ -57,8 +57,8 @@ public enum DueReminderPlanner {
     /// - Returns: future reminders, soonest first, skipping zero-due days.
     public static func plan(
         store: ReviewStore,
-        conjugationDue: (Date, Calendar) -> Int = { _, _ in 0 },
-        vocabResolves: @escaping (String) -> Bool = { _ in true },
+        conjugationDue: (Date, Calendar) -> Int,
+        vocabResolves: @escaping (String) -> Bool,
         from now: Date,
         hour: Int,
         days: Int = 7,

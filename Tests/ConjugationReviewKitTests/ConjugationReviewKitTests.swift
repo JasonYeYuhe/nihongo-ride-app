@@ -244,4 +244,51 @@ struct ConjugationOrphanCountTests {
                                      resolves: { seen.append($0); return true })
         #expect(Set(seen) == ["live", "retired"], Comment(rawValue: "got \(seen)"))
     }
+
+    /// The three counts v1.24 §C added a filter to, which nothing then exercised.
+    ///
+    /// Measured: changing `resolves($0.sourceID)` to `resolves($0.id)` in all three left the
+    /// whole 503-test suite green. In the app those three are handed `vocab.resolvesID` and no
+    /// VocabEntry id contains '#', so the predicate would be false for every card and the Stats
+    /// screen would read "Forms practiced 0 / Tough forms 0" for every learner, forever, no
+    /// matter how much they drilled. The test above pins the same property for `dueCount` and
+    /// is the reason that one is safe; these three had nothing. (v1.24, pre-submission review.)
+    @Test("the counts v1.24 filtered also drop a card whose verb is gone")
+    func v124CountsFilterOrphans() {
+        let now = Date()
+        var s = store(now: now)
+        // Make both cards leeches and reviewed, so every count below has something to drop.
+        for _ in 0..<8 {
+            _ = s.record(promptID: "live#te", outcome: .init(completed: false, mistakes: 5), on: now)
+            _ = s.record(promptID: "retired#te", outcome: .init(completed: false, mistakes: 5), on: now)
+        }
+        #expect(s.reviewedCount() == 2)
+        #expect(s.reviewedCount(resolves: resolves) == 1)
+
+        #expect(s.leeches().count == 2)
+        #expect(s.leeches(resolves: resolves).count == 1)
+
+        #expect(s.weakestFormCards().count == 2)
+        #expect(s.weakestFormCards(resolves: resolves).count == 1)
+    }
+
+    /// …and each of them must ask about the VERB, not the prompt key. Separate from the counts
+    /// above because "returns one fewer card" is satisfied by a filter that drops the wrong one.
+    @Test("all three ask about the verb, not the prompt key")
+    func v124CountsReceiveTheSourceID() {
+        let now = Date()
+        var s = store(now: now)
+        for _ in 0..<8 {
+            _ = s.record(promptID: "live#te", outcome: .init(completed: false, mistakes: 5), on: now)
+        }
+        for (name, call) in [("reviewedCount", { (f: @escaping (String) -> Bool) in _ = s.reviewedCount(resolves: f) }),
+                             ("leeches", { (f: @escaping (String) -> Bool) in _ = s.leeches(resolves: f) }),
+                             ("weakestFormCards", { (f: @escaping (String) -> Bool) in _ = s.weakestFormCards(resolves: f) })] {
+            var seen: [String] = []
+            call({ seen.append($0); return true })
+            #expect(!seen.isEmpty, "\(name) never consulted the filter")
+            #expect(seen.allSatisfy { !$0.contains("#") },
+                    Comment(rawValue: "\(name) was handed a prompt key, not a verb id: \(seen)"))
+        }
+    }
 }

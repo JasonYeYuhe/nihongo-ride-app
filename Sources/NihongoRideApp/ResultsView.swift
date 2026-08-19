@@ -281,6 +281,7 @@ struct ResultsView: View {
         .onLongPressGesture { if let id = stumble.entryID { addToListsTarget = id } }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel(for: stumble, saved: saved))
+        .accessibilityHint(accessibilityHint(for: stumble, saved: saved) ?? "")
         .accessibilityAddTraits(stumble.entryID == nil ? [] : .isButton)
         .accessibilityActions {
             if let id = stumble.entryID {
@@ -289,13 +290,13 @@ struct ResultsView: View {
         }
     }
 
-    /// VoiceOver has to distinguish the two kinds of chip, because visually the difference is a
-    /// missing star and a paler stroke — neither of which it can convey.
     private func accessibilityLabel(for stumble: StumbledWords.Stumble, saved: Bool) -> String {
-        let word = "\(stumble.surface), \(stumble.reading)"
-        guard stumble.entryID != nil else { return word }
-        if saved { return zh ? "\(word),已收藏" : "\(word), saved" }
-        return zh ? "\(word),收藏" : "Save \(word)"
+        StumbleChipLabel.label(surface: stumble.surface, reading: stumble.reading,
+                               actionable: stumble.entryID != nil, saved: saved, zh: zh)
+    }
+
+    private func accessibilityHint(for stumble: StumbledWords.Stumble, saved: Bool) -> String? {
+        StumbleChipLabel.hint(actionable: stumble.entryID != nil, saved: saved, zh: zh)
     }
 
     /// Rides the words this screen just named, as a word run that records no SRS.
