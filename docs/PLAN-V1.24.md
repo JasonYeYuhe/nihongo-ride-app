@@ -270,3 +270,55 @@ The dictation diagnostic v1.23 shipped is intact.
 `GameSummary` now carries `persistsSRS` from `RunCompletion` — the same value `finishGame`
 gates the merge on — so a mode check in the view cannot drift. The first wording ("Missed")
 was replaced after the headless render showed it reading as a contradiction beside the chips.
+
+---
+
+# What the pre-submission adversarial review found
+
+Five lenses over `251de43..HEAD`, each an independent agent, plus a completeness critic. Twelve
+findings, all twelve verified here before acting and all twelve fixed. The review earned its
+place several times over; what follows is the part worth carrying forward.
+
+## It found a defect the feature was built around
+
+`§A`'s rule was "the written form and the reading must both agree", and this document argued at
+length that this made resolution safe. It does not. **An inflected form is written and read
+exactly like its homographic lemma.** 本を読みます tokenizes as 本 / を / 読み / ます, and 読み
+matched the N3 noun 読み "reading" — so the chip for the word the learner was typing carried a
+star that saved a different word. た, alone, matched the entry "past tense marker" in **2,695**
+shipped sentences: stumble twice on a past-tense ending and the app offers you a card asking you
+to type "ta".
+
+The property the index guarantees and the property the feature needs are different sentences,
+and the whole of §A was written without noticing. Fixed by asking the sentence rather than the
+token: refuse when the next token is a verb/adjective inflection, or when the entry is a bound
+morpheme. 58.4% → 51.0% of content tokens; residual 連用形 misses measured at 0.88% of
+resolutions, most of which are genuine nouns.
+
+## Three of the twelve were tests that could not fail
+
+- The corpus "safety invariant" fetched an entry from an index keyed on `(surface, reading)` and
+  then asserted that its surface and reading matched — **re-deriving the index's own key**. Green
+  over 24,082 resolutions, structurally incapable of failing, and it is why the above shipped.
+- The three conjugation filters §C added had no behavioural test at all: swapping `sourceID` for
+  `id` left all 503 tests passing, while production would have read "Forms practiced 0" forever.
+- The device test that is the only evidence §A reaches a real screen was **broken by §A** — the
+  chip gained `.isButton` and an instruction-prefixed label, so its detector matched nothing. It
+  would have failed on a screen rendering perfectly, and only a simulator run would have said so.
+
+## And the rule that was meant to end this class of defect had three holes
+
+`ResolvesCallSiteTests` reported clean on all of: a `resolves:` that was accepted and never
+called (it read the signature and stopped at the first brace); anything after a nested `public
+struct` (one running variable, never restored); and the entire `NotificationKit` directory, which
+still held the last `{ _ in true }` while `STATE-2026-08-18.md` recorded that all ten were gone.
+
+That last one is the shape this project keeps writing down: **a document asserting a property
+nothing checks**, committed by the change that was meant to close it.
+
+## The one the review could not have caught, and the harness had to
+
+Emptying `inflectionalTails` blinds the rule and its property test at the same moment, because
+the test reads the same constant. Measured: only the concrete named cases went red. A property
+test parameterised by the value it polices is a gate sharing a blind spot with the thing it
+gates — the concrete cases exist for exactly that, and the mutation harness is what showed it.
