@@ -73,8 +73,32 @@ public enum StumbledWords {
     /// path would resolve 7 more tokens out of 41,222, every one of them a euphonic stem whose
     /// lemma is genuinely ambiguous.
     ///
-    /// The second path is the store's pair index. See `VocabStore.entry(surface:reading:)`.
+    /// The second path is the store's pair index, and it needs one more thing than the index
+    /// can give it.
+    ///
+    /// "Written and read exactly like this entry" is what the index guarantees, and v1.24
+    /// shipped believing that was the same as "this IS that entry". It is not, and the review
+    /// found the gap: an inflected form is written and read exactly like its homographic
+    /// lemma. 本を読みます tokenizes as 本 / を / 読み / ます, and 読み matched the N3 noun 読み
+    /// "reading" — so the chip for the word the learner was typing (読む) carried a star that
+    /// saved a different word. 事件…進展があった gives あっ, and た alone matched the entry
+    /// "past tense marker" in 2,695 sentences.
+    ///
+    /// So the pair path now also asks whether the token is a free word at all:
+    ///
+    /// * **Not if the entry is a bound morpheme** (`suf`) — た, 向け, the suffix sense of 中.
+    /// * **Not if the next token is a verb/adjective inflection** — 読み+ます, あっ+た,
+    ///   疲れ+て. See `JapaneseParticles.inflectionalTails`, and note what is deliberately NOT
+    ///   in it.
+    ///
+    /// The taught-word path is exempt from both, because there the id is known rather than
+    /// inferred: the sentence was written to teach that entry, so a stem of it still names it.
+    ///
+    /// - Parameter followedBy: surface of the next content token, or nil at the end of the
+    ///   sentence. Required, not defaulted — a caller that cannot supply it is a caller that
+    ///   cannot make this judgement, and defaulting to nil would silently restore the bug.
     static func entryID(for token: (surface: String, reading: String),
+                        followedBy successor: String?,
                         taughtBy entry: VocabEntry,
                         in vocab: VocabStore) -> String? {
         guard !JapaneseParticles.single.contains(token.surface) else { return nil }
@@ -83,7 +107,11 @@ public enum StumbledWords {
              == KanaScript.katakanaToHiragana(entry.kana) {
             return entry.id
         }
-        return vocab.entry(surface: token.surface, reading: token.reading)?.id
+        if let successor, JapaneseParticles.inflectionalTails.contains(successor) { return nil }
+        guard let named = vocab.entry(surface: token.surface, reading: token.reading),
+              Set(named.partsOfSpeech).isDisjoint(with: JapaneseParticles.boundPartsOfSpeech)
+        else { return nil }
+        return named.id
     }
 
     /// The words `trace`'s refusals landed in, most-refused first.
@@ -117,12 +145,14 @@ public enum StumbledWords {
                   // the word's own reading, and indexing exTokens with it would name a word
                   // at random. This is the check that keeps the two explanations apart.
                   entry.exampleKana == event.targetKana,
-                  let token = entry.exampleToken(atReadingIndex: event.kanaIndex)
+                  let located = entry.exampleTokenInContext(atReadingIndex: event.kanaIndex)
             else { continue }
+            let token = located.token
             if !includesParticles, JapaneseParticles.single.contains(token.surface) { continue }
             let key = token.surface + "\u{1F}" + token.reading
             counts[key, default: (token.surface, token.reading,
-                                  entryID(for: token, taughtBy: entry, in: vocab), 0)].n += 1
+                                  entryID(for: token, followedBy: located.next,
+                                          taughtBy: entry, in: vocab), 0)].n += 1
         }
         return counts.values
             .filter { $0.n >= minimumRefusals }

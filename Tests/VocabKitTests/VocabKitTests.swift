@@ -382,7 +382,7 @@ struct StumbledWordResolutionTests {
         // A store that does NOT contain the taught entry: the id can only have come from the
         // entry in hand, which is the property this path is for.
         let bare = VocabStore(entries: [hand])
-        #expect(StumbledWords.entryID(for: (surface: "生", reading: "なま"),
+        #expect(StumbledWords.entryID(for: (surface: "生", reading: "なま"), followedBy: "の",
                                       taughtBy: taught, in: bare) == "nama")
     }
 
@@ -393,10 +393,10 @@ struct StumbledWordResolutionTests {
     func taughtWordDoesNotSwallowItsHomograph() {
         let taught = sentence(teaching: namaEntry,
                               tokens: [["生", "せい"], ["活", "かつ"]], kana: "せいかつ")
-        #expect(StumbledWords.entryID(for: (surface: "生", reading: "せい"),
+        #expect(StumbledWords.entryID(for: (surface: "生", reading: "せい"), followedBy: "活",
                                       taughtBy: taught, in: VocabStore(entries: [namaEntry])) == nil)
         // With the せい entry present it resolves — to せい, via the pair index, not to なま.
-        #expect(StumbledWords.entryID(for: (surface: "生", reading: "せい"),
+        #expect(StumbledWords.entryID(for: (surface: "生", reading: "せい"), followedBy: "活",
                                       taughtBy: taught, in: store) == "sei")
     }
 
@@ -461,40 +461,121 @@ struct ShippedResolutionTests {
     private static let punctuation: Set<Character> = ["。", "、", "！", "？", "「", "」", "・"]
 
     /// Every (token, owning entry) pair in the shipped sentences.
-    private static var corpusTokens: [(token: (surface: String, reading: String), owner: VocabEntry)] {
-        var out: [(token: (surface: String, reading: String), owner: VocabEntry)] = []
+    private static var corpusTokens: [(token: (surface: String, reading: String),
+                                       next: String?, owner: VocabEntry)] {
+        var out: [(token: (surface: String, reading: String), next: String?, owner: VocabEntry)] = []
         for entry in VocabStore.shared.entries where entry.isTypeableSentence {
-            for token in entry.exampleTokens ?? [] where token.count >= 2 {
-                guard !token[1].allSatisfy({ Self.punctuation.contains($0) }), !token[1].isEmpty
-                else { continue }
-                out.append(((surface: token[0], reading: token[1]), entry))
+            let content = (entry.exampleTokens ?? []).filter { token in
+                token.count >= 2 && !token[1].isEmpty
+                    && !token[1].allSatisfy({ Self.punctuation.contains($0) })
+            }
+            for (i, token) in content.enumerated() {
+                out.append(((surface: token[0], reading: token[1]),
+                            i + 1 < content.count ? content[i + 1][0] : nil, entry))
             }
         }
         return out
     }
 
-    /// The safety invariant, and the reason the rule refuses so much.
+    /// What the shipped corpus actually resolves to, and what it must refuse.
     ///
-    /// Whatever a token resolves to, that entry must be written the way the token is written
-    /// AND read the way the token is read. Not "usually" — every single time, or the app is
-    /// offering somebody a card for a word that was never on their screen. This is the one
-    /// property that makes it safe to hang a ★ off a chip.
-    @Test("a token never resolves to an entry that is written or read differently")
-    func resolutionNeverNamesADifferentWord() {
-        var checked = 0
-        for (token, owner) in Self.corpusTokens {
-            guard let id = StumbledWords.entryID(for: token, taughtBy: owner, in: .shared),
+    /// **This replaces an assertion that could not fail.** v1.24 shipped a test here that
+    /// walked all 41,000 tokens and checked `named.surface == token.surface` and
+    /// `fold(named.kana) == fold(token.reading)` — but `named` was fetched from the pair index
+    /// USING those two values as the key, so the assertion re-derived the index's own key and
+    /// was structurally incapable of failing. It reported green over 24,082 resolutions while
+    /// 読み resolved to the noun "reading" and た to "past tense marker" 2,695 times. A test
+    /// whose expected value is computed by the code under test is the failure this project has
+    /// a standing note about; this is the second time, and the first time it reached a release
+    /// candidate.
+    ///
+    /// The properties below can each fail, and each one did fail before the rule was narrowed.
+    @Test("no bound morpheme and no inflected stem is offered as a word")
+    func resolutionRefusesWhatIsNotAWord() {
+        var resolved = 0
+        var offenders: [String] = []
+        for (token, next, owner) in Self.corpusTokens {
+            guard let id = StumbledWords.entryID(for: token, followedBy: next,
+                                                 taughtBy: owner, in: .shared),
                   let named = VocabStore.shared.entry(id: id) else { continue }
-            checked += 1
-            #expect(named.surface == token.surface,
-                    "\(owner.id): token \(token.surface)/\(token.reading) resolved to \(named.surface)/\(named.kana)")
-            #expect(KanaScript.katakanaToHiragana(named.kana)
-                        == KanaScript.katakanaToHiragana(token.reading),
-                    "\(owner.id): token \(token.surface)/\(token.reading) resolved to \(named.surface)/\(named.kana)")
+            resolved += 1
+            let taught = id == owner.id
+            if taught { continue }   // the taught word's id is known, not inferred
+            if !Set(named.partsOfSpeech).isDisjoint(with: JapaneseParticles.boundPartsOfSpeech) {
+                offenders.append("\(owner.id): \(token.surface) -> \(named.id) (\(named.partsOfSpeech))")
+            }
+            if let next, JapaneseParticles.inflectionalTails.contains(next) {
+                offenders.append("\(owner.id): \(token.surface)+\(next) is a stem -> \(named.id)")
+            }
         }
-        // An invariant that inspected nothing is not an invariant. This is the shape of the
-        // "clean number from an untested instrument" failure this project keeps logging.
-        #expect(checked > 20_000, "only \(checked) tokens resolved — the walk stopped measuring")
+        #expect(resolved > 15_000, "only \(resolved) tokens resolved — the walk stopped measuring")
+        #expect(offenders.isEmpty, "\(offenders.count) non-words offered: \(offenders.prefix(8))")
+    }
+
+    /// The exact words the review caught, pinned by name.
+    ///
+    /// A property test says the class is closed; these say the specific bugs are gone. Both
+    /// are needed — the property was written after these were found, so only these prove it
+    /// was aimed at the right thing.
+    @Test("the words that shipped resolving to the wrong entry now resolve to nothing")
+    func namedRegressions() throws {
+        // Real triples from the shipped corpus: (owner sentence, token surface, token reading,
+        // the token that follows).
+        //
+        // **These are the check that can police the constants.** The property test above reads
+        // `inflectionalTails` and `boundPartsOfSpeech` — the same values the rule reads — so
+        // emptying either list blinds the rule and its checker at the same moment. Measured:
+        // with the tail list emptied, the property test stayed green and only these cases went
+        // red. That is the "a gate and the thing it gates share a blind spot" trap this project
+        // already has a note about, and concrete cases are the only way out of it.
+        let cases: [(String, String, String, String?)] = [
+            ("n5-hon", "読み", "よみ", "ます"),      // 本を読みます。 — the 連用形, not the noun 読み
+            // 大統領が暗殺された。 — the past-tense た, which matched the entry "past tense
+            // marker" in 2,695 sentences. Its owner must be a sentence that CONTAINS it, not
+            // the た entry itself: against that owner the taught-word path fires correctly and
+            // the case would prove nothing. (It did, first time round.)
+            ("n1-g011", "た", "た", nil),          // 大統領が暗殺された。
+            ("n1-g313", "向け", "むけ", "た"),        // …視線を向けた。 — suffix POS
+            ("n1-b049", "合わせ", "あわせ", "て"),     // 音楽に合わせて行進した。
+            ("n1-b309", "調べ", "しらべ", "た"),      // 辞書を調べた。
+            ("n1-b1731", "教え", "おしえ", "た"),     // 指差して教えた。
+            ("n1-b1526", "帰り", "かえり", "ます"),    // 直ぐに帰ります。
+            ("n1-b062", "切れ", "きれ", "て"),        // 在庫が切れております。
+            ("n1-b097", "あっ", "あっ", "た"),        // 助けがあったおかげで…
+            ("n1-b037", "読み", "よみ", "ください"),   // お読みください。
+        ]
+        for (owner, surface, reading, next) in cases {
+            let entry = try #require(VocabStore.shared.entry(id: owner))
+            #expect(entry.surface != surface, "\(owner) IS \(surface) — this case cannot fail")
+            #expect(StumbledWords.entryID(for: (surface: surface, reading: reading),
+                                          followedBy: next, taughtBy: entry, in: .shared) == nil,
+                    "\(surface) still resolves")
+        }
+        // …and the pair index still HOLDS those entries, so the refusal is the rule working
+        // rather than the corpus having changed underneath it.
+        #expect(VocabStore.shared.entry(surface: "読み", reading: "よみ") != nil)
+        #expect(VocabStore.shared.entry(surface: "た", reading: "た") != nil)
+    }
+
+    /// The positive control. A rule that refuses everything would pass every test above.
+    /// The positive control, and it needs to be more than one case: a rule that refuses
+    /// everything satisfies every negative test above, and the narrowing this suite polices
+    /// works by refusing more.
+    @Test("ordinary content words still resolve, including ones the sentence does not teach")
+    func positiveControls() throws {
+        let cases: [(owner: String, surface: String, reading: String, next: String?, expected: String)] = [
+            ("n5-hon", "本", "ほん", "を", "n5-hon"),            // the taught word
+            ("n1-g001", "感じる", "かんじる", nil, "n4-g335"),     // 哀愁を感じる。
+            ("n1-g006", "必要", "ひつよう", "は", "n4-b102"),      // 焦る必要はない。
+            ("n1-g007", "手紙", "てがみ", "を", "n5-g074"),       // 彼に手紙を宛てる。
+        ]
+        for c in cases {
+            let owner = try #require(VocabStore.shared.entry(id: c.owner))
+            #expect(StumbledWords.entryID(for: (surface: c.surface, reading: c.reading),
+                                          followedBy: c.next, taughtBy: owner,
+                                          in: .shared) == c.expected,
+                    "\(c.surface) should resolve to \(c.expected)")
+        }
     }
 
     /// Particles are blocked on the token in every mode, and the corpus contains an entry that
@@ -503,10 +584,11 @@ struct ShippedResolutionTests {
     @Test("no grammatical particle anywhere in the corpus resolves to a word")
     func noParticleResolves() {
         var particleTokens = 0
-        for (token, owner) in Self.corpusTokens
+        for (token, next, owner) in Self.corpusTokens
         where JapaneseParticles.single.contains(token.surface) {
             particleTokens += 1
-            #expect(StumbledWords.entryID(for: token, taughtBy: owner, in: .shared) == nil,
+            #expect(StumbledWords.entryID(for: token, followedBy: next,
+                                          taughtBy: owner, in: .shared) == nil,
                     "\(owner.id): particle \(token.surface) resolved")
         }
         #expect(particleTokens > 5_000, "only \(particleTokens) particle tokens seen — the scan is wrong")
@@ -522,9 +604,10 @@ struct ShippedResolutionTests {
     @Test("the rule still resolves most of the vocabulary a learner would want to save")
     func coverageFloorsHold() {
         var content = 0, contentResolved = 0, kanji = 0, kanjiResolved = 0
-        for (token, owner) in Self.corpusTokens {
+        for (token, next, owner) in Self.corpusTokens {
             if JapaneseParticles.single.contains(token.surface) { continue }
-            let resolved = StumbledWords.entryID(for: token, taughtBy: owner, in: .shared) != nil
+            let resolved = StumbledWords.entryID(for: token, followedBy: next,
+                                                 taughtBy: owner, in: .shared) != nil
             content += 1
             if resolved { contentResolved += 1 }
             if token.surface.contains(where: { $0.isKanji }) {
@@ -535,8 +618,8 @@ struct ShippedResolutionTests {
         #expect(content > 40_000, "only \(content) content tokens — the corpus walk is wrong")
         let contentRate = Double(contentResolved) / Double(content)
         let kanjiRate = Double(kanjiResolved) / Double(kanji)
-        #expect(contentRate > 0.50, "content-token resolution fell to \(contentRate)")
-        #expect(kanjiRate > 0.65, "kanji-token resolution fell to \(kanjiRate)")
+        #expect(contentRate > 0.44, "content-token resolution fell to \(contentRate)")
+        #expect(kanjiRate > 0.58, "kanji-token resolution fell to \(kanjiRate)")
     }
 }
 

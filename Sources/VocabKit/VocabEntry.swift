@@ -137,13 +137,34 @@ public struct VocabEntry: Identifiable, Codable, Hashable, Sendable {
     /// Returns nil when the entry has no tokens, or when `index` is past the end — a caller
     /// holding a stale index should get nothing rather than the last word by accident.
     public func exampleToken(atReadingIndex index: Int) -> (surface: String, reading: String)? {
+        exampleTokenInContext(atReadingIndex: index)?.token
+    }
+
+    /// The same walk, plus the surface of the token that FOLLOWS the one it lands on.
+    ///
+    /// The successor is what tells a free word from a bound stem. Sudachi's `SplitMode.C`
+    /// emits 読みます as 読み + ます and 食べた as 食べ + た, so the first half is written and
+    /// read exactly like the noun 読み "reading" and resolves to it with full confidence —
+    /// a chip offering to save the wrong word. Nothing about the token in isolation says
+    /// which it is; the next token does. (v1.24, found by the pre-submission review.)
+    ///
+    /// One walk, not two: the alignment rule — punctuation contributes no reading, because
+    /// `exKana` has none — is subtle enough that a second copy would drift, and this project
+    /// has paid for that three times.
+    public func exampleTokenInContext(atReadingIndex index: Int)
+        -> (token: (surface: String, reading: String), next: String?)? {
         guard index >= 0, let tokens = exampleTokens else { return nil }
+        let content = tokens.filter { token in
+            token.count >= 2 && !token[1].filter { !Self.punctuation.contains($0) }.isEmpty
+        }
         var consumed = 0
-        for token in tokens where token.count >= 2 {
+        for (position, token) in content.enumerated() {
             let reading = token[1].filter { !Self.punctuation.contains($0) }
-            if reading.isEmpty { continue }
             let next = consumed + reading.count
-            if index < next { return (surface: token[0], reading: token[1]) }
+            if index < next {
+                let successor = position + 1 < content.count ? content[position + 1][0] : nil
+                return ((surface: token[0], reading: token[1]), successor)
+            }
             consumed = next
         }
         return nil
