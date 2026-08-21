@@ -46,8 +46,7 @@ and kana can differ in phrasing while saying the same words, so it speaks for on
 sentences. Within those, 494 match their `exKana` and **27 are proven to say something else**
 (私 as わたし where the corpus says わたくし, 何 as なに, 風車 as ふうしゃ …). A second pass —
 render every single-token reading variant, ask which the kanji audio is nearest — covers
-everything, and against those 521 labelled sentences it scores **100% recall (27/27) and 0%
-false positives (0/494)**.
+everything, and against those 521 labelled sentences it scores **100% recall (27/27)**. The false-positive half of that figure — long recorded here as 0/494 — was arithmetic, not measurement, and is withdrawn: the false-positive population is BY DEFINITION the sentences whose `exJP` audio is byte-identical to an `exKana` variant, so `own = dtw(x, x)`, and the repo's own DTW returns at most 8.9e-17 for a matrix against itself against a minimum of 0.445 for distinct pairs. `best < own` is unsatisfiable; 0/494 was guaranteed before a clip was rendered. The recall half stands — those are the proven positives and the instrument found all of them. (Withdrawn in v1.25 §A.)
 
 That calibration is the part worth keeping. An earlier one used synthetic decoys (a reading
 replaced by random kana) and put the false-positive rate at 4.7%, which made a working

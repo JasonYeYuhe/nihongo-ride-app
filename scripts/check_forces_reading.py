@@ -20,8 +20,11 @@ is what she read. This asks both, and reports which one is speaking:
     version of this script printed those as "the voice reads it another way", which was
     wrong and would have condemned three candidates on nothing.
   * COMPARATIVE (render each rival reading, ask which the kanji audio is nearest) has
-    full coverage and was calibrated at 100% recall / 0% false positives against 521
-    labelled sentences in v1.21 §A.
+    full coverage and was calibrated at 100% RECALL (27/27) against 521 labelled
+    sentences in v1.21 §A. Its recorded 0% false-positive rate is WITHDRAWN (v1.25 §A):
+    that population is by definition the sentences whose audio is byte-identical to an
+    exKana variant, so own = dtw(x, x) = 0 and the flag condition `best < own` cannot
+    hold. 0/494 was arithmetic. Treat a comparative flag as a lead, not a verdict.
 
 Measured on the six entries blocked for content reasons (v1.22 §B): ONE clean rescue
 (未だ, both parsers agree and the audio proves it), one false rescue (違える — the

@@ -509,6 +509,46 @@ struct ExampleSentenceTests {
     ///
     /// It reads the measurement file rather than the shipped resource because the resource
     /// carries only ids; the reason lives with the measurement, which is where a reason belongs.
+    /// The shipped reading notes must be what their generator emits today.
+    ///
+    /// `gen_reading_notes.py` derives every note from the corpus: a card teaching a minority
+    /// reading gets a line naming the everyday reading of its spelling and the card that teaches
+    /// it, but only when a sibling at an EASIER level exists to be the second source. The rule
+    /// was corrected in v1.22 §E — three notes had been printing backwards — and the resource was
+    /// never regenerated afterwards, so it shipped one note short of its own rule for three
+    /// releases and nothing compared the two.
+    ///
+    /// This is not a check that the notes are good; it is a check that the file and the
+    /// generator have not drifted. Derivable data that is checked in as a resource needs one of
+    /// these or it silently becomes a snapshot of whenever somebody last remembered.
+    @Test("the shipped reading notes are what the generator produces from today's corpus")
+    func readingNotesMatchTheirGenerator() throws {
+        let root = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+        process.arguments = ["python3", root.appendingPathComponent("scripts/gen_reading_notes.py").path]
+        process.currentDirectoryURL = root
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = Pipe()
+        try process.run()
+        let printed = String(decoding: pipe.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
+        process.waitUntilExit()
+        // The generator's report line is the one number both sides can be compared on without
+        // re-implementing its rule here — which would be the same rule written twice.
+        guard let line = printed.split(separator: "\n").first(where: { $0.hasPrefix("notes:") }),
+              let emitted = Int(line.dropFirst("notes:".count)
+                  .trimmingCharacters(in: .whitespaces).prefix(while: \.isNumber))
+        else {
+            Issue.record("could not read the generator's note count from: \(printed.prefix(200))")
+            return
+        }
+        #expect(emitted == ReadingNotes.all.count, Comment(rawValue:
+                "the generator emits \(emitted) notes and the shipped resource holds "
+                + "\(ReadingNotes.all.count) — regenerate it"))
+    }
+
     @Test("no dictation exclusion rests on a reading the corpus no longer contains")
     func exclusionReasonsStillHold() throws {
         struct Record: Decodable { let id: String; let heardInstead: String? }

@@ -125,6 +125,12 @@
    "siblingID": "n5-g020"
   },
   {
+   "id": "n1-b1668",
+   "kind": "commonIs",
+   "common": "ほとけ",
+   "siblingID": "n3-b162"
+  },
+  {
    "id": "n1-b1754",
    "kind": "commonIs",
    "common": "たにん",
@@ -351,6 +357,12 @@
    "kind": "commonIs",
    "common": "あと",
    "siblingID": "n5-b205"
+  },
+  {
+   "id": "n3-b235",
+   "kind": "commonIs",
+   "common": "した",
+   "siblingID": "n5-b080"
   },
   {
    "id": "n3-b243",
