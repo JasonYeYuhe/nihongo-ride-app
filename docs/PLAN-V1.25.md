@@ -124,9 +124,11 @@ large-type layout is device-verified" — and the warning was nearly walked past
 
 The renders were deleted rather than kept as a partial check. A file named
 `results-sentence-ax5.png` that cannot tell AX5 from AX3 is worse than no file: the next person
-reads the name, not the caveat. **This stop-rule item is OPEN**, and closing it needs a device or
-a simulator with `xcrun simctl ui <device> content_size accessibility-extra-extra-extra-large`,
-not a render.
+reads the name, not the caveat. **WAIVED by the owner for this release** (2026-08-21), after the failed render attempt was
+reported. It is not closed and it is not quietly dropped: closing it needs a device or a
+simulator with `xcrun simctl ui <device> content_size accessibility-extra-extra-extra-large`,
+not a render. The layout risk it covers is real — v1.14 §C spilled tiles out of this exact panel
+at AX5 — and v1.25 changed three labels and removed a list from it.
 
 ## §C Not in this release, and why
 
