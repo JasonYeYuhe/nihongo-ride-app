@@ -5,8 +5,8 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 1004,
- "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken.",
+ "excludedCount": 977,
+ "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A removed 27 exclusions whose recorded complaint no longer occurs: the corpus was corrected to the reading the checker said the voice takes, so the reason for withholding them was repaired rather than re-decided. Six of the 27 are now PROVEN correct by byte-identical audio.",
  "excluded": [
   {
    "id": "n1-b003",
@@ -76,13 +76,6 @@
    "exJP": "この問題には早急な対応が求められる。",
    "exKana": "このもんだいにはさっきゅうなたいおうがもとめられる",
    "heardInstead": "早急 さっきゅう -> そうきゅう",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n1-b063",
-   "exJP": "強いて言うなら、こちらの色が好みです。",
-   "exKana": "しいてゆうならこちらのいろがこのみです",
-   "heardInstead": "言う ゆう -> いう",
    "evidence": "nearest"
   },
   {
@@ -1381,13 +1374,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n1-b389",
-   "exJP": "箱からゲーム機の本体を取り出した。",
-   "exKana": "ばこからげーむきのほんたいをとりだした",
-   "heardInstead": "箱 ばこ -> はこ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n1-b390",
    "exJP": "この地域は古くから紡績業で栄えてきた。",
    "exKana": "このちいきはふるくからぼうせきぎょうでさかえてきた",
@@ -1479,13 +1465,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n1-b448",
-   "exJP": "「えい」と声を上げて重い箱を持ち上げた。",
-   "exKana": "えいとこえをあげておもいばこをもちあげた",
-   "heardInstead": "箱 ばこ -> はこ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n1-b454",
    "exJP": "彼は緊張して、おどおどした態度をとっていた。",
    "exKana": "かれはきんちょうしておどおどしたたいどをとっていた",
@@ -1525,13 +1504,6 @@
    "exJP": "発表の後に十分な質疑の時間を設けた。",
    "exKana": "はっぴょうのあとにじゅうぶんなしつぎのじかんをもうけた",
    "heardInstead": "後 あと -> のち",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n1-b526",
-   "exJP": "使った道具を箱の中に仕舞った。",
-   "exKana": "つかったどうぐをばこのなかにしまった",
-   "heardInstead": "箱 ばこ -> ぱこ",
    "evidence": "nearest"
   },
   {
@@ -1864,13 +1836,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n1-b809",
-   "exJP": "この箱には面白い仕掛けがある。",
-   "exKana": "このばこにはおもしろいしかけがある",
-   "heardInstead": "箱 ばこ -> はこ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n1-b816",
    "exJP": "この植物は珍しい種に属する。",
    "exKana": "このしょくぶつはめずらしいしゅにぞくする",
@@ -2107,20 +2072,6 @@
    "exKana": "かれのりろんはじっけんによってしょうめいされた",
    "heardInstead": "彼 かれ -> か",
    "evidence": "nearest"
-  },
-  {
-   "id": "n1-g005",
-   "exJP": "彼を嘲笑うな。",
-   "exKana": "かれをあざけわらうな",
-   "heardInstead": "嘲笑う あざけわらう -> あざわらう",
-   "evidence": "proven"
-  },
-  {
-   "id": "n1-g016",
-   "exJP": "髪を弄る癖がある。",
-   "exKana": "かみをまさぐるくせがある",
-   "heardInstead": "弄る まさぐる -> いじる",
-   "evidence": "proven"
   },
   {
    "id": "n1-g017",
@@ -2410,13 +2361,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n2-b070",
-   "exJP": "部長のつまらない洒落に、みんな苦笑いをした。",
-   "exKana": "ぶちょうのつまらないしゃらくにみんなにがわらいをした",
-   "heardInstead": "洒落 しゃらく -> しゃれ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n2-b072",
    "exJP": "漢字のテストに向けて、四字熟語をたくさん暗記した。",
    "exKana": "かんじのてすとにむけてよんじじゅくごをたくさんあんきした",
@@ -2676,13 +2620,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n2-b1165",
-   "exJP": "この箱の体積を計算してください。",
-   "exKana": "このばこのたいせきをけいさんしてください",
-   "heardInstead": "箱 ばこ -> はこ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n2-b1170",
    "exJP": "たんすの引き出しに服をしまった。",
    "exKana": "たんすのひきだしにふくをしまった",
@@ -2722,13 +2659,6 @@
    "exJP": "舞台の上に有名な俳優が登場した。",
    "exKana": "ぶたいのうえにゆうめいなはいゆうがとうじょうした",
    "heardInstead": "上 うえ -> かみ",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n2-b1205",
-   "exJP": "プレゼントの箱を開けて中身を見た。",
-   "exKana": "ぷれぜんとのばこをあけてなかみをみた",
-   "heardInstead": "箱 ばこ -> はこ",
    "evidence": "nearest"
   },
   {
@@ -2816,13 +2746,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n2-b1283",
-   "exJP": "この箱の容積を正確に計算した。",
-   "exKana": "このばこのようせきをせいかくにけいさんした",
-   "heardInstead": "箱 ばこ -> はこ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n2-b1287",
    "exJP": "古い写真を見て当時の記憶が蘇った。",
    "exKana": "ふるいしゃしんをみてとうじのきおくがよみがえった",
@@ -2855,13 +2778,6 @@
    "exJP": "割れたガラスの破片を片付けた。",
    "exKana": "われたがらすのはへんをかたづけた",
    "heardInstead": "割れ われ -> われれ",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n2-b143",
-   "exJP": "針金を使って箱をしっかり縛った。",
-   "exKana": "はりがねをつかってばこをしっかりしばった",
-   "heardInstead": "箱 ばこ -> はこ",
    "evidence": "nearest"
   },
   {
@@ -3058,13 +2974,6 @@
    "exJP": "明後日ではなく、しあさっての午後に会議を行います。",
    "exKana": "みょうごにちではなくしあさってのごごにかいぎをおこないます",
    "heardInstead": "明後日 みょうごにち -> あさって",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n2-b275",
-   "exJP": "テーブルの上に四角い箱が置いてあった。",
-   "exKana": "てーぶるのうえにしかくいばこがおいてあった",
-   "heardInstead": "箱 ばこ -> はこ",
    "evidence": "nearest"
   },
   {
@@ -3320,13 +3229,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n2-b593",
-   "exJP": "りんごを大小に分けて箱に入れた。",
-   "exKana": "りんごをだいしょうにわけてばこにいれた",
-   "heardInstead": "箱 ばこ -> ぱこ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n2-b595",
    "exJP": "この川の水は絶えず流れている。",
    "exKana": "このかわのみずはたえずながれている",
@@ -3338,13 +3240,6 @@
    "exJP": "パンを小さくちぎって鳥にあげた。",
    "exKana": "ぱんをちいさくちぎってとりにあげた",
    "heardInstead": "鳥 とり -> どり",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n2-b616",
-   "exJP": "箱が重くて中の卵が潰れた。",
-   "exKana": "ばこがおもくてなかのたまごがつぶれた",
-   "heardInstead": "箱 ばこ -> はこ",
    "evidence": "nearest"
   },
   {
@@ -3999,13 +3894,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n3-b017",
-   "exJP": "御茶をどうぞ。",
-   "exKana": "ごちゃをどうぞ",
-   "heardInstead": "御 ご -> お",
-   "evidence": "proven"
-  },
-  {
    "id": "n3-b031",
    "exJP": "暗い道を歩くのは恐怖を感じる。",
    "exKana": "くらいみちをあるくのはきょうふをかんじる",
@@ -4332,13 +4220,6 @@
    "exJP": "スマートフォンの画面を拡大して写真を見た。",
    "exKana": "すまーとふぉんのがめんをかくだいしてしゃしんをみた",
    "heardInstead": "写真 しゃしん -> じゃしん",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n3-b215",
-   "exJP": "箱の中のりんごの数を数える。",
-   "exKana": "ばこのなかのりんごのかずをかぞえる",
-   "heardInstead": "箱 ばこ -> ぱこ",
    "evidence": "nearest"
   },
   {
@@ -4769,13 +4650,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n3-b592",
-   "exJP": "整理した手紙の束を箱に入れた。",
-   "exKana": "せいりしたてがみのたばをばこにいれた",
-   "heardInstead": "箱 ばこ -> はこ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n3-b594",
    "exJP": "今学期は必要な単位を全て取った。",
    "exKana": "こんがっきはひつようなたんいをすべてとった",
@@ -4986,13 +4860,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n3-b766",
-   "exJP": "この箱は強い金属で作られている。",
-   "exKana": "このばこはつよいきんぞくでつくられている",
-   "heardInstead": "箱 ばこ -> はこ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n3-b776",
    "exJP": "入場券を買って中に入った。",
    "exKana": "にゅうじょうけんをかってなかにはいった",
@@ -5110,20 +4977,6 @@
    "exKana": "あすとりひきさきのかいしゃをほうもんします",
    "heardInstead": "明日 あす -> あした",
    "evidence": "nearest"
-  },
-  {
-   "id": "n3-b955",
-   "exJP": "重い箱を一人でもちあげる。",
-   "exKana": "おもいばこをひとりでもちあげる",
-   "heardInstead": "箱 ばこ -> はこ",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n3-b958",
-   "exJP": "彼はいつも不満や文句を言う。",
-   "exKana": "かれはいつもふまんやもんくをゆう",
-   "heardInstead": "言う ゆう -> いう",
-   "evidence": "proven"
   },
   {
    "id": "n3-b962",
@@ -5539,13 +5392,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n3-g361",
-   "exJP": "この箱の中は完全に空だった。",
-   "exKana": "このばこのなかはかんぜんにそらだった",
-   "heardInstead": "箱 ばこ -> はこ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n3-k050",
    "exJP": "明日は彼とデートだ。",
    "exKana": "あすはかれとでーとだ",
@@ -5812,13 +5658,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n4-g016",
-   "exJP": "意見を言う。",
-   "exKana": "いけんをゆう",
-   "heardInstead": "言う ゆう -> いう",
-   "evidence": "nearest"
-  },
-  {
    "id": "n4-g020",
    "exJP": "私がいたします。",
    "exKana": "わたくしがいたします",
@@ -5838,13 +5677,6 @@
    "exKana": "わたくしもそうおもう",
    "heardInstead": "私 わたくし -> わたし",
    "evidence": "nearest"
-  },
-  {
-   "id": "n4-g063",
-   "exJP": "表を見る。",
-   "exKana": "ひょうをみる",
-   "heardInstead": "表 ひょう -> おもて",
-   "evidence": "proven"
   },
   {
    "id": "n4-g074",
@@ -6379,13 +6211,6 @@
    "evidence": "proven"
   },
   {
-   "id": "n5-b105",
-   "exJP": "この箱はたてが二十センチあります。",
-   "exKana": "このばこはたてがにじゅうせんちあります",
-   "heardInstead": "箱 ばこ -> はこ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n5-b106",
    "exJP": "日本の食べ物はどれも美味しいです。",
    "exKana": "にっぽんのたべものはどれもおいしいです",
@@ -6558,13 +6383,6 @@
    "exJP": "いいえ、それは私の本ではありません。",
    "exKana": "いいえそれはわたくしのほんではありません",
    "heardInstead": "私 わたくし -> わたし",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n5-b218",
-   "exJP": "テーブルの上に箱が五つあります。",
-   "exKana": "てーぶるのうえにばこがいつつあります",
-   "heardInstead": "箱 ばこ -> ぱこ",
    "evidence": "nearest"
   },
   {
@@ -6783,13 +6601,6 @@
    "exKana": "わたくしはがくせいです",
    "heardInstead": "私 わたくし -> わたし",
    "evidence": "nearest"
-  },
-  {
-   "id": "n5-g021",
-   "exJP": "何を食べますか。",
-   "exKana": "なんをたべますか",
-   "heardInstead": "何 なん -> なに",
-   "evidence": "proven"
   },
   {
    "id": "n5-g024",

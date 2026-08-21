@@ -157,10 +157,28 @@ struct ExampleSentenceTests {
     /// was genuinely adjudicated — either its `exKana` was corrected, or its sentence was
     /// withdrawn because the sentence is right and the card's minority reading cannot occur in
     /// it. Both outcomes are legitimate; leaving it is not.
+    /// The eight that remain, and why each is a deliberate keep rather than a backlog item.
+    ///
+    /// Thirteen of the original twenty-one were corrected in v1.25 §A. These eight were
+    /// classified REGISTER — the two readings mean the same thing in that sentence and differ
+    /// only in formality — independently by two models, and v1.21 §C has already decided that a
+    /// minority reading is not an error. Correcting them would overturn a recorded decision, and
+    /// would mean authoring Japanese to satisfy a card:
+    ///
+    ///   n1-g315  獣    けだもの / けもの      both "beast"
+    ///   n1-b005  怒る  いかる / おこる        both "to be angry"; いかる is the literary one
+    ///   n1-b016  大事  おおごと / だいじ      both "a serious matter" in 大事に至る
+    ///   n1-b071  消耗  しょうこう / しょうもう  identical meaning; しょうこう is the original reading
+    ///   n1-b072  所々  しょしょ / ところどころ  both "here and there"
+    ///   n3-g131  得る  える / うる            both "to obtain"; うる is formal
+    ///   n5-ashita 明日 あした / あす          both "tomorrow"
+    ///   n5-g012  私    わたし / わたくし      both "I"; わたくし is formal
+    ///
+    /// They stay named so the list is a decision with a reason, not a silence. If the register
+    /// question is ever reopened, this is where it starts.
     private let knownHeadwordReadingMismatch: Set<String> = [
-        "n1-g005", "n1-g016", "n1-g315", "n1-b005", "n1-b016", "n1-b039", "n1-b071",
-        "n1-b072", "n1-b118", "n2-g252", "n2-b070", "n3-g131", "n3-g361", "n3-b017",
-        "n3-b162", "n3-b680", "n3-b919", "n4-g063", "n5-ashita", "n5-g012", "n5-g021",
+        "n1-g315", "n1-b005", "n1-b016", "n1-b071", "n1-b072",
+        "n3-g131", "n5-ashita", "n5-g012",
     ]
 
     /// A ratchet that is not shrinking is a list nobody is working through, and one that names
@@ -475,6 +493,55 @@ struct ExampleSentenceTests {
     /// from. Every id withheld from dictation must also still BE a sentence — an exclusion
     /// list that drifts onto ids the corpus no longer has looks like a shrinking safe pool
     /// and is really a stale file.
+    /// An exclusion whose reason has been repaired is content withheld for nothing.
+    ///
+    /// Each excluded sentence carries a recorded complaint of the form `箱 ばこ -> はこ`: the
+    /// checker measured that `exKana` said ばこ where the voice says はこ. When the corpus is
+    /// later corrected to what the voice says — which is exactly what v1.25 §A did for 箱, 言う
+    /// and eleven headwords — the complaint no longer describes anything, and the sentence is
+    /// being kept out of dictation by a reason that has been fixed.
+    ///
+    /// v1.25 found 27 such exclusions by hand and released them, taking the dictation pool from
+    /// 5,720 to 5,747. This is the check that finds the next one without anybody looking. It is
+    /// deliberately NOT a re-decision of the 961 exclusions whose complaint still matches the
+    /// corpus — those stand or fall on the instrument that made them, which is a separate
+    /// argument recorded in PLAN-V1.25 §C.
+    ///
+    /// It reads the measurement file rather than the shipped resource because the resource
+    /// carries only ids; the reason lives with the measurement, which is where a reason belongs.
+    @Test("no dictation exclusion rests on a reading the corpus no longer contains")
+    func exclusionReasonsStillHold() throws {
+        struct Record: Decodable { let id: String; let heardInstead: String? }
+        struct File: Decodable { let excluded: [Record] }
+        let url = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("docs/measurements/dictation-reading-mismatches.json")
+        let file = try JSONDecoder().decode(File.self, from: try Data(contentsOf: url))
+        let byID = Dictionary(VocabStore.shared.entries.map { ($0.id, $0) },
+                              uniquingKeysWith: { a, _ in a })
+        var inspected = 0
+        var voided: [String] = []
+        for record in file.excluded {
+            // "surface reading -> whatTheVoiceSays". Anything else (propagated exclusions say
+            // so in prose) carries no per-sentence claim to check.
+            guard let complaint = record.heardInstead else { continue }
+            let parts = complaint.split(separator: " ")
+            guard parts.count >= 3, parts[2] == "->" else { continue }
+            let surface = String(parts[0]), reading = String(parts[1])
+            guard let entry = byID[record.id], let tokens = entry.exampleTokens else { continue }
+            inspected += 1
+            if !tokens.contains(where: { $0.count >= 2 && $0[0] == surface && $0[1] == reading }) {
+                voided.append("\(record.id): withheld because \(complaint), which no longer occurs")
+            }
+        }
+        // A parse that matched nothing would report every exclusion sound. The file records
+        // ~1,000 exclusions and the great majority carry a parseable complaint.
+        #expect(inspected > 800, "only \(inspected) complaints parsed — the reader is wrong")
+        #expect(voided.isEmpty, Comment(rawValue:
+            "\(voided.count) exclusion(s) rest on a repaired reason — release them:\n"
+            + voided.prefix(10).joined(separator: "\n")))
+    }
+
     @Test("every dictation exclusion names a real, otherwise-typeable sentence")
     func dictationExclusionsResolve() {
         let byID = Dictionary(VocabStore.shared.entries.map { ($0.id, $0) },

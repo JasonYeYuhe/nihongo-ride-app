@@ -1,0 +1,401 @@
+{
+ "reason": "v1.25 §A. Thirteen example sentences transcribed their own headword with a reading the card does not teach, and exKana is the literal typing target the learner is graded against. Five are proven by byte-identical synthesised audio (instrument 1 of check_dictation_readings), which is proof of the phoneme sequence rather than an inference, and in every one of the five the voice takes the CARD's reading. Seven more were classified as a MEANING difference — the reading changes what the sentence says — independently by Codex and Gemini 3.7 Flash, with the English translation as a third, non-circular witness. One (n1-b039) is a recorded split. Eight further entries were classified REGISTER by both models and are deliberately NOT touched: v1.21 §C decided minority readings are not errors. Two further per-spelling corrections ride along: 箱 read ばこ in 18 standalone positions where the rendaku allomorph cannot occur, and 言う read ゆう, the reading v1.18 retired.",
+ "entries": [
+  {
+   "id": "n1-g005",
+   "surface": "嘲笑う",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "かれをあざけわらうな",
+   "to": "かれをあざわらうな",
+   "why": "proven by byte-identical audio; あざけわらう is a blend of あざける and あざわらう"
+  },
+  {
+   "id": "n1-g016",
+   "surface": "弄る",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "かみをまさぐるくせがある",
+   "to": "かみをいじるくせがある",
+   "why": "proven by byte-identical audio; まさぐる is to grope, the sentence is a habit of touching one's hair"
+  },
+  {
+   "id": "n1-b039",
+   "surface": "木綿",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ひろいはたけにもめんのはながとてもきれいにしろくさいている",
+   "to": "ひろいはたけにきわたのはながとてもきれいにしろくさいている",
+   "why": "exEN says 'cotton plant flowers'; もめん is cotton cloth. Gemini says MEANING, Codex hedged — recorded as a split"
+  },
+  {
+   "id": "n1-b118",
+   "surface": "床",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ねつがたかかったのできのうからずっとゆかについている",
+   "to": "ねつがたかかったのできのうからずっととこについている",
+   "why": "床に就く is a fixed expression read とこにつく; exEN says 'staying in bed', ゆか is a floor"
+  },
+  {
+   "id": "n2-g252",
+   "surface": "縁",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "かのじょはべっどのえんにしずかにすわった",
+   "to": "かのじょはべっどのふちにしずかにすわった",
+   "why": "a bed's physical edge is ふち; えん is a karmic bond"
+  },
+  {
+   "id": "n2-b070",
+   "surface": "洒落",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ぶちょうのつまらないしゃらくにみんなにがわらいをした",
+   "to": "ぶちょうのつまらないしゃれにみんなにがわらいをした",
+   "why": "a joke is しゃれ; しゃらく is an easygoing disposition. Instrument 2 also flags it"
+  },
+  {
+   "id": "n3-g361",
+   "surface": "空",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "このばこのなかはかんぜんにそらだった",
+   "to": "このばこのなかはかんぜんにからだった",
+   "why": "an empty box is から; そら is the sky and contradicts exEN"
+  },
+  {
+   "id": "n3-b017",
+   "surface": "御",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ごちゃをどうぞ",
+   "to": "おちゃをどうぞ",
+   "why": "proven by byte-identical audio; 御茶 is おちゃ, ごちゃ is not this word"
+  },
+  {
+   "id": "n3-b162",
+   "surface": "仏",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ふつのかおもさんどまでとゆう",
+   "to": "ほとけのかおもさんどまでとゆう",
+   "why": "the proverb 仏の顔も三度 is fixed on ほとけ; ふつ is the abbreviation for France"
+  },
+  {
+   "id": "n3-b680",
+   "surface": "方々",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "かたがたをあるきまわってつかれた",
+   "to": "ほうぼうをあるきまわってつかれた",
+   "why": "places walked around are ほうぼう; かたがた refers respectfully to people"
+  },
+  {
+   "id": "n3-b919",
+   "surface": "額",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "はんかちでがくのあせをぬぐう",
+   "to": "はんかちでひたいのあせをぬぐう",
+   "why": "exEN says 'forehead'; がく is an amount or a picture frame"
+  },
+  {
+   "id": "n4-g063",
+   "surface": "表",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ひょうをみる",
+   "to": "おもてをみる",
+   "why": "proven by byte-identical audio; exEN says 'front', ひょう is a table/chart"
+  },
+  {
+   "id": "n5-g021",
+   "surface": "何",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "なんをたべますか",
+   "to": "なにをたべますか",
+   "why": "proven by byte-identical audio; 何を before を is なにを, なんを is not a reading of anything"
+  },
+  {
+   "id": "n1-b389",
+   "surface": "本体",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ばこからげーむきのほんたいをとりだした",
+   "to": "はこからげーむきのほんたいをとりだした",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n1-b448",
+   "surface": "えい",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "えいとこえをあげておもいばこをもちあげた",
+   "to": "えいとこえをあげておもいはこをもちあげた",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n1-b526",
+   "surface": "仕舞う",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "つかったどうぐをばこのなかにしまった",
+   "to": "つかったどうぐをはこのなかにしまった",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n1-b809",
+   "surface": "仕掛け",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "このばこにはおもしろいしかけがある",
+   "to": "このはこにはおもしろいしかけがある",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n2-b143",
+   "surface": "針金",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "はりがねをつかってばこをしっかりしばった",
+   "to": "はりがねをつかってはこをしっかりしばった",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n2-b275",
+   "surface": "四角い",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "てーぶるのうえにしかくいばこがおいてあった",
+   "to": "てーぶるのうえにしかくいはこがおいてあった",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n2-b593",
+   "surface": "大小",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "りんごをだいしょうにわけてばこにいれた",
+   "to": "りんごをだいしょうにわけてはこにいれた",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n2-b616",
+   "surface": "潰れる",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ばこがおもくてなかのたまごがつぶれた",
+   "to": "はこがおもくてなかのたまごがつぶれた",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n2-b1165",
+   "surface": "体積",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "このばこのたいせきをけいさんしてください",
+   "to": "このはこのたいせきをけいさんしてください",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n2-b1205",
+   "surface": "中身",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ぷれぜんとのばこをあけてなかみをみた",
+   "to": "ぷれぜんとのはこをあけてなかみをみた",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n2-b1283",
+   "surface": "容積",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "このばこのようせきをせいかくにけいさんした",
+   "to": "このはこのようせきをせいかくにけいさんした",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n3-g361",
+   "surface": "空",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "このばこのなかはかんぜんにからだった",
+   "to": "このはこのなかはかんぜんにからだった",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n3-b215",
+   "surface": "数える",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ばこのなかのりんごのかずをかぞえる",
+   "to": "はこのなかのりんごのかずをかぞえる",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n3-b592",
+   "surface": "束",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "せいりしたてがみのたばをばこにいれた",
+   "to": "せいりしたてがみのたばをはこにいれた",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n3-b766",
+   "surface": "金属",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "このばこはつよいきんぞくでつくられている",
+   "to": "このはこはつよいきんぞくでつくられている",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n3-b955",
+   "surface": "もちあげる",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "おもいばこをひとりでもちあげる",
+   "to": "おもいはこをひとりでもちあげる",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n5-b105",
+   "surface": "たて",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "このばこはたてがにじゅうせんちあります",
+   "to": "このはこはたてがにじゅうせんちあります",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n5-b218",
+   "surface": "五つ",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "てーぶるのうえにばこがいつつあります",
+   "to": "てーぶるのうえにはこがいつつあります",
+   "why": "箱 read ばこ -> はこ. 18 sentences read 箱 as ばこ and none as はこ, while the corpus's only 箱 card is n5-b144/はこ. ばこ is a rendaku allomorph that occurs only as the second half of a compound (本箱, ゴミ箱); every one of the 18 is standalone — three are sentence-initial, six follow この, the rest follow a particle or an adjective — so none of them can be ばこ. Instrument 2 of check_dictation_readings independently flags it. One per-spelling decision, not eighteen."
+  },
+  {
+   "id": "n1-b063",
+   "surface": "強いて",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "しいてゆうならこちらのいろがこのみです",
+   "to": "しいていうならこちらのいろがこのみです",
+   "why": "言う read ゆう -> いう. 5 sentences read 言う as ゆう against 2 as いう, and the only 言う card is n5-b014/いう. ゆう is the colloquial pronunciation v1.18 RETIRED, so the corpus was teaching a reading the app deliberately removed. Contexts are 強いて言う, 実を言うと and と言う, all standard いう."
+  },
+  {
+   "id": "n1-b287",
+   "surface": "実",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "じつをゆうとわたくしはまだそのえいがをみていない",
+   "to": "じつをいうとわたくしはまだそのえいがをみていない",
+   "why": "言う read ゆう -> いう. 5 sentences read 言う as ゆう against 2 as いう, and the only 言う card is n5-b014/いう. ゆう is the colloquial pronunciation v1.18 RETIRED, so the corpus was teaching a reading the app deliberately removed. Contexts are 強いて言う, 実を言うと and と言う, all standard いう."
+  },
+  {
+   "id": "n3-b162",
+   "surface": "仏",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ほとけのかおもさんどまでとゆう",
+   "to": "ほとけのかおもさんどまでという",
+   "why": "言う read ゆう -> いう. 5 sentences read 言う as ゆう against 2 as いう, and the only 言う card is n5-b014/いう. ゆう is the colloquial pronunciation v1.18 RETIRED, so the corpus was teaching a reading the app deliberately removed. Contexts are 強いて言う, 実を言うと and と言う, all standard いう."
+  },
+  {
+   "id": "n3-b958",
+   "surface": "文句",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "かれはいつもふまんやもんくをゆう",
+   "to": "かれはいつもふまんやもんくをいう",
+   "why": "言う read ゆう -> いう. 5 sentences read 言う as ゆう against 2 as いう, and the only 言う card is n5-b014/いう. ゆう is the colloquial pronunciation v1.18 RETIRED, so the corpus was teaching a reading the app deliberately removed. Contexts are 強いて言う, 実を言うと and と言う, all standard いう."
+  },
+  {
+   "id": "n4-g016",
+   "surface": "意見",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "いけんをゆう",
+   "to": "いけんをいう",
+   "why": "言う read ゆう -> いう. 5 sentences read 言う as ゆう against 2 as いう, and the only 言う card is n5-b014/いう. ゆう is the colloquial pronunciation v1.18 RETIRED, so the corpus was teaching a reading the app deliberately removed. Contexts are 強いて言う, 実を言うと and と言う, all standard いう."
+  }
+ ]
+}
