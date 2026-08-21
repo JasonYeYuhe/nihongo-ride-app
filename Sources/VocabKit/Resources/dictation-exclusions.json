@@ -5,8 +5,8 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 954,
- "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A removed 27 exclusions whose recorded complaint no longer occurs: the corpus was corrected to the reading the checker said the voice takes, so the reason for withholding them was repaired rather than re-decided. Six of the 27 are now PROVEN correct by byte-identical audio.",
+ "excludedCount": 962,
+ "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made.",
  "evidence": "docs/measurements/dictation-reading-mismatches.json",
  "excluded": [
   {
@@ -308,6 +308,9 @@
   },
   {
    "id": "n1-b1511"
+  },
+  {
+   "id": "n1-b1516"
   },
   {
    "id": "n1-b1519"
@@ -638,6 +641,9 @@
   },
   {
    "id": "n1-b524"
+  },
+  {
+   "id": "n1-b526"
   },
   {
    "id": "n1-b532"
@@ -1363,6 +1369,9 @@
    "id": "n2-b584"
   },
   {
+   "id": "n2-b593"
+  },
+  {
    "id": "n2-b595"
   },
   {
@@ -1780,6 +1789,9 @@
    "id": "n3-b214"
   },
   {
+   "id": "n3-b215"
+  },
+  {
    "id": "n3-b218"
   },
   {
@@ -1937,6 +1949,9 @@
   },
   {
    "id": "n3-b504"
+  },
+  {
+   "id": "n3-b518"
   },
   {
    "id": "n3-b536"
@@ -2578,6 +2593,9 @@
    "id": "n5-b039"
   },
   {
+   "id": "n5-b040"
+  },
+  {
    "id": "n5-b041"
   },
   {
@@ -2650,6 +2668,9 @@
    "id": "n5-b138"
   },
   {
+   "id": "n5-b147"
+  },
+  {
    "id": "n5-b149"
   },
   {
@@ -2684,6 +2705,9 @@
   },
   {
    "id": "n5-b211"
+  },
+  {
+   "id": "n5-b218"
   },
   {
    "id": "n5-b254"

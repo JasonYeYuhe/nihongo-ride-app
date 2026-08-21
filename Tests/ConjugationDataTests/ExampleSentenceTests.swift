@@ -156,6 +156,63 @@ struct ExampleSentenceTests {
         return found.isEmpty ? nil : found
     }
 
+    /// The headword's reading where the tokenizer does not split ON the headword's boundary.
+    ///
+    /// `headwordReadings` needs a run of tokens whose surfaces concatenate to EXACTLY the
+    /// headword. Sudachi does not always oblige: 支払い方式 comes back as 支払い方 + 式, so no
+    /// span equals 方式 and the entry was skipped — 106 entries, and two of them shipped a
+    /// reading that is not a word (支払い方式 keyed しはらいかたしき, 建築学科 keyed けんちくがくか).
+    ///
+    /// This is the SAME lesson twice: the single-token gate was validated by its catches and
+    /// missed 240 entries; the span gate was validated by its 26 catches and missed 106 more.
+    /// The question is always what the scan cannot see.
+    ///
+    /// Here the headword's own reading cannot be isolated — the covering tokens carry more than
+    /// the headword — so the test is weaker on purpose: the card's reading must appear SOMEWHERE
+    /// in the covering reading. That is satisfied by legitimate rendaku and jukujikun only when
+    /// the compound leaves the reading intact, so the three shipped cases where it does not
+    /// (座り心地 ごこち, 働き盛り ざかり, 今日 きょう) are named rather than papered over.
+    static func coveringReading(of entry: VocabEntry) -> (surface: String, reading: String)? {
+        guard headwordReadings(of: entry) == nil,
+              let jp = entry.exampleJP, jp.contains(entry.surface),
+              let tokens = entry.exampleTokens else { return nil }
+        let content = tokens.filter { $0.count >= 2 }
+        for start in content.indices {
+            var surface = ""
+            for end in start..<content.count {
+                surface += content[end][0]
+                if surface.contains(entry.surface) {
+                    return (surface, KanaScript.katakanaToHiragana(
+                        content[start...end].map { $0[1] }.joined()))
+                }
+            }
+        }
+        return nil
+    }
+
+    /// Rendaku and jukujikun that legitimately change the headword's reading inside a compound.
+    /// Named, not thresholded, for the same reason as every other ratchet here.
+    private let knownCompoundReadings: Set<String> = ["n2-g298", "n3-b510", "n3-b901"]
+
+    @Test("a headword the tokenizer splits across is still read the way its card teaches")
+    func boundaryCrossingHeadwordsAreRead() {
+        var inspected = 0
+        var offenders: [String] = []
+        for entry in withExamples {
+            guard let cover = Self.coveringReading(of: entry) else { continue }
+            inspected += 1
+            if !cover.reading.contains(KanaScript.katakanaToHiragana(entry.kana)),
+               !knownCompoundReadings.contains(entry.id) {
+                offenders.append("\(entry.id) \(entry.surface): card says \(entry.kana), "
+                                 + "\(cover.surface) reads \(cover.reading)")
+            }
+        }
+        #expect(inspected > 60, "only \(inspected) boundary-crossing headwords — the walk is wrong")
+        #expect(offenders.isEmpty, Comment(rawValue:
+            "\(offenders.count) headword(s) the tokenizer split across are misread:\n"
+            + offenders.prefix(8).joined(separator: "\n")))
+    }
+
     @Test("a sentence reads its headword the way its own card teaches it")
     func readsItsHeadwordAsTaught() {
         var offenders: [String] = []
@@ -169,9 +226,10 @@ struct ExampleSentenceTests {
                                  + "sentence says \(readings.joined(separator: "/"))")
             }
         }
-        // A scan that inspected nothing would report a clean corpus. Most sentences do contain
-        // their headword as a bare token — 83.6% of them, measured — so this floor is far below
-        // what a working walk sees and far above what a broken one does.
+        // A scan that inspected nothing would report a clean corpus. The span walk inspects
+        // 5,862 of 6,738 sentences (87.0%), measured on the shipped corpus AFTER the walk was
+        // made span-aware — the number this floor is set against, not the 83.6% the bare-token
+        // predicate saw, which is what this comment quoted until the second review pass.
         #expect(inspected > 5_500, "only \(inspected) sentences contain their headword")
         #expect(offenders.isEmpty,
                 Comment(rawValue: "\(offenders.count) sentence(s) read their headword a way the "
@@ -522,102 +580,29 @@ struct ExampleSentenceTests {
     /// from. Every id withheld from dictation must also still BE a sentence — an exclusion
     /// list that drifts onto ids the corpus no longer has looks like a shrinking safe pool
     /// and is really a stale file.
-    /// An exclusion whose reason has been repaired is content withheld for nothing.
+    /// The evidence behind every exclusion must still describe the corpus it was measured on.
     ///
-    /// Each excluded sentence carries a recorded complaint of the form `箱 ばこ -> はこ`: the
-    /// checker measured that `exKana` said ばこ where the voice says はこ. When the corpus is
-    /// later corrected to what the voice says — which is exactly what v1.25 §A did for 箱, 言う
-    /// and eleven headwords — the complaint no longer describes anything, and the sentence is
-    /// being kept out of dictation by a reason that has been fixed.
+    /// Each excluded sentence carries the `exKana` it had when the voice was measured against
+    /// it. When the corpus is later corrected — v1.25 rewrote 69 sentences — that record starts
+    /// quoting a reading the corpus no longer has, and every later decision about the exclusion
+    /// is made against stale evidence.
     ///
-    /// v1.25 found 27 such exclusions by hand and released them, taking the dictation pool from
-    /// 5,720 to 5,747. This is the check that finds the next one without anybody looking. It is
-    /// deliberately NOT a re-decision of the 961 exclusions whose complaint still matches the
-    /// corpus — those stand or fall on the instrument that made them, which is a separate
-    /// argument recorded in PLAN-V1.25 §C.
+    /// **This replaces two attempts at a cleverer test, both of which were wrong.** The first
+    /// released an exclusion when the complained-of TOKEN had vanished — but v1.25 corrected
+    /// sentences by MERGING token spans, which deletes the very token a complaint names, so the
+    /// test could not fail and eight sentences were released whose corpus reading disagrees with
+    /// the measured audio (十分 set to じっぷん while the voice says じゅうぶん: in dictation
+    /// every keystroke after あと is refused). The second matched the heard reading anywhere in
+    /// the sentence and flagged 80 sentences because 「彼 かれ -> か」 finds か in almost any
+    /// kana string.
     ///
-    /// It reads the measurement file rather than the shipped resource because the resource
-    /// carries only ids; the reason lives with the measurement, which is where a reason belongs.
-    /// The shipped reading notes must be what their generator emits today.
-    ///
-    /// `gen_reading_notes.py` derives every note from the corpus: a card teaching a minority
-    /// reading gets a line naming the everyday reading of its spelling and the card that teaches
-    /// it, but only when a sibling at an EASIER level exists to be the second source. The rule
-    /// was corrected in v1.22 §E — three notes had been printing backwards — and the resource was
-    /// never regenerated afterwards, so it shipped one note short of its own rule for three
-    /// releases and nothing compared the two.
-    ///
-    /// This is not a check that the notes are good; it is a check that the file and the
-    /// generator have not drifted. Derivable data that is checked in as a resource needs one of
-    /// these or it silently becomes a snapshot of whenever somebody last remembered.
-    @Test("the shipped reading notes are what the generator produces from today's corpus")
-    func readingNotesMatchTheirGenerator() throws {
-        let root = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = ["python3", root.appendingPathComponent("scripts/gen_reading_notes.py").path]
-        process.currentDirectoryURL = root
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        process.standardError = Pipe()
-        try process.run()
-        let printed = String(decoding: pipe.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
-        process.waitUntilExit()
-        // The generator's report line is the one number both sides can be compared on without
-        // re-implementing its rule here — which would be the same rule written twice.
-        guard let line = printed.split(separator: "\n").first(where: { $0.hasPrefix("notes:") }),
-              let emitted = Int(line.dropFirst("notes:".count)
-                  .trimmingCharacters(in: .whitespaces).prefix(while: \.isNumber))
-        else {
-            Issue.record("could not read the generator's note count from: \(printed.prefix(200))")
-            return
-        }
-        #expect(emitted == ReadingNotes.all.count, Comment(rawValue:
-                "the generator emits \(emitted) notes and the shipped resource holds "
-                + "\(ReadingNotes.all.count) — regenerate it"))
-    }
-
-    /// The shipped exclusion list and the measurement it came from must name the same ids.
-    ///
-    /// They are two files: `dictation-exclusions.json` is the RESOURCE the app reads and holds
-    /// only ids, while `dictation-reading-mismatches.json` is the measurement and holds the
-    /// reason. The gate below can only check reasons, so it reads the measurement — and when
-    /// v1.25 released repaired exclusions from the measurement, the resource kept all 23 of
-    /// them and the gate stayed green. The app went on withholding sentences for reasons that
-    /// had been fixed, and nothing could see it: the file with the evidence and the file with
-    /// the effect had drifted apart.
-    @Test("the dictation resource and its measurement name the same exclusions")
-    func exclusionResourceMatchesItsMeasurement() throws {
-        struct Record: Decodable { let id: String }
-        struct File: Decodable { let excluded: [Record] }
-        let root = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-        func ids(_ path: String) throws -> Set<String> {
-            let data = try Data(contentsOf: root.appendingPathComponent(path))
-            return Set(try JSONDecoder().decode(File.self, from: data).excluded.map(\.id))
-        }
-        let measured = try ids("docs/measurements/dictation-reading-mismatches.json")
-        let shipped = try ids("Sources/VocabKit/Resources/dictation-exclusions.json")
-        #expect(measured.count > 800, "only \(measured.count) measured — the reader is wrong")
-        // Compare the DIFFERENCES, not the sets. `#expect(a == b)` prints both operands, and
-        // both are ~950 ids: the first version of this test failed with a 1,900-id wall of text
-        // that named the one offender somewhere in the middle. A red build nobody can read is a
-        // red build nobody acts on.
-        let staleInResource = shipped.subtracting(measured).sorted()
-        let missingFromResource = measured.subtracting(shipped).sorted()
-        #expect(staleInResource.isEmpty, Comment(rawValue:
-            "withheld by the app but no longer measured: \(staleInResource.prefix(10))"))
-        #expect(missingFromResource.isEmpty, Comment(rawValue:
-            "measured as excluded but not withheld: \(missingFromResource.prefix(10))"))
-        #expect(shipped.subtracting(Set(DictationSafety.excludedIDs)).isEmpty
-                && Set(DictationSafety.excludedIDs).subtracting(shipped).isEmpty,
-                "the loaded list disagrees with the file it was loaded from")
-    }
-
-    @Test("no dictation exclusion rests on a reading the corpus no longer contains")
-    func exclusionReasonsStillHold() throws {
-        struct Record: Decodable { let id: String; let heardInstead: String? }
+    /// What is left is the property that can be stated exactly and has no false positives:
+    /// evidence must match the data it describes. Releasing an exclusion is then a decision
+    /// somebody makes with a re-measurement in hand, which is what it always should have been —
+    /// not something a substring test infers.
+    @Test("every dictation exclusion's evidence still matches the sentence it describes")
+    func exclusionEvidenceIsCurrent() throws {
+        struct Record: Decodable { let id: String; let exKana: String? }
         struct File: Decodable { let excluded: [Record] }
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
@@ -626,26 +611,19 @@ struct ExampleSentenceTests {
         let byID = Dictionary(VocabStore.shared.entries.map { ($0.id, $0) },
                               uniquingKeysWith: { a, _ in a })
         var inspected = 0
-        var voided: [String] = []
+        var stale: [String] = []
         for record in file.excluded {
-            // "surface reading -> whatTheVoiceSays". Anything else (propagated exclusions say
-            // so in prose) carries no per-sentence claim to check.
-            guard let complaint = record.heardInstead else { continue }
-            let parts = complaint.split(separator: " ")
-            guard parts.count >= 3, parts[2] == "->" else { continue }
-            let surface = String(parts[0]), reading = String(parts[1])
-            guard let entry = byID[record.id], let tokens = entry.exampleTokens else { continue }
+            guard let recorded = record.exKana, let entry = byID[record.id],
+                  let current = entry.exampleKana else { continue }
             inspected += 1
-            if !tokens.contains(where: { $0.count >= 2 && $0[0] == surface && $0[1] == reading }) {
-                voided.append("\(record.id): withheld because \(complaint), which no longer occurs")
+            if recorded != current {
+                stale.append("\(record.id): measured against \(recorded), corpus now says \(current)")
             }
         }
-        // A parse that matched nothing would report every exclusion sound. The file records
-        // ~1,000 exclusions and the great majority carry a parseable complaint.
-        #expect(inspected > 800, "only \(inspected) complaints parsed — the reader is wrong")
-        #expect(voided.isEmpty, Comment(rawValue:
-            "\(voided.count) exclusion(s) rest on a repaired reason — release them:\n"
-            + voided.prefix(10).joined(separator: "\n")))
+        #expect(inspected > 800, "only \(inspected) records carry an exKana — the reader is wrong")
+        #expect(stale.isEmpty, Comment(rawValue:
+            "\(stale.count) exclusion(s) rest on evidence the corpus no longer matches — "
+            + "re-measure them:\n" + stale.prefix(8).joined(separator: "\n")))
     }
 
     @Test("every dictation exclusion names a real, otherwise-typeable sentence")

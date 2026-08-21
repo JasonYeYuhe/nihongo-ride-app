@@ -5,8 +5,8 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 954,
- "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A removed 27 exclusions whose recorded complaint no longer occurs: the corpus was corrected to the reading the checker said the voice takes, so the reason for withholding them was repaired rather than re-decided. Six of the 27 are now PROVEN correct by byte-identical audio.",
+ "excludedCount": 962,
+ "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made.",
  "excluded": [
   {
    "id": "n1-b003",
@@ -39,9 +39,9 @@
   {
    "id": "n1-b039",
    "exJP": "広い畑に木綿の花がとてもきれいに白く咲いている。",
-   "exKana": "ひろいはたけにもめんのはながとてもきれいにしろくさいている",
-   "heardInstead": "畑 はたけ -> ばたけ",
-   "evidence": "nearest"
+   "exKana": "ひろいはたけにきわたのはながとてもきれいにしろくさいている",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n1-b045",
@@ -709,6 +709,13 @@
    "evidence": "nearest"
   },
   {
+   "id": "n1-b1516",
+   "exJP": "あと十分で授業が始まる。",
+   "exKana": "あとじっぷんでじゅぎょうがはじまる",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
+  },
+  {
    "id": "n1-b1519",
    "exJP": "部屋の床に柔らかい絨毯を敷いた。",
    "exKana": "へやのゆかにやわらかいじゅうたんをしいた",
@@ -1264,9 +1271,9 @@
   {
    "id": "n1-b287",
    "exJP": "実を言うと、私はまだその映画を見ていない。",
-   "exKana": "じつをゆうとわたくしはまだそのえいがをみていない",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
+   "exKana": "じつをいうとわたくしはまだそのえいがをみていない",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n1-b295",
@@ -1477,6 +1484,13 @@
    "exKana": "はっぴょうのあとにじゅうぶんなしつぎのじかんをもうけた",
    "heardInstead": "後 あと -> のち",
    "evidence": "nearest"
+  },
+  {
+   "id": "n1-b526",
+   "exJP": "使った道具を箱の中に仕舞った。",
+   "exKana": "つかったどうぐをはこのなかにしまった",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n1-b532",
@@ -1880,9 +1894,9 @@
   {
    "id": "n1-b878",
    "exJP": "地震の後、海岸沿いの地域に津波警報が出た。",
-   "exKana": "じしんのあとかいがんそいのちいきにつなみけいほうがでた",
-   "heardInstead": "後 あと -> のち",
-   "evidence": "nearest"
+   "exKana": "じしんのあとかいがんぞいのちいきにつなみけいほうがでた",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n1-b886",
@@ -2566,9 +2580,9 @@
   {
    "id": "n2-b1154",
    "exJP": "先々月日本へ引っ越してきました。",
-   "exKana": "さきざきつきにっぽんへひっこしてきました",
-   "heardInstead": "日本 にっぽん -> にほん",
-   "evidence": "nearest"
+   "exKana": "せんせんげつにっぽんへひっこしてきました",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n2-b1164",
@@ -2965,9 +2979,9 @@
   {
    "id": "n2-b312",
    "exJP": "先々週買った本をようやく読み終わった。",
-   "exKana": "さきざきしゅうかったほんをようやくよみおわった",
-   "heardInstead": "本 ほん -> もと",
-   "evidence": "nearest"
+   "exKana": "せんせんしゅうかったほんをようやくよみおわった",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n2-b337",
@@ -3164,6 +3178,13 @@
    "exKana": "そういえばあすはたなかさんのたんじょうびだ",
    "heardInstead": "明日 あす -> あした",
    "evidence": "nearest"
+  },
+  {
+   "id": "n2-b593",
+   "exJP": "りんごを大小に分けて箱に入れた。",
+   "exKana": "りんごをだいしょうにわけてはこにいれた",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n2-b595",
@@ -4050,9 +4071,9 @@
   {
    "id": "n3-b162",
    "exJP": "仏の顔も三度までと言う。",
-   "exKana": "ふつのかおもさんどまでとゆう",
-   "heardInstead": "顔 かお -> がん",
-   "evidence": "nearest"
+   "exKana": "ほとけのかおもさんどまでという",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n3-b168",
@@ -4137,6 +4158,13 @@
    "exKana": "すまーとふぉんのがめんをかくだいしてしゃしんをみた",
    "heardInstead": "写真 しゃしん -> じゃしん",
    "evidence": "nearest"
+  },
+  {
+   "id": "n3-b215",
+   "exJP": "箱の中のりんごの数を数える。",
+   "exKana": "はこのなかのりんごのかずをかぞえる",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n3-b218",
@@ -4508,6 +4536,13 @@
    "exKana": "これらはすべてわたくしのほんです",
    "heardInstead": "私 わたくし -> わたし",
    "evidence": "nearest"
+  },
+  {
+   "id": "n3-b518",
+   "exJP": "先生と直に話をした。",
+   "exKana": "せんせいとじかにはなしをした",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n3-b536",
@@ -6001,6 +6036,13 @@
    "evidence": "nearest"
   },
   {
+   "id": "n5-b040",
+   "exJP": "一昨日、新しい本を買いました。",
+   "exKana": "おとといあたらしいほんをかいました",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
+  },
+  {
    "id": "n5-b041",
    "exJP": "私と田中さんは同じ傘を持っています。",
    "exKana": "わたくしとたなかさんはおなじかさをもっています",
@@ -6169,6 +6211,13 @@
    "evidence": "nearest"
   },
   {
+   "id": "n5-b147",
+   "exJP": "今月の二十日に友達が来ます。",
+   "exKana": "こんげつのはつかにともだちがきます",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
+  },
+  {
    "id": "n5-b149",
    "exJP": "明日は空が晴れるでしょう。",
    "exKana": "あすはそらがはれるでしょう",
@@ -6213,9 +6262,9 @@
   {
    "id": "n5-b186",
    "exJP": "りんごを八つ買いました。",
-   "exKana": "りんごをようつかいました",
-   "heardInstead": "買い かい -> がい",
-   "evidence": "nearest"
+   "exKana": "りんごをやっつかいました",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n5-b194",
@@ -6251,6 +6300,13 @@
    "exKana": "いいえそれはわたくしのほんではありません",
    "heardInstead": "私 わたくし -> わたし",
    "evidence": "nearest"
+  },
+  {
+   "id": "n5-b218",
+   "exJP": "テーブルの上に箱が五つあります。",
+   "exKana": "てーぶるのうえにはこがいつつあります",
+   "heardInstead": "the sentence was corrected in v1.25 after this was measured; instrument 1 cannot speak for it, so it stays withheld pending a re-measurement",
+   "evidence": "stale-after-correction"
   },
   {
    "id": "n5-b254",
