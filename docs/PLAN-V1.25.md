@@ -154,3 +154,60 @@ Ships when:
   fixed. It found the defect v1.24 was built around and then a defect in the fix; assume it will
   find something here too.
 * `scripts/launch_gate.sh` passes on the archive **that was uploaded**, not one built beside it.
+
+
+---
+
+# What was decided, and by what evidence
+
+## The twenty-one, resolved 13 / 8
+
+**Fixed (13).** Five by byte-identical synthesised audio — instrument 1, proof of the phoneme
+sequence rather than an inference — and in every one of the five the voice takes the CARD's
+reading: 何 なに, 表 おもて, 御 お, 嘲笑う あざわらう, 弄る いじる. Ten more were classified
+MEANING (the reading changes what the sentence says) **independently and identically by Codex
+and Gemini 3.7 Flash**, with the English translation as a third, non-circular witness: 床 とこ,
+縁 ふち, 洒落 しゃれ, 空 から, 仏 ほとけ, 方々 ほうぼう, 額 ひたい, 木綿 きわた, 弄る, 表.
+
+The two models' partitions were identical — the same ten MEANING, the same eleven REGISTER —
+which also resolved what an earlier pass had recorded as a split: 木綿 is not a split. Codex
+hedged on the first, blunter question and answered MEANING on the sharper one.
+
+**Kept (8), named in the ratchet with the reason.** 獣, 怒る, 大事, 消耗, 所々, 得る, 明日, 私 —
+all in both models' REGISTER list. v1.21 §C has already decided a minority reading is not an
+error; correcting these would overturn a recorded decision and author Japanese to satisfy a card.
+
+## The axis question was missing a category, and the instrument covered for it
+
+Both models put 何 (なん/なに), 御 (ご/お) and 嘲笑う in REGISTER, reasoning that the two readings
+mean the same thing. Semantically that is right. But なんを is not a possible reading of anything,
+御茶 is not ごちゃ, and あざけわらう is a blend of two verbs — these are not stylistic variants,
+they are **not readings of that word in that position**. The question offered only MEANING and
+REGISTER, so a wrong reading with an adjacent meaning had nowhere to go but REGISTER.
+
+They were corrected anyway, because instrument 1 had already proved what the voice says. The
+lesson is not that the models were weak; it is that **a question with the wrong categories will
+be answered wrongly by anything honest**, and that having one instrument that can be asked
+decisively is worth more than a third opinion.
+
+## §B, decided by looking
+
+The render is what settled it. A sentence run's results screen showed 「友達と映画を見ました。」
+inside a 116pt word cell, wrapped over two lines, captioned "movie, film" — the gloss of 映画,
+not of the sentence — with a star that saved 映画, a word the cell never named. Above it a tile
+read "Words 4" for four SENTENCES, and "Struggled 1" sat five lines above "the words that
+stopped you: 4".
+
+Three numbers, two units, none of them labelled with the unit it counted.
+
+Fixed with one predicate — `GameMode.lapsesAreWords` — which the tile and the list now share:
+
+* the whole-sentence review list is **dropped** on sentence and dictation runs. Nothing replaces
+  it because the chips already had: they name what went wrong per word, resolve to real entries,
+  and are actionable. It was the same question answered worse.
+* "Words" becomes "Sentences" where the queue holds sentences;
+* "Struggled" becomes "Tough lines", so the sentence-level count and the word-level chips read
+  as the different things they are.
+
+The predicate is tested against what the session BUILDERS produce rather than against a list of
+modes, and calibrated: making it `true` everywhere reddens.

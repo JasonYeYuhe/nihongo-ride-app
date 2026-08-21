@@ -753,3 +753,66 @@ struct StumbledWordsRunTests {
         #expect(StumbledWords.from(play(session, mistypeAt: 1), vocab: vocab).isEmpty)
     }
 }
+
+// MARK: - What a lapsed entry IS, per mode (v1.25 §B)
+
+/// The results screen draws lapsed entries as words. In two modes they are not words.
+///
+/// `GameSession.sentenceSession` wraps each sentence as a `VocabEntry` whose `surface` is the
+/// whole sentence and whose `kana` is the whole reading, so a sentence or dictation run's
+/// `lapsedEntries` are sentences wearing a word's shape. The results screen rendered them in
+/// 116pt word cells: 「友達と映画を見ました。」 wrapped over two lines, captioned with one word's
+/// gloss, and announced by VoiceOver as "Save 〈whole sentence〉" — while the star saved the
+/// headword, a word the cell never named.
+///
+/// `GameMode.lapsesAreWords` is the one predicate the tile and the list now share. This checks
+/// it against what the BUILDERS actually produce rather than restating the list of modes, which
+/// would be the same rule written twice.
+@Suite("A lapsed entry is only a word in the modes where it is one")
+struct LapsesAreWordsTests {
+
+    private static func store() -> VocabStore {
+        VocabStore(entries: (0..<8).map { i in
+            VocabEntry(id: "w\(i)", surface: "水\(i)", kana: "みず\(i)",
+                       partsOfSpeech: ["n"], jlpt: .n5, meanings: ["en": ["water"]],
+                       exampleJP: "これは水\(i)です。", exampleEN: "This is water.",
+                       exampleKana: "これはみず\(i)です",
+                       exampleTokens: [["これ", "これ"], ["は", "は"], ["水\(i)", "みず\(i)"],
+                                       ["です", "です"], ["。", "。"]])
+        })
+    }
+
+    @Test("the predicate matches what the session builders actually queue")
+    func predicateMatchesTheBuilders() throws {
+        let vocab = Self.store()
+        var config = GameSession.Config()
+        config.newWordCount = 4
+        config.reviewWordCount = 0
+
+        // A sentence run queues entries whose surface is the SENTENCE.
+        let sentence = GameSession.makeSentence(vocab: vocab, config: config)
+        let queuedSentence = try #require(sentence.wordList.first)
+        #expect(queuedSentence.surface.count > 4,
+                "a sentence run should queue a whole sentence, not a word: \(queuedSentence.surface)")
+        #expect(GameMode.sentence.lapsesAreWords == false)
+
+        // A word run queues the words themselves.
+        var wordConfig = config
+        wordConfig.mode = .journey
+        let journey = GameSession.make(config: wordConfig, vocab: vocab, review: ReviewStore())
+        let queuedWord = try #require(journey.wordList.first)
+        #expect(vocab.entry(id: queuedWord.id)?.surface == queuedWord.surface,
+                "a word run should queue the entry as it is stored")
+        #expect(GameMode.journey.lapsesAreWords)
+    }
+
+    /// The predicate must not quietly become "everything is a word", which would restore the
+    /// bug while every other assertion still passed.
+    @Test("exactly the sentence-shaped modes are excluded")
+    func onlySentenceShapedModesAreExcluded() {
+        let excluded = GameMode.allCases.filter { !$0.lapsesAreWords }
+        #expect(Set(excluded) == [.sentence, .dictation],
+                Comment(rawValue: "excluded: \(excluded)"))
+    }
+}
+

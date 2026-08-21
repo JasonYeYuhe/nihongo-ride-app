@@ -21,6 +21,21 @@ public enum GameMode: String, Sendable, CaseIterable {
     case sentence      // type a whole example sentence (v1.18); no SRS — see RunCompletion
     case dictation     // hear a sentence and type it (v1.21); no SRS, same reason as .sentence
 }
+extension GameMode {
+    /// Whether a lapsed entry in this mode is a WORD the learner can be shown as one.
+    ///
+    /// False for sentence and dictation, where `GameSession.sentenceSession` wraps each
+    /// sentence as a `VocabEntry` whose `surface` is the whole sentence and whose `kana` is the
+    /// whole reading. Anything that renders a lapsed entry as a word — a grid cell, a saved-word
+    /// row, a VoiceOver label — is rendering a sentence in a word's clothes, which is exactly
+    /// what the v1.25 §B render showed: 「友達と映画を見ました。」 inside a 116pt cell captioned
+    /// "movie, film".
+    ///
+    /// One predicate, so the tile that counts them and the list that draws them cannot disagree
+    /// about what they are.
+    public var lapsesAreWords: Bool { self != .sentence && self != .dictation }
+}
+
 
 /// What a finished run persists and where it lands — the single source of truth for
 /// `AppModel.finishGame`'s side-effect gating, extracted as a pure value so the

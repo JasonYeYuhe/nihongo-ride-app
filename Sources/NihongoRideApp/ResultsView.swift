@@ -89,7 +89,19 @@ struct ResultsView: View {
                         .foregroundStyle(.white)
                     grade(for: summary)
                     scoreGrid(summary)
-                    if !summary.reviewWords.isEmpty {
+                    // Only where a lapsed entry really is a WORD. On a sentence or dictation
+                    // run `GameSession.sentenceSession` wraps each sentence as a VocabEntry
+                    // whose `surface` IS the whole sentence, so this list rendered 「友達と映画を
+                    // 見ました。」 inside a 116pt word cell, captioned with one word's gloss
+                    // ("movie, film"), and VoiceOver announced "Save 〈whole sentence〉" — while
+                    // the star actually saved 映画, a word the cell never named. Seen in the
+                    // headless render.
+                    //
+                    // Nothing replaces it because something already had: the chips below name
+                    // what went wrong per WORD, resolve to real entries, and are actionable.
+                    // This list was the same question answered worse. (v1.25 §B; v1.24 §B left
+                    // this open as "decide what replaces it rather than leaving a gap".)
+                    if !summary.reviewWords.isEmpty, summary.mode.lapsesAreWords {
                         reviewList(summary.reviewWords)
                     }
                     stageLine
@@ -350,8 +362,14 @@ struct ResultsView: View {
             (icon: "flame.fill", tint: Theme.accent,
              value: "×\(summary.maxCombo)", label: zh ? "最高连击" : "Best combo",
              spoken: "\(summary.maxCombo)"),
+            // `wordsCompleted` counts whatever the run's queue held, and on a sentence or
+            // dictation run that is SENTENCES. Labelling it "Words" put a second unit on a
+            // screen that already says "the words that stopped you" a few lines below, with a
+            // different number, about different things. (v1.25 §B.)
             (icon: "checkmark.circle.fill", tint: Theme.done,
-             value: "\(summary.wordsCompleted)", label: zh ? "完成词数" : "Words", spoken: nil),
+             value: "\(summary.wordsCompleted)",
+             label: summary.mode.lapsesAreWords ? (zh ? "完成词数" : "Words")
+                                                : (zh ? "完成句数" : "Sentences"), spoken: nil),
             (icon: "scope", tint: Color.white,
              value: "\(Int(summary.accuracy * 100))%", label: zh ? "准确率" : "Accuracy", spoken: nil),
             // "To review" is a promise, and on a run that persists no SRS it is a false one:
@@ -368,7 +386,9 @@ struct ResultsView: View {
              // above four words that plainly stopped the learner. Seen in the headless render,
              // not reasoned about. This wording matches the list directly below it instead.
              label: summary.persistsSRS ? (zh ? "待复习" : "To review")
-                                        : (zh ? "吃力" : "Struggled"), spoken: nil),
+                                        : (summary.mode.lapsesAreWords ? (zh ? "吃力" : "Struggled")
+                                                                       : (zh ? "吃力句" : "Tough lines")),
+             spoken: nil),
         ]
         // Width-driven, not idiom-driven — see ConjugationResultsView.scoreGrid for the bug
         // this replaces (iPad portrait treated as roomy, tiles off both screen edges).

@@ -97,6 +97,11 @@ enum Screenshotter {
         let sentenceResults = makeModel()
         sentenceResults.selectedMode = .sentence
         sentenceResults.startGame()
+        // Skip one, so the review list is NOT empty. A results screen rendered with nothing in
+        // it does not exercise the layout that matters here: on a sentence run every lapsed
+        // "word" is a whole sentence (GameSession.sentenceSession wraps it as a VocabEntry whose
+        // surface IS the sentence), and that only shows up when something lapses.
+        sentenceResults.session?.skip()
         for _ in 0 ..< 4 {
             // Two refused keys first: the matcher does not advance on a rejection, so both land
             // inside the same word, which is what makes it a stumble rather than two slips
