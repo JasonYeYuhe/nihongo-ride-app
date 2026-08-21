@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import RomajiKana
 @testable import VocabKit
 
 /// Guards the 2,121 shipped example sentences.
@@ -103,6 +104,83 @@ struct ExampleSentenceTests {
         #expect(offenders.isEmpty,
                 Comment(rawValue: "\(offenders.count) example(s) don't contain their word:\n"
                                   + offenders.prefix(12).joined(separator: "\n")))
+    }
+
+    /// The reading half of `usesTheWord`, which only ever compared the WRITTEN form.
+    ///
+    /// `usesTheWord` asks whether the sentence contains the headword — `jp.contains(surface)`,
+    /// a substring test that never looks at a reading. So a sentence can contain its headword
+    /// and transcribe it as a different word entirely, and pass. Twenty-one shipped sentences
+    /// do, and `exKana` is not decoration: it is the LITERAL TYPING TARGET the learner is graded
+    /// against, and the furigana printed over the sentence.
+    ///
+    /// The card 何/なに ships 「何を食べますか。」 with `exKana` なんをたべますか — and なんを is
+    /// not a possible reading of anything. 額/ひたい, glossed "forehead", types がく. 御/お
+    /// types ごちゃ for 御茶. In eighteen of the twenty-one the reading the sentence uses is
+    /// literally another entry's `kana`, so the corpus contradicts itself in a way it can be
+    /// asked about.
+    ///
+    /// Derived, never a list of forms: for every entry whose `exTokens` contain a token written
+    /// exactly like the headword, the entry's own `kana` must be among those tokens' readings.
+    /// Katakana is folded with `KanaScript` — the same folding the typing matcher and the
+    /// stumbled-word index use, not a fourth copy of the rule.
+    @Test("a sentence reads its headword the way its own card teaches it")
+    func readsItsHeadwordAsTaught() {
+        var offenders: [String] = []
+        var inspected = 0
+        for entry in withExamples {
+            guard let tokens = entry.exampleTokens else { continue }
+            let own = tokens.filter { $0.count >= 2 && $0[0] == entry.surface }
+            guard !own.isEmpty else { continue }
+            inspected += 1
+            let readings = own.map { KanaScript.katakanaToHiragana($0[1]) }
+            if !readings.contains(KanaScript.katakanaToHiragana(entry.kana)),
+               !knownHeadwordReadingMismatch.contains(entry.id) {
+                offenders.append("\(entry.id) \(entry.surface): card says \(entry.kana), "
+                                 + "sentence says \(readings.joined(separator: "/"))")
+            }
+        }
+        // A scan that inspected nothing would report a clean corpus. Most sentences do contain
+        // their headword as a bare token — 83.6% of them, measured — so this floor is far below
+        // what a working walk sees and far above what a broken one does.
+        #expect(inspected > 4_000, "only \(inspected) sentences contain their headword as a token")
+        #expect(offenders.isEmpty,
+                Comment(rawValue: "\(offenders.count) sentence(s) read their headword a way the "
+                                  + "card does not teach:\n" + offenders.prefix(12).joined(separator: "\n")))
+    }
+
+    /// The twenty-one that shipped, each one named.
+    ///
+    /// A ratchet on the `knownSharedExamples` model, and named rather than counted for the same
+    /// reason: a threshold lets a new one in as an old one is fixed, and this defect grades a
+    /// learner's typing against a reading nobody teaches. Removing a line here means the entry
+    /// was genuinely adjudicated — either its `exKana` was corrected, or its sentence was
+    /// withdrawn because the sentence is right and the card's minority reading cannot occur in
+    /// it. Both outcomes are legitimate; leaving it is not.
+    private let knownHeadwordReadingMismatch: Set<String> = [
+        "n1-g005", "n1-g016", "n1-g315", "n1-b005", "n1-b016", "n1-b039", "n1-b071",
+        "n1-b072", "n1-b118", "n2-g252", "n2-b070", "n3-g131", "n3-g361", "n3-b017",
+        "n3-b162", "n3-b680", "n3-b919", "n4-g063", "n5-ashita", "n5-g012", "n5-g021",
+    ]
+
+    /// A ratchet that is not shrinking is a list nobody is working through, and one that names
+    /// an entry already fixed hides the next offender behind a stale exemption.
+    @Test("the headword-reading ratchet names only entries that still offend")
+    func ratchetIsNotStale() {
+        var stillOffending: Set<String> = []
+        for entry in withExamples {
+            guard let tokens = entry.exampleTokens else { continue }
+            let own = tokens.filter { $0.count >= 2 && $0[0] == entry.surface }
+            guard !own.isEmpty else { continue }
+            let readings = own.map { KanaScript.katakanaToHiragana($0[1]) }
+            if !readings.contains(KanaScript.katakanaToHiragana(entry.kana)) {
+                stillOffending.insert(entry.id)
+            }
+        }
+        let stale = knownHeadwordReadingMismatch.subtracting(stillOffending)
+        #expect(stale.isEmpty,
+                Comment(rawValue: "fixed — remove from knownHeadwordReadingMismatch: "
+                                  + stale.sorted().joined(separator: ", ")))
     }
 
     /// Sentences already shared by two entries when this test was written.

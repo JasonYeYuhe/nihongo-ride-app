@@ -134,7 +134,7 @@ let package = Package(
         // golden over the real vc-stamped vocab JSON (v1.6 B1, PLAN-V1.6 §3 layer-ii).
         // Imports VocabKit (the data) + ConjugationKit (the engine); vc is mapped via
         // VerbClass(rawValue:) — no extra dependency edge.
-        .testTarget(name: "ConjugationDataTests", dependencies: ["VocabKit", "ConjugationKit"]),
+        .testTarget(name: "ConjugationDataTests", dependencies: ["VocabKit", "ConjugationKit", "RomajiKana"]),
 
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
