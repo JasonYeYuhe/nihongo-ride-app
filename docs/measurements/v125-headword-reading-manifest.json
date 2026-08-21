@@ -1,5 +1,5 @@
 {
- "reason": "v1.25 §A. Thirteen example sentences transcribed their own headword with a reading the card does not teach, and exKana is the literal typing target the learner is graded against. Five are proven by byte-identical synthesised audio (instrument 1 of check_dictation_readings), which is proof of the phoneme sequence rather than an inference, and in every one of the five the voice takes the CARD's reading. Seven more were classified as a MEANING difference — the reading changes what the sentence says — independently by Codex and Gemini 3.7 Flash, with the English translation as a third, non-circular witness. One (n1-b039) is a recorded split. Eight further entries were classified REGISTER by both models and are deliberately NOT touched: v1.21 §C decided minority readings are not errors. Two further per-spelling corrections ride along: 箱 read ばこ in 18 standalone positions where the rendaku allomorph cannot occur, and 言う read ゆう, the reading v1.18 retired.",
+ "reason": "v1.25 §A. Thirteen example sentences transcribed their own headword with a reading the card does not teach, and exKana is the literal typing target the learner is graded against. Five are proven by byte-identical synthesised audio (instrument 1 of check_dictation_readings), which is proof of the phoneme sequence rather than an inference, and in every one of the five the voice takes the CARD's reading. Seven more were classified as a MEANING difference — the reading changes what the sentence says — independently by Codex and Gemini 3.7 Flash, with the English translation as a third, non-circular witness. One (n1-b039) is a recorded split. Eight further entries were classified REGISTER by both models and are deliberately NOT touched: v1.21 §C decided minority readings are not errors. Two further per-spelling corrections ride along: 箱 read ばこ in 18 standalone positions where the rendaku allomorph cannot occur, and 言う read ゆう, the reading v1.18 retired. The pre-submission review then found the gate itself had a blind spot — it matched a single token, so 240 entries whose headword the tokenizer splits were never inspected and 26 more offenders hid behind it, ten of them N5 counters and dates (四つ typed よんつ, 二日 typed ふたか). The gate is now span-aware and those are corrected here too, plus two further per-spelling sweeps of identical shape (沿い, 得る).",
  "entries": [
   {
    "id": "n1-g005",
@@ -396,6 +396,369 @@
    "from": "いけんをゆう",
    "to": "いけんをいう",
    "why": "言う read ゆう -> いう. 5 sentences read 言う as ゆう against 2 as いう, and the only 言う card is n5-b014/いう. ゆう is the colloquial pronunciation v1.18 RETIRED, so the corpus was teaching a reading the app deliberately removed. Contexts are 強いて言う, 実を言うと and と言う, all standard いう."
+  },
+  {
+   "id": "n1-b305",
+   "surface": "その外",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ぺんとのーとそのそとにひつようなどうぐをかった",
+   "to": "ぺんとのーとそのほかにひつようなどうぐをかった",
+   "why": "その外 is そのほか"
+  },
+  {
+   "id": "n1-b348",
+   "surface": "何より",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "かぞくがみなけんこうですごせることがなんよりのしあわせだ",
+   "to": "かぞくがみなけんこうですごせることがなによりのしあわせだ",
+   "why": "何より is なにより"
+  },
+  {
+   "id": "n1-b457",
+   "surface": "お八",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "さんじになったのでこどもたちにおはちをあげる",
+   "to": "さんじになったのでこどもたちにおやつをあげる",
+   "why": "お八 is ateji for おやつ"
+  },
+  {
+   "id": "n1-b745",
+   "surface": "街道",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "このかいどうそいにはふるいまちなみがのこっている",
+   "to": "このかいどうぞいにはふるいまちなみがのこっている",
+   "why": "沿い read そい -> ぞい. 3 sentences read 沿い as そい and none as ぞい; the only 沿い card is n1-b1547/ぞい. The suffix 〜沿い always rendakus (川沿い かわぞい); そい is the bare nominalisation of 沿う and cannot occur in 街道沿い or 海岸沿い. The dictation checker already recorded 「沿い そい -> ぞい」."
+  },
+  {
+   "id": "n1-b878",
+   "surface": "津波",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "じしんのあとかいがんそいのちいきにつなみけいほうがでた",
+   "to": "じしんのあとかいがんぞいのちいきにつなみけいほうがでた",
+   "why": "沿い read そい -> ぞい. 3 sentences read 沿い as そい and none as ぞい; the only 沿い card is n1-b1547/ぞい. The suffix 〜沿い always rendakus (川沿い かわぞい); そい is the bare nominalisation of 沿う and cannot occur in 街道沿い or 海岸沿い. The dictation checker already recorded 「沿い そい -> ぞい」."
+  },
+  {
+   "id": "n1-b1230",
+   "surface": "動力",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "かぜのちからをりようしてふねのどうりょくをうる",
+   "to": "かぜのちからをりようしてふねのどうりょくをえる",
+   "why": "得る read うる -> える. 3 sentences read 得る as うる and none as える; the only 得る card is n3-g131/える, which declares vc: ichidan. うる is the attributive of the classical nidan 得, productive in modern Japanese only as 〜し得る — not a register variant but a form the card's own table cannot produce. Kept as REGISTER at first on two models reading 'both mean to obtain', which is the wrong question. Found by the pre-submission review."
+  },
+  {
+   "id": "n1-b1479",
+   "surface": "左程",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "きょうのしけんはひだりほどむずかしくなかった",
+   "to": "きょうのしけんはさほどむずかしくなかった",
+   "why": "左程 is ateji for さほど"
+  },
+  {
+   "id": "n1-b1487",
+   "surface": "為来り",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "このちいきにはふるいためきたりがいまものこっている",
+   "to": "このちいきにはふるいしきたりがいまものこっている",
+   "why": "為来り is ateji for しきたり"
+  },
+  {
+   "id": "n1-b1516",
+   "surface": "十分",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "あとじゅうふんでじゅぎょうがはじまる",
+   "to": "あとじっぷんでじゅぎょうがはじまる",
+   "why": "十分 for ten minutes is じっぷん; じゅうふん is not the word"
+  },
+  {
+   "id": "n2-b170",
+   "surface": "店屋",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "かいどうそいにちいさなみせやがならんでいる",
+   "to": "かいどうぞいにちいさなみせやがならんでいる",
+   "why": "沿い read そい -> ぞい. 3 sentences read 沿い as そい and none as ぞい; the only 沿い card is n1-b1547/ぞい. The suffix 〜沿い always rendakus (川沿い かわぞい); そい is the bare nominalisation of 沿う and cannot occur in 街道沿い or 海岸沿い. The dictation checker already recorded 「沿い そい -> ぞい」."
+  },
+  {
+   "id": "n2-b312",
+   "surface": "先々週",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "さきざきしゅうかったほんをようやくよみおわった",
+   "to": "せんせんしゅうかったほんをようやくよみおわった",
+   "why": "先々週 is せんせんしゅう"
+  },
+  {
+   "id": "n2-b384",
+   "surface": "一通り",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "しょるいにいちとおりめをとおした",
+   "to": "しょるいにひととおりめをとおした",
+   "why": "一通り as an adverb is ひととおり"
+  },
+  {
+   "id": "n2-b701",
+   "surface": "三日月",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "こんやはそらにきれいなみっかつきがでている",
+   "to": "こんやはそらにきれいなみかづきがでている",
+   "why": "三日月 is みかづき"
+  },
+  {
+   "id": "n2-b937",
+   "surface": "何分",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "なんふんふるいくるまなのでときどきこしょうします",
+   "to": "なにぶんふるいくるまなのでときどきこしょうします",
+   "why": "何分 meaning 'after all' is なにぶん"
+  },
+  {
+   "id": "n2-b1154",
+   "surface": "先々月",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "さきざきつきにっぽんへひっこしてきました",
+   "to": "せんせんげつにっぽんへひっこしてきました",
+   "why": "先々月 is せんせんげつ"
+  },
+  {
+   "id": "n3-g088",
+   "surface": "承認",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "じょうしのしょうにんをうる",
+   "to": "じょうしのしょうにんをえる",
+   "why": "得る read うる -> える. 3 sentences read 得る as うる and none as える; the only 得る card is n3-g131/える, which declares vc: ichidan. うる is the attributive of the classical nidan 得, productive in modern Japanese only as 〜し得る — not a register variant but a form the card's own table cannot produce. Kept as REGISTER at first on two models reading 'both mean to obtain', which is the wrong question. Found by the pre-submission review."
+  },
+  {
+   "id": "n3-g131",
+   "surface": "得る",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "あたらしいちしきをうる",
+   "to": "あたらしいちしきをえる",
+   "why": "得る read うる -> える. 3 sentences read 得る as うる and none as える; the only 得る card is n3-g131/える, which declares vc: ichidan. うる is the attributive of the classical nidan 得, productive in modern Japanese only as 〜し得る — not a register variant but a form the card's own table cannot produce. Kept as REGISTER at first on two models reading 'both mean to obtain', which is the wrong question. Found by the pre-submission review."
+  },
+  {
+   "id": "n3-b518",
+   "surface": "直に",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "せんせいとちょくにはなしをした",
+   "to": "せんせいとじかにはなしをした",
+   "why": "直に meaning 'directly' is じかに"
+  },
+  {
+   "id": "n5-b040",
+   "surface": "一昨日",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "いっさくひあたらしいほんをかいました",
+   "to": "おとといあたらしいほんをかいました",
+   "why": "一昨日 is おととい"
+  },
+  {
+   "id": "n5-b134",
+   "surface": "七日",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "らいげつのななにちにりょこうへいきます",
+   "to": "らいげつのなのかにりょこうへいきます",
+   "why": "date: 七日 is なのか"
+  },
+  {
+   "id": "n5-b147",
+   "surface": "二十日",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "こんげつのにとうかにともだちがきます",
+   "to": "こんげつのはつかにともだちがきます",
+   "why": "date: 二十日 is はつか"
+  },
+  {
+   "id": "n5-b160",
+   "surface": "二日",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ふたかやすみがありました",
+   "to": "ふつかやすみがありました",
+   "why": "date: 二日 is ふつか"
+  },
+  {
+   "id": "n5-b186",
+   "surface": "八つ",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "りんごをようつかいました",
+   "to": "りんごをやっつかいました",
+   "why": "counter: 八つ is やっつ"
+  },
+  {
+   "id": "n5-b192",
+   "surface": "四つ",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "みかんをよんつたべました",
+   "to": "みかんをよっつたべました",
+   "why": "counter: 四つ is よっつ; よんつ is not a reading of anything"
+  },
+  {
+   "id": "n5-b312",
+   "surface": "十日",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "こんげつのとうかにりょこうへいきます",
+   "to": "こんげつのとおかにりょこうへいきます",
+   "why": "date: 十日 is とおか; とうか is the wrong long vowel"
+  },
+  {
+   "id": "n5-b360",
+   "surface": "六つ",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "たまごをむいつかいました",
+   "to": "たまごをむっつかいました",
+   "why": "counter: 六つ is むっつ"
+  },
+  {
+   "id": "n5-b371",
+   "surface": "四日",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "らいげつのよんかはやすみです",
+   "to": "らいげつのよっかはやすみです",
+   "why": "date: 四日 is よっか"
+  },
+  {
+   "id": "n1-b391",
+   "surface": "坊ちゃん",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "ぼうちゃんはにわでげんきにあそんでいますよ",
+   "to": "ぼっちゃんはにわでげんきにあそんでいますよ",
+   "why": "坊ちゃん is ぼっちゃん. Codex: ぼうちゃん is not a standard reading here; Gemini called it a variant. Split, and it does not need settling: both witnesses agree ぼっちゃん is correct in this sentence, and it is the card's own reading."
+  },
+  {
+   "id": "n1-b965",
+   "surface": "真っ二つ",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "すいかをほうちょうでまっふたつにわった",
+   "to": "すいかをほうちょうでまっぷたつにわった",
+   "why": "真っ二つ is まっぷたつ. Both witnesses called まっふたつ an accepted variant, and both agree まっぷたつ is correct here."
+  },
+  {
+   "id": "n2-b344",
+   "surface": "出入口",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "たてもののでいりくちをふさがないでください",
+   "to": "たてもののでいりぐちをふさがないでください",
+   "why": "出入口 is でいりぐち. Codex: the compound rendakus, 口 becomes ぐち; Gemini called でいりくち a variant. Same split, same resolution — でいりぐち is agreed correct by both."
+  },
+  {
+   "id": "n3-b131",
+   "surface": "何か",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "なんかあたたかいのみものをのみたい",
+   "to": "なにかあたたかいのみものをのみたい",
+   "why": "何か is なにか; なんか is a spoken contraction both witnesses call colloquial. なにか is natural in this sentence and is what the card teaches."
+  },
+  {
+   "id": "n5-b237",
+   "surface": "一昨年",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "わたくしはいっさくねんにっぽんへきました",
+   "to": "わたくしはおととしにっぽんへきました",
+   "why": "一昨年 is おととし; いっさくねん is the formal on-reading. Both are real, both witnesses agree おととし is correct here, and it is the card's reading."
+  },
+  {
+   "id": "n2-b788",
+   "surface": "給与",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "from": "まいつきにとうかにきゅうよがしはらわれます",
+   "to": "まいつきはつかにきゅうよがしはらわれます",
+   "why": "二十日 is はつか — the corpus's only 二十日 card (n5-b147) says so, and にとうか is not a reading of it in any context. Unlike the twenty-six, 二十日 is not this entry's headword, so neither the headword gate nor the per-spelling sweeps reach it; it is corrected because the pre-submission review named it as one of six sentences sitting in the LIVE dictation pool with an exKana that is not a reading of the Japanese — a learner who hears はつか and types it is marked wrong on every keystroke and cannot finish the item. The other five it named are corrected by the twenty-six."
   }
  ]
 }

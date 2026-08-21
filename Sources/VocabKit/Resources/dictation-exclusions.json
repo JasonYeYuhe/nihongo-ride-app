@@ -5,7 +5,7 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 977,
+ "excludedCount": 954,
  "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A removed 27 exclusions whose recorded complaint no longer occurs: the corpus was corrected to the reading the checker said the voice takes, so the reason for withholding them was repaired rather than re-decided. Six of the 27 are now PROVEN correct by byte-identical audio.",
  "evidence": "docs/measurements/dictation-reading-mismatches.json",
  "excluded": [
@@ -193,9 +193,6 @@
    "id": "n1-b1228"
   },
   {
-   "id": "n1-b1230"
-  },
-  {
    "id": "n1-b1233"
   },
   {
@@ -311,9 +308,6 @@
   },
   {
    "id": "n1-b1511"
-  },
-  {
-   "id": "n1-b1516"
   },
   {
    "id": "n1-b1519"
@@ -583,9 +577,6 @@
    "id": "n1-b335"
   },
   {
-   "id": "n1-b348"
-  },
-  {
    "id": "n1-b349"
   },
   {
@@ -596,9 +587,6 @@
   },
   {
    "id": "n1-b390"
-  },
-  {
-   "id": "n1-b391"
   },
   {
    "id": "n1-b395"
@@ -763,9 +751,6 @@
    "id": "n1-b741"
   },
   {
-   "id": "n1-b745"
-  },
-  {
    "id": "n1-b748"
   },
   {
@@ -881,9 +866,6 @@
   },
   {
    "id": "n1-b957"
-  },
-  {
-   "id": "n1-b965"
   },
   {
    "id": "n1-b981"
@@ -1207,9 +1189,6 @@
    "id": "n2-b162"
   },
   {
-   "id": "n2-b170"
-  },
-  {
    "id": "n2-b171"
   },
   {
@@ -1306,9 +1285,6 @@
    "id": "n2-b341"
   },
   {
-   "id": "n2-b344"
-  },
-  {
    "id": "n2-b346"
   },
   {
@@ -1316,9 +1292,6 @@
   },
   {
    "id": "n2-b373"
-  },
-  {
-   "id": "n2-b384"
   },
   {
    "id": "n2-b394"
@@ -1424,9 +1397,6 @@
   },
   {
    "id": "n2-b699"
-  },
-  {
-   "id": "n2-b701"
   },
   {
    "id": "n2-b711"
@@ -1538,9 +1508,6 @@
   },
   {
    "id": "n2-b923"
-  },
-  {
-   "id": "n2-b937"
   },
   {
    "id": "n2-b941"
@@ -1748,9 +1715,6 @@
   },
   {
    "id": "n3-b128"
-  },
-  {
-   "id": "n3-b131"
   },
   {
    "id": "n3-b132"
@@ -1975,9 +1939,6 @@
    "id": "n3-b504"
   },
   {
-   "id": "n3-b518"
-  },
-  {
    "id": "n3-b536"
   },
   {
@@ -2194,9 +2155,6 @@
    "id": "n3-g082"
   },
   {
-   "id": "n3-g088"
-  },
-  {
    "id": "n3-g106"
   },
   {
@@ -2204,9 +2162,6 @@
   },
   {
    "id": "n3-g122"
-  },
-  {
-   "id": "n3-g131"
   },
   {
    "id": "n3-g132"
@@ -2623,9 +2578,6 @@
    "id": "n5-b039"
   },
   {
-   "id": "n5-b040"
-  },
-  {
    "id": "n5-b041"
   },
   {
@@ -2692,16 +2644,10 @@
    "id": "n5-b132"
   },
   {
-   "id": "n5-b134"
-  },
-  {
    "id": "n5-b136"
   },
   {
    "id": "n5-b138"
-  },
-  {
-   "id": "n5-b147"
   },
   {
    "id": "n5-b149"
@@ -2725,9 +2671,6 @@
    "id": "n5-b186"
   },
   {
-   "id": "n5-b192"
-  },
-  {
    "id": "n5-b194"
   },
   {
@@ -2741,9 +2684,6 @@
   },
   {
    "id": "n5-b211"
-  },
-  {
-   "id": "n5-b237"
   },
   {
    "id": "n5-b254"
@@ -2782,9 +2722,6 @@
    "id": "n5-b303"
   },
   {
-   "id": "n5-b312"
-  },
-  {
    "id": "n5-b323"
   },
   {
@@ -2806,16 +2743,10 @@
    "id": "n5-b356"
   },
   {
-   "id": "n5-b360"
-  },
-  {
    "id": "n5-b362"
   },
   {
    "id": "n5-b370"
-  },
-  {
-   "id": "n5-b371"
   },
   {
    "id": "n5-b380"

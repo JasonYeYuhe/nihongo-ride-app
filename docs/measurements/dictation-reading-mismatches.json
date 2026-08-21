@@ -5,7 +5,7 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 977,
+ "excludedCount": 954,
  "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A removed 27 exclusions whose recorded complaint no longer occurs: the corpus was corrected to the reading the checker said the voice takes, so the reason for withholding them was repaired rather than re-decided. Six of the 27 are now PROVEN correct by byte-identical audio.",
  "excluded": [
   {
@@ -436,13 +436,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n1-b1230",
-   "exJP": "風の力を利用して船の動力を得る。",
-   "exKana": "かぜのちからをりようしてふねのどうりょくをうる",
-   "heardInstead": "得る うる -> える",
-   "evidence": "nearest"
-  },
-  {
    "id": "n1-b1233",
    "exJP": "畑に野菜の苗を丁寧に植えた。",
    "exKana": "はたけにやさいのなえをていねいにうえた",
@@ -713,13 +706,6 @@
    "exJP": "国民からの信任を得て新首相が誕生した。",
    "exKana": "こくみんからのしんにんをえてしんしゅしょうがたんじょうした",
    "heardInstead": "新 しん -> あたらし",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n1-b1516",
-   "exJP": "あと十分で授業が始まる。",
-   "exKana": "あとじゅうふんでじゅぎょうがはじまる",
-   "heardInstead": "分 ふん -> ぶん",
    "evidence": "nearest"
   },
   {
@@ -1346,13 +1332,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n1-b348",
-   "exJP": "家族が皆健康で過ごせることが何よりの幸せだ。",
-   "exKana": "かぞくがみなけんこうですごせることがなんよりのしあわせだ",
-   "heardInstead": "何 なん -> なに",
-   "evidence": "nearest"
-  },
-  {
    "id": "n1-b349",
    "exJP": "このクリームを塗ると、肌が滑らかになる。",
    "exKana": "このくりーむをぬるとはだがなめらかになる",
@@ -1379,13 +1358,6 @@
    "exKana": "このちいきはふるくからぼうせきぎょうでさかえてきた",
    "heardInstead": "業 ぎょう -> ごう",
    "evidence": "nearest"
-  },
-  {
-   "id": "n1-b391",
-   "exJP": "坊ちゃんは庭で元気に遊んでいますよ。",
-   "exKana": "ぼうちゃんはにわでげんきにあそんでいますよ",
-   "heardInstead": "坊 ぼう -> ぼっ",
-   "evidence": "proven"
   },
   {
    "id": "n1-b395",
@@ -1766,13 +1738,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n1-b745",
-   "exJP": "この街道沿いには古い町並みが残っている。",
-   "exKana": "このかいどうそいにはふるいまちなみがのこっている",
-   "heardInstead": "沿い そい -> ぞい",
-   "evidence": "nearest"
-  },
-  {
    "id": "n1-b748",
    "exJP": "日本に来てから三ヶ月が経ちました。",
    "exKana": "にっぽんにきてからさんかげつがたちました",
@@ -2043,13 +2008,6 @@
    "exJP": "受付は本館の一階にあります。",
    "exKana": "うけつけはほんかんのいちかいにあります",
    "heardInstead": "一 いち -> いっ",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n1-b965",
-   "exJP": "スイカを包丁で真っ二つに割った。",
-   "exKana": "すいかをほうちょうでまっふたつにわった",
-   "heardInstead": "二 ふた -> ぷた",
    "evidence": "nearest"
   },
   {
@@ -2802,13 +2760,6 @@
    "evidence": "propagated"
   },
   {
-   "id": "n2-b170",
-   "exJP": "街道沿いに小さな店屋が並んでいる。",
-   "exKana": "かいどうそいにちいさなみせやがならんでいる",
-   "heardInstead": "沿い そい -> ぞい",
-   "evidence": "nearest"
-  },
-  {
    "id": "n2-b171",
    "exJP": "見慣れた景色に心が落ち着く。",
    "exKana": "みなれたけしきにこころがおちつく",
@@ -3033,13 +2984,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n2-b344",
-   "exJP": "建物の出入口を塞がないでください。",
-   "exKana": "たてもののでいりくちをふさがないでください",
-   "heardInstead": "口 くち -> ぐち",
-   "evidence": "nearest"
-  },
-  {
    "id": "n2-b346",
    "exJP": "電車が静かに古い鉄橋を渡っていく。",
    "exKana": "でんしゃがしずかにふるいてっきょうをわたっていく",
@@ -3058,13 +3002,6 @@
    "exJP": "始めに自己紹介から行ってください。",
    "exKana": "はじめにじこしょうかいからいってください",
    "heardInstead": "行っ いっ -> おこなっ",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n2-b384",
-   "exJP": "書類に一通り目を通した。",
-   "exKana": "しょるいにいちとおりめをとおした",
-   "heardInstead": "一 いち -> ひと",
    "evidence": "nearest"
   },
   {
@@ -3310,13 +3247,6 @@
    "exJP": "この地域で雪が降るのはとても稀だ。",
    "exKana": "このちいきでゆきがふるのはとてもまれだ",
    "heardInstead": "降る ふる -> くだる",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n2-b701",
-   "exJP": "今夜は空にきれいな三日月が出ている。",
-   "exKana": "こんやはそらにきれいなみっかつきがでている",
-   "heardInstead": "月 つき -> づき",
    "evidence": "nearest"
   },
   {
@@ -3576,13 +3506,6 @@
    "exJP": "日本の歴史と天皇の関係を勉強する。",
    "exKana": "にっぽんのれきしとてんのうのかんけいをべんきょうする",
    "heardInstead": "日本 にっぽん -> にほん",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n2-b937",
-   "exJP": "何分古い車なので、時々故障します。",
-   "exKana": "なんふんふるいくるまなのでときどきこしょうします",
-   "heardInstead": "何 なん -> なに",
    "evidence": "nearest"
   },
   {
@@ -4066,13 +3989,6 @@
    "exJP": "どんな料理が好きですか。",
    "exKana": "どんなりょうりがすきですか",
    "heardInstead": "好き すき -> ずき",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n3-b131",
-   "exJP": "何か温かい飲み物を飲みたい。",
-   "exKana": "なんかあたたかいのみものをのみたい",
-   "heardInstead": "何 なん -> なに",
    "evidence": "nearest"
   },
   {
@@ -4594,13 +4510,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n3-b518",
-   "exJP": "先生と直に話をした。",
-   "exKana": "せんせいとちょくにはなしをした",
-   "heardInstead": "直 ちょく -> じき",
-   "evidence": "nearest"
-  },
-  {
    "id": "n3-b536",
    "exJP": "米は主要な輸出品の一つだ。",
    "exKana": "べいはしゅようなゆしゅつひんのひとつだ",
@@ -5105,13 +5014,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n3-g088",
-   "exJP": "上司の承認を得る。",
-   "exKana": "じょうしのしょうにんをうる",
-   "heardInstead": "得る うる -> える",
-   "evidence": "nearest"
-  },
-  {
    "id": "n3-g106",
    "exJP": "日本の伝統を守る。",
    "exKana": "にっぽんのでんとうをまもる",
@@ -5130,13 +5032,6 @@
    "exJP": "彼はいつも冷静です。",
    "exKana": "かれはいつもれいせいです",
    "heardInstead": "彼 かれ -> か",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n3-g131",
-   "exJP": "新しい知識を得る。",
-   "exKana": "あたらしいちしきをうる",
-   "heardInstead": "得る うる -> える",
    "evidence": "nearest"
   },
   {
@@ -6106,13 +6001,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n5-b040",
-   "exJP": "一昨日、新しい本を買いました。",
-   "exKana": "いっさくひあたらしいほんをかいました",
-   "heardInstead": "日 ひ -> び",
-   "evidence": "nearest"
-  },
-  {
    "id": "n5-b041",
    "exJP": "私と田中さんは同じ傘を持っています。",
    "exKana": "わたくしとたなかさんはおなじかさをもっています",
@@ -6267,13 +6155,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n5-b134",
-   "exJP": "来月の七日に旅行へ行きます。",
-   "exKana": "らいげつのななにちにりょこうへいきます",
-   "heardInstead": "日 にち -> か",
-   "evidence": "nearest"
-  },
-  {
    "id": "n5-b136",
    "exJP": "今日の晩御飯は何ですか。",
    "exKana": "きょうのばんごはんはなんですか",
@@ -6285,13 +6166,6 @@
    "exJP": "家の庭にきれいな花が咲いています。",
    "exKana": "いえのにわにきれいなはながさいています",
    "heardInstead": "咲い さい -> ざい",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n5-b147",
-   "exJP": "今月の二十日に友達が来ます。",
-   "exKana": "こんげつのにとうかにともだちがきます",
-   "heardInstead": "日 か -> び",
    "evidence": "nearest"
   },
   {
@@ -6344,13 +6218,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n5-b192",
-   "exJP": "みかんを四つ食べました。",
-   "exKana": "みかんをよんつたべました",
-   "heardInstead": "四 よん -> よっ",
-   "evidence": "proven"
-  },
-  {
    "id": "n5-b194",
    "exJP": "私の大学には留学生がたくさんいます。",
    "exKana": "わたくしのだいがくにはりゅうがくせいがたくさんいます",
@@ -6383,13 +6250,6 @@
    "exJP": "いいえ、それは私の本ではありません。",
    "exKana": "いいえそれはわたくしのほんではありません",
    "heardInstead": "私 わたくし -> わたし",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n5-b237",
-   "exJP": "私は一昨年、日本へ来ました。",
-   "exKana": "わたくしはいっさくねんにっぽんへきました",
-   "heardInstead": "年 ねん -> とし",
    "evidence": "nearest"
   },
   {
@@ -6477,13 +6337,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n5-b312",
-   "exJP": "今月の十日に旅行へ行きます。",
-   "exKana": "こんげつのとうかにりょこうへいきます",
-   "heardInstead": "十 とう -> と",
-   "evidence": "nearest"
-  },
-  {
    "id": "n5-b323",
    "exJP": "この街は夜も賑やかです。",
    "exKana": "このまちはよるもにぎやかです",
@@ -6533,13 +6386,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n5-b360",
-   "exJP": "卵を六つ買いました。",
-   "exKana": "たまごをむいつかいました",
-   "heardInstead": "六 むい -> むっ",
-   "evidence": "nearest"
-  },
-  {
    "id": "n5-b362",
    "exJP": "私はカバンを持っています。",
    "exKana": "わたくしはかばんをもっています",
@@ -6551,13 +6397,6 @@
    "exJP": "私はよく図書館へ行きます。",
    "exKana": "わたくしはよくとしょかんへいきます",
    "heardInstead": "私 わたくし -> わたし",
-   "evidence": "nearest"
-  },
-  {
-   "id": "n5-b371",
-   "exJP": "来月の四日は休みです。",
-   "exKana": "らいげつのよんかはやすみです",
-   "heardInstead": "四 よん -> よっ",
    "evidence": "nearest"
   },
   {

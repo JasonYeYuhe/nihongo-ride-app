@@ -124,16 +124,45 @@ struct ExampleSentenceTests {
     /// exactly like the headword, the entry's own `kana` must be among those tokens' readings.
     /// Katakana is folded with `KanaScript` — the same folding the typing matcher and the
     /// stumbled-word index use, not a fourth copy of the rule.
+    /// How the sentence reads this entry's headword, wherever the headword appears — as one
+    /// token or as a run of adjacent ones.
+    ///
+    /// **The single-token version of this was a blind spot that hid 26 further offenders, ten
+    /// of them N5.** Sudachi splits 四つ into 四 + つ and 二十日 into 二十 + 日, so an exact
+    /// `token == surface` match skipped 240 entries entirely and the gate reported them clean.
+    /// Behind it: 四つ typed よんつ, 八つ typed ようつ, 二日 typed ふたか, 一昨日 typed いっさくひ
+    /// — counters and dates, the most beginner-facing content the app has, graded against
+    /// readings that are not words. Found by the v1.25 pre-submission review, in the gate this
+    /// release exists to add.
+    ///
+    /// The lesson is the one this project keeps paying for: the gate was validated by what it
+    /// CAUGHT (21) and never asked what it structurally could not see.
+    static func headwordReadings(of entry: VocabEntry) -> [String]? {
+        guard let tokens = entry.exampleTokens else { return nil }
+        let content = tokens.filter { $0.count >= 2 }
+        var found: [String] = []
+        for start in content.indices {
+            var surface = ""
+            for end in start..<content.count {
+                surface += content[end][0]
+                if surface == entry.surface {
+                    found.append(KanaScript.katakanaToHiragana(
+                        content[start...end].map { $0[1] }.joined()))
+                    break
+                }
+                if surface.count > entry.surface.count { break }
+            }
+        }
+        return found.isEmpty ? nil : found
+    }
+
     @Test("a sentence reads its headword the way its own card teaches it")
     func readsItsHeadwordAsTaught() {
         var offenders: [String] = []
         var inspected = 0
         for entry in withExamples {
-            guard let tokens = entry.exampleTokens else { continue }
-            let own = tokens.filter { $0.count >= 2 && $0[0] == entry.surface }
-            guard !own.isEmpty else { continue }
+            guard let readings = Self.headwordReadings(of: entry) else { continue }
             inspected += 1
-            let readings = own.map { KanaScript.katakanaToHiragana($0[1]) }
             if !readings.contains(KanaScript.katakanaToHiragana(entry.kana)),
                !knownHeadwordReadingMismatch.contains(entry.id) {
                 offenders.append("\(entry.id) \(entry.surface): card says \(entry.kana), "
@@ -143,7 +172,7 @@ struct ExampleSentenceTests {
         // A scan that inspected nothing would report a clean corpus. Most sentences do contain
         // their headword as a bare token — 83.6% of them, measured — so this floor is far below
         // what a working walk sees and far above what a broken one does.
-        #expect(inspected > 4_000, "only \(inspected) sentences contain their headword as a token")
+        #expect(inspected > 5_500, "only \(inspected) sentences contain their headword")
         #expect(offenders.isEmpty,
                 Comment(rawValue: "\(offenders.count) sentence(s) read their headword a way the "
                                   + "card does not teach:\n" + offenders.prefix(12).joined(separator: "\n")))
@@ -159,10 +188,15 @@ struct ExampleSentenceTests {
     /// it. Both outcomes are legitimate; leaving it is not.
     /// The eight that remain, and why each is a deliberate keep rather than a backlog item.
     ///
-    /// Thirteen of the original twenty-one were corrected in v1.25 §A. These eight were
+    /// Fourteen of the original twenty-one were corrected in v1.25 §A. These seven were
     /// classified REGISTER — the two readings mean the same thing in that sentence and differ
     /// only in formality — independently by two models, and v1.21 §C has already decided that a
-    /// minority reading is not an error. Correcting them would overturn a recorded decision, and
+    /// minority reading is not an error.
+    ///
+    /// n3-g131 得る was on this list and came OFF it: both models answered "える and うる both
+    /// mean to obtain", which is true and is the wrong question. うる is the attributive of the
+    /// classical nidan 得, which the card's own `vc: ichidan` cannot produce — a different
+    /// conjugation class, not a register. Found by the pre-submission review. Correcting them would overturn a recorded decision, and
     /// would mean authoring Japanese to satisfy a card:
     ///
     ///   n1-g315  獣    けだもの / けもの      both "beast"
@@ -170,15 +204,13 @@ struct ExampleSentenceTests {
     ///   n1-b016  大事  おおごと / だいじ      both "a serious matter" in 大事に至る
     ///   n1-b071  消耗  しょうこう / しょうもう  identical meaning; しょうこう is the original reading
     ///   n1-b072  所々  しょしょ / ところどころ  both "here and there"
-    ///   n3-g131  得る  える / うる            both "to obtain"; うる is formal
     ///   n5-ashita 明日 あした / あす          both "tomorrow"
     ///   n5-g012  私    わたし / わたくし      both "I"; わたくし is formal
     ///
     /// They stay named so the list is a decision with a reason, not a silence. If the register
     /// question is ever reopened, this is where it starts.
     private let knownHeadwordReadingMismatch: Set<String> = [
-        "n1-g315", "n1-b005", "n1-b016", "n1-b071", "n1-b072",
-        "n3-g131", "n5-ashita", "n5-g012",
+        "n1-g315", "n1-b005", "n1-b016", "n1-b071", "n1-b072", "n5-ashita", "n5-g012",
     ]
 
     /// A ratchet that is not shrinking is a list nobody is working through, and one that names
@@ -187,10 +219,7 @@ struct ExampleSentenceTests {
     func ratchetIsNotStale() {
         var stillOffending: Set<String> = []
         for entry in withExamples {
-            guard let tokens = entry.exampleTokens else { continue }
-            let own = tokens.filter { $0.count >= 2 && $0[0] == entry.surface }
-            guard !own.isEmpty else { continue }
-            let readings = own.map { KanaScript.katakanaToHiragana($0[1]) }
+            guard let readings = Self.headwordReadings(of: entry) else { continue }
             if !readings.contains(KanaScript.katakanaToHiragana(entry.kana)) {
                 stillOffending.insert(entry.id)
             }
@@ -547,6 +576,43 @@ struct ExampleSentenceTests {
         #expect(emitted == ReadingNotes.all.count, Comment(rawValue:
                 "the generator emits \(emitted) notes and the shipped resource holds "
                 + "\(ReadingNotes.all.count) — regenerate it"))
+    }
+
+    /// The shipped exclusion list and the measurement it came from must name the same ids.
+    ///
+    /// They are two files: `dictation-exclusions.json` is the RESOURCE the app reads and holds
+    /// only ids, while `dictation-reading-mismatches.json` is the measurement and holds the
+    /// reason. The gate below can only check reasons, so it reads the measurement — and when
+    /// v1.25 released repaired exclusions from the measurement, the resource kept all 23 of
+    /// them and the gate stayed green. The app went on withholding sentences for reasons that
+    /// had been fixed, and nothing could see it: the file with the evidence and the file with
+    /// the effect had drifted apart.
+    @Test("the dictation resource and its measurement name the same exclusions")
+    func exclusionResourceMatchesItsMeasurement() throws {
+        struct Record: Decodable { let id: String }
+        struct File: Decodable { let excluded: [Record] }
+        let root = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        func ids(_ path: String) throws -> Set<String> {
+            let data = try Data(contentsOf: root.appendingPathComponent(path))
+            return Set(try JSONDecoder().decode(File.self, from: data).excluded.map(\.id))
+        }
+        let measured = try ids("docs/measurements/dictation-reading-mismatches.json")
+        let shipped = try ids("Sources/VocabKit/Resources/dictation-exclusions.json")
+        #expect(measured.count > 800, "only \(measured.count) measured — the reader is wrong")
+        // Compare the DIFFERENCES, not the sets. `#expect(a == b)` prints both operands, and
+        // both are ~950 ids: the first version of this test failed with a 1,900-id wall of text
+        // that named the one offender somewhere in the middle. A red build nobody can read is a
+        // red build nobody acts on.
+        let staleInResource = shipped.subtracting(measured).sorted()
+        let missingFromResource = measured.subtracting(shipped).sorted()
+        #expect(staleInResource.isEmpty, Comment(rawValue:
+            "withheld by the app but no longer measured: \(staleInResource.prefix(10))"))
+        #expect(missingFromResource.isEmpty, Comment(rawValue:
+            "measured as excluded but not withheld: \(missingFromResource.prefix(10))"))
+        #expect(shipped.subtracting(Set(DictationSafety.excludedIDs)).isEmpty
+                && Set(DictationSafety.excludedIDs).subtracting(shipped).isEmpty,
+                "the loaded list disagrees with the file it was loaded from")
     }
 
     @Test("no dictation exclusion rests on a reading the corpus no longer contains")
