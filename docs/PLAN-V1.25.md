@@ -113,6 +113,21 @@ does.
 accessibility sizes; v1.14 §C spilled tiles out of this exact panel; and the one device test
 covering these chips was broken by the chips themselves in v1.24.
 
+**This was attempted through the headless renderer and the attempt FAILED — recorded because it
+nearly shipped as a passing gate.** `ImageRenderer` does not drive `@ScaledMetric`, which is
+what `scaledSystemFont` is built on and therefore what nearly every size in this app is.
+Injecting `dynamicTypeSize`, and then the legacy `sizeCategory`, produced AX3 and AX5 renders
+that were **byte-identical to each other** (md5 `53bef237…` for both). The screen looked fine at
+"AX5" because nothing had been made larger. `ScaledFont.swift` has said this since v1.7 Phase A
+— "ImageRenderer ignores dynamicTypeSize, so only the default size is render-verifiable;
+large-type layout is device-verified" — and the warning was nearly walked past.
+
+The renders were deleted rather than kept as a partial check. A file named
+`results-sentence-ax5.png` that cannot tell AX5 from AX3 is worse than no file: the next person
+reads the name, not the caveat. **This stop-rule item is OPEN**, and closing it needs a device or
+a simulator with `xcrun simctl ui <device> content_size accessibility-extra-extra-extra-large`,
+not a render.
+
 ## §C Not in this release, and why
 
 * **Re-deciding the 961 nearest-only dictation exclusions.** The criticism of the credential is

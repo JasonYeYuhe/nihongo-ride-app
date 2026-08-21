@@ -114,6 +114,16 @@ enum Screenshotter {
         sentenceResults.finishGame()
         render(RootView().environment(sentenceResults), size: size,
                to: directory + "/results-sentence.png")
+        // NO accessibility-size render here, and that is a finding rather than an omission.
+        // `ImageRenderer` does not drive `@ScaledMetric`, which is what `scaledSystemFont` is
+        // built on and therefore what nearly every size in this app is: injecting
+        // `dynamicTypeSize` (or the legacy `sizeCategory`) produced AX3 and AX5 renders that
+        // were BYTE-IDENTICAL to each other. A file named results-sentence-ax5.png that cannot
+        // tell AX5 from AX3 is worse than no file — it is a gate that reports clean without
+        // measuring, which is this project's most expensive recurring mistake.
+        //
+        // Large-type layout stays device-verified (Gate E). ScaledFont.swift has said so since
+        // v1.7 Phase A; this comment exists because that warning was nearly ignored.
 
         // Every stretch of road, as a contact sheet (v1.12 §D). The palettes are the one
         // part of the scenery a person has to LOOK at to judge, and there is no other way
