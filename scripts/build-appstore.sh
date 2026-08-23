@@ -24,7 +24,7 @@ if [[ -z "${NR_BUILD_COPY:-}" ]] && xattr "$ROOT/project.yml" 2>/dev/null | grep
     WORK="$(mktemp -d "${TMPDIR:-/tmp}/nrbuild.XXXXXX")"
     echo "==> Source carries provenance xattrs (codesign-hostile); building from a clean copy:"
     echo "    $WORK"
-    rsync -a --exclude .git --exclude build --exclude .build \
+    rsync -a --exclude .git --exclude build --exclude .build --exclude .claude \
         --exclude '*.xcodeproj' --exclude .swiftpm "$ROOT/" "$WORK/"
     export NR_BUILD_COPY="$ROOT"
     exec "$WORK/scripts/build-appstore.sh" "$@"
