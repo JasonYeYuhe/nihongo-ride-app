@@ -228,3 +228,52 @@ Fixed with one predicate — `GameMode.lapsesAreWords` — which the tile and th
 
 The predicate is tested against what the session BUILDERS produce rather than against a list of
 modes, and calibrated: making it `true` everywhere reddens.
+
+---
+
+# Shipped
+
+Submitted 2026-08-23, macOS build 47 / iOS build 48, both platforms. 520 tests green;
+`check_vocab_diff` clean under a 71-entry manifest; its own 18 probes behaved; no duplicate
+source files; `launch_gate` passed on the binary that was actually uploaded.
+
+| | v1.24 | v1.25 |
+|---|---|---|
+| tests | 518 | **520** |
+| sentences corrected | — | **71**, all under one manifest |
+| dictation pool | 5,720 | **5,762** |
+| reading notes | 64 | **66** |
+| new gates | 4 | **6**, each calibrated both ways |
+
+## What actually happened to §A
+
+The release set out to fix 21 sentences and a missing gate. It fixed 71, because each review
+pass found the previous fix incomplete:
+
+1. The plan's own layer-2 resolution rule was measured before building and both halves failed.
+2. The first review found the gate matched a single token — 240 entries never inspected, 26
+   offenders behind them, ten of them N5 counters and dates (四つ graded as よんつ).
+3. The second review found the span gate still blind where the tokenizer splits across the
+   headword boundary — 106 more entries, two of them misread.
+4. It also found that correcting sentences by MERGING token spans had blinded the exclusion
+   gate, because a merge deletes the very token a complaint names. Eight sentences had been
+   released into dictation whose corpus reading disagrees with the measured audio.
+
+The through-line is one sentence, and it is the thing to carry forward: **a gate validated by
+what it CATCHES has not been validated.** Both gate versions were justified by their catch count
+— 21, then 26 — and neither author measured the population the scan skipped. That is the
+question that finds this class, and it is cheap: compute what the scan does not inspect, and
+look at a sample of it.
+
+## Open
+
+* **Accessibility text sizes — WAIVED by the owner**, not closed. The headless renderer cannot
+  verify them (`ImageRenderer` does not drive `@ScaledMetric`; AX3 and AX5 render byte-identical),
+  and v1.25 changed three labels and removed a list from a panel that spilled tiles at AX5 in
+  v1.14 §C. Closing it needs a device or `xcrun simctl ui <device> content_size …`.
+* **The 961 dictation exclusions** whose complaint still matches the corpus. The criticism of
+  their credential is recorded; the re-measurement is a release of its own, may be undecidable
+  with the instruments in the repo, and its likely outcome removes content.
+* **The eight sentences put back into exclusion**, plus fifteen records marked
+  `stale-after-correction`. Their corpus readings are right; their audio has not been re-measured
+  since. Instrument 1 is silent for all of them.
