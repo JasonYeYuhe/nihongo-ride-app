@@ -128,12 +128,24 @@ final class TouchFlowTests: XCTestCase {
         let app = XCUIApplication()
         app.launchIsolated()
 
-        // Switch the mode picker to Practice (3rd segment), then start.
-        let modePicker = app.segmentedControls.firstMatch
-        XCTAssertTrue(modePicker.waitForExistence(timeout: 10))
-        let segments = modePicker.buttons
-        XCTAssertGreaterThanOrEqual(segments.count, 3, "mode picker should have 3 segments")
-        segments.element(boundBy: 2).tap()
+        // **This test had been failing silently, and the reason is worth recording.** It read
+        // `app.segmentedControls.firstMatch` and called it the mode picker, tapping its third
+        // segment. The mode selector stopped being a segmented control when it grew to six
+        // modes — `MenuView` says so in its own comment, "a segmented control cannot label six"
+        // — and became a row of capsule Buttons. `firstMatch` has therefore been the LANGUAGE
+        // picker, which has two segments, so the assertion below could never hold.
+        //
+        // Nobody saw it because the suite could not run at all: without the v1.26 UI-test
+        // isolation, an unsigned build traps in `CKContainer.init` and the app dies inside
+        // `AppModel.init` before any UI appears, so the case failed as a CRASH and read as an
+        // environment problem. Measured both ways on iPhone and iPad before concluding it.
+        //
+        // Selected by label, the way `StumbledWordsFlowTests` already selects Sentence mode.
+        let practice = app.buttons["Practice"]
+        XCTAssertTrue(practice.waitForExistence(timeout: 10),
+                      "no Practice mode button. BUTTONS: " +
+                      app.buttons.allElementsBoundByIndex.map(\.label).prefix(20).joined(separator: " | "))
+        practice.tap()
 
         app.buttons["startButton"].tap()
 
