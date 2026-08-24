@@ -104,7 +104,8 @@ struct ExampleSentenceTests {
         var offenders: [String] = []
         for e in withExamples {
             guard e.exampleJP != nil else { continue }
-            if !sentenceUsesTheWord(e), !knownVariantSpelling.contains(e.id) {
+            if !sentenceUsesTheWord(e), !knownVariantSpelling.contains(e.id),
+               !knownFakeNoCompanion.contains(e.id) {
                 offenders.append("\(e.id) \(e.surface): \(e.exampleJP ?? "")")
             }
         }
@@ -283,7 +284,7 @@ struct ExampleSentenceTests {
         #expect(!text.isEmpty, "could not read this suite's own source")
         let ratchets = ["knownVariantSpelling", "knownCompoundReadings",
                         "knownHeadwordReadingMismatch", "knownSharedExamples",
-                        "knownStemSharedWithOtherWord"]
+                        "knownStemSharedWithOtherWord", "knownFakeNoCompanion"]
         // Every ratchet declared above must appear at least three times: the declaration, the
         // gate that consults it, and a companion that can retire an entry from it.
         for name in ratchets {
@@ -468,6 +469,8 @@ struct ExampleSentenceTests {
     /// entry hides the next offender behind it.
     private let knownStemSharedWithOtherWord: Set<String> = ["n1-b269"]
 
+    private let knownFakeNoCompanion: Set<String> = ["zzz-nonexistent"]
+
     @Test("a conjugated headword's stem is read the way its own card teaches it")
     func stemIsReadAsTaught() {
         var inspected = 0
@@ -486,6 +489,7 @@ struct ExampleSentenceTests {
         }
         // A scan that inspected nothing would report a clean corpus. Measured on the shipped
         // corpus this walk reaches 648 of the 874 the span walk cannot see.
+        print("[MEASURE] stemIsReadAsTaught inspected=\(inspected)")
         #expect(inspected > 600, "only \(inspected) conjugated headwords — the stem walk is wrong")
         #expect(offenders.isEmpty, Comment(rawValue:
             "\(offenders.count) sentence(s) read their headword's stem a way the card does not "
@@ -571,6 +575,7 @@ struct ExampleSentenceTests {
                                  + "\(walk.span) reads \(walk.reading)")
             }
         }
+        print("[MEASURE] stemSpanIsReadAsTaught inspected=\(inspected)")
         #expect(inspected > 5, "only \(inspected) split stems — the span walk is wrong")
         #expect(offenders.isEmpty, Comment(rawValue:
             "\(offenders.count) split-stem headword(s) are misread:\n"

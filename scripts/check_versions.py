@@ -23,6 +23,7 @@ Usage:
 import argparse
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -90,10 +91,48 @@ def bump(to_version):
     os.replace(tmp, PROJECT)
 
 
+def check_archive(archive):
+    """Verify what was actually BUILT, not what project.yml intended.
+
+    project.yml is the input; an archive is the artifact Apple receives. They can disagree —
+    a stale generated .xcodeproj, a cached build, an export that picked up the wrong config —
+    and the stop rule asks for the archived Info.plists precisely because the intent agreeing
+    with itself is not evidence about the binary.
+
+    A host app and its embedded extension carry SEPARATE Info.plists, and a mismatch between
+    them is a rejection.
+    """
+    root = Path(archive)
+    plists = sorted(root.glob("Products/**/Info.plist"))
+    if not plists:
+        print(f"  no Info.plist under {archive}")
+        return ["archive contains no Info.plist — wrong path?"]
+    problems, seen = [], {}
+    for plist in plists:
+        # Skip resource bundles, which carry no app version.
+        if ".bundle/" in str(plist):
+            continue
+        out = {}
+        for key in ("CFBundleShortVersionString", "CFBundleVersion", "CFBundleIdentifier"):
+            proc = subprocess.run(["/usr/libexec/PlistBuddy", "-c", f"Print :{key}", str(plist)],
+                                  capture_output=True, text=True)
+            out[key] = proc.stdout.strip() if proc.returncode == 0 else None
+        if out["CFBundleShortVersionString"] is None:
+            continue
+        rel = str(plist.relative_to(root))
+        print(f"  {out['CFBundleIdentifier'] or rel:44s} {out['CFBundleShortVersionString']:8s} "
+              f"build {out['CFBundleVersion']}")
+        seen[rel] = (out["CFBundleShortVersionString"], out["CFBundleVersion"])
+    if len(set(seen.values())) > 1:
+        problems.append(f"archived bundles disagree on version/build: {seen}")
+    return problems
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--bump", metavar="VERSION", help="increment every build by one and set this marketing version")
     ap.add_argument("--submit-script", default="scripts/submit_1_26.py")
+    ap.add_argument("--archive", help="also verify the Info.plists inside a built .xcarchive")
     args = ap.parse_args()
 
     if args.bump:
@@ -147,6 +186,10 @@ def main():
             got = submit_builds.get(platform)
             if got != build:
                 problems.append(f"submit script says {platform} build {got!r}, project says {build!r}")
+
+    if args.archive:
+        print(f"\narchive {args.archive}:")
+        problems += check_archive(args.archive)
 
     print()
     if problems:
