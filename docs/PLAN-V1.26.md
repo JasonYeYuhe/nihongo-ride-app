@@ -721,3 +721,107 @@ Ships when:
   It is honest about its own weakness, which is not the same as being a gate. Treat a signed-out
   pass as a HARNESS ERROR, not a PASS.
 - The What's New copy's numbers are checked against the corpus, not against this plan.
+
+---
+
+# Shipped
+
+Built 2026-08-25, macOS build 48 / iOS build 49, marketing 1.26. 541 tests green
+(520 → 541); the iOS XCUITest target green for the first time in this repo's history, because
+until this release it could not run at all. `check_vocab_diff` clean under a 5-entry manifest,
+its 18 probes behaved, no duplicate source files, all four archived `Info.plist`s cross-checked
+against `project.yml` and the submit script.
+
+| | v1.25 | v1.26 |
+|---|---|---|
+| tests (`swift test`) | 520 | **541** |
+| XCUITests that can run | 0 | **4** (1 skipped by design) |
+| gates in `ExampleSentenceTests` | 17 | **25** |
+| sentences corrected | 71 | **5** |
+| **sentences inspected by NO reading gate** | **770** | **112** |
+| dictation pool | 5,762 | **5,760** |
+
+## What actually happened
+
+**§A found three and shipped five.** The stem-aware walk found the three the plan named. Then
+the residue audit the stop rule demanded — *audit the cases that are neither mechanically safe
+nor deliberately tokenless* — found two more, and they are the better find:
+
+    n1-b1365  意気込む/いきごむ   typed いきこんで — the rendaku is part of the word
+    n3-b222   気に入る/きにいる    typed きにはいった — 入る is いる in this fixed expression
+
+**Sudachi agrees with the corpus's error in both.** It splits 意気 + 込ん and reads 込ん as コン;
+it reads 入っ as ハイッ. Both are the common readings and both are wrong here. Asked about the
+HEADWORD 意気込む, the same tokenizer answers いき + ごむ — the rendaku it dropped in the sentence.
+One tool, opposite answers, and the reason the arbiter is the card and never the tokenizer. A
+gate built on Sudachi would have confirmed the defect. That is the "a gate and the thing it
+gates share a blind spot" trap, measured rather than recalled.
+
+A second walk now covers headwords the tokenizer splits ACROSS the stem, which is what those
+two are. It cut the uninspected residue from 122 to 112.
+
+**§A's dictation half went the opposite way from the measurement, and the measurement was
+withdrawn.** Instrument 2 put the voice nearer the OLD reading for all three originals, which
+would have been reported as a finding. It was then calibrated against v1.25's 71 corrections —
+real labelled data on the same instrument-1-silent population — and it agrees with adjudication
+only **42/63 = 67%**, with a median margin LARGER when it is wrong (0.0240) than when it is
+right (0.0177). **A margin that grows when the instrument errs is not evidence.** The verdict
+was withdrawn and the two live dictation targets are withheld on the documented one-sided
+flagging policy instead, with the record saying so. `n1-b045`'s 心 complaint re-measures at a
+margin of 0.0003 — the smallest in the whole calibration set.
+
+**§B was fixed, mutation-proven, and the mutation proved the fix insufficient.** After B1 and B2
+were repaired at the `AppModel` seam and shown red, one more mutation restored the ORIGINAL
+labels in `MenuView` — and all 527 tests stayed green. The unit tests held the predicate and
+nothing bound the screen to it. That is this release's own thesis landing on this release's own
+work. The label strings are now composed by the model beside the queue they describe, so the
+view is handed no number and cannot pick the wrong one.
+
+**§D's premise was false and the correction is the section.** `ResultsView` was never untested;
+three XCUITest files exist and one completes a real sentence run. `swift test` cannot run them,
+which is why the 520-test figure could not see them.
+
+Isolating that target (the plan's precondition, done first) made it RUNNABLE, and the moment it
+ran it found two things nobody could have seen:
+
+* **The flow tests were depending on ambient simulator state.** A genuinely fresh install lands
+  on onboarding; they passed only because the simulator carried a dismissed-onboarding flag
+  from some earlier run.
+* **`testPracticeNextAndDoneByTouch` had been failing silently.** It reads
+  `segmentedControls.firstMatch` and calls it the mode picker — but the mode selector became a
+  row of buttons when it grew to six modes, so `firstMatch` has been the two-segment LANGUAGE
+  picker and its "at least 3 segments" assertion could never hold. Nobody saw it because
+  without the isolation an unsigned build traps in `CKContainer.init` and dies before any UI,
+  so it failed as a CRASH and read as an environment problem.
+
+## Three of the release's own instruments were wrong, and each was caught by using it
+
+* The first corpus write **reformatted all 178,868 lines of n1.json** (indent=2 against the
+  file's indent=1). Caught on the diff. A byte-identical round-trip assertion now runs before
+  any corpus write.
+* `xcodebuild test ... | tail -60` reported **exit 0 for a FAILED suite** — the pipe replaced
+  xcodebuild's status. Calibrated: it returns **65** on failure. The gate must never be piped.
+  Same family as the `&&`-swallows-failure trap already in STATE, on the gate that decides
+  whether this ships.
+* `v126-uninspected-residue.json` said **122**, the figure from before the second walk landed.
+  A stale number in a measurement file, in the release about stale measurements. Now 112, and
+  it agrees to the digit with what the Swift gate computes at test time — two independent
+  implementations of one question.
+
+## Open, and carried forward
+
+* **The 913 `nearest` dictation exclusions** now have a measured reason to be re-decided rather
+  than an argued one: instrument 2, which produced them, is **67% accurate on the population
+  where instrument 1 is silent, and its margin carries no signal**. That is a sharper statement
+  of the doubt PLAN-V1.25 recorded, and it is the number the next release starts from.
+* **112 sentences that no reading gate inspects** — N1 29, N2 34, N3 13, N4 17, N5 19; ids in
+  `docs/measurements/v126-uninspected-residue.json`. 55 are kana-only stems, 22 have a stem that
+  appears nowhere, 14 are deliberately tokenless, 11 are named irregulars, 10 fall outside the
+  selector.
+* **§C and B4** — the conjugation drill grades every clean answer 5 because no per-prompt timing
+  is supplied, and practice mode's live WPM is wall clock while the WPM it records is ridden
+  time. A coherent pause-aware timing release, deferred with its risk written down.
+* **§E accessibility** — still waived, not closed.
+* **The 15 `propagated` exclusions** rest on a comment ("a voice does not change its mind
+  between sentences") that nothing enforces and that a context-sensitive speech front-end makes
+  doubtful. Small, decidable by instrument 1, and it RELEASES content rather than removing it.
