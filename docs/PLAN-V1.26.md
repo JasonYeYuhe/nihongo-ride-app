@@ -143,9 +143,20 @@ Sampled ten by hand, all correct. **The 57 kana-only stems are structurally safe
 merely unsampled — a headword with no kanji has no kanji reading that could disagree — which
 leaves roughly sixty entries that are genuinely unexamined and not provably safe.
 
+And the 121, broken out — Codex computed this and it reproduces here exactly:
+
+| | N1 | N2 | N3 | N4 | N5 |
+|---|---|---|---|---|---|
+| inspected by nothing after §A | 31 | 37 | 15 | **20** | **18** |
+
+**38 of the 121 are N4 or N5**, and 90 of them are verbs. So the residue is not an N1 tail that can
+be waved off; it is the same beginner-level shape as the 26 counters and dates v1.25 found behind
+its first gate.
+
 Two things follow, and the second is the point of writing this down at all. Ten out of sixty is a
-thin sample and both reviews said so; deepen it before §A closes. And 121 is the number the *next*
-release starts from — which is precisely what v1.25 could not do, because it never computed its own.
+thin sample and both reviews said so; deepen it before §A closes. And 121 — with that level
+breakdown — is the number the *next* release starts from, which is precisely what v1.25 could not
+do, because it never computed its own.
 
 ### The corrections
 
