@@ -1,0 +1,112 @@
+{
+ "measurement": "v1.26 §A — the five corrections, checked against witnesses that are not the gate",
+ "why": "The gate that found these compares the sentence against the CARD, so the gate cannot also be the evidence that the card is right — it would be validating itself. These are the independent witnesses: the English and Chinese translations, which were written before this release and describe the intended meaning; the dictionary's reading of the HEADWORD (not of the sentence, where it agrees with the error); and whether a separate card ships the same spelling with the other reading, which is the corpus contradicting itself in a way that can be asked about rather than argued.",
+ "entries": [
+  {
+   "id": "n1-g305",
+   "surface": "潜る",
+   "cardKana": "くぐる",
+   "exJP": "暖簾を潜って老舗の蕎麦屋に入った。",
+   "was": "のれんをもぐってしにせのそばやにはいった",
+   "now": "のれんをくぐってしにせのそばやにはいった",
+   "exEN": "I passed through the noren curtains and entered the traditional soba restaurant.",
+   "exZH": "穿过暖帘，走进了老字号荞麦面店。",
+   "glossEN": [
+    "to pass through",
+    "to dive",
+    "to evade"
+   ],
+   "dictionaryReadingOfHeadword": "もぐる",
+   "dictionaryAgreesWithCard": false,
+   "siblingCardsWithSameSpelling": [
+    {
+     "id": "n2-g127",
+     "kana": "もぐる"
+    }
+   ],
+   "verdict": "CONFIRMED by translation + sibling card. exEN 'I passed through the noren curtains' and exZH '穿过暖帘' both say PASS THROUGH, which is くぐる; もぐる is to dive. The corpus ships n2-g127 潜る/もぐる separately, so it contradicts itself and can be asked rather than argued. The dictionary's own lookup answers もぐる — it regresses to the common reading, which is the documented blind spot a tokenizer-based gate would share."
+  },
+  {
+   "id": "n1-b393",
+   "surface": "捲る",
+   "cardKana": "まくる",
+   "exJP": "シャツの袖を捲って作業を始めた。",
+   "was": "しゃつのそでをめくってさぎょうをはじめた",
+   "now": "しゃつのそでをまくってさぎょうをはじめた",
+   "exEN": "I rolled up my shirt sleeves and started working.",
+   "exZH": "我卷起衬衫袖子开始干活。",
+   "glossEN": [
+    "to turn over",
+    "to roll up"
+   ],
+   "dictionaryReadingOfHeadword": "まくる",
+   "dictionaryAgreesWithCard": true,
+   "siblingCardsWithSameSpelling": [],
+   "verdict": "CONFIRMED by translation + dictionary. exEN 'I rolled up my shirt sleeves'; the dictionary reads the headword まくる, agreeing with the card. This was the weakest of the three original claims and is stated as a card/example alignment defect rather than wrong Japanese: めくる is also possible for sleeves, it simply is not what this card teaches."
+  },
+  {
+   "id": "n1-b045",
+   "surface": "汚れる",
+   "cardKana": "けがれる",
+   "exJP": "権力への強い欲望で彼の純粋な心は汚れてしまった。",
+   "was": "けんりょくへのつよいよくぼうでかれのじゅんすいなこころはよごれてしまった",
+   "now": "けんりょくへのつよいよくぼうでかれのじゅんすいなこころはけがれてしまった",
+   "exEN": "His pure heart was defiled by a strong desire for power.",
+   "exZH": "他的纯洁之心被对权力的强烈欲望所玷污。",
+   "glossEN": [
+    "to get dirty",
+    "to be defiled"
+   ],
+   "dictionaryReadingOfHeadword": "よごれる",
+   "dictionaryAgreesWithCard": false,
+   "siblingCardsWithSameSpelling": [
+    {
+     "id": "n4-b179",
+     "kana": "よごれる"
+    }
+   ],
+   "verdict": "CONFIRMED by translation + sibling card. exEN 'His pure heart was DEFILED' and exZH '被玷污' are けがれる; よごれる is physical dirt. n4-b179 汚れる/よごれる ships separately. Also a card/example alignment defect rather than wrong Japanese — よごれる can carry a moral sense — and the accusation is written as the weaker one on purpose."
+  },
+  {
+   "id": "n1-b1365",
+   "surface": "意気込む",
+   "cardKana": "いきごむ",
+   "exJP": "彼は試合に向けて意気込んでいる。",
+   "was": "かれはしあいにむけていきこんでいる",
+   "now": "かれはしあいにむけていきごんでいる",
+   "exEN": "He is enthusiastic and geared up for the match.",
+   "exZH": "他面对比赛干劲十足。",
+   "glossEN": [
+    "to be enthusiastic",
+    "to be eager"
+   ],
+   "dictionaryReadingOfHeadword": "いきごむ",
+   "dictionaryAgreesWithCard": true,
+   "siblingCardsWithSameSpelling": [],
+   "verdict": "CONFIRMED by the dictionary, decisively. Asked about the HEADWORD 意気込む it answers いき + ごむ = いきごむ, with the rendaku. Asked about the SENTENCE it splits 意気 + 込ん and reads 込ん as コン, producing the corpus's error. Same tool, opposite answers, and the reason the arbiter here is the card and never the tokenizer."
+  },
+  {
+   "id": "n3-b222",
+   "surface": "気に入る",
+   "cardKana": "きにいる",
+   "exJP": "デパートでとても気に入った服を見つけた。",
+   "was": "でぱーとでとてもきにはいったふくをみつけた",
+   "now": "でぱーとでとてもきにいったふくをみつけた",
+   "exEN": "I found clothes at the department store that I really liked.",
+   "exZH": "我在百货商店找到了非常喜欢的衣服。",
+   "glossEN": [
+    "to be pleased with",
+    "to suit"
+   ],
+   "dictionaryReadingOfHeadword": "きにはいる",
+   "dictionaryAgreesWithCard": false,
+   "siblingCardsWithSameSpelling": [],
+   "verdict": "CONFIRMED by gloss; the dictionary is WRONG here and that is the point. It reads the headword as き+に+はいる because it does not hold 気に入る as an idiom. 気に入る is read きにいる — glossed 'to be pleased with' — and きにはいる is not a word. A gate built on the tokenizer would have agreed with the corpus's error in both directions."
+  }
+ ],
+ "summary": {
+  "confirmed": 5,
+  "dictionaryAgreesWithCard": 2,
+  "note": "The dictionary agrees with the card for 2 of 5. For the other 3 it answers the COMMON reading (潜る→もぐる, 汚れる→よごれる) or fails on an idiom (気に入る→きにはいる). That is not evidence against these corrections; it is the measured reason the tokenizer cannot be the arbiter, and each of those 3 is carried by a witness that is not the tokenizer."
+ }
+}
