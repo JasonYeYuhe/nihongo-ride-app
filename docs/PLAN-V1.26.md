@@ -15,41 +15,55 @@ Three of them teach a reading that is not the word:
     n1-b045   card 汚れる / けがれる  「…純粋な心は汚れてしまった。」        types  …こころはよごれて…
     n1-b393   card 捲る / まくる     「シャツの袖を捲って作業を始めた。」    types  …そでをめくって…
 
-暖簾を**くぐる** is to duck under a shop curtain; もぐる is to dive underwater. They are two
+暖簾を**くぐる** is to duck under a shop curtain; もぐる is to dive or go under water. They are two
 different verbs sharing a spelling, and the corpus has a separate card for each — `n2-g127`
 潜る/もぐる, whose own sentence 「海に潜って魚を見る。」 is correct. The learner studying くぐる
-is graded against the other verb. 心が**けがれる** is to be defiled; よごれる is to get dirty,
-and it is the commoner reading — this is the regress-to-the-common-answer failure that has cost
-this project two releases already. 袖を**まくる** is to roll up a sleeve; めくる is to turn a page.
+is graded against the other verb.
 
-None of these could have been caught, because nothing looked. That is the release.
+**The other two are weaker claims than an earlier draft made, and Codex was right to say so.**
+心が**けがれる** matches this card and this translation, but よごれる is *also* valid Japanese for
+losing moral purity — dictionaries allow it. 袖を**まくる** is the canonical expression for rolling
+up a sleeve, but sleeves and hems admit めくる too. So `n1-g305` is wrong Japanese; `n1-b045` and
+`n1-b393` are **valid Japanese using the card's other reading** — a card/example alignment defect,
+which is still worth fixing and is not the same accusation. The distinction matters because this
+project has twice mistaken "different from what I expected" for "wrong".
+
+None of the three could have been caught, because nothing looked. That is the release.
 
 The second half of the release is a different shape with the same cause, and it is worth naming
 because it is new to this project's list:
 
 > **A unit test on a predicate is not a test of the screen that uses it.**
 
-`ConjugationSRSCard.quality` is tested with a `durationRatio` the test supplies — production
-never supplies one, so the rubric's last line is a constant (§C). `GameMode.lapsesAreWords` is
-tested well — `LapsesAreWordsTests` (`GameSessionTests.swift:766`) checks the predicate against
-what the session builders actually queue, deliberately "rather than restating the list of modes"
-— and **every one of its consumers is in `ResultsView`, which no test in this repository
-mentions**, so the entire visible outcome of v1.24 §B and v1.25 §B can be deleted with 520 tests
-still green (§D). Both suites are honestly green. Neither proves what a learner sees.
+`ConjugationSRSCard.quality` is tested with a `durationRatio` the test supplies — production never
+supplies one, so the rubric's last line is a constant (§C). `GameMode.lapsesAreWords` is tested
+well — `LapsesAreWordsTests` (`GameSessionTests.swift:766`) checks the predicate against what the
+session builders actually queue, deliberately "rather than restating the list of modes" — and yet
+every one of its consumers sits in `ResultsView`, where the *copy* those five lines produce is
+asserted nowhere, so the visible outcome of v1.24 §B and v1.25 §B can be deleted without reddening
+anything (§D). Both suites are honestly green. Neither proves what a learner sees.
+
+§D is also where this plan failed its own test: the draft claimed that screen had no tests at all,
+because the scan looked for a type name in a layer that works by accessibility identifiers, and
+because `swift test` cannot run XCUITests at all. The section now documents the miss.
 
 ## Scope and order
 
 | | what | size |
 |---|---|---|
-| **§A** | 3 corpus corrections + the stem-aware gate + its ratchet | ~2–3 h |
-| **§B** | B1, B3, B4 + the accessibility-string check v1.25 specified | ~3 h |
-| **§C** | wire the conjugation drill's timing, through a paused clock | ~2 h |
-| **§D** | `ResultsView` rendered-text tests; restore the deleted gate; two ratchet companions | ~3 h |
-| ~~§E~~ | **cut to backlog** — do the static scan only if §A–§D land early | — |
+| **§A** | the stem-aware gate + its ratchet; corpus corrections **audio-measured, or excluded from dictation** | ~4 h |
+| **§B** | B1 (weak words) and B2 (conjugation due) — each label calls the function that builds the run; B3's two labels | ~3 h |
+| **§D** | extend the existing UI flow to the v1.24/v1.25 copy, **after** isolating it; restore the reading-note gate with payload equality; two ratchet companions | ~3 h |
+| **release** | version/build cross-check, submit-script failure propagation, launch-gate iCloud assertion | ~2 h |
+| ~~§C~~ | **deferred** with B4 as a pause-aware timing release — v1.26 ships only the corrected comment | — |
+| ~~§E~~ | **deferred** — the static scan measures syntax, not AX failure | — |
 
-Do them in that order. §A is the only one a learner can be harmed by today; §D is the only one
-that makes the others hard to break later. All three reviews converged on §A–§D as a two-day
-release and on cutting §E.
+§A first: it is the only one a learner can be harmed by today. §D last: it is what makes the rest
+hard to break later.
+
+**This is smaller than the first draft.** §C, B4, the generic accessibility scanner and §E all came
+out under review — three of the four because the honest fix is bigger than the section admitted,
+and §E because its instrument measures the wrong thing.
 
 ## Where this scope came from
 
@@ -115,33 +129,60 @@ thresholded:**
   match and compares against the noun. **The gate must compare against every token bearing the
   stem and pass if any agrees**, not against the first.
 
-Calibrated both directions before it is believed: reverting `n1-g305`'s `exKana` to もぐって must
-redden the gate, and naming an entry in the ratchet that no longer offends must redden the
-staleness companion. A gate that has never been red is not evidence.
+Calibrated both directions before it is believed: a mutation must redden the gate, and naming an
+entry in the ratchet that no longer offends must redden the staleness companion. A gate that has
+never been red is not evidence.
+
+**The obvious calibration does not work, and Codex caught why.** Reverting only `n1-g305`'s
+`exKana` leaves `exTokens` saying くぐっ while `exKana` says もぐっ — that breaks the round-trip
+and reddens a *different*, older gate, so a green-to-red transition would prove nothing about this
+one. **Mutate `exKana` and the corresponding token together**, so alignment stays valid and the
+stem gate is the only thing that can fire.
+
+**And "pass if any stem-bearing token agrees" opens a false-negative hole.** Exactly two entries
+have more than one stem hit: `n1-b269` (湿気) and `n5-b224` (歌 — 「部屋で歌を歌います」, noun
+歌/うた beside verb 歌い/うたい). Under "any agrees", corrupting the *verb* reading while the noun
+stays right would pass silently. Two entries is small enough to assert explicitly: identify the
+inflected occurrence, or require every stem-bearing token to agree and name these two.
 
 ### What this gate still cannot see — 121 sentences, after everything
 
-The same question, asked of the new rule. With the strict selector it reaches **668 of the 874**,
-leaving 206. Of those, `coveringReading` (v1.25's boundary walk) already inspects **85**. So:
+The same question, asked of the new rule. **Pick one selector and state its numbers, because an
+earlier draft named a selector and published a different selector's figures beside it.** Codex
+measured all three:
+
+| selector | reaches | residue | of which `coveringReading` inspects | **uninspected** |
+|---|---:|---:|---:|---:|
+| any tag beginning `v`, excluding `vs` | 668 | 206 | 85 | **121** |
+| `vc != nil` or non-`vs` verb/adjective | 669 | 205 | 84 | **121** |
+| **primary POS is a verb or i-adjective** ← adopt this | 649 | 225 | 104 | **121** |
+
+Adopt the third: it excludes bare suru nouns outright, and the loosest selector "reaches" 19 suru
+verbal nouns only by truncating a noun (焦燥 → 焦), all 19 of which `coveringReading` already
+covers. The union residue is **121 under every selector** — that invariant is the number that
+matters, and the intermediate figures are not interchangeable.
 
 > **After §A ships, 121 of 6,738 sentences are inspected by no reading gate at all.**
 
-An earlier draft of this section said 205 and did not subtract the boundary walk's coverage —
-Gemini 3.1 Pro objected that the residue double-counted a population v1.25 already inspected, and
-Codex put the true figure at 121. Independently recomputed here: 121.
+An earlier draft said 205 without subtracting the boundary walk. Gemini 3.1 Pro objected that the
+residue double-counted a population v1.25 already inspects; Codex put the union at 121;
+independently recomputed here: 121.
 
-What the 206 are, before the boundary walk takes its 85:
+The bucket table an earlier draft printed **was not a partition** — 96 + 57 + 49 + 14 = 216 against
+a residue of 206, because it mixed counts from two different selector runs and stated no precedence.
+It is withdrawn rather than patched. The shape is: mostly split nouns (what `coveringReading`
+exists for), kana-only stems, stems that never appear as a token, and the 14 with no `exTokens`.
 
-| | why |
-|---|---|
-| ~96 | not an inflecting verb or i-adjective — mostly nouns the tokenizer split, which is what `coveringReading` exists for |
-| 57 | kana-only stem: ちぎる, ぼやく, おどかす, しくじる, プラス |
-| 49 | the stem does not appear as a token: 逞しい written たくましい, 存ずる → 存じて |
-| 14 | no `exTokens` at all (the 14 with digits, deliberately) |
+**And "the 57 kana-only stems are structurally safe" is false.** The argument was that a headword
+with no kanji has no kanji reading to disagree — but the *sentence* may write it in kanji anyway.
+`n1-g219` teaches ゆがむ/ゆがむ and its example is 「顔が苦痛で歪む。」 It is already a named
+`knownVariantSpelling` exception, so it is not a loose defect; the safety **argument** is what
+fails, and it was the argument holding up a quarter of the residue.
 
-Sampled ten by hand, all correct. **The 57 kana-only stems are structurally safe** rather than
-merely unsampled — a headword with no kanji has no kanji reading that could disagree — which
-leaves roughly sixty entries that are genuinely unexamined and not provably safe.
+Ten samples were taken and not recorded by id. Codex's arithmetic on that: **if exactly one defect
+remains among the 121, a ten-item sample finds it 8.3% of the time.** Record the ids, and audit the
+cases that are neither mechanically safe nor deliberately tokenless — roughly fifty entries — before
+§A closes.
 
 And the 121, broken out — Codex computed this and it reproduces here exactly:
 
@@ -163,22 +204,43 @@ do, because it never computed its own.
 Three, under one `check_vocab_diff --manifest`, `exKana` and `exTokens` only, `kana` frozen. All
 three are N1.
 
-**Two of the three are live dictation targets.** `n1-g305` (潜る) and `n1-b393` (捲る) are not on
-the exclusion list, so learners hear those sentences today and are graded against もぐって and
-めくって — with no spelling on screen to argue with. That makes these worse than typing-target
-defects, and it is the same argument v1.25 used for its ten.
+### ⚠️ The dictation half of this section was backwards, and it is a shipping blocker
 
-**The third is not, and it costs more than the other two put together.** `n1-b045` (汚れる) **is
-excluded**, on a `nearest` record whose stored `exKana` is byte-identical to the corpus. Two
-consequences, and the second is the one that matters:
+An earlier draft argued that `n1-g305` and `n1-b393` are the strongest case for the fix, because
+they are live dictation targets and a dictation learner cannot see the spelling to argue with.
+**Codex pointed out that this inverts the risk, and it is right.**
 
-1. Changing the corpus without updating `docs/measurements/dictation-reading-mismatches.json`
-   turns `exclusionEvidenceIsCurrent` red and breaks `swift test`. That is the gate working.
-2. **The exclusion may have been measuring the corpus's error rather than the voice's.** It was
-   excluded because the synthesizer disagreed with よごれて. If よごれて was never the right
-   reading, the disagreement says nothing about the voice, and the record cannot be re-stamped —
-   it has to be **re-measured** against けがれて. Re-stamping it would be manufacturing agreement,
-   which is precisely what "evidence must match the data it describes" was written to forbid.
+**Dictation speaks `exampleJP` — the kanji sentence — not `exKana`.** `GameView.swift:194` says so
+in its own comment, and the reason is on record: Kyoko reads a bare hiragana は as "ha", so feeding
+her the typing target would mispronounce the topic particle in ~2,900 sentences. So the voice reads
+「暖簾を潜って…」 and chooses its own reading for 潜って.
+
+Therefore **changing `exKana` does not change what the learner hears.** If the voice says もぐって
+and the answer key is corrected to くぐって, the dictation learner hears one word, is required to
+type another, and **every keystroke after the particle is refused — on a sentence that works
+today.** The correction improves the typing target and can break the dictation target with the
+same edit.
+
+So the rule for §A is: **measure the audio for all three, and exclude from dictation any entry
+whose voice keeps the old reading.** That is not optional polish; without it this section makes the
+app worse for exactly the learners the earlier draft claimed to be helping.
+
+### And `n1-b045` carries an exclusion record — for an unrelated reason
+
+`n1-b045` **is** on the exclusion list, on a `nearest` record whose stored `exKana` is byte-identical
+to the corpus, so changing the corpus without updating
+`docs/measurements/dictation-reading-mismatches.json` turns `exclusionEvidenceIsCurrent` red. That
+is the gate working.
+
+**An earlier draft then invented why it was excluded** — it claimed the synthesizer had disagreed
+with よごれて, and built a re-decision argument on that. The record says
+`"heardInstead": "心 こころ -> ごころ"`. The complaint is about 心, **not about 汚れて at all.**
+Codex caught it; I had not opened the record.
+
+The record still has to be re-measured rather than re-stamped, because its `exKana` changes and
+evidence must match the data it describes. But the *reason* is bookkeeping, not a re-decision, and
+the plan should not have claimed otherwise. This is the `exMeta` failure from PLAN-V1.24's review —
+right in substance, invented in detail — committed here by the plan's own author.
 
 **And that re-measurement is currently un-runnable.** `check_dictation_readings.py` imports
 `sudachipy`, and **no interpreter on this machine has it** — `/usr/bin/python3`,
@@ -242,7 +304,19 @@ comes before or after the filter. Its fixture is `store(count: 20)` against `lim
 where the promise is twenty and the run is fifteen — and it asserts `cards.count == 15` as the
 correct answer. The contract is written down, the test is green, and nothing checks the contract.
 
-**~~B2 — the results screen counts uncapped and draws twelve.~~ WITHDRAWN.** A survey agent, its
+**B2 — the conjugation-review button announces every due card and rides twelve.** Found by Codex,
+and it is the genuine instance twenty. `MenuView.swift:159-161` shows the button when
+`model.conjugationDueCount > 0` and prints that number; `AppModel.swift:1539` computes it over
+every due conjugation card, uncapped. `startConjugationReview` builds the run with
+`limit: Self.conjugationRunSize` = **12** (`AppModel.swift:1554`, `:1574`). A learner with thirty
+due forms is told thirty and rides twelve.
+
+What makes it worth its own line: `AppModel.swift:1548` carries the comment *"Same predicate the
+menu label counts with (`conjugationDueCount`)"* — and that is **true and insufficient**. The two
+sides do share a predicate; they do not share the cap. A comment asserting the half of the
+contract that holds is how this one survived, and it is a new sub-species of the cheapest detector.
+
+**~~B3-as-drafted — the results screen counts uncapped and draws twelve.~~ WITHDRAWN.** A survey agent, its
 adversary, and I all read `ResultsView.swift:488` (`ForEach(words.prefix(12))`) beside the tile's
 uncapped `summary.reviewWords.count` and called it instance twenty. **Gemini 3.1 Pro read eight
 lines further and found `ResultsView.swift:539-541`, which renders `+\(words.count - 12) more…`
@@ -283,7 +357,15 @@ and the check must assert the interpolated expression *is* that quantity, not th
 cap. Best shape: the one `StumbledWords.rideableIDs` already uses in v1.24 — a single function both
 the number and the run call, so they cannot be derived separately.
 
-Three further constraints on the check, all from review:
+**But do not build the generic source scanner this release.** Codex's objection is sound: a
+universal "any digit-bearing accessibility string must equal `min(pool, cap)`" rule is wrong,
+because some controls *truthfully* announce an available population rather than promising the next
+queue — `MenuView.swift:228` deliberately says "Due dictation · N available". A syntactic scan
+cannot tell a promise from an inventory; that needs a typed contract at the `AppModel` seam, and
+its own skipped population is at least twelve launch buttons plus three keyboard paths. **Fix B1
+and B2 by making each label call the function that builds the run, and defer the scanner.**
+
+If it is built anyway, three constraints, all from review:
 * **It must read the Chinese string too.** `MenuView.swift:453` is
   `"弱词练习,\(model.weakWordsPoolCount) 个薄弱词"`. A scan keyed on the word `words` passes the
   English fix and leaves the Chinese wrong — one rule written twice, in two languages.
@@ -322,47 +404,87 @@ producing a form first. Gemini 3.7 Flash flagged it as a blind spot; Gemini 3.1 
 and said cut §C entirely, because "learners will fail the baseline, score a 4, and permanently
 suppress their ease factors."
 
-**That danger is measured and it is false.** In this SM-2 implementation (`SRSCard.swift:103-106`)
-the ease-factor delta at q=4 is exactly **0.000**, and EF is updated only on success. A q=4 cannot
-lower an ease factor; it can only decline to raise it. So the failure mode of a too-tight baseline
-is that conjugation ease factors stop *growing* — intervals rise more slowly and the learner sees
-the form more often. For a drill whose purpose is fluency that is the safe direction, and it is the
-opposite of the current bug, which is a schedule that runs away upward on a grade nobody earned.
+**That specific danger is measured and it is false.** In this implementation
+(`ConjugationSRSCard.swift:117`) the ease-factor delta at q=4 is exactly **0.000**. A q=4 cannot
+lower an ease factor; it can only decline to raise it.
 
-Deltas, for the record: q=5 +0.100, q=4 0.000, q=3 −0.140, q=2 −0.320, q=1 −0.540, q=0 −0.800.
+The deltas, corrected — an earlier draft printed the *formula* for all six grades without reading
+the branch around it, and Codex caught that too. **EF is only touched when q ≥ 3**; q ≤ 2 takes the
+lapse branch, which resets repetitions and interval and leaves EF alone:
 
-**Recommend reusing 0.8 unchanged.** One rule written twice will drift, and this section is what
-that looks like. The change is one-directional and safe; a second constant invented without data
-would be the `inflectionalTails` mistake — a number written from intuition and validated by its
-effect.
+| q | 5 | 4 | 3 | 2 | 1 | 0 |
+|---|---|---|---|---|---|---|
+| EF delta | +0.100 | **0.000** | −0.140 | — | — | — |
 
-**Flash's other catch is real and must be handled: `ConjugationSession` has no `RunClock`.**
-A bare `promptStartedAt` measures wall clock, so a learner who backgrounds the app mid-prompt
-returns to a ratio that counted the interruption — **which is B4, re-introduced in a new place by
-the fix for §C.** Either drive the ratio through a `RunClock` the way the ride does, or pause the
-prompt clock on `scenePhase`. Do not ship the naive version.
+### The decision: defer §C, with B4, as a pause-aware timing release
 
-The test must drive the SESSION, not the rubric. The existing
-`ConjugationReviewKitTests.swift:61-62` passes today and would pass with the wiring still absent.
+Codex says cut it, and after checking its reasons I agree — not because the defect is not real (it
+is measured, with a negative control) but because **every honest way to fix it is out of scope:**
+
+* **There is no correct clock to copy.** `GameSession.durationRatio` (`GameSession.swift:667`) is
+  itself raw wall time — it does not go through `RunClock` either. So "mirror what the ride does"
+  means mirroring B4, the defect two sections up. Gemini 3.7 Flash reached the same place from the
+  other direction.
+* **The threshold cannot be calibrated with anything in this repo.** 0.8 s/kana was chosen for
+  copying a visible word; a conjugation prompt is recall plus production. Arguing from "q=4 is
+  harmless" is measuring what the rule *blocks*, not whether it is *right* — culture rule 4, which
+  this plan quotes at the top.
+* **The result is durable and it syncs.** The grade is written to the conjugation store and queued
+  to CloudKit (`AppModel.swift:1589`; `conjSRSSyncAvailable` has been true since v1.8.1). A wrong
+  threshold rewrites schedules on every device the learner owns.
+
+So v1.26 ships **only the finding**: the doc comment claiming parity between the two rubrics is
+false, and it should say what is actually true — that the conjugation drill has no per-prompt
+timing, so its clean-answer grade is a constant. One comment, no behaviour change, no schedule risk.
+
+The fix — a paused prompt clock, a baseline chosen against data, and B4's live readout routed
+through `RunClock` — is a coherent release of its own. When it is written, the test must drive the
+SESSION, not the rubric: `ConjugationReviewKitTests.swift:61-62` passes today and would pass with
+the wiring still absent.
 
 ---
 
-## §D `ResultsView` is not tested at all
+## §D The results screen's copy is untested — and my scan for that was itself blind
 
-`grep -rl ResultsView Tests/` returns nothing. Nor does `MenuView`, `StatsView`, `JournalView`,
-or `CoachView`. The app test target added in v1.24 contains exactly two files, `AppModelTests`
-and `StumbleChipLabelTests`.
+**The premise of an earlier draft was false, and how it was false is the most on-topic thing in
+this document.** It said "`ResultsView` is not tested at all", on the evidence that
+`grep -rl ResultsView Tests/` returns nothing.
 
-Every consumer of `lapsesAreWords` and every consumer of `GameSummary.persistsSRS` is in
-`ResultsView`. **The headline behaviour of the last two releases — the whole-sentence review list
-being dropped, "Words" → "Sentences", "Struggled" → "Tough lines", "To review" not being promised
-on a run that persists nothing — can be deleted in five lines with the suite still green.**
+It returns nothing because **a UI test never names the type.**
+`Tests/NihongoRideiOSUITests/StumbledWordsFlowTests.swift` launches the app, sets the hint mode,
+enters Sentence mode, completes a run, and asserts on the rendered results content. There are three
+UI test files. Codex found them; my scan could not, because it searched for a symbol in a layer that
+works by accessibility identifiers.
 
-The v1.24 target already proves an app-layer test can run and can be sandboxed (`sandboxed(vocab:)`,
-`nothingOutsideTheSandboxIsWritten`, and the write detector that is itself calibrated). What is
-missing is a *rendered-text* assertion: build a `GameSummary` per mode and assert the labels the
-screen produces. Every assertion here must be shown to go red by reverting the corresponding fix
-— that is the whole point of the section, and a green new test is not evidence.
+They are also invisible in the "520 tests" figure this plan quotes, because **`swift test` does not
+run XCUITests** — that needs `xcodebuild test`. So the number I used to argue the screen was
+unguarded was measured by an instrument that structurally cannot see the guard.
+
+A scan justified by what it found, whose skipped population was never computed, in the plan whose
+thesis is that this is the defect. Recorded rather than quietly corrected.
+
+### What is actually untested, and what to do
+
+The *flow* is covered. The **specific copy of v1.24 §B and v1.25 §B is not**: "Words" → "Sentences",
+"Struggled" → "Tough lines", "To review" withheld on a run that persists nothing, the whole-sentence
+review list dropped. Every consumer of `lapsesAreWords` and of `GameSummary.persistsSRS` sits in
+`ResultsView`, and those five lines can still be deleted without reddening anything.
+
+**Extend the existing isolated flow rather than building a parallel proof** — Codex's recommendation
+and it is right; a second harness for the same screen is one rule written twice. Cover the results
+states that are actually reachable — journey, cram journey, time attack, sentence, dictation —
+in both languages, across empty / non-empty / overflow review lists. Practice never shows Results
+and conjugation uses a different screen; do not write cases for either.
+
+Two conditions before expanding it, both from Codex:
+
+* **`swift test` does not run these.** The stop rule must name the `xcodebuild test` invocation, or
+  the new assertions are green in a suite nobody runs.
+* **The UI test launches the normal app and finishes a real run**, which writes SRS, the journal and
+  the odometer, and CloudKit sync is on. Add a DEBUG UI-test mode that disables sync and redirects
+  every store **before** widening it. This is the v1.24 widget incident with a bigger blast radius:
+  that one wrote zeros to a local App Group container; this one can push a phantom ride to the
+  owner's real CloudKit database.
 
 ⚠️ **The App Group hazard is live for anything that builds an `AppModel`.** v1.24's first app-layer
 tests stamped fourteen days of zeros onto the owner's real home-screen widget, because
@@ -532,17 +654,54 @@ document describing it. Both constraints adopted, neither number.
 SM-2 implementation the q=4 delta is exactly 0.000 and EF moves only on success, so a q=4 cannot
 lower an ease factor. §C survives with its risk analysis written down instead of being cut.
 
-**All three converged** on §A–§D as a two-day release and on cutting §E, and all three independently
-reproduced §A's population figures (6,738 / 5,864 / 874 / 104 / 770) to the digit.
+**And then Codex arrived and cut the release roughly in half.** It ran longest and read hardest,
+and it overturned three things the other two had let stand:
+
+* **The dictation argument was backwards.** The voice reads `exampleJP`, so correcting `exKana`
+  cannot change what a learner hears — it can only make the answer key disagree with the audio.
+  The two "live dictation targets" the plan called its strongest case were its biggest risk.
+* **`n1-b045`'s exclusion had nothing to do with 汚れる.** The record says `心 こころ -> ごころ`.
+  The plan's causal account was invented; I had not opened the record.
+* **`ResultsView` is not untested.** Three XCUITest files exist and one of them completes a
+  sentence run and asserts the results screen. `swift test` cannot run them, which is why the
+  520-test figure could not see them and why my grep for the type name found nothing.
+
+It also corrected the EF table (q ≤ 2 takes the lapse branch and applies no delta at all — only the
+q=4 value, the one the rebuttal rests on, was right), showed the proposed §A calibration could not
+work (reverting `exKana` alone breaks the round-trip and reddens an older gate), found a
+false-negative hole in "pass if any stem token agrees", found that the residue table was not a
+partition, showed "kana-only stems are structurally safe" to be false via `n1-g219`, and supplied
+the genuine instance twenty (§B2) after the drafted one was withdrawn.
+
+**On the Japanese it was also the strictest.** It agreed on 潜る and on both false positives, and
+then said the plan overstated the other two: よごれる and めくる are *valid Japanese* here, so those
+are card/example alignment defects rather than wrong readings. The corrections stand; the accusation
+was rewritten.
+
+**All four passes independently reproduced §A's population figures** (6,738 / 5,864 / 874 / 104 /
+770 / 121) to the digit. Every conclusion built on top of them still had to be argued separately.
 
 ## Stop rule
 
 Ships when:
 
-- `swift test` is green **and every new test has been shown to fail** — the §A gate with
-  `n1-g305`'s `exKana` reverted, the §B accessibility check with B1's label restored, the §C test
-  with the timing wiring removed, each §D assertion with its corresponding v1.24/v1.25 fix
-  reverted. A test that has never been red is not evidence.
+- `swift test` is green **and `xcodebuild test` is green** — they are different suites, and the
+  520-test figure does not include the three XCUITest files.
+- **Every new test has been shown to fail** — the §A gate with `n1-g305`'s `exKana` *and its
+  matching token* reverted together (reverting `exKana` alone reddens the older round-trip gate
+  instead, and proves nothing), B1's and B2's labels restored, each §D assertion with its
+  corresponding v1.24/v1.25 copy reverted. A test that has never been red is not evidence.
+- **The audio has been measured for all three §A corrections**, and any entry whose voice keeps the
+  old reading is excluded from dictation in the same change. Dictation speaks `exampleJP`; without
+  this step §A makes the app worse for dictation learners.
+- The UI test target has been isolated — CloudKit off, stores redirected — **before** any new
+  assertion is added to it.
+- `project.yml`'s eight version/build fields, the submit script's three, and all four archived
+  `Info.plist`s agree, checked programmatically. macOS 47 → 48 and iOS 48 → 49 are per-platform;
+  a host/widget mismatch is a rejection.
+- The submit script fails non-zero on an unrecognised ASC state or a failed attach/create/submit,
+  and both platforms' submissions are read back afterwards. A run that submitted nothing must not
+  exit 0.
 - §A's population numbers are re-measured against the shipped corpus at build time, not quoted
   from this document — and **the new gate's own skipped population is computed and printed**,
   not asserted to be empty.
@@ -556,5 +715,9 @@ Ships when:
 - No `Sources/**/* [0-9]*.swift` duplicates.
 - The pre-submission adversarial review has run and its blockers are fixed.
 - `scripts/launch_gate.sh` passes on the archive that was actually **uploaded**, not one built
-  beside it.
+  beside it, **and the Mac is signed into iCloud when it runs.** The gate exists because macOS 1.4
+  was rejected for a launch crash on the CloudKit account path; it prints
+  `"NOT SIGNED IN — a pass here does not exercise the account-change path"` and then passes anyway.
+  It is honest about its own weakness, which is not the same as being a gate. Treat a signed-out
+  pass as a HARNESS ERROR, not a PASS.
 - The What's New copy's numbers are checked against the corpus, not against this plan.
