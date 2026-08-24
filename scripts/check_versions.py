@@ -91,40 +91,67 @@ def bump(to_version):
     os.replace(tmp, PROJECT)
 
 
-def check_archive(archive):
-    """Verify what was actually BUILT, not what project.yml intended.
+DT_PLATFORM = {"macosx": "macOS", "iphoneos": "iOS"}
 
-    project.yml is the input; an archive is the artifact Apple receives. They can disagree —
-    a stale generated .xcodeproj, a cached build, an export that picked up the wrong config —
-    and the stop rule asks for the archived Info.plists precisely because the intent agreeing
-    with itself is not evidence about the binary.
 
-    A host app and its embedded extension carry SEPARATE Info.plists, and a mismatch between
-    them is a rejection.
+def plist_value(path, key):
+    proc = subprocess.run(["/usr/libexec/PlistBuddy", "-c", f"Print :{key}", str(path)],
+                          capture_output=True, text=True)
+    return proc.stdout.strip() if proc.returncode == 0 else None
+
+
+def check_archive(archive, marketing, builds):
+    """Verify what was actually BUILT against what project.yml declares.
+
+    project.yml is the INPUT; an archive is the artifact Apple receives, and they can disagree —
+    a stale generated .xcodeproj, a cached build, an export that picked up the wrong config.
+
+    **The first version of this function did not do that.** It compared the archived bundles
+    against EACH OTHER and nothing else, so a stale archive carrying the previous release's
+    version and build — the exact artifact this exists to catch — printed `ok` and exited 0.
+    It was caught by the pre-submission review, which built a synthetic 1.25/47 archive and
+    watched it pass. A checker that reports "fine" without comparing anything is this repo's
+    oldest defect, committed inside the release whose subject is that defect.
+
+    The archive's platform comes from `DTPlatformName` (macosx / iphoneos), not from which
+    build number it happens to carry — deriving the expectation from the thing being checked
+    would make the check unfalsifiable.
     """
     root = Path(archive)
-    plists = sorted(root.glob("Products/**/Info.plist"))
-    if not plists:
-        print(f"  no Info.plist under {archive}")
-        return ["archive contains no Info.plist — wrong path?"]
+    app = plist_value(root / "Info.plist", "ApplicationProperties:ApplicationPath")
+    if not app:
+        return [f"{archive}: no ApplicationProperties:ApplicationPath — not an .xcarchive?"]
+
     problems, seen = [], {}
-    for plist in plists:
-        # Skip resource bundles, which carry no app version.
+    platform = None
+    for plist in sorted(root.glob("Products/**/Info.plist")):
         if ".bundle/" in str(plist):
+            continue                                  # resource bundles carry no app version
+        version = plist_value(plist, "CFBundleShortVersionString")
+        if version is None:
             continue
-        out = {}
-        for key in ("CFBundleShortVersionString", "CFBundleVersion", "CFBundleIdentifier"):
-            proc = subprocess.run(["/usr/libexec/PlistBuddy", "-c", f"Print :{key}", str(plist)],
-                                  capture_output=True, text=True)
-            out[key] = proc.stdout.strip() if proc.returncode == 0 else None
-        if out["CFBundleShortVersionString"] is None:
-            continue
-        rel = str(plist.relative_to(root))
-        print(f"  {out['CFBundleIdentifier'] or rel:44s} {out['CFBundleShortVersionString']:8s} "
-              f"build {out['CFBundleVersion']}")
-        seen[rel] = (out["CFBundleShortVersionString"], out["CFBundleVersion"])
+        build = plist_value(plist, "CFBundleVersion")
+        bundle = plist_value(plist, "CFBundleIdentifier")
+        platform = platform or DT_PLATFORM.get(plist_value(plist, "DTPlatformName") or "")
+        print(f"  {bundle or plist.name:44s} {version:8s} build {build}")
+        seen[bundle or str(plist)] = (version, build)
+
+    if not seen:
+        return [f"{archive}: contains no versioned bundle — wrong path?"]
+    if platform is None:
+        problems.append(f"{archive}: no DTPlatformName — cannot tell which platform this is")
     if len(set(seen.values())) > 1:
-        problems.append(f"archived bundles disagree on version/build: {seen}")
+        problems.append(f"archived bundles disagree with each other (a rejection): {seen}")
+
+    # …and against the project, which is the half the first version was missing.
+    if platform:
+        expected = (marketing, builds.get(platform))
+        print(f"  expected for {platform}: {expected[0]} build {expected[1]}")
+        for bundle, got in sorted(seen.items()):
+            if got != expected:
+                problems.append(
+                    f"{bundle} in the archive is {got[0]} build {got[1]}, but project.yml "
+                    f"declares {expected[0]} build {expected[1]} for {platform}")
     return problems
 
 
@@ -189,7 +216,7 @@ def main():
 
     if args.archive:
         print(f"\narchive {args.archive}:")
-        problems += check_archive(args.archive)
+        problems += check_archive(args.archive, sorted(marketing)[0], builds)
 
     print()
     if problems:

@@ -267,39 +267,57 @@ struct ExampleSentenceTests {
             "remove from knownCompoundReadings: " + stale.joined(separator: ", ")))
     }
 
-    /// Nothing counted the gates, so one could leave the suite inside the release that added it
-    /// and the release would notice nothing — which is exactly what happened to
+    /// Nothing counted the gates, so one could leave the suite inside the release that added
+    /// it and the release would notice nothing — which is exactly what happened to
     /// `readingNotesMatchTheirGenerator` in v1.25 (added in `e71e7be`, removed in `fafae5a`,
     /// whose message is about a different subject entirely and never mentions it).
     ///
-    /// Counting them is not a strong check and is not meant to be. It is the cheapest possible
-    /// answer to "did a gate disappear", and its absence is what let one disappear.
-    @Test("every named-id exemption list in this file has a staleness companion")
+    /// **Two defects in the first version of this test, both found by the pre-submission
+    /// review, and both are the shape it is written against:**
+    ///
+    /// * It required three occurrences of each ratchet's name — "the declaration, the gate,
+    ///   and a companion" — but the list of names below is ITSELF inside the file it counts,
+    ///   so every name got a free occurrence and the real bar was declaration + one use. A
+    ///   ratchet with no companion at all passed it. The list is now excised from the text
+    ///   before counting, so the three occurrences are three REAL ones.
+    /// * Its doc told the `readingNotesMatchTheirGenerator` story while counting named-id
+    ///   exemption lists, which that test does not have. Deleting it again would still have
+    ///   been invisible. So the gates are now counted too.
+    @Test("every ratchet has a staleness companion, and no gate has quietly left")
     func everyRatchetHasACompanion() {
-        // Read this file's own source: the property is about the SUITE, and a list of names
-        // restated here would be the same rule written twice.
         let source = try? String(contentsOf: URL(fileURLWithPath: #filePath), encoding: .utf8)
         let text = source ?? ""
         #expect(!text.isEmpty, "could not read this suite's own source")
+
         let ratchets = ["knownVariantSpelling", "knownCompoundReadings",
                         "knownHeadwordReadingMismatch", "knownSharedExamples",
                         "knownStemSharedWithOtherWord"]
-        // Every ratchet declared above must appear at least three times: the declaration, the
-        // gate that consults it, and a companion that can retire an entry from it.
-        for name in ratchets {
-            let uses = text.components(separatedBy: name).count - 1
-            #expect(uses >= 3, Comment(rawValue:
-                "\(name) appears \(uses) time(s) — a ratchet with no staleness companion "
-                + "exempts its entries forever and hides the next offender behind them"))
+
+        // The list above is inside the counted file. Excise it, or every name is credited with
+        // an occurrence it did not earn — which is how the first version passed a ratchet that
+        // had no companion.
+        let marker = "let ratchets = ["
+        var counted = text
+        if let start = counted.range(of: marker),
+           let end = counted.range(of: "]", range: start.upperBound..<counted.endIndex) {
+            counted.removeSubrange(start.lowerBound..<end.upperBound)
+        } else {
+            Issue.record("could not excise the ratchet list — the count would be inflated")
         }
-        // …and the list above must not fall behind the file: every ratchet DECLARED here has to
-        // be named in it, so a new one cannot be exempt by omission — the failure mode
-        // `ResolvesCallSiteTests` records for hard-coded identifier lists.
-        //
-        // Matched on the declaration prefix, not on a substring: the first version matched any
-        // line containing both "let known" and "Set<String>", which caught this test's own
-        // comment and its own loop condition. A scan that flags itself is measuring its text
-        // rather than the file's structure.
+
+        for name in ratchets {
+            let uses = counted.components(separatedBy: name).count - 1
+            #expect(uses >= 3, Comment(rawValue:
+                "\(name) appears \(uses) time(s) outside this test's own list — a ratchet needs "
+                + "a declaration, a gate that consults it, and a companion that can retire an "
+                + "entry from it. With fewer, its entries are exempted forever and the next "
+                + "offender hides behind them"))
+        }
+
+        // Every ratchet DECLARED here must be named above, so a new one cannot be exempt by
+        // omission. Matched on the declaration prefix rather than a substring: the first
+        // version matched any line containing "let known" and "Set<String>", which flagged its
+        // own comment and its own loop condition — a scan measuring its text, not the file.
         let declarations = text.components(separatedBy: "\n")
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { $0.hasPrefix("private let known") && $0.contains("Set<String>") }
@@ -309,6 +327,26 @@ struct ExampleSentenceTests {
             #expect(ratchets.contains { line.contains($0) }, Comment(rawValue:
                 "a ratchet this test does not know about: \(line)"))
         }
+
+        // …and the gates themselves, which is the half the story actually described. A gate
+        // deleted by accident — the thing that happened — leaves no ratchet behind to miss.
+        //
+        // Counted as DECLARATIONS, not as occurrences of the substring. The first version
+        // counted `text.components(separatedBy: "@Test(")`, which matched its own string
+        // literal on this very line and made 25 tests read as 26 — so deleting a gate left
+        // exactly 25 and the floor passed. That is the third time in this file a scan has
+        // measured its own text instead of the file's structure, and the second time in one
+        // release. A floor taken from the runner's count and compared against a substring
+        // count is two numbers by two predicates, which is what this release is about.
+        let gates = text.components(separatedBy: "\n")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { $0.hasPrefix("@Test(") }
+            .count
+        #expect(gates >= 25, Comment(rawValue:
+            "\(gates) gates in this file, was 25 — a gate has left the suite. If that was "
+            + "deliberate, say so in the commit message and lower this floor in the same "
+            + "commit; `readingNotesMatchTheirGenerator` was removed by a commit about "
+            + "something else and nobody noticed for a release"))
     }
 
     @Test("a sentence reads its headword the way its own card teaches it")
@@ -468,6 +506,16 @@ struct ExampleSentenceTests {
     /// entry hides the next offender behind it.
     private let knownStemSharedWithOtherWord: Set<String> = ["n1-b269"]
 
+    /// Whether every stem-bearing token agrees with the card. One function, so the gate and its
+    /// staleness companion cannot drift apart — the reason `sentenceUsesTheWord` was extracted,
+    /// applied to the two companions that had retyped the comparison inline instead.
+    private func stemAgreesWithCard(_ walk: (stem: String, taught: String,
+                                             found: [(surface: String, reading: String)])) -> Bool {
+        walk.found.allSatisfy {
+            $0.reading.hasPrefix(walk.taught) || walk.taught.hasPrefix($0.reading)
+        }
+    }
+
     @Test("a conjugated headword's stem is read the way its own card teaches it")
     func stemIsReadAsTaught() {
         var inspected = 0
@@ -475,10 +523,7 @@ struct ExampleSentenceTests {
         for entry in withExamples {
             guard let walk = Self.stemReadings(of: entry) else { continue }
             inspected += 1
-            let agrees = walk.found.allSatisfy {
-                $0.reading.hasPrefix(walk.taught) || walk.taught.hasPrefix($0.reading)
-            }
-            if !agrees, !knownStemSharedWithOtherWord.contains(entry.id) {
+            if !stemAgreesWithCard(walk), !knownStemSharedWithOtherWord.contains(entry.id) {
                 let seen = walk.found.map { "\($0.surface)=\($0.reading)" }.joined(separator: " ")
                 offenders.append("\(entry.id) \(entry.surface): card teaches \(entry.kana) "
                                  + "(stem \(walk.stem) → \(walk.taught)), sentence has \(seen)")
@@ -497,10 +542,7 @@ struct ExampleSentenceTests {
         var stillOffending: Set<String> = []
         for entry in withExamples {
             guard let walk = Self.stemReadings(of: entry) else { continue }
-            let agrees = walk.found.allSatisfy {
-                $0.reading.hasPrefix(walk.taught) || walk.taught.hasPrefix($0.reading)
-            }
-            if !agrees { stillOffending.insert(entry.id) }
+            if !stemAgreesWithCard(walk) { stillOffending.insert(entry.id) }
         }
         let stale = knownStemSharedWithOtherWord.subtracting(stillOffending)
         #expect(stale.isEmpty, Comment(rawValue:
@@ -603,8 +645,12 @@ struct ExampleSentenceTests {
         print("[v1.26 §A] \(uninspected.count) of \(withExamples.count) sentences are inspected "
               + "by NO reading gate — \(breakdown)")
         #expect(uninspected.count <= 112, Comment(rawValue:
-            "\(uninspected.count) sentences are inspected by no reading gate (was 112). "
-            + "A gate was narrowed or the corpus grew into the blind spot: \(breakdown)"))
+            "\(uninspected.count) sentences are inspected by no reading gate (was 112): "
+            + breakdown + ". The corpus grew into the blind spot, or a gate stopped reaching "
+            + "entries it used to. NOTE this ratchet does NOT detect a gate being weakened: "
+            + "the review measured that neutering `stemReadings` leaves this at exactly 112, "
+            + "because `stemSpanReading` then absorbs all 648 into its weaker `contains` check. "
+            + "What catches that is each gate's own `inspected` floor, not this number."))
     }
 
     /// Sentences already shared by two entries when this test was written.

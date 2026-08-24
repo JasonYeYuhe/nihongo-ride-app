@@ -31,9 +31,21 @@ final class StoreScreenshotTests: XCTestCase {
 
         walk(app, lang: "en")
 
-        // Flip the in-app language picker (2nd segmented control) to 中文.
-        let language = app.segmentedControls.element(boundBy: 1)
-        XCTAssertTrue(language.waitForExistence(timeout: 5))
+        // Flip the in-app language picker to 中文.
+        //
+        // **This selected the JLPT LEVEL picker, not the language picker.** Index 1 is the
+        // level row (`MenuView.swift:110`); the language picker is index 0 (`:97`). Tapping
+        // its second button changed the level and left the app in English, so the whole zh
+        // pass would have captured English screens under zh-* filenames — the worst kind of
+        // failure for a screenshot walk, because the output looks plausible.
+        //
+        // Matched by accessibility label instead, which is the technique `selectAlwaysHints`
+        // in this same file already uses and the one `TouchFlowTests` adopted for the same
+        // reason. Positional indices into `segmentedControls` are a claim about layout that
+        // nothing on this screen keeps.
+        let language = app.segmentedControls.matching(
+            NSPredicate(format: "label IN {'Language', '界面语言'}")).firstMatch
+        XCTAssertTrue(language.waitForExistence(timeout: 5), "language picker not found")
         tapWhenSettled(language.buttons.element(boundBy: 1))
 
         selectAlwaysHints(app)   // the setting persists, but assert it rather than assume
@@ -68,8 +80,20 @@ final class StoreScreenshotTests: XCTestCase {
         // Practice: washi-paper passage with a little typed progress. Selecting
         // Practice reveals two more picker rows, which pushes the start button
         // down — wait for it to settle or the tap lands on the old position.
-        let mode = app.segmentedControls.firstMatch
-        tapWhenSettled(mode.buttons.element(boundBy: 2))
+        // **The same defect one file over, and it is the one this release already diagnosed.**
+        // `segmentedControls.firstMatch` is the LANGUAGE picker, not the mode selector: the
+        // mode row stopped being a segmented control when it grew to six modes and became
+        // capsule Buttons (`MenuView.swift:58-78`, "a segmented control cannot label six").
+        // `boundBy: 2` is out of range on a two-segment picker, so the walk aborted partway
+        // through the English pass and the zh pass was unreachable.
+        //
+        // v1.26 fixed this in `TouchFlowTests` and shipped it in the same commit that left it
+        // here. A fix applied to one call site is not a fix — this project's own rule, missed
+        // in the release that quotes it.
+        let practiceLabel = lang == "zh" ? "练习" : "Practice"
+        let mode = app.buttons[practiceLabel]
+        XCTAssertTrue(mode.waitForExistence(timeout: 5), "no \(practiceLabel) mode button")
+        tapWhenSettled(mode)
         tapWhenSettled(app.buttons["startButton"])
         XCTAssertTrue(app.buttons["practiceNext"].waitForExistence(timeout: 10))
         _ = app.keyboards.firstMatch.waitForExistence(timeout: 5)

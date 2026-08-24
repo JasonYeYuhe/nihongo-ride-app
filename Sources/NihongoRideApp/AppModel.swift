@@ -610,10 +610,24 @@ final class AppModel {
                 settingsSuite: settingsOverride ?? "NihongoRideUITest",
                 syncAllowed: false)
         }
+        if capturing {
+            // Screenshot capture redirects its FILES and is kept away from the widget, the
+            // journal and sync by three separate `!Screenshotter.isCapturing` guards at the
+            // call sites. The review pointed out that leaving the other two fields nil here
+            // means `touchesNothingOfTheUsers` would never flag capture — the "check the door
+            // somebody remembered" shape, inside the value written to replace it. So capture
+            // now names all three, and the call-site guards become belt-and-braces rather than
+            // the only thing standing between a render and the owner's widget.
+            let dir = FileManager.default.temporaryDirectory
+                .appendingPathComponent("NihongoRideCapture", isDirectory: true)
+            return LaunchIsolation(
+                supportBase: supportOverride ?? dir,
+                widgetContainer: widgetOverride ?? dir.appendingPathComponent("group", isDirectory: true),
+                settingsSuite: settingsOverride ?? "NihongoRideCapture",
+                syncAllowed: false)
+        }
         return LaunchIsolation(
-            supportBase: supportOverride
-                ?? (capturing ? FileManager.default.temporaryDirectory
-                        .appendingPathComponent("NihongoRideCapture", isDirectory: true) : nil),
+            supportBase: supportOverride,
             widgetContainer: widgetOverride,
             settingsSuite: settingsOverride,
             syncAllowed: !layoutHarness)
@@ -632,6 +646,10 @@ final class AppModel {
     /// store it describes cannot drift apart.
     static var settingsSuiteOverride: String?
 
+    /// The UI-test defaults suite is wiped once per process, so files and defaults agree about
+    /// what "a fresh launch" means.
+    private static var clearedUITestDefaults = false
+
     /// True while an XCUITest is driving the app.
     ///
     /// The UI tests launch the NORMAL app and complete a REAL run, which writes SRS, the ride
@@ -646,19 +664,44 @@ final class AppModel {
     /// DEBUG-only, so a shipping build cannot be talked into it by an environment variable.
     static var isUITest: Bool {
         #if DEBUG
+        if let isUITestOverride { return isUITestOverride }
         return ProcessInfo.processInfo.environment["NIHONGO_UITEST"] != nil
         #else
         return false
         #endif
     }
 
+    #if DEBUG
+    /// Test-only: forces `isUITest` without an environment variable.
+    ///
+    /// It exists because the first version of the isolation tests asserted the DECISION and
+    /// nothing asserted the CONSUMPTION. The pre-submission review severed every consumer from
+    /// `currentIsolation` — `supportFileURL`, `settingsStore`, the widget write and the sync
+    /// guard all reverted to their old expressions — while leaving `launchIsolation()` returning
+    /// the correct value, and **all 541 tests passed**. In that state a real UI-test launch
+    /// writes the owner's Application Support, App Group container and UserDefaults, and starts
+    /// CloudKit sync, with a green suite. Verbatim the v1.24 incident, in the section written to
+    /// prevent it, and it is only reachable from a test if a test can turn the flag on.
+    ///
+    /// Set it and restore it inside one synchronous `@MainActor` test.
+    static var isUITestOverride: Bool?
+    #endif
+
     /// The throwaway container a UI-test launch reads and writes.
     ///
-    /// FIXED rather than per-launch, because a UI test may relaunch the app mid-case and expect
-    /// what it typed to still be there. Cleared ONCE per process instead — screenshot capture
-    /// learned this the hard way: a fixed directory that nothing clears makes every run inherit
-    /// the last one's rides, and the lifetime odometer grew monotonically until the render gate
-    /// depended on how many times it had been run.
+    /// FIXED path, cleared on first access in each process.
+    ///
+    /// An earlier version of this comment justified the fixed path by saying a UI test may
+    /// relaunch the app and expect its data to survive. **That is false and was caught by the
+    /// pre-submission review**: `XCUIApplication.launch()` starts a NEW process, so this
+    /// `static let` is evaluated again and `removeItem` wipes the directory. Nothing survives a
+    /// relaunch, and no current test depends on it doing so.
+    ///
+    /// What the clearing actually buys is the opposite guarantee, and it is the one worth
+    /// having: every launch starts from nothing. Screenshot capture learned that the hard way
+    /// with a fixed directory nothing cleared — every run inherited the last one's rides, and
+    /// the lifetime odometer grew monotonically until the render gate depended on how many
+    /// times it had been run.
     static let uiTestDirectory: URL = {
         let dir = FileManager.default.temporaryDirectory
             .appendingPathComponent("NihongoRideUITest", isDirectory: true)
@@ -1972,11 +2015,25 @@ final class AppModel {
 
     static var settingsStore: UserDefaults {
         if let settingsDefaults { return settingsDefaults }
-        // A UI-test launch must not inherit or leave behind the simulator's real settings —
-        // languageCode and selectedMode decide which screen a flow test lands on, so a case
-        // that passes only because a previous one left the app in Sentence mode proves nothing.
+        // A UI-test launch must not inherit or leave behind the simulator's REAL settings —
+        // languageCode and selectedMode decide which screen a flow test lands on.
+        //
+        // Note precisely what this does and does not buy, because an earlier version of this
+        // comment overstated it and the review caught that: the private suite is isolated from
+        // the user's defaults, but it is NOT cleared between cases in a run, so one case can
+        // still inherit what another persisted. The files are cleared per launch; defaults are
+        // not. Cleared here on first use in each process, which makes the two halves agree.
         if let suite = currentIsolation.settingsSuite, let defaults = UserDefaults(suiteName: suite) {
+            if isUITest, !clearedUITestDefaults {
+                clearedUITestDefaults = true
+                defaults.removePersistentDomain(forName: suite)
+            }
             return defaults
+        }
+        // A nil suite here would silently fall back to the user's own defaults while the
+        // isolation VALUE still reported a suite, so say so rather than degrade quietly.
+        if currentIsolation.settingsSuite != nil {
+            assertionFailure("isolation names a settings suite that UserDefaults refused to open")
         }
         return .standard
     }

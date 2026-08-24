@@ -10,38 +10,12 @@ copy, and the fix is that a number in release copy is derived here rather than t
 Import it (`from release_numbers import numbers`) or run it to print the table.
 """
 import json
+import re
 import subprocess
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "Sources/VocabKit/Resources"
-
-
-def numbers():
-    entries = []
-    for level in ("n1", "n2", "n3", "n4", "n5"):
-        entries += json.loads((RESOURCES / f"{level}.json").read_text(encoding="utf-8"))
-    excluded = {r["id"] for r in json.loads(
-        (RESOURCES / "dictation-exclusions.json").read_text(encoding="utf-8"))["excluded"]}
-    typeable = [e for e in entries if e.get("exJP") and e.get("exKana")]
-    with_example = [e for e in entries if e.get("exJP")]
-
-    manifest = json.loads((REPO / "docs/measurements/v126-stem-reading-manifest.json")
-                          .read_text(encoding="utf-8"))
-    residue = json.loads((REPO / "docs/measurements/v126-uninspected-residue.json")
-                         .read_text(encoding="utf-8"))
-    notes = json.loads((RESOURCES / "reading-notes.json").read_text(encoding="utf-8"))["notes"]
-
-    return {
-        "entries": len(entries),
-        "withExample": len(with_example),
-        "typeable": len(typeable),
-        "dictationExcluded": len(excluded),
-        "dictationPool": len([e for e in typeable if e["id"] not in excluded]),
-        "correctedThisRelease": len(manifest["entries"]),
-        "uninspectedResidue": residue["total"],
-        "readingNotes": len(notes),
-    }
 
 
 def previous(ref="60c9ed9"):
@@ -60,6 +34,52 @@ def previous(ref="60c9ed9"):
     typeable = [e for e in out["entries"] if e.get("exJP") and e.get("exKana")]
     return {"dictationExcluded": len(excluded),
             "dictationPool": len([e for e in typeable if e["id"] not in excluded])}
+
+
+def numbers():
+    entries = []
+    for level in ("n1", "n2", "n3", "n4", "n5"):
+        entries += json.loads((RESOURCES / f"{level}.json").read_text(encoding="utf-8"))
+    excluded = {r["id"] for r in json.loads(
+        (RESOURCES / "dictation-exclusions.json").read_text(encoding="utf-8"))["excluded"]}
+    typeable = [e for e in entries if e.get("exJP") and e.get("exKana")]
+    with_example = [e for e in entries if e.get("exJP")]
+
+    manifest = json.loads((REPO / "docs/measurements/v126-stem-reading-manifest.json")
+                          .read_text(encoding="utf-8"))
+    residue = json.loads((REPO / "docs/measurements/v126-uninspected-residue.json")
+                         .read_text(encoding="utf-8"))
+    notes = json.loads((RESOURCES / "reading-notes.json").read_text(encoding="utf-8"))["notes"]
+
+    # The run caps the release copy quotes. Read from the source of truth rather than typed
+    # beside it: "the menu announces fifteen and rides fifteen" is a claim about a constant,
+    # and a claim about a constant belongs next to the constant.
+    app = (REPO / "Sources/NihongoRideApp/AppModel.swift").read_text(encoding="utf-8")
+    caps = {}
+    for name in ("weakWordsRunSize", "conjugationRunSize"):
+        m = re.search(rf"static let {name}\s*=\s*(\d+)", app)
+        if not m:
+            raise SystemExit(f"release_numbers: cannot find {name} in AppModel.swift — "
+                             "the copy quotes it, so a rename must not silently keep the old figure")
+        caps[name] = int(m.group(1))
+
+    before = previous()
+    withheld = (len(excluded) - before["dictationExcluded"]) if "error" not in before else None
+
+    return {
+        "entries": len(entries),
+        "withExample": len(with_example),
+        "typeable": len(typeable),
+        "dictationExcluded": len(excluded),
+        "dictationPool": len([e for e in typeable if e["id"] not in excluded]),
+        "correctedThisRelease": len(manifest["entries"]),
+        "uninspectedResidue": residue["total"],
+        "readingNotes": len(notes),
+        "weakWordsRunSize": caps["weakWordsRunSize"],
+        "conjugationRunSize": caps["conjugationRunSize"],
+        "dictationPoolBefore": before.get("dictationPool"),
+        "withheldThisRelease": withheld,
+    }
 
 
 if __name__ == "__main__":

@@ -53,6 +53,19 @@ extension GameMode {
         return zh ? "完成句数" : "Sentences"
     }
 
+    /// The ride HUD's progress label, including the rule about Chinese.
+    ///
+    /// The HUD's Chinese has always been 进度 ("progress"), which is mode-neutral and therefore
+    /// right in all six modes — one language had solved this and the other had not. That rule
+    /// lived at the call site as `zh ? "进度" : mode.completedUnitLabel(zh: false)`, which still
+    /// left `GameView` CHOOSING, and the pre-submission review measured what that costs:
+    /// reverting the call site to a bare "Words" left the entire suite green, because the test
+    /// below can only see this file. So the choice is moved here. The view now asks one
+    /// question and gets one answer, the same shape `MenuView` was given for §B1 and §B2.
+    public func hudProgressLabel(zh: Bool) -> String {
+        zh ? "进度" : completedUnitLabel(zh: false)
+    }
+
     /// The same distinction for the tile that counts what went wrong on a run persisting no SRS.
     public func struggledLabel(zh: Bool) -> String {
         if lapsesAreWords { return zh ? "吃力" : "Struggled" }

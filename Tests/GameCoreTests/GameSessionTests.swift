@@ -820,6 +820,20 @@ struct LapsesAreWordsTests {
                 != GameMode.journey.completedUnitLabel(zh: true))
         #expect(GameMode.sentence.struggledLabel(zh: false)
                 != GameMode.journey.struggledLabel(zh: false))
+
+        // The ride HUD, whose rule is asymmetric: Chinese is mode-neutral in all six modes and
+        // English is not. It lived at the call site until the review measured that reverting
+        // the call site left this whole suite green — the test can only see this file, so the
+        // call site had to stop choosing.
+        for mode in GameMode.allCases {
+            #expect(mode.hudProgressLabel(zh: true) == "进度",
+                    "\(mode): the HUD's Chinese is mode-neutral by design")
+            #expect(mode.hudProgressLabel(zh: false) == mode.completedUnitLabel(zh: false),
+                    "\(mode): the HUD's English must name the same unit as the results tile")
+        }
+        #expect(GameMode.sentence.hudProgressLabel(zh: false)
+                != GameMode.journey.hudProgressLabel(zh: false),
+                "the HUD must distinguish sentence runs, or this asserts nothing")
     }
 
     @Test("the predicate matches what the session builders actually queue")

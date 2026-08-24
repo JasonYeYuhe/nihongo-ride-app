@@ -54,8 +54,8 @@ WHATS_NEW = {
         "\"moguru\" -- to dive underwater, a different verb that happens to share the character. "
         "気に入る was written as \"ki ni hairu\" instead of \"ki ni iru\".\n"
         "\u2022 The menu now tells you how many words a drill will actually give you. The weak "
-        "words button announced every word you had ever reviewed and then ran fifteen; the "
-        "conjugation review button announced every form that was due and then ran twelve.\n"
+        f"words button announced every word you had ever reviewed and then ran {N['weakWordsRunSize']}; the "
+        f"conjugation review button announced every form that was due and then ran {N['conjugationRunSize']}.\n"
         "\u2022 A sentence or dictation ride now counts sentences everywhere it counts them. The "
         "progress display during the ride, and the summary card you can share, both still called "
         "them words."
@@ -66,7 +66,7 @@ WHATS_NEW = {
         "守着这些句子的检查因此找不到它。潜る 本是「钻过(门帘)」,却被标成「もぐる」,那是"
         "「潜水」,是另一个碰巧共用汉字的词;気に入る 被标成「きにはいる」而不是「きにいる」。\n"
         "\u2022 菜单现在会告诉你一次练习实际会给你多少个词。「弱词练习」此前报的是你复习过的"
-        "全部词数,实际只跑十五个;「变形复习」报的是全部到期的变形,实际只跑十二个。\n"
+        f"全部词数,实际只跑 {N['weakWordsRunSize']} 个;「变形复习」报的是全部到期的变形,实际只跑 {N['conjugationRunSize']} 个。\n"
         "\u2022 句子和听写练习现在在每一处都按句计数。骑行途中的进度显示,以及你可以分享的"
         "成绩卡,此前都还写着「词」。"
     ),
@@ -82,7 +82,7 @@ REVIEW_NOTES = (
     "version, but it needed the headword to appear literally, and a conjugated verb never does. Two additional "
     "checks now cover that case, and the number of sentences no check can reach is measured and recorded "
     f"({N['uninspectedResidue']} of {N['withExample']}) rather than assumed to be zero.\n\n"
-    f"The Dictation exercise draws on {N['dictationPool']} sentences. Two were withheld in this version: "
+    f"The Dictation exercise draws on {N['dictationPool']} sentences, down from {N['dictationPoolBefore']}: {N['withheldThisRelease']} were withheld in this version, because "
     "Dictation speaks the kanji sentence through the system voice and grades against the kana transcription, "
     "so correcting a transcription can put the answer key at odds with the audio. Where that could not be "
     "measured decisively, the sentence is withheld from Dictation rather than risked; it remains fully "
@@ -222,7 +222,10 @@ def ensure_version(platform):
         "attributes": {"platform": platform, "versionString": VERSION},
         "relationships": {"app": {"data": {"type": "apps", "id": APP}}}}})
     if r.get("errors"):
-        print("  create version ERR:", r["errors"][0].get("detail")); sys.exit(1)
+        # Recorded, not exited: aborting mid-loop skips the OTHER platform and, in --submit,
+        # skips the read-back entirely — so a platform that HAD submitted would go unverified.
+        fail(f"create version {VERSION}: {r['errors'][0].get('detail')}")
+        return None
     vid = r["data"]["id"]
     print(f"  created version {VERSION}: {vid}")
     return vid
@@ -235,10 +238,24 @@ def set_whats_new(vid):
     for locale, text in WHATS_NEW.items():
         lid = by_locale.get(locale)
         if not lid:
-            print(f"    !! no localization for {locale} (have {list(by_locale)}) — skipping"); continue
+            # NOT a skip. A locale that is configured on the App Store and missing here means
+            # the release ships that language with the PREVIOUS version's What's New, and the
+            # previous template printed "skipping" and exited 0.
+            fail(f"no localization for {locale} (have {list(by_locale)}) — What's New unset"); continue
         r = asc("PATCH", f"/v1/appStoreVersionLocalizations/{lid}", {"data": {
             "type": "appStoreVersionLocalizations", "id": lid, "attributes": {"whatsNew": text}}})
-        print(f"    whatsNew {locale}:", "OK" if not r.get("errors") else r["errors"][0].get("detail"))
+        if r.get("errors"):
+            fail(f"whatsNew {locale}: {r['errors'][0].get('detail')}"); continue
+        # Read it BACK. The response to a PATCH is not evidence that the text is what we sent —
+        # ASC silently truncates and normalises, and the star-glyph rejection lands here.
+        check = asc("GET", f"/v1/appStoreVersionLocalizations/{lid}"
+                           f"?fields[appStoreVersionLocalizations]=whatsNew")
+        stored = (check.get("data") or {}).get("attributes", {}).get("whatsNew")
+        if stored != text:
+            fail(f"whatsNew {locale}: stored text differs from what was sent "
+                 f"({len(stored or '')} chars vs {len(text)})")
+        else:
+            print(f"    whatsNew {locale}: OK ({len(text)} chars, read back identical)")
 
 
 def set_review_detail(vid):
@@ -253,7 +270,18 @@ def set_review_detail(vid):
         r = asc("POST", "/v1/appStoreReviewDetails", {"data": {
             "type": "appStoreReviewDetails", "attributes": attrs,
             "relationships": {"appStoreVersion": {"data": {"type": "appStoreVersions", "id": vid}}}}})
-    print("  review detail:", "OK" if not r.get("errors") else r["errors"][0].get("detail"))
+    if r.get("errors"):
+        fail(f"review detail: {r['errors'][0].get('detail')}")
+        return
+    # Read back, for the same reason: App Review reads these notes, and a version that reaches
+    # them with the PREVIOUS release's notes describes work that is not in this build.
+    back = asc("GET", f"/v1/appStoreVersions/{vid}/appStoreReviewDetail")
+    stored = ((back.get("data") or {}).get("attributes") or {}).get("notes")
+    if stored != REVIEW_NOTES:
+        fail(f"review detail: stored notes differ from what was sent "
+             f"({len(stored or '')} chars vs {len(REVIEW_NOTES)})")
+    else:
+        print(f"  review detail: OK ({len(REVIEW_NOTES)} chars, read back identical)")
 
 
 def find_build(platform, num):

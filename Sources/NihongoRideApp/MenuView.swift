@@ -159,12 +159,16 @@ struct MenuView: View {
                         if model.conjugationDueCount > 0 {
                             // The view is handed no number: both strings are composed beside
                             // the queue they describe, so this call site cannot pick the pool
-                            // over the run. (v1.26 §B.)
+                            // over the run. (v1.26 §B.) Bound once — each of these properties
+                            // filters and sorts the whole store, and asking three times per
+                            // body evaluation is three scans for one answer.
+                            let buttonText = model.conjugationReviewButtonText(zh: zh)
+                            let buttonLabel = model.conjugationReviewButtonLabel(zh: zh)
                             Button(action: model.startConjugationReview) {
                                 HStack(spacing: 8) {
                                     Image(systemName: "arrow.triangle.2.circlepath")
                                         .accessibilityHidden(true)
-                                    Text(model.conjugationReviewButtonText(zh: zh))
+                                    Text(buttonText)
                                         .scaledSystemFont(14, weight: .semibold, design: .rounded)
                                         .lineLimit(1)
                                 }
@@ -175,7 +179,7 @@ struct MenuView: View {
                             .buttonStyle(.plain)
                             .fixedSize()
                             .padding(.top, 2)
-                            .accessibilityLabel(model.conjugationReviewButtonLabel(zh: zh))
+                            .accessibilityLabel(buttonLabel)
                         }
                     }
                     .menuControlWidth(340)

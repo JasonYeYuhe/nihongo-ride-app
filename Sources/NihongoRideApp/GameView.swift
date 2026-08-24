@@ -271,7 +271,7 @@ private struct HUDBar: View {
                  // and the results screen read "Sentences 5". The Chinese has always said
                  // 进度 ("progress"), which is mode-neutral and therefore already right in all
                  // six modes: one language had solved this and the other had not. (v1.26 §B3.)
-                 label: zh ? "进度" : session.mode.completedUnitLabel(zh: false),
+                 label: session.mode.hudProgressLabel(zh: zh),
                  spoken: zh ? "\(session.wordsCompleted) / \(session.wordCount)"
                             : "\(session.wordsCompleted) of \(session.wordCount)")
                 .accessibilityIdentifier("hudProgress")

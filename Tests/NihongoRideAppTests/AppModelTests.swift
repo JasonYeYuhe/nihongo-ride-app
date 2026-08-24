@@ -96,6 +96,24 @@ struct AppModelTests {
         return card
     }
 
+    /// Ten real verbs. A synthetic 書0/か0 will not conjugate, so `makeReview` builds nothing
+    /// and `startConjugationReview` bails at its own guard — which is how the first version of
+    /// these tests came to assert against a nil session.
+    static let realVerbs: [(String, String, String)] = [
+        ("書く", "かく", "godan_k"), ("読む", "よむ", "godan_m"), ("話す", "はなす", "godan_s"),
+        ("待つ", "まつ", "godan_t"), ("遊ぶ", "あそぶ", "godan_b"), ("泳ぐ", "およぐ", "godan_g"),
+        ("買う", "かう", "godan_u"), ("帰る", "かえる", "godan_r"), ("見る", "みる", "ichidan"),
+        ("食べる", "たべる", "ichidan"),
+    ]
+
+    static func verbEntries(_ count: Int) -> [VocabEntry] {
+        realVerbs.prefix(count).enumerated().map { index, verb in
+            VocabEntry(id: "v\(index)", surface: verb.0, kana: verb.1,
+                       partsOfSpeech: ["v"], jlpt: .n5,
+                       meanings: ["en": ["verb"], "zh": ["\u{52A8}\u{8BCD}"]], vc: verb.2)
+        }
+    }
+
     /// A conjugation card that is overdue.
     static func dueConjugationCard(_ sourceID: String, _ form: String) -> ConjugationSRSCard {
         var card = ConjugationSRSCard(id: "\(sourceID)#\(form)")
@@ -322,6 +340,102 @@ struct AppModelTests {
         #expect(isolation.widgetContainer?.path.hasPrefix(temp) == true)
     }
 
+    /// **The UI suite's own contract, enforced.**
+    ///
+    /// `IsolatedLaunch.swift` opens with "Every UI-test launch goes through here, and none of
+    /// them may call `app.launch()` directly." That was a comment stating a contract nothing
+    /// kept — this project's cheapest detector, pointed at the guard that stands between an
+    /// XCUITest and the owner's real CloudKit database. All five call sites complied when it
+    /// was written; the sixth is the one that matters.
+    ///
+    /// Checked from the unit suite because `swift test` cannot run XCUITests, so the target
+    /// that owns the rule is the one target that cannot assert it.
+    @Test("no UI test launches the app without the isolation")
+    func everyUITestLaunchIsIsolated() throws {
+        let dir = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("NihongoRideiOSUITests")
+        let files = try FileManager.default.contentsOfDirectory(atPath: dir.path)
+            .filter { $0.hasSuffix(".swift") }
+        #expect(files.count >= 3, "only \(files.count) UI test files — the scan is looking in the wrong place")
+        var offenders: [String] = []
+        var launches = 0
+        for file in files {
+            let source = try String(contentsOf: dir.appendingPathComponent(file), encoding: .utf8)
+            for (number, line) in source.components(separatedBy: "\n").enumerated() {
+                let trimmed = line.trimmingCharacters(in: .whitespaces)
+                guard !trimmed.hasPrefix("//"), !trimmed.hasPrefix("///") else { continue }
+                if trimmed.contains(".launchIsolated(") { launches += 1 }
+                // `.launch()` on an XCUIApplication, but not `.launchIsolated()` and not the
+                // `launchEnvironment` assignment inside the helper itself.
+                if trimmed.contains(".launch()") {
+                    offenders.append("\(file):\(number + 1)  \(trimmed)")
+                }
+            }
+        }
+        #expect(launches >= 5, Comment(rawValue:
+            "only \(launches) isolated launches found — a scan that inspects nothing reports clean"))
+        #expect(offenders.isEmpty, Comment(rawValue:
+            "a UI test launches the app WITHOUT isolation, so it writes the owner's real stores "
+            + "and can push a phantom ride to their CloudKit database:\n"
+            + offenders.joined(separator: "\n")))
+    }
+
+    /// **The isolation is CONSUMED, not merely decided — asserted through the real doors.**
+    ///
+    /// The four tests around this one call `launchIsolation(...)` with literal arguments and
+    /// check what it returns. That is necessary and it is not sufficient, and the pre-submission
+    /// review proved it: it severed every consumer from `currentIsolation` — `supportFileURL`,
+    /// `settingsStore`, the widget write and the sync guard all back to their pre-v1.26
+    /// expressions — while leaving `launchIsolation()` correct, and **the whole suite stayed
+    /// green**. In that state a real `NIHONGO_UITEST=1` launch writes the owner's Application
+    /// Support, their App Group container and their UserDefaults, and starts CloudKit sync.
+    ///
+    /// So this one turns the flag ON and reads the doors. The widget container is covered by
+    /// the same write detector `nothingOutsideTheSandboxIsWritten` uses — already calibrated by
+    /// `writeDetectorIsCalibrated`, so a null result from it is not taken on trust.
+    @Test("a UI-test launch actually lands in the throwaway container, door by door")
+    func uiTestIsolationIsConsumed() throws {
+        let savedSupport = AppModel.supportDirectoryOverride
+        let savedWidget = AppModel.widgetContainerOverride
+        let savedDefaults = AppModel.settingsDefaults
+        let savedSuite = AppModel.settingsSuiteOverride
+        defer {
+            AppModel.isUITestOverride = nil
+            AppModel.supportDirectoryOverride = savedSupport
+            AppModel.widgetContainerOverride = savedWidget
+            AppModel.settingsDefaults = savedDefaults
+            AppModel.settingsSuiteOverride = savedSuite
+        }
+        // Every explicit override cleared, so the ONLY thing keeping this out of the user's data
+        // is the UI-test branch itself. With the overrides left in place the old and new code
+        // agree, and the test would pass under the severed consumers too.
+        AppModel.supportDirectoryOverride = nil
+        AppModel.widgetContainerOverride = nil
+        AppModel.settingsDefaults = nil
+        AppModel.settingsSuiteOverride = nil
+        AppModel.isUITestOverride = true
+
+        let throwaway = AppModel.uiTestDirectory.path
+        #expect(AppModel.supportFileURL("review.json").path.hasPrefix(throwaway),
+                "Application Support is not redirected: \(AppModel.supportFileURL("review.json").path)")
+        #expect(AppModel.settingsStore != UserDefaults.standard,
+                "settings still resolve to the user's own UserDefaults")
+
+        // …and the doors that cannot be read directly, observed by their effects.
+        let before = Self.realUserFileStamps()
+        let model = AppModel(vocab: VocabStore(entries: [
+            Self.entry("a", "水", "みず"), Self.entry("b", "火", "ひ")]))
+        model.startGame()
+        model.session?.skip()
+        model.finishGame()
+        model.refreshWidgetSnapshot()
+        let after = Self.realUserFileStamps()
+        let touched = after.filter { before[$0.key] != $0.value }.keys.sorted()
+        #expect(touched.isEmpty, "a UI-test launch wrote the user's own data: \(touched)")
+        #expect(model.syncStatus == .off, "a UI-test launch started CloudKit sync")
+    }
+
     /// The negative control. Without it the assertion above is satisfied by a function that
     /// isolates EVERY launch, which would silently disable sync in the shipping app.
     @Test("an ordinary launch is not isolated, so the check above means something")
@@ -334,6 +448,24 @@ struct AppModelTests {
         #expect(normal.widgetContainer == nil, "a shipping launch must use the real App Group")
         #expect(normal.settingsSuite == nil, "a shipping launch must use UserDefaults.standard")
         #expect(normal.syncAllowed, "a shipping launch must be allowed to sync")
+    }
+
+    /// Screenshot capture must clear the same bar, and until the pre-submission review it did
+    /// not: it redirected FILES and left the widget container and the settings suite nil, so
+    /// `touchesNothingOfTheUsers` could never have flagged it. Capture was safe only because
+    /// three separate `!Screenshotter.isCapturing` guards sat at the call sites — which is the
+    /// "check the door somebody remembered" shape, inside the value written to replace it.
+    @Test("screenshot capture reaches nothing that belongs to the user either")
+    func captureIsIsolated() {
+        let capture = AppModel.launchIsolation(
+            uiTest: false, layoutHarness: false, capturing: true,
+            supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
+        #expect(capture.touchesNothingOfTheUsers,
+                "a capture launch may not resolve any real location: \(capture)")
+        #expect(capture.supportBase?.lastPathComponent == "NihongoRideCapture")
+        #expect(capture.widgetContainer != nil, "capture could still write the real widget")
+        #expect(capture.settingsSuite != nil, "capture could still write the real settings")
+        #expect(capture.syncAllowed == false, "capture could still push to the real CloudKit")
     }
 
     /// The layout harness keeps the behaviour it already had — sync off, files real — so this
@@ -424,14 +556,13 @@ struct AppModelTests {
     /// The same for the conjugation button, whose number is VISIBLE as well as spoken.
     @Test("the conjugation-review label states the run length in both languages")
     func conjugationReviewLabelStatesTheRun() {
-        let verbs = (0..<10).map {
-            VocabEntry(id: "v\($0)", surface: "書\($0)", kana: "か\($0)",
-                       partsOfSpeech: ["v"], jlpt: .n5,
-                       meanings: ["en": ["write"], "zh": ["\u{5199}"]], vc: "godan_k")
-        }
+        let verbs = Self.verbEntries(10)
         var cards: [String: ConjugationSRSCard] = [:]
         for verb in verbs {
-            for form in ["masu", "past", "te"] {
+            // VALID ConjugationForm raw values. "masu" is not one — the drill's builder drops a
+            // form it cannot parse while `conjugationDueCount` counts the card regardless, so
+            // the first fixture produced thirty due cards and an empty run.
+            for form in ["polite", "past", "te"] {
                 let card = Self.dueConjugationCard(verb.id, form)
                 cards[card.id] = card
             }
@@ -480,15 +611,14 @@ struct AppModelTests {
     /// detector — "where a comment states a contract, check whether anything enforces it" —
     /// by making the contract look as though it were already checked.
     @Test("the conjugation-review button shows the length of the run it starts, not every due card")
-    func conjugationReviewCountMatchesTheRun() {
-        let verbs = (0..<10).map {
-            VocabEntry(id: "v\($0)", surface: "書\($0)", kana: "か\($0)",
-                       partsOfSpeech: ["v"], jlpt: .n5,
-                       meanings: ["en": ["write"], "zh": ["\u{5199}"]], vc: "godan_k")
-        }
+    func conjugationReviewCountMatchesTheRun() throws {
+        let verbs = Self.verbEntries(10)
         var cards: [String: ConjugationSRSCard] = [:]
         for verb in verbs {
-            for form in ["masu", "past", "te"] {
+            // VALID ConjugationForm raw values. "masu" is not one — the drill's builder drops a
+            // form it cannot parse while `conjugationDueCount` counts the card regardless, so
+            // the first fixture produced thirty due cards and an empty run.
+            for form in ["polite", "past", "te"] {
                 let card = Self.dueConjugationCard(verb.id, form)
                 cards[card.id] = card
             }
@@ -501,6 +631,43 @@ struct AppModelTests {
         #expect(shown == 12, "the cap is 12, so the button may promise at most 12")
         #expect(shown != model.conjugationDueCount,
                 "if these are equal the fixture is too small to prove anything")
+
+        // …and START the run, which the first version of this test did not. Its weak-words twin
+        // does, and the review pointed out that comparing two model properties cannot see a
+        // divergence between the label and the queue — only between two readings of the store.
+        model.startConjugationReview()
+        let ridden = try #require(model.conjugationSession).promptCount
+        #expect(ridden >= shown, Comment(rawValue:
+            "the button promises \(shown) due forms and the drill holds \(ridden) prompts"))
+    }
+
+    /// Below the cap the conjugation button behaves DIFFERENTLY from the weak-words one, and
+    /// the difference is legitimate rather than a defect — recorded here so it is a decision
+    /// with a reason and not a silence.
+    ///
+    /// With five forms due the label says five and the drill still holds twelve prompts:
+    /// `startConjugationReview` sets `promptCount = conjugationRunSize` unconditionally and
+    /// `makeReview` fills the remainder with fresh weak-form prompts. That is the documented
+    /// design — "due forms first, weak-form fill" — and the label's promise is about the DUE
+    /// ones, all five of which are ridden. It is not B1's defect, where fifteen were promised
+    /// and twelve ridden; nothing here is promised and withheld.
+    @Test("below the cap the label names the due forms, and the drill may hold more than that")
+    func conjugationBelowTheCapNamesTheDue() throws {
+        let verbs = Self.verbEntries(3)
+        var cards: [String: ConjugationSRSCard] = [:]
+        for verb in verbs {
+            let card = Self.dueConjugationCard(verb.id, "polite")
+            cards[card.id] = card
+        }
+        let model = Self.seeded(vocab: VocabStore(entries: verbs),
+                                conjugation: ConjugationReviewStore(cards: cards))
+        #expect(model.conjugationDueCount == 3)
+        let shown = model.conjugationReviewQueue.count
+        #expect(shown == 3, "three due and a cap of twelve — the label names three")
+        #expect(model.conjugationReviewButtonText(zh: false) == "Review 3 due")
+        model.startConjugationReview()
+        let ridden = try #require(model.conjugationSession).promptCount
+        #expect(ridden >= shown, "every due form must be in the drill")
     }
 
     /// The same contract where it actually broke before: an id that no longer resolves. The run

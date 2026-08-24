@@ -818,6 +818,18 @@ ran it found two things nobody could have seen:
   `docs/measurements/v126-uninspected-residue.json`. 55 are kana-only stems, 22 have a stem that
   appears nowhere, 14 are deliberately tokenless, 11 are named irregulars, 10 fall outside the
   selector.
+* **Instance twenty-one, latent, found by a broken test fixture.**
+  `conjugationDueCount` and `conjugationReviewQueue` count a due card without validating its
+  `formToken`; `makeReview` parses that token and drops what it cannot read. A fixture in this
+  release used `"masu"`, which is not a `ConjugationForm` raw value — and the button reported
+  **thirty due while the drill built zero prompts**, which is this defect demonstrated rather
+  than argued. It is unreachable today because every stored token came from
+  `ConjugationForm.rawValue` and no case has ever been renamed or removed; it becomes reachable
+  the moment one is, exactly as withdrawing a vocab entry did before `resolves:` existed. The
+  same shape as the v1.23 "due-conjugation review, latent" entry, and it should be closed the
+  same way — one predicate the count and the run share. Not fixed here: it is new behaviour, it
+  is unreachable in this build, and this release has already had its scope decided.
+
 * **§C and B4** — the conjugation drill grades every clean answer 5 because no per-prompt timing
   is supplied, and practice mode's live WPM is wall clock while the WPM it records is ridden
   time. A coherent pause-aware timing release, deferred with its risk written down.

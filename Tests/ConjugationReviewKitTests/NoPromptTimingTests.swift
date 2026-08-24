@@ -41,7 +41,15 @@ struct NoPromptTimingTests {
     /// timing reached the outcome at all, this could not come back as 1.0.
     private final class SlowClock: @unchecked Sendable {
         private var t = Date(timeIntervalSince1970: 0)
-        func next() -> Date { t = t.addingTimeInterval(30); return t }
+        /// How many times the session asked what time it is. **This is the finding**, not
+        /// bookkeeping: on a clean answer `ConjugationSession` asks ZERO times, because its only
+        /// `now()` call is on the mistype path. An earlier version of these tests, and the doc
+        /// comment on `quality(from:)`, described "a probe driving a real session with a clock
+        /// advancing 30 seconds per keystroke" — the clock was never consulted, so the 1.0 came
+        /// from `TypingOutcome`'s default argument and not from a measurement of elapsed time.
+        /// The conclusion was right and the account of how it was reached was not.
+        private(set) var asks = 0
+        func next() -> Date { asks += 1; t = t.addingTimeInterval(30); return t }
     }
 
     @Test("a clean answer typed absurdly slowly still reports durationRatio 1.0")
@@ -56,6 +64,10 @@ struct NoPromptTimingTests {
         let outcome = try #require(seen, "the session emitted no outcome at all")
         #expect(outcome.completed)
         #expect(outcome.mistakes == 0)
+        #expect(clock.asks == 0, Comment(rawValue:
+            "the session consulted the clock \(clock.asks) time(s) on a clean answer. If that is "
+            + "now non-zero the drill has gained timing and `quality(from:)`'s doc comment — "
+            + "which says its last line is a constant — must be revisited"))
         #expect(outcome.durationRatio == 1.0, Comment(rawValue:
                 "the session now supplies timing (\(outcome.durationRatio)) — the rubric's last "
                 + "line is no longer a constant, so quality(from:)'s doc comment must be revisited"))
