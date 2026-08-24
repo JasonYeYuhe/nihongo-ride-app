@@ -36,7 +36,7 @@ final class TouchFlowTests: XCTestCase {
     @MainActor
     func testJourneyIsFullyPlayableByTouch() {
         let app = XCUIApplication()
-        app.launch()
+        app.launchIsolated()
 
         // Menu → start a ride.
         let start = app.buttons["startButton"]
@@ -107,7 +107,7 @@ final class TouchFlowTests: XCTestCase {
     @MainActor
     func testJournalOpensAndReturnsByTouch() {
         let app = XCUIApplication()
-        app.launch()
+        app.launchIsolated()
 
         let journal = app.buttons["journalButton"]
         XCTAssertTrue(journal.waitForExistence(timeout: 10), "menu should show a Ride Log button")
@@ -126,7 +126,7 @@ final class TouchFlowTests: XCTestCase {
     @MainActor
     func testPracticeNextAndDoneByTouch() {
         let app = XCUIApplication()
-        app.launch()
+        app.launchIsolated()
 
         // Switch the mode picker to Practice (3rd segment), then start.
         let modePicker = app.segmentedControls.firstMatch

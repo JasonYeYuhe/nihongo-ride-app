@@ -24,7 +24,7 @@ final class StumbledWordsFlowTests: XCTestCase {
     @MainActor
     func testSentenceRunNamesTheWordsThatStoppedYou() throws {
         let app = XCUIApplication()
-        app.launch()
+        app.launchIsolated()
         XCTAssertTrue(app.buttons["startButton"].waitForExistence(timeout: 15))
 
         // The romaji has to be on screen for the typist to know what is correct — a fresh
@@ -98,6 +98,68 @@ final class StumbledWordsFlowTests: XCTestCase {
         XCTAssertFalse(chips.isEmpty,
                        "the section rendered with no words in it. ELEMENTS: " +
                        labels.joined(separator: " | "))
+
+        assertSentenceResultsCopy(app, labels: labels)
+    }
+
+    /// **v1.26 §D — the copy v1.24 §B and v1.25 §B produced, asserted on the screen.**
+    ///
+    /// Both releases changed what this screen SAYS, and every consumer of
+    /// `GameMode.lapsesAreWords` and `GameSummary.persistsSRS` lives here — so all five lines
+    /// could be deleted without reddening anything. The predicates were tested and honestly
+    /// green; the visible outcome was not tested at all. That is v1.26's own thesis, and it was
+    /// re-measured on this release's own work: restoring §B's defect in `MenuView` left every
+    /// unit test passing.
+    ///
+    /// Extending the existing flow rather than building a parallel proof — a second harness for
+    /// the same screen is one rule written twice, and this one has already finished a real
+    /// sentence run, which is the expensive part.
+    ///
+    /// Exact-match, never `contains`: the heading on this very screen is "The words that
+    /// stopped you", so a substring test for "Words" would pass on a screen that had regressed.
+    @MainActor
+    private func assertSentenceResultsCopy(_ app: XCUIApplication, labels: [String]) {
+        let all = Set(labels)
+        let zh = all.contains("这些词卡住了你") || all.contains("这些词没听出来")
+        let shown = labels.joined(separator: " | ")
+
+        // v1.25 §B: a sentence run completes SENTENCES, not words.
+        let sentences = zh ? "完成句数" : "Sentences"
+        let words = zh ? "完成词数" : "Words"
+        XCTAssertTrue(all.contains(sentences),
+                      "a sentence run must count \(sentences). ELEMENTS: \(shown)")
+        XCTAssertFalse(all.contains(words),
+                       "a sentence run still labels its count \(words). ELEMENTS: \(shown)")
+
+        // v1.25 §B: and what went wrong on it is tough LINES, so the sentence-level count and
+        // the word-level chips read as the different things they are.
+        let toughLines = zh ? "吃力句" : "Tough lines"
+        let struggled = zh ? "吃力" : "Struggled"
+        XCTAssertTrue(all.contains(toughLines),
+                      "a sentence run must say \(toughLines). ELEMENTS: \(shown)")
+        XCTAssertFalse(all.contains(struggled),
+                       "a sentence run still says \(struggled). ELEMENTS: \(shown)")
+
+        // v1.24 §B: "To review" is a promise, and a sentence run persists no SRS — nothing here
+        // will ever come back for review, so the tile must not promise it.
+        let toReview = zh ? "待复习" : "To review"
+        XCTAssertFalse(all.contains(toReview),
+                       "a run that persists no SRS promises \(toReview). ELEMENTS: \(shown)")
+
+        // v1.25 §B: the whole-sentence review list is DROPPED on a sentence run. It wrapped a
+        // sentence as a VocabEntry whose surface was the whole sentence, so the grid rendered
+        // 「友達と映画を見ました。」 in a 116pt word cell captioned with one word's gloss, and
+        // VoiceOver announced "Save 〈whole sentence〉". Its heading must be absent; the chips
+        // asserted above are what replaced it.
+        for heading in ["Words to review", "复习这些词", "Review these words"] {
+            XCTAssertFalse(all.contains(heading),
+                           "the whole-sentence review list is back. ELEMENTS: \(shown)")
+        }
+        // A sentence-shaped element in a word cell is the defect itself, whatever it is called:
+        // no label on this screen may be long enough to be a whole sentence AND end in 。
+        let sentenceShaped = labels.filter { $0.count > 12 && ($0.hasSuffix("。") || $0.contains("。,")) }
+        XCTAssertTrue(sentenceShaped.isEmpty,
+                      "a whole sentence is being rendered as a word: \(sentenceShaped)")
     }
 
     /// Types the current word's remaining romaji, once per word, until the run ends or the hint

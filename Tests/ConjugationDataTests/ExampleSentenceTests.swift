@@ -90,15 +90,22 @@ struct ExampleSentenceTests {
         "n4-g076",   // 堅い → 固い
     ]
 
+    /// Whether the sentence contains the headword in SOME writable form. One function, so the
+    /// ratchet and its staleness companion cannot disagree about what "uses the word" means —
+    /// which is the only way a companion is worth having.
+    private func sentenceUsesTheWord(_ e: VocabEntry) -> Bool {
+        guard let jp = e.exampleJP else { return false }
+        let candidates = [e.surface, e.kana] + stems(e)
+        return candidates.contains { !$0.isEmpty && jp.contains($0) }
+    }
+
     @Test("every example sentence actually uses its own word")
     func usesTheWord() {
         var offenders: [String] = []
         for e in withExamples {
-            guard let jp = e.exampleJP else { continue }
-            let candidates = [e.surface, e.kana] + stems(e)
-            if !candidates.contains(where: { !$0.isEmpty && jp.contains($0) }),
-               !knownVariantSpelling.contains(e.id) {
-                offenders.append("\(e.id) \(e.surface): \(jp)")
+            guard e.exampleJP != nil else { continue }
+            if !sentenceUsesTheWord(e), !knownVariantSpelling.contains(e.id) {
+                offenders.append("\(e.id) \(e.surface): \(e.exampleJP ?? "")")
             }
         }
         #expect(offenders.isEmpty,
@@ -211,6 +218,97 @@ struct ExampleSentenceTests {
         #expect(offenders.isEmpty, Comment(rawValue:
             "\(offenders.count) headword(s) the tokenizer split across are misread:\n"
             + offenders.prefix(8).joined(separator: "\n")))
+    }
+
+    /// **Two of this file's four ratchets could never go stale, and that is one rule applied to
+    /// half the places it applies to — this file's oldest shape.**
+    ///
+    /// `knownHeadwordReadingMismatch` has `ratchetIsNotStale`; `knownSharedExamples` checks
+    /// staleness inline. `knownVariantSpelling` (4 ids) and `knownCompoundReadings` (3 ids) had
+    /// no companion at all, so **7 entries were exempted forever** — and if one were fixed the
+    /// exemption would stay and hide the next offender behind it. That is verbatim the rationale
+    /// this file already gives at `ratchetIsNotStale` for why the other two have companions.
+    @Test("the variant-spelling exemption names only entries that still need it")
+    func variantSpellingRatchetIsNotStale() {
+        let byID = Dictionary(withExamples.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        var stale: [String] = []
+        for id in knownVariantSpelling.sorted() {
+            guard let entry = byID[id] else {
+                stale.append("\(id) (no longer in the corpus)")
+                continue
+            }
+            if sentenceUsesTheWord(entry) {
+                stale.append("\(id) \(entry.surface) (its sentence now contains the word)")
+            }
+        }
+        #expect(stale.isEmpty, Comment(rawValue:
+            "remove from knownVariantSpelling: " + stale.joined(separator: ", ")))
+    }
+
+    @Test("the compound-reading exemption names only entries that still need it")
+    func compoundReadingRatchetIsNotStale() {
+        let byID = Dictionary(withExamples.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        var stale: [String] = []
+        for id in knownCompoundReadings.sorted() {
+            guard let entry = byID[id] else {
+                stale.append("\(id) (no longer in the corpus)")
+                continue
+            }
+            guard let cover = Self.coveringReading(of: entry) else {
+                // No longer boundary-crossing — the gate that exempts it does not even reach it.
+                stale.append("\(id) \(entry.surface) (no longer a boundary-crossing headword)")
+                continue
+            }
+            if cover.reading.contains(KanaScript.katakanaToHiragana(entry.kana)) {
+                stale.append("\(id) \(entry.surface) (\(cover.surface) now reads \(cover.reading))")
+            }
+        }
+        #expect(stale.isEmpty, Comment(rawValue:
+            "remove from knownCompoundReadings: " + stale.joined(separator: ", ")))
+    }
+
+    /// Nothing counted the gates, so one could leave the suite inside the release that added it
+    /// and the release would notice nothing — which is exactly what happened to
+    /// `readingNotesMatchTheirGenerator` in v1.25 (added in `e71e7be`, removed in `fafae5a`,
+    /// whose message is about a different subject entirely and never mentions it).
+    ///
+    /// Counting them is not a strong check and is not meant to be. It is the cheapest possible
+    /// answer to "did a gate disappear", and its absence is what let one disappear.
+    @Test("every named-id exemption list in this file has a staleness companion")
+    func everyRatchetHasACompanion() {
+        // Read this file's own source: the property is about the SUITE, and a list of names
+        // restated here would be the same rule written twice.
+        let source = try? String(contentsOf: URL(fileURLWithPath: #filePath), encoding: .utf8)
+        let text = source ?? ""
+        #expect(!text.isEmpty, "could not read this suite's own source")
+        let ratchets = ["knownVariantSpelling", "knownCompoundReadings",
+                        "knownHeadwordReadingMismatch", "knownSharedExamples",
+                        "knownStemSharedWithOtherWord"]
+        // Every ratchet declared above must appear at least three times: the declaration, the
+        // gate that consults it, and a companion that can retire an entry from it.
+        for name in ratchets {
+            let uses = text.components(separatedBy: name).count - 1
+            #expect(uses >= 3, Comment(rawValue:
+                "\(name) appears \(uses) time(s) — a ratchet with no staleness companion "
+                + "exempts its entries forever and hides the next offender behind them"))
+        }
+        // …and the list above must not fall behind the file: every ratchet DECLARED here has to
+        // be named in it, so a new one cannot be exempt by omission — the failure mode
+        // `ResolvesCallSiteTests` records for hard-coded identifier lists.
+        //
+        // Matched on the declaration prefix, not on a substring: the first version matched any
+        // line containing both "let known" and "Set<String>", which caught this test's own
+        // comment and its own loop condition. A scan that flags itself is measuring its text
+        // rather than the file's structure.
+        let declarations = text.components(separatedBy: "\n")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { $0.hasPrefix("private let known") && $0.contains("Set<String>") }
+        #expect(declarations.count == ratchets.count, Comment(rawValue:
+            "\(declarations.count) ratchets declared but \(ratchets.count) known to this test"))
+        for line in declarations {
+            #expect(ratchets.contains { line.contains($0) }, Comment(rawValue:
+                "a ratchet this test does not know about: \(line)"))
+        }
     }
 
     @Test("a sentence reads its headword the way its own card teaches it")
@@ -821,6 +919,83 @@ struct ExampleSentenceTests {
     /// evidence must match the data it describes. Releasing an exclusion is then a decision
     /// somebody makes with a re-measurement in hand, which is what it always should have been —
     /// not something a substring test infers.
+    /// **A gate v1.25 specified, built, and then deleted by accident.**
+    ///
+    /// PLAN-V1.25 §A required "a test that the resource equals what the generator emits" — the
+    /// defect being that `reading-notes.json` had been one note SHORT of its own generator for
+    /// three releases, because the rule was corrected in v1.22 §E and the file was never
+    /// regenerated, and nothing compared the two.
+    ///
+    /// It was written (`readingNotesMatchTheirGenerator`, commit `e71e7be`) and removed in
+    /// `fafae5a`, whose message is about merging token spans and blinding the exclusion gate
+    /// and **never mentions it**. Its neighbour `exclusionResourceMatchesItsMeasurement` went in
+    /// the same commit, but that one was properly SUPERSEDED by `exclusionEvidenceIsCurrent` and
+    /// the message says so. One deletion was a decision; the other was an accident, and
+    /// PLAN-V1.25's shipped table still counted both.
+    ///
+    /// The process finding underneath is the cheaper lesson and it is now also fixed:
+    /// **nothing counted the gates**, so a gate could leave the suite inside the release that
+    /// added it and the release would notice nothing. `everyRatchetHasACompanion` counts them.
+    ///
+    /// **Restored STRONGER than it was deleted.** The original compared the generator's
+    /// reported COUNT against `ReadingNotes.all.count`, so a resource that differed from its
+    /// generator in content rather than in length would have passed — and "the shipped resource
+    /// equals what the generator emits" is what the plan asked for. `--json` emits the payload
+    /// exactly as `--write` would serialise it, and this compares every note.
+    @Test("the shipped reading notes are exactly what their generator emits")
+    func readingNotesMatchTheirGenerator() throws {
+        struct Note: Decodable, Equatable, Comparable {
+            let id: String
+            let kind: String
+            let common: String
+            let siblingID: String?
+            static func < (a: Note, b: Note) -> Bool { a.id < b.id }
+        }
+        struct Payload: Decodable { let notes: [Note] }
+
+        let root = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+        process.arguments = ["python3",
+                             root.appendingPathComponent("scripts/gen_reading_notes.py").path,
+                             "--json"]
+        process.currentDirectoryURL = root
+        let out = Pipe(), err = Pipe()
+        process.standardOutput = out
+        process.standardError = err
+        try process.run()
+        // Read BEFORE waiting: a payload larger than the pipe buffer deadlocks the other way
+        // round, and this one is ~7 KB today and grows with the corpus.
+        let data = out.fileHandleForReading.readDataToEndOfFile()
+        let errorText = String(decoding: err.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
+        process.waitUntilExit()
+        try #require(process.terminationStatus == 0, Comment(rawValue:
+            "the generator failed (\(process.terminationStatus)): \(errorText.prefix(400))"))
+
+        let emitted = try JSONDecoder().decode(Payload.self, from: data).notes.sorted()
+        let shipped = ReadingNotes.all.map {
+            Note(id: $0.key, kind: $0.value.kind.rawValue,
+                 common: $0.value.common, siblingID: $0.value.siblingID)
+        }.sorted()
+
+        // The count first, because a length mismatch is the original defect and its message is
+        // the useful one; then the content, which is what the count could not see.
+        #expect(emitted.count == shipped.count, Comment(rawValue:
+            "the generator emits \(emitted.count) notes and the shipped resource holds "
+            + "\(shipped.count) — run `python3 scripts/gen_reading_notes.py --write`"))
+        let onlyEmitted = Set(emitted.map(\.id)).subtracting(shipped.map(\.id))
+        let onlyShipped = Set(shipped.map(\.id)).subtracting(emitted.map(\.id))
+        #expect(onlyEmitted.isEmpty && onlyShipped.isEmpty, Comment(rawValue:
+            "generator-only: \(onlyEmitted.sorted()); resource-only: \(onlyShipped.sorted())"))
+        #expect(emitted == shipped, Comment(rawValue:
+            "same ids, different content — regenerate: "
+            + zip(emitted, shipped).filter { $0 != $1 }
+                .prefix(4).map { "\($0.0.id): \($0.0) vs \($0.1)" }.joined(separator: "; ")))
+        // …and the comparison must have compared something.
+        #expect(emitted.count > 50, "only \(emitted.count) notes — the generator produced almost nothing")
+    }
+
     @Test("every dictation exclusion's evidence still matches the sentence it describes")
     func exclusionEvidenceIsCurrent() throws {
         struct Record: Decodable { let id: String; let exKana: String? }

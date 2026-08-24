@@ -390,6 +390,20 @@ final class AppModel {
         // First-launch onboarding: show it only to a genuinely fresh install, and
         // never while capturing screenshots (would replace menu.png). An upgrading
         // user who already has data is silently marked as seen so they never get it.
+        // A UI-test launch is a genuinely fresh install — that is the point of the isolation —
+        // so it lands on ONBOARDING, and every existing flow test waited fifteen seconds for a
+        // menu button that was never coming. Those tests used to pass because the simulator
+        // happened to carry a dismissed-onboarding flag from some earlier run: they depended on
+        // ambient state they never set, which is precisely what isolating them exposes.
+        //
+        // So the start state is now declared rather than inherited. `NIHONGO_UITEST_ONBOARDING`
+        // opts back in, so onboarding itself stays reachable instead of becoming the one screen
+        // no UI test can see.
+        let uiTestWantsOnboarding =
+            ProcessInfo.processInfo.environment["NIHONGO_UITEST_ONBOARDING"] != nil
+        if Self.isUITest && !uiTestWantsOnboarding {
+            settings.hasSeenOnboarding = true
+        }
         if !settings.hasSeenOnboarding && !Screenshotter.isCapturing {
             let freshInstall = reviewStore.count == 0 && journal.totalRuns == 0
             if freshInstall {
@@ -497,7 +511,8 @@ final class AppModel {
             lifetimeWords: lifetimeWords,
             languageCode: languageCode)
         switch WidgetSnapshotStore.write(snapshot,
-                                         to: Self.widgetContainerOverride ?? AppGroup.containerURL()) {
+                                         to: Self.currentIsolation.widgetContainer
+                                             ?? AppGroup.containerURL()) {
         case .success:
             WidgetCenter.shared.reloadAllTimelines()
         case .failure(.containerUnavailable):
@@ -529,7 +544,11 @@ final class AppModel {
 
     private func startSyncIfEnabled(fullResync: Bool = false) {
         guard Self.cloudSyncAvailable else { syncStatus = .off; return }
-        guard !Self.isLayoutHarness else { syncStatus = .off; return }
+        // The harness and the UI tests both finish REAL runs; an unguarded push lands those in
+        // the owner's real CloudKit database, where nothing local can clean them up. Read from
+        // the one isolation value rather than re-testing the flags, so a new harness mode is
+        // covered by describing itself there instead of by remembering this line.
+        guard Self.currentIsolation.syncAllowed else { syncStatus = .off; return }
         guard iCloudSyncEnabled else { syncStatus = .off; return }
         guard let controller = CloudKitSyncController(model: self) else {
             syncStatus = .off          // CloudKit unavailable (dev / no entitlement)
@@ -551,6 +570,102 @@ final class AppModel {
             syncStatus = .off
         }
     }
+
+    /// Every location a launch may touch, decided in ONE value.
+    ///
+    /// v1.24's sandbox assertion was green while the tests were overwriting the owner's real
+    /// home-screen widget, because it checked the one door that was known about. The lesson
+    /// recorded then was to assert the PROPERTY — this launch touches nothing that belongs to
+    /// the user — over every location, so the next escape trips it without anyone predicting
+    /// which door it uses. That is only checkable if the locations are decided together, which
+    /// is what this is: four fields, one function, one test that reads all four.
+    struct LaunchIsolation: Equatable, Sendable {
+        /// Base for `supportFileURL`. Nil means the machine's real Application Support.
+        var supportBase: URL?
+        /// Where the widget snapshot lands. Nil means the real App Group container.
+        var widgetContainer: URL?
+        /// Named UserDefaults suite. Nil means `.standard`.
+        var settingsSuite: String?
+        /// Whether CloudKit sync may start at all.
+        var syncAllowed: Bool
+
+        /// True when nothing here can reach data the user owns.
+        var touchesNothingOfTheUsers: Bool {
+            supportBase != nil && widgetContainer != nil && settingsSuite != nil && !syncAllowed
+        }
+    }
+
+    /// Pure, so it can be asked about a configuration this process is not in.
+    static func launchIsolation(uiTest: Bool,
+                                layoutHarness: Bool,
+                                capturing: Bool,
+                                supportOverride: URL?,
+                                widgetOverride: URL?,
+                                settingsOverride: String?) -> LaunchIsolation {
+        if uiTest {
+            let dir = uiTestDirectory
+            return LaunchIsolation(
+                supportBase: supportOverride ?? dir,
+                widgetContainer: widgetOverride ?? dir.appendingPathComponent("group", isDirectory: true),
+                settingsSuite: settingsOverride ?? "NihongoRideUITest",
+                syncAllowed: false)
+        }
+        return LaunchIsolation(
+            supportBase: supportOverride
+                ?? (capturing ? FileManager.default.temporaryDirectory
+                        .appendingPathComponent("NihongoRideCapture", isDirectory: true) : nil),
+            widgetContainer: widgetOverride,
+            settingsSuite: settingsOverride,
+            syncAllowed: !layoutHarness)
+    }
+
+    /// This launch's isolation, read by every redirect below so they cannot disagree.
+    static var currentIsolation: LaunchIsolation {
+        launchIsolation(uiTest: isUITest, layoutHarness: isLayoutHarness,
+                        capturing: Screenshotter.isCapturing,
+                        supportOverride: supportDirectoryOverride,
+                        widgetOverride: widgetContainerOverride,
+                        settingsOverride: settingsSuiteOverride)
+    }
+
+    /// Set by the unit-test target alongside `settingsDefaults`, so the isolation value and the
+    /// store it describes cannot drift apart.
+    static var settingsSuiteOverride: String?
+
+    /// True while an XCUITest is driving the app.
+    ///
+    /// The UI tests launch the NORMAL app and complete a REAL run, which writes SRS, the ride
+    /// journal, the odometer and the widget snapshot — and pushes all of it to CloudKit if the
+    /// device is signed in. That is the v1.24 App Group incident with a bigger blast radius:
+    /// that one wrote zeros to a local container, this one can put a phantom ride in the
+    /// owner's real CloudKit database, where nothing local can clean it up.
+    ///
+    /// So this redirects every store the same way `AppModelTests` does, and stops sync before
+    /// it starts. It is the precondition for widening the UI suite, not a follow-up to it.
+    ///
+    /// DEBUG-only, so a shipping build cannot be talked into it by an environment variable.
+    static var isUITest: Bool {
+        #if DEBUG
+        return ProcessInfo.processInfo.environment["NIHONGO_UITEST"] != nil
+        #else
+        return false
+        #endif
+    }
+
+    /// The throwaway container a UI-test launch reads and writes.
+    ///
+    /// FIXED rather than per-launch, because a UI test may relaunch the app mid-case and expect
+    /// what it typed to still be there. Cleared ONCE per process instead — screenshot capture
+    /// learned this the hard way: a fixed directory that nothing clears makes every run inherit
+    /// the last one's rides, and the lifetime odometer grew monotonically until the render gate
+    /// depended on how many times it had been run.
+    static let uiTestDirectory: URL = {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("NihongoRideUITest", isDirectory: true)
+        try? FileManager.default.removeItem(at: dir)
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return dir
+    }()
 
     /// True while the layout harness is driving. Kept OUTSIDE the `#if` so the guards that
     /// consult it read the same in every configuration; it is constant-false anywhere the
@@ -1855,7 +1970,16 @@ final class AppModel {
     /// depend on what a previous run happened to persist is not a suite worth trusting.
     static var settingsDefaults: UserDefaults?
 
-    static var settingsStore: UserDefaults { settingsDefaults ?? .standard }
+    static var settingsStore: UserDefaults {
+        if let settingsDefaults { return settingsDefaults }
+        // A UI-test launch must not inherit or leave behind the simulator's real settings —
+        // languageCode and selectedMode decide which screen a flow test lands on, so a case
+        // that passes only because a previous one left the app in Sentence mode proves nothing.
+        if let suite = currentIsolation.settingsSuite, let defaults = UserDefaults(suiteName: suite) {
+            return defaults
+        }
+        return .standard
+    }
 
     static func supportFileURL(_ name: String) -> URL {
         let fm = FileManager.default
@@ -1864,10 +1988,8 @@ final class AppModel {
         // models mint a fresh deviceID and run startGame/finishGame, which would
         // otherwise pollute the real, iCloud-synced odometer/journal/word-lists —
         // and leak the real review queue into store screenshots.)
-        let base: URL = supportDirectoryOverride
-            ?? (Screenshotter.isCapturing
-                ? fm.temporaryDirectory.appendingPathComponent("NihongoRideCapture", isDirectory: true)
-                : (fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first ?? fm.temporaryDirectory))
+        let base: URL = currentIsolation.supportBase
+            ?? (fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first ?? fm.temporaryDirectory)
         let dir = base.appendingPathComponent("NihongoRide", isDirectory: true)
         try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir.appendingPathComponent(name)

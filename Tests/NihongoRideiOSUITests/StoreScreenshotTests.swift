@@ -21,7 +21,7 @@ final class StoreScreenshotTests: XCTestCase {
             throw XCTSkip("set NIHONGO_STORE_SHOTS=1 to run the screenshot walk")
         }
         let app = XCUIApplication()
-        app.launch()
+        app.launchIsolated()
         XCTAssertTrue(app.buttons["startButton"].waitForExistence(timeout: 10))
 
         // v1.16 §A: a fresh install defaults to "when stuck", which hides the romaji — and the

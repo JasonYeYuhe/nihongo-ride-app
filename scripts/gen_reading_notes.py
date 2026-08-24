@@ -80,6 +80,12 @@ SOURCE = REPO / "docs/measurements/entries-no-sentence-can-teach.json"
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
+    # Emits the payload EXACTLY as --write would serialise it, on stdout, writing nothing.
+    # The gate that compares the shipped resource against this generator needs the bytes, not
+    # a count: v1.25 restored a count comparison, and a resource that differed from its
+    # generator by content rather than by length would have passed it.
+    ap.add_argument("--json", action="store_true",
+                    help="print the payload to stdout instead of a report (writes nothing)")
     args = ap.parse_args()
 
     blocked = json.loads(SOURCE.read_text(encoding="utf-8"))
@@ -169,6 +175,11 @@ def main():
                 "and the same gloss are no longer indistinguishable",
         "notes": sorted(notes, key=lambda n: n["id"]),
     }
+
+    if args.json:
+        # Byte-identical to what --write would produce, so a comparison is a comparison.
+        print(json.dumps(payload, ensure_ascii=False, indent=1))
+        return 0
 
     print(f"notes: {len(payload['notes'])}  "
           f"({collections.Counter(n['kind'] for n in payload['notes'])})")

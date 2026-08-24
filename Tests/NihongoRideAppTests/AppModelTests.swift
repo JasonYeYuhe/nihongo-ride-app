@@ -43,7 +43,9 @@ struct AppModelTests {
         AppModel.widgetContainerOverride = dir.appendingPathComponent("group", isDirectory: true)
         // …and settings, which live in UserDefaults rather than in either directory. A private
         // suite per model, so one test cannot inherit what another persisted.
-        AppModel.settingsDefaults = UserDefaults(suiteName: "NihongoRideTests-\(UUID().uuidString)")
+        let suite = "NihongoRideTests-\(UUID().uuidString)"
+        AppModel.settingsDefaults = UserDefaults(suiteName: suite)
+        AppModel.settingsSuiteOverride = suite
         return (AppModel(vocab: vocab), dir)
     }
 
@@ -60,7 +62,9 @@ struct AppModelTests {
             .appendingPathComponent("NihongoRideAppTests-\(UUID().uuidString)", isDirectory: true)
         AppModel.supportDirectoryOverride = dir
         AppModel.widgetContainerOverride = dir.appendingPathComponent("group", isDirectory: true)
-        AppModel.settingsDefaults = UserDefaults(suiteName: "NihongoRideTests-\(UUID().uuidString)")
+        let suite = "NihongoRideTests-\(UUID().uuidString)"
+        AppModel.settingsDefaults = UserDefaults(suiteName: suite)
+        AppModel.settingsSuiteOverride = suite
         // `supportFileURL` puts its files in a "NihongoRide" subdirectory of the override, so
         // seeds must be written through IT rather than into the override root — writing them
         // one level too high produced a model with empty stores and a suite whose assertions
@@ -283,6 +287,84 @@ struct AppModelTests {
         model.startStumbledWords(displayed)
         let ridden = try #require(model.session).wordList.count
         #expect(ridden == promised, "promised \(promised) words and the run contains \(ridden)")
+    }
+
+    // MARK: v1.26 §D — the UI suite finishes a REAL run
+
+    /// **The precondition for widening the XCUITest suite, asserted over every location.**
+    ///
+    /// Those tests launch the normal app and complete a real sentence run, which writes SRS,
+    /// the journal, the odometer and the widget snapshot — and pushes all of it to CloudKit if
+    /// the device is signed in. v1.24's App Group incident wrote zeros to a LOCAL container and
+    /// was recoverable; this one can put a phantom ride in the owner's real CloudKit database,
+    /// where nothing local can clean it up.
+    ///
+    /// The lesson v1.24 recorded was not "add another override" — it was that a sandbox
+    /// assertion checking the door somebody remembered will be green while a different door is
+    /// open. So this asserts the PROPERTY over the whole value: under a UI-test launch, no
+    /// location resolves to something the user owns, and sync cannot start. A location added
+    /// later fails this test by being nil, without anyone predicting which one it would be.
+    @Test("a UI-test launch can reach nothing that belongs to the user")
+    func uiTestLaunchIsIsolated() {
+        let isolation = AppModel.launchIsolation(
+            uiTest: true, layoutHarness: false, capturing: false,
+            supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
+        #expect(isolation.touchesNothingOfTheUsers,
+                "a UI-test launch may not resolve any real location: \(isolation)")
+        // …and each one named, so a failure says WHICH door opened rather than just "false".
+        #expect(isolation.supportBase != nil, "Application Support is not redirected")
+        #expect(isolation.widgetContainer != nil, "the App Group container is not redirected")
+        #expect(isolation.settingsSuite != nil, "UserDefaults is not redirected")
+        #expect(isolation.syncAllowed == false, "CloudKit sync is not disabled")
+        // The redirects must be throwaway, not merely non-nil.
+        let temp = FileManager.default.temporaryDirectory.path
+        #expect(isolation.supportBase?.path.hasPrefix(temp) == true)
+        #expect(isolation.widgetContainer?.path.hasPrefix(temp) == true)
+    }
+
+    /// The negative control. Without it the assertion above is satisfied by a function that
+    /// isolates EVERY launch, which would silently disable sync in the shipping app.
+    @Test("an ordinary launch is not isolated, so the check above means something")
+    func ordinaryLaunchIsNotIsolated() {
+        let normal = AppModel.launchIsolation(
+            uiTest: false, layoutHarness: false, capturing: false,
+            supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
+        #expect(normal.touchesNothingOfTheUsers == false)
+        #expect(normal.supportBase == nil, "a shipping launch must use real Application Support")
+        #expect(normal.widgetContainer == nil, "a shipping launch must use the real App Group")
+        #expect(normal.settingsSuite == nil, "a shipping launch must use UserDefaults.standard")
+        #expect(normal.syncAllowed, "a shipping launch must be allowed to sync")
+    }
+
+    /// The layout harness keeps the behaviour it already had — sync off, files real — so this
+    /// refactor cannot have quietly changed it. `jumpToDebugScreen` is simulator-gated and its
+    /// container is disposable; what was never disposable is the CloudKit database.
+    @Test("the layout harness still cannot sync")
+    func layoutHarnessCannotSync() {
+        let harness = AppModel.launchIsolation(
+            uiTest: false, layoutHarness: true, capturing: false,
+            supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
+        #expect(harness.syncAllowed == false)
+        // Screenshot capture keeps its fixed temp directory.
+        let capture = AppModel.launchIsolation(
+            uiTest: false, layoutHarness: false, capturing: true,
+            supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
+        #expect(capture.supportBase?.lastPathComponent == "NihongoRideCapture")
+    }
+
+    /// An explicit override always wins, because the unit-test target sets one per model and
+    /// swift-testing runs these in parallel — a shared directory would let them read each
+    /// other's stores.
+    @Test("an explicit override outranks every harness mode")
+    func overrideWins() {
+        let mine = URL(fileURLWithPath: "/tmp/mine")
+        let isolation = AppModel.launchIsolation(
+            uiTest: true, layoutHarness: true, capturing: true,
+            supportOverride: mine, widgetOverride: mine, settingsOverride: "mine")
+        #expect(isolation.supportBase == mine)
+        #expect(isolation.widgetContainer == mine)
+        #expect(isolation.settingsSuite == "mine")
+        #expect(isolation.syncAllowed == false)
     }
 
     // MARK: v1.26 §B — instances nineteen and twenty of the same defect
