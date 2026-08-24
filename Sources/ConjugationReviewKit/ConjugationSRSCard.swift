@@ -135,8 +135,33 @@ public struct ConjugationSRSCard: Codable, Hashable, Sendable, Identifiable {
         dueDate = Calendar.current.date(byAdding: .day, value: interval, to: date) ?? date
     }
 
-    /// Maps a conjugation outcome to an SM-2 quality grade (0…5). Same rubric as
-    /// `SRSCard.quality(from:)` (kept in sync intentionally).
+    /// Maps a conjugation outcome to an SM-2 quality grade (0…5).
+    ///
+    /// **The last line is a constant in production, and this comment used to claim otherwise.**
+    /// It said "Same rubric as `SRSCard.quality(from:)` (kept in sync intentionally)", which is
+    /// true of the TEXT and false of the BEHAVIOUR: `ConjugationSession` builds its
+    /// `TypingOutcome` without a `durationRatio` (`ConjugationSession.swift:252` and `:281`), so
+    /// the value defaults to 1.0 and `outcome.durationRatio <= 1.5` is always true. **Every
+    /// clean conjugation answer is graded 5**, however long the learner laboured over it.
+    ///
+    /// Measured rather than read: a probe drove a real session with an injected clock advancing
+    /// 30 seconds per keystroke — 240 seconds to type たべます — and the reported ratio was 1.0.
+    /// The negative control is what makes that worth believing: the identical slow typing driven
+    /// through `GameSession`, which DOES compute a ratio, graded 4. The instrument can see
+    /// timing; the timing is not supplied here.
+    ///
+    /// The consequence is a schedule that drifts from the one this comment claimed parity with:
+    /// q=5 adds 0.10 to the ease factor and q=4 adds nothing, so a form the learner struggled
+    /// with is treated as instant recall and leaves the rotation faster than a vocabulary card.
+    ///
+    /// **Deliberately NOT fixed in v1.26.** Wiring a prompt clock needs a baseline, and the only
+    /// one available (`secondsPerKanaBaseline`, 0.8 s/kana) was chosen for copying a word the
+    /// learner can SEE, while a conjugation prompt is recall plus production. There is also no
+    /// correct clock to copy — `GameSession.durationRatio` is raw wall time and does not go
+    /// through `RunClock` either. The grade is durable and syncs to CloudKit, so a wrong
+    /// threshold would rewrite schedules on every device the learner owns. It is its own
+    /// release: a paused prompt clock, a baseline chosen against data, and the live-WPM readout
+    /// routed through `RunClock`. `NoPromptTimingTests` holds the finding until then.
     public static func quality(from outcome: ConjugationOutcome) -> Int {
         guard outcome.completed else {
             return outcome.mistakes > 0 ? 1 : 0      // attempted-but-failed vs. blank/skip

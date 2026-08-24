@@ -368,8 +368,7 @@ struct ResultsView: View {
             // different number, about different things. (v1.25 §B.)
             (icon: "checkmark.circle.fill", tint: Theme.done,
              value: "\(summary.wordsCompleted)",
-             label: summary.mode.lapsesAreWords ? (zh ? "完成词数" : "Words")
-                                                : (zh ? "完成句数" : "Sentences"), spoken: nil),
+             label: summary.mode.completedUnitLabel(zh: zh), spoken: nil),
             (icon: "scope", tint: Color.white,
              value: "\(Int(summary.accuracy * 100))%", label: zh ? "准确率" : "Accuracy", spoken: nil),
             // "To review" is a promise, and on a run that persists no SRS it is a false one:
@@ -386,8 +385,7 @@ struct ResultsView: View {
              // above four words that plainly stopped the learner. Seen in the headless render,
              // not reasoned about. This wording matches the list directly below it instead.
              label: summary.persistsSRS ? (zh ? "待复习" : "To review")
-                                        : (summary.mode.lapsesAreWords ? (zh ? "吃力" : "Struggled")
-                                                                       : (zh ? "吃力句" : "Tough lines")),
+                                        : summary.mode.struggledLabel(zh: zh),
              spoken: nil),
         ]
         // Width-driven, not idiom-driven — see ConjugationResultsView.scoreGrid for the bug

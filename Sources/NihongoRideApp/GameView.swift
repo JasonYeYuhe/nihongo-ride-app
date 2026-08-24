@@ -265,7 +265,13 @@ private struct HUDBar: View {
             }
             stat(icon: "checkmark.circle.fill",
                  value: "\(session.wordsCompleted)/\(session.wordCount)", tint: Theme.done,
-                 label: zh ? "进度" : "Words",
+                 // One run must not show three units for one number. v1.25 §B taught the
+                 // results screen to say "Sentences" on a sentence or dictation ride, and this
+                 // HUD kept saying "Words" for the same queue — so mid-ride read "Words 2/5"
+                 // and the results screen read "Sentences 5". The Chinese has always said
+                 // 进度 ("progress"), which is mode-neutral and therefore already right in all
+                 // six modes: one language had solved this and the other had not. (v1.26 §B3.)
+                 label: zh ? "进度" : session.mode.completedUnitLabel(zh: false),
                  spoken: zh ? "\(session.wordsCompleted) / \(session.wordCount)"
                             : "\(session.wordsCompleted) of \(session.wordCount)")
                 .accessibilityIdentifier("hudProgress")

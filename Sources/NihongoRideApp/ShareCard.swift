@@ -103,7 +103,11 @@ struct ShareCardView: View {
                 divider
                 stat("\(Int(summary.accuracy * 100))%", zh ? "准确率" : "Accuracy")
                 divider
-                stat("\(summary.wordsCompleted)", zh ? "完成词数" : "Words")
+                // The learner POSTS this one publicly, so a sentence run captioned "Words 5"
+                // is the most visible copy of the v1.25 §B defect. Both languages are wrong
+                // here, unlike the ride HUD: 完成词数 is as word-specific as "Words".
+                stat("\(summary.wordsCompleted)",
+                     summary.mode.completedUnitLabel(zh: zh))
             }
 
             Text(zh ? "日语打字练习 · Japanese typing practice"

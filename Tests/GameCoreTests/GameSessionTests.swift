@@ -782,6 +782,46 @@ struct LapsesAreWordsTests {
         })
     }
 
+    /// **v1.26 §B3 — the predicate was right and reached three call sites of five.**
+    ///
+    /// `lapsesAreWords` was tested well and the tests were honestly green, and the ride HUD and
+    /// the share card still said "Words" for a queue of sentences. One run showed three units
+    /// for one number: "Words 2/5" mid-ride, "Sentences 5" on results, and a card the learner
+    /// POSTS PUBLICLY saying "Words 5". A fix applied to one call site is not a fix — five of
+    /// the first eight instances of this defect were the same repair left half-done.
+    ///
+    /// So the STRING now lives beside the predicate and this checks the string, not the
+    /// boolean: every mode must yield a unit label, the two sentence-shaped modes must differ
+    /// from the four word-shaped ones, and both languages must move together — the Chinese and
+    /// English drifted apart on the share card, where 完成词数 is as word-specific as "Words".
+    @Test("every mode names its completed unit, and both languages agree about which")
+    func everyModeNamesItsUnit() {
+        // CaseIterable, so a mode added later cannot be exempt by omission.
+        for mode in GameMode.allCases {
+            for zh in [true, false] {
+                #expect(!mode.completedUnitLabel(zh: zh).isEmpty)
+                #expect(!mode.struggledLabel(zh: zh).isEmpty)
+            }
+            // The two languages must make the SAME distinction — one language solving this and
+            // the other not is exactly how the share card shipped wrong in Chinese.
+            let wordish = mode.completedUnitLabel(zh: false) == "Words"
+            #expect((mode.completedUnitLabel(zh: true) == "完成词数") == wordish,
+                    "\(mode) disagrees across languages about whether it counts words")
+            #expect((mode.struggledLabel(zh: true) == "吃力") == wordish,
+                    "\(mode) disagrees across languages on the struggled label")
+            // …and it must track the predicate rather than being a second opinion about it.
+            #expect(wordish == mode.lapsesAreWords, "\(mode) labels and predicate disagree")
+        }
+        // The distinction must actually be drawn — a function returning one string for
+        // everything would satisfy every assertion above.
+        #expect(GameMode.sentence.completedUnitLabel(zh: false)
+                != GameMode.journey.completedUnitLabel(zh: false))
+        #expect(GameMode.dictation.completedUnitLabel(zh: true)
+                != GameMode.journey.completedUnitLabel(zh: true))
+        #expect(GameMode.sentence.struggledLabel(zh: false)
+                != GameMode.journey.struggledLabel(zh: false))
+    }
+
     @Test("the predicate matches what the session builders actually queue")
     func predicateMatchesTheBuilders() throws {
         let vocab = Self.store()

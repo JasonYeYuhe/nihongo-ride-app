@@ -1417,9 +1417,53 @@ final class AppModel {
     /// How many of the weakest words a single cram run drills.
     private static let weakWordsRunSize = 15
 
-    /// How many reviewed words are available to cram (menu gating).
+    /// How many reviewed words are available to cram. **Menu GATING only** — this is every
+    /// card the learner has ever reviewed, uncapped, which is the right question for "is this
+    /// button worth showing" and the wrong one for "how many words will I ride".
     var weakWordsPoolCount: Int {
         reviewStore.reviewedCount(resolves: vocab.resolvesID)
+    }
+
+    /// The weak-words button's spoken label, composed HERE rather than in the view.
+    ///
+    /// A view that holds a number can interpolate the wrong one, and this project has now done
+    /// that nineteen times. Composing the string beside the queue it describes removes the
+    /// choice from the call site: `MenuView` cannot pick the pool over the run because it is
+    /// handed no number at all. That is a stronger guarantee than a test asserting the view
+    /// picked correctly — and it was measured to be necessary, because restoring the original
+    /// defect in `MenuView` left all 527 tests green. A unit test on a predicate is not a test
+    /// of the screen that uses it.
+    func weakWordsButtonLabel(zh: Bool) -> String {
+        let n = weakWordsRunIDs.count
+        return zh ? "弱词练习,\(n) 个薄弱词" : "Weak words drill, \(n) words"
+    }
+
+    /// The conjugation-review button's text and spoken label, composed for the same reason.
+    func conjugationReviewButtonText(zh: Bool) -> String {
+        let n = conjugationReviewQueue.count
+        return zh ? "复习 \(n) 个到期变形" : "Review \(n) due"
+    }
+
+    func conjugationReviewButtonLabel(zh: Bool) -> String {
+        let n = conjugationReviewQueue.count
+        return zh ? "复习 \(n) 个到期的变形" : "Review \(n) due conjugations"
+    }
+
+    /// The ids a weak-words cram would actually ride: the cap applied and the withdrawn
+    /// filtered, in that order.
+    ///
+    /// **The menu label and `startWeakWords` must BOTH read this**, and that is the whole
+    /// point of its existing. The spoken label used to interpolate `weakWordsPoolCount`, so a
+    /// learner with three hundred reviewed words was told three hundred and rode fifteen —
+    /// instance nineteen of this app's oldest defect, and audible only to VoiceOver, which is
+    /// why every headless render walked past it. Announcing the CAP instead would be the same
+    /// defect mirrored: a learner with five weak words would be promised fifteen. The only
+    /// number true in both directions is the length of the queue the button produces, so the
+    /// count and the run are derived from one function and cannot disagree.
+    /// `StumbledWords.rideableIDs` is the same shape for the same reason (v1.24 §A).
+    var weakWordsRunIDs: [String] {
+        reviewStore.weakestCards(limit: Self.weakWordsRunSize,
+                                 resolves: vocab.resolvesID).map(\.id)
     }
 
     /// Starts a weak-words cram: the user's hardest reviewed words, run through the
@@ -1432,9 +1476,7 @@ final class AppModel {
         // weakestCards sorts leeches to the front, and a withdrawn entry's card is a permanent
         // leech — it can never be reviewed away — so the unusable ids sat at the very front of
         // the fifteen and the ride came back with twelve. (v1.23 §B.)
-        let resolvable = reviewStore.weakestCards(
-            limit: Self.weakWordsRunSize,
-            resolves: vocab.resolvesID).map(\.id)
+        let resolvable = weakWordsRunIDs
         guard !resolvable.isEmpty else { return }
         var config = GameSession.Config()
         config.languageCode = languageCode
@@ -1535,9 +1577,25 @@ final class AppModel {
         screen = .playing
     }
 
-    /// How many (verb, form) cards are due for conjugation review right now (menu gating).
+    /// How many (verb, form) cards are due for conjugation review right now. **Menu GATING
+    /// only** — uncapped, so it answers "is anything due" and not "how many will I ride".
     var conjugationDueCount: Int {
         conjugationReviewStore.dueCount(resolves: vocab.resolvesID)
+    }
+
+    /// The due (verb, form) pairs a review drill would actually ride: the cap applied.
+    ///
+    /// **The menu label and `startConjugationReview` must BOTH read this.** The label printed
+    /// `conjugationDueCount`, which is every due card and uncapped, while the run took twelve —
+    /// so a learner with thirty due forms was told thirty and rode twelve. What let this one
+    /// survive is worth naming: the builder carried the comment *"Same predicate the menu label
+    /// counts with"*, and that is TRUE and insufficient. The two sides did share a predicate;
+    /// they never shared the cap. A comment asserting the half of a contract that holds is a
+    /// new sub-species of this project's cheapest detector, and it defeated it.
+    var conjugationReviewQueue: [(entryID: String, formToken: String)] {
+        conjugationReviewStore.dueCards(limit: Self.conjugationRunSize,
+                                        resolves: vocab.resolvesID)
+            .map { (entryID: $0.sourceID, formToken: $0.formToken) }
     }
 
     /// Starts a **due-review** conjugation drill: the due (verb, form) cards first, then
@@ -1545,15 +1603,12 @@ final class AppModel {
     /// — a run that resolves to nothing (all due cards point at removed vocab) does NOT enter
     /// the screen. Due review spans all levels (the due cards define its scope).
     func startConjugationReview() {
-        // Same predicate the menu label counts with (`conjugationDueCount`). Without it the
-        // orphans sort FIRST — a card whose verb is gone is never reviewed away, so it stays
-        // maximally overdue — spend slots inside the limit, and are then dropped by makeReview
-        // and padded over with fresh prompts. The learner is promised N due and rides fewer,
-        // and the orphans stay due forever. (v1.23 §B.)
-        let due = conjugationReviewStore.dueCards(
-            limit: Self.conjugationRunSize,
-            resolves: vocab.resolvesID)
-            .map { (entryID: $0.sourceID, formToken: $0.formToken) }
+        // The SAME queue the menu label counts — not merely the same predicate, which is the
+        // distinction this comment used to get wrong. `resolves:` keeps the orphans out: a card
+        // whose verb is gone is never reviewed away, so it stays maximally overdue, sorts FIRST,
+        // spends a slot inside the limit and is then dropped by makeReview and padded over with
+        // a fresh prompt. (v1.23 §B for the filter; v1.26 §B for sharing the cap.)
+        let due = conjugationReviewQueue
         var config = ConjugationSession.Config()
         config.languageCode = languageCode
         config.assistance = assistance

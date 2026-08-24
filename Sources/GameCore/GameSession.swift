@@ -34,6 +34,30 @@ extension GameMode {
     /// One predicate, so the tile that counts them and the list that draws them cannot disagree
     /// about what they are.
     public var lapsesAreWords: Bool { self != .sentence && self != .dictation }
+
+    /// What ONE completed item in this mode is called, for the counter that counts them.
+    ///
+    /// v1.25 §B taught the results screen this distinction and reached three call sites of five.
+    /// The ride HUD and the share card kept saying "Words" for a queue of sentences, so a single
+    /// sentence run showed three units for one number: "Words 2/5" mid-ride, "Sentences 5" on
+    /// results, and a card the learner POSTS PUBLICLY saying "Words 5".
+    ///
+    /// It lives here, beside the predicate, so the four places that name the unit cannot name it
+    /// differently — the same reason `RunClock.wpm` gives for owning its own arithmetic. A call
+    /// site choosing its own string is how this drifted the first time.
+    ///
+    /// The ride HUD deliberately passes neither: its Chinese has always been 进度 ("progress"),
+    /// which is mode-neutral and right in all six modes.
+    public func completedUnitLabel(zh: Bool) -> String {
+        if lapsesAreWords { return zh ? "完成词数" : "Words" }
+        return zh ? "完成句数" : "Sentences"
+    }
+
+    /// The same distinction for the tile that counts what went wrong on a run persisting no SRS.
+    public func struggledLabel(zh: Bool) -> String {
+        if lapsesAreWords { return zh ? "吃力" : "Struggled" }
+        return zh ? "吃力句" : "Tough lines"
+    }
 }
 
 

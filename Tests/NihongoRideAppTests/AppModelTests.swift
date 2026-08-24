@@ -2,6 +2,8 @@ import Testing
 import Foundation
 import VocabKit
 import GameCore
+import ReviewKit
+import ConjugationReviewKit
 import WidgetSharedKit
 @testable import NihongoRideApp
 
@@ -43,6 +45,59 @@ struct AppModelTests {
         // suite per model, so one test cannot inherit what another persisted.
         AppModel.settingsDefaults = UserDefaults(suiteName: "NihongoRideTests-\(UUID().uuidString)")
         return (AppModel(vocab: vocab), dir)
+    }
+
+    /// A sandboxed model whose review stores are SEEDED before `init` reads them.
+    ///
+    /// Both stores are `private(set)`, and deliberately: `record` is the only writer. So a test
+    /// that needs a learner with history arranges it the way the app does — by persisting a
+    /// store into the sandbox directory and letting `init` load it — rather than by widening
+    /// the model's API for the test's convenience.
+    static func seeded(vocab: VocabStore,
+                       review: ReviewStore? = nil,
+                       conjugation: ConjugationReviewStore? = nil) -> AppModel {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("NihongoRideAppTests-\(UUID().uuidString)", isDirectory: true)
+        AppModel.supportDirectoryOverride = dir
+        AppModel.widgetContainerOverride = dir.appendingPathComponent("group", isDirectory: true)
+        AppModel.settingsDefaults = UserDefaults(suiteName: "NihongoRideTests-\(UUID().uuidString)")
+        // `supportFileURL` puts its files in a "NihongoRide" subdirectory of the override, so
+        // seeds must be written through IT rather than into the override root — writing them
+        // one level too high produced a model with empty stores and a suite whose assertions
+        // all read zero. Asking the app where its files go is the only version that cannot rot.
+        let encoder = JSONEncoder()
+        if let review, let data = try? encoder.encode(review) {
+            try? data.write(to: AppModel.supportFileURL("review.json"))
+        }
+        if let conjugation, let data = try? encoder.encode(conjugation) {
+            try? data.write(to: AppModel.supportFileURL("conjugation-review.json"))
+        }
+        let model = AppModel(vocab: vocab)
+        // The seed itself is a claim. A helper that silently seeded nothing would make every
+        // test built on it pass for the wrong reason, which is this project's signature failure.
+        if let review { precondition(model.reviewStore.count == review.count,
+                                     "review seed did not load: expected \(review.count), got \(model.reviewStore.count)") }
+        if let conjugation { precondition(model.conjugationReviewStore.count == conjugation.count,
+                                          "conjugation seed did not load: expected \(conjugation.count), got \(model.conjugationReviewStore.count)") }
+        return model
+    }
+
+    /// A reviewed card that is genuinely weak, so `weakestCards` will rank it.
+    static func weakCard(_ id: String, lapses: Int) -> SRSCard {
+        var card = SRSCard(id: id)
+        card.totalReviews = 5
+        card.totalMistakes = 4
+        card.lapses = lapses
+        card.easeFactor = 1.5
+        return card
+    }
+
+    /// A conjugation card that is overdue.
+    static func dueConjugationCard(_ sourceID: String, _ form: String) -> ConjugationSRSCard {
+        var card = ConjugationSRSCard(id: "\(sourceID)#\(form)")
+        card.dueDate = Date().addingTimeInterval(-60 * 60 * 24 * 30)
+        card.totalReviews = 1
+        return card
     }
 
     /// Two words with typeable sentences, so a sentence or word run has something to build from.
@@ -228,6 +283,142 @@ struct AppModelTests {
         model.startStumbledWords(displayed)
         let ridden = try #require(model.session).wordList.count
         #expect(ridden == promised, "promised \(promised) words and the run contains \(ridden)")
+    }
+
+    // MARK: v1.26 §B — instances nineteen and twenty of the same defect
+
+    /// **The weak-words button announced the pool and rode fifteen.**
+    ///
+    /// `weakWordsPoolCount` is every card the learner has ever reviewed, uncapped; the run is
+    /// `weakestCards(limit: 15)`. A learner with thirty reviewed words was told thirty and rode
+    /// fifteen. The visible label carries no number at all — this is spoken only to VoiceOver,
+    /// which is why every headless render this project has taken walked straight past it.
+    ///
+    /// Asserted against each other rather than against a literal, because a literal is exactly
+    /// how the suite that SHOULD have held this failed: `ReviewKitTests.swift:217` opens by
+    /// quoting the promise — "The menu promises `weakWordsPoolCount` weak words" — then fixtures
+    /// twenty cards against a limit of fifteen and asserts `cards.count == 15` as the correct
+    /// answer. The contract is written down, the test is green, and nothing checks the contract.
+    @Test("the weak-words button speaks the length of the run it starts, not the pool")
+    func weakWordsSpokenCountMatchesTheRun() throws {
+        let entries = (0..<30).map { Self.entry("w\($0)", "語\($0)", "ご\($0)") }
+        let cards = Dictionary(uniqueKeysWithValues: entries.enumerated().map {
+            ($1.id, Self.weakCard($1.id, lapses: $0))
+        })
+        let model = Self.seeded(vocab: VocabStore(entries: entries),
+                                review: ReviewStore(cards: cards))
+        // The pool must genuinely exceed the run, or this passes for nothing.
+        #expect(model.weakWordsPoolCount == 30)
+        let spoken = model.weakWordsRunIDs.count
+        #expect(spoken == 15, "the cap is 15, so the button may promise at most 15")
+        #expect(spoken != model.weakWordsPoolCount, "fixture too small to separate pool from run")
+        model.startWeakWords()
+        let ridden = try #require(model.session).wordList.count
+        #expect(ridden == spoken, "spoke \(spoken) words and the run contains \(ridden)")
+    }
+
+    /// The label itself, in BOTH languages, because one rule written twice will drift and this
+    /// one already was: the Chinese string interpolated the same wrong count as the English.
+    /// A scan keyed on the word "words" would have passed the English fix and left 个薄弱词
+    /// wrong. Asserting the composed string is what covers both at once.
+    @Test("the weak-words label states the run length in both languages")
+    func weakWordsLabelStatesTheRun() {
+        let entries = (0..<30).map { Self.entry("w\($0)", "語\($0)", "ご\($0)") }
+        let cards = Dictionary(uniqueKeysWithValues: entries.enumerated().map {
+            ($1.id, Self.weakCard($1.id, lapses: $0))
+        })
+        let model = Self.seeded(vocab: VocabStore(entries: entries),
+                                review: ReviewStore(cards: cards))
+        let run = model.weakWordsRunIDs.count
+        #expect(run == 15)
+        #expect(model.weakWordsPoolCount == 30, "the two must differ or this proves nothing")
+        #expect(model.weakWordsButtonLabel(zh: false) == "Weak words drill, \(run) words")
+        #expect(model.weakWordsButtonLabel(zh: true) == "弱词练习,\(run) 个薄弱词")
+        // …and neither language may state the pool.
+        #expect(!model.weakWordsButtonLabel(zh: false).contains("30"))
+        #expect(!model.weakWordsButtonLabel(zh: true).contains("30"))
+    }
+
+    /// The same for the conjugation button, whose number is VISIBLE as well as spoken.
+    @Test("the conjugation-review label states the run length in both languages")
+    func conjugationReviewLabelStatesTheRun() {
+        let verbs = (0..<10).map {
+            VocabEntry(id: "v\($0)", surface: "書\($0)", kana: "か\($0)",
+                       partsOfSpeech: ["v"], jlpt: .n5,
+                       meanings: ["en": ["write"], "zh": ["\u{5199}"]], vc: "godan_k")
+        }
+        var cards: [String: ConjugationSRSCard] = [:]
+        for verb in verbs {
+            for form in ["masu", "past", "te"] {
+                let card = Self.dueConjugationCard(verb.id, form)
+                cards[card.id] = card
+            }
+        }
+        let model = Self.seeded(vocab: VocabStore(entries: verbs),
+                                conjugation: ConjugationReviewStore(cards: cards))
+        let run = model.conjugationReviewQueue.count
+        #expect(run == 12)
+        #expect(model.conjugationDueCount == 30, "the two must differ or this proves nothing")
+        #expect(model.conjugationReviewButtonText(zh: false) == "Review \(run) due")
+        #expect(model.conjugationReviewButtonText(zh: true) == "复习 \(run) 个到期变形")
+        #expect(model.conjugationReviewButtonLabel(zh: false) == "Review \(run) due conjugations")
+        #expect(model.conjugationReviewButtonLabel(zh: true) == "复习 \(run) 个到期的变形")
+        for label in [model.conjugationReviewButtonText(zh: false),
+                      model.conjugationReviewButtonText(zh: true),
+                      model.conjugationReviewButtonLabel(zh: false),
+                      model.conjugationReviewButtonLabel(zh: true)] {
+            #expect(!label.contains("30"), "\(label) states the pool, not the run")
+        }
+    }
+
+    /// The mirror image, which is the trap in PLAN-V1.25 §B's unbuilt check: it specified that
+    /// the label must "name the quantity the builder caps on", and naming the CAP promises
+    /// fifteen to a learner who has five. The only number true in both directions is the length
+    /// of the queue the button produces.
+    @Test("with fewer weak words than the cap, the button speaks the smaller number")
+    func weakWordsBelowTheCapSpeaksThePool() throws {
+        let entries = (0..<6).map { Self.entry("w\($0)", "語\($0)", "ご\($0)") }
+        let cards = Dictionary(uniqueKeysWithValues: entries.enumerated().map {
+            ($1.id, Self.weakCard($1.id, lapses: $0))
+        })
+        let model = Self.seeded(vocab: VocabStore(entries: entries),
+                                review: ReviewStore(cards: cards))
+        let spoken = model.weakWordsRunIDs.count
+        #expect(spoken == 6, "six reviewed words against a cap of fifteen — the promise is six")
+        model.startWeakWords()
+        #expect(try #require(model.session).wordList.count == spoken)
+    }
+
+    /// **The conjugation-review button announced every due card and rode twelve.**
+    ///
+    /// What let this one survive is the interesting part: `startConjugationReview` carried the
+    /// comment *"Same predicate the menu label counts with (`conjugationDueCount`)"*, which is
+    /// TRUE and insufficient. The two sides did share a predicate; they never shared the cap.
+    /// A comment asserting the half of a contract that holds defeats this project's cheapest
+    /// detector — "where a comment states a contract, check whether anything enforces it" —
+    /// by making the contract look as though it were already checked.
+    @Test("the conjugation-review button shows the length of the run it starts, not every due card")
+    func conjugationReviewCountMatchesTheRun() {
+        let verbs = (0..<10).map {
+            VocabEntry(id: "v\($0)", surface: "書\($0)", kana: "か\($0)",
+                       partsOfSpeech: ["v"], jlpt: .n5,
+                       meanings: ["en": ["write"], "zh": ["\u{5199}"]], vc: "godan_k")
+        }
+        var cards: [String: ConjugationSRSCard] = [:]
+        for verb in verbs {
+            for form in ["masu", "past", "te"] {
+                let card = Self.dueConjugationCard(verb.id, form)
+                cards[card.id] = card
+            }
+        }
+        let model = Self.seeded(vocab: VocabStore(entries: verbs),
+                                conjugation: ConjugationReviewStore(cards: cards))
+        // Thirty due against a cap of twelve — the exact shape the learner was mis-told.
+        #expect(model.conjugationDueCount == 30)
+        let shown = model.conjugationReviewQueue.count
+        #expect(shown == 12, "the cap is 12, so the button may promise at most 12")
+        #expect(shown != model.conjugationDueCount,
+                "if these are equal the fixture is too small to prove anything")
     }
 
     /// The same contract where it actually broke before: an id that no longer resolves. The run

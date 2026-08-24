@@ -157,12 +157,14 @@ struct MenuView: View {
                         // Due-review entry (v1.8 §B): shown only when conjugation cards are
                         // due. Runs the spaced-review drill (due forms first, weak-form fill).
                         if model.conjugationDueCount > 0 {
-                            let n = model.conjugationDueCount
+                            // The view is handed no number: both strings are composed beside
+                            // the queue they describe, so this call site cannot pick the pool
+                            // over the run. (v1.26 §B.)
                             Button(action: model.startConjugationReview) {
                                 HStack(spacing: 8) {
                                     Image(systemName: "arrow.triangle.2.circlepath")
                                         .accessibilityHidden(true)
-                                    Text(zh ? "复习 \(n) 个到期变形" : "Review \(n) due")
+                                    Text(model.conjugationReviewButtonText(zh: zh))
                                         .scaledSystemFont(14, weight: .semibold, design: .rounded)
                                         .lineLimit(1)
                                 }
@@ -173,7 +175,7 @@ struct MenuView: View {
                             .buttonStyle(.plain)
                             .fixedSize()
                             .padding(.top, 2)
-                            .accessibilityLabel(zh ? "复习 \(n) 个到期的变形" : "Review \(n) due conjugations")
+                            .accessibilityLabel(model.conjugationReviewButtonLabel(zh: zh))
                         }
                     }
                     .menuControlWidth(340)
@@ -449,9 +451,10 @@ struct MenuView: View {
                     .buttonStyle(.plain)
                     .fixedSize()
                     .accessibilityIdentifier("weakWordsButton")
-                    .accessibilityLabel(model.languageCode == "zh"
-                        ? "弱词练习,\(model.weakWordsPoolCount) 个薄弱词"
-                        : "Weak words drill, \(model.weakWordsPoolCount) words")
+                    // Spoken, never shown — which is exactly why the wrong number here
+                    // survived every headless render. Composed by the model, so this call
+                    // site has no number to get wrong.
+                    .accessibilityLabel(model.weakWordsButtonLabel(zh: model.languageCode == "zh"))
                 }
 
                 Button(action: { model.screen = .settings }) {
