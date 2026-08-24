@@ -119,21 +119,33 @@ Calibrated both directions before it is believed: reverting `n1-g305`'s `exKana`
 redden the gate, and naming an entry in the ratchet that no longer offends must redden the
 staleness companion. A gate that has never been red is not evidence.
 
-### What this gate still cannot see — 205 sentences, sampled
+### What this gate still cannot see — 121 sentences, after everything
 
-The same question, asked of the new rule. It reaches 669 of the 874:
+The same question, asked of the new rule. With the strict selector it reaches **668 of the 874**,
+leaving 206. Of those, `coveringReading` (v1.25's boundary walk) already inspects **85**. So:
 
-| still uninspected | why |
+> **After §A ships, 121 of 6,738 sentences are inspected by no reading gate at all.**
+
+An earlier draft of this section said 205 and did not subtract the boundary walk's coverage —
+Gemini 3.1 Pro objected that the residue double-counted a population v1.25 already inspected, and
+Codex put the true figure at 121. Independently recomputed here: 121.
+
+What the 206 are, before the boundary walk takes its 85:
+
+| | why |
 |---|---|
-| 85 | not a verb or i-adjective — a noun whose surface the tokenizer split |
+| ~96 | not an inflecting verb or i-adjective — mostly nouns the tokenizer split, which is what `coveringReading` exists for |
 | 57 | kana-only stem: ちぎる, ぼやく, おどかす, しくじる, プラス |
 | 49 | the stem does not appear as a token: 逞しい written たくましい, 存ずる → 存じて |
 | 14 | no `exTokens` at all (the 14 with digits, deliberately) |
 
-Sampled ten by hand, all correct. **57 of the 205 are structurally safe** rather than merely
-unsampled: a kana-only headword has no kanji whose reading could disagree. The 85 nouns overlap
-the population `coveringReading` already covers. This residue is stated here so the next release
-can start from it instead of rediscovering it — which is exactly what v1.25 could not do.
+Sampled ten by hand, all correct. **The 57 kana-only stems are structurally safe** rather than
+merely unsampled — a headword with no kanji has no kanji reading that could disagree — which
+leaves roughly sixty entries that are genuinely unexamined and not provably safe.
+
+Two things follow, and the second is the point of writing this down at all. Ten out of sixty is a
+thin sample and both reviews said so; deepen it before §A closes. And 121 is the number the *next*
+release starts from — which is precisely what v1.25 could not do, because it never computed its own.
 
 ### The corrections
 
