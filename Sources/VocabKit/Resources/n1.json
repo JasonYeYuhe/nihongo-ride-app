@@ -16456,7 +16456,7 @@
   "exJP": "暖簾を潜って老舗の蕎麦屋に入った。",
   "exEN": "I passed through the noren curtains and entered the traditional soba restaurant.",
   "exZH": "穿过暖帘，走进了老字号荞麦面店。",
-  "exKana": "のれんをもぐってしにせのそばやにはいった",
+  "exKana": "のれんをくぐってしにせのそばやにはいった",
   "exTokens": [
    [
     "暖簾",
@@ -16468,7 +16468,7 @@
    ],
    [
     "潜っ",
-    "もぐっ"
+    "くぐっ"
    ],
    [
     "て",
@@ -23425,7 +23425,7 @@
   "exJP": "権力への強い欲望で彼の純粋な心は汚れてしまった。",
   "exEN": "His pure heart was defiled by a strong desire for power.",
   "exZH": "他的纯洁之心被对权力的强烈欲望所玷污。",
-  "exKana": "けんりょくへのつよいよくぼうでかれのじゅんすいなこころはよごれてしまった",
+  "exKana": "けんりょくへのつよいよくぼうでかれのじゅんすいなこころはけがれてしまった",
   "exTokens": [
    [
     "権力",
@@ -23477,7 +23477,7 @@
    ],
    [
     "汚れ",
-    "よごれ"
+    "けがれ"
    ],
    [
     "て",
@@ -49486,7 +49486,7 @@
    "sense": "to roll up sleeves",
    "senseListed": true
   },
-  "exKana": "しゃつのそでをめくってさぎょうをはじめた",
+  "exKana": "しゃつのそでをまくってさぎょうをはじめた",
   "exTokens": [
    [
     "シャツ",
@@ -49506,7 +49506,7 @@
    ],
    [
     "捲っ",
-    "めくっ"
+    "まくっ"
    ],
    [
     "て",
@@ -123310,7 +123310,7 @@
    "sense": "to be eager and enthusiastic",
    "senseListed": true
   },
-  "exKana": "かれはしあいにむけていきこんでいる",
+  "exKana": "かれはしあいにむけていきごんでいる",
   "exTokens": [
    [
     "彼",
@@ -123342,7 +123342,7 @@
    ],
    [
     "込ん",
-    "こん"
+    "ごん"
    ],
    [
     "で",

@@ -288,6 +288,227 @@ struct ExampleSentenceTests {
                                   + stale.sorted().joined(separator: ", ")))
     }
 
+    // MARK: v1.26 §A — the reading of a headword that is never spelled out
+
+    /// Kanji, for deciding whether a stem is one the sentence must spell in kanji too.
+    private static func containsKanji(_ text: String) -> Bool {
+        text.unicodeScalars.contains {
+            (0x4E00...0x9FFF).contains($0.value)      // CJK unified
+                || (0x3400...0x4DBF).contains($0.value)  // extension A
+                || $0.value == 0x3005                    // 々
+        }
+    }
+
+    /// Verb classes whose stem is NOT the headword minus one character.
+    ///
+    /// 来る conjugates on こ/き/く and する on し/さ/せ — the written stem stays 来 and 為 while
+    /// the reading moves, so a stem-reading comparison accuses correct Japanese. 「友達が来ます。」
+    /// reads 来 as き against a card teaching くる, and it is right. -ずる verbs alternate onto a
+    /// じ stem (存ずる → 存じております), which STATE records as a place the Swift and Python
+    /// copies of a rule already drifted apart; excluded here for the same reason.
+    ///
+    /// Keyed on `vc` rather than on a list of surfaces, so a new irregular is covered by its
+    /// data rather than by remembering to add it — the `inflectionalTails` lesson from v1.24.
+    private static let irregularVerbClasses: Set<String> = ["kuru", "suru", "zuru"]
+
+    /// How the sentence reads the headword's stem, when the headword itself never appears.
+    ///
+    /// `headwordReadings` needs the headword as a contiguous token span and `coveringReading`
+    /// needs it inside one — but a verb in a sentence is CONJUGATED, so its dictionary form is
+    /// not present in any form. Measured on the shipped corpus, 874 of 6,738 sentences are
+    /// invisible to the span walk, `coveringReading` rescues 104, and **770 were inspected by
+    /// nothing at all**. 778 of the 874 are verbs or i-adjectives, and 236 of them are N4 or N5,
+    /// so this was never an N1 tail.
+    ///
+    /// Three of the 770 taught a reading that is not the word the card teaches, and none of
+    /// them could have been caught, because nothing looked:
+    ///
+    ///   n1-g305  潜る/くぐる  「暖簾を潜って…」   typed もぐって — a different verb entirely
+    ///   n1-b045  汚れる/けがれる 「…心は汚れて…」  typed よごれて — the card's other reading
+    ///   n1-b393  捲る/まくる  「…袖を捲って…」   typed めくって — the card's other reading
+    ///
+    /// The rule is derived, never a list of conjugations: a verb's dictionary form is absent
+    /// but its KANJI STEM is present, so take the headword minus its okurigana, find every
+    /// token written with that stem, and require the card's own reading of the stem to be
+    /// prefix-compatible with each. There is no table of surface forms to be wrong about,
+    /// which is the `inflectionalTails` mistake this project has already paid for once.
+    ///
+    /// **EVERY stem-bearing token must agree, not merely one of them.** "Pass if any agrees"
+    /// is the obvious rule and it opens a false-negative hole: 「部屋で歌を歌います」 carries the
+    /// noun 歌/うた beside the verb 歌い/うたい, so corrupting the verb's reading would pass on
+    /// the strength of the noun. Exactly two shipped entries have more than one stem-bearing
+    /// token; requiring all of them closes the hole, and the one entry where the disagreement
+    /// is legitimate is named below rather than thresholded.
+    static func stemReadings(of entry: VocabEntry)
+        -> (stem: String, taught: String, found: [(surface: String, reading: String)])? {
+        // Only where the two existing walks are blind — this gate exists for their residue.
+        guard headwordReadings(of: entry) == nil else { return nil }
+        guard let primary = entry.partsOfSpeech.first?.lowercased(),
+              (primary.hasPrefix("v") && primary != "vs")
+                  || primary == "adj-i" || primary == "i-adjective" else { return nil }
+        guard !irregularVerbClasses.contains(entry.vc ?? "") else { return nil }
+        let stem = String(entry.surface.dropLast())
+        guard !stem.isEmpty, containsKanji(stem) else { return nil }
+        guard let tokens = entry.exampleTokens else { return nil }
+        let bearing = tokens.filter { $0.count >= 2 && $0[0].hasPrefix(stem) }
+        guard !bearing.isEmpty else { return nil }
+        let kana = KanaScript.katakanaToHiragana(entry.kana)
+        // The card's reading of the STEM: its kana minus the okurigana the stem dropped.
+        let taught = entry.surface.count - stem.count < kana.count
+            ? String(kana.dropLast(entry.surface.count - stem.count)) : kana
+        return (stem, taught,
+                bearing.map { (surface: $0[0], reading: KanaScript.katakanaToHiragana($0[1])) })
+    }
+
+    /// The one entry where a token legitimately shares the headword's stem and is a different
+    /// word: 「湿気でせんべいが湿気ってしまった。」 uses the NOUN 湿気/しっけ beside the verb
+    /// 湿気って/しけって. The verb reads correctly; the noun is not this card's word and its
+    /// reading is not this card's business.
+    ///
+    /// Named rather than thresholded, and it has a staleness companion, for the reason the
+    /// file's own doc comment gives at `ratchetIsNotStale`: an exemption that outlives its
+    /// entry hides the next offender behind it.
+    private let knownStemSharedWithOtherWord: Set<String> = ["n1-b269"]
+
+    @Test("a conjugated headword's stem is read the way its own card teaches it")
+    func stemIsReadAsTaught() {
+        var inspected = 0
+        var offenders: [String] = []
+        for entry in withExamples {
+            guard let walk = Self.stemReadings(of: entry) else { continue }
+            inspected += 1
+            let agrees = walk.found.allSatisfy {
+                $0.reading.hasPrefix(walk.taught) || walk.taught.hasPrefix($0.reading)
+            }
+            if !agrees, !knownStemSharedWithOtherWord.contains(entry.id) {
+                let seen = walk.found.map { "\($0.surface)=\($0.reading)" }.joined(separator: " ")
+                offenders.append("\(entry.id) \(entry.surface): card teaches \(entry.kana) "
+                                 + "(stem \(walk.stem) → \(walk.taught)), sentence has \(seen)")
+            }
+        }
+        // A scan that inspected nothing would report a clean corpus. Measured on the shipped
+        // corpus this walk reaches 648 of the 874 the span walk cannot see.
+        #expect(inspected > 600, "only \(inspected) conjugated headwords — the stem walk is wrong")
+        #expect(offenders.isEmpty, Comment(rawValue:
+            "\(offenders.count) sentence(s) read their headword's stem a way the card does not "
+            + "teach:\n" + offenders.prefix(12).joined(separator: "\n")))
+    }
+
+    @Test("the stem-reading exemption names only entries that still need it")
+    func stemExemptionIsNotStale() {
+        var stillOffending: Set<String> = []
+        for entry in withExamples {
+            guard let walk = Self.stemReadings(of: entry) else { continue }
+            let agrees = walk.found.allSatisfy {
+                $0.reading.hasPrefix(walk.taught) || walk.taught.hasPrefix($0.reading)
+            }
+            if !agrees { stillOffending.insert(entry.id) }
+        }
+        let stale = knownStemSharedWithOtherWord.subtracting(stillOffending)
+        #expect(stale.isEmpty, Comment(rawValue:
+            "no longer offends — remove from knownStemSharedWithOtherWord: "
+            + stale.sorted().joined(separator: ", ")))
+    }
+
+    /// The stem's reading where the tokenizer does not split ON the stem's boundary either.
+    ///
+    /// `stemReadings` needs a token that BEGINS with the stem. Sudachi does not always oblige:
+    /// 意気込む comes back as 意気 + 込ん and 気に入る as 気 + に + 入っ, so no token bears the
+    /// stem and both entries fell straight through into the uninspected residue — where the
+    /// audit this release ran on that residue found them, and both were wrong:
+    ///
+    ///   n1-b1365  意気込む/いきごむ  typed いきこんで — the rendaku is missing; the word is いきごむ
+    ///   n3-b222   気に入る/きにいる   typed きにはいった — 入る in this fixed expression is いる
+    ///
+    /// **Sudachi agrees with the corpus's error in both.** It reads 込ん as コン and 入っ as
+    /// ハイッ, which are the common readings and the wrong ones here — the tokenizer regresses
+    /// to exactly the reading under examination. That is the "a gate and the thing it gates
+    /// share a blind spot" trap, so the arbiter here is the CARD, never the tokenizer.
+    ///
+    /// Weaker on purpose, exactly as `coveringReading` is and for the same reason: the span
+    /// carries more than the stem, so the stem's own reading cannot be isolated and the card's
+    /// reading need only appear SOMEWHERE inside it. The span is taken MINIMAL so the least
+    /// foreign context is admitted — a wider span would let 物足りな pass on a なかっ that
+    /// belonged to a neighbouring token.
+    static func stemSpanReading(of entry: VocabEntry) -> (span: String, reading: String)? {
+        guard stemReadings(of: entry) == nil, headwordReadings(of: entry) == nil,
+              coveringReading(of: entry) == nil else { return nil }
+        guard let primary = entry.partsOfSpeech.first?.lowercased(),
+              (primary.hasPrefix("v") && primary != "vs")
+                  || primary == "adj-i" || primary == "i-adjective" else { return nil }
+        guard !irregularVerbClasses.contains(entry.vc ?? "") else { return nil }
+        let stem = String(entry.surface.dropLast())
+        guard !stem.isEmpty, containsKanji(stem) else { return nil }
+        guard let tokens = entry.exampleTokens else { return nil }
+        let content = tokens.filter { $0.count >= 2 }
+        var best: (width: Int, span: String, reading: String)?
+        for start in content.indices {
+            var surface = ""
+            for end in start..<content.count {
+                surface += content[end][0]
+                if surface.contains(stem) {
+                    if best == nil || end - start < best!.width {
+                        best = (end - start, surface, KanaScript.katakanaToHiragana(
+                            content[start...end].map { $0[1] }.joined()))
+                    }
+                    break
+                }
+            }
+        }
+        guard let found = best else { return nil }
+        return (found.span, found.reading)
+    }
+
+    @Test("a headword the tokenizer splits ACROSS the stem is still read as its card teaches")
+    func stemSpanIsReadAsTaught() {
+        var inspected = 0
+        var offenders: [String] = []
+        for entry in withExamples {
+            guard let walk = Self.stemSpanReading(of: entry) else { continue }
+            inspected += 1
+            let kana = KanaScript.katakanaToHiragana(entry.kana)
+            let taught = kana.count > 1 ? String(kana.dropLast()) : kana
+            if !walk.reading.contains(taught) {
+                offenders.append("\(entry.id) \(entry.surface): card teaches \(entry.kana), "
+                                 + "\(walk.span) reads \(walk.reading)")
+            }
+        }
+        #expect(inspected > 5, "only \(inspected) split stems — the span walk is wrong")
+        #expect(offenders.isEmpty, Comment(rawValue:
+            "\(offenders.count) split-stem headword(s) are misread:\n"
+            + offenders.prefix(8).joined(separator: "\n")))
+    }
+
+    /// What NO reading gate can see, counted rather than assumed empty.
+    ///
+    /// This is the question v1.25 did not ask about its own gate, twice, at a cost of 240 and
+    /// then 106 unexamined entries. It is asked here about the gate this release adds, in the
+    /// release that adds it: a scan is not validated by what it catches, so the population it
+    /// SKIPS is computed, printed with its level breakdown, and ratcheted.
+    ///
+    /// It is a ceiling, not an equality, so the number can only fall. It must never be
+    /// asserted to be zero — it is 112, and pretending otherwise is the defect itself.
+    @Test("the population no reading gate inspects is measured and can only shrink")
+    func uninspectedPopulationIsMeasured() {
+        var uninspected: [VocabEntry] = []
+        for entry in withExamples {
+            if Self.headwordReadings(of: entry) != nil { continue }
+            if Self.coveringReading(of: entry) != nil { continue }
+            if Self.stemReadings(of: entry) != nil { continue }
+            if Self.stemSpanReading(of: entry) != nil { continue }
+            uninspected.append(entry)
+        }
+        var byLevel: [Int: Int] = [:]
+        for entry in uninspected { byLevel[entry.jlpt.rawValue, default: 0] += 1 }
+        let breakdown = byLevel.keys.sorted()
+            .map { "N\($0) \(byLevel[$0] ?? 0)" }.joined(separator: ", ")
+        print("[v1.26 §A] \(uninspected.count) of \(withExamples.count) sentences are inspected "
+              + "by NO reading gate — \(breakdown)")
+        #expect(uninspected.count <= 112, Comment(rawValue:
+            "\(uninspected.count) sentences are inspected by no reading gate (was 112). "
+            + "A gate was narrowed or the corpus grew into the blind spot: \(breakdown)"))
+    }
+
     /// Sentences already shared by two entries when this test was written.
     ///
     /// A ratchet, not an exemption. Resolving one means giving the other entry a NEW sentence,

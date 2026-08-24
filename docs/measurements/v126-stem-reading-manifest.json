@@ -1,0 +1,60 @@
+{
+  "reason": "v1.26 §A — five sentences whose headword is a conjugated verb, and which therefore no reading gate had ever inspected, read that headword as a different word than their own card teaches. Three were found by the stem-aware reading walk this release adds; the other two were found by AUDITING that walk's own residue, and are now held by a second walk for headwords the tokenizer splits across the stem. None of the five could have been caught before, because nothing looked. exKana and exTokens only; `kana` is frozen.",
+  "entries": [
+    {
+      "id": "n1-g305",
+      "surface": "潜る",
+      "rewrite": [
+        "exKana",
+        "exTokens"
+      ],
+      "from": "のれんをもぐってしにせのそばやにはいった",
+      "to": "のれんをくぐってしにせのそばやにはいった",
+      "why": "WRONG JAPANESE, not a register variant. 暖簾を潜る is くぐる, to duck under a shop curtain; もぐる is to dive or submerge. They are two different verbs sharing a spelling and the corpus ships a separate card for each — n2-g127 潜る/もぐる, whose own sentence 「海に潜って魚を見る。」 is correct and is left alone. The learner studying くぐる was graded against the other verb."
+    },
+    {
+      "id": "n1-b393",
+      "surface": "捲る",
+      "rewrite": [
+        "exKana",
+        "exTokens"
+      ],
+      "from": "しゃつのそでをめくってさぎょうをはじめた",
+      "to": "しゃつのそでをまくってさぎょうをはじめた",
+      "why": "CARD/EXAMPLE ALIGNMENT, a weaker claim than wrong Japanese and deliberately stated as such. 袖を捲る is canonically まくる, the card's reading; めくる is valid Japanese for sleeves and hems too. So the sentence was not wrong — it was using the card's OTHER reading, which still grades the learner against a reading this card does not teach."
+    },
+    {
+      "id": "n1-b045",
+      "surface": "汚れる",
+      "rewrite": [
+        "exKana",
+        "exTokens"
+      ],
+      "from": "けんりょくへのつよいよくぼうでかれのじゅんすいなこころはよごれてしまった",
+      "to": "けんりょくへのつよいよくぼうでかれのじゅんすいなこころはけがれてしまった",
+      "why": "CARD/EXAMPLE ALIGNMENT, as above. 心がけがれる matches this card and its translation ('pure heart ... defiled'); よごれる is also valid Japanese for losing moral purity. Corrected so the typing target teaches the card's reading. NOTE: this entry already carried a dictation exclusion whose complaint is about 心 (こころ -> ごころ) and has nothing to do with 汚れる; its recorded exKana is updated to match this edit and the complaint was re-measured rather than re-stamped."
+    },
+    {
+      "id": "n1-b1365",
+      "surface": "意気込む",
+      "rewrite": [
+        "exKana",
+        "exTokens"
+      ],
+      "from": "かれはしあいにむけていきこんでいる",
+      "to": "かれはしあいにむけていきごんでいる",
+      "why": "WRONG READING. 意気込む is いきごむ — the rendaku is part of the word. Sudachi splits the sentence as 意気 + 込ん and reads 込ん as コン, so the corpus typed いきこんで; asked about the headword directly the same tokenizer answers イキ・ゴム. The tokenizer agreeing with the corpus's error is why no gate caught this: found by auditing the residue no gate inspects, and now held by the split-stem span walk this release adds. Already withheld from dictation, so the correction carries no audio risk."
+    },
+    {
+      "id": "n3-b222",
+      "surface": "気に入る",
+      "rewrite": [
+        "exKana",
+        "exTokens"
+      ],
+      "from": "でぱーとでとてもきにはいったふくをみつけた",
+      "to": "でぱーとでとてもきにいったふくをみつけた",
+      "why": "WRONG READING, and N3. 気に入る is a fixed expression read きにいる; 入る is いる here, not はいる. The corpus typed きにはいった. Same cause and same discovery route as n1-b1365 — Sudachi reads 入っ as ハイッ, the common reading and the wrong one in this expression. Already withheld from dictation."
+    }
+  ]
+}
