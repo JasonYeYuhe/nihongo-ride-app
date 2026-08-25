@@ -833,6 +833,17 @@ ran it found two things nobody could have seen:
 * **§C and B4** — the conjugation drill grades every clean answer 5 because no per-prompt timing
   is supplied, and practice mode's live WPM is wall clock while the WPM it records is ridden
   time. A coherent pause-aware timing release, deferred with its risk written down.
+* **The macOS App Store export is the last step that needs a human.** `codesign` survives a
+  locked console and `productbuild` does not, so the archive runs unattended and the export does
+  not. Measured while shipping this release: the login keychain is unlocked and `no-timeout`, so
+  the keychain was never the blocker — what the lock blocks is the authorization prompt for a
+  private key's ACL. And the standard remedy does not apply, because there IS no persistent
+  installer identity to pre-authorise: `security find-identity -v` lists none before or after a
+  successful export, so Xcode provisions one per export and discards it. Specified as **§R in
+  PLAN-V1.27**, including the awkward part — the distribution log STATE tells you to read first
+  is not produced at all on the `destination: upload` path this project uses, so the instrument
+  has to be restored before the hypothesis can be tested.
+
 * **§E accessibility** — still waived, not closed.
 * **The 15 `propagated` exclusions** rest on a comment ("a voice does not change its mind
   between sentences") that nothing enforces and that a context-sensitive speech front-end makes
