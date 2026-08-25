@@ -11,8 +11,9 @@ it says so. Where it is a judgement, it says that too.
 > **This document has been through three adversarial reviews (Gemini 3.1 Pro, Gemini 3.7 Flash,
 > Codex) and the first draft did not survive them.** Its central recommendation was replaced,
 > its "red line" was shown to be timid rather than principled, and its reading of its own only
-> data point was shown to be an over-interpretation. What each review changed is recorded in §J,
-> in the house style, because the pattern is more useful than the verdicts.
+> data point was shown to be an over-interpretation. What each review changed is recorded in §K,
+> in the house style, because the pattern is more useful than the verdicts. **§L records a fourth
+> round: what happened when the judgements were re-measured instead of re-argued.**
 
 ---
 
@@ -36,6 +37,18 @@ under one sale a month. **A paywall built in an empty room earns nothing no matt
 is engineered**, and the first draft spent its length on StoreKit failure modes while never
 mentioning distribution.
 
+> **⚠️ That paragraph was itself an inference wearing the word "measurement", and the traffic
+> was retrievable the whole time.** It has now been pulled — `docs/measurements/v2-stage0-baseline.md`.
+> **The conclusion survives and Stage 0 does not move**: 109 lifetime installs and ~2.4 a day
+> is still an empty room. Two things change. The "40 monthly downloads" here is the *lifetime
+> average*, not the present rate (~72/30d). And traffic is **rising, roughly doubling across
+> each of three windows** — the plan was written as though the number were flat, because nobody
+> had looked at the series. **The cause of the rise is not established** and four explanations
+> remain open (release cadence, first-weeks keyword indexing, the star rating becoming visible
+> in July, an unobserved mention in China); acquisition source separates them and is not yet
+> available. No cause may be asserted, and in particular nothing here licenses shipping
+> releases *in order to* distribute.
+
 So the same three characters support two conclusions, and the plan needs both.
 
 ### What is measured
@@ -45,7 +58,12 @@ So the same three characters support two conclusions, and the plan needs both.
 | price | **Free**, both platforms, since launch |
 | monetization code | **none** — no StoreKit, no IAP, no receipt handling anywhere in `Sources/` |
 | App Privacy declaration | **Data Not Collected** |
-| written reviews, all time | **1** |
+| written reviews, all time | **1** (confirmed via ASC `customerReviews`, `meta.paging.total`) |
+| **first-time downloads, all time** | **109** — macOS 60 · iOS 49 · census, 2026-06-06 → 08-24 |
+| **current rate / trend** | **~72 per 30 days**, up from 0.46 → 1.11 → **2.39 per day** across three windows |
+| **China share of installs** | **48%** (52 of 109) |
+| storefront locales | **2** — `en-US`, `zh-Hans`. No `ja` despite Japan being the #2 territory |
+| Paid Applications Agreement | **active** — five sibling apps hold `APPROVED` IAPs |
 | corpus | 7,071 entries · 6,738 with a sentence · 5,760 in the dictation pool |
 | modes / surfaces | 6 modes; 11 screens plus a widget |
 | `AppTransaction.originalAppVersion` availability | **macOS 13 / iOS 16** — verified in the MacOSX26.5 SDK's `StoreKit.swiftinterface`, below this app's 14.0 / 17.0 targets |
@@ -100,19 +118,38 @@ before Stage 1 has produced a number.
 
 ### Stage 0 — Distribution, which is the actual constraint
 
-Everything else multiplies by traffic, and traffic is currently near zero. This stage has no
-paywall in it at all.
+Everything else multiplies by traffic, and traffic is currently near zero — **measured, not
+inferred: 109 lifetime installs, ~2.4 a day, §A.** This stage has no paywall in it at all.
 
-* **ASO.** The keyword list has been unchanged since launch and is English-only. The one review
-  came from **China**, the app is already fully localised to Chinese, and its zh keywords are not
-  tuned. Japan, Korea and Taiwan are untouched.
+* **ASO.** ~~The keyword list has been unchanged since launch and is English-only.~~
+  **Measured 2026-08-26 and half of that is false:** `zh-Hans` keywords ship on both platforms
+  and have since before this plan. What is true is the other half, and it is sharper than the
+  plan made it — **the app has exactly two storefront locales, `en-US` and `zh-Hans`.** Japan is
+  the **#2 territory by installs (15)** and has no `ja` listing at all; Taiwan and Korea have
+  none either. China is **48% of all installs**, not merely the source of one review, so the
+  Simplified-Chinese merchandising decision is settled — **for reach. It says nothing about
+  willingness to pay**, and reading it as intent is the move §A was corrected for.
 * **Ask for reviews.** `SKStoreReviewController`, triggered at a genuine positive moment — a
   completed journey, a streak milestone — not on launch. One review is not a reputation; it is a
   rounding error, and it is the single biggest lever on downloads.
-* **Baseline before anything ships.** Record 30 days of downloads, product-page views and
-  impressions **now**, so the first post-change number means something. Without a baseline the
-  first month's figure is uninterpretable — this project's own rule about instruments applies
-  unchanged.
+* **Baseline before anything ships. DONE 2026-08-26** —
+  `docs/measurements/v2-stage0-baseline.{md,json}`, regenerate with
+  `scripts/sales_report.py --calibrate`. It is the app's **entire life at daily granularity**,
+  not 30 days, because the whole history sits inside Sales and Trends' 365-day window.
+
+  Two things about the instrument are load-bearing. **It is Sales and Trends, not Analytics** —
+  Analytics counts only users who opted into sharing and **can report zero while real downloads
+  exist**, which at this traffic level is the whole measurement; the Analytics figures are to be
+  calibrated *against* this census, never the reverse. And **the classifier was derived from
+  this app's data rather than copied** from the sibling script that solves the same problem: run
+  unchanged, that script reports 49 downloads where the census says 109, with macOS silently 0.
+  The script exits 4 unless its positive control passes. **Do not quote a number from a run that
+  did not print `OK`.**
+
+  Product-page views and impressions are **still missing** — they are Analytics-only. Both
+  report requests were created 2026-08-26 (`ONE_TIME_SNAPSHOT` `4c53fdae-…`, `ONGOING`
+  `c57c770b-…`); **none had ever been requested before**, so the ongoing series starts from that
+  date and no earlier.
 
 ### Stage 1 — The tip jar
 
@@ -149,13 +186,27 @@ Structure in §E and §F. Not before.
 Codex's finding, and the first draft did not mention any of it. These are **decisions with
 irreversible consequences**, not implementation details:
 
-* **Does one purchase cover macOS AND iOS?** Apple's universal purchase requires a single app
-  record; verify whether these two already share one before creating the product.
+* ~~**Does one purchase cover macOS AND iOS?**~~ **Answered 2026-08-26: they already share one
+  record.** One app id, one SKU (`nihongoride-mac-2026`), and Apple's own sales reports stamp
+  **every unit** `Supported Platforms = iOS and macOS`. **This settles the App Store side only.**
+  Whether the entitlement then *resolves* on the second device is client code, and stays a
+  Stage 1 test case.
 * **Family Sharing: Apple says it cannot be turned off once enabled.** Decide deliberately.
 * **What does "permanent" include?** A one-time unlock that implies all future features is an
   unbounded promise against finite revenue. Name the capability set it covers.
 * **Reinstall, Apple Account change, storefront change, refund, revocation, offline launch** —
   each needs a defined answer before the flow is built.
+
+**⚠️ And the house pattern already violates this rule, so it must not be copied wholesale.**
+Seven apps on this team ship a `<bundle>.pro.lifetime` non-consumable, which means Stage 1 is
+adapting a pattern that has shipped seven times rather than writing StoreKit from zero — a
+material input to §D's required build-cost number. But Wearform's shipped
+`StoreManager.refreshEntitlements()` ends `isPro = active`, rebuilt from
+`Transaction.currentEntitlements` on every call, with nothing persisting a previously verified
+entitlement: *"the list could not be read"* and *"this user never bought anything"* take the
+same branch. **Take the shape, not that method.** Separately, **no sibling uses `AppTransaction`
+at all**, so §E's grandfathering has no in-house precedent and its offline behaviour is
+genuinely unverified.
 
 **And the failure rule, which the first draft got wrong in its own text.** §C said "fail closed
 but quiet" while §E said fail open; Codex caught the contradiction and resolved it correctly:
@@ -415,6 +466,32 @@ nothing at all.** So pre-register, before writing code: the minimum cohort, the 
 window, the net-proceeds floor, the refund ceiling, the retention/deletion guardrails, and the
 go / iterate / stop decision attached to each.
 
+**⚠️ And now that the base is measured, 100 exposures is a harder threshold than it reads.** The
+census ceiling on devices that have ever installed this app is **109**, and it binds harder than
+that: one person on a Mac and an iPhone is two units, so the number of humans is lower. Whatever
+the placement, **at most ~109 devices can ever be exposed for the first time.**
+
+**The step from installs to exposures is unmeasured, and no honest number for it exists before
+it is instrumented.** A tip jar in Settings is seen by a small fraction of users; one on the
+results screen is seen by approximately every active user, repeatedly — a multiplier spanning
+more than an order of magnitude. An earlier attempt to bound this wrote *"100 exposures ≈ 92% of
+every install"*, which silently assumed an exposure rate of 1.0; the correction that replaced it
+with an industry-average "5–20%" was refused for the same reason in the other direction. **Both
+were unmeasured numbers dressed as arithmetic.**
+
+Three consequences, and they are design constraints rather than commentary:
+
+* **This is a stronger argument for the local counter than §G originally made.** Without it the
+  exposure denominator is not merely unknown, it is *unknowable*, and every conversion figure
+  computed against installs rather than exposures is wrong by the placement multiplier.
+* **Placement must be chosen and recorded before the counter means anything**, which §G already
+  says and which this makes non-optional.
+* **The first release carrying a tip jar exposes much of a ~109-device base at once**, so its
+  opening weeks are structurally the "launch spike with no clean exposure denominator" this
+  section warns against reading as steady state. A *clean* cohort of 100 **new** installs is the
+  quantity on a ~42-day clock at the current rate — a different number from 100 exposures, and
+  the two must not be swapped.
+
 **Report the launch spike separately.** Existing fans buying in week one have no clean exposure
 denominator and say little about future cohorts. Conflating that with steady-state conversion is
 how a one-off becomes a forecast.
@@ -563,3 +640,53 @@ measured and was not. "100% of reviewers asked to pay" (a self-selected denomina
 (asserted). "The complaint is about checkout" (judged). The document's own rule — *distinguish
 measured from judged, always* — was the rule it broke most often, and it took three reviewers to
 see it because the writing sounded like measurement throughout.
+
+---
+
+## §L The fourth round: what re-measuring changed
+
+The first three rounds were reviewers arguing with a document. This round pulled the numbers the
+document had been arguing about. The record is `docs/measurements/v2-stage0-baseline.md`; what
+follows is only what it changed here.
+
+**The load-bearing claim was an inference wearing the word "measurement", and this document's own
+rule should have caught it.** §A said one review "is a measurement of near-zero traffic". The
+review count was measured; the traffic was not, and had been retrievable from App Store Connect
+the entire time. §K closes by naming exactly this pattern — *a claim that sounded measured and was
+not* — and then §A committed it in the sentence the whole staging rests on. **The conclusion
+survived: 109 installs is an empty room and Stage 0 stays first.** The working figure did not:
+"40 monthly downloads" is the lifetime average, the current rate is ~72/30d, and traffic is
+rising rather than flat.
+
+**Half of a Stage 0 premise was simply false.** "The keyword list is English-only" — `zh-Hans`
+keywords ship on both platforms and predate this plan. The true and sharper fact is that only two
+locales exist at all, and Japan is the #2 territory with no listing in its own language.
+
+**One "irreversible decision" was already made, and had been since launch.** Universal Purchase
+is not a choice to weigh: one record, one SKU, and Apple stamps every unit `iOS and macOS`.
+
+**The prerequisite capable of hard-blocking Stage 1 was never checked by anyone, and it is clear.**
+The Paid Applications Agreement is active — five sibling apps hold `APPROVED` IAPs, which is
+impossible without it. That is 1–3 weeks of tax and banking latency that does not have to be
+spent.
+
+**"No monetization code" is true of this repo and false of this developer**, which changes §D's
+required build-cost figure — and the pattern it would be copied from implements precisely the
+failure rule §C forbids. See §C.
+
+**A judgement that survived re-measurement got stronger, and only in one direction.** The China
+recommendation rested on n=1. It now rests on 48% of 109 — for *reach*. Willingness to pay is
+still unmeasured, and treating install share as intent would be the same error §A was corrected
+for.
+
+**The instrument had to be built before the number could be believed, and building it found a
+defect in the obvious shortcut.** A sibling project solves this exact problem; run unchanged its
+classifier reports 49 downloads where the census says 109, with macOS silently zero. The
+replacement derives its codes from this app's data and refuses to run without a positive control.
+
+**And the fourth reviewer was wrong twice, both times about data it had been handed.** Gemini
+3.7 Flash marked as DECISIVE that `F7`-on-iOS was unproven (the `Device` column says `iPhone` on
+106 units) and that the newest window was 24 days (it is 28; the *oldest* is short). Its two most
+valuable findings were of the opposite shape — *"you did not check X"* — and one of those is the
+Paid Applications Agreement above. **The pattern holds in both directions: what is checkable
+should be checked, by the reviewer as well as the author.**
