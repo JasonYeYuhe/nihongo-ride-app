@@ -726,7 +726,7 @@ Ships when:
 
 # Shipped
 
-Built 2026-08-25, macOS build 48 / iOS build 49, marketing 1.26. 541 tests green
+**Submitted 2026-08-25, macOS build 48 / iOS build 49, marketing 1.26 — both platforms WAITING_FOR_REVIEW, verified by querying ASC directly rather than by reading the submit script's own output.** `launch_gate` passed on the archive that was actually uploaded, with the Mac signed into iCloud, so it exercised the account-change path macOS 1.4 was rejected for rather than reporting a harness pass. 541 tests green
 (520 → 541); the iOS XCUITest target green for the first time in this repo's history, because
 until this release it could not run at all. `check_vocab_diff` clean under a 5-entry manifest,
 its 18 probes behaved, no duplicate source files, all four archived `Info.plist`s cross-checked
