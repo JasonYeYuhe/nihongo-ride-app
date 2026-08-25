@@ -52,18 +52,25 @@ So the same three characters support two conclusions, and the plan needs both.
 
 ### ⚠️ What cannot be measured today
 
-The app collects no usage data. There is no answer to: how many people finish a ride, which
-modes are touched, where people stop coming back.
+The app collects no usage data **of its own**. There is no answer to: which modes are touched,
+where inside a ride people stop.
 
-The first draft called this an acceptable cost of the privacy promise and proposed measuring
-conversion through App Store Connect alone. **Both reviews rejected that, and they are right.**
-ASC can tell you conversion is 0.4%; it cannot tell you whether that is because people saw the
-price and declined or because they never found the button — which are opposite problems with
-opposite fixes.
+**But "engagement is untestable" — which the first two drafts asserted — is factually wrong, and
+Codex corrected it with citations.** App Store Connect already reports sessions, active devices,
+retention, deletions, crashes and update adoption, from Apple's own opt-in sampling, with no SDK
+and no change to the privacy label. It cannot rank modes. It *can* answer the question that
+actually guards this plan: **did monetization damage overall use?** Those are guardrails, and
+they are sampled rather than whole-population — use them as such.
 
-The error was treating "Data Not Collected" as equivalent to "zero telemetry". They are not the
-same thing. **Local, on-device, non-identifying counters that never leave the device are not
-tracking** and do not change the privacy declaration. See §G.
+What ASC genuinely cannot do is **diagnose a non-purchase**. It cannot say whether an eligible
+user saw the paywall, whether the product loaded, whether Buy was tapped, whether the purchase
+was cancelled or errored, or whether the entitlement was delivered. **So zero sales rules out
+nothing** — all three reviews said so, and the first draft's "App Store Connect only" was
+rationalised blindness.
+
+The error underneath was treating "Data Not Collected" as equivalent to "zero telemetry". They
+are not the same. **Local, on-device, non-identifying counters that never leave the device are
+not tracking** and do not change the declaration. See §G.
 
 ---
 
@@ -137,6 +144,31 @@ useful:
 
 Structure in §E and §F. Not before.
 
+### The entitlement contract, which must be written before a SKU is created
+
+Codex's finding, and the first draft did not mention any of it. These are **decisions with
+irreversible consequences**, not implementation details:
+
+* **Does one purchase cover macOS AND iOS?** Apple's universal purchase requires a single app
+  record; verify whether these two already share one before creating the product.
+* **Family Sharing: Apple says it cannot be turned off once enabled.** Decide deliberately.
+* **What does "permanent" include?** A one-time unlock that implies all future features is an
+  unbounded promise against finite revenue. Name the capability set it covers.
+* **Reinstall, Apple Account change, storefront change, refund, revocation, offline launch** —
+  each needs a defined answer before the flow is built.
+
+**And the failure rule, which the first draft got wrong in its own text.** §C said "fail closed
+but quiet" while §E said fail open; Codex caught the contradiction and resolved it correctly:
+
+> **Never revoke on failure what was previously verified.** Persist the last verified entitlement
+> and honour it offline. Fail closed **only where entitlement was never established**, and
+> reconcile refunds and revocations when connectivity returns.
+
+A cached Boolean is not an entitlement design. Test: success, cancel, pending / Ask to Buy,
+interrupted purchase, product unavailable, reinstall, new device, account and storefront change,
+Family Sharing, refund and revocation, cross-platform restore, and **both sides of the
+grandfathering cutoff**.
+
 ---
 
 ## §D The model, and the constraint the first draft missed
@@ -166,7 +198,42 @@ Both reviews attacked this and they are both right, from different directions:
 A hybrid (annual pass + lifetime unlock) is a legitimate Stage 3 shape and is explicitly *not*
 ruled out here. It was ruled out in the first draft on evidence that will not carry it.
 
-**Price stays an owner decision.** Not an agent's call, and it needs real comparables.
+### The two rejections, redone for reasons that survive
+
+Codex showed both of the first draft's rejections were asserted rather than argued:
+
+* **Paid-upfront was rejected with an unsupported absolute** — *"a paid app with no reviews does
+  not get downloaded"*. Directionally plausible; no impression or download history was supplied
+  to support it. It is **not rejected here**. It monetises the product that already exists
+  instead of inventing a marginal Pro bundle, and its real cost is losing the trial. Model it
+  against freemium on the actual funnel before discarding it.
+* **Subscription is rejected, but not because "there is nothing to rent"** — people subscribe to
+  recurring *outcomes*, not to servers, and developer maintenance cost alone never justifies one.
+  The honest reason is that **this app has no demonstrated retention and no credible
+  recurring-value promise**. And the evidence that would REOPEN it is stateable: sustained use
+  (visible in Apple's retention metrics) plus a content cadence users demonstrably value.
+
+### ⚠️ Price is not an incidental owner decision
+
+The first draft deferred price as "the owner's call, needs comparables". Codex's objection is
+right: **price determines expectations, conversion and break-even**, so a model cannot be
+declared correct without it.
+
+Before any StoreKit code is written, model it:
+
+```
+monthly = new downloads × paid conversion × net proceeds − content and support cost
+```
+
+and state two numbers in advance: **the monthly contribution that would make this worth doing**,
+and **the maximum build cost that is acceptable to find out**. Both are owner inputs; neither is
+optional, and an agent must not invent either.
+
+**And fix the currency ambiguity from the first draft.** It wrote a band of "¥30–90", which is
+plausible as CNY and absurd as JPY. The one signal this app has came from **China**; write
+**CNY** explicitly, price per territory, and localise the paywall and IAP metadata into
+Simplified Chinese — the audience whose sole review created this plan currently has no localised
+merchandising and no support path in their language.
 
 ---
 
@@ -202,6 +269,26 @@ Two conditions on it, and neither is optional:
 * **A generous free tier is still the funnel.** Grandfathering makes gating *possible*; it does
   not make aggressive gating *wise* for an app with no reviews and no traffic.
 
+### And the fork this plan must not blur
+
+Codex's sharpest structural point: **if the free tier really keeps everything, then this is
+patronage economics and it must not be called "Pro"** — because measuring tip-jar conversion and
+reporting it as premium-product conversion produces a confidently wrong conclusion.
+
+Pick one, explicitly, at Stage 2:
+
+1. **Keep the whole app free; sell a Supporter Pack** (themes, an alternate icon, a route,
+   visible recognition). Honest patronage. Small revenue ceiling, near-zero risk, no tier
+   boundary to police.
+2. **Grandfather existing users; give NEW users a bounded but complete sampler; sell the full
+   unlock.** Codex's concrete suggestion is worth recording: *all six mechanics*, 1,000–1,500
+   high-frequency words with their sentences, ~20 passages, one route — so the free tier
+   demonstrates every mechanic and the purchase buys depth.
+3. **Keep the generous free tier and build a genuinely transformative paid workflow** (§F1).
+
+These have different economics and different measurements. Choosing none of them and shipping a
+bit of each is the failure mode.
+
 ---
 
 ## §F Pro candidates, re-ranked
@@ -211,18 +298,32 @@ reviews identified that as supply-side bias — building what is easy rather tha
 and both independently inverted the same two items. The ranking below is theirs, not the first
 draft's.
 
-### F1 — Export and custom lists · **flagship**
+### F1 — "Bring your own Japanese" · **flagship**
 
 `SavedWordsKit`, `WordListsKit` and `JournalKit` all ship.
 
-* Export review history, saved words and the ride log — CSV, Anki.
-* Import a deck and drill it with the existing engine: a *Genki* chapter, a JLPT prep list, a
-  teacher's handout.
+All three reviews converged here, and Codex sharpened it from a utility list into a single
+promise worth paying for:
+
+> **Bring your own Japanese, have the app revisit what you miss, and continue across devices.**
+
+* Paste text, import a deck, add custom passages — a *Genki* chapter, a JLPT prep list, a
+  teacher's handout — and drill it with the existing engine.
+* The mistakes from that material feed the same on-device review queue as everything else.
+* Progress insight over material the user chose.
 
 *Why first:* it is a **finished good** — zero ongoing content labour, so it is honestly priced
-once (§D). It targets the highest-intent segment in language learning, the people who already
-maintain their own decks. And it is thematically exact for a privacy-first offline app: *your
-data is yours and you can take it with you.* Both reviews moved this to the top independently.
+once (§D) — and it makes the app useful **beyond its fixed catalogue**, which is the one thing
+more corpus cannot do.
+
+**⚠️ But not plain export, and this is a contradiction Codex found in the previous draft.** That
+draft made "export your review history and saved words" the flagship. **Charging a user to
+retrieve their own data directly contradicts the privacy positioning this app sells on** — *your
+data is yours* is not compatible with *pay to get it out*. So:
+
+* **Plain CSV backup/export stays FREE.** It is a promise the product already implies.
+* What may be sold is the **transformed workflow**: Anki-ready packaging with templates, bulk
+  deck management, automation — things that are work, not access.
 
 ### F2 — Audio, scoped honestly
 
@@ -235,6 +336,13 @@ withheld from dictation because the system voice mispronounces them.
 *The honest version:* **curate a verified subset** (say the top 2,500 words and sentences whose
 audio has been checked) and sell that, rather than withholding the feature until the whole corpus
 is perfect or selling "audio for everything" while 964 sentences are quietly excluded.
+
+**Codex went further and it is the better argument: the system voice is not a premium good.** The
+customer already owns that speech engine, and this project has *documented* that it produces
+unacceptable output for hundreds of sentences. Exposing the same voice on more screens is reuse,
+not a product. **Basic playback should be free.** Audio is sellable only when it adds something
+the user does not already have: reviewed coverage, playback control, actual listening exercises,
+or recorded human audio. Otherwise postpone it.
 
 ### F3 — More content · **demoted from flagship**
 
@@ -254,7 +362,13 @@ audio. Good bundle filler; not an anchor.
 
 Most expensive by a wide margin, needs content the pipeline does not produce, and the conjugation
 drill it would extend has a known scheduling defect (v1.26 measured that it grades every clean
-answer 5). PLAN-V1.27 §C first.
+answer 5).
+
+**Codex argues for removing these from the roadmap rather than deferring them**, and the reason
+is good: kanji writing changes the input modality, fits macOS poorly, and takes on recognition
+and content-quality obligations unrelated to *typing*. Pitch accent has the same expertise
+problem. **Keep both out unless user research (§H) identifies them as a core job.** And fix the
+conjugation timing defect for everyone as correctness work — it is not a Pro feature.
 
 ---
 
@@ -263,7 +377,15 @@ answer 5). PLAN-V1.27 §C first.
 The project's rule — *a checker that reports "no problems" is indistinguishable from a broken
 checker* — translates directly: **a launch with no way to tell why it failed teaches nothing.**
 
-* **App Store Connect** for conversion, downloads, product-page views. Baseline first (§C).
+* **App Store Connect — but the RIGHT metric.** Codex caught that the previous draft baselined
+  the wrong thing: Apple's metric named "Conversion Rate" is *downloads ÷ impressions*, an
+  **acquisition** number. It cannot baseline free-to-paid behaviour, and thirty days of downloads
+  before an IAP exists cannot either. For monetization use **Download-to-Paid cohorts, proceeds
+  per download, paying users, refunds**, split by territory, platform and source — Apple exposes
+  these separately.
+* **Apple's engagement metrics as guardrails** — retention, sessions, active devices, deletions,
+  by app version. They answer "did monetization damage use", which is the question that should
+  stop a rollout.
 * **Local, on-device counters** — paywall/tip-jar impressions, taps, completions. **Never
   transmitted**, inspectable in a debug view, and optionally attachable by the user to a support
   email. This is the distinction the first draft got wrong: *Data Not Collected* forbids
@@ -283,12 +405,49 @@ against the Stage 0 baseline** — the point is that they exist and are fixed *i
 | stage | success | failure → what it kills |
 |---|---|---|
 | Stage 0 distribution | downloads and reviews both up meaningfully over baseline | if traffic does not move, **monetization is not the problem** — do not proceed to Stage 3 |
-| Stage 1 tip jar | any sustained non-trivial tipping across ≥500 new downloads | near-zero over 60 days **kills the Pro tier**, not just the tip jar |
-| Stage 3 Pro | conversion at or above the owner's pre-set floor within 45 days | below the floor after ≥500 downloads invalidates *"incremental utilities sell Pro"* — reconsider tier structure, not just price |
+| Stage 1 tip jar | any sustained non-trivial tipping across a pre-registered cohort | near-zero over the window **kills H2 as well as H1** — do not build Pro |
+| Stage 3 Pro | Download-to-Paid at or above the owner's pre-set floor, refunds under the ceiling | below the floor at the registered sample invalidates the packaging, not merely the price |
+
+**⚠️ And the sample sizes have to be real, which the previous draft's numbers were not.** Codex's
+arithmetic: **zero purchases after 100 genuine paywall exposures only rules out a conversion rate
+above roughly 3%, at 95% confidence — and zero purchases with no exposure count rules out
+nothing at all.** So pre-register, before writing code: the minimum cohort, the observation
+window, the net-proceeds floor, the refund ceiling, the retention/deletion guardrails, and the
+go / iterate / stop decision attached to each.
+
+**Report the launch spike separately.** Existing fans buying in week one have no clean exposure
+denominator and say little about future cohorts. Conflating that with steady-state conversion is
+how a one-off becomes a forecast.
 
 ---
 
-## §H Risks
+## §H The customer, which the plan never defined
+
+**Codex's most structural finding, and it explains a symptom visible in the previous draft's own
+feature list:** it jumped from passages to pitch accent to handwriting because **no definition of
+the payer constrained it**.
+
+These are different products for different people:
+
+* someone improving raw typing speed in Japanese,
+* a beginner learning kana and first vocabulary,
+* a JLPT candidate on a deadline,
+* an advanced reader wanting long-form material,
+* a native speaker practising input.
+
+**The app currently serves all of them a little and none of them specifically**, which is
+survivable while free and is exactly what makes a paid tier impossible to package.
+
+**Do this before Stage 3, and it is cheap:** recruit 10–15 target users across proficiency,
+territory and platform. Watch a session. Then force a choice between concrete packages at
+concrete prices — supporter, bring-your-own-material, structured course, listening — and see
+which one people reach for. That is not market research theatre; at this scale it is the only
+instrument that can answer a question ASC structurally cannot, and one unsolicited review has
+already proved the channel works.
+
+---
+
+## §I Risks
 
 * **Building the paywall in an empty room.** The largest risk, and the first draft did not
   mention it. Stage 0 exists for this.
@@ -306,7 +465,7 @@ against the Stage 0 baseline** — the point is that they exist and are fixed *i
 
 ---
 
-## §I Not in this plan
+## §J Not in this plan
 
 * **Ads** — contradict the product and the audience.
 * **Accounts and a backend** — load-bearing absences, not gaps.
@@ -316,7 +475,7 @@ against the Stage 0 baseline** — the point is that they exist and are fixed *i
 
 ---
 
-## §J What the three reviews changed
+## §K What the three reviews changed
 
 Kept in the house style of PLAN-V1.24 and PLAN-V1.26, because the pattern repeats and is worth
 watching. **The first draft's central recommendation did not survive.**
@@ -357,8 +516,50 @@ rejected "App Store Connect only" as rationalised blindness, and both drew the s
 and then set no thresholds, so every outcome would have been rationalisable. §G now fixes them in
 advance.
 
-**Where the reviews disagreed, and it is left open on purpose.** Flash proposed a hybrid
-(annual pass plus lifetime unlock) against Pro's stricter "only sell finished things once".
-Both are defensible and the choice needs Stage 1's number, which does not exist yet. §D records
-the constraint both agree on — *a one-time price may only buy things that are finished* — and
-leaves the shape to Stage 2.
+**And then Codex arrived and found contradictions in the REVISION, not just the draft.** It ran
+longest, cited Apple's own documentation, and overturned four things the two Gemini passes had
+let stand:
+
+* **Charging for export contradicts the product's own pitch.** The revision had just promoted
+  "export your review history" to flagship. *Your data is yours* and *pay to get it out* cannot
+  both be the position. Plain export is now free; only transformed workflows are sellable.
+* **"Fail closed but quiet" was wrong, and the plan contradicted itself about it** — §C said fail
+  closed while §E said fail open. Resolved correctly: never revoke on failure what was
+  previously verified; fail closed only where entitlement was never established.
+* **The measurement baseline was the wrong metric.** Apple's "Conversion Rate" is downloads ÷
+  impressions — an acquisition number that cannot baseline free-to-paid. Download-to-Paid
+  cohorts and proceeds-per-download are the ones that can.
+* **"Engagement is untestable" is factually false.** Apple already reports retention, sessions,
+  active devices and deletions without any SDK. Two drafts asserted a blindness that does not
+  exist.
+
+It also supplied the arithmetic the falsification section was missing — *zero purchases after
+100 exposures only rules out conversion above ~3% at 95% confidence* — caught that "¥30–90" is
+ambiguous between CNY and JPY in a plan whose only signal came from China, and noted that the
+one-time-versus-subscription rejections were both **asserted rather than argued**: paid-upfront
+was dismissed with an absolute nobody had checked, and subscription was rejected for a
+convenient reason ("nothing to rent") rather than the defensible one (no demonstrated retention,
+no credible recurring promise) — with the evidence that would reopen it now stated.
+
+**And the finding that explains the shape of every earlier mistake.** The plan never defined its
+customer. A typist, a beginner, a JLPT candidate and an advanced reader are different products,
+and with no payer definition the feature list wandered from passages to pitch accent to
+handwriting. §H exists because of this, and it is the reason the earlier rankings kept needing
+to be inverted: **they were ordered by what was easy to build because nothing else was
+constraining them.**
+
+**Where the reviews disagreed, and it is left open on purpose.** Flash proposed a hybrid (annual
+pass plus lifetime unlock); Pro argued "only sell finished things once"; Codex declined to call
+any model correct without unit economics and refused to let paid-upfront be dismissed. All three
+positions are defensible and the choice needs numbers that do not exist yet. §D records the
+constraint they share — *a one-time price may only buy things that are finished* — and the
+requirement Codex added: **model the economics and state the required monthly contribution
+before writing StoreKit code.** The shape is a Stage 2 decision, made by the owner, with data.
+
+**The pattern across all three, worth naming because it is the same one this project keeps
+finding in its code.** Every substantive correction was of the same kind: a claim that sounded
+measured and was not. "100% of reviewers asked to pay" (a self-selected denominator of one).
+"Engagement is untestable" (false). "A paid app with no reviews does not get downloaded"
+(asserted). "The complaint is about checkout" (judged). The document's own rule — *distinguish
+measured from judged, always* — was the rule it broke most often, and it took three reviewers to
+see it because the writing sounded like measurement throughout.
