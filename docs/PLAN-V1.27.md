@@ -1,8 +1,62 @@
-# v1.27 — scope in progress
+# v1.27 — the first product-stage release
 
-Opened 2026-08-25, while v1.26 sat in review. The first item is a research item and is written
-out in full because it is the one whose method is not obvious; the rest are the open items v1.26
-recorded, carried here so this file is a usable starting point rather than a stub.
+Opened 2026-08-25 while v1.26 sat in review; scoped 2026-08-26 once v1.26 went live on both
+platforms and the Stage 0 baseline was measured.
+
+**Shipped: §A only.** Everything below §A was already open when this file was written and stays
+open. §R (the locked-screen macOS export) was not attempted — the screen was unlocked for this
+release, so the question never became load-bearing.
+
+---
+
+## §A Ask for a review, and count every time we decided not to — SHIPPED
+
+`PLAN-V2-PRODUCT.md` §C names review-prompting "the single biggest lever on downloads". This is
+that, and it is the first monetization-adjacent code this repo has ever carried.
+
+**The API the plan names is deprecated.** `SKStoreReviewController` carries
+`API_DEPRECATED(ios(10.3, 18.0), macos(10.14, 15.0))` in the shipping SDK. Verified there rather
+than recalled — the same way the product plan verified `AppTransaction`. What replaced it,
+`@Environment(\.requestReview)`, is **iOS 16 / macOS 13**, below this app's 17.0 / 14.0 targets,
+is not deprecated, and is one call on both platforms with no window-scene plumbing.
+
+**The rejections are the feature.** `requestReview` reports nothing back: Apple decides whether
+to show anything, never says which way it went, and silently discards calls past its own
+three-per-365-days limit. So a release that produces no new reviews would be indistinguishable
+from one whose gates never let a single moment through — this project's oldest rule in new
+clothes. `ReviewPromptLedger` counts **every** outcome by reason, on-device and never
+transmitted, so the thresholds can be revised against data instead of defended. All five
+thresholds are judgements and say so in the source; the annual limit is not, and mirrors
+Apple's.
+
+**The ask and the record are one branch.** `requestDates.append` and `ask()` sit on the same
+line of control flow, so the ledger cannot record a request that was never made or miss one that
+was — the fix twenty-one count-vs-run defects arrived at, applied before the defect rather than
+after. The moment is built from the appended `RideRecord`, not from the session, so the accuracy
+gating the prompt is the accuracy the Ride Log shows; and it is consumed on the way through, so
+"ride again" bouncing back through results cannot spend two of Apple's three slots on one ride.
+
+**Eleven mutations, all red**, including deleting the `ResultsView` call site — the v1.26
+scenario where 527 tests stayed green while the view was severed from the model.
+
+### Why the ASO half of Stage 0 is NOT in this release
+
+Stage 0 also calls for `ja` / `zh-Hant` storefront locales, and the pre-submission review was
+right that locales, description and binary all attach to one App Store version record. That
+makes them shippable together; it does not make them **readable** together. New locales move
+downloads and the review prompt moves reviews, and both feed the one number Stage 0 is trying to
+read against a baseline recorded three days earlier. **One change at a time**, which is this
+project's own rule about instruments pointed at its own release process. The ASO payload is
+v1.28, by which time the acquisition-source report may exist to say whether a `ja` listing can
+replicate anything.
+
+---
+
+## Open items, carried from v1.26 and still open
+
+The first item is a research item and is written out in full because it is the one whose method
+is not obvious; the rest are the open items v1.26 recorded, carried here so this file is a
+usable starting point rather than a stub.
 
 ---
 
@@ -150,3 +204,64 @@ tested locked would leave the project with a new signing configuration and the s
 * **§E accessibility** — waived, not closed. v1.26 added nothing here. The static scan
   (37 fixed frames, 15 `.font(.system(size:))`, 25 `.lineLimit(1)`) is still the cheap first
   answer, and the comparator problem is still unsolved.
+
+---
+
+# Shipped
+
+**Submitted 2026-08-26, macOS build 50 / iOS build 51, marketing 1.27 — both platforms
+WAITING_FOR_REVIEW, verified by querying ASC directly rather than by reading the submit script's
+own output.** `launch_gate` passed on the archive that was actually uploaded, with the Mac
+signed into iCloud. `swift test` **570 green** (545 → 570); iOS XCUITest exit 0, 4 passed and
+1 skipped by design; macOS Xcode build succeeded. Metadata written and **read back identical**
+on both platforms. No corpus file was touched.
+
+| | v1.26 | v1.27 |
+|---|---|---|
+| tests (`swift test`) | 541 | **570** |
+| mutations proven red on new code | — | **13** |
+| corpus files changed | 5 entries | **0** |
+| App Store locales | 2 | 2 (`ja` / `zh-Hant` deferred to v1.28, deliberately) |
+
+## What actually happened
+
+**Two builds were uploaded and abandoned.** macOS 49 and iOS 50 went to Apple before the
+pre-submission review ran; the review produced changes to `AppModel`, so both were rebuilt as
+50 / 51. Uploading a build costs nothing but the wait — abandoning one is cheaper than shipping
+around it.
+
+**The iOS build was interrupted mid-archive and reported nothing useful.** The wrapper died with
+signal 137 and the log ended at `** BUILD INTERRUPTED **`. Neither "it uploaded" nor "it did not"
+could be read off that, so it was read off **ASC**, per platform: `filter[preReleaseVersion.platform]`
+distinguishes the two build 50s, which a bare build listing does not. The iOS archive had never
+uploaded. Re-run in the background, it took 140 seconds.
+
+**The pre-submission review claimed two BLOCKERs and one was real** — recorded in the commit
+`review(v1.27)`. The unreal one is the more useful entry: it described a UI-test launch
+corrupting the owner's ledger, which cannot happen because `settingsStore` already routes an
+isolated launch into a throwaway suite. The gates were unified onto one predicate anyway, and
+**reverting that unification leaves the suite green** — so it is recorded as defence in depth
+rather than as a fix, because claiming a test proves it would be the exact failure this project
+keeps finding.
+
+**Three instruments were wrong, and each was caught by using it** — the pattern v1.26 recorded,
+repeating:
+
+* `check_versions.py` defaulted `--submit-script` to `submit_1_26.py` while the project was on
+  1.27. It now resolves the newest on disk and prints which file it read.
+* STATE said releases are archived under `NihongoRide-Archives/`. Nothing does that; the path to
+  gate had to be read out of the upload run's own log.
+* A journal seed written with a bare `JSONEncoder()` loaded as an empty journal, because
+  `RideJournal` uses `.iso8601`. Caught only because the helper asserted its own seed had loaded.
+
+## Open, and carried forward
+
+* **The Analytics reports still do not exist** — all 156, on both requests, zero instances as of
+  2026-08-26. Re-check after 2026-08-28. Until then §G's guardrail layer has nothing behind it
+  and the acquisition-source question that gates the `ja` listing is unanswerable.
+* **The ASO payload** — `ja` / `zh-Hant` locales, keyword tuning. v1.28.
+* **The "no network" description** — still true today and must be reworded **before** any IAP
+  ships, not with it.
+* Everything under "Open items, carried from v1.26" above, untouched: §R, instance twenty-one,
+  §C + B4 timing, the 913 `nearest` and 15 `propagated` dictation exclusions, the 112
+  uninspected sentences, §E accessibility.
