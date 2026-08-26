@@ -17,8 +17,17 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "Sources/VocabKit/Resources"
 
+# Set to this release's corpus-change manifest, or None when the release changes no corpus.
+CORPUS_MANIFEST = None        # v1.27 ships one feature and touches no vocabulary file
 
-def previous(ref="60c9ed9"):
+
+# Advanced with every release. v1.27 moved it from 60c9ed9 (the v1.25 baseline) to the v1.26
+# release commit, so "this release" means since 1.26 and not since 1.25. Leaving it behind is how
+# a delta silently becomes a two-release total — the stale-number failure this module exists for.
+BASELINE_REF = "b9dd532"      # release(v1.26): submitted, both platforms WAITING_FOR_REVIEW
+
+
+def previous(ref=BASELINE_REF):
     """The same figures at the release baseline, so a delta is measured rather than remembered."""
     out = {}
     try:
@@ -45,8 +54,13 @@ def numbers():
     typeable = [e for e in entries if e.get("exJP") and e.get("exKana")]
     with_example = [e for e in entries if e.get("exJP")]
 
-    manifest = json.loads((REPO / "docs/measurements/v126-stem-reading-manifest.json")
-                          .read_text(encoding="utf-8"))
+    # The corpus manifest for the CURRENT release, or none when a release changes no corpus.
+    # v1.27 changes none, so `correctedThisRelease` must be 0 rather than v1.26's 5 — a number
+    # that describes the previous release while the copy calls it "this release" is the exact
+    # defect this module was written to end.
+    manifest = ({"entries": []} if CORPUS_MANIFEST is None
+                else json.loads((REPO / CORPUS_MANIFEST)
+                                .read_text(encoding="utf-8")))
     residue = json.loads((REPO / "docs/measurements/v126-uninspected-residue.json")
                          .read_text(encoding="utf-8"))
     notes = json.loads((RESOURCES / "reading-notes.json").read_text(encoding="utf-8"))["notes"]

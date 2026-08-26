@@ -190,6 +190,32 @@ much weight the retention and session numbers can carry.
   this developer, and the offline behaviour the handoff flags as a design gate is genuinely
   unverified — there is no shipped precedent to read it off.
 
+## ⚠️ The Analytics reports do not exist yet, and may never
+
+Checked 2026-08-26, hours after the requests were created: **all 156 reports, on BOTH the
+one-time snapshot and the ongoing request, have zero instances.** Not "returned zero rows" —
+zero *instances*, meaning Apple has generated no file at all.
+
+Uniformly zero across every report is consistent with **"not generated yet"** (Apple documents
+up to 48 hours for a first snapshot) and it does **not** rule out **"will never generate for an
+app this small"**, because these reports carry a privacy threshold. **The two are distinguished
+only by waiting**, and this record must not be read as though they had been. Re-check after
+2026-08-28.
+
+What hangs on the answer, and it is more than a convenience:
+
+* **§G's guardrail layer is currently empty.** Retention, sessions, active devices and
+  deletions are the numbers §G nominates to answer *"did monetization damage use"* — the
+  question meant to stop a rollout. There is nothing behind them today.
+* **The ASO decision has no evidence yet either.** Whether Japan's installs arrive by App Store
+  search or by referral decides whether a `ja` keyword listing can replicate anything, and
+  acquisition source lives in `App Store Discovery and Engagement`.
+* **`App Opt In` — the report that would state the sampling rate directly — is among the
+  empty ones**, so the calibration this record calls for cannot be performed yet either.
+
+If the reports never materialise, §G needs rebuilding on the two instruments that DO work at
+this scale: the Sales and Trends census, and local on-device counters.
+
 ## The review this record went through
 
 Gemini 3.7 Flash, one of the three reviewers of the plan itself, was asked to attack this
