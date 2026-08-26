@@ -15,6 +15,7 @@ import SpeechKit
 import WidgetSharedKit
 import WidgetKit
 import SceneryKit
+import StoreReviewKit
 
 /// A snapshot of a finished run, shown on the results screen.
 struct GameSummary: Equatable {
@@ -195,6 +196,18 @@ final class AppModel {
     private(set) var lastConjugationSummary: ConjugationSummary?
     /// True while the results screen is showing a conjugation drill (vs a ride).
     private(set) var resultsAreConjugation = false
+
+    /// When this app asked for an App Store review, and — the reason it exists — every time it
+    /// decided NOT to, by reason. Local, on-device, never transmitted: *Data Not Collected*
+    /// forbids collecting, not counting (PLAN-V2-PRODUCT §G). `requestReview` reports nothing
+    /// back, so without the rejection counts a release that produced no reviews would be
+    /// indistinguishable from one whose gates never let a single moment through.
+    private(set) var reviewPromptLedger = ReviewPromptLedger()
+
+    /// The finished ride awaiting a review-prompt decision, or nil. Built in `finishGame` where
+    /// the ride's own numbers are still to hand, and CONSUMED by `considerReviewPrompt` — so a
+    /// results screen that appears twice for one ride cannot spend two of Apple's three slots.
+    private(set) var pendingReviewMoment: RideMoment?
     private(set) var reviewStore: ReviewStore
     /// The verb-conjugation SRS store (v1.8 §B) — a SEPARATE store, file, and CKRecord
     /// from the flat `reviewStore` (red line §1): a conjugation lapse (keyed `sourceID#form`)
@@ -316,6 +329,11 @@ final class AppModel {
             ? AppSettings.default.sanitized()
             : AppSettings.load(from: Self.settingsStore)
         settings = loaded
+        // Same rule as settings: a capture run starts clean and never persists, so a render
+        // can neither read nor spend the owner's real review-prompt history.
+        reviewPromptLedger = Screenshotter.isCapturing
+            ? ReviewPromptLedger()
+            : ReviewPromptLedger.load(from: Self.settingsStore)
         languageCode = loaded.languageCode
         assistance = AssistanceMode(rawValue: loaded.assistance)
             ?? (loaded.showRomajiHint ? .always : .off)
@@ -1872,6 +1890,14 @@ final class AppModel {
         lastSummary = GameSummary(from: session)
         resultsAreConjugation = false
         let appended = completion.logsRide ? logRun(session) : nil   // a cram doesn't log a ride / odometer
+        // Built from `appended` and not from `session`, deliberately: the accuracy that gates
+        // the prompt is then the same number the Ride Log shows, and "was this a real ride" is
+        // answered by the value that decided whether a RideRecord exists at all. Two sides, one
+        // predicate — the shape twenty-one defects in this project have had in common.
+        pendingReviewMoment = RideMoment(wasLogged: appended != nil,
+                                         accuracy: appended?.accuracy ?? 0,
+                                         lifetimeRides: lifetimeRuns,
+                                         riddenDays: journal.riddenDays().count)
         // Tell the iCloud sync controller what changed (no-op when sync off / a cram).
         syncController?.recordLocalChanges(
             srsIDs: changedSRS,
@@ -1887,6 +1913,26 @@ final class AppModel {
         self.session = nil
         refreshWidgetSnapshot()   // the due count just moved
         screen = completion.showsResults ? .results : .menu
+    }
+
+    /// Consider asking for an App Store review, asking in the SAME branch that records it.
+    ///
+    /// Lives here rather than in `finishGame` because `requestReview` is a SwiftUI environment
+    /// action and only a view can hold it; the results screen passes it in. The moment is
+    /// consumed on the way through, so "ride again" bouncing through this screen cannot ask
+    /// twice for one ride.
+    ///
+    /// Suppression reuses `touchesNothingOfTheUsers` rather than adding a fourth flag: a run
+    /// that cannot reach the owner's data must not spend one of the three real prompts Apple
+    /// allows per year either. (Sniffing `Bundle.main.bundleIdentifier` would be wrong here —
+    /// under XCTest hosting it is non-nil, which is the trap STATE records.)
+    func considerReviewPrompt(now: Date = Date(), ask: () -> Void) {
+        guard let moment = pendingReviewMoment else { return }
+        pendingReviewMoment = nil
+        reviewPromptLedger.requestIfEarned(
+            moment: moment, now: now,
+            suppressed: Self.currentIsolation.touchesNothingOfTheUsers, ask: ask)
+        if !Screenshotter.isCapturing { reviewPromptLedger.save(to: Self.settingsStore) }
     }
 
     func backToMenu() {

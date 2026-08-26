@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 import SceneryKit
 import VocabKit
 import DiagnosticsKit
@@ -6,6 +7,10 @@ import DiagnosticsKit
 struct ResultsView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// Verified against the shipping SDK: `RequestReviewAction` is iOS 16 / macOS 13, below
+    /// this app's 17.0 / 14.0 targets, and unlike `SKStoreReviewController` — deprecated in
+    /// iOS 18 / macOS 15 — it is one call on both platforms with no window-scene plumbing.
+    @Environment(\.requestReview) private var requestReview
 
     private var zh: Bool { model.languageCode == "zh" }
     /// Word whose "add to lists" multi-select sheet is open (long-press a chip).
@@ -47,6 +52,11 @@ struct ResultsView: View {
             guard !Screenshotter.isCapturing, let summary = model.lastSummary else { return }
             shareCard = ShareCardRenderer.render(summary: summary, zh: zh)
                 .map { ShareCardImage(data: $0, title: zh ? "にほんご ライド" : "Nihongo Ride") }
+        }
+        .onAppear {
+            // Arriving somewhere after a good ride is the positive moment; the model decides
+            // whether this particular one has earned the ask, and records the answer either way.
+            model.considerReviewPrompt { requestReview() }
         }
         .sheet(isPresented: Binding(get: { addToListsTarget != nil },
                                     set: { if !$0 { addToListsTarget = nil } })) {

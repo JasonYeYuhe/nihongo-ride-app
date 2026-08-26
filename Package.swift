@@ -15,6 +15,7 @@ let package = Package(
         .library(name: "GameCore", targets: ["GameCore"]),
         .library(name: "JournalKit", targets: ["JournalKit"]),
         .library(name: "SettingsKit", targets: ["SettingsKit"]),
+        .library(name: "StoreReviewKit", targets: ["StoreReviewKit"]),
         .library(name: "SyncKit", targets: ["SyncKit"]),
         .library(name: "NotificationKit", targets: ["NotificationKit"]),
         .library(name: "SavedWordsKit", targets: ["SavedWordsKit"]),
@@ -84,6 +85,11 @@ let package = Package(
         .target(name: "SettingsKit"),
         .testTarget(name: "SettingsKitTests", dependencies: ["SettingsKit"]),
 
+        // When to ask for an App Store review, and — the point of it — a local count of
+        // every time we decided not to. Pure: no StoreKit import, so it tests headlessly.
+        .target(name: "StoreReviewKit"),
+        .testTarget(name: "StoreReviewKitTests", dependencies: ["StoreReviewKit"]),
+
         // MARK: iCloud sync core — pure merge of SRS / history / odometer / saved / word-lists (v1.2 Phase A, +v1.4, +v1.5).
         .target(name: "SyncKit", dependencies: ["ReviewKit", "JournalKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "PersistKit"]),
         .testTarget(name: "SyncKitTests", dependencies: ["SyncKit", "PersistKit"]),
@@ -139,7 +145,7 @@ let package = Package(
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit", "WidgetSharedKit", "SceneryKit", "PersistKit", "DiagnosticsKit"],
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit", "WidgetSharedKit", "SceneryKit", "PersistKit", "DiagnosticsKit", "StoreReviewKit"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]

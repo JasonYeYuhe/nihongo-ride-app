@@ -99,6 +99,8 @@ targets:
       - package: Nihongo
         product: SettingsKit
       - package: Nihongo
+        product: StoreReviewKit
+      - package: Nihongo
         product: SyncKit
       - package: Nihongo
         product: NotificationKit
@@ -208,6 +210,8 @@ targets:
         product: JournalKit
       - package: Nihongo
         product: SettingsKit
+      - package: Nihongo
+        product: StoreReviewKit
       - package: Nihongo
         product: SyncKit
       - package: Nihongo
