@@ -329,9 +329,16 @@ final class AppModel {
             ? AppSettings.default.sanitized()
             : AppSettings.load(from: Self.settingsStore)
         settings = loaded
-        // Same rule as settings: a capture run starts clean and never persists, so a render
-        // can neither read nor spend the owner's real review-prompt history.
-        reviewPromptLedger = Screenshotter.isCapturing
+        // ONE predicate for all three of the ledger's decisions — load, save and suppress.
+        // The pre-submission review flagged the earlier version, which gated load and save on
+        // `Screenshotter.isCapturing` while suppression used the isolation. Its stated failure
+        // (a UI test writing the owner's real ledger) does not occur, because `settingsStore`
+        // already routes a UI-test launch into a throwaway suite — `uiTestIsolationIsConsumed`
+        // asserts exactly that. But being safe by a SECOND mechanism, guarded by a DIFFERENT
+        // predicate, is the shape this project has paid for twenty-one times, and the same
+        // shape v1.26 §E removed from `LaunchIsolation` itself. A run that cannot reach the
+        // owner's data neither reads nor writes their prompt history, and says so once.
+        reviewPromptLedger = Self.currentIsolation.touchesNothingOfTheUsers
             ? ReviewPromptLedger()
             : ReviewPromptLedger.load(from: Self.settingsStore)
         languageCode = loaded.languageCode
@@ -1929,10 +1936,9 @@ final class AppModel {
     func considerReviewPrompt(now: Date = Date(), ask: () -> Void) {
         guard let moment = pendingReviewMoment else { return }
         pendingReviewMoment = nil
-        reviewPromptLedger.requestIfEarned(
-            moment: moment, now: now,
-            suppressed: Self.currentIsolation.touchesNothingOfTheUsers, ask: ask)
-        if !Screenshotter.isCapturing { reviewPromptLedger.save(to: Self.settingsStore) }
+        let isolated = Self.currentIsolation.touchesNothingOfTheUsers
+        reviewPromptLedger.requestIfEarned(moment: moment, now: now, suppressed: isolated, ask: ask)
+        if !isolated { reviewPromptLedger.save(to: Self.settingsStore) }
     }
 
     func backToMenu() {

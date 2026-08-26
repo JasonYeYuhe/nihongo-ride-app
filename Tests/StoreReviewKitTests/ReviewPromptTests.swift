@@ -213,6 +213,10 @@ struct ReviewPromptNamingTests {
 
     static let forbidden = ["shown", "displayed", "presented", "impression", "seen", "viewed"]
 
+    // Types are scanned too. The first version matched only var/let/func/case, so a
+    // `public struct PromptsShown` would have passed the guard that exists to forbid it —
+    // a scan whose blind spot was the thing it was written to catch.
+
     static var sourceFile: URL {
         URL(fileURLWithPath: #filePath)      // …/Tests/StoreReviewKitTests/ReviewPromptTests.swift
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
@@ -228,7 +232,7 @@ struct ReviewPromptNamingTests {
             let line = rawLine.trimmingCharacters(in: .whitespaces)
             // Prose is allowed to use the words; declarations are not.
             guard !line.hasPrefix("//") else { continue }
-            guard let range = line.range(of: #"\b(public\s+(private\(set\)\s+)?(var|let|func)|case)\s+([A-Za-z_][A-Za-z0-9_]*)"#,
+            guard let range = line.range(of: #"\b(public\s+(private\(set\)\s+)?(var|let|func|struct|class|enum|typealias)|case)\s+([A-Za-z_][A-Za-z0-9_]*)"#,
                                          options: .regularExpression) else { continue }
             let decl = String(line[range])
             guard let name = decl.split(separator: " ").last.map(String.init) else { continue }

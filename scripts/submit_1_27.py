@@ -28,7 +28,7 @@ figure was 42, because eight sentences went back into exclusion after the copy w
 
 Two phases:
   python3 scripts/submit_1_27.py --metadata   # create versions + What's New + review detail
-  python3 scripts/submit_1_27.py --submit     # attach VALID builds (mac 49 / iOS 50) + submit
+  python3 scripts/submit_1_27.py --submit     # attach VALID builds (mac 50 / iOS 51) + submit
 
 NOTE: --metadata cannot run while a previous version is WAITING_FOR_REVIEW. Uploading builds is
 fine at any time; this is the step that blocks.
@@ -39,8 +39,8 @@ from pathlib import Path
 APP = "6777469778"
 VERSION = "1.27"
 TARGETS = [
-    {"name": "macOS", "platform": "MAC_OS", "build_num": "49"},
-    {"name": "iOS",   "platform": "IOS",    "build_num": "50"},
+    {"name": "macOS", "platform": "MAC_OS", "build_num": "50"},
+    {"name": "iOS",   "platform": "IOS",    "build_num": "51"},
 ]
 
 # Measured, never typed. See release_numbers.py for why this is a module rather than a habit.
@@ -230,6 +230,16 @@ def set_whats_new(vid):
     locs = asc("GET", f"/v1/appStoreVersions/{vid}/appStoreVersionLocalizations"
                       f"?fields[appStoreVersionLocalizations]=locale&limit=50").get("data", [])
     by_locale = {l["attributes"]["locale"]: l["id"] for l in locs}
+    # The loop below asks "does every locale I WROTE have a destination". The pre-submission
+    # review caught that it cannot see the other direction: a locale configured on the App
+    # Store that this script has no copy for is never visited, so it silently ships the
+    # PREVIOUS version's What's New — claiming the last release's changes as this one's.
+    # Latent today (en-US and zh-Hans are the only two) and reachable the moment v1.28 adds
+    # ja / zh-Hant, which is exactly when nobody would be looking for it.
+    unwritten = sorted(set(by_locale) - set(WHATS_NEW))
+    if unwritten:
+        fail(f"App Store has locales this script writes no What's New for: {unwritten} "
+             f"— they would keep the previous version's copy")
     for locale, text in WHATS_NEW.items():
         lid = by_locale.get(locale)
         if not lid:

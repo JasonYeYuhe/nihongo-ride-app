@@ -188,6 +188,46 @@ struct ReviewPromptWiringTests {
                 "ResultsView must pass the environment action in, or the prompt can never appear")
     }
 
+    /// The pre-submission review's BLOCKER, tested rather than argued.
+    ///
+    /// Its claim: a UI-test launch loads the owner's real ledger, records a `.suppressed`
+    /// outcome into it, and saves it back. That failure does not occur — `settingsStore` routes
+    /// a UI-test launch into a throwaway suite, which `uiTestIsolationIsConsumed` already
+    /// asserts. But "safe because a second mechanism happens to catch it" is not a property
+    /// anybody checked, so this checks it: with every explicit override cleared, the only thing
+    /// standing between this model and `UserDefaults.standard` is the isolation itself.
+    @Test("a UI-test launch neither reads nor writes the owner's prompt ledger")
+    func uiTestNeverTouchesTheRealLedger() {
+        let savedSupport = AppModel.supportDirectoryOverride
+        let savedWidget = AppModel.widgetContainerOverride
+        let savedDefaults = AppModel.settingsDefaults
+        let savedSuite = AppModel.settingsSuiteOverride
+        defer {
+            AppModel.isUITestOverride = nil
+            AppModel.supportDirectoryOverride = savedSupport
+            AppModel.widgetContainerOverride = savedWidget
+            AppModel.settingsDefaults = savedDefaults
+            AppModel.settingsSuiteOverride = savedSuite
+        }
+        AppModel.supportDirectoryOverride = nil
+        AppModel.widgetContainerOverride = nil
+        AppModel.settingsDefaults = nil
+        AppModel.settingsSuiteOverride = nil
+        AppModel.isUITestOverride = true
+
+        let key = ReviewPromptLedger.defaultsKey
+        let before = UserDefaults.standard.data(forKey: key)
+        let model = AppModel(vocab: Self.vocab())
+        #expect(model.reviewPromptLedger == ReviewPromptLedger(),
+                "an isolated launch must start from an empty ledger, not the owner's")
+        Self.rideCleanly(model)
+        var asked = 0
+        model.considerReviewPrompt { asked += 1 }
+        #expect(asked == 0, "a UI test must never spend one of Apple's three annual prompts")
+        #expect(UserDefaults.standard.data(forKey: key) == before,
+                "a UI-test launch wrote the owner's real review-prompt ledger")
+    }
+
     /// A run that cannot reach the user's data must not spend one of the three real prompts
     /// Apple allows per year. The isolation value is the single source of truth for both.
     @Test("an isolated launch is suppressed, and an ordinary one is not")

@@ -155,10 +155,28 @@ def check_archive(archive, marketing, builds):
     return problems
 
 
+def newest_submit_script():
+    """The highest-versioned scripts/submit_<major>_<minor>.py on disk."""
+    best, best_key = None, ()
+    for path in Path(__file__).resolve().parent.glob("submit_*.py"):
+        m = re.fullmatch(r"submit_(\d+)_(\d+)(?:_(\d+))?", path.stem)
+        if not m:
+            continue
+        key = tuple(int(g) for g in m.groups() if g is not None)
+        if key > best_key:
+            best, best_key = path, key
+    if best is None:
+        raise SystemExit("check_versions: no scripts/submit_<version>.py found")
+    return str(best.relative_to(Path(__file__).resolve().parent.parent))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--bump", metavar="VERSION", help="increment every build by one and set this marketing version")
-    ap.add_argument("--submit-script", default="scripts/submit_1_26.py")
+    # Resolved, not hardcoded. This defaulted to submit_1_26.py while the project was on
+    # 1.27, so a bare run compared the build numbers against a release that had already
+    # shipped — a checker reading the wrong file reports "clean" exactly like a working one.
+    ap.add_argument("--submit-script", default=newest_submit_script())
     ap.add_argument("--archive", help="also verify the Info.plists inside a built .xcarchive")
     args = ap.parse_args()
 
