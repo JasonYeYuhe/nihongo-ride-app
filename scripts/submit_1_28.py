@@ -55,37 +55,47 @@ N = _release_numbers()
 # What's New — MUST NOT contain the literal star glyph (ASC rejects it).
 WHATS_NEW = {
     "en-US": (
-        "\u2022 After a ride that went well, Nihongo Ride may now ask whether you would like to "
-        "rate it on the App Store. It waits until you have come back on a second day and finished "
-        "a few rides, it does not ask after a rough ride, and it will not ask again for months.\n"
-        "\u2022 That is still nothing to do with the network. The app keeps its own count of when "
-        "it asked and when it decided not to, on your device, and that count never leaves it."
+        f"\u2022 Dictation now draws on {N['dictationPool']:,} sentences, "
+        f"{N['releasedThisRelease']} more than before. Those {N['releasedThisRelease']} had been "
+        "set aside on an assumption rather than a measurement \u2014 that a word the voice "
+        "misreads in one sentence is misread in every sentence. Each was checked on its own "
+        "against the voice, and these say exactly what their answer key says.\n"
+        "\u2022 The App Store listing is now available in Japanese, and the reading-passage "
+        "count in the English and Chinese listings was out of date."
     ),
     "zh-Hans": (
-        "\u2022 骑行结束且成绩不错时,Nihongo Ride 现在可能会问你是否愿意在 App Store 上评分。"
-        "它会等到你第二天再回来、并且已经完成过几次骑行才问;成绩不理想时不问;问过之后几个月内"
-        "不会再问。\n"
-        "\u2022 这依然和联网无关。App 会在你的设备上自己记录何时问过、何时决定不问,"
-        "这些记录永远不会离开设备。"
+        f"\u2022 听写现在可以抽取 {N['dictationPool']:,} 个句子,比之前多 {N['releasedThisRelease']} 个。"
+        f"这 {N['releasedThisRelease']} 个此前是被一个假设挡下的,而不是被测量挡下的 \u2014\u2014 "
+        "那个假设是「语音在某个句子里读错的词,在所有句子里都会读错」。现在每一个都单独对着语音核过,"
+        "它们念的正是答案本身。\n"
+        "\u2022 App Store 商品页新增日语版本;英文和中文商品页里的阅读文章数量此前是过时的。"
+    ),
+    "ja": (
+        f"\u2022 ディクテーションの出題範囲が {N['dictationPool']:,} 文になりました"
+        f"（{N['releasedThisRelease']} 文の増加）。この {N['releasedThisRelease']} 文は、"
+        "「ある文で読み間違えられた語は、どの文でも読み間違えられる」という"
+        "測定ではなく仮定によって除外されていたものです。一文ずつ音声と照合し直し、"
+        "解答どおりに読まれることを確認しました。\n"
+        "\u2022 App Store の製品ページが日本語に対応しました。"
     ),
 }
 
 REVIEW_NOTES = (
-    "Nihongo Ride is a fully offline-capable typing-practice app for Japanese learners. No account or login "
-    "is required; the developer collects no data.\n\n"
-    "Version 1.27 adds a single user-facing change: the app may request an App Store rating using SwiftUI's "
-    "requestReview environment action, shown only after a completed practice ride, and only for someone who "
-    "has returned on a second day and finished several rides. It is not shown after a poor result, not on "
-    "launch, and not more than once in several months.\n\n"
-    "Nothing about data handling has changed and the App Privacy declaration is unchanged. The app records, "
-    "in local storage on the device, the dates on which it made a rating request and a tally of the reasons "
-    "it decided not to make one. That record is never transmitted, is not associated with any identifier, and "
-    "is used only so the app can space its own requests correctly. There is no analytics SDK, no network call, "
-    "no account and no advertising in this app.\n\n"
-    "Everything else runs on-device as before: no microphone, no speech recognition. Dictation uses the system "
-    "Japanese text-to-speech voice (AVSpeechSynthesizer, on-device ja-JP) and is shown as unavailable, with an "
-    "explanation, when no Japanese voice is installed. iCloud sync is the user's own private database and the "
-    "app is fully usable without it."
+    "Nihongo Ride is a typing-practice app for learners of Japanese. No account or login is "
+    "required and the developer collects no data.\n\n"
+    "Version 1.28 makes one functional change: eleven example sentences are returned to the "
+    "Dictation exercise. Dictation speaks a sentence with the system Japanese voice and grades "
+    "the learner against a kana answer key, so any sentence where the two disagree is withheld. "
+    "Eleven had been withheld by inference rather than measurement; each was re-measured "
+    "individually and now matches.\n\n"
+    "This version also adds a Japanese (ja) App Store localization, and corrects two figures in "
+    "the existing English and Simplified Chinese descriptions that had fallen out of date.\n\n"
+    "Data handling is unchanged and the App Privacy declaration is unchanged. There is no "
+    "analytics SDK, no advertising, and no developer-operated server in this app. Optional iCloud "
+    "sync uses the user's own private CloudKit database, which the developer cannot read, and the "
+    "app is fully usable with it switched off. Dictation uses the on-device system Japanese "
+    "text-to-speech voice (AVSpeechSynthesizer, ja-JP) and reports itself unavailable, with an "
+    "explanation, when no Japanese voice is installed."
 )
 CONTACT = {"contactFirstName": "Yuhe", "contactLastName": "Ye",
            "contactPhone": "+81 80-3526-7088", "contactEmail": "yyyyy.yeyuhe@gmail.com"}
