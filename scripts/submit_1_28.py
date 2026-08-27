@@ -28,7 +28,7 @@ figure was 42, because eight sentences went back into exclusion after the copy w
 
 Two phases:
   python3 scripts/submit_1_28.py --metadata   # create versions + What's New + review detail
-  python3 scripts/submit_1_28.py --submit     # attach VALID builds (mac 51 / iOS 52) + submit
+  python3 scripts/submit_1_28.py --submit     # attach VALID builds (mac 52 / iOS 53) + submit
 
 NOTE: --metadata cannot run while a previous version is WAITING_FOR_REVIEW. Uploading builds is
 fine at any time; this is the step that blocks.
@@ -39,8 +39,8 @@ from pathlib import Path
 APP = "6777469778"
 VERSION = "1.28"
 TARGETS = [
-    {"name": "macOS", "platform": "MAC_OS", "build_num": "51"},
-    {"name": "iOS",   "platform": "IOS",    "build_num": "52"},
+    {"name": "macOS", "platform": "MAC_OS", "build_num": "52"},
+    {"name": "iOS",   "platform": "IOS",    "build_num": "53"},
 ]
 
 # Measured, never typed. See release_numbers.py for why this is a module rather than a habit.
@@ -88,8 +88,10 @@ REVIEW_NOTES = (
     "the learner against a kana answer key, so any sentence where the two disagree is withheld. "
     "Eleven had been withheld by inference rather than measurement; each was re-measured "
     "individually and now matches.\n\n"
-    "This version also adds a Japanese (ja) App Store localization, and corrects two figures in "
-    "the existing English and Simplified Chinese descriptions that had fallen out of date.\n\n"
+    "This version also adds a Japanese (ja) App Store localization and corrects three statements "
+    "in the existing English and Simplified Chinese descriptions: the reading-passage count was "
+    "out of date, the wording implied no network use at all when optional iCloud sync is on by "
+    "default, and one line named the Mac on a listing that also serves iPhone and iPad.\n\n"
     "Data handling is unchanged and the App Privacy declaration is unchanged. There is no "
     "analytics SDK, no advertising, and no developer-operated server in this app. Optional iCloud "
     "sync uses the user's own private CloudKit database, which the developer cannot read, and the "

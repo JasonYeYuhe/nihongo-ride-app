@@ -108,6 +108,13 @@ LOCKLOG="$BUILD_DIR/console-lock.log"
       sleep 1
   done ) > "$LOCKLOG" 2>/dev/null &
 LOCKPID=$!
+# bash replaces traps rather than appending, so installing this one would silently discard an
+# earlier EXIT handler. There is none today; if one is ever added above, this stops rather than
+# eating it. (Pre-submission review, v1.28.)
+if [[ -n "$(trap -p EXIT)" ]]; then
+    echo "❌ An EXIT trap is already installed; adding the lock sampler would discard it." >&2
+    exit 1
+fi
 trap 'kill "$LOCKPID" 2>/dev/null || true' EXIT
 cat > "$BUILD_DIR/ExportOptions.plist" << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>

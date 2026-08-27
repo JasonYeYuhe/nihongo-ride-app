@@ -25,6 +25,14 @@ from pathlib import Path
 APP = "6777469778"
 REPO = Path(__file__).resolve().parent.parent
 APP_INFO_FIELDS = {"name", "subtitle", "privacyPolicyUrl"}
+
+# Quantities the copy is allowed to name, and how to recompute each. A needle that appears in
+# the copy while its computed value does not is a stale figure.
+CHECKED_FIGURES = {
+    "passages": lambda N: [{"needle": "読解パッセージ", "value": str(N["passages"])},
+                           {"needle": "reading passages", "value": str(N["passages"])},
+                           {"needle": "阅读文章", "value": str(N["passages"])}],
+}
 VERSION_FIELDS = {"description", "keywords", "whatsNew", "promotionalText",
                   "supportUrl", "marketingUrl"}
 _failures = []
@@ -97,6 +105,8 @@ def main():
     ap.add_argument("--content", required=True)
     ap.add_argument("--version", help="marketing version; default = the newest editable one")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--skip-number-check", action="store_true",
+                    help="upload copy whose figures this repo cannot confirm; say why in the commit")
     args = ap.parse_args()
 
     content = json.loads(Path(args.content).read_text(encoding="utf-8"))
@@ -104,6 +114,26 @@ def main():
     if unknown:
         print(f"unknown fields in {args.content}: {sorted(unknown)}")
         return 2
+
+    # Store copy is a place numbers go to rot. `en-US` and `zh-Hans` both told users "183
+    # reading passages" for months after the corpus reached 233, and the ja draft inherited it
+    # by copying. So any figure here that names a quantity this repo can compute is checked
+    # against the computation before it is uploaded.
+    if not args.skip_number_check:
+        from release_numbers import numbers as _n
+        N = _n()
+        blob = " ".join(str(v) for v in content.values())
+        wrong = []
+        for key, claimed in CHECKED_FIGURES.items():
+            for token in claimed(N):
+                if token["needle"] in blob and token["value"] not in blob:
+                    wrong.append(f"copy says {token['needle']!r} but {key} is {token['value']}")
+        if wrong:
+            print("STORE-COPY-FIGURE-MISMATCH:")
+            for w in wrong:
+                print(f"  {w}")
+            print("  Fix the copy, or pass --skip-number-check and say why.")
+            return 2
 
     # App-level record.
     infos = asc("GET", f"/v1/apps/{APP}/appInfos?limit=5")
@@ -138,13 +168,20 @@ def main():
         if vs.get("errors") or not vs.get("data"):
             fail(f"{platform}: no version found")
             continue
-        v = vs["data"][0]
-        state = v["attributes"]["appStoreState"]
-        if state in ("READY_FOR_SALE", "IN_REVIEW", "WAITING_FOR_REVIEW"):
-            fail(f"{platform} {v['attributes']['versionString']} is {state} — not editable. "
-                 f"Create the next version first.")
+        # Select by state, never by position. data[0] is whatever ASC returned first, and this
+        # file already carries the scar of that: the appInfo lookup above took data[0], got the
+        # LIVE record, and answered "A relationship cannot be created in current state". Exactly
+        # one editable version must exist, or stop.
+        LOCKED = ("READY_FOR_SALE", "IN_REVIEW", "WAITING_FOR_REVIEW", "PENDING_DEVELOPER_RELEASE")
+        editable = [r for r in vs["data"] if r["attributes"]["appStoreState"] not in LOCKED]
+        if len(editable) != 1:
+            fail(f"{platform}: expected exactly one editable version, found "
+                 + str([(r["attributes"]["versionString"], r["attributes"]["appStoreState"])
+                        for r in vs["data"]]))
             continue
-        print(f"  {platform} {v['attributes']['versionString']} ({state})")
+        v = editable[0]
+        print(f"  {platform} {v['attributes']['versionString']} "
+              f"({v['attributes']['appStoreState']})")
         upsert("appStoreVersionLocalizations",
                f"/v1/appStoreVersions/{v['id']}/appStoreVersionLocalizations",
                {"appStoreVersion": {"data": {"type": "appStoreVersions", "id": v["id"]}}},

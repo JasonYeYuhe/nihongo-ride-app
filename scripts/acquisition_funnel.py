@@ -137,10 +137,13 @@ def main():
     print(f"window {args.since} .. {args.until}")
     print(f"  impressions {impressions} · page views {pageviews} · taps {tot['Tap']} · "
           f"first-time downloads {downloads}")
-    print(f"  impression -> download  {downloads / impressions:.2%}   <- the honest rate")
-    print(f"  {nopage} of {downloads} downloads ({nopage / downloads:.0%}) never opened the "
+    # Guarded: a window with no impressions or no downloads is a legitimate query (a new app,
+    # a quiet week) and must print zeros, not raise. Line 153 already guarded; these did not.
+    pct = lambda a, b: (a / b) if b else 0.0
+    print(f"  impression -> download  {pct(downloads, impressions):.2%}   <- the honest rate")
+    print(f"  {nopage} of {downloads} downloads ({pct(nopage, downloads):.0%}) never opened the "
           f"product page, so page-view-to-download is not a conversion rate")
-    print("  source: " + " · ".join(f"{k}={v} ({v/downloads:.0%})"
+    print("  source: " + " · ".join(f"{k}={v} ({pct(v, downloads):.0%})"
                                     for k, v in sorted(src.items(), key=lambda x: -x[1])))
     print()
     print(f"  {'terr':5}{'impr':>8}{'pv':>7}{'dl':>5}{'impr->dl':>10}")

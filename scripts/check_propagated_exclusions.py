@@ -108,19 +108,32 @@ def analyse(rows, readings_of, decoys=True):
     return plans, decoy_texts
 
 
-def verdict(row, plan):
+def verdict(row, plan, disputed):
+    """Decide one sentence. `disputed` is the set of surfaces that got it withheld.
+
+    **A release must confirm the DISPUTED word, not merely some word.** The first version
+    returned RELEASE as soon as any span agreed with its corpus reading, and the
+    pre-submission review found that this released `n2-g210` (彼が殺人を犯した動機は何だ)
+    on 彼 = かれ while 何 -- the entire reason it was withheld -- was never confirmed. That
+    is this project's oldest defect in a new place: the evidence that released the sentence
+    and the reason it was withheld were different predicates, agreeing only by inspection.
+    """
     target = C.sha(C.clip(row["exJP"]))
-    agrees, disagrees = [], []
+    agrees, disagrees, covered = [], [], set()
     for (i, L, surf, corpus), cands in plan.items():
         matched = [k for k, txt in cands.items() if C.sha(C.clip(txt)) == target]
         if not matched:
             continue
         if corpus in matched:
             agrees.append((surf, corpus))
+            covered |= {w for w in disputed if w in surf}
         else:
             disagrees.append((surf, corpus, matched))
     if disagrees:
         return "KEEP", disagrees
+    here = {w for w in disputed if w in row["exJP"]}
+    if here and not here <= covered:
+        return "SILENT", sorted(here - covered)      # the disputed word was never confirmed
     if agrees:
         return "RELEASE", agrees
     return "SILENT", []
@@ -129,6 +142,10 @@ def verdict(row, plan):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--calibrate", action="store_true")
+    ap.add_argument("--evidence", default="propagated",
+                    help="which evidence class to inspect. The default class was retired by "
+                         "v1.28 §A, so a bare run now reports FINISHED; re-point it to "
+                         "re-measure, or to attack the 910 'nearest' exclusions.")
     ap.add_argument("--json")
     args = ap.parse_args()
 
@@ -145,7 +162,16 @@ def main():
 
     mism = json.loads((REPO / "docs/measurements/dictation-reading-mismatches.json")
                       .read_text(encoding="utf-8"))
-    want = {r["id"] for r in mism["excluded"] if r["evidence"] == "propagated"}
+    want = {r["id"] for r in mism["excluded"] if r["evidence"] == args.evidence}
+    # The surfaces that were PROVEN misread somewhere. A sentence may only be released if
+    # the one that got IT withheld is confirmed in IT.
+    disputed = set()
+    for r in mism["excluded"]:
+        if not r["evidence"].startswith("proven"):
+            continue
+        parts = r["heardInstead"].split()
+        if len(parts) >= 3 and parts[1] != "->":
+            disputed.add(parts[0])
     every = C.build_rows()
     rows = [r for r in every if r["id"] in want]
     if len(rows) != len(want):
@@ -196,7 +222,7 @@ def main():
         ok, _, _ = C.prove(sample_rows)
         sample = ok[:80]
         plans, _ = analyse(sample, readings_of, decoys=False)
-        disagreed = [r["id"] for r in sample if verdict(r, plans[r["id"]])[0] == "KEEP"]
+        disagreed = [r["id"] for r in sample if verdict(r, plans[r["id"]], disputed)[0] == "KEEP"]
         print(f"  positive control: instrument 1 proved {len(sample)} sentences say their corpus "
               f"reading; 1b contradicts {len(disagreed)}")
         if disagreed:
@@ -229,7 +255,7 @@ def main():
     out = {"release": [], "keep": [], "silent": []}
     print("VERDICTS")
     for r in rows:
-        v, detail = verdict(r, plans[r["id"]])
+        v, detail = verdict(r, plans[r["id"]], disputed)
         if v == "RELEASE":
             out["release"].append(r["id"])
             note = "says the corpus reading"

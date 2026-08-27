@@ -1111,9 +1111,18 @@ struct ExampleSentenceTests {
         let data = try Data(contentsOf: url)
         let json = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
         let rows = try #require(json["excluded"] as? [[String: Any]])
-        let recorded = Set(rows.compactMap { $0["id"] as? String })
+        let ids = rows.compactMap { $0["id"] as? String }
+        let recorded = Set(ids)
         // A scan that reads nothing cannot report clean.
         #expect(recorded.count > 300, "the evidence record parsed only \(recorded.count) rows")
+        // Set comparison is blind to duplicates: a record with the same id twice has the same
+        // set difference as one with it once, so the two files could disagree on COUNT while
+        // this test stayed green. (Pre-submission review, v1.28.)
+        #expect(ids.count == recorded.count, Comment(rawValue:
+            "the evidence record lists \(ids.count - recorded.count) duplicate id(s)"))
+        #expect((json["excludedCount"] as? Int) == ids.count, Comment(rawValue:
+            "excludedCount says \(json["excludedCount"] as? Int ?? -1) but the record holds "
+            + "\(ids.count) rows"))
 
         let shipped = Set(DictationSafety.excludedIDs)
         let withheldWithoutReason = shipped.subtracting(recorded).sorted()

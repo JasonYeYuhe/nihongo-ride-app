@@ -18,7 +18,6 @@
   "n1-b621",
   "n1-b909",
   "n1-b2014",
-  "n2-g210",
   "n2-b162",
   "n2-b208",
   "n2-b570",
@@ -45,6 +44,7 @@
  ],
  "undecided": [
   "n1-b655",
+  "n2-g210",
   "n5-g004"
  ],
  "geminiPredictionTested": "Gemini 3.7 Flash predicted correcting exKana to よにん would 'likely produce a byte match with Kyoko, directly unblocking n5-kazoku'. Measured FALSE: 四人 -> よにん differs, as do よんにん and よったり. Only 人 -> ひと matches.",
@@ -57,12 +57,13 @@
  },
  "dictationPool": {
   "before": 5760,
-  "after": 5771
+  "after": 5770
  },
  "knownLimits": [
   "Byte identity proves the synthesizer converted two texts to the same phonemes. It does NOT prove the pronunciation is CORRECT — if Kyoko mispronounces both the kanji and the kana the same way, the learner hears the same wrong audio and the proof is silent about it. This is a standing property of every one of the 5,771 sentences in the pool, not a regression introduced by releasing eleven.",
   "It also says nothing about whether a learner might hear a valid homophone and type a different but legitimate kana spelling. The particle は/わ and へ/え variants are handled; anything else is unhandled and unmeasured.",
   "Verified for this release: all 11 released sentences carried 'propagated' as their ONLY recorded evidence. That label was assigned only where a sentence was neither proven nor flagged by the nearest instrument, so none of them had a second, independent reason to be withheld."
  ],
- "opensAnItemThePlanCalledBlocked": "PLAN-V1.27 lists the 910 'nearest' exclusions as needing 'an instrument this repo does not have' — instrument 2 agrees with adjudication only 42/63 on that population and its margin is larger when it is wrong. Instrument 1b IS such an instrument: proof by byte identity under a whole-span kana substitution, with 0 spurious matches against 69 real alternative readings. Running it over the 910 is the largest content win now available and is NOT done here."
+ "opensAnItemThePlanCalledBlocked": "PLAN-V1.27 lists the 910 'nearest' exclusions as needing 'an instrument this repo does not have' — instrument 2 agrees with adjudication only 42/63 on that population and its margin is larger when it is wrong. Instrument 1b IS such an instrument: proof by byte identity under a whole-span kana substitution, with 0 spurious matches against 69 real alternative readings. Running it over the 910 is the largest content win now available and is NOT done here.",
+ "releasePredicate": "A sentence may be released only if the DISPUTED word — the surface that got it withheld — is itself confirmed in that sentence. The first predicate returned RELEASE as soon as ANY span agreed with its corpus reading, and the pre-submission review found it had released n2-g210 (彼が殺人を犯した動機は何だ) on 彼 = かれ while 何 was never confirmed. The evidence that released the sentence and the reason it was withheld were different predicates, agreeing only by inspection — this project's oldest defect shape, in a new place. n2-g210 is now SILENT and stays withheld."
 }
