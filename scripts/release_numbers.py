@@ -24,7 +24,7 @@ CORPUS_MANIFEST = None        # v1.27 ships one feature and touches no vocabular
 # Advanced with every release. v1.27 moved it from 60c9ed9 (the v1.25 baseline) to the v1.26
 # release commit, so "this release" means since 1.26 and not since 1.25. Leaving it behind is how
 # a delta silently becomes a two-release total — the stale-number failure this module exists for.
-BASELINE_REF = "b9dd532"      # release(v1.26): submitted, both platforms WAITING_FOR_REVIEW
+BASELINE_REF = "14f5214"      # release(v1.27): submitted, both platforms WAITING_FOR_REVIEW
 
 
 def previous(ref=BASELINE_REF):
@@ -97,7 +97,12 @@ def numbers():
         "weakWordsRunSize": caps["weakWordsRunSize"],
         "conjugationRunSize": caps["conjugationRunSize"],
         "dictationPoolBefore": before.get("dictationPool"),
+        # Signed: positive means sentences LEFT the dictation pool this release, negative
+        # means they returned to it. v1.28 released 11, so this reads -11 — a figure that
+        # says the opposite of its own name if quoted without its sign. `releasedThisRelease`
+        # exists so release copy can never quote the wrong direction.
         "withheldThisRelease": withheld,
+        "releasedThisRelease": (-withheld if withheld is not None and withheld < 0 else 0),
     }
 
 

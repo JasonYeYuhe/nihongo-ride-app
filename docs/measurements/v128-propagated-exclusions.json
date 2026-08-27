@@ -1,0 +1,16 @@
+{
+ "measurement": "scripts/check_propagated_exclusions.py",
+ "voice": "not observed — every clip served from cache this run",
+ "question": "The 15 exclusions whose evidence was 'propagated' were never measured. They were excluded because a word in them was proven misread IN A DIFFERENT SENTENCE, under the comment 'a voice does not change its mind between sentences'. This measures each of them directly.",
+ "instrument": "1b: the sentence stays in kanji and exactly one CONTIGUOUS SPAN of tokens is replaced by kana, so word boundaries and accent context are unchanged. A byte-identical render is proof about that span in that sentence; a non-match stays silent.",
+ "calibration": {
+  "rebuildIdentity": "0/0 — string handling only, no linguistic weight",
+  "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+  "negativeControl": "0 decoy substitutions, 0 spurious byte matches"
+ },
+ "instrument1Recall": "3 of 15 — the carried-forward plan's claim that 'instrument 1 can decide each directly' is measured FALSE. Rendering the whole reading as kana changes prosody, so byte identity goes silent even where the reading is right.",
+ "theCommentIsFalse": "畑 is read はたけ in n1-b432 and ばたけ in n1-b1000 — same word, same voice, two sentences, two readings, both proven by byte identity. The assumption that justified propagating 15 verdicts is disproven by the data those verdicts were derived from.",
+ "release": [],
+ "keep": [],
+ "silent": []
+}

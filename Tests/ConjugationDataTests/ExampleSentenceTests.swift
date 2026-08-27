@@ -1093,4 +1093,46 @@ struct ExampleSentenceTests {
             "only \(DictationSafety.excludedIDs.count) exclusions — the shipped measurement "
             + "found 1,003. An empty or truncated list silently makes dictation dishonest."))
     }
+
+    /// **The shipped list and the evidence behind it are two files, and nothing kept them in
+    /// step.** v1.28 released eleven sentences from dictation and all 570 tests stayed green,
+    /// which is the same shape as every count-vs-run defect this project has found: two sides
+    /// of one fact, agreeing only by inspection.
+    ///
+    /// The bundle ships ids alone — deliberately, the 240 KB of evidence is for the repo, not
+    /// for devices — so this reads the measurement record from the repo and requires the two to
+    /// name exactly the same sentences. Withholding a sentence with no recorded reason, and
+    /// recording a reason for a sentence that is not withheld, both go red.
+    @Test("every withheld sentence has a recorded reason, and every reason a withheld sentence")
+    func exclusionsAndEvidenceAgree() throws {
+        let repo = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let url = repo.appendingPathComponent("docs/measurements/dictation-reading-mismatches.json")
+        let data = try Data(contentsOf: url)
+        let json = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let rows = try #require(json["excluded"] as? [[String: Any]])
+        let recorded = Set(rows.compactMap { $0["id"] as? String })
+        // A scan that reads nothing cannot report clean.
+        #expect(recorded.count > 300, "the evidence record parsed only \(recorded.count) rows")
+
+        let shipped = Set(DictationSafety.excludedIDs)
+        let withheldWithoutReason = shipped.subtracting(recorded).sorted()
+        let reasonWithoutWithholding = recorded.subtracting(shipped).sorted()
+        #expect(withheldWithoutReason.isEmpty, Comment(rawValue:
+            "\(withheldWithoutReason.count) sentence(s) are withheld from dictation with no "
+            + "recorded reason: " + withheldWithoutReason.prefix(8).joined(separator: ", ")))
+        #expect(reasonWithoutWithholding.isEmpty, Comment(rawValue:
+            "\(reasonWithoutWithholding.count) sentence(s) have a recorded exclusion reason but "
+            + "are offered for dictation: " + reasonWithoutWithholding.prefix(8).joined(separator: ", ")))
+
+        // Every reason must say something. "propagated" is retired: it named an inference
+        // drawn from a DIFFERENT sentence, and v1.28 measured it wrong 11 times out of 15.
+        let evidences = rows.compactMap { $0["evidence"] as? String }
+        #expect(evidences.count == rows.count, "an exclusion row carries no evidence field")
+        #expect(!evidences.contains("propagated"), Comment(rawValue:
+            "\(evidences.filter { $0 == "propagated" }.count) exclusion(s) are back on "
+            + "'propagated' evidence — that rule was retired in v1.28 because the comment "
+            + "behind it ('a voice does not change its mind between sentences') is false: "
+            + "畑 is proven はたけ in n1-b432 and ばたけ in n1-b1000."))
+    }
 }

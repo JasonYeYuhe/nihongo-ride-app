@@ -5,7 +5,7 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 964,
+ "excludedCount": 953,
  "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made.",
  "excluded": [
   {
@@ -132,8 +132,8 @@
    "id": "n1-b1000",
    "exJP": "畑の収穫後に残った藁を集めた。",
    "exKana": "はたけのしゅうかくごにのこったわらをあつめた",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
+   "heardInstead": "畑 はたけ -> ばたけ",
+   "evidence": "proven (v1.28, instrument 1b)"
   },
   {
    "id": "n1-b1001",
@@ -484,13 +484,6 @@
    "exKana": "そのどうとくかんはじだいをこえてふへんである",
    "heardInstead": "時代 じだい -> ときよ",
    "evidence": "nearest"
-  },
-  {
-   "id": "n1-b129",
-   "exJP": "今日は何だか体が重く感じられる。",
-   "exKana": "きょうはなんだかからだがおもくかんじられる",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
   },
   {
    "id": "n1-b1299",
@@ -1103,13 +1096,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n1-b2014",
-   "exJP": "今日は何て素晴らしい日だろう。",
-   "exKana": "きょうはなんてすばらしいひだろう",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
-  },
-  {
    "id": "n1-b2015",
    "exJP": "心の中の憎しみを捨てるのは難しい。",
    "exKana": "こころのなかのにくしみをすてるのはむずかしい",
@@ -1419,13 +1405,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n1-b432",
-   "exJP": "イノシシが畑を荒らして困っている。",
-   "exKana": "いのししがはたけをあらしてこまっている",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
-  },
-  {
    "id": "n1-b434",
    "exJP": "風邪を引いたので、家で安静にしている。",
    "exKana": "かぜをひいたのでいえであんせいにしている",
@@ -1601,13 +1580,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n1-b621",
-   "exJP": "何と美しい景色だろう。",
-   "exKana": "なんとうつくしいけしきだろう",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
-  },
-  {
    "id": "n1-b631",
    "exJP": "大雨の後に道路の排水作業を行った。",
    "exKana": "おおあめのあとにどうろのはいすいさぎょうをおこなった",
@@ -1646,8 +1618,8 @@
    "id": "n1-b655",
    "exJP": "あと数分でバスが到着します。",
    "exKana": "あとすうふんでばすがとうちゃくします",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
+   "heardInstead": "no instrument has decided this sentence",
+   "evidence": "undecided (v1.28: propagation retired, instrument 1b silent)"
   },
   {
    "id": "n1-b663",
@@ -1942,13 +1914,6 @@
    "exKana": "さかなをさばいたのでてがなまぐさい",
    "heardInstead": "手 て -> しゅ",
    "evidence": "nearest"
-  },
-  {
-   "id": "n1-b909",
-   "exJP": "わからないことがあれば何なりとお聞きください。",
-   "exKana": "わからないことがあればなんなりとおききください",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
   },
   {
    "id": "n1-b910",
@@ -2449,13 +2414,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n2-b1023",
-   "exJP": "彼は何でも欲しがる欲張りな性格だ。",
-   "exKana": "かれはなんでもほしがるよくばりなせいかくだ",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
-  },
-  {
    "id": "n2-b103",
    "exJP": "彼は私をだまして金を奪った。",
    "exKana": "かれはわたくしをだましてきんをうばった",
@@ -2785,13 +2743,6 @@
    "evidence": "nearest"
   },
   {
-   "id": "n2-b162",
-   "exJP": "坊や、お名前は何というの。",
-   "exKana": "ぼうやおなまえはなんというの",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
-  },
-  {
    "id": "n2-b171",
    "exJP": "見慣れた景色に心が落ち着く。",
    "exKana": "みなれたけしきにこころがおちつく",
@@ -2832,13 +2783,6 @@
    "exKana": "すーぷがこいのでみずでうすめた",
    "heardInstead": "水 みず -> ずい",
    "evidence": "nearest"
-  },
-  {
-   "id": "n2-b208",
-   "exJP": "ええと、次の予定は何でしたっけ。",
-   "exKana": "ええとつぎのよていはなんでしたっけ",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
   },
   {
    "id": "n2-b214",
@@ -3182,13 +3126,6 @@
    "exKana": "かれはかいぎちゅうしじゅうだまっていた",
    "heardInstead": "中 ちゅう -> うち",
    "evidence": "nearest"
-  },
-  {
-   "id": "n2-b570",
-   "exJP": "野菜の好き嫌いなく何でも食べる。",
-   "exKana": "やさいのすききらいなくなんでもたべる",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
   },
   {
    "id": "n2-b584",
@@ -3665,13 +3602,6 @@
    "exKana": "あきにべいをしゅうかくする",
    "heardInstead": "米 べい -> ごめ",
    "evidence": "nearest"
-  },
-  {
-   "id": "n2-g210",
-   "exJP": "彼が殺人を犯した動機は何だ。",
-   "exKana": "かれがさつじんをおかしたどうきはなんだ",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
   },
   {
    "id": "n2-g214",
@@ -4667,13 +4597,6 @@
    "exKana": "かみひこうきをたかくとばす",
    "heardInstead": "紙 かみ -> がみ",
    "evidence": "nearest"
-  },
-  {
-   "id": "n3-b637",
-   "exJP": "難しい試験でしたが、何とか合格できました。",
-   "exKana": "むずかしいしけんでしたがなんとかごうかくできました",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
   },
   {
    "id": "n3-b638",
@@ -6492,8 +6415,8 @@
    "id": "n5-g004",
    "exJP": "四ページです。",
    "exKana": "よんぺーじです",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
+   "heardInstead": "no instrument has decided this sentence",
+   "evidence": "undecided (v1.28: propagation retired, instrument 1b silent)"
   },
   {
    "id": "n5-g007",
@@ -6737,8 +6660,8 @@
    "id": "n5-kazoku",
    "exJP": "家族は四人です。",
    "exKana": "かぞくはよんにんです",
-   "heardInstead": "same word proven misread in another sentence",
-   "evidence": "propagated"
+   "heardInstead": "人 にん -> ひと",
+   "evidence": "proven (v1.28, instrument 1b)"
   },
   {
    "id": "n5-namae",

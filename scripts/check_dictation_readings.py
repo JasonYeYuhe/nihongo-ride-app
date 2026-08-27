@@ -179,13 +179,28 @@ def render(texts, workers=8):
 
     def run(chunk):
         if chunk:
-            subprocess.run([str(binary), str(CACHE)],
-                           input="".join(f"{k}\t{t}\n" for k, t in chunk).encode("utf-8"),
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+            # stderr carries `voice=<identifier>` from the renderer, and used to go to DEVNULL —
+            # so which voice produced every verdict in this repo was PRINTED on every run and
+            # captured by none of them, while measurement files named a specific Kyoko build by
+            # hand. Captured now, so the record can state what was measured instead of what was
+            # assumed. Failure to parse leaves it None; nothing here depends on it.
+            proc = subprocess.run([str(binary), str(CACHE)],
+                                  input="".join(f"{k}\t{t}\n" for k, t in chunk).encode("utf-8"),
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, check=False)
+            for line in proc.stderr.decode("utf-8", errors="replace").splitlines():
+                if line.startswith("voice="):
+                    global RESOLVED_VOICE
+                    RESOLVED_VOICE = line.split("=", 1)[1].strip()
+                    break
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
         list(ex.map(run, [todo[i::workers] for i in range(workers)]))
     return len(todo)
+
+
+#: The voice identifier the renderer actually resolved, or None if nothing has been rendered
+#: in this process (every clip may have been cached). MEASURED, not declared.
+RESOLVED_VOICE = None
 
 
 # --- instrument 1: proof by byte-identical audio -------------------------------------
@@ -465,13 +480,21 @@ def main():
               "\n  random kana are a harder test than real alternative readings, and would"
               "\n  have made a working instrument look broken.")
 
-    # A voice does not change its mind between sentences: a PROVEN word-level mismatch
-    # applies wherever the corpus assigns that reading to that surface.
+    # RETIRED in v1.28, because the comment that justified it is measured FALSE.
+    #
+    # It used to read: "A voice does not change its mind between sentences: a PROVEN
+    # word-level mismatch applies wherever the corpus assigns that reading to that
+    # surface." Nothing enforced that, and Kyoko's front-end is context-sensitive by
+    # construction. Measured directly (scripts/check_propagated_exclusions.py): 畑 is
+    # proven はたけ in n1-b432 and proven ばたけ in n1-b1000 — the same word, the same
+    # voice, two sentences, two readings, both by byte identity.
+    #
+    # Of the 15 sentences this rule withheld, 11 were proven to say their corpus reading
+    # and only 2 were proven to say anything else. It was wrong far more often than right,
+    # and it presented as a measurement because the sentences it produced sat in the same
+    # list as measured ones. A sentence with no verdict is now recorded as UNDECIDED and
+    # withheld on the documented one-sided policy, which is what it always was.
     propagated = set()
-    for _, hit in proven_bad:
-        for r in rows:
-            if any(t[0] == hit["surface"] and t[1] == hit["from"] for t in r["tokens"]):
-                propagated.add(r["id"])
     excluded = sorted(flagged | propagated)
     print(f"\nEXCLUSIONS = flagged ({len(flagged)}) union proven-word propagation "
           f"({len(propagated)}) = {len(excluded)} ({100 * len(excluded) / len(rows):.1f}%)")
