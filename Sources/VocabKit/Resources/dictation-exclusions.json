@@ -5,18 +5,12 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 954,
- "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made. v1.28 released 10 more: the 15 whose evidence was 'propagated' were never measured — they inherited a verdict from a DIFFERENT sentence under the comment 'a voice does not change its mind between sentences'. Measured directly (scripts/check_propagated_exclusions.py), 10 are proven to say their corpus reading, 2 to say something else, 3 stay withheld undecided. The comment is false: 畑 is proven はたけ in n1-b432 and ばたけ in n1-b1000. A release requires the DISPUTED word to be confirmed in that sentence — an earlier predicate released n2-g210 on 彼=かれ while 何, the reason it was withheld, was never confirmed.",
+ "excludedCount": 793,
+ "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made. v1.28 released 10 more: the 15 whose evidence was 'propagated' were never measured — they inherited a verdict from a DIFFERENT sentence under the comment 'a voice does not change its mind between sentences'. Measured directly (scripts/check_propagated_exclusions.py), 10 are proven to say their corpus reading, 2 to say something else, 3 stay withheld undecided. The comment is false: 畑 is proven はたけ in n1-b432 and ばたけ in n1-b1000. A release requires the DISPUTED word to be confirmed in that sentence — an earlier predicate released n2-g210 on 彼=かれ while 何, the reason it was withheld, was never confirmed. v1.29 re-decided the 910 'nearest' exclusions with instrument 1b: 161 released (their own disputed word proven to be read as the corpus says), 226 confirmed misread (upgraded from instrument 2's 67%-accurate verdict to proof), 523 undecided and still withheld. Silence is not evidence in either direction.",
  "evidence": "docs/measurements/dictation-reading-mismatches.json",
  "excluded": [
   {
-   "id": "n1-b003"
-  },
-  {
    "id": "n1-b007"
-  },
-  {
-   "id": "n1-b014"
   },
   {
    "id": "n1-b035"
@@ -52,9 +46,6 @@
    "id": "n1-b091"
   },
   {
-   "id": "n1-b093"
-  },
-  {
    "id": "n1-b096"
   },
   {
@@ -85,12 +76,6 @@
    "id": "n1-b1037"
   },
   {
-   "id": "n1-b1039"
-  },
-  {
-   "id": "n1-b104"
-  },
-  {
    "id": "n1-b1040"
   },
   {
@@ -101,9 +86,6 @@
   },
   {
    "id": "n1-b1047"
-  },
-  {
-   "id": "n1-b1061"
   },
   {
    "id": "n1-b107"
@@ -142,9 +124,6 @@
    "id": "n1-b1132"
   },
   {
-   "id": "n1-b1136"
-  },
-  {
    "id": "n1-b1142"
   },
   {
@@ -152,9 +131,6 @@
   },
   {
    "id": "n1-b115"
-  },
-  {
-   "id": "n1-b1151"
   },
   {
    "id": "n1-b1161"
@@ -235,16 +211,7 @@
    "id": "n1-b1337"
   },
   {
-   "id": "n1-b1346"
-  },
-  {
-   "id": "n1-b135"
-  },
-  {
    "id": "n1-b1359"
-  },
-  {
-   "id": "n1-b136"
   },
   {
    "id": "n1-b1365"
@@ -254,9 +221,6 @@
   },
   {
    "id": "n1-b1395"
-  },
-  {
-   "id": "n1-b1399"
   },
   {
    "id": "n1-b1409"
@@ -295,28 +259,16 @@
    "id": "n1-b1468"
   },
   {
-   "id": "n1-b1480"
-  },
-  {
    "id": "n1-b1485"
   },
   {
    "id": "n1-b1493"
   },
   {
-   "id": "n1-b1511"
-  },
-  {
    "id": "n1-b1516"
   },
   {
-   "id": "n1-b1519"
-  },
-  {
    "id": "n1-b1538"
-  },
-  {
-   "id": "n1-b1557"
   },
   {
    "id": "n1-b1564"
@@ -334,9 +286,6 @@
    "id": "n1-b159"
   },
   {
-   "id": "n1-b1597"
-  },
-  {
    "id": "n1-b1601"
   },
   {
@@ -349,9 +298,6 @@
    "id": "n1-b1614"
   },
   {
-   "id": "n1-b1615"
-  },
-  {
    "id": "n1-b1623"
   },
   {
@@ -362,9 +308,6 @@
   },
   {
    "id": "n1-b1650"
-  },
-  {
-   "id": "n1-b1657"
   },
   {
    "id": "n1-b1663"
@@ -382,16 +325,10 @@
    "id": "n1-b1695"
   },
   {
-   "id": "n1-b1701"
-  },
-  {
    "id": "n1-b171"
   },
   {
    "id": "n1-b1722"
-  },
-  {
-   "id": "n1-b1734"
   },
   {
    "id": "n1-b1750"
@@ -427,22 +364,10 @@
    "id": "n1-b1843"
   },
   {
-   "id": "n1-b1853"
-  },
-  {
-   "id": "n1-b1865"
-  },
-  {
    "id": "n1-b1873"
   },
   {
-   "id": "n1-b1875"
-  },
-  {
    "id": "n1-b1908"
-  },
-  {
-   "id": "n1-b1912"
   },
   {
    "id": "n1-b1914"
@@ -460,9 +385,6 @@
    "id": "n1-b1956"
   },
   {
-   "id": "n1-b1964"
-  },
-  {
    "id": "n1-b1974"
   },
   {
@@ -470,9 +392,6 @@
   },
   {
    "id": "n1-b1990"
-  },
-  {
-   "id": "n1-b201"
   },
   {
    "id": "n1-b2015"
@@ -490,22 +409,13 @@
    "id": "n1-b2043"
   },
   {
-   "id": "n1-b2065"
-  },
-  {
    "id": "n1-b2070"
   },
   {
    "id": "n1-b2071"
   },
   {
-   "id": "n1-b2076"
-  },
-  {
    "id": "n1-b2077"
-  },
-  {
-   "id": "n1-b2078"
   },
   {
    "id": "n1-b2081"
@@ -514,13 +424,7 @@
    "id": "n1-b2082"
   },
   {
-   "id": "n1-b209"
-  },
-  {
    "id": "n1-b2103"
-  },
-  {
-   "id": "n1-b2111"
   },
   {
    "id": "n1-b216"
@@ -530,9 +434,6 @@
   },
   {
    "id": "n1-b231"
-  },
-  {
-   "id": "n1-b257"
   },
   {
    "id": "n1-b267"
@@ -547,9 +448,6 @@
    "id": "n1-b287"
   },
   {
-   "id": "n1-b295"
-  },
-  {
    "id": "n1-b308"
   },
   {
@@ -557,9 +455,6 @@
   },
   {
    "id": "n1-b317"
-  },
-  {
-   "id": "n1-b322"
   },
   {
    "id": "n1-b326"
@@ -572,9 +467,6 @@
   },
   {
    "id": "n1-b335"
-  },
-  {
-   "id": "n1-b349"
   },
   {
    "id": "n1-b369"
@@ -607,28 +499,13 @@
    "id": "n1-b429"
   },
   {
-   "id": "n1-b434"
-  },
-  {
-   "id": "n1-b435"
-  },
-  {
    "id": "n1-b445"
-  },
-  {
-   "id": "n1-b446"
-  },
-  {
-   "id": "n1-b454"
   },
   {
    "id": "n1-b468"
   },
   {
    "id": "n1-b481"
-  },
-  {
-   "id": "n1-b513"
   },
   {
    "id": "n1-b518"
@@ -658,13 +535,7 @@
    "id": "n1-b574"
   },
   {
-   "id": "n1-b575"
-  },
-  {
    "id": "n1-b588"
-  },
-  {
-   "id": "n1-b591"
   },
   {
    "id": "n1-b599"
@@ -688,9 +559,6 @@
    "id": "n1-b633"
   },
   {
-   "id": "n1-b635"
-  },
-  {
    "id": "n1-b638"
   },
   {
@@ -698,12 +566,6 @@
   },
   {
    "id": "n1-b655"
-  },
-  {
-   "id": "n1-b663"
-  },
-  {
-   "id": "n1-b665"
   },
   {
    "id": "n1-b671"
@@ -721,12 +583,6 @@
    "id": "n1-b705"
   },
   {
-   "id": "n1-b707"
-  },
-  {
-   "id": "n1-b712"
-  },
-  {
    "id": "n1-b716"
   },
   {
@@ -734,9 +590,6 @@
   },
   {
    "id": "n1-b720"
-  },
-  {
-   "id": "n1-b729"
   },
   {
    "id": "n1-b732"
@@ -767,9 +620,6 @@
   },
   {
    "id": "n1-b783"
-  },
-  {
-   "id": "n1-b794"
   },
   {
    "id": "n1-b795"
@@ -811,9 +661,6 @@
    "id": "n1-b878"
   },
   {
-   "id": "n1-b886"
-  },
-  {
    "id": "n1-b894"
   },
   {
@@ -838,9 +685,6 @@
    "id": "n1-b925"
   },
   {
-   "id": "n1-b929"
-  },
-  {
    "id": "n1-b930"
   },
   {
@@ -853,9 +697,6 @@
    "id": "n1-b935"
   },
   {
-   "id": "n1-b939"
-  },
-  {
    "id": "n1-b946"
   },
   {
@@ -863,12 +704,6 @@
   },
   {
    "id": "n1-b981"
-  },
-  {
-   "id": "n1-b994"
-  },
-  {
-   "id": "n1-b996"
   },
   {
    "id": "n1-g017"
@@ -919,28 +754,13 @@
    "id": "n1-g264"
   },
   {
-   "id": "n1-g272"
-  },
-  {
    "id": "n1-g273"
   },
   {
    "id": "n1-g278"
   },
   {
-   "id": "n1-g279"
-  },
-  {
-   "id": "n1-g287"
-  },
-  {
-   "id": "n1-g296"
-  },
-  {
    "id": "n1-g305"
-  },
-  {
-   "id": "n1-g307"
   },
   {
    "id": "n1-g317"
@@ -958,9 +778,6 @@
    "id": "n1-g343"
   },
   {
-   "id": "n1-g346"
-  },
-  {
    "id": "n1-g351"
   },
   {
@@ -970,19 +787,10 @@
    "id": "n2-b010"
   },
   {
-   "id": "n2-b020"
-  },
-  {
    "id": "n2-b025"
   },
   {
-   "id": "n2-b029"
-  },
-  {
    "id": "n2-b034"
-  },
-  {
-   "id": "n2-b039"
   },
   {
    "id": "n2-b053"
@@ -1004,9 +812,6 @@
   },
   {
    "id": "n2-b079"
-  },
-  {
-   "id": "n2-b084"
   },
   {
    "id": "n2-b090"
@@ -1042,9 +847,6 @@
    "id": "n2-b103"
   },
   {
-   "id": "n2-b1030"
-  },
-  {
    "id": "n2-b1033"
   },
   {
@@ -1057,16 +859,10 @@
    "id": "n2-b1036"
   },
   {
-   "id": "n2-b1044"
-  },
-  {
    "id": "n2-b1052"
   },
   {
    "id": "n2-b1066"
-  },
-  {
-   "id": "n2-b1079"
   },
   {
    "id": "n2-b1087"
@@ -1084,16 +880,10 @@
    "id": "n2-b1100"
   },
   {
-   "id": "n2-b1102"
-  },
-  {
    "id": "n2-b1118"
   },
   {
    "id": "n2-b1139"
-  },
-  {
-   "id": "n2-b114"
   },
   {
    "id": "n2-b1142"
@@ -1108,9 +898,6 @@
    "id": "n2-b1170"
   },
   {
-   "id": "n2-b1174"
-  },
-  {
    "id": "n2-b1176"
   },
   {
@@ -1118,9 +905,6 @@
   },
   {
    "id": "n2-b1188"
-  },
-  {
-   "id": "n2-b1197"
   },
   {
    "id": "n2-b1210"
@@ -1147,13 +931,7 @@
    "id": "n2-b1247"
   },
   {
-   "id": "n2-b1258"
-  },
-  {
    "id": "n2-b1260"
-  },
-  {
-   "id": "n2-b1261"
   },
   {
    "id": "n2-b1271"
@@ -1169,9 +947,6 @@
   },
   {
    "id": "n2-b141"
-  },
-  {
-   "id": "n2-b142"
   },
   {
    "id": "n2-b149"
@@ -1216,9 +991,6 @@
    "id": "n2-b231"
   },
   {
-   "id": "n2-b233"
-  },
-  {
    "id": "n2-b239"
   },
   {
@@ -1243,9 +1015,6 @@
    "id": "n2-b270"
   },
   {
-   "id": "n2-b271"
-  },
-  {
    "id": "n2-b274"
   },
   {
@@ -1268,12 +1037,6 @@
   },
   {
    "id": "n2-b337"
-  },
-  {
-   "id": "n2-b341"
-  },
-  {
-   "id": "n2-b346"
   },
   {
    "id": "n2-b365"
@@ -1399,13 +1162,7 @@
    "id": "n2-b722"
   },
   {
-   "id": "n2-b726"
-  },
-  {
    "id": "n2-b730"
-  },
-  {
-   "id": "n2-b731"
   },
   {
    "id": "n2-b736"
@@ -1415,9 +1172,6 @@
   },
   {
    "id": "n2-b750"
-  },
-  {
-   "id": "n2-b753"
   },
   {
    "id": "n2-b756"
@@ -1433,9 +1187,6 @@
   },
   {
    "id": "n2-b791"
-  },
-  {
-   "id": "n2-b798"
   },
   {
    "id": "n2-b808"
@@ -1456,22 +1207,10 @@
    "id": "n2-b838"
   },
   {
-   "id": "n2-b845"
-  },
-  {
    "id": "n2-b847"
   },
   {
    "id": "n2-b852"
-  },
-  {
-   "id": "n2-b864"
-  },
-  {
-   "id": "n2-b879"
-  },
-  {
-   "id": "n2-b880"
   },
   {
    "id": "n2-b884"
@@ -1483,22 +1222,13 @@
    "id": "n2-b901"
   },
   {
-   "id": "n2-b903"
-  },
-  {
    "id": "n2-b907"
   },
   {
    "id": "n2-b913"
   },
   {
-   "id": "n2-b922"
-  },
-  {
    "id": "n2-b923"
-  },
-  {
-   "id": "n2-b941"
   },
   {
    "id": "n2-b942"
@@ -1511,9 +1241,6 @@
   },
   {
    "id": "n2-g001"
-  },
-  {
-   "id": "n2-g033"
   },
   {
    "id": "n2-g034"
@@ -1558,9 +1285,6 @@
    "id": "n2-g230"
   },
   {
-   "id": "n2-g234"
-  },
-  {
    "id": "n2-g241"
   },
   {
@@ -1591,9 +1315,6 @@
    "id": "n2-g321"
   },
   {
-   "id": "n2-g324"
-  },
-  {
    "id": "n2-g336"
   },
   {
@@ -1607,9 +1328,6 @@
   },
   {
    "id": "n2-k022"
-  },
-  {
-   "id": "n2-k052"
   },
   {
    "id": "n2-k064"
@@ -1630,34 +1348,16 @@
    "id": "n3-b016"
   },
   {
-   "id": "n3-b031"
-  },
-  {
    "id": "n3-b036"
   },
   {
-   "id": "n3-b040"
-  },
-  {
    "id": "n3-b045"
-  },
-  {
-   "id": "n3-b046"
   },
   {
    "id": "n3-b047"
   },
   {
    "id": "n3-b054"
-  },
-  {
-   "id": "n3-b060"
-  },
-  {
-   "id": "n3-b063"
-  },
-  {
-   "id": "n3-b067"
   },
   {
    "id": "n3-b080"
@@ -1676,12 +1376,6 @@
   },
   {
    "id": "n3-b101"
-  },
-  {
-   "id": "n3-b102"
-  },
-  {
-   "id": "n3-b103"
   },
   {
    "id": "n3-b104"
@@ -1714,9 +1408,6 @@
    "id": "n3-b142"
   },
   {
-   "id": "n3-b144"
-  },
-  {
    "id": "n3-b149"
   },
   {
@@ -1735,9 +1426,6 @@
    "id": "n3-b168"
   },
   {
-   "id": "n3-b169"
-  },
-  {
    "id": "n3-b170"
   },
   {
@@ -1748,9 +1436,6 @@
   },
   {
    "id": "n3-b179"
-  },
-  {
-   "id": "n3-b181"
   },
   {
    "id": "n3-b197"
@@ -1789,16 +1474,10 @@
    "id": "n3-b238"
   },
   {
-   "id": "n3-b247"
-  },
-  {
    "id": "n3-b250"
   },
   {
    "id": "n3-b251"
-  },
-  {
-   "id": "n3-b255"
   },
   {
    "id": "n3-b257"
@@ -1816,9 +1495,6 @@
    "id": "n3-b289"
   },
   {
-   "id": "n3-b290"
-  },
-  {
    "id": "n3-b295"
   },
   {
@@ -1826,9 +1502,6 @@
   },
   {
    "id": "n3-b308"
-  },
-  {
-   "id": "n3-b309"
   },
   {
    "id": "n3-b310"
@@ -1894,9 +1567,6 @@
    "id": "n3-b409"
   },
   {
-   "id": "n3-b410"
-  },
-  {
    "id": "n3-b423"
   },
   {
@@ -1936,19 +1606,10 @@
    "id": "n3-b536"
   },
   {
-   "id": "n3-b538"
-  },
-  {
    "id": "n3-b552"
   },
   {
-   "id": "n3-b554"
-  },
-  {
    "id": "n3-b557"
-  },
-  {
-   "id": "n3-b565"
   },
   {
    "id": "n3-b577"
@@ -1975,22 +1636,7 @@
    "id": "n3-b626"
   },
   {
-   "id": "n3-b628"
-  },
-  {
-   "id": "n3-b638"
-  },
-  {
-   "id": "n3-b641"
-  },
-  {
-   "id": "n3-b642"
-  },
-  {
    "id": "n3-b643"
-  },
-  {
-   "id": "n3-b644"
   },
   {
    "id": "n3-b655"
@@ -2017,16 +1663,7 @@
    "id": "n3-b708"
   },
   {
-   "id": "n3-b710"
-  },
-  {
-   "id": "n3-b718"
-  },
-  {
    "id": "n3-b720"
-  },
-  {
-   "id": "n3-b729"
   },
   {
    "id": "n3-b748"
@@ -2050,12 +1687,6 @@
    "id": "n3-b794"
   },
   {
-   "id": "n3-b821"
-  },
-  {
-   "id": "n3-b827"
-  },
-  {
    "id": "n3-b853"
   },
   {
@@ -2075,9 +1706,6 @@
   },
   {
    "id": "n3-b905"
-  },
-  {
-   "id": "n3-b913"
   },
   {
    "id": "n3-b917"
@@ -2152,9 +1780,6 @@
    "id": "n3-g120"
   },
   {
-   "id": "n3-g122"
-  },
-  {
    "id": "n3-g132"
   },
   {
@@ -2165,9 +1790,6 @@
   },
   {
    "id": "n3-g140"
-  },
-  {
-   "id": "n3-g159"
   },
   {
    "id": "n3-g160"
@@ -2218,9 +1840,6 @@
    "id": "n3-g285"
   },
   {
-   "id": "n3-g286"
-  },
-  {
    "id": "n3-g287"
   },
   {
@@ -2230,22 +1849,10 @@
    "id": "n3-g299"
   },
   {
-   "id": "n3-g302"
-  },
-  {
-   "id": "n3-g304"
-  },
-  {
    "id": "n3-g327"
   },
   {
    "id": "n3-g329"
-  },
-  {
-   "id": "n3-g330"
-  },
-  {
-   "id": "n3-g331"
   },
   {
    "id": "n3-g339"
@@ -2255,9 +1862,6 @@
   },
   {
    "id": "n3-g344"
-  },
-  {
-   "id": "n3-g348"
   },
   {
    "id": "n3-g357"
@@ -2275,25 +1879,13 @@
    "id": "n3-k074"
   },
   {
-   "id": "n3-k097"
-  },
-  {
    "id": "n4-b005"
-  },
-  {
-   "id": "n4-b008"
   },
   {
    "id": "n4-b010"
   },
   {
    "id": "n4-b021"
-  },
-  {
-   "id": "n4-b023"
-  },
-  {
-   "id": "n4-b026"
   },
   {
    "id": "n4-b031"
@@ -2326,13 +1918,7 @@
    "id": "n4-b088"
   },
   {
-   "id": "n4-b094"
-  },
-  {
    "id": "n4-b101"
-  },
-  {
-   "id": "n4-b117"
   },
   {
    "id": "n4-b127"
@@ -2345,9 +1931,6 @@
   },
   {
    "id": "n4-b139"
-  },
-  {
-   "id": "n4-b141"
   },
   {
    "id": "n4-b142"
@@ -2372,9 +1955,6 @@
   },
   {
    "id": "n4-b193"
-  },
-  {
-   "id": "n4-g013"
   },
   {
    "id": "n4-g020"
@@ -2419,16 +1999,7 @@
    "id": "n4-g201"
   },
   {
-   "id": "n4-g206"
-  },
-  {
    "id": "n4-g208"
-  },
-  {
-   "id": "n4-g209"
-  },
-  {
-   "id": "n4-g210"
   },
   {
    "id": "n4-g211"
@@ -2464,13 +2035,7 @@
    "id": "n4-g247"
   },
   {
-   "id": "n4-g255"
-  },
-  {
    "id": "n4-g262"
-  },
-  {
-   "id": "n4-g266"
   },
   {
    "id": "n4-g269"
@@ -2494,9 +2059,6 @@
    "id": "n4-g320"
   },
   {
-   "id": "n4-g332"
-  },
-  {
    "id": "n4-g333"
   },
   {
@@ -2518,9 +2080,6 @@
    "id": "n4-g379"
   },
   {
-   "id": "n4-g385"
-  },
-  {
    "id": "n4-g386"
   },
   {
@@ -2528,9 +2087,6 @@
   },
   {
    "id": "n4-g394"
-  },
-  {
-   "id": "n4-k024"
   },
   {
    "id": "n4-k030"
@@ -2546,9 +2102,6 @@
   },
   {
    "id": "n5-b003"
-  },
-  {
-   "id": "n5-b004"
   },
   {
    "id": "n5-b008"
@@ -2590,9 +2143,6 @@
    "id": "n5-b055"
   },
   {
-   "id": "n5-b061"
-  },
-  {
    "id": "n5-b063"
   },
   {
@@ -2603,9 +2153,6 @@
   },
   {
    "id": "n5-b085"
-  },
-  {
-   "id": "n5-b098"
   },
   {
    "id": "n5-b100"
@@ -2662,9 +2209,6 @@
    "id": "n5-b175"
   },
   {
-   "id": "n5-b177"
-  },
-  {
    "id": "n5-b186"
   },
   {
@@ -2696,9 +2240,6 @@
   },
   {
    "id": "n5-b269"
-  },
-  {
-   "id": "n5-b273"
   },
   {
    "id": "n5-b279"
@@ -2782,9 +2323,6 @@
    "id": "n5-g063"
   },
   {
-   "id": "n5-g067"
-  },
-  {
    "id": "n5-g077"
   },
   {
@@ -2830,9 +2368,6 @@
    "id": "n5-iku"
   },
   {
-   "id": "n5-k002"
-  },
-  {
    "id": "n5-k007"
   },
   {
@@ -2845,28 +2380,10 @@
    "id": "n5-k022"
   },
   {
-   "id": "n5-k027"
-  },
-  {
-   "id": "n5-k038"
-  },
-  {
-   "id": "n5-k057"
-  },
-  {
-   "id": "n5-k059"
-  },
-  {
-   "id": "n5-kaku"
-  },
-  {
    "id": "n5-kazoku"
   },
   {
    "id": "n5-namae"
-  },
-  {
-   "id": "n5-samui"
   },
   {
    "id": "n5-tori"

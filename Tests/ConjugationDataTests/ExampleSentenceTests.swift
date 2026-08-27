@@ -1045,7 +1045,7 @@ struct ExampleSentenceTests {
     @Test("every dictation exclusion's evidence still matches the sentence it describes")
     func exclusionEvidenceIsCurrent() throws {
         struct Record: Decodable { let id: String; let exKana: String? }
-        struct File: Decodable { let excluded: [Record] }
+        struct File: Decodable { let excluded: [Record]; let excludedCount: Int }
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
             .appendingPathComponent("docs/measurements/dictation-reading-mismatches.json")
@@ -1062,7 +1062,18 @@ struct ExampleSentenceTests {
                 stale.append("\(record.id): measured against \(recorded), corpus now says \(current)")
             }
         }
-        #expect(inspected > 800, "only \(inspected) records carry an exKana — the reader is wrong")
+        // Self-calibrating, deliberately. This was `> 800`, a floor set when the list held 964,
+        // and it fired the moment v1.29 released 161 sentences — correctly noticing the
+        // population had moved, and then demanding a number be edited to fit, which is how a
+        // floor becomes a thing nobody believes. What it is actually for is catching a reader
+        // that parsed a truncated or garbage file, so it asks the file how many rows it should
+        // have found and requires that many, plus an absolute floor no release will approach.
+        #expect(inspected == file.excluded.count, Comment(rawValue:
+            "read \(inspected) of \(file.excluded.count) rows — some record is missing an "
+            + "exKana or names an id the corpus no longer has"))
+        #expect(file.excluded.count == file.excludedCount, Comment(rawValue:
+            "excludedCount says \(file.excludedCount), the file holds \(file.excluded.count)"))
+        #expect(inspected > 100, "only \(inspected) records — the reader is wrong, not the corpus")
         #expect(stale.isEmpty, Comment(rawValue:
             "\(stale.count) exclusion(s) rest on evidence the corpus no longer matches — "
             + "re-measure them:\n" + stale.prefix(8).joined(separator: "\n")))

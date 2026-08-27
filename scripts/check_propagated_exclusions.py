@@ -163,15 +163,36 @@ def main():
     mism = json.loads((REPO / "docs/measurements/dictation-reading-mismatches.json")
                       .read_text(encoding="utf-8"))
     want = {r["id"] for r in mism["excluded"] if r["evidence"] == args.evidence}
-    # The surfaces that were PROVEN misread somewhere. A sentence may only be released if
-    # the one that got IT withheld is confirmed in IT.
-    disputed = set()
+    # The surface that got EACH sentence withheld, per sentence.
+    #
+    # **Per row, not one global set, and that distinction is worth more than it looks.** The
+    # first version built one set from the rows whose evidence begins "proven", which is right
+    # for the `propagated` class -- those inherited a verdict about one of THOSE words. Pointed
+    # at `nearest`, where every row carries its own complaint ("紙 かみ -> がみ"), the global set
+    # matched nothing in 382 of 388 releases, `here` came out empty, and the coverage check was
+    # skipped entirely: exactly the defect the pre-submission review caught, reintroduced by
+    # aiming a correct predicate at a different population. A predicate that is right for one
+    # population and silently vacuous on another is this project's oldest shape wearing a
+    # population instead of a call site.
+    global_proven = set()
     for r in mism["excluded"]:
         if not r["evidence"].startswith("proven"):
             continue
         parts = r["heardInstead"].split()
         if len(parts) >= 3 and parts[1] != "->":
-            disputed.add(parts[0])
+            global_proven.add(parts[0])
+
+    def disputed_for(row_id):
+        """Surfaces that must be CONFIRMED before this sentence may be released."""
+        rec = by_id.get(row_id, {})
+        parts = (rec.get("heardInstead") or "").split()
+        if len(parts) >= 3 and parts[1] != "->" and "->" in parts:
+            return {parts[0]}                    # this row's own complaint
+        # No per-row complaint (the `propagated` class says only "same word proven misread in
+        # another sentence"), so fall back to every word proven misread anywhere.
+        return set(global_proven)
+
+    by_id = {r["id"]: r for r in mism["excluded"]}
     every = C.build_rows()
     rows = [r for r in every if r["id"] in want]
     # A withheld id with no buildable row is a REAL condition, not a glitch: build_rows only
@@ -224,7 +245,8 @@ def main():
         ok, _, _ = C.prove(sample_rows)
         sample = ok[:80]
         plans, _ = analyse(sample, readings_of, decoys=False)
-        disagreed = [r["id"] for r in sample if verdict(r, plans[r["id"]], disputed)[0] == "KEEP"]
+        disagreed = [r["id"] for r in sample
+                     if verdict(r, plans[r["id"]], disputed_for(r["id"]))[0] == "KEEP"]
         print(f"  positive control: instrument 1 proved {len(sample)} sentences say their corpus "
               f"reading; 1b contradicts {len(disagreed)}")
         if disagreed:
@@ -257,7 +279,7 @@ def main():
     out = {"release": [], "keep": [], "silent": []}
     print("VERDICTS")
     for r in rows:
-        v, detail = verdict(r, plans[r["id"]], disputed)
+        v, detail = verdict(r, plans[r["id"]], disputed_for(r["id"]))
         if v == "RELEASE":
             out["release"].append(r["id"])
             note = "says the corpus reading"
@@ -271,6 +293,12 @@ def main():
             note = "silent"
         print(f"  {v:8} {r['id']:12} {r['exJP'][:26]:28} {note}")
     print(f"\nRELEASE {len(out['release'])} · KEEP {len(out['keep'])} · SILENT {len(out['silent'])}")
+    print(f"  SILENT means this instrument said NOTHING. Those {len(out['silent'])} stay withheld;")
+    print( "  silence is not evidence in either direction.")
+    no_basis = [r["id"] for r in rows if not disputed_for(r["id"])]
+    if no_basis:
+        print(f"  ⚠️  {len(no_basis)} row(s) name no disputed surface at all, so nothing "
+              f"constrained their release: {no_basis[:6]}")
 
     if args.json:
         # The record carries its own provenance and its own calibration, and REFUSES to be

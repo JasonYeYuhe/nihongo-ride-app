@@ -1,0 +1,2758 @@
+{
+ "measurement": "scripts/check_propagated_exclusions.py --evidence nearest --calibrate",
+ "date": "2026-08-28",
+ "question": "910 sentences were withheld from Dictation on instrument 2's 'nearest hypothesis' verdict. v1.26 measured that instrument at 42/63 = 67% agreement with adjudication on this very population, with a median margin LARGER when it is wrong (0.0240) than when it is right (0.0177) — a margin that grows when the instrument errs is not evidence. PLAN-V1.27 recorded that re-deciding them 'needs an instrument this repo does not have'. Instrument 1b is that instrument.",
+ "result": {
+  "released": 161,
+  "provenMisread": 226,
+  "undecided": 523
+ },
+ "dictationPool": {
+  "before": 5770,
+  "after": 5931
+ },
+ "calibration": {
+  "negativeControl": "1,816 decoy substitutions -> 0 spurious byte matches.",
+  "positiveControl": "39 sentences instrument 1 had already proven -> 1b contradicts 0.",
+  "rebuildIdentity": "910/910 (string handling only; no linguistic weight)."
+ },
+ "theDefectThisRunFound": "The release predicate was RIGHT for the population it was written against and SILENTLY VACUOUS on this one. It required the DISPUTED word to be confirmed, taking 'disputed' from one global set built out of the rows whose evidence begins 'proven'. That is correct for the `propagated` class, which inherited a verdict about one of THOSE words. Every `nearest` row carries its own complaint instead ('紙 かみ -> がみ'), none of which is in that set — so for 382 of 388 releases the coverage check was skipped entirely and the sentence was released on whatever unrelated span happened to agree. Fixed to read each row's own complaint: RELEASE fell from 388 to 161, and 236 sentences that would have shipped carried a real, never-confirmed complaint (別 べつ->べち, 古い ふるい->ふりい, 家 いえ->け, 明日 あす->あした). A predicate that is right for one population and vacuous on another is this project's oldest shape wearing a population instead of a call site.",
+ "whatSilenceMeans": "523 sentences stay withheld because instrument 1b said NOTHING about them. That is not a verdict. They were withheld by an instrument known to be near-uninformative on this population, so remaining withheld is not a safe default either — it is an invisible one. Released, kept and undecided are reported as three numbers and never collapsed into two.",
+ "evidenceUpgrade": "226 sentences moved from instrument 2's 67%-accurate 'nearest' verdict to PROOF that they are read differently from their answer key. Those were withheld correctly, and now they are withheld for a reason that can be checked.",
+ "released": [
+  "n1-g272",
+  "n1-g279",
+  "n1-g287",
+  "n1-g296",
+  "n1-g307",
+  "n1-g346",
+  "n1-b003",
+  "n1-b014",
+  "n1-b093",
+  "n1-b104",
+  "n1-b135",
+  "n1-b136",
+  "n1-b201",
+  "n1-b209",
+  "n1-b257",
+  "n1-b295",
+  "n1-b322",
+  "n1-b349",
+  "n1-b434",
+  "n1-b435",
+  "n1-b446",
+  "n1-b454",
+  "n1-b513",
+  "n1-b575",
+  "n1-b591",
+  "n1-b635",
+  "n1-b663",
+  "n1-b665",
+  "n1-b707",
+  "n1-b712",
+  "n1-b729",
+  "n1-b794",
+  "n1-b886",
+  "n1-b929",
+  "n1-b939",
+  "n1-b994",
+  "n1-b996",
+  "n1-b1039",
+  "n1-b1061",
+  "n1-b1136",
+  "n1-b1151",
+  "n1-b1346",
+  "n1-b1399",
+  "n1-b1480",
+  "n1-b1511",
+  "n1-b1519",
+  "n1-b1557",
+  "n1-b1597",
+  "n1-b1615",
+  "n1-b1657",
+  "n1-b1701",
+  "n1-b1734",
+  "n1-b1853",
+  "n1-b1865",
+  "n1-b1875",
+  "n1-b1912",
+  "n1-b1964",
+  "n1-b2065",
+  "n1-b2076",
+  "n1-b2078",
+  "n1-b2111",
+  "n2-g033",
+  "n2-g234",
+  "n2-g324",
+  "n2-b020",
+  "n2-b029",
+  "n2-b039",
+  "n2-b084",
+  "n2-b114",
+  "n2-b142",
+  "n2-b233",
+  "n2-b271",
+  "n2-b341",
+  "n2-b346",
+  "n2-k052",
+  "n2-b726",
+  "n2-b731",
+  "n2-b753",
+  "n2-b798",
+  "n2-b845",
+  "n2-b864",
+  "n2-b879",
+  "n2-b880",
+  "n2-b903",
+  "n2-b922",
+  "n2-b941",
+  "n2-b1030",
+  "n2-b1044",
+  "n2-b1079",
+  "n2-b1102",
+  "n2-b1174",
+  "n2-b1197",
+  "n2-b1258",
+  "n2-b1261",
+  "n3-g122",
+  "n3-g159",
+  "n3-g286",
+  "n3-g302",
+  "n3-g304",
+  "n3-g330",
+  "n3-g331",
+  "n3-g348",
+  "n3-b031",
+  "n3-b040",
+  "n3-b046",
+  "n3-b060",
+  "n3-b063",
+  "n3-b067",
+  "n3-b102",
+  "n3-b103",
+  "n3-b144",
+  "n3-b169",
+  "n3-b181",
+  "n3-b247",
+  "n3-b255",
+  "n3-b290",
+  "n3-b309",
+  "n3-b410",
+  "n3-k097",
+  "n3-b538",
+  "n3-b554",
+  "n3-b565",
+  "n3-b628",
+  "n3-b638",
+  "n3-b641",
+  "n3-b642",
+  "n3-b644",
+  "n3-b710",
+  "n3-b718",
+  "n3-b729",
+  "n3-b821",
+  "n3-b827",
+  "n3-b913",
+  "n4-g013",
+  "n4-g206",
+  "n4-g209",
+  "n4-g210",
+  "n4-g255",
+  "n4-g266",
+  "n4-g332",
+  "n4-g385",
+  "n4-b008",
+  "n4-b023",
+  "n4-b026",
+  "n4-b094",
+  "n4-b117",
+  "n4-b141",
+  "n4-k024",
+  "n5-kaku",
+  "n5-samui",
+  "n5-g067",
+  "n5-b004",
+  "n5-b061",
+  "n5-b098",
+  "n5-b177",
+  "n5-b273",
+  "n5-k002",
+  "n5-k027",
+  "n5-k038",
+  "n5-k057",
+  "n5-k059"
+ ],
+ "provenMisread": [
+  {
+   "id": "n1-g097",
+   "surface": "抱く",
+   "corpus": "いだく",
+   "kyoko": [
+    "だく"
+   ]
+  },
+  {
+   "id": "n1-g099",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n1-g219",
+   "surface": "歪む",
+   "corpus": "ゆがむ",
+   "kyoko": [
+    "ひずむ"
+   ]
+  },
+  {
+   "id": "n1-g238",
+   "surface": "称える",
+   "corpus": "たたえる",
+   "kyoko": [
+    "となえる"
+   ]
+  },
+  {
+   "id": "n1-g243",
+   "surface": "抱い",
+   "corpus": "いだい",
+   "kyoko": [
+    "だい"
+   ]
+  },
+  {
+   "id": "n1-g254",
+   "surface": "奥深く",
+   "corpus": "おくふかく",
+   "kyoko": [
+    "おくぶかく"
+   ]
+  },
+  {
+   "id": "n1-g317",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-g334",
+   "surface": "札",
+   "corpus": "さつ",
+   "kyoko": [
+    "ふだ"
+   ]
+  },
+  {
+   "id": "n1-b060",
+   "surface": "早急",
+   "corpus": "さっきゅう",
+   "kyoko": [
+    "そうきゅう"
+   ]
+  },
+  {
+   "id": "n1-b091",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b101",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n1-b109",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b159",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b231",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n1-b267",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b283",
+   "surface": "辛い",
+   "corpus": "つらい",
+   "kyoko": [
+    "からい"
+   ]
+  },
+  {
+   "id": "n1-b329",
+   "surface": "行っ",
+   "corpus": "おこなっ",
+   "kyoko": [
+    "いっ"
+   ]
+  },
+  {
+   "id": "n1-b372",
+   "surface": "行き交う",
+   "corpus": "いきかう",
+   "kyoko": [
+    "ゆきかう"
+   ]
+  },
+  {
+   "id": "n1-b395",
+   "surface": "区々",
+   "corpus": "まちまち",
+   "kyoko": [
+    "くく"
+   ]
+  },
+  {
+   "id": "n1-k103",
+   "surface": "数",
+   "corpus": "すう",
+   "kyoko": [
+    "かず"
+   ]
+  },
+  {
+   "id": "n1-b425",
+   "surface": "愛想",
+   "corpus": "あいそ",
+   "kyoko": [
+    "あいそう"
+   ]
+  },
+  {
+   "id": "n1-b518",
+   "surface": "一代",
+   "corpus": "いちだい",
+   "kyoko": [
+    "かずよ"
+   ]
+  },
+  {
+   "id": "n1-b524",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b574",
+   "surface": "弛み",
+   "corpus": "たるみ",
+   "kyoko": [
+    "ゆるみ"
+   ]
+  },
+  {
+   "id": "n1-b606",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b631",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b705",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b741",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b766",
+   "surface": "断っ",
+   "corpus": "ことわっ",
+   "kyoko": [
+    "たっ"
+   ]
+  },
+  {
+   "id": "n1-b770",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b783",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b816",
+   "surface": "種",
+   "corpus": "しゅ",
+   "kyoko": [
+    "たね"
+   ]
+  },
+  {
+   "id": "n1-b824",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b839",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b840",
+   "surface": "擦れ",
+   "corpus": "すれ",
+   "kyoko": [
+    "こすれ"
+   ]
+  },
+  {
+   "id": "n1-b844",
+   "surface": "真",
+   "corpus": "しん",
+   "kyoko": [
+    "ま"
+   ]
+  },
+  {
+   "id": "n1-b900",
+   "surface": "辛い",
+   "corpus": "つらい",
+   "kyoko": [
+    "からい"
+   ]
+  },
+  {
+   "id": "n1-b925",
+   "surface": "時",
+   "corpus": "とき",
+   "kyoko": [
+    "じ"
+   ]
+  },
+  {
+   "id": "n1-b946",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b1073",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b1109",
+   "surface": "金",
+   "corpus": "かね",
+   "kyoko": [
+    "きん"
+   ]
+  },
+  {
+   "id": "n1-b1191",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b1202",
+   "surface": "公",
+   "corpus": "こう",
+   "kyoko": [
+    "おおやけ"
+   ]
+  },
+  {
+   "id": "n1-b1228",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b1233",
+   "surface": "畑",
+   "corpus": "はたけ",
+   "kyoko": [
+    "ばたけ"
+   ]
+  },
+  {
+   "id": "n1-b1235",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b1252",
+   "surface": "方",
+   "corpus": "かた",
+   "kyoko": [
+    "ほう"
+   ]
+  },
+  {
+   "id": "n1-b1269",
+   "surface": "未",
+   "corpus": "ひつじ",
+   "kyoko": [
+    "み"
+   ]
+  },
+  {
+   "id": "n1-b1395",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n1-b1538",
+   "surface": "方",
+   "corpus": "ほう",
+   "kyoko": [
+    "かた"
+   ]
+  },
+  {
+   "id": "n1-b1581",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n1-b1601",
+   "surface": "研い",
+   "corpus": "とい",
+   "kyoko": [
+    "みがい"
+   ]
+  },
+  {
+   "id": "n1-b1623",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b1650",
+   "surface": "抱い",
+   "corpus": "いだい",
+   "kyoko": [
+    "だい"
+   ]
+  },
+  {
+   "id": "n1-b1682",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b1757",
+   "surface": "辛い",
+   "corpus": "つらい",
+   "kyoko": [
+    "からい"
+   ]
+  },
+  {
+   "id": "n1-b1783",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b1803",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n1-b1831",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b1924",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n1-b1974",
+   "surface": "瞑っ",
+   "corpus": "つぶっ",
+   "kyoko": [
+    "つむっ"
+   ]
+  },
+  {
+   "id": "n1-b2070",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n2-g001",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n2-g058",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n2-g107",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n2-g121",
+   "surface": "古",
+   "corpus": "こ",
+   "kyoko": [
+    "いにしえ"
+   ]
+  },
+  {
+   "id": "n2-g243",
+   "surface": "抱い",
+   "corpus": "いだい",
+   "kyoko": [
+    "だい"
+   ]
+  },
+  {
+   "id": "n2-g265",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n2-g309",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n2-g349",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n2-b025",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n2-b034",
+   "surface": "一",
+   "corpus": "いち",
+   "kyoko": [
+    "ひと"
+   ]
+  },
+  {
+   "id": "n2-b079",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n2-b090",
+   "surface": "背負っ",
+   "corpus": "せおっ",
+   "kyoko": [
+    "しょっ"
+   ]
+  },
+  {
+   "id": "n2-b136",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n2-b149",
+   "surface": "捻っ",
+   "corpus": "ひねっ",
+   "kyoko": [
+    "ねじっ"
+   ]
+  },
+  {
+   "id": "n2-b201",
+   "surface": "一昨年",
+   "corpus": "いっさくねん",
+   "kyoko": [
+    "おととし"
+   ]
+  },
+  {
+   "id": "n2-b219",
+   "surface": "通り",
+   "corpus": "とおり",
+   "kyoko": [
+    "どおり"
+   ]
+  },
+  {
+   "id": "n2-b221",
+   "surface": "風車",
+   "corpus": "かざぐるま",
+   "kyoko": [
+    "ふうしゃ"
+   ]
+  },
+  {
+   "id": "n2-b239",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n2-b250",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n2-b252",
+   "surface": "山道",
+   "corpus": "さんどう",
+   "kyoko": [
+    "やまみち"
+   ]
+  },
+  {
+   "id": "n2-b256",
+   "surface": "称え",
+   "corpus": "たたえ",
+   "kyoko": [
+    "となえ"
+   ]
+  },
+  {
+   "id": "n2-b266",
+   "surface": "行っ",
+   "corpus": "いっ",
+   "kyoko": [
+    "おこなっ"
+   ]
+  },
+  {
+   "id": "n2-b274",
+   "surface": "明後日",
+   "corpus": "みょうごにち",
+   "kyoko": [
+    "あさって"
+   ]
+  },
+  {
+   "id": "n2-b311",
+   "surface": "十分",
+   "corpus": "じゅうふん",
+   "kyoko": [
+    "じゅうぶん"
+   ]
+  },
+  {
+   "id": "n2-b373",
+   "surface": "行っ",
+   "corpus": "いっ",
+   "kyoko": [
+    "おこなっ"
+   ]
+  },
+  {
+   "id": "n2-b394",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n2-b427",
+   "surface": "金",
+   "corpus": "かね",
+   "kyoko": [
+    "きん"
+   ]
+  },
+  {
+   "id": "n2-k018",
+   "surface": "弾く",
+   "corpus": "ひく",
+   "kyoko": [
+    "はじく"
+   ]
+  },
+  {
+   "id": "n2-k022",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n2-k064",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n2-b474",
+   "surface": "今",
+   "corpus": "こん",
+   "kyoko": [
+    "いま"
+   ]
+  },
+  {
+   "id": "n2-b482",
+   "surface": "担い",
+   "corpus": "かつい",
+   "kyoko": [
+    "にない"
+   ]
+  },
+  {
+   "id": "n2-b665",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n2-b835",
+   "surface": "方",
+   "corpus": "ほう",
+   "kyoko": [
+    "かた"
+   ]
+  },
+  {
+   "id": "n2-b884",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n2-b913",
+   "surface": "間",
+   "corpus": "ま",
+   "kyoko": [
+    "あいだ"
+   ]
+  },
+  {
+   "id": "n2-b1017",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n2-b1118",
+   "surface": "断っ",
+   "corpus": "ことわっ",
+   "kyoko": [
+    "たっ"
+   ]
+  },
+  {
+   "id": "n2-b1142",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n2-b1180",
+   "surface": "十",
+   "corpus": "じゅう",
+   "kyoko": [
+    "じゅっ"
+   ]
+  },
+  {
+   "id": "n2-b1210",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n2-b1211",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n2-b1212",
+   "surface": "着替え",
+   "corpus": "きがえ",
+   "kyoko": [
+    "きかえ"
+   ]
+  },
+  {
+   "id": "n2-b1247",
+   "surface": "辛い",
+   "corpus": "つらい",
+   "kyoko": [
+    "からい"
+   ]
+  },
+  {
+   "id": "n3-g009",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g010",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g015",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n3-g016",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g029",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g031",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n3-g033",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g039",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g044",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g073",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g082",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g133",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g179",
+   "surface": "着替える",
+   "corpus": "きがえる",
+   "kyoko": [
+    "きかえる"
+   ]
+  },
+  {
+   "id": "n3-g184",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g245",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g274",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g285",
+   "surface": "抱い",
+   "corpus": "いだい",
+   "kyoko": [
+    "だい"
+   ]
+  },
+  {
+   "id": "n3-g293",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-g357",
+   "surface": "被っ",
+   "corpus": "かぶっ",
+   "kyoko": [
+    "こうむっ"
+   ]
+  },
+  {
+   "id": "n3-b016",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b036",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b045",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b054",
+   "surface": "札",
+   "corpus": "さつ",
+   "kyoko": [
+    "ふだ"
+   ]
+  },
+  {
+   "id": "n3-b080",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b087",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b104",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b107",
+   "surface": "降り",
+   "corpus": "おり",
+   "kyoko": [
+    "ふり"
+   ]
+  },
+  {
+   "id": "n3-b132",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b151",
+   "surface": "表",
+   "corpus": "ひょう",
+   "kyoko": [
+    "おもて"
+   ]
+  },
+  {
+   "id": "n3-b170",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b197",
+   "surface": "空い",
+   "corpus": "あい",
+   "kyoko": [
+    "すい"
+   ]
+  },
+  {
+   "id": "n3-b200",
+   "surface": "風",
+   "corpus": "ふう",
+   "kyoko": [
+    "かぜ"
+   ]
+  },
+  {
+   "id": "n3-b204",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n3-b232",
+   "surface": "臭い",
+   "corpus": "くさい",
+   "kyoko": [
+    "におい"
+   ]
+  },
+  {
+   "id": "n3-b251",
+   "surface": "大勢",
+   "corpus": "たいせい",
+   "kyoko": [
+    "おおぜい"
+   ]
+  },
+  {
+   "id": "n3-b286",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b296",
+   "surface": "今",
+   "corpus": "こん",
+   "kyoko": [
+    "いま"
+   ]
+  },
+  {
+   "id": "n3-b341",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b354",
+   "surface": "行っ",
+   "corpus": "いっ",
+   "kyoko": [
+    "おこなっ"
+   ]
+  },
+  {
+   "id": "n3-b356",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n3-b389",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b397",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b423",
+   "surface": "札",
+   "corpus": "さつ",
+   "kyoko": [
+    "ふだ"
+   ]
+  },
+  {
+   "id": "n3-k062",
+   "surface": "弾く",
+   "corpus": "ひく",
+   "kyoko": [
+    "はじく"
+   ]
+  },
+  {
+   "id": "n3-k074",
+   "surface": "留める",
+   "corpus": "とめる",
+   "kyoko": [
+    "とどめる"
+   ]
+  },
+  {
+   "id": "n3-b552",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b557",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b594",
+   "surface": "今",
+   "corpus": "こん",
+   "kyoko": [
+    "いま"
+   ]
+  },
+  {
+   "id": "n3-b604",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b620",
+   "surface": "通り",
+   "corpus": "とおり",
+   "kyoko": [
+    "どおり"
+   ]
+  },
+  {
+   "id": "n3-b623",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b656",
+   "surface": "抱い",
+   "corpus": "いだい",
+   "kyoko": [
+    "だい"
+   ]
+  },
+  {
+   "id": "n3-b672",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b705",
+   "surface": "入っ",
+   "corpus": "はいっ",
+   "kyoko": [
+    "いっ"
+   ]
+  },
+  {
+   "id": "n3-b708",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n3-b880",
+   "surface": "降り",
+   "corpus": "おり",
+   "kyoko": [
+    "ふり"
+   ]
+  },
+  {
+   "id": "n3-b900",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n3-b905",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g021",
+   "surface": "行っ",
+   "corpus": "いっ",
+   "kyoko": [
+    "おこなっ"
+   ]
+  },
+  {
+   "id": "n4-g061",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g131",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g176",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g181",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g190",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g201",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g215",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g220",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g228",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g229",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g262",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g269",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g317",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g320",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g341",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g373",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-g386",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n4-g390",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-b010",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n4-b068",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-b127",
+   "surface": "十分",
+   "corpus": "じゅうふん",
+   "kyoko": [
+    "じゅうぶん"
+   ]
+  },
+  {
+   "id": "n4-b129",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-b149",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-b154",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-b186",
+   "surface": "一",
+   "corpus": "いち",
+   "kyoko": [
+    "ひと"
+   ]
+  },
+  {
+   "id": "n4-b189",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-k030",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n4-k037",
+   "surface": "弾く",
+   "corpus": "ひく",
+   "kyoko": [
+    "はじく"
+   ]
+  },
+  {
+   "id": "n5-gakusei",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-namae",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n5-g012",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-g079",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-g087",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-g110",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-g111",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-g114",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-g121",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b008",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b018",
+   "surface": "一日",
+   "corpus": "いちにち",
+   "kyoko": [
+    "ついたち"
+   ]
+  },
+  {
+   "id": "n5-b022",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b029",
+   "surface": "煩い",
+   "corpus": "うるさい",
+   "kyoko": [
+    "わずらい"
+   ]
+  },
+  {
+   "id": "n5-b039",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b041",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b055",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b063",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b109",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b117",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b123",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b136",
+   "surface": "何",
+   "corpus": "なん",
+   "kyoko": [
+    "なに"
+   ]
+  },
+  {
+   "id": "n5-b152",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b194",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b206",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b211",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b254",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b255",
+   "surface": "後",
+   "corpus": "あと",
+   "kyoko": [
+    "のち"
+   ]
+  },
+  {
+   "id": "n5-b299",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b301",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b370",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  },
+  {
+   "id": "n5-b380",
+   "surface": "方",
+   "corpus": "ほう",
+   "kyoko": [
+    "かた"
+   ]
+  },
+  {
+   "id": "n5-k007",
+   "surface": "弾き",
+   "corpus": "ひき",
+   "kyoko": [
+    "はじき"
+   ]
+  },
+  {
+   "id": "n5-k011",
+   "surface": "私",
+   "corpus": "わたくし",
+   "kyoko": [
+    "わたし"
+   ]
+  }
+ ],
+ "undecided": [
+  "n1-g017",
+  "n1-g168",
+  "n1-g171",
+  "n1-g177",
+  "n1-g239",
+  "n1-g247",
+  "n1-g250",
+  "n1-g257",
+  "n1-g263",
+  "n1-g264",
+  "n1-g273",
+  "n1-g278",
+  "n1-g320",
+  "n1-g332",
+  "n1-g343",
+  "n1-g351",
+  "n1-b007",
+  "n1-b047",
+  "n1-b051",
+  "n1-b055",
+  "n1-b065",
+  "n1-b080",
+  "n1-b087",
+  "n1-b096",
+  "n1-b098",
+  "n1-b107",
+  "n1-b108",
+  "n1-b115",
+  "n1-b119",
+  "n1-b133",
+  "n1-b142",
+  "n1-b143",
+  "n1-b161",
+  "n1-b171",
+  "n1-b180",
+  "n1-b193",
+  "n1-b216",
+  "n1-b223",
+  "n1-b269",
+  "n1-b308",
+  "n1-b311",
+  "n1-b317",
+  "n1-b326",
+  "n1-b327",
+  "n1-b335",
+  "n1-b369",
+  "n1-b390",
+  "n1-b405",
+  "n1-b422",
+  "n1-b424",
+  "n1-b429",
+  "n1-b445",
+  "n1-b468",
+  "n1-b481",
+  "n1-b532",
+  "n1-b538",
+  "n1-b539",
+  "n1-b552",
+  "n1-b573",
+  "n1-b588",
+  "n1-b599",
+  "n1-b607",
+  "n1-b613",
+  "n1-b615",
+  "n1-b633",
+  "n1-b638",
+  "n1-b647",
+  "n1-b671",
+  "n1-b689",
+  "n1-b699",
+  "n1-b704",
+  "n1-b716",
+  "n1-b718",
+  "n1-b720",
+  "n1-b732",
+  "n1-b735",
+  "n1-b748",
+  "n1-b754",
+  "n1-b761",
+  "n1-b764",
+  "n1-b795",
+  "n1-b841",
+  "n1-b842",
+  "n1-b845",
+  "n1-b856",
+  "n1-b867",
+  "n1-b872",
+  "n1-b894",
+  "n1-b901",
+  "n1-b906",
+  "n1-b910",
+  "n1-b912",
+  "n1-b918",
+  "n1-b930",
+  "n1-b931",
+  "n1-b933",
+  "n1-b935",
+  "n1-b957",
+  "n1-b981",
+  "n1-b1001",
+  "n1-b1015",
+  "n1-b1019",
+  "n1-b1029",
+  "n1-b1031",
+  "n1-b1040",
+  "n1-b1044",
+  "n1-b1046",
+  "n1-b1074",
+  "n1-b1078",
+  "n1-b1106",
+  "n1-b1111",
+  "n1-b1128",
+  "n1-b1129",
+  "n1-b1132",
+  "n1-b1142",
+  "n1-b1147",
+  "n1-b1161",
+  "n1-b1164",
+  "n1-b1171",
+  "n1-b1172",
+  "n1-b1189",
+  "n1-b1211",
+  "n1-b1218",
+  "n1-b1222",
+  "n1-b1241",
+  "n1-b1273",
+  "n1-b1280",
+  "n1-b1299",
+  "n1-b1319",
+  "n1-b1322",
+  "n1-b1326",
+  "n1-b1336",
+  "n1-b1337",
+  "n1-b1359",
+  "n1-b1391",
+  "n1-b1409",
+  "n1-b1417",
+  "n1-b1435",
+  "n1-b1437",
+  "n1-b1439",
+  "n1-b1443",
+  "n1-b1444",
+  "n1-b1452",
+  "n1-b1461",
+  "n1-b1468",
+  "n1-b1485",
+  "n1-b1493",
+  "n1-b1564",
+  "n1-b1574",
+  "n1-b1578",
+  "n1-b1602",
+  "n1-b1614",
+  "n1-b1630",
+  "n1-b1633",
+  "n1-b1663",
+  "n1-b1678",
+  "n1-b1681",
+  "n1-b1695",
+  "n1-b1722",
+  "n1-b1750",
+  "n1-b1782",
+  "n1-b1812",
+  "n1-b1840",
+  "n1-b1843",
+  "n1-b1873",
+  "n1-b1908",
+  "n1-b1914",
+  "n1-b1952",
+  "n1-b1956",
+  "n1-b1978",
+  "n1-b1990",
+  "n1-b2015",
+  "n1-b2031",
+  "n1-b2034",
+  "n1-b2042",
+  "n1-b2043",
+  "n1-b2071",
+  "n1-b2077",
+  "n1-b2081",
+  "n1-b2082",
+  "n1-b2103",
+  "n2-g072",
+  "n2-g085",
+  "n2-g101",
+  "n2-g108",
+  "n2-g129",
+  "n2-g176",
+  "n2-g179",
+  "n2-g214",
+  "n2-g241",
+  "n2-g257",
+  "n2-g264",
+  "n2-g285",
+  "n2-g317",
+  "n2-g319",
+  "n2-g321",
+  "n2-g336",
+  "n2-g338",
+  "n2-b010",
+  "n2-b053",
+  "n2-b059",
+  "n2-b061",
+  "n2-b066",
+  "n2-b072",
+  "n2-b074",
+  "n2-b095",
+  "n2-b101",
+  "n2-b140",
+  "n2-b141",
+  "n2-b152",
+  "n2-b171",
+  "n2-b174",
+  "n2-b182",
+  "n2-b205",
+  "n2-b214",
+  "n2-b217",
+  "n2-b226",
+  "n2-b231",
+  "n2-b243",
+  "n2-b268",
+  "n2-b270",
+  "n2-b285",
+  "n2-b288",
+  "n2-b304",
+  "n2-b309",
+  "n2-b337",
+  "n2-b365",
+  "n2-b409",
+  "n2-b417",
+  "n2-b429",
+  "n2-k080",
+  "n2-b442",
+  "n2-b449",
+  "n2-b458",
+  "n2-b477",
+  "n2-b479",
+  "n2-b481",
+  "n2-b484",
+  "n2-b504",
+  "n2-b515",
+  "n2-b518",
+  "n2-b529",
+  "n2-b535",
+  "n2-b538",
+  "n2-b539",
+  "n2-b584",
+  "n2-b595",
+  "n2-b603",
+  "n2-b624",
+  "n2-b631",
+  "n2-b639",
+  "n2-b650",
+  "n2-b662",
+  "n2-b681",
+  "n2-b688",
+  "n2-b695",
+  "n2-b699",
+  "n2-b711",
+  "n2-b713",
+  "n2-b716",
+  "n2-b722",
+  "n2-b730",
+  "n2-b736",
+  "n2-b750",
+  "n2-b756",
+  "n2-b762",
+  "n2-b768",
+  "n2-b771",
+  "n2-b791",
+  "n2-b823",
+  "n2-b833",
+  "n2-b837",
+  "n2-b838",
+  "n2-b847",
+  "n2-b852",
+  "n2-b885",
+  "n2-b901",
+  "n2-b907",
+  "n2-b923",
+  "n2-b942",
+  "n2-b948",
+  "n2-b994",
+  "n2-b1003",
+  "n2-b1009",
+  "n2-b1010",
+  "n2-b1012",
+  "n2-b1013",
+  "n2-b1015",
+  "n2-b1033",
+  "n2-b1034",
+  "n2-b1035",
+  "n2-b1036",
+  "n2-b1052",
+  "n2-b1066",
+  "n2-b1087",
+  "n2-b1090",
+  "n2-b1091",
+  "n2-b1094",
+  "n2-b1100",
+  "n2-b1139",
+  "n2-b1164",
+  "n2-b1170",
+  "n2-b1176",
+  "n2-b1188",
+  "n2-b1222",
+  "n2-b1227",
+  "n2-b1228",
+  "n2-b1236",
+  "n2-b1260",
+  "n2-b1271",
+  "n2-b1287",
+  "n3-g042",
+  "n3-g050",
+  "n3-g053",
+  "n3-g054",
+  "n3-g064",
+  "n3-g106",
+  "n3-g120",
+  "n3-g132",
+  "n3-g134",
+  "n3-g140",
+  "n3-g160",
+  "n3-g164",
+  "n3-g180",
+  "n3-g203",
+  "n3-g206",
+  "n3-g226",
+  "n3-g229",
+  "n3-g242",
+  "n3-g255",
+  "n3-g266",
+  "n3-g287",
+  "n3-g299",
+  "n3-g327",
+  "n3-g329",
+  "n3-g339",
+  "n3-g343",
+  "n3-g344",
+  "n3-b002",
+  "n3-b003",
+  "n3-b012",
+  "n3-b047",
+  "n3-b089",
+  "n3-b095",
+  "n3-b096",
+  "n3-b101",
+  "n3-b106",
+  "n3-b119",
+  "n3-b123",
+  "n3-b124",
+  "n3-b128",
+  "n3-b140",
+  "n3-b142",
+  "n3-b156",
+  "n3-b157",
+  "n3-b168",
+  "n3-b172",
+  "n3-b177",
+  "n3-b179",
+  "n3-b205",
+  "n3-b214",
+  "n3-b233",
+  "n3-b234",
+  "n3-b238",
+  "n3-b250",
+  "n3-b257",
+  "n3-b273",
+  "n3-b274",
+  "n3-b289",
+  "n3-b295",
+  "n3-b308",
+  "n3-b310",
+  "n3-b311",
+  "n3-b314",
+  "n3-b320",
+  "n3-b328",
+  "n3-b334",
+  "n3-b342",
+  "n3-b348",
+  "n3-b352",
+  "n3-b363",
+  "n3-b365",
+  "n3-b368",
+  "n3-b382",
+  "n3-b391",
+  "n3-b402",
+  "n3-b409",
+  "n3-k050",
+  "n3-k061",
+  "n3-b440",
+  "n3-b443",
+  "n3-b448",
+  "n3-b465",
+  "n3-b466",
+  "n3-b472",
+  "n3-b478",
+  "n3-b498",
+  "n3-b499",
+  "n3-b504",
+  "n3-b536",
+  "n3-b577",
+  "n3-b609",
+  "n3-b614",
+  "n3-b626",
+  "n3-b643",
+  "n3-b655",
+  "n3-b675",
+  "n3-b693",
+  "n3-b695",
+  "n3-b720",
+  "n3-b748",
+  "n3-b750",
+  "n3-b756",
+  "n3-b758",
+  "n3-b776",
+  "n3-b782",
+  "n3-b794",
+  "n3-b853",
+  "n3-b879",
+  "n3-b891",
+  "n3-b902",
+  "n3-b917",
+  "n3-b923",
+  "n3-b929",
+  "n3-b937",
+  "n3-b962",
+  "n3-b973",
+  "n4-g074",
+  "n4-g122",
+  "n4-g132",
+  "n4-g159",
+  "n4-g180",
+  "n4-g189",
+  "n4-g208",
+  "n4-g211",
+  "n4-g212",
+  "n4-g213",
+  "n4-g224",
+  "n4-g242",
+  "n4-g245",
+  "n4-g247",
+  "n4-g272",
+  "n4-g287",
+  "n4-g301",
+  "n4-g313",
+  "n4-g335",
+  "n4-g362",
+  "n4-g371",
+  "n4-g379",
+  "n4-g394",
+  "n4-b005",
+  "n4-b021",
+  "n4-b031",
+  "n4-b041",
+  "n4-b049",
+  "n4-b059",
+  "n4-b060",
+  "n4-b076",
+  "n4-b086",
+  "n4-b088",
+  "n4-b101",
+  "n4-b131",
+  "n4-b139",
+  "n4-b142",
+  "n4-b153",
+  "n4-b187",
+  "n4-b193",
+  "n4-k043",
+  "n5-heya",
+  "n5-tori",
+  "n5-iku",
+  "n5-furui",
+  "n5-g007",
+  "n5-g010",
+  "n5-g024",
+  "n5-g025",
+  "n5-g028",
+  "n5-g046",
+  "n5-g063",
+  "n5-g077",
+  "n5-g090",
+  "n5-g091",
+  "n5-g094",
+  "n5-g122",
+  "n5-g124",
+  "n5-b001",
+  "n5-b003",
+  "n5-b012",
+  "n5-b042",
+  "n5-b044",
+  "n5-b049",
+  "n5-b052",
+  "n5-b071",
+  "n5-b084",
+  "n5-b085",
+  "n5-b100",
+  "n5-b106",
+  "n5-b126",
+  "n5-b127",
+  "n5-b130",
+  "n5-b132",
+  "n5-b138",
+  "n5-b149",
+  "n5-b158",
+  "n5-b170",
+  "n5-b175",
+  "n5-b198",
+  "n5-b210",
+  "n5-b259",
+  "n5-b269",
+  "n5-b279",
+  "n5-b285",
+  "n5-b298",
+  "n5-b303",
+  "n5-b323",
+  "n5-b325",
+  "n5-b330",
+  "n5-b334",
+  "n5-b339",
+  "n5-b341",
+  "n5-b356",
+  "n5-k015",
+  "n5-k022"
+ ],
+ "wouldHaveBeenReleasedByTheDefectivePredicate": [
+  "n1-b007",
+  "n1-b047",
+  "n1-b055",
+  "n1-b096",
+  "n1-b098",
+  "n1-b1015",
+  "n1-b1019",
+  "n1-b1029",
+  "n1-b1031",
+  "n1-b1040",
+  "n1-b1044",
+  "n1-b1074",
+  "n1-b108",
+  "n1-b1106",
+  "n1-b115",
+  "n1-b1164",
+  "n1-b1172",
+  "n1-b1189",
+  "n1-b119",
+  "n1-b1241",
+  "n1-b1280",
+  "n1-b1299",
+  "n1-b1319",
+  "n1-b133",
+  "n1-b1337",
+  "n1-b1359",
+  "n1-b1417",
+  "n1-b143",
+  "n1-b1437",
+  "n1-b1443",
+  "n1-b1452",
+  "n1-b1493",
+  "n1-b171",
+  "n1-b1722",
+  "n1-b1750",
+  "n1-b180",
+  "n1-b1812",
+  "n1-b1840",
+  "n1-b1908",
+  "n1-b1914",
+  "n1-b1952",
+  "n1-b1956",
+  "n1-b1978",
+  "n1-b1990",
+  "n1-b2015",
+  "n1-b2031",
+  "n1-b2034",
+  "n1-b2042",
+  "n1-b2043",
+  "n1-b2071",
+  "n1-b216",
+  "n1-b223",
+  "n1-b311",
+  "n1-b317",
+  "n1-b369",
+  "n1-b390",
+  "n1-b405",
+  "n1-b422",
+  "n1-b468",
+  "n1-b588",
+  "n1-b613",
+  "n1-b633",
+  "n1-b699",
+  "n1-b720",
+  "n1-b735",
+  "n1-b748",
+  "n1-b764",
+  "n1-b795",
+  "n1-b841",
+  "n1-b845",
+  "n1-b872",
+  "n1-b901",
+  "n1-b906",
+  "n1-b910",
+  "n1-b912",
+  "n1-b931",
+  "n1-b933",
+  "n1-b935",
+  "n1-g171",
+  "n1-g263",
+  "n1-g351",
+  "n2-b061",
+  "n2-b066",
+  "n2-b095",
+  "n2-b1003",
+  "n2-b1009",
+  "n2-b1010",
+  "n2-b1015",
+  "n2-b1033",
+  "n2-b1034",
+  "n2-b1052",
+  "n2-b1066",
+  "n2-b1091",
+  "n2-b1164",
+  "n2-b1271",
+  "n2-b1287",
+  "n2-b152",
+  "n2-b217",
+  "n2-b226",
+  "n2-b231",
+  "n2-b243",
+  "n2-b309",
+  "n2-b365",
+  "n2-b417",
+  "n2-b429",
+  "n2-b442",
+  "n2-b458",
+  "n2-b477",
+  "n2-b479",
+  "n2-b481",
+  "n2-b484",
+  "n2-b504",
+  "n2-b515",
+  "n2-b518",
+  "n2-b529",
+  "n2-b538",
+  "n2-b539",
+  "n2-b631",
+  "n2-b650",
+  "n2-b695",
+  "n2-b699",
+  "n2-b713",
+  "n2-b730",
+  "n2-b750",
+  "n2-b768",
+  "n2-b791",
+  "n2-b833",
+  "n2-b847",
+  "n2-b942",
+  "n2-g101",
+  "n2-g129",
+  "n2-g176",
+  "n2-g179",
+  "n2-g319",
+  "n2-g338",
+  "n3-b002",
+  "n3-b012",
+  "n3-b101",
+  "n3-b119",
+  "n3-b123",
+  "n3-b140",
+  "n3-b142",
+  "n3-b156",
+  "n3-b157",
+  "n3-b168",
+  "n3-b172",
+  "n3-b179",
+  "n3-b205",
+  "n3-b233",
+  "n3-b238",
+  "n3-b250",
+  "n3-b273",
+  "n3-b274",
+  "n3-b289",
+  "n3-b314",
+  "n3-b342",
+  "n3-b352",
+  "n3-b363",
+  "n3-b391",
+  "n3-b409",
+  "n3-b443",
+  "n3-b448",
+  "n3-b577",
+  "n3-b609",
+  "n3-b626",
+  "n3-b655",
+  "n3-b675",
+  "n3-b695",
+  "n3-b758",
+  "n3-b782",
+  "n3-b879",
+  "n3-b891",
+  "n3-b902",
+  "n3-b917",
+  "n3-b937",
+  "n3-b973",
+  "n3-g050",
+  "n3-g053",
+  "n3-g106",
+  "n3-g120",
+  "n3-g132",
+  "n3-g180",
+  "n3-g206",
+  "n3-g226",
+  "n3-g255",
+  "n3-g287",
+  "n3-g299",
+  "n3-g329",
+  "n4-b041",
+  "n4-b060",
+  "n4-b086",
+  "n4-b088",
+  "n4-b142",
+  "n4-b187",
+  "n4-b193",
+  "n4-g122",
+  "n4-g208",
+  "n4-g212",
+  "n4-g242",
+  "n4-g287",
+  "n4-g301",
+  "n4-g371",
+  "n5-b001",
+  "n5-b003",
+  "n5-b012",
+  "n5-b042",
+  "n5-b044",
+  "n5-b049",
+  "n5-b052",
+  "n5-b071",
+  "n5-b127",
+  "n5-b130",
+  "n5-b132",
+  "n5-b149",
+  "n5-b158",
+  "n5-b175",
+  "n5-b198",
+  "n5-b210",
+  "n5-b285",
+  "n5-b303",
+  "n5-b325",
+  "n5-b330",
+  "n5-b334",
+  "n5-b356",
+  "n5-g024",
+  "n5-g025",
+  "n5-g028",
+  "n5-g046",
+  "n5-g063",
+  "n5-g077",
+  "n5-g090",
+  "n5-g091",
+  "n5-g094",
+  "n5-g122",
+  "n5-iku",
+  "n5-k015"
+ ]
+}
