@@ -62,6 +62,26 @@ usable starting point rather than a stub.
 
 ## §R Build the macOS App Store package with the screen locked
 
+> **⚠️ MEASURED 2026-08-28: the failure does not reproduce.** A full macOS App Store
+> export + upload succeeded with **82 of 82 one-second samples of `IOConsoleLocked` reading
+> `<true/>`** — asserted DURING the run, which is what this section demands and what an earlier
+> bracketed observation the same day could not give. Two exports that day, both with the console
+> locked, both succeeded.
+>
+> This section's own rule applies to this section: *"A trap that no longer reproduces is a trap
+> that has been fixed by somebody else."* STATE's `productbuild` row was measured on v1.25 and
+> the toolchain has moved to Xcode 26.6.
+>
+> **What this does NOT establish**: that it can never fail. Two successes are not a proof of
+> absence, and the mechanism was never understood — §R's own "what is NOT measured" list still
+> stands, including that the transient key's ACL was only ever an inference. So the sampler is
+> now permanent in `build-appstore.sh` and every release prints its ratio. If the trap returns,
+> the log says so instead of a person guessing.
+>
+> **Consequence: steps 3, 4 and 5 below are moot unless it returns**, and with them the
+> owner-only step (obtaining and pre-authorising a persistent installer identity). The macOS
+> release no longer needs a human at the machine, which was the entire goal.
+
 **Goal:** remove the human step from the release. Everything else in this pipeline runs
 unattended — `swift test`, `xcodebuild test`, both archives, the iOS upload, the launch gate,
 the submit script. The macOS App Store export is the only thing that needs somebody physically
