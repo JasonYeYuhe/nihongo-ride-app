@@ -174,26 +174,28 @@ def main():
             disputed.add(parts[0])
     every = C.build_rows()
     rows = [r for r in every if r["id"] in want]
-    if len(rows) != len(want):
-        print(f"expected {len(want)} propagated rows, built {len(rows)}")
-        return 3
-    # A run with nothing to inspect must not report OK, and this one could.
-    # `len(rows) != len(want)` passes when BOTH are zero, and every calibration below then
-    # succeeds vacuously: rebuild identity 0/0, zero decoys, zero spurious matches, followed
-    # by "OK — decoys never match". It printed exactly that on 2026-08-28, AFTER this
-    # release retired the `propagated` evidence class and emptied the population — so from
-    # here on every run of this file would have reported a confident pass over nothing, and
-    # written a record with empty verdicts to prove it. Caught only because an earlier run's
-    # output was still on screen to compare against.
-    #
-    # This is the project's oldest rule turned on the newest instrument: a checker that
-    # reports "no problems" is indistinguishable from a broken one until it is shown to
-    # alarm. Its own subject is gone; say so instead of passing.
+    # A withheld id with no buildable row is a REAL condition, not a glitch: build_rows only
+    # yields sentences with exJP + exKana + exTokens, and a withheld sentence may have lost one.
+    # Naming them and continuing is right; silently comparing lengths and stopping would make
+    # the whole run hostage to one stale id, and silently ignoring them would let the report
+    # claim a population it never inspected. So: say which, count them, carry on.
+    missing = sorted(want - {r["id"] for r in rows})
+    if missing:
+        print(f"NOT INSPECTED: {len(missing)} of {len(want)} '{args.evidence}' ids have no "
+              f"buildable row (no exJP/exKana/exTokens): {missing[:8]}"
+              + (" …" if len(missing) > 8 else ""))
+        print("  They stay withheld — this instrument has said nothing about them.\n")
+    # A run with nothing to inspect must not report OK, and this one could: `len(rows) !=
+    # len(want)` passes when BOTH are zero, and every calibration below then succeeds vacuously
+    # on an empty population. It printed "OK — decoys never match" over zero rows and exited 0.
     if not rows:
-        print("NOTHING TO INSPECT: no exclusion carries evidence 'propagated'.\n"
-              "  That class was retired by v1.28 §A, so this instrument has no population\n"
-              "  left and CANNOT report a result. It is finished, not clean.\n"
-              "  Re-point `want` at another evidence class to reuse it.")
+        print(f"NOTHING TO INSPECT: no exclusion carries evidence {args.evidence!r}.")
+        print("  This instrument has no population and CANNOT report a result.")
+        print("  It is FINISHED, not clean. Re-point --evidence at another class to reuse it.")
+        print(f"  Classes present: "
+              + ", ".join(f"{k}={v}" for k, v in sorted(
+                  __import__("collections").Counter(
+                      r["evidence"] for r in mism["excluded"]).items())))
         return 5
 
     rc = 0
