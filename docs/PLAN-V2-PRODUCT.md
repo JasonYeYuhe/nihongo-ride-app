@@ -152,11 +152,15 @@ inferred: 109 lifetime installs, ~2.4 a day, §A.** This stage has no paywall in
     "Japanese keywords buy Japanese search surface, and JP's rate is the evidence that surface
     would convert". Different argument, different number to watch: **JP impressions**, not JP
     conversion.
-  * **China is the larger and harder problem, and it is not a locale gap.** Three quarters of all
-    impressions, the lowest conversion of any significant territory, on the one listing that IS
-    localised. Two explanations fit — zh keywords matching broad low-intent queries, or a zh
-    product page that does not convince — and **the data cannot separate them.** Distinguishing
-    them is the next measurement, not the next guess.
+  * **China is the larger and harder problem, it is not a locale gap, and the funnel says where
+    in the funnel it sits.** Three quarters of all impressions, the lowest conversion of any
+    significant territory, on the one listing that IS localised. Decomposed by stage against
+    Japan: **impression → opened the product page is 4.01% vs 6.19%, z = +3.55, significant**;
+    product page → install is 5.6% vs 10.8% but **z = +1.70, not significant** on eight Japanese
+    page-installs. **So the evidenced gap is the search-result row, not the product page** —
+    icon, title, subtitle, first two screenshots, and the precision of the zh keywords putting
+    the app in front of those queries. Do not rewrite the zh description on the strength of the
+    stage the sample cannot carry.
   * **93% of installs come from search, and 41% never open the product page.** Whatever is
     changed is changed for search: keywords, title, subtitle, and the first two screenshots.
 * **Ask for reviews.** `SKStoreReviewController`, triggered at a genuine positive moment — a

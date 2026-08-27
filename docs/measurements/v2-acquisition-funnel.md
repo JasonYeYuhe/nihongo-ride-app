@@ -96,12 +96,26 @@ one holding three quarters of the impressions.**
    Japanese search surface, and JP's conversion rate is the evidence that the impressions it buys
    would convert well. That is a better argument, and it predicts a different number to watch
    (JP impressions, not JP conversion).
-3. **China is the anomaly worth a release of its own.** 75% of impressions, 48% of downloads, the
-   lowest conversion of any significant territory — despite being the only non-English localised
-   listing. Two explanations fit and the data here cannot separate them: the zh keywords match
-   broad, low-intent queries, or the zh product page (subtitle, screenshots) does not convince.
-   **They have different fixes**, and distinguishing them is the next measurement, not the next
-   guess.
+3. **China is the anomaly worth a release of its own — and the funnel DOES say where.** 75% of
+   impressions, 48% of downloads, the lowest conversion of any significant territory, on the one
+   listing that is already localised. An earlier draft of this file said the data could not
+   separate "broad low-intent keywords" from "a product page that does not convince". That was
+   written before the `Event` column was decomposed, and it is wrong — the report distinguishes
+   `Impression`, `Page view` and `Tap`, which are three different stages:
+
+   | stage | CN | JP | z |
+   |---|---|---|---|
+   | impression → **opened the product page** | 4.01% (429/10,700) | 6.19% (74/1,196) | **+3.55 — significant** |
+   | product page view → install | 5.6% (24/429) | 10.8% (8/74) | +1.70 — not significant |
+   | impression → install **without** opening the page | 0.26% (28/10,700) | 0.59% (7/1,196) | +1.96 — not significant |
+
+   **The one gap that is established is at the search-result row, not at the product page.**
+   Chinese users who see the app in results open it half as often as Japanese users do; what
+   happens after they open it is 1.9× worse and **the sample cannot carry that claim** (eight JP
+   downloads via the page). So the evidenced fix is what a search result actually shows —
+   **icon, title, subtitle, and the first two screenshots** — or the precision of the zh keywords
+   that put it in front of those queries. The product page's own copy is the *unevidenced*
+   half, and should not be rewritten on the strength of a z of 1.70.
 4. **93% of installs come from search.** Whatever is done, it is done to search: keywords, title,
    subtitle, and the first two screenshots — which are what 41% of installers see instead of the
    product page.
