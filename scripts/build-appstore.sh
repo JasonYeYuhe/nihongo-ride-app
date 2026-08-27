@@ -88,6 +88,27 @@ if [[ "$UPLOAD" != true ]]; then
 fi
 
 echo "==> [2/2] Exporting + uploading to App Store Connect"
+
+# Sample the console lock state DURING the export, not before it.
+#
+# STATE records that `productbuild` -- which only the macOS App Store path runs -- fails
+# -60008 with the console locked, and PLAN-V1.27 §R is built on that. On 2026-08-28 a full
+# export+upload SUCCEEDED with `IOConsoleLocked` reading <true/> immediately before and
+# immediately after. Bracketing is not proof: the screen could have been unlocked inside the
+# window. §R says so itself -- "assert the lock state INSIDE the run" -- and names the shape
+# of the mistake, three screenshot runs that "passed" because nothing asserted the app was
+# frontmost.
+#
+# So every export from here on records it, once a second, into the build directory. This costs
+# nothing and turns each release into evidence for or against a trap that may already be fixed.
+LOCKLOG="$BUILD_DIR/console-lock.log"
+( while :; do
+      printf '%s %s\n' "$(date -u +%H:%M:%S)" \
+          "$(ioreg -n Root -d1 -a 2>/dev/null | grep -A1 IOConsoleLocked | tail -1 | tr -d ' \t')"
+      sleep 1
+  done ) > "$LOCKLOG" 2>/dev/null &
+LOCKPID=$!
+trap 'kill "$LOCKPID" 2>/dev/null || true' EXIT
 cat > "$BUILD_DIR/ExportOptions.plist" << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -126,3 +147,10 @@ xcodebuild -exportArchive \
     -authenticationKeyIssuerID "$API_ISSUER"
 
 echo "    ✓ Uploaded. Apple will process the build (10-30 min) before it's attachable."
+
+if [[ -f "$LOCKLOG" ]]; then
+    kill "$LOCKPID" 2>/dev/null || true
+    LOCKED=$(grep -c "<true/>" "$LOCKLOG" || true)
+    TOTAL=$(grep -c . "$LOCKLOG" || true)
+    echo "    console lock during this export: ${LOCKED}/${TOTAL} samples locked  ($LOCKLOG)"
+fi
