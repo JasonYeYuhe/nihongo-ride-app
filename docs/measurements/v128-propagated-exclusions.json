@@ -1,16 +1,61 @@
 {
- "measurement": "scripts/check_propagated_exclusions.py",
- "voice": "not observed — every clip served from cache this run",
- "question": "The 15 exclusions whose evidence was 'propagated' were never measured. They were excluded because a word in them was proven misread IN A DIFFERENT SENTENCE, under the comment 'a voice does not change its mind between sentences'. This measures each of them directly.",
- "instrument": "1b: the sentence stays in kanji and exactly one CONTIGUOUS SPAN of tokens is replaced by kana, so word boundaries and accent context are unchanged. A byte-identical render is proof about that span in that sentence; a non-match stays silent.",
+ "measurement": "scripts/check_propagated_exclusions.py --calibrate",
+ "date": "2026-08-28",
+ "voice": "com.apple.voice.compact.ja-JP.Kyoko",
+ "question": "The 15 exclusions whose evidence read 'propagated' were never measured. They were withheld because a word in them was proven misread IN A DIFFERENT SENTENCE, under the comment 'a voice does not change its mind between sentences'. This measures each of them directly.",
+ "instrument": "Instrument 1b: the sentence stays in kanji and exactly one CONTIGUOUS SPAN of tokens is replaced by kana, so word boundaries and accent context elsewhere are unchanged. Spans, not single tokens: 四人 is tokenised 四+人 but lexicalises as よにん, and an earlier version substituted one token at a time, produced 家族は四ひとです, and reported that sentence 'proven misread' while never testing よにん at all. A byte-identical render is proof; a non-match is SILENCE and never evidence.",
  "calibration": {
-  "rebuildIdentity": "0/0 — string handling only, no linguistic weight",
-  "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
-  "negativeControl": "0 decoy substitutions, 0 spurious byte matches"
+  "negativeControl": "30 decoy substitutions (kana that are not readings of anything) -> 0 spurious byte matches.",
+  "positiveControl": "39 sentences instrument 1 had already proven say their corpus reading -> 1b contradicts 0.",
+  "rebuildIdentity": "15/15. Proves the string handling is faithful and carries no linguistic weight; not counted as calibration on its own."
  },
- "instrument1Recall": "3 of 15 — the carried-forward plan's claim that 'instrument 1 can decide each directly' is measured FALSE. Rendering the whole reading as kana changes prosody, so byte identity goes silent even where the reading is right.",
- "theCommentIsFalse": "畑 is read はたけ in n1-b432 and ばたけ in n1-b1000 — same word, same voice, two sentences, two readings, both proven by byte identity. The assumption that justified propagating 15 verdicts is disproven by the data those verdicts were derived from.",
- "release": [],
- "keep": [],
- "silent": []
+ "instrument1Recall": "3 of 15. PLAN-V1.27's claim that 'instrument 1 can decide each directly' is measured false: rendering the whole reading as kana changes prosody, so byte identity goes silent even where the reading is right.",
+ "theCommentIsFalse": "畑 is proven はたけ in n1-b432 and ばたけ in n1-b1000 — the same word, the same voice, two sentences, two readings. The assumption that justified propagating 15 verdicts is disproven by the data those verdicts were derived from. Of the 15 it withheld, 11 say their corpus reading and 2 do not: wrong far more often than right.",
+ "release": [
+  "n1-b129",
+  "n1-b432",
+  "n1-b621",
+  "n1-b909",
+  "n1-b2014",
+  "n2-g210",
+  "n2-b162",
+  "n2-b208",
+  "n2-b570",
+  "n2-b1023",
+  "n3-b637"
+ ],
+ "keepExcluded": [
+  {
+   "id": "n1-b1000",
+   "surface": "畑",
+   "corpus": "はたけ",
+   "kyoko": [
+    "ばたけ"
+   ]
+  },
+  {
+   "id": "n5-kazoku",
+   "surface": "人",
+   "corpus": "にん",
+   "kyoko": [
+    "ひと"
+   ]
+  }
+ ],
+ "undecided": [
+  "n1-b655",
+  "n5-g004"
+ ],
+ "geminiPredictionTested": "Gemini 3.7 Flash predicted correcting exKana to よにん would 'likely produce a byte match with Kyoko, directly unblocking n5-kazoku'. Measured FALSE: 四人 -> よにん differs, as do よんにん and よったり. Only 人 -> ひと matches.",
+ "corpusDefectFound": {
+  "id": "n5-kazoku",
+  "exJP": "家族は四人です。",
+  "exKana": "かぞくはよんにんです",
+  "finding": "Standard Japanese lexicalises 四人 as よにん (一人ひとり, 二人ふたり, 三人さんにん, 四人よにん); the corpus says よんにん. 四人 is not this card's headword (家族/かぞく), so no reading gate has ever inspected it — this is the '112 uninspected sentences' population.",
+  "status": "candidate correction, NOT applied. It would not release the sentence — Kyoko says ひと either way — so it is a correctness question for a reading-gate release, not for this one."
+ },
+ "dictationPool": {
+  "before": 5760,
+  "after": 5771
+ }
 }
