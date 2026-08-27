@@ -109,7 +109,20 @@ one holding three quarters of the impressions.**
    | product page view → install | 5.6% (24/429) | 10.8% (8/74) | +1.70 — not significant |
    | impression → install **without** opening the page | 0.26% (28/10,700) | 0.59% (7/1,196) | +1.96 — not significant |
 
-   **The one gap that is established is at the search-result row, not at the product page.**
+   **⚠️ But what that z-score attributes the gap to was wrong, and the error is one this project
+   has a memory of: it calibrated on the wrong population.** Gemini 3.7 Flash caught it on
+   2026-08-27. The app ships **no Japanese keywords at all**, so the only way it can surface in
+   Japanese search is against its English metadata or its own name — meaning **every JP
+   impression comes from a deliberate, English-language, high-intent query**. China's
+   impressions come from broad `zh-Hans` terms. The two CTRs are therefore measured on
+   populations with different intent, and **the z of +3.55 measures keyword-basket intent
+   asymmetry at least as well as it measures anything about the search-result row.**
+
+   What survives: **the gap is at the search-result row rather than the product page** — that
+   part is a comparison of stages within each territory and holds. What does NOT survive is the
+   attribution: it cannot be told apart from the app being shown for queries it does not answer.
+   **Search-term data would separate them and Apple's reports do not contain it**, so this stays
+   open rather than resolved.
    Chinese users who see the app in results open it half as often as Japanese users do; what
    happens after they open it is 1.9× worse and **the sample cannot carry that claim** (eight JP
    downloads via the page). So the evidenced fix is what a search result actually shows —

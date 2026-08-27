@@ -161,6 +161,13 @@ inferred: 109 lifetime installs, ~2.4 a day, §A.** This stage has no paywall in
     icon, title, subtitle, first two screenshots, and the precision of the zh keywords putting
     the app in front of those queries. Do not rewrite the zh description on the strength of the
     stage the sample cannot carry.
+
+    **⚠️ And do not read that z as "the CN creative is bad".** The app ships no Japanese
+    keywords, so every JP impression comes from a deliberate English-language query, while CN's
+    come from broad `zh-Hans` terms. The comparison is across two populations with different
+    intent — the same error `feedback-calibrate-on-the-right-population` records. The
+    **stage** is established; the **cause** is not, and Apple's reports carry no search terms to
+    separate keyword mismatch from creative failure.
   * **93% of installs come from search, and 41% never open the product page.** Whatever is
     changed is changed for search: keywords, title, subtitle, and the first two screenshots.
 * **Ask for reviews.** `SKStoreReviewController`, triggered at a genuine positive moment — a
