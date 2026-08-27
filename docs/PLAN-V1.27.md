@@ -291,3 +291,55 @@ repeating:
 * Everything under "Open items, carried from v1.26" above, untouched: §R, instance twenty-one,
   §C + B4 timing, the 913 `nearest` and 15 `propagated` dictation exclusions, the 112
   uninspected sentences, §E accessibility.
+
+---
+
+# v1.28 — shipped
+
+**Submitted 2026-08-28, macOS build 52 / iOS build 53, marketing 1.28 — both platforms
+WAITING_FOR_REVIEW, verified by querying ASC directly.** `swift test` **571 green**; launch gate
+passed on the uploaded archive with the Mac signed into iCloud; What's New read back from ASC in
+all **three** locales, and read back for its *numbers* rather than its length — 11 → 10 and
+5,771 → 5,770 are the same number of characters, so a length check could not have seen the
+correction.
+
+| | v1.27 | v1.28 |
+|---|---|---|
+| tests | 570 | **571** |
+| dictation pool | 5,760 | **5,770** |
+| App Store locales | 2 | **3** (`ja` added) |
+| builds abandoned to a review finding | 2 | **2** |
+
+## The pre-submission review found a real defect, in builds that were already uploaded
+
+`verdict()` returned RELEASE as soon as **any** span agreed with its corpus reading, without
+checking it was the span the sentence had been withheld for. It released `n2-g210`
+(彼が殺人を犯した動機は何だ) on 彼 = かれ while 何 — the whole reason it was withheld — was never
+confirmed. **The evidence that released the sentence and the reason it was withheld were
+different predicates, agreeing only by inspection**: this project's oldest defect shape, arriving
+in the release whose subject is an assumption that looked like a measurement.
+
+Ten of eleven were right. Checking is what found the one, and the fix was made at the predicate
+and then **re-measured from the restored pre-change state**, so the shipped result comes from the
+corrected instrument rather than from a hand-patched list.
+
+## And §R closed itself
+
+Two macOS exports that day succeeded with the console locked, the second with **82/82 one-second
+samples of `IOConsoleLocked` reading `<true/>` taken during the export**. §R's own rule decides
+it: a trap that no longer reproduces has been fixed by somebody else. The sampler is now
+permanent, so a return is recorded rather than rediscovered.
+
+## Open, and carried forward
+
+* **The 910 `nearest` exclusions.** PLAN-V1.27 said re-deciding them "needs an instrument this
+  repo does not have". Instrument 1b is that instrument — 0 spurious matches against 69 real
+  alternative readings — and running it over the 910 is now the largest content win available.
+* **`n5-kazoku` reads 四人 as よんにん**, where standard Japanese lexicalises よにん. Not applied:
+  correcting it would not release the sentence (Kyoko says ひと either way), so it belongs to a
+  reading-gate release, not this one.
+* **The CN search-result row**, which the acquisition funnel identified and this release does not
+  touch. `en-US` and `zh-Hans` keywords were deliberately left alone so v1.28's per-territory
+  reading stays attributable to the one locale that changed.
+* The three sentences no instrument has decided, now labelled `undecided` rather than
+  `propagated`.
