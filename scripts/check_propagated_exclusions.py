@@ -151,6 +151,24 @@ def main():
     if len(rows) != len(want):
         print(f"expected {len(want)} propagated rows, built {len(rows)}")
         return 3
+    # A run with nothing to inspect must not report OK, and this one could.
+    # `len(rows) != len(want)` passes when BOTH are zero, and every calibration below then
+    # succeeds vacuously: rebuild identity 0/0, zero decoys, zero spurious matches, followed
+    # by "OK — decoys never match". It printed exactly that on 2026-08-28, AFTER this
+    # release retired the `propagated` evidence class and emptied the population — so from
+    # here on every run of this file would have reported a confident pass over nothing, and
+    # written a record with empty verdicts to prove it. Caught only because an earlier run's
+    # output was still on screen to compare against.
+    #
+    # This is the project's oldest rule turned on the newest instrument: a checker that
+    # reports "no problems" is indistinguishable from a broken one until it is shown to
+    # alarm. Its own subject is gone; say so instead of passing.
+    if not rows:
+        print("NOTHING TO INSPECT: no exclusion carries evidence 'propagated'.\n"
+              "  That class was retired by v1.28 §A, so this instrument has no population\n"
+              "  left and CANNOT report a result. It is finished, not clean.\n"
+              "  Re-point `want` at another evidence class to reuse it.")
+        return 5
 
     rc = 0
     calibration = None
