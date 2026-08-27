@@ -1,0 +1,578 @@
+{
+  "window": {
+    "start": "2026-06-06",
+    "end": "2026-08-24"
+  },
+  "totals": {
+    "impressions": 14292,
+    "pageViews": 627,
+    "taps": 281,
+    "firstTimeDownloads": 109,
+    "downloadsWithNoPageView": 45
+  },
+  "sourceType": {
+    "App Store search": 101,
+    "App Store browse": 2,
+    "App referrer": 6
+  },
+  "byTerritory": {
+    "CN": {
+      "impressions": 10700,
+      "pageViews": 429,
+      "taps": 149,
+      "downloads": 52
+    },
+    "JP": {
+      "impressions": 1196,
+      "pageViews": 74,
+      "taps": 60,
+      "downloads": 15
+    },
+    "US": {
+      "impressions": 707,
+      "pageViews": 38,
+      "taps": 19,
+      "downloads": 9
+    },
+    "VN": {
+      "impressions": 243,
+      "pageViews": 14,
+      "taps": 14,
+      "downloads": 5
+    },
+    "AE": {
+      "impressions": 161,
+      "pageViews": 7,
+      "taps": 1,
+      "downloads": 1
+    },
+    "IN": {
+      "impressions": 132,
+      "pageViews": 5,
+      "taps": 2,
+      "downloads": 3
+    },
+    "CO": {
+      "impressions": 101,
+      "pageViews": 4,
+      "taps": 1,
+      "downloads": 1
+    },
+    "AU": {
+      "impressions": 73,
+      "pageViews": 3,
+      "taps": 5,
+      "downloads": 4
+    },
+    "PH": {
+      "impressions": 69,
+      "pageViews": 2,
+      "taps": 2,
+      "downloads": 1
+    },
+    "SG": {
+      "impressions": 62,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "CA": {
+      "impressions": 59,
+      "pageViews": 1,
+      "taps": 0,
+      "downloads": 1
+    },
+    "HK": {
+      "impressions": 51,
+      "pageViews": 4,
+      "taps": 6,
+      "downloads": 3
+    },
+    "MY": {
+      "impressions": 50,
+      "pageViews": 2,
+      "taps": 0,
+      "downloads": 0
+    },
+    "ID": {
+      "impressions": 44,
+      "pageViews": 2,
+      "taps": 1,
+      "downloads": 0
+    },
+    "FR": {
+      "impressions": 44,
+      "pageViews": 3,
+      "taps": 0,
+      "downloads": 0
+    },
+    "GB": {
+      "impressions": 42,
+      "pageViews": 3,
+      "taps": 0,
+      "downloads": 0
+    },
+    "SA": {
+      "impressions": 41,
+      "pageViews": 2,
+      "taps": 0,
+      "downloads": 0
+    },
+    "DE": {
+      "impressions": 38,
+      "pageViews": 8,
+      "taps": 3,
+      "downloads": 2
+    },
+    "RU": {
+      "impressions": 31,
+      "pageViews": 3,
+      "taps": 3,
+      "downloads": 2
+    },
+    "NP": {
+      "impressions": 28,
+      "pageViews": 0,
+      "taps": 1,
+      "downloads": 1
+    },
+    "KR": {
+      "impressions": 28,
+      "pageViews": 1,
+      "taps": 0,
+      "downloads": 0
+    },
+    "TW": {
+      "impressions": 26,
+      "pageViews": 4,
+      "taps": 3,
+      "downloads": 2
+    },
+    "ES": {
+      "impressions": 23,
+      "pageViews": 1,
+      "taps": 1,
+      "downloads": 1
+    },
+    "PL": {
+      "impressions": 23,
+      "pageViews": 5,
+      "taps": 3,
+      "downloads": 2
+    },
+    "PK": {
+      "impressions": 22,
+      "pageViews": 3,
+      "taps": 0,
+      "downloads": 0
+    },
+    "TH": {
+      "impressions": 19,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "BE": {
+      "impressions": 14,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "NG": {
+      "impressions": 12,
+      "pageViews": 2,
+      "taps": 0,
+      "downloads": 0
+    },
+    "IT": {
+      "impressions": 12,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "KH": {
+      "impressions": 11,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "IE": {
+      "impressions": 11,
+      "pageViews": 1,
+      "taps": 0,
+      "downloads": 0
+    },
+    "QA": {
+      "impressions": 10,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "OM": {
+      "impressions": 9,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "KW": {
+      "impressions": 9,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "MX": {
+      "impressions": 9,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "BH": {
+      "impressions": 9,
+      "pageViews": 1,
+      "taps": 0,
+      "downloads": 0
+    },
+    "SE": {
+      "impressions": 9,
+      "pageViews": 1,
+      "taps": 0,
+      "downloads": 0
+    },
+    "NL": {
+      "impressions": 8,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "IL": {
+      "impressions": 7,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "BR": {
+      "impressions": 7,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "MM": {
+      "impressions": 7,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "AT": {
+      "impressions": 7,
+      "pageViews": 1,
+      "taps": 2,
+      "downloads": 1
+    },
+    "CY": {
+      "impressions": 6,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "EG": {
+      "impressions": 6,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "IQ": {
+      "impressions": 6,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "TR": {
+      "impressions": 5,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "AR": {
+      "impressions": 5,
+      "pageViews": 0,
+      "taps": 2,
+      "downloads": 1
+    },
+    "LK": {
+      "impressions": 5,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "NZ": {
+      "impressions": 5,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "BT": {
+      "impressions": 4,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "CH": {
+      "impressions": 4,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "ZA": {
+      "impressions": 4,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "MN": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "HR": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "FI": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "CI": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "DZ": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "DK": {
+      "impressions": 3,
+      "pageViews": 3,
+      "taps": 3,
+      "downloads": 2
+    },
+    "SV": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "KZ": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "UZ": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "CL": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "SK": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "HU": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "PE": {
+      "impressions": 3,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "DO": {
+      "impressions": 2,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "FJ": {
+      "impressions": 2,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "PT": {
+      "impressions": 2,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "LB": {
+      "impressions": 2,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "LA": {
+      "impressions": 2,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "JO": {
+      "impressions": 2,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "AI": {
+      "impressions": 2,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "GH": {
+      "impressions": 2,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "AM": {
+      "impressions": 2,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "BG": {
+      "impressions": 2,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "RO": {
+      "impressions": 2,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "BO": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "ML": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "LV": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "AL": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "MG": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "MU": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "CD": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "BY": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "NI": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "CR": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "TZ": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "GE": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "MA": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "HN": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "ZM": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "LY": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    },
+    "KE": {
+      "impressions": 1,
+      "pageViews": 0,
+      "taps": 0,
+      "downloads": 0
+    }
+  }
+}

@@ -49,6 +49,13 @@ mentioning distribution.
 > available. No cause may be asserted, and in particular nothing here licenses shipping
 > releases *in order to* distribute.
 
+> **⚠️ And one qualifier the funnel added on 2026-08-27** (`docs/measurements/v2-acquisition-funnel.md`):
+> **the room is not empty of footfall.** The app was surfaced **14,292** times and installed 109
+> — **0.76%**. So "nobody sees it" is false, and the shape of Stage 0's problem moves from *be
+> visible* toward *convert the visibility that already exists*. Stage 0 still comes first, and
+> the paywall argument is untouched: 109 installs and one review is still an empty room for
+> anything that has to be **bought**.
+
 So the same three characters support two conclusions, and the plan needs both.
 
 ### What is measured
@@ -62,6 +69,9 @@ So the same three characters support two conclusions, and the plan needs both.
 | **first-time downloads, all time** | **109** — macOS 60 · iOS 49 · census, 2026-06-06 → 08-24 |
 | **current rate / trend** | **~72 per 30 days**, up from 0.46 → 1.11 → **2.39 per day** across three windows |
 | **China share of installs** | **48%** (52 of 109) |
+| **impressions, all time** | **14,292** · 627 product page views · **impression → download 0.76%** |
+| acquisition source | **93% App Store search** (referrer 6, browse 2) |
+| conversion spread by territory | **0.49% (CN, 75% of impressions) … 5.88% (HK)** |
 | storefront locales | **2** — `en-US`, `zh-Hans`. No `ja` despite Japan being the #2 territory |
 | Paid Applications Agreement | **active** — five sibling apps hold `APPROVED` IAPs |
 | corpus | 7,071 entries · 6,738 with a sentence · 5,760 in the dictation pool |
@@ -129,6 +139,26 @@ inferred: 109 lifetime installs, ~2.4 a day, §A.** This stage has no paywall in
   none either. China is **48% of all installs**, not merely the source of one review, so the
   Simplified-Chinese merchandising decision is settled — **for reach. It says nothing about
   willingness to pay**, and reading it as intent is the move §A was corrected for.
+
+  **⚠️ The funnel (2026-08-27) reorders this bullet and changes what a `ja` listing is FOR.**
+
+  | | impressions | share | downloads | impression → download |
+  |---|---|---|---|---|
+  | **CN** (zh-Hans listing) | 10,700 | **75%** | 52 | **0.49%** |
+  | **JP** (English only) | 1,196 | 8% | 15 | **1.25%** |
+
+  * **`ja` is an IMPRESSIONS play, not a conversion fix.** Japan already converts at 2.5× China's
+    rate *without* a Japanese listing, so the case is not "localise and it will convert" — it is
+    "Japanese keywords buy Japanese search surface, and JP's rate is the evidence that surface
+    would convert". Different argument, different number to watch: **JP impressions**, not JP
+    conversion.
+  * **China is the larger and harder problem, and it is not a locale gap.** Three quarters of all
+    impressions, the lowest conversion of any significant territory, on the one listing that IS
+    localised. Two explanations fit — zh keywords matching broad low-intent queries, or a zh
+    product page that does not convince — and **the data cannot separate them.** Distinguishing
+    them is the next measurement, not the next guess.
+  * **93% of installs come from search, and 41% never open the product page.** Whatever is
+    changed is changed for search: keywords, title, subtitle, and the first two screenshots.
 * **Ask for reviews.** `SKStoreReviewController`, triggered at a genuine positive moment — a
   completed journey, a streak milestone — not on launch. One review is not a reputation; it is a
   rounding error, and it is the single biggest lever on downloads.
@@ -437,6 +467,16 @@ checker* — translates directly: **a launch with no way to tell why it failed t
 * **Apple's engagement metrics as guardrails** — retention, sessions, active devices, deletions,
   by app version. They answer "did monetization damage use", which is the question that should
   stop a rollout.
+
+  **⚠️ These do not exist for this app, and should be planned as permanently unavailable.**
+  Requested 2026-08-26 (the first ever made); 28 hours later **8 of 156 reports had
+  materialised and every one is acquisition-side**. Sessions, installation-and-deletion,
+  crashes, retention and App Opt In did not — the split falls exactly along *needs a sample of
+  users who opted into sharing*, which latency would not produce. **This section's rollout
+  guardrail therefore has nothing behind it.** What DOES work at this scale is the Sales and
+  Trends census (`scripts/sales_report.py`), the acquisition funnel
+  (`scripts/acquisition_funnel.py`) and local on-device counters — rebuild the guardrails on
+  those three, and stop nominating a retention number nobody can read.
 * **Local, on-device counters** — paywall/tip-jar impressions, taps, completions. **Never
   transmitted**, inspectable in a debug view, and optionally attachable by the user to a support
   email. This is the distinction the first draft got wrong: *Data Not Collected* forbids
@@ -690,3 +730,33 @@ replacement derives its codes from this app's data and refuses to run without a 
 valuable findings were of the opposite shape — *"you did not check X"* — and one of those is the
 Paid Applications Agreement above. **The pattern holds in both directions: what is checkable
 should be checked, by the reviewer as well as the author.**
+
+---
+
+## §M The funnel, and a warning that was false
+
+2026-08-27, one day after §L. Recorded separately because it corrects §L rather than extending it.
+
+**The instrument that was avoided turned out to be exact.** §L took the census from Sales and
+Trends because `credits.md` warns that the Analytics API counts only opted-in users and *"can
+show 0 while the real number is not 0"*. The Analytics download report has now been pulled and,
+over the identical window, it reports **109 first-time downloads against the census's 109**,
+agreeing on both platforms and on **all 20 territories**. The 111-versus-109 in the raw totals
+was one extra day of coverage, nothing else. **The warning is false for that report.** It is not
+withdrawn generally — it plausibly explains the engagement reports, which are the ones that need
+an opted-in sample and are the ones that did not materialise.
+
+**What did not arrive is itself a measurement.** 8 of 156 reports, all acquisition-side. The
+guardrail layer §G nominates is empty and should be planned as permanently empty at this scale.
+
+**The plan's own metaphor needed a qualifier.** *A paywall built in an empty room* has been the
+organising image since §A. The room has **14,292 impressions** in it. What is empty is
+conversion — 0.76% — and after that, purchase intent, which is still entirely unmeasured. The
+staging does not change; the diagnosis inside Stage 0 does.
+
+**And the ASO recommendation survived, for a different reason than the one given.** The plan
+wanted `ja` because Japan is the #2 territory. The funnel says Japan converts at **2.5× China's
+rate on an English-only listing**, which makes the localisation case an argument about
+impressions rather than conversion — stronger, and pointing at a different number to watch. The
+finding the plan did not anticipate at all is that **China holds 75% of impressions and converts
+worst**, on the one listing that is already localised.

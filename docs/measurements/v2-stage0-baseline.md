@@ -202,6 +202,15 @@ app this small"**, because these reports carry a privacy threshold. **The two ar
 only by waiting**, and this record must not be read as though they had been. Re-check after
 2026-08-28.
 
+> **RESOLVED 2026-08-27, and the answer was both.** ~28 hours later **8 of 156** had
+> materialised, and every one of them is acquisition-side: downloads, impressions, page views.
+> Sessions, installation-and-deletion, crashes, retention and **App Opt In** did not. The split
+> falls exactly along "needs an opted-in user sample", which latency would not produce. See
+> `v2-acquisition-funnel.md` — **including that the download report turned out to agree with this
+> census exactly, so the sampling warning that motivated using Sales and Trends is false for that
+> report.** The engagement guardrails §G nominates remain empty and should be planned as
+> permanently unavailable at this traffic level.
+
 What hangs on the answer, and it is more than a convenience:
 
 * **§G's guardrail layer is currently empty.** Retention, sessions, active devices and
