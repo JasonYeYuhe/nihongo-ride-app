@@ -7,7 +7,8 @@
  "calibration": {
   "negativeControl": "30 decoy substitutions (kana that are not readings of anything) -> 0 spurious byte matches.",
   "positiveControl": "39 sentences instrument 1 had already proven say their corpus reading -> 1b contradicts 0.",
-  "rebuildIdentity": "15/15. Proves the string handling is faithful and carries no linguistic weight; not counted as calibration on its own."
+  "rebuildIdentity": "15/15. Proves the string handling is faithful and carries no linguistic weight; not counted as calibration on its own.",
+  "hardNegativeControl": "69 REAL, dictionary-attested alternative readings substituted across the positive control's 39 sentences -> 0 spurious byte matches. Decoys that are not readings of anything are an easy test; this one uses readings the tokenizer itself proposes, and byte identity still never collides."
  },
  "instrument1Recall": "3 of 15. PLAN-V1.27's claim that 'instrument 1 can decide each directly' is measured false: rendering the whole reading as kana changes prosody, so byte identity goes silent even where the reading is right.",
  "theCommentIsFalse": "畑 is proven はたけ in n1-b432 and ばたけ in n1-b1000 — the same word, the same voice, two sentences, two readings. The assumption that justified propagating 15 verdicts is disproven by the data those verdicts were derived from. Of the 15 it withheld, 11 say their corpus reading and 2 do not: wrong far more often than right.",
@@ -57,5 +58,11 @@
  "dictationPool": {
   "before": 5760,
   "after": 5771
- }
+ },
+ "knownLimits": [
+  "Byte identity proves the synthesizer converted two texts to the same phonemes. It does NOT prove the pronunciation is CORRECT — if Kyoko mispronounces both the kanji and the kana the same way, the learner hears the same wrong audio and the proof is silent about it. This is a standing property of every one of the 5,771 sentences in the pool, not a regression introduced by releasing eleven.",
+  "It also says nothing about whether a learner might hear a valid homophone and type a different but legitimate kana spelling. The particle は/わ and へ/え variants are handled; anything else is unhandled and unmeasured.",
+  "Verified for this release: all 11 released sentences carried 'propagated' as their ONLY recorded evidence. That label was assigned only where a sentence was neither proven nor flagged by the nearest instrument, so none of them had a second, independent reason to be withheld."
+ ],
+ "opensAnItemThePlanCalledBlocked": "PLAN-V1.27 lists the 910 'nearest' exclusions as needing 'an instrument this repo does not have' — instrument 2 agrees with adjudication only 42/63 on that population and its margin is larger when it is wrong. Instrument 1b IS such an instrument: proof by byte identity under a whole-span kana substitution, with 0 spurious matches against 69 real alternative readings. Running it over the 910 is the largest content win now available and is NOT done here."
 }

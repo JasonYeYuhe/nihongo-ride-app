@@ -192,7 +192,13 @@ tested locked would leave the project with a new signing configuration and the s
   it: instrument 2 agrees with adjudication **42/63 = 67%** on the instrument-1-silent
   population, and its margin is LARGER when it is wrong (0.0240) than when it is right
   (0.0177). Re-deciding them needs an instrument this repo does not have.
-* **The 15 `propagated` exclusions.** They rest on a comment — "a voice does not change its
+* ~~**The 15 `propagated` exclusions.**~~ **DONE in v1.28 §A**, and the rule behind them is
+  retired: 11 released, 2 kept on direct proof, 2 undecided.
+  **And it unblocks the item above.** That entry says re-deciding the 913 `nearest` exclusions
+  "needs an instrument this repo does not have". It does now — instrument 1b, proof by byte
+  identity under a whole-span kana substitution, calibrated at 0 spurious matches against 69 real
+  alternative readings. Running it over the 910 is the largest content win available.
+* ~~The 15 `propagated` exclusions (original entry).~~ They rest on a comment — "a voice does not change its
   mind between sentences" — that nothing enforces and that a context-sensitive speech front-end
   makes doubtful. Instrument 1 can decide each directly. Small, decidable, and it RELEASES
   content rather than removing it, which makes it the cheapest content win available.
