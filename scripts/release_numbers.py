@@ -89,6 +89,11 @@ def numbers():
         "correctedThisRelease": len(manifest["entries"]),
         "uninspectedResidue": residue["total"],
         "readingNotes": len(notes),
+        # Quoted in the App Store description in every locale. Both live listings said 183 for
+        # months after the corpus reached 233 -- the same defect as v1.25's "fifty more
+        # sentences" against a measured 42, moved from What's New to the description, where
+        # nobody was re-reading it. Computed here so the copy cannot be typed.
+        "passages": len(json.loads((RESOURCES / "passages.json").read_text(encoding="utf-8"))),
         "weakWordsRunSize": caps["weakWordsRunSize"],
         "conjugationRunSize": caps["conjugationRunSize"],
         "dictationPoolBefore": before.get("dictationPool"),

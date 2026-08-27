@@ -57,8 +57,8 @@ Nihongo Ride は、日本語を「打ちながら覚える」ための静かな�
 
 ■ 収録内容
 ・JLPT N5〜N1 の 7,000 語以上。英語と中国語の語義つき。
-・例文と 183 の読解パッセージ。日常のあいさつから短い文学的な段落まで。
-・カタカナ外来語にも対応（外来音の拗音を含む）。
+・例文と 233 の読解パッセージ。日常のあいさつから短い文学的な段落まで。
+・カタカナ外来語にも対応（ファ・ティなど、外来語特有の表記を含む）。
 
 ■ 設計として、プライベート
 ・完全オフライン。アカウント不要、通信なし、トラッキングなし、広告なし。
@@ -70,8 +70,22 @@ Nihongo Ride は、日本語を「打ちながら覚える」ための静かな�
 語義の表示は英語と中国語のみです。
 
 N5 を始めたばかりでも、N1 を磨いている途中でも、Nihongo Ride は毎日のタイピングを
-日本語の上達に変えます。さあ、乗ってください。
+日本語の上達に変えます。さあ、走り出しましょう。
 ```
+
+## ⚠️ Numbers in this copy are computed, and one of them was inherited wrong
+
+`183 の読解パッセージ` was copied from the live `en-US` listing while drafting. **The corpus has
+233.** Both live listings — `en-US` and `zh-Hans` — have been quoting 183 since the passage set
+grew, which is v1.25's "fifty more sentences against a measured 42" moved from What's New into
+the description, where nobody re-reads it. `scripts/release_numbers.py` now computes `passages`,
+and **v1.28 must correct `en-US` and `zh-Hans` as well as ship `ja` right.**
+
+| claim | value | source |
+|---|---|---|
+| `7,000 語以上` | 7,071 entries | `release_numbers.py: entries` |
+| `233 の読解パッセージ` | 233 | `release_numbers.py: passages` |
+| `JLPT N5〜N1` | five levels present | corpus files |
 
 ## What's New (v1.28)
 Written against whatever v1.28's actual code change is — **not** against the listing, because a
