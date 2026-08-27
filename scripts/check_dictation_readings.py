@@ -75,6 +75,8 @@ which is gitignored — the ~37k clips are reproducible, not source.
 import argparse
 import collections
 import hashlib
+import os
+import struct
 import itertools
 import json
 import os
@@ -164,6 +166,31 @@ def clip(text):
     return CACHE / f"{key(text)}.wav"
 
 
+def complete_wav(path):
+    """True only for a WAV whose RIFF header agrees with its size on disk.
+
+    The synthesizer writes AVAudioFile straight to the FINAL path, buffer by buffer, and
+    finalises the header on close. Kill it mid-render — a timeout, a Ctrl-C, a SIGKILL —
+    and a torn file is left exactly where a complete one belongs, with the placeholder
+    length (4096) still in its header.
+
+    `render()` used to skip anything that merely EXISTED, so one torn clip was cached
+    forever and `sha()` hashed it happily. Seven were found in the cache on 2026-08-28,
+    two of them written during that day's own work. The damage is one-sided — a wrong sha
+    matches nothing, so it reads as SILENCE — which means content stays withheld for a
+    reason that is not true, and a run over hundreds of sentences would under-release
+    without a single visible error.
+    """
+    try:
+        with open(path, "rb") as fh:
+            head = fh.read(12)
+        if len(head) < 12 or head[:4] != b"RIFF" or head[8:12] != b"WAVE":
+            return False
+        return struct.unpack("<I", head[4:8])[0] + 8 == os.path.getsize(path)
+    except OSError:
+        return False
+
+
 def render(texts, workers=8):
     todo, seen = [], set()
     for t in texts:
@@ -171,7 +198,10 @@ def render(texts, workers=8):
         if k in seen:
             continue
         seen.add(k)
-        if not clip(t).exists():
+        path = clip(t)
+        if path.exists() and not complete_wav(path):
+            path.unlink(missing_ok=True)      # torn: re-render rather than trust it
+        if not path.exists():
             todo.append((k, t))
     if not todo:
         return 0
@@ -209,10 +239,13 @@ _sha = {}
 
 
 def sha(path):
+    """SHA-1 of a COMPLETE clip, or None. A torn file hashes to a value that matches
+    nothing, which reads as silence rather than as the error it is — so refuse it."""
     path = str(path)
     if path not in _sha:
         try:
-            _sha[path] = hashlib.sha1(Path(path).read_bytes()).hexdigest()
+            _sha[path] = (hashlib.sha1(Path(path).read_bytes()).hexdigest()
+                          if complete_wav(path) else None)
         except FileNotFoundError:
             _sha[path] = None
     return _sha[path]
