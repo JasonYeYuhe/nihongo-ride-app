@@ -77,8 +77,17 @@ def substituted(tokens, i, length, kana):
     return "".join(pieces[:i] + [kana] + pieces[i + length:])
 
 
-def analyse(rows, readings_of, decoys=True):
-    """For each row: {span -> {kana: matched?}}, plus the decoy results."""
+def analyse(rows, readings_of, decoys=True, complaint=None):
+    """For each row: {span -> {kana: matched?}}, plus the decoy results.
+
+    `complaint` maps row id -> {surface: {readings}}: the hypothesis the PREVIOUS instrument
+    named for that sentence. It is added to the candidate list unconditionally, because an
+    instrument that declines to test the hypothesis it was pointed at cannot report on it.
+    Measured 2026-08-28: Sudachi already proposed it for 518 of 523 silent sentences, so this
+    buys five — which is also the finding. The silence is a prosody limit, not a coverage gap,
+    and no amount of extra candidates will move it.
+    """
+    complaint = complaint or {}
     plans, decoy_texts = {}, {}
     for r in rows:
         toks, plan = r["tokens"], {}
@@ -90,7 +99,8 @@ def analyse(rows, readings_of, decoys=True):
                 if not has_kanji(surf):
                     continue
                 corpus = "".join(t[1] for t in toks[i:i + L])
-                cands = span_candidates(surf, readings_of(surf) | {corpus})
+                extra = complaint.get(r["id"], {}).get(surf, set())
+                cands = span_candidates(surf, readings_of(surf) | {corpus} | extra)
                 if len(cands) < 2 and corpus in cands:
                     continue                      # nothing to distinguish
                 plan[(i, L, surf, corpus)] = {c: substituted(toks, i, L, c) for c in cands}
@@ -275,7 +285,12 @@ def main():
                                 f"byte matches"),
         }
 
-    plans, _ = analyse(rows, readings_of, decoys=False)
+    complaint = {}
+    for r in rows:
+        parts = (by_id.get(r["id"], {}).get("heardInstead") or "").split()
+        if len(parts) >= 3 and "->" in parts:
+            complaint[r["id"]] = {parts[0]: {parts[1], parts[-1]}}
+    plans, _ = analyse(rows, readings_of, decoys=False, complaint=complaint)
     out = {"release": [], "keep": [], "silent": []}
     print("VERDICTS")
     for r in rows:

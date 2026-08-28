@@ -2313,7 +2313,7 @@
    "exJP": "消しゴムの屑を綺麗に掃除する。",
    "exKana": "けしごむのくずをきれいにそうじする",
    "heardInstead": "消しゴム けしごむ -> けしゴム",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "evidence": "proven (v1.29, instrument 1b)"
   },
   {
    "id": "n2-b250",

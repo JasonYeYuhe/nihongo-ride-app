@@ -4,8 +4,8 @@
  "question": "910 sentences were withheld from Dictation on instrument 2's 'nearest hypothesis' verdict. v1.26 measured that instrument at 42/63 = 67% agreement with adjudication on this very population, with a median margin LARGER when it is wrong (0.0240) than when it is right (0.0177) — a margin that grows when the instrument errs is not evidence. PLAN-V1.27 recorded that re-deciding them 'needs an instrument this repo does not have'. Instrument 1b is that instrument.",
  "result": {
   "released": 161,
-  "provenMisread": 226,
-  "undecided": 523
+  "provenMisread": 227,
+  "undecided": 522
  },
  "dictationPool": {
   "before": 5770,
@@ -821,6 +821,14 @@
    "corpus": "あと",
    "kyoko": [
     "のち"
+   ]
+  },
+  {
+   "id": "n2-b243",
+   "surface": "消しゴム",
+   "corpus": "けしごむ",
+   "kyoko": [
+    "けしゴム"
    ]
   },
   {
@@ -2211,7 +2219,6 @@
   "n2-b217",
   "n2-b226",
   "n2-b231",
-  "n2-b243",
   "n2-b268",
   "n2-b270",
   "n2-b285",
@@ -2754,5 +2761,6 @@
   "n5-g122",
   "n5-iku",
   "n5-k015"
- ]
+ ],
+ "whyTheSilenceCannotBeChasedFurther": "Instrument 2 named a specific hypothesis for every one of these sentences ('紙 かみ -> がみ'), and the obvious next move was to make sure 1b always tests it — an instrument that declines to test the hypothesis it was pointed at cannot report on it. Measured before implementing: Sudachi ALREADY proposed that hypothesis for 518 of the 523 silent sentences, and testing the remaining 5 converted exactly ONE (n2-b243, 消しゴム けしごむ -> けしゴム) and released none. So the silence is not a coverage gap that a longer candidate list closes. It is instrument 1b's recall limit: substituting kana at a span changes prosody, so neither the corpus reading nor the complaint renders byte-identically, and byte identity has nothing to say. Moving these 522 needs a DIFFERENT instrument, not a more thorough version of this one — and this repo does not have one. AVSpeechSynthesisMarker's phoneme marks are empty for every Japanese voice and NSSpeechSynthesizer.phonemes returns empty even for English, both checked in v1.21."
 }
