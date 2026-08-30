@@ -143,6 +143,10 @@ struct RootView: View {
         #if DEBUG && targetEnvironment(simulator)
         .task { model.jumpToDebugScreen() }
         #endif
+        // Navigation only, no seeded run, so it is safe off-simulator. See `jumpToDebugView`.
+        #if DEBUG
+        .task { model.jumpToDebugView() }
+        #endif
         // Keep the due-reminder schedule and iCloud sync fresh as days pass.
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { model.appBecameActive() }

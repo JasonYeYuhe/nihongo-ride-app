@@ -11,7 +11,36 @@ struct MenuView: View {
         if isPhoneIdiom {
             ScrollView(showsIndicators: false) { content }
         } else {
-            content
+            // **A Mac window is a short screen too, and this branch used to assume it never was.**
+            //
+            // `content` opens with a `Spacer()`, so when it does not fit it is CENTRED and clipped
+            // at BOTH ends — the "Nihongo Ride" title off the top, the Ride Log / Word Lists /
+            // Stats / Settings row off the bottom — with no way to reach either, because there was
+            // nothing to scroll. Measured at 900×632, which is a real saved window frame on this
+            // machine, and `minHeight: 600` in `NihongoRideApp` permits shorter still.
+            //
+            // The comment above states the reason correctly and applied it to one platform: a rule
+            // right for one population, silently wrong on another. That is this project's rule 5,
+            // and here it was sitting in the sentence that explains the fix.
+            //
+            // `minHeight: proxy.size.height` is what keeps the appearance identical when the
+            // window IS tall: the content still gets at least the viewport, so the Spacers still
+            // centre it exactly as before. It only scrolls once it genuinely does not fit.
+            // The iPhone branch is left byte-identical — its Spacers collapse inside a plain
+            // ScrollView today, and giving it a minimum height would change a shipped layout.
+            // …and NOT while capturing. `ImageRenderer` does not lay out a ScrollView's contents,
+            // so wrapping the menu unconditionally would have rendered the app's PRIMARY App Store
+            // screenshot blank — the same guard every other screen in this app already carries,
+            // and the reason each of them writes `if Screenshotter.isCapturing { content } else`.
+            if Screenshotter.isCapturing {
+                content
+            } else {
+                GeometryReader { proxy in
+                    ScrollView(showsIndicators: false) {
+                        content.frame(minWidth: proxy.size.width, minHeight: proxy.size.height)
+                    }
+                }
+            }
         }
     }
 

@@ -861,6 +861,36 @@ final class AppModel {
     }
     #endif
 
+    #if DEBUG
+    /// Jump to a screen that needs NO seeded run, so its layout can be looked at on macOS.
+    ///
+    /// Separate from `jumpToDebugScreen` above rather than folded into it, and the separation is
+    /// the whole point. That one is gated to the simulator because its cases **write**: they
+    /// finish runs, which persists SRS, logs a ride and moves the odometer. Widening that gate to
+    /// macOS would point the writing harness at the owner's real data — the v1.24 incident.
+    ///
+    /// This one only assigns `screen`. Nothing is seeded, nothing is written, and the cases are
+    /// restricted to screens that render from state that already exists. That is what makes it
+    /// safe outside the simulator, and it is why the list is short rather than convenient.
+    ///
+    /// It exists because macOS layout was otherwise uninspectable: `ImageRenderer` drops the
+    /// ScrollView every one of these screens depends on, so the headless gate cannot see how they
+    /// behave in a real window — which is exactly where the v1.30 road screen's top went missing.
+    ///
+    ///   NIHONGO_DEBUG_VIEW=road|settings|about|journal|stats swift run NihongoRideApp
+    func jumpToDebugView() {
+        guard let want = ProcessInfo.processInfo.environment["NIHONGO_DEBUG_VIEW"] else { return }
+        switch want {
+        case "road":     screen = .road
+        case "settings": screen = .settings
+        case "about":    screen = .about
+        case "journal":  screen = .journal
+        case "stats":    screen = .stats
+        default:         break
+        }
+    }
+    #endif
+
     /// The rider stopped riding — pause overlay, a sheet over the game, or the app leaving
     /// the foreground. Idempotent, because those three overlap. (v1.15 §D.)
     func pauseRunClock() { runClock?.pause(at: Date()) }
