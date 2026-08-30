@@ -381,7 +381,8 @@ adapter is the same code — which is an argument, not an observation.
 
 ## §M What is done, and what Stage 1 is still waiting on
 
-**Done and proven.**
+**Done and proven.** (`swift test` 618 green; `scripts/run_ios_placement_tests.sh` 5/5;
+`scripts/run_store_gates.sh` exits 3 — no coverage — see §L.)
 
 * The road: eight new stretches, palettes generated from a verified table, contrast 11.1:1 worst
   case against a 7:1 floor.
@@ -391,9 +392,13 @@ adapter is the same code — which is an argument, not an observation.
 * The entitlement rule: pure, exhaustively tested, and unable to express "the store says no".
 * The offer: one row, one screen, honest to a rider who has not arrived.
 * The counter, with its own limits written on the type.
-* The IAP: `com.jasonye.nihongoride.scenery.lifetime`, NON_CONSUMABLE, Family Sharing **off**,
-  base territory CHN at ¥10.00 (net ¥8.42), 174 territories auto-equalised, three localisations,
-  175 territories available including CHN.
+* The IAP: `com.jasonye.nihongoride.scenery.lifetime` (id **6806755720**), NON_CONSUMABLE,
+  Family Sharing **off**, base territory CHN at ¥10.00 (net ¥8.42), 174 territories
+  auto-equalised, three localisations, 175 territories available including CHN, review screenshot
+  uploaded at 1320×2868. **State: `READY_TO_SUBMIT`.**
+  ⚠️ Availability is NOT inherited from the app: a newly created IAP has **no availability
+  resource at all** (404) and ASC says nothing about it. Setting it is a required step, not a
+  check — a product left that way is silently unsellable in every territory.
 
 **Blocked, and on what.**
 
@@ -407,6 +412,11 @@ adapter is the same code — which is an argument, not an observation.
   metadata edit and therefore also blocked until 1.29 clears. (The older "no network" wording is
   already gone; v1.28 fixed it. `docs/ASC_METADATA.md` still shows the pre-v1.28 text and is
   itself stale.)
-* **The three manual gates above.**
+* **The three manual gates above — and, as of today, the automated ones too.** See §L.
+* **The version bump to 1.30 and the build.** Deliberately NOT done yet: build numbers are
+  per-platform and consumed once, and if v1.29 comes back rejected the bump would have to be
+  redone. Do it when 1.29 clears, with `scripts/check_versions.py --bump 1.30`, which locates by
+  enclosing target rather than by value — never a chained string replace, which is how v1.25 gave
+  both platforms build 48.
 * **The day-0 known-positive purchase (§K)** — an owner action, in production, refunded after,
   excluded from the cohort.
