@@ -74,7 +74,11 @@ echo
 
 LOG="$WORK/gates.log"
 set +e
-xcodebuild test \
+# `caffeinate -d -i` for the same measured reason as `run_ios_placement_tests.sh`: a sleeping
+# display stalls the build→test handoff at 0% CPU indefinitely. These gates are macOS unit tests
+# rather than XCUITest so they are less exposed, but the cost of the guard is nothing and the cost
+# of rediscovering the stall was most of an afternoon.
+caffeinate -d -i xcodebuild test \
   -project NihongoRide.xcodeproj \
   -scheme NihongoRide \
   -destination 'platform=macOS,arch=arm64' \

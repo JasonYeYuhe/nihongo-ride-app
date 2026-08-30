@@ -32,7 +32,21 @@ rsync -a \
 cd "$WORK"
 xcodegen generate >/dev/null
 
-xcodebuild test \
+# ⚠️ `caffeinate -d` is LOAD-BEARING, not politeness.
+#
+# MEASURED 2026-08-30: with the display asleep this suite stalls at exactly the build→test
+# handoff — the build completes, the .xctest bundle is touched, and then nothing, at 0% CPU,
+# indefinitely. FOUR consecutive runs, always the same point; `Simulator.app` never launches, and
+# `xcrun simctl` reports the device booted the whole time. Holding the display awake for the
+# duration was the ONLY change that made it run: 5 tests, 0 failures, first try.
+#
+# The distinction that matters, and the one that would cost a day to rediscover: the console was
+# UNLOCKED every time (`ioreg -n Root -d1 -a | grep -A1 IOConsoleLocked` → false). This is not the
+# screen-lock trap CLAUDE.md records for notarization. It is DISPLAY SLEEP, and XCUITest needs a
+# live window-server session because it drives a real GUI.
+#
+# `-i` also prevents idle system sleep for the run. Neither outlives the command.
+caffeinate -d -i xcodebuild test \
   -project NihongoRide.xcodeproj \
   -scheme NihongoRideiOS \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
