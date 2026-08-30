@@ -143,6 +143,29 @@ targets:
         COMBINE_HIDPI_IMAGES: YES
         # Don't auto-define SWIFT_PACKAGE here — Xcode only defines it for SPM
         # source compilation, and we WANT it undefined for the App target.
+      # ⚠️ DEBUG ONLY, and it exists for the StoreKit gates.
+      #
+      # MEASURED 2026-08-30: with the App Sandbox on, `SKTestSession` logs
+      # `SKInternalErrorDomain Code=3` — "Error saving configuration file" — for EVERY operation,
+      # and **its initialiser does not throw**, so it hands back a live object that controls
+      # nothing. `clearTransactions`, `setSimulatedError`, `refundTransaction` and
+      # `approveAskToBuyTransaction` all silently no-op, and `Product.purchase()` then hangs
+      # waiting for a dialog `disableDialogs` never disabled.
+      #
+      # The failure is invisible from inside a naive gate: `Product.products(for:)` still resolves,
+      # because the SCHEME's storeKitConfiguration arms the app's store environment independently
+      # of the session. So a calibration that only asked "do products resolve" passed against a
+      # completely inert session — the exact shape this project refuses to trust, one level up
+      # from the one the harness was written to avoid.
+      #
+      # Release and archive configurations are untouched, which is what the Mac App Store build
+      # uses. But state the caveat rather than implying it away: **the gates therefore run against
+      # a Debug build whose sandbox is off, and the shipped app's sandbox is not exercised by
+      # them.** Nothing in the purchase path touches sandboxed resources, which is an argument,
+      # not an observation.
+      configs:
+        Debug:
+          ENABLE_APP_SANDBOX: NO
 
   # iOS app — same shared SwiftUI sources, platform-conditional input/sound/entry.
   # Same bundle ID so it lives under the one App Store Connect record (universal).

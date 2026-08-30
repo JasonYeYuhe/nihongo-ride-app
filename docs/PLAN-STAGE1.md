@@ -350,10 +350,33 @@ Each needs a date, a device and an outcome written beside it **before v1.30 is s
 | **Family Sharing** | The SKU ships with Family Sharing **off**, and Apple documents that turning it on can never be undone — so the state to verify is that a family member does NOT inherit it | On a second Apple Account in the same family group, launch and open Settings → The Road. **Expect:** the offer, not the owned state. | ☐ |
 | **Cross-platform restore (macOS ↔ iOS)** | One Universal Purchase record covers both platforms on the STORE side; whether the entitlement resolves on the second device is client code and has never been observed | Buy on one platform. On the other, signed into the same Apple Account, launch and open Settings → The Road. **Expect:** owned, without tapping Restore. Then try it from a cold install. **Fail if:** Restore is needed and does not work. | ☐ |
 
-And one that is automated but whose automation only covers macOS, restated so the gap is not
-implied away: **iOS StoreKit behaviour is not observed by any automated test on this machine.**
-The two targets share `Sources/NihongoRideApp` so the adapter is the same code, which is an
-argument, not an observation.
+**⚠️ And as of 2026-08-30 the AUTOMATED gates do not run either, so this manual list is the only
+purchase coverage that exists.**
+
+`Tests/NihongoRideMacTests` is written, and it skips. `SKTestSession` is **inert for this app on
+this machine**: it logs `SKInternalErrorDomain Code=3` for every operation and its initialiser
+does not throw, so it hands back a live object that controls nothing. Measured against the
+alternatives, in this order, and none of them was the cause: the App Sandbox (turned off for Debug
+— the errors persisted), code-signing entitlements (stripped — persisted), the CloudKit isolation.
+A minimal, non-App-Store macOS app on this same machine drives the same session fine and passes
+10/10, so **the difference is this app, not the tooling** — the remaining untested differences are
+the real App Store bundle identifier and the embedded widget extension.
+
+What made this visible is worth more than the gates would have been. The first calibration asked
+only *"do products resolve"* — and they do, because the scheme's `storeKitConfiguration` arms the
+app's store environment **independently of the session**. So the suite passed while every
+simulated refund, network error and Ask-to-Buy in it was doing nothing. The second calibration
+makes the session DO something and observes it, and that is what caught it.
+
+The suite now **skips with the reason attached** rather than passing or failing: a green suite that
+proves nothing is worse than none, and a permanently-red one teaches people to ignore red. If a
+toolchain update fixes the session, every gate starts running again with no edit.
+
+**The one thing that must not happen is weakening that check to make the suite green.**
+
+And restated so the gap is not implied away: **iOS StoreKit behaviour is not observed by any
+automated test on this machine either.** The two targets share `Sources/NihongoRideApp`, so the
+adapter is the same code — which is an argument, not an observation.
 
 ## §M What is done, and what Stage 1 is still waiting on
 

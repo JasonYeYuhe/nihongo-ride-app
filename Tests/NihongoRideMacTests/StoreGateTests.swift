@@ -62,6 +62,49 @@ final class StoreGateTests: XCTestCase {
         session.clearTransactions()
         session.askToBuyEnabled = false
         session.interruptedPurchasesEnabled = false
+
+        // ⚠️ EVERY gate below skips — loudly — if the session cannot actually control the store.
+        //
+        // `SKTestSession.init` does not throw when it fails. On this machine, for THIS app, it
+        // logs `SKInternalErrorDomain Code=3` for every operation and hands back a live object
+        // that no-ops. Products still resolve, because the scheme's storeKitConfiguration arms the
+        // app's store environment independently — so without this check the whole file passes
+        // while every simulated refund, network error and Ask-to-Buy in it does nothing.
+        //
+        // A green suite that proves nothing is worse than no suite. It is also worse than a red
+        // one, because a permanently-red test trains people to ignore red. So the gates SKIP with
+        // the reason attached, `run_store_gates.sh` prints a banner, and PLAN-STAGE1 §L lists the
+        // paths as MANUAL until this stops firing. The moment a toolchain update fixes the
+        // session, they start running again with no edit.
+        //
+        // The one thing that must never happen here is weakening the check to make the suite
+        // green. That is the exact failure this project spends the most effort avoiding.
+        let inert = await Self.sessionIsInert(session)
+        try XCTSkipIf(inert,
+                      """
+                      SKTestSession is INERT for this app on this machine (SKInternalErrorDomain \
+                      Code=3). Products resolve but nothing can be simulated, so these gates \
+                      would prove nothing. They are recorded as MANUAL in PLAN-STAGE1 §L. \
+                      Re-check on a toolchain update; a minimal non-App-Store macOS app on this \
+                      same machine drives the session fine, so the difference is this app, not \
+                      the tooling.
+                      """)
+    }
+
+    /// Does the session actually control the store? Measured, by making it do something.
+    ///
+    /// "Products resolve" and "the session controls the store" are two different claims, and the
+    /// first was being used as evidence for the second until a run caught it.
+    private static func sessionIsInert(_ session: SKTestSession) async -> Bool {
+        do {
+            try await session.setSimulatedError(
+                .generic(.networkError(URLError(.notConnectedToInternet))), forAPI: .loadProducts)
+            defer { Task { try? await session.setSimulatedError(nil, forAPI: .loadProducts) } }
+            let stillWorks = try await !Product.products(for: [productID]).isEmpty
+            return stillWorks          // the simulated error changed nothing ⇒ inert
+        } catch {
+            return false               // it threw, which means it took effect
+        }
     }
 
     override func tearDown() async throws {
@@ -74,7 +117,7 @@ final class StoreGateTests: XCTestCase {
 
     func test00_theStoreIsReachable() async throws {
         // Without this, every assertion below is indistinguishable from one made against a store
-        // that answers nothing. This is the known positive: it passes here and fails on iOS.
+        // that answers nothing.
         let products = try await Product.products(for: [Self.productID])
         XCTAssertEqual(products.count, 1, "the local StoreKit configuration did not reach the app")
         XCTAssertFalse(try XCTUnwrap(products.first).displayPrice.isEmpty)

@@ -66,6 +66,12 @@ if ! grep -q "StoreKitConfigurationFileReference" \
   exit 3
 fi
 
+echo
+echo "  Running the StoreKit purchase gates. If they SKIP, read the skip reason: it means"
+echo "  SKTestSession is inert for this app on this machine and the gates prove NOTHING."
+echo "  In that state PLAN-STAGE1 §L's manual list is the only coverage there is."
+echo
+
 xcodebuild test \
   -project NihongoRide.xcodeproj \
   -scheme NihongoRide \
@@ -73,4 +79,5 @@ xcodebuild test \
   -only-testing:NihongoRideMacTests \
   -derivedDataPath "$WORK/DerivedData" \
   -clonedSourcePackagesDirPath "$WORK/SourcePackages" \
-  CODE_SIGNING_ALLOWED=NO
+  CODE_SIGNING_ALLOWED=NO \
+  CODE_SIGN_ENTITLEMENTS=
