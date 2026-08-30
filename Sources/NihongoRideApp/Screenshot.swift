@@ -129,7 +129,13 @@ enum Screenshotter {
         // part of the scenery a person has to LOOK at to judge, and there is no other way
         // to see seven of them without riding 25 km. NIHONGO_SHOT_STAGES=1 opts in.
         if ProcessInfo.processInfo.environment["NIHONGO_SHOT_STAGES"] != nil {
-            for stage in RideRoute.stages {
+            // BOTH roads, entitlement ignored. This is a developer contact sheet, not the app:
+            // its whole purpose is that the palettes are the one part of the scenery a person has
+            // to LOOK at to judge, and eight of the sixteen are otherwise unreachable without
+            // buying the road and riding 138 km. Never confuse this with a shipping surface —
+            // `Screenshotter.isCapturing` gates the whole block, and `forceRideStage` refuses
+            // outside capture.
+            for stage in RideRoute.stages(westOpen: true) {
                 let m = makeModel()
                 m.startGame()
                 m.session?.skip()

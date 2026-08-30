@@ -101,6 +101,8 @@ targets:
       - package: Nihongo
         product: StoreReviewKit
       - package: Nihongo
+        product: EntitlementKit
+      - package: Nihongo
         product: SyncKit
       - package: Nihongo
         product: NotificationKit
@@ -212,6 +214,8 @@ targets:
         product: SettingsKit
       - package: Nihongo
         product: StoreReviewKit
+      - package: Nihongo
+        product: EntitlementKit
       - package: Nihongo
         product: SyncKit
       - package: Nihongo

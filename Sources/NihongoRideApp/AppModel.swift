@@ -214,6 +214,10 @@ final class AppModel {
     /// must never flow into the vocab journey due-queue. Owned here by AppModel (GameCore
     /// stays ignorant of it); written only via a conjugation drill's `onOutcome` sink.
     private(set) var conjugationReviewStore: ConjugationReviewStore
+    /// Stage 1's one purchase, and the only thing in the app that knows whether it exists.
+    /// See `rideableStages` for the single seam between it and the scenery.
+    let entitlements: RouteStore
+
     private(set) var journal: RideJournal
     /// Lifetime odometer as a per-device G-Counter — the iCloud-sync vehicle for
     /// lifetime totals (sums correctly across devices; see SyncKit.OdometerLog).
@@ -341,6 +345,12 @@ final class AppModel {
         reviewPromptLedger = Self.currentIsolation.touchesNothingOfTheUsers
             ? ReviewPromptLedger()
             : ReviewPromptLedger.load(from: Self.settingsStore)
+        // Stage 1's purchase, behind the SAME isolation predicate as the ledger above and for
+        // the same reason: one predicate for read, write and suppress, so a run that cannot
+        // reach the owner's data cannot reach their entitlement either. Handing `nil` is what
+        // makes the store inert rather than merely quiet — there is nowhere for it to persist to.
+        entitlements = RouteStore(defaults: Self.currentIsolation.touchesNothingOfTheUsers
+                                  ? nil : Self.settingsStore)
         languageCode = loaded.languageCode
         assistance = AssistanceMode(rawValue: loaded.assistance)
             ?? (loaded.showRomajiHint ? .always : .off)
@@ -1140,11 +1150,25 @@ final class AppModel {
     /// thing a background in a typing app must never do. Freezing also means the reward lands
     /// where it reads as a reward: you set out on a new road, rather than having it change
     /// under you. (v1.12 §D.)
-    private(set) var rideStage: RideStage = RideRoute.stages[0]
+    private(set) var rideStage: RideStage = RideRoute.home
+
+    /// The road this rider can ride — the Tōkaidō alone, or the Tōkaidō and the road west.
+    ///
+    /// **The single seam between the entitlement and the scenery.** Nothing else in the app may
+    /// ask whether the purchase exists in order to pick a stretch: `RideRoute.stages(westOpen:)`
+    /// is the only function that reads an entitlement, and this is the only place that calls it.
+    /// One value, read by the ride and by the offer row, so the two cannot disagree about what
+    /// was bought — the shape twenty-two of this project's defects have come from getting wrong.
+    ///
+    /// Note what it is NOT: it is not consulted mid-run. `rideStage` is frozen at the start of a
+    /// run, so a purchase (or a revocation) landing mid-ride changes nothing until the next one.
+    /// That is the v1.12 legibility rule and it happens to be the kind one — a refund cannot
+    /// repaint the world around somebody who is typing.
+    var rideableStages: [RideStage] { RideRoute.stages(westOpen: entitlements.isEntitled) }
 
     /// Resolves the stage for a run about to start. Called by every start* path.
     func resolveRideStage() {
-        rideStage = RideRoute.stage(forLifetimeMetres: lifetimeDistanceMeters)
+        rideStage = RideRoute.stage(forLifetimeMetres: lifetimeDistanceMeters, in: rideableStages)
     }
 
     /// Capture-only: pin a stage so the headless renderer can shoot the whole route without

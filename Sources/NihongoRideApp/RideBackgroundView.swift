@@ -25,7 +25,7 @@ struct RideBackgroundView: View {
 
     /// The stretch of road this run is on. Chosen ONCE when the run starts and held for its
     /// whole length — nothing behind the word card may change while someone is reading kana.
-    var stage: RideStage = RideRoute.stages[0]
+    var stage: RideStage = RideRoute.home
     /// Draw one static frame regardless of Reduce Motion. The results screens use this:
     /// `landmarkPhase` alone only freezes the landmark — clouds and lane dashes are
     /// wall-clock-driven and would keep streaming behind a screen that is meant to be

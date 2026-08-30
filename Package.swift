@@ -16,6 +16,7 @@ let package = Package(
         .library(name: "JournalKit", targets: ["JournalKit"]),
         .library(name: "SettingsKit", targets: ["SettingsKit"]),
         .library(name: "StoreReviewKit", targets: ["StoreReviewKit"]),
+        .library(name: "EntitlementKit", targets: ["EntitlementKit"]),
         .library(name: "SyncKit", targets: ["SyncKit"]),
         .library(name: "NotificationKit", targets: ["NotificationKit"]),
         .library(name: "SavedWordsKit", targets: ["SavedWordsKit"]),
@@ -90,6 +91,16 @@ let package = Package(
         .target(name: "StoreReviewKit"),
         .testTarget(name: "StoreReviewKitTests", dependencies: ["StoreReviewKit"]),
 
+        // MARK: Stage 1 — whether a purchase is honoured, and the evidence for it (v1.30).
+        //
+        // Pure for a MEASURED reason, not a stylistic one: under `swift test` the host is
+        // SwiftPM's own binary, where `Transaction.currentEntitlements` returns [] **silently**
+        // — so a headless test written against real StoreKit would assert nothing while passing
+        // forever. The rule lives here where it can be exercised; the real store is proven on
+        // the macOS target against a local StoreKit configuration.
+        .target(name: "EntitlementKit"),
+        .testTarget(name: "EntitlementKitTests", dependencies: ["EntitlementKit"]),
+
         // MARK: iCloud sync core — pure merge of SRS / history / odometer / saved / word-lists (v1.2 Phase A, +v1.4, +v1.5).
         .target(name: "SyncKit", dependencies: ["ReviewKit", "JournalKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "PersistKit"]),
         .testTarget(name: "SyncKitTests", dependencies: ["SyncKit", "PersistKit"]),
@@ -145,7 +156,7 @@ let package = Package(
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit", "WidgetSharedKit", "SceneryKit", "PersistKit", "DiagnosticsKit", "StoreReviewKit"],
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit", "WidgetSharedKit", "SceneryKit", "PersistKit", "DiagnosticsKit", "StoreReviewKit", "EntitlementKit"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]
