@@ -14,9 +14,10 @@ this project has paid three times for a rule written twice.
 |---|---|---|
 | mean kana of the words met first | 3.71 (mean over all 7,071 entries) | **2.92** |
 | new words to 25,000 m | 673 | **856** |
-| journey rides to Kyōto | "20–50" | **48** with reviews · **72** on new words alone |
+| journey rides to Kyōto, DEFAULT level (N5) | "20–50" | **48**, and only because of reviews |
+| journey rides to Kyōto, mixed pool, new words only | — | **72** |
 | first ride | — | **exactly 150 m** |
-| mean ride to Kyōto | — | **350 m** new-only · **525 m** with reviews |
+| mean ride to Kyōto | — | **533 m** at N5 with reviews · **350 m** mixed, new-only |
 
 **Why Part I was wrong.** `VocabStore.ordered` sorts by `VocabEntry.difficulty`, and its
 `0.6 × length` term deals the short words first. The first twelve words a rider ever sees are
@@ -115,3 +116,33 @@ Xcode 26.6 (17F113), SDK 26.5, Swift 6.3.3, iOS 26.5 simulator runtime.
 
 **Recorded as MEASURED-BROKEN on 2026-08-30, not as impossible.** It is a simulator-runtime
 failure; re-check on a toolchain update.
+
+## 7. Correction, 2026-08-30 evening — §1 measured a population no default rider is in
+
+The road figures above were first taken on the **mixed** corpus. `AppSettings`'s default
+`selectedLevel` is **5** (`Sources/SettingsKit/AppSettings.swift:86`), and `AppModel.startGame`
+passes it straight into `GameSession.Config.level` — so a fresh install rides **N5 only**.
+
+Which is this project's rule 5 again — *a rule correct for one population fails silently on
+another* — committed inside the instrument written to correct exactly that error in the plan. It
+was found by an adversarial review reading the test, not by the test.
+
+Re-measured with the level parameterised:
+
+| | N5 (the default) | mixed pool |
+|---|---|---|
+| rides to Kyōto, with the review mix | **48** | 48 |
+| rides to Kyōto, new words only | **never arrives** | 72 |
+| mean ride | 533 m | 350 m (new-only) |
+
+**And the re-measurement surfaced a product fact the first pass could not have seen.** The whole
+N5 pool is 646 words ≈ **20.8 km**, so a rider who never leaves the default level **cannot reach
+Kyōto on new words at all** — the last 4 km is carried entirely by SRS repetitions. Anything that
+changes how often words come back for review therefore moves the road, and the road is what Stage 1
+sells the continuation of.
+
+The instrument had a second defect in the same place: `rideTo` returned only the per-ride
+distances, so a run that stopped because the **pool ran out** was indistinguishable from one that
+stopped because it **arrived** — and on N5 that is what happens. It compared a ride count from an
+exhausted pool against a golden taken from an arrival. It now returns `arrived` alongside the
+rides, and asserts on it.

@@ -127,8 +127,12 @@ enum Screenshotter {
 
         // The road screen (v1.30). Rendered unconditionally because it is the ONE surface Apple's
         // reviewer is told to look at — the IAP's review note points at Settings > The Road — and
-        // because the offer's honesty to a rider who has NOT arrived is a layout property that
-        // only a render can show.
+        // because the offer's DISTANCE COPY — what it tells a rider who has not arrived — is a
+        // layout property nothing else can show. It cannot show the price or the buy button:
+        // `RouteStore.storeIsReachable` is false while capturing, so the card renders its
+        // "Loading price…" branch. That is a limit of this artifact and it is stated rather than
+        // implied, because "the render proves the offer looks right" would be false of the half
+        // of the offer that takes the money.
         //
         // ONE state — unentitled — and that is a limitation, not a choice. The owned state would
         // need `NIHONGO_FAKE_ENTITLEMENT`, which is read once per process at `RouteStore.init`,

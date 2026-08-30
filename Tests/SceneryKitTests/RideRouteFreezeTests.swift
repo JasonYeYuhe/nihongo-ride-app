@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import CryptoKit
 @testable import SceneryKit
 
 /// **The red line, as a test rather than a promise.**
@@ -60,12 +61,37 @@ struct RideRouteFreezeTests {
     /// fixture fails here.
     private static let baselineSHA = "48de373f956fa5f9422628872f783531656dde40"
 
+    /// SHA-256 of the golden's 1,167 rows, canonicalised.
+    ///
+    /// The SHA above is necessary and was NOT sufficient: it pins which commit the fixture claims
+    /// to come from, and somebody editing the rows to make a red test go green would simply leave
+    /// that field alone. 147 KB of machine-generated JSON is unreviewable by eye, so the edit
+    /// would pass review as well as the test.
+    ///
+    /// This makes tampering cost a visible one-line diff **in code**, next to a comment saying
+    /// what it is for. Regenerating legitimately means running `scripts/gen_route_golden.py
+    /// --write`, which refuses any ref containing the paid road, and then updating this constant
+    /// in the same commit — where a reviewer will see it and ask why.
+    private static let goldenRowsSHA256 =
+        "08ea0a3c16ba717be4faabee6afacb690713f57aaf9fb1cea1067d13f63089bf"
+
     private static func golden() throws -> [[String: String]] {
         let data = try Data(contentsOf: fixture)
         let payload = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
         #expect(payload["generatedFromSHA"] as? String == baselineSHA,
                 "the golden was regenerated from a different commit; if deliberate, change the expected SHA above in the same commit and justify the diff")
-        return try #require(payload["rows"] as? [[String: String]])
+        let rows = try #require(payload["rows"] as? [[String: String]])
+
+        // Canonicalised the same way `scripts/gen_route_golden.py` does, so the two agree by
+        // construction rather than by inspection.
+        let canonical = rows
+            .map { row in row.keys.sorted().map { "\($0)=\(row[$0]!)" }.joined(separator: "|") }
+            .joined(separator: "\n")
+        let digest = SHA256.hash(data: Data(canonical.utf8))
+            .map { String(format: "%02x", $0) }.joined()
+        #expect(digest == goldenRowsSHA256,
+                "the golden's ROWS were edited. If that was deliberate, regenerate with scripts/gen_route_golden.py --write and update goldenRowsSHA256 in the same commit.")
+        return rows
     }
 
     /// Re-derives one golden row from a road. Used by the real assertion AND by its negative
@@ -234,10 +260,35 @@ struct RouteSelectorTests {
                 "a shipping source decides the entitlement by writing it down: \(detail)")
 
         // …and the scanner must be able to see one when it is there, or the emptiness above is
-        // worth nothing. Run through the same regex the real scan uses.
+        // worth nothing. **Run through the SAME regex the real scan uses** — the first version of
+        // this control used `(true|false)` while the scan used `([A-Za-z0-9_.]+)` plus a string
+        // compare, so it certified a pattern that was not the one doing the work.
         let planted = "let x = RideRoute.stages(westOpen: true)"
-        #expect(planted.matches(of: /stages\(westOpen:\s*(true|false)\s*\)/).count == 1,
-                "the regex cannot detect the thing it exists to detect")
+        let plantedHits = planted.matches(of: /stages\(westOpen:\s*([A-Za-z0-9_.]+)\s*\)/)
+            .filter { $0.output.1 == "true" || $0.output.1 == "false" }
+        #expect(plantedHits.count == 1, "the regex cannot detect the thing it exists to detect")
         #expect(callSites >= 1, "no call site was inspected at all")
+
+        // `everyStage` is the OTHER way to get the paid road without an entitlement, and policing
+        // only the literal left it wide open. It exists for the developer contact sheet; anywhere
+        // else in `Sources/` it is an unguarded bypass of the one seam.
+        var bypasses: [String] = []
+        for file in files where file.lastPathComponent != "Screenshot.swift" {
+            let source = try String(contentsOf: file, encoding: .utf8)
+            let code = source.split(separator: "\n", omittingEmptySubsequences: false)
+                .map { line -> Substring in
+                    guard let c = line.range(of: "//") else { return line }
+                    return line[line.startIndex ..< c.lowerBound]
+                }
+                .joined(separator: "\n")
+            // Its own declaration in RideRoute.swift is not a use. Everything else is.
+            let uses = code.split(separator: "\n").filter {
+                $0.contains("everyStage") && !$0.contains("static let everyStage")
+            }
+            if !uses.isEmpty { bypasses.append(file.lastPathComponent) }
+        }
+        let bypassList = bypasses.joined(separator: ", ")
+        #expect(bypasses.isEmpty,
+                "everyStage hands out the paid road with no entitlement, and is used outside the contact sheet: \(bypassList)")
     }
 }

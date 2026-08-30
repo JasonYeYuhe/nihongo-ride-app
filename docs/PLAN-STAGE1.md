@@ -178,9 +178,10 @@ way to Kyōto average **2.92 kana, not 3.71**.
 |---|---|---|
 | mean kana of the words ridden first | 3.71 (whole corpus) | **2.92** |
 | new words to 25 km | 673 | **856**, inside the 72nd ride of twelve |
-| journey rides to Kyōto | "20–50" | **48** with the review mix · **72** on new words alone |
+| journey rides to Kyōto, DEFAULT level (N5) | "20–50" | **48**, and only because of reviews — see below |
+| journey rides to Kyōto, mixed pool, new words only | — | **72** |
 | first ride | — | **exactly 150 m** |
-| mean ride on the road to Kyōto | — | **350 m** new-only · **525 m** with reviews |
+| mean ride on the road to Kyōto | — | **533 m** at N5 with reviews · **350 m** mixed, new-only |
 
 Both numbers are kept, because they answer different questions: **856** is where the odometer
 first crosses 25,000 m; **72 rides × 12** is where a rider crosses it, since a ride is atomic and

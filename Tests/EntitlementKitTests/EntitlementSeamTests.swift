@@ -28,6 +28,7 @@ struct EntitlementSeamTests {
         let source = try Self.routeStoreSource
         let needle = "NIHONGO_FAKE_ENTITLEMENT"
         var depth = 0
+        var elseDepth = 0
         var mentions = 0
         var escaped: [Int] = []
 
@@ -35,6 +36,10 @@ struct EntitlementSeamTests {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             if trimmed.hasPrefix("#if DEBUG") { depth += 1 }
             else if trimmed.hasPrefix("#endif") { depth = max(0, depth - 1) }
+            // `#else` flips out of the DEBUG branch. The first version counted only `#if`/`#endif`,
+            // so a seam sitting in the `#else` — the RELEASE side — read as guarded. That is the
+            // one arrangement this test exists to forbid, and it was the one it could not see.
+            else if trimmed.hasPrefix("#else") && depth > 0 { depth -= 1; elseDepth += 1 }
             // The mention in this file's own name and in prose does not count; only the source's.
             if line.contains(needle), !trimmed.hasPrefix("//"), !trimmed.hasPrefix("///") {
                 mentions += 1
@@ -44,6 +49,7 @@ struct EntitlementSeamTests {
 
         #expect(mentions >= 1, "the seam has vanished from RouteStore.swift — if it moved, this test must follow it")
         #expect(escaped.isEmpty, "the fake-entitlement seam is reachable outside #if DEBUG at line(s) \(escaped)")
+        _ = elseDepth
     }
 
     @Test("and the scanner can actually see an escape, so the emptiness above means something")

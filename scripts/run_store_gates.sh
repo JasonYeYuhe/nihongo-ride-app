@@ -72,6 +72,8 @@ echo "  SKTestSession is inert for this app on this machine and the gates prove 
 echo "  In that state PLAN-STAGE1 §L's manual list is the only coverage there is."
 echo
 
+LOG="$WORK/gates.log"
+set +e
 xcodebuild test \
   -project NihongoRide.xcodeproj \
   -scheme NihongoRide \
@@ -80,4 +82,26 @@ xcodebuild test \
   -derivedDataPath "$WORK/DerivedData" \
   -clonedSourcePackagesDirPath "$WORK/SourcePackages" \
   CODE_SIGNING_ALLOWED=NO \
-  CODE_SIGN_ENTITLEMENTS=
+  CODE_SIGN_ENTITLEMENTS= 2>&1 | tee "$LOG"
+STATUS=${PIPESTATUS[0]}
+set -e
+tail -3 "$LOG" >/dev/null   # keep the log alive until the trap
+
+# ⚠️ A run where every gate SKIPPED must not exit 0.
+#
+# `xcodebuild` reports skipped tests as success, which is correct for xcodebuild and wrong for
+# this script: exit 0 is what every human and every automation reads as "the purchase flow is
+# covered". It is not — a fully-skipped run has covered NOTHING, and the whole reason the gates
+# skip is that they would otherwise have proved nothing while passing. Reporting that as a pass
+# would put the same lie back one layer out.
+#
+# 3 = the harness could not obtain coverage. Distinct from 65 (a gate genuinely failed) and from
+# 0 (gates ran and passed), because those are three different things to do next.
+if grep -q "with [0-9]* tests* skipped" "$LOG" && ! grep -qE "Executed [0-9]+ tests?, with 0 tests? skipped" "$LOG"; then
+  SKIPPED=$(grep -oE "with [0-9]+ tests? skipped" "$LOG" | head -1)
+  echo
+  echo "  ⚠️  NO COVERAGE: $SKIPPED. The gates did not run — read the skip reason above."
+  echo "      PLAN-STAGE1 §L's manual list is the only purchase coverage in that state."
+  exit 3
+fi
+exit $STATUS

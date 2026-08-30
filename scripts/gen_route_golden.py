@@ -129,7 +129,11 @@ def main():
         tmp = FIXTURE.with_suffix(".tmp")
         tmp.write_text(json.dumps(payload, indent=1, ensure_ascii=False) + "\n")
         tmp.replace(FIXTURE)
+        canon = "\n".join("|".join(f"{k}={r[k]}" for k in sorted(r)) for r in rows)
+        import hashlib
+        digest = hashlib.sha256(canon.encode()).hexdigest()
         print(f"wrote {FIXTURE.relative_to(REPO)}")
+        print(f"goldenRowsSHA256 = \"{digest}\"   <- paste into RideRouteFreezeTests.swift")
         print(f"⚠️  If --ref was not {BASELINE_REF}, update the expected SHA in "
               f"Tests/SceneryKitTests/RideRouteFreezeTests.swift in the SAME commit.")
         return 0

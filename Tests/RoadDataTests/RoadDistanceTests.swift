@@ -60,9 +60,10 @@ struct RoadDistanceTests {
     ///
     /// Returns nil if the pool is exhausted, so a caller can stop rather than spin.
     private static func ride(vocab: VocabStore, review: inout ReviewStore,
-                             reviewWords: Int, on day: Date) -> Double? {
+                             level: JLPTLevel?, reviewWords: Int, on day: Date) -> Double? {
         var config = GameSession.Config()
         config.mode = .journey
+        config.level = level
         config.reviewWordCount = reviewWords
         let session = GameSession.make(config: config, vocab: vocab, review: review, now: { day })
         guard !session.isFinished else { return nil }
@@ -95,7 +96,17 @@ struct RoadDistanceTests {
     /// The threshold is READ FROM `RideRoute`, never written here: the number this suite reports
     /// and the number the app uses to decide you have arrived must be the same value, not two
     /// values that agree by inspection.
-    private static func rideTo(_ metres: Double, reviewWords: Int) -> [Double] {
+    /// A road walked: the per-ride distances, and **whether it actually got there**.
+    ///
+    /// `arrived` is not bookkeeping. The first version returned only the distances, so a run that
+    /// stopped because the WORD POOL RAN OUT was indistinguishable from one that stopped because
+    /// it reached Kyōto — and on the default N5 level that is exactly what happens. The test then
+    /// compared a ride count from an exhausted pool against a golden taken from an arrival: a
+    /// number and a run computed by different predicates, inside the instrument written to catch
+    /// that.
+    private struct Walk { var rides: [Double]; var arrived: Bool }
+
+    private static func rideTo(_ metres: Double, level: JLPTLevel?, reviewWords: Int) -> Walk {
         let vocab = VocabStore.shared
         // ONE review store across the whole road. It is what makes `seen` grow, so each ride
         // introduces the NEXT twelve words rather than the same twelve forever — a fresh store per
@@ -104,49 +115,67 @@ struct RoadDistanceTests {
         var lifetime = 0.0
         var perRide: [Double] = []
         var day = Date(timeIntervalSince1970: 0)
+        var exhausted = false
         while lifetime < metres && perRide.count < 5_000 {
-            guard let d = ride(vocab: vocab, review: &review, reviewWords: reviewWords, on: day),
-                  d > 0 else { break }
+            guard let d = ride(vocab: vocab, review: &review, level: level,
+                               reviewWords: reviewWords, on: day),
+                  d > 0 else { exhausted = true; break }
             lifetime += d
             perRide.append(d)
             // Days advance so review cards actually come due; without it the "with reviews" path
             // would be a fiction that quietly measured the new-words-only path.
             day = day.addingTimeInterval(60 * 60 * 24)
         }
-        return perRide
+        return Walk(rides: perRide, arrived: !exhausted && lifetime >= metres)
     }
 
     @Test("the first ride is 150 m, which is where RideRoute's ~150 m came from")
     func theFirstRide() {
-        let rides = Self.rideTo(200, reviewWords: 0)
-        #expect(rides.first == 150,
+        let walk = Self.rideTo(200, level: .n5, reviewWords: 0)
+        #expect(walk.rides.first == 150,
                 "the first twelve words are nine single kana plus みず・あさ・よる")
     }
 
-    @Test("Kyōto is 47 rides away with reviews mixed in, 72 without")
-    func theRoadToKyoto() throws {
+    @Test("on the DEFAULT level a rider reaches Kyōto in 48 rides — and only because of reviews")
+    func theRoadToKyotoOnTheDefaultLevel() throws {
+        // **N5, because that is what a fresh install actually rides.** `AppSettings`'s default
+        // `selectedLevel` is 5 (Sources/SettingsKit/AppSettings.swift:86) and `startGame` passes
+        // it straight into `GameSession.Config.level`. The first version of this suite measured
+        // the MIXED corpus — a population no default rider is in — which is the same rule this
+        // file's own header corrects PLAN-STAGE1 for, committed one level down.
         let kyoto = try #require(RideRoute.tokaidoStages.last).startMetres
         #expect(kyoto == 25_000, "the road's end moved; every number below is calibrated to it")
 
-        let withReviews = Self.rideTo(kyoto, reviewWords: 8)
-        let newOnly = Self.rideTo(kyoto, reviewWords: 0)
-        let meanNew = newOnly.reduce(0, +) / Double(newOnly.count)
-        let meanMixed = withReviews.reduce(0, +) / Double(withReviews.count)
+        let withReviews = Self.rideTo(kyoto, level: .n5, reviewWords: 8)
+        let newOnly = Self.rideTo(kyoto, level: .n5, reviewWords: 0)
+        let meanMixed = withReviews.rides.reduce(0, +) / Double(withReviews.rides.count)
 
-        // Printed so a corpus change reports the NEW figure rather than only that the old one
-        // broke. A golden whose failure message does not carry the replacement gets "fixed" by
-        // pasting in whatever the run produced, without anyone asking whether it should have moved.
         print("""
-              road to Kyōto — \(withReviews.count) rides with reviews, \(newOnly.count) without
-              mean ride: \(Int(meanMixed)) m with reviews, \(Int(meanNew)) m without
-              first ride: \(Int(newOnly[0])) m
+              N5 (the default): \(withReviews.rides.count) rides with reviews, arrived \(withReviews.arrived)
+              N5 new words only: \(newOnly.rides.count) rides, arrived \(newOnly.arrived)
+              mean ride with reviews: \(Int(meanMixed)) m · first ride: \(Int(newOnly.rides[0])) m
               """)
 
-        #expect(withReviews.count == 48)
-        #expect(newOnly.count == 72)
-        #expect(meanNew > 340 && meanNew < 360,
-                "a journey ride averages ~350 m on the road to Kyōto, not the ~150 m of the first")
-        #expect(meanMixed > 515 && meanMixed < 535)
+        #expect(withReviews.arrived)
+        #expect(withReviews.rides.count == 48)
+        #expect(meanMixed > 520 && meanMixed < 545)
+
+        // **The finding this parameterisation surfaced, and it is a product fact rather than a
+        // test detail:** the whole N5 pool is 646 words ≈ 20.8 km, so a rider who never leaves the
+        // default level CANNOT reach Kyōto on new words at all. They get there on SRS repetitions,
+        // which means anything changing how often words come back for review moves the road.
+        #expect(!newOnly.arrived,
+                "N5's new-word pool now reaches 25 km on its own — the corpus grew, and the claim that reviews carry the last stretch is no longer true")
+    }
+
+    @Test("a rider who switches to the mixed pool takes 72 rides on new words alone")
+    func theRoadToKyotoMixed() throws {
+        let kyoto = try #require(RideRoute.tokaidoStages.last).startMetres
+        let newOnly = Self.rideTo(kyoto, level: nil, reviewWords: 0)
+        let meanNew = newOnly.rides.reduce(0, +) / Double(newOnly.rides.count)
+        #expect(newOnly.arrived)
+        #expect(newOnly.rides.count == 72)
+        #expect(meanNew > 340 && meanNew < 360)
     }
 
     @Test("the ordering is at least deterministic within a run, which is what makes the goldens reproducible")
