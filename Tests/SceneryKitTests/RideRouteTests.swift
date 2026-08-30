@@ -123,9 +123,19 @@ struct RideRouteTests {
         let view = root.appendingPathComponent("Sources/NihongoRideApp/RideBackgroundView.swift")
         let source = try String(contentsOf: view, encoding: .utf8)
 
-        let body = try #require(source.range(of: "private func drawLandmark").map {
-            String(source[$0.lowerBound...])
-        })
+        // Bounded to drawLandmark's OWN body. Reading "from the declaration to the end of file"
+        // was the first version of this and it is the project's rule-5 defect — correct rule,
+        // wrong population: drawLandmark starts at line 184 of 252, so the scan also read
+        // `drawCloud`. Harmless today because drawCloud has no numeric cases, and the moment any
+        // function added after it switches over a cloud style or a lane count, that number would
+        // be admitted as a drawable landmark and a stage asking for a silhouette the scene cannot
+        // draw would ship as Fuji with this guard still green.
+        let start = try #require(source.range(of: "private func drawLandmark"))
+        let rest = source[start.upperBound...]
+        let end = rest.range(of: "\n    private func") ?? rest.range(of: "\n}")
+        let body = String(end.map { rest[..<$0.lowerBound] } ?? rest)
+        #expect(body.count < source.count / 2,
+                "the scan read \(body.count) of \(source.count) characters — it is not bounded to one function")
         var drawable = Set<Int>()
         for match in body.matches(of: /\n\s*case (\d+):/) {
             drawable.insert(Int(match.output.1)!)

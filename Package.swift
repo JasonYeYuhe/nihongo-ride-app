@@ -99,7 +99,7 @@ let package = Package(
         // forever. The rule lives here where it can be exercised; the real store is proven on
         // the macOS target against a local StoreKit configuration.
         .target(name: "EntitlementKit"),
-        .testTarget(name: "EntitlementKitTests", dependencies: ["EntitlementKit"]),
+        .testTarget(name: "EntitlementKitTests", dependencies: ["EntitlementKit", "SceneryKit"]),
 
         // MARK: iCloud sync core — pure merge of SRS / history / odometer / saved / word-lists (v1.2 Phase A, +v1.4, +v1.5).
         .target(name: "SyncKit", dependencies: ["ReviewKit", "JournalKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "PersistKit"]),
@@ -144,7 +144,16 @@ let package = Package(
         // from those stores' dueByDay(...) and hands this module the finished arrays.
         .target(name: "WidgetSharedKit"),
         .target(name: "SceneryKit"),
-        .testTarget(name: "SceneryKitTests", dependencies: ["SceneryKit"]),
+        .testTarget(
+            name: "SceneryKitTests",
+            dependencies: ["SceneryKit"],
+            // Declared so the golden is BUNDLED with the test binary rather than only reachable
+            // beside the source tree. The freeze test still loads it through `#filePath` — that is
+            // the house pattern (`ResolvesCallSiteTests` reads shipped sources the same way) and
+            // `swift test` is the gate it runs in — but an undeclared file also makes SwiftPM warn
+            // on every build, and a warning nobody can fix is a warning everybody stops reading.
+            resources: [.copy("Fixtures/tokaido-v1.29-sweep.json")]
+        ),
         .testTarget(name: "WidgetSharedKitTests", dependencies: ["WidgetSharedKit"]),
 
         // MARK: Derived verb-class data path — conservation invariants + end-to-end

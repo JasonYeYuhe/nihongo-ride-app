@@ -324,6 +324,20 @@ public enum RideRoute {
         westOpen ? tokaidoStages + westStages : tokaidoStages
     }
 
+    /// Every stretch that exists, **regardless of whether anyone paid for it.**
+    ///
+    /// For contact sheets, contrast checking and tests — never for a rider. It exists so that
+    /// `stages(westOpen:)` is never called with a literal in shipping code: the developer
+    /// screenshot pass legitimately needs all sixteen, and if it got them by passing `true` then
+    /// `true` would be a normal thing to write at that call site, and the next person needing
+    /// "all of them" for a less legitimate reason would write it too.
+    ///
+    /// `RouteSelectorTests.entitlementIsNeverALiteral` reads the shipped sources and fails if any
+    /// file under `Sources/` hands `westOpen:` a constant. That is the enforcement; this comment
+    /// is not — a contract stated in prose with nothing checking it is the defect this project
+    /// finds most cheaply and keeps finding anyway.
+    public static let everyStage: [RideStage] = tokaidoStages + westStages
+
     // MARK: - Resolution, over whichever road was handed in
 
     /// The stretch a rider with this lifetime distance is on.
@@ -337,7 +351,7 @@ public enum RideRoute {
     /// Infinities are ordered, so they fall out at the ends on their own.
     ///
     /// The algorithm is byte-for-byte the one that shipped in v1.29, scanning every element and
-    /// keeping the last one passed. That matters: `RideRouteTests.theTokaidoResolvesExactlyAsItDid`
+    /// keeping the last one passed. That matters: `RideRouteFreezeTests.theTokaidoResolvesExactlyAsItDid`
     /// sweeps this against a golden table of v1.29's own answers, so "an unentitled rider's road
     /// is unchanged" is a checked property rather than a claim in a commit message.
     public static func stage(forLifetimeMetres metres: Double, in stages: [RideStage]) -> RideStage {

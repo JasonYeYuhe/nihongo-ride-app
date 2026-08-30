@@ -26,7 +26,7 @@ struct EntitlementTests {
     @Test("a verified entitlement survives every silent answer the store can give")
     func silenceNeverRevokes() {
         var record = EntitlementRecord(productID: sku)
-        record.apply(.entitled(t0))
+        record.apply(.entitled(id: 1, at: t0))
         #expect(record.isEntitled)
 
         // An offline launch, a signed-out account, a failed product request, a StoreKit outage,
@@ -49,39 +49,39 @@ struct EntitlementTests {
     @Test("only an affirmative revocation closes it")
     func revocationIsTheOnlyDownward() {
         var record = EntitlementRecord(productID: sku)
-        record.apply(.entitled(t0))
-        record.apply(.revoked(later(60)))
+        record.apply(.entitled(id: 1, at: t0))
+        record.apply(.revoked(id: 1, at: later(60)))
         #expect(!record.isEntitled)
     }
 
     @Test("buying again after a refund re-opens it, because the later verification wins")
     func rePurchaseAfterRefund() {
         var record = EntitlementRecord(productID: sku)
-        record.apply(.entitled(t0))
-        record.apply(.revoked(later(60)))
+        record.apply(.entitled(id: 1, at: t0))
+        record.apply(.revoked(id: 1, at: later(60)))
         #expect(!record.isEntitled)
-        record.apply(.entitled(later(120)))
+        record.apply(.entitled(id: 1, at: later(120)))
         #expect(record.isEntitled, "a customer who paid twice must not be locked out by the first refund")
     }
 
     @Test("a revocation older than the verification it arrives after does not reopen the question")
     func staleRevocationIsIgnored() {
         var record = EntitlementRecord(productID: sku)
-        record.apply(.entitled(later(120)))
-        record.apply(.revoked(t0))       // an old refund replayed by Transaction.updates
+        record.apply(.entitled(id: 1, at: later(120)))
+        record.apply(.revoked(id: 1, at: t0))       // an old refund replayed by Transaction.updates
         #expect(record.isEntitled)
     }
 
     @Test("verification is monotonic, so an out-of-order replay cannot undo a later revocation")
     func verificationIsMonotonic() {
         var record = EntitlementRecord(productID: sku)
-        record.apply(.entitled(later(120)))
-        record.apply(.revoked(later(180)))
+        record.apply(.entitled(id: 1, at: later(120)))
+        record.apply(.revoked(id: 1, at: later(180)))
         #expect(!record.isEntitled)
         // StoreKit replays old transactions on relaunch. If this walked `lastVerifiedAt`
         // backwards it would still be < revokedAt, but the record would then be lying about when
         // it was last verified — and the next comparison after a second refund would be wrong.
-        record.apply(.entitled(t0))
+        record.apply(.entitled(id: 1, at: t0))
         #expect(record.lastVerifiedAt == later(120))
         #expect(!record.isEntitled)
     }
@@ -89,8 +89,8 @@ struct EntitlementTests {
     @Test("revocation is monotonic too")
     func revocationIsMonotonic() {
         var record = EntitlementRecord(productID: sku)
-        record.apply(.revoked(later(60)))
-        record.apply(.revoked(t0))
+        record.apply(.revoked(id: 1, at: later(60)))
+        record.apply(.revoked(id: 1, at: t0))
         #expect(record.revokedAt == later(60))
     }
 
@@ -98,10 +98,57 @@ struct EntitlementTests {
     func changeReporting() {
         var record = EntitlementRecord(productID: sku)
         #expect(record.apply(.silent) == false)
-        #expect(record.apply(.entitled(t0)) == true)
-        #expect(record.apply(.entitled(t0)) == false, "the same verification twice is not a change")
+        #expect(record.apply(.entitled(id: 1, at: t0)) == true)
+        #expect(record.apply(.entitled(id: 1, at: t0)) == false, "the same verification twice is not a change")
         #expect(record.apply(.silent) == false)
-        #expect(record.apply(.revoked(later(1))) == true)
+        #expect(record.apply(.revoked(id: 1, at: later(1))) == true)
+    }
+
+    // MARK: Whose refund is it
+
+    @Test("a revocation of somebody else's transaction does not close this one")
+    func revocationMustMatchTheVerification() {
+        // Without the id match, every revocation is a global off-switch. A shared device where
+        // two Apple Accounts have both owned the SKU, or a stale transaction replayed after an
+        // account switch, would close an entitlement it has no authority over — revoking somebody
+        // who paid and was never refunded, which is the one-star review this product cannot
+        // absorb, arriving through the code that exists to prevent it.
+        var record = EntitlementRecord(productID: sku)
+        record.apply(.entitled(id: 111, at: t0))
+        record.apply(.revoked(id: 222, at: later(60)))
+        #expect(record.isEntitled, "another account's refund closed this device's purchase")
+        #expect(record.revokedAt == nil, "the unmatched revocation was recorded as if it applied")
+
+        // …and the matching one still closes it, so the guard is not simply "never revoke".
+        record.apply(.revoked(id: 111, at: later(120)))
+        #expect(!record.isEntitled)
+    }
+
+    @Test("switching to an account that also owns it re-points the id, so ITS refund lands")
+    func theStoredIDFollowsTheLatestVerification() {
+        // Last-writer-wins on the id, deliberately. Pinning the first id ever seen looks safer
+        // and is not: it makes the second account's refund unmatchable, so the road stays open
+        // for somebody who WAS refunded — and the code that dropped the revocation looks like it
+        // handled it correctly, which is the worst version of a bug.
+        var record = EntitlementRecord(productID: sku)
+        record.apply(.entitled(id: 111, at: t0))
+        record.apply(.entitled(id: 222, at: later(60)))
+        #expect(record.verifiedTransactionID == 222)
+        record.apply(.revoked(id: 222, at: later(120)))
+        #expect(!record.isEntitled)
+    }
+
+    @Test("a record written before ids existed is still closable by a refund")
+    func anAbsentIDDoesNotBlockARevocation() {
+        // v1.30 may persist a record with no id. The asymmetry is chosen rather than inherited:
+        // losing a purchase to an unmatched refund is recoverable — the customer re-buys, or
+        // Restore heals it — while keeping a refunded purchase open is not recoverable at all,
+        // and is the case Apple would be right to complain about.
+        var record = EntitlementRecord(productID: sku, lastVerifiedAt: t0, revokedAt: nil,
+                                       verifiedTransactionID: nil)
+        #expect(record.isEntitled)
+        record.apply(.revoked(id: 999, at: later(60)))
+        #expect(!record.isEntitled)
     }
 
     // MARK: Persistence
@@ -117,7 +164,7 @@ struct EntitlementTests {
     func roundTrip() throws {
         let defaults = try freshDefaults("roundTrip")
         var ledger = EntitlementLedger(productID: sku)
-        ledger.apply(.entitled(t0), savingTo: defaults)
+        ledger.apply(.entitled(id: 1, at: t0), savingTo: defaults)
 
         let reloaded = EntitlementLedger.load(from: defaults, productID: sku)
         #expect(reloaded.isEntitled)
@@ -137,7 +184,7 @@ struct EntitlementTests {
     func productIDIsNotInherited() throws {
         let defaults = try freshDefaults("productID")
         var other = EntitlementLedger(productID: "com.jasonye.nihongoride.something.else")
-        other.apply(.entitled(t0), savingTo: defaults)
+        other.apply(.entitled(id: 1, at: t0), savingTo: defaults)
 
         let ours = EntitlementLedger.load(from: defaults, productID: sku)
         #expect(!ours.isEntitled, "a second SKU inherited this one's verification")
@@ -154,13 +201,24 @@ struct EntitlementTests {
         // cannot be parsed contains no verification to protect, and defaulting to entitled would
         // hand the road to anyone whose defaults were ever corrupt. The next successful store
         // read restores a real purchase within seconds.
+        //
+        // But the unreadable bytes are the only local evidence that a purchase happened, and the
+        // next write destroys them — so they are copied aside first.
+        #expect(defaults.data(forKey: EntitlementLedger.quarantineKey) == Data("not json".utf8),
+                "the unreadable record was discarded instead of quarantined")
+
+        // …and a SECOND bad load must not overwrite the first. The earliest blob is the one
+        // closest to the purchase; a later one may just be this app having written over it.
+        defaults.set(Data("also not json".utf8), forKey: EntitlementLedger.defaultsKey)
+        _ = EntitlementLedger.load(from: defaults, productID: sku)
+        #expect(defaults.data(forKey: EntitlementLedger.quarantineKey) == Data("not json".utf8))
     }
 
     @Test("the debug summary names its evidence, not just its answer")
     func debugSummaryCarriesEvidence() {
         var ledger = EntitlementLedger(productID: sku)
         #expect(ledger.debugSummary.contains("never verified"))
-        ledger.apply(.entitled(t0), savingTo: nil)
+        ledger.apply(.entitled(id: 1, at: t0), savingTo: nil)
         #expect(ledger.debugSummary.contains("entitled"))
         #expect(!ledger.debugSummary.contains("never verified"))
     }

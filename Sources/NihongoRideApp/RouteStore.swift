@@ -82,6 +82,14 @@ final class RouteStore {
     var notice: Notice?
     private(set) var isPurchasing = false
 
+    /// What StoreKit answered on the last `purchase()`, in the counter's vocabulary.
+    ///
+    /// Set on **every** branch of `purchase()`, including the ones that set no `notice` — a
+    /// cancel is a real outcome and a silent one, and a ledger that recorded only the noisy
+    /// branches would report "nobody tried" for a device where somebody tried and backed out.
+    /// That is the difference the whole experiment turns on.
+    private(set) var lastOutcome: UnlockOfferEvent = .purchaseUnrecognised
+
     private let defaults: UserDefaults?
     private var updates: Task<Void, Never>?
 
@@ -106,10 +114,10 @@ final class RouteStore {
         // than defaulting to entitled — a seam that faked EVERY launch would satisfy a naive test.
         if let fake = ProcessInfo.processInfo.environment["NIHONGO_FAKE_ENTITLEMENT"] {
             switch fake {
-            case "verified": ledger.apply(.entitled(Date()), savingTo: nil)
+            case "verified": ledger.apply(.entitled(id: 1, at: Date()), savingTo: nil)
             case "revoked":
-                ledger.apply(.entitled(Date(timeIntervalSince1970: 0)), savingTo: nil)
-                ledger.apply(.revoked(Date()), savingTo: nil)
+                ledger.apply(.entitled(id: 1, at: Date(timeIntervalSince1970: 0)), savingTo: nil)
+                ledger.apply(.revoked(id: 1, at: Date()), savingTo: nil)
             default: break          // including "neverEstablished": the fresh ledger already is
             }
             return                  // never start StoreKit under a faked entitlement
@@ -163,25 +171,33 @@ final class RouteStore {
     /// `nonisolated` and static so it is a pure translation with nothing to observe: the only
     /// thing it may produce is a signal, and it cannot decide anything about it.
     nonisolated static func readStore() async -> StoreEntitlementSignal {
-        // 1. Does the customer own it right now? `currentEntitlements` already excludes revoked
-        //    and expired transactions, so a hit here is unambiguous.
+        // 1. Does the customer own it right now? `currentEntitlements` is documented as "all
+        //    currently-subscribed transactions, and all purchased (and NOT REFUNDED)
+        //    non-consumables", so a hit here is unambiguous.
         for await result in Transaction.currentEntitlements {
             guard case .verified(let transaction) = result,
                   transaction.productID == productID,
                   transaction.revocationDate == nil
             else { continue }
-            return .entitled(Date())
+            return .entitled(id: transaction.originalID, at: Date())
         }
         // 2. Nothing owned. That is NOT "never bought" — so before concluding anything, look for
-        //    the one thing that IS conclusive: a verified transaction Apple has revoked. This is
-        //    the reconciliation half of the failure rule, and it is why the scan continues past
-        //    `currentEntitlements` instead of returning here.
-        for await result in Transaction.all {
-            guard case .verified(let transaction) = result,
-                  transaction.productID == productID,
-                  transaction.revocationDate != nil
-            else { continue }
-            return .revoked(Date())
+        //    the one thing that IS conclusive: a transaction Apple has revoked.
+        //
+        //    ⚠️ This CANNOT be found through `currentEntitlements`, and reading the refund case
+        //    out of that sequence is the mistake to avoid: the SDK's own doc comment says it
+        //    excludes refunded non-consumables, so the branch would never execute and a refunded
+        //    customer would keep the road forever while the code looked like it handled refunds.
+        //    `Transaction.updates` is not a substitute either — it guarantees redelivery only for
+        //    UNFINISHED transactions, and this app finishes every purchase immediately, so a
+        //    revocation issued while the app was not running is never redelivered.
+        //
+        //    `latest(for:)` is the channel that works: "the user's latest transaction for a
+        //    product… nil if the user has never purchased this product" — so it still returns the
+        //    transaction after a refund, which is exactly the case being looked for.
+        if case .verified(let transaction)? = await Transaction.latest(for: productID),
+           transaction.revocationDate != nil {
+            return .revoked(id: transaction.originalID, at: Date())
         }
         // 3. The store said nothing. Offline, signed out, never purchased, mid-refund, or the
         //    measured moment after a successful purchase — indistinguishable, and therefore
@@ -192,7 +208,11 @@ final class RouteStore {
     // MARK: - Buying
 
     func purchase() async {
-        guard let product else { notice = .productMissing; return }
+        guard let product else {
+            notice = .productMissing
+            lastOutcome = .offerUnavailable
+            return
+        }
         isPurchasing = true
         defer { isPurchasing = false }
         do {
@@ -202,20 +222,28 @@ final class RouteStore {
                 case .verified(let transaction):
                     await transaction.finish()
                     await settleEntitlement()
+                    lastOutcome = .purchaseSucceeded
                 case .unverified:
                     // The customer paid a sheet and StoreKit could not vouch for the result. Do
                     // not open the road; do say what state they are in.
                     notice = .unverified
+                    lastOutcome = .purchaseUnverified
                 }
             case .pending:
                 notice = .pending
+                lastOutcome = .purchasePending
             case .userCancelled:
-                break
+                // No notice: the customer closed Apple's own sheet and knows what they did. It is
+                // still recorded — an attempt that was backed out of is the single most
+                // informative thing this experiment can observe short of a sale.
+                lastOutcome = .purchaseCancelled
             @unknown default:
                 notice = .failed(String(localized: "The purchase ended in an unexpected state. If you were charged, use Restore."))
+                lastOutcome = .purchaseUnrecognised
             }
         } catch {
             notice = .failed(error.localizedDescription)
+            lastOutcome = .purchaseFailed
         }
     }
 

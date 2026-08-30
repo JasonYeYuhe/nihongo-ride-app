@@ -230,6 +230,7 @@ struct RootView: View {
         case .stats:   StatsView()
         case .coach:   CoachView()
         case .settings: SettingsView()
+        case .road:    RoadView()
         case .lists:   ListsView()
         case .listDetail: ListDetailView()
         case .onboarding: OnboardingView()

@@ -135,7 +135,7 @@ enum Screenshotter {
             // buying the road and riding 138 km. Never confuse this with a shipping surface —
             // `Screenshotter.isCapturing` gates the whole block, and `forceRideStage` refuses
             // outside capture.
-            for stage in RideRoute.stages(westOpen: true) {
+            for stage in RideRoute.everyStage {
                 let m = makeModel()
                 m.startGame()
                 m.session?.skip()

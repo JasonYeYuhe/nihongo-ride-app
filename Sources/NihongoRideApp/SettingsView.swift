@@ -132,6 +132,36 @@ struct SettingsView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
+            // Stage 1. ONE row, here, and nowhere else in the app.
+            //
+            // The placement is Codex's discipline adopted whole and it is a design constraint
+            // rather than a detail: no modal, no badge, no post-ride solicitation, no recurring
+            // reminder, and deliberately far from the rating prompt v1.27 already fires after a
+            // completed ride — two asks landing on the same moment would spend the goodwill of
+            // one on the other. `PaidRouteRowTests` asserts on the running app that exactly one
+            // such row exists and that the results screen has none.
+            //
+            // The row names the thing and goes to a screen; it does not itself sell. That screen
+            // is the product page, and it is what lets the offer be honest to a rider who is
+            // still twenty kilometres from this being any use to them.
+            settingsCard(title: zh ? "路" : "The Road") {
+                Button(action: model.showRoad) {
+                    HStack {
+                        rowLabel(icon: "map",
+                                 text: model.entitlements.isEntitled
+                                     ? (zh ? "东海道与西の道" : "The Tōkaidō and the Road West")
+                                     : (zh ? "京都之后的路" : "The road past Kyōto"))
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .scaledSystemFont(13).foregroundStyle(Theme.dim)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("roadRow")
+                .onAppear { model.recordOfferRowAppeared() }
+            }
+
             Spacer(minLength: 12)
         }
         .padding(isPhoneIdiom ? 22 : 40)

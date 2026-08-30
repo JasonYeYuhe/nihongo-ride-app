@@ -8,6 +8,7 @@ import PersistKit
 import DiagnosticsKit
 import RomajiKana
 import SyncKit
+import EntitlementKit
 import VocabKit
 import WordListsKit
 import ConjugationReviewKit
@@ -104,7 +105,7 @@ struct ConjugationSummary: Equatable {
 @MainActor
 @Observable
 final class AppModel {
-    enum Screen: Equatable { case menu, playing, results, about, journal, settings, lists, listDetail, onboarding, stats, coach }
+    enum Screen: Equatable { case menu, playing, results, about, journal, settings, lists, listDetail, onboarding, stats, coach, road }
 
     var screen: Screen = .menu {
         didSet { navCount += 1 }
@@ -203,6 +204,20 @@ final class AppModel {
     /// back, so without the rejection counts a release that produced no reviews would be
     /// indistinguishable from one whose gates never let a single moment through.
     private(set) var reviewPromptLedger = ReviewPromptLedger()
+
+    /// What happened to the offer row on THIS device. Local, never transmitted.
+    ///
+    /// Same shape and same isolation predicate as `reviewPromptLedger` above, and it exists for
+    /// the same reason that one does: App Store Connect answers "how many bought" exactly and can
+    /// never answer "how many were ever in a position to". Without this, a zero collapses three
+    /// different findings — nobody will pay, nobody had ridden far enough for it to be worth
+    /// anything, nobody opened Settings — into one number that means none of them.
+    ///
+    /// Its honest limit is written on `UnlockOfferLedger` itself: it is never transmitted, so it
+    /// reaches the developer only if a customer sends it, and the measured base rate for that is
+    /// one volunteered message per 109 installs. It cannot estimate a rate. It can kill a
+    /// universal from one sample.
+    private(set) var unlockOfferLedger = UnlockOfferLedger()
 
     /// The finished ride awaiting a review-prompt decision, or nil. Built in `finishGame` where
     /// the ride's own numbers are still to hand, and CONSUMED by `considerReviewPrompt` — so a
@@ -351,6 +366,9 @@ final class AppModel {
         // makes the store inert rather than merely quiet — there is nowhere for it to persist to.
         entitlements = RouteStore(defaults: Self.currentIsolation.touchesNothingOfTheUsers
                                   ? nil : Self.settingsStore)
+        unlockOfferLedger = Self.currentIsolation.touchesNothingOfTheUsers
+            ? UnlockOfferLedger()
+            : UnlockOfferLedger.load(from: Self.settingsStore)
         languageCode = loaded.languageCode
         assistance = AssistanceMode(rawValue: loaded.assistance)
             ?? (loaded.showRomajiHint ? .always : .off)
@@ -1953,6 +1971,54 @@ final class AppModel {
     /// consumed on the way through, so "ride again" bouncing through this screen cannot ask
     /// twice for one ride.
     ///
+    // MARK: Stage 1 — the road screen, and recording what happened to the offer
+
+    /// Open the road screen. The ONE entrance, from the ONE row in Settings.
+    func showRoad() { screen = .road }
+    func showSettings() { screen = .settings }
+
+    // MARK: Stage 1 — recording what happened to the offer
+
+    /// The offer row appeared. Records what it was actually able to offer, in one branch.
+    ///
+    /// `suppressed` reuses the SAME isolation predicate as the review prompt below, so a run that
+    /// cannot reach the owner's data does not pollute their counts either — and, more to the
+    /// point, so a UI test or a screenshot render is never counted as a person.
+    func recordOfferRowAppeared() {
+        let isolated = Self.currentIsolation.touchesNothingOfTheUsers
+        unlockOfferLedger.rowAppeared(lifetimeMetres: lifetimeDistanceMeters,
+                                      entitled: entitlements.isEntitled,
+                                      offerLoaded: entitlements.product != nil,
+                                      suppressed: isolated)
+        if !isolated { unlockOfferLedger.save(to: Self.settingsStore) }
+    }
+
+    /// Buy the road west. The ledger records that StoreKit was asked and what it answered on one
+    /// line of control flow, so the count and the attempt cannot come apart.
+    func buyTheRoadWest() async {
+        let isolated = Self.currentIsolation.touchesNothingOfTheUsers
+        // `purchasing` is mutating and async, which Swift will not let us call on a stored
+        // property of an actor-isolated class. Taking a local copy and putting it back is NOT a
+        // workaround around the one-branch rule — the ledger value still records the attempt and
+        // the answer inside a single call, which is the property that matters. What must never
+        // happen is a caller deciding the outcome itself; here the closure returns whatever
+        // StoreKit said and nothing else can be substituted for it.
+        var ledger = unlockOfferLedger
+        await ledger.purchasing(lifetimeMetres: lifetimeDistanceMeters) {
+            await entitlements.purchase()
+            return entitlements.lastOutcome
+        }
+        unlockOfferLedger = ledger
+        if !isolated { unlockOfferLedger.save(to: Self.settingsStore) }
+    }
+
+    func restorePurchases() async {
+        let isolated = Self.currentIsolation.touchesNothingOfTheUsers
+        unlockOfferLedger.restoreStarted(lifetimeMetres: lifetimeDistanceMeters)
+        await entitlements.restore()
+        if !isolated { unlockOfferLedger.save(to: Self.settingsStore) }
+    }
+
     /// Suppression reuses `touchesNothingOfTheUsers` rather than adding a fourth flag: a run
     /// that cannot reach the owner's data must not spend one of the three real prompts Apple
     /// allows per year either. (Sniffing `Bundle.main.bundleIdentifier` would be wrong here —

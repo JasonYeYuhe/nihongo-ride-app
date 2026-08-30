@@ -46,14 +46,20 @@ import Foundation
 public enum StoreEntitlementSignal: Sendable, Equatable {
 
     /// The store returned a verified, unrevoked transaction for the product. Authoritative.
-    case entitled(Date)
+    ///
+    /// Carries the transaction's `originalID` so a later revocation can be matched to the
+    /// purchase it actually revokes. Without it every revocation is a global off-switch: a refund
+    /// belonging to a different Apple Account on a shared device, or a stale transaction replayed
+    /// after an account switch, would close an entitlement it has no authority over — revoking
+    /// somebody who paid and was never refunded.
+    case entitled(id: UInt64, at: Date)
 
     /// The store returned a verified transaction carrying a revocation date — a refund, a family
     /// removal, or an Apple-side revocation. **The only signal permitted to close an entitlement.**
     ///
     /// Deliberately distinct from `silent`: a revocation is something the store *said*, and an
     /// empty result is something it did not say.
-    case revoked(Date)
+    case revoked(id: UInt64, at: Date)
 
     /// The store said nothing about this product: no transaction, or an error, or a query that
     /// never completed.
@@ -83,10 +89,25 @@ public struct EntitlementRecord: Codable, Sendable, Equatable {
     /// Set only by an affirmative `revoked` signal. Never by an absence.
     public private(set) var revokedAt: Date?
 
-    public init(productID: String, lastVerifiedAt: Date? = nil, revokedAt: Date? = nil) {
+    /// `originalID` of the transaction the last verification was about.
+    ///
+    /// **Last writer wins**, deliberately: a device that switches Apple Account and re-verifies
+    /// against a different purchase must store the id a revocation would actually name. Pinning
+    /// the first id ever seen looks safer and is not — it makes the second account's refund
+    /// unmatchable, so the road stays open for a customer who was refunded, and the code that
+    /// discarded the revocation looks like it handled it correctly.
+    ///
+    /// Optional because a record persisted by v1.30 before this field existed has no id, and
+    /// **an absent id must not block a revocation** — losing a purchase to an unmatched refund
+    /// is recoverable by re-buying; keeping a refunded purchase open is not recoverable at all.
+    public private(set) var verifiedTransactionID: UInt64?
+
+    public init(productID: String, lastVerifiedAt: Date? = nil, revokedAt: Date? = nil,
+                verifiedTransactionID: UInt64? = nil) {
         self.productID = productID
         self.lastVerifiedAt = lastVerifiedAt
         self.revokedAt = revokedAt
+        self.verifiedTransactionID = verifiedTransactionID
     }
 
     /// **The one predicate.** Nothing else may decide whether the purchase is honoured — not the
@@ -108,12 +129,19 @@ public struct EntitlementRecord: Codable, Sendable, Equatable {
     public mutating func apply(_ signal: StoreEntitlementSignal) -> Bool {
         let before = self
         switch signal {
-        case .entitled(let at):
+        case .entitled(let id, let at):
             // Monotonic. StoreKit delivers updates out of order (a relaunch replaying an old
             // transaction, `Transaction.updates` racing a manual refresh), and a verification
             // that walked backwards would let a stale delivery undo a later revocation.
-            if lastVerifiedAt.map({ at > $0 }) ?? true { lastVerifiedAt = at }
-        case .revoked(let at):
+            if lastVerifiedAt.map({ at > $0 }) ?? true {
+                lastVerifiedAt = at
+                verifiedTransactionID = id
+            }
+        case .revoked(let id, let at):
+            // Only a revocation of the purchase this record is ABOUT may close it. An unmatched
+            // revocation is dropped — but an absent stored id is treated as a match, because a
+            // record written before ids were stored must still be closable by a refund.
+            guard verifiedTransactionID == nil || verifiedTransactionID == id else { break }
             if revokedAt.map({ at > $0 }) ?? true { revokedAt = at }
         case .silent:
             // Nothing, and the absence of code here is the module's entire point.
@@ -181,13 +209,32 @@ public struct EntitlementLedger: Sendable, Equatable {
     ///
     /// A record stored under a different `productID` is discarded rather than adopted: a second
     /// SKU must never inherit this one's verification.
+    /// Where unreadable bytes are copied before anything is allowed to write over them.
+    ///
+    /// `PersistKit.LossyLoad.quarantine` does this for the file-backed stores and cannot be used
+    /// here, because there is no URL to append `.corrupt` to. The principle is the same and it is
+    /// the one that matters: **a record that could not be parsed is the only evidence a purchase
+    /// happened on this device**, and the next successful store read will overwrite it. Copying
+    /// it aside costs one key and means a customer who writes in can be helped.
+    public static let quarantineKey = defaultsKey + ".unreadable"
+
     public static func load(from defaults: UserDefaults,
                             productID: String,
                             key: String = defaultsKey) -> EntitlementLedger {
-        guard let data = defaults.data(forKey: key),
-              let record = try? JSONDecoder().decode(EntitlementRecord.self, from: data),
+        guard let data = defaults.data(forKey: key) else {
+            return EntitlementLedger(productID: productID)
+        }
+        guard let record = try? JSONDecoder().decode(EntitlementRecord.self, from: data),
               record.productID == productID
-        else { return EntitlementLedger(productID: productID) }
+        else {
+            // Written once, and never overwritten by a second bad load: the FIRST unreadable
+            // blob is the one closest to the purchase, and a later one may just be this app
+            // having written over it.
+            if defaults.data(forKey: quarantineKey) == nil {
+                defaults.set(data, forKey: quarantineKey)
+            }
+            return EntitlementLedger(productID: productID)
+        }
         return EntitlementLedger(record: record)
     }
 

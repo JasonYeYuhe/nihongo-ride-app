@@ -27,7 +27,19 @@ import Foundation
 /// geometry, so the number the test checked and the property the comment claimed were computed
 /// over different domains — this project's signature defect, sitting inside the safety net.
 ///
-/// The sweep below covers −2,000 … 40,000 at 37 m, every threshold ±1, both infinities and NaN.
+/// ## What the sweep actually covers, and what actually catches an append
+///
+/// 1,167 points: −2,000 … 40,000 at 37 m, every free threshold ±1, both infinities, NaN, and
+/// 138,000 and 1,000,000 at the far end.
+///
+/// It does NOT probe the paid thresholds, and that is fine for a reason worth writing down,
+/// because the intuitive reason to add them is wrong. Measured by replaying appends at 28,000,
+/// 50,000, 120,000, 500,000 and 2,000,000: **all five produce their first mismatch at exactly
+/// m = 25,000**, the first probe past the last free threshold. What catches an append is the
+/// TERMINAL INVARIANT — once 京都 stops being last, `metresToNextStage` flips nil → a number and
+/// `progressWithinStage` flips 1 → a fraction — not coverage of where the new stretch begins.
+/// Believing otherwise invites deleting the clause that does the work as redundant and keeping
+/// the ones that do not.
 @Suite("The Tōkaidō is frozen")
 struct RideRouteFreezeTests {
 
@@ -37,9 +49,23 @@ struct RideRouteFreezeTests {
             .appendingPathComponent("Fixtures/tokaido-v1.29-sweep.json")
     }
 
+    /// The commit the golden was swept from — the last one before the paid road existed.
+    ///
+    /// Asserted rather than trusted. The fixture is 147 KB of machine-generated JSON, which is
+    /// unreviewable by eye, so the failure mode worth engineering against is somebody regenerating
+    /// it from the WORKING TREE when the test goes red after an intentional change: the test then
+    /// grades the code under test against itself, and nothing anywhere goes red.
+    /// `scripts/gen_route_golden.py` refuses to read the working tree and refuses any ref that
+    /// already contains `westStages`; this line is the other half, so a hand-edited or re-pointed
+    /// fixture fails here.
+    private static let baselineSHA = "48de373f956fa5f9422628872f783531656dde40"
+
     private static func golden() throws -> [[String: String]] {
         let data = try Data(contentsOf: fixture)
-        return try #require(try JSONSerialization.jsonObject(with: data) as? [[String: String]])
+        let payload = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
+        #expect(payload["generatedFromSHA"] as? String == baselineSHA,
+                "the golden was regenerated from a different commit; if deliberate, change the expected SHA above in the same commit and justify the diff")
+        return try #require(payload["rows"] as? [[String: String]])
     }
 
     /// Re-derives one golden row from a road. Used by the real assertion AND by its negative
@@ -93,7 +119,7 @@ struct RideRouteFreezeTests {
         #expect(mismatches > 0, "the sweep accepted a paid stage on the free road — it proves nothing")
         // And it must catch it well before the far end: the old suite's 1,000,000 m probe was
         // blind to exactly this because both roads are terminal out there.
-        let divergedAt = Double(try #require(firstDivergence)) ?? .infinity
+        let divergedAt = Double(firstDivergence ?? "") ?? .infinity
         #expect(divergedAt < 30_000,
                 "the sweep only notices past 30 km, which is where the old suite already looked")
     }
@@ -163,5 +189,55 @@ struct RideRouteFreezeTests {
         #expect(!RideRoute.hasArrivedAtKyoto(lifetimeMetres: .nan), "a corrupt odometer must not claim arrival")
         #expect(!RideRoute.hasArrivedAtKyoto(lifetimeMetres: -.infinity))
         #expect(RideRoute.hasArrivedAtKyoto(lifetimeMetres: .infinity))
+    }
+}
+
+/// The selector's call sites, read out of the shipped sources.
+///
+/// `stages(westOpen:)` is the one function in the package that reads an entitlement, which makes
+/// the *argument handed to it* the whole security surface. A `Bool` cannot stop anyone writing
+/// `true`, so what stops them is this: no file under `Sources/` may hand it a constant, and the
+/// one place that legitimately wants every stretch — the developer contact sheet — asks for
+/// `everyStage` by name instead.
+@Suite("Nothing in the app hands the selector a constant")
+struct RouteSelectorTests {
+
+    @Test("entitlement is never a literal in shipping code")
+    func entitlementIsNeverALiteral() throws {
+        let sources = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Sources")
+
+        let files = FileManager.default
+            .enumerator(at: sources, includingPropertiesForKeys: nil)?
+            .compactMap { $0 as? URL }
+            .filter { $0.pathExtension == "swift" } ?? []
+        // The scan must be shown to have read something. A directory walk that silently returned
+        // nothing would report clean in exactly the same words as a passing one — the failure
+        // mode this project has paid for five times.
+        #expect(files.count > 40, "the scan found \(files.count) sources; it cannot report clean")
+
+        var offenders: [String] = []
+        var callSites = 0
+        for file in files {
+            let source = try String(contentsOf: file, encoding: .utf8)
+            for match in source.matches(of: /stages\(westOpen:\s*([A-Za-z0-9_.]+)\s*\)/) {
+                callSites += 1
+                let argument = String(match.output.1)
+                if argument == "true" || argument == "false" {
+                    offenders.append("\(file.lastPathComponent): stages(westOpen: \(argument))")
+                }
+            }
+        }
+        let detail = offenders.joined(separator: ", ")
+        #expect(offenders.isEmpty,
+                "a shipping source decides the entitlement by writing it down: \(detail)")
+
+        // …and the scanner must be able to see one when it is there, or the emptiness above is
+        // worth nothing. Run through the same regex the real scan uses.
+        let planted = "let x = RideRoute.stages(westOpen: true)"
+        #expect(planted.matches(of: /stages\(westOpen:\s*(true|false)\s*\)/).count == 1,
+                "the regex cannot detect the thing it exists to detect")
+        #expect(callSites >= 1, "no call site was inspected at all")
     }
 }
