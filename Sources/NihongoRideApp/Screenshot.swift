@@ -130,9 +130,25 @@ enum Screenshotter {
         // because the offer's honesty to a rider who has NOT arrived is a layout property that
         // only a render can show. Two states, since they are different screens: the offer, and
         // what an owner sees instead of it.
+        // Rendered TALL, not at the store size. In capture mode the views drop their ScrollView
+        // (ImageRenderer does not lay out inside one), so a screen taller than the frame is
+        // centred and clipped at BOTH ends — the first render of this one lost its header and the
+        // §C boundary sentence, which is the one line a reviewer most needs to read.
         let road = makeModel()
         road.showRoad()
-        render(RootView().environment(road), size: size, to: directory + "/road.png")
+        render(RootView().environment(road),
+               size: CGSize(width: size.width, height: max(size.height, 1400)),
+               to: directory + "/road.png")
+        // And again at 1320×2868 — iPhone 6.9" portrait, at macOS's ×2 scale from 660×1434.
+        //
+        // This one is the **App Store Connect IAP review screenshot**, which is why it targets a
+        // spec rather than looking nice: Apple asks for "a screenshot that meets any of the
+        // screenshot specifications your app supports", the upload is documented as irreversible
+        // once made ("you can update it but not remove it"), and 1320×2868 is the exact spec that
+        // has already passed review on this team. A non-standard size here is a rejection on an
+        // asset that cannot be taken back.
+        render(RootView().environment(road), size: CGSize(width: 660, height: 1434),
+               to: directory + "/road-iap-review.png")
 
         // Every stretch of road, as a contact sheet (v1.12 §D). The palettes are the one
         // part of the scenery a person has to LOOK at to judge, and there is no other way

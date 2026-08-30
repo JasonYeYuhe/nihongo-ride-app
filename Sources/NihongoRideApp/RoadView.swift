@@ -108,6 +108,17 @@ struct RoadView: View {
         return zh ? "距离京都还有 \(km) 公里。" : "\(km) km still to Kyōto."
     }
 
+    /// A stretch's threshold, in kilometres a rider can compare against the Ride Log.
+    ///
+    /// One decimal below 10 km, because `Int(400 / 1000)` is 0 and the first render of this screen
+    /// showed 川崎 — which begins at 400 m and is the second stretch every rider reaches — labelled
+    /// **"0 km"**, directly under 日本橋's "0 km". Two different stretches claiming the same
+    /// distance, on the screen whose entire job is to say how far away things are.
+    static func distanceLabel(_ metres: Double) -> String {
+        let km = metres / 1000
+        return km < 10 ? String(format: "%.1f km", km) : "\(Int(km)) km"
+    }
+
     private var metresToKyoto: Double {
         max(0, (RideRoute.tokaidoStages.last?.startMetres ?? 0) - metres)
     }
@@ -123,7 +134,7 @@ struct RoadView: View {
             Text(stage.romaji)
                 .scaledSystemFont(12).foregroundStyle(Theme.dim)
             Spacer()
-            Text("\(Int(stage.startMetres / 1000)) km")
+            Text(Self.distanceLabel(stage.startMetres))
                 .scaledSystemFont(12, weight: .medium, design: .monospaced)
                 .foregroundStyle(Theme.dim)
         }
