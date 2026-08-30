@@ -335,3 +335,54 @@ true 5% refund rate, P(≥1) = 40%.
 date here and **exclude it from the cohort**, or it will later look like the signal. This is the
 money instrument's known-positive, and this project does not trust an instrument that has not
 fired. *An agent cannot do this step and must not try.*
+
+## §L The three manual gates
+
+These cannot be automated on this machine and are therefore **not tested until somebody walks
+them**. Recording them as a checklist rather than as prose so that "we tested the purchase flow"
+can never mean "the macOS suite was green".
+
+Each needs a date, a device and an outcome written beside it **before v1.30 is submitted**.
+
+| gate | why it cannot be automated | procedure | walked |
+|---|---|---|---|
+| **No App Store account signed in** | `SKTestSession` cannot simulate a signed-out Apple Account; the closest automatable proxy is `.loadProducts` erroring, which is a different thing and is named as a proxy in the test that does it | Sign out of the App Store on a Mac or device. Launch. Open Settings → The Road. **Expect:** the row is there, the screen opens, the price area says prices are unavailable and offers Retry, Restore is present, and nothing crashes. **Fail if:** the row is missing, or the screen claims the road is unlocked, or the app hangs. | ☐ |
+| **Family Sharing** | The SKU ships with Family Sharing **off**, and Apple documents that turning it on can never be undone — so the state to verify is that a family member does NOT inherit it | On a second Apple Account in the same family group, launch and open Settings → The Road. **Expect:** the offer, not the owned state. | ☐ |
+| **Cross-platform restore (macOS ↔ iOS)** | One Universal Purchase record covers both platforms on the STORE side; whether the entitlement resolves on the second device is client code and has never been observed | Buy on one platform. On the other, signed into the same Apple Account, launch and open Settings → The Road. **Expect:** owned, without tapping Restore. Then try it from a cold install. **Fail if:** Restore is needed and does not work. | ☐ |
+
+And one that is automated but whose automation only covers macOS, restated so the gap is not
+implied away: **iOS StoreKit behaviour is not observed by any automated test on this machine.**
+The two targets share `Sources/NihongoRideApp` so the adapter is the same code, which is an
+argument, not an observation.
+
+## §M What is done, and what Stage 1 is still waiting on
+
+**Done and proven.**
+
+* The road: eight new stretches, palettes generated from a verified table, contrast 11.1:1 worst
+  case against a 7:1 floor.
+* The red line: the free road frozen field-by-field and swept against v1.29's own compiled code at
+  1,167 points, with a committed negative control and a generator that refuses to read the working
+  tree.
+* The entitlement rule: pure, exhaustively tested, and unable to express "the store says no".
+* The offer: one row, one screen, honest to a rider who has not arrived.
+* The counter, with its own limits written on the type.
+* The IAP: `com.jasonye.nihongoride.scenery.lifetime`, NON_CONSUMABLE, Family Sharing **off**,
+  base territory CHN at ¥10.00 (net ¥8.42), 174 territories auto-equalised, three localisations,
+  175 territories available including CHN.
+
+**Blocked, and on what.**
+
+* **Submission is blocked on v1.29 clearing review.** This is the app's FIRST non-consumable, and
+  Apple requires the first of each type to be submitted **with a new app version** — so the IAP
+  cannot go alone, and there is no editable version while 1.29 sits in `WAITING_FOR_REVIEW`.
+* **The IAP is `MISSING_METADATA` until its review screenshot is uploaded.** The screenshot needs
+  the built UI; `Screenshot.swift` now renders `road.png` for exactly this.
+* **The store description says "No account".** A purchase uses the customer's Apple Account, so
+  that becomes false with v1.30 and must be corrected **in the same submission** — it is a
+  metadata edit and therefore also blocked until 1.29 clears. (The older "no network" wording is
+  already gone; v1.28 fixed it. `docs/ASC_METADATA.md` still shows the pre-v1.28 text and is
+  itself stale.)
+* **The three manual gates above.**
+* **The day-0 known-positive purchase (§K)** — an owner action, in production, refunded after,
+  excluded from the cohort.

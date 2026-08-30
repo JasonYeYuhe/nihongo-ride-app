@@ -32,14 +32,23 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-WORK="${TMPDIR:-/tmp}/nihongo-store-gates"
-
-rm -rf "$WORK"
-mkdir -p "$WORK"
+# A fresh directory per run, rather than one fixed path cleared at the top.
+#
+# The fixed path was the first version and it failed twice in a row with
+# "Directory not empty": `rm -rf` races an earlier run's `xcodebuild`, which keeps writing to
+# DerivedData/ModuleCache for a while after it is signalled. With `set -e` that aborts the whole
+# gate — and a gate that fails for a reason having nothing to do with the code under test is a
+# gate people learn to rerun until it is green, which is worse than not having one.
+WORK="$(mktemp -d "${TMPDIR:-/tmp}/nihongo-store-gates.XXXXXX")"
+trap 'rm -rf "$WORK" 2>/dev/null || true' EXIT
 rsync -a \
   --exclude '.git' \
   --exclude '.build' \
+  --exclude '/build' \
   --exclude '.claude' \
+  --exclude '.swiftpm' \
+  --exclude '/.venv-jp' \
+  --exclude '/.dictation-wav' \
   --exclude '/*.xcodeproj' \
   --exclude '/NihongoRide-*' \
   "$REPO/" "$WORK/"
