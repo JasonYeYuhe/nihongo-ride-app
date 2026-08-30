@@ -84,6 +84,15 @@ public enum UnlockOfferEvent: String, Codable, Sendable, CaseIterable {
     /// The Settings ROW entered the view hierarchy. The entrance, not the offer — and the two are
     /// a screen apart, so they are counted apart. An upper bound on viewings, never a count.
     case settingsRowAppeared
+    /// The menu's route strip entered the hierarchy **in its arrived state** — the second
+    /// entrance, added in v1.30 and live only for a rider at or past Kyōto.
+    ///
+    /// Counted apart from `settingsRowAppeared` for the same reason that one is counted apart from
+    /// `offerAppeared`: there are now two ways to reach the road screen, they qualify completely
+    /// different populations, and a single entrance count that pooled them could not tell which
+    /// one a purchase came through. That is the count-versus-run shape this ledger exists to
+    /// refuse. Like the Settings row, an upper bound on viewings and never a count.
+    case menuRouteEntranceAppeared
     /// The OFFER ITSELF rendered, with a price, on the road screen. This is the event that means
     /// somebody was actually in a position to buy: the first version of this counter recorded only
     /// the Settings row and then read it as if it meant this, which is two different predicates
@@ -182,6 +191,23 @@ public struct UnlockOfferLedger: Codable, Sendable, Equatable {
         return event
     }
 
+    /// The menu's route strip appeared in its arrived state — the v1.30 second entrance.
+    ///
+    /// Takes `lifetimeMetres` like every other entry point rather than assuming the bucket must be
+    /// `.kyoto`. It always will be today, because the caller only renders this variant past
+    /// Kyōto — but a ledger that hard-coded the bucket would be recording the CALLER's belief
+    /// about where the rider is instead of measuring it, and if the two ever diverged the ledger
+    /// would agree with the bug.
+    @discardableResult
+    public mutating func menuEntranceAppeared(lifetimeMetres: Double,
+                                              suppressed: Bool) -> UnlockOfferEvent {
+        let bucket = RoadBucket.forLifetimeMetres(lifetimeMetres)
+        furthestBucket = max(furthestBucket, bucket)
+        let event: UnlockOfferEvent = suppressed ? .suppressed : .menuRouteEntranceAppeared
+        record(event, at: bucket)
+        return event
+    }
+
     /// The road screen rendered, and this is what it was actually able to show.
     ///
     /// Recorded HERE rather than at the Settings row, because the row is the entrance and the
@@ -252,9 +278,23 @@ public struct UnlockOfferLedger: Codable, Sendable, Equatable {
     /// Every event is printed **including the zeros**, because the zeros are the finding: a
     /// summary that omitted empty rows would make "the row never appeared" and "this build does
     /// not record that" look identical, which is the whole failure this ledger exists to prevent.
+    /// The one thing this ledger knows that nothing else does is **which stretch of road the
+    /// device was on when each event fired** — and the first version of this summary threw exactly
+    /// that away, because every row came from `count(of:)`, which sums all eight buckets. What
+    /// came back was a number that could not distinguish "the offer rendered for somebody 20 km
+    /// short of it being any use" from "the offer rendered for somebody who had arrived".
+    ///
+    /// Those are the two cases §K's decision rule turns on, so the kyoto column is printed as its
+    /// own line. Only that column: a longer blob is less likely to be pasted whole, and kyoto is
+    /// the only bucket the pre-registration asks a question about.
     public var shareableSummary: String {
         let furthest = "furthest \(furthestBucket)"
         let rows = UnlockOfferEvent.allCases.map { "\($0.rawValue) \(count(of: $0))" }
-        return "launches \(launches) · \(furthest) — " + rows.joined(separator: " · ")
+        let atKyoto = UnlockOfferEvent.allCases
+            .map { (event: $0, n: count(of: $0, in: .kyoto)) }
+            .filter { $0.n > 0 }
+            .map { "\($0.event.rawValue) \($0.n)" }
+        let kyotoLine = atKyoto.isEmpty ? "at kyoto: none" : "at kyoto: " + atKyoto.joined(separator: " · ")
+        return "launches \(launches) · \(furthest) — " + rows.joined(separator: " · ") + "\n" + kyotoLine
     }
 }

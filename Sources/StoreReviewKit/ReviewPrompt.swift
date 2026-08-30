@@ -76,12 +76,33 @@ public struct RideMoment: Sendable, Equatable {
     /// Lifetime rides INCLUDING this one (the journal has already been appended to).
     public var lifetimeRides: Int
     public var riddenDays: Int
+    /// True on the one ride that first opened a purchase entrance the rider did not have before —
+    /// in v1.30, the ride that crosses into Kyōto and makes the menu's route strip an entrance.
+    ///
+    /// **Why a review prompt has to know this at all.** The placement discipline says the offer
+    /// stays far from the rating prompt, and until v1.30 that was purely a question of *screens*:
+    /// the prompt fires on the results screen, the offer lived in Settings, and they never met.
+    /// The second entrance breaks that, in TIME rather than in space. A rider who crosses 25 km
+    /// has just finished a long ride at good accuracy after many logged days — which is precisely
+    /// the profile every other clause of `decide` selects for — so on that one ride the app would
+    /// ask for a rating and then, one tap later, show a new gold element that opens a purchase
+    /// screen. Two asks in one session, on the population most likely to buy.
+    ///
+    /// Nothing would ever measure that. It would not appear in retention and it would not appear
+    /// in the counter; it would appear once, in a one-star review, which is the outcome §K names
+    /// as its only stop-and-fix guardrail.
+    ///
+    /// So the prompt yields for exactly one ride. The cooldown and the annual cap already handle
+    /// everything after it, and a rider this app wants to hear from will finish another ride.
+    public var openedANewOffer: Bool
 
-    public init(wasLogged: Bool, accuracy: Double, lifetimeRides: Int, riddenDays: Int) {
+    public init(wasLogged: Bool, accuracy: Double, lifetimeRides: Int, riddenDays: Int,
+                openedANewOffer: Bool = false) {
         self.wasLogged = wasLogged
         self.accuracy = accuracy
         self.lifetimeRides = lifetimeRides
         self.riddenDays = riddenDays
+        self.openedANewOffer = openedANewOffer
     }
 }
 
@@ -94,6 +115,9 @@ public enum ReviewPromptDecision: String, Codable, Sendable, CaseIterable {
     case rideTooRough
     case withinCooldown
     case annualLimitReached
+    /// This ride opened a purchase entrance the rider did not have before, so the prompt yielded
+    /// to it. See `RideMoment.openedANewOffer`.
+    case rideOpenedANewOffer
     /// A UI test, a screenshot capture, or any other run that must not touch the real store.
     case suppressed
 }
@@ -139,6 +163,10 @@ public struct ReviewPromptLedger: Codable, Sendable, Equatable {
         guard moment.lifetimeRides >= policy.minimumLoggedRides else { return .tooFewRides }
         guard moment.riddenDays >= policy.minimumRiddenDays else { return .tooFewRiddenDays }
         guard moment.accuracy >= policy.minimumAccuracy else { return .rideTooRough }
+        // Checked BEFORE the cooldown and the annual cap, so that yielding to the offer does not
+        // spend one of the three requests Apple allows per year. A rider who crosses into Kyōto
+        // keeps their unspent prompt for the next ride.
+        guard !moment.openedANewOffer else { return .rideOpenedANewOffer }
         let yearAgo = now.addingTimeInterval(-365 * 24 * 60 * 60)
         guard requests(since: yearAgo) < policy.maximumRequestsPerYear else { return .annualLimitReached }
         if let last = requestDates.max() {

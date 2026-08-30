@@ -71,10 +71,22 @@ struct MenuView: View {
             // becomes that sentence — which is also exactly what VoiceOver already read.
             // (v1.14 §C, found on a device; the headless gate renders only the default size.)
             if typeSize.isAccessibilitySize {
-                Text(routeLabel)
+                // The strip collapses at these sizes and becomes its sentence — and after Kyōto
+                // that sentence is also the second entrance, so it has to stay reachable. An
+                // entrance that exists at default text size and vanishes at accessibility sizes
+                // is the same defect as one that exists for sighted riders only.
+                let sentence = Text(routeLabel)
                     .font(.callout).foregroundStyle(Theme.dim)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 520)
+                if arrived {
+                    Button(action: model.showRoad) { sentence }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("menuRouteEntrance")
+                        .onAppear { model.recordMenuRouteEntranceAppeared() }
+                } else {
+                    sentence
+                }
             } else {
                 routePreview
                     .frame(maxWidth: 520)
@@ -545,14 +557,76 @@ struct MenuView: View {
 
     private var streak: Int { model.journal.streakDays() }
 
+    /// Whether to draw the strip in its arrived state. See `routePreview`.
+    private var arrived: Bool { model.hasArrivedAtKyoto }
+
     /// One sentence for the route strip — the VoiceOver label, and the strip itself at
     /// accessibility text sizes.
     private var routeLabel: String {
-        model.languageCode == "zh" ? "路线:东京 · 富士 · 名古屋 · 京都"
-                                   : "Route: Tokyo, Fuji, Nagoya, Kyoto"
+        let zh = model.languageCode == "zh"
+        let base = zh ? "路线:东京 · 富士 · 名古屋 · 京都"
+                      : "Route: Tokyo, Fuji, Nagoya, Kyoto"
+        guard arrived else { return base }
+        return base + (zh ? " —— 东海道已走完,已抵达京都。查看路线。"
+                          : " — Tōkaidō complete, Kyōto reached. View routes.")
     }
 
+    /// The four-stop strip, and after Kyōto the one place outside Settings that reaches the road
+    /// screen.
+    ///
+    /// ## Why this element changed in v1.30, and what the change is careful not to be
+    ///
+    /// The strip has always drawn the free road as a little map. It was **static**: it showed
+    /// Kyōto as the last stop whether the rider was at 0 m or at 25 km, so the app drew somebody a
+    /// map and never marked where they were on it. A rider finished the Tōkaidō — 48 rides at the
+    /// default level — and nothing anywhere said so. That was a hole in the product, not in the
+    /// funnel, and marking arrival would be worth doing if nothing were for sale.
+    ///
+    /// It is also, unavoidably, a second entrance to the screen that carries the purchase, and
+    /// **the honest thing is to call it that rather than redefine the word.** The placement
+    /// discipline this project adopted (one row in Settings; no modal, no badge, no post-ride
+    /// solicitation, no recurring reminder, far from v1.27's rating prompt) is kept in every
+    /// clause except that there are now two entrances instead of one — and §I/§K are amended to
+    /// say so, timestamped, **before** the observation window opens. Shipping this on day 45
+    /// instead would have voided the pre-registration.
+    ///
+    /// Three deliberate limits:
+    ///
+    ///  * **Nothing changes before Kyōto.** A rider short of arrival sees byte-for-byte what
+    ///    v1.29 showed, and the strip is not tappable. The entrance exists only for the population
+    ///    the thing being sold is any use to.
+    ///  * **The wording reports a state, never the product.** "Tōkaidō complete · Kyōto reached"
+    ///    and "view routes" — not "the road continues west", which was the first draft and which
+    ///    is solicitation wearing a state's clothes. The destination is the route screen; that the
+    ///    road west has a price on it is a property of that screen.
+    ///  * **No price, no badge, no count, no modal.** The strip does not know the SKU exists.
     private var routePreview: some View {
+        let strip = routeStrip
+        return Group {
+            if arrived {
+                Button(action: model.showRoad) {
+                    VStack(spacing: 8) {
+                        strip
+                        HStack(spacing: 6) {
+                            Image(systemName: "checkmark.seal.fill")
+                                .font(.caption).foregroundStyle(Theme.gold)
+                            Text(model.languageCode == "zh" ? "东海道 走完 · 京都到达" : "Tōkaidō complete · Kyōto reached")
+                                .font(.caption).foregroundStyle(Theme.dim)
+                            Image(systemName: "chevron.right")
+                                .font(.caption2).foregroundStyle(Theme.dim.opacity(0.7))
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("menuRouteEntrance")
+                .onAppear { model.recordMenuRouteEntranceAppeared() }
+            } else {
+                strip
+            }
+        }
+    }
+
+    private var routeStrip: some View {
         let stops: [(String, String)] = [("🗼", "Tokyo"), ("🗻", "Fuji"), ("🏯", "Nagoya"), ("⛩️", "Kyoto")]
         return HStack(spacing: 0) {
             ForEach(Array(stops.enumerated()), id: \.offset) { index, stop in
@@ -562,7 +636,7 @@ struct MenuView: View {
                 }
                 if index < stops.count - 1 {
                     Rectangle()
-                        .fill(Theme.cardStroke)
+                        .fill(arrived ? Theme.gold.opacity(0.55) : Theme.cardStroke)
                         .frame(height: 2)
                         .frame(maxWidth: .infinity)
                         .overlay(alignment: .center) {

@@ -55,11 +55,12 @@ struct ReviewPromptWiringTests {
         return model
     }
 
-    static func record(daysAgo: Int, accuracy: Double = 1.0) -> RideRecord {
+    static func record(daysAgo: Int, accuracy: Double = 1.0,
+                       distanceMeters: Double = 500) -> RideRecord {
         RideRecord(date: Date().addingTimeInterval(Double(-daysAgo) * 24 * 60 * 60),
                    mode: "journey", level: "n5", score: 100, wpm: 30,
                    accuracy: accuracy, wordsCompleted: 3, lapsed: 0,
-                   distanceMeters: 500, duration: 60)
+                   distanceMeters: distanceMeters, duration: 60)
     }
 
     // MARK: - The moment
@@ -244,5 +245,63 @@ struct ReviewPromptWiringTests {
                                                 supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
         #expect(shipping.touchesNothingOfTheUsers == false,
                 "a shipping launch must be able to ask, or this feature does nothing")
+    }
+
+    // MARK: - The offer collision (v1.30)
+
+    /// Three seeded rides across three days, totalling `total` metres — enough to clear
+    /// `minimumLoggedRides` (3) and `minimumRiddenDays` (2), so that a moment built on top of this
+    /// is earned on every clause EXCEPT the one under test. The first draft seeded one ride, and
+    /// `asked == 0` passed because `decide` returned `.tooFewRides` before it ever reached the
+    /// offer guard — the assertion holding for a reason that had nothing to do with the feature.
+    static func seededAtDistance(_ total: Double) -> AppModel {
+        let each = total / 3
+        return seededJournal([record(daysAgo: 3, distanceMeters: each),
+                              record(daysAgo: 2, distanceMeters: each),
+                              record(daysAgo: 1, distanceMeters: each)])
+    }
+
+    /// **The wiring the policy test cannot reach.** `ReviewPromptOfferCollisionTests` proves
+    /// `decide` yields when `openedANewOffer` is true; it cannot prove anything ever sets it.
+    /// Mutating `finishGame` to pass a hard-coded `false` left that whole suite green — the guard
+    /// present and nothing reaching it, which is this project's v1.26 lesson exactly.
+    @Test("the ride that crosses into Kyōto is the one that yields, and only that ride")
+    func crossingIntoKyotoOpensAnOfferAndYieldsThePrompt() throws {
+        // Just short of the 25 km arrival. The test vocab is three short words
+        // (みず・ひ・やま = 5 kana = 50 m), so the seed must sit within one ride of the threshold —
+        // hence 24,990 and not a round number. The assertions either side of the ride keep that
+        // honest: if the arithmetic drifts, this fails as "did not cross" rather than passing.
+        let crossing = Self.seededAtDistance(24_990)
+        #expect(crossing.hasArrivedAtKyoto == false, "the seed should start short of Kyōto")
+        Self.rideCleanly(crossing)
+        #expect(crossing.hasArrivedAtKyoto, "the ride should have crossed into Kyōto")
+        #expect(try #require(crossing.pendingReviewMoment).openedANewOffer,
+                "the ride that opened the menu entrance did not yield the rating prompt")
+
+        var askedOnCrossing = 0
+        crossing.considerReviewPrompt { askedOnCrossing += 1 }
+        #expect(askedOnCrossing == 0, "the rating prompt fired on the same ride that opened the offer")
+        #expect(crossing.reviewPromptLedger.count(of: .rideOpenedANewOffer) == 1,
+                "the prompt was withheld, but not for this reason — check which clause fired")
+
+        // **The pair that makes the above mean something.** Same seed shape, same ride, same
+        // policy — the ONLY difference is that this rider was already past Kyōto, so nothing new
+        // opened. If this one is not asked, the test above proved nothing about the offer.
+        let past = Self.seededAtDistance(30_000)
+        #expect(past.hasArrivedAtKyoto)
+        Self.rideCleanly(past)
+        #expect(try #require(past.pendingReviewMoment).openedANewOffer == false,
+                "a rider already past Kyōto opened no new entrance, but the ride claimed it did")
+        var askedOnPast = 0
+        past.considerReviewPrompt { askedOnPast += 1 }
+        #expect(askedOnPast == 1,
+                "the control was not asked either — the crossing test is not isolating the offer")
+
+        // And a rider far short of it: without this, a `finishGame` that set the flag on every
+        // ride would still pass everything above.
+        let short = Self.seededAtDistance(3_000)
+        Self.rideCleanly(short)
+        #expect(try #require(short.pendingReviewMoment).openedANewOffer == false)
+        #expect(short.hasArrivedAtKyoto == false)
     }
 }

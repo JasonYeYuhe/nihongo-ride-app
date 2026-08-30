@@ -62,6 +62,7 @@ struct AboutView: View {
                         : "Chinese and English glosses, example sentences and passages are LLM-drafted (Gemini 3.1 Pro) and audited; readings & levels follow Bluskyo's authoritative data with errors removed. A native-speaker review pass is still the required final step before release."
                 )
                 stats
+                contact
                 diagnostics
                 Spacer(minLength: 18)
                 footerNote
@@ -198,14 +199,54 @@ struct AboutView: View {
     /// volunteering anything is one message per 109 installs, so this cannot estimate a rate. It
     /// can let a single person refute a universal, and it can prove to the OWNER that the counter
     /// fires at all — which is the reader it will actually have.
+    /// Somewhere to write. **The block below this one has been telling people to write in since
+    /// v1.30's first build, and the app contained no address, no `mailto:`, and no tappable link
+    /// anywhere** — so the sentence "if you write in, pasting the two lines below helps" named an
+    /// action the product did not offer.
+    ///
+    /// That is not only a courtesy problem. §K's day-90 decision has a branch that turns a zero
+    /// into evidence, and it requires at least one voluntarily returned counter; without a return
+    /// path that branch cannot fire, so the pre-registered outcome was fixed at "record the zero
+    /// as UNINTERPRETABLE" by construction rather than by evidence. This is the only lever on that
+    /// probability that changes neither price nor offer.
+    ///
+    /// Plain selectable text, matching `diagnostics` below: no mail composer, no "contact us"
+    /// prompt, nothing sent by the app, and nothing asked for. The address is the one already
+    /// published on the support page that the App Store product page links to, so this discloses
+    /// nothing new — it just stops making the reader go and find it.
+    ///
+    /// Its honest limit is the same as the counter's: the measured base rate for a customer of
+    /// this app volunteering anything is one message per 109 installs. This cannot produce a rate.
+    /// It can let one person refute a universal.
+    private var contact: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text((zh ? "联系" : "Contact").uppercased())
+                .scaledSystemFont(10, weight: .black).tracking(2)
+                .foregroundStyle(Theme.dim)
+            Text(zh ? "有问题、看法,或者想要某条路线 —— 写信来。"
+                    : "Questions, thoughts, or a route you want — write in.")
+                .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.8))
+                .fixedSize(horizontal: false, vertical: true)
+            Text(verbatim: "yyyyy.yeyuhe@gmail.com")
+                .scaledSystemFont(11, design: .monospaced)
+                .foregroundStyle(Theme.dim.opacity(0.85))
+                .textSelection(.enabled)
+        }
+        .padding(.top, 6)
+        .accessibilityIdentifier("contactAddress")
+    }
+
     private var diagnostics: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text((zh ? "本机计数" : "On-device counters").uppercased())
                 .scaledSystemFont(10, weight: .black).tracking(2)
                 .foregroundStyle(Theme.dim)
+            // "The two lines below" was true until `shareableSummary` gained its own second line
+            // for the kyoto column. Counts the blocks rather than the lines, so the sentence stays
+            // true the next time either summary grows.
             Text(zh
-                 ? "只存在这台设备上,从不上传。如果你写信来,把下面两行一起贴上会很有帮助。"
-                 : "Local to this device and never transmitted. If you write in, pasting the two lines below helps.")
+                 ? "只存在这台设备上,从不上传。如果你写信来,把下面的计数一起贴上会很有帮助。"
+                 : "Local to this device and never transmitted. If you write in, pasting the counters below helps.")
                 .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.8))
                 .fixedSize(horizontal: false, vertical: true)
             Text(model.unlockOfferLedger.shareableSummary)

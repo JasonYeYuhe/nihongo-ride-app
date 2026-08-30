@@ -245,3 +245,80 @@ struct ReviewPromptNamingTests {
         #expect(offenders.isEmpty, "these names claim to observe what requestReview never reports: \(offenders)")
     }
 }
+
+/// **The rating prompt yields to a newly-opened purchase entrance, for exactly one ride.**
+///
+/// v1.30 gave the offer a second entrance on the menu, live once a rider passes Kyōto. The
+/// placement discipline keeps the offer away from the rating prompt, and until now that was a
+/// statement about SCREENS — the prompt fires on results, the offer lived in Settings. The new
+/// entrance breaks it in TIME instead: the crossing ride is a long, accurate ride after many
+/// logged days, which is the exact profile every other clause of `decide` selects for, so both
+/// would fire in one session on the population most likely to buy.
+@Suite("A ride that opens an offer does not also ask for a rating")
+struct ReviewPromptOfferCollisionTests {
+
+    /// Everything the policy wants: enough rides, enough days, clean accuracy, no history.
+    private func earnedMoment(openedANewOffer: Bool) -> RideMoment {
+        RideMoment(wasLogged: true, accuracy: 0.99, lifetimeRides: 50, riddenDays: 20,
+                   openedANewOffer: openedANewOffer)
+    }
+
+    @Test("the same moment is asked without the offer and yielded with it")
+    func theOnlyDifferenceIsTheOffer() {
+        let ledger = ReviewPromptLedger()
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let policy = ReviewPromptPolicy()
+
+        // Paired, so the assertion cannot pass because the moment failed some OTHER clause — the
+        // shape where a guard "works" because nothing ever reached it.
+        #expect(ledger.decide(moment: earnedMoment(openedANewOffer: false),
+                              policy: policy, now: now, suppressed: false) == .asked)
+        #expect(ledger.decide(moment: earnedMoment(openedANewOffer: true),
+                              policy: policy, now: now, suppressed: false) == .rideOpenedANewOffer)
+    }
+
+    @Test("yielding does not spend one of the three requests Apple allows per year")
+    func yieldingIsNotARequest() {
+        var ledger = ReviewPromptLedger()
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        var asked = 0
+        ledger.requestIfEarned(moment: earnedMoment(openedANewOffer: true), now: now,
+                               suppressed: false) { asked += 1 }
+
+        #expect(asked == 0, "the prompt was shown on the ride that opened the offer")
+        #expect(ledger.requestsMade == 0, "yielding consumed one of the year's three requests")
+        #expect(ledger.count(of: .rideOpenedANewOffer) == 1, "the yield was not counted")
+
+        // And the very next ride still can ask — the yield is for one ride, not a suppression.
+        ledger.requestIfEarned(moment: earnedMoment(openedANewOffer: false), now: now,
+                               suppressed: false) { asked += 1 }
+        #expect(asked == 1, "the rider's prompt was not merely deferred, it was lost")
+    }
+
+    @Test("the offer check runs before the cooldown, so the order cannot silently reverse")
+    func theOfferCheckPrecedesTheCooldown() {
+        // If `openedANewOffer` were tested after the cooldown, a rider inside a cooldown would be
+        // counted `withinCooldown` and the yield would never appear in the ledger — the outcome
+        // would be right and the record wrong, which is how a counter stops meaning anything.
+        var ledger = ReviewPromptLedger()
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        ledger.requestIfEarned(moment: earnedMoment(openedANewOffer: false), now: now,
+                               suppressed: false) { }
+        #expect(ledger.requestsMade == 1)
+
+        let soon = now.addingTimeInterval(60 * 60)      // deep inside any cooldown
+        #expect(ledger.decide(moment: earnedMoment(openedANewOffer: false),
+                              policy: ReviewPromptPolicy(), now: soon, suppressed: false) == .withinCooldown)
+        #expect(ledger.decide(moment: earnedMoment(openedANewOffer: true),
+                              policy: ReviewPromptPolicy(), now: soon, suppressed: false) == .rideOpenedANewOffer)
+    }
+
+    @Test("suppression still wins, so a UI test or a capture is never an offer yield")
+    func suppressionOutranksIt() {
+        let ledger = ReviewPromptLedger()
+        #expect(ledger.decide(moment: earnedMoment(openedANewOffer: true),
+                              policy: ReviewPromptPolicy(),
+                              now: Date(timeIntervalSince1970: 1_700_000_000),
+                              suppressed: true) == .suppressed)
+    }
+}

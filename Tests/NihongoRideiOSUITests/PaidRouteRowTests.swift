@@ -2,10 +2,29 @@ import XCTest
 
 /// **Where the offer is, and — the harder half — where it is not.**
 ///
-/// The placement is the one part of Stage 1 that no unit test can reach: "one row, in Settings, and
-/// nowhere else" is a statement about the running app's screens. It is also the constraint most
+/// The placement is the one part of Stage 1 that no unit test can reach: where the offer is
+/// reachable from is a statement about the running app's screens. It is also the constraint most
 /// likely to be quietly violated by a later edit, because adding a second entry point always looks
 /// like an improvement to whoever is adding it.
+///
+/// ## v1.30 has TWO entrances, deliberately, and this file is where that is written down
+///
+/// The rule was "one row, in Settings, and nowhere else". It is now:
+///
+///  * the Settings row (`roadRow`), always; and
+///  * the menu's route strip (`menuRouteEntrance`), **only at or past Kyōto**.
+///
+/// The second one was added because the first cannot produce an interpretable zero: the offer is
+/// only useful past 48 rides, its counter is never transmitted, and §K's branch that turns a zero
+/// into evidence needs a voluntarily returned ledger that probably never arrives. It shipped
+/// **before** the observation window opened, and §I/§K were amended and timestamped to say so —
+/// doing it mid-window would have voided the pre-registration instead.
+///
+/// **A second entrance is exactly what the doc comment above warns about**, so the guard is not
+/// weakened to accommodate it — it is made specific. What still must never happen: an entrance
+/// before arrival, an entrance on a post-ride screen, or a price or buy control anywhere but the
+/// road screen. Those are the tests below, and they are the reason a THIRD entrance cannot arrive
+/// quietly.
 ///
 /// ## Why these tests fake the entitlement instead of buying anything
 ///
@@ -48,10 +67,13 @@ final class PaidRouteRowTests: XCTestCase {
         let app = XCUIApplication()
         app.launchIsolated(["NIHONGO_FAKE_ENTITLEMENT": "neverEstablished"])
 
-        // Not on the menu. The menu is where a rider starts a ride, and an offer there would be
-        // the "no modal, no badge" discipline broken by the nearest available surface.
+        // The road ROW is never on the menu — the menu's entrance is a different element with a
+        // different rule (see `testTheMenuEntranceIsAbsentBeforeKyoto`), and this launch is at
+        // zero distance so neither should be present.
         XCTAssertEqual(app.descendants(matching: .any).matching(identifier: "roadRow").count, 0,
                        "the offer row appears on the menu")
+        XCTAssertEqual(app.descendants(matching: .any).matching(identifier: "menuRouteEntrance").count, 0,
+                       "the menu entrance is present at zero distance")
 
         openSettings(app)
         let row = app.buttons["roadRow"]
@@ -83,6 +105,49 @@ final class PaidRouteRowTests: XCTestCase {
                       "Back should land on Settings")
     }
 
+    // MARK: The second entrance (v1.30), and the arrival gate on it
+
+    /// The guarantee that keeps the free experience and the App Store screenshot identical to
+    /// v1.29 for everybody who has not finished the road — which is nearly everybody.
+    @MainActor
+    func testTheMenuEntranceIsAbsentBeforeKyoto() {
+        let app = XCUIApplication()
+        app.launchIsolated(["NIHONGO_FAKE_ENTITLEMENT": "neverEstablished",
+                            "NIHONGO_FAKE_LIFETIME_METRES": "24999"])
+
+        XCTAssertTrue(app.buttons["startButton"].waitForExistence(timeout: 10),
+                      "the menu should have loaded")
+        // One metre short. The boundary is the interesting case: an off-by-one here would open the
+        // entrance for riders the thing being sold is no use to, which is the population the whole
+        // arrival gate exists to exclude.
+        XCTAssertEqual(app.descendants(matching: .any).matching(identifier: "menuRouteEntrance").count, 0,
+                       "the menu entrance appeared one metre short of Kyōto")
+    }
+
+    @MainActor
+    func testTheMenuEntranceAppearsAtKyotoAndOpensTheRoadScreen() {
+        let app = XCUIApplication()
+        app.launchIsolated(["NIHONGO_FAKE_ENTITLEMENT": "neverEstablished",
+                            "NIHONGO_FAKE_LIFETIME_METRES": "25000"])
+
+        let entrance = app.buttons["menuRouteEntrance"]
+        XCTAssertTrue(entrance.waitForExistence(timeout: 10),
+                      "a rider at Kyōto should see the arrived route strip")
+        XCTAssertEqual(app.descendants(matching: .any).matching(identifier: "menuRouteEntrance").count, 1,
+                       "there is more than one menu entrance")
+
+        // It carries no price and no buy control — it reports a state and navigates. A buy button
+        // here would be the solicitation the placement rule forbids, wearing a state's clothes.
+        XCTAssertEqual(app.descendants(matching: .any).matching(identifier: "buyRoadWest").count, 0,
+                       "the menu entrance carries a purchase control")
+
+        tapWhenSettled(entrance)
+        XCTAssertTrue(app.buttons["roadBackButton"].waitForExistence(timeout: 5),
+                      "the menu entrance should open the road screen")
+        XCTAssertTrue(app.buttons["restorePurchases"].exists,
+                      "the road screen must always offer Restore Purchases")
+    }
+
     // MARK: What must NOT happen anywhere else
 
     @MainActor
@@ -92,10 +157,17 @@ final class PaidRouteRowTests: XCTestCase {
         // after a completed ride; two asks landing on the same moment spends the goodwill of one
         // on the other, which is why the plan puts the offer deliberately far from it.
         let app = XCUIApplication()
-        app.launchIsolated(["NIHONGO_FAKE_ENTITLEMENT": "neverEstablished"])
+        // Launched PAST Kyōto on purpose. At zero distance the menu entrance does not exist, so a
+        // results screen with no purchase affordance would prove nothing about the new entrance —
+        // the assertion would pass because there was nothing to leak. This is the population that
+        // has one.
+        app.launchIsolated(["NIHONGO_FAKE_ENTITLEMENT": "neverEstablished",
+                            "NIHONGO_FAKE_LIFETIME_METRES": "30000"])
 
         let start = app.buttons["startButton"]
         XCTAssertTrue(start.waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["menuRouteEntrance"].exists,
+                      "the entrance should exist on the menu, or this test proves nothing")
         tapWhenSettled(start)
 
         // Finish the run the short way: pause and end it. What matters is reaching the results
@@ -105,7 +177,7 @@ final class PaidRouteRowTests: XCTestCase {
         let end = app.buttons["endRunButton"]
         if end.waitForExistence(timeout: 5) { tapWhenSettled(end) }
 
-        for identifier in ["roadRow", "buyRoadWest", "restorePurchases"] {
+        for identifier in ["roadRow", "buyRoadWest", "restorePurchases", "menuRouteEntrance"] {
             XCTAssertEqual(app.descendants(matching: .any).matching(identifier: identifier).count, 0,
                            "\(identifier) reached a post-ride screen — the placement rule is broken")
         }

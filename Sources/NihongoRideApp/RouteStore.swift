@@ -45,10 +45,20 @@ final class RouteStore {
     ///
     /// Named `scenery` rather than the house `<bundle>.pro.lifetime` because §C of the product
     /// plan requires the capability set to be named before the SKU exists, and `pro` names
-    /// nothing. What this buys is **scenery and routes — every route and every backdrop, now and
-    /// in future — and nothing else.** Anything needing a server, custom material import, or a
-    /// content pack is outside it and sells separately. That boundary is in the identifier
-    /// itself, so a future Pro tier cannot inherit a promise this SKU never made.
+    /// nothing. Anything needing a server, custom material import, or a content pack is outside
+    /// it and sells separately — that boundary is in the identifier itself, so a future Pro tier
+    /// cannot inherit a promise this SKU never made.
+    ///
+    /// **What it buys is narrower than this identifier suggests, and deliberately so.** The first
+    /// draft sold "every route and every backdrop, now and in future". That was cut back before
+    /// submission, while the SKU still had zero customers — the only moment a promise can be
+    /// narrowed at all. It now buys **the complete road west, Kyōto to Nagasaki, and that route's
+    /// scenery**; "permanent" describes how long it is owned, not an unbounded future catalogue.
+    /// `RoadView.boundary` carries the reasoning and is the copy a buyer actually reads.
+    ///
+    /// The identifier keeps the word `scenery` because Apple never lets a product id be edited.
+    /// It is developer-facing and the divergence is recorded here rather than left to be
+    /// rediscovered: **read `RoadView.boundary`, not this string, for what was sold.**
     nonisolated static let productID = "com.jasonye.nihongoride.scenery.lifetime"
 
     /// What the app is allowed to show. The one predicate; see `EntitlementRecord.isEntitled`.

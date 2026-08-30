@@ -292,3 +292,77 @@ struct RouteSelectorTests {
                 "everyStage hands out the paid road with no entitlement, and is used outside the contact sheet: \(bypassList)")
     }
 }
+
+/// **What the buyer was promised, pinned so that re-widening it cannot be silent.**
+///
+/// v1.30's first draft sold "scenery and routes — all of them, now and in future". That was cut
+/// back to the finished thing — the complete road west, Kyōto to Nagasaki, and that route's
+/// scenery — while the SKU still had **zero customers**, which is the only window in which a
+/// promise can be narrowed at all. Widening one afterwards is always possible; narrowing one never
+/// is.
+///
+/// So the risk this guards is asymmetric and one-directional: nobody will accidentally narrow the
+/// promise, and somebody could very easily widen it back by editing a sentence that reads like
+/// marketing copy. This is a scan and not a golden, because the sentence should stay editable —
+/// what must not happen silently is the return of an unbounded future-catalogue claim.
+@Suite("The purchase promises the finished thing, not a future catalogue")
+struct PurchasePromiseTests {
+
+    @Test("no shipping copy sells routes or scenery that do not exist yet")
+    func theForwardPromiseIsGone() throws {
+        let road = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Sources/NihongoRideApp/RoadView.swift")
+        let source = try String(contentsOf: road, encoding: .utf8)
+
+        // Strings only. The doc comments above `boundary` and `owned` deliberately quote the old
+        // wording in order to explain why it came out, and a scanner that could not tell a comment
+        // from the copy would have to be lied to — which is how a guard becomes decoration.
+        let copy = source.split(separator: "\n")
+            .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("//") }
+            .joined(separator: "\n")
+        #expect(copy.contains("road west"), "the scan did not find the purchase copy at all")
+
+        // Each of these was in the draft that was cut, in one language or the other.
+        let futureCatalogue = ["now and in future", "now and in the future", "added later",
+                               "以后的全部", "现在的和以后", "以后新增", "日后所有", "今後の道"]
+        for phrase in futureCatalogue {
+            #expect(!copy.contains(phrase),
+                    """
+                    purchase copy contains "\(phrase)", which promises routes or scenery that are \
+                    not built. The one-time price may only buy finished goods, and this SKU has \
+                    customers now — so the promise can be widened deliberately, but it must not \
+                    come back by accident. If this was intended, delete the phrase from this test \
+                    in the same commit and say why.
+                    """)
+        }
+
+        // Negative control: the scan must catch one when it is really there.
+        #expect(futureCatalogue.contains { "and every route added later".contains($0) },
+                "the promise scan cannot detect its own forbidden phrases")
+    }
+
+    @Test("restore does not promise what StoreKit will not do")
+    func restoreDoesNotPromiseACrossAccountRecovery() throws {
+        // A non-consumable belongs to the Apple Account that bought it; Restore on a different
+        // account recovers nothing. The shipped draft said "or a different Apple Account — bring
+        // it back here. You will not be charged again", which is a refund and a one-star review
+        // waiting to be written.
+        let road = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Sources/NihongoRideApp/RoadView.swift")
+        let source = try String(contentsOf: road, encoding: .utf8)
+        let copy = source.split(separator: "\n")
+            .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("//") }
+            .joined(separator: "\n")
+
+        #expect(copy.contains("Restore Purchases"), "the scan did not find the restore card")
+        for phrase in ["different Apple Account", "换了 Apple 账号", "另一个 Apple 账号"] {
+            #expect(!copy.contains(phrase),
+                    "restore copy claims a different Apple Account can recover this purchase; it cannot")
+        }
+        // And it must still say which account IS required, or the correction is only half made.
+        #expect(copy.contains("Apple Account that bought it") && copy.contains("当初购买的那个 Apple 账号"),
+                "restore no longer makes the false claim, but no longer names the right account either")
+    }
+}

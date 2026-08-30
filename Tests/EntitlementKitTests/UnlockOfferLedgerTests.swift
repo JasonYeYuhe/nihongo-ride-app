@@ -189,6 +189,7 @@ struct UnlockOfferLedgerTests {
         // that a dictionary can be printed, not that the ledger records what the app does to it.
         for _ in 0 ..< 7 {
             ledger.rowAppeared(lifetimeMetres: 26_000, suppressed: false)
+            ledger.menuEntranceAppeared(lifetimeMetres: 26_000, suppressed: false)
             ledger.offerAppeared(lifetimeMetres: 26_000, entitled: false, offerLoaded: true, suppressed: false)
             ledger.offerAppeared(lifetimeMetres: 26_000, entitled: true, offerLoaded: true, suppressed: false)
             ledger.offerAppeared(lifetimeMetres: 26_000, entitled: false, offerLoaded: false, suppressed: false)
@@ -271,5 +272,61 @@ struct UnlockOfferLedgerTests {
         // Negative control: the scan must catch one when it is really there.
         #expect(fabrications.contains { "    case settingsRowSeen".lowercased().contains($0) },
                 "the naming scan cannot detect its own forbidden words")
+    }
+
+    // MARK: The second entrance (v1.30)
+
+    @Test("the menu entrance is counted apart from the Settings row")
+    func theTwoEntrancesAreNotPooled() {
+        var ledger = UnlockOfferLedger()
+        ledger.menuEntranceAppeared(lifetimeMetres: 26_000, suppressed: false)
+        ledger.rowAppeared(lifetimeMetres: 26_000, suppressed: false)
+        ledger.rowAppeared(lifetimeMetres: 26_000, suppressed: false)
+
+        // The whole reason this is its own case: two entrances now reach the road screen, they
+        // qualify different populations, and a pooled count could not say which one a purchase
+        // came through. If these ever return the same number the distinction has been lost.
+        #expect(ledger.count(of: .menuRouteEntranceAppeared) == 1)
+        #expect(ledger.count(of: .settingsRowAppeared) == 2)
+    }
+
+    @Test("the menu entrance records the bucket it measured, not the one the caller assumed")
+    func theMenuEntranceMeasuresTheBucket() {
+        // The caller only draws this variant past Kyōto, so the bucket "should" always be .kyoto.
+        // The ledger must not encode that belief: if the caller's gate and the odometer ever
+        // disagree, a hard-coded bucket would make the ledger agree with the bug instead of
+        // recording what was true.
+        var ledger = UnlockOfferLedger()
+        ledger.menuEntranceAppeared(lifetimeMetres: 3_000, suppressed: false)
+        #expect(ledger.count(of: .menuRouteEntranceAppeared, in: .fuji) == 1)
+        #expect(ledger.count(of: .menuRouteEntranceAppeared, in: .kyoto) == 0)
+    }
+
+    @Test("a suppressed menu entrance is not counted as a person")
+    func aSuppressedMenuEntranceIsNotAPerson() {
+        var ledger = UnlockOfferLedger()
+        ledger.menuEntranceAppeared(lifetimeMetres: 26_000, suppressed: true)
+        #expect(ledger.count(of: .menuRouteEntranceAppeared) == 0)
+        #expect(ledger.count(of: .suppressed) == 1)
+    }
+
+    @Test("the shareable summary keeps the kyoto column instead of summing it away")
+    func theSummaryKeepsTheKyotoColumn() {
+        // The first version built every row from `count(of:)`, which sums all eight buckets — so
+        // it could not distinguish an offer that rendered for somebody 20 km short of it being
+        // any use from one that rendered for somebody who had arrived. Those are the two cases
+        // §K's decision rule turns on.
+        var ledger = UnlockOfferLedger()
+        ledger.offerAppeared(lifetimeMetres: 1_000, entitled: false, offerLoaded: true, suppressed: false)
+        let short = ledger.shareableSummary
+        #expect(short.contains("at kyoto: none"),
+                "a device that never arrived must say so, not go silent: \(short)")
+
+        ledger.offerAppeared(lifetimeMetres: 26_000, entitled: false, offerLoaded: true, suppressed: false)
+        let arrived = ledger.shareableSummary
+        #expect(arrived.contains("at kyoto: offerAppeared 1"),
+                "the one fact this ledger uniquely knows was summed away: \(arrived)")
+        // And the flat rows still pool both, so the two lines really are different questions.
+        #expect(arrived.contains("offerAppeared 2"))
     }
 }

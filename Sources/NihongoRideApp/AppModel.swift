@@ -1190,7 +1190,25 @@ final class AppModel {
     // Lifetime totals prefer the cross-device odometer (G-Counter) but never show
     // less than the local journal's own accumulation (equal on a single device).
     var lifetimeWords: Int { max(journal.totalWords, odometer.totalWords) }
-    var lifetimeDistanceMeters: Double { max(journal.totalDistanceMeters, odometer.totalDistanceMeters) }
+    var lifetimeDistanceMeters: Double {
+        #if DEBUG
+        // The UI-test odometer seam, and the reason the arrival state has a test at all: the menu's
+        // arrived variant only exists past 25 km, and a capture or a UI test cannot ride 48 times.
+        //
+        // ⚠️ This is a more dangerous seam than `NIHONGO_FAKE_ENTITLEMENT`, because distance does
+        // not merely decide what is offered — it decides WHICH ROAD A RIDER SEES. A leak would
+        // repaint somebody's world, which is HARD CONSTRAINT 1. So it carries two guards, not one:
+        // it is inside `#if DEBUG` (and `DebugSeamTests` reads this file to prove it), and it is
+        // honoured **only under an isolation that touches nothing of the user's** — a UI test or a
+        // headless render. On a real launch the variable is read and discarded.
+        if Self.currentIsolation.touchesNothingOfTheUsers,
+           let fake = ProcessInfo.processInfo.environment["NIHONGO_FAKE_LIFETIME_METRES"],
+           let metres = Double(fake), metres.isFinite {
+            return metres
+        }
+        #endif
+        return max(journal.totalDistanceMeters, odometer.totalDistanceMeters)
+    }
 
     /// The stretch of road the CURRENT run is on, resolved when the run starts and then held.
     ///
@@ -1969,6 +1987,11 @@ final class AppModel {
         }
         lastSummary = GameSummary(from: session)
         resultsAreConjugation = false
+        // Read BEFORE `logRun` moves the odometer. Deriving it afterwards by subtracting the
+        // ride's own distance would be arithmetic on a value that `SyncMerge` can change from
+        // another device mid-run; this is the same question asked at a moment where it has one
+        // answer.
+        let hadArrivedBeforeThisRide = hasArrivedAtKyoto
         let appended = completion.logsRide ? logRun(session) : nil   // a cram doesn't log a ride / odometer
         // Built from `appended` and not from `session`, deliberately: the accuracy that gates
         // the prompt is then the same number the Ride Log shows, and "was this a real ride" is
@@ -1977,7 +2000,8 @@ final class AppModel {
         pendingReviewMoment = RideMoment(wasLogged: appended != nil,
                                          accuracy: appended?.accuracy ?? 0,
                                          lifetimeRides: lifetimeRuns,
-                                         riddenDays: journal.riddenDays().count)
+                                         riddenDays: journal.riddenDays().count,
+                                         openedANewOffer: !hadArrivedBeforeThisRide && hasArrivedAtKyoto)
         // Tell the iCloud sync controller what changed (no-op when sync off / a cram).
         syncController?.recordLocalChanges(
             srsIDs: changedSRS,
@@ -2035,6 +2059,22 @@ final class AppModel {
         let isolated = Self.currentIsolation.touchesNothingOfTheUsers
         unlockOfferLedger.rowAppeared(lifetimeMetres: lifetimeDistanceMeters, suppressed: isolated)
         if !isolated { unlockOfferLedger.save(to: Self.settingsStore) }
+    }
+
+    /// The menu's route strip appeared in its arrived state — v1.30's second entrance to the road
+    /// screen, live only for a rider at or past Kyōto.
+    func recordMenuRouteEntranceAppeared() {
+        let isolated = Self.currentIsolation.touchesNothingOfTheUsers
+        unlockOfferLedger.menuEntranceAppeared(lifetimeMetres: lifetimeDistanceMeters,
+                                               suppressed: isolated)
+        if !isolated { unlockOfferLedger.save(to: Self.settingsStore) }
+    }
+
+    /// Whether the rider has finished the free road. The menu asks this to decide whether to draw
+    /// its route strip in the arrived state; `RoadView` and the ledger's furthest-bucket both ask
+    /// the same question of the same function, so all three cannot drift apart.
+    var hasArrivedAtKyoto: Bool {
+        RideRoute.hasArrivedAtKyoto(lifetimeMetres: lifetimeDistanceMeters)
     }
 
     /// The road screen rendered, and what it was able to offer. See `rowAppeared` vs

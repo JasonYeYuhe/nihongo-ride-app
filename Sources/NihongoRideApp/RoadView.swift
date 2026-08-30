@@ -212,9 +212,11 @@ struct RoadView: View {
     /// What an owner sees where the offer used to be. **Not nothing** — see `restore` below.
     private var owned: some View {
         card(title: zh ? "已开启" : "Opened") {
+            // Says only what was sold. The earlier version promised "every route and backdrop
+            // added later" here too — see `boundary` for why that came out.
             Text(zh
-                 ? "西の道已经开启。谢谢 —— 这条路会一直在,以后新增的路线和风景也一样。"
-                 : "The road west is open. Thank you — it stays open, and so does every route and backdrop added later.")
+                 ? "西の道已经开启。谢谢 —— 这条路会一直在。"
+                 : "The road west is open. Thank you — it stays open.")
                 .scaledSystemFont(13).foregroundStyle(.white.opacity(0.82))
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -234,9 +236,15 @@ struct RoadView: View {
     /// A test that is never executed is a comment.
     private var restore: some View {
         card(title: zh ? "已经买过?" : "Already bought it?") {
+            // "Or a different Apple Account" was here, and it was FALSE: a non-consumable belongs
+            // to the Apple Account that bought it, and Restore on another account recovers nothing
+            // (Family Sharing aside, which this SKU does not enable). Purchase copy promising
+            // something StoreKit cannot do is how a refund and the one negative review §K names as
+            // its only stop-and-fix guardrail get manufactured. Says the true thing instead, and
+            // names the account requirement rather than leaving somebody to discover it.
             Text(zh
-                 ? "换了设备、重装、或者换了 Apple 账号,用这里把它找回来。不会重复扣款。"
-                 : "New device, reinstall, or a different Apple Account — bring it back here. You will not be charged again.")
+                 ? "换了设备、重装,或者在你的另一台设备上 —— 用这里把它找回来,不会重复扣款。请用当初购买的那个 Apple 账号登录。"
+                 : "New device, reinstall, or another of your devices — bring it back here and you will not be charged again. Sign in with the Apple Account that bought it.")
                 .scaledSystemFont(12).foregroundStyle(Theme.dim)
                 .fixedSize(horizontal: false, vertical: true)
             Button(zh ? "恢复购买" : "Restore Purchases") {
@@ -282,10 +290,29 @@ struct RoadView: View {
 
     /// §C required the capability set to be NAMED before the SKU existed. This is where a buyer
     /// reads it, in one sentence, before paying rather than after asking.
+    /// **What this says, and why it is narrower than the first draft's.**
+    ///
+    /// v1.30's first draft sold "scenery and routes — all of them, now and in future", with one
+    /// exclusion named to the buyer. Two problems, both found while the SKU still had **zero
+    /// customers**, which is the only window in which either could be fixed: widening a promise is
+    /// always possible afterwards and narrowing one never is.
+    ///
+    /// 1. It named two categories of goods where the code has one. `SceneryKit` is two files, a
+    ///    palette is a field of a `RideStage`, and the entitlement gates a `[RideStage]` — there is
+    ///    no scenery in this app that is not attached to a route. So "scenery", standing alone, was
+    ///    an undefined second category that a buyer could reasonably read onto weather, a night
+    ///    mode, or a seasonal repaint of stages they already have.
+    /// 2. "Now and in future" sells unfinished goods, which §D's own finished-goods rule forbids.
+    ///    The two rules could not both be literally true.
+    ///
+    /// So this names the finished thing: the whole road west, end to end, and that route's scenery.
+    /// **"Permanent" now describes the duration of ownership, not an unbounded future catalogue.**
+    /// More routes can still be given to these buyers later, and probably will be — a gift keeps
+    /// its option value, a promise does not.
     private var boundary: some View {
         Text(zh
-             ? "这次购买包含风景与路线 —— 现在的和以后的全部。不包含需要联网的功能:这个 app 完全离线,以后如果做联网玩法,那是另外的东西。"
-             : "This purchase covers scenery and routes — all of them, now and in future. It does not cover anything needing a server: this app works fully offline, and if a connected mode is ever built it will be a separate thing.")
+             ? "这次购买永久开启完整的西行之路 —— 京都到长崎 —— 以及这条路线的风景。不包含:需要联网的功能(这个 app 完全离线,以后如果做联网玩法,那是另外的东西)、导入你自己的日语材料、以及内容包。"
+             : "This purchase permanently opens the complete road west — Kyōto to Nagasaki — and the scenery of that route. It does not cover anything needing a server (this app works fully offline, and a connected mode would be a separate thing), importing your own Japanese, or content packs.")
             .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.75))
             .fixedSize(horizontal: false, vertical: true)
     }

@@ -75,6 +75,71 @@ The one exception worth arguing later: a rider who has *arrived at Kyōto* is in
 where "the road continues" is information rather than solicitation. That is a Stage 2 question,
 after this placement has produced a number.
 
+> ### AMENDED 2026-08-30, before day 0 and before submission — the placement has TWO entrances
+>
+> **The deferral above is withdrawn, and the reason is that its own precondition is unsatisfiable.**
+> It says to wait "after this placement has produced a number". This placement cannot produce a
+> number. The counter is never transmitted; `UnlockOfferLedger`'s own doc comment puts the expected
+> count of voluntarily returned ledgers over 90 days at "under two and plausibly zero"; and until
+> this same release there was no contact address anywhere in the app, so the return path did not
+> exist at all. §K's branch that turns a zero into evidence requires a returned ledger, so under
+> the one-entrance design the day-90 outcome was fixed in advance at *"record the zero as
+> UNINTERPRETABLE"* — by construction, not by evidence.
+>
+> **The registered treatment is therefore two entrances, not one:**
+>
+> 1. the Settings row (`roadRow`), always present, unchanged; and
+> 2. the menu's route strip (`menuRouteEntrance`), **live only at or past Kyōto** — the strip has
+>    always drawn the free road as a map and was static, so the app drew a rider a map and never
+>    marked where they were on it. It now marks arrival, and after arrival it opens the road screen.
+>
+> **Timing is what makes this legitimate rather than a violation.** Rule 7 binds from
+> `READY_FOR_SALE`; v1.30 has not been submitted, so the window has not opened and there is no
+> before/after to contaminate. Shipping the same change on day 45 would have voided the
+> pre-registration. There is no third option: it goes in v1.30, or it waits for day 91.
+>
+> **What is deliberately NOT claimed.** This is a second entrance to a screen whose primary
+> commercial action is a purchase, and Codex's review named it plainly: neutral navigation to a
+> route surface is *mixed*, not pure information, and calling it information to keep the plan tidy
+> would be redefining the word. So it is recorded as a placement change. What it is not: the strip
+> carries no price, no buy control, no badge and no count; the wording reports a state ("Tōkaidō
+> complete · Kyōto reached", "view routes") and never the product — the first draft said "the road
+> continues west", which is solicitation wearing a state's clothes, and was rejected on that basis.
+>
+> Also corrected: the earlier claim that this is "not recurring" was **false**. Anything on the menu
+> after Kyōto is seen on every menu visit. It is a stable status element rather than a prompt, which
+> is milder, but it is recurring exposure and is written down as such.
+>
+> The remaining four clauses of the placement discipline are unchanged and are asserted by
+> `PaidRouteRowTests`: no modal, no badge, no post-ride solicitation, and nothing near v1.27's
+> rating prompt. The results-screen test now launches **past Kyōto**, because at zero distance it
+> would have been asserting the absence of something that did not exist.
+>
+> #### The collision that clause four did NOT cover, raised on review by the release session
+>
+> "Nothing near v1.27's rating prompt" was true of **screens** and false of **time**, and the
+> assertions only ever checked the first. The rating prompt fires on the results screen; the ride
+> that crosses 25 km is a long, accurate ride after many logged days, which is the exact profile
+> every clause of `ReviewPromptLedger.decide` selects for. So on that one ride the app would ask
+> for a rating and then, one tap later, show a gold element that opens a purchase screen — **two
+> asks in one session, on the population most likely to buy.** Nothing would ever measure it: not
+> retention, not the counter. It would surface once, as the one-star review §K names as its only
+> stop-and-fix guardrail.
+>
+> Fixed rather than documented. `RideMoment` gained `openedANewOffer`, and `decide` yields for
+> **exactly one ride** — checked *before* the cooldown and the annual cap, so yielding does not
+> spend one of the three requests Apple allows per year. The rider keeps their prompt for the next
+> ride.
+>
+> **The gap this exposed in the tests is worth more than the fix.** A first pass proved the policy
+> yields when the flag is set, and mutating `finishGame` to pass a hard-coded `false` left that
+> whole suite green — the guard present and nothing reaching it, v1.26's lesson exactly. The
+> binding test now rides a real `AppModel` across the threshold, and carries a **paired control**
+> that must be asked: a rider already past Kyōto, same seed shape, same ride, differing only in
+> whether anything new opened. Without it, `asked == 0` passed because the seeded journal had two
+> rides against a minimum of three and `decide` returned `.tooFewRides` — the assertion holding for
+> a reason with nothing to do with the feature.
+
 ## The economics, computed before any StoreKit is written (§D)
 
 Owner inputs, 2026-08-30: **price ¥10 CNY one-time · ¥50 CNY/month makes it worth doing ·
@@ -305,10 +370,26 @@ data exists.
 * **≥ 1 net purchase at any point → GO on H1.** Somebody will pay this developer. Run to day 90
   anyway for the repeat rate. State the ceiling honestly: 1–3 purchases proves existence and
   estimates nothing.
-* **Zero, AND at least one returned counter showing `settingsRowAppeared > 0` with
-  `furthestBucket == kyoto` → STOP.** Somebody arrived, the row appeared, nothing was bought.
-  That is the only configuration in which a zero is evidence about willingness to pay.
-* **Zero, AND no returned counter (or every one showing `settingsRowAppeared == 0`) → STOP
+* **Zero, AND at least one returned counter showing `offerAppeared > 0` in the `kyoto` bucket →
+  STOP.** Somebody arrived, **the offer itself rendered with a price in front of them**, nothing
+  was bought. That is the only configuration in which a zero is evidence about willingness to pay.
+
+  > **CORRECTED 2026-08-30, before day 0.** This branch read `settingsRowAppeared > 0` with
+  > `furthestBucket == kyoto`, and that was the error the instrument was built to prevent, written
+  > into the pre-registration itself. `UnlockOfferLedger` says so in as many words: the Settings row
+  > is *"the entrance, not the offer — and the two are a screen apart, so they are counted apart"*,
+  > while `offerAppeared` *"is the event that means somebody was actually in a position to buy"*,
+  > and reading the row as if it meant the offer is *"two different predicates answering one
+  > question — the shape this project has shipped twenty-two times."* The code already recorded the
+  > right event; only this decision rule asked for the wrong one.
+  >
+  > Two further reasons the old form was weaker than it looked. `furthestBucket` is a high-water
+  > mark over the device's whole life, so it could be `kyoto` while the row appeared at 400 m —
+  > the conjunction did not say the two happened together, and the per-bucket form does.
+  > And `shareableSummary` **summed all eight buckets away**, so the quantity this branch asks
+  > about was not printable on the one readout a customer could return; it now prints the kyoto
+  > column on its own line.
+* **Zero, AND no returned counter (or every one showing `offerAppeared == 0` in `kyoto`) → STOP
   BUILDING, and record the zero as UNINTERPRETABLE.** The next release's job is instrumentation and
   placement, not price and not Pro. **This branch is the one that must not be quietly dropped:** a
   pre-registration with no "this taught us nothing" outcome is precisely the failure this project's
@@ -381,7 +462,7 @@ adapter is the same code — which is an argument, not an observation.
 
 ## §M What is done, and what Stage 1 is still waiting on
 
-**Done and proven.** (`swift test` 618 green; `scripts/run_ios_placement_tests.sh` 5/5;
+**Done and proven.** (`swift test` 632 green; `scripts/run_ios_placement_tests.sh` 7/7;
 `scripts/run_store_gates.sh` exits 3 — no coverage — see §L.)
 
 * The road: eight new stretches, palettes generated from a verified table, contrast 11.1:1 worst
@@ -390,8 +471,47 @@ adapter is the same code — which is an argument, not an observation.
   1,167 points, with a committed negative control and a generator that refuses to read the working
   tree.
 * The entitlement rule: pure, exhaustively tested, and unable to express "the store says no".
-* The offer: one row, one screen, honest to a rider who has not arrived.
-* The counter, with its own limits written on the type.
+* The offer: **two entrances** — the Settings row, and the menu's route strip once the rider has
+  arrived at Kyōto — one screen, honest to a rider who has not arrived. The second entrance was
+  added 2026-08-30, before submission and before day 0; see the amendment box under *Placement*
+  for why the deferral was withdrawn and what is and is not claimed for it.
+* The counter, with its own limits written on the type — and, as of the same day, a second event
+  (`menuRouteEntranceAppeared`) so the two entrances cannot be pooled, plus a readout that keeps
+  the `kyoto` column instead of summing all eight buckets away.
+
+**Fixed on 2026-08-30, both found by adversarial review of the shipped v1.30 tree.**
+
+* **The restore card claimed a different Apple Account could recover the purchase.** It cannot: a
+  non-consumable belongs to the account that bought it, Family Sharing is off on this SKU, and
+  Restore on another account returns nothing. Purchase copy promising what StoreKit will not do is
+  how a refund and the one negative review §K names as its only stop-and-fix guardrail get
+  manufactured. Now names the required account instead, and `PurchasePromiseTests` fails if either
+  the false claim returns or the correction is only half made.
+* **§K's STOP branch asked for the wrong event** — see the correction box in §K.
+
+**Narrowed on 2026-08-30, while the SKU still had zero customers.** What the ¥10 buys was
+"scenery and routes — all of them, now and in future"; it is now the complete road west,
+Kyōto→Nagasaki, and that route's scenery. Two reasons: the copy named two categories of goods
+where the code has one (a palette is a field of a `RideStage`; there is no scenery not attached to
+a route), and "now and in future" sold unfinished goods, which the finished-goods rule forbids —
+the two rules could not both be literally true. **"Permanent" now describes the duration of
+ownership, not an unbounded future catalogue.** More routes can still be given to these buyers
+later, and a gift keeps its option value where a promise does not. Pinned by
+`PurchasePromiseTests`, because nobody will re-narrow it by accident and anybody could re-widen it
+by editing a sentence that reads like marketing copy. **The three ASC IAP descriptions carry the
+same promise and must be edited in the same pass** — **done 2026-08-30**, all three PATCHed and
+read back byte-identical ("One-time. The road west: Kyoto to Nagasaki." /
+"買い切り。京都から長崎まで、西への道すべて。" / "一次性购买。京都到长崎,完整的西行之路。"); the IAP
+stayed `READY_TO_SUBMIT`. Read-back rather than trusting the PATCH response, because ASC silently
+truncates and normalises — the habit that caught the star-glyph rejection before review.
+
+> **A known constraint the next person should meet as a constraint, not a surprise** (raised by the
+> release session on review): **the product id is immutable and does not distinguish this road from
+> a future one.** `...scenery.lifetime` is fine under the plan as written, because future routes are
+> *gifts to existing buyers* rather than goods. It only becomes awkward if a second route is ever
+> sold as its own SKU — at which point the naming has nowhere clean to go, and the honest options
+> are a differently-named SKU that reads as inconsistent, or not selling routes separately at all.
+> Decide that deliberately if it ever comes up; do not discover it while creating a product.
 * The IAP: `com.jasonye.nihongoride.scenery.lifetime` (id **6806755720**), NON_CONSUMABLE,
   Family Sharing **off**, base territory CHN at ¥10.00 (net ¥8.42), 174 territories
   auto-equalised, three localisations, 175 territories available including CHN, review screenshot
@@ -420,3 +540,82 @@ adapter is the same code — which is an argument, not an observation.
   both platforms build 48.
 * **The day-0 known-positive purchase (§K)** — an owner action, in production, refunded after,
   excluded from the cohort.
+
+## §N What else could be sold — the inventory, so Stage 2 does not re-imagine it
+
+Written 2026-08-30, after the owner asked whether more should be added to the monetization. Two
+external models (Codex, Gemini 3.7 Flash) and four internal analyses answered independently. **All
+six said no.** This records what was checked and why, because this is the *third* document to ask
+the question and the first two answered from imagination — §F's original ranking was explicitly
+supply-side bias, inverted afterwards by two reviews. The next person to ask will be under time
+pressure at Stage 2, which is exactly when the temptation to add a SKU is highest.
+
+**Cite the instrument, not the conclusion.** Where a row below carries a number, the number is
+re-derivable from the file named next to it.
+
+### The arithmetic that closes the question
+
+The owner's own exchange rate is **50 hours of build ↔ ¥50 CNY/month** (§D). A week is 40 h = 0.8
+of that, so a week of engineering must clear ¥40/month:
+
+```
+new installs   2.321/day  →  70.65/month  ·  847.2/year        (scripts/sales_report.py --calibrate)
+net per sale   ¥8.42                                            (ASC price points, not a 15% assumption)
+¥40/mo ÷ ¥8.42 = 4.75 sales/month = 57.0 sales/year
+57.0 ÷ 847.2   = 6.7% of every new install, sustained, forever
+```
+
+**§D already calls 8.2% "at or above the ceiling of free-to-paid conversion for a well-performing
+app."** 6.7% is 82% of a rate this plan has already rejected as impossible. And the entire 90-day
+window, at a *healthy* 5% conversion, yields **¥88 net**. No second SKU pays for itself here.
+
+**The binding constraint is distribution, not the catalogue.** 14,292 impressions convert at
+0.76%; 93% of installs come from search; Japan is the #2 territory and converts at 2.5× China's
+rate **on an English-only listing**, holding 8% of impressions with no Japanese keywords at all.
+Revenue is `traffic × conversion × net`. A second SKU multiplies the term already at its ceiling;
+a `ja` listing multiplies the one sitting at 8%. That listing is **already drafted and natively
+reviewed** — `docs/store/ja-listing.json`, `docs/store/ja-listing-draft.md`,
+`scripts/add_locale.py`.
+
+### What is finished, and what only looks finished
+
+| module | state | verdict |
+|---|---|---|
+| `SceneryKit` | Two files. A palette is a **field of a `RideStage`** — there is no scenery in this app not attached to a route. | **Inside the SKU.** A third road is pure data plus palettes, and is therefore worth ¥0 as a separate good. |
+| `JournalKit`, `SavedWordsKit`, `WordListsKit`, `ReviewKit`, `SyncKit` | Shipped. | **Forbidden — rule 4.** The learner's own data. Plain CSV export stays free, permanently. |
+| `SpeechKit` | Wraps `AVSpeechSynthesizer`. **964 sentences are withheld from dictation** because the voice was measured reading them wrong (`docs/STATE-2026-08-18.md`; the older 977 figure was corrected in v1.25 §A). | **Do not sell.** The customer already owns the voice, and this project has measured it as unacceptable on 14.5% of the corpus. Selling more of that is not a product. |
+| `DiagnosticsKit` + `VocabKit/StumbledWords` | **Already built and already wired** to `ResultsView` — token-level stumble analysis with save/re-drill. | **Not a premium candidate.** An earlier brief called this untapped, quoting a stale line in STATE. Codex caught it. |
+| §F1 "bring your own Japanese" | **Does not exist at any layer.** `VocabStore.loadBundled()` reads five JSONs from `Bundle.module` into a `static let shared`; `WordList.ids` and `SavedWordsStore.ids` are corpus ids, not text; `SRSCard.id` *is* `VocabEntry.id`; sentence mode needs `exKana`/`exTokens`, produced offline by `scripts/gen_sentence_kana.py`, and **there is no tokenizer on the device at all**. | **Stage 3 at the earliest.** Codex's estimate on reading the code: 80–120 h. It looks cheap only because `WordListsKit`/`SavedWordsKit`/`JournalKit` all ship. |
+| Anything server-backed | — | **Forbidden twice:** rule 2, and the fully-offline positioning that three localised listings and the app's only review rest on. |
+
+### A precondition before any second SKU ever exists
+
+**`UnlockOfferLedger.counts` is `[String: [Int]]` keyed by event × road bucket under one defaults
+key, with no product dimension.** A second offer would silently pool its `offerAppeared` and
+`purchaseStarted` counts with the road's. `EntitlementRecord` carries `productID` specifically so a
+second SKU cannot inherit the first's verification; the ledger has no equivalent guard. **Split the
+counter before adding an offer, never in the same release** — shipping both at once is how the
+count and the run end up computed by different predicates.
+
+### The measurement idea that was proposed and refuted, recorded so it is not re-proposed
+
+A Game Center leaderboard carrying lifetime distance, to measure the arrival rate §H calls
+unmeasurable. **Withdrawn**, on three independent grounds:
+
+* It would publish **raw lifetime distance** — the exact quantity `UnlockOfferLedger` forbids even
+  *representing* locally ("close to a fingerprint of their whole history … the raw figure is
+  unrepresentable here"). The codebase refuses to put it in a local blob a customer chooses to
+  paste; this would publish it to a global list.
+* **It is not a null treatment.** `GameCenterManager` sets `showHighlights = true`, whose header
+  text includes "current rank on default leaderboard", and the access point is active on every
+  screen except `.playing`/`.onboarding` — **including the Settings screen carrying the offer row**.
+* At achievable n (20–40 Game-Center-visible accounts), the estimate's 95% interval spans three of
+  §H's four arrival-rate rows. The estimator cannot make the decision the estimate is for.
+
+What survives: the mechanism is real (`loadEntries` returns `totalPlayerCount`; `score` is a raw
+`NSInteger`; a top-100 descending page is exact whenever fewer than 100 players have arrived), and
+`submitScore` is genuinely silent. **So the free first step, which was skipped: `ta_score` has
+shipped since v1.3 — read its `totalPlayerCount` before building anything on leaderboards.** If it
+returns 3, the question is answered for nothing. Building a new instrument to discover whether that
+class of instrument can be read is the shape `feedback-a-clean-number-from-an-untested-instrument`
+records five times.
