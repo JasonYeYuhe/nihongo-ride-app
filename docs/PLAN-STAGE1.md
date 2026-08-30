@@ -410,6 +410,16 @@ true 5% refund rate, P(≥1) = 40%.
   units.** At one lifetime review, n=1 is a real signal here and it costs nothing to watch.
 * **Report the launch spike separately.** The first release carrying the row exposes much of a
   114-device base at once; conflating that with steady state is how a one-off becomes a forecast.
+* **A co-intervention is already running, and it was not registered — recorded 2026-08-30.** The
+  **`ja` storefront listing went live in v1.28 on 2026-08-27**, three days before this
+  pre-registration was written, and nobody carried it into §K. App Store keyword indexing ramps
+  over a new locale's first weeks, so Japan's share of installs will plausibly rise *through* the
+  90 days — and Japan is the territory that converts best (2.5× China on the pre-`ja` funnel).
+  A conversion rate computed over the whole window would then move for a reason that has nothing
+  to do with the offer. **Read day 90 split by territory** (`scripts/sales_report.py` supports it),
+  and treat any Japan-weighted shift as attributable to the listing until something separates them.
+  Registered late and marked as such, because a co-intervention discovered at day 90 is a degree of
+  freedom and one written down at day 0 is a covariate.
 
 **Day 0, before the SKU goes on sale — non-negotiable, and it is an OWNER action:** make one real
 ¥10 purchase on the owner's own Apple Account **in production** (sandbox never appears in
@@ -573,9 +583,35 @@ window, at a *healthy* 5% conversion, yields **¥88 net**. No second SKU pays fo
 0.76%; 93% of installs come from search; Japan is the #2 territory and converts at 2.5× China's
 rate **on an English-only listing**, holding 8% of impressions with no Japanese keywords at all.
 Revenue is `traffic × conversion × net`. A second SKU multiplies the term already at its ceiling;
-a `ja` listing multiplies the one sitting at 8%. That listing is **already drafted and natively
-reviewed** — `docs/store/ja-listing.json`, `docs/store/ja-listing-draft.md`,
-`scripts/add_locale.py`.
+localisation multiplies the one sitting at 8%.
+
+> ### CORRECTED 2026-08-30 — the `ja` listing is not a proposal, it SHIPPED THREE DAYS AGO
+>
+> This section first said the Japanese listing was "already drafted and natively reviewed" and
+> recommended shipping it with v1.30. **It went live in v1.28 on 2026-08-27, on both platforms**,
+> and it is complete: name, subtitle, description, keywords, support and marketing URLs, and
+> translated release notes. `git log` says so in a commit subject — *"feat(v1.28): the ja storefront
+> locale is live in ASC"* — and one ASC GET confirms it. The error was reasoning from the repo's
+> drafting artifacts (`docs/store/ja-listing.json`, `ja-listing-draft.md`, `scripts/add_locale.py`)
+> as though they described pending work, when they are the record of work that was done.
+>
+> **Every Japan figure quoted above is therefore from the pre-`ja` era.** The baseline states its
+> own date — *"Taken 2026-08-26, before anything ships"* — and names the condition explicitly:
+> *"Japan (#2 territory, 15 downloads, **no `ja` listing**)"*. That was true for one more day. The
+> "2.5× on an English-only listing" figure measures a state that ended on 2026-08-27, so it is
+> evidence **for** having localised and not evidence about what to do next.
+>
+> **What replaces the recommendation:** there is nothing to ship, and nothing to decide. There is an
+> intervention with **three days of data** behind it (~7 installs at 2.321/day), which resolves
+> nothing yet. The action is to re-run `scripts/acquisition_funnel.py` split by territory once there
+> is a window worth reading, and to compare against the 2026-08-26 baseline, which is now the
+> pre-intervention arm of a before/after nobody planned.
+>
+> **And it is an unregistered co-intervention sitting inside Stage 1's window.** Japanese keyword
+> indexing ramps over weeks, so Japan's share of installs will very likely drift upward *during*
+> the 90 days, for reasons that have nothing to do with the offer — and Japan is the territory that
+> converts best. §K's day-90 read must be split by territory (`scripts/sales_report.py` already
+> does this), for the same reason §K already requires the launch spike reported separately.
 
 ### What is finished, and what only looks finished
 
