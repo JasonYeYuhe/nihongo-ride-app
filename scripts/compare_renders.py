@@ -118,9 +118,29 @@ def main() -> int:
         if verdict != "subpixel":
             failures += 1
 
+    # Screens the comparison COULD NOT SEE.
+    #
+    # The loop above walks the baseline's filenames, so a render that exists only in the
+    # candidate is never opened — and the summary line then says "stable screens unchanged"
+    # having never looked at it. That is this project's oldest rule in a new costume: a checker
+    # that reports "no problems" is indistinguishable from a broken one, and the fix is not to
+    # widen the check but to make it state the population it skipped.
+    #
+    # These are NOT failures. A change that adds screens is the normal reason for them, and the
+    # operator is the one who knows whether the new files were expected. Silence is the bug.
+    added = sorted(set(names(args.candidate)) - set(base))
+    if added:
+        print(f"  NEW      {len(added)} screen(s) exist only in the candidate and were NOT compared:")
+        for n in added:
+            print(f"           {n}")
+        print()
+
     print()
-    print("stable screens unchanged" if failures == 0
-          else f"{failures} stable screen(s) changed")
+    summary = ("stable screens unchanged" if failures == 0
+               else f"{failures} stable screen(s) changed")
+    if added:
+        summary += f" — over {len(base)} baseline screen(s); {len(added)} new screen(s) uninspected"
+    print(summary)
     return 0 if failures == 0 else 1
 
 

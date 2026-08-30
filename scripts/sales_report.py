@@ -30,12 +30,36 @@ re-proves them rather than trusting this comment:
     behavioural proof that `F7` means "update", independent of Apple's code
     table, and it is what distinguishes this instrument from a broken one.
 
-MONETIZATION CODES ARE EXPECTED-ABSENT, ON PURPOSE
---------------------------------------------------
-IAP codes cannot occur yet — there is no StoreKit in this app. They are listed
-in EXPECTED_ABSENT with that reason, so that when Stage 1 ships, the FIRST run
-that sees one flips it out of that set. An IAP unit landing in "unclassified"
-would be the exact failure this file exists to prevent.
+MONETIZATION CODES — FLIPPED OUT OF EXPECTED-ABSENT FOR STAGE 1
+---------------------------------------------------------------
+This block used to say IAP codes "cannot occur yet — there is no StoreKit in
+this app", and put them in EXPECTED_ABSENT so that the first run seeing one
+would fail loudly. That tripwire did its job: it is the reason this file was
+opened before the SKU went on sale rather than on the morning of the first sale,
+which is the worst possible day to be editing the instrument.
+
+They are now a tallied class (PURCHASE), and three things had to move with them,
+because a code that is merely *recognised* is still not *counted*:
+
+  * TERRITORY was incremented only inside the DOWNLOAD branch, so a purchase
+    would have had no country at all. Purchases get their own tally rather than
+    joining `terr` — silently widening an existing number's meaning is how a
+    figure quoted in one release comes to mean something else in the next.
+  * DEVELOPER PROCEEDS was parsed and then never used anywhere in the file.
+  * REFUNDS arrive as NEGATIVE Units, up to ~90 days after the sale, and no code
+    path in this repo had ever seen a negative. Gross units and refunded units
+    are tallied separately and never netted silently: "6 sold" and "8 sold, 2
+    refunded" are different facts about the same net 6.
+
+The replacement tripwire matters more than the one removed. `--calibrate` now
+drives a SYNTHETIC purchase row through the real `tally()` on every run and
+fails if it does not land in units, territory, proceeds and refunds. So the
+purchase path is proven to fire before a real sale exists, rather than being
+trusted until a sale silently fails to appear — a classifier that has never
+recognised anything reports "0 sales" exactly like a working one.
+
+Unknown codes still fail calibration, so a product-type identifier nobody
+anticipated cannot be quietly absorbed by the new class.
 
 Exit codes: 0 ran · 2 vendor number not on file · 3 API failure ·
 4 calibration failed (the instrument is not trustworthy — do not use the number)
@@ -69,11 +93,14 @@ CACHE_DIR = Path.home() / "Library/Application Support/NihongoRide-Stats/sales"
 DOWNLOAD = {"F1": "macOS", "1F": "iOS"}
 UPDATE = {"F7"}
 REDOWNLOAD = {"3F", "F3"}                  # 4 units across the app's whole life
+# Stage 1's non-consumable. Universal Purchase means one SKU serves both platforms, so all
+# three shapes Apple uses for a paid in-app item are accepted rather than guessed between —
+# and anything NOT listed still lands in `unclassified` and fails calibration, so a code
+# nobody anticipated cannot hide inside this class.
+PURCHASE = {"IA1": "iOS", "IA9": "iOS", "FI1": "macOS"}
 EXPECTED_ABSENT = {
-    "IA1": "IAP — impossible until Stage 1 ships StoreKit",
-    "IA9": "IAP — impossible until Stage 1 ships StoreKit",
-    "IAY": "IAP subscription — not planned",
-    "FI1": "Mac IAP — impossible until Stage 1 ships StoreKit",
+    "IAY": "IAP subscription — Stage 1 sells one non-consumable; a subscription code "
+           "appearing means either a misconfigured product or the wrong app's rows",
 }
 # Days a version reached users. Used ONLY by --calibrate, as known-positive events.
 RELEASE_DAYS = {"2026-08-11", "2026-08-16", "2026-08-18",
@@ -193,6 +220,8 @@ def tally(days):
     seen_codes = defaultdict(int)
     unclassified = []
     terr = defaultdict(int)
+    buy_terr = defaultdict(int)
+    proceeds = 0.0
     platforms = set()
     for key, (state, payload) in sorted(days.items()):
         if state != "data":
@@ -211,15 +240,123 @@ def tally(days):
                 per_day[key]["upd"] += u
             elif pti in REDOWNLOAD:
                 per_day[key]["redl"] += u
+            elif pti in PURCHASE:
+                # A refund is the SAME row with negative Units, arriving up to ~90 days after
+                # the sale. Gross and refunded are kept apart on purpose: netting them would
+                # make "nobody bought it" and "somebody bought it and asked for their money
+                # back" print the same number, and those are opposite findings about the offer.
+                if u >= 0:
+                    per_day[key]["buy"] += u
+                    per_day[key]["buy_" + PURCHASE[pti]] += u
+                else:
+                    per_day[key]["refund"] += -u
+                buy_terr[row["country"]] += u
+                try:
+                    per_unit = float(row["proceeds"] or 0)
+                except ValueError:
+                    # Never silently zero: an unparseable proceeds figure on a real sale is a
+                    # broken instrument, and calibration below turns this into a failure.
+                    per_day[key]["proceeds_unparsed"] += 1
+                else:
+                    # ⚠️ ASSUMPTION, ASSERTED RATHER THAN TRUSTED. "Developer Proceeds" is
+                    # read as a PER-UNIT figure that is always positive, with the sign of the
+                    # transaction carried by Units — so a refund subtracts through its negative
+                    # Units. Nobody here has seen a real refund row, because the app has never
+                    # sold anything. If Apple ALSO negates the proceeds cell, this
+                    # multiplication would silently ADD money on a refund, and a total that is
+                    # too high by twice the refund looks exactly like a total that is right.
+                    # So the unexpected sign is counted and calibration fails on it.
+                    if per_unit < 0:
+                        per_day[key]["proceeds_sign_conflict"] += 1
+                    proceeds += per_unit * u
             else:
                 per_day[key]["unclassified"] += u
                 unclassified.append((key, pti, row["device"], row["version"], u))
-    return per_day, seen_codes, unclassified, terr, platforms
+    return per_day, seen_codes, unclassified, terr, platforms, buy_terr, proceeds
+
+
+# A fabricated day of purchase rows, in Apple's own TSV shape, used ONLY as the known-positive
+# for the purchase path. It is driven through the real `our_rows` + `tally` — not through a
+# reimplementation — so it proves the shipping classifier fires, which is the only thing a
+# positive control is worth. Header names must match `fetch_day`'s real report; a rename in
+# Apple's format therefore fails calibration instead of silently zeroing sales.
+_CONTROL_HEADER = ("Provider\tProvider Country\tSKU\tDeveloper\tTitle\tVersion\t"
+                   "Product Type Identifier\tUnits\tDeveloper Proceeds\tBegin Date\tEnd Date\t"
+                   "Customer Currency\tCountry Code\tCurrency of Proceeds\tApple Identifier\t"
+                   "Customer Price\tPromo Code\tParent Identifier\tSubscription\tPeriod\t"
+                   "Category\tCDR\tPromotion Name\tClient\tDevice\tSupported Platforms\t"
+                   "Proceeds Reason\tPreserved Pricing\tClient\tOrder Type")
+
+
+def _control_row(pti, units, proceeds, country):
+    cells = [""] * 30
+    cells[5] = "1.30"
+    cells[6] = pti
+    cells[7] = str(units)
+    cells[8] = proceeds
+    cells[12] = country
+    cells[14] = "0"                 # not APP_ID — admitted via Parent Identifier, like real IAP rows
+    cells[17] = APP_SKU             # Parent Identifier: what actually routes an IAP row to this app
+    cells[24] = "Desktop"
+    cells[25] = "iOS and macOS"
+    return "\t".join(cells)
+
+
+def purchase_path_control():
+    """Drive synthetic purchase rows through the real tally. Returns a list of failures.
+
+    This exists because of the rule this project pays for most often: a classifier that has
+    never recognised a purchase reports "0 sales" in exactly the same words as one that works.
+    Before Stage 1 there will be no real sale to prove the path on for weeks or months, so the
+    proof has to be manufactured — and it has to run on EVERY calibration, not once.
+    """
+    fails = []
+    payload = "\n".join([
+        _CONTROL_HEADER,
+        _control_row("IA1", 2, "8.42", "CHN"),     # two sales, iOS
+        _control_row("FI1", 1, "8.42", "JPN"),     # one sale, macOS
+        _control_row("IA1", -1, "8.42", "CHN"),    # one refund: negative Units, per-unit
+                                                   # proceeds still positive — the assumption
+                                                   # `tally` asserts rather than trusts
+    ])
+    days = {"2026-01-01": ("data", payload)}
+    per_day, seen, unclassified, terr, _plat, buy_terr, proceeds = tally(days)
+    d = per_day["2026-01-01"]
+    if d["buy"] != 3:
+        fails.append(f"purchase control: expected 3 gross units, tallied {d['buy']}")
+    if d["buy_iOS"] != 2 or d["buy_macOS"] != 1:
+        fails.append(f"purchase control: platform split wrong "
+                     f"(iOS {d['buy_iOS']}, macOS {d['buy_macOS']})")
+    if d["refund"] != 1:
+        fails.append(f"purchase control: expected 1 refunded unit, tallied {d['refund']}")
+    if dict(buy_terr) != {"CHN": 1, "JPN": 1}:
+        fails.append(f"purchase control: territory tally wrong — {dict(buy_terr)} "
+                     f"(CHN nets to 1 after the refund)")
+    if abs(proceeds - 8.42 * 2) > 0.005:
+        fails.append(f"purchase control: proceeds {proceeds:.2f}, expected {8.42 * 2:.2f} "
+                     f"(3 sold − 1 refunded = 2 net units at 8.42)")
+    if d["proceeds_sign_conflict"]:
+        fails.append("purchase control: the control's own rows tripped the proceeds sign "
+                     "guard — the guard is inverted")
+    if terr:
+        fails.append(f"purchase control: purchases leaked into the DOWNLOAD territory tally — "
+                     f"{dict(terr)}")
+    if unclassified:
+        fails.append(f"purchase control: purchase codes were not recognised — {unclassified}")
+    return fails
 
 
 def calibrate(per_day, seen_codes, unclassified):
     """Prove the instrument responds to known-positive events. Returns list of failures."""
-    fails = []
+    fails = purchase_path_control()
+    for key in per_day:
+        if per_day[key].get("proceeds_sign_conflict"):
+            fails.append(
+                f"{key}: a purchase row carries NEGATIVE Developer Proceeds, which this "
+                f"classifier assumed impossible. Every proceeds figure from this run is "
+                f"suspect — read the raw TSV before quoting money.")
+        if per_day[key].get("proceeds_unparsed"):
+            fails.append(f"{key}: a purchase row's Developer Proceeds could not be parsed")
     for code in list(DOWNLOAD) + list(UPDATE):
         if seen_codes.get(code, 0) == 0:
             fails.append(f"whitelisted code {code!r} never occurs in this window — "
@@ -282,7 +419,7 @@ def main():
         print(f"API-FAILURE: {e}")
         return 3
 
-    per_day, seen_codes, unclassified, terr, platforms = tally(days)
+    per_day, seen_codes, unclassified, terr, platforms, buy_terr, proceeds = tally(days)
     states = defaultdict(int)
     for d in per_day:
         states[per_day[d]["_state"]] += 1
@@ -297,6 +434,22 @@ def main():
     print(f"  report states: " + " · ".join(f"{k}={v}" for k, v in sorted(states.items())))
     print(f"  FIRST-TIME DOWNLOADS  {dl}   (macOS {mac} · iOS {ios})")
     print(f"  updates {upd} · redownloads {redl} · unclassified {len(unclassified)} row(s)")
+
+    # Stage 1's numerator. Printed unconditionally, including the zero: "no purchase rows yet"
+    # and "the classifier no longer recognises purchase rows" must not look the same, and the
+    # only thing separating them is that `--calibrate` drives a synthetic sale through the
+    # same code every run.
+    buy = sum(per_day[d]["buy"] for d in per_day)
+    buy_mac = sum(per_day[d]["buy_macOS"] for d in per_day)
+    buy_ios = sum(per_day[d]["buy_iOS"] for d in per_day)
+    refunds = sum(per_day[d]["refund"] for d in per_day)
+    print(f"  PURCHASES  gross {buy} (macOS {buy_mac} · iOS {buy_ios}) · refunded {refunds} "
+          f"· net {buy - refunds} · proceeds {proceeds:.2f}")
+    if buy_terr:
+        print("  purchase territory: "
+              + ", ".join(f"{k}={v}" for k, v in sorted(buy_terr.items(), key=lambda x: -x[1])))
+    if buy == 0:
+        print("    (zero is a RESULT only if calibration passed — see --calibrate)")
     print(f"  Supported Platforms values seen: {sorted(platforms)}")
     if unclassified:
         for u in unclassified:
@@ -335,8 +488,13 @@ def main():
             "unclassified_rows": unclassified,
             "product_type_units": dict(seen_codes),
             "territory_downloads": dict(sorted(terr.items(), key=lambda x: -x[1])),
+            "purchases": {"gross": buy, "macOS": buy_mac, "iOS": buy_ios,
+                          "refunded": refunds, "net": buy - refunds,
+                          "developer_proceeds": round(proceeds, 2)},
+            "territory_purchases": dict(sorted(buy_terr.items(), key=lambda x: -x[1])),
             "daily": {d: {"dl": per_day[d]["dl"], "dl_macOS": per_day[d]["dl_macOS"],
-                          "dl_iOS": per_day[d]["dl_iOS"], "upd": per_day[d]["upd"]}
+                          "dl_iOS": per_day[d]["dl_iOS"], "upd": per_day[d]["upd"],
+                          "buy": per_day[d]["buy"], "refund": per_day[d]["refund"]}
                       for d in sorted(data_days)},
             "calibrated": args.calibrate and rc == 0,
         }
