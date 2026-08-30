@@ -75,15 +75,75 @@ The one exception worth arguing later: a rider who has *arrived at Kyōto* is in
 where "the road continues" is information rather than solicitation. That is a Stage 2 question,
 after this placement has produced a number.
 
+## The economics, computed before any StoreKit is written (§D)
+
+Owner inputs, 2026-08-30: **price ¥10 CNY one-time · ¥50 CNY/month makes it worth doing ·
+50 hours maximum build cost.**
+
+```
+monthly = new downloads × paid conversion × net proceeds − content and support cost
+```
+
+Traffic is **72 downloads/month**, measured (trailing-28d census). Apple's Small Business
+Program rate of 15% is assumed; at 30% every figure below gets ~20% worse.
+
+| price | net/sale | sales needed for ¥50/mo | share of new installs | share of Kyōto arrivers @20% |
+|---|---|---|---|---|
+| **¥10** | ¥8.50 | **5.9** | **8.2%** | **41%** |
+| ¥18 | ¥15.30 | 3.3 | 4.5% | 23% |
+| ¥25 | ¥21.25 | 2.4 | 3.3% | 16% |
+| ¥30 | ¥25.50 | 2.0 | 2.7% | 14% |
+
+**⚠️ At ¥10 the two owner numbers are inconsistent with each other at today's traffic.** 8.2% of
+all installs is at or above the ceiling of free-to-paid conversion for a well-performing app —
+and the thing being sold is only *useful* past Kyōto, so the real denominator is arrivers, not
+installs. If 20% arrive, 41% of them must buy; if 5% arrive, ¥50/month is **arithmetically
+impossible** (163%). Holding ¥10 and reaching the target by traffic alone needs about **300
+downloads/month**, roughly 4× today.
+
+**Resolved by changing the yardstick, not the price.** This plan's own architecture says Stage 1
+buys **information, not revenue** — it exists to answer *will anyone pay this developer anything
+at all* before four times the engineering goes into Pro. A low price maximises the chance of a
+non-zero signal, which is the thing Stage 1 is actually short of.
+
+* **Stage 1's kill criterion is any sustained purchasing across the observation window**, not a
+  revenue figure. One purchase proves somebody will pay; zero proves nothing (§G), and yet zero
+  still means *do not build Pro*, because the larger investment would have no positive evidence.
+* **¥50/month is recorded as the Stage 3 floor**, where it belongs.
+* **50 hours is comfortable** for this scope — seven sibling apps on this account already ship a
+  `<bundle>.pro.lifetime` non-consumable, so this adapts a shape rather than inventing one. The
+  scarce resource here is signal, not hours.
+
+**And ¥50/month should be named for what it is:** ¥600/year, about US$84. Against a 50-hour
+build that is roughly ¥1.7 per hour in year one. That is not an argument against doing it — it is
+the argument for keeping the build small and the yardstick honest.
+
+## What "permanent" covers, named before the SKU exists (§C)
+
+**The purchase buys scenery and routes — every route and every backdrop, now and in future — and
+nothing else.**
+
+§C requires this to be named rather than discovered: *"A one-time unlock that implies all future
+features is an unbounded promise against finite revenue."* At ¥8.50 net, "everything forever" is
+exactly that promise.
+
+Explicitly **outside** it, and to be sold separately if ever built:
+
+* Anything requiring a server — real-time versus play, leaderboards, cloud matches. **These also
+  contradict the product's own positioning**: three localised listings and the app's only review
+  rest on *fully offline*. A networked mode is not merely out of scope for this SKU, it is a
+  different product decision.
+* §F1's "bring your own Japanese" — importing custom material.
+* Any content pack.
+
+The category is stable, its cost is bounded (route data is finished the day it ships), and its
+boundary is stateable to a buyer in one sentence.
+
 ## Still required before any StoreKit is written — owner inputs, per §D
 
-The plan is explicit that an agent must not invent these:
-
-1. **The price**, per territory, written in **CNY** (China is 48% of installs).
-2. **The monthly contribution that would make this worth doing.**
-3. **The maximum build cost acceptable to find out.**
-
-And the pre-registered kill criteria from §G, which need those numbers first.
+~~The plan is explicit that an agent must not invent these.~~ **All three supplied 2026-08-30
+and worked through above.** What remains is the §G pre-registration — the minimum cohort, the
+observation window, the refund ceiling — which now has the numbers it was waiting on.
 
 ## Open, carried
 
