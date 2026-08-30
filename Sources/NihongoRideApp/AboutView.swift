@@ -62,6 +62,7 @@ struct AboutView: View {
                         : "Chinese and English glosses, example sentences and passages are LLM-drafted (Gemini 3.1 Pro) and audited; readings & levels follow Bluskyo's authoritative data with errors removed. A native-speaker review pass is still the required final step before release."
                 )
                 stats
+                diagnostics
                 Spacer(minLength: 18)
                 footerNote
             }
@@ -180,6 +181,46 @@ struct AboutView: View {
         .accessibilityElement()
         .accessibilityLabel(label)
         .accessibilityValue(value)
+    }
+
+    /// The one place the local counters can actually be read.
+    ///
+    /// §G licenses local, never-transmitted counting with the distinction the first draft got
+    /// wrong — *Data Not Collected forbids collecting, not counting* — and it names two readout
+    /// paths: a debug view, and something a customer can attach to a support message. **Neither
+    /// existed.** `ReviewPromptLedger.debugSummary` has had zero call sites since v1.27, and the
+    /// Stage 1 counter shipped its first version the same way: a type whose whole justification
+    /// is "a customer can choose to send it" with nothing anywhere for them to send.
+    ///
+    /// Deliberately plain text rather than a mail composer. It is selectable, it is at the bottom
+    /// of a screen nobody visits by accident, and it asks for nothing. The honest limit is on
+    /// `UnlockOfferLedger` itself: the one measured base rate for a customer of this app
+    /// volunteering anything is one message per 109 installs, so this cannot estimate a rate. It
+    /// can let a single person refute a universal, and it can prove to the OWNER that the counter
+    /// fires at all — which is the reader it will actually have.
+    private var diagnostics: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text((zh ? "本机计数" : "On-device counters").uppercased())
+                .scaledSystemFont(10, weight: .black).tracking(2)
+                .foregroundStyle(Theme.dim)
+            Text(zh
+                 ? "只存在这台设备上,从不上传。如果你写信来,把下面两行一起贴上会很有帮助。"
+                 : "Local to this device and never transmitted. If you write in, pasting the two lines below helps.")
+                .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.8))
+                .fixedSize(horizontal: false, vertical: true)
+            Text(model.unlockOfferLedger.shareableSummary)
+                .scaledSystemFont(10, design: .monospaced)
+                .foregroundStyle(Theme.dim.opacity(0.7))
+                .textSelection(.enabled)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(model.reviewPromptLedger.debugSummary)
+                .scaledSystemFont(10, design: .monospaced)
+                .foregroundStyle(Theme.dim.opacity(0.7))
+                .textSelection(.enabled)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.top, 6)
+        .accessibilityIdentifier("onDeviceCounters")
     }
 
     private var footerNote: some View {

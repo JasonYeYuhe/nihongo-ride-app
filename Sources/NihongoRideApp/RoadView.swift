@@ -40,7 +40,8 @@ struct RoadView: View {
             header
             tokaido
             west
-            if !entitled { offer }
+            if entitled { owned } else { offer }
+            restore
             boundary
             Spacer(minLength: 12)
         }
@@ -51,6 +52,9 @@ struct RoadView: View {
             if Screenshotter.isCapturing { content } else { ScrollView { content } }
         }
         .frame(maxWidth: .infinity)
+        // Recorded here, not at the Settings row: this is the moment somebody is actually looking
+        // at the offer, and the moment the product either has a price or does not.
+        .onAppear { model.recordOfferAppeared() }
         .background {
             if !Screenshotter.isCapturing {
                 KeyCaptureView(
@@ -138,12 +142,18 @@ struct RoadView: View {
                 .scaledSystemFont(12, weight: .medium, design: .monospaced)
                 .foregroundStyle(Theme.dim)
         }
+        // `.accessibilityElement()` defaults to `children: .ignore`, so the trailing distance —
+        // the one number this screen exists to state — was dropped from VoiceOver entirely. It
+        // goes into the value alongside the state, because a stretch's name without its distance
+        // is the half of the row that does not answer anything.
         .accessibilityElement()
         .accessibilityLabel("\(stage.name), \(stage.romaji)")
-        .accessibilityValue(reached
-                            ? (zh ? "已抵达" : "reached")
-                            : locked ? (zh ? "未解锁" : "locked")
-                                     : (zh ? "还未抵达" : "not yet reached"))
+        .accessibilityValue({
+            let state = reached ? (zh ? "已抵达" : "reached")
+                : locked ? (zh ? "未解锁" : "locked")
+                         : (zh ? "还未抵达" : "not yet reached")
+            return "\(Self.distanceLabel(stage.startMetres)), \(state)"
+        }())
     }
 
     // MARK: The offer
@@ -195,22 +205,54 @@ struct RoadView: View {
                     .scaledSystemFont(12).foregroundStyle(Theme.dim)
             }
 
+            if let notice = store.notice { noticeText(notice) }
+        }
+    }
+
+    /// What an owner sees where the offer used to be. **Not nothing** — see `restore` below.
+    private var owned: some View {
+        card(title: zh ? "已开启" : "Opened") {
+            Text(zh
+                 ? "西の道已经开启。谢谢 —— 这条路会一直在,以后新增的路线和风景也一样。"
+                 : "The road west is open. Thank you — it stays open, and so does every route and backdrop added later.")
+                .scaledSystemFont(13).foregroundStyle(.white.opacity(0.82))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    /// **Always present, owned or not, and that is the whole point.**
+    ///
+    /// The first version of this screen put Restore inside the offer card, which only rendered
+    /// `if !entitled` — so the app had NO restore control at all on a device that owned the SKU.
+    /// That is precisely backwards: the person who needs Restore is a buyer on a second device,
+    /// or after a reinstall, whose entitlement has not resolved yet. App Review guideline 3.1.1
+    /// requires a restore mechanism for non-consumables, and this app's would have been reachable
+    /// only by people who had nothing to restore.
+    ///
+    /// `PaidRouteRowTests.testAnOwnedDeviceStillSeesTheRowAndStillHasRestore` asserts exactly
+    /// this — and it was written before the bug and never run, which is how the bug survived.
+    /// A test that is never executed is a comment.
+    private var restore: some View {
+        card(title: zh ? "已经买过?" : "Already bought it?") {
+            Text(zh
+                 ? "换了设备、重装、或者换了 Apple 账号,用这里把它找回来。不会重复扣款。"
+                 : "New device, reinstall, or a different Apple Account — bring it back here. You will not be charged again.")
+                .scaledSystemFont(12).foregroundStyle(Theme.dim)
+                .fixedSize(horizontal: false, vertical: true)
             Button(zh ? "恢复购买" : "Restore Purchases") {
                 Task { await model.restorePurchases() }
             }
             .buttonStyle(.plain)
-            .scaledSystemFont(13)
-            .foregroundStyle(Theme.dim)
+            .scaledSystemFont(14, weight: .semibold)
+            .foregroundStyle(Theme.accent2)
             .accessibilityIdentifier("restorePurchases")
-
-            if let notice = store.notice { noticeText(notice) }
         }
     }
 
     private var offerBlurb: String {
         if arrived {
             return zh
-                ? "你已经骑到京都了。这次购买把路接下去 —— 大阪、神户、姫路、冈山、广岛、下关、博多,一直到长崎。"
+                ? "你已经骑到京都了。这次购买把路接下去 —— 大阪、神户、姬路、冈山、广岛、下关、博多,一直到长崎。"
                 : "You have already reached Kyōto. This continues the road — Ōsaka, Kōbe, Himeji, Okayama, Hiroshima, Shimonoseki, Hakata, and on to Nagasaki."
         }
         let km = String(format: "%.1f", max(0, (RideRoute.tokaidoStages.last?.startMetres ?? 0) - metres) / 1000)

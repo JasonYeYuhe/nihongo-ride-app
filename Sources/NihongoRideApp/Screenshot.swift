@@ -128,8 +128,14 @@ enum Screenshotter {
         // The road screen (v1.30). Rendered unconditionally because it is the ONE surface Apple's
         // reviewer is told to look at — the IAP's review note points at Settings > The Road — and
         // because the offer's honesty to a rider who has NOT arrived is a layout property that
-        // only a render can show. Two states, since they are different screens: the offer, and
-        // what an owner sees instead of it.
+        // only a render can show.
+        //
+        // ONE state — unentitled — and that is a limitation, not a choice. The owned state would
+        // need `NIHONGO_FAKE_ENTITLEMENT`, which is read once per process at `RouteStore.init`,
+        // so setting it would fake the entitlement for every other screen in the same capture run.
+        // The owned layout is covered by `PaidRouteRowTests` instead. (An earlier version of this
+        // comment claimed two states and wrote one, which is the defect this file exists to
+        // catch, in this file.)
         // Rendered TALL, not at the store size. In capture mode the views drop their ScrollView
         // (ImageRenderer does not lay out inside one), so a screen taller than the frame is
         // centred and clipped at BOTH ends — the first render of this one lost its header and the

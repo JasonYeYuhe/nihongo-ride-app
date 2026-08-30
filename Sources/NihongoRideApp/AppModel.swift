@@ -480,6 +480,7 @@ final class AppModel {
         refreshWidgetSnapshot()   // v1.11: publish the current due counts to the widget
         startSyncIfEnabled()
         gameCenter.authenticate()
+        recordLaunch()
     }
 
     /// Dismisses first-launch onboarding (finish or skip): records it as seen and
@@ -1979,6 +1980,22 @@ final class AppModel {
 
     // MARK: Stage 1 — recording what happened to the offer
 
+    /// A launch happened, and this is how far this device has ridden.
+    ///
+    /// **The denominator.** Without it `settingsRowAppeared == 0` says nothing — "the row never
+    /// appeared" across one launch and across sixty are different facts — and `furthestBucket`
+    /// could only ever advance for somebody who opened Settings, which destroys the counter's one
+    /// job: telling "nobody would pay" apart from "nobody rode far enough for it to matter".
+    ///
+    /// The first version of this work shipped `launched(lifetimeMetres:)` with **no caller at
+    /// all**, so `launches` was permanently 0 while the type's doc comment explained at length
+    /// what it was for. A counter with no writer reports zero exactly like a quiet device.
+    func recordLaunch() {
+        let isolated = Self.currentIsolation.touchesNothingOfTheUsers
+        unlockOfferLedger.launched(lifetimeMetres: lifetimeDistanceMeters)
+        if !isolated { unlockOfferLedger.save(to: Self.settingsStore) }
+    }
+
     /// The offer row appeared. Records what it was actually able to offer, in one branch.
     ///
     /// `suppressed` reuses the SAME isolation predicate as the review prompt below, so a run that
@@ -1986,10 +2003,18 @@ final class AppModel {
     /// point, so a UI test or a screenshot render is never counted as a person.
     func recordOfferRowAppeared() {
         let isolated = Self.currentIsolation.touchesNothingOfTheUsers
-        unlockOfferLedger.rowAppeared(lifetimeMetres: lifetimeDistanceMeters,
-                                      entitled: entitlements.isEntitled,
-                                      offerLoaded: entitlements.product != nil,
-                                      suppressed: isolated)
+        unlockOfferLedger.rowAppeared(lifetimeMetres: lifetimeDistanceMeters, suppressed: isolated)
+        if !isolated { unlockOfferLedger.save(to: Self.settingsStore) }
+    }
+
+    /// The road screen rendered, and what it was able to offer. See `rowAppeared` vs
+    /// `offerAppeared` on the ledger for why these are two events and not one.
+    func recordOfferAppeared() {
+        let isolated = Self.currentIsolation.touchesNothingOfTheUsers
+        unlockOfferLedger.offerAppeared(lifetimeMetres: lifetimeDistanceMeters,
+                                        entitled: entitlements.isEntitled,
+                                        offerLoaded: entitlements.product != nil,
+                                        suppressed: isolated)
         if !isolated { unlockOfferLedger.save(to: Self.settingsStore) }
     }
 

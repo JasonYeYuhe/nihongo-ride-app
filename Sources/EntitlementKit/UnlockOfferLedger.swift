@@ -81,11 +81,17 @@ public enum RoadBucket: Int, Codable, Sendable, CaseIterable, Comparable {
 /// `UnlockOfferLedgerTests.namesClaimOnlyWhatIsObservable` reads this file and fails the build if
 /// that discipline slips, exactly as `ReviewPromptNamingTests` already does for the review prompt.
 public enum UnlockOfferEvent: String, Codable, Sendable, CaseIterable {
-    /// The row entered the view hierarchy. An upper bound on viewings, never a count of them.
+    /// The Settings ROW entered the view hierarchy. The entrance, not the offer — and the two are
+    /// a screen apart, so they are counted apart. An upper bound on viewings, never a count.
     case settingsRowAppeared
-    /// The row appeared and the product had not loaded — nothing was actually for sale.
+    /// The OFFER ITSELF rendered, with a price, on the road screen. This is the event that means
+    /// somebody was actually in a position to buy: the first version of this counter recorded only
+    /// the Settings row and then read it as if it meant this, which is two different predicates
+    /// answering one question — the shape this project has shipped twenty-two times.
+    case offerAppeared
+    /// The offer rendered and the product had not loaded — nothing was actually for sale.
     case offerUnavailable
-    /// The row appeared on a device that already owns it.
+    /// The road screen was opened on a device that already owns it.
     case alreadyOwned
     /// This app called `Product.purchase()`.
     case purchaseStarted
@@ -168,15 +174,29 @@ public struct UnlockOfferLedger: Codable, Sendable, Equatable {
     /// was. Deciding elsewhere and recording here is the shape of every count-versus-run defect
     /// this project has found.
     @discardableResult
-    public mutating func rowAppeared(lifetimeMetres: Double,
-                                     entitled: Bool,
-                                     offerLoaded: Bool,
-                                     suppressed: Bool) -> UnlockOfferEvent {
+    public mutating func rowAppeared(lifetimeMetres: Double, suppressed: Bool) -> UnlockOfferEvent {
+        let bucket = RoadBucket.forLifetimeMetres(lifetimeMetres)
+        furthestBucket = max(furthestBucket, bucket)
+        let event: UnlockOfferEvent = suppressed ? .suppressed : .settingsRowAppeared
+        record(event, at: bucket)
+        return event
+    }
+
+    /// The road screen rendered, and this is what it was actually able to show.
+    ///
+    /// Recorded HERE rather than at the Settings row, because the row is the entrance and the
+    /// offer is a screen behind it — and at the row's `onAppear` the product has usually not
+    /// loaded yet, so asking "was it for sale" there answers about the wrong moment.
+    @discardableResult
+    public mutating func offerAppeared(lifetimeMetres: Double,
+                                       entitled: Bool,
+                                       offerLoaded: Bool,
+                                       suppressed: Bool) -> UnlockOfferEvent {
         let bucket = RoadBucket.forLifetimeMetres(lifetimeMetres)
         furthestBucket = max(furthestBucket, bucket)
         let event: UnlockOfferEvent = suppressed ? .suppressed
             : entitled ? .alreadyOwned
-            : offerLoaded ? .settingsRowAppeared
+            : offerLoaded ? .offerAppeared
             : .offerUnavailable
         record(event, at: bucket)
         return event

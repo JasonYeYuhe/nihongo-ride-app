@@ -160,7 +160,7 @@ final class RouteStore {
 
     /// Ask the store what it knows, and hand the answer — including "nothing" — to the ledger.
     func refresh() async {
-        ledger.apply(await Self.readStore(), savingTo: defaults)
+        ledger.apply(await Self.readStore(ledgerRevokedAt: ledger.record.revokedAt), savingTo: defaults)
         // An approved Ask to Buy is completed BY the entitlement arriving; the notice must not
         // keep saying "awaiting approval" after the road has opened.
         if ledger.isEntitled, notice == .pending { notice = nil }
@@ -170,7 +170,23 @@ final class RouteStore {
     ///
     /// `nonisolated` and static so it is a pure translation with nothing to observe: the only
     /// thing it may produce is a signal, and it cannot decide anything about it.
-    nonisolated static func readStore() async -> StoreEntitlementSignal {
+    /// An observation stamp that cannot land before a revocation this device already knows about.
+    ///
+    /// Both signals are stamped with the wall clock at the moment of observation, and `isEntitled`
+    /// compares them — so a clock moved BACKWARDS between a refund and a re-purchase would leave
+    /// the new verification looking older than the old revocation, and lock a paying customer out
+    /// until the clock caught up.
+    ///
+    /// This is not inventing a time. The adapter is observing this entitlement **now**, and it has
+    /// already recorded that revocation, so "after it" is a true statement about the order of its
+    /// own observations regardless of what the clock says between them.
+    nonisolated static func observedNow(after revoked: Date?) -> Date {
+        let now = Date()
+        guard let revoked, revoked > now else { return now }
+        return revoked.addingTimeInterval(1)
+    }
+
+    nonisolated static func readStore(ledgerRevokedAt: Date? = nil) async -> StoreEntitlementSignal {
         // 1. Does the customer own it right now? `currentEntitlements` is documented as "all
         //    currently-subscribed transactions, and all purchased (and NOT REFUNDED)
         //    non-consumables", so a hit here is unambiguous.
@@ -179,7 +195,7 @@ final class RouteStore {
                   transaction.productID == productID,
                   transaction.revocationDate == nil
             else { continue }
-            return .entitled(id: transaction.originalID, at: Date())
+            return .entitled(id: transaction.originalID, at: Self.observedNow(after: ledgerRevokedAt))
         }
         // 2. Nothing owned. That is NOT "never bought" — so before concluding anything, look for
         //    the one thing that IS conclusive: a transaction Apple has revoked.
@@ -221,6 +237,16 @@ final class RouteStore {
                 switch verification {
                 case .verified(let transaction):
                     await transaction.finish()
+                    // Apply the transaction we ALREADY HAVE, before going anywhere near
+                    // `currentEntitlements`.
+                    //
+                    // This is authoritative: StoreKit verified it, it is for our product, and it
+                    // is not revoked. Throwing it away and then polling a channel this same file
+                    // documents as not-immediately-consistent was strictly worse — it made the
+                    // happy path depend on a measured race, when the answer was already in hand.
+                    // The settle loop below stays, but only as reconciliation.
+                    ledger.apply(.entitled(id: transaction.originalID, at: Date()),
+                                 savingTo: defaults)
                     await settleEntitlement()
                     lastOutcome = .purchaseSucceeded
                 case .unverified:

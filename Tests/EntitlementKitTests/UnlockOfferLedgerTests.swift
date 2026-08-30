@@ -54,18 +54,18 @@ struct UnlockOfferLedgerTests {
         // (b) the row appeared, repeatedly, to somebody 20 km short of it mattering.
         var tooEarly = UnlockOfferLedger()
         for _ in 0 ..< 12 {
-            tooEarly.rowAppeared(lifetimeMetres: 3_000, entitled: false, offerLoaded: true, suppressed: false)
+            tooEarly.offerAppeared(lifetimeMetres: 3_000, entitled: false, offerLoaded: true, suppressed: false)
         }
-        #expect(tooEarly.count(of: .settingsRowAppeared, in: .fuji) == 12)
-        #expect(tooEarly.count(of: .settingsRowAppeared, in: .kyoto) == 0)
+        #expect(tooEarly.count(of: .offerAppeared, in: .fuji) == 12)
+        #expect(tooEarly.count(of: .offerAppeared, in: .kyoto) == 0)
         #expect(tooEarly.furthestBucket == .fuji)
 
         // (a) the only configuration in which a zero is evidence about willingness to pay.
         var sawAndDeclined = UnlockOfferLedger()
         for _ in 0 ..< 12 {
-            sawAndDeclined.rowAppeared(lifetimeMetres: 30_000, entitled: false, offerLoaded: true, suppressed: false)
+            sawAndDeclined.offerAppeared(lifetimeMetres: 30_000, entitled: false, offerLoaded: true, suppressed: false)
         }
-        #expect(sawAndDeclined.count(of: .settingsRowAppeared, in: .kyoto) == 12)
+        #expect(sawAndDeclined.count(of: .offerAppeared, in: .kyoto) == 12)
         #expect(sawAndDeclined.count(of: .purchaseStarted) == 0)
 
         // …and the three are actually different objects, which is the assertion that matters.
@@ -77,24 +77,39 @@ struct UnlockOfferLedgerTests {
     @Test("a row that could not offer anything is not counted as an offer")
     func unavailableIsItsOwnFact() {
         var ledger = UnlockOfferLedger()
-        ledger.rowAppeared(lifetimeMetres: 30_000, entitled: false, offerLoaded: false, suppressed: false)
+        ledger.offerAppeared(lifetimeMetres: 30_000, entitled: false, offerLoaded: false, suppressed: false)
         #expect(ledger.count(of: .offerUnavailable) == 1)
-        #expect(ledger.count(of: .settingsRowAppeared) == 0,
+        #expect(ledger.count(of: .offerAppeared) == 0,
                 "an offline device with no prices would otherwise read as a declined offer")
     }
 
     @Test("an owner's device is not counted as an unconverted one")
     func alreadyOwnedIsItsOwnFact() {
         var ledger = UnlockOfferLedger()
-        ledger.rowAppeared(lifetimeMetres: 30_000, entitled: true, offerLoaded: true, suppressed: false)
+        ledger.offerAppeared(lifetimeMetres: 30_000, entitled: true, offerLoaded: true, suppressed: false)
         #expect(ledger.count(of: .alreadyOwned) == 1)
-        #expect(ledger.count(of: .settingsRowAppeared) == 0)
+        #expect(ledger.count(of: .offerAppeared) == 0)
+    }
+
+    @Test("the Settings row and the offer are counted apart, because they are a screen apart")
+    func theEntranceIsNotTheOffer() {
+        // The first version recorded only the Settings row and then read it as "saw the offer".
+        // Two different predicates answering one question — and at the row's onAppear the product
+        // has usually not loaded, so asking "was it for sale" there answers about the wrong moment.
+        var ledger = UnlockOfferLedger()
+        ledger.rowAppeared(lifetimeMetres: 30_000, suppressed: false)
+        #expect(ledger.count(of: .settingsRowAppeared) == 1)
+        #expect(ledger.count(of: .offerAppeared) == 0, "opening Settings is not seeing the offer")
+
+        ledger.offerAppeared(lifetimeMetres: 30_000, entitled: false, offerLoaded: true, suppressed: false)
+        #expect(ledger.count(of: .offerAppeared) == 1)
+        #expect(ledger.count(of: .settingsRowAppeared) == 1, "the entrance was counted twice")
     }
 
     @Test("a UI test or a screenshot render is never counted as a person")
     func suppressedIsItsOwnFact() {
         var ledger = UnlockOfferLedger()
-        ledger.rowAppeared(lifetimeMetres: 100, entitled: false, offerLoaded: true, suppressed: true)
+        ledger.offerAppeared(lifetimeMetres: 100, entitled: false, offerLoaded: true, suppressed: true)
         #expect(ledger.count(of: .suppressed) == 1)
         #expect(ledger.count(of: .settingsRowAppeared) == 0)
     }
@@ -156,7 +171,7 @@ struct UnlockOfferLedgerTests {
         defer { defaults.removePersistentDomain(forName: suite) }
         var ledger = UnlockOfferLedger()
         ledger.launched(lifetimeMetres: 26_000)
-        ledger.rowAppeared(lifetimeMetres: 26_000, entitled: false, offerLoaded: true, suppressed: false)
+        ledger.offerAppeared(lifetimeMetres: 26_000, entitled: false, offerLoaded: true, suppressed: false)
         ledger.save(to: defaults)
         #expect(UnlockOfferLedger.load(from: defaults) == ledger)
     }
@@ -173,10 +188,11 @@ struct UnlockOfferLedgerTests {
         // Through the shipped API only. A test that assigned `counts` directly would be proving
         // that a dictionary can be printed, not that the ledger records what the app does to it.
         for _ in 0 ..< 7 {
-            ledger.rowAppeared(lifetimeMetres: 26_000, entitled: false, offerLoaded: true, suppressed: false)
-            ledger.rowAppeared(lifetimeMetres: 26_000, entitled: true, offerLoaded: true, suppressed: false)
-            ledger.rowAppeared(lifetimeMetres: 26_000, entitled: false, offerLoaded: false, suppressed: false)
-            ledger.rowAppeared(lifetimeMetres: 26_000, entitled: false, offerLoaded: true, suppressed: true)
+            ledger.rowAppeared(lifetimeMetres: 26_000, suppressed: false)
+            ledger.offerAppeared(lifetimeMetres: 26_000, entitled: false, offerLoaded: true, suppressed: false)
+            ledger.offerAppeared(lifetimeMetres: 26_000, entitled: true, offerLoaded: true, suppressed: false)
+            ledger.offerAppeared(lifetimeMetres: 26_000, entitled: false, offerLoaded: false, suppressed: false)
+            ledger.offerAppeared(lifetimeMetres: 26_000, entitled: false, offerLoaded: true, suppressed: true)
             ledger.restoreStarted(lifetimeMetres: 26_000)
             for outcome: UnlockOfferEvent in [.purchaseSucceeded, .purchaseUnverified, .purchaseCancelled,
                                               .purchasePending, .purchaseFailed, .purchaseUnrecognised] {
@@ -184,10 +200,11 @@ struct UnlockOfferLedgerTests {
             }
         }
         let summary = ledger.shareableSummary
-        for event in UnlockOfferEvent.allCases where event != .purchaseStarted {
+        for event in UnlockOfferEvent.allCases where event != .purchaseStarted && event != .suppressed {
             #expect(summary.contains("\(event.rawValue) 7"), "\(event.rawValue) is missing from the summary")
         }
         #expect(summary.contains("purchaseStarted 42"))
+        #expect(summary.contains("suppressed 7"))
         #expect(summary.contains("launches 1"))
         #expect(summary.contains("furthest kyoto"))
 
@@ -205,7 +222,7 @@ struct UnlockOfferLedgerTests {
         // it would surface — and a rider's exact lifetime distance is close to a fingerprint of
         // their entire history, on a string the design expects them to paste into a message.
         ledger.launched(lifetimeMetres: 31_337)
-        ledger.rowAppeared(lifetimeMetres: 31_337, entitled: false, offerLoaded: true, suppressed: false)
+        ledger.offerAppeared(lifetimeMetres: 31_337, entitled: false, offerLoaded: true, suppressed: false)
         #expect(!ledger.shareableSummary.contains("31337"))
         #expect(!ledger.shareableSummary.contains("31,337"))
         #expect(!ledger.shareableSummary.contains("31337.0"))

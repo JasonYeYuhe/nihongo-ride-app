@@ -99,10 +99,14 @@ final class StoreGateTests: XCTestCase {
         do {
             try await session.setSimulatedError(
                 .generic(.networkError(URLError(.notConnectedToInternet))), forAPI: .loadProducts)
-            defer { Task { try? await session.setSimulatedError(nil, forAPI: .loadProducts) } }
             let stillWorks = try await !Product.products(for: [productID]).isEmpty
+            // Cleared by AWAITING it, not in a detached `defer { Task { … } }` — that returns
+            // before the clear lands, so `setUp` could hand the first real gate a store still
+            // wired to fail, and the failure would look like the code under test.
+            try? await session.setSimulatedError(nil, forAPI: .loadProducts)
             return stillWorks          // the simulated error changed nothing ⇒ inert
         } catch {
+            try? await session.setSimulatedError(nil, forAPI: .loadProducts)
             return false               // it threw, which means it took effect
         }
     }
