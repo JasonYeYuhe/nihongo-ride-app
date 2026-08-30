@@ -1,0 +1,22 @@
+{
+ "measurement": "scripts/acquisition_funnel.py report_rows + manual pull, 2026-08-30",
+ "question": "PLAN-V2-PRODUCT §G nominates Apple's engagement metrics — retention, sessions, active devices, deletions — as the guardrail that decides whether to stop a monetization rollout. On 2026-08-26 none of those reports existed. This checks again, and calibrates what arrived against the Sales and Trends census.",
+ "myEarlierClaimWasWrong": "On 2026-08-26 I recorded that the engagement reports 'should be planned as permanently unavailable at this traffic level', reasoning from the fact that 8 of 156 reports had arrived and every one was acquisition-side. Both Codex and Gemini 3.7 Flash independently flagged 'probably never' as an inference rather than a measurement. They were right, and re-checking on 2026-08-30 falsified it: App Sessions Standard and App Store Installation and Deletion Standard have both materialised.",
+ "butTheyAreUnusable": {
+  "installationAndDeletion": {
+   "installsReported": 10,
+   "deletionsReported": 1,
+   "censusInstallsSameApp": 109,
+   "samplingRate": "9.2%",
+   "daysCovered": "2026-08-11 .. 2026-08-12 (2 days, not the app's history)"
+  },
+  "sessions": {
+   "weeklyRows": 23,
+   "totalSessionsReported": 0,
+   "note": "the Counts column sums to zero — session volumes are suppressed at this scale"
+  }
+ },
+ "whatThisSettles": "The honest statement is neither 'they will never come' (my inference, now falsified) nor '28 hours is just pipeline lag' (true, and incomplete). It is: THEY COME, AND THEY CANNOT CARRY A GUARDRAIL. One deletion event and zero session counts cannot answer 'did monetization damage use'. §G's rollout guardrail is unavailable in practice, and the reason is sample size rather than absence — which is a reason that only shrinks as traffic grows, so it is worth re-checking, not worth planning around.",
+ "consequenceForStage1": "Both Codex and Gemini, asked independently, chose shape B — ship the tip jar with NO transmitted telemetry and keep Data Not Collected — and both argued it from statistical power rather than from privacy: at ~72 downloads/month no telemetry could detect a retention change either. This measurement replaces that argument with a number: Apple's own sample is 9.2% of a 109-install base.",
+ "ownedElsewhere": "docs/measurements/v2-stage0-baseline.md and PLAN-V2-PRODUCT.md §G still carry the 'plan for permanently unavailable' wording. Both belong to the peer session under the working split; it has been told."
+}
