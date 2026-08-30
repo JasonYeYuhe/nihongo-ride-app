@@ -12,13 +12,22 @@
 | Platform | macOS (14.0+) |
 | Primary language | English (U.S.) |
 | Primary category | Education |
-| Secondary category | Games — Word (optional) |
+| Secondary category | Reference |
 | Age rating | 4+ (no objectionable content) |
 | Price | **Free** |
 | Copyright | © 2026 Yuhe Ye |
 | Support URL | https://jasonyeyuhe.github.io/nihongo-ride/support.html |
 | Marketing URL | https://jasonyeyuhe.github.io/nihongo-ride/ |
 | Privacy Policy URL | https://jasonyeyuhe.github.io/nihongo-ride/privacy.html |
+
+> **Corrected 2026-08-30 against the live record**, not from memory: this row said
+> *"Games — Word (optional)"*. `GET /v1/appInfos/e66ae118-…?include=primaryCategory,secondaryCategory`
+> returns `EDUCATION` / `REFERENCE`, with no Games classification at all.
+>
+> The staleness was not cosmetic. A Stage 1 reviewer read this line and raised mainland China's
+> licence requirement (版号) for **games** offering in-app purchase as a possible hard block on
+> the base territory — which is 48% of installs. It does not apply, and the five minutes that
+> established that were spent because a document disagreed with the thing it describes.
 
 App Privacy: **Data Not Collected** (fully offline, no account, no analytics).
 

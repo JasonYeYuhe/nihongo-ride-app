@@ -1,0 +1,35 @@
+{
+  "identifier" : "C9E0A4B1",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "10.00",
+      "familyShareable" : false,
+      "internalID" : "A1B2C3D4",
+      "localizations" : [
+        {
+          "description" : "A second journey west, and every route after.",
+          "displayName" : "The Road West",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.jasonye.nihongoride.scenery.lifetime",
+      "referenceName" : "Nihongo Ride Scenery — the road west",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6777469778",
+    "_developerTeamID" : "KHMK6Q3L3K",
+    "_lastSynchronizedDate" : 0
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

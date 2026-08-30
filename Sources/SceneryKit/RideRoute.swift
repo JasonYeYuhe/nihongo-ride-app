@@ -91,8 +91,8 @@ public enum RideRoute {
     /// exactly 150 m** — its twelve words are き・て・め・に・ご・え・く・は・せ・みず・あさ・よる,
     /// nine of them a single kana — because `VocabStore.ordered` deals by `difficulty`, whose
     /// `0.6 × length` term puts the short words first. Averaged over the road to Kyōto a journey
-    /// ride is **351 m** on new words alone and **535 m** with the review mix, so Kyōto is
-    /// **47–72 rides**, and the last stretch is roughly 19–28 rides rather than months.
+    /// ride is **350 m** on new words alone and **525 m** with the review mix, so Kyōto is
+    /// **48–72 rides**, and the last stretch is roughly 19–28 rides rather than months.
     /// `Tests/RoadDataTests` pins those numbers by riding real `GameSession`s, so the next corpus
     /// change reports the new figure instead of leaving this paragraph to rot the way the old one
     /// did.

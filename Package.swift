@@ -162,6 +162,16 @@ let package = Package(
         // VerbClass(rawValue:) — no extra dependency edge.
         .testTarget(name: "ConjugationDataTests", dependencies: ["VocabKit", "ConjugationKit", "RomajiKana"]),
 
+        // MARK: How far the road actually is (v1.30) — measured by riding it.
+        //
+        // A cross-target data test in the shape of ConjugationDataTests above: it needs the road
+        // (SceneryKit), the distance rule (GameCore), the corpus (VocabKit) and the matcher
+        // (RomajiKana) at once. Deliberately NOT in NihongoRideAppTests — every AppModel built
+        // there writes to the App Group container, which is outside `supportDirectoryOverride`,
+        // and this test needs none of the app to answer its question.
+        .testTarget(name: "RoadDataTests",
+                    dependencies: ["SceneryKit", "GameCore", "VocabKit", "RomajiKana", "ReviewKit"]),
+
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",

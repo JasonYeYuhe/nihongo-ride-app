@@ -125,6 +125,15 @@ enum Screenshotter {
         // Large-type layout stays device-verified (Gate E). ScaledFont.swift has said so since
         // v1.7 Phase A; this comment exists because that warning was nearly ignored.
 
+        // The road screen (v1.30). Rendered unconditionally because it is the ONE surface Apple's
+        // reviewer is told to look at — the IAP's review note points at Settings > The Road — and
+        // because the offer's honesty to a rider who has NOT arrived is a layout property that
+        // only a render can show. Two states, since they are different screens: the offer, and
+        // what an owner sees instead of it.
+        let road = makeModel()
+        road.showRoad()
+        render(RootView().environment(road), size: size, to: directory + "/road.png")
+
         // Every stretch of road, as a contact sheet (v1.12 §D). The palettes are the one
         // part of the scenery a person has to LOOK at to judge, and there is no other way
         // to see seven of them without riding 25 km. NIHONGO_SHOT_STAGES=1 opts in.

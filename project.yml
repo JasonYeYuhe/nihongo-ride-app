@@ -329,6 +329,45 @@ targets:
         CODE_SIGN_STYLE: Automatic
         SKIP_INSTALL: YES
 
+  # v1.30 — the StoreKit gates, on macOS, because iOS cannot run them.
+  #
+  # MEASURED 2026-08-30 on Xcode 26.6 / iOS 26.5 sim, on an independent minimal project: a local
+  # `.storekit` configuration never reaches the app under `xcodebuild test` on iOS under ANY
+  # wiring tried (xcodegen `run:` reference, hand-added TestAction reference, an `.xctestplan`
+  # `storeKitConfigurationFileReference`, unsigned, ad-hoc signed, two devices) —
+  # `Product.products(for:)` returns 0 every time. `SKTestSession` logs
+  # `SKInternalErrorDomain Code=3` for every operation AND ITS INITIALISER DOES NOT THROW, so the
+  # obvious gate test passes while the session is completely inert.
+  #
+  # The same `.storekit` and the same probe code pass 10/10 on macOS in ~11s. That contrast is
+  # what makes this target trustworthy rather than merely green: the instrument is known to fire
+  # on a positive and known to fail on a negative, on this machine, today.
+  #
+  # ⚠️ Recorded as MEASURED-BROKEN, not as IMPOSSIBLE. It is a simulator-runtime failure and a
+  # toolchain update could fix it. Re-check with the probe when Xcode changes; PLAN-STAGE1 says
+  # where it lives. Assuming permanence here would be the same inference error the engagement
+  # reports already falsified once.
+  NihongoRideMacTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests/NihongoRideMacTests
+      # xcodegen puts a .storekit listed in `sources` into Resources automatically (measured).
+      # It belongs to the TEST bundle and must never enter the app target: a Release .app
+      # containing a local store configuration would be a shipped debug affordance.
+      - path: xcode/NihongoRide.storekit
+    dependencies:
+      - target: NihongoRide
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride.mactests
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: "YES"
+        CODE_SIGN_STYLE: Automatic
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Nihongo Ride.app/Contents/MacOS/Nihongo Ride"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+
   # XCUITest bundle reproducing the App Review touch-only flow on the iPad
   # simulator (keyboard appears, typing works, pause/exit by touch).
   NihongoRideiOSUITests:
@@ -358,6 +397,33 @@ schemes:
         NihongoRide: all
     run:
       config: Debug
+      # ⚠️ ONLY honoured here. Under `test:` or at the scheme's top level xcodegen writes NOTHING
+      # and says nothing — the check is to grep the generated .xcscheme for
+      # StoreKitConfigurationFileReference, which is what `check_storekit_wiring.sh` does.
+      #
+      # Also measured: this reference is NOT what arms SKTestSession — the suite passes 9/10 with
+      # it removed entirely, because the .storekit as a test-bundle resource is what matters. It
+      # is here so a human can Debug-run the Mac app against the local store. Wearform's project
+      # comment claims the scheme reference is causal; it is not, and that claim is not inherited.
+      storeKitConfiguration: xcode/NihongoRide.storekit
+    test:
+      config: Debug
+      targets:
+        - NihongoRideMacTests
+      # The SAME isolation the iOS UI tests use, for the same two reasons and one more.
+      #
+      # A unit-test bundle with a TEST_HOST launches the real app, so `AppModel.init` runs — which
+      # means Application Support, the App Group container, UserDefaults and CloudKit are all in
+      # play. v1.24 learned what that costs when a test target stamped fourteen days of zeros onto
+      # the owner's real home-screen widget.
+      #
+      # And on an ad-hoc-signed build there are no iCloud entitlements, so `CKContainer.init`
+      # traps and the host dies before a single test runs — measured here, as a hang after
+      # "In order to use CloudKit, your process must have a com.apple.developer.icloud-services
+      # entitlement". Not starting the sync controller is what keeps it alive; it is the same
+      # reason `IsolatedLaunch.swift` gives for the iOS suite.
+      environmentVariables:
+        NIHONGO_UITEST: "1"
     archive:
       config: Release
   NihongoRideiOS:

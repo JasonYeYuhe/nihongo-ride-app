@@ -11,7 +11,7 @@ import EntitlementKit
 /// it does not cover the thing most likely to actually hurt.
 ///
 /// Before this release the Tōkaidō was **the** road and 京都 was where it ended. Somebody who rode
-/// 47 to 72 rides to get there finished something. Draw the same data as one sixteen-stretch bar
+/// 48 to 72 rides to get there finished something. Draw the same data as one sixteen-stretch bar
 /// and their completed journey silently becomes a half-finished one — nothing removed, and a real
 /// loss. There is no telemetry in this app and there will not be, so if that happened nobody would
 /// find out; it would arrive, if at all, as the one-star review this product cannot absorb.

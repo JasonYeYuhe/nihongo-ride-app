@@ -157,3 +157,181 @@ observation window, the refund ceiling — which now has the numbers it was wait
   the shape, not that method.
 * The description's "no network" wording — already corrected in v1.28 for CloudKit, and it will
   need revisiting again when a purchase exists.
+
+---
+
+# Part II — what the build found, and the pre-registration
+
+Everything above was decided before any code existed. Everything below was measured while writing
+it, on 2026-08-30, and where it contradicts Part I it supersedes it.
+
+## §H The road is twice as long as Part I said, and the error is the familiar one
+
+Part I: *"全语料平均词长 3.71 假名,所以 673 个完成的词到京都,约 20–50 次骑行。"* The arithmetic is
+right. **The population is wrong**, and it is this project's most-repeated shape one more time.
+
+New words are not drawn at random. `VocabStore.ordered` sorts by `VocabEntry.difficulty`, whose
+`0.6 × length` term deals the **short words first** — so the words a rider actually meets on the
+way to Kyōto average **2.92 kana, not 3.71**.
+
+| | Part I | measured |
+|---|---|---|
+| mean kana of the words ridden first | 3.71 (whole corpus) | **2.92** |
+| new words to 25 km | 673 | **856**, inside the 72nd ride of twelve |
+| journey rides to Kyōto | "20–50" | **48** with the review mix · **72** on new words alone |
+| first ride | — | **exactly 150 m** |
+| mean ride on the road to Kyōto | — | **350 m** new-only · **525 m** with reviews |
+
+Both numbers are kept, because they answer different questions: **856** is where the odometer
+first crosses 25,000 m; **72 rides × 12** is where a rider crosses it, since a ride is atomic and
+nobody dismounts at word 857.
+
+`RideRoute.swift:46` carried the same error in the other direction — *"a journey ride is ~150 m"*.
+That is exactly right **for the first ride**, whose twelve words are き・て・め・に・ご・え・く・は・せ・
+みず・あさ・よる, nine of them a single kana. It was then used as a steady-state constant to justify
+the whole threshold ladder. Corrected in the code, and `Tests/SceneryKitTests` now pins the road's
+shape so the next corpus change reports a new number instead of leaving a paragraph to rot.
+
+**The consequence for §D is worse arithmetic, and it is not hidden.** The buyer is somebody who
+rode 48–72 times, not 20–50. Against the measured **2.321 installs/day** and net **¥8.42**:
+
+| arrival rate at Kyōto | arrivers / 30d | share of them who must buy for ¥50/月 |
+|---|---|---|
+| 30% | 20.9 | 28% |
+| 20% | 13.9 | 43% |
+| **10%** | 7.0 | **85%** |
+| 5% | 3.5 | **170% — impossible** |
+
+**The arrival rate is not measurable and will not become measurable during Stage 1.** The odometer
+is device-local and never transmitted; Apple's engagement reports are a 9.2% sample with one
+deletion event and a sessions column summing to zero. Every row above is a hypothesis, and the
+observation window below is set on that basis rather than on a model that pretends to know which
+row is true.
+
+## §I What was decided against Part I, with the measurement that decided it
+
+**`AppTransaction` is NOT used, and §E's grandfathering is deferred.** Part I carried it as an open
+item with an unverified offline path. It is now verified and the verdict is worse than "unknown":
+
+* `AppTransaction.shared` is `get async throws`, and the SDK's own doc comment scopes its cache
+  **per app version** — "make a request to get one from the App Store server if one has not been
+  cached yet". Measured under a simulated offline: **it throws `networkError(-1009)`**. A rider who
+  auto-updated overnight and opens the app on a plane hits a throw on the exact path meant to
+  protect them. `refresh()` is not a fallback; its own doc says it forces an authentication dialog.
+* Under Stage 1's scope the predicate has an **empty extension**: a free rider's outcome does not
+  depend on entitlement at all, so grandfathered and not-grandfathered give the same result on
+  every input. §E's rule was written for the fork where something free moves behind the paywall.
+  This is the other fork, and §E's own text names *"a route"* as its example.
+* The one place the branches differ is that grandfathering would hand the SKU **free to every
+  pre-paywall install** — which is every Kyōto arriver alive, i.e. exactly the cohort Part I calls
+  "the right person to ask". It would zero out the only measurement Stage 1 exists to take.
+* Zero of 6,865 sibling `.swift` files use it, with two positive controls proving the grep fires.
+
+What replaces it is a **code-enforced route invariant** rather than a promise: the free road is
+frozen field-by-field, and `Fixtures/tokaido-v1.29-sweep.json` — swept from v1.29's own compiled
+`RideRoute.swift` at `48de373`, not from the working tree — asserts an unentitled rider gets
+identical answers at 1,167 points. `scripts/gen_route_golden.py` refuses to regenerate it from a
+ref that already contains the paid road. Deferring costs nothing: `originalAppVersion` reports the
+first version the Apple Account downloaded and is readable retroactively, so Stage 3 can still go
+the other way with nothing recorded now.
+
+**The offer is one row in Settings, and it opens a screen.** Codex's placement discipline is
+adopted whole. The screen is the product page for the thing the row names, not a second
+solicitation — and it is what lets the offer be honest to a rider who is still 20 km from the
+purchase being any use, which a bare price row cannot be.
+
+**The two roads are presented as two journeys, never as one sixteen-stretch bar.** Structurally the
+paid road is appended and a test proves nothing is taken away. That covers what a byte can cover
+and not the thing most likely to hurt: before v1.30 the Tōkaidō *was* the road and Kyōto was where
+it ended, so one progress bar would convert a finished journey into a half-finished one — nothing
+removed, a real loss, and **invisible**, because there is no telemetry and will not be.
+**This is a judgement. Nobody has watched a rider react to either layout.**
+
+## §J iOS cannot run the purchase gates. macOS can, and that is where they live
+
+MEASURED on Xcode 26.6 / iOS 26.5 simulator, on an independent minimal project:
+
+* a local `.storekit` configuration **never reaches the app on iOS** under `xcodebuild test` — five
+  wirings tried, `Product.products(for:)` returns 0 every time, on two devices;
+* `SKTestSession` logs `SKInternalErrorDomain Code=3` for every operation **and its initialiser
+  does not throw**, so the obvious gate test passes while the session is completely inert;
+* the identical configuration and code pass **10/10 on macOS**.
+
+So the gates are `Tests/NihongoRideMacTests`, and `test00_theStoreIsReachable` is what makes the
+rest of that file mean anything — it fails on iOS and passes on macOS, a known negative and a
+known positive on this machine today.
+
+**Recorded as MEASURED-BROKEN, not IMPOSSIBLE.** It is a simulator-runtime failure and a toolchain
+update could fix it; calling it permanent would be the same inference error the engagement reports
+already falsified once. Re-check when Xcode changes.
+
+**Three gates cannot be automated anywhere here and are therefore MANUAL:** no App Store account
+signed in, Family Sharing, and a real cross-platform (macOS ↔ iOS) restore. Listing them as tested
+because the macOS suite is green would be a lie. They need a walked-through date and device below
+before submission.
+
+## §K §G's pre-registration, fixed in advance
+
+Written before the SKU exists. The point is not that these numbers are right; it is that they are
+**fixed before the data arrives**, so no outcome can be rationalised afterwards.
+
+**Measured inputs, 2026-08-30, all from `scripts/sales_report.py --calibrate` (OK) and ASC:**
+
+| | |
+|---|---|
+| installs | **2.321/day** trailing-28d (65/28); band 53–70 per 30d across 14/28/56-day windows |
+| lifetime install base | **114** (macOS 62 / iOS 52) |
+| net proceeds per ¥10 sale | **¥8.42** — looked up from ASC's price points, **not** derived from a 15% rate |
+| CNY 10 equalises to | USD 0.99 · JPY 150 · EUR 0.99 · GBP 0.99, across 174 territories |
+
+**Denominated in installs, not exposures**, deliberately. §D's own economics are stated as a share
+of new installs, a device cannot be exposed without installing, and an install-denominated bound
+can only *overstate* the traffic — so it is conservative. The exposure question stays where it
+honestly belongs: unmeasurable remotely, addressed by the local counter, not by this table.
+
+**Window: 90 days from READY_FOR_SALE on both platforms. Refunds evaluated separately at day 180**,
+because refunds land up to ~90 days after a sale and a ceiling read at day 90 is read before the
+data exists.
+
+| checkpoint | new installs | zero purchases rules out (rule of three, 95%) | decision attached in advance |
+|---|---|---|---|
+| **day 15** | 34.8 | per-install conversion **≥ 8.6%** | **Continue, and record it.** §D needs 8.2% at ¥10, so a zero here already falsifies the revenue model. That is a result. **Do not change the price** — a mid-window price change voids this pre-registration and turns the run into an uninterpretable before/after. |
+| **day 42** | 97.5 | **≥ 3.1%** | **Continue.** No iteration, because iterating restarts the cohort clock and there is not enough traffic to spend a restart on. |
+| **day 90** | 208.9 (+114 base ⇒ ≤ 323 devices ever exposed) | **≥ 1.4%** on new installs · **≥ 0.9%** against the ceiling | **Decide — the three branches below.** |
+
+**Go / iterate / stop at day 90:**
+
+* **≥ 1 net purchase at any point → GO on H1.** Somebody will pay this developer. Run to day 90
+  anyway for the repeat rate. State the ceiling honestly: 1–3 purchases proves existence and
+  estimates nothing.
+* **Zero, AND at least one returned counter showing `settingsRowAppeared > 0` with
+  `furthestBucket == kyoto` → STOP.** Somebody arrived, the row appeared, nothing was bought.
+  That is the only configuration in which a zero is evidence about willingness to pay.
+* **Zero, AND no returned counter (or every one showing `settingsRowAppeared == 0`) → STOP
+  BUILDING, and record the zero as UNINTERPRETABLE.** The next release's job is instrumentation and
+  placement, not price and not Pro. **This branch is the one that must not be quietly dropped:** a
+  pre-registration with no "this taught us nothing" outcome is precisely the failure this project's
+  central rule names, written into the schedule.
+
+**Refund ceiling — absolute counts, because below ~20 sales a rate is noise.** At 10 sales and a
+true 5% refund rate, P(≥1) = 40%.
+* **1 refund → no action.** The modal outcome of a healthy product at this volume.
+* **≥ 2 refunds AND ≥ 20% of units → stop selling.** Pull the SKU. **Every existing entitlement
+  stays honoured** — pulling a SKU must never revoke, and the code cannot revoke without an
+  affirmative revocation signal.
+* **≥ 3 refunds at any n ≤ 18 → investigate the product claim, not the price.**
+
+**Guardrails that exist, and the one that does not.**
+* **Retention/engagement: nothing behind it**, and this is stated as an accepted cost rather than
+  an oversight. If Stage 1 damages engagement, the developer will not find out.
+* **Any new store review mentioning the purchase negatively is a stop-and-fix, regardless of
+  units.** At one lifetime review, n=1 is a real signal here and it costs nothing to watch.
+* **Report the launch spike separately.** The first release carrying the row exposes much of a
+  114-device base at once; conflating that with steady state is how a one-off becomes a forecast.
+
+**Day 0, before the SKU goes on sale — non-negotiable, and it is an OWNER action:** make one real
+¥10 purchase on the owner's own Apple Account **in production** (sandbox never appears in
+`salesReports`), confirm the row appears and `--calibrate` still passes, then refund it. Record the
+date here and **exclude it from the cohort**, or it will later look like the signal. This is the
+money instrument's known-positive, and this project does not trust an instrument that has not
+fired. *An agent cannot do this step and must not try.*
