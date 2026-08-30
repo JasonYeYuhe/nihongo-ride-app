@@ -581,7 +581,8 @@ window, at a *healthy* 5% conversion, yields **¥88 net**. No second SKU pays fo
 
 **The binding constraint is distribution, not the catalogue.** 14,292 impressions convert at
 0.76%; 93% of installs come from search; Japan is the #2 territory and converts at 2.5× China's
-rate **on an English-only listing**, holding 8% of impressions with no Japanese keywords at all.
+rate **on an English-only listing** (a condition that ended 2026-08-27 — see the correction
+directly below), holding 8% of impressions with no Japanese keywords at all.
 Revenue is `traffic × conversion × net`. A second SKU multiplies the term already at its ceiling;
 localisation multiplies the one sitting at 8%.
 
