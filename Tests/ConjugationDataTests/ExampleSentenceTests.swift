@@ -1145,9 +1145,35 @@ struct ExampleSentenceTests {
             "\(reasonWithoutWithholding.count) sentence(s) have a recorded exclusion reason but "
             + "are offered for dictation: " + reasonWithoutWithholding.prefix(8).joined(separator: ", ")))
 
+        let evidences = rows.compactMap { $0["evidence"] as? String }
+
+        // The SHIPPED resource must also agree with itself. This suite reads the evidence
+        // record; the file that actually reaches devices is a different one, and until now
+        // nothing compared its own declared count to its own array. A resource truncated
+        // between those two fields would ship. (Pre-submission review, v1.29.)
+        let resURL = repo.appendingPathComponent("Sources/VocabKit/Resources/dictation-exclusions.json")
+        let resJSON = try #require(try JSONSerialization.jsonObject(
+            with: try Data(contentsOf: resURL)) as? [String: Any])
+        let resRows = try #require(resJSON["excluded"] as? [[String: Any]])
+        #expect((resJSON["excludedCount"] as? Int) == resRows.count, Comment(rawValue:
+            "the shipped resource says excludedCount \(resJSON["excludedCount"] as? Int ?? -1) "
+            + "and holds \(resRows.count) rows"))
+        #expect(resRows.count == shipped.count, Comment(rawValue:
+            "the shipped resource holds \(resRows.count) rows but DictationSafety loaded "
+            + "\(shipped.count) ids"))
+
+        // A floor that is not a number somebody chose. Sentences PROVEN to be spoken differently
+        // from their own answer key can never legitimately be released, so the exclusion list can
+        // never legitimately fall below however many of those there are. `> 100` — the previous
+        // floor — would have let hundreds vanish while every internal count stayed consistent.
+        let proven = evidences.filter { $0.hasPrefix("proven") }.count
+        #expect(proven > 0, "no exclusion is on proven evidence — the record is not what it was")
+        #expect(shipped.count >= proven, Comment(rawValue:
+            "\(shipped.count) sentences are withheld but \(proven) are PROVEN misread — "
+            + "something released a sentence that is proven to be spoken wrongly"))
+
         // Every reason must say something. "propagated" is retired: it named an inference
         // drawn from a DIFFERENT sentence, and v1.28 measured it wrong 11 times out of 15.
-        let evidences = rows.compactMap { $0["evidence"] as? String }
         #expect(evidences.count == rows.count, "an exclusion row carries no evidence field")
         #expect(!evidences.contains("propagated"), Comment(rawValue:
             "\(evidences.filter { $0 == "propagated" }.count) exclusion(s) are back on "

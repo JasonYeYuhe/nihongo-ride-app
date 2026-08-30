@@ -186,7 +186,15 @@ def complete_wav(path):
             head = fh.read(12)
         if len(head) < 12 or head[:4] != b"RIFF" or head[8:12] != b"WAVE":
             return False
-        return struct.unpack("<I", head[4:8])[0] + 8 == os.path.getsize(path)
+        size = os.path.getsize(path)
+        if struct.unpack("<I", head[4:8])[0] + 8 != size:
+            return False
+        # A 12-byte header-only stub satisfies the arithmetic above (4 + 8 == 12) while
+        # containing no audio at all, and so does a render killed at exactly the placeholder
+        # boundary. Require the chunks that carry sound: a `fmt ` and a non-empty `data`.
+        with open(path, "rb") as fh:
+            blob = fh.read(4096)
+        return b"fmt " in blob and b"data" in blob and size > 1024
     except OSError:
         return False
 

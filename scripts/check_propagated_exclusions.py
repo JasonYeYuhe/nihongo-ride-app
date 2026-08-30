@@ -129,9 +129,17 @@ def verdict(row, plan, disputed):
     and the reason it was withheld were different predicates, agreeing only by inspection.
     """
     target = C.sha(C.clip(row["exJP"]))
+    # `sha` returns None for a clip that is missing or torn. Comparing two of those gives
+    # None == None -> True, which is a byte-identical MATCH manufactured out of two absent
+    # recordings -- proof of a pronunciation from audio that does not exist. It did not bite
+    # (0 of 910 rows had a None target when this ran) but it is one failed render away from a
+    # confidently wrong verdict, which is the shape this whole file exists to avoid.
+    if target is None:
+        return "SILENT", ["no usable render of the sentence itself"]
     agrees, disagrees, covered = [], [], set()
     for (i, L, surf, corpus), cands in plan.items():
-        matched = [k for k, txt in cands.items() if C.sha(C.clip(txt)) == target]
+        matched = [k for k, txt in cands.items()
+                   if (h := C.sha(C.clip(txt))) is not None and h == target]
         if not matched:
             continue
         if corpus in matched:
@@ -265,8 +273,12 @@ def main():
 
         # 3. negative control — decoys must NEVER match
         _, decoys = analyse(rows, readings_of, decoys=True)
-        spurious = [(cid, t) for cid, txts in decoys.items() for t in txts
-                    if C.sha(C.clip(t)) == C.sha(C.clip(next(r for r in rows if r["id"] == cid)["exJP"]))]
+        spurious = []
+        for cid, txts in decoys.items():
+            tgt = C.sha(C.clip(next(r for r in rows if r["id"] == cid)["exJP"]))
+            if tgt is None:
+                continue                       # never let None == None read as a match
+            spurious += [(cid, t) for t in txts if C.sha(C.clip(t)) == tgt]
         decoy_count = sum(len(v) for v in decoys.values())
         print(f"  negative control: {decoy_count} decoy substitutions, "
               f"{len(spurious)} spurious byte matches")
@@ -288,7 +300,10 @@ def main():
     complaint = {}
     for r in rows:
         parts = (by_id.get(r["id"], {}).get("heardInstead") or "").split()
-        if len(parts) >= 3 and "->" in parts:
+        # `parts[1] != "->"` matters: on a three-part complaint ("かみ -> がみ") parts[1] IS the
+        # arrow, and injecting it would put the literal string "->" into the candidate readings.
+        # No row has that shape today; the guard is here so none ever silently does.
+        if len(parts) >= 4 and "->" in parts and parts[1] != "->":
             complaint[r["id"]] = {parts[0]: {parts[1], parts[-1]}}
     plans, _ = analyse(rows, readings_of, decoys=False, complaint=complaint)
     out = {"release": [], "keep": [], "silent": []}

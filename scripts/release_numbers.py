@@ -103,6 +103,14 @@ def numbers():
         # exists so release copy can never quote the wrong direction.
         "withheldThisRelease": withheld,
         "releasedThisRelease": (-withheld if withheld is not None and withheld < 0 else 0),
+        # Sentences withheld from Dictation that are PROVEN to be spoken differently from their
+        # own answer key, as opposed to merely undecided. The review notes quote it, so it is
+        # computed: a figure typed into copy sent to App Review is the same defect as one typed
+        # into What's New, only with a smaller audience and a worse consequence.
+        "dictationProvenMisread": sum(
+            1 for r in json.loads((REPO / "docs/measurements/dictation-reading-mismatches.json")
+                                  .read_text(encoding="utf-8"))["excluded"]
+            if str(r.get("evidence", "")).startswith("proven")),
     }
 
 

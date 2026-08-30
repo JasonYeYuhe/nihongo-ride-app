@@ -2,9 +2,9 @@
 """Create the 1.27 App Store versions, set What's New + review notes, then attach the
 processed builds and submit both platforms for review.
 
-v1.27 is the first product-stage release: it ships one feature, the App Store rating request,
+v1.29 ships one content change and no store metadata beyond release notes: it ships one feature, the App Store rating request,
 and touches no vocabulary file. The paragraphs below are kept from the v1.26 template because the
-defects they record are properties of the TEMPLATE, not of that release.
+defects they record are properties of the TEMPLATE, not of any one release.
 
 The v1.26 notes, retained for the two template fixes they explain: it turned v1.25's closing
 sentence — a gate validated by what it CATCHES has not been
@@ -47,7 +47,7 @@ TARGETS = [
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from release_numbers import numbers as _release_numbers   # noqa: E402
 
-# v1.27 quotes NO corpus figure, because it changes no corpus — see release_numbers.CORPUS_MANIFEST.
+# v1.29 quotes corpus figures in BOTH What's New and the review notes, because it changes no corpus — see release_numbers.CORPUS_MANIFEST.
 # The call is kept anyway: it raises if a constant the copy has ever quoted was renamed away, and a
 # free integrity check at submit time is worth more than a tidy import list.
 N = _release_numbers()
@@ -83,12 +83,14 @@ WHATS_NEW = {
 REVIEW_NOTES = (
     "Nihongo Ride is a typing-practice app for learners of Japanese. No account or login is "
     "required and the developer collects no data.\n\n"
-    "Version 1.29 makes one functional change: 161 example sentences are returned to the "
-    "Dictation exercise. Dictation speaks a sentence with the on-device system Japanese voice and "
-    "grades the learner against a kana answer key, so any sentence where the two disagree is "
-    "withheld. These 161 had been withheld by an indirect estimate; each has now been measured "
-    "directly against the voice and matches its answer key. A further 227 sentences remain "
-    "withheld, now on a direct measurement rather than an estimate.\n\n"
+    f"Version 1.29 makes one functional change: {N['releasedThisRelease']} example sentences are "
+    "returned to the Dictation exercise. Dictation speaks a sentence with the on-device system "
+    "Japanese voice and grades the learner against a kana answer key, so any sentence where the "
+    f"two disagree is withheld. These {N['releasedThisRelease']} had been withheld by an indirect "
+    "estimate; each has now been measured directly against the voice and matches its answer key. "
+    f"{N['dictationExcluded']} sentences remain withheld, {N['dictationProvenMisread']} of them "
+    f"proven to be spoken differently from their answer key. The Dictation exercise now draws on "
+    f"{N['dictationPool']} sentences.\n\n"
     "There are no App Store metadata changes in this version other than the release notes.\n\n"
     "Data handling is unchanged and the App Privacy declaration is unchanged. There is no "
     "analytics SDK, no advertising, and no developer-operated server in this app. Optional iCloud "
