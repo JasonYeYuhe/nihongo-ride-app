@@ -129,6 +129,12 @@ it as an objection.
 > Everything else — modes, review scheduling, stats, widgets, UI, accessibility, content — is
 > open. §D below stays correct about *what the debt is* and is wrong about it being the whole list.
 
+> **The backlog moved out of this file on 2026-08-31.** The owner chose fast iteration, and a
+> constraint document that also carries the work list makes the work list read like a set of
+> concessions. **`docs/PLAN-ITERATION.md` is the backlog**; this file is why the constraints are
+> as few as they are. §D below is kept because it is still an accurate inventory of the *debt* —
+> it was never an accurate inventory of what may be built.
+
 ## §D What is free, re-ranked after review
 
 Free = invisible to both clauses of §A's test. **The first draft ranked these by what was
