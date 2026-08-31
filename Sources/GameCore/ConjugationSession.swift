@@ -110,19 +110,47 @@ public final class ConjugationSession {
         public var level: JLPTLevel?
         /// Which forms to drill.
         public var forms: [ConjugationForm]
+        /// Seconds per kana of the answer, for the PRODUCTION half of the prompt. Same value
+        /// and same meaning as `GameSession.Config.secondsPerKanaBaseline`: it was calibrated
+        /// for the typing mechanic, which is identical here — the learner presses the same
+        /// romaji keys for the same kana.
+        public var secondsPerKanaBaseline: Double
+        /// Seconds allowed for reading the prompt and RECALLING the form, before any typing.
+        ///
+        /// **This number is a choice and not a measurement, and that is stated here rather
+        /// than discovered later.** `PLAN-V1.26` §C refused to wire this clock at all for
+        /// exactly this reason — *"the threshold cannot be calibrated with anything in this
+        /// repo"* — and nothing has since made it calibratable: the app transmits no
+        /// telemetry, so no distribution of real prompt times exists anywhere.
+        ///
+        /// What IS measured is the harm bound, and it is what makes shipping a chosen number
+        /// defensible rather than reckless. `ConjugationSRSCard.review(quality:)` moves the
+        /// ease factor by **+0.100 at q=5 and by exactly 0.000 at q=4** — a q=4 cannot lower
+        /// an ease factor, it can only decline to raise one. The defect being fixed is that
+        /// *every* clean answer scored 5. So an allowance chosen too SMALL grades some
+        /// effortless answers 4, which costs the learner an ease-factor increment; an
+        /// allowance chosen too LARGE reproduces the bug. The errors are not symmetric, so
+        /// this errs small.
+        ///
+        /// Zero when the answer is on screen — see `durationRatio(for:)`.
+        public var recallAllowanceSeconds: Double
 
         public init(
             languageCode: String = "en",
             assistance: AssistanceMode = .always,
             promptCount: Int = 12,
             level: JLPTLevel? = nil,
-            forms: [ConjugationForm] = ConjugationForm.allCases
+            forms: [ConjugationForm] = ConjugationForm.allCases,
+            secondsPerKanaBaseline: Double = 0.8,
+            recallAllowanceSeconds: Double = 2.0
         ) {
             self.languageCode = languageCode
             self.assistance = assistance
             self.promptCount = promptCount
             self.level = level
             self.forms = forms.isEmpty ? ConjugationForm.allCases : forms
+            self.secondsPerKanaBaseline = secondsPerKanaBaseline
+            self.recallAllowanceSeconds = recallAllowanceSeconds
         }
 
         /// Sets ``forms`` from persisted raw `ConjugationForm` values (e.g.
@@ -169,6 +197,10 @@ public final class ConjugationSession {
     private var matcher: KanaInputMatcher?
     private var currentMistakes = 0
     private var currentRevealed = false
+    /// Time on the current prompt, excluding pauses. Before v1.31 there was no prompt clock
+    /// at all: `TypingOutcome` was built without a `durationRatio`, the default 1.0 made
+    /// `<= 1.5` always true, and every clean answer was graded 5 however long it took.
+    private var promptClock: PromptClock
 
     // MARK: Init
 
@@ -178,6 +210,7 @@ public final class ConjugationSession {
         self.queue = prompts
         self.config = config
         self.now = now
+        self.promptClock = PromptClock(startedAt: now())
         loadCurrent()
     }
 
@@ -244,12 +277,26 @@ public final class ConjugationSession {
         assistanceOffered = false
     }
 
+    /// The learner stopped typing because the app said so — pause overlay, a sheet over the
+    /// drill, or the app leaving the foreground. The same three signals that stop the ride's
+    /// `RunClock`.
+    public func pauseTyping() { promptClock.pause(at: now()) }
+
+    /// Resumed. Idempotent, and ignored when not paused.
+    public func resumeTyping() { promptClock.resume(at: now()) }
+
+    /// Whether the prompt clock is stopped. Exposed so a test can assert the app's three
+    /// signals actually reach the session, rather than asserting that the method exists.
+    public var isTypingPaused: Bool { promptClock.isPaused }
+
     /// Gives up on the current prompt and advances. Emits an incomplete outcome (if a sink
     /// is set) — the session still holds no store; the app decides what to persist.
     public func skip() {
         combo = 0
         if let prompt = current {
-            onOutcome?(prompt, TypingOutcome(completed: false, mistakes: currentMistakes, usedHint: currentRevealed))
+            onOutcome?(prompt, TypingOutcome(completed: false, mistakes: currentMistakes,
+                                             usedHint: currentRevealed,
+                                             durationRatio: durationRatio(for: prompt)))
         }
         advance()
     }
@@ -261,6 +308,7 @@ public final class ConjugationSession {
         if index < queue.count {
             current = queue[index]
             matcher = KanaInputMatcher(target: queue[index].conjugatedKana)
+            promptClock.restart(at: now())
         } else {
             current = nil
             matcher = nil
@@ -278,9 +326,40 @@ public final class ConjugationSession {
         }
         score += currentRevealed ? 10 : promptScore(mistakes: currentMistakes, combo: combo)
         if let prompt = current {
-            onOutcome?(prompt, TypingOutcome(completed: true, mistakes: currentMistakes, usedHint: currentRevealed))
+            onOutcome?(prompt, TypingOutcome(completed: true, mistakes: currentMistakes,
+                                             usedHint: currentRevealed,
+                                             durationRatio: durationRatio(for: prompt)))
         }
         advance()
+    }
+
+    /// How long this prompt took, against how long it should reasonably have taken.
+    ///
+    /// `baseline = allowance + kana × secondsPerKanaBaseline`, and the two terms are of
+    /// different evidential status, which is the whole reason they are two terms:
+    ///
+    /// * The **production** term reuses `secondsPerKanaBaseline` for the task it was
+    ///   calibrated on. The objection `PLAN-ITERATION` records — *0.8 s/kana was calibrated
+    ///   for copying a word the learner can SEE* — applies to the recall half of a
+    ///   conjugation prompt and not to the typing half, where the learner presses the same
+    ///   romaji keys for the same kana as in a ride.
+    /// * The **allowance** covers reading the prompt and recalling the form, and is a chosen
+    ///   number. See `Config.recallAllowanceSeconds` for what is and is not known about it.
+    ///
+    /// **The allowance is zero when the answer is on screen**, because then there is nothing
+    /// to recall — the drill is copying a visible string, which is exactly the task the
+    /// production term already covers. That happens in two ways: `assistance == .always`
+    /// shows the romaji of the answer for every prompt, and a revealed prompt shows it for
+    /// this one. Treating those the same as blind recall would hand out the allowance to
+    /// learners who were reading the answer, which is the lenient direction — the one that
+    /// reproduces the defect.
+    private func durationRatio(for prompt: ConjugationPrompt) -> Double {
+        let answerVisible = config.assistance == .always || currentRevealed
+        let allowance = answerVisible ? 0 : config.recallAllowanceSeconds
+        let baseline = allowance
+            + Double(max(1, prompt.conjugatedKana.count)) * config.secondsPerKanaBaseline
+        guard baseline > 0 else { return 1 }
+        return promptClock.elapsed(at: now()) / baseline
     }
 
     private func advance() {

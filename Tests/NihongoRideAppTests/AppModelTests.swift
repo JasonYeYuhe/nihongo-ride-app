@@ -86,6 +86,46 @@ struct AppModelTests {
         return model
     }
 
+    // MARK: The pause reaches the session's clock (v1.31)
+
+    /// **Proving a clock can be paused is not proving anything pauses it.**
+    ///
+    /// `PromptTimingTests` proves `ConjugationSession`/`GameSession` exclude a paused stretch
+    /// when told to. That would stay green with `pauseRunClock()` never calling them — which is
+    /// precisely how the ride's word clock came to run through pauses for fifteen releases while
+    /// the run clock stopped: v1.15 wired one of the two signals' destinations and nothing
+    /// compared them. The same shape defeated `RideMoment.openedANewOffer`'s first fix, where
+    /// mutating the caller to pass a hard-coded `false` left the whole suite green.
+    ///
+    /// So this asserts the wiring from the app's side, on the model the views actually call.
+    @Test("pauseRunClock stops the word clock too, and resumeRunClock starts it")
+    func pauseReachesTheRideSession() throws {
+        let model = Self.makeModel(vocab: VocabStore(entries: Self.verbEntries(10)))
+        model.startGame()
+        let session = try #require(model.session, "no ride to pause — the arrangement failed")
+        #expect(!session.isTypingPaused, "a fresh ride must not start paused")
+        model.pauseRunClock()
+        #expect(session.isTypingPaused, Comment(rawValue: "the pause overlay, the sheet and "
+                + "backgrounding all go through pauseRunClock; if it does not reach the session "
+                + "the word clock runs through all three"))
+        model.resumeRunClock()
+        #expect(!session.isTypingPaused)
+    }
+
+    @Test("…and the conjugation drill's prompt clock, which had no pause signal at all")
+    func pauseReachesTheConjugationSession() throws {
+        let model = Self.makeModel(vocab: VocabStore(entries: Self.verbEntries(10)))
+        model.startConjugation()
+        let session = try #require(model.conjugationSession,
+                                   "no drill to pause — the arrangement failed")
+        #expect(!session.isTypingPaused)
+        model.pauseRunClock()
+        #expect(session.isTypingPaused, Comment(rawValue: "ConjugationGameView called only "
+                + "resetStruggle before v1.31, because there was no prompt clock to stop"))
+        model.resumeRunClock()
+        #expect(!session.isTypingPaused)
+    }
+
     /// A reviewed card that is genuinely weak, so `weakestCards` will rank it.
     static func weakCard(_ id: String, lapses: Int) -> SRSCard {
         var card = SRSCard(id: id)

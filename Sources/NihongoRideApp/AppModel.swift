@@ -893,10 +893,39 @@ final class AppModel {
 
     /// The rider stopped riding — pause overlay, a sheet over the game, or the app leaving
     /// the foreground. Idempotent, because those three overlap. (v1.15 §D.)
-    func pauseRunClock() { runClock?.pause(at: Date()) }
+    ///
+    /// **It now stops the WORD's clock as well as the run's, and until v1.31 it did not.**
+    /// v1.15 stopped the run clock for these three signals because paused time was being
+    /// written into the journal as riding; the per-word clock that grades SM-2 kept running
+    /// through all three, so a word interrupted by a pause was graded on time the rider spent
+    /// away from the keyboard. One signal, two clocks, and only one of them was wired — the
+    /// shape this repo has now recorded two dozen times. The two are driven from one place so
+    /// they cannot drift apart again.
+    func pauseRunClock() {
+        runClock?.pause(at: Date())
+        session?.pauseTyping()
+        conjugationSession?.pauseTyping()
+    }
 
     /// The rider resumed. Ignored when not paused.
-    func resumeRunClock() { runClock?.resume(at: Date()) }
+    func resumeRunClock() {
+        runClock?.resume(at: Date())
+        session?.resumeTyping()
+        conjugationSession?.resumeTyping()
+    }
+
+    /// The speed the rider is going right now, by exactly the convention the journal row will
+    /// record — `RunClock.wpm` over RIDDEN time, so the number on screen during the ride and
+    /// the number written to the Ride Log afterwards cannot be two different quantities.
+    ///
+    /// Zero, and rendered as nothing, until the run has two seconds of ridden time and a
+    /// correct keystroke — `RunClock.wpm`'s own convention, not a second opinion about it.
+    /// A pause freezes it rather than letting it decay, which is the point: the rider is not
+    /// getting slower while the pause overlay is up.
+    var liveWPM: Double {
+        guard let session, let runClock else { return 0 }
+        return runClock.wpm(correctKeystrokes: session.correctKeystrokes, at: Date())
+    }
 
     // MARK: Coach (v1.15)
 

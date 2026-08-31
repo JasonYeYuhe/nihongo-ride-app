@@ -111,7 +111,7 @@ asserted. Other glyphs ASC may dislike are unmeasured, and this check says nothi
 nothing" from "somebody forgot to wire the purchase up", and those must not be the same
 keystroke — v1.24 §C's move, applied to the release path.
 
-### 2. The conjugation prompt clock — a live defect, and a visible feature
+### 2. The conjugation prompt clock — **DONE 2026-09-01**, a live defect and a visible feature
 
 `ConjugationSRSCard.quality(from:)` grades **every clean answer 5**, because `ConjugationSession`
 never supplies a `durationRatio` and the default 1.0 makes `<= 1.5` always true. Measured with an
@@ -128,6 +128,54 @@ the last of those is user-visible.
 *Risk:* it rewrites SM-2 schedules. Choose the baseline against data, not intuition; the existing
 `secondsPerKanaBaseline` (0.8 s/kana) was calibrated for copying a word the learner can SEE, and a
 conjugation prompt is recall plus production.
+
+> **WHAT SHIPPED, AND THE ONE THING THAT COULD NOT BE DONE AS ASKED.**
+>
+> `PromptClock` — `RunClock` restarted per prompt — is now held by both sessions, so **two
+> defects closed with one clock**. `ConjugationSession` supplied no timing at all (every clean
+> answer graded 5); `GameSession` supplied *raw wall time*, so a rider who paused mid-word was
+> graded on the pause while the ride's own clock had already stopped for it. `PLAN-V1.26` §C
+> named that second one as the reason it could not fix the first: *"there is no correct clock to
+> copy."* There is now.
+>
+> `AppModel.pauseRunClock()` drives both clocks from one place, so one signal cannot again reach
+> one destination and not the other — and `ConjugationGameView`, which called only
+> `resetStruggle()`, now sends its two signals through it as well.
+>
+> **The baseline is two terms of different evidential status, and that is deliberate.**
+> `baseline = allowance + kana × secondsPerKanaBaseline`. The production term applies the
+> existing 0.8 s/kana to the task it was actually calibrated on — the learner presses the same
+> romaji keys for the same kana as in a ride — which answers the ⚠️ above for that half. The
+> **allowance is zero when the answer is on screen** (`assistance == .always`, or a revealed
+> prompt), because then there is nothing to recall.
+>
+> ⚠️ **`recallAllowanceSeconds = 2.0` is a CHOICE and not a measurement, and no amount of care
+> makes it one.** `PLAN-V1.26` §C refused this whole item because *"the threshold cannot be
+> calibrated with anything in this repo"*, and that is still true: the app transmits no
+> telemetry, so no distribution of real prompt times exists anywhere. What made shipping it
+> defensible rather than reckless is that **the harm is bounded and asymmetric**, which is
+> measured: the ease factor moves +0.100 at q=5 and exactly **0.000** at q=4, so a q=4 cannot
+> lower an ease factor — it can only decline to raise one. Too small an allowance costs an
+> effortless answer one increment; too large reproduces the defect being fixed. So it errs small.
+> **Anyone with real prompt-time data should re-derive it; nothing here should be read as having
+> measured it.**
+>
+> **Mutation-proven, because everything passed first try.** Five mutations, each reverted from a
+> file backup rather than `git checkout` (which would have wiped the uncommitted work):
+> conjugation timing removed → 11 assertions fail; the ride clock ignoring pause → 4; the
+> allowance granted whatever is on screen → 6; the app never pausing the session → 6.
+> **The fifth survived, and that is the useful one.** "A restart forgets the app is away" killed
+> nothing — the boundary test paused *after* the prompt boundary rather than across it, so it
+> asserted the right sentence about the wrong moment and no defect could have broken it. It was
+> rewritten around `skip()` (the reachable route: `PracticeView` binds it to Enter and has no
+> pause overlay) and backed by `PromptClockTests` at the unit level. It now kills the mutation.
+>
+> **Registered under §B3.** The HUD gains a live speed pill, on the same width rule as distance
+> and accuracy — Mac and iPad only; the phone HUD fits about four pills and cannot reflow. A
+> speed readout is the kind of thing that could make people ride further, which moves
+> exposure-per-install. Second-order, written down rather than avoided. It reads `RunClock`, so
+> it is the same quantity the Ride Log will record, and a pause freezes it rather than letting it
+> decay.
 
 ### 3. "Type your own text" in Practice — the bounded half of F1
 

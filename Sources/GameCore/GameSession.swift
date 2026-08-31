@@ -210,7 +210,11 @@ public final class GameSession {
     private var matcher: KanaInputMatcher?
     private var currentMistakes = 0
     private var currentRevealed = false
-    private var wordStartedAt: Date
+    /// Time on the current word, excluding pauses. Was a bare `Date` and raw wall clock:
+    /// the ride's `RunClock` stopped for the pause overlay, the sheet and backgrounding
+    /// while this did not, so a word interrupted by any of the three was graded on time the
+    /// rider spent away from the keyboard. See `PromptClock`.
+    private var promptClock: PromptClock
 
     // MARK: Init
 
@@ -225,7 +229,7 @@ public final class GameSession {
         self.review = review
         self.config = config
         self.now = now
-        self.wordStartedAt = now()
+        self.promptClock = PromptClock(startedAt: now())
         loadCurrent()
     }
 
@@ -630,6 +634,19 @@ public final class GameSession {
         assistanceOffered = false
     }
 
+    /// The rider stopped typing because the app said so — pause overlay, a sheet over the
+    /// game, or the app leaving the foreground. The same three signals that already stop the
+    /// ride's `RunClock`; before v1.31 they stopped the ride's clock and not the word's, so a
+    /// word interrupted by any of them was graded on time the rider was not there for.
+    public func pauseTyping() { promptClock.pause(at: now()) }
+
+    /// The rider resumed. Idempotent, and ignored when not paused.
+    public func resumeTyping() { promptClock.resume(at: now()) }
+
+    /// Whether the word clock is currently stopped. Exposed so a test can assert the app's
+    /// three signals actually reach the session, rather than asserting that the method exists.
+    public var isTypingPaused: Bool { promptClock.isPaused }
+
     /// Gives up on the current word, recording it as not completed, and advances.
     public func skip() {
         if let entry = current {
@@ -654,7 +671,7 @@ public final class GameSession {
         if index < queue.count {
             current = queue[index]
             matcher = KanaInputMatcher(target: queue[index].kana)
-            wordStartedAt = now()
+            promptClock.restart(at: now())
         } else {
             current = nil
             matcher = nil
@@ -702,7 +719,7 @@ public final class GameSession {
     }
 
     private func durationRatio(for entry: VocabEntry) -> Double {
-        let elapsed = now().timeIntervalSince(wordStartedAt)
+        let elapsed = promptClock.elapsed(at: now())
         let baseline = Double(max(1, entry.kana.count)) * config.secondsPerKanaBaseline
         return baseline > 0 ? elapsed / baseline : 1
     }

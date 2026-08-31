@@ -53,10 +53,15 @@ struct ConjugationGameView: View {
             if isPaused { pauseOverlay }
         }
         .observingKeyboard($keyboardUp)
+        // The prompt clock follows the same signals as the ride's, and the drill has two of
+        // the three (it has no add-to-lists sheet). Before v1.31 this view stopped the struggle
+        // detector and nothing else, because there was no prompt clock to stop.
         .onChange(of: isPaused) { _, paused in
+            paused ? model.pauseRunClock() : model.resumeRunClock()
             if paused { model.conjugationSession?.resetStruggle() }
         }
         .onChange(of: scenePhase) { _, phase in
+            phase == .active ? model.resumeRunClock() : model.pauseRunClock()
             if phase != .active { model.conjugationSession?.resetStruggle() }
         }
         // Cap Dynamic Type on the dense, fixed drill layout (mirrors GameView): it

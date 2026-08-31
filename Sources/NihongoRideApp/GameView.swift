@@ -10,6 +10,11 @@ struct GameView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var isPaused = false
     @State private var timeRemaining = 0.0
+    /// The speed pill's value, in whole words per minute. Held as view state rather than read
+    /// from the model on every render because elapsed time changes with no state change behind
+    /// it — nothing in the model moves between keystrokes, so a computed property would show a
+    /// number frozen at the last key press. The ticker below is what makes it live.
+    @State private var liveWPM = 0.0
     @State private var keyboardUp = false   // iOS: software keyboard visible → compact layout
     /// Vocab id whose "add to lists" sheet is open (long-press ★). While set, the
     /// game must NOT consume keystrokes or advance the word — otherwise the sheet
@@ -35,7 +40,7 @@ struct GameView: View {
                 Color.black.opacity(model.rideStage.palette.textScrim).ignoresSafeArea()
 
                 VStack(spacing: keyboardUp ? 12 : 22) {
-                    HUDBar(session: session, language: model.languageCode,
+                    HUDBar(session: session, language: model.languageCode, wpm: liveWPM,
                            onPause: isTouchDevice ? { isPaused = true } : nil)
                     if session.mode == .timeAttack {
                         TimerBar(remaining: timeRemaining, total: session.config.timeLimit ?? 1,
@@ -122,6 +127,13 @@ struct GameView: View {
         // demanding you type what you had not been told.
         .onChange(of: session.index) { _, _ in playPrompt(session) }
         .onReceive(ticker) { _ in
+            // The speed readout, in every mode — so it is updated BEFORE the time-attack guard
+            // below, which returns early. Assigned only when the DISPLAYED whole number moves,
+            // so a 10 Hz ticker does not redraw the HUD ten times a second for a value that
+            // changes every few seconds. `model.liveWPM` is RunClock's ridden time, so a pause
+            // freezes this rather than letting it decay.
+            let shown = model.liveWPM.rounded()
+            if shown != liveWPM { liveWPM = shown }
             // Sheet open → pause the time-attack clock too (it's a modal interruption).
             guard session.mode == .timeAttack, !isPaused, addToListsID == nil,
                   !session.isFinished else { return }
@@ -234,6 +246,11 @@ struct GameView: View {
 private struct HUDBar: View {
     let session: GameSession
     let language: String
+    /// Whole words per minute over RIDDEN time, from `AppModel.liveWPM`. Zero means "not yet
+    /// meaningful" by `RunClock.wpm`'s own convention — under two seconds of riding, or no
+    /// correct keystrokes — and is rendered as a dash rather than as a zero, because a rider
+    /// three seconds into a ride is not going at 0 wpm.
+    var wpm: Double = 0
     var onPause: (() -> Void)? = nil
 
     /// iPhone width fits ~4 pills; distance + accuracy move to the results
@@ -279,6 +296,17 @@ private struct HUDBar: View {
                 stat(icon: "scope",
                      value: "\(Int(session.accuracy * 100))%", tint: .white,
                      label: zh ? "正确率" : "Accuracy")
+                // Informational, so it follows the same width rule as distance and accuracy:
+                // the fixed ride layout fits about four pills on a phone and cannot reflow, and
+                // a shattered HUD is device-verified territory (Gate E). A phone rider still
+                // gets the number on the results screen and in the Ride Log, which is where it
+                // was already.
+                stat(icon: "speedometer",
+                     value: wpm >= 1 ? "\(Int(wpm))" : "—", tint: Theme.accent,
+                     label: zh ? "速度" : "Speed",
+                     spoken: wpm >= 1 ? (zh ? "每分钟 \(Int(wpm)) 词" : "\(Int(wpm)) words per minute")
+                                      : (zh ? "尚未开始计算" : "not yet"))
+                    .accessibilityIdentifier("hudSpeed")
             }
             if let onPause {
                 Button(action: onPause) {
