@@ -1,0 +1,79 @@
+{
+  "controls" : {
+    "negativeSurfaceAsReadingRate" : 0.0072873289708506837,
+    "positiveNormaliserDestroysNothing" : true
+  },
+  "instrument" : "CFStringTokenizer(kCFStringTokenizerUnitWordBoundary, ja) + kCFStringTokenizerAttributeLatinTranscription + StringTransform.latinToHiragana, with kana-only tokens read as themselves",
+  "kanaPositionRate" : 0.99119831157664351,
+  "kanaPositionsRight" : 126804,
+  "kanaPositionsTotal" : 127930,
+  "population" : "every typeable example sentence in this corpus (exJP with an exKana), each exKana human-reviewed under three lenses",
+  "populationSize" : 6724,
+  "prolongedMarkExactRate" : 0.97715289982425313,
+  "sampleOfMisses" : [
+    {
+      "corpus" : "かれをあざわらうな",
+      "exJP" : "彼を嘲笑うな。",
+      "tokenizer" : "かれをあざけわらうな"
+    },
+    {
+      "corpus" : "かみをいじるくせがある",
+      "exJP" : "髪を弄る癖がある。",
+      "tokenizer" : "かみをまさぐるくせがある"
+    },
+    {
+      "corpus" : "こどもはおかあさんのふくにしがみついた",
+      "exJP" : "子どもはお母さんの服にしがみついた。",
+      "tokenizer" : "こどもはおははさんのふくにしがみついた"
+    },
+    {
+      "corpus" : "のれんをくぐってしにせのそばやにはいった",
+      "exJP" : "暖簾を潜って老舗の蕎麦屋に入った。",
+      "tokenizer" : "のれんをもぐってしにせのそばやにはいった"
+    },
+    {
+      "corpus" : "かんきょうほごはげんだいのわたしたちにとってじゅうようなかだいだ",
+      "exJP" : "環境保護は現代の私たちにとって重要な課題だ。",
+      "tokenizer" : "かんきょうほごはげんだいのわたくしたちにとってじゅうようなかだいだ"
+    },
+    {
+      "corpus" : "かれのなにげないつめたいことばにわたくしはふかくきずついた",
+      "exJP" : "彼の何気ない冷たい言葉に私は深く傷付いた。",
+      "tokenizer" : "かれのなんげないつめたいことばにわたくしはふかくきずついた"
+    },
+    {
+      "corpus" : "ここをきてんとしてわたしたちのあたらしいたびがはじまる",
+      "exJP" : "ここを起点として私たちの新しい旅が始まる。",
+      "tokenizer" : "ここをきてんとしてわたくしたちのあたらしいたびがはじまる"
+    },
+    {
+      "corpus" : "ひろいはたけにきわたのはながとてもきれいにしろくさいている",
+      "exJP" : "広い畑に木綿の花がとてもきれいに白く咲いている。",
+      "tokenizer" : "ひろいはたけにもめんのはながとてもきれいにしろくさいている"
+    },
+    {
+      "corpus" : "けんりょくへのつよいよくぼうでかれのじゅんすいなこころはけがれてしまった",
+      "exJP" : "権力への強い欲望で彼の純粋な心は汚れてしまった。",
+      "tokenizer" : "けんりょくへのつよいよくぼうでかれのじゅんすいなこころはよごれてしまった"
+    },
+    {
+      "corpus" : "ねつがたかかったのできのうからずっととこについている",
+      "exJP" : "熱が高かったので、昨日からずっと床に就いている。",
+      "tokenizer" : "ねつがたかかったのできのうからずっとゆかについている"
+    },
+    {
+      "corpus" : "このやまごやはかいばつにせんめーとるのばしょにある",
+      "exJP" : "この山小屋は海抜二千メートルの場所にある。",
+      "tokenizer" : "このやまこやはかいばつにせんめーとるのばしょにある"
+    },
+    {
+      "corpus" : "かれはかたことのにほんごでじぶんのおもいをいっしょうけんめいにつたえた",
+      "exJP" : "彼は片言の日本語で自分の思いを一生懸命に伝えた。",
+      "tokenizer" : "かれはかたことのにっぽんごでじぶんのおもいをいっしょうけんめいにつたえた"
+    }
+  ],
+  "sentenceExactRate" : 0.96891731112433077,
+  "sentencesCarryingProlongedMark" : 569,
+  "sentencesExactlyRight" : 6515,
+  "whatThisDoesNotCover" : "These are short, curated sentences built around JLPT vocabulary and reviewed for teaching. Text a learner pastes — news, lyrics, forum posts, names — is a different population and this number does not describe it."
+}

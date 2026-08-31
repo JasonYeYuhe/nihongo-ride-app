@@ -177,7 +177,7 @@ conjugation prompt is recall plus production.
 > it is the same quantity the Ride Log will record, and a pause freezes it rather than letting it
 > decay.
 
-### 3. "Type your own text" in Practice — the bounded half of F1
+### 3. "Type your own text" in Practice — the bounded half of F1 (**tokenizer measured 2026-09-01; the feature is not built**)
 
 The flagship's promise, at a fraction of its cost, because two blockers turned out to be softer
 than the plan recorded:
@@ -196,6 +196,42 @@ than the plan recorded:
 expensive, dangerous half of F1 and it is what makes the full feature weeks rather than days. Ship
 practice-only first. It already answers the question that matters — *will anyone paste their own
 material* — and that answer is what decides whether the SRS half is worth building.
+
+> **THE TOKENIZER IS NOW MEASURED, not asserted — `scripts/measure_tokenizer_readings.swift`,
+> `docs/measurements/tokenizer-reading-accuracy.json`.** Against **6,724 corpus sentences whose
+> `exKana` went through a three-lens human review** — the best labelled Japanese in reach —
+> `CFStringTokenizer` + `.latinToHiragana` gets **96.9% of whole sentences exactly right and
+> 99.1% of kana positions**, offline, on both platforms, with no dependency.
+>
+> **Two findings changed the number, and the second one matters more than the first.**
+>
+> 1. *Kana tokens must read as themselves.* The naive pipeline scored 88.6%, and most of the gap
+>    was the prolonged-sound mark: the corpus writes スープ as すーぷ and the transcription route
+>    returns すうぷ. `gen_sentence_kana.py` had already found and documented this **about
+>    Sudachi** — *"taking Sudachi's reading here would normalise ー and the small kana away"* — and
+>    it is true of `CFStringTokenizer` for the same reason. Applying the repo's existing rule took
+>    it to 96.9%.
+> 2. **The first version of the measurement was wrong and its positive control could not have
+>    said so.** It filtered both sides to U+3041–U+3096, which silently deleted every ー — and
+>    the control compared the corpus to *itself through the same filter*, so it read 100% for any
+>    normaliser, destructive ones included. The control proved the comparison could tell apart
+>    the two things it was handed; it said nothing about whether the right answer survived being
+>    handed over. **This is STATE's second family, produced while measuring.** The replacement
+>    control asserts a property that can fail — the normaliser deletes nothing but punctuation —
+>    and the negative control (surface used as the reading) sits at 0.7%.
+>
+> **What the 3.1% residue actually is: homograph ambiguity, not breakage.** 私 as わたくし where
+> the corpus wrote わたし, 木綿 as もめん where it wrote きわた, 汚れる as よごれる against けがれる,
+> 床 as ゆか against とこ. Both readings are real Japanese in every one of those. **The corpus is
+> itself inconsistent on 私**, which is the clearest possible statement of what kind of
+> disagreement this is. In curated content a wrong reading is a taught error; in text the learner
+> pasted it is visible to them and theirs to correct — which is the plan's own argument, now with
+> a number behind it.
+>
+> ⚠️ **What the measurement does NOT cover, stated because this repo pays for unstated scopes:**
+> these are short curated sentences built around JLPT vocabulary. News, lyrics, forum posts and
+> above all **proper names** are a different population, and 96.9% does not describe them. Names
+> are the predictable weak spot and none of this population tests them.
 
 ### 4. Whatever a pass over the app finds
 
