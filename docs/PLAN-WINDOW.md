@@ -96,6 +96,39 @@ it as an objection.
 
 ---
 
+> ### CORRECTED 2026-08-31, hours after writing, on the owner's push-back — this file conflated two unrelated things
+>
+> The owner's response to the draft was *"I'd rather build more features."* **They are right, and
+> the error is structural rather than a difference of taste.**
+>
+> This plan organised the window around *protecting the measurement*, and then listed only
+> maintenance as permitted — coverage, corpus fixes, accessibility. That silently treats "build"
+> and "measure" as competing for the same 90 days. **They do not compete at all.** The measurement
+> is a purchase count pulled from App Store Connect by `sales_report.py`. It costs **zero
+> engineering**, it runs whether anybody writes code or not, and no feature work makes it arrive
+> later or noisier.
+>
+> **And free feature work passes both clauses of this file's own test.** A new practice mode does
+> not change what a device is offered — the paid thing is still the road west — and it does not
+> change which devices arrive. §A had the right test; §D applied it only to a drawer of chores.
+>
+> **The genuine constraints on feature work are four, and they are much narrower than this file
+> implied:**
+>
+> 1. **Do not touch the offer, the price, or the placement.** Voids the pre-registration.
+> 2. **Anything shipped free is permanently free**, by the red line — no installed user may lose
+>    anything. So the window is the period in which the Stage 3 catalogue gets given away. This is
+>    the one constraint that actually shapes *which* feature, and it is a decision rather than a
+>    rule; see §K.
+> 3. **A feature that substantially changes how far people ride changes exposure-per-install**,
+>    which is the denominator §K deliberately does not measure. Second-order and tolerable —
+>    **register it, do not avoid it.**
+> 4. **Do not change store metadata for `en-US` / `zh-Hans` / `ja`.** Unchanged; that one really
+>    is about which devices arrive.
+>
+> Everything else — modes, review scheduling, stats, widgets, UI, accessibility, content — is
+> open. §D below stays correct about *what the debt is* and is wrong about it being the whole list.
+
 ## §D What is free, re-ranked after review
 
 Free = invisible to both clauses of §A's test. **The first draft ranked these by what was
@@ -152,6 +185,14 @@ decision has three branches, and their probabilities are not close to equal:
 | **GO** | ≥ 1 purchase | plausible, and the only clean outcome |
 | **STOP, with evidence** | zero purchases **and** a voluntarily returned counter showing `offerAppeared > 0` in the `kyoto` bucket | **very low.** `UnlockOfferLedger`'s own doc comment puts expected returned ledgers over 90 days at *"under two and plausibly zero"* — and this branch needs one from a *non-buyer who reached Kyoto*, a strictly rarer thing |
 | **UNINTERPRETABLE** | zero purchases and no such counter | **almost everything else** |
+
+> **⚠️ And this table is misleading as written, corrected the same day.** It gives the branch
+> probabilities *conditional on zero sales* without ever saying how likely zero sales is — which
+> makes UNINTERPRETABLE look near-certain when it is not. Over ≤ 323 devices ever exposed, the GO
+> branch fires with probability **80% at a true conversion of 0.5%**, 96% at 1%, and still 48% at
+> 0.2%. It only collapses below ~0.3%. **The measurement is in materially better shape than the
+> paragraph below suggests**, and presenting a conditional probability as if it were an
+> unconditional one is this repo's own favourite error wearing statistics.
 
 So conditional on zero sales, the pre-registered outcome is *already* known today, and §K says as
 much: it exists precisely so that "this taught us nothing" is a permitted result rather than a
