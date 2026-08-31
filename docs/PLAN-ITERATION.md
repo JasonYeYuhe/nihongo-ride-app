@@ -63,11 +63,53 @@ safest item here: it touches no app code, so it cannot affect the measurement or
 
 Ranked by visible improvement per day of work, with the risk named.
 
-### 1. Extract the release template (§A)
+### 1. Extract the release template (§A) — **DONE 2026-09-01, `scripts/asc_release.py`**
 
 Leave each `submit_<version>.py` as its 162 lines of config, importing the 630 lines of machinery
 from one module. **Do not delete the old files** — they are the record of what was sent for each
 release. Zero app-code risk. Pays back on every item below.
+
+> **How it was held to the script it was ported from, because a plausible port is the whole
+> risk here.** `scripts/test_asc_release.py` drives BOTH `submit_1_30.py` and the extracted
+> module against one stateful fake App Store Connect, configured from v1.30's own constants, and
+> requires the same calls with the same bodies in the same order, the same failure ledger and the
+> same end state — across **eleven scenarios**, not one, because a differential over the happy
+> path is a differential over the branch nobody doubted. The matrix deliberately includes the
+> branches that have cost something: the purchase that cannot be staged, a description whose
+> sentence is no longer there, a store locale the release writes no copy for, one platform
+> already in review, an orphan submission container.
+>
+> **Both comparisons are controlled.** Dropping the byte-exact read-back from the port must make
+> the call-log comparison go red; making `fail()` swallow its argument must make the ledger
+> comparison go red. Both fire. The end-state comparison is *not* independently controlled and is
+> kept as a cheap redundancy rather than as evidence — said out loud because an uncontrolled
+> check that passes looks exactly like a controlled one.
+>
+> **And then against the real thing.** `--dry-run` issues GETs only, so both implementations were
+> run against live App Store Connect and their output diffed: **73 lines, identical**, one
+> deliberately generalised header aside. That is the half the fake cannot give — that the port's
+> endpoint strings are the ones Apple answers.
+>
+> **One ledger message differs on purpose** (v1.30's text names v1.30) and is *enumerated* in the
+> test rather than normalised away by a regex, because a regex tolerant of "any version-shaped
+> difference" would also tolerate the next difference, which nobody has read.
+
+**It also closed a rule that had been a comment since v1.5.** `# What's New — MUST NOT contain
+the literal star glyph (ASC rejects it)` has ridden along in twenty-plus submit scripts and
+`docs/ASC_METADATA.md` records the rejection twice; **nothing had ever checked it.** `preflight`
+now does, along with four other contracts that were also only comments — What's New and review
+notes against ASC's 4000-character limit (the description was the only field checked), and, new,
+**a description edit whose OLD sentence is a substring of its NEW one**, which would re-apply on
+every run and grow the paragraph without bound. v1.30's pair happens not to trip that; nothing
+stopped the next one from doing so.
+
+*What the star-glyph check does NOT cover, stated because this repo pays for unstated scopes:*
+U+2605 is the only glyph this project has **measured** a rejection for, so it is the only one
+asserted. Other glyphs ASC may dislike are unmeasured, and this check says nothing about them.
+
+**`iap=` is a required argument with no default.** The gate cannot tell "this release sells
+nothing" from "somebody forgot to wire the purchase up", and those must not be the same
+keystroke — v1.24 §C's move, applied to the release path.
 
 ### 2. The conjugation prompt clock — a live defect, and a visible feature
 
