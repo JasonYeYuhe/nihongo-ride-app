@@ -182,7 +182,22 @@ anyone** — which is the red line stated to the people it protects.
 
 ## §E Still owner-only, and still not done
 
-Unchanged from `PLAN-STAGE1` §K/§L, restated because a release is exactly when these get assumed:
+**And one of them was a written precondition on this submission, which the submission did not
+meet.** §L says each gate needs *"a date, a device and an outcome written beside it **before v1.30
+is submitted**"*. None was walked. The release report said the gates were "still open", which was
+true and was not enough: **"not yet done" and "a document required this before the thing you just
+did" print the same words.** §L now carries a box saying so, with the sentence left unreworded.
+
+**The window is asymmetric and it is open now.** While both platforms sit in
+`WAITING_FOR_REVIEW`, a failed gate costs a cancel and a resubmit — measured today rather than
+assumed, because that cycle was run twice for an unrelated reason: `PATCH /v1/reviewSubmissions
+{"canceled": true}` → `CANCELING` → the version settles at `DEVELOPER_REJECTED` and is submittable
+again, in minutes. After `READY_FOR_SALE` the same failure costs a whole new version, with live
+customers meeting a broken purchase in between — and *"I paid and got nothing"* is precisely the
+one-star review §K names as its only stop-and-fix guardrail. Two of the three gates need no second
+Apple Account: one Mac and one iPhone walks both.
+
+Restated because a release is exactly when these get assumed:
 
 * **The three manual gates** — no App Store account signed in · Family Sharing does not inherit ·
   macOS↔iOS cross-platform restore. Each needs a date, a device and an outcome written into §L's
