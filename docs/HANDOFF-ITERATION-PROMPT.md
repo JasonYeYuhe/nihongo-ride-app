@@ -22,7 +22,7 @@ Nihongo Ride — 快速迭代交接(2026-08-31)
 # 现在的状态(2026-09-01 重新核过,与 08-31 提交时相同)
 
 * v1.30 macOS build 54 / iOS build 55 + IAP `com.jasonye.nihongoride.scenery.lifetime`(6806755720),**三个都 `WAITING_FOR_REVIEW`**
-* 仓库停在 1.30,工作树干净,HEAD `99e734c`
+* 仓库停在 1.30,工作树干净(HEAD 用 `git log -1` 自己看 —— 写死的 sha 在下一次提交就过期了)
 * `swift test` 632 绿 · iOS 放置测试 7/7 · `run_store_gates.sh` **exit 3,九个 skip,零覆盖**(如实报告,不是通过)
 
 # 开工前先说这两件,它们有到期时间
