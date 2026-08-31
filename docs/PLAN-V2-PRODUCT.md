@@ -72,7 +72,7 @@ So the same three characters support two conclusions, and the plan needs both.
 | **impressions, all time** | **14,292** · 627 product page views · **impression → download 0.76%** |
 | acquisition source | **93% App Store search** (referrer 6, browse 2) |
 | conversion spread by territory | **0.49% (CN, 75% of impressions) … 5.88% (HK)** |
-| storefront locales | **2** — `en-US`, `zh-Hans`. No `ja` despite Japan being the #2 territory |
+| storefront locales | ~~**2** — `en-US`, `zh-Hans`. No `ja` despite Japan being the #2 territory~~ **3 since 2026-08-27** — `ja` shipped in v1.28, live on both platforms (see §A's ASO bullet) |
 | Paid Applications Agreement | **active** — five sibling apps hold `APPROVED` IAPs |
 | corpus | 7,071 entries · 6,738 with a sentence · 5,760 in the dictation pool |
 | modes / surfaces | 6 modes; 11 screens plus a widget |
@@ -136,7 +136,8 @@ inferred: 109 lifetime installs, ~2.4 a day, §A.** This stage has no paywall in
   and have since before this plan. What is true is the other half, and it is sharper than the
   plan made it — **the app has exactly two storefront locales, `en-US` and `zh-Hans`.** Japan is
   the **#2 territory by installs (15)** and has no `ja` listing at all; Taiwan and Korea have
-  none either. China is **48% of all installs**, not merely the source of one review, so the
+  none either. *(The Japan half of that stopped being true one day later: `ja` shipped
+  2026-08-27 in v1.28. Taiwan and Korea still have none. See the box below.)* China is **48% of all installs**, not merely the source of one review, so the
   Simplified-Chinese merchandising decision is settled — **for reach. It says nothing about
   willingness to pay**, and reading it as intent is the move §A was corrected for.
 
@@ -152,6 +153,26 @@ inferred: 109 lifetime installs, ~2.4 a day, §A.** This stage has no paywall in
     "Japanese keywords buy Japanese search surface, and JP's rate is the evidence that surface
     would convert". Different argument, different number to watch: **JP impressions**, not JP
     conversion.
+
+    > **SHIPPED 2026-08-27 — this is no longer a recommendation.** The `ja` listing went live in
+    > **v1.28**, on both platforms, complete: name, subtitle, description, keywords, support and
+    > marketing URLs, and translated release notes. So every JP figure in the table above is from
+    > the **pre-`ja`** period — the baseline states its own date, *"Taken 2026-08-26, before
+    > anything ships"* — and the "2.5× on an English-only listing" number is evidence **for**
+    > having localised, not evidence about what to do next.
+    >
+    > **The argument above is unchanged and now has a prediction attached to it.** If `ja` is an
+    > impressions play, the thing that should move is **JP impressions**, and App Store keyword
+    > indexing ramps over a new locale's first weeks — so the effect is expected to arrive
+    > gradually rather than at once. Re-run `scripts/acquisition_funnel.py` split by territory
+    > against the 2026-08-26 baseline, which is now the pre-intervention arm of a before/after
+    > nobody planned. **As of 2026-08-31 there are four days of data (~9 installs); nothing is
+    > resolvable yet, and reading it now would be reading noise.**
+    >
+    > ⚠️ **It is also an unregistered co-intervention inside Stage 1's 90-day window**, recorded
+    > late in `PLAN-STAGE1.md` §K. Japan converts best; if its install share rises through the
+    > window, a whole-window conversion rate moves for a reason that has nothing to do with the
+    > offer. Day 90 must be read split by territory.
   * **China is the larger and harder problem, it is not a locale gap, and the funnel says where
     in the funnel it sits.** Three quarters of all impressions, the lowest conversion of any
     significant territory, on the one listing that IS localised. Decomposed by stage against
@@ -326,6 +347,22 @@ plausible as CNY and absurd as JPY. The one signal this app has came from **Chin
 **CNY** explicitly, price per territory, and localise the paywall and IAP metadata into
 Simplified Chinese — the audience whose sole review created this plan currently has no localised
 merchandising and no support path in their language.
+
+> **DONE in part, 2026-08-31 — and the two halves came apart, so they are recorded apart.**
+>
+> * **Merchandising: done.** Price is CNY, per-territory, equalised across 174 territories.
+>   `RoadView`'s offer, boundary, owned and restore copy all branch on `zh`. The IAP carries three
+>   localisations (`en-US`, `ja`, `zh-Hans`), rewritten 2026-08-30 when the promise was narrowed.
+> * **Support path in their language: still absent, and this is now sharper than when it was
+>   written.** `site/support.html` is `lang="en"` and contains no Chinese. That page is the URL on
+>   the App Store product page — for a listing that draws **75% of its impressions and 48% of its
+>   installs from China**. v1.30 additionally puts a contact address inside the app (`AboutView`),
+>   whose surrounding copy *is* bilingual, so the in-app ask is localised and the page it
+>   corresponds to is not.
+>
+> Left open deliberately rather than closed quietly: translating the support page is cheap, is not
+> a code change, and is the one half of this bullet that a paying Chinese customer would actually
+> hit.
 
 ---
 
@@ -713,6 +750,16 @@ rising rather than flat.
 keywords ship on both platforms and predate this plan. The true and sharper fact is that only two
 locales exist at all, and Japan is the #2 territory with no listing in its own language.
 
+> **And that sharper fact had a shelf life of one day: `ja` shipped 2026-08-27 in v1.28.**
+> Recorded here because this paragraph is the file's own list of things that "sounded measured and
+> were not", and a corrected figure that silently goes stale belongs on it. Three locales now;
+> Taiwan and Korea are still uncovered. **The general shape, which this project has now paid for
+> twice: a repo artifact describing work (`docs/store/ja-listing.json`, `scripts/add_locale.py`)
+> reads identically whether that work is pending or finished.** Only the live system or `git log`
+> distinguishes them, and on 2026-08-30 a Stage 1 review recommended shipping the listing all over
+> again on the strength of those files. `git log --grep` would have said
+> *"feat(v1.28): the ja storefront locale is live in ASC"*.
+
 **One "irreversible decision" was already made, and had been since launch.** Universal Purchase
 is not a choice to weigh: one record, one SKU, and Apple stamps every unit `iOS and macOS`.
 
@@ -765,9 +812,12 @@ organising image since §A. The room has **14,292 impressions** in it. What is e
 conversion — 0.76% — and after that, purchase intent, which is still entirely unmeasured. The
 staging does not change; the diagnosis inside Stage 0 does.
 
-**And the ASO recommendation survived, for a different reason than the one given.** The plan
-wanted `ja` because Japan is the #2 territory. The funnel says Japan converts at **2.5× China's
-rate on an English-only listing**, which makes the localisation case an argument about
-impressions rather than conversion — stronger, and pointing at a different number to watch. The
+**And the ASO recommendation survived, for a different reason than the one given** — and was then
+**executed on 2026-08-27 in v1.28**, so it is now an intervention awaiting measurement rather than
+a recommendation. The plan wanted `ja` because Japan is the #2 territory. The funnel says Japan
+converted at **2.5× China's rate on an English-only listing** — a condition that ended the day
+after the funnel was taken — which makes the localisation case an argument about impressions
+rather than conversion: stronger, and pointing at a different number to watch. **That number
+(JP impressions) has not been read yet, and four days of data cannot read it.** The
 finding the plan did not anticipate at all is that **China holds 75% of impressions and converts
 worst**, on the one listing that is already localised.
