@@ -1,6 +1,22 @@
 # App Store Connect — 上架元数据 / Metadata
 
-> 单一事实来源。Chrome/API 填写时从这里复制。字符数已核对在 App Store 限制内。
+> **这份文件不是单一事实来源,活着的 App Store Connect 才是。** 它曾经这样自称,然后陈旧了
+> 二十二个版本:描述里停在 v1.28 之前的措辞、What's New 停在 v1.8.1、`ja` locale 从头到尾
+> 没有出现过 —— 而这三样在线上都早已不同。一份声称自己是真相、实际落后于被描述系统的文档,
+> 正是这个项目给自己命名过的缺陷:**「仓库里描述一件工作的产物,在待办和已办两种情况下长得
+> 一模一样。」**
+>
+> 所以它现在的角色被写清楚:
+>
+> * **当前上架文案**(name / subtitle / keywords / description)—— 下面各 locale 段落保存
+>   *撰写稿*,并注明最后一次与 ASC 对读的日期。改动之前请先 GET 一次线上文本再动手。
+> * **每次发布的 What's New 与审核备注** —— **不在这里**。它们在那一次发布的
+>   `scripts/submit_<version>.py` 里,由脚本 PATCH 后逐字节回读。下面 v1.8.1 及更早的段落
+>   是历史记录,保留原样,不要改。
+> * **价格、可售地区、内购** —— ASC 是唯一权威,下面只记不变的事实与 id。
+>
+> 最后一次与线上逐字节对读:**2026-08-31(v1.30 提交时)**,三个 locale 的 description
+> 全部核过。字符数已核对在 App Store 限制内。
 
 ## 基本信息 / Core
 
@@ -14,7 +30,7 @@
 | Primary category | Education |
 | Secondary category | Reference |
 | Age rating | 4+ (no objectionable content) |
-| Price | **Free** |
+| Price | **Free**,含一项非消耗型内购(见下方 In-App Purchase 段) |
 | Copyright | © 2026 Yuhe Ye |
 | Support URL | https://jasonyeyuhe.github.io/nihongo-ride/support.html |
 | Marketing URL | https://jasonyeyuhe.github.io/nihongo-ride/ |
@@ -29,7 +45,9 @@
 > the base territory — which is 48% of installs. It does not apply, and the five minutes that
 > established that were spent because a document disagreed with the thing it describes.
 
-App Privacy: **Data Not Collected** (fully offline, no account, no analytics).
+App Privacy: **Data Not Collected**(离线可用、无开发者账号体系、无统计分析)。
+v1.30 起 app 有一项可选内购,它由 App Store 通过用户自己的 Apple 账户完成 —— 这不改变 `Data Not Collected`(它禁止的是收集,不是购买),但**改变了 description 里那句
+「无账号」能被怎么读**,所以 en-US 与 zh-Hans 的那一句在 v1.30 被限定过。见下。
 
 ---
 
@@ -41,7 +59,8 @@ App Privacy: **Data Not Collected** (fully offline, no account, no analytics).
 
 **Keywords** (≤100): `japanese,typing,kana,hiragana,katakana,JLPT,vocabulary,romaji,learn,study,N5,furigana`
 
-**Promotional text** (≤170):
+**Promotional text** (≤170): **线上未设置**(2026-08-31 GET 确认,三个 locale 都是 null)。
+下面这句是 v1.7 时代的草稿,从未上线,且它引用的 183 篇文章早已是 233 篇 —— 保留仅作记录:
 `Ride from Tokyo to Kyoto while you learn JLPT N5–N1 vocabulary. Now with 183 calm Practice passages and a BLIND typing challenge.`
 
 **Description** (≤4000):
@@ -62,12 +81,12 @@ THREE WAYS TO RIDE
 
 CONTENT
 • 7,000+ words across JLPT N5 to N1, with English and Chinese meanings.
-• Example sentences and 183 reading passages — from everyday greetings to short literary paragraphs.
+• Example sentences and 233 reading passages — from everyday greetings to short literary paragraphs.
 • Katakana loanwords supported, with foreign-sound digraphs.
 
 PRIVATE BY DESIGN
-• Fully offline. No account, no network, no tracking, no ads.
-• Your progress stays on your Mac.
+• Works fully offline. No sign-up and no account with the developer, no ads, no tracking, and no analytics of any kind. The one optional in-app purchase is handled by the App Store, through your own Apple Account.
+• Your progress stays on your device. Optional iCloud sync uses your own private iCloud database, which the developer cannot see inside, and the app is fully usable with it switched off.
 
 Whether you're starting N5 or polishing N1, Nihongo Ride turns daily typing into real Japanese progress. Hop on and ride.
 ```
@@ -82,7 +101,7 @@ Whether you're starting N5 or polishing N1, Nihongo Ride turns daily typing into
 
 **Keywords** (≤100): `日语,打字,假名,平假名,片假名,JLPT,单词,学日语,罗马音,N5,练习,日语学习`
 
-**Promotional text** (≤170):
+**Promotional text** (≤170): **线上未设置**(同上)。以下为未上线的旧草稿:
 `从东京骑到京都,一路学 JLPT N5–N1 单词。新增 183 篇禅意 Practice 文章与「盲打」挑战。`
 
 **Description** (≤4000):
@@ -103,15 +122,79 @@ Nihongo Ride 是一款安静、专注的打字练习应用,真正帮你学会日
 
 内容
 • JLPT N5 到 N1 共 7000+ 词,含中英文词义。
-• 例句 + 183 篇阅读文章——从日常问候到短篇文学段落。
+• 例句 + 233 篇阅读文章——从日常问候到短篇文学段落。
 • 支持片假名外来词与外来音 digraph。
 
 隐私至上
-• 完全离线。无账号、不联网、无追踪、无广告。
-• 学习进度只留在你的 Mac 上。
+• 完全离线可用。无需注册,开发者这边也没有你的账号,无广告、无追踪,也没有任何统计分析。唯一的一项可选内购由 App Store 通过你自己的 Apple 账户完成。
+• 学习进度留在你自己的设备上。iCloud 同步(可在设置里关闭)用的是你自己的私有 iCloud 数据库,开发者看不到里面的内容;关掉它,App 依然完整可用。
 
 无论你是刚开始 N5,还是在打磨 N1,Nihongo Ride 把每天的打字变成真实的日语进步。上车,出发。
 ```
+
+---
+
+## 日本語 (ja)
+
+> **2026-08-27 随 v1.28 上线,两个平台都有,并且是完整的**:name / subtitle / description /
+> keywords / support URL / marketing URL / 本地化 release notes。
+>
+> 这一段之所以直到现在才出现在这份文件里,本身就是这个项目付过两次学费的那个形状:
+> `docs/store/ja-listing.json`、`ja-listing-draft.md`、`scripts/add_locale.py` 这三个撰写产物,
+> 在「待发」和「已发」两种情况下长得完全一样。2026-08-30 一次 Stage 1 评审据此建议「把日语
+> 商店页做了吧」,而它三天前就已经在线上了。**能分辨的只有活系统或 `git log`** ——
+> `git log --grep` 会给出 *"feat(v1.28): the ja storefront locale is live in ASC"*。
+>
+> **撰写稿在 `docs/store/ja-listing.json`,并且经过母语者审阅** —— 这是本 app 唯一经过母语
+> 审阅的 locale,所以往里加未经审阅的日语是有代价的,不要为了「三个语言看起来一致」而改它。
+
+**Name** (≤30): `Nihongo Ride`
+
+**Keywords** (≤100): `日本語学習,JLPT,日本語能力試験,N5,N4,N3,N2,N1,単語,ひらがな,カタカナ,漢字,読み方,例文,読解,暗記,語彙力,かな入力`
+
+**Description**:线上文本(2026-08-31 逐字节 GET,1177 字符)。撰写稿见
+`docs/store/ja-listing.json`;改动前先 GET 一次。
+
+> **v1.30 没有改这一段,而这是一个决定,不是遗漏。** en-US 的 `No account` 和 zh-Hans 的
+> 「无账号」都是无限定的,在有内购之后会被读成「买东西也不需要账号」,所以两句都补了限定。
+> 日语这句写的是 **`アカウント登録は不要`** —— **登録**,注册 —— 买家用的是自己**已有的**
+> Apple 账户,不向开发者注册任何东西,所以它在 v1.30 之后仍然为真。
+> 为了对齐而改它,等于把一句已经无歧义的话换成一句需要限定的话:看起来是统一,实际是放宽。
+
+---
+
+## In-App Purchase — Stage 1
+
+> ASC 是唯一权威。这里只记不会变的事实和 id,不作为填写来源。
+
+| 字段 | 值 |
+|---|---|
+| Reference name | `Nihongo Ride Scenery — the road west` |
+| Product ID | `com.jasonye.nihongoride.scenery.lifetime` **(永久不可改)** |
+| ASC id | `6806755720` |
+| Type | `NON_CONSUMABLE` |
+| Family Sharing | **off**(Apple 说明:打开之后无法撤销) |
+| 基准价 | CHN ¥10.00,净 **¥8.42**(查自 ASC price points,不是按 15 percent 推的) |
+| 等价地区 | 174 个自动等价;可售 **175** 个地区(含 CHN / JPN / USA) |
+| 本地化 | en-US / ja / zh-Hans 三条 |
+| 审核截图 | 1320×2868,`assetDeliveryState=COMPLETE` |
+| 首次提交 | 随 **v1.30**(Apple 要求每种类型的第一个内购必须跟随一个新版本提交) |
+| 提交端点 | `POST /v1/inAppPurchaseSubmissions`(**不是** `reviewSubmissionItems` —— 它不接受 IAP,已实测) |
+
+三条本地化描述(2026-08-30 PATCH 后逐字节回读):
+
+```
+en-US    The Road West   / One-time. The road west: Kyoto to Nagasaki.
+ja       西への道         / 買い切り。京都から長崎まで、西への道すべて。
+zh-Hans  西行之路         / 一次性购买。京都到长崎,完整的西行之路。
+```
+
+**「永久」描述的是拥有的时长,不是无限的未来目录。** 卖的是京都→长崎这一条路和它的风景;
+以后的新路线可以作为礼物送给已购买者,但不是承诺。买家实际读到的措辞在 `RoadView.boundary`,
+由 `PurchasePromiseTests` 钉住 —— 不要照 product id 里的 `scenery` 反推卖了什么。
+
+⚠️ **新建的内购不会继承 app 的地区可售性**:全新产品的 availability 资源**根本不存在**(404),
+ASC 对此只字不提,而放着不管的产品在每一个地区都静默不可购买。这是必做的一步,不是一个检查项。
 
 ---
 
@@ -388,7 +471,15 @@ buttons. Version 1.1 adds iPhone (portrait) support and a Ride Log progress
 screen, reachable from the main menu.
 ```
 
-## 审核备注 / Review notes (App Review)
+## 审核备注 / Review notes — **v1.0 时代的记录,不是当前文案**
+
+> 这一段原本没有版本标注,于是读起来像是「现在提交用的备注」,而它有两处已经是假的:
+> **`No network connection is made`** 在 v1.28 就被更正过(`iCloudSyncEnabled` 默认为 true,
+> app 默认就会通过 CloudKit 联网),而 app 也早已不是 macOS-only。
+>
+> **当前的审核备注在那一次发布的 `scripts/submit_<version>.py` 里**,由脚本 PATCH 后逐字节
+> 回读 —— v1.30 的在 `scripts/submit_1_30.py: REVIEW_NOTES`。下面保留原文作为记录。
+
 ```
 Nihongo Ride is a fully offline macOS typing-practice app for Japanese learners.
 No account or login is required. No network connection is made. No data is collected.

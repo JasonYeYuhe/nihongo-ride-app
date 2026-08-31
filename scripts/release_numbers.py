@@ -18,13 +18,13 @@ REPO = Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "Sources/VocabKit/Resources"
 
 # Set to this release's corpus-change manifest, or None when the release changes no corpus.
-CORPUS_MANIFEST = None        # v1.27 ships one feature and touches no vocabulary file
+CORPUS_MANIFEST = None        # v1.30 ships the paid route and touches no vocabulary file
 
 
 # Advanced with every release. v1.27 moved it from 60c9ed9 (the v1.25 baseline) to the v1.26
 # release commit, so "this release" means since 1.26 and not since 1.25. Leaving it behind is how
 # a delta silently becomes a two-release total — the stale-number failure this module exists for.
-BASELINE_REF = "3a0d37d"      # release(v1.28): submitted, both platforms WAITING_FOR_REVIEW
+BASELINE_REF = "5669e8a"      # release(v1.29): submitted, both platforms WAITING_FOR_REVIEW
 
 
 def previous(ref=BASELINE_REF):
@@ -77,6 +77,34 @@ def numbers():
                              "the copy quotes it, so a rename must not silently keep the old figure")
         caps[name] = int(m.group(1))
 
+    # The shape of the two roads, read from the shipped route rather than typed beside it.
+    #
+    # v1.30's copy names how many stretches the paid road has and where it starts and ends, and
+    # the review notes name the free road's length in kilometres. Those are claims about a
+    # constant, and a claim about a constant belongs next to the constant — the same reason the
+    # run caps above are read out of AppModel. A route edit that left the copy behind is
+    # `passages` all over again: 183 in two live listings for months after the corpus said 233.
+    route_src = (REPO / "Sources/SceneryKit/RideRoute.swift").read_text(encoding="utf-8")
+    stages = re.findall(
+        r'RideStage\(id: (\d+), road: \.(\w+), name: "([^"]+)", romaji: "([^"]+)",'
+        r'\s*startMetres: ([\d_]+)', route_src)
+    roads = {}
+    for sid, road, name, romaji, metres in stages:
+        roads.setdefault(road, []).append((int(sid), name, romaji, int(metres.replace("_", ""))))
+    # A regex that silently matches nothing produces a plausible zero, and this project has
+    # shipped that shape more than once. Assert the population before reading anything off it:
+    # both roads present, both non-empty, and the ids contiguous from 0 — so a renamed field or
+    # a reformatted declaration fails loudly here instead of quietly halving a number in copy.
+    for road in ("tokaido", "west"):
+        if not roads.get(road):
+            raise SystemExit(f"release_numbers: parsed no {road} stretches out of RideRoute.swift "
+                             "— the declaration shape changed and the copy would quote a zero")
+    ids = sorted(sid for group in roads.values() for sid, *_ in group)
+    if ids != list(range(len(ids))):
+        raise SystemExit(f"release_numbers: stage ids are not contiguous from 0: {ids}")
+    tokaido = sorted(roads["tokaido"])
+    west = sorted(roads["west"])
+
     before = previous()
     withheld = (len(excluded) - before["dictationExcluded"]) if "error" not in before else None
 
@@ -111,6 +139,15 @@ def numbers():
             1 for r in json.loads((REPO / "docs/measurements/dictation-reading-mismatches.json")
                                   .read_text(encoding="utf-8"))["excluded"]
             if str(r.get("evidence", "")).startswith("proven")),
+        # The free road, and the paid one appended to it. `freeRouteEndKm` is where the Tōkaidō
+        # ends and therefore where the offer becomes any use — the one number App Review and a
+        # buyer both need, and the one this plan's own Part I got wrong twice by estimating it.
+        "freeRouteStretches": len(tokaido),
+        "freeRouteEndKm": int(tokaido[-1][3] / 1000),
+        "paidRouteStretches": len(west),
+        "paidRouteFirst": west[0][2],
+        "paidRouteLast": west[-1][2],
+        "paidRouteStops": ", ".join(romaji for _, _, romaji, _ in west),
     }
 
 

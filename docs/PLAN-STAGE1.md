@@ -551,6 +551,63 @@ truncates and normalises — the habit that caught the star-glyph rejection befo
 * **The day-0 known-positive purchase (§K)** — an owner action, in production, refunded after,
   excluded from the cohort.
 
+> ### CLEARED 2026-08-31 — v1.30 was built, uploaded and submitted. What is left is the owner's.
+>
+> The list above is left standing as the record of what blocked the release; this box says which
+> rows moved and which did not, because a checklist whose ticked and unticked rows look alike is
+> the thing this project keeps paying for.
+>
+> | blocker | now |
+> |---|---|
+> | v1.29 clearing review | **cleared** — both platforms `READY_FOR_SALE`, queried directly |
+> | IAP `MISSING_METADATA` | **cleared** — `READY_TO_SUBMIT`, and its screenshot, three localisations, price point (¥10 / net ¥8.42) and **175** territories were each re-read from ASC rather than taken from this file |
+> | the description's "No account" | **corrected in en-US and zh-Hans, and deliberately NOT in `ja`** — see below |
+> | the bump and the build | **done** — mac 54 / iOS 55, `check_versions.py --bump 1.30`, launch gate PASS on the archive that was actually uploaded |
+> | the three manual gates (§L) | **still open, and still owner-only** |
+> | the day-0 known positive (§K) | **still open, and still owner-only** |
+>
+> **The sentence about "No account" was wrong about WHEN, and the error is this plan's own
+> favourite shape.** It says a purchase "*becomes* false with v1.30". Until v1.28 the same line
+> read `No account, no network, no tracking, no ads`, and `iCloudSyncEnabled` defaults to **true**
+> — so the app reached CloudKit by default while the product page said it made no network
+> connection. **It had already been false for releases.** This plan reasoned forward from a
+> capability it was about to add and never asked what the sentence already claimed, so it
+> correctly predicted one falsification while standing on top of another. `STATE` carries the
+> general rule: that paragraph is the only place in the repo holding a *negative universal* about
+> the whole product, and a negative universal is falsified by any new capability, forever.
+>
+> **And the correction is not one sentence translated three times, which is the part worth
+> keeping.** `ja` said `アカウント登録は不要` — *registration* is not required — which stays true
+> after the SKU ships, because a buyer uses an Apple Account they already have and registers
+> nothing with the developer. en-US's `No account` and zh-Hans's 「无账号」 were unqualified and
+> were the two that could be read as "buying needs no account". Editing `ja` for symmetry would
+> have swapped an unambiguous sentence for one needing a qualifier — loosening it while looking
+> like tidying — and put un-reviewed Japanese into the only listing on this app that had a native
+> review. Per-locale judgement, recorded in `PLAN-V1.30.md` §A.
+>
+> **The paragraph that stood here was wrong, and it was written before it was tested — so it is
+> corrected rather than deleted.** It said the IAP goes through `POST
+> /v1/inAppPurchaseSubmissions` and not through `reviewSubmissionItems`. The second half was the
+> error, and the reasoning is the interesting part: `reviewSubmissionItems` was probed for
+> `inAppPurchase` and `inAppPurchaseV2`, both came back `RELATIONSHIP.UNKNOWN`, and an absence
+> across **two guesses** was read as an absence across all names. **The real relationship is a
+> third one naming a different object — `inAppPurchaseVersion`, pointing at an
+> `inAppPurchaseVersions` record.**
+>
+> `inAppPurchaseSubmissions` is real and is create-only, but for an app's FIRST non-consumable it
+> answers 409 `STATE_ERROR.FIRST_NON_CONSUMABLE_MUST_BE_SUBMITTED_ON_VERSION`. Both readings of
+> "at the same time" were tried — versions already in review, and an open submission not yet sent
+> — and both were refused. It means *in the same submission*. The purchase is app-level under
+> Universal Purchase, so exactly one platform's submission carries it and the other is refused.
+> Full account in `PLAN-V1.30.md` §B.
+>
+> **And the ordering rule this box claimed was in the script was only in its comment.** `do_submit`
+> said the IAP is submitted "only if nothing failed", and the loop that submitted the versions
+> never checked. When the IAP failed, both platforms went to Apple carrying release notes for a
+> purchase nobody could make; both submissions were cancelled and rebuilt. The rule is now in the
+> control flow and in `scripts/test_submit_gate.py`, with a paired control that must fire —
+> removing the gate from a copy turns the test red with the exact message the incident produced.
+
 ## §N What else could be sold — the inventory, so Stage 2 does not re-imagine it
 
 Written 2026-08-30, after the owner asked whether more should be added to the monetization. Two
