@@ -361,9 +361,32 @@ data exists.
 
 | checkpoint | new installs | zero purchases rules out (rule of three, 95%) | decision attached in advance |
 |---|---|---|---|
-| **day 15** | 34.8 | per-install conversion **≥ 8.6%** | **Continue, and record it.** §D needs 8.2% at ¥10, so a zero here already falsifies the revenue model. That is a result. **Do not change the price** — a mid-window price change voids this pre-registration and turns the run into an uninterpretable before/after. |
+| **day 15** | 34.8 | per-install conversion **≥ 8.6%** | **Continue, and record it. A zero here falsifies NOTHING** — see the correction box below; the sentence that stood here was arithmetically false. **Do not change the price** — a mid-window price change voids this pre-registration and turns the run into an uninterpretable before/after. |
 | **day 42** | 97.5 | **≥ 3.1%** | **Continue.** No iteration, because iterating restarts the cohort clock and there is not enough traffic to spend a restart on. |
 | **day 90** | 208.9 (+114 base ⇒ ≤ 323 devices ever exposed) | **≥ 1.4%** on new installs · **≥ 0.9%** against the ceiling | **Decide — the three branches below.** |
+
+> ### CORRECTED 2026-08-31, before day 0 — the day-15 row asserted something its own column refutes
+>
+> It read: *"§D needs 8.2% at ¥10, so a zero here already falsifies the revenue model. That is a
+> result."* **That is false, and the number that falsifies it is in the cell immediately to its
+> left.** Rule of three at n = 34.8 bounds conversion at **3/34.8 = 8.62%**, and 8.2% is *below*
+> that bound, so a day-15 zero leaves §D's model standing. Exact binomial agrees and is not close
+> enough to rescue it either: P(0 sales | p = 0.082, n = 35) = **5.01%**, which does not clear
+> 0.05.
+>
+> **The first checkpoint that can falsify 8.2% is day 42**, where the bound is 3/97.5 = 3.08%.
+>
+> Two things about this are worth more than the fix. **The row contradicted itself in adjacent
+> cells** — "≥ 8.6%" and "8.2% is falsified" cannot both hold — so this needed no new information,
+> only someone multiplying. And it is **the second defect found inside this pre-registration
+> before day 0**, after §K's STOP branch asked for `settingsRowAppeared` where it meant
+> `offerAppeared`. A pre-registration's whole value is that it is fixed in advance; that makes it
+> the one document where an error survives unexamined until it is quoted as a result.
+>
+> Found by an external review (Gemini 3.7 Flash, 2026-08-31) and verified against the arithmetic
+> before being accepted. **The thresholds are unchanged** — 8.6% / 3.1% / 1.4% all stand. Only the
+> claim about what a day-15 zero *means* is corrected, which is why this is a correction and not a
+> mid-window change of criteria.
 
 **Go / iterate / stop at day 90:**
 
