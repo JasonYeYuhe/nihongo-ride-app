@@ -19,7 +19,7 @@ Nihongo Ride — 快速迭代交接(2026-08-31)
 3. `docs/STATE-2026-08-18.md` —— **先读 Traps 段最顶上那个「两族」引言**,它决定你怎么读下面 40 多条
 4. `docs/PLAN-STAGE1.md` §K/§L —— 只在你要碰发布或报价时读
 
-# 现在的状态(2026-08-31 全部刚验证过)
+# 现在的状态(2026-09-01 重新核过,与 08-31 提交时相同)
 
 * v1.30 macOS build 54 / iOS build 55 + IAP `com.jasonye.nihongoride.scenery.lifetime`(6806755720),**三个都 `WAITING_FOR_REVIEW`**
 * 仓库停在 1.30,工作树干净,HEAD `99e734c`
