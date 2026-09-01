@@ -399,16 +399,27 @@ RED.** Turning a gate green to make a suite pass is the one thing this project f
 it is not evidence about this session's code either way. It is a gate that reported pass and fail
 on the same code within an hour, which makes both readings worthless until the cause is found.
 
-**Where the next attempt should start.** The failure attachment shows the app still on the MENU
-after the tap, with `menuRouteEntrance` present at `{{20, 230.7}, {362, 69}}` — on screen, unique,
-and hittable — so the element is found and the screen does not change. The `Button(action:
-model.showRoad)` is wrapped by an `.accessibilityElement()` carrying the identifier, and a tap
-delivered to the a11y element rather than to the button would look exactly like this. **That is a
-hypothesis, not a finding, and the reason it was not acted on is that it cannot be told apart from
-a real defect by looking at it** — and the fix for "the tap is unreliable" and the fix for "the
-button stopped working" are the same edit, which is precisely the shape that turns a gate into
-decoration. Settle it by proving the tap lands (a coordinate tap that also fails would exonerate
-the tap) BEFORE changing anything.
+**Where the next attempt should start, with two hypotheses already dead.** Both were tested in a
+throwaway copy of the tree, never in the repo, because a diagnostic that edits the gate is not a
+diagnostic:
+
+* **It is not tap delivery.** A `coordinate(withNormalizedOffset:).tap()` at the element's own
+  centre fails too — while *the identical coordinate, tapped by hand through `simctl`, opens The
+  Road immediately.* The failure attachment confirms the app is still on the MENU afterwards,
+  with `menuRouteEntrance` present at `{{20, 230.7}, {362, 69}}`, on screen and unique. The
+  identifier is on the `Button` itself, not on a wrapper, so the first guess — a tap landing on
+  an `.accessibilityElement()` instead of the button — is wrong.
+* **It is not launch timing.** Sleeping four seconds before the tap changes nothing.
+
+Also eliminated: simulator state (freshly booted, everything else shut down), Dynamic Type (fails
+at default and at AX5), the UI-test `UserDefaults` suite (deleted, still fails), inter-test
+contamination (fails alone), and this session's code (fails at `2722dd1`).
+
+**What is left is the difference nothing has explained: it works when a human taps it and does not
+work under XCUITest automation, on code that passed the same test twice earlier the same day.**
+That last clause is the important one — a gate that flips on unchanged code is unreliable, not
+merely failing, and the next person should attack *that* rather than the tap. Start by getting one
+passing run again and diffing the machine state, not the source.
 
 *Bookkeeping:* the earlier 7/7 runs reported in §C's boxes should be read as "passed at the time",
 not as clearance for this release.
