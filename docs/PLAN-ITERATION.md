@@ -375,54 +375,51 @@ Unchanged and repeated because a fast cadence is exactly when these get skipped:
 
 ---
 
-## §H ⚠️ THE PLACEMENT GATE IS RED AND I CANNOT EXPLAIN IT — do not ship v1.31 until this is settled
+## §H The placement gate was flaky, and the flakiness WAS the defect — **RESOLVED 2026-09-01**
 
-`scripts/run_ios_placement_tests.sh` exits **65** on
-`testTheMenuEntranceAppearsAtKyotoAndOpensTheRoadScreen`. That suite exists because its tests
-*"were written, were correct, and were never run — and the one thing they guarded shipped
-broken"*, and it guards the offer's placement, which is App Review 3.1.1 territory. **It is left
-RED.** Turning a gate green to make a suite pass is the one thing this project forbids by name.
+`scripts/run_ios_placement_tests.sh` was failing on the menu-entrance test. It had passed 7/7
+three times the same afternoon and then failed six times running, including **at `2722dd1`,
+before any of this session's code**. The obvious reading — an unreliable gate on a churned
+machine — was wrong, and it took an hour to stop believing it.
 
-**What is measured, so the next person does not re-derive it:**
+**What it actually was: v1.30's second purchase entrance is dead to the touch in its middle, and
+has been since it shipped.** The route strip's connectors are `Rectangle().frame(height: 2)`, so
+between the four stops there is a two-point line and a great deal of empty space. Empty space in
+a SwiftUI stack is not content, and a plain `Button` does not hit-test it. Only the emoji, the
+stop labels and the caption row ever responded. **A rider tapping the road itself — the obvious
+target — got nothing.** One line fixes it: `.contentShape(Rectangle())` on the label.
 
-| | result |
-|---|---|
-| the same suite, twice earlier the same day, same code region | **passed 7/7** |
-| at `2722dd1`, before ANY of this session's UI work | **fails identically**, 4 runs |
-| the failing test alone, in isolation | **fails** |
-| freshly booted simulator, nothing else running | **fails** |
-| default text size, and AX5 | **fails at both** |
-| after deleting the UI-test `UserDefaults` suite | **fails** |
-| **the behaviour itself, driven by hand** | **WORKS** — tapping the strip opens The Road, with Restore Purchases present |
+**How it was finally cracked, because the method is the transferable part.** Every hypothesis
+about the environment died first: simulator state, Dynamic Type at both ends, the UI-test
+defaults suite, inter-test contamination, launch timing, tap delivery, this session's code. What
+cracked it was tapping **the element's own centre** by hand — `(201, 265)`, the point XCUITest
+computes — instead of `(201, 293)`, where I had happened to tap earlier and which had "proved"
+the app worked. The centre did nothing; the caption 28 points lower opened The Road. Two taps,
+28 points apart, opposite outcomes.
 
-**So it is not a regression from this session** — the same failure predates every line of it — and
-it is not evidence about this session's code either way. It is a gate that reported pass and fail
-on the same code within an hour, which makes both readings worthless until the cause is found.
+> **The lesson, and it is a new one for this file: a flaky test can be a real defect sampled
+> twice.** *`element.tap()` chooses its own point*, so the suite was sampling a button that
+> worked on part of its area and not the rest, and reporting the sample. "Passed three times,
+> failed six" was not noise around a working feature — it was the *measurement* of a feature that
+> works about a third of the time. **The reflex this file has to unlearn is treating
+> non-determinism as an environment problem.** It is a signal about the thing under test until
+> something rules that out, and here nothing had.
+>
+> The second habit worth keeping: **my by-hand check "proving the app worked" was itself the
+> uncalibrated instrument.** It tapped a point I chose, not the point the failing test chose, and
+> it produced a confident wrong conclusion that survived four rounds of investigation.
 
-**Where the next attempt should start, with two hypotheses already dead.** Both were tested in a
-throwaway copy of the tree, never in the repo, because a diagnostic that edits the gate is not a
-diagnostic:
+**Pinned so it cannot come back.** `testTheMenuEntranceIsTappableInItsMiddleAndNotOnlyOnItsText`
+taps the centre **explicitly** via `coordinate(withNormalizedOffset:)` — `element.tap()` cannot
+pin this property, because the point it is free to choose is exactly the thing being asserted.
+Removing `.contentShape` fails that test and only that test. The suite is now 8 tests, exit 0.
 
-* **It is not tap delivery.** A `coordinate(withNormalizedOffset:).tap()` at the element's own
-  centre fails too — while *the identical coordinate, tapped by hand through `simctl`, opens The
-  Road immediately.* The failure attachment confirms the app is still on the MENU afterwards,
-  with `menuRouteEntrance` present at `{{20, 230.7}, {362, 69}}`, on screen and unique. The
-  identifier is on the `Button` itself, not on a wrapper, so the first guess — a tap landing on
-  an `.accessibilityElement()` instead of the button — is wrong.
-* **It is not launch timing.** Sleeping four seconds before the tap changes nothing.
-
-Also eliminated: simulator state (freshly booted, everything else shut down), Dynamic Type (fails
-at default and at AX5), the UI-test `UserDefaults` suite (deleted, still fails), inter-test
-contamination (fails alone), and this session's code (fails at `2722dd1`).
-
-**What is left is the difference nothing has explained: it works when a human taps it and does not
-work under XCUITest automation, on code that passed the same test twice earlier the same day.**
-That last clause is the important one — a gate that flips on unchanged code is unreliable, not
-merely failing, and the next person should attack *that* rather than the tap. Start by getting one
-passing run again and diffing the machine state, not the source.
-
-*Bookkeeping:* the earlier 7/7 runs reported in §C's boxes should be read as "passed at the time",
-not as clearance for this release.
+> ⚠️ **REGISTERED AGAINST STAGE 1, and the timing is lucky.** This makes the offer's second
+> entrance *work*, so more devices will reach the road screen and `offerAppeared` will count more
+> events than it would have. That changes the instrument — and **§K's day 0 has not started**
+> (macOS 1.30 is still in review and the purchase is not approved), so amending it now is free,
+> which it will not be in a week. The alternative — shipping the measurement on an entrance that
+> responds on a caption line — would have biased it the other way and been invisible.
 
 ---
 

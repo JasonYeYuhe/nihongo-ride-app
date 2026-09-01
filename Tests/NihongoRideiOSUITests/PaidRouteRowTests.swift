@@ -42,7 +42,11 @@ final class PaidRouteRowTests: XCTestCase {
     override func setUp() { continueAfterFailure = false }
 
     /// Screens slide in with a spring; tapping a mid-flight button can miss.
-    private func tapWhenSettled(_ element: XCUIElement) {
+    /// Waits for an element to stop moving. Split out of `tapWhenSettled` so a test can settle
+    /// an element and then tap it somewhere specific — the hit-area test below needs to choose
+    /// its own point, and calling `tapWhenSettled` first would consume the tap and navigate away
+    /// before it got the chance.
+    private func settle(_ element: XCUIElement) {
         var last = element.frame
         let deadline = Date().addingTimeInterval(5)
         while Date() < deadline {
@@ -51,6 +55,10 @@ final class PaidRouteRowTests: XCTestCase {
             if now.equalTo(last) { break }
             last = now
         }
+    }
+
+    private func tapWhenSettled(_ element: XCUIElement) {
+        settle(element)
         element.tap()
     }
 
@@ -207,6 +215,37 @@ final class PaidRouteRowTests: XCTestCase {
             let backButton = app.buttons[back]
             if backButton.waitForExistence(timeout: 5) { tapWhenSettled(backButton) }
         }
+    }
+
+    /// **The entrance must be tappable in its MIDDLE, not only on its text.**
+    ///
+    /// This pins a defect that shipped in v1.30 and made the sibling test above flaky rather
+    /// than red. The strip's connectors are `Rectangle().frame(height: 2)`, so between the four
+    /// stops there is a two-point line and a lot of empty space — and empty space in a stack is
+    /// not content, so a plain `Button` does not hit-test it. Only the emoji, the stop labels
+    /// and the caption row responded.
+    ///
+    /// Measured before it was fixed: a tap at the element's own centre left the app on the
+    /// menu; a tap 28 points lower, on the caption, opened The Road. `element.tap()` chooses
+    /// its own point, so whether a run passed depended on which side of that line it picked —
+    /// which is why the same commit passed three times and failed six on one afternoon.
+    ///
+    /// So this taps the CENTRE explicitly. `element.tap()` cannot pin this property, because
+    /// the thing being asserted is exactly the point it is free to choose.
+    @MainActor
+    func testTheMenuEntranceIsTappableInItsMiddleAndNotOnlyOnItsText() {
+        let app = XCUIApplication()
+        app.launchIsolated(["NIHONGO_FAKE_ENTITLEMENT": "neverEstablished",
+                            "NIHONGO_FAKE_LIFETIME_METRES": "25000"])
+
+        let entrance = app.buttons["menuRouteEntrance"]
+        XCTAssertTrue(entrance.waitForExistence(timeout: 10),
+                      "a rider at Kyōto should see the arrived route strip")
+        settle(entrance)           // settle only — the tap that matters is the next line
+        entrance.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        XCTAssertTrue(app.buttons["roadBackButton"].waitForExistence(timeout: 5),
+                      "the middle of the entrance is dead to the touch — a rider tapping the "
+                      + "road itself, which is the obvious target, gets nothing")
     }
 
     // MARK: The owned state

@@ -678,6 +678,19 @@ struct MenuView: View {
                                 .font(.caption2).foregroundStyle(Theme.dim.opacity(0.7))
                         }
                     }
+                    // **Without this the entrance is mostly dead to the touch.** The strip's
+                    // connectors are `Rectangle().frame(height: 2)`, so between the four stops
+                    // there is a 2-point line and a great deal of empty space — and empty space
+                    // in a stack is not content, so a plain Button does not hit-test it. Only
+                    // the emoji, the stop labels and the caption row responded; the middle of
+                    // the strip, which is the obvious thing to tap, did nothing.
+                    //
+                    // Measured, not deduced: tapping the element's own centre (201, 265) left
+                    // the app on the menu, while (201, 293) — the caption, 28 points lower —
+                    // opened The Road. That is also why `PaidRouteRowTests` was flaky rather
+                    // than simply red: XCUITest taps a computed point, and whether it landed on
+                    // live content or on the dead middle decided the run.
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("menuRouteEntrance")
