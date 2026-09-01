@@ -338,6 +338,37 @@ material* — and that answer is what decides whether the SRS half is worth buil
 > measured at AX5. At the default size `PRACTICE · MY TEXT` fits comfortably. The comment now
 > says which.
 
+> **THIRD PASS — the conjugation drill, run for the first time.** v1.31's other headline change
+> had never been executed in the app.
+>
+> **The prompt clock is live, observed in the store the app itself wrote.** Three answers, three
+> cards, every one `easeFactor = 2.5` — graded **4**. Before v1.31 every clean answer graded 5
+> and would have written 2.6. That is the defect closing, seen from outside the code.
+>
+> ⚠️ **What could NOT be demonstrated through this harness, stated rather than glossed:** that a
+> *pause* excludes its time. The grading budget for a prompt is 1.5 × (2.0 + 0.8 × kana) — about
+> 8–12 seconds — and a screenshot-plus-type round trip through the simulator costs comparable
+> time, so a q=5 is not reachable here even with the pause working perfectly. The experiment was
+> run anyway and came back inconclusive **as predicted in advance**, which is the only reason it
+> was worth running. The pause exclusion is proven at the unit level with an injected clock, a
+> paired control and a mutation (`PromptTimingTests`).
+>
+> **Two pre-existing defects on that screen, both phone-only, both found by looking:**
+>
+> 1. **The HUD wrapped mid-word.** No `lineLimit` anywhere in that row, and "Conjugate" is nine
+>    characters where the ride's equivalent pill holds "N5" — so at ★230 the mode capsule read
+>    "Conjuga / te" and the progress pill broke into "2/1 / 2". Fixed with `lineLimit(1)` plus a
+>    shrink allowance.
+> 2. **The form chip truncated the PROMPT.** In English it renders `japaneseLabel / englishLabel`,
+>    and the longest of the seven — ない形（否定） / Negative (-nai) — does not fit a phone at
+>    18pt. It was showing "… / Negative (…". That is the one string on the screen the learner
+>    cannot do without: it names the form they are being asked to produce. Fixed the same way.
+>
+> Neither is v1.31's doing — the conjugation screen dates from v1.8 — and neither is visible to
+> any test the repo can run, because `ImageRenderer` does not lay out or shrink text the way a
+> device does. **This is the third and fourth defect this pass has found that only running the
+> app could surface**, after the JLPT picker and the Ride Log capsule.
+
 The rest of this item is still open:
 
 

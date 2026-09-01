@@ -169,9 +169,20 @@ private struct ConjugationHUD: View {
 
     var body: some View {
         HStack(spacing: narrow ? 8 : 14) {
+            // **`lineLimit(1)` is not decoration here.** This row had none, and "Conjugate" is
+            // nine characters where the ride's equivalent pill holds "N5" — so on a phone, as
+            // soon as the score reached three digits the mode capsule wrapped mid-word to
+            // "Conjugat / e" and the progress pill broke into "2/1 / 2". Seen at ★230 on an
+            // iPhone 17 Pro; the row simply has less width than it needs and SwiftUI resolved
+            // that by wrapping every Text in it.
+            //
+            // Shrink before truncating, and never wrap: a label that wraps mid-word reads as a
+            // broken screen, while a slightly smaller one reads as a label.
             Text(zh ? "变形" : "Conjugate")
                 .scaledSystemFont(14, weight: .heavy, design: .rounded)
                 .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
                 .padding(.horizontal, 10).padding(.vertical, 6)
                 .background(Theme.accent2.opacity(0.85), in: Capsule())
                 .accessibilityLabel(zh ? "动词变形模式" : "Conjugation mode")
@@ -211,7 +222,11 @@ private struct ConjugationHUD: View {
     private func stat(icon: String, value: String, tint: Color, label: String, spoken: String? = nil) -> some View {
         HStack(spacing: 6) {
             Image(systemName: icon).foregroundStyle(tint)
+            // Same reason as the capsule above: "2/12" wrapping to two lines is not a smaller
+            // number, it is a broken pill. These are short strings; they must never wrap.
             Text(value).foregroundStyle(.white).monospacedDigit()
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
         }
         .padding(.horizontal, narrow ? 9 : 12).padding(.vertical, 7)
         .background(.black.opacity(0.42), in: Capsule())
@@ -278,9 +293,21 @@ private struct ConjugationCard: View {
                 .scaledSystemFont(compact ? 13 : 16, weight: .bold)
                 .foregroundStyle(Theme.accent2)
                 .accessibilityHidden(true)
+            // **This is the question.** In English the label is "\(japaneseLabel) / \(englishLabel)",
+            // and the longest of the seven — ない形（否定） / Negative (-nai) — does not fit a
+            // phone at 18pt. It was truncating to "…/ Negative (…", which is the one string on
+            // this screen the learner cannot do without: it names the form they are being asked
+            // to produce.
+            //
+            // Shrink rather than truncate, the same choice the practice header and the Ride
+            // Log's date column already make. A slightly smaller prompt is still the prompt; a
+            // cut one is a different question.
             Text(session.currentFormLabel ?? "")
                 .scaledSystemFont(compact ? 18 : 24, weight: .heavy, design: .rounded)
                 .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .allowsTightening(true)
                 .padding(.horizontal, 14).padding(.vertical, 7)
                 .background(Theme.accent.opacity(0.22), in: Capsule())
                 .overlay(Capsule().strokeBorder(Theme.accent.opacity(0.5)))
