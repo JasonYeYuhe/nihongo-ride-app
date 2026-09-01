@@ -263,12 +263,37 @@ app uses it.)*
 | | why |
 |---|---|
 | **A second SKU** | §N: six independent analyses said no, and the arithmetic is re-derivable — a week of engineering must clear 6.7% of every new install, forever. **And `UnlockOfferLedger.counts` has no product dimension**, so a second offer silently pools its counts with the road's. Split the counter first, **never in the same release**. |
-| **Pro, or §F1 "bring your own Japanese"** | Stage 3. No tokenizer on the device; `VocabStore.loadBundled` reads a `static let shared`; 80–120 h estimated. Stage 2 cannot happen before day 90. |
+| ~~**Pro, or §F1 "bring your own Japanese"**~~ **PARTLY SUPERSEDED — see the box below** | Stage 3. ~~No tokenizer on the device~~; `VocabStore.loadBundled` reads a `static let shared`; 80–120 h estimated. Stage 2 cannot happen before day 90. |
 | **A `zh-Hant` or `ko` storefront listing** | §C. The binary cannot serve those readers. |
 | **Anything server-backed** | The failure rule, and the fully-offline positioning three localised listings and the app's only review rest on. |
 | **Any transmitted telemetry** | `Data Not Collected` stays. Local never-transmitted counters remain fine — the distinction is collection, not counting. |
 | **Charging for data export** | Plain CSV export is free, permanently. |
 | **Changing the price, the offer, or the placement** | Voids the pre-registration. The only row here where the cost is not "wasted effort" but "the previous release was wasted". |
+
+> ### CORRECTED 2026-09-01 — the row above rested on a fact that was not one, and the bounded half shipped
+>
+> **"No tokenizer on the device" was false when it was written.** `PLAN-STAGE1` §N said it, this
+> table repeated it, and `CFStringTokenizer` had been in Foundation the whole time — on both
+> platforms, offline, with no dependency. `PLAN-ITERATION` §C corrected §N on 2026-08-31 and made
+> the bounded half of F1 a tier-1 item; it shipped on 2026-09-01 (`CustomTextKit`).
+>
+> **Measured before it was built, on the right population:** against the 6,724 corpus sentences
+> whose readings a human reviewed, the pipeline gets **96.9% of whole sentences exactly right and
+> 99.1% of kana positions**, and the residue is homograph ambiguity rather than breakage
+> (`docs/measurements/tokenizer-reading-accuracy.json`). The learner can edit every reading,
+> which is the whole reason 96.9% is enough here and would not be enough in the shipped corpus.
+>
+> **What of the row still stands, and it is most of it.** The 80–120 h estimate was for the FULL
+> feature, whose expensive half is giving pasted words SRS card identities — `SRSCard(id:)` is
+> keyed on corpus ids and `SyncMerge` carries them across devices. That half is **not built and
+> is still Stage 3.** What shipped is practice-only, records no SRS, and syncs nothing.
+>
+> **And the decision this represents is registered rather than assumed.** Constraint 4 of the
+> correction box above is *"anything shipped free can still be sold later — grandfather on
+> `originalAppVersion`, do not freeze the free tier"*. So shipping this free does not forbid a
+> paid version for new users; it does mean **today's installs are grandfathered into it**, and
+> that is the trade this window was always going to make. §K's measurement is untouched: the
+> paid thing is still the road west, and no store metadata moved.
 
 **Prepared but not shipped:** CN search-result creative. `v2-acquisition-funnel.md` establishes the
 gap is at the search row (impression → product page, 4.01% vs 6.19%, z = +3.55) and **not** at the
