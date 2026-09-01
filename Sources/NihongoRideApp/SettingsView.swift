@@ -27,20 +27,28 @@ struct SettingsView: View {
                     .frame(maxWidth: 200)
                     .accessibilityLabel(zh ? "界面语言" : "Language")
                 }
-                HStack {
-                    rowLabel(icon: "character.cursor.ibeam",
-                             text: zh ? "罗马字提示" : "Romaji assistance")
-                    Spacer()
-                    Picker("", selection: $model.assistance) {
-                        // Same three words as the menu's copy of this control. Two spellings
-                        // of one setting reads as two settings.
-                        Text(zh ? "总是提示" : "Hints on").tag(AssistanceMode.always)
-                        Text(zh ? "卡住时" : "When stuck").tag(AssistanceMode.afterStruggle)
-                        Text(zh ? "关闭" : "Off").tag(AssistanceMode.off)
+                // **The label and the picker share a row only where there is room for both.**
+                // On a phone there is not: "Romaji assistance" takes most of the width and the
+                // three segments were left with about sixty points each, so the control read
+                // "Hints… / Whe… / Off" — and "Whe…" does not tell a learner what the middle
+                // option is. Seen on an iPhone 17 Pro at the default text size.
+                //
+                // The words themselves are NOT shortened, deliberately: they are the same three
+                // the menu's copy of this control uses, and the comment there is right that two
+                // spellings of one setting reads as two settings. So the layout yields instead.
+                if isPhoneIdiom {
+                    VStack(alignment: .leading, spacing: 8) {
+                        rowLabel(icon: "character.cursor.ibeam",
+                                 text: zh ? "罗马字提示" : "Romaji assistance")
+                        assistancePicker.frame(maxWidth: .infinity)
                     }
-                    .pickerStyle(.segmented)
-                    .frame(maxWidth: 260)
-                    .accessibilityLabel(zh ? "罗马字提示" : "Romaji assistance")
+                } else {
+                    HStack {
+                        rowLabel(icon: "character.cursor.ibeam",
+                                 text: zh ? "罗马字提示" : "Romaji assistance")
+                        Spacer()
+                        assistancePicker.frame(maxWidth: 260)
+                    }
                 }
                 Toggle(isOn: $model.soundEnabled) {
                     rowLabel(icon: "speaker.wave.2.fill",
@@ -203,6 +211,18 @@ struct SettingsView: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("settingsBackButton")
         }
+    }
+
+    /// The three options, written once. Both layouts above render THIS — the words are the
+    /// setting's identity and a second copy would drift from the menu's.
+    private var assistancePicker: some View {
+        Picker("", selection: Bindable(model).assistance) {
+            Text(zh ? "总是提示" : "Hints on").tag(AssistanceMode.always)
+            Text(zh ? "卡住时" : "When stuck").tag(AssistanceMode.afterStruggle)
+            Text(zh ? "关闭" : "Off").tag(AssistanceMode.off)
+        }
+        .pickerStyle(.segmented)
+        .accessibilityLabel(zh ? "罗马字提示" : "Romaji assistance")
     }
 
     private var syncStatusText: String {

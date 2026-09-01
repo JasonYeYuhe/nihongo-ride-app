@@ -369,6 +369,35 @@ material* — and that answer is what decides whether the SRS half is worth buil
 > device does. **This is the third and fourth defect this pass has found that only running the
 > app could surface**, after the JLPT picker and the Ride Log capsule.
 
+> **FOURTH PASS — the remaining screens.** Results, coach, Stats and Settings, walked at the
+> default text size.
+>
+> **Three of the four are in good shape and it is worth saying so**, because a pass that only
+> reports defects gives no sense of the base rate. The results screen carries no purchase
+> affordance (the placement discipline holding, seen rather than asserted); the coach screen's
+> "Drill 3 words" agrees with its own "across 3 words"; Stats renders cleanly.
+>
+> **One more of the same family in Settings.** The "Romaji assistance" segmented control shared a
+> row with its label, and on a phone that left about sixty points per segment: it read
+> **"Hints… / Whe… / Off"**, and "Whe…" does not tell a learner what the middle option is. The
+> three words are deliberately identical to the menu's copy — *two spellings of one setting reads
+> as two settings*, as the comment there says — so the **layout** yields instead: on a phone the
+> picker gets its own full-width row. The options are written once and both layouts render that.
+>
+> *Looked at and deliberately not changed:* the iCloud card can show the toggle ON above the word
+> "Off". That is the sync ENGINE's state, not the setting's, and it only diverges when CloudKit
+> is unavailable — which is what the layout harness forces. There is already a dedicated
+> `.noAccount` case reading "Not signed in to iCloud" for the one production path that matters.
+> Recorded because a contradiction on screen is this repo's signature defect and the next person
+> should know it was examined rather than missed.
+>
+> **The pattern across all five UI defects this pass found is one thing:** a `Text` whose content
+> can grow, in a row with no `lineLimit` and no shrink allowance. The JLPT picker was the odd one
+> out; the Ride Log capsule, the conjugation HUD, the conjugation form chip and this picker are
+> all the same shape. **None is visible to any test this repo can run** — `ImageRenderer` does not
+> lay out or shrink text the way a device does — which is precisely why they survived to be found
+> by looking, and why "use the app" earned its place as a tier-1 item.
+
 The rest of this item is still open:
 
 
