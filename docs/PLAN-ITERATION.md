@@ -428,6 +428,16 @@ material* — and that answer is what decides whether the SRS half is worth buil
 > **This one is not cosmetic.** Sentence mode has shipped since v1.18 and Dictation reuses the same
 > card.
 
+> **WHAT THE PASS CHECKED AND FOUND CLEAN**, listed because six defect reports without a
+> denominator give no sense of the base rate. Dictation gives nothing away before the learner
+> asks — no sentence, no reading, no meaning, exactly as its comment promises — and its struggle
+> detector fired at exactly three distinct refusals, *offering* the answer rather than injecting
+> it; the reveal then shows the romaji, the next key, the sentence with furigana and the
+> translation, all fully visible. Word Lists gates its play control on an empty list. Results,
+> coach and Stats were clean. Menu, practice and the road screen were verified earlier.
+>
+> **Not yet walked:** Time Attack, and a full Journey ride to its results screen with real data.
+
 The rest of this item is still open:
 
 
