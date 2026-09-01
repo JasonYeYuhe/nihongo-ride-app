@@ -78,7 +78,8 @@ WHATS_NEW = {
         "interrupted by a pause, a sheet, or the app going to the background is no longer "
         "graded on the time you were away.\n"
         "• On a Mac or iPad the ride now shows your speed as you go, over ridden time — the "
-        "same number the Ride Log records afterwards."
+        "same number the Ride Log records afterwards.\n"
+        "• The menu's route strip now responds wherever you tap it. Only its text did before."
     ),
     "zh-Hans": (
         "• 练习你自己的日语。把歌词、新闻、课本的一页粘贴进来 —— app 会算出读音、标在汉字上方,"
@@ -88,7 +89,8 @@ WHATS_NEW = {
         "• 暂停时,正在打的这个词的计时也会停,而不只是整段骑行。被暂停、弹窗或切到后台打断的词,"
         "不再按你离开的时间计分。\n"
         "• Mac 和 iPad 上,骑行时会显示当前速度,按实际骑行时间计算 —— 和之后写进骑行记录的是"
-        "同一个数。"
+        "同一个数。\n"
+        "• 菜单上的路线条现在整块都可以点。此前只有上面的文字能点到。"
     ),
     # The app's interface is English or Chinese only, so the Japanese copy names what a Japanese
     # rider actually sees on screen.
@@ -102,7 +104,9 @@ WHATS_NEW = {
         "• 一時停止すると、いま入力中の単語の計測も止まります。一時停止・シート・バックグラウンド"
         "で中断された単語が、離れていた時間で評価されることはなくなりました。\n"
         "• Mac と iPad では、走行中の速度を表示するようになりました。実際に走った時間で計算する、"
-        "あとでライドログに記録されるものと同じ数値です。"
+        "あとでライドログに記録されるものと同じ数値です。\n"
+        "• メニューのルート表示が、どこをタップしても反応するようになりました。"
+        "これまでは文字の部分だけでした。"
     ),
 }
 
@@ -117,6 +121,11 @@ REVIEW_NOTES = (
     "com.jasonye.nihongoride.scenery.lifetime is unchanged: same price, same content, same "
     "placement (Settings > \"The Road\", plus the menu's route strip once lifetime distance "
     "passes Kyoto). Restore Purchases is on the same screen and is always present.\n\n"
+    "ONE BUG FIX TOUCHES THAT SECOND ENTRANCE, and it is named here rather than left for review "
+    "to notice. In 1.30 the menu's route strip was a button whose middle did not respond to "
+    "taps - only its text did - so a user tapping the strip itself often got no reaction. It now "
+    "responds across its whole area. Nothing about where it is, what it says, or what it opens "
+    "has changed.\n\n"
     "WHAT IS NEW.\n"
     "1) PRACTICE OVER THE USER'S OWN TEXT. The user can paste Japanese text into the app. The "
     "app splits it into sentences and derives a kana reading for each using Apple's own "
