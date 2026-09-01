@@ -53,7 +53,7 @@ struct PracticeView: View {
                     .opacity(passageOpacity)
                     .animation(.easeOut(duration: 0.18), value: passageOpacity)
                 Spacer(minLength: 0)
-                if model.practicePassages, let total = session.currentKana?.count, total > 0 {
+                if model.practiceRendersSentences, let total = session.currentKana?.count, total > 0 {
                     passageProgress(done: session.completedKanaCount, total: total)
                         .padding(.bottom, keyboardUp ? 0 : 14)
                 }
@@ -108,9 +108,25 @@ struct PracticeView: View {
     @ViewBuilder
     private func practiceBody(_ session: GameSession) -> some View {
         let content = VStack(spacing: 0) {
-            if model.practicePassages {
+            if model.practiceRendersSentences {
+                // The learner's own sentence, in their own kanji, with the readings the app
+                // worked out set above it — and the typing line below is the reading. Both are
+                // on screen at once on purpose: Practice always shows its target, and here the
+                // source is the thing they pasted and the target is what it says.
+                if let tokens = session.currentExampleTokens, !tokens.isEmpty {
+                    FuriganaText(tokens: tokens, size: isPhoneIdiom ? 20 : 26,
+                                 color: ink.opacity(0.75))
+                        .frame(maxWidth: 760, alignment: .leading)
+                        .padding(.bottom, 16)
+                        .accessibilityIdentifier("practiceSourceFurigana")
+                }
                 longPassage(session)
-                translation(session).padding(.top, 18)
+                // A bundled passage has a translation; a text the learner pasted does not, and
+                // an empty italic line where one used to be reads as a missing translation
+                // rather than as an absent one.
+                if !(session.currentGloss ?? "").isEmpty {
+                    translation(session).padding(.top, 18)
+                }
             } else {
                 passage(session)
             }
@@ -187,8 +203,12 @@ struct PracticeView: View {
     }
 
     private func practiceHeaderLabel(_ s: GameSession) -> String {
-        guard model.practicePassages else { return s.currentLevelLabel }
         let zh = model.languageCode == "zh"
+        if model.practiceSource == .custom {
+            return (model.customTextForRun?.title).map { String($0.prefix(20)) }
+                ?? (zh ? "我的文本" : "MY TEXT")
+        }
+        guard model.practicePassages else { return s.currentLevelLabel }
         switch model.practicePassageLevel {
         case .easy: return zh ? "短" : "SHORT"
         case .med:  return zh ? "中" : "MED"
@@ -289,6 +309,12 @@ struct PracticeView: View {
 
     /// Looks up the original (punctuated) text for the current passage; falls back to kana.
     private func displayText(for s: GameSession) -> String {
+        // A custom-text entry carries its punctuated reading in `surface`, because the caret
+        // walks THIS string while the engine consumes `kana` — and `CustomSentence` asserts
+        // that the two differ by punctuation and nothing else.
+        if let id = s.current?.id, id.hasPrefix("customtext-") {
+            return s.current?.surface ?? (s.currentKana ?? "")
+        }
         guard let id = s.current?.id, id.hasPrefix("passage-") else { return s.currentKana ?? "" }
         let pid = String(id.dropFirst("passage-".count))
         return PassageStore.shared.passages.first { $0.id == pid }?.displayText ?? (s.currentKana ?? "")

@@ -777,3 +777,191 @@ struct AppModelTests {
         #expect(RunCompletion(mode: .journey, recordsSRS: true).persistsSRS)
     }
 }
+
+/// The learner's own text, from the app's side (v1.31).
+///
+/// The kit's tests cover reading, splitting and persistence. What can only be observed here is
+/// the part that makes this the *bounded* half of "bring your own Japanese": that a pasted
+/// sentence reaches the typing engine and reaches **nothing else**.
+@MainActor
+@Suite("Practice over the learner's own text")
+struct CustomTextRunTests {
+
+    static func model() -> AppModel {
+        AppModelTests.makeModel(vocab: VocabStore(entries: AppModelTests.verbEntries(10)))
+    }
+
+    /// Types the whole run through, the way the view's key handler does.
+    static func rideItOut(_ model: AppModel) {
+        var guardrail = 0
+        while let session = model.session, !session.isFinished, guardrail < 5_000 {
+            guard let romaji = session.currentRomaji, !romaji.isEmpty else { session.skip(); continue }
+            for character in romaji { _ = session.input(character) }
+            guardrail += romaji.count
+        }
+    }
+
+    @Test("a pasted sentence reaches the typing engine")
+    func aCustomTextRides() throws {
+        let model = Self.model()
+        model.selectedMode = .practice
+        model.practiceSource = .custom
+        _ = model.addCustomText(title: "mine", source: "毎日勉強する。今日はいい天気ですね。")
+        model.startGame()
+        let session = try #require(model.session, "the run did not start")
+        #expect(session.wordCount == 2)
+        #expect(session.currentKana == "まいにちべんきょうする")
+        // The furigana line the practice screen draws comes from here, and it must cover the
+        // learner's own sentence rather than the reading.
+        let tokens = try #require(session.currentExampleTokens)
+        #expect(tokens.map { $0[0] }.joined() == "毎日勉強する。")
+    }
+
+    /// **A known miss, pinned rather than hidden — and it is the case the whole design is for.**
+    ///
+    /// 日本語 comes back as にっぽんご, because the tokenizer splits it into 日本[nippon] +
+    /// 語[go]. This is the exact compound-splitting this project measured in Sudachi, and the
+    /// first draft of the test above expected にほんご and failed on it.
+    ///
+    /// It is asserted here so that a change in the system tokenizer is NOTICED rather than
+    /// discovered by a learner — and immediately afterwards the correction is made and the run
+    /// re-checked, because "the app can be wrong about your text" is only acceptable while
+    /// "and you can fix it" is true in the same breath.
+    @Test("a compound the tokenizer splits is wrong, and the learner can put it right")
+    func aKnownMissIsFixable() throws {
+        let model = Self.model()
+        model.selectedMode = .practice
+        model.practiceSource = .custom
+        let id = try #require(model.addCustomText(title: "mine", source: "日本語を勉強する。"))
+        model.startGame()
+        #expect(model.session?.currentKana == "にっぽんごをべんきょうする",
+                "if this is now にほんご the system tokenizer changed — good news, worth knowing")
+
+        let text = try #require(model.customTexts.text(id: id))
+        let sentence = try #require(text.sentences.first)
+        let index = try #require(sentence.tokens.firstIndex { $0.surface == "日本" })
+        let ok = model.setCustomReading("にほん", textID: id, sentenceID: sentence.id,
+                                        tokenIndex: index)
+        #expect(ok)
+        model.startGame()
+        #expect(model.session?.currentKana == "にほんごをべんきょうする",
+                "the learner's correction is the whole answer to the tokenizer's 3.1%")
+    }
+
+    /// **The red line, observed rather than argued.** `SRSCard(id:)` is keyed on corpus entry
+    /// ids and `SyncMerge` merges them across devices through CloudKit; a pasted word must
+    /// never acquire a card identity. The control is what makes this evidence: an ordinary
+    /// journey run through the same harness MUST change the review store, or this test would
+    /// pass on a harness that never finishes a run at all.
+    @Test("…and reaches the review scheduler not at all — with a control that must fire")
+    func aCustomTextWritesNoSRS() throws {
+        let custom = Self.model()
+        custom.selectedMode = .practice
+        custom.practiceSource = .custom
+        _ = custom.addCustomText(title: "mine", source: "日本語を勉強する。")
+        let before = custom.reviewStore.count
+        custom.startGame()
+        Self.rideItOut(custom)
+        custom.finishGame()
+        #expect(custom.reviewStore.count == before, "a pasted sentence created review cards")
+        // …and the identity itself, named, because a count can stay equal while an id is
+        // swapped. Every sentence in the run is checked by id.
+        let text = try #require(custom.customTextForRun)
+        for sentence in text.typeableSentences {
+            #expect(custom.reviewStore.card(for: "customtext-\(sentence.id)") == nil,
+                    Comment(rawValue: "a pasted sentence acquired a card identity, which "
+                            + "SyncMerge would then carry to every device the learner owns"))
+        }
+
+        let ride = Self.model()
+        ride.selectedMode = .journey
+        let rideBefore = ride.reviewStore.count
+        ride.startGame()
+        Self.rideItOut(ride)
+        ride.finishGame()
+        #expect(ride.reviewStore.count > rideBefore, Comment(rawValue:
+            "THE CONTROL DID NOT FIRE: an ordinary ride wrote no SRS either (\(rideBefore) → "
+            + "\(ride.reviewStore.count)), so the assertion above is about the harness"))
+    }
+
+    /// The thing the first draft broke. Setting `recordsSRS = false` on the custom builder
+    /// looked like belt-and-braces and would have made `RunCompletion` read the run as a
+    /// weak-words cram, which switches off ride logging too — five hundred characters typed
+    /// and the road does not move, with nothing on screen saying why.
+    @Test("a custom-text run still logs a ride, like every other practice run")
+    func aCustomTextLogsARide() {
+        let model = Self.model()
+        model.selectedMode = .practice
+        model.practiceSource = .custom
+        _ = model.addCustomText(title: "mine", source: "日本語を勉強する。")
+        let before = model.journal.records.count
+        model.startGame()
+        Self.rideItOut(model)
+        model.finishGame()
+        #expect(model.journal.records.count == before + 1, "the road must move")
+        #expect(model.journal.records.last?.level == "custom",
+                "and the Ride Log must not call it a passage length it never had")
+    }
+
+    /// The menu's number and the queue it describes, which is this project's most-shipped
+    /// defect. An untypeable sentence is KEPT (it is the learner's text) and WITHHELD from the
+    /// queue, so the stored count and the run count genuinely differ.
+    @Test("the menu's sentence count is the queue's length, not the stored one")
+    func theLabelCountsWhatTheRunRides() throws {
+        let model = Self.model()
+        model.selectedMode = .practice
+        model.practiceSource = .custom
+        _ = model.addCustomText(title: "mixed", source: "日本語を勉強する。ABCと言った。今日はいい天気。")
+        let text = try #require(model.customTextForRun)
+        #expect(text.sentences.count == 3, "all three are the learner's text")
+        #expect(model.customTextRunCount == 2, "…and only two can be typed")
+        model.startGame()
+        let session = try #require(model.session)
+        #expect(session.wordCount == model.customTextRunCount,
+                "the label and the run must read the same property, not merely agree today")
+    }
+
+    /// Resolve-then-guard, the rule every start path in this file follows: a run that resolves
+    /// to nothing stays on the menu, where the explanation is, rather than entering an
+    /// already-finished screen.
+    @Test("a text with nothing typeable in it does not enter the game screen")
+    func anUntypeableTextStaysOnTheMenu() {
+        let model = Self.model()
+        model.selectedMode = .practice
+        model.practiceSource = .custom
+        _ = model.addCustomText(title: "latin", source: "ABC DEF.")
+        model.startGame()
+        #expect(model.session == nil, "a run with no typeable sentence must not start")
+        #expect(model.screen != .playing)
+        #expect(model.emptyPoolNotice, "…and the menu must say why")
+    }
+
+    @Test("no text at all is the same guarded outcome, not a crash")
+    func noTextAtAll() {
+        let model = Self.model()
+        model.selectedMode = .practice
+        model.practiceSource = .custom
+        #expect(model.customTextForRun == nil)
+        #expect(model.customTextRunCount == 0)
+        model.startGame()
+        #expect(model.session == nil)
+    }
+
+    @Test("a correction the learner makes is what the next run types")
+    func correctionsReachTheRun() throws {
+        let model = Self.model()
+        model.selectedMode = .practice
+        model.practiceSource = .custom
+        let id = try #require(model.addCustomText(title: "mine", source: "私は行く。"))
+        let text = try #require(model.customTexts.text(id: id))
+        let sentence = try #require(text.sentences.first)
+        let index = try #require(sentence.tokens.firstIndex { $0.surface == "私" })
+        #expect(sentence.kana == "わたくしはいく", "the tokenizer's own answer")
+        let ok = model.setCustomReading("わたし", textID: id, sentenceID: sentence.id,
+                                        tokenIndex: index)
+        #expect(ok)
+        model.startGame()
+        #expect(model.session?.currentKana == "わたしはいく",
+                "the correction must be what the engine asks for, or editing is decoration")
+    }
+}

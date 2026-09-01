@@ -233,6 +233,58 @@ public final class GameSession {
         loadCurrent()
     }
 
+    /// Builds a run over sentences the LEARNER supplied.
+    ///
+    /// **GameCore takes plain values here, deliberately.** `makeReview` already established the
+    /// rule — it takes `(entryID, formToken)` strings so GameCore never imports
+    /// ConjugationReviewKit — and the same reason applies: CustomTextKit owns the reading
+    /// pipeline and the store, and GameCore knowing about either would put the app's newest
+    /// data type behind the module every mode is built on.
+    ///
+    /// **This mode is `.practice` and that is a safety property, not a category.**
+    /// `RunCompletion(mode: .practice)` sets `persistsSRS = false`, so a pasted sentence cannot
+    /// reach the review scheduler. `SRSCard(id:)` is keyed on corpus entry ids and `SyncMerge`
+    /// merges those across devices through CloudKit; giving pasted words card identities is the
+    /// expensive and dangerous half of "bring your own Japanese", and running on the one mode
+    /// that records nothing is what keeps this the cheap half.
+    ///
+    /// - Parameter sentences: `(id, displayKana, kana, source, tokens)` per sentence, already
+    ///   filtered to the typeable ones by the caller. `kana` is the typing target; `displayKana`
+    ///   is the same readings with their punctuation, which the practice screen renders; `source`
+    ///   and `tokens` are the learner's own text and its per-token readings, shown above.
+    public static func makeCustomText(
+        sentences: [(id: String, displayKana: String, kana: String, source: String,
+                     tokens: [[String]])],
+        config: Config = .init(),
+        now: @escaping () -> Date = Date.init
+    ) -> GameSession {
+        let words = sentences.map { sentence in
+            VocabEntry(
+                id: "customtext-\(sentence.id)",
+                // The practice screen renders `surface` for the typing line, so it carries the
+                // punctuated reading; the engine consumes `kana`, which has none.
+                surface: sentence.displayKana,
+                kana: sentence.kana,
+                partsOfSpeech: ["customtext"],
+                jlpt: .n5,
+                meanings: [:],
+                exampleJP: sentence.source,
+                exampleTokens: sentence.tokens
+            )
+        }
+        var custom = config
+        custom.mode = .practice
+        // **`recordsSRS` is deliberately LEFT ALONE, and the reason is a trap.** Setting it
+        // false looks like belt-and-braces on the SRS guarantee, and it is not: `RunCompletion`
+        // reads `!recordsSRS` as "this is a weak-words cram" and switches off `logsRide` too.
+        // A learner who typed five hundred characters of their own text would watch the road
+        // not move, with nothing on screen saying why. The SRS guarantee comes from the mode —
+        // `RunCompletion(mode: .practice).persistsSRS == false`, the same guarantee ordinary
+        // practice has had since v1.7 — and `AppModelTests` observes it on a real run rather
+        // than trusting this sentence.
+        return GameSession(words: words, config: custom, now: now)
+    }
+
     /// Builds a passage-driven session: every queue item is a full sentence
     /// (the passage's kana) — used by Practice "long-text" mode. Uses passages
     /// at or below `level`; difficulty rises as you progress through the run.

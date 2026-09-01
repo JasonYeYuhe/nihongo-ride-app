@@ -28,6 +28,7 @@ let package = Package(
         .library(name: "SceneryKit", targets: ["SceneryKit"]),
         .library(name: "PersistKit", targets: ["PersistKit"]),
         .library(name: "DiagnosticsKit", targets: ["DiagnosticsKit"]),
+        .library(name: "CustomTextKit", targets: ["CustomTextKit"]),
         // The macOS SwiftUI app (Nihongo Ride). Run with `swift run NihongoRideApp`.
         .executable(name: "NihongoRideApp", targets: ["NihongoRideApp"]),
     ],
@@ -65,6 +66,8 @@ let package = Package(
         .testTarget(name: "DiagnosticsKitTests", dependencies: ["DiagnosticsKit", "RomajiKana"]),
 
         .target(name: "PersistKit"),
+        .target(name: "CustomTextKit", dependencies: ["PersistKit"]),
+        .testTarget(name: "CustomTextKitTests", dependencies: ["CustomTextKit"]),
         .testTarget(name: "PersistKitTests", dependencies: ["PersistKit"]),
 
         // MARK: Spaced repetition — simplified SM-2 over typing performance.
@@ -175,7 +178,7 @@ let package = Package(
         // MARK: SwiftUI app (Nihongo Ride) — bike-journey typing game + IME-bypassing key capture.
         .executableTarget(
             name: "NihongoRideApp",
-            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit", "WidgetSharedKit", "SceneryKit", "PersistKit", "DiagnosticsKit", "StoreReviewKit", "EntitlementKit"],
+            dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "GameCore", "JournalKit", "SettingsKit", "SyncKit", "NotificationKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "SpeechKit", "WidgetSharedKit", "SceneryKit", "PersistKit", "DiagnosticsKit", "StoreReviewKit", "EntitlementKit", "CustomTextKit"],
             resources: [
                 .copy("Resources/AppIcon.png")   // runtime dock icon (swift run); Xcode uses design/AppIcon.appiconset
             ]

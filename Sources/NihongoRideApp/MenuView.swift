@@ -7,6 +7,11 @@ struct MenuView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
+        menu.sheet(isPresented: $managingCustomTexts) { CustomTextsView() }
+    }
+
+    @ViewBuilder
+    private var menu: some View {
         // iPhone: the stack can outgrow short screens (SE class), so scroll.
         if isPhoneIdiom {
             ScrollView(showsIndicators: false) { content }
@@ -42,6 +47,56 @@ struct MenuView: View {
                 }
             }
         }
+    }
+
+    @State private var managingCustomTexts = false
+
+    /// Choosing which of the learner's own texts to ride, and getting to the editor.
+    ///
+    /// Extracted as its own property rather than inlined: this file's `content` already sits at
+    /// the Swift type-checker's limit, and adding four views to it failed to compile with
+    /// "unable to type-check this expression in reasonable time" — on a line 130 rows away from
+    /// the edit.
+    @ViewBuilder
+    private var customTextRow: some View {
+        let zh = model.languageCode == "zh"
+        HStack(spacing: 12) {
+            Image(systemName: "doc.text").accessibilityHidden(true)
+            if model.customTexts.isEmpty {
+                Button(zh ? "添加我的文本…" : "Add your own text…") { managingCustomTexts = true }
+                    .accessibilityIdentifier("customTextEmptyAdd")
+            } else {
+                Menu {
+                    ForEach(model.customTexts.ordered) { text in
+                        Button(text.title) { model.selectedCustomTextID = text.id }
+                    }
+                    Divider()
+                    Button(zh ? "管理…" : "Manage…") { managingCustomTexts = true }
+                } label: {
+                    Text(model.customTextForRun?.title ?? (zh ? "选择文本" : "Choose a text"))
+                        .lineLimit(1)
+                }
+                .menuControlWidth(220)
+                .accessibilityIdentifier("customTextPicker")
+            }
+        }
+        if !model.customTexts.isEmpty {
+            // The RUN's number. `typeableSentences` is what the queue is built from, and the
+            // stored count can be larger — so the label reads the same property the run does,
+            // which is the one rule this project has paid for two dozen times.
+            Text(customTextRunLabel(zh: zh))
+                .scaledSystemFont(12, weight: .medium)
+                .foregroundStyle(Theme.dim)
+                .accessibilityIdentifier("customTextRunLabel")
+        }
+    }
+
+    private func customTextRunLabel(zh: Bool) -> String {
+        let n = model.customTextRunCount
+        if n == 0 {
+            return zh ? "这段文本没有可输入的句子" : "Nothing in this text can be typed"
+        }
+        return zh ? "\(n) 句" : "\(n) sentence\(n == 1 ? "" : "s")"
     }
 
     private var content: some View {
@@ -296,13 +351,20 @@ struct MenuView: View {
                 if model.selectedMode == .practice {
                     HStack(spacing: 12) {
                         Image(systemName: "text.alignleft").accessibilityHidden(true)
-                        Picker("", selection: $model.practicePassages) {
-                            Text(model.languageCode == "zh" ? "文章" : "Passages").tag(true)
-                            Text(model.languageCode == "zh" ? "词流" : "Words").tag(false)
+                        Picker("", selection: $model.practiceSource) {
+                            Text(model.languageCode == "zh" ? "文章" : "Passages")
+                                .tag(AppModel.PracticeSource.passages)
+                            Text(model.languageCode == "zh" ? "词流" : "Words")
+                                .tag(AppModel.PracticeSource.words)
+                            Text(model.languageCode == "zh" ? "我的文本" : "My text")
+                                .tag(AppModel.PracticeSource.custom)
                         }
                         .pickerStyle(.segmented)
-                        .menuControlWidth(220)
+                        .menuControlWidth(300)
                         .accessibilityLabel(model.languageCode == "zh" ? "练习内容" : "Practice content")
+                    }
+                    if model.practiceSource == .custom {
+                        customTextRow
                     }
                     if model.practicePassages {
                         HStack(spacing: 12) {

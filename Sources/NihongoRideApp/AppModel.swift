@@ -12,6 +12,7 @@ import EntitlementKit
 import VocabKit
 import WordListsKit
 import ConjugationReviewKit
+import CustomTextKit
 import SpeechKit
 import WidgetSharedKit
 import WidgetKit
@@ -156,7 +157,103 @@ final class AppModel {
     /// Chosen JLPT level for new words; `nil` mixes all levels.
     var selectedLevel: JLPTLevel? = .n5 { didSet { persistSettings() } }
     /// In Practice mode: cycle whole passages (true) or stream individual words (false).
-    var practicePassages: Bool = true { didSet { persistSettings() } }
+    /// What Practice draws from. Replaces the `practicePassages` boolean, which could not
+    /// express a third option; the boolean is still persisted and still derived from this, so
+    /// an older build reading the same blob gets a sensible screen. (v1.31.)
+    enum PracticeSource: String, CaseIterable, Sendable {
+        case passages, words, custom
+    }
+
+    var practiceSource: PracticeSource = .passages { didSet { persistSettings() } }
+    /// Kept as a computed view of `practiceSource` rather than as a second stored value.
+    /// **Two stored flags for one choice is this project's most-shipped defect**, and the
+    /// menu, `startGame` and `logRun` all read this.
+    var practicePassages: Bool { practiceSource == .passages }
+
+    /// Whether the practice screen renders a flowing SENTENCE (with a caret walking it) rather
+    /// than the word stream.
+    ///
+    /// **Deliberately a second, differently-named predicate.** `practicePassages` answers "did
+    /// the learner pick the bundled passages", which decides what `startGame` builds and what
+    /// the Ride Log calls the run; this answers "what shape is on screen", which is true for
+    /// bundled passages AND for the learner's own text. Collapsing them would be one name
+    /// answering two questions — the shape this project has shipped two dozen times — and
+    /// reusing `practicePassages` for rendering is what made a custom text draw as a word
+    /// stream on the first attempt.
+    var practiceRendersSentences: Bool { practiceSource != .words }
+
+    /// Which of the learner's texts a custom-text run draws from. Not persisted in settings:
+    /// a text id that outlives its text is a dangling reference, and `customTextForRun`
+    /// resolves it against the store on every read rather than trusting it.
+    var selectedCustomTextID: String?
+
+    /// The text a run would actually use — the selected one, or the newest, or none.
+    ///
+    /// **Resolve-then-guard, the rule every start path in this file follows.** A stale id (the
+    /// text was deleted on this device, or the store failed to load) must not strand the learner
+    /// on an empty screen; it falls back to the newest text and, failing that, to nil, which the
+    /// menu explains rather than the game screen discovering.
+    var customTextForRun: CustomText? {
+        if let id = selectedCustomTextID, let found = customTexts.text(id: id) { return found }
+        return customTexts.ordered.first
+    }
+
+    /// How many sentences a custom-text run would ride. **The menu label and the run must both
+    /// read THIS**, never `sentences.count` — an untypeable sentence is kept and shown but
+    /// withheld from the queue, so the two numbers genuinely differ, and telling the learner
+    /// the larger one is v1.22's badge and v1.26's weak-words button all over again.
+    var customTextRunCount: Int { customTextForRun?.typeableSentences.count ?? 0 }
+
+    // MARK: The learner's own texts (v1.31)
+
+    /// Add a pasted text. Returns the id, or nil when the text produced no sentences at all.
+    @discardableResult
+    func addCustomText(title: String, source: String) -> String? {
+        let text = CustomText.make(title: title, source: source, now: Date())
+        guard !text.sentences.isEmpty else { return nil }
+        var store = customTexts
+        guard store.add(text) else { return nil }
+        customTexts = store
+        selectedCustomTextID = text.id
+        saveCustomTexts()
+        return text.id
+    }
+
+    func removeCustomText(id: String) {
+        var store = customTexts
+        guard store.remove(id: id) else { return }
+        customTexts = store
+        if selectedCustomTextID == id { selectedCustomTextID = nil }
+        saveCustomTexts()
+    }
+
+    func renameCustomText(id: String, to title: String) {
+        var store = customTexts
+        guard store.rename(id: id, to: title) else { return }
+        customTexts = store
+        saveCustomTexts()
+    }
+
+    /// The learner correcting a reading in their own text. Returns false when the correction
+    /// is not kana, so the editor can say so instead of appearing to have worked.
+    @discardableResult
+    func setCustomReading(_ reading: String, textID: String, sentenceID: String,
+                          tokenIndex: Int) -> Bool {
+        var store = customTexts
+        guard store.setReading(reading, textID: textID, sentenceID: sentenceID,
+                               tokenIndex: tokenIndex) else { return false }
+        customTexts = store
+        saveCustomTexts()
+        return true
+    }
+
+    private func saveCustomTexts() {
+        // A user-initiated data action, but not one worth an alert: the text is still in front
+        // of them and re-adding costs a paste. Log-only, like the other background writes.
+        bgSave("custom texts", allowed: customTextsWritable) { [customTexts, customTextsURL] in
+            try customTexts.save(to: customTextsURL)
+        }
+    }
     var practicePassageLevel: Passage.Level = .med { didSet { persistSettings() } }
 
     // v1.2 settings.
@@ -229,6 +326,8 @@ final class AppModel {
     /// must never flow into the vocab journey due-queue. Owned here by AppModel (GameCore
     /// stays ignorant of it); written only via a conjugation drill's `onOutcome` sink.
     private(set) var conjugationReviewStore: ConjugationReviewStore
+    /// The learner's own texts. Local only — see `CustomText` for why it is not synced.
+    private(set) var customTexts: CustomTextStore
     /// Stage 1's one purchase, and the only thing in the app that knows whether it exists.
     /// See `rideableStages` for the single seam between it and the scenery.
     let entitlements: RouteStore
@@ -244,6 +343,7 @@ final class AppModel {
     // (v1.15 §C.)
     private let reviewStoreWritable: Bool
     private let conjugationStoreWritable: Bool
+    private let customTextsWritable: Bool
     private let journalWritable: Bool
     private let odometerWritable: Bool
     /// What each store's load reported, for the launch log.
@@ -291,6 +391,7 @@ final class AppModel {
 
     private let storeURL: URL
     private let conjugationReviewURL: URL
+    private let customTextsURL: URL
     private let journalURL: URL
     private let odometerURL: URL
     private let wordListsURL: URL
@@ -311,6 +412,7 @@ final class AppModel {
         self.vocab = vocab
         storeURL = Self.supportFileURL("review.json")
         conjugationReviewURL = Self.supportFileURL("conjugation-review.json")
+        customTextsURL = Self.supportFileURL("custom-texts.json")
         journalURL = Self.supportFileURL("history.json")
         odometerURL = Self.supportFileURL("odometer.json")
         wordListsURL = Self.supportFileURL("word-lists.json")
@@ -322,16 +424,20 @@ final class AppModel {
         reviewStore = reviewLoad.store
         let conjLoad = ConjugationReviewStore.loadReporting(from: conjugationReviewURL)
         conjugationReviewStore = conjLoad.store
+        let customLoad = CustomTextStore.loadReporting(from: customTextsURL)
+        customTexts = customLoad.store
         let journalLoad = RideJournal.loadReporting(from: journalURL)
         journal = journalLoad.journal
         let odometerLoad = OdometerLog.loadReporting(from: odometerURL)
         odometer = odometerLoad.log
         reviewStoreWritable = LossyLoad.isSafeToWrite(reviewLoad.outcome)
         conjugationStoreWritable = LossyLoad.isSafeToWrite(conjLoad.outcome)
+        customTextsWritable = LossyLoad.isSafeToWrite(customLoad.outcome)
         journalWritable = LossyLoad.isSafeToWrite(journalLoad.outcome)
         odometerWritable = LossyLoad.isSafeToWrite(odometerLoad.outcome)
         persistLoadOutcomes = [("review", reviewLoad.outcome), ("conjugation", conjLoad.outcome),
-                               ("journal", journalLoad.outcome), ("odometer", odometerLoad.outcome)]
+                               ("journal", journalLoad.outcome), ("odometer", odometerLoad.outcome),
+                               ("custom texts", customLoad.outcome)]
         // Word lists load via a corruption-aware, one-time migration from the
         // legacy saved-words deck; localized default name applied after settings
         // load below. Temporary empty store until then (no reads in between).
@@ -376,7 +482,7 @@ final class AppModel {
         exampleFurigana = loaded.exampleFurigana
         selectedMode = GameMode(rawValue: loaded.selectedMode) ?? .journey
         selectedLevel = loaded.selectedLevel.flatMap { JLPTLevel(rawValue: $0) }
-        practicePassages = loaded.practicePassages
+        practiceSource = PracticeSource(rawValue: loaded.practiceSource) ?? .passages
         practicePassageLevel = Passage.Level(rawValue: loaded.practicePassageLevel) ?? .med
         iCloudSyncEnabled = loaded.iCloudSyncEnabled
         dueReminderEnabled = loaded.dueReminderEnabled
@@ -849,7 +955,7 @@ final class AppModel {
             // Longest passages, hints on — the worst case for the reflow fix in §D, which is
             // the only way to see whether the typing target is still behind an ellipsis.
             selectedMode = .practice
-            practicePassages = true
+            practiceSource = .passages
             practicePassageLevel = .hard
             assistance = .always
             startGame()
@@ -1098,6 +1204,7 @@ final class AppModel {
         settings.soundEnabled = soundEnabled
         settings.selectedMode = selectedMode.rawValue
         settings.selectedLevel = selectedLevel?.rawValue
+        settings.practiceSource = practiceSource.rawValue
         settings.practicePassages = practicePassages
         settings.practicePassageLevel = practicePassageLevel.rawValue
         settings.iCloudSyncEnabled = iCloudSyncEnabled
@@ -1681,6 +1788,15 @@ final class AppModel {
             built = GameSession.makeDictation(vocab: vocab, config: config)
         } else if selectedMode == .sentence {
             built = GameSession.makeSentence(vocab: vocab, config: config)
+        } else if selectedMode == .practice && practiceSource == .custom {
+            // Resolve-then-guard: no text, or a text whose every sentence is untypeable, must
+            // stay on the menu. `built.isFinished` below catches it either way, and the menu
+            // is where the explanation lives.
+            let sentences = (customTextForRun?.typeableSentences ?? []).map {
+                (id: $0.id, displayKana: $0.displayKana, kana: $0.kana, source: $0.source,
+                 tokens: $0.furiganaTokens)
+            }
+            built = GameSession.makeCustomText(sentences: sentences, config: config)
         } else if selectedMode == .practice && practicePassages {
             built = GameSession.makePractice(level: practicePassageLevel, config: config)
         } else {
@@ -2180,7 +2296,12 @@ final class AppModel {
         let duration = clock.elapsed(at: now)
         let wpm = clock.wpm(correctKeystrokes: session.correctKeystrokes, at: now)
         let level: String
-        if session.mode == .practice && practicePassages {
+        if session.mode == .practice && practiceSource == .custom {
+            // Not a JLPT level and not a passage length. The Ride Log's "level" column is a
+            // label for what was ridden, and "my text" is the honest one — quoting a passage
+            // length for a text the app did not choose would be a number about nothing.
+            level = "custom"
+        } else if session.mode == .practice && practicePassages {
             level = practicePassageLevel.rawValue
         } else {
             level = session.config.level?.label ?? "all"

@@ -23,6 +23,17 @@ public struct AppSettings: Codable, Equatable, Sendable {
     public var selectedMode: String          // GameMode raw value
     public var selectedLevel: Int?           // JLPTLevel raw value; nil = mix all levels
     public var practicePassages: Bool
+    /// What Practice draws from: `"passages"`, `"words"`, or `"custom"` (the learner's own
+    /// text, v1.31).
+    ///
+    /// **`practicePassages` is kept and kept derived, never independent.** The boolean it
+    /// replaces is written by every version up to v1.30 and read by anything that has not
+    /// launched the new binary yet; leaving the two free to disagree is how a learner sets
+    /// "my text", relaunches an older build, and gets a screen neither value asked for.
+    /// `sanitized()` re-derives the boolean from this string, which is exactly what v1.16 did
+    /// when `assistance` replaced `showRomajiHint` — including the part that took a second
+    /// attempt there: the derivation runs on EVERY sanitise, not only on the migration path.
+    public var practiceSource: String
     public var practicePassageLevel: String  // Passage.Level raw value
 
     // v1.2 additions.
@@ -85,6 +96,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         selectedMode: String = "journey",
         selectedLevel: Int? = 5,
         practicePassages: Bool = true,
+        practiceSource: String = "passages",
         practicePassageLevel: String = "med",
         iCloudSyncEnabled: Bool = true,
         dueReminderEnabled: Bool = false,
@@ -106,6 +118,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.selectedMode = selectedMode
         self.selectedLevel = selectedLevel
         self.practicePassages = practicePassages
+        self.practiceSource = practiceSource
         self.practicePassageLevel = practicePassageLevel
         self.iCloudSyncEnabled = iCloudSyncEnabled
         self.dueReminderEnabled = dueReminderEnabled
@@ -132,7 +145,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     // partial / older / forward-version blob still loads instead of throwing.
     private enum CodingKeys: String, CodingKey {
         case languageCode, showRomajiHint, assistance, soundEnabled, selectedMode, selectedLevel
-        case practicePassages, practicePassageLevel
+        case practicePassages, practicePassageLevel, practiceSource
         case iCloudSyncEnabled, dueReminderEnabled, dueReminderHour, deviceID
         case hasSeenOnboarding
         case conjugationForms
@@ -160,6 +173,11 @@ public struct AppSettings: Codable, Equatable, Sendable {
             ? try c.decode(Int?.self, forKey: .selectedLevel)
             : d.selectedLevel
         practicePassages = try c.decodeIfPresent(Bool.self, forKey: .practicePassages) ?? d.practicePassages
+        // Migration: a pre-v1.31 blob has no `practiceSource`. Deriving it from the boolean the
+        // learner actually set preserves their choice; "passages" is only ever the default for
+        // a blob that never existed.
+        practiceSource = try c.decodeIfPresent(String.self, forKey: .practiceSource)
+            ?? (practicePassages ? "passages" : "words")
         practicePassageLevel = try c.decodeIfPresent(String.self, forKey: .practicePassageLevel) ?? d.practicePassageLevel
         iCloudSyncEnabled = try c.decodeIfPresent(Bool.self, forKey: .iCloudSyncEnabled) ?? d.iCloudSyncEnabled
         dueReminderEnabled = try c.decodeIfPresent(Bool.self, forKey: .dueReminderEnabled) ?? d.dueReminderEnabled
@@ -188,6 +206,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         try c.encode(selectedMode, forKey: .selectedMode)
         try c.encode(selectedLevel, forKey: .selectedLevel)
         try c.encode(practicePassages, forKey: .practicePassages)
+        try c.encode(practiceSource, forKey: .practiceSource)
         try c.encode(practicePassageLevel, forKey: .practicePassageLevel)
         try c.encode(iCloudSyncEnabled, forKey: .iCloudSyncEnabled)
         try c.encode(dueReminderEnabled, forKey: .dueReminderEnabled)
@@ -220,6 +239,14 @@ public struct AppSettings: Codable, Equatable, Sendable {
         // migration and the invalid-value fallback above — would read that stale true and
         // resurrect "always" from a blob whose owner never chose it.
         s.showRomajiHint = (s.assistance == "always")
+        if !["passages", "words", "custom"].contains(s.practiceSource) {
+            s.practiceSource = s.practicePassages ? "passages" : "words"
+        }
+        // Same rule, same reason as `showRomajiHint` above: the legacy boolean stays DERIVED.
+        // "custom" has no boolean to be, and it maps to `true` because a custom text is a
+        // passage-shaped run — an older build reading it gets bundled passages, which is a
+        // sensible screen, rather than the word stream, which is a different mode entirely.
+        s.practicePassages = (s.practiceSource != "words")
         return s
     }
 

@@ -255,7 +255,7 @@ enum Screenshotter {
         // Practice (passage) mode — washi paper, full multi-sentence paragraph
         let practice = makeModel()
         practice.selectedMode = .practice
-        practice.practicePassages = true
+        practice.practiceSource = .passages
         practice.practicePassageLevel = .hard
         // Re-roll until we land on one of the long multi-sentence paragraphs (kana > 40 chars)
         for _ in 0 ..< 30 {
@@ -270,7 +270,7 @@ enum Screenshotter {
         // Practice BLIND mode (no romaji hint)
         let blind = makeModel()
         blind.selectedMode = .practice
-        blind.practicePassages = true
+        blind.practiceSource = .passages
         blind.practicePassageLevel = .hard
         blind.assistance = .off
         for _ in 0 ..< 30 {

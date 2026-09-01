@@ -194,3 +194,67 @@ struct AssistanceMigrationTests {
         #expect(back.assistance == "struggle")
     }
 }
+
+/// `practiceSource` replaced a boolean, and v1.16 already paid for getting that wrong once.
+///
+/// When `assistance` replaced `showRomajiHint`, the fix needed two parts and the second was
+/// found late: derive the new value from the old on migration, AND keep the legacy boolean
+/// derived on EVERY sanitise — otherwise a stale `true` survives and resurrects a setting the
+/// owner never chose. The same two parts are asserted here, for the same reason.
+@Suite("practiceSource replaces practicePassages without losing the learner's choice")
+struct PracticeSourceMigrationTests {
+
+    private func decoded(_ json: String) -> AppSettings? {
+        AppSettings.decode(Data(json.utf8))
+    }
+
+    @Test("a pre-v1.31 blob keeps the choice its owner actually made")
+    func migratesFromTheBoolean() throws {
+        let passages = try #require(decoded(#"{"practicePassages": true}"#))
+        #expect(passages.practiceSource == "passages")
+        let words = try #require(decoded(#"{"practicePassages": false}"#))
+        #expect(words.practiceSource == "words",
+                "a learner who chose the word stream must not be moved to passages")
+    }
+
+    @Test("an explicit practiceSource wins over the legacy boolean")
+    func newKeyWins() throws {
+        let s = try #require(decoded(#"{"practicePassages": true, "practiceSource": "custom"}"#))
+        #expect(s.practiceSource == "custom")
+    }
+
+    @Test("the legacy boolean stays DERIVED — the half v1.16 got wrong first time")
+    func booleanIsDerivedOnEverySanitise() throws {
+        // A blob where the two disagree is exactly what an older build writes after the learner
+        // used a newer one. Sanitising must resolve it in one direction, always.
+        var s = try #require(decoded(#"{"practicePassages": false, "practiceSource": "passages"}"#))
+        s = s.sanitized()
+        #expect(s.practicePassages, "the boolean must follow the source, not persist beside it")
+
+        var custom = try #require(decoded(#"{"practicePassages": false, "practiceSource": "custom"}"#))
+        custom = custom.sanitized()
+        #expect(custom.practicePassages, Comment(rawValue:
+            "\"custom\" has no boolean to be; it maps to true so an older build shows bundled "
+            + "passages — a sensible screen — rather than the word stream, a different mode"))
+
+        var words = try #require(decoded(#"{"practicePassages": true, "practiceSource": "words"}"#))
+        words = words.sanitized()
+        #expect(!words.practicePassages, Comment(rawValue: "…and the control: 'words' must drive "
+                + "it the other way, or the derivation is a constant"))
+    }
+
+    @Test("an unknown source falls back to the legacy boolean, not to a blank screen")
+    func unknownSourceRepairs() throws {
+        let s = try #require(decoded(#"{"practicePassages": false, "practiceSource": "nonsense"}"#))
+            .sanitized()
+        #expect(s.practiceSource == "words")
+    }
+
+    @Test("it survives its own round trip")
+    func roundTrip() throws {
+        var s = AppSettings.default
+        s.practiceSource = "custom"
+        let back = try #require(AppSettings.decode(s.sanitized().encoded()))
+        #expect(back.practiceSource == "custom")
+    }
+}

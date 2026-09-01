@@ -177,7 +177,7 @@ conjugation prompt is recall plus production.
 > it is the same quantity the Ride Log will record, and a pause freezes it rather than letting it
 > decay.
 
-### 3. "Type your own text" in Practice — the bounded half of F1 (**tokenizer measured 2026-09-01; the feature is not built**)
+### 3. "Type your own text" in Practice — **BUILT 2026-09-01**, the bounded half of F1
 
 The flagship's promise, at a fraction of its cost, because two blockers turned out to be softer
 than the plan recorded:
@@ -232,6 +232,51 @@ material* — and that answer is what decides whether the SRS half is worth buil
 > these are short curated sentences built around JLPT vocabulary. News, lyrics, forum posts and
 > above all **proper names** are a different population, and 96.9% does not describe them. Names
 > are the predictable weak spot and none of this population tests them.
+
+> **WHAT SHIPPED.** `CustomTextKit` — the reading pipeline, a sentence splitter, and a local
+> store — plus a three-option Practice source (Passages · Words · **My text**), an editor that
+> shows every reading and lets the learner change any of them, and a practice screen that draws
+> their sentence with furigana above the line they type.
+>
+> **It stays outside the SRS by construction, and that is observed rather than asserted.**
+> `makeCustomText` runs in `.practice`, where `RunCompletion.persistsSRS` is false; the app-level
+> test rides a custom text to completion, checks the review store by **id** for every sentence,
+> and carries a control — an ordinary journey run through the same harness that MUST write SRS,
+> or the first assertion is about the harness rather than about the feature.
+>
+> **Four things the tests found that reading the code did not.**
+>
+> 1. **`ABCを見る。` reads as あぶくをみる.** The transcription leaves Latin alone and
+>    `latinToHiragana` then reads it as romaji, so the target is valid kana, perfectly typeable,
+>    and a reading of nothing. **A check on the target passes it** — the check has to be on the
+>    source. `gen_sentence_kana.py` refuses this exact class for this exact reason and records
+>    Sudachi turning 10 into いちれい; the pipeline changed and the failure did not.
+> 2. **The splitter broke 「おはよう。」と彼は言った。 in two**, leaving a practice screen showing
+>    one clause. Fixed with quote depth.
+> 3. **`recordsSRS = false` on the builder looked like belt-and-braces and was a bug.**
+>    `RunCompletion` reads `!recordsSRS` as *weak-words cram*, which also switches off ride
+>    logging — five hundred characters typed and the road does not move, with nothing saying why.
+>    The SRS guarantee comes from the mode, not from that flag.
+> 4. **`CustomTextKit` was missing from the app target in `Package.swift` AND from both app
+>    targets in `project.yml`.** The first failed at link, loudly. The second would have passed
+>    `swift test` completely and failed only when an archive was cut — or on one platform only,
+>    which is v1.25's crossed build numbers wearing a module graph. `ModuleDependencyTests` now
+>    holds both files against each other, with a floor so a parser that reads nothing cannot
+>    report clean — **and that floor immediately caught its own first draft**, which anchored on
+>    the `products:` entry instead of the target and parsed one dependency out of nineteen.
+>
+> **Registered under §B3.** A custom-text run logs a ride like any other practice run, so a
+> learner with their own material can ride further than one without. That moves
+> exposure-per-install. Second-order, written down rather than avoided.
+>
+> **The caret and the engine are a count-and-run pair here**, closed by a property rather than by
+> inspection: `CustomSentence.hasNoUncountedCharacters` asserts every character of the displayed
+> reading is either punctuation or kana with nothing in between, so the view's allow-list and the
+> engine's target partition the same string.
+>
+> **What is NOT built, deliberately:** no SRS cards for pasted words, no CloudKit sync for the
+> texts, no translation. The question this answers is *will anyone paste their own material*,
+> and that answer is what decides whether the expensive half is worth building.
 
 ### 4. Whatever a pass over the app finds
 
