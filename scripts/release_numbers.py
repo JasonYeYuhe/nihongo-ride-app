@@ -24,7 +24,7 @@ CORPUS_MANIFEST = None        # v1.30 ships the paid route and touches no vocabu
 # Advanced with every release. v1.27 moved it from 60c9ed9 (the v1.25 baseline) to the v1.26
 # release commit, so "this release" means since 1.26 and not since 1.25. Leaving it behind is how
 # a delta silently becomes a two-release total — the stale-number failure this module exists for.
-BASELINE_REF = "5669e8a"      # release(v1.29): submitted, both platforms WAITING_FOR_REVIEW
+BASELINE_REF = "eb28e02"      # release(v1.30): Stage 1 submitted — both platforms and the IAP in review
 
 
 def previous(ref=BASELINE_REF):

@@ -314,6 +314,49 @@ Unchanged and repeated because a fast cadence is exactly when these get skipped:
 
 ---
 
+## §G The release cadence, written down as §B asks
+
+**§B says to record the dates and NOT to claim the cadence caused anything**, because
+`PLAN-V2-PRODUCT` §L already filed "seven releases in fourteen days coinciding with the traffic
+tripling" as *one candidate among four — and the one with a perverse incentive attached*. Fast
+iteration is that incentive arriving on purpose, so the dates are kept where day 90 can see them.
+
+Pulled from App Store Connect on 2026-09-01, not from memory. `created` is when the version
+record was made, which is within minutes of submission for every row here.
+
+| version | created (both platforms, within 20 s of each other) |
+|---|---|
+| 1.23 | 2026-08-17 |
+| 1.24 | 2026-08-19 |
+| 1.25 | 2026-08-22 |
+| 1.26 | 2026-08-24 |
+| 1.27 | 2026-08-26 |
+| 1.28 | 2026-08-27 |
+| 1.29 | 2026-08-29 |
+| 1.30 | 2026-08-31 |
+| 1.31 | prepared 2026-09-01, **not submitted** — see below |
+
+**State on 2026-09-01, and it moved during the session:** iOS 1.30 is **READY_FOR_SALE**, macOS
+1.30 is **IN_REVIEW**, and the in-app purchase is **IN_REVIEW**.
+
+Three consequences, and the second is the one with a deadline on it:
+
+1. **v1.31 cannot be submitted yet.** ASC refuses `--metadata` on a new version while the
+   previous one is in review, and macOS 1.30 is. The release is prepared —
+   `scripts/submit_1_31.py`, `check_versions.py` green at mac 55 / iOS 56, `--dry-run` clean
+   against live ASC — and waits.
+2. **§L's manual purchase gates just got more expensive on iOS.** While a version is in review a
+   failed gate costs a cancel and a resubmit, measured in minutes. **iOS 1.30 is live**, so on
+   that platform a failed gate now costs a whole new version. macOS is still in review. This is
+   the asymmetry §H flagged, and half of it has now expired.
+3. **§K's day 0 has NOT started.** It counts from *both* platforms being `READY_FOR_SALE`, and
+   the purchase itself is still in review — so the offer on live iOS currently shows *"Prices are
+   unavailable right now"*, which the app handles as designed and the counter records as
+   `offerUnavailable` rather than as an offer nobody took. Verified by reading `RoadView`, not
+   assumed.
+
+---
+
 ## §F What would make this plan wrong
 
 * **If the release-template extraction turns out to be more than a day.** It is proposed as the
