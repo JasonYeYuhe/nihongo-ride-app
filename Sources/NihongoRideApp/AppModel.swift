@@ -1023,15 +1023,19 @@ final class AppModel {
     /// away from the keyboard. One signal, two clocks, and only one of them was wired — the
     /// shape this repo has now recorded two dozen times. The two are driven from one place so
     /// they cannot drift apart again.
-    func pauseRunClock() {
-        runClock?.pause(at: Date())
+    /// - Parameter instant: injected for the same reason `liveWPM(at:)` is. Without it the
+    ///   freeze this method exists to produce cannot be observed by a test at all — the pause
+    ///   lands on the real clock while the assertion reads an injected one, and the two never
+    ///   line up. Found by writing the test, not by reading the code.
+    func pauseRunClock(at instant: Date = Date()) {
+        runClock?.pause(at: instant)
         session?.pauseTyping()
         conjugationSession?.pauseTyping()
     }
 
     /// The rider resumed. Ignored when not paused.
-    func resumeRunClock() {
-        runClock?.resume(at: Date())
+    func resumeRunClock(at instant: Date = Date()) {
+        runClock?.resume(at: instant)
         session?.resumeTyping()
         conjugationSession?.resumeTyping()
     }
@@ -1044,9 +1048,12 @@ final class AppModel {
     /// correct keystroke — `RunClock.wpm`'s own convention, not a second opinion about it.
     /// A pause freezes it rather than letting it decay, which is the point: the rider is not
     /// getting slower while the pause overlay is up.
-    var liveWPM: Double {
+    /// - Parameter instant: injected so this is testable. The first version read `Date()`
+    ///   internally, which made the one piece of arithmetic on the ride screen unobservable —
+    ///   and a number a test cannot see is a number nobody is checking.
+    func liveWPM(at instant: Date = Date()) -> Double {
         guard let session, let runClock else { return 0 }
-        return runClock.wpm(correctKeystrokes: session.correctKeystrokes, at: Date())
+        return runClock.wpm(correctKeystrokes: session.correctKeystrokes, at: instant)
     }
 
     // MARK: Coach (v1.15)

@@ -394,13 +394,27 @@ struct JournalView: View {
         }
     }
 
-    private func levelLabel(_ level: String) -> String {
+    private func levelLabel(_ level: String) -> String { Self.levelLabel(level, zh: zh) }
+
+    /// The capsule beside a ride's date. **Every label here is short on purpose, and the
+    /// `default:` used to pass anything else straight through.**
+    ///
+    /// That cost a broken screen the day a new level string appeared. v1.31's custom-text runs
+    /// log `level: "custom"`, which rendered a six-character capsule in a row laid out for one
+    /// — the score, WPM and accuracy columns beside it were squeezed until they wrapped
+    /// character by character and the row became unreadable. Found by looking at the Ride Log
+    /// on a phone, not by any test.
+    ///
+    /// So the passthrough is now capped. The cap is the durable half: the next level string
+    /// somebody adds gets an ugly label instead of a broken row, which is the right way round.
+    static func levelLabel(_ level: String, zh: Bool) -> String {
         switch level {
-        case "easy": zh ? "短" : "S"
-        case "med": zh ? "中" : "M"
-        case "hard": zh ? "长" : "L"
-        case "all": zh ? "混合" : "MIX"
-        default: level   // N5…N1
+        case "easy": return zh ? "短" : "S"
+        case "med": return zh ? "中" : "M"
+        case "hard": return zh ? "长" : "L"
+        case "all": return zh ? "混合" : "MIX"
+        case "custom": return zh ? "自选" : "MINE"
+        default: return String(level.prefix(4))   // N5…N1, and anything unforeseen, bounded
         }
     }
 

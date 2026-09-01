@@ -132,7 +132,7 @@ struct GameView: View {
             // so a 10 Hz ticker does not redraw the HUD ten times a second for a value that
             // changes every few seconds. `model.liveWPM` is RunClock's ridden time, so a pause
             // freezes this rather than letting it decay.
-            let shown = model.liveWPM.rounded()
+            let shown = model.liveWPM().rounded()
             if shown != liveWPM { liveWPM = shown }
             // Sheet open → pause the time-attack clock too (it's a modal interruption).
             guard session.mode == .timeAttack, !isPaused, addToListsID == nil,

@@ -1004,3 +1004,117 @@ struct JLPTPickerVisibilityTests {
         }
     }
 }
+
+/// The ride screen's live speed readout.
+///
+/// The pill itself is one conditional over `stat(...)`, the same helper four other pills use;
+/// what has logic is the number. This suite exists because the first version of `liveWPM` read
+/// `Date()` internally and so could not be observed at all — the whole arithmetic on the ride
+/// screen, unchecked, which is how a readout and the row it is supposed to match drift apart.
+@MainActor
+@Suite("The live speed readout is the number the Ride Log will record")
+struct LiveWPMTests {
+
+    static func startedModel() -> AppModel {
+        let model = AppModelTests.makeModel(vocab: VocabStore(entries: AppModelTests.verbEntries(10)))
+        model.selectedMode = .journey
+        model.startGame()
+        return model
+    }
+
+    @Test("nothing to report before the ride has two seconds and a keystroke")
+    func belowTheFloor() throws {
+        let model = Self.startedModel()
+        let session = try #require(model.session)
+        // RunClock's own convention: under two seconds, or no correct keystrokes, has no
+        // meaningful speed. The HUD renders 0 as a dash rather than as "0 wpm", because a rider
+        // three seconds into a ride is not going at zero.
+        #expect(model.liveWPM(at: Date()) == 0, "no keystrokes yet")
+        for character in (session.currentRomaji ?? "").prefix(5) { _ = session.input(character) }
+        #expect(model.liveWPM(at: Date()) == 0, "under two seconds of riding")
+        // The control: the same keystrokes, further along the clock, must produce a number.
+        #expect(model.liveWPM(at: Date().addingTimeInterval(60)) > 0, Comment(rawValue:
+                "…and past the floor it must report something, or this suite is asserting a "
+                + "constant zero"))
+    }
+
+    @Test("it is RunClock's convention, not a second opinion about speed")
+    func matchesTheJournalConvention() throws {
+        let model = Self.startedModel()
+        let session = try #require(model.session)
+        for character in (session.currentRomaji ?? "") { _ = session.input(character) }
+        let at = Date().addingTimeInterval(60)
+        let keystrokes = session.correctKeystrokes
+        // The definition the Ride Log row uses, computed here from the same clock. If the two
+        // ever diverge, the rider watches one number during the ride and is shown another
+        // afterwards — the count-and-run defect wearing a speedometer.
+        let expected = RunClock(startedAt: Date()).wpm(correctKeystrokes: keystrokes, at: at)
+        #expect(abs(model.liveWPM(at: at) - expected) < 0.5, Comment(rawValue:
+            "live \(model.liveWPM(at: at)) vs journal convention \(expected)"))
+    }
+
+    @Test("a pause freezes it rather than letting it decay")
+    func pauseFreezesIt() throws {
+        let model = Self.startedModel()
+        let session = try #require(model.session)
+        for character in (session.currentRomaji ?? "") { _ = session.input(character) }
+        let atPause = Date().addingTimeInterval(10)
+        let running = model.liveWPM(at: atPause)
+        #expect(running > 0)
+        model.pauseRunClock(at: atPause)
+        // Ten minutes of pause: ridden time has not moved, so neither has the readout.
+        let after = model.liveWPM(at: atPause.addingTimeInterval(600))
+        #expect(abs(after - running) < 0.5, Comment(rawValue:
+            "the readout decayed from \(running) to \(after) while the rider was paused"))
+        // The control, and it is what makes the freeze mean something: once resumed, more wall
+        // clock DOES lower the speed again.
+        model.resumeRunClock(at: atPause.addingTimeInterval(600))
+        let later = model.liveWPM(at: atPause.addingTimeInterval(1200))
+        #expect(later < running, Comment(rawValue:
+            "after resuming, the readout must move again — got \(later) against \(running)"))
+    }
+}
+
+/// The Ride Log's level capsule.
+///
+/// Written after the row broke. Every ride the app logs carries a `level` string, the capsule
+/// beside the date renders it, and the row is laid out for a label of one or two characters —
+/// so a longer one squeezes the score, WPM and accuracy columns until they wrap character by
+/// character. `levelLabel`'s `default:` passed anything through, and v1.31's `"custom"` was the
+/// first string long enough to matter.
+@MainActor
+@Suite("A ride's level capsule stays short enough for the row")
+struct RideLevelLabelTests {
+
+    /// Every level string `AppModel.logRun` can actually write, enumerated from that method's
+    /// own branches rather than guessed: the passage lengths, the mixed pool, a JLPT level, and
+    /// the custom-text runs added in v1.31.
+    static let everyLevelTheAppWrites: [String] =
+        ["easy", "med", "hard", "all", "custom"] + JLPTLevel.allCases.map(\.label)
+
+    @Test("no label the app can produce is longer than the row can hold")
+    func everyLabelIsShort() {
+        for zh in [false, true] {
+            for level in Self.everyLevelTheAppWrites {
+                let label = JournalView.levelLabel(level, zh: zh)
+                #expect(!label.isEmpty, Comment(rawValue: "\(level) rendered nothing"))
+                #expect(label.count <= 4, Comment(rawValue:
+                    "\(level) → \(label.debugDescription) is \(label.count) characters; the row "
+                    + "is laid out for one or two and squeezes everything beside it"))
+            }
+        }
+    }
+
+    @Test("…and an unforeseen level is capped rather than passed through")
+    func theDefaultIsBounded() {
+        // The mutation this kills: restoring `default: level`. That is what shipped the broken
+        // row, and it would pass the test above for as long as nobody adds a long level string
+        // — which is precisely how it survived until v1.31.
+        let long = "a-level-nobody-has-thought-of-yet"
+        #expect(JournalView.levelLabel(long, zh: false).count <= 4)
+        // The control: the labels that are meant to pass through still do.
+        #expect(JournalView.levelLabel("N5", zh: false) == "N5")
+        #expect(JournalView.levelLabel("custom", zh: false) == "MINE")
+        #expect(JournalView.levelLabel("custom", zh: true) == "自选")
+    }
+}

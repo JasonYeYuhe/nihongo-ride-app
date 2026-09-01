@@ -304,6 +304,40 @@ material* — and that answer is what decides whether the SRS half is worth buil
 > Japanese path is covered by `CustomTextRunTests`, which drives a real session and asserts the
 > kana it produces.
 
+> **SECOND PASS, same day, with the app SEEDED so the Japanese path could actually be walked.**
+> The harness note above said Japanese cannot be got into the simulator; the way round it is to
+> seed the store through **its own writer** (`scripts/`-style throwaway compiled against
+> `CustomTextKit`, asserting the seed round-trips before the app ever sees it — the rule that
+> exists because a hand-rolled encoder once made a seed load as an empty journal while every
+> assertion passed for the wrong reason).
+>
+> **What that verified, on a real device run rather than in a test:** the sentence renders with
+> furigana above the typing line; typing it advances 1/3 → 2/3 → 3/3; the run returns to the menu
+> (practice shows no results screen); the Ride Log gains a row and the odometer moves 0.5 km; and
+> **`review.json` does not exist at all afterwards** — no `customtext-` id in any persisted
+> store. The SRS red line, observed rather than argued.
+>
+> **And it found a defect I had shipped into the Ride Log.** `JournalView.levelLabel` maps the
+> passage lengths to ONE character (S / M / L) because that row is width-constrained, and its
+> `default:` passed anything else through raw. v1.31's `level: "custom"` was the first string
+> long enough to matter: a six-character capsule squeezed the score, WPM and accuracy columns
+> until they wrapped character by character. Fixed with an explicit `MINE` / 自选 **and a cap on
+> the default**, which is the durable half — the next level string somebody adds gets an ugly
+> label instead of a broken row.
+>
+> ⚠️ **A finding NOT mine, and the reason it took a while to separate: the simulator was at
+> AX5** (`accessibility-extra-extra-extra-large`). At that size the Ride Log does not survive —
+> and the evidence that this is pre-existing is that the **Review Forecast** rows, which this
+> release never touched, run off the right edge too. At the default size the same screen is
+> clean: `Today · MINE · ★651 · WPM 13 · 100%`. `ImageRenderer` cannot see this class of problem
+> at all (`ScaledFont.swift` has said so since v1.7), which is exactly why it is Gate E's
+> territory and why it survived to be found by looking.
+>
+> *This also corrected a claim I had already written into the code.* The practice header's
+> comment said the truncation was "measured on a phone", which was true and incomplete — it was
+> measured at AX5. At the default size `PRACTICE · MY TEXT` fits comfortably. The comment now
+> says which.
+
 The rest of this item is still open:
 
 
@@ -338,6 +372,46 @@ Unchanged and repeated because a fast cadence is exactly when these get skipped:
 * **§K's day-0 known-positive purchase.**
 * **Whether to denominate §K's checkpoints by installs rather than dates** — free to decide only
   before day 0.
+
+---
+
+## §H ⚠️ THE PLACEMENT GATE IS RED AND I CANNOT EXPLAIN IT — do not ship v1.31 until this is settled
+
+`scripts/run_ios_placement_tests.sh` exits **65** on
+`testTheMenuEntranceAppearsAtKyotoAndOpensTheRoadScreen`. That suite exists because its tests
+*"were written, were correct, and were never run — and the one thing they guarded shipped
+broken"*, and it guards the offer's placement, which is App Review 3.1.1 territory. **It is left
+RED.** Turning a gate green to make a suite pass is the one thing this project forbids by name.
+
+**What is measured, so the next person does not re-derive it:**
+
+| | result |
+|---|---|
+| the same suite, twice earlier the same day, same code region | **passed 7/7** |
+| at `2722dd1`, before ANY of this session's UI work | **fails identically**, 4 runs |
+| the failing test alone, in isolation | **fails** |
+| freshly booted simulator, nothing else running | **fails** |
+| default text size, and AX5 | **fails at both** |
+| after deleting the UI-test `UserDefaults` suite | **fails** |
+| **the behaviour itself, driven by hand** | **WORKS** — tapping the strip opens The Road, with Restore Purchases present |
+
+**So it is not a regression from this session** — the same failure predates every line of it — and
+it is not evidence about this session's code either way. It is a gate that reported pass and fail
+on the same code within an hour, which makes both readings worthless until the cause is found.
+
+**Where the next attempt should start.** The failure attachment shows the app still on the MENU
+after the tap, with `menuRouteEntrance` present at `{{20, 230.7}, {362, 69}}` — on screen, unique,
+and hittable — so the element is found and the screen does not change. The `Button(action:
+model.showRoad)` is wrapped by an `.accessibilityElement()` carrying the identifier, and a tap
+delivered to the a11y element rather than to the button would look exactly like this. **That is a
+hypothesis, not a finding, and the reason it was not acted on is that it cannot be told apart from
+a real defect by looking at it** — and the fix for "the tap is unreliable" and the fix for "the
+button stopped working" are the same edit, which is precisely the shape that turns a gate into
+decoration. Settle it by proving the tap lands (a coordinate tap that also fails would exonerate
+the tap) BEFORE changing anything.
+
+*Bookkeeping:* the earlier 7/7 runs reported in §C's boxes should be read as "passed at the time",
+not as clearance for this release.
 
 ---
 

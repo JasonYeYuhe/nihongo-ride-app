@@ -205,8 +205,18 @@ struct PracticeView: View {
     private func practiceHeaderLabel(_ s: GameSession) -> String {
         let zh = model.languageCode == "zh"
         if model.practiceSource == .custom {
-            return (model.customTextForRun?.title).map { String($0.prefix(20)) }
-                ?? (zh ? "我的文本" : "MY TEXT")
+            // A SHORT constant, not the text's title. **Measured, and the measurement's
+            // CONDITIONS matter:** at the default text size "PRACTICE · MY TEXT" fits an
+            // iPhone comfortably, and a twenty-character user title would not. At AX5 — where
+            // this was first seen — the header yields its width to the Next/Done buttons (the
+            // comment at the call site says so, deliberately) and collapses to "PRAC…"
+            // whatever the label is, title or not.
+            //
+            // So this is not a fix for AX5, which needs the row rethought and is Gate E's
+            // territory. It keeps the custom label in the same length class as its siblings —
+            // SHORT / MED / LONG — so it costs nothing at any size. The learner chose the text
+            // one tap ago and the menu names it.
+            return zh ? "我的文本" : "MY TEXT"
         }
         guard model.practicePassages else { return s.currentLevelLabel }
         switch model.practicePassageLevel {
