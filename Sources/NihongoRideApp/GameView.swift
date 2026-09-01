@@ -468,10 +468,16 @@ private struct WordCard: View {
                 // learner asks to be shown.
                 replayControl
             } else {
+                // Same defect as `kanaReading` below and the same reason: this is one line for
+                // a WORD and a whole sentence in sentence/dictation mode. It was truncating to
+                // 「授業でこの新しい辞書を使…」, and with the software keyboard up the card drops
+                // the full sentence it repeats underneath — so on a phone, mid-run, the
+                // truncated line was the ONLY copy on screen.
                 Text(session.currentSurface ?? "")
                     .scaledSystemFont(compact ? 40 : 64, weight: .bold, relativeTo: .largeTitle)
                     .foregroundStyle(.white)
-                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
                     .minimumScaleFactor(0.4)   // long compounds shrink instead of clipping (narrow screens)
 
                 kanaReading
@@ -670,6 +676,22 @@ private struct WordCard: View {
     /// Kana reading with committed kana tinted, the current one emphasized.
     /// iPhone: one concatenated Text so a long reading scales down as a unit
     /// instead of overflowing (per-character HStack can't shrink).
+    ///
+    /// **IT MUST WRAP, AND UNTIL v1.31 IT DID NOT.** The comment above was written for long
+    /// WORDS, where one shrinking line is right. v1.18 then sent whole SENTENCES through the
+    /// same view, and a sentence does not fit one phone line at any scale: 授業でこの新しい辞書
+    /// を使います。 rendered as 「じゅぎょうでこのあたらしいじしょをつか…」 and stayed that way as
+    /// the learner typed, so once the caret passed the ellipsis **they were typing blind** —
+    /// the kana they still owed were off the end and the romaji buffer below was truncated too.
+    ///
+    /// `PracticeView` fixed exactly this in v1.16 §D and its comment says why in the words that
+    /// apply here verbatim: SwiftUI "resolved that by putting an ellipsis through the characters
+    /// the learner is supposed to be typing — a typing app hiding the typing target." **The fix
+    /// was applied to one of the two screens that show a typing target.** A fix applied to one
+    /// call site is not a fix.
+    ///
+    /// Both branches now wrap. A short word still occupies one line because it fits, so nothing
+    /// about the word modes changes; only a target that could not be shown at all is affected.
     @ViewBuilder
     private var kanaReading: some View {
         let kana = Array(session.currentKana ?? "")
@@ -683,10 +705,14 @@ private struct WordCard: View {
                     .underline(pair.offset == done, color: Theme.accent)
             }
             .scaledSystemFont(compact ? 26 : 34, weight: .semibold, design: .rounded, relativeTo: .largeTitle)
-            .lineLimit(1)
+            .multilineTextAlignment(.center)
+            .lineLimit(3)
             .minimumScaleFactor(0.5)
         } else {
-            HStack(spacing: 2) {
+            // FlowLayout rather than HStack for the same reason: an HStack cannot wrap, so a
+            // sentence-length target ran off the card and was clipped. It is the app's own
+            // wrapping layout, already carrying every furigana sentence in the corpus.
+            FlowLayout(spacing: 2, lineSpacing: 6) {
                 ForEach(Array(kana.enumerated()), id: \.offset) { index, character in
                     Text(String(character))
                         .scaledSystemFont(compact ? 26 : 40, weight: .semibold, design: .rounded, relativeTo: .largeTitle)
@@ -707,9 +733,15 @@ private struct WordCard: View {
     @ViewBuilder
     private var romaji: some View {
         VStack(spacing: compact ? 5 : 8) {
+            // What the learner has typed so far. It was truncating on a sentence, so past a
+            // certain length they could see neither what they still owed (the kana line) nor
+            // what they had already entered.
             Text(session.typedRomaji.isEmpty ? " " : session.typedRomaji)
                 .scaledSystemFont(compact ? 20 : 26, weight: .bold, design: .monospaced)
                 .foregroundStyle(Theme.accent2)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.5)
                 .accessibilityIdentifier("typedRomaji")
 
             if session.romajiVisible {

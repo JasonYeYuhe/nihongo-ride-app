@@ -398,6 +398,36 @@ material* — and that answer is what decides whether the SRS half is worth buil
 > lay out or shrink text the way a device does — which is precisely why they survived to be found
 > by looking, and why "use the app" earned its place as a tier-1 item.
 
+> **FIFTH PASS — Sentence mode, and it found the worst one yet.**
+>
+> **The typing target was truncated, and stayed truncated as the learner typed.** On a phone,
+> 授業でこの新しい辞書を使います。 rendered as 「じゅぎょうでこのあたらしいじしょをつか…」 — and
+> once the caret passed the ellipsis **the learner was typing blind**: the kana they still owed
+> were off the end, the romaji buffer below was truncated too, and with the software keyboard up
+> the card drops the full sentence it otherwise repeats underneath. Verified by typing past the
+> cut and watching the caret disappear.
+>
+> **`PracticeView` fixed exactly this in v1.16 §D**, and its comment states the principle in words
+> that apply here verbatim: SwiftUI *"resolved that by putting an ellipsis through the characters
+> the learner is supposed to be typing — a typing app hiding the typing target."* **It was applied
+> to one of the two screens that show a typing target.** *A fix applied to one call site is not a
+> fix* — this repo's own first lesson, twenty releases on.
+>
+> The root cause is the shape this pass keeps finding, in its sharpest form. `kanaReading`'s doc
+> comment says *"iPhone: one concatenated Text so a long reading scales down as a unit"* — correct
+> for a WORD, which is the population it was written for in v1.7. v1.18 then sent whole SENTENCES
+> through the same view and nobody revisited it: **a component correct for its original population,
+> silently wrong on a new one.**
+>
+> Fixed on both branches: the phone's concatenated `Text` wraps to three lines, and the
+> wider-screen per-character `HStack` — which cannot wrap at all and simply clipped — becomes the
+> app's own `FlowLayout`, the one already carrying every furigana sentence in the corpus. The
+> sentence line and the typed-romaji buffer wrap too. A short word still occupies one line because
+> it fits, so the word modes are untouched.
+>
+> **This one is not cosmetic.** Sentence mode has shipped since v1.18 and Dictation reuses the same
+> card.
+
 The rest of this item is still open:
 
 
