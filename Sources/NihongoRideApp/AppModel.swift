@@ -182,6 +182,22 @@ final class AppModel {
     /// stream on the first attempt.
     var practiceRendersSentences: Bool { practiceSource != .words }
 
+    /// Whether the menu should offer the JLPT level picker at all.
+    ///
+    /// **Found by running the app, not by reading it.** The expression in `MenuView` was
+    /// `!(selectedMode == .practice && practicePassages)`, and when `practicePassages` stopped
+    /// meaning "this practice run is sentence-shaped" and started meaning "the BUNDLED passages
+    /// specifically", the level picker reappeared under *My text* — a control that decides
+    /// nothing, because a custom run draws from the learner's own sentences and never touches a
+    /// level pool. One name answering two questions, one release after the file's own v1.15 §L
+    /// note about a header claiming every passage was N5.
+    ///
+    /// It lives here rather than in the view so it can be asserted for every mode and source,
+    /// which a `some View` cannot be.
+    var showsJLPTPicker: Bool {
+        !(selectedMode == .practice && practiceRendersSentences)
+    }
+
     /// Which of the learner's texts a custom-text run draws from. Not persisted in settings:
     /// a text id that outlives its text is a dangling reference, and `customTextForRun`
     /// resolves it against the store on every read rather than trusting it.

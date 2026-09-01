@@ -278,7 +278,34 @@ material* — and that answer is what decides whether the SRS half is worth buil
 > texts, no translation. The question this answers is *will anyone paste their own material*,
 > and that answer is what decides whether the expensive half is worth building.
 
-### 4. Whatever a pass over the app finds
+### 4. Whatever a pass over the app finds — **one pass done 2026-09-01, and it found one**
+
+> **The first thing running the app found was a defect the 674 tests could not see.** With *My
+> text* selected, the **JLPT level picker came back** — a control that decides nothing, because a
+> custom run draws from the learner's own sentences and never touches a level pool. `MenuView`
+> asked `!(mode == .practice && practicePassages)`, and when `practicePassages` narrowed from
+> "this practice run is sentence-shaped" to "the BUNDLED passages specifically", the question
+> silently changed under it. One name answering two questions, one release after this file's own
+> v1.15 §L note about a header claiming every passage was N5.
+>
+> The predicate moved to `AppModel.showsJLPTPicker` so it could be asserted for every mode and
+> source — a `some View` cannot be — with the control that matters: the word stream must KEEP the
+> picker, or the suite would pass while a real control disappeared.
+>
+> **What else the pass verified, in the running app rather than in a test:** the three-way picker,
+> the empty state, the add sheet, and the whole guarded path — pasting non-Japanese produced
+> *"0 of 1 typeable · the rest contain letters or digits"* on the text and *"Nothing in this text
+> can be typed"* on the menu, with the text kept and the queue empty. That is `canRead` and
+> `customTextRunCount` firing end to end.
+>
+> *Harness note for whoever does this next:* the simulator can only type ASCII, and both
+> `simctl pbcopy` and `simctl pbsync` mangle UTF-8 into MacRoman, so **Japanese cannot be got into
+> the simulator by either route.** The Latin path was exercised by accident because of it. The
+> Japanese path is covered by `CustomTextRunTests`, which drives a real session and asserts the
+> kana it produces.
+
+The rest of this item is still open:
+
 
 Tier 1 above is everything I can defend from the repo's own records. **The rest of the backlog
 should come from using the app, not from reading it**, and that pass is itself the next work item.

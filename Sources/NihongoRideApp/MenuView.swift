@@ -199,7 +199,7 @@ struct MenuView: View {
                     .accessibilityLabel(model.languageCode == "zh" ? "界面语言" : "Language")
                 }
                 // JLPT level applies to word-stream modes; Practice Passages has its own level picker below.
-                let showJLPT = !(model.selectedMode == .practice && model.practicePassages)
+                let showJLPT = model.showsJLPTPicker
                 if showJLPT {
                     HStack(spacing: 12) {
                         Image(systemName: "graduationcap").accessibilityHidden(true)

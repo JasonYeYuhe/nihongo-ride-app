@@ -965,3 +965,42 @@ struct CustomTextRunTests {
                 "the correction must be what the engine asks for, or editing is decoration")
     }
 }
+
+/// The menu's level picker, which is a claim about what the run will draw from.
+///
+/// This suite exists because the picker came BACK under "My text" when `practicePassages`
+/// narrowed its meaning, and it was found by launching the app rather than by any test. A
+/// control that decides nothing is the same defect class as a label that counts something the
+/// run does not ride — v1.15 §L is the same note about the same screen.
+@MainActor
+@Suite("The JLPT picker is shown exactly when it decides something")
+struct JLPTPickerVisibilityTests {
+
+    static func model() -> AppModel {
+        AppModelTests.makeModel(vocab: VocabStore(entries: AppModelTests.verbEntries(10)))
+    }
+
+    @Test("hidden for both sentence-shaped practice sources, shown for the word stream")
+    func practiceSources() {
+        let model = Self.model()
+        model.selectedMode = .practice
+        model.practiceSource = .passages
+        #expect(!model.showsJLPTPicker, "a passage run draws from a length, not a level")
+        model.practiceSource = .custom
+        #expect(!model.showsJLPTPicker, "a custom run draws from the learner's own sentences")
+        // The control, and it is the half that makes the two above mean anything: if the picker
+        // were hidden in every practice mode this suite would pass while the word stream lost a
+        // control it genuinely needs.
+        model.practiceSource = .words
+        #expect(model.showsJLPTPicker, "the word stream really does draw from a level")
+    }
+
+    @Test("and every other mode keeps it")
+    func otherModes() {
+        let model = Self.model()
+        for mode in [GameMode.journey, .timeAttack, .sentence, .dictation, .conjugation] {
+            model.selectedMode = mode
+            #expect(model.showsJLPTPicker, Comment(rawValue: "\(mode) lost its level picker"))
+        }
+    }
+}
