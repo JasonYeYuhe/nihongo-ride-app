@@ -66,6 +66,23 @@ extension GameMode {
         zh ? "进度" : completedUnitLabel(zh: false)
     }
 
+    /// Whether the queue's LENGTH is a target the learner is working towards.
+    ///
+    /// **It is not, in Time Attack, and the HUD was claiming otherwise.** That mode ends on the
+    /// clock, and `startGame` fills its queue with `newWordCount = 300` — the comment there says
+    /// why in as many words: *"plenty for a 60s sprint"*. It is a pool size. But the HUD renders
+    /// `wordsCompleted/wordCount` in every mode, so a rider opening a sixty-second sprint was
+    /// shown **"0/300"** under a "Done" label, which reads as a target and is one nobody comes
+    /// within an order of magnitude of. Seen on an iPhone; no store screenshot carries it.
+    ///
+    /// Every other mode's queue IS the target: journey and practice ride the queue to its end,
+    /// sentence and dictation ride five, the conjugation drill twelve.
+    ///
+    /// It lives here for the reason `hudProgressLabel` gives directly above — a view choosing
+    /// this for itself is how the unit labels drifted the first time, and a call site's choice
+    /// is invisible to the tests in this file.
+    public var queueLengthIsTheTarget: Bool { self != .timeAttack }
+
     /// The same distinction for the tile that counts what went wrong on a run persisting no SRS.
     public func struggledLabel(zh: Bool) -> String {
         if lapsesAreWords { return zh ? "吃力" : "Struggled" }

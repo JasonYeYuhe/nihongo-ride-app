@@ -436,7 +436,20 @@ material* — and that answer is what decides whether the SRS half is worth buil
 > translation, all fully visible. Word Lists gates its play control on an empty list. Results,
 > coach and Stats were clean. Menu, practice and the road screen were verified earlier.
 >
-> **Not yet walked:** Time Attack, and a full Journey ride to its results screen with real data.
+> **SIXTH PASS — Time Attack.** The progress pill read **"0/300"** under a "Done" label. 300 is
+> the queue `startGame` fills for that mode, and its own comment says what it is: *"plenty for a
+> 60s sprint"* — a pool size, not a goal, and one nobody comes within an order of magnitude of in
+> sixty seconds. Time Attack now shows a bare count; the timer bar directly above already carries
+> that mode's progress.
+>
+> The rule lives on `GameMode` as `queueLengthIsTheTarget`, beside `hudProgressLabel`, for the
+> reason that property's own comment gives: a view choosing this for itself is how the unit
+> labels drifted the first time, and *"reverting the call site to a bare 'Words' left the entire
+> suite green, because the test can only see this file."* Mutation-proven both ways — a constant
+> true kills 4 assertions, a constant false kills 8. No store screenshot carries the Time Attack
+> HUD, checked before touching it.
+>
+> **Not yet walked:** a full Journey ride to its results screen with real data.
 
 The rest of this item is still open:
 

@@ -281,7 +281,12 @@ private struct HUDBar: View {
                      spoken: zh ? "\(Int(session.distanceMeters)) 米" : "\(Int(session.distanceMeters)) meters")
             }
             stat(icon: "checkmark.circle.fill",
-                 value: "\(session.wordsCompleted)/\(session.wordCount)", tint: Theme.done,
+                 // Time Attack shows a bare count: its queue is a pool, not a target, and the
+                 // timer bar directly above is already the progress this mode has.
+                 value: session.mode.queueLengthIsTheTarget
+                     ? "\(session.wordsCompleted)/\(session.wordCount)"
+                     : "\(session.wordsCompleted)",
+                 tint: Theme.done,
                  // One run must not show three units for one number. v1.25 §B taught the
                  // results screen to say "Sentences" on a sentence or dictation ride, and this
                  // HUD kept saying "Words" for the same queue — so mid-ride read "Words 2/5"
@@ -289,8 +294,10 @@ private struct HUDBar: View {
                  // 进度 ("progress"), which is mode-neutral and therefore already right in all
                  // six modes: one language had solved this and the other had not. (v1.26 §B3.)
                  label: session.mode.hudProgressLabel(zh: zh),
-                 spoken: zh ? "\(session.wordsCompleted) / \(session.wordCount)"
-                            : "\(session.wordsCompleted) of \(session.wordCount)")
+                 spoken: session.mode.queueLengthIsTheTarget
+                     ? (zh ? "\(session.wordsCompleted) / \(session.wordCount)"
+                           : "\(session.wordsCompleted) of \(session.wordCount)")
+                     : "\(session.wordsCompleted)")
                 .accessibilityIdentifier("hudProgress")
             if !narrow {
                 stat(icon: "scope",

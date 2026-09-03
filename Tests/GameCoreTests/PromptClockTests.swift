@@ -60,3 +60,24 @@ struct PromptClockTests {
         #expect(clock.elapsed(at: t(90)) == 40)
     }
 }
+
+/// The ride HUD's progress denominator is a claim about what the run is for.
+///
+/// Time Attack ends on the clock and fills its queue with 300 words — `startGame`'s own comment
+/// calls that "plenty for a 60s sprint" — so the HUD's `wordsCompleted/wordCount` was telling a
+/// rider "0/300" under a Done label. That is a pool size wearing a target's clothes.
+@Suite("Only a queue the learner rides to its end is a target")
+struct QueueTargetTests {
+
+    @Test("Time Attack has no word target; every other mode does")
+    func onlyTimeAttackIsOpenEnded() {
+        #expect(!GameMode.timeAttack.queueLengthIsTheTarget,
+                "a sixty-second sprint does not have a 300-word goal")
+        // The control, and it is the half that matters: if this were a constant false, the HUD
+        // would lose the denominator in the five modes where the queue really is the target.
+        for mode in [GameMode.journey, .practice, .sentence, .dictation, .conjugation] {
+            #expect(mode.queueLengthIsTheTarget, Comment(rawValue:
+                "\(mode) rides its queue to the end, so its length IS the target"))
+        }
+    }
+}
