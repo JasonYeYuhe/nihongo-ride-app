@@ -34,6 +34,9 @@ import sys
 
 from sudachipy import Dictionary, SplitMode
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import corpus_io   # noqa: E402
+
 REPO = pathlib.Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "Sources/VocabKit/Resources"
 
@@ -102,7 +105,11 @@ def main():
     failures = []
 
     for path in sorted(RESOURCES.glob("n[1-5].json")):
-        data = json.load(path.open())
+        # Through corpus_io so the file is written back in the format it was READ in. These
+        # files are indent=1; this script used to write indent=2, which is the v1.26 incident
+        # STATE records — 178,868 lines reformatted for a three-token change.
+        corpus = corpus_io.load(path)
+        data = corpus.data
         changed = False
         for entry in data:
             jp = (entry.get("exJP") or "").strip()
@@ -120,7 +127,7 @@ def main():
                 entry["exTokens"] = tokens
                 changed = True
         if args.write and changed:
-            path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
+            corpus.write()
 
     print(f"sentences        : {total}")
     print(f"readable         : {ok} ({100 * ok / max(1, total):.1f}%)")

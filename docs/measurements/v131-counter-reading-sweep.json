@@ -1,0 +1,70 @@
+{
+ "population": 6724,
+ "enumerated": 23,
+ "absorbers": [
+  "真っ二つ",
+  "三日月",
+  "四つ角",
+  "一日中",
+  "二十日",
+  "十日町",
+  "二人三脚",
+  "一人前"
+ ],
+ "hits": [
+  {
+   "id": "n5-kazoku",
+   "compound": "四人",
+   "standard": "よにん",
+   "exJP": "家族は四人です。",
+   "exKana": "かぞくはよんにんです"
+  }
+ ],
+ "calibration": {
+  "naiveVersion": {
+   "hits": 9,
+   "falsePositives": 7,
+   "falsePositiveRate": "78%",
+   "causes": {
+    "absorbed": [
+     "真っ二つ まっぷたつ",
+     "三日月 みかづき",
+     "四つ角 よつかど",
+     "一日中 いちにちじゅう"
+    ],
+    "substring": [
+     "二十日 contains 十日; both readings already correct (x2)"
+    ],
+    "wrongExpectation": [
+     "一日 is ついたち only as a DATE, いちにち as a duration"
+    ]
+   }
+  },
+  "refinedVersion": {
+   "againstThePreCorrectionCorpus": {
+    "hits": 2,
+    "falsePositives": 0,
+    "ids": [
+     "n2-b304",
+     "n5-kazoku"
+    ]
+   },
+   "againstThisCorpus": {
+    "hits": 1,
+    "ids": [
+     "n5-kazoku"
+    ]
+   },
+   "knownPositiveStillCaught": "n2-b304 is caught at HEAD and not after its correction, so the refinement removed seven false positives without losing the true one"
+  },
+  "whyNoTokenizerCanDoThis": "Sudachi gives 四[ヨン]+人[ニン] and CFStringTokenizer gives 四[よん]+人[にん] — the same split as the corpus. Two independent implementations agreeing here is one architectural blind spot seen twice, not two confirmations."
+ },
+ "outcome": {
+  "corrected": {
+   "n2-b304": "三日 さんにち -> みっか. Arbiter: check_forces_reading put みっか at DTW 0.00556 against さんにち at 0.06562, byte-identical proof silent. This independently reproduces the row's own v1.29 flag '三 さん -> み', which was recorded as undecided."
+  },
+  "leftAlone": {
+   "n5-kazoku": "四人 よんにん. NOT corrected. The arbiter's comparative marginally favours the TAUGHT reading (0.04290) over よにん (0.04354), and both are far — consistent with this row's recorded 'people にん -> ひと', i.e. the voice is saying a third thing. PLAN-ITERATION §D assumed this was a straightforward correction; the arbiter does not support that."
+  }
+ }
+}

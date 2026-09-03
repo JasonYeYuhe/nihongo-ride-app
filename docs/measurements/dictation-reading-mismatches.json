@@ -2381,9 +2381,9 @@
   {
    "id": "n2-b304",
    "exJP": "完成させるにはすくなくとも三日かかる。",
-   "exKana": "かんせいさせるにはすくなくともさんにちかかる",
-   "heardInstead": "三 さん -> み",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "かんせいさせるにはすくなくともみっかかかる",
+   "heardInstead": "三 さん -> み  (v1.29 instrument 2; the corpus has since been corrected to みっか)",
+   "evidence": "stale-after-correction (v1.31): this row's v1.29 flag is what the correction acted on. The corpus now reads 三日 as みっか, so the recorded mismatch no longer describes the sentence. STILL EXCLUDED: releasing it needs instrument 1b, and the comparative that supported the correction is a lead rather than a verdict — check_forces_reading put みっか at 0.00556 against さんにち at 0.06562, with byte-identical proof silent."
   },
   {
    "id": "n2-b309",

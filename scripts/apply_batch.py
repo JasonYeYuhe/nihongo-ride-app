@@ -25,6 +25,9 @@ import re
 import sys
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import corpus_io   # noqa: E402
+
 RESOURCES = REPO / "Sources" / "VocabKit" / "Resources"
 
 _spec = importlib.util.spec_from_file_location("pilot", REPO / "scripts" / "pilot_gate.py")
@@ -120,7 +123,11 @@ def main() -> int:
 
     written = 0
     for path in sorted(RESOURCES.glob("n[1-5].json")):
-        data = json.load(path.open())
+        # Through corpus_io so the file goes back in the format it came out in. These files are
+        # indent=1 and this script wrote indent=2 — the v1.26 incident STATE records, which
+        # reformatted 178,868 lines of n1.json for a three-token change.
+        corpus = corpus_io.load(path)
+        data = corpus.data
         changed = False
         for entry in data:
             item = by_id.get(entry["id"])
@@ -140,7 +147,7 @@ def main() -> int:
             changed = True
             written += 1
         if changed:
-            path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
+            corpus.write()
     print(f"wrote {written} examples with provenance")
     return 0
 

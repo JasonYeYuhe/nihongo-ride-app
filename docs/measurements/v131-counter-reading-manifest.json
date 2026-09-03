@@ -1,0 +1,6 @@
+{
+  "reason": "n2-b304 read the lexicalised counter 三日 as さん+にち. Standard Japanese reads 三日 as みっか for both the date and the duration, and this sentence is a duration ('at least three days to complete'). Adjudicated by scripts/check_forces_reading.py: Apple's speech front-end places the rival reading みっか at DTW 0.00556 against the taught さんにち at 0.06562 — an order of magnitude nearer. Byte-identical proof was silent, which the instrument's own docstring says is NOT evidence against. Sudachi and CFStringTokenizer BOTH split it as 三[さん]+日[にち], which is not two confirmations but one shared blind spot: every tokenizer this project has tried splits lexicalised counters and reads each half in isolation. exTokens is merged to 三日[みっか], which is the convention the corpus already uses for 二人[ふたり] (23x), 一人[ひとり] (11x), 一日[ついたち] (6x), 二十日[はつか] (2x) and 四つ[よっつ] (1x). The entry is already withheld from dictation, so no dictation decision moves.",
+  "entries": [
+    { "id": "n2-b304", "rewrite": ["exKana", "exTokens"] }
+  ]
+}

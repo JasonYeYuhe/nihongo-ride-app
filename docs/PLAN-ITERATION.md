@@ -468,7 +468,33 @@ afternoon is which of those is underexposed rather than missing.
   money is the least-tested in the repo. Not tier 1 only because `SKTestSession` is measurably
   inert here — re-check on every toolchain bump, and it becomes tier 1 the day it works.
 * **Accessibility (§E, carried since v1.26).**
-* **Corpus:** `n5-kazoku` reads 四人 as よんにん (standard is よにん); the 112 uninspected residue.
+* **Corpus:** ~~`n5-kazoku` reads 四人 as よんにん (standard is よにん)~~ — **swept 2026-09-04, and
+  the assumption in this line was wrong.** `scripts/check_counter_readings.py` enumerates the 23
+  counters that are single lexical items and sweeps all 6,724 sentences carrying an `exKana`.
+  **One correction made and one refusal:**
+  * **`n2-b304` corrected** — 三日 read as さん+にち in a sentence that means "at least three
+    days". `check_forces_reading` puts みっか at DTW **0.00556** against さんにち at **0.06562**,
+    with byte-identical proof silent. It independently reproduces that row's OWN v1.29 flag,
+    *"三 さん -> み"*, which was filed **undecided** — one of the 522 `PLAN-WINDOW` §D closed with
+    *"if a new instrument appears, revisit."* One did.
+  * **`n5-kazoku` NOT corrected.** The arbiter's comparative marginally favours the TAUGHT
+    reading (0.04290) over よにん (0.04354), and **both are far** — consistent with that row's
+    recorded *"人 にん -> ひと"*: the voice is saying a third thing. The line above assumed a
+    straightforward correction; it is not one, and it stays flagged.
+
+  **Neither tokenizer can arbitrate this family and that is the point.** Sudachi gives
+  四[ヨン]+人[ニン]; `CFStringTokenizer` gives 四[よん]+人[にん]; the corpus agrees with both. Two
+  independent implementations agreeing here is **one architectural blind spot seen twice**, not
+  two confirmations — STATE's *"a gate and the thing it gates can share a blind spot"*.
+
+  *Calibrated before it was trusted:* the first version matched plain substrings and produced
+  **9 hits of which 7 were false positives (78%)** in three causes — a counter absorbed by a
+  longer word (真っ二つ, 三日月, 四つ角, 一日中), a substring match (二十日 contains 十日), and one
+  wrong expectation (一日 is ついたち only as a DATE, so it is deliberately not enumerated). The
+  refined scan finds **2 with 0 false positives against the pre-correction corpus and 1 after**,
+  so the refinement removed the noise without losing the known positive.
+
+  The 112 uninspected residue is untouched.
 * **NOT the 522 undecided dictation sentences.** `PLAN-V1.29` closed that with a measurement.
 * **`ta_score`'s `totalPlayerCount`** — never read since v1.3; one physical-device errand closes a
   class of future proposals.
