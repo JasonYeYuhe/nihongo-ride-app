@@ -126,6 +126,12 @@ REVIEW_NOTES = (
     "taps - only its text did - so a user tapping the strip itself often got no reaction. It now "
     "responds across its whole area. Nothing about where it is, what it says, or what it opens "
     "has changed.\n\n"
+    "NOTE ON THE IN-APP PURCHASE'S CURRENT STATE, so that nothing here is a surprise. The "
+    "non-consumable was submitted on 31 August 2026 as part of the macOS 1.30 submission, "
+    "which is still in review, so the purchase itself is not yet approved. Version 1.31 for "
+    "iOS does not resubmit it and does not change it. If the purchase does not display a "
+    "price during testing, that is the pending approval rather than a defect in this build; "
+    "the Restore Purchases control is present and functional either way.\n\n"
     "WHAT IS NEW.\n"
     "1) PRACTICE OVER THE USER'S OWN TEXT. The user can paste Japanese text into the app. The "
     "app splits it into sentences and derives a kana reading for each using Apple's own "
@@ -147,8 +153,37 @@ REVIEW_NOTES = (
     "No keywords, URLs, description text or screenshots changed in this version."
 )
 
+# --- Shipping the two platforms apart -----------------------------------------
+# 1.31 is the first release where the platforms separate. macOS 1.30 has been
+# IN_REVIEW since 2026-08-31 and ASC refuses --metadata on a platform that has a
+# version in review, so macOS 1.31 cannot be created yet; iOS 1.30 is
+# READY_FOR_SALE and iOS is free to move. The two live defects 1.31 fixes -- the
+# route strip's dead middle and Sentence mode's truncated typing target -- are
+# live on iOS *now*, so iOS goes alone and macOS follows when 1.30 clears.
+#
+# The filter is a required argument rather than a default because the failure it
+# prevents is silent-looking: run this with both targets today and the macOS half
+# dies partway through, after the iOS half has already been written.
+PLATFORM_ARG = {"ios": ("IOS",), "macos": ("MAC_OS",), "both": ("IOS", "MAC_OS")}
+
+
+def _targets_for(argv):
+    flags = [a for a in argv[1:] if a.startswith("--platform=")]
+    if not flags:
+        sys.exit("error: pass --platform=ios | --platform=macos | --platform=both\n"
+                 "       (1.31 ships iOS first; macOS 1.30 is still IN_REVIEW)")
+    key = flags[-1].split("=", 1)[1].lower()
+    if key not in PLATFORM_ARG:
+        sys.exit(f"error: unknown --platform={key}")
+    wanted = PLATFORM_ARG[key]
+    chosen = [t for t in TARGETS if t["platform"] in wanted]
+    assert chosen, f"--platform={key} selected no target"
+    print(f"==> platform filter: {key} -> {[t['name'] for t in chosen]}")
+    return chosen
+
+
 if __name__ == "__main__":
-    main(Release(version=VERSION, targets=TARGETS, whats_new=WHATS_NEW,
+    main(Release(version=VERSION, targets=_targets_for(sys.argv), whats_new=WHATS_NEW,
                  description_edits=DESCRIPTION_EDITS, review_notes=REVIEW_NOTES,
                  iap=None,                       # v1.31 sells nothing new; a statement, not a default
                  numbers=N),
