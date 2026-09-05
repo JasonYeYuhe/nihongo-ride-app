@@ -572,7 +572,7 @@ iteration is that incentive arriving on purpose, so the dates are kept where day
 Pulled from App Store Connect on 2026-09-01, not from memory. `created` is when the version
 record was made, which is within minutes of submission for every row here.
 
-| version | created (both platforms, within 20 s of each other) |
+| version | created (both platforms within 20 s of each other — **except 1.31**, see below) |
 |---|---|
 | 1.23 | 2026-08-17 |
 | 1.24 | 2026-08-19 |
@@ -582,17 +582,41 @@ record was made, which is within minutes of submission for every row here.
 | 1.28 | 2026-08-27 |
 | 1.29 | 2026-08-29 |
 | 1.30 | 2026-08-31 |
-| 1.31 | prepared 2026-09-01, **not submitted** — see below |
+| 1.31 | **iOS submitted 2026-09-05** (build 56); macOS NOT submitted — see below |
 
-**State on 2026-09-01, and it moved during the session:** iOS 1.30 is **READY_FOR_SALE**, macOS
-1.30 is **IN_REVIEW**, and the in-app purchase is **IN_REVIEW**.
+**Superseded on 2026-09-05: the platforms have separated, and this table's header no longer
+holds for every row.** Every release from 1.23 to 1.30 shipped both platforms together within
+twenty seconds. 1.31 did not, and the reason matters for anything that reads this table as a
+cadence series: **macOS 1.30 had then been IN_REVIEW for five days** (submitted 2026-08-31,
+still in review on 09-05), and ASC refuses `--metadata` on a platform whose previous version is
+in review. iOS was free, so iOS went alone.
+
+The alternative — cancelling the macOS submission so 1.31 could take its place — was considered
+and rejected on a fact read from ASC rather than assumed: **that submission carries two items,
+`appStoreVersions 1.30` AND `inAppPurchaseVersions`**. Withdrawing it would have pulled the
+purchase out of review with it, and the purchase is the app's first non-consumable, which Apple
+accepts only riding a version submission. It would also have thrown away five days of queue
+position on the hypothesis that the submission was stuck, for which there is no evidence: both
+items report `READY_FOR_REVIEW`, with no rejection and no resolution.
+
+So from 1.31 onward, **a row in this table may describe one platform**. Anything computing
+exposure-per-install or cadence effects across this boundary has to read the per-platform dates,
+not the row.
+
+**State on 2026-09-05:** iOS **1.31 WAITING_FOR_REVIEW** (build 56, submitted 09-05) · iOS 1.30
+READY_FOR_SALE · macOS **1.30 IN_REVIEW** since 08-31 · the in-app purchase **IN_REVIEW**,
+attached to that macOS submission.
 
 Three consequences, and the second is the one with a deadline on it:
 
-1. **v1.31 cannot be submitted yet.** ASC refuses `--metadata` on a new version while the
-   previous one is in review, and macOS 1.30 is. The release is prepared —
-   `scripts/submit_1_31.py`, `check_versions.py` green at mac 55 / iOS 56, `--dry-run` clean
-   against live ASC — and waits.
+1. **v1.31 shipped on iOS and waits on macOS.** iOS 1.31 is WAITING_FOR_REVIEW with build 56;
+   the submission carries the version *only* — verified by reading its items back and confirming
+   one item against the macOS submission's two, so the count is calibrated rather than assumed.
+   macOS 1.31 stays unsubmitted until 1.30 clears; its archive is built (1.31/55) and passed
+   `launch_gate.sh`. Note that gate has **no iOS form**: it reads `$APP/Contents/Info.plist` and
+   launches the binary on this Mac, which is the macOS bundle layout, so the iOS artifact that
+   actually shipped was never launch-tested. The applicable iOS gate is
+   `run_ios_placement_tests.sh` (8/8).
 2. **§L's manual purchase gates just got more expensive on iOS.** While a version is in review a
    failed gate costs a cancel and a resubmit, measured in minutes. **iOS 1.30 is live**, so on
    that platform a failed gate now costs a whole new version. macOS is still in review. This is
