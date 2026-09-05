@@ -46,10 +46,30 @@ xcodegen generate >/dev/null
 # live window-server session because it drives a real GUI.
 #
 # `-i` also prevents idle system sleep for the run. Neither outlives the command.
+# --- Which simulator, and why it is overridable -------------------------------
+# 2026-09-05: this gate reported two failures -- including "an owner lost the road
+# row entirely" -- that were not real. Another session on this machine was running
+# its own XCUITests against the SAME device: there is exactly one simulator named
+# "iPhone 17 Pro", and two UI-test runs on one device fight over the foreground.
+# The failures vanished once the runs were separated.
+#
+# So the destination is overridable. But NOT with a different model: these tests
+# assert hit areas and layout, so the screen size is part of the instrument, and
+# quietly moving to an iPhone 17 Pro Max would be measuring something else. To
+# isolate, clone the SAME device type under a private name:
+#
+#   xcrun simctl create NihongoRide-Placement "iPhone 17 Pro"
+#   SIM_NAME=NihongoRide-Placement scripts/run_ios_placement_tests.sh
+#
+# The default stays "iPhone 17 Pro" so an unqualified run measures what it always
+# measured.
+SIM_NAME="${SIM_NAME:-iPhone 17 Pro}"
+echo "==> simulator destination: $SIM_NAME"
+
 caffeinate -d -i xcodebuild test \
   -project NihongoRide.xcodeproj \
   -scheme NihongoRideiOS \
-  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  -destination "platform=iOS Simulator,name=$SIM_NAME" \
   -only-testing:NihongoRideiOSUITests/PaidRouteRowTests \
   -derivedDataPath "$WORK/DerivedData" \
   -clonedSourcePackagesDirPath "$WORK/SourcePackages" \
