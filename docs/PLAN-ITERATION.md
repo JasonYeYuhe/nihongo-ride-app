@@ -603,6 +603,42 @@ So from 1.31 onward, **a row in this table may describe one platform**. Anything
 exposure-per-install or cadence effects across this boundary has to read the per-platform dates,
 not the row.
 
+**MEASURED 2026-09-07, and it changes what macOS 1.30 costs: the Mac shares the dead
+entrance.** `Sources/NihongoRideApp/MenuView.swift` compiles into both targets (`project.yml:39`
+and `:178`) and `.contentShape(Rectangle())` landed in 1.31, so the question was whether AppKit
+hit-tests the strip's empty middle the way UIKit did not. It does not. Synthesized `NSEvent`
+clicks over a 15x26 grid, on the entrance's structure, reproduced exactly across two runs:
+
+| variant | live cells | shape |
+|---|---|---|
+| no `contentShape` (= 1.30) | **53 / 390** | the four emoji, the stop labels, the 2-point connector line, the caption — and a dead band between them |
+| `contentShape` (= 1.31) | **168 / 390** | one solid rectangle |
+
+The instrument carries its own control: 53 is not zero, so the events reach the view and a plain
+Button is clickable on its glyphs — it is the *gaps* that are dead. An earlier version of this
+probe guessed a single caption point, missed it, reported "dead", and looked exactly like the
+defect being hunted; the grid exists because of that.
+
+**`NSView.hitTest` cannot see this.** It returns `NSHostingView` for every point in both variants
+— SwiftUI renders into one view — so the cheap probe would have passed identically whether the
+fix was present or absent. It was two lines from being written as the gate.
+
+This is now `Tests/NihongoRideMacTests/MenuEntranceHitTests.swift`, the **macOS form of the
+placement gate that this document recorded as missing**. Two tests, because they are two claims:
+`test00` measures the platform behaviour on a reproduction; `test01` reads `MenuView.swift` to
+assert the *shipping* entrance still carries the modifier, because a reproduction stays green
+after somebody deletes it from the real view. `routePreview` is `private`, which `@testable`
+does not reach, so source-reading is the same move `EntitlementSeamTests` already makes — and it
+carries the same negative control.
+
+**Consequence for §K.** macOS 1.30's `releaseType` is `AFTER_APPROVAL`, so approval ships it the
+same minute, and day 0 starts on a binary whose offer entrance responds on roughly a third of
+itself. `menuEntranceAppeared` fires on appearance while `offerAppeared` fires only when the road
+screen renders, so those installs return "entrance seen, offer never appeared" — which is
+indistinguishable from "saw it and chose not to open it", the exact inference §K's STOP branch
+draws. Not a hypothetical heterogeneity; a measured one, on the platform holding the larger half
+of the base that can reach Kyōto.
+
 **State on 2026-09-05:** iOS **1.31 WAITING_FOR_REVIEW** (build 56, submitted 09-05) · iOS 1.30
 READY_FOR_SALE · macOS **1.30 IN_REVIEW** since 08-31 · the in-app purchase **IN_REVIEW**,
 attached to that macOS submission.

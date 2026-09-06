@@ -91,7 +91,13 @@ STATUS=${PIPESTATUS[0]}
 set -e
 tail -3 "$LOG" >/dev/null   # keep the log alive until the trap
 
-# ⚠️ A run where every gate SKIPPED must not exit 0.
+# ⚠️ A run where the PURCHASE gates SKIPPED must not exit 0.
+#
+# 2026-09-06: this target gained `MenuEntranceHitTests`, which does run. So "every test
+# skipped" stopped being the condition and "the StoreKit gates skipped" became it. The
+# grep below already measured the right thing — it fires on any non-zero skip count — but
+# the message said "the gates did not run", which is now false in the literal reading a
+# hurried person takes. Naming which suite is dark keeps the warning true.
 #
 # `xcodebuild` reports skipped tests as success, which is correct for xcodebuild and wrong for
 # this script: exit 0 is what every human and every automation reads as "the purchase flow is
@@ -104,7 +110,8 @@ tail -3 "$LOG" >/dev/null   # keep the log alive until the trap
 if grep -q "with [0-9]* tests* skipped" "$LOG" && ! grep -qE "Executed [0-9]+ tests?, with 0 tests? skipped" "$LOG"; then
   SKIPPED=$(grep -oE "with [0-9]+ tests? skipped" "$LOG" | head -1)
   echo
-  echo "  ⚠️  NO COVERAGE: $SKIPPED. The gates did not run — read the skip reason above."
+  echo "  ⚠️  NO PURCHASE COVERAGE: $SKIPPED. The StoreKit gates did not run — read the skip reason above."
+  echo "      (Other tests in this target may have passed. They say nothing about the purchase flow.)"
   echo "      PLAN-STAGE1 §L's manual list is the only purchase coverage in that state."
   exit 3
 fi
