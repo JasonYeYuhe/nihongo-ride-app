@@ -115,6 +115,14 @@ def fresh_state(module, sc):
     if sc.get("open_submissions"):
         for t in module.TARGETS:
             submissions[f"open-{t['platform']}"] = []
+    # A purchase that is "already in review" is IN something. Seeding only the state string
+    # produced a world Apple cannot be in — the purchase in review, held by no submission — which
+    # is exactly the post-cancel window the containment probe exists to refuse. The scenario was
+    # asserting that the old code sailed through an impossible state; making the world coherent is
+    # what lets it assert the real property instead.
+    if sc.get("iap_state") in ("WAITING_FOR_REVIEW", "IN_REVIEW", "PENDING_BINARY_APPROVAL",
+                               "APPROVED", "APPROVED_PENDING_RELEASE"):
+        submissions.setdefault("open-carrying-iap", []).append(("iap", None))
     return {
         "locales": list(locales),
         "versions": versions,
@@ -213,10 +221,24 @@ def make_fake(state, module, sc, log):
                                             "productId": module.IAP_PRODUCT_ID}}}
 
         # --- review submissions -------------------------------------------------------------
-        if method == "GET" and "reviewSubmissions?" in ep:
+        if method == "GET" and "reviewSubmissions?" in ep and "filter[platform]=" in ep:
             platform = ep.split("filter[platform]=")[1].split("&")[0]
             sid = f"open-{platform}"
             return {"data": [{"id": sid}] if sid in state["preexisting_submissions"] else []}
+        if method == "GET" and "reviewSubmissions?" in ep:
+            # No platform filter: the containment probe asks about EVERY platform at once. The
+            # real API allows this; the fake refused to model it and raised IndexError, which is
+            # the fake being incomplete rather than the module being wrong.
+            live = [{"id": sid, "attributes": {"state": "READY_FOR_REVIEW", "platform": "?"}}
+                    for sid in list(state["preexisting_submissions"]) + list(state["submissions"])]
+            return {"data": live}
+        if method == "GET" and "/items?" in ep and "reviewSubmissions/" in ep:
+            sid = ep.split("reviewSubmissions/")[1].split("/")[0]
+            held = state["submissions"].get(sid, [])
+            included = [{"type": "inAppPurchaseVersions", "id": "iapv-1"}
+                        for kind, _ in held if kind == "iap"]
+            return {"data": [{"id": f"item-{i}"} for i, _ in enumerate(held)],
+                    "included": included}
         if method == "POST" and ep == "/v1/reviewSubmissions":
             sid = "sub-" + body["data"]["attributes"]["platform"]
             state["submissions"][sid] = []
@@ -266,6 +288,45 @@ def drive_new(module, sc, release=None):
     with contextlib.redirect_stdout(buf):
         getattr(release, sc["phase"])()
     return log, list(release.failures), state, buf.getvalue()
+
+
+# The port deliberately makes calls v1.30's script did not, and they are enumerated here for the
+# same reason `LEDGER_EQUIVALENTS` is: a rule like "ignore extra GETs" would also swallow the next
+# divergence, which nobody has read.
+#
+# What they are: the containment probe added 2026-09-07. v1.30 decided "is the purchase already
+# carried?" by reading the purchase's own state string, and `IAP_ALREADY_IN` contains `IN_REVIEW`.
+# Apple's cancel is asynchronous, so immediately after a submission is withdrawn the purchase
+# still reads `IN_REVIEW` while belonging to nothing — and the old expression concluded "carried",
+# skipped staging, satisfied the phase-3 gate, and submitted a version advertising a purchase that
+# was in no review. Printing OK. Exiting 0.
+#
+# So the module now asks WHERE the purchase is instead of WHAT it says. That is strictly more
+# reads and no more writes, which is the only shape of divergence allowed here: the assertion
+# below is that every extra call is a GET. A port that started sending extra PATCHes would fail.
+def is_iap_location_read(call):
+    """A read whose only purpose is answering "where is the purchase?".
+
+    The two implementations answer it differently ON PURPOSE, so this question is lifted out of
+    the strict call-log diff on BOTH sides — v1.30's state read and the module's containment
+    reads alike — and asserted instead by `test_containment_probe`, which checks the behaviour
+    rather than the byte sequence. Everything else, including every WRITE and the staging POST
+    that actually puts the purchase in a submission, is still compared byte for byte.
+
+    Narrow by construction: `open_submission()` also GETs `reviewSubmissions?`, and both
+    implementations make that call, so it must NOT be swallowed here. It is distinguished by
+    carrying `filter[platform]=`, which the containment sweep deliberately omits.
+    """
+    method, endpoint = call[0], call[1]
+    if method != "GET":
+        return False
+    if endpoint.startswith("/v2/inAppPurchases/") and "fields[inAppPurchases]=state" in endpoint:
+        return True
+    if "reviewSubmissions?" in endpoint and "filter[platform]=" not in endpoint:
+        return True
+    if "/items?" in endpoint and "include=inAppPurchaseVersion" in endpoint:
+        return True
+    return False
 
 
 def diff_logs(old, new):
@@ -336,7 +397,12 @@ def test_differential(module, problems):
     for name, sc, expect_failures in SCENARIOS:
         old_log, old_fail, old_state, _ = drive_old(module, sc)
         new_log, new_fail, new_state, _ = drive_new(module, sc)
-        difference = diff_logs(old_log, new_log)
+        trimmed_old = [c for c in old_log if not is_iap_location_read(c)]
+        trimmed_new = [c for c in new_log if not is_iap_location_read(c)]
+        if [c for c in new_log if is_iap_location_read(c) and c[0] != "GET"]:
+            problems.append(f"{name}: an IAP-location call is not a read — the exemption above "
+                            "only covers reads, and a write hid inside it")
+        difference = diff_logs(trimmed_old, trimmed_new)
         verdict = "IDENTICAL" if difference is None else "DIFFERENT"
         print(f"  {name:60s} {len(old_log):3d} calls  {len(old_fail)} fail  {verdict}")
         if not old_log:
@@ -514,6 +580,56 @@ def test_preflight(module, problems):
         problems.append(f"preflight ACCEPTED {name!r} — the contract is still only a comment")
 
 
+def test_containment_probe(module, problems):
+    """The property the differential deliberately stopped comparing, asserted directly.
+
+    v1.30 answered "is the purchase already carried?" by reading its state string, and
+    `IAP_ALREADY_IN` contains `IN_REVIEW`. Apple's cancel is asynchronous, so between a
+    withdrawal and the state settling there is a window where the purchase reads `IN_REVIEW`
+    while belonging to nothing. The old expression called that "carried", skipped staging,
+    satisfied the phase-3 gate, and submitted a version whose notes advertise a purchase in no
+    review — printing OK and exiting 0.
+
+    Both directions are asserted, because a probe that always refuses would pass the first half
+    and break every legitimate resubmission.
+    """
+    # 1. IN_REVIEW but held by nothing — the post-cancel window. Must REFUSE.
+    sc = dict(phase="do_submit", versions_exist=True, iap_state="IN_REVIEW")
+    state = fresh_state(module, sc)
+    state["submissions"] = {}            # the state string lies; nothing actually holds it
+    state["preexisting_submissions"] = {}
+    log = []
+    release = release_from(module)
+    release.asc = make_fake(state, module, sc, log)
+    with contextlib.redirect_stdout(io.StringIO()):
+        release.do_submit()
+    refused = any("NO live review submission" in m for m in release.failures)
+    print(f"  post-cancel window (IN_REVIEW, held by nothing) -> "
+          f"{'REFUSED' if refused else 'SUBMITTED ANYWAY'}")
+    if not refused:
+        problems.append("containment: a purchase reading IN_REVIEW while held by NO submission "
+                        "was treated as carried — this is the defect the probe exists to stop, "
+                        "and it would ship a version advertising a purchase nobody is reviewing")
+    if state["versions"]["MAC_OS"]["state"] == "WAITING_FOR_REVIEW":
+        problems.append("containment: the version was submitted despite the refusal")
+
+    # 2. IN_REVIEW and genuinely held. Must PROCEED, or every real resubmission breaks.
+    sc2 = dict(phase="do_submit", versions_exist=True, iap_state="IN_REVIEW")
+    state2 = fresh_state(module, sc2)    # fresh_state seeds the carrying submission
+    log2 = []
+    release2 = release_from(module)
+    release2.asc = make_fake(state2, module, sc2, log2)
+    with contextlib.redirect_stdout(io.StringIO()):
+        release2.do_submit()
+    blocked = any("NO live review submission" in m for m in release2.failures)
+    print(f"  genuinely carried (IN_REVIEW, held) -> "
+          f"{'WRONGLY REFUSED' if blocked else 'proceeded'}")
+    if blocked:
+        problems.append("containment: a purchase that IS in a live submission was refused — the "
+                        "probe cannot tell the two worlds apart, so it is not measuring "
+                        "containment, only pessimism")
+
+
 def main():
     problems = []
     module = load_v130()
@@ -524,6 +640,8 @@ def main():
     print("\nCONTROLS — the comparison must be able to fail")
     test_control_calls(module, problems)
     test_control_ledger(module, problems)
+    print("\nTHE CONTAINMENT PROBE — the question the differential stops comparing")
+    test_containment_probe(module, problems)
     print("\nTHE SUBMIT GATE")
     test_submit_gate(module, problems)
     test_no_iap_release(module, problems)

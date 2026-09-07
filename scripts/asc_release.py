@@ -498,6 +498,36 @@ class Release:
             return s["id"]
         return None
 
+    def iap_is_in_a_live_submission(self):
+        """Is the purchase actually inside a submission that is going to Apple?
+
+        **This replaces reading the purchase's own state, which is not the same question and
+        answers it wrongly at the one moment it matters.** `IAP_ALREADY_IN` contains `IN_REVIEW`,
+        and Apple's cancel is asynchronous: for a window after a submission is withdrawn the
+        purchase still reads `IN_REVIEW` while belonging to nothing. In that window the old
+        expression concluded "carried", skipped staging, satisfied the phase-3 gate, and submitted
+        a version whose release notes advertise a purchase that is in no review at all — printing
+        OK and exiting 0.
+
+        That is not hypothetical: it is the shape of the 2026-08-31 double-cancel, and this path
+        is reached exactly when somebody withdraws a stuck submission to replace it, which is when
+        the release is already under pressure.
+
+        So this asks the containment question directly, over every non-terminal submission on
+        every platform, and returns the submission id that holds the purchase (or None).
+        """
+        subs = self.asc("GET", f"/v1/apps/{self.app}/reviewSubmissions?limit=50"
+                               f"&fields[reviewSubmissions]=state,platform")
+        for sub in (subs.get("data") or []):
+            if sub["attributes"]["state"] in ("COMPLETE", "CANCELING"):
+                continue
+            items = self.asc("GET", f"/v1/reviewSubmissions/{sub['id']}/items?limit=20"
+                                    f"&include=inAppPurchaseVersion")
+            for obj in (items.get("included") or []):
+                if obj["type"] == "inAppPurchaseVersions":
+                    return sub["id"]
+        return None
+
     def add_item(self, sid, vid):
         return self.asc("POST", "/v1/reviewSubmissionItems", {"data": {
             "type": "reviewSubmissionItems",
@@ -543,8 +573,18 @@ class Release:
             return False
         state = attrs.get("state")
         if state in IAP_ALREADY_IN:
-            print(f"  IAP is already {state} — not staged again")
-            return True
+            # "Already in review" is only a reason to skip staging if it is IN something. After a
+            # withdrawal the state lags the truth, and believing it here submits a version whose
+            # notes advertise a purchase that no longer rides any submission.
+            holder = self.iap_is_in_a_live_submission()
+            if holder:
+                print(f"  IAP is already {state} in submission {holder} — not staged again")
+                return True
+            self.fail(f"IAP reads {state!r} but is in NO live review submission. That is the "
+                      "window right after a cancel, where Apple's state lags. Refusing to submit "
+                      "a version whose notes describe a purchase nobody is reviewing — wait for "
+                      "the state to settle to READY_TO_SUBMIT and run again.")
+            return False
         if state not in IAP_READY:
             self.fail(f"IAP state is {state!r}, which is neither submittable nor already "
                       "submitted — refusing to guess (MISSING_METADATA means a required field "
@@ -626,7 +666,15 @@ class Release:
         # `carried` is what phase 3 checks, and it is a fact read back from Apple rather than an
         # intention. With no purchase declared, nothing here touches the IAP endpoints at all.
         staged = {}
-        carried = self.iap is not None and self.iap_state().get("state") in IAP_ALREADY_IN
+        # Read back WHERE the purchase is, not what its state string says. See
+        # `iap_is_in_a_live_submission` for why those differ, and for the release this would
+        # otherwise have shipped without its purchase.
+        carried = False
+        if self.iap is not None:
+            holder = self.iap_is_in_a_live_submission()
+            if holder:
+                print(f"  purchase already carried by submission {holder}")
+                carried = True
         for t in self.targets:
             vid = attached.get(t["name"])
             if not vid:
