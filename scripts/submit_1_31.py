@@ -114,7 +114,7 @@ WHATS_NEW = {
 # paragraph having been re-read against the live text rather than the repo's copy.
 DESCRIPTION_EDITS = {}
 
-REVIEW_NOTES = (
+REVIEW_NOTES_IOS = (
     "Nihongo Ride is a typing-practice app for learners of Japanese. It requires no account or "
     "login with the developer, and the developer collects no data.\n\n"
     "VERSION 1.31 ADDS NO IN-APP PURCHASE AND CHANGES NONE. The existing non-consumable "
@@ -143,6 +143,74 @@ REVIEW_NOTES = (
     "This is a local scheduling change with no data-handling implications.\n"
     "3) A pause now also stops the per-word timer, and the ride screen shows a live typing "
     "speed on Mac and iPad.\n\n"
+    "Data handling is unchanged and the App Privacy declaration is unchanged (Data Not "
+    "Collected). There is no analytics SDK, no advertising, and no developer-operated server in "
+    "this app. Optional iCloud sync uses the user's own private CloudKit database, which the "
+    "developer cannot read, and the app is fully usable with it switched off; the user's pasted "
+    "text is NOT part of that sync. Dictation uses the on-device system Japanese "
+    "text-to-speech voice (AVSpeechSynthesizer, ja-JP) and reports itself unavailable, with an "
+    "explanation, when no Japanese voice is installed.\n\n"
+    "No keywords, URLs, description text or screenshots changed in this version."
+)
+
+# --- macOS 1.31 carries the purchase, and its notes have to say so ---------------
+# iOS 1.31 shipped on 2026-09-05 with the notes above, and those are left exactly as sent: this
+# file is the record of what each platform received, so the iOS text is not edited to match a
+# later decision.
+#
+# macOS is a different submission with a different truth in it. The 1.30 macOS submission sat
+# IN_REVIEW for seven days carrying BOTH the version and the in-app purchase; withdrawing it to
+# ship 1.31 takes the purchase out of review too, and Apple accepts a first non-consumable only
+# on a version submission. So macOS 1.31 carries it, and every sentence that said 1.31 adds no
+# purchase is false here.
+IAP_ID = "6806755720"
+IAP_PRODUCT_ID = "com.jasonye.nihongoride.scenery.lifetime"
+
+REVIEW_NOTES_MACOS = (
+    "Nihongo Ride is a typing-practice app for learners of Japanese. It requires no account or "
+    "login with the developer, and the developer collects no data.\n\n"
+    "THIS VERSION CARRIES THE APP'S FIRST IN-APP PURCHASE, submitted with it:\n"
+    f"  {IAP_PRODUCT_ID}\n"
+    "  \"Nihongo Ride Scenery - the road west\", non-consumable, CNY 10.00 one time,\n"
+    "  Family Sharing off.\n\n"
+    "WHY IT IS BEING SUBMITTED AGAIN, stated plainly. The same purchase was submitted on 31 "
+    "August 2026 with macOS version 1.30. That submission remained in review for seven days, so "
+    "the developer withdrew it and is submitting version 1.31 in its place. Version 1.31 "
+    "contains everything 1.30 contained plus the changes listed below. Nothing about the "
+    "purchase has changed: same product identifier, same price, same content, same placement. "
+    "The identical iOS version was approved on 5 September 2026 and is live.\n\n"
+    "WHAT IT UNLOCKS. The app's background is a stylised bicycle journey whose scenery advances "
+    "with the learner's lifetime typing distance. The free route - the Tokaido, "
+    f"{N['freeRouteStretches']} stretches, Nihonbashi to Kyoto - ends at {N['freeRouteEndKm']} km "
+    "and is unchanged: still free, still complete, no stretch removed and no threshold moved. "
+    f"The purchase appends a second route of {N['paidRouteStretches']} stretches running west "
+    f"from Kyoto ({N['paidRouteStops']}), and the scenery of that route.\n\n"
+    "WHAT IT DOES NOT GATE. No vocabulary, no practice mode, no review queue, no reading "
+    "passages, no export. Nothing that was available in version 1.29 sits behind the purchase. "
+    "It affects only the background artwork, its colour palette and the results-screen "
+    "backdrop.\n\n"
+    "WHERE TO FIND IT. Settings > \"The Road\" is one row and opens a screen listing both routes, "
+    "with the purchase on it. That screen also states how far the tester still is from Kyoto. "
+    "Restore Purchases is on the same screen and is always present, including for an account "
+    "that already owns the item. Once lifetime distance passes Kyoto the menu's route strip also "
+    "opens that screen. There is no modal, no badge, and nothing on the post-ride results "
+    "screen.\n\n"
+    "ONE BUG FIX TOUCHES THAT SECOND ENTRANCE, and it is named here rather than left for review "
+    "to notice. In 1.30 the menu's route strip was a button whose middle did not respond to "
+    "clicks - only its text did - so a user clicking the strip itself often got no reaction. It "
+    "now responds across its whole area. Nothing about where it is, what it says, or what it "
+    "opens has changed.\n\n"
+    "WHAT ELSE IS NEW IN 1.31.\n"
+    "1) PRACTICE OVER THE USER'S OWN TEXT. The user can paste Japanese text into the app. The "
+    "app splits it into sentences and derives a kana reading for each using Apple's own "
+    "CFStringTokenizer with a Japanese locale, entirely on device. The readings are shown and "
+    "the user can correct any of them. The text is stored in the app's own container on the "
+    "device, is never transmitted, is not synced to iCloud, and is not shared with the "
+    "developer or anyone else. No network request is made at any point in this feature.\n"
+    "2) The conjugation drill now measures how long each prompt took and grades accordingly. "
+    "This is a local scheduling change with no data-handling implications.\n"
+    "3) A pause now also stops the per-word timer, and the ride screen shows a live typing "
+    "speed.\n\n"
     "Data handling is unchanged and the App Privacy declaration is unchanged (Data Not "
     "Collected). There is no analytics SDK, no advertising, and no developer-operated server in "
     "this app. Optional iCloud sync uses the user's own private CloudKit database, which the "
@@ -182,9 +250,28 @@ def _targets_for(argv):
     return chosen
 
 
+def _notes_and_iap(targets):
+    """macOS carries the purchase; iOS already shipped and did not.
+
+    Keyed off the targets rather than a second flag, so the notes and the `iap` argument cannot
+    disagree with each other or with what is actually being submitted.
+    """
+    platforms = {t["platform"] for t in targets}
+    if platforms == {"IOS"}:
+        return REVIEW_NOTES_IOS, None
+    if platforms == {"MAC_OS"}:
+        return REVIEW_NOTES_MACOS, {"id": IAP_ID, "product_id": IAP_PRODUCT_ID}
+    sys.exit("error: --platform=both would need one set of review notes for two different "
+             "truths — iOS 1.31 is already live and carries no purchase, macOS 1.31 carries it. "
+             "Submit them separately.")
+
+
 if __name__ == "__main__":
-    main(Release(version=VERSION, targets=_targets_for(sys.argv), whats_new=WHATS_NEW,
-                 description_edits=DESCRIPTION_EDITS, review_notes=REVIEW_NOTES,
-                 iap=None,                       # v1.31 sells nothing new; a statement, not a default
+    _targets = _targets_for(sys.argv)
+    _notes, _iap = _notes_and_iap(_targets)
+    print(f"==> review notes: {'macOS (carries the purchase)' if _iap else 'iOS (no purchase)'}")
+    main(Release(version=VERSION, targets=_targets, whats_new=WHATS_NEW,
+                 description_edits=DESCRIPTION_EDITS, review_notes=_notes,
+                 iap=_iap,
                  numbers=N),
          doc=__doc__)
