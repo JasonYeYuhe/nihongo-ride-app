@@ -328,7 +328,32 @@ class Release:
         if r.get("errors"):
             # Recorded, not exited: aborting mid-loop skips the OTHER platform and, in --submit,
             # skips the read-back entirely — so a platform that HAD submitted would go unverified.
-            self.fail(f"create version {self.version}: {self.detail(r)}")
+            #
+            # One case deserves more than Apple's sentence for it. After a withdrawal the previous
+            # version sits in DEVELOPER_REJECTED and Apple refuses to create a second one, saying
+            # only "You cannot create a new version of the App in the current state." That reads
+            # like a permissions or timing problem and is neither: the rejected record IS the one
+            # to use — DEVELOPER_REJECTED is already in SUBMITTABLE above — it just still carries
+            # the OLD version string, so find_version does not recognise it.
+            #
+            # Not renamed automatically. Renaming a version record is how the marketing version
+            # silently stops matching the uploaded build's CFBundleShortVersionString, and this
+            # module should not do that on a guess. Measured 2026-09-07 while shipping macOS 1.31.
+            blocked = self.detail(r)
+            if "current state" in blocked:
+                other = self.asc("GET", f"/v1/apps/{self.app}/appStoreVersions"
+                                        f"?filter[platform]={platform}&limit=5"
+                                        f"&fields[appStoreVersions]=versionString,appStoreState")
+                for v in (other.get("data") or []):
+                    a = v["attributes"]
+                    if a["appStoreState"] in SUBMITTABLE and a["versionString"] != self.version:
+                        blocked += (f" — version {a['versionString']} is {a['appStoreState']} and "
+                                    f"is the record Apple wants reused. Point it at this release "
+                                    f"by PATCHing its versionString to {self.version} (and make "
+                                    f"sure the uploaded build's marketing version matches), then "
+                                    f"run this again.")
+                        break
+            self.fail(f"create version {self.version}: {blocked}")
             return None
         vid = r["data"]["id"]
         print(f"  created version {self.version}: {vid}")

@@ -582,7 +582,7 @@ record was made, which is within minutes of submission for every row here.
 | 1.28 | 2026-08-27 |
 | 1.29 | 2026-08-29 |
 | 1.30 | 2026-08-31 |
-| 1.31 | **iOS submitted 2026-09-05** (build 56); macOS NOT submitted — see below |
+| 1.31 | **iOS submitted 2026-09-05** (build 56, live 09-06); **macOS submitted 2026-09-07** (build 55) |
 
 **Superseded on 2026-09-05: the platforms have separated, and this table's header no longer
 holds for every row.** Every release from 1.23 to 1.30 shipped both platforms together within
@@ -602,6 +602,36 @@ items report `READY_FOR_REVIEW`, with no rejection and no resolution.
 So from 1.31 onward, **a row in this table may describe one platform**. Anything computing
 exposure-per-install or cadence effects across this boundary has to read the per-platform dates,
 not the row.
+
+**2026-09-07 — macOS 1.30 was WITHDRAWN and 1.31 submitted in its place, on the owner's
+instruction after the argument against it was put twice.** Recorded with what it actually cost,
+because the estimate and the outcome differed in both directions.
+
+*The feared tail did not happen.* The purchase settled to `READY_TO_SUBMIT` within minutes of the
+withdrawal — not `MISSING_METADATA`, not `DEVELOPER_ACTION_NEEDED`, and the review screenshot's
+odd `uploaded: null` (with `assetDeliveryState: COMPLETE`) turned out not to matter. The
+unrecoverable branch that made this look severe was real but did not fire, and it is now an
+observed state transition rather than an unknown one.
+
+*Two things did bite, and neither was on the list.*
+
+1. **`asc_release.py` would have submitted macOS 1.31 without the purchase.** `carried` and
+   `stage_iap` both decided "already carried" from the purchase's own state string, and
+   `IAP_ALREADY_IN` contains `IN_REVIEW`; Apple's cancel is asynchronous, so there is a real
+   window where the purchase reads `IN_REVIEW` while belonging to nothing. Fixed in `91e3c87`
+   before the withdrawal, and mutation-proven: reverting it makes the harness report
+   `SUBMITTED ANYWAY`. Had this shipped, the notes would have advertised a purchase in no review,
+   printing OK and exiting 0.
+2. **Apple refuses to create a new version while the previous one is `DEVELOPER_REJECTED`** —
+   "You cannot create a new version of the App in the current state", which reads like a
+   permissions problem and is not. The rejected record is the one to reuse; it simply still
+   carried `1.30`, so `find_version` did not recognise it. Resolved by PATCHing its
+   `versionString` to `1.31` (the uploaded build's marketing version already said 1.31), with a
+   byte-exact read-back. `ensure_version` now detects this case and names the fix instead of
+   passing Apple's sentence through.
+
+*What it did not cost:* the description text (0 edits, verified against live), the price, the
+offer, the placement, and iOS — 1.31 and 1.30 both stayed `READY_FOR_SALE` throughout.
 
 **MEASURED 2026-09-07, and it changes what macOS 1.30 costs: the Mac shares the dead
 entrance.** `Sources/NihongoRideApp/MenuView.swift` compiles into both targets (`project.yml:39`
