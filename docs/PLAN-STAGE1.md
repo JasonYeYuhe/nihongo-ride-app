@@ -411,6 +411,40 @@ before submission.
 >
 > **Unchanged:** the price, the offer, the placement, the three branches in §K, and every
 > threshold. Decided under the owner's delegation of this specific call.
+>
+> ---
+>
+> **Observation logged 2026-09-09, AFTER the amendment above was committed (`e05658a`), and it
+> changes nothing.** Recorded in this order deliberately: the decision was made and committed
+> before any outcome series was read, and this note exists so that ordering is auditable rather
+> than claimed.
+>
+> `sales_report.py --since 2026-08-25 --daily` (census, 14 days to 09-07, the reporting lag being
+> two days) gives **28 first-time downloads, macOS 17 / iOS 11 — a rate of 2.0/day**.
+>
+> **The doubling §F relied on is not visible in the latest window.** §F's case was
+> 0.46 → 1.11 → 2.39/day, "roughly doubling each month"; the most recent fortnight is **2.0/day**,
+> slightly *below* both 2.39 and the 2.321 flat anchor it criticised. So the flat anchor was
+> mildly optimistic here, not pessimistic — the opposite of the direction §F argued.
+>
+> **This strengthens the amendment rather than weakening it, for a reason §F did not give.** The
+> case for denominating by N was written as "the series is accelerating, so the dates understate
+> n". The better statement is direction-free: **the series is non-stationary, and a bound computed
+> from a forecast is wrong whichever way the forecast errs.** `3/N` on observed N is right in both
+> worlds. And the backstop earns itself immediately — at 2.39/day N = 200 lands near day 83, at the
+> observed 2.0/day it lands near **day 100**, past the old day-90 date:
+>
+> | | at 2.39/day (§F's premise) | at 2.0/day (observed) |
+> |---|---|---|
+> | N = 35 | 2026-09-23 | **2026-09-26** |
+> | N = 100 | 2026-10-20 | **2026-10-29** |
+> | N = 200 | 2026-12-01 | **2026-12-18** |
+>
+> These are projections, not commitments — the checkpoints fire on N, not on these dates.
+>
+> **`PURCHASES gross 0` in this window is not a result and must not be read as one.** The window
+> ends 09-07; the purchase was not `APPROVED` until 09-08/09. There was nothing to buy. §K's own
+> day-0 row is the thing that makes a later zero interpretable, and it has not been walked.
 
 
 
