@@ -570,7 +570,20 @@ tripling" as *one candidate among four — and the one with a perverse incentive
 iteration is that incentive arriving on purpose, so the dates are kept where day 90 can see them.
 
 Pulled from App Store Connect on 2026-09-01, not from memory. `created` is when the version
-record was made, which is within minutes of submission for every row here.
+record was made, which is within minutes of submission for every row here **except macOS 1.31 —
+see the warning below before re-pulling this table.**
+
+> ⚠️ **`createdDate` is no longer a usable proxy for macOS 1.31's submission date, and re-pulling
+> this table from ASC will silently get it wrong by seven days.** ASC reports macOS 1.31 as
+> `created 2026-08-31`; it was submitted **2026-09-07**. The gap is not Apple's — it is mine.
+> macOS 1.30 was withdrawn, and Apple then refuses to create a new version while the previous one
+> is `DEVELOPER_REJECTED`, so the 1.30 record was reused by PATCHing its `versionString` to 1.31.
+> The record therefore keeps 1.30's creation timestamp. Anything reading this table as a cadence
+> series — which §B says day 90 will — must take macOS 1.31's date from the review submission
+> (`submittedDate` 2026-09-07T12:37:50Z), not from the version record.
+>
+> The general form, worth more than the instance: **a reused record carries the old record's
+> timestamps.** Any future withdraw-and-resubmit does this again.
 
 | version | created (both platforms within 20 s of each other — **except 1.31**, see below) |
 |---|---|
@@ -582,7 +595,7 @@ record was made, which is within minutes of submission for every row here.
 | 1.28 | 2026-08-27 |
 | 1.29 | 2026-08-29 |
 | 1.30 | 2026-08-31 |
-| 1.31 | **iOS submitted 2026-09-05** (build 56, live 09-06); **macOS submitted 2026-09-07** (build 55) |
+| 1.31 | iOS submitted **2026-09-05** (build 56, live 09-06); macOS submitted **2026-09-07** (build 55, live 09-09). **Both live 2026-09-09 = §K's day 0.** ASC's `createdDate` says 08-31 for macOS — wrong, see above |
 
 **Superseded on 2026-09-05: the platforms have separated, and this table's header no longer
 holds for every row.** Every release from 1.23 to 1.30 shipped both platforms together within

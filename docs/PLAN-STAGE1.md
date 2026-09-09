@@ -338,6 +338,35 @@ before submission.
 
 ## §K §G's pre-registration, fixed in advance
 
+> ### ⏱ DAY 0 = 2026-09-09. The window is open and the clock is running.
+>
+> Recorded the day it happened, which is the whole point of the instruction to record it.
+>
+> | | |
+> |---|---|
+> | both platforms `READY_FOR_SALE` | macOS **1.31** (build 55) · iOS **1.31** (build 56) |
+> | purchase | `com.jasonye.nihongoride.scenery.lifetime` **APPROVED**, ¥10.00, proceeds ¥8.42, base territory CHN, on sale in **175 territories** (CHN/USA/JPN all present) |
+> | **day 15** | **2026-09-24** |
+> | **day 42** | **2026-10-21** — the first checkpoint that can falsify §D's 8.2% |
+> | **day 90** | **2026-12-08** — the go/iterate/stop decision |
+> | **day 180** | **2027-03-08** — refunds, evaluated separately |
+>
+> **Precision, stated honestly:** ASC exposes no timestamp for the moment a version becomes
+> `READY_FOR_SALE`. 2026-09-09 is the date both platforms were first *observed* live with the
+> purchase approved; the transition happened between the 09-08 observation (macOS `IN_REVIEW`) and
+> this one. The uncertainty is under a day and it is one-sided — the true day 0 is 09-08 or 09-09,
+> never later — so every checkpoint above is a date the window has certainly reached, not one it
+> might not have.
+>
+> **§F's re-denomination window has closed on the strict reading.** Moving the checkpoints from
+> day 15/42/90 to cumulative installs 35/100/200 was free "only before day 0", and day 0 is now
+> behind us. The looser reading is defensible and belongs to the owner, not to this document: no
+> outcome data has been looked at yet, so fixing the denominator *now, before reading any number*,
+> preserves the property the deadline was protecting. What is NOT available any more is deciding
+> it after seeing a checkpoint — that is the thing the deadline existed to forbid. If it is
+> changed, the change and its timestamp go in this box, above the table it changes.
+
+
 Written before the SKU exists. The point is not that these numbers are right; it is that they are
 **fixed before the data arrives**, so no outcome can be rationalised afterwards.
 
