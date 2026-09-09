@@ -237,6 +237,10 @@ same direction.
 > is not yet adopted** — it changes the shape of §K's table and therefore needs the owner's
 > decision, and it must be decided **before day 0**, which is the only moment amending a
 > pre-registration is free.
+>
+> **ADOPTED 2026-09-09** under the owner's delegation, with a calendar backstop added
+> because this proposal as written cannot terminate if growth reverses. The binding text
+> and the verification that no outcome data preceded it are in `PLAN-STAGE1` §K.
 
 **And a smaller one neither reviewer stated cleanly.** One reviewer claimed §K blindly attributes
 purchases to the new cohort when the 114-device base can buy too. **That is wrong at day 90** — §K's

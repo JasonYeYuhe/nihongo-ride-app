@@ -366,6 +366,53 @@ before submission.
 > it after seeing a checkpoint — that is the thing the deadline existed to forbid. If it is
 > changed, the change and its timestamp go in this box, above the table it changes.
 
+> ### ✅ AMENDED 2026-09-09, day 0 or day 1, BEFORE any outcome number was read
+>
+> **§F's re-denomination is ADOPTED.** Checkpoints now fire at **cumulative new installs since
+> day 0: N = 35, N = 100, N = 200** — whenever they arrive — not at day 15/42/90.
+>
+> **Why this is not a mid-window change of criteria.** No threshold moves and no decision rule
+> moves: 8.6% / 3.1% / 1.4% are `3/N`, functions of N alone. The calendar table did not state
+> different criteria — it stated *the same* criteria under a forecast, and the forecast is
+> measurably wrong. Installs were held flat at 2.321/day against a series measured at
+> **0.46 → 1.11 → 2.39 per day** across three 28-day windows. A flat anchor on an accelerating
+> series is wrong in one direction for every row, so the calendar reading would have quoted a
+> bound that the actual n does not support. Denominating by N makes the bound true by
+> construction rather than true if a growth curve holds.
+>
+> **Why it is legitimate to adopt it now, and what it still costs.** The amendment was written
+> down *before* day 0 (`PLAN-WINDOW` §F) — this adopts a pre-specified alternative rather than
+> inventing one — and it is being adopted before any post-day-0 install, unit or proceeds figure
+> has been read. Verified rather than asserted: this session has read version states, the
+> purchase's price, proceeds-per-sale, territory count and submission dates, and **no outcome
+> series at all**. The residual cost is real and is not argued away: the document said "decide
+> before day 0" and this is a day late. That lateness is recorded here rather than smoothed over,
+> and it is the reason the verification above is written out.
+>
+> **One thing added that §F did not have, because §F's version cannot terminate.** An
+> install-denominated checkpoint has no deadline: if growth reverses, N = 200 may never arrive and
+> the go/iterate/stop decision hangs open forever. So:
+>
+> | | fires at |
+> |---|---|
+> | record, falsifies nothing | **N = 35** |
+> | first checkpoint that can falsify §D's 8.2% | **N = 100** |
+> | **interim record, no decision attached** | **2026-12-08** (day 90) — a dated waypoint regardless of N |
+> | **the go / iterate / stop decision** | **N = 200, or 2027-03-08 (day 180), whichever comes first** |
+> | refunds | 2027-03-08 (day 180) |
+>
+> If the decision fires on the backstop rather than on N, the bound is computed from the **observed
+> N**, not from 200. At the last measured rate N = 200 lands near day 84, so the backstop is
+> unlikely to bind — it exists so that a stalled series produces a conclusion instead of silence.
+>
+> **Also adopted from §F:** the N = 35 and N = 100 rows carry the ceiling denominator (+114 legacy
+> base) as the day-90 row already did. At N = 35 the base is over three times the new cohort, so
+> omitting it there was the row most in need of it.
+>
+> **Unchanged:** the price, the offer, the placement, the three branches in §K, and every
+> threshold. Decided under the owner's delegation of this specific call.
+
+
 
 Written before the SKU exists. The point is not that these numbers are right; it is that they are
 **fixed before the data arrives**, so no outcome can be rationalised afterwards.
