@@ -719,6 +719,42 @@ final class AppModel {
     /// e.g. under `swift run`). Owned here; created lazily when sync is enabled.
     private var syncController: CloudKitSyncController?
 
+    /// What changed locally and now needs pushing to iCloud.
+    ///
+    /// A value rather than five loose arguments, so a test can assert what was announced by
+    /// comparing it — "the recorder saw exactly this" is a stronger statement than "the recorder
+    /// saw something".
+    struct LocalChange: Equatable, Sendable {
+        var srsIDs: [String] = []
+        var rideRecordIDs: [UUID] = []
+        var odometerChanged = false
+        var listIDs: [String] = []
+        var conjugationSRSIDs: [String] = []
+    }
+
+    /// **The one door every persisted local change leaves by** (v1.32 §D1).
+    ///
+    /// The rule this exists to hold is `persistWordLists`': *a change that did not reach disk must
+    /// not be queued for CloudKit*. It used to record unconditionally, so a failed save still
+    /// queued the in-memory state for upload — the local file kept the old version and the cloud
+    /// got the one that never landed. The guard was added and **nothing could assert it**:
+    /// `syncController` is nil in every `swift test` process, so deleting the `return` left the
+    /// whole suite green. A rule whose violation is invisible is a comment, not a guard.
+    ///
+    /// Injected as a closure rather than by widening `syncController`, per §D1's own risk note —
+    /// and the default IS the shipping behaviour, so production wires nothing and cannot forget
+    /// to. A test substitutes a recorder and observes the DECISION, which is the thing that was
+    /// unobservable.
+    ///
+    /// `[weak self]` avoids a cycle; the controller already holds the model weakly.
+    @ObservationIgnored
+    lazy var announceLocalChange: (LocalChange) -> Void = { [weak self] change in
+        self?.syncController?.recordLocalChanges(
+            srsIDs: change.srsIDs, rideRecordIDs: change.rideRecordIDs,
+            odometerChanged: change.odometerChanged, listIDs: change.listIDs,
+            conjugationSRSIDs: change.conjugationSRSIDs)
+    }
+
     private func startSyncIfEnabled(fullResync: Bool = false) {
         guard Self.cloudSyncAvailable else { syncStatus = .off; return }
         // The harness and the UI tests both finish REAL runs; an unguarded push lands those in
@@ -1609,7 +1645,7 @@ final class AppModel {
             // for upload — the local file survived and the cloud got the version that didn't.
             return
         }
-        syncController?.recordLocalChanges(listIDs: listIDs)
+        announceLocalChange(LocalChange(listIDs: listIDs))
     }
 
     /// Re-reads the word-list file after a transient failure (file protection while locked,
@@ -1777,7 +1813,7 @@ final class AppModel {
             bgSave("word-lists (legacy fold)", allowed: !wordListsReadOnly) { try wordLists.save(to: wordListsURL) }
             // A v1.4 addition changed our default → propagate to v1.5 peers (and the
             // controller refreshes the deck mirror because the default id is included).
-            syncController?.recordLocalChanges(listIDs: [WordList.defaultID])
+            announceLocalChange(LocalChange(listIDs: [WordList.defaultID]))
         }
     }
 
@@ -2133,7 +2169,7 @@ final class AppModel {
         // Push the changed card to iCloud — GATED OFF for v1.8 (conjSRSSyncAvailable=false),
         // so this is a no-op until device gate E flips it on (PLAN-V1.8 §4).
         if Self.conjSRSSyncAvailable {
-            syncController?.recordLocalChanges(conjugationSRSIDs: [promptID])
+            announceLocalChange(LocalChange(conjugationSRSIDs: [promptID]))
         }
     }
 
@@ -2208,10 +2244,10 @@ final class AppModel {
                                          riddenDays: journal.riddenDays().count,
                                          openedANewOffer: !hadArrivedBeforeThisRide && hasArrivedAtKyoto)
         // Tell the iCloud sync controller what changed (no-op when sync off / a cram).
-        syncController?.recordLocalChanges(
+        announceLocalChange(LocalChange(
             srsIDs: changedSRS,
             rideRecordIDs: appended.map { [$0.id] } ?? [],
-            odometerChanged: appended != nil)
+            odometerChanged: appended != nil))
         // Game Center: submit score + achievements for real (non-practice, non-cram) runs.
         if completion.reportsGameCenter, let summary = lastSummary {
             gameCenter.recordRun(summary: summary, mode: session.mode,

@@ -572,7 +572,14 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         model?.updateSyncStatus(Self.status(for: error))
     }
 
-    private nonisolated static func status(for error: Error) -> AppModel.SyncStatus {
+    /// What a sync failure looks like to the user.
+    ///
+    /// `internal` because §C2's close says, in prose, that a shipped app can never show "Off"
+    /// beside an ON toggle — and the load-bearing half of that argument is that this function
+    /// cannot return `.off`. Nothing enforced it. A guard stated in prose that nothing enforces
+    /// is the defect §A says the survey found inside this repo's own gates, so the close is now
+    /// a test (`SyncStatusNeverOffTests`) instead of a paragraph.
+    nonisolated static func status(for error: Error) -> AppModel.SyncStatus {
         if let ckError = error as? CKError {
             switch ckError.code {
             case .notAuthenticated:
@@ -593,14 +600,32 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     }
 
     /// Splits "Type:key" — key may itself contain ':' (UUIDs don't, ids don't).
-    private nonisolated static func parse(_ recordName: String) -> (type: String, key: String) {
+    nonisolated static func parse(_ recordName: String) -> (type: String, key: String) {
         guard let sep = recordName.firstIndex(of: ":") else { return ("", recordName) }
         return (String(recordName[..<sep]), String(recordName[recordName.index(after: sep)...]))
     }
 
     // MARK: CKRecord <-> model field mapping
 
-    private nonisolated static func fill(_ record: CKRecord, from card: SRSCard) {
+    // ⚠️ `internal`, not `private`, and the reason is written here rather than left to be
+    // rediscovered as an erosion (v1.32 §D1).
+    //
+    // 756 lines, zero tests. These fourteen functions ARE the wire format: a converter that
+    // wrote the wrong type or silently dropped a field would corrupt user data across every
+    // device the account owns, and it would pass every gate in this repo.
+    // `scripts/check_prod_schema.sh` proves the field NAMES exist in Production and says nothing
+    // about whether a value round-trips. `@testable` promotes `internal`; it cannot reach
+    // `private`. So this is the minimum that makes a round-trip test possible at all.
+    //
+    // **It widens nothing outside this module.** `NihongoRideApp` is an `executableTarget` whose
+    // only product is `.executable` (Package.swift:33/:179) — it ships no library, so no other
+    // module can import it in any configuration. §D1's own risk note says to stop and inject if a
+    // seam wants three declarations opened; that rule is about widening a boundary, and there is
+    // no boundary here to widen.
+    //
+    // Deliberately NOT widened: `isTransient` (:466), which no test needs.
+
+    nonisolated static func fill(_ record: CKRecord, from card: SRSCard) {
         record["vocabID"] = card.id
         record["easeFactor"] = card.easeFactor
         record["interval"] = card.interval
@@ -612,7 +637,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         record["totalMistakes"] = card.totalMistakes
     }
 
-    private nonisolated static func srsCard(from record: CKRecord) -> SRSCard? {
+    nonisolated static func srsCard(from record: CKRecord) -> SRSCard? {
         guard let id = record["vocabID"] as? String else { return nil }
         var card = SRSCard(id: id)
         card.easeFactor = record["easeFactor"] as? Double ?? card.easeFactor
@@ -628,7 +653,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
 
     // Conjugation SRS card (v1.8 §C) — same field shape as SRSCard, its own record type
     // ("ConjugationSRSCard"). `cardID` holds the form-level id (`sourceID#form`).
-    private nonisolated static func fill(_ record: CKRecord, from card: ConjugationSRSCard) {
+    nonisolated static func fill(_ record: CKRecord, from card: ConjugationSRSCard) {
         record["cardID"] = card.id
         record["easeFactor"] = card.easeFactor
         record["interval"] = card.interval
@@ -640,7 +665,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         record["totalMistakes"] = card.totalMistakes
     }
 
-    private nonisolated static func conjSrsCard(from record: CKRecord) -> ConjugationSRSCard? {
+    nonisolated static func conjSrsCard(from record: CKRecord) -> ConjugationSRSCard? {
         guard let id = record["cardID"] as? String else { return nil }
         var card = ConjugationSRSCard(id: id)
         card.easeFactor = record["easeFactor"] as? Double ?? card.easeFactor
@@ -654,7 +679,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         return card
     }
 
-    private nonisolated static func fill(_ record: CKRecord, from ride: RideRecord) {
+    nonisolated static func fill(_ record: CKRecord, from ride: RideRecord) {
         record["uuid"] = ride.id.uuidString
         record["date"] = ride.date
         record["mode"] = ride.mode
@@ -668,7 +693,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         record["duration"] = ride.duration
     }
 
-    private nonisolated static func rideRecord(from record: CKRecord) -> RideRecord? {
+    nonisolated static func rideRecord(from record: CKRecord) -> RideRecord? {
         guard let uuidString = record["uuid"] as? String, let id = UUID(uuidString: uuidString),
               let date = record["date"] as? Date,
               let mode = record["mode"] as? String,
@@ -685,38 +710,38 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             duration: record["duration"] as? Double ?? 0)
     }
 
-    private nonisolated static func fill(_ record: CKRecord, from slot: OdometerLog.Slot, deviceID: String) {
+    nonisolated static func fill(_ record: CKRecord, from slot: OdometerLog.Slot, deviceID: String) {
         record["deviceID"] = deviceID
         record["words"] = slot.words
         record["distanceMeters"] = slot.distanceMeters
         record["runs"] = slot.runs
     }
 
-    private nonisolated static func odometerSlot(from record: CKRecord) -> OdometerLog.Slot? {
+    nonisolated static func odometerSlot(from record: CKRecord) -> OdometerLog.Slot? {
         OdometerLog.Slot(
             words: record["words"] as? Int ?? 0,
             distanceMeters: record["distanceMeters"] as? Double ?? 0,
             runs: record["runs"] as? Int ?? 0)
     }
 
-    private nonisolated static func fill(_ record: CKRecord, savedIDs: [String]) {
+    nonisolated static func fill(_ record: CKRecord, savedIDs: [String]) {
         record["ids"] = savedIDs
     }
 
     /// Legacy v1.4 deck record → just its ids (folded into the default list once).
-    private nonisolated static func savedIDs(from record: CKRecord) -> [String] {
+    nonisolated static func savedIDs(from record: CKRecord) -> [String] {
         record["ids"] as? [String] ?? []
     }
 
     /// One STRING field, not a per-word record type: a list's meta is only ever read
     /// and written whole, alongside the list itself, so N extra records would buy
     /// nothing and cost a fetch each.
-    private nonisolated static func encodeMeta(_ meta: [String: WordMeta]) -> String? {
+    nonisolated static func encodeMeta(_ meta: [String: WordMeta]) -> String? {
         guard !meta.isEmpty else { return nil }
         return (try? JSONEncoder().encode(meta)).flatMap { String(data: $0, encoding: .utf8) }
     }
 
-    private nonisolated static func decodeMeta(_ raw: Any?) -> [String: WordMeta] {
+    nonisolated static func decodeMeta(_ raw: Any?) -> [String: WordMeta] {
         guard let s = raw as? String, let data = s.data(using: .utf8) else { return [:] }
         // A meta blob we can't parse must NOT fail the whole list: dropping to [:]
         // degrades to pre-v1.10 union semantics (a stale word may linger) rather than
@@ -724,7 +749,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         return (try? JSONDecoder().decode([String: WordMeta].self, from: data)) ?? [:]
     }
 
-    private nonisolated static func fill(_ record: CKRecord, from list: WordList) {
+    nonisolated static func fill(_ record: CKRecord, from list: WordList) {
         record["name"] = list.name
         record["ids"] = list.ids
         record["nameUpdatedAt"] = list.nameUpdatedAt
@@ -739,7 +764,7 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
         record["wordMeta"] = Self.encodeMeta(list.wordMeta)
     }
 
-    private nonisolated static func wordList(from record: CKRecord) -> WordList? {
+    nonisolated static func wordList(from record: CKRecord) -> WordList? {
         let (_, id) = parse(record.recordID.recordName)
         guard !id.isEmpty else { return nil }
         return WordList(
