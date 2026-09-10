@@ -58,7 +58,7 @@ let package = Package(
                 .copy("Resources/reading-notes.json"),
             ]
         ),
-        .testTarget(name: "VocabKitTests", dependencies: ["VocabKit"]),
+        .testTarget(name: "VocabKitTests", dependencies: ["RomajiKana", "VocabKit"]),
 
         // MARK: Loading JSON stores off disk without losing everything to one bad element.
         // MARK: Typing diagnostics — names what the engine refused, so the app can explain it.
@@ -79,7 +79,7 @@ let package = Package(
         // + ConjugationSession). The app reaches CK transitively through GameCore, so the
         // app target / project.yml need no direct CK dependency (PLAN-V1.6 §4).
         .target(name: "GameCore", dependencies: ["RomajiKana", "VocabKit", "ReviewKit", "ConjugationKit"]),
-        .testTarget(name: "GameCoreTests", dependencies: ["GameCore"]),
+        .testTarget(name: "GameCoreTests", dependencies: ["ConjugationKit", "GameCore", "ReviewKit", "RomajiKana", "VocabKit"]),
 
         // MARK: Ride journal — append-only run history + streak/trend analytics.
         .target(name: "JournalKit", dependencies: ["PersistKit"]),
@@ -106,11 +106,11 @@ let package = Package(
 
         // MARK: iCloud sync core — pure merge of SRS / history / odometer / saved / word-lists (v1.2 Phase A, +v1.4, +v1.5).
         .target(name: "SyncKit", dependencies: ["ReviewKit", "JournalKit", "SavedWordsKit", "WordListsKit", "ConjugationReviewKit", "PersistKit"]),
-        .testTarget(name: "SyncKitTests", dependencies: ["SyncKit", "PersistKit"]),
+        .testTarget(name: "SyncKitTests", dependencies: ["ConjugationReviewKit", "JournalKit", "PersistKit", "ReviewKit", "SavedWordsKit", "SyncKit", "WordListsKit"]),
 
         // MARK: SRS due-reminder scheduling — pure planner over the review store (v1.2 Phase A).
         .target(name: "NotificationKit", dependencies: ["ReviewKit"]),
-        .testTarget(name: "NotificationKitTests", dependencies: ["NotificationKit"]),
+        .testTarget(name: "NotificationKitTests", dependencies: ["NotificationKit", "ReviewKit"]),
 
         // MARK: Saved-words deck — user-curated vocab list (v1.4 feature core).
         .target(name: "SavedWordsKit"),
@@ -133,7 +133,7 @@ let package = Package(
         // flat vocab journey due-queue. GameCore must NOT depend on this (red line §6):
         // the app (AppModel) owns the store and hands GameCore only plain data/closures.
         .target(name: "ConjugationReviewKit", dependencies: ["PersistKit"]),
-        .testTarget(name: "ConjugationReviewKitTests", dependencies: ["ConjugationReviewKit"]),
+        .testTarget(name: "ConjugationReviewKitTests", dependencies: ["ConjugationReviewKit", "GameCore", "ReviewKit", "RomajiKana", "VocabKit"]),
 
         // MARK: Text-to-speech — @MainActor AVSpeechSynthesizer wrapper for on-demand
         // kana read-aloud (v1.8 §D). A leaf module; the app depends on it directly.
@@ -193,6 +193,6 @@ let package = Package(
         // testing — a fresh model at N5 has a full pool, so a dead-tap test would exercise the
         // empty-pool guard by never reaching it and pass for the wrong reason. `init(vocab:)`
         // is what makes this target worth having.
-        .testTarget(name: "NihongoRideAppTests", dependencies: ["NihongoRideApp", "WidgetSharedKit"]),
+        .testTarget(name: "NihongoRideAppTests", dependencies: ["ConjugationReviewKit", "GameCore", "JournalKit", "NihongoRideApp", "ReviewKit", "StoreReviewKit", "SyncKit", "VocabKit", "WidgetSharedKit", "WordListsKit"]),
     ]
 )
