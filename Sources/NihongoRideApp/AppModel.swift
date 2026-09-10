@@ -755,6 +755,34 @@ final class AppModel {
             conjugationSRSIDs: change.conjugationSRSIDs)
     }
 
+    // MARK: The doors a cloud merge's side effects leave by (v1.32 §D3)
+    //
+    // `applyCloudChanges` carries three contracts in prose, each of them a shipped defect
+    // written down after it was fixed: compaction runs only after a merge (v1.10 §A3),
+    // reminders are rescheduled after BOTH SRS merges (v1.14 §B), and the widget is
+    // republished when the journal or odometer branch fires alone (v1.12 §C). All three hold
+    // today and **nothing pinned any of them** — no test called the function at all.
+    //
+    // Compaction is observable directly, in `wordLists`. The other two are not: both
+    // `refreshReminders` and `refreshWidgetSnapshot` return early on
+    // `Bundle.main.bundleIdentifier != nil`, which is nil under SwiftPM's swift-testing entry
+    // point — and that guard is what keeps a test run out of the owner's real notification
+    // centre and off their real home-screen widget, so it must NOT be relaxed to let a test
+    // reach further. (v1.24 measured a test target stamping fourteen days of zeros onto the
+    // owner's real widget. It is the same door.)
+    //
+    // So the DECISION leaves through a named closure, exactly as `announceLocalChange` does,
+    // and a test observes the decision instead of the effect. The default is the shipping
+    // behaviour, so production wires nothing and cannot forget to.
+
+    /// "This merge changed something both SRS stores' reminders depend on."
+    @ObservationIgnored
+    lazy var remindersNeedRescheduling: () -> Void = { [weak self] in self?.refreshReminders() }
+
+    /// "This merge changed something the widget snapshot derives from."
+    @ObservationIgnored
+    lazy var widgetNeedsRepublishing: () -> Void = { [weak self] in self?.refreshWidgetSnapshot() }
+
     private func startSyncIfEnabled(fullResync: Bool = false) {
         guard Self.cloudSyncAvailable else { syncStatus = .off; return }
         // The harness and the UI tests both finish REAL runs; an unguarded push lands those in
@@ -1252,7 +1280,7 @@ final class AppModel {
         // merges — the call used to sit inside the vocab branch above, which meant a peer's
         // conjugation progress reached the app but never the badge, and a vocab-only fetch
         // rescheduled from a conjugation store that was still about to change.
-        if !cards.isEmpty || !conjugationCards.isEmpty { refreshReminders() }
+        if !cards.isEmpty || !conjugationCards.isEmpty { remindersNeedRescheduling() }
         // Republish the widget if the merge touched ANYTHING the snapshot derives from.
         // Gating on the review stores alone was too narrow: `streakByDay` comes from the
         // journal and `lifetimeWords` from the odometer, and both of those branches can fire
@@ -1260,7 +1288,7 @@ final class AppModel {
         // only. The peer's ride would restore the streak in-app while the widget kept walking
         // its decay curve toward a streak the user had not actually lost. (v1.12 §C.)
         if !cards.isEmpty || !conjugationCards.isEmpty
-            || !records.isEmpty || !odometerSlots.isEmpty { refreshWidgetSnapshot() }
+            || !records.isEmpty || !odometerSlots.isEmpty { widgetNeedsRepublishing() }
     }
 
     /// Mirrors the live settings into the persisted blob and writes it. Cheap
