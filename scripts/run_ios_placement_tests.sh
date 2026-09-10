@@ -66,6 +66,71 @@ xcodegen generate >/dev/null
 SIM_NAME="${SIM_NAME:-iPhone 17 Pro}"
 echo "==> simulator destination: $SIM_NAME"
 
+# --- Preconditions, ASSERTED rather than assumed (v1.32 §D5) ------------------
+#
+# Everything below was previously a property this script relied on and never checked. The
+# distinction matters more here than almost anywhere else in the repo: when one of these is
+# violated the suite does not error, it FAILS — with messages like "an owner lost the road row
+# entirely", which is indistinguishable from the App Review 3.1.1 defect this gate exists to
+# catch. That happened on 2026-09-05 and cost a real investigation.
+#
+# Convention borrowed from `launch_gate.sh`: exit 2 = HARNESS ERROR (the machine's fault),
+# 65 = a test failed (the app's fault). They must never print the same number.
+harness_error() { echo; echo "HARNESS ERROR: $1" >&2; exit 2; }
+
+# 1. The device must exist, and it must be the model the assertions were calibrated on. A
+#    destination that silently resolves to another model measures a different screen.
+DEVICE_JSON="$(xcrun simctl list devices -j)"
+SIM_UDID="$(printf '%s' "$DEVICE_JSON" | python3 -c "
+import json, sys
+name = sys.argv[1]
+data = json.load(sys.stdin)
+for runtime, devices in data['devices'].items():
+    for d in devices:
+        if d.get('name') == name and d.get('isAvailable'):
+            print(d['udid']); raise SystemExit
+" "$SIM_NAME" 2>/dev/null || true)"
+[ -n "$SIM_UDID" ] || harness_error "no available simulator named '$SIM_NAME'. Create one with:
+    xcrun simctl create $SIM_NAME \"iPhone 17 Pro\""
+
+# 2. NOBODY ELSE MAY BE DRIVING IT. This is the 2026-09-05 incident, and it is the one
+#    precondition whose absence produces failures shaped exactly like real defects.
+OTHER="$(pgrep -fl "xcodebuild.*$SIM_UDID" 2>/dev/null || true)"
+if [ -z "$OTHER" ]; then
+  # A run started by NAME rather than by udid will not match the pattern above, so also refuse
+  # when any other xcodebuild test is running at all — several agent sessions share this machine
+  # and only one of them can have the foreground.
+  OTHER="$(pgrep -fl "xcodebuild.*NihongoRideiOS" 2>/dev/null | grep -v "^$$ " || true)"
+fi
+[ -z "$OTHER" ] || harness_error "another xcodebuild is already driving this simulator:
+    $OTHER
+  Two UI-test runs on one device fight over the foreground and produce failures that read like
+  real defects — measured 2026-09-05. Wait, or clone the device:
+    xcrun simctl create NihongoRide-Placement \"iPhone 17 Pro\"
+    SIM_NAME=NihongoRide-Placement $0"
+
+# 3. The SOFTWARE keyboard must be the one that appears. `TouchFlowTests` reproduces App Review
+#    rejection 2.1(a) — "the keyboard never came up" — so a run with the hardware keyboard
+#    connected asserts nothing and passes. The global preference is overridable PER DEVICE, so
+#    both are checked; a missing key means the default, which is connected.
+KB_GLOBAL="$(defaults read com.apple.iphonesimulator ConnectHardwareKeyboard 2>/dev/null || echo 1)"
+[ "$KB_GLOBAL" = "0" ] || harness_error "the simulator's hardware keyboard is connected, so a
+  software-keyboard assertion would pass without the software keyboard ever appearing. Turn it
+  off (Simulator ▸ I/O ▸ Keyboard ▸ Connect Hardware Keyboard, or):
+    defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false"
+
+# 4. The display must be awake. Measured 2026-08-30: with the display asleep the suite builds
+#    cleanly, touches the .xctest bundle, and then does NOTHING at 0% CPU — four consecutive
+#    runs, always the same point — while `simctl` reports the device booted throughout. It looks
+#    like a hang, not a failure. `caffeinate -d` below covers the run; this refuses to START in a
+#    state where the operator cannot see what is happening.
+if pmset -g powerstate IODisplayWrangler 2>/dev/null | tail -1 | grep -qE "^IODisplayWrangler +[0-3] "; then
+  harness_error "the display is asleep. XCUITest drives a real GUI and stalls at the build→test
+  handoff with no diagnostic — measured, four runs in a row. Wake the display and re-run."
+fi
+
+echo "==> preconditions ok: $SIM_NAME ($SIM_UDID), exclusive, software keyboard, display awake"
+
 caffeinate -d -i xcodebuild test \
   -project NihongoRide.xcodeproj \
   -scheme NihongoRideiOS \

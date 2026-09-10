@@ -71,7 +71,10 @@ done
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO"
 
-LOGS="$(mktemp -d "${TMPDIR:-/tmp}/nihongo-all-gates.XXXXXX")"
+# `GATE_LOG_DIR` lets a caller (CI) put the logs somewhere it can upload them. A temp dir that
+# dies with the job is why the first CI run reported WHICH gate failed and not why.
+LOGS="${GATE_LOG_DIR:-$(mktemp -d "${TMPDIR:-/tmp}/nihongo-all-gates.XXXXXX")}"
+mkdir -p "$LOGS"
 trap 'echo; echo "logs: $LOGS"' EXIT
 
 FAILED=()
@@ -100,6 +103,12 @@ run_gate() {
     NOCOVERAGE+=("$name"); return
   fi
   printf 'FAILED (exit %s)\n' "$status"
+  # The tail, inline. On CI the log lives in a temp dir that dies with the job, and a runner that
+  # reports WHICH gate failed but not WHY sends the reader back to reproduce it by hand. Twelve
+  # lines is enough to name the assertion and cheap enough to keep in every local run.
+  echo "        ┌─ last 12 lines of $name"
+  tail -12 "$log" | sed 's/^/        │ /'
+  echo "        └─"
   FAILED+=("$name (exit $status) — $log")
 }
 
@@ -113,12 +122,18 @@ run_swift_test() {
   # and truncated text; "no summary line" is a failure, not silence.
   if ! grep -qE "Test run with [0-9]+ tests" "$log"; then
     printf 'FAILED (no summary line — the suite did not complete)\n'
+    echo "        ┌─ last 20 lines (a signal death leaves truncated output)"
+    tail -20 "$log" | sed 's/^/        │ /'
+    echo "        └─"
     FAILED+=("swift test (never completed) — $log"); return
   fi
   local summary
   summary=$(grep -oE "Test run with [0-9]+ tests in [0-9]+ suites" "$log" | tail -1)
   if [ "$status" -ne 0 ]; then
     printf 'FAILED (exit %s) — %s\n' "$status" "$summary"
+    echo "        ┌─ failing tests"
+    grep -E '^✘ Test |error: ' "$log" | head -12 | sed 's/^/        │ /'
+    echo "        └─"
     FAILED+=("swift test (exit $status) — $log"); return
   fi
   printf 'ok — %s\n' "$summary"

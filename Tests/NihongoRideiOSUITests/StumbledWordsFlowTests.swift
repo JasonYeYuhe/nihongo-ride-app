@@ -31,7 +31,14 @@ final class StumbledWordsFlowTests: XCTestCase {
         // install defaults to "when stuck", which hides it. (Same reason the screenshot walk
         // does this; without it the run would type nothing and the section would be empty for
         // a reason that has nothing to do with what is under test.)
-        let hints = app.segmentedControls.element(boundBy: 2)
+        // By LABEL, not by index. The menu renders FIVE segmented controls, all conditionally
+        // (MenuView.swift:197, :212, :362, :377, :394), so `element(boundBy: 2)` is an index into
+        // whichever ones happen to be on screen — the exact fragility v1.26 fixed in
+        // `TouchFlowTests` and shipped in the same commit that left it here and in
+        // `StoreScreenshotTests`. A fix applied to one call site is not a fix. (v1.32 §D5.)
+        let hints = app.segmentedControls.matching(
+            NSPredicate(format: "label IN {'Romaji assistance', '罗马字提示'}")).firstMatch
+        XCTAssertTrue(hints.waitForExistence(timeout: 5), "romaji assistance picker missing")
         XCTAssertTrue(hints.waitForExistence(timeout: 5))
         hints.buttons.element(boundBy: 0).tap()
 

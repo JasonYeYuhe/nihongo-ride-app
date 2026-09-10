@@ -103,4 +103,19 @@ jobs:
       # to call a no-coverage or vacuous gate a pass, and fails if fewer gates ran than it expects
       # — a glob that matched nothing would otherwise print a clean summary.
       - name: Run the headless gates
-        run: bash scripts/run_all_gates.sh --headless --vocab-base "${{ steps.base.outputs.base }}"
+        run: |
+          bash scripts/run_all_gates.sh --headless \
+            --vocab-base "${{ steps.base.outputs.base }}"
+        env:
+          # Somewhere the next step can collect. The first run of this workflow reported WHICH
+          # gate failed and not why, because the logs lived in a temp dir that died with the job.
+          GATE_LOG_DIR: ${{ github.workspace }}/gate-logs
+
+      - name: Keep the logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-logs
+          path: gate-logs/
+          retention-days: 14
+          if-no-files-found: warn

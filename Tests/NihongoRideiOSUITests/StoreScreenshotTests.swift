@@ -102,7 +102,15 @@ final class StoreScreenshotTests: XCTestCase {
         snap("\(lang)-4-practice")
         app.buttons["practiceDone"].tap()
         XCTAssertTrue(app.buttons["startButton"].waitForExistence(timeout: 8))
-        tapWhenSettled(mode.buttons.element(boundBy: 0))   // back to journey
+        // `mode` IS a Button now (:94), so `mode.buttons` asks for a button INSIDE a button and
+        // can never match. A leftover from when the mode row was a segmented control — and it sat
+        // eleven lines under the comment block that diagnoses exactly that change and says "a fix
+        // applied to one call site is not a fix". The fix was applied at the top of this function
+        // and missed at the bottom of it. (v1.32 §D5.)
+        let journeyLabel = lang == "zh" ? "环游" : "Journey"
+        let journey = app.buttons[journeyLabel]
+        XCTAssertTrue(journey.waitForExistence(timeout: 5), "no \(journeyLabel) mode button")
+        tapWhenSettled(journey)
 
         // Ride Log: real history from the runs above.
         tapWhenSettled(app.buttons["journalButton"])
