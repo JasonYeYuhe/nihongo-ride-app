@@ -16,7 +16,24 @@
 # `xcodebuild` hanging in-place whenever an agent worktree with its own Package.swift is left
 # under `.claude/`.
 #
-# NEVER pipe this. 0 = passed, 65 = a test failed.
+# WHAT IT RUNS, and what it still does not (v1.32 §D5)
+# ----------------------------------------------------
+# `PaidRouteRowTests` (8) plus, since v1.32, `StumbledWordsFlowTests` (1) and
+# `StoreScreenshotTests` (1) — the two orphans that need no second destination.
+#
+# `TouchFlowTests` (3) is still orphaned ON PURPOSE. Its own header says it needs an **iPad**
+# simulator, and running it on the iPhone clone this script uses would defeat its purpose
+# entirely: it reproduces App Review rejection 2.1(a) on the geometry where the keyboard failed to
+# appear. That is a second `xcodebuild` invocation against a second destination, and it is the
+# remaining piece of §D5.
+#
+# The two adopted here were not "never run" — the plan says so and it is wrong. They were GREEN on
+# 2026-08-25 (`f311520`) and have had no runner since, so the drift window is 26 app-layer commits
+# rather than six releases. Two real breakages were in that window and are fixed alongside this:
+# an index into whichever segmented controls happen to be visible, and a query for a button INSIDE
+# a button left over from when the mode row was a segmented control.
+#
+# NEVER pipe this. 0 = passed, 65 = a test failed, 2 = HARNESS ERROR (the machine, not the app).
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -119,15 +136,30 @@ KB_GLOBAL="$(defaults read com.apple.iphonesimulator ConnectHardwareKeyboard 2>/
   off (Simulator ▸ I/O ▸ Keyboard ▸ Connect Hardware Keyboard, or):
     defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false"
 
-# 4. The display must be awake. Measured 2026-08-30: with the display asleep the suite builds
-#    cleanly, touches the .xctest bundle, and then does NOTHING at 0% CPU — four consecutive
-#    runs, always the same point — while `simctl` reports the device booted throughout. It looks
-#    like a hang, not a failure. `caffeinate -d` below covers the run; this refuses to START in a
-#    state where the operator cannot see what is happening.
-if pmset -g powerstate IODisplayWrangler 2>/dev/null | tail -1 | grep -qE "^IODisplayWrangler +[0-3] "; then
-  harness_error "the display is asleep. XCUITest drives a real GUI and stalls at the build→test
-  handoff with no diagnostic — measured, four runs in a row. Wake the display and re-run."
-fi
+# 4. There must be a live, unlocked GUI session. XCUITest drives a real window server; measured
+#    2026-08-30, with the display asleep the suite builds cleanly, touches the .xctest bundle and
+#    then does NOTHING at 0% CPU — four consecutive runs, always the same point — while `simctl`
+#    reports the device booted throughout. It looks like a hang, not a failure.
+#
+#    The probe is `IOConsoleLocked`, which is the one STATE-2026-08-18 and CLAUDE.md both use and
+#    which answers on this hardware. `pmset -g powerstate IODisplayWrangler` was tried first and
+#    is WORTHLESS here: it prints "Internal failure: Failed to get power state information" on
+#    Apple Silicon, so the grep matched nothing and the check silently passed. A precondition that
+#    cannot fail is the thing this whole preamble exists to stop, so:
+CONSOLE="$(ioreg -n Root -d1 -a 2>/dev/null | grep -A1 IOConsoleLocked | tail -1 | tr -d '[:space:]')"
+case "$CONSOLE" in
+  "<false/>") : ;;   # unlocked — proceed
+  "<true/>")
+    harness_error "the console is LOCKED. XCUITest needs a live window-server session: it builds,
+  touches the .xctest bundle and then sits at 0% CPU with no diagnostic — measured, four runs in a
+  row. Unlock the screen and re-run. (This is NOT the codesign keychain trap CLAUDE.md records,
+  though the same lock causes both.)" ;;
+  *)
+    harness_error "could not read IOConsoleLocked (got '${CONSOLE:-nothing}'). Refusing rather
+  than assuming: a precondition that cannot determine its answer must not report the good one.
+  The first version of this check used \`pmset -g powerstate IODisplayWrangler\`, which fails on
+  Apple Silicon and therefore passed every time." ;;
+esac
 
 echo "==> preconditions ok: $SIM_NAME ($SIM_UDID), exclusive, software keyboard, display awake"
 
@@ -136,6 +168,8 @@ caffeinate -d -i xcodebuild test \
   -scheme NihongoRideiOS \
   -destination "platform=iOS Simulator,name=$SIM_NAME" \
   -only-testing:NihongoRideiOSUITests/PaidRouteRowTests \
+  -only-testing:NihongoRideiOSUITests/StumbledWordsFlowTests \
+  -only-testing:NihongoRideiOSUITests/StoreScreenshotTests \
   -derivedDataPath "$WORK/DerivedData" \
   -clonedSourcePackagesDirPath "$WORK/SourcePackages" \
   CODE_SIGNING_ALLOWED=NO
