@@ -728,7 +728,18 @@ final class AppModel {
         guard Self.currentIsolation.syncAllowed else { syncStatus = .off; return }
         guard iCloudSyncEnabled else { syncStatus = .off; return }
         guard let controller = CloudKitSyncController(model: self) else {
-            syncStatus = .off          // CloudKit unavailable (dev / no entitlement)
+            // NOT "CloudKit unavailable", which is what this line used to claim: `init?` never
+            // asks about iCloud at all. It returns nil for an unbundled process (`swift run`)
+            // or a capture render, and `CKContainer(identifier:)` is constructed
+            // unconditionally. A real account problem arrives LATER, through the running
+            // controller, as `.noAccount` / `.waiting` / `.error` — never as `.off`.
+            //
+            // The old comment also said "no entitlement", and project.yml:447-450 records the
+            // opposite as measured: with no iCloud entitlement `CKContainer.init` TRAPS and the
+            // process dies, so it never reaches this line. (v1.32 §C2 — the whole point of that
+            // item was that a wrong comment here is what kept sending people back to re-examine
+            // a contradiction that cannot occur in a shipped build.)
+            syncStatus = .off
             return
         }
         syncController = controller

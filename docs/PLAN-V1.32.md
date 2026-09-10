@@ -87,6 +87,52 @@ visible forever with nothing behind it — not a short run and not a wrong numbe
 Reachable only because no `ConjugationForm` case has ever been removed or renamed — a property of
 history, not of the code.
 
+> ### ✅ DONE 2026-09-10 (`331d85a`) — and this section was wrong about the scope, the door and the fix
+>
+> Kept unedited above, because a plan quietly reworded after it is executed stops being a record of
+> what was believed. Four corrections, in the order they cost time:
+>
+> **1. It is six readouts, not one.** The same unfiltered count feeds the menu button, the run's own
+> label, the Stats forecast (`dueForecast`), "N tough forms" (`leeches`), the home-screen widget
+> (`dueByDay`) and the **app-icon badge** (`ReminderScheduler`). The badge was found by the
+> *compiler*, not by the sweep that listed the other five — making the new parameter required is
+> what turned "remember every call site" into a build failure. This is v1.22's *"a fix applied to
+> one call site is not a fix"* arriving on the same store a second time.
+>
+> **2. "Nothing behind it" is false.** `makeReview` backfills, so the run is a full twelve real
+> prompts. The harm is different and worse: the stranded card **displaces** a genuinely due one out
+> of the twelve, because it only grows more overdue and therefore sorts first.
+>
+> **3. The reachable door is not a renamed enum case.** `ConjugationPrompt.init?` is *failable* and
+> fails for an entry that exists and a token that parses: `verbClass` reads the corpus's opaque `vc`
+> field, and `Conjugator` fails per-form on a reading whose class has no stem for it. **A corpus
+> edit can strand a card whose verb is perfectly present.** Measured over all 56 corpus commits:
+> `780d40d` (v1.14) changed three entries' `vc` — `n1-b479`, `n2-g040`, `n2-g058`, all
+> `godan_u` → `suru`. They landed on a class that conjugates every form, so nothing stranded;
+> nothing about the edit made that the likely outcome. The corpus is edited most releases.
+>
+> **4. The fix this section specified would have missed that door.** An injected *token* validator
+> — the shape §C1 asks for, and what the survey recommended as `formResolves:` — cannot express
+> conjugability, which is a property of the (entry, form) **pair**. The shipped fix injects
+> `ConjugationSession.reviewPrompt(entryID:formToken:vocab:languageCode:)`, extracted from
+> `makeReview`'s own skip, so the count and the run **share the function** instead of agreeing with
+> each other. Mutation **M8** is exactly the token-only re-derivation: it passes every arithmetic
+> assertion in the suite and the shared-predicate test kills it.
+>
+> `reviewedCount` deliberately keeps counting a stranded card — "forms practised" is history, and
+> the learner did practise it. Asserted, not left to a comment.
+>
+> Evidence: **8/8 behaviour mutations and 3/3 gate mutations killed**; `swift test` 693. The first
+> mutation harness reported 4/8 survivors with every mutation at exit 1, because it asked one suite
+> about another suite's test name — a broken instrument inside the harness written to enforce that
+> rule. And the paired control caught the *test's* own defect first: its "conjugable" arm used あかい
+> with an `ichidan` class, which needs a る ending, so both arms measured the same thing.
+>
+> Two gates strengthened rather than merely extended: the declaration rule now requires the new
+> predicate (declared **and** called) on outstanding-work counts, and the anti-default rule was
+> re-keyed from the *name* `resolves` to the *structure* (`-> Bool` closure with an `=`), which is
+> what a second predicate needed and what a third will inherit.
+
 ### C2 — the iCloud card can show the toggle ON above the word "Off" · *hours, and probably a decision not a fix*
 
 `AppModel:730` sets `syncStatus = .off` while `iCloudSyncEnabled` stays true;
@@ -97,6 +143,63 @@ v1.31 pass (`PLAN-ITERATION.md:387-393`).
 a real device is the `.noAccount` path that already has its own message. That is a strong argument
 and it may be right. **Re-check it once; if it holds, close the item in writing rather than leaving
 it to be re-examined a fourth time.** The cost here is the re-examination, not the fix.
+
+> ### ✅ CLOSED 2026-09-10, on the fourth examination. Not reachable in a shipped build — and the reviewer's REASON was wrong, which is why it kept reopening.
+>
+> **The conclusion holds. The mechanism everyone kept writing down does not**, and that is the part
+> worth recording: three examinations agreed on an answer while describing a path the code does not
+> have, so each one left the next reader with nothing to check.
+>
+> **The enumeration, and why it is complete.** `syncStatus` is `private(set)`
+> (`AppModel.swift:302`), so the only writers are inside `AppModel.swift` plus the one door it
+> opens, `updateSyncStatus` (`:1141`). That is a *structural* argument, not a grep — which matters,
+> because a grep here is exactly the instrument that would answer for a population smaller than the
+> question. Six writes:
+>
+> | line | writes `.off` when | `iCloudSyncEnabled` there | reachable in a shipped app |
+> |---|---|---|---|
+> | `:302` | the declaration default | — | overwritten inside `init` before any view body reads it |
+> | `:723` | `!cloudSyncAvailable` | true | **no** — `static let cloudSyncAvailable = true` (`:705`), and `SettingsView:61` hides the whole card when it is false |
+> | `:728` | `!currentIsolation.syncAllowed` | true | **no** — UI test, capture, or layout harness only (`:782-810`) |
+> | `:731` | `CloudKitSyncController(model:)` returned nil | true | **no** — see below |
+> | `:729`, `:747` | the user turned the toggle off | **false** | yes, and honest |
+>
+> So the contradiction is `:728` and `:731`, and both need a launch that is not the App Store's.
+>
+> **What `init?` actually consults** (`CloudKitSyncController.swift:71-72`) is
+> `Bundle.main.bundleIdentifier != nil` and `!Screenshotter.isCapturing` — **it never asks about an
+> iCloud account, and `CKContainer(identifier:)` is constructed unconditionally.** So "CloudKit is
+> unconstructible" is not a state this code can be in, and `.noAccount` is not that path: it comes
+> from an already-running controller, via `CKError.notAuthenticated` (`:578`) or a `.signOut` event
+> (`:524`). The capture half of `:731` is dead too — `currentIsolation` reads the same
+> `Screenshotter.isCapturing` (`:814`) and the capture branch sets `syncAllowed: false` (`:804`),
+> so `:728` fires first.
+>
+> **The controller can never write `.off` at all.** All eight `updateSyncStatus` call sites pass
+> `.syncing`, `.synced`, `.waiting`, `.noAccount` or `Self.status(for:)`, and `status(for:)`
+> (`:575-586`) returns only `.noAccount`, `.waiting` or `.error(...)`. A real device with a real
+> account problem therefore reads "Not signed in to iCloud", "Waiting to sync…" or "Sync error: …"
+> — **never "Off"**.
+>
+> **Two things fixed rather than filed.** The comment on `:731` said *"CloudKit unavailable (dev /
+> no entitlement)"*. Both halves are wrong, and a wrong comment at the exact line under examination
+> is a good part of why this item kept coming back — a reader checks the comment, it names a
+> production-sounding cause, and the item reopens. It now says what the guard does.
+> (`project.yml:447-450` records, as measured, that a missing iCloud entitlement makes
+> `CKContainer.init` **trap** — the process dies well before this line. That is a recorded
+> measurement in a comment, not re-run here, and it is cited as such.)
+>
+> **What would reopen this** — stated so the close has an expiry rather than being permanent by
+> omission:
+> 1. `init?` gaining an availability/account check, which would make `:731` a production path.
+> 2. `cloudSyncAvailable` becoming anything other than `true`.
+> 3. Any new `syncStatus = .off` write, or `updateSyncStatus` being passed `.off` from the
+>    controller.
+>
+> **And a trap for whoever "fixes" it anyway:** `AppModelTests.swift:476` asserts
+> `model.syncStatus == .off` for a UI-test launch and is load-bearing — it is the assertion that
+> proves an isolated launch does not start CloudKit. Making the harness stop showing `.off` breaks
+> the guard that keeps test runs out of the owner's real iCloud database.
 
 ---
 
