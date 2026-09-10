@@ -46,8 +46,13 @@ struct AboutView: View {
                 credit("Tatoeba Project",
                        license: "CC BY 2.0 FR",
                        url: "https://tatoeba.org",
-                       en: "Inspiration corpus for the 183 Practice-mode passages (most are LLM-original; see THIRD_PARTY_LICENSES.md).",
-                       zh: "Practice 模式 183 篇文章的灵感语料(大多为 LLM 原创衍生,详见 THIRD_PARTY_LICENSES.md)。")
+                       // DERIVED, not typed. This said 183 while `stats` twelve lines below
+                       // printed `PassageStore.shared.passages.count` — 233 — so one screen
+                       // contradicted itself, on the surface that carries a licence attribution.
+                       // A number in copy beside the same number computed is this repo's
+                       // signature defect at its smallest. (v1.32 §F1.)
+                       en: "Inspiration corpus for the \(PassageStore.shared.passages.count) Practice-mode passages (most are LLM-original; see THIRD_PARTY_LICENSES.md).",
+                       zh: "Practice 模式 \(PassageStore.shared.passages.count) 篇文章的灵感语料(大多为 LLM 原创衍生,详见 THIRD_PARTY_LICENSES.md)。")
                 credit("WanaKana (reference)",
                        license: "MIT",
                        url: "https://github.com/WaniKani/WanaKana",

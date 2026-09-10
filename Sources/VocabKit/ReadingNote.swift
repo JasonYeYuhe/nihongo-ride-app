@@ -58,7 +58,13 @@ public struct ReadingNote: Sendable, Equatable {
 }
 
 public enum ReadingNotes {
-    /// The note for an entry, or nil for the 96% of the corpus that needs none.
+    /// The note for an entry, or nil for the **99%** of the corpus that needs none.
+    ///
+    /// It said 96%. Measured 2026-09-10: 66 notes against 7,071 entries is **99.07%** without one.
+    /// A percentage in a doc comment is a claim about data that grows, and this corpus has grown
+    /// by thousands of entries since the number was written — so the figure is now pinned by
+    /// `ReadingNoteCoverageTests`, which recomputes it and fails when the comment stops being
+    /// true rather than when somebody happens to re-check. (v1.32 §F1.)
     public static func note(for id: String) -> ReadingNote? { all[id] }
 
     /// Whether the shipped list loaded. A missing file means every card silently loses its
