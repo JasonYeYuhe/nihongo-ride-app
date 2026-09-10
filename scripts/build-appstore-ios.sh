@@ -70,6 +70,27 @@ xcodebuild archive \
     -quiet
 echo "    ✓ $ARCHIVE"
 
+# --- Artifact gate, on the archive that was just built ------------------------
+#
+# Wired into the build path for the same reason `check_prod_schema.sh` above is: until v1.32 the
+# iOS artifact was inspected by NOTHING. `launch_gate.sh` read `Contents/Info.plist` — the macOS
+# bundle shape — so handed an iOS app it reported a harness error, and the thing that ships to the
+# iOS App Store had never been looked at.
+#
+# What it catches here is not hypothetical. An iOS build without
+# `com.apple.developer.icloud-services` traps in `CKContainer.init` on launch, for EVERY customer
+# — measured on the simulator 2026-09-10, with a paired control and the log line quoted in
+# launch_gate.sh's header. `AppModel.init` reaches that path on every un-isolated launch, so there
+# is no version of this that only some users see.
+#
+# It cannot LAUNCH the app; that needs a device, and it says so rather than printing a pass.
+APP_IN_ARCHIVE="$ARCHIVE/Products/Applications/Nihongo Ride.app"
+echo "==> [1b/2] iOS artifact gate"
+if ! "$SCRIPT_DIR/launch_gate.sh" "$APP_IN_ARCHIVE"; then
+    echo "❌ Refusing to continue: the archived iOS app failed its artifact gate."
+    exit 1
+fi
+
 if [[ "$UPLOAD" != true ]]; then
     echo "==> Skipping upload (pass --upload)"; exit 0
 fi

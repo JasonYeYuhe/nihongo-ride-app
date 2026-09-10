@@ -22,6 +22,31 @@
 #   scripts/launch_gate.sh "<archive>/Products/Applications/Nihongo Ride.app"
 #
 # It steals focus for ~20 seconds. Do not run it while somebody is using the machine.
+#
+# ── iOS (v1.32) ───────────────────────────────────────────────────────────────────────────────
+#
+# This script used to read `Contents/Info.plist` unconditionally, which is the macOS bundle shape.
+# Handed an iOS artifact it said "HARNESS ERROR: cannot read …/Contents/Info.plist" — so **the
+# artifact that ships to the iOS App Store had never been inspected by anything at all.** It now
+# reads both shapes and runs every check that does not require executing the binary.
+#
+# **The runtime half cannot run on iOS from this machine, and that is measured, not assumed.**
+# Launching an unsigned simulator build the way a CUSTOMER launches it — no `NIHONGO_UITEST`, so
+# no isolation — kills it in about one second. Measured 2026-09-10 with a paired control: the same
+# build launched WITH `NIHONGO_UITEST=1` survives, so the probe discriminates and the death is
+# real. The simulator's own log gives the reason verbatim:
+#
+#     [com.apple.cloudkit.sim:CK] Significant issue at CKContainer.m:748: In order to use
+#     CloudKit, your process must have a com.apple.developer.icloud-services entitlement.
+#
+# Which is `project.yml:447-450`'s recorded trap, on the platform it had only ever been recorded
+# for the Mac test host. So an iOS launch gate on the simulator is **structurally impossible**: the
+# path it exists to exercise needs the entitlement, and an unsigned simulator build cannot have a
+# working one. The runtime half is a DEVICE errand.
+#
+# What runs here instead is condition 1, which is the one that would have caught the worst version
+# of this: **an iOS release built without the iCloud entitlement traps on launch for every
+# customer**, exactly as measured above, and nothing checked it.
 set -uo pipefail
 
 APP="${1:-}"
@@ -31,18 +56,48 @@ LOG="${TMPDIR:-/tmp}/launchgate_stderr.log"
 [[ -n "$APP" ]] || { echo "HARNESS ERROR: usage: $0 <path to .app> [seconds]"; exit 2; }
 [[ -d "$APP" ]] || { echo "HARNESS ERROR: no app bundle at $APP"; exit 2; }
 
-PLIST="$APP/Contents/Info.plist"
+# Which bundle shape is this? macOS nests everything under Contents/; iOS is flat. Deciding by
+# what is THERE rather than by a flag, so a caller cannot tell the gate the wrong answer.
+if [[ -f "$APP/Contents/Info.plist" ]]; then
+    PLATFORM="macOS"
+    PLIST="$APP/Contents/Info.plist"
+elif [[ -f "$APP/Info.plist" ]]; then
+    PLATFORM="iOS"
+    PLIST="$APP/Info.plist"
+else
+    echo "HARNESS ERROR: $APP has no Info.plist in either the macOS (Contents/) or iOS (root)"
+    echo "               position — it is not an app bundle."
+    exit 2
+fi
+
 EXE_NAME="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$PLIST" 2>/dev/null)" || {
     echo "HARNESS ERROR: cannot read $PLIST"; exit 2; }
-EXE="$APP/Contents/MacOS/$EXE_NAME"
+if [[ "$PLATFORM" == "macOS" ]]; then
+    EXE="$APP/Contents/MacOS/$EXE_NAME"
+else
+    EXE="$APP/$EXE_NAME"
+fi
 [[ -x "$EXE" ]] || { echo "HARNESS ERROR: no executable at $EXE"; exit 2; }
 
 VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$PLIST")"
 BUILD="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$PLIST")"
 
-# Condition 1: the entitlements have to be there, or the crash path is unreachable and a
-# pass would mean nothing.
+# Condition 1: the entitlements have to be there.
+#
+# On macOS a missing entitlement means the crash path is unreachable and a pass would mean
+# nothing — a HARNESS problem. On iOS it is worse than that and it is not a harness problem at
+# all: an iOS build shipped without `com.apple.developer.icloud-services` **traps in
+# `CKContainer.init` on launch, for every customer**. Measured on the simulator 2026-09-10; the
+# log line is quoted in this file's header. So the same missing entitlement is exit 2 on macOS
+# and exit 1 — a FAILURE — on iOS.
 if ! codesign -d --entitlements - --xml "$APP" 2>/dev/null | grep -q "icloud-services"; then
+    if [[ "$PLATFORM" == "iOS" ]]; then
+        echo "FAIL: this iOS build carries no com.apple.developer.icloud-services entitlement."
+        echo "      That is not a gap in this gate — it is a launch crash for every customer:"
+        echo "      CKContainer.init traps, measured, and AppModel.init reaches it on every"
+        echo "      un-isolated launch. Do not ship this artifact."
+        exit 1
+    fi
     echo "HARNESS ERROR: this build has no CloudKit entitlement, so it cannot exercise the"
     echo "               path this gate exists for. Use the app from the signed archive."
     exit 2
@@ -57,7 +112,31 @@ else
 fi
 
 echo "gate: $VERSION ($BUILD)"
+echo "      platform: $PLATFORM"
 echo "      iCloud: $ICLOUD"
+
+# iOS stops here, and says exactly what it did and did not do rather than printing PASS.
+if [[ "$PLATFORM" == "iOS" ]]; then
+    # The embedded widget extension is part of what launches. A missing or unsigned one is a
+    # different failure from the app's own, and nothing else looks at it.
+    EXTENSIONS="$(find "$APP/PlugIns" -maxdepth 1 -name "*.appex" 2>/dev/null | wc -l | tr -d ' ')"
+    echo "      embedded app extensions: $EXTENSIONS"
+    [[ "$EXTENSIONS" -ge 1 ]] || {
+        echo "FAIL: no .appex under PlugIns/. The widget ships with this app; an artifact without"
+        echo "      it is not the product, and the widget's own snapshot writer is what feeds the"
+        echo "      home-screen view."
+        exit 1
+    }
+    echo
+    echo "CHECKED: bundle shape, executable, iCloud entitlement, embedded extension."
+    echo "NOT CHECKED — and this is a real gap, not a formality: the app was never LAUNCHED."
+    echo "  An iOS launch gate cannot run on this machine. An unsigned simulator build dies in"
+    echo "  about a second on the un-isolated path (CKContainer.init traps without the"
+    echo "  entitlement — measured 2026-09-10, with a paired control), and a signed build needs a"
+    echo "  device. The runtime half is a DEVICE errand and is recorded as owner-only."
+    exit 0
+fi
+
 echo "      launching $EXE"
 : > "$LOG"
 "$EXE" > "$LOG" 2>&1 &

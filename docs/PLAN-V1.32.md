@@ -407,6 +407,19 @@ F1 runs alongside from the start; it touches none of these files.
    * The remote (`JasonYeYuhe/nihongo-ride-app`, verified **private**) was 147 commits behind, so
      adopting CI meant pushing three weeks of history. Owner authorised it.
 4. `ta_score`'s `totalPlayerCount` — physical device, before anything is built on leaderboards.
+5. **The iOS LAUNCH test — a device errand, and newly separated from a gap that is now closed.**
+   `launch_gate.sh` was macOS-only: it read `Contents/Info.plist`, so handed an iOS artifact it
+   reported a harness error, and **the thing that ships to the iOS App Store had been inspected by
+   nothing at all**. It now reads both bundle shapes and runs every check that does not require
+   executing the binary, and it is wired into `build-appstore-ios.sh` where it can refuse a
+   release. Six self-test cases, 3/3 mutations killed.
+   *What is still owner-only is the RUNTIME half, and the reason is measured rather than assumed:*
+   an unsigned simulator build launched the way a customer launches it — no `NIHONGO_UITEST`, so no
+   isolation — dies in about a second, and the simulator's log gives the reason verbatim:
+   *"CKContainer.m:748: In order to use CloudKit, your process must have a
+   `com.apple.developer.icloud-services` entitlement."* A paired control (the same build launched
+   WITH isolation survives) proves the probe discriminates. So the path this gate exists for needs
+   the entitlement, an entitled build needs signing, and on iOS that means a **device**.
 
 ---
 

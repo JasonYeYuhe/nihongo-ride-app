@@ -150,8 +150,10 @@ run_swift_test
 for t in scripts/test_*.py; do
   run_gate "$(basename "$t")" "" python3 "$t"
 done
-# …and the shell one, which is the newest and guards the classification below.
+# …and the shell ones. Both guard a script that can REFUSE A RELEASE, which is exactly the
+# authority a gate should not have before somebody has watched it fail.
 run_gate "test_run_store_gates.sh" "" bash scripts/test_run_store_gates.sh
+run_gate "test_launch_gate.sh" "" bash scripts/test_launch_gate.sh
 
 run_gate "check_versions.py" "" python3 scripts/check_versions.py
 
@@ -207,8 +209,8 @@ printf '  FAILED:      %d\n' "${#FAILED[@]}"
 # and read exactly like a clean run — this repo's oldest defect, pointed at its own runner.
 TOTAL=$(( ${#PASSED[@]} + ${#NOCOVERAGE[@]} + ${#FAILED[@]} + ${#VACUOUS[@]} ))
 printf '  gates run:   %d\n' "$TOTAL"
-FLOOR=8
-if [ -n "$HEADLESS" ]; then FLOOR=7; fi
+FLOOR=9
+if [ -n "$HEADLESS" ]; then FLOOR=8; fi
 if [ "$TOTAL" -lt "$FLOOR" ]; then
   echo
   echo "  ❌ only $TOTAL gate(s) ran. This script expects at least $FLOOR; a glob that matched nothing"
