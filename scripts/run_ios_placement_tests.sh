@@ -18,8 +18,9 @@
 #
 # WHAT IT RUNS, and what it still does not (v1.32 §D5)
 # ----------------------------------------------------
-# `PaidRouteRowTests` (8) plus, since v1.32, `StumbledWordsFlowTests` (1) and
-# `StoreScreenshotTests` (1) — the two orphans that need no second destination.
+# `PaidRouteRowTests` (8) plus, since v1.32, `StumbledWordsFlowTests` (1). `StoreScreenshotTests`
+# is opt-in behind `--with-screenshots` because it skips by default, and a skip line in a gate's
+# output reads like a test that ran.
 #
 # `TouchFlowTests` (3) is still orphaned ON PURPOSE. Its own header says it needs an **iPad**
 # simulator, and running it on the iPhone clone this script uses would defeat its purpose
@@ -83,6 +84,26 @@ xcodegen generate >/dev/null
 SIM_NAME="${SIM_NAME:-iPhone 17 Pro}"
 echo "==> simulator destination: $SIM_NAME"
 
+# --- The screenshot walk, on demand -------------------------------------------
+#
+# `StoreScreenshotTests` throws `XCTSkip` unless `NIHONGO_STORE_SHOTS` is set, so putting it in
+# the default invocation buys a SKIP LINE and nothing else — and a skip line in a gate's output is
+# worse than absence, because it reads like a test that ran. (`run_store_gates.sh` exists entirely
+# because of that distinction.) So it is opt-in:
+#
+#   scripts/run_ios_placement_tests.sh --with-screenshots
+#
+# `TEST_RUNNER_` is the prefix `xcodebuild` strips when handing an environment variable to the
+# XCUITest runner process, which is where the test's `ProcessInfo` reads it. Measured 2026-09-10:
+# passing it as a command-line BUILD SETTING does not work — the test still skips. It has to be an
+# environment variable of the xcodebuild process itself.
+SHOT_TESTING=""
+if [ "${1:-}" = "--with-screenshots" ]; then
+  SHOT_TESTING="-only-testing:NihongoRideiOSUITests/StoreScreenshotTests"
+  export TEST_RUNNER_NIHONGO_STORE_SHOTS=1
+  echo "==> including the store screenshot walk (~76 s; attachments land in the .xcresult)"
+fi
+
 # --- Preconditions, ASSERTED rather than assumed (v1.32 §D5) ------------------
 #
 # Everything below was previously a property this script relied on and never checked. The
@@ -136,32 +157,32 @@ KB_GLOBAL="$(defaults read com.apple.iphonesimulator ConnectHardwareKeyboard 2>/
   off (Simulator ▸ I/O ▸ Keyboard ▸ Connect Hardware Keyboard, or):
     defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false"
 
-# 4. There must be a live, unlocked GUI session. XCUITest drives a real window server; measured
-#    2026-08-30, with the display asleep the suite builds cleanly, touches the .xctest bundle and
-#    then does NOTHING at 0% CPU — four consecutive runs, always the same point — while `simctl`
-#    reports the device booted throughout. It looks like a hang, not a failure.
+# 4. `caffeinate` must be present, because it — and NOT a human at the keyboard — is what makes
+#    an unattended run work.
 #
-#    The probe is `IOConsoleLocked`, which is the one STATE-2026-08-18 and CLAUDE.md both use and
-#    which answers on this hardware. `pmset -g powerstate IODisplayWrangler` was tried first and
-#    is WORTHLESS here: it prints "Internal failure: Failed to get power state information" on
-#    Apple Silicon, so the grep matched nothing and the check silently passed. A precondition that
-#    cannot fail is the thing this whole preamble exists to stop, so:
-CONSOLE="$(ioreg -n Root -d1 -a 2>/dev/null | grep -A1 IOConsoleLocked | tail -1 | tr -d '[:space:]')"
-case "$CONSOLE" in
-  "<false/>") : ;;   # unlocked — proceed
-  "<true/>")
-    harness_error "the console is LOCKED. XCUITest needs a live window-server session: it builds,
-  touches the .xctest bundle and then sits at 0% CPU with no diagnostic — measured, four runs in a
-  row. Unlock the screen and re-run. (This is NOT the codesign keychain trap CLAUDE.md records,
-  though the same lock causes both.)" ;;
-  *)
-    harness_error "could not read IOConsoleLocked (got '${CONSOLE:-nothing}'). Refusing rather
-  than assuming: a precondition that cannot determine its answer must not report the good one.
-  The first version of this check used \`pmset -g powerstate IODisplayWrangler\`, which fails on
-  Apple Silicon and therefore passed every time." ;;
-esac
+#    MEASURED 2026-09-10, and it refuted the check that used to be here. This script briefly
+#    refused to start with the console locked, on the theory that XCUITest needs a live GUI
+#    session. It does not. With `IOConsoleLocked = true` AND `CGDisplayIsAsleep = true` — screen
+#    locked, display off, nobody at the machine — the full suite ran and passed: 10 tests, 1
+#    skipped, 0 failures, 104 s.
+#
+#    So STATE-2026-08-18's stall entry is about DISPLAY SLEEP WITHOUT `caffeinate`, and its own
+#    closing line already said so: *"`run_ios_placement_tests.sh` and `run_store_gates.sh` now hold
+#    the display awake themselves, so the trap cannot recur through them."* The mitigation was
+#    already in place and I re-derived the hazard as though it were not — the same conflation of
+#    two nearby states (console lock vs display sleep) that CLAUDE.md warns about for signing.
+#
+#    A check that blocked every locked-screen run would have cost far more than it saved: an
+#    agent-driven repo does most of its work with nobody at the keyboard. So what is asserted is
+#    the thing that actually does the work.
+command -v caffeinate > /dev/null 2>&1 || harness_error "caffeinate is not on PATH. It is what
+  keeps this suite alive with the display asleep — measured 2026-08-30, four consecutive runs
+  stalled at the build→test handoff at 0% CPU without it, with no diagnostic at all."
+grep -q "caffeinate -d -i xcodebuild test" "${BASH_SOURCE[0]}" || harness_error "the xcodebuild
+  invocation is no longer wrapped in \`caffeinate -d -i\`. That wrapper is the only thing standing
+  between an unattended run and a silent, indefinite stall."
 
-echo "==> preconditions ok: $SIM_NAME ($SIM_UDID), exclusive, software keyboard, display awake"
+echo "==> preconditions ok: $SIM_NAME ($SIM_UDID), exclusive, software keyboard, caffeinate present"
 
 caffeinate -d -i xcodebuild test \
   -project NihongoRide.xcodeproj \
@@ -169,7 +190,7 @@ caffeinate -d -i xcodebuild test \
   -destination "platform=iOS Simulator,name=$SIM_NAME" \
   -only-testing:NihongoRideiOSUITests/PaidRouteRowTests \
   -only-testing:NihongoRideiOSUITests/StumbledWordsFlowTests \
-  -only-testing:NihongoRideiOSUITests/StoreScreenshotTests \
+  $SHOT_TESTING \
   -derivedDataPath "$WORK/DerivedData" \
   -clonedSourcePackagesDirPath "$WORK/SourcePackages" \
   CODE_SIGNING_ALLOWED=NO

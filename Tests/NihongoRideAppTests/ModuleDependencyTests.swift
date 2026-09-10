@@ -80,6 +80,125 @@ struct ModuleDependencyTests {
         }
     }
 
+    // MARK: What a TEST target imports vs what it declares
+
+    /// Modules that come from the platform, not from this package.
+    static let platformModules: Set<String> = [
+        "Testing", "Foundation", "XCTest", "SwiftUI", "CloudKit", "UIKit", "AppKit", "os",
+        "Combine", "UserNotifications", "WidgetKit", "StoreKit", "AVFoundation", "Observation",
+    ]
+
+    /// Every `.testTarget` and the dependency list it declares.
+    static func testTargetDependencies() throws -> [String: Set<String>] {
+        let text = try String(contentsOf: repo.appendingPathComponent("Package.swift"), encoding: .utf8)
+        var out: [String: Set<String>] = [:]
+        var rest = Substring(text)
+        while let marker = rest.range(of: ".testTarget(name: \"") {
+            let after = rest[marker.upperBound...]
+            guard let closeQuote = after.firstIndex(of: "\"") else { break }
+            let name = String(after[..<closeQuote])
+            guard let depsOpen = after.range(of: "dependencies: ["),
+                  let depsClose = after[depsOpen.upperBound...].firstIndex(of: "]")
+            else { rest = after; continue }
+            let body = after[depsOpen.upperBound..<depsClose]
+            var deps: Set<String> = []
+            var scan = body
+            while let q = scan.firstIndex(of: "\"") {
+                let tail = scan[scan.index(after: q)...]
+                guard let end = tail.firstIndex(of: "\"") else { break }
+                deps.insert(String(tail[..<end]))
+                scan = tail[tail.index(after: end)...]
+            }
+            out[name] = deps
+            rest = after
+        }
+        return out
+    }
+
+    /// **A test target must DECLARE every module it imports, and `swift test` on this machine
+    /// cannot tell you when it does not.**
+    ///
+    /// Found by CI's first run, not by any local one. `ConjugationReviewKitTests` imported
+    /// `GameCore` while `Package.swift` declared only `ConjugationReviewKit`. On a machine with a
+    /// warm `.build` every module is already emitted and the import resolves; on a fresh checkout
+    /// the test target is compiled before `GameCore` exists and the build dies with
+    /// `error: no such module 'GameCore'`. Six targets, twenty-two undeclared imports.
+    ///
+    /// So the outcome depended on BUILD ORDER — the same shape as a test that passes because of
+    /// state the previous test left behind. The only environment that can observe it is one with
+    /// no `.build`, and this repo has not had one since those targets were written. A source scan
+    /// has no such blind spot, which is why the rule lives here rather than in a hosted runner.
+    @Test("every test target declares the modules its files import")
+    func testTargetsDeclareWhatTheyImport() throws {
+        let declared = try Self.testTargetDependencies()
+        #expect(declared.count >= 10,
+                Comment(rawValue: "parsed only \(declared.count) test targets — the scan is misdirected"))
+
+        var offenders: [String] = []
+        var filesRead = 0
+        for (target, deps) in declared.sorted(by: { $0.key < $1.key }) {
+            let dir = Self.repo.appendingPathComponent("Tests/\(target)")
+            guard let files = try? FileManager.default.contentsOfDirectory(atPath: dir.path) else { continue }
+            for file in files where file.hasSuffix(".swift") {
+                filesRead += 1
+                let source = try String(contentsOf: dir.appendingPathComponent(file), encoding: .utf8)
+                for line in source.components(separatedBy: "\n") {
+                    let trimmed = line.trimmingCharacters(in: .whitespaces)
+                    guard trimmed.hasPrefix("import ") || trimmed.hasPrefix("@testable import ") else { continue }
+                    let module = String(trimmed
+                        .replacingOccurrences(of: "@testable ", with: "")
+                        .dropFirst("import ".count))
+                        .trimmingCharacters(in: .whitespaces)
+                    guard !module.isEmpty, !Self.platformModules.contains(module),
+                          !deps.contains(module) else { continue }
+                    offenders.append("\(target)/\(file) imports \(module), which \(target) does not declare")
+                }
+            }
+        }
+        #expect(filesRead >= 40, Comment(rawValue: "only \(filesRead) test files read — the scan is misdirected"))
+        #expect(offenders.isEmpty, Comment(rawValue:
+            "\(offenders.count) undeclared import(s). These compile on a warm .build and fail on a "
+            + "fresh checkout: \(offenders.prefix(8))"))
+    }
+
+    /// `IsolatedLaunch.swift` opens with *"Every UI-test launch goes through here, and none of
+    /// them may call `app.launch()` directly."* Nothing enforced that.
+    ///
+    /// The stake is the one that file names: those tests complete REAL runs, and an unisolated
+    /// launch pushes a phantom ride into the owner's real CloudKit database, which cannot be
+    /// cleaned up from the simulator that created it. v1.24's App Group incident is the same shape
+    /// with a smaller blast radius, and it happened.
+    ///
+    /// A source scan rather than a behavioural test, because the iOS UI target is not built by
+    /// `swift test` at all — so this is the only instrument that can see it from here.
+    @Test("no iOS UI test launches the app unisolated")
+    func everyUITestLaunchIsIsolated() throws {
+        let dir = Self.repo.appendingPathComponent("Tests/NihongoRideiOSUITests")
+        let files = try FileManager.default.contentsOfDirectory(atPath: dir.path)
+            .filter { $0.hasSuffix(".swift") }
+        #expect(files.count >= 4, Comment(rawValue: "only \(files.count) UI test files — the scan is misdirected"))
+
+        var bare: [String] = []
+        var isolated = 0
+        for file in files where file != "IsolatedLaunch.swift" {
+            let source = try String(contentsOf: dir.appendingPathComponent(file), encoding: .utf8)
+            for (index, line) in source.components(separatedBy: "\n").enumerated() {
+                let trimmed = line.trimmingCharacters(in: .whitespaces)
+                guard !trimmed.hasPrefix("//"), !trimmed.hasPrefix("///") else { continue }
+                if trimmed.contains("launchIsolated(") { isolated += 1 }
+                if trimmed.contains(".launch()") {
+                    bare.append("\(file):\(index + 1) \(trimmed)")
+                }
+            }
+        }
+        // The floor: a scan that found no launches at all would report clean.
+        #expect(isolated >= 8, Comment(rawValue:
+            "only \(isolated) isolated launch(es) found — the scan is not reading the tests"))
+        #expect(bare.isEmpty, Comment(rawValue:
+            "\(bare.count) unisolated launch(es): \(bare). An unisolated UI-test launch completes a "
+            + "REAL run and pushes a phantom ride into the owner's real CloudKit database."))
+    }
+
     @Test("…and the two Xcode app targets agree with each other")
     func theTwoPlatformsAgree() throws {
         let project = try Self.projectDependencies()
