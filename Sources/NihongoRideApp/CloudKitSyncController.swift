@@ -710,6 +710,20 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
             duration: record["duration"] as? Double ?? 0)
     }
 
+    /// ⚠️ `deviceID` is WRITTEN and never read, and that is deliberate rather than an oversight —
+    /// recorded here because the field-drop sweep in `CloudKitCodecTests` found it as the ONE
+    /// survivor of forty, and an unexplained survivor is indistinguishable from a bug.
+    ///
+    /// The device a slot belongs to is the record's IDENTITY, not one of its values: the record
+    /// name is `Odometer:<deviceID>`, and both decode call sites recover it with
+    /// `parse(record.recordID.recordName)`. A body field cannot be the key — the sync engine
+    /// addresses records by id — so reading it back would mean trusting a copy over the original,
+    /// and a record whose two disagreed would merge another device's odometer into this one's
+    /// slot. It is written for the CloudKit Console, where a record browsed by hand shows only
+    /// its fields.
+    ///
+    /// `theOdometerDeviceComesFromTheRecordName` pins the decode side, so a later change that
+    /// starts trusting the field fails rather than quietly becoming authoritative.
     nonisolated static func fill(_ record: CKRecord, from slot: OdometerLog.Slot, deviceID: String) {
         record["deviceID"] = deviceID
         record["words"] = slot.words
