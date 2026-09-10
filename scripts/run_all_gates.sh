@@ -51,6 +51,23 @@
 
 set -uo pipefail
 
+# --headless        skip every gate that needs xcodebuild, a simulator or a GUI session.
+#                   This is what CI runs, and it runs THIS script rather than a second copy of
+#                   the gate list — one rule written twice will drift, and this repo has three
+#                   recorded instances of exactly that.
+# --vocab-base REF  what check_vocab_diff.py compares against. Locally the default (HEAD, i.e.
+#                   the working tree) is right. On CI it is WRONG and silently so: a clean
+#                   checkout compares HEAD with itself and is green whatever the commit changed.
+HEADLESS=""
+VOCAB_BASE=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --headless) HEADLESS=1; shift ;;
+    --vocab-base) VOCAB_BASE="$2"; shift 2 ;;
+    *) echo "unknown argument: $1" >&2; exit 2 ;;
+  esac
+done
+
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO"
 
@@ -133,7 +150,17 @@ run_gate "check_versions.py" "" python3 scripts/check_versions.py
 # (§D6's own text specifies `check_vocab_diff.py --manifest`. That is not a valid invocation —
 #  `--manifest` takes a path to a JSON declaring a reviewed structural change. The runner found
 #  it on the first run, by exit 2.)
-if [ -z "$(git diff --name-only HEAD -- Sources/VocabKit/Resources)" ]; then
+if [ -n "$VOCAB_BASE" ]; then
+  # An explicit base was given, so there IS something to compare. Refuse a base that is not a
+  # real commit rather than letting git's error read as "nothing changed".
+  if ! git rev-parse --verify --quiet "$VOCAB_BASE^{commit}" > /dev/null; then
+    printf '  %-34s %s\n' "check_vocab_diff.py" "FAILED (base '$VOCAB_BASE' is not a commit)"
+    FAILED+=("check_vocab_diff.py — base '$VOCAB_BASE' does not resolve; a shallow checkout does this")
+  else
+    run_gate "check_vocab_diff.py --base $VOCAB_BASE" "" \
+      python3 scripts/check_vocab_diff.py --base "$VOCAB_BASE"
+  fi
+elif [ -z "$(git diff --name-only HEAD -- Sources/VocabKit/Resources)" ]; then
   printf '  %-34s %s\n' "check_vocab_diff.py" "vacuous (no corpus change in the working tree)"
   VACUOUS+=("check_vocab_diff.py")
 else
@@ -143,7 +170,11 @@ fi
 # 3 = "the StoreKit gates ran and SKIPPED" — its documented no-coverage state, and the state this
 # repo has been in since 2026-08-30. It is reported, never absorbed. 4 (harness error) and 65 (a
 # gate genuinely failed) are failures and are NOT on the tolerated list.
-run_gate "run_store_gates.sh" "3" bash scripts/run_store_gates.sh
+if [ -n "$HEADLESS" ]; then
+  printf '  %-34s %s\n' "run_store_gates.sh" "skipped (--headless: needs xcodebuild)"
+else
+  run_gate "run_store_gates.sh" "3" bash scripts/run_store_gates.sh
+fi
 
 echo
 echo "──────────────────────────────────────────────────────────────"
@@ -161,9 +192,11 @@ printf '  FAILED:      %d\n' "${#FAILED[@]}"
 # and read exactly like a clean run — this repo's oldest defect, pointed at its own runner.
 TOTAL=$(( ${#PASSED[@]} + ${#NOCOVERAGE[@]} + ${#FAILED[@]} + ${#VACUOUS[@]} ))
 printf '  gates run:   %d\n' "$TOTAL"
-if [ "$TOTAL" -lt 8 ]; then
+FLOOR=8
+if [ -n "$HEADLESS" ]; then FLOOR=7; fi
+if [ "$TOTAL" -lt "$FLOOR" ]; then
   echo
-  echo "  ❌ only $TOTAL gate(s) ran. This script expects at least 8; a glob that matched nothing"
+  echo "  ❌ only $TOTAL gate(s) ran. This script expects at least $FLOOR; a glob that matched nothing"
   echo "     would otherwise print a clean summary. Fix the runner before believing it."
   exit 1
 fi

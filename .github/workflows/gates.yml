@@ -1,0 +1,106 @@
+
+# The gates that need no device, no account and no signature.
+#
+# PHASE 1 OF TWO, and the split is the decision, not a limitation.
+#
+# Owner decision 2026-09-10 (PLAN-V1.32 §H item 3), taken after second opinions from Gemini 3.7
+# Flash and Codex, which converged on the same hybrid shape from different starting points:
+# headless logic and data gates run here; anything needing a booted simulator, the login keychain,
+# an Apple credential or a signed .app stays local, at the release boundary, where those things
+# exist.
+#
+# Phase 2 — the iOS placement XCUITests — is deliberately NOT here yet. Codex argued for including
+# them now, and the argument is good: hosted isolation is exactly what fixes the "several agent
+# sessions fight over one simulator and manufacture failures shaped like real defects" problem this
+# repo has measured. The reason to wait is narrower than a disagreement about value. Those tests
+# assert HIT REGIONS, so the simulator model is part of the instrument — `run_ios_placement_tests.sh`
+# pins iPhone 17 Pro and says why. A runner image that moves to a different model turns the gate
+# red for an environmental reason, and a gate that goes red without a defect teaches everyone to
+# ignore red. So: phase 2 lands once this workflow has been green for a couple of weeks AND the
+# runner image is confirmed to carry that exact device.
+#
+# WHY IT CALLS run_all_gates.sh RATHER THAN LISTING THE GATES
+# -----------------------------------------------------------
+# One rule written twice will drift, and this repo has three recorded instances where the Swift
+# test and the Python gate disagreed and the copy was the stale one. So the gate list lives in ONE
+# file and CI passes `--headless`. Adding a gate there adds it here.
+
+name: gates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  # One run per ref. Two concurrent runs of the same branch buy nothing and the vocabulary
+  # self-test creates git worktrees, which do not want company.
+  group: gates-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  headless:
+    # ARM64. `swift test` here builds for arm64-apple-macosx26.0 and the repo's goldens are
+    # calibrated on that toolchain.
+    runs-on: macos-26
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # FULL history, and this is not caution — it is required twice over:
+          #
+          #  * `scripts/test_check_vocab_diff.py` replays four specific historical commits
+          #    (f0762d4, 8823a3a, fea5435, 78eeadb) AND their parents, through `git worktree add`.
+          #    At the default depth of 1 those commits do not exist and the self-test cannot run.
+          #  * `check_vocab_diff.py` compares against a BASE. With a shallow clone the base is not
+          #    fetched, and a gate that cannot resolve its base must fail rather than pass.
+          fetch-depth: 0
+
+      # The toolchain is asserted, not assumed. The road goldens, the ordering determinism note in
+      # RoadDistanceTests and the corpus scans are all calibrated against a specific Swift; running
+      # them on a different one and reading the result as a pass is the wrong-population error this
+      # repo keeps paying for. Print it, and fail loudly if the image has moved.
+      - name: Assert the toolchain
+        run: |
+          set -euo pipefail
+          echo "::group::versions"
+          swift --version
+          xcodebuild -version
+          echo "::endgroup::"
+          swift --version 2>&1 | grep -q "Apple Swift version 6\." || {
+            echo "::error::the runner image's Swift is not 6.x — this repo's goldens are calibrated on 6.3.3"
+            exit 1
+          }
+
+      # `check_vocab_diff.py` is a DIFF guard, and its default base is HEAD. On a clean checkout
+      # that compares HEAD with itself and is green no matter what the commit changed — a null
+      # result from an instrument that had nothing to look at, which is this repo's oldest trap
+      # arriving in CI. So the base is computed explicitly and the run fails if it does not
+      # resolve.
+      - name: Resolve the vocabulary comparison base
+        id: base
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE="${{ github.event.before }}"
+          fi
+          # A first push to a new branch reports an all-zero "before". Fall back to the parent
+          # commit, which is a real base, rather than to HEAD, which is not a comparison at all.
+          case "$BASE" in
+            ""|0000000000000000000000000000000000000000) BASE="$(git rev-parse HEAD~1)" ;;
+          esac
+          git rev-parse --verify "$BASE^{commit}" > /dev/null
+          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+          echo "comparing the corpus against $BASE"
+
+      # ONE list of gates, shared with the local runner. Its own exit code is the verdict: it
+      # takes each gate's status from the process that produced it (never through a pipe), refuses
+      # to call a no-coverage or vacuous gate a pass, and fails if fewer gates ran than it expects
+      # — a glob that matched nothing would otherwise print a clean summary.
+      - name: Run the headless gates
+        run: bash scripts/run_all_gates.sh --headless --vocab-base "${{ steps.base.outputs.base }}"

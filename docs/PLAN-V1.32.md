@@ -350,7 +350,32 @@ F1 runs alongside from the start; it touches none of these files.
 1. **§K's day-0 known-positive purchase** — see the box above. Late.
 2. **§L's three manual gates** — signed-out account · Family Sharing non-inheritance · macOS ↔ iOS
    cross-platform restore. The cheap window closed when both platforms went live.
-3. **CI as a service** — whether to adopt it. §D6 makes the case; the decision is not the plan's.
+3. ~~**CI as a service** — whether to adopt it.~~ **DECIDED 2026-09-10: adopt, in two phases.**
+   Second opinions taken from Gemini 3.7 Flash and Codex, read-only against the tree; they
+   converged on the same hybrid from different starting points. Phase 1 shipped:
+   `.github/workflows/gates.yml` runs `scripts/run_all_gates.sh --headless` on `macos-26`.
+   * **Why the split is the decision rather than a limitation.** Headless logic and data gates run
+     hosted; anything needing a booted simulator, the login keychain, an Apple credential or a
+     signed `.app` stays local at the release boundary, where those things exist. Neither
+     consultant argued for moving signing or production credentials into CI.
+   * **Phase 2 (the iOS placement XCUITests) is deferred, and the reason is narrow.** Codex argued
+     for including them now, and the argument is good — hosted isolation is exactly what fixes the
+     shared-simulator collisions this repo has measured. But those tests assert HIT REGIONS, so the
+     simulator model is part of the instrument, and a runner image on a different device turns the
+     gate red for an environmental reason. A gate that goes red without a defect teaches everyone
+     to ignore red. Phase 2 lands once phase 1 has been green for a couple of weeks and the image
+     is confirmed to carry an iPhone 17 Pro.
+   * **One trap the consult caught that a generic answer would not have.** `check_vocab_diff.py`
+     defaults to `--base HEAD`. On a clean CI checkout that compares HEAD with itself and is green
+     whatever the commit changed — this repo's oldest defect, arriving in CI. The workflow computes
+     an explicit base and fails if it does not resolve; `run_all_gates.sh` gained `--vocab-base`
+     and refuses a base that is not a commit. `fetch-depth: 0` is likewise required rather than
+     cautious: `test_check_vocab_diff.py` replays four historical commits and their parents.
+   * **`.claude/` was not in `.gitignore`** — found while checking what a checkout would carry.
+     Nothing under it was tracked, but nothing stopped it while several sessions ran `git add -A`.
+     Fixed in the same pass.
+   * The remote (`JasonYeYuhe/nihongo-ride-app`, verified **private**) was 147 commits behind, so
+     adopting CI meant pushing three weeks of history. Owner authorised it.
 4. `ta_score`'s `totalPlayerCount` — physical device, before anything is built on leaderboards.
 
 ---
