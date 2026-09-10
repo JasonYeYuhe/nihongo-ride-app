@@ -18,9 +18,13 @@
 #
 # WHAT IT RUNS, and what it still does not (v1.32 §D5)
 # ----------------------------------------------------
-# `PaidRouteRowTests` (8) plus, since v1.32, `StumbledWordsFlowTests` (1). `StoreScreenshotTests`
-# is opt-in behind `--with-screenshots` because it skips by default, and a skip line in a gate's
-# output reads like a test that ran.
+# TWO invocations, because the target holds suites about two different devices:
+#   iPhone 17 Pro   PaidRouteRowTests (8) + StumbledWordsFlowTests (1)
+#   iPad Pro 11"    TouchFlowTests (3) — App Review rejection 2.1(a), the touch-only path
+# `StoreScreenshotTests` (1) is opt-in behind `--with-screenshots`: it skips by default, and a
+# skip line in a gate's output reads like a test that ran.
+#
+# That is all 13 methods in the target. Before v1.32 §D5 the script ran 8 of them.
 #
 # `TouchFlowTests` (3) is still orphaned ON PURPOSE. Its own header says it needs an **iPad**
 # simulator, and running it on the iPhone clone this script uses would defeat its purpose
@@ -184,6 +188,36 @@ grep -q "caffeinate -d -i xcodebuild test" "${BASH_SOURCE[0]}" || harness_error 
 
 echo "==> preconditions ok: $SIM_NAME ($SIM_UDID), exclusive, software keyboard, caffeinate present"
 
+# TWO DESTINATIONS, because one of these suites is about a device this repo does not otherwise
+# test on. `TouchFlowTests` reproduces App Review rejection 2.1(a) — "stuck on the first word
+# screen" on a touch-only **iPad**, where the software keyboard never appeared — and its own
+# header says so. Running it on the iPhone clone would defeat its purpose entirely, which is why
+# it stayed orphaned rather than being folded into the invocation above.
+#
+# Overridable for the same reason `SIM_NAME` is, and pinned for a weaker one: these assert that
+# things are TAPPABLE and that the keyboard appears, not where a hit region lands, so the exact
+# iPad matters less here than the iPhone model does above. Pinned anyway, so a run reports which
+# device answered.
+IPAD_NAME="${IPAD_NAME:-iPad Pro 11-inch (M5)}"
+IPAD_UDID="$(printf '%s' "$DEVICE_JSON" | python3 -c "
+import json, sys
+name = sys.argv[1]
+data = json.load(sys.stdin)
+for runtime, devices in data['devices'].items():
+    for d in devices:
+        if d.get('name') == name and d.get('isAvailable'):
+            print(d['udid']); raise SystemExit
+" "$IPAD_NAME" 2>/dev/null || true)"
+[ -n "$IPAD_UDID" ] || harness_error "no available simulator named '$IPAD_NAME'. TouchFlowTests
+  needs an iPad — that is the geometry App Review rejected. Create one with:
+    xcrun simctl create \"$IPAD_NAME\" \"$IPAD_NAME\""
+
+echo "==> iPad destination: $IPAD_NAME ($IPAD_UDID)"
+
+# Statuses are captured PER INVOCATION and combined at the end. No `&&` — it swallows the first
+# failure — and no pipes, which replace the exit code of the command before them. Both traps are
+# measured in this repo, the second on the gate that decides whether a release ships.
+set +e
 caffeinate -d -i xcodebuild test \
   -project NihongoRide.xcodeproj \
   -scheme NihongoRideiOS \
@@ -194,3 +228,26 @@ caffeinate -d -i xcodebuild test \
   -derivedDataPath "$WORK/DerivedData" \
   -clonedSourcePackagesDirPath "$WORK/SourcePackages" \
   CODE_SIGNING_ALLOWED=NO
+IPHONE_STATUS=$?
+
+echo
+echo "==> iPad suite (App Review 2.1(a): the touch-only path)"
+caffeinate -d -i xcodebuild test \
+  -project NihongoRide.xcodeproj \
+  -scheme NihongoRideiOS \
+  -destination "platform=iOS Simulator,name=$IPAD_NAME" \
+  -only-testing:NihongoRideiOSUITests/TouchFlowTests \
+  -derivedDataPath "$WORK/DerivedData" \
+  -clonedSourcePackagesDirPath "$WORK/SourcePackages" \
+  CODE_SIGNING_ALLOWED=NO
+IPAD_STATUS=$?
+set -e
+
+echo
+echo "──────────────────────────────────────────────────────────────"
+printf '  %-28s %s\n' "$SIM_NAME" "$([ "$IPHONE_STATUS" -eq 0 ] && echo ok || echo "FAILED (exit $IPHONE_STATUS)")"
+printf '  %-28s %s\n' "$IPAD_NAME" "$([ "$IPAD_STATUS" -eq 0 ] && echo ok || echo "FAILED (exit $IPAD_STATUS)")"
+# Report the FIRST non-zero rather than the last, so a passing second run cannot mask a failing
+# first one — which is what a bare `exit $?` after two commands does.
+if [ "$IPHONE_STATUS" -ne 0 ]; then exit "$IPHONE_STATUS"; fi
+exit "$IPAD_STATUS"

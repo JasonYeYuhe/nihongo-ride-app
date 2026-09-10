@@ -294,6 +294,36 @@ of them.
 
 ---
 
+> ### ✅ §D5 DONE 2026-09-10 — all 13 methods run, and three of the plan's claims were wrong
+>
+> The script ran 8 of the target's 13 methods. It now runs all of them, across **two destinations**,
+> and every one passes: iPhone 9/9 (`PaidRouteRowTests` + `StumbledWordsFlowTests`), iPad 3/3
+> (`TouchFlowTests`), plus `StoreScreenshotTests` opt-in behind `--with-screenshots`.
+>
+> **1. "They have never run" is false.** `f311520` (2026-08-25) records *"Full iOS UI target:
+> 4 passed, 1 skipped, exit 0"*. The drift window is 26 app-layer commits, not six releases — the
+> difference between an audit and a diff, and why this took hours rather than the days §D5 sized.
+>
+> **2. The predicted iPad regression does not exist.** The survey expected `c66e338`'s
+> GeometryReader+ScrollView on the non-phone branch to break `TouchFlowTests`. It passed 3/3 on
+> the first honest run. The adversarial verifier had already said why: the iPhone branch has had a
+> ScrollView the whole time, so the mechanism fails its own negative control.
+>
+> **3. Two real breakages WERE in the window, and neither was the one predicted.**
+> `StumbledWordsFlowTests` indexed `element(boundBy: 2)` into whichever of five conditional
+> segmented controls happened to render; `StoreScreenshotTests` asked for a button INSIDE a button,
+> left over from when the mode row was a segmented control — eleven lines under the comment block
+> that diagnoses that very change and says *"a fix applied to one call site is not a fix"*. Both
+> fixed and both now proven by execution, not by reading: the screenshot walk's log carries
+> `Tap "Journey" Button`.
+>
+> **4. And the harness gained the preconditions §D5 asked for — minus one that was wrong.** Device
+> exists, nobody else is driving it, software keyboard, `caffeinate` present and still wrapping the
+> run. A fifth check refused to start with the console locked; **measured, that is not a hazard** —
+> the suite passes with the screen locked AND the display asleep, because `caffeinate` is what does
+> the work. Blocking every locked-screen run would have disabled the gate for its normal operating
+> condition in an agent-driven repo. Recorded in `STATE-2026-08-18.md`.
+
 ## §E Carried, honestly bounded
 
 * **Accessibility** (v1.26 §E). **Answer the comparator question before scheduling the work** —
