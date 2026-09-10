@@ -342,6 +342,20 @@ final class AppModel {
     /// must never flow into the vocab journey due-queue. Owned here by AppModel (GameCore
     /// stays ignorant of it); written only via a conjugation drill's `onOutcome` sink.
     private(set) var conjugationReviewStore: ConjugationReviewStore
+
+    /// What the learner keeps getting refused on, across rides (v1.32 §F2).
+    ///
+    /// The app has produced this data every run since v1.18 and thrown it away every time:
+    /// `GameSummary.mistakes` says *"in memory with the summary; never persisted"*. So it could
+    /// tell you what you missed in THIS run and had never once been able to tell you what you keep
+    /// missing — the one thing a person cannot see about themselves and software can.
+    ///
+    /// **Local, and it stays local.** `PLAN-WINDOW`'s constraint list forbids collected telemetry
+    /// and permits counting; this counts, in a file beside the review stores, and it must never
+    /// become a reason to change `Data Not Collected`. It is not synced either: the ledger is
+    /// derived from one device's typing and merging two devices' habits would average away the
+    /// thing it exists to show.
+    private(set) var stumbleLedger: StumbleLedger
     /// The learner's own texts. Local only — see `CustomText` for why it is not synced.
     private(set) var customTexts: CustomTextStore
     /// Stage 1's one purchase, and the only thing in the app that knows whether it exists.
@@ -407,6 +421,7 @@ final class AppModel {
 
     private let storeURL: URL
     private let conjugationReviewURL: URL
+    private let stumbleLedgerURL: URL
     private let customTextsURL: URL
     private let journalURL: URL
     private let odometerURL: URL
@@ -428,6 +443,7 @@ final class AppModel {
         self.vocab = vocab
         storeURL = Self.supportFileURL("review.json")
         conjugationReviewURL = Self.supportFileURL("conjugation-review.json")
+        stumbleLedgerURL = Self.supportFileURL("stumble-ledger.json")
         customTextsURL = Self.supportFileURL("custom-texts.json")
         journalURL = Self.supportFileURL("history.json")
         odometerURL = Self.supportFileURL("odometer.json")
@@ -440,6 +456,11 @@ final class AppModel {
         reviewStore = reviewLoad.store
         let conjLoad = ConjugationReviewStore.loadReporting(from: conjugationReviewURL)
         conjugationReviewStore = conjLoad.store
+        // No `loadReporting` shape: a corrupt ledger degrades to an empty one and the learner
+        // starts accumulating again. That is a different trade from the review stores, and it is
+        // deliberate — this file is derived data with no schedule behind it, so quarantining it
+        // and refusing to write would cost more than it protects.
+        stumbleLedger = StumbleLedger.load(from: stumbleLedgerURL)
         let customLoad = CustomTextStore.loadReporting(from: customTextsURL)
         customTexts = customLoad.store
         let journalLoad = RideJournal.loadReporting(from: journalURL)
@@ -1174,6 +1195,49 @@ final class AppModel {
 
     /// Starts a drill on the diagnosed pattern. Same journey loop, same SRS rules as any
     /// list run — these are the learner's own words, so their progress still counts.
+    /// Folds one finished run's refusals into the lifetime ledger (v1.32 §F2).
+    ///
+    /// **Once per run**, which is what makes `StumbleLedger.Entry.runs` mean what it says — the
+    /// field that separates a habit from one bad minute. Calling it per event would inflate the
+    /// only number the feature rests on.
+    ///
+    /// Skipped while capturing, like every other writer here: a headless render plays fake runs,
+    /// and its invented mistakes must not become the owner's typing history.
+    /// `internal`, not `private`, and only that: `@testable` promotes internal and cannot reach
+    /// private, and this is the function the whole feature's correctness sits on. Nothing outside
+    /// this module can see it — `NihongoRideApp` is an `executableTarget` whose only product is
+    /// `.executable`, so there is no boundary here to widen. That "once per ride" is a property
+    /// of the CALL SITE and not of this body is pinned separately, by a source scan, because no
+    /// runtime state can show how many times something was called from where.
+    func foldStumbles(_ trace: MistakeTrace) {
+        guard !Screenshotter.isCapturing else { return }
+        stumbleLedger.fold(trace)
+        bgSave("stumble ledger", allowed: true) { [stumbleLedger, stumbleLedgerURL] in
+            try stumbleLedger.save(to: stumbleLedgerURL)
+        }
+    }
+
+    /// How many separate runs a kana must appear in before the app calls it a habit.
+    ///
+    /// Three, and the number is a judgement rather than a measurement — nobody has watched a
+    /// learner react to either threshold. Two would call a single unlucky pair of sittings a
+    /// habit; five would stay silent through most of a learner's first week. It lives here as one
+    /// value so the Stats list and anything that acts on it cannot disagree about what a habit is.
+    static let stumbleHabitRuns = 3
+
+    /// **The one list.** Everything the app says about lifetime stumbles reads this, so a count
+    /// and a list can never describe different populations — the shape twenty-odd defects in this
+    /// project have had in common.
+    var stumbleHabits: [StumbleLedger.Entry] {
+        stumbleLedger.habits(minimumRuns: Self.stumbleHabitRuns)
+    }
+
+    /// The patterns behind those habits, worst first — the bridge to the coach, which drills a
+    /// PATTERN rather than a kana. Built from `stumbleHabits`, not from the raw ledger.
+    var stumblePatterns: [(pattern: TypingPattern, kana: [String])] {
+        stumbleLedger.dominantPatterns(minimumRuns: Self.stumbleHabitRuns)
+    }
+
     func startCoachDrill(for pattern: TypingPattern) {
         var config = GameSession.Config()
         config.languageCode = languageCode
@@ -2256,6 +2320,7 @@ final class AppModel {
         }
         lastSummary = GameSummary(from: session)
         resultsAreConjugation = false
+        foldStumbles(session.mistakes)
         // Read BEFORE `logRun` moves the odometer. Deriving it afterwards by subtracting the
         // ride's own distance would be arithmetic on a value that `SyncMerge` can change from
         // another device mid-run; this is the same question asked at a moment where it has one

@@ -61,6 +61,43 @@ This is the largest genuinely-new feature available that touches none of the fou
 **Constraint 3 applies**: if it changes how far people ride, **register it in `PLAN-STAGE1` §K
 before the release ships — do not avoid it.**
 
+> ### ✅ F2 SHIPPED 2026-09-10 — the lifetime half, and constraint 3 does NOT apply
+>
+> **What was missing was not the data.** Every run has produced a `MistakeTrace` since v1.18 and
+> thrown it away every time — `GameSummary.mistakes` says so in as many words: *"in memory with the
+> summary; never persisted."* So the app could tell a learner what they missed in THIS run and had
+> never once been able to tell them what they keep missing, which is the one thing a person cannot
+> see about themselves and software can.
+>
+> `StumbleLedger` (DiagnosticsKit) folds one run's refusals per ride, keyed by KANA — a key space
+> bounded by the syllabary rather than by the corpus — and `AppModel.stumbleHabits` is the single
+> list everything reads, so a count and a list cannot describe different populations.
+>
+> **`runs` is the load-bearing field, not `refusals`,** and that distinction is the feature. Hold a
+> key down and you can log two hundred refusals on one kana in a minute; a kana that recurs across
+> separate sittings is a different claim and the only one worth showing. The habit threshold is
+> three runs — a judgement, stated as one.
+>
+> **Constraint 3 does not apply, and it is asserted rather than claimed.** The Stats card is
+> read-only: it starts no run and does not link to the coach drill, which is a real ride (~3.4 km)
+> reachable exactly as before from the results screen. "It has no button" is the kind of claim that
+> is true when written and false two releases later, so
+> `StumbleLedgerWiringTests.theCardCannotStartARide` scans for every ride entrance and fails if one
+> appears — with the registration rule in its own failure message.
+>
+> **Constraint on telemetry honoured structurally:** the ledger is a local file beside the review
+> stores, is not synced, and `nothingTransmitsTheLedger` fails if `CloudKitSyncController` ever
+> names it. `Data Not Collected` stays. Merging two devices' habits would average away the thing
+> the feature exists to show, so not syncing is a design decision and not an omission.
+>
+> Evidence: **8/8 ledger mutations + 5/5 wiring mutations + 1/1 on the constraint-3 scan.** One
+> ledger mutation SURVIVED the first pass — `runs` incremented per refusal — because the control's
+> two arms both used a single refusal, so +1 and +1 were the same number. A control whose arms
+> cannot be told apart is not a control; it was rewritten to ten and the mutation dies.
+>
+> And the gate built four hours earlier caught this work: `every test target declares the modules
+> its files import` failed on the new test file's undeclared `RomajiKana` / `DiagnosticsKit`.
+
 ---
 
 ## §C Track 2 — the two live defects

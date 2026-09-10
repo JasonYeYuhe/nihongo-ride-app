@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import DiagnosticsKit
 
 /// "Stats" (v1.9 §B) — a data screen that goes deeper than the Ride Log: words-per-day
 /// bars, accuracy + WPM trends from the ride history, plus a conjugation section that
@@ -31,6 +32,7 @@ struct StatsView: View {
                 emptyState
             }
             conjugationCard
+            stumbleCard
         }
         .frame(maxWidth: 860)
         .frame(maxWidth: .infinity)
@@ -199,6 +201,94 @@ struct StatsView: View {
                 }
             }
         }
+    }
+
+    // MARK: What you keep missing (v1.32 §F2)
+
+    /// The first thing this app has ever been able to say about a learner's typing ACROSS rides.
+    ///
+    /// Every run has produced this data since v1.18 and thrown it away every time, so the app
+    /// could tell you what you missed in one run and never what you keep missing — the one thing
+    /// a person cannot see about themselves and software can.
+    ///
+    /// **It renders nothing until there is something to say.** A card reading "0 habits" on a
+    /// fresh install is a worse experience than no card, and worse than that it would teach the
+    /// learner to ignore this corner of the screen before it ever had a finding.
+    @ViewBuilder private var stumbleCard: some View {
+        let habits = model.stumbleHabits
+        if !habits.isEmpty {
+            card(zh ? "你反复卡住的假名" : "What you keep missing",
+                 icon: "scope",
+                 a11y: stumbleAccessibilityLabel(habits)) {
+                VStack(alignment: .leading, spacing: 12) {
+                    // `FlowLayout`, not an HStack, for the reason `GameView:719` already gives:
+                    // an HStack cannot wrap. Six kana at AX5 on a phone will not sit on one line
+                    // and this screen has no horizontal scroll — v1.31 found FOUR separate defects
+                    // that were all a Text in a row with no room, and `ImageRenderer` cannot see
+                    // any of them, which is why reusing the layout that already solved it beats
+                    // deciding this one fits.
+                    FlowLayout(spacing: 8, lineSpacing: 8) {
+                        ForEach(habits.prefix(6), id: \.kana) { habit in
+                            stumbleChip(habit)
+                        }
+                    }
+                    // The number the finding rests on, said in words rather than left to be
+                    // inferred from the chips. `runsRecorded` is the denominator, so "in 4 of your
+                    // 20 rides" is a claim the learner can check against their own Ride Log.
+                    if let worst = habits.first {
+                        Text(zh
+                             ? "「\(worst.kana)」出现在你 \(model.stumbleLedger.runsRecorded) 次骑行中的 \(worst.runs) 次里。"
+                             : "\(worst.kana) turned up in \(worst.runs) of your \(model.stumbleLedger.runsRecorded) rides.")
+                            .scaledSystemFont(12).foregroundStyle(Theme.dim)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    if let advice = stumbleAdvice(habits) {
+                        Text(advice)
+                            .scaledSystemFont(12).foregroundStyle(Theme.dim.opacity(0.85))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+        }
+    }
+
+    private func stumbleChip(_ habit: StumbleLedger.Entry) -> some View {
+        HStack(spacing: 6) {
+            Text(habit.kana)
+                .scaledSystemFont(18, weight: .bold, design: .rounded)
+                .foregroundStyle(.white)
+                .lineLimit(1)
+            Text("\(habit.runs)")
+                .scaledSystemFont(12, weight: .semibold, design: .rounded).monospacedDigit()
+                .foregroundStyle(Theme.accent)
+                .lineLimit(1)
+        }
+        .padding(.horizontal, 10).padding(.vertical, 6)
+        .background(Theme.card, in: Capsule())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(zh ? "\(habit.kana),\(habit.runs) 次骑行"
+                               : "\(habit.kana), \(habit.runs) rides")
+    }
+
+    /// One sentence naming the RULE behind the worst habit, when the diagnosis has one.
+    ///
+    /// Reads `CoachContent`, the same source the coach screen uses, so the two cannot explain the
+    /// same pattern differently. `.unknown` yields nothing rather than a filler sentence: the
+    /// diagnosis honestly says it does not know, and inventing advice there is how a learner is
+    /// told they were wrong about something nobody diagnosed.
+    private func stumbleAdvice(_ habits: [StumbleLedger.Entry]) -> String? {
+        guard let worst = habits.first, worst.pattern != .unknown,
+              let advice = CoachContent.advice(for: worst.pattern, zh: zh)
+        else { return nil }
+        return advice.rule
+    }
+
+    /// Spoken as one sentence. VoiceOver reading six capsules as six fragments is how v1.26's
+    /// weak-words button came to SAY a different number than it rode — audible only to VoiceOver,
+    /// which is why every headless render walked past it.
+    private func stumbleAccessibilityLabel(_ habits: [StumbleLedger.Entry]) -> String {
+        let named = habits.prefix(6).map { "\($0.kana) \($0.runs)" }.joined(separator: ", ")
+        return zh ? "你反复卡住的假名:\(named)" : "What you keep missing: \(named)"
     }
 
     private func dueChip(_ label: String, _ n: Int, _ tint: Color) -> some View {

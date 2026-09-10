@@ -193,6 +193,6 @@ let package = Package(
         // testing — a fresh model at N5 has a full pool, so a dead-tap test would exercise the
         // empty-pool guard by never reaching it and pass for the wrong reason. `init(vocab:)`
         // is what makes this target worth having.
-        .testTarget(name: "NihongoRideAppTests", dependencies: ["ConjugationReviewKit", "GameCore", "JournalKit", "NihongoRideApp", "ReviewKit", "StoreReviewKit", "SyncKit", "VocabKit", "WidgetSharedKit", "WordListsKit"]),
+        .testTarget(name: "NihongoRideAppTests", dependencies: ["ConjugationReviewKit", "DiagnosticsKit", "GameCore", "JournalKit", "NihongoRideApp", "ReviewKit", "RomajiKana", "StoreReviewKit", "SyncKit", "VocabKit", "WidgetSharedKit", "WordListsKit"]),
     ]
 )
