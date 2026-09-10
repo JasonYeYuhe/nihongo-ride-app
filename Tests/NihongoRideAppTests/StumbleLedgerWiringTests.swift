@@ -139,6 +139,30 @@ struct StumbleLedgerWiringTests {
                 "the fold is no longer beside the summary it summarises")
     }
 
+    /// The DENOMINATOR the card prints must name the population it counts.
+    ///
+    /// `runsRecorded` counts rides in which the learner was refused at least once — a clean run
+    /// folds nothing, deliberately. The first version of the caption said "of your N rides",
+    /// which is a different population: somebody who rode fifty times and slipped in twenty-one
+    /// would read 21, check the Ride Log, and find 50. A number labelled as something it is not is
+    /// this project's signature defect, and this was a fresh one, caught by looking at the screen.
+    ///
+    /// The test pins the FACT, not the wording — a caption is a view's business — so it asserts
+    /// the two counts genuinely differ when clean runs happen. Without that, "rides where you
+    /// slipped" and "your rides" are indistinguishable and the copy fix is unfalsifiable.
+    @Test("the ledger's run count is rides-with-a-mistake, not rides")
+    func theDenominatorIsRidesWithAMistake() {
+        let model = AppModelTests.makeModel(vocab: Self.vocab())
+        for _ in 0..<Self.habitRuns { model.foldStumbles(Self.trace(1)) }
+        // Three clean rides. A learner has now ridden 6 times and slipped in 3.
+        for _ in 0..<3 { model.foldStumbles(MistakeTrace()) }
+
+        #expect(model.stumbleLedger.runsRecorded == Self.habitRuns,
+                "clean rides entered the denominator the card prints")
+        #expect(model.stumbleLedger.entries["は"]?.runs == Self.habitRuns,
+                "the numerator and the denominator must count the same population")
+    }
+
     /// **Constraint 3, asserted rather than claimed.**
     ///
     /// `PLAN-WINDOW`'s third constraint is that a feature which substantially changes how far

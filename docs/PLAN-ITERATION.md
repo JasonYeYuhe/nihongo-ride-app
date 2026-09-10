@@ -462,6 +462,32 @@ afternoon is which of those is underexposed rather than missing.
 
 ---
 
+## §C2 What running the app found — v1.32 §F2's card, 2026-09-10
+
+Two defects, one mine and one pre-existing, both on the Stats screen at AX5, and **neither is
+visible to any test this repo can run** — `ImageRenderer` does not lay out or shrink text the way
+a device does (`ScaledFont.swift` has said so since v1.7). This is the fifth and sixth instance of
+the shape v1.31 found four of.
+
+**Mine, and it is a caption that named the wrong population.** The new card printed
+*"っ turned up in 7 of your 21 rides."* `StumbleLedger.runsRecorded` counts rides in which the
+learner was refused at least once — a clean run folds nothing, deliberately, because an empty trace
+is not a run. So a learner who rode fifty times and slipped in twenty-one would read "21 rides",
+check the Ride Log, and find fifty. **A number labelled as something it is not**, written by the
+session that spent the day cataloguing exactly that. Now *"…of the 21 rides where you slipped"*,
+and `theDenominatorIsRidesWithAMistake` pins the FACT rather than the wording, by folding clean
+runs and requiring the counter not to move.
+
+**Pre-existing: `dueChip`'s label breaks mid-word at AX5** — "Tomorrow" renders as "Tomorr / ow" in
+the Conjugation Review card, which has shipped that way. A `Text` in a row with no `lineLimit` and
+no shrink allowance, which is the same sentence all six instances of this share. Fixed with
+`lineLimit(1)` + `minimumScaleFactor(0.7)`, and verified on screen at AX5 rather than argued.
+
+**What did NOT need fixing, said because a pass that only reports defects gives no base rate:** the
+card's own chip row wraps correctly at AX5 onto two rows with no clipping. That is `FlowLayout`
+doing its job — the layout `GameView:719` already reaches for, with its own comment explaining that
+an HStack cannot wrap. Reusing the thing that already solved this beat deciding it would fit.
+
 ## §D Carried, and not tier 1
 
 * **iOS StoreKit has no automated coverage at all** (`PLAN-STAGE1` §J/§L). The code now carrying

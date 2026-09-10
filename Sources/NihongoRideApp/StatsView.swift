@@ -232,13 +232,20 @@ struct StatsView: View {
                             stumbleChip(habit)
                         }
                     }
-                    // The number the finding rests on, said in words rather than left to be
-                    // inferred from the chips. `runsRecorded` is the denominator, so "in 4 of your
-                    // 20 rides" is a claim the learner can check against their own Ride Log.
+                    // The number the finding rests on, and the DENOMINATOR is named exactly.
+                    //
+                    // It said "of your N rides" and that was false: `runsRecorded` counts rides in
+                    // which the learner was refused at least once — a clean run folds nothing, by
+                    // design. Somebody who rode fifty times and slipped in twenty-one would read
+                    // "21 rides", check the Ride Log, and find fifty. A number labelled as
+                    // something it is not is this repo's signature defect, and this was a fresh
+                    // instance of it. **Found by looking at the screen**, which is also how v1.31
+                    // found four; no test in this repo can see a caption that is true of a
+                    // different population than the one it names.
                     if let worst = habits.first {
                         Text(zh
-                             ? "「\(worst.kana)」出现在你 \(model.stumbleLedger.runsRecorded) 次骑行中的 \(worst.runs) 次里。"
-                             : "\(worst.kana) turned up in \(worst.runs) of your \(model.stumbleLedger.runsRecorded) rides.")
+                             ? "在你出错的 \(model.stumbleLedger.runsRecorded) 次骑行里,「\(worst.kana)」出现了 \(worst.runs) 次。"
+                             : "\(worst.kana) turned up in \(worst.runs) of the \(model.stumbleLedger.runsRecorded) rides where you slipped.")
                             .scaledSystemFont(12).foregroundStyle(Theme.dim)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -291,11 +298,18 @@ struct StatsView: View {
         return zh ? "你反复卡住的假名:\(named)" : "What you keep missing: \(named)"
     }
 
+    /// ⚠️ `lineLimit(1)` + a shrink allowance on the LABEL, because at AX5 on a phone "Tomorrow"
+    /// breaks mid-word into "Tomorr / ow". Pre-existing — seen while looking at this screen for
+    /// v1.32 §F2 — and the same family as the four defects v1.31 found by running the app: a
+    /// `Text` whose content can grow, in a row with no `lineLimit` and no shrink allowance.
+    /// `ImageRenderer` cannot see any of them (`ScaledFont.swift` has said so since v1.7).
     private func dueChip(_ label: String, _ n: Int, _ tint: Color) -> some View {
         VStack(spacing: 2) {
             Text("\(n)").scaledSystemFont(22, weight: .heavy, design: .rounded).monospacedDigit()
                 .foregroundStyle(n > 0 ? tint : Theme.dim)
             Text(label).scaledSystemFont(10, weight: .medium).foregroundStyle(Theme.dim)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)

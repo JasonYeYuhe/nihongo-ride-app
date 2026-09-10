@@ -1459,6 +1459,32 @@ final class AppModel {
             if i < 2, var c = store.card(for: id) { c.dueDate = today.addingTimeInterval(-3600); store = ConjugationReviewStore(cards: store.cards.merging([id: c]) { _, n in n }) }
         }
         conjugationReviewStore = store
+
+        // The stumble ledger (v1.32 §F2). Seeded here for the same reason the journal is: the
+        // card renders nothing until a habit exists, so without this the Stats screenshot — and
+        // any eyes-on check of the layout — would show the screen as it looks on a fresh install
+        // and never as it looks once the feature has something to say.
+        //
+        // Folded through the REAL `fold`, not by constructing entries by hand. A seed built with
+        // a hand-rolled encoder is how `RideJournal`'s helper came to load an empty journal while
+        // every assertion on it passed — `STATE-2026-08-18.md` records it as "seed a store with
+        // the store's OWN writer, never a hand-rolled encoder".
+        var ledger = StumbleLedger()
+        let demoRefusals: [(String, Int, Character, Set<Character>, Int)] = [
+            ("こんにちは", 4, "w", ["h"], 5),     // は as `wa` — the particle-spelling habit
+            ("いって", 1, "t", ["c"], 4),         // the sokuon
+            ("きゃく", 1, "y", ["a"], 3),         // a small ゃ typed full-size
+        ]
+        for (target, index, rejected, expected, runs) in demoRefusals {
+            for run in 0..<runs {
+                var trace = MistakeTrace()
+                trace.record(MistakeEvent(targetKana: target, entryID: nil, acceptedRomaji: "",
+                                          rejected: rejected, expectedNext: expected,
+                                          kanaIndex: index, order: 0))
+                ledger.fold(trace, now: today.addingTimeInterval(Double(-run) * 86_400))
+            }
+        }
+        stumbleLedger = ledger
     }
 
     /// Words currently waiting in the review deck (due now).
