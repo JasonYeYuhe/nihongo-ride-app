@@ -61,26 +61,12 @@ struct StatsView: View {
     // MARK: Header
 
     private var header: some View {
-        HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(zh ? "统计" : "Stats")
-                    .scaledSystemFont(isPhoneIdiom ? 28 : 32, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
-                    .foregroundStyle(.white)
-                Text(zh ? "你的练习,一图看懂" : "Your practice, at a glance")
-                    .scaledSystemFont(13).foregroundStyle(Theme.dim)
-            }
-            Spacer()
-            Button(action: model.backToMenu) {
-                Label(zh ? "返回" : "Back", systemImage: "chevron.left")
-                    .scaledSystemFont(14, weight: .semibold)
-                    .padding(.horizontal, 12).padding(.vertical, 8)
-                    .background(Theme.card, in: Capsule())
-                    .overlay(Capsule().strokeBorder(Theme.cardStroke))
-                    .foregroundStyle(.white)
-            }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("statsBackButton")
-        }
+        ScreenHeader(title: zh ? "统计" : "Stats",
+                     subtitle: zh ? "你的练习,一图看懂" : "Your practice, at a glance",
+                     backLabel: zh ? "返回" : "Back",
+                     backIdentifier: "statsBackButton",
+                     isPhoneIdiom: isPhoneIdiom,
+                     onBack: model.backToMenu)
     }
 
     // MARK: Lifetime tiles

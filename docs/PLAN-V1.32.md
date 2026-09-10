@@ -368,6 +368,42 @@ of them.
   occurrences sit in 7 it cannot. The unblocked first step is the **static scan**, which needs no
   comparator. Measured and unfixed: Ride Log *and* Review Forecast rows run off the right edge at
   AX5 (`PLAN-ITERATION.md:328-334`).
+
+> ### ✅ §E's unblocked half DONE 2026-09-10 — the measured defect fixed, and the scan built and BOUNDED
+>
+> **The recorded defect was understated.** *"Rows run off the right edge"* — reproduced on an
+> iPhone 17 Pro at AX5, what actually happens is that every column of the Ride Log row squeezes to
+> about one glyph of width and each `Text` wraps **vertically**: "N5" as N over 5, "MINE" as four
+> stacked letters, "★651" as ★/6/5/1, "WPM 22" as W/P/M beside 2/2, "100%" as 1/0/0/% with the %
+> half off the edge. **Every value in the row was illegible**, on the screen whose entire job is
+> showing them. The header was clipped on BOTH edges — "Ride Log" missing its R, "Back" reading
+> "Bac" — because an oversized row inside `.frame(maxWidth: .infinity)` is centred, not truncated.
+>
+> Fixed the way `MenuView:128` already fixes this: at `typeSize.isAccessibilitySize` the row
+> becomes two lines and the header becomes a column with Back FIRST — a way out that has scrolled
+> off the top is not a way out. Verified on screen at AX5, not argued.
+>
+> **The header is now one file, `ScreenHeader.swift`**, because `JournalView` and `StatsView` held
+> byte-identical copies. Fixing one and leaving the other would have been *a fix applied to one
+> call site*, which is the rule directly above *one rule written twice will drift*.
+>
+> **The scan exists and its coverage is MEASURED at 4½ of 7, not claimed.**
+> `HorizontalTextFitTests` finds a `Text` with a scaled font, inside a horizontal ancestor, with
+> neither a `lineLimit` nor a `minimumScaleFactor`. 34 occurrences today, pinned as a ceiling that
+> must not grow — and the ceiling is the measurement, after a first draft guessed 47, forty percent
+> above the real count, which is a ceiling that can never bind.
+>
+> **Two blind spots, both found by MUTATION rather than by reasoning.** Reintroducing the real
+> "Tomorrow → Tomorr / ow" defect left the suite green twice: first because the model treated a
+> `VStack` as safe (wrong — a column inside a row is width-constrained, and the model now walks
+> ancestors), then because `dueChip` is a helper whose `HStack` is at the call site, which a
+> one-function-at-a-time scan cannot follow. The second is unfixable here and is compensated by a
+> direct assertion on that helper instead. The Settings picker is a `Picker`, not this shape at
+> all.
+>
+> **What is still blocked is unchanged:** the comparator question. `ImageRenderer` renders AX3 and
+> AX5 byte-identically, so the render harness still cannot see any of this, and every defect above
+> was found by looking at a device.
 * **The 112 sentences no reading gate inspects** (`PLAN-ITERATION.md:497`). Two limits up front: the
   ratchet cannot detect a gate being *weakened*, and this population is defined by what every gate
   skips, so it cannot be validated by what it catches.

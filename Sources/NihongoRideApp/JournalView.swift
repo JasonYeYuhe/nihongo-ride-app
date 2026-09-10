@@ -13,6 +13,7 @@ import ReviewKit
 /// streak flame is the screen's signature.
 struct JournalView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     private var zh: Bool { model.languageCode == "zh" }
 
@@ -64,27 +65,12 @@ struct JournalView: View {
     // MARK: Header
 
     private var header: some View {
-        HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(zh ? "骑行日志" : "Ride Log")
-                    .scaledSystemFont(isPhoneIdiom ? 28 : 32, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
-                    .foregroundStyle(.white)
-                Text(zh ? "你的打字旅程,一页一页记着" : "Every ride, remembered")
-                    .scaledSystemFont(13)
-                    .foregroundStyle(Theme.dim)
-            }
-            Spacer()
-            Button(action: model.backToMenu) {
-                Label(zh ? "返回" : "Back", systemImage: "chevron.left")
-                    .scaledSystemFont(14, weight: .semibold)
-                    .padding(.horizontal, 12).padding(.vertical, 8)
-                    .background(Theme.card, in: Capsule())
-                    .overlay(Capsule().strokeBorder(Theme.cardStroke))
-                    .foregroundStyle(.white)
-            }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("journalBackButton")
-        }
+        ScreenHeader(title: zh ? "骑行日志" : "Ride Log",
+                     subtitle: zh ? "你的打字旅程,一页一页记着" : "Every ride, remembered",
+                     backLabel: zh ? "返回" : "Back",
+                     backIdentifier: "journalBackButton",
+                     isPhoneIdiom: isPhoneIdiom,
+                     onBack: model.backToMenu)
     }
 
     // MARK: Streak
@@ -291,7 +277,71 @@ struct JournalView: View {
     @ScaledMetric(relativeTo: .caption) private var dateColumnWide: CGFloat = 64
     private var dateColumnWidth: CGFloat { isPhoneIdiom ? dateColumnPhone : dateColumnWide }
 
+    /// One ride.
+    ///
+    /// ⚠️ **At the accessibility text sizes this row becomes two lines, and that is not a
+    /// preference.** Measured on an iPhone 17 Pro at AX5, 2026-09-10: the six-column HStack
+    /// squeezed every column to about one glyph of width, and each `Text` — none of which could
+    /// wrap horizontally any further — wrapped VERTICALLY instead. "N5" rendered as N over 5,
+    /// "MINE" as four stacked letters, "★651" as ★ over 6 over 5 over 1, "WPM 22" as W/P/M beside
+    /// 2/2, and "100%" as 1/0/0/% with the % half off the right edge. Every value in the row was
+    /// illegible, on a screen whose entire job is showing them.
+    ///
+    /// `PLAN-ITERATION` recorded this as *"the Ride Log does not survive"* at AX5 and left it
+    /// unfixed for two releases, because `ImageRenderer` cannot see it — it does not lay out or
+    /// shrink text the way a device does (`ScaledFont.swift`, since v1.7). It was found by
+    /// looking, twice.
+    ///
+    /// The fix is the one `MenuView:128` already uses for the route strip, for the same reason
+    /// and with the same argument: a horizontal arrangement that cannot fit stops being a
+    /// horizontal arrangement. The identity (icon, date, level) stays on the first line and the
+    /// numbers move to a second, where they have the width to be read. The VoiceOver label does
+    /// not change — it was already one spoken sentence, and it was already the only version of
+    /// this row that worked at these sizes.
     private func rideRow(_ record: RideRecord) -> some View {
+        Group {
+            if typeSize.isAccessibilitySize { stackedRideRow(record) } else { inlineRideRow(record) }
+        }
+        .padding(.vertical, 8)
+        // Combine the date / mode / level / score / wpm / accuracy fragments into
+        // one spoken row instead of six disjoint VoiceOver stops.
+        .accessibilityElement()
+        .accessibilityLabel(rideRowLabel(record))
+    }
+
+    /// The accessibility-size arrangement: identity on one line, numbers on the next.
+    private func stackedRideRow(_ record: RideRecord) -> some View {
+        let style = modeStyle(record.mode)
+        return VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 8) {
+                Image(systemName: style.icon)
+                    .scaledSystemFont(12, weight: .bold)
+                    .foregroundStyle(style.tint)
+                    .frame(width: 26, height: 26)
+                    .background(style.tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 7))
+                Text(dayLabel(record.date))
+                    .scaledSystemFont(12, weight: .medium, design: .rounded)
+                    .foregroundStyle(.white.opacity(0.85))
+                    .lineLimit(1).minimumScaleFactor(0.6)
+                Text(levelLabel(record.level))
+                    .scaledSystemFont(10, weight: .heavy, design: .rounded)
+                    .foregroundStyle(Theme.accent2)
+                    .lineLimit(1).minimumScaleFactor(0.6)
+                    .padding(.horizontal, 6).padding(.vertical, 2)
+                    .background(Theme.accent2.opacity(0.14), in: Capsule())
+                Spacer(minLength: 0)
+            }
+            // `FlowLayout` rather than an HStack, for the reason `GameView:719` gives: an HStack
+            // cannot wrap, and at AX5 three stats do not fit one line either.
+            FlowLayout(spacing: 12, lineSpacing: 4) {
+                if record.score > 0 { rowStat("★", "\(record.score)", tint: Theme.gold) }
+                if record.wpm > 0 { rowStat("WPM", "\(Int(record.wpm))", tint: Theme.done) }
+                rowStat("", "\(Int(record.accuracy * 100))%", tint: .white)
+            }
+        }
+    }
+
+    private func inlineRideRow(_ record: RideRecord) -> some View {
         let style = modeStyle(record.mode)
         return HStack(spacing: isPhoneIdiom ? 8 : 12) {
             Image(systemName: style.icon)
@@ -311,6 +361,9 @@ struct JournalView: View {
             Text(levelLabel(record.level))
                 .scaledSystemFont(10, weight: .heavy, design: .rounded)
                 .foregroundStyle(Theme.accent2)
+                // The sizes just BELOW the accessibility range squeeze this the same way, only
+                // less — "MINE" is the longest label and the one that showed it first.
+                .lineLimit(1).minimumScaleFactor(0.6)
                 .padding(.horizontal, 6).padding(.vertical, 2)
                 .background(Theme.accent2.opacity(0.14), in: Capsule())
             Spacer(minLength: 4)
@@ -322,11 +375,6 @@ struct JournalView: View {
             }
             rowStat("", "\(Int(record.accuracy * 100))%", tint: .white)
         }
-        .padding(.vertical, 8)
-        // Combine the date / mode / level / score / wpm / accuracy fragments into
-        // one spoken row instead of six disjoint VoiceOver stops.
-        .accessibilityElement()
-        .accessibilityLabel(rideRowLabel(record))
     }
 
     private func rideRowLabel(_ record: RideRecord) -> String {
@@ -352,11 +400,15 @@ struct JournalView: View {
                 Text(label)
                     .scaledSystemFont(9, weight: .bold, design: .rounded)
                     .foregroundStyle(tint.opacity(0.8))
+                    // "WPM" wrapped to W/P/M stacked, which is what a three-letter label does
+                    // when its column is one glyph wide.
+                    .lineLimit(1).minimumScaleFactor(0.6)
             }
             Text(value)
                 .scaledSystemFont(13, weight: .semibold, design: .rounded)
                 .foregroundStyle(.white.opacity(0.9))
                 .monospacedDigit()
+                .lineLimit(1).minimumScaleFactor(0.6)
         }
         .frame(minWidth: isPhoneIdiom ? 38 : 48, alignment: .trailing)
     }
