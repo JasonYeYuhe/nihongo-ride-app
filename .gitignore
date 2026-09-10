@@ -26,3 +26,13 @@ __pycache__/
 # Rendered AVSpeech audio for scripts/check_dictation_readings.py — ~37k clips,
 # reproducible from the corpus, not source.
 .dictation-wav/
+
+# Agent scratch, and it is NOT cosmetic that this is here.
+#
+# Sessions leave full worktrees under `.claude/worktrees/`, each with its OWN `Package.swift`.
+# STATE-2026-08-18 records what that costs: four of them totalled 1.5 GB and every release build
+# rsync'd all of it, and — worse — `xcodebuild -list` STALLS at 0% CPU on a second Swift package
+# nested under the root package's directory. It was never tracked, but nothing stopped it: this
+# directory was absent from .gitignore while several sessions ran `git add -A` in this tree.
+# One `git add -A` during a fan-out would have committed a gigabyte and a build stall together.
+/.claude/

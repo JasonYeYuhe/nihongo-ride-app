@@ -31,6 +31,52 @@
 # already shipped a release on an `xcodebuild … | tail` that reported 0 for a failed suite.
 set -euo pipefail
 
+# The classification is a FUNCTION so it can be exercised without running xcodebuild — see
+# `scripts/test_run_store_gates.sh`, which sources this file and feeds it synthetic logs. A
+# re-implementation of these rules in a test would be the shape v1.32 §D4 was about.
+#
+# ⚠️ ORDER MATTERS, and getting it wrong is the defect this block was rewritten to fix.
+#
+# The skip check used to run FIRST and unconditionally. So a run where the StoreKit gates skipped
+# — which is every run today — AND another test in the same target genuinely FAILED exited 3,
+# "no coverage": a real failure reported as a known, tolerated state. Every doc in this repo says
+# to keep running this script and expect 3, so that failure would have been read as normal and
+# walked past. A genuine failure must never be reportable as a documented non-result.
+#
+#   65  a gate genuinely failed        (xcodebuild's own code, taken from PIPESTATUS)
+#    4  the harness could not start    (above)
+#    3  the gates ran and SKIPPED, and nothing else failed — no coverage, not a pass
+#    0  the gates ran and passed
+classify_store_gates() {
+  local status="$1" log="$2"
+  if grep -q "with [0-9]* tests* skipped" "$log" \
+     && ! grep -qE "Executed [0-9]+ tests?, with 0 tests? skipped" "$log"; then
+    local skipped
+    skipped=$(grep -oE "with [0-9]+ tests? skipped" "$log" | head -1)
+    echo "  ⚠️  NO PURCHASE COVERAGE: $skipped. The StoreKit gates did not run — read the skip reason above." >&2
+    echo "      (Other tests in this target may have passed. They say nothing about the purchase flow.)" >&2
+    echo "      PLAN-STAGE1 §L's manual list is the only purchase coverage in that state." >&2
+    # …but a genuine failure outranks the missing coverage. Both facts get printed; the EXIT CODE
+    # reports the one that must not be walked past.
+    if [ "$status" != "0" ]; then
+      echo "      AND a test in this target FAILED (exit $status). That is the finding, not the skip." >&2
+      echo "$status"
+      return
+    fi
+    echo "3"
+    return
+  fi
+  echo "$status"
+}
+
+# Sourced for testing rather than run: `test_run_store_gates.sh` sets this before sourcing.
+# Sourced rather than run: `test_run_store_gates.sh` sets this, takes the function, and stops
+# here — BEFORE the rsync, the xcodegen and the twenty-second xcodebuild below. The first version
+# of this guard sat at the BOTTOM of the file, which guards nothing: sourcing would have run the
+# whole gate first and then returned.
+if [ -n "${RUN_STORE_GATES_SOURCE_ONLY:-}" ]; then return 0; fi
+
+
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # A fresh directory per run, rather than one fixed path cleared at the top.
 #
@@ -63,7 +109,10 @@ if ! grep -q "StoreKitConfigurationFileReference" \
      "NihongoRide.xcodeproj/xcshareddata/xcschemes/NihongoRide.xcscheme"; then
   echo "HARNESS ERROR: the generated scheme carries no StoreKitConfigurationFileReference." >&2
   echo "  xcodegen honours storeKitConfiguration only under a scheme's run: block." >&2
-  exit 3
+  # 4, not 3. This used to exit 3 as well, so "the harness could not even start" and "the gates
+  # ran and skipped" printed the same number — two different things to do next, reported
+  # identically. (v1.32 §D6.)
+  exit 4
 fi
 
 echo
@@ -107,12 +156,6 @@ tail -3 "$LOG" >/dev/null   # keep the log alive until the trap
 #
 # 3 = the harness could not obtain coverage. Distinct from 65 (a gate genuinely failed) and from
 # 0 (gates ran and passed), because those are three different things to do next.
-if grep -q "with [0-9]* tests* skipped" "$LOG" && ! grep -qE "Executed [0-9]+ tests?, with 0 tests? skipped" "$LOG"; then
-  SKIPPED=$(grep -oE "with [0-9]+ tests? skipped" "$LOG" | head -1)
-  echo
-  echo "  ⚠️  NO PURCHASE COVERAGE: $SKIPPED. The StoreKit gates did not run — read the skip reason above."
-  echo "      (Other tests in this target may have passed. They say nothing about the purchase flow.)"
-  echo "      PLAN-STAGE1 §L's manual list is the only purchase coverage in that state."
-  exit 3
-fi
-exit $STATUS
+
+echo
+exit "$(classify_store_gates "$STATUS" "$LOG")"
