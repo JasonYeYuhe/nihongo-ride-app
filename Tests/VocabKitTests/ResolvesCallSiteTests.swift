@@ -49,6 +49,24 @@ struct ResolvesCallSiteTests {
     /// a pool a run is built from.
     static let countingPrefixes = ["due", "reviewed", "leech", "weakest"]
 
+    /// The subset that counts work still to DO, as opposed to work already done. In
+    /// `ConjugationReviewKit` these must additionally declare and call `rideable:` (v1.32 §C1):
+    /// a card whose `sourceID#form` the drill can no longer build a prompt for is never graded
+    /// by any run, so it inflates them forever — the same argument `resolves:` was added on,
+    /// one predicate further in.
+    ///
+    /// **`reviewed` is deliberately absent and that is a decision, not an oversight.**
+    /// "Forms practised" is a historical fact; the learner did practise a card that has since
+    /// become unbuildable. Filtering it there would make a true number false, which is the
+    /// direction v1.24 §C's `sourceID`/`id` swap actually shipped ("Forms practiced 0"). Work
+    /// remaining filters; history does not. If that line ever moves, it moves here.
+    static let outstandingWorkPrefixes = ["due", "leech", "weakest"]
+
+    /// `rideable:` is meaningful only where a card has a FORM to build. The vocabulary side has
+    /// no equivalent, so the rule is scoped to the module that does rather than asserted
+    /// everywhere and then excepted.
+    static let rideableModule = "Sources/ConjugationReviewKit"
+
     /// Directories whose numbers reach a learner.
     static let scanned = ["Sources/NihongoRideApp", "Sources/GameCore",
                           "Sources/NotificationKit", "Sources/WidgetSharedKit"]
@@ -216,6 +234,18 @@ struct ResolvesCallSiteTests {
             } else if !declaration.contains("resolves(") {
                 found.append("\(file):\(index + 1) \(name) — takes resolves: and never calls it")
             }
+            // The same two checks for the second predicate, in the one module where a card has
+            // a form. Declared AND called, for the reason the `resolves:` half learned the hard
+            // way: `ReviewStore.leeches` shipped declaring a filter it never applied, and a
+            // signature check called it clean.
+            guard file.hasPrefix(Self.rideableModule),
+                  Self.outstandingWorkPrefixes.contains(where: { lowered.hasPrefix($0) })
+            else { continue }
+            if !signature.contains("rideable:") {
+                found.append("\(file):\(index + 1) \(name) — counts OUTSTANDING work without a rideable:")
+            } else if !declaration.contains("rideable(") {
+                found.append("\(file):\(index + 1) \(name) — takes rideable: and never calls it")
+            }
         }
         return found
     }
@@ -327,11 +357,48 @@ struct ResolvesCallSiteTests {
                 "a single card's own dueDate is not a count over a store")
     }
 
+    /// A predicate parameter with a default value, wherever it is and whatever it is called.
+    ///
+    /// **This replaced a name-based rule, and the replacement is both wider and narrower.**
+    /// The old version matched any line containing `resolves:` (case-insensitively) plus
+    /// `-> Bool` or `-> Int`, and flagged it if the line contained an `=` anywhere:
+    ///
+    /// * **It was too narrow.** v1.32 added `rideable:` — a second injected predicate on the
+    ///   same counting APIs, guarding the same class of defect — and the name rule could not
+    ///   see it at all. Giving it `= { _ in true }` would have restored the whole v1.23/v1.24
+    ///   trap with every gate green. The next predicate would have inherited the same hole; a
+    ///   gate keyed on a NAME only ever guards the names somebody remembered.
+    /// * **It was too wide.** `=` anywhere on the line included some OTHER parameter's default,
+    ///   so `func dueCount(on date: Date = Date(), resolves: (String) -> Bool) -> Int {` was an
+    ///   offender the moment anyone wrote the signature on one line. Every declaration in the
+    ///   tree happens to break the line first, which is the only reason it never fired.
+    ///
+    /// This version asks the structural question instead: does a `-> Bool` closure type have an
+    /// `=` immediately after it. That is what a defaulted predicate looks like and nothing else
+    /// does.
+    static func defaultedPredicates(in source: String, file: String) -> [String] {
+        var found: [String] = []
+        for (index, line) in source.components(separatedBy: "\n").enumerated() {
+            var cursor = line.startIndex
+            while let hit = line.range(of: "-> Bool", range: cursor..<line.endIndex) {
+                cursor = hit.upperBound
+                var after = hit.upperBound
+                while after < line.endIndex, line[after] == "?" || line[after] == " " {
+                    after = line.index(after: after)
+                }
+                if after < line.endIndex, line[after] == "=" {
+                    found.append("\(file):\(index + 1) — a Bool-returning closure parameter has a default")
+                }
+            }
+        }
+        return found
+    }
+
     /// The defaults must not come back. Re-adding one restores the whole trap in a single
     /// character-for-character edit, and it would look like a kindness to the review modules'
     /// own tests — which is exactly the argument v1.23 accepted and v1.24 reversed.
-    @Test("no resolves: parameter has a default value")
-    func noDefaultedResolves() throws {
+    @Test("no injected predicate has a default value, whatever it is called")
+    func noDefaultedPredicates() throws {
         var offenders: [String] = []
         var inspected = 0
         for directory in Self.countingModules {
@@ -339,23 +406,98 @@ struct ResolvesCallSiteTests {
             for file in try FileManager.default.contentsOfDirectory(atPath: url.path)
                     .filter({ $0.hasSuffix(".swift") }) {
                 let source = try String(contentsOf: url.appendingPathComponent(file), encoding: .utf8)
-                // Case-INSENSITIVE, and not anchored to a bare "resolves:". The first version
-                // matched the literal lowercase string, so `vocabResolves:` in NotificationKit
-                // was invisible — in the very file this scan was extended to cover, added by
-                // the commit whose message says that file was the one place a default survived.
-                // Restoring the default there left all 510 tests green. Found by the
-                // completeness pass of the pre-submission review.
-                for (index, line) in source.components(separatedBy: "\n").enumerated()
-                where line.lowercased().contains("resolves:")
-                        && (line.contains("-> Bool") || line.contains("-> Int")) {
+                for line in source.components(separatedBy: "\n") where line.contains("-> Bool") {
                     inspected += 1
-                    if line.contains("=") {
-                        offenders.append("\(directory)/\(file):\(index + 1) — resolves: has a default")
-                    }
                 }
+                offenders += Self.defaultedPredicates(in: source, file: "\(directory)/\(file)")
             }
         }
-        #expect(inspected >= 8, "only \(inspected) resolves: parameters seen — the scan is wrong")
+        // The count is of Bool-returning closure lines, not of `resolves:` ones, so the old
+        // threshold does not transfer. Measured at the commit that introduced this rule: 24.
+        #expect(inspected >= 16, "only \(inspected) predicate parameters seen — the scan is wrong")
         #expect(offenders.isEmpty, "\(offenders)")
+    }
+
+    /// Calibrated both ways, on the two names that actually exist and one that does not, because
+    /// the whole point of the replacement is that it does not depend on the name.
+    @Test("the default rule fires on any predicate name, and not on another parameter's default")
+    func defaultRuleIsCalibrated() {
+        // Positive: the shape v1.24 §C removed, under three different names.
+        for name in ["resolves", "vocabResolves", "rideable"] {
+            let offending = "    public func dueCount(\(name): (String) -> Bool = { _ in true }) -> Int {"
+            #expect(Self.defaultedPredicates(in: offending, file: "x").count == 1,
+                    "missed a default on `\(name):`")
+        }
+
+        // Negative: the false positive the name-based rule had. Another parameter's default on
+        // the same line is not a defaulted predicate, and flagging it would push authors to
+        // break lines to appease the gate rather than to read well.
+        let innocent = "    public func dueCount(on date: Date = Date(), resolves: (String) -> Bool) -> Int {"
+        #expect(Self.defaultedPredicates(in: innocent, file: "x").isEmpty,
+                "another parameter's default is not a defaulted predicate")
+
+        // Negative: a function that RETURNS Bool is not a parameter.
+        #expect(Self.defaultedPredicates(in: "    func isDue(on date: Date = Date()) -> Bool {",
+                                         file: "x").isEmpty)
+
+        // Negative: an optional predicate with no default.
+        #expect(Self.defaultedPredicates(in: "    resolves: ((String) -> Bool)?,",
+                                         file: "x").isEmpty)
+    }
+
+    /// The `rideable:` half of the declaration rule, calibrated on the exact shapes that would
+    /// reintroduce v1.32 §C1 — written as the code looked BEFORE the fix.
+    @Test("the declaration rule flags an outstanding-work count with no rideable:, and spares history")
+    func rideableRuleIsCalibrated() {
+        let inTheRightModule = "\(Self.rideableModule)/ConjugationReviewStore.swift"
+
+        // Before v1.32: due counts filtered on the verb only.
+        let before = """
+        public struct ConjugationReviewStore {
+        public func dueCount(resolves: (String) -> Bool) -> Int {
+            cards.values.filter { resolves($0.sourceID) }.count
+        }
+
+        public func leeches(resolves: (String) -> Bool) -> [ConjugationSRSCard] {
+            cards.values.filter { $0.isLeech && resolves($0.sourceID) }
+        }
+        """
+        #expect(Self.undeclaredGuards(in: before, file: inTheRightModule).count == 2)
+
+        // Declared and never applied — the `ReviewStore.leeches` shape, which a signature-only
+        // check called clean while it shipped.
+        let declaredNotCalled = """
+        public struct ConjugationReviewStore {
+        public func dueCount(resolves: (String) -> Bool,
+                             rideable: (ConjugationSRSCard) -> Bool) -> Int {
+            cards.values.filter { resolves($0.sourceID) }.count
+        }
+        """
+        #expect(Self.undeclaredGuards(in: declaredNotCalled, file: inTheRightModule).count == 1)
+
+        // Fixed.
+        let after = """
+        public struct ConjugationReviewStore {
+        public func dueCount(resolves: (String) -> Bool,
+                             rideable: (ConjugationSRSCard) -> Bool) -> Int {
+            cards.values.filter { resolves($0.sourceID) && rideable($0) }.count
+        }
+        """
+        #expect(Self.undeclaredGuards(in: after, file: inTheRightModule).isEmpty)
+
+        // History is spared, in the same module — the decision recorded on
+        // `outstandingWorkPrefixes`, asserted rather than left to that comment.
+        let history = """
+        public struct ConjugationReviewStore {
+        public func reviewedCount(resolves: (String) -> Bool) -> Int {
+            cards.values.filter { $0.totalReviews > 0 && resolves($0.sourceID) }.count
+        }
+        """
+        #expect(Self.undeclaredGuards(in: history, file: inTheRightModule).isEmpty,
+                "forms PRACTISED is history, and history is not outstanding work")
+
+        // And the rule does not leak into the vocabulary module, which has no forms.
+        #expect(Self.undeclaredGuards(in: before, file: "Sources/ReviewKit/ReviewStore.swift").isEmpty,
+                "ReviewKit has no form to build — rideable: is meaningless there")
     }
 }

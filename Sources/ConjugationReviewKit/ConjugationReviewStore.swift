@@ -6,6 +6,35 @@ import PersistKit
 /// with its own file (`conjugation-review.json`) and its own CKRecord type — a
 /// conjugation lapse must NEVER flow into the vocab journey due-queue (red line §1,
 /// PLAN-V1.8). Value type with `Codable` persistence.
+///
+/// # Why every count here takes TWO predicates
+///
+/// `resolves:` answers *does this card's verb still exist* and has been required since v1.24 §C.
+/// It is necessary and it is not sufficient, and the gap is not hypothetical arithmetic:
+///
+/// A card is keyed `sourceID#form`. The drill can only ride it if `GameCore` can build a
+/// `ConjugationPrompt` from that pair — which needs the entry to exist (that is `resolves:`),
+/// the token to name a `ConjugationForm`, **and the engine to be able to conjugate that entry's
+/// reading into that form**. The last one reads the corpus's opaque `vc` field and a per-form
+/// stem table, so a *corpus edit* can strand a card whose verb is still perfectly present.
+/// `ConjugationSession.makeReview` skips such a pair and pads the run with a fresh prompt, whose
+/// outcome is written against a different card id — so the stranded card is never graded, stays
+/// maximally overdue, sorts first in every query here, and inflates the menu button, the widget,
+/// the Stats forecast and the reminder body forever. That is this project's signature defect
+/// (`STATE-2026-08-18.md`, twenty-odd instances) in its exact canonical shape: **the number shown
+/// and the run produced computed by different predicates.**
+///
+/// So `rideable:` is required on every member that answers *how much work is outstanding*, and it
+/// is the app's job to make it the SAME function `makeReview` skips with —
+/// `ConjugationSession.reviewPrompt(entryID:formToken:vocab:languageCode:) != nil` — not a
+/// re-derivation of it. Sharing the function is the property; agreeing by inspection is what
+/// failed the previous twenty times.
+///
+/// **`reviewedCount` deliberately does NOT take it**, and the line is worth stating rather than
+/// leaving to be re-litigated: it answers *how many forms have you practised*, which is a
+/// historical fact. A stranded card WAS practised. Filtering it there would make a true number
+/// false — the opposite error, and the one v1.24 §C's `sourceID`/`id` swap actually shipped
+/// ("Forms practiced 0" forever). Work-remaining filters; history does not. (v1.32 §C1.)
 public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     public private(set) var cards: [String: ConjugationSRSCard]
 
@@ -44,21 +73,28 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     ///   appears in, forever. The v1.22 sweep fixed the vocabulary half and left this one,
     ///   which is half a fix — the app badge is `vocab + conjugation`, and 言う/ゆう, one of
     ///   the two entries v1.18 retired, is a VERB.
+    ///   The filter is applied BEFORE `limit`, for the reason `weakestFormCards` records below.
+    /// - Parameter rideable: whether a review could actually BUILD this card's prompt — see
+    ///   ``ConjugationReviewStore`` for why `resolves:` is not enough on its own.
     public func dueCards(on date: Date = Date(), limit: Int = 100,
                          calendar: Calendar = .current,
-                         resolves: (String) -> Bool) -> [ConjugationSRSCard] {
+                         resolves: (String) -> Bool,
+                         rideable: (ConjugationSRSCard) -> Bool) -> [ConjugationSRSCard] {
         let cutoff = Self.dueCutoff(for: date, calendar: calendar)
         return cards.values
-            .filter { $0.dueDate < cutoff && resolves($0.sourceID) }
+            .filter { $0.dueDate < cutoff && resolves($0.sourceID) && rideable($0) }
             .sorted { $0.dueDate < $1.dueDate }
             .prefix(limit)
             .map { $0 }
     }
 
     public func dueCount(on date: Date = Date(), calendar: Calendar = .current,
-                         resolves: (String) -> Bool) -> Int {
+                         resolves: (String) -> Bool,
+                         rideable: (ConjugationSRSCard) -> Bool) -> Int {
         let cutoff = Self.dueCutoff(for: date, calendar: calendar)
-        return cards.values.filter { $0.dueDate < cutoff && resolves($0.sourceID) }.count
+        return cards.values
+            .filter { $0.dueDate < cutoff && resolves($0.sourceID) && rideable($0) }
+            .count
     }
 
     /// Midnight ending `date`'s day (see `ReviewStore.dueCutoff`).
@@ -85,8 +121,13 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     ///   meant to be able to drill N down. A card whose verb has been withdrawn can never be
     ///   reviewed away, so it is a leech that no amount of practice can retire — and 言う/ゆう,
     ///   one of the two entries v1.18 retired, is a verb.
-    public func leeches(resolves: (String) -> Bool) -> [ConjugationSRSCard] {
-        cards.values.filter { $0.isLeech && resolves($0.sourceID) }
+    /// - Parameter rideable: and here the argument for it is the same sentence one step on. A
+    ///   card the engine can no longer build a prompt for is *also* a leech no amount of practice
+    ///   can retire — the drill silently rides something else instead — so "N tough forms" would
+    ///   promise work the learner cannot finish. Same promise, second mechanism.
+    public func leeches(resolves: (String) -> Bool,
+                        rideable: (ConjugationSRSCard) -> Bool) -> [ConjugationSRSCard] {
+        cards.values.filter { $0.isLeech && resolves($0.sourceID) && rideable($0) }
             .sorted { $0.lapses > $1.lapses }
     }
 
@@ -101,10 +142,14 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     ///   ids would occupy the first places of the cap and the drill would come back short.
     ///   Nothing calls this yet — which is why it is worth fixing now, while the shape is a
     ///   latent copy of a bug rather than a live one.
+    /// - Parameter rideable: applied BEFORE `limit` for the same reason, and it matters more
+    ///   here than anywhere: this sort puts leeches first, and a stranded card is a permanent
+    ///   leech, so unbuildable ids would occupy the front of the cap.
     public func weakestFormCards(limit: Int = 100,
-                                 resolves: (String) -> Bool) -> [ConjugationSRSCard] {
+                                 resolves: (String) -> Bool,
+                                 rideable: (ConjugationSRSCard) -> Bool) -> [ConjugationSRSCard] {
         cards.values
-            .filter { $0.totalReviews > 0 && resolves($0.sourceID) }
+            .filter { $0.totalReviews > 0 && resolves($0.sourceID) && rideable($0) }
             .sorted { a, b in
                 if a.isLeech != b.isLeech { return a.isLeech }
                 if a.easeFactor != b.easeFactor { return a.easeFactor < b.easeFactor }
@@ -155,11 +200,12 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     /// days out are omitted. See `ReviewStore.dueByDay` for the full rationale (why a
     /// histogram, not a relative forecast). DST-safe via `dateComponents([.day])`.
     public func dueByDay(asOf date: Date = Date(), horizon: Int, calendar: Calendar = .current,
-                         resolves: (String) -> Bool) -> [Int] {
+                         resolves: (String) -> Bool,
+                         rideable: (ConjugationSRSCard) -> Bool) -> [Int] {
         precondition(horizon > 0, "horizon must be positive")
         let start = calendar.startOfDay(for: date)
         var hist = [Int](repeating: 0, count: horizon)
-        for card in cards.values where resolves(card.sourceID) {
+        for card in cards.values where resolves(card.sourceID) && rideable(card) {
             let cardDay = calendar.startOfDay(for: card.dueDate)
             guard let off = calendar.dateComponents([.day], from: start, to: cardDay).day else { continue }
             let bucket = max(0, off)
@@ -173,14 +219,15 @@ public struct ConjugationReviewStore: Codable, Sendable, Equatable {
     /// Disjoint: `today` includes anything overdue, `tomorrow` = next day, `thisWeek` = the 5 days
     /// after that.
     public func dueForecast(asOf date: Date = Date(), calendar: Calendar = .current,
-                            resolves: (String) -> Bool) -> Forecast {
+                            resolves: (String) -> Bool,
+                            rideable: (ConjugationSRSCard) -> Bool) -> Forecast {
         let start = calendar.startOfDay(for: date)
         guard let endToday = calendar.date(byAdding: .day, value: 1, to: start),
               let endTomorrow = calendar.date(byAdding: .day, value: 2, to: start),
               let endWeek = calendar.date(byAdding: .day, value: 7, to: start)
         else { return Forecast() }
         var f = Forecast()
-        for card in cards.values where resolves(card.sourceID) {
+        for card in cards.values where resolves(card.sourceID) && rideable(card) {
             if card.dueDate < endToday { f.today += 1 }
             else if card.dueDate < endTomorrow { f.tomorrow += 1 }
             else if card.dueDate < endWeek { f.thisWeek += 1 }

@@ -628,10 +628,11 @@ final class AppModel {
         // Captured before the hop, like every other value here: `vocab` is the model's own
         // store and the Task must not reach back into the model for it.
         let resolves = vocab.resolvesID
+        let rideable = conjugationRideable
         Task { [weak self] in
             let scheduled = await ReminderScheduler.apply(
                 enabled: enabled, store: store, conjugationStore: conjStore,
-                resolves: resolves, hour: hour, languageCode: lang)
+                resolves: resolves, rideable: rideable, hour: hour, languageCode: lang)
             if enabled && !scheduled {
                 self?.dueReminderEnabled = false   // denied / unavailable
             }
@@ -682,7 +683,7 @@ final class AppModel {
                                                 resolves: vocab.resolvesID),
             conjugationDueByDay: conjugationReviewStore.dueByDay(
                 asOf: now, horizon: h,
-                resolves: vocab.resolvesID),
+                resolves: vocab.resolvesID, rideable: conjugationRideable),
             streakByDay: streakByDay,
             lifetimeWords: lifetimeWords,
             languageCode: languageCode)
@@ -1278,7 +1279,8 @@ final class AppModel {
     var statsHasRides: Bool { !journal.isEmpty }
     /// Near-term conjugation due buckets (surfaces the v1.8 conjugation SRS on the Stats screen).
     var conjugationDueForecast: ConjugationReviewStore.Forecast {
-        conjugationReviewStore.dueForecast(resolves: vocab.resolvesID)
+        conjugationReviewStore.dueForecast(resolves: vocab.resolvesID,
+                                           rideable: conjugationRideable)
     }
     // Both filtered on the verb still existing, matching the vocabulary side of the same
     // Stats card, which has been filtered since v1.21. Unfiltered, "Forms practiced" counted
@@ -1290,7 +1292,8 @@ final class AppModel {
         conjugationReviewStore.reviewedCount(resolves: vocab.resolvesID)
     }
     var conjugationLeechCount: Int {
-        conjugationReviewStore.leeches(resolves: vocab.resolvesID).count
+        conjugationReviewStore.leeches(resolves: vocab.resolvesID,
+                                       rideable: conjugationRideable).count
     }
 
     /// Capture-only: seed demo journal + conjugation data so the Stats screenshot has content
@@ -2019,10 +2022,32 @@ final class AppModel {
         screen = .playing
     }
 
+    /// Whether a conjugation card can still be RIDDEN — the `rideable:` half every due count on
+    /// `conjugationReviewStore` requires.
+    ///
+    /// **It IS `ConjugationSession.reviewPrompt`**, the very function `makeReview` skips a due
+    /// pair with, rather than a re-derivation that agrees with it today. That is the whole
+    /// point: read `ConjugationReviewStore`'s type doc for what a card counted here and skipped
+    /// there does to the menu, the widget, the Stats forecast and the reminder body. Twenty
+    /// instances of this defect are recorded in `STATE-2026-08-18.md` and every one of them had
+    /// two predicates that looked right in isolation.
+    ///
+    /// `@Sendable` over captured value types, so `refreshReminders` can hand it across its Task
+    /// hop for the same reason it captures `vocab.resolvesID` there — the model must not be
+    /// reached back into, and two vocabularies must not answer one question.
+    var conjugationRideable: @Sendable (ConjugationSRSCard) -> Bool {
+        let vocab = self.vocab
+        let lang = languageCode
+        return { card in
+            ConjugationSession.reviewPrompt(entryID: card.sourceID, formToken: card.formToken,
+                                            vocab: vocab, languageCode: lang) != nil
+        }
+    }
+
     /// How many (verb, form) cards are due for conjugation review right now. **Menu GATING
     /// only** — uncapped, so it answers "is anything due" and not "how many will I ride".
     var conjugationDueCount: Int {
-        conjugationReviewStore.dueCount(resolves: vocab.resolvesID)
+        conjugationReviewStore.dueCount(resolves: vocab.resolvesID, rideable: conjugationRideable)
     }
 
     /// The due (verb, form) pairs a review drill would actually ride: the cap applied.
@@ -2036,7 +2061,8 @@ final class AppModel {
     /// new sub-species of this project's cheapest detector, and it defeated it.
     var conjugationReviewQueue: [(entryID: String, formToken: String)] {
         conjugationReviewStore.dueCards(limit: Self.conjugationRunSize,
-                                        resolves: vocab.resolvesID)
+                                        resolves: vocab.resolvesID,
+                                        rideable: conjugationRideable)
             .map { (entryID: $0.sourceID, formToken: $0.formToken) }
     }
 

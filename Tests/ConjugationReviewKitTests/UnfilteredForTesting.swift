@@ -11,29 +11,79 @@ import Foundation
 extension ConjugationReviewStore {
     static var everythingResolves: (String) -> Bool { { _ in true } }
 
+    /// The `rideable:` half (v1.32 §C1). Same argument as `everythingResolves`: the production
+    /// default was removed so a NEW counting method cannot silently ship unfiltered, and the
+    /// noise that removal creates is absorbed here rather than at 40-odd call sites.
+    static var everythingRideable: (ConjugationSRSCard) -> Bool { { _ in true } }
+
     func dueCards(on date: Date = Date(), limit: Int = 100,
                   calendar: Calendar = .current) -> [ConjugationSRSCard] {
-        dueCards(on: date, limit: limit, calendar: calendar, resolves: Self.everythingResolves)
+        dueCards(on: date, limit: limit, calendar: calendar,
+                 resolves: Self.everythingResolves, rideable: Self.everythingRideable)
     }
 
     func dueCount(on date: Date = Date(), calendar: Calendar = .current) -> Int {
-        dueCount(on: date, calendar: calendar, resolves: Self.everythingResolves)
+        dueCount(on: date, calendar: calendar,
+                 resolves: Self.everythingResolves, rideable: Self.everythingRideable)
     }
 
     func dueByDay(asOf date: Date = Date(), horizon: Int,
                   calendar: Calendar = .current) -> [Int] {
-        dueByDay(asOf: date, horizon: horizon, calendar: calendar, resolves: Self.everythingResolves)
+        dueByDay(asOf: date, horizon: horizon, calendar: calendar,
+                 resolves: Self.everythingResolves, rideable: Self.everythingRideable)
     }
 
     func dueForecast(asOf date: Date = Date(), calendar: Calendar = .current) -> Forecast {
-        dueForecast(asOf: date, calendar: calendar, resolves: Self.everythingResolves)
+        dueForecast(asOf: date, calendar: calendar,
+                    resolves: Self.everythingResolves, rideable: Self.everythingRideable)
     }
 
-    func leeches() -> [ConjugationSRSCard] { leeches(resolves: Self.everythingResolves) }
+    func leeches() -> [ConjugationSRSCard] {
+        leeches(resolves: Self.everythingResolves, rideable: Self.everythingRideable)
+    }
 
     func reviewedCount() -> Int { reviewedCount(resolves: Self.everythingResolves) }
 
     func weakestFormCards(limit: Int = 100) -> [ConjugationSRSCard] {
-        weakestFormCards(limit: limit, resolves: Self.everythingResolves)
+        weakestFormCards(limit: limit,
+                         resolves: Self.everythingResolves, rideable: Self.everythingRideable)
+    }
+
+    // MARK: `resolves:` given, `rideable:` defaulted
+    //
+    // The suite has tests that exercise `resolves:` specifically — they predate `rideable:` and
+    // are about a different predicate. These keep them saying exactly what they said before,
+    // rather than editing them to carry an argument they are not about. A test rewritten to
+    // mention a second predicate stops being evidence about the first one.
+
+    func dueCards(on date: Date = Date(), limit: Int = 100, calendar: Calendar = .current,
+                  resolves: (String) -> Bool) -> [ConjugationSRSCard] {
+        dueCards(on: date, limit: limit, calendar: calendar,
+                 resolves: resolves, rideable: Self.everythingRideable)
+    }
+
+    func dueCount(on date: Date = Date(), calendar: Calendar = .current,
+                  resolves: (String) -> Bool) -> Int {
+        dueCount(on: date, calendar: calendar, resolves: resolves, rideable: Self.everythingRideable)
+    }
+
+    func dueByDay(asOf date: Date = Date(), horizon: Int, calendar: Calendar = .current,
+                  resolves: (String) -> Bool) -> [Int] {
+        dueByDay(asOf: date, horizon: horizon, calendar: calendar,
+                 resolves: resolves, rideable: Self.everythingRideable)
+    }
+
+    func dueForecast(asOf date: Date = Date(), calendar: Calendar = .current,
+                     resolves: (String) -> Bool) -> Forecast {
+        dueForecast(asOf: date, calendar: calendar,
+                    resolves: resolves, rideable: Self.everythingRideable)
+    }
+
+    func leeches(resolves: (String) -> Bool) -> [ConjugationSRSCard] {
+        leeches(resolves: resolves, rideable: Self.everythingRideable)
+    }
+
+    func weakestFormCards(limit: Int = 100, resolves: (String) -> Bool) -> [ConjugationSRSCard] {
+        weakestFormCards(limit: limit, resolves: resolves, rideable: Self.everythingRideable)
     }
 }

@@ -462,6 +462,37 @@ extension ConjugationSession {
         return ConjugationSession(prompts: prompts, config: config)
     }
 
+    /// The prompt one due `(entryID, formToken)` pair rides, or nil when it cannot be built.
+    ///
+    /// **This is the one predicate for "is this conjugation card rideable", and it exists to be
+    /// SHARED rather than agreed with.** `makeReview` skips a due pair exactly when this returns
+    /// nil — and then pads the run with a fresh weak-form prompt, so the drill writes its outcome
+    /// against a *different* card id and the skipped one is never graded. It stays maximally
+    /// overdue, sorts first in every due query, and keeps the menu button lit forever with
+    /// nothing behind it. Any count that promises this run must therefore filter with this
+    /// function, which is what `ConjugationReviewStore`'s `rideable:` parameter carries.
+    /// (v1.32 §C1; the shape is `StumbledWords.rideableIDs`, v1.24 §A.)
+    ///
+    /// Three things can make it nil, and the interesting ones are not the obvious one:
+    /// 1. `entryID` no longer names an entry — already covered by `resolves:`.
+    /// 2. `formToken` is not a `ConjugationForm` raw value — needs a case renamed or removed,
+    ///    which has never happened.
+    /// 3. **The entry survives but can no longer be conjugated into that form**: `verbClass`
+    ///    reads the corpus's opaque `vc` string, and `Conjugator.conjugate` fails per-form on a
+    ///    reading its class has no stem for. `resolves:` cannot see either. That door is *corpus
+    ///    edits*, which ship most releases — measured: `780d40d` (v1.14) changed three entries'
+    ///    `vc` (`n1-b479`, `n2-g040`, `n2-g058`, all `godan_u` → `suru`). Those three landed on a
+    ///    class that conjugates every form, so no card stranded; nothing about the edit made that
+    ///    outcome more likely than the other one.
+    public static func reviewPrompt(entryID: String, formToken: String,
+                                    vocab: VocabStore = .shared,
+                                    languageCode: String = "en") -> ConjugationPrompt? {
+        guard let entry = vocab.entry(id: entryID),
+              let form = ConjugationForm(rawValue: formToken)
+        else { return nil }
+        return ConjugationPrompt(entry: entry, form: form, languageCode: languageCode)
+    }
+
     /// Builds a **due-review** run (v1.8 §B): the caller's due `(entryID, formToken)` pairs
     /// first (in the given, soonest-first order), then fills up to `promptCount` with fresh
     /// (verb, form) prompts not already queued. GameCore takes only plain strings — `due`
@@ -470,6 +501,10 @@ extension ConjugationSession {
     /// `formToken` is a `ConjugationForm` raw value; a due pair whose entry is unresolvable,
     /// unconjugable, or whose token is unknown is skipped (resolve-then-guard). An empty
     /// result finishes the session immediately so the UI can guard the empty screen.
+    ///
+    /// **The skip is `reviewPrompt` and nothing else**, so every count that promises this run
+    /// can filter with the same function rather than agreeing with it by inspection — see that
+    /// method's doc for what a skipped-but-counted card does to the menu. (v1.32 §C1.)
     public static func makeReview(
         due: [(entryID: String, formToken: String)],
         vocab: VocabStore = .shared,
@@ -483,9 +518,8 @@ extension ConjugationSession {
         // 1) Due prompts, in order, capped at promptCount.
         for pair in due {
             if prompts.count >= config.promptCount { break }
-            guard let entry = vocab.entry(id: pair.entryID),
-                  let form = ConjugationForm(rawValue: pair.formToken),
-                  let p = ConjugationPrompt(entry: entry, form: form, languageCode: config.languageCode)
+            guard let p = reviewPrompt(entryID: pair.entryID, formToken: pair.formToken,
+                                       vocab: vocab, languageCode: config.languageCode)
             else { continue }
             if seen.insert(p.id).inserted { prompts.append(p) }
         }

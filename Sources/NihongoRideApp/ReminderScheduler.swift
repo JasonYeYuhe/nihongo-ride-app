@@ -37,8 +37,13 @@ enum ReminderScheduler {
     ///   global store. The model that owns `store` also owns the vocabulary it should be
     ///   filtered by; reading `.shared` here meant the badge and the menu could be computed
     ///   from two different vocabularies the moment a model held anything else. (v1.24.)
+    /// - Parameter rideable: the conjugation half of the same argument. A card whose form the
+    ///   engine can no longer build is never graded by any drill, so counting it here would
+    ///   send a notification saying "3 forms due" to a learner whose drill rides two of them
+    ///   and pads the third — the same divergence, delivered to the lock screen. (v1.32 §C1.)
     static func apply(enabled: Bool, store: ReviewStore, conjugationStore: ConjugationReviewStore,
                       resolves: @escaping @Sendable (String) -> Bool,
+                      rideable: @escaping @Sendable (ConjugationSRSCard) -> Bool,
                       hour: Int, languageCode: String) async -> Bool {
         let center = UNUserNotificationCenter.current()
 
@@ -60,7 +65,7 @@ enum ReminderScheduler {
         let reminders = DueReminderPlanner.plan(
             store: store,
             conjugationDue: { conjugationStore.dueCount(on: $0, calendar: $1,
-                                              resolves: resolves) },
+                                              resolves: resolves, rideable: rideable) },
             vocabResolves: resolves,
             from: Date(), hour: hour)
         for (index, reminder) in reminders.enumerated() {
@@ -77,10 +82,14 @@ enum ReminderScheduler {
                 identifier: "\(idPrefix)\(index)", content: content, trigger: trigger)
             try? await center.add(request)
         }
-        // Keep the app icon badge honest with what's due right now — both kinds.
+        // Keep the app icon badge honest with what's due right now — both kinds. The badge is
+        // the sixth reader of this count and was found by the compiler, not by the sweep that
+        // listed the other five: making `rideable:` required is what turned "somebody has to
+        // remember every call site" into "the build fails". (v1.24 §C's argument, v1.32 §C1's
+        // instance.)
         try? await center.setBadgeCount(
             store.dueCount(resolves: resolves)
-                + conjugationStore.dueCount(resolves: resolves))
+                + conjugationStore.dueCount(resolves: resolves, rideable: rideable))
         return true
     }
 
