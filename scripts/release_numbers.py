@@ -24,7 +24,10 @@ CORPUS_MANIFEST = None        # v1.30 ships the paid route and touches no vocabu
 # Advanced with every release. v1.27 moved it from 60c9ed9 (the v1.25 baseline) to the v1.26
 # release commit, so "this release" means since 1.26 and not since 1.25. Leaving it behind is how
 # a delta silently becomes a two-release total — the stale-number failure this module exists for.
-BASELINE_REF = "eb28e02"      # release(v1.30): Stage 1 submitted — both platforms and the IAP in review
+BASELINE_REF = "f258801"      # release(v1.31): macOS resubmitted carrying the purchase
+# Was eb28e02 (v1.30) until v1.32 — two releases behind, so every "this release" delta computed
+# from it silently included v1.31. n2.json changed inside that window, which is exactly the
+# stale-number failure the paragraph above names. Advance it WITH the release, not after it.
 
 
 def previous(ref=BASELINE_REF):

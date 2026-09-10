@@ -376,6 +376,7 @@ final class AppModel {
     private let customTextsWritable: Bool
     private let journalWritable: Bool
     private let odometerWritable: Bool
+    private let stumbleLedgerWritable: Bool
     /// What each store's load reported, for the launch log.
     private let persistLoadOutcomes: [(String, LossyLoad.Outcome)]
 
@@ -456,11 +457,15 @@ final class AppModel {
         reviewStore = reviewLoad.store
         let conjLoad = ConjugationReviewStore.loadReporting(from: conjugationReviewURL)
         conjugationReviewStore = conjLoad.store
-        // No `loadReporting` shape: a corrupt ledger degrades to an empty one and the learner
-        // starts accumulating again. That is a different trade from the review stores, and it is
-        // deliberate — this file is derived data with no schedule behind it, so quarantining it
-        // and refusing to write would cost more than it protects.
-        stumbleLedger = StumbleLedger.load(from: stumbleLedgerURL)
+        // A CORRUPT ledger degrades to an empty one and the learner starts accumulating again —
+        // that is a different trade from the review stores and it is deliberate, because this
+        // file is derived data with no schedule behind it. An UNREADABLE one is a different case
+        // and gets the same protection as every other store: `stumbleLedgerWritable` goes false
+        // and nothing overwrites bytes that are probably intact. The two used to be one branch,
+        // which meant one unlucky launch could cost a learner their whole stumble history on the
+        // next finished ride. (Found by the v1.32 pre-submission review.)
+        let stumbleLoad = StumbleLedger.loadReporting(from: stumbleLedgerURL)
+        stumbleLedger = stumbleLoad.ledger
         let customLoad = CustomTextStore.loadReporting(from: customTextsURL)
         customTexts = customLoad.store
         let journalLoad = RideJournal.loadReporting(from: journalURL)
@@ -472,9 +477,14 @@ final class AppModel {
         customTextsWritable = LossyLoad.isSafeToWrite(customLoad.outcome)
         journalWritable = LossyLoad.isSafeToWrite(journalLoad.outcome)
         odometerWritable = LossyLoad.isSafeToWrite(odometerLoad.outcome)
+        stumbleLedgerWritable = LossyLoad.isSafeToWrite(stumbleLoad.outcome)
         persistLoadOutcomes = [("review", reviewLoad.outcome), ("conjugation", conjLoad.outcome),
                                ("journal", journalLoad.outcome), ("odometer", odometerLoad.outcome),
-                               ("custom texts", customLoad.outcome)]
+                               ("custom texts", customLoad.outcome),
+                               // The one store with no schedule behind it is also the one whose
+                               // disappearance a learner notices and cannot explain, so it needs
+                               // the log line most, not least. (v1.32.)
+                               ("stumble ledger", stumbleLoad.outcome)]
         // Word lists load via a corruption-aware, one-time migration from the
         // legacy saved-words deck; localized default name applied after settings
         // load below. Temporary empty store until then (no reads in between).
@@ -1212,7 +1222,7 @@ final class AppModel {
     func foldStumbles(_ trace: MistakeTrace) {
         guard !Screenshotter.isCapturing else { return }
         stumbleLedger.fold(trace)
-        bgSave("stumble ledger", allowed: true) { [stumbleLedger, stumbleLedgerURL] in
+        bgSave("stumble ledger", allowed: stumbleLedgerWritable) { [stumbleLedger, stumbleLedgerURL] in
             try stumbleLedger.save(to: stumbleLedgerURL)
         }
     }
@@ -2346,7 +2356,16 @@ final class AppModel {
         }
         lastSummary = GameSummary(from: session)
         resultsAreConjugation = false
-        foldStumbles(session.mistakes)
+        // Gated on the SAME predicate that decides every other lifetime write in this function.
+        // A weak-words cram is not a ride: it does not log one, does not move the odometer, and
+        // does not count toward `lifetimeRuns` — so folding it made `runsRecorded` a denominator
+        // no other screen could reproduce, and the Stats card prints it as "the N rides where you
+        // slipped". Worse, the cram is reached from the results screen's "ride these words"
+        // button, i.e. the app's own remediation loop: slip on は, tap it, slip again, tap again,
+        // and three `runs` accrue in three minutes. `StumbleLedger`'s type doc says `runs` exists
+        // precisely to distinguish a habit from one bad minute; ungated, the feature manufactured
+        // the finding it was built to report. (Found by the v1.32 pre-submission review.)
+        if completion.logsRide { foldStumbles(session.mistakes) }
         // Read BEFORE `logRun` moves the odometer. Deriving it afterwards by subtracting the
         // ride's own distance would be arithmetic on a value that `SyncMerge` can change from
         // another device mid-run; this is the same question asked at a moment where it has one

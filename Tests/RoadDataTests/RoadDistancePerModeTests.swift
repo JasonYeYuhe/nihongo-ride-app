@@ -187,9 +187,16 @@ struct RoadDistancePerModeTests {
     /// The mode that is advertised for the first time by §F1 and moves the odometer by ZERO.
     ///
     /// Verbs runs on `ConjugationSession`, which holds no odometer and has no `distanceMeters` at
-    /// all — a conjugation drill is not a ride. This matters to the §K registration and it is the
-    /// half that first registration got wrong in the other direction: of the three modes the intro
-    /// newly names, one contributes nothing to exposure-per-install.
+    /// all — a conjugation drill is not a ride.
+    ///
+    /// **What this asserts, exactly: the mode HOLDS NO ODOMETER.** The doc here used to promote
+    /// that into "one of the three modes the intro newly names contributes nothing to
+    /// exposure-per-install", and §K credited it with the same. That is a different and larger
+    /// claim: a mode that moves the odometer by zero still consumes sittings, and a sitting spent
+    /// in it is one that does not advance the 25,000 m Kyōto predicate — so it can move
+    /// time-to-second-entrance LATER. A source scan for `distanceMeters` cannot see any of that.
+    /// §K now states the sign as unknown, and this test is credited with the narrow fact it holds.
+    /// (v1.32 pre-submission review.)
     @Test("the conjugation drill is not a ride — it moves the odometer by nothing")
     func conjugationDoesNotMoveTheOdometer() throws {
         let source = try String(
@@ -199,6 +206,6 @@ struct RoadDistancePerModeTests {
             encoding: .utf8)
         #expect(source.count > 5_000, "read \(source.count) bytes — the scan is misdirected")
         #expect(!source.contains("distanceMeters"),
-                "ConjugationSession gained a distance; §K's registration says Verbs contributes none")
+                "ConjugationSession gained a distance; §K's registration says Verbs holds no odometer")
     }
 }

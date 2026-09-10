@@ -18,6 +18,16 @@ import Foundation
 /// keylog scoped to a practice session. So it lives **in memory, for the current run only**.
 /// It is never written to disk, never enters the SRS card, and never goes near CloudKit. When
 /// the run ends the coach reads it, and when the session is released it is gone.
+///
+/// **One derivative is persisted, and this paragraph is where a privacy audit will look for it.**
+/// Since v1.32 `StumbleLedger` (DiagnosticsKit) keeps a per-KANA count folded out of these
+/// events: the kana, how many keystrokes were refused on it, how many runs it happened in, and
+/// the name of the dominant `TypingPattern`. The rejected keys themselves — the keylog — are
+/// still never written anywhere. That file is local, in Application Support, and nothing
+/// transmits it (`StumbleLedgerWiringTests.theLedgerIsNeverTransmitted` fails if anything ever
+/// does); it is inside the user's own device backup the same way every other store here is,
+/// which is what "never leaves the device" means in this app and what `Data Not Collected`
+/// declares. See `StumbleLedger`'s type doc for the rest.
 public struct MistakeEvent: Equatable, Sendable {
     /// The kana the learner was typing when this happened.
     public let targetKana: String

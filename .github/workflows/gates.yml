@@ -70,7 +70,7 @@ jobs:
           swift --version
           xcodebuild -version
           echo "::endgroup::"
-          swift --version 2>&1 | grep -q "Apple Swift version 6\." || {
+          swift --version 2>&1 | grep -q "Apple Swift version 6\.3\." || {
             echo "::error::the runner image's Swift is not 6.x — this repo's goldens are calibrated on 6.3.3"
             exit 1
           }

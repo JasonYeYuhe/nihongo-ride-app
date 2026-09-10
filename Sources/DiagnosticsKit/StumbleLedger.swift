@@ -1,5 +1,6 @@
 import Foundation
 import RomajiKana
+import PersistKit
 
 /// What a learner keeps getting refused on, **across rides** (v1.32 §F2).
 ///
@@ -29,16 +30,21 @@ import RomajiKana
 /// **Nothing here is ever transmitted.** `PLAN-WINDOW`'s constraint list forbids collected
 /// telemetry; it does not forbid counting, and this file counts. The app's privacy declaration
 /// stays `Data Not Collected` and this ledger must never become a reason to change it: it is a
-/// local file, in Application Support, beside the review stores, and it leaves the device only if
-/// the learner exports it themselves.
+/// local file, in Application Support, beside the review stores, and nothing in this app sends it
+/// anywhere — not CloudKit, not an export, not a log. It rides along in the user's own device
+/// backup exactly as every other store here does, which is what "stays on the device" means for
+/// this app and is consistent with `Data Not Collected`.
 ///
 /// # Bounds
 ///
 /// Keyed by kana, so the key space is the syllabary — a few hundred at most, and it cannot grow
 /// with the corpus the way an entry-id key would (7,071 and rising). `capacity` is a second belt:
 /// a corpus edit that introduced an unexpected character class cannot make this file grow without
-/// limit, and what was dropped is COUNTED rather than silently discarded, the same way
-/// `MistakeTrace.dropped` handles its own cap.
+/// limit, and what was dropped is COUNTED rather than silently discarded — counted for a future
+/// reader, which is a weaker promise than `MistakeTrace.dropped` keeps: that one reaches the
+/// learner, through `TypingDiagnostics`' `sampleTruncated`. `droppedKana` reaches a test and
+/// nothing else. Deliberate, because the cap cannot bind (see the key space above) — but stated
+/// accurately rather than by claiming a parity that is not there.
 public struct StumbleLedger: Codable, Equatable, Sendable {
 
     /// One kana the learner keeps being refused on.
@@ -53,21 +59,43 @@ public struct StumbleLedger: Codable, Equatable, Sendable {
         public var runs: Int
         /// When it was last refused, so a ledger can age.
         public var lastSeen: Date
-        /// The pattern that explains the most refusals on this kana, and how many it explains.
-        /// Stored rather than recomputed because the raw events are not kept — the whole point
-        /// of the ledger is that it is a summary, not a log.
-        public var dominantPattern: String
-        public var dominantCount: Int
+        /// Lifetime refusals on this kana, per `TypingPattern` raw value.
+        ///
+        /// Keyed by raw value rather than by the enum so the file survives a pattern being
+        /// renamed or retired — an unknown key decodes fine and simply stops winning.
+        ///
+        /// **A map, not a winner plus a tally**, and the first version was the latter: it kept
+        /// `dominantPattern`/`dominantCount` and compared each RUN's count against a LIFETIME
+        /// accumulator, so a challenger's evidence was thrown away instead of banked. Two
+        /// consequences. Once the incumbent's accumulator passed any plausible single-run count
+        /// the label could never change again — a learner who fixed their particle habit and now
+        /// trips on the same kana for a different reason kept being told the rule they had
+        /// already learned. And the "incumbent wins" branch ASSIGNED rather than added (run of 1
+        /// then run of 5 stored 5, not 6), so the number being compared was not the total it
+        /// claimed to be. Both were invisible: the comment above it said "decided over the
+        /// LIFETIME", which is what this now is. (v1.32 pre-submission review.)
+        public var patternCounts: [String: Int]
 
         public init(kana: String, refusals: Int, runs: Int, lastSeen: Date,
-                    dominantPattern: String, dominantCount: Int) {
+                    patternCounts: [String: Int]) {
             self.kana = kana
             self.refusals = refusals
             self.runs = runs
             self.lastSeen = lastSeen
-            self.dominantPattern = dominantPattern
-            self.dominantCount = dominantCount
+            self.patternCounts = patternCounts
         }
+
+        /// The pattern that explains the most refusals on this kana, over its whole history.
+        ///
+        /// Ties break by raw value, ascending — deterministic, so the screen does not reshuffle
+        /// between launches on equal evidence. `.unknown` when nothing has been recorded.
+        public var dominantPattern: String {
+            patternCounts.max { a, b in (a.value, b.key) < (b.value, a.key) }?.key
+                ?? TypingPattern.unknown.rawValue
+        }
+
+        /// How many refusals the dominant pattern explains.
+        public var dominantCount: Int { patternCounts[dominantPattern] ?? 0 }
 
         public var pattern: TypingPattern { TypingPattern(rawValue: dominantPattern) ?? .unknown }
     }
@@ -78,6 +106,9 @@ public struct StumbleLedger: Codable, Equatable, Sendable {
     public static let capacity = 400
 
     public private(set) var entries: [String: Entry]
+    /// How many entries the last decode had to drop. Zero for a ledger built in memory.
+    /// Reported by the loader, not acted on — the surviving entries are still correct.
+    public private(set) var skippedOnLoad: Int = 0
     /// Kana the cap refused to start tracking. Counted, never silently dropped: a ledger that
     /// quietly stopped recording would look exactly like a learner who stopped making mistakes.
     public private(set) var droppedKana: Int
@@ -95,14 +126,30 @@ public struct StumbleLedger: Codable, Equatable, Sendable {
     // malformed entry must not take the whole ledger with it. Unlike the review stores this one
     // is derived data and could be rebuilt from nothing — but "could be rebuilt" means "the
     // learner loses their history", which is the thing it exists to accumulate.
+    //
+    // The first version of this file said exactly the paragraph above and then decoded
+    // `[String: Entry]` whole, which is all-or-nothing: `Entry`'s six fields are synthesized and
+    // required, so one lost field threw for the entire dictionary and `load` swallowed it into an
+    // empty ledger. A guard stated in prose that nothing enforces is this project's second
+    // signature defect, and that one was in the store's own decoder. `lossyDictionary` is what
+    // the sentence claimed; `EntryLossyDecodeTests` is what keeps the claim honest.
     private enum CodingKeys: String, CodingKey { case entries, droppedKana, runsRecorded }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        let raw = try c.decodeIfPresent([String: Entry].self, forKey: .entries) ?? [:]
-        entries = raw
+        (entries, skippedOnLoad) = try LossyLoad.lossyDictionary(Entry.self, from: c, forKey: .entries)
         droppedKana = try c.decodeIfPresent(Int.self, forKey: .droppedKana) ?? 0
         runsRecorded = try c.decodeIfPresent(Int.self, forKey: .runsRecorded) ?? 0
+    }
+
+    // `entries` is no longer optional-tolerant at the key level, so an old file that predates the
+    // key (there is none — v1.32 is the first) or a hand-edited one missing it must still load.
+    // `lossyDictionary` requires the key; this keeps the encoder always writing it.
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(entries, forKey: .entries)
+        try c.encode(droppedKana, forKey: .droppedKana)
+        try c.encode(runsRecorded, forKey: .runsRecorded)
     }
 
     // MARK: Folding a run in
@@ -134,27 +181,19 @@ public struct StumbleLedger: Codable, Equatable, Sendable {
         }
 
         for (kana, bucket) in perKana {
-            let (pattern, count) = bucket.patterns
-                .max { a, b in (a.value, a.key.rawValue) < (b.value, b.key.rawValue) }
-                ?? (.unknown, 0)
+            // Every pattern this run saw is banked, not just the run's winner. `dominantPattern`
+            // then reads the lifetime maximum, which is what this type has always claimed to
+            // report — see `Entry.patternCounts` for what it used to do instead.
+            let counts = bucket.patterns.reduce(into: [String: Int]()) { $0[$1.key.rawValue] = $1.value }
             if var existing = entries[kana] {
                 existing.refusals += bucket.refusals
                 existing.runs += 1
                 existing.lastSeen = now
-                // The dominant pattern is decided over the LIFETIME, not by the latest run, so a
-                // single odd sitting cannot relabel a long-standing habit. Ties keep the
-                // incumbent, which makes the field stable rather than flapping.
-                if count > existing.dominantCount {
-                    existing.dominantPattern = pattern.rawValue
-                    existing.dominantCount = count
-                } else if existing.dominantPattern == pattern.rawValue {
-                    existing.dominantCount += count
-                }
+                for (pattern, n) in counts { existing.patternCounts[pattern, default: 0] += n }
                 entries[kana] = existing
             } else if entries.count < Self.capacity {
                 entries[kana] = Entry(kana: kana, refusals: bucket.refusals, runs: 1,
-                                      lastSeen: now, dominantPattern: pattern.rawValue,
-                                      dominantCount: count)
+                                      lastSeen: now, patternCounts: counts)
             } else {
                 droppedKana += 1
             }
@@ -211,10 +250,27 @@ public struct StumbleLedger: Codable, Equatable, Sendable {
         try data.write(to: url, options: .atomic)
     }
 
-    public static func load(from url: URL) -> StumbleLedger {
-        guard let data = try? Data(contentsOf: url),
-              let decoded = try? JSONDecoder().decode(StumbleLedger.self, from: data)
-        else { return StumbleLedger() }
-        return decoded
+    /// Loads the ledger and says what happened, so a caller that can WRITE it back can refuse to.
+    ///
+    /// The shape every other store here has, and it did not used to: this file loaded with the
+    /// `try? Data` / `try? decode` block quoted at the top of `LossyLoad` as the defect that
+    /// module exists to delete. Its third failure is the one that mattered here — **it cannot
+    /// tell "unreadable" from "undecodable"**, so a ledger the process momentarily could not READ
+    /// (file protection while the device is still unlocking, a busy volume, an iCloud-backed home
+    /// directory on macOS) came back empty and the very next finished ride wrote that emptiness
+    /// over bytes that were probably intact. The trade recorded in `AppModel.init` — "a corrupt
+    /// ledger degrades to an empty one … quarantining it and refusing to write would cost more
+    /// than it protects" — is a fair trade for `.undecodable` and a bad one for `.unreadable`,
+    /// where the cost of refusing to write is one session's stumbles and the cost of writing is
+    /// the learner's whole history.
+    public static func loadReporting(from url: URL) -> (ledger: StumbleLedger, outcome: LossyLoad.Outcome) {
+        let (decoded, outcome) = LossyLoad.load(StumbleLedger.self, from: url)
+        let ledger = decoded ?? StumbleLedger()
+        if ledger.skippedOnLoad > 0 {
+            return (ledger, .loadedWithSkips(skipped: ledger.skippedOnLoad))
+        }
+        return (ledger, outcome)
     }
+
+    public static func load(from url: URL) -> StumbleLedger { loadReporting(from: url).ledger }
 }

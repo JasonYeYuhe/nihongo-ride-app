@@ -62,8 +62,11 @@ let package = Package(
 
         // MARK: Loading JSON stores off disk without losing everything to one bad element.
         // MARK: Typing diagnostics — names what the engine refused, so the app can explain it.
-        .target(name: "DiagnosticsKit", dependencies: ["RomajiKana"]),
-        .testTarget(name: "DiagnosticsKitTests", dependencies: ["DiagnosticsKit", "RomajiKana"]),
+        // PersistKit for `LossyLoad`: `StumbleLedger` is a store on disk, and this repo has one
+        // way of reading a store off disk. Acyclic — PersistKit has no dependencies at all.
+        .target(name: "DiagnosticsKit", dependencies: ["RomajiKana", "PersistKit"]),
+        .testTarget(name: "DiagnosticsKitTests",
+                    dependencies: ["DiagnosticsKit", "RomajiKana", "PersistKit"]),
 
         .target(name: "PersistKit"),
         .target(name: "CustomTextKit", dependencies: ["PersistKit"]),

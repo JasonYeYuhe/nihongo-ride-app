@@ -35,7 +35,7 @@ safest item here: it touches no app code, so it cannot affect the measurement or
 | `launch_gate.sh` on the uploaded archive | ~20 s | **yes** — it exists because v1.4 shipped a launch crash that only a signed build on an iCloud-signed Mac reproduces |
 | build + upload ×2 | ~8 min | **yes** |
 | `run_ios_placement_tests.sh` | ~4 min | **only when UI or placement changed** |
-| `run_store_gates.sh` | ~1 min | **exits 3 with zero coverage today.** Run it, but it is not evidence — see `PLAN-STAGE1` §L |
+| `run_store_gates.sh` | ~1 min | **exits 3 with zero coverage today.** Run it, but it is not evidence — see `PLAN-STAGE1` §L. **exit 4 is NOT the tolerated state**: it means the harness could not start (the generated scheme lost its `StoreKitConfigurationFileReference`), which is a failure. 65 = a gate genuinely failed. |
 | byte-exact read-back of every ASC PATCH | seconds | **yes, always** — it is what caught the star-glyph rejection before review |
 
 ---

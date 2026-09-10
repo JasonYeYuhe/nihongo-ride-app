@@ -67,6 +67,7 @@ checkpoint 已改成安装量口径:N = 35 / 100 / 200(不是第 15/42/90 天)
 **只在 UI/位置改动时:** `scripts/run_ios_placement_tests.sh`(约 4 分钟)。**绝不能用管道**(管道会替换掉前一个命令的退出码)—— 用重定向。0 = 通过,65 = 有测试失败。
 
 `scripts/run_store_gates.sh` 现在 exit 3 且零覆盖 —— **照跑,但它不是证据,也绝不要为了让它变绿而削弱它。**
+只有 **3** 是被容忍的状态。v1.32 起 **exit 4 = harness 起不来**(生成的 scheme 丢了 `StoreKitConfigurationFileReference`),**65 = 真的有闸门失败**;这两个都是失败,不是"零覆盖"。
 
 # 这一轮踩过的坑,写下来省你的时间
 

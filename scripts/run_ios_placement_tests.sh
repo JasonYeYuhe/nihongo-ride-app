@@ -182,9 +182,15 @@ KB_GLOBAL="$(defaults read com.apple.iphonesimulator ConnectHardwareKeyboard 2>/
 command -v caffeinate > /dev/null 2>&1 || harness_error "caffeinate is not on PATH. It is what
   keeps this suite alive with the display asleep — measured 2026-08-30, four consecutive runs
   stalled at the build→test handoff at 0% CPU without it, with no diagnostic at all."
-grep -q "caffeinate -d -i xcodebuild test" "${BASH_SOURCE[0]}" || harness_error "the xcodebuild
-  invocation is no longer wrapped in \`caffeinate -d -i\`. That wrapper is the only thing standing
-  between an unattended run and a silent, indefinite stall."
+#    And the check has to be anchored, because the first version was not: it grepped this file
+#    for a string that its own line contained, so deleting BOTH wrappers left it green. A checker
+#    that cannot fail is worth less than no checker, because it is also believed. Both real
+#    invocations start at column 0; this line does not, so `^` separates them — and the count is
+#    asserted, so losing ONE of the two destinations is caught as well.
+WRAPPED=$(grep -c '^caffeinate -d -i xcodebuild test' "${BASH_SOURCE[0]}")
+[ "$WRAPPED" -eq 2 ] || harness_error "expected 2 xcodebuild invocations wrapped in
+  \`caffeinate -d -i\`, found $WRAPPED. That wrapper is the only thing standing between an
+  unattended run and a silent, indefinite stall — measured 2026-08-30."
 
 echo "==> preconditions ok: $SIM_NAME ($SIM_UDID), exclusive, software keyboard, caffeinate present"
 

@@ -595,13 +595,25 @@ true 5% refund rate, P(≥1) = 40%.
 > | Practice · hard | **4** | ~6,300 | no |
 >
 > `ConjugationSession` holds no odometer and has no `distanceMeters` at all — a conjugation drill
-> is not a ride. Pinned by `conjugationDoesNotMoveTheOdometer`, because §K now depends on it.
+> is not a ride. Pinned by `conjugationDoesNotMoveTheOdometer`, which asserts exactly that: **it
+> holds no odometer.** Not "contributes nothing to exposure-per-install" — that is a bigger claim
+> the test does not make, and the sentence below is why the difference matters.
 >
 > **So the honest statement of the exposure effect.** Of the three modes the intro newly names,
 > **Verbs contributes nothing**, and Sentence/Listen ride about **1.4× faster** to Kyōto than
 > Journey (33–34 rides against 48). Practice — by far the largest at 4–10 rides — was **already**
-> in the old intro, so this change does not newly expose it. The effect is real, one-directional
-> (shorter, never longer) and much smaller than the first version of this box claimed.
+> in the old intro, so this change does not newly expose it. The effect is real and much smaller
+> than the first version of this box claimed.
+>
+> **The net direction is UNKNOWN, and the earlier "one-directional (shorter, never longer)" was
+> wrong on this box's own table.** Verbs moves the odometer by zero. A sitting spent in a newly
+> advertised zero-metre mode is a sitting that does not advance the 25,000 m Kyōto predicate, so
+> time-to-second-entrance can move LATER as well as sooner — the direction the struck sentence
+> declared impossible. Everything in the table above is metres-per-ride *conditional on the mode
+> already being chosen*; nothing in it measures mode CHOICE, and mode choice is precisely what an
+> intro page changes. The mitigation two paragraphs down (nobody is pushed toward any mode) bounds
+> the ranking effect and does not close this one. So: bounded in magnitude, unknown in sign.
+> (Corrected by the v1.32 pre-submission review, before the window's first checkpoint.)
 >
 > **Why any of it matters here.** Kyōto sits at 25,000 m (`RideRoute.swift:174`) and arriving there
 > is the predicate that opens the SECOND offer entrance. So exposure-per-install is not a diffuse
@@ -611,7 +623,23 @@ true 5% refund rate, P(≥1) = 40%.
 > placement, the store metadata, and the number of entrances. Nobody is pushed toward any mode —
 > the six are listed in the order they were added, Journey first, exactly as the menu shows them —
 > and the intro carries no offer language, which
-> `OnboardingModesTests.theIntroCarriesNoOfferLanguage` enforces rather than intends.
+> `OnboardingModesTests.theIntroCarriesNoOfferLanguage` enforces rather than intends. That claim
+> was too wide when it was first written — the test's population was the six mode clauses, about a
+> third of what a fresh install reads — so the test was widened to match the sentence rather than
+> the sentence narrowed: it now covers every clause, every short label, both mode-page titles and
+> bodies in both languages, plus a source scan of `OnboardingView` for the four literal pages,
+> which are `private` and unreachable any other way. Constraint 1 is the one whose breach voids the
+> pre-registration, so it is the one that gets the whole surface.
+>
+> **Two further changes in this release, registered because constraint 3 says register rather than
+> avoid — both second-order, neither one a reason to hold anything.**
+>
+> * The `rideable:` filter added to every conjugation due-count is strictly SUBTRACTIVE — an added
+>   AND inside the same `filter`, so counts can only fall. It reaches the notification and the app
+>   icon badge through `ReminderScheduler`. Measured stranded population: zero, so the expected
+>   effect is nil with direction down.
+> * The intro is one page longer: `modesPerPage = 3` over six modes gives two mode pages where
+>   there was one, so a fresh install now taps four pages instead of three.
 >
 > **How to read a checkpoint against it.** §K's bound is `3/N` on observed installs and does not
 > move. Installs after this ships may convert at a slightly different rate per install for a reason

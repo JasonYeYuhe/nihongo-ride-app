@@ -25,6 +25,11 @@ WORK="$(mktemp -d "${TMPDIR:-/tmp}/launch-gate-test.XXXXXX")"
 trap 'rm -rf "$WORK" 2>/dev/null || true' EXIT
 
 FAILURES=0
+# Set when the ONE positive case — an entitled iOS bundle that must exit 0 — could not be built
+# on this machine. Every other case expects a NON-zero exit, so without it the suite still passes
+# while having proved only that the gate can say no. That is not a pass; it is no coverage, and
+# `run_all_gates.sh` has a column for exactly that distinction. (v1.32 pre-submission review.)
+NO_COVERAGE=0
 check() {
     local name="$1" want="$2" app="$3" got
     "$GATE" "$app" > "$WORK/out.txt" 2>&1
@@ -81,12 +86,31 @@ if [ -f "$ENTITLEMENTS" ]; then
         make_ios_app "$WORK/NoExt.app" no
         codesign -f -s - --entitlements "$ENTITLEMENTS" "$WORK/NoExt.app" > /dev/null 2>&1
         check "iOS bundle with the entitlement but no .appex" 1 "$WORK/NoExt.app"
+
+        # 5. `icloud-services` present, CONTAINER WRONG. The services key alone does not say which
+        #    container the app opens, and `CloudKitSyncController` opens exactly one by name — so a
+        #    build signed for somebody else's container passes the services grep and finds nothing
+        #    behind it at runtime. Without this case the container check added in v1.32 is
+        #    satisfied by an entitlements file that happens to contain the right string.
+        sed 's/iCloud\.com\.jasonye\.nihongoride/iCloud.com.example.wrong/g' \
+            "$ENTITLEMENTS" > "$WORK/wrong-container.entitlements"
+        if grep -q "iCloud.com.example.wrong" "$WORK/wrong-container.entitlements"; then
+            make_ios_app "$WORK/WrongContainer.app" yes
+            codesign -f -s - --entitlements "$WORK/wrong-container.entitlements" \
+                "$WORK/WrongContainer.app" > /dev/null 2>&1
+            check "iOS bundle entitled for the WRONG iCloud container" 1 "$WORK/WrongContainer.app"
+        else
+            echo "  SKIP  the entitlements file does not name the container by that string"
+            NO_COVERAGE=1
+        fi
     else
         echo "  SKIP  could not attach entitlements with an ad-hoc signature on this machine"
         echo "        — the PASS case is unverified here, which is stated rather than assumed"
+        NO_COVERAGE=1
     fi
 else
     echo "  SKIP  $ENTITLEMENTS not found"
+    NO_COVERAGE=1
 fi
 
 # 5. macOS shape is RECOGNISED — routed to the macOS branch rather than the iOS one. The launch
@@ -103,9 +127,14 @@ codesign -f -s - "$WORK/Mac.app" > /dev/null 2>&1
 check "macOS bundle with no entitlement is a HARNESS error, not a FAIL" 2 "$WORK/Mac.app"
 
 echo
-if [ "$FAILURES" -eq 0 ]; then
-    echo "launch_gate classification: all cases correct"
-    exit 0
+if [ "$FAILURES" -gt 0 ]; then
+    echo "launch_gate classification: $FAILURES case(s) wrong"
+    exit 1
 fi
-echo "launch_gate classification: $FAILURES case(s) wrong"
-exit 1
+if [ "$NO_COVERAGE" -eq 1 ]; then
+    echo "launch_gate classification: no case wrong, but the POSITIVE control did not run —"
+    echo "  every case that DID run expects a non-zero exit, so nothing here proves the gate can pass."
+    exit 3
+fi
+echo "launch_gate classification: all cases correct"
+exit 0

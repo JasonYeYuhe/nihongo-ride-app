@@ -47,7 +47,7 @@ import Foundation
 /// So a clean run means "no NEW instance of the shape in the files scanned". It does not mean the
 /// app survives AX5, and nothing but a device can mean that.
 ///
-/// # How much of the known population it actually covers — MEASURED, 4 of 7
+/// # How much of the known population it actually covers — MEASURED, 5 of 7
 ///
 /// The question that finds a blind spot is not *what did it catch* but *what can it NOT see*, and
 /// the honest answer is checked against the seven instances above rather than estimated:
@@ -58,11 +58,19 @@ import Foundation
 /// | ✅ | v1.31 conjugation HUD capsule | in scope |
 /// | ✅ | v1.31 conjugation form chip | in scope |
 /// | ✅ | v1.32 Ride Log / Stats header | in scope |
-/// | ◐ | v1.32 Ride Log row at AX5 | the row is in scope; its numbers come from `rowStat()` and are not |
+/// | ✅ | v1.32 Ride Log row at AX5 | in scope — `rowStat()` declares its OWN `HStack`, so its `Text`s |
+/// |   |   | are attributed to it and were caught directly. This row read ◐ until the |
+/// |   |   | v1.32 review re-ran the scan over the PRE-FIX tree and got two hits |
 /// | ❌ | v1.32 Stats "Tomorrow" | `dueChip()` is a helper — its `HStack` is at the CALL SITE, in another function |
 /// | ❌ | v1.31 Settings romaji picker | a `Picker`, not a `Text` in an `HStack`. A different shape entirely |
 ///
-/// **Four and a half of seven.** That is worth having and it is not a gate on this defect class —
+/// **Five of seven**, and the corrected row is worth reading twice: the ◐ was written from the
+/// general rule "a helper's `Text`s are attributed to the helper", which is true, and then applied
+/// to a helper that opens its own row — where it does not cost coverage at all. A coverage claim
+/// derived from a rule instead of from a run is the same mistake as a gate believed because it is
+/// green. It was corrected by running the scan against `git show 6e582e3:…JournalView.swift`.
+///
+/// That is worth having and it is not a gate on this defect class —
 /// and the two it misses are missed for reasons no amount of tuning fixes: a source scan cannot
 /// follow a helper to its call sites without becoming a type checker, and a `Picker` squeezing its
 /// segments is not this shape at all.
@@ -112,6 +120,28 @@ struct HorizontalTextFitTests {
     /// A `FlowLayout` CLEARS the constraint, because it wraps: a `Text` inside one is in a
     /// horizontal container that can grow downward, which is the fix the Stats chips and the
     /// stacked Ride Log row both use.
+    /// Strips the Swift keywords a container or a `Text` can legitimately hide behind, so the
+    /// prefix test below sees `HStack(` on `return HStack(spacing: 12) {` and on
+    /// `else { HStack(alignment: .top) { … } }`.
+    ///
+    /// Repeated, because `else { return HStack(` is both. Deliberately NOT a general expression
+    /// parser: matching `HStack` anywhere on the line would count it inside a string, a comment
+    /// tail or a type annotation, and a scan that over-reports is a scan people switch off.
+    /// `hasPrefix` after stripping keeps the "this line OPENS a container" meaning intact.
+    static func stripLeadingKeywords(_ line: String) -> String {
+        var out = line
+        var changed = true
+        while changed {
+            changed = false
+            for keyword in ["return ", "else { ", "else {", "{ "] where out.hasPrefix(keyword) {
+                out = String(out.dropFirst(keyword.count)).trimmingCharacters(in: .whitespaces)
+                changed = true
+                break
+            }
+        }
+        return out
+    }
+
     static func findings(in source: String, file: String) -> [Finding] {
         var out: [Finding] = []
         let lines = source.components(separatedBy: "\n")
@@ -128,10 +158,18 @@ struct HorizontalTextFitTests {
             // Close every container the current line has dedented out of.
             stack.removeAll { indent <= $0.indent }
 
-            if trimmed.hasPrefix("HStack") { stack.append((indent, .horizontal)) }
-            if trimmed.hasPrefix("FlowLayout") { stack.append((indent, .wrapping)) }
+            // `hasPrefix` on the raw trimmed line missed twelve of the app's horizontal
+            // containers, because `return HStack(spacing: 12) {` and `else { HStack(...) {` are
+            // both ordinary ways to write one — and with the container invisible, every `Text`
+            // inside it was invisible too. Five live instances of the exact shape this file
+            // defines were outside the scan, and the ceiling of 34 had been measured over that
+            // reduced population. So the leading keywords are stripped before the test.
+            // (Found by the v1.32 pre-submission review.)
+            let opener = Self.stripLeadingKeywords(trimmed)
+            if opener.hasPrefix("HStack") { stack.append((indent, .horizontal)) }
+            if opener.hasPrefix("FlowLayout") { stack.append((indent, .wrapping)) }
 
-            guard trimmed.hasPrefix("Text(") else { continue }
+            guard opener.hasPrefix("Text(") else { continue }
             // Constrained if any ancestor is horizontal and no NEARER ancestor wraps.
             var constrained = false
             for container in stack.reversed() {
@@ -171,7 +209,7 @@ struct HorizontalTextFitTests {
 
     /// **A number that must not grow.**
     ///
-    /// Measured 2026-09-10 after the §E pass: **34**, and the number is the measurement rather
+    /// Measured 2026-09-10 after the §E pass: **39**, and the number is the measurement rather
     /// than a guess. The first draft wrote 47 from intuition — a ceiling forty percent above the
     /// real count, which is a ceiling that can never bind, which is not a gate. It was measured by
     /// setting it to zero and reading what the failure printed.
@@ -179,7 +217,26 @@ struct HorizontalTextFitTests {
     /// Every remaining occurrence is one somebody has to look at before adding to; a NEW one is a
     /// new instance of a shape this app has shipped seven times, and it should be fixed or
     /// explicitly accepted by moving this number in a diff somebody has to justify.
-    static let accepted = 34
+    ///
+    /// **It moved 34 → 39 without a line of view code changing**, and that is the honest kind of
+    /// growth: the scan learned to see `return HStack(spacing: 12) {`, which is how twelve of this
+    /// app's horizontal containers are written, and every `Text` inside those twelve had been
+    /// outside the population the old 34 was measured over. The five that appeared are examined
+    /// rather than merely tolerated — the whole point of a residue is that somebody looked:
+    ///
+    /// * `ListsView:143` `Text(name)` — a word-list name the LEARNER typed, the longest string in
+    ///   this list. It sits in a `VStack` with `.frame(maxWidth: .infinity)`, so it wraps
+    ///   downward; a row that grows taller is not the clipping shape this file is about.
+    /// * `ListsView:422` `Text(entry?.surface ?? …)` — same column shape, and a Japanese surface
+    ///   is a handful of characters.
+    /// * `MenuView:706` `Text(stop.0)` — one emoji (🗼 / 🗻 / 🏯 / ⛩️).
+    /// * `ConjugationGameView:397` and `GameView:792` `Text(key)` — a SINGLE character, in a
+    ///   monospaced chip built by `ForEach` over `expectedNextCharacters`.
+    ///
+    /// None of the five is a defect; all five belong in the count, because the count's job is to
+    /// stop the population growing silently, and a population that excluded a whole syntactic form
+    /// could not do that. (v1.32 pre-submission review.)
+    static let accepted = 39
 
     @Test("no NEW Text in a horizontal row without a line limit or a shrink allowance")
     func theShapeDoesNotGrow() throws {
@@ -272,6 +329,43 @@ struct HorizontalTextFitTests {
         #expect(Self.findings(in: flowing, file: "x").isEmpty,
                 "FlowLayout wraps — a Text inside one is not the shape")
 
+        // A container opened behind `return`, `else {`, or both. Twelve of this app's horizontal
+        // containers are written this way, and the scan could not see any of them — so every Text
+        // inside them was outside the population the ceiling was measured over. The ceiling alone
+        // cannot protect this: losing the ability to see them makes the count go DOWN, which no
+        // upper bound catches. This is the assertion that does. (v1.32 pre-submission review.)
+        let behindReturn = """
+        return HStack(spacing: 12) {
+            Text(name)
+                .scaledSystemFont(16, weight: .semibold)
+        }
+        """
+        #expect(Self.findings(in: behindReturn, file: "x").count == 1,
+                "`return HStack(` does not open a container for this scan — twelve of the app's rows are invisible to it")
+
+        let behindElse = """
+        else { HStack(alignment: .top, spacing: 18) {
+            Text(label)
+                .scaledSystemFont(12)
+        } }
+        """
+        #expect(Self.findings(in: behindElse, file: "x").count == 1,
+                "`else { HStack(` does not open a container for this scan")
+
+        // …and the negative that keeps the strip from turning every line into a container. The
+        // scanner hands it an already-trimmed line, so what is checked is that stripping the
+        // KEYWORDS does not turn a line merely mentioning HStack into one that opens a row.
+        #expect(Self.stripLeadingKeywords("let note = \"see the HStack above\"") == "let note = \"see the HStack above\"")
+        let mentionsOnly = """
+        VStack {
+            let note = "see the HStack above"
+            Text(name)
+                .scaledSystemFont(16)
+        }
+        """
+        #expect(Self.findings(in: mentionsOnly, file: "x").isEmpty,
+                "a line that merely names HStack opened a horizontal container")
+
         // And a Text with no scaled font is outside the population: it does not grow with the
         // accessibility sizes, so it cannot produce this defect.
         let unscaled = """
@@ -292,8 +386,8 @@ struct HorizontalTextFitTests {
     /// this scan reads one function at a time; the Settings picker is a `Picker`, not a `Text` in
     /// a row. Recorded as a measurement rather than left implied, because "the scan is green" and
     /// "the class is covered" are different sentences and this repo has paid for confusing them.
-    @Test("the scan's blind spots are the ones documented, and no more")
-    func theBlindSpotsAreKnown() throws {
+    @Test("dueChip keeps the floor the scan cannot see")
+    func theDueChipBlindSpotIsCompensated() throws {
         let stats = try String(contentsOf: Self.appDirectory.appendingPathComponent("StatsView.swift"),
                                encoding: .utf8)
         // `dueChip`'s label carries its floor. If somebody removes it, THIS scan will not notice —
@@ -302,9 +396,37 @@ struct HorizontalTextFitTests {
             Issue.record("dueChip moved; the blind-spot compensation below is measuring nothing")
             return
         }
-        let body = String(stats[chip.lowerBound...].prefix(700))
+        // Brace-balanced, not `prefix(700)`. Measured: 700 characters from `private func dueChip`
+        // already lands 13 characters INSIDE the next function, `miniStat`, whose own two `Text`s
+        // are among the accepted residue — so give either of them a `lineLimit` and this assertion
+        // would have passed on a floor belonging to a different function. A window that can drift
+        // into its neighbour is not a window. (v1.32 pre-submission review.)
+        let body = Self.functionBody(of: stats, from: chip.lowerBound)
+        #expect(!body.isEmpty && body.count < 700,
+                "the brace walk returned \(body.count) characters — it did not find dueChip's body, so what follows is measuring nothing")
+        #expect(!body.contains("func miniStat"), "the window overran into the next function again")
         #expect(body.contains("minimumScaleFactor") || body.contains("lineLimit"),
                 "dueChip's label lost its floor, and the source scan CANNOT see it — the HStack that constrains it is at the call site, so this assertion is the only cover")
+    }
+
+    /// One declaration's body, from its opening `{` to the brace that closes it.
+    ///
+    /// Deliberately naive about braces in strings and comments: over-running by a few characters
+    /// would be a bug, and the assertions above check the result is bounded and does not reach the
+    /// next declaration, rather than trusting the walk.
+    static func functionBody(of source: String, from start: String.Index) -> String {
+        guard let open = source[start...].firstIndex(of: "{") else { return "" }
+        var depth = 0
+        var cursor = open
+        while cursor < source.endIndex {
+            if source[cursor] == "{" { depth += 1 }
+            if source[cursor] == "}" {
+                depth -= 1
+                if depth == 0 { return String(source[open...cursor]) }
+            }
+            cursor = source.index(after: cursor)
+        }
+        return ""
     }
 
     @Test("none of the seven shipped instances is still in the tree")

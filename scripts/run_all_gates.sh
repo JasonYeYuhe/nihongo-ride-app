@@ -153,7 +153,10 @@ done
 # …and the shell ones. Both guard a script that can REFUSE A RELEASE, which is exactly the
 # authority a gate should not have before somebody has watched it fail.
 run_gate "test_run_store_gates.sh" "" bash scripts/test_run_store_gates.sh
-run_gate "test_launch_gate.sh" "" bash scripts/test_launch_gate.sh
+# exit 3 = the one POSITIVE case could not be built on this machine (no ad-hoc entitlements).
+# Every other case expects a non-zero exit, so a run without it has proved only that the gate can
+# say no — that is NO COVERAGE, not a pass, and it used to print `ok`.
+run_gate "test_launch_gate.sh" "3" bash scripts/test_launch_gate.sh
 
 run_gate "check_versions.py" "" python3 scripts/check_versions.py
 
@@ -167,6 +170,16 @@ run_gate "check_versions.py" "" python3 scripts/check_versions.py
 # (§D6's own text specifies `check_vocab_diff.py --manifest`. That is not a valid invocation —
 #  `--manifest` takes a path to a JSON declaring a reviewed structural change. The runner found
 #  it on the first run, by exit 2.)
+# The local emptiness test compares against the PREVIOUS COMMIT, not against the working tree.
+# `git diff HEAD` goes empty the moment a corpus change is committed — which is to say, exactly
+# when the guard is most needed and no later than the commit before the release. So the window
+# that decides "there is nothing to inspect" has to include at least the last commit; CI passes
+# an explicit `--vocab-base` and takes the branch above. (v1.32 pre-submission review.)
+LOCAL_VOCAB_BASE="HEAD~1"
+if ! git rev-parse --verify --quiet "$LOCAL_VOCAB_BASE^{commit}" > /dev/null; then
+  LOCAL_VOCAB_BASE="HEAD"   # a repo with one commit; nothing earlier to compare to
+fi
+
 if [ -n "$VOCAB_BASE" ]; then
   # An explicit base was given, so there IS something to compare. Refuse a base that is not a
   # real commit rather than letting git's error read as "nothing changed".
@@ -177,8 +190,8 @@ if [ -n "$VOCAB_BASE" ]; then
     run_gate "check_vocab_diff.py --base $VOCAB_BASE" "" \
       python3 scripts/check_vocab_diff.py --base "$VOCAB_BASE"
   fi
-elif [ -z "$(git diff --name-only HEAD -- Sources/VocabKit/Resources)" ]; then
-  printf '  %-34s %s\n' "check_vocab_diff.py" "vacuous (no corpus change in the working tree)"
+elif [ -z "$(git diff --name-only "$LOCAL_VOCAB_BASE" -- Sources/VocabKit/Resources)" ]; then
+  printf '  %-34s %s\n' "check_vocab_diff.py" "vacuous (no corpus change since $LOCAL_VOCAB_BASE)"
   VACUOUS+=("check_vocab_diff.py")
 else
   run_gate "check_vocab_diff.py" "" python3 scripts/check_vocab_diff.py
@@ -209,8 +222,14 @@ printf '  FAILED:      %d\n' "${#FAILED[@]}"
 # and read exactly like a clean run — this repo's oldest defect, pointed at its own runner.
 TOTAL=$(( ${#PASSED[@]} + ${#NOCOVERAGE[@]} + ${#FAILED[@]} + ${#VACUOUS[@]} ))
 printf '  gates run:   %d\n' "$TOTAL"
-FLOOR=9
-if [ -n "$HEADLESS" ]; then FLOOR=8; fi
+# The floor is the EXACT number of gates this script runs, not one below it. It used to be one
+# below, which meant the single failure it exists to catch — a gate quietly disappearing, from a
+# glob that stopped matching or a file that got renamed — left the total at exactly the floor and
+# printed a clean summary. A threshold that the failure mode cannot cross is not a threshold.
+# Adding a gate raises the total and still passes; REMOVING one has to be done in a diff that also
+# moves this number, which is the whole point. (v1.32 pre-submission review.)
+FLOOR=10
+if [ -n "$HEADLESS" ]; then FLOOR=9; fi
 if [ "$TOTAL" -lt "$FLOOR" ]; then
   echo
   echo "  ❌ only $TOTAL gate(s) ran. This script expects at least $FLOOR; a glob that matched nothing"

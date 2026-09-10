@@ -49,6 +49,12 @@ set -euo pipefail
 #    0  the gates ran and passed
 classify_store_gates() {
   local status="$1" log="$2"
+  # The second grep is belt-and-braces, not the working condition: XCTestCore's format string is
+  # `Executed %lu test%s, with%@ %lu failure%s ...` where the %@ is either empty or
+  # " %lu test%s skipped and", so a real no-skip run has NO skipped clause and never prints
+  # "0 tests skipped". Kept because an older Xcode or a wrapper could, and it costs nothing —
+  # but the first grep is what does the work. (Format verified against XCTestCore, 2026-09-10;
+  # `test_run_store_gates.sh` carries the extraction and the fixtures now use the real shape.)
   if grep -q "with [0-9]* tests* skipped" "$log" \
      && ! grep -qE "Executed [0-9]+ tests?, with 0 tests? skipped" "$log"; then
     local skipped

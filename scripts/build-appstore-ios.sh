@@ -86,8 +86,17 @@ echo "    ✓ $ARCHIVE"
 # It cannot LAUNCH the app; that needs a device, and it says so rather than printing a pass.
 APP_IN_ARCHIVE="$ARCHIVE/Products/Applications/Nihongo Ride.app"
 echo "==> [1b/2] iOS artifact gate"
-if ! "$SCRIPT_DIR/launch_gate.sh" "$APP_IN_ARCHIVE"; then
-    echo "❌ Refusing to continue: the archived iOS app failed its artifact gate."
+# The two non-zero codes are NOT the same news, and launch_gate.sh's own header says the
+# distinction is why it exists: 1 = the app is broken, 2 = the gate could not inspect it. A bare
+# `if !` collapses them, so a missing Info.plist would have been reported as a shipping defect and
+# a shipping defect as a possible harness fault. (v1.32 pre-submission review.)
+"$SCRIPT_DIR/launch_gate.sh" "$APP_IN_ARCHIVE"; GATE=$?
+if [ "$GATE" -eq 2 ]; then
+    echo "❌ HARNESS ERROR: the gate could not inspect $APP_IN_ARCHIVE. Fix the harness, not the app."
+    exit 1
+fi
+if [ "$GATE" -ne 0 ]; then
+    echo "❌ The archived iOS app FAILED its artifact gate (exit $GATE). Do not ship it."
     exit 1
 fi
 

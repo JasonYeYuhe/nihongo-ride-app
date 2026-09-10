@@ -29,6 +29,41 @@ struct CoachContentTests {
         }
     }
 
+    /// **No markup, because nothing renders it.**
+    ///
+    /// Both consumers hand these strings to `Text(_:)` as a `String` VARIABLE — `CoachView` at
+    /// its advice row and `StatsView`'s stumble card — which selects the `StringProtocol`
+    /// overload. Only `Text(_ key: LocalizedStringKey)`, chosen for a string LITERAL, parses
+    /// Markdown, and there is no `AttributedString`, `LocalizedStringKey(…)` or `extension Text`
+    /// anywhere in Sources. So a `**` here is a `**` on screen.
+    ///
+    /// It was: the Chinese `particleSpelling` rule shipped with `**打字要按写法**`, and that is
+    /// the pattern this card names most often (152 of the 233 passages contain は). Caught by the
+    /// v1.32 pre-submission review, on the release's headline new feature.
+    ///
+    /// The rule is stated over EVERY string rather than the one that was wrong, because a fix
+    /// applied to one call site is the defect this project keeps re-buying.
+    @Test("no advice string carries Markdown that nothing will render")
+    func noMarkup() {
+        // Emphasis, code spans, links, headings — the four `Text(LocalizedStringKey:)` would
+        // consume and `Text(String)` will not.
+        let markup = ["**", "__", "`", "](", "# "]
+        var inspected = 0
+        for pattern in TypingPattern.allCases where pattern != .unknown {
+            for zh in [true, false] {
+                guard let a = CoachContent.advice(for: pattern, zh: zh) else { continue }
+                inspected += 1
+                for token in markup {
+                    #expect(!a.rule.contains(token), "\(pattern) \(zh ? "zh" : "en") rule contains \(token), which renders literally: \(a.rule)")
+                    #expect(!a.title.contains(token), "\(pattern) \(zh ? "zh" : "en") title contains \(token), which renders literally: \(a.title)")
+                }
+            }
+        }
+        // A scan that inspected nothing reports clean. Both languages, every pattern but .unknown.
+        #expect(inspected == (TypingPattern.allCases.count - 1) * 2,
+                "the scan saw \(inspected) strings, not \((TypingPattern.allCases.count - 1) * 2) — it is measuring a smaller population than it claims")
+    }
+
     @Test("unknown gets no advice — silence beats invented encouragement")
     func unknownSaysNothing() {
         // "Keep practicing! You're getting the hang of it." is what the on-device model

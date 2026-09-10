@@ -82,6 +82,31 @@ xcodebuild archive \
     -quiet
 echo "    ✓ $ARCHIVE"
 
+# The artifact gate, on the platform it was WRITTEN for.
+#
+# launch_gate.sh exists because macOS 1.4 was rejected by App Review for a launch crash, and
+# v1.32 wired it into the iOS build path and not this one — so the iOS build printed a visible
+# gate step and this build's silence read as "handled". It was not handled; it was absent.
+# PLAN-ITERATION.md:35 has listed it as required for the uploaded archive the whole time.
+#
+# Unconditional, not gated on --upload: a gate that only runs on the release path has never been
+# run before the release path, which is the one place a surprise is expensive. It costs ~20 s.
+APP_IN_ARCHIVE="$ARCHIVE/Products/Applications/Nihongo Ride.app"
+echo "==> [1b/2] macOS artifact gate"
+# The two non-zero codes are NOT the same news, and launch_gate.sh's own header says the
+# distinction is why it exists: 1 = the app is broken, 2 = the gate could not inspect it. A bare
+# `if !` collapses them, so a missing Info.plist would have been reported as a shipping defect and
+# a shipping defect as a possible harness fault. (v1.32 pre-submission review.)
+"$SCRIPT_DIR/launch_gate.sh" "$APP_IN_ARCHIVE"; GATE=$?
+if [ "$GATE" -eq 2 ]; then
+    echo "❌ HARNESS ERROR: the gate could not inspect $APP_IN_ARCHIVE. Fix the harness, not the app."
+    exit 1
+fi
+if [ "$GATE" -ne 0 ]; then
+    echo "❌ The archived macOS app FAILED its artifact gate (exit $GATE). Do not ship it."
+    exit 1
+fi
+
 if [[ "$UPLOAD" != true ]]; then
     echo "==> [2/2] Skipping upload (pass --upload to export + upload to ASC)"
     echo "Done. Archive at $ARCHIVE"

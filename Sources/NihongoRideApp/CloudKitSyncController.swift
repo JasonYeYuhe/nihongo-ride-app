@@ -578,7 +578,9 @@ final class CloudKitSyncController: NSObject, CKSyncEngineDelegate {
     /// beside an ON toggle — and the load-bearing half of that argument is that this function
     /// cannot return `.off`. Nothing enforced it. A guard stated in prose that nothing enforces
     /// is the defect §A says the survey found inside this repo's own gates, so the close is now
-    /// a test (`SyncStatusNeverOffTests`) instead of a paragraph.
+    /// a test (`LocalChangeSeamTests`, its never-`.off` cases) instead of a paragraph. The comment
+    /// named `SyncStatusNeverOffTests` until v1.32 — a suite that has never existed, so a reader
+    /// grepping for the guard found nothing and would reasonably conclude there was none.
     nonisolated static func status(for error: Error) -> AppModel.SyncStatus {
         if let ckError = error as? CKError {
             switch ckError.code {

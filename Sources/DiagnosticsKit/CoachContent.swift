@@ -60,7 +60,12 @@ public enum CoachContent {
             return zh
                 ? CoachAdvice(
                     title: "有些假名不按读音拼",
-                    rule: "は、へ、を 作助词时读作 wa、e、o,但**打字要按写法**:ha、he、wo。"
+                    // No Markdown. `Text(_:)` given a String variable takes the StringProtocol
+                    // overload, which does not parse it — only a string LITERAL becomes a
+                    // LocalizedStringKey — so the asterisks rendered verbatim on two screens.
+                    // The English sibling below already carries the emphasis as capitalised
+                    // WRITTEN, with no markup; this now matches it. (v1.32.)
+                    rule: "は、へ、を 作助词时读作 wa、e、o,但打字要按写法:ha、he、wo。"
                         + "「こんにちは」要打 konnichiha。",
                     drillHelps: true)
                 : CoachAdvice(

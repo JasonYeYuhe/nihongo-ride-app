@@ -84,18 +84,55 @@ struct OnboardingModesTests {
     /// this is worth a check rather than an intention. `Journey`'s clause says "unlock landmarks",
     /// which is about the free road; the words below are the ones that would make the intro a
     /// third purchase entrance.
-    @Test("no mode clause mentions the road, a price, or a purchase")
-    func theIntroCarriesNoOfferLanguage() {
+    /// **The population is the WHOLE intro, not just the mode clauses.**
+    ///
+    /// It was the clauses alone — roughly a third of what a fresh install reads — while §K credited
+    /// this test with guarding the intro. So the titles, the bodies and the four non-mode pages
+    /// were uncovered, and constraint 1 is the one whose breach voids the pre-registration. The
+    /// four literal pages cannot be reached through an API (`OnboardingView.pages` is `private` on
+    /// a SwiftUI view), so they are scanned in source — the same technique `theMenuPickerIsDerived`
+    /// below already uses in this file, for the same reason. (v1.32 pre-submission review.)
+    @Test("nothing in the intro mentions the road, a price, or a purchase")
+    func theIntroCarriesNoOfferLanguage() throws {
         let forbidden = ["Kyōto", "Kyoto", "京都", "西", "Road West", "road west",
                          "purchase", "buy", "unlock the road", "购买", "解锁道路", "¥", "$"]
+        var inspected = 0
+        func check(_ text: String, _ where_: String) {
+            inspected += 1
+            for word in forbidden {
+                #expect(!text.contains(word),
+                        "\(where_) contains offer language: \(word) — that makes the intro a third purchase entrance, which is a constraint-1 change and voids the §K pre-registration")
+            }
+        }
+
         for zh in [false, true] {
             for mode in GameMode.allCases {
-                let clause = mode.onboardingClause(zh: zh)
-                for word in forbidden {
-                    #expect(!clause.contains(word),
-                            "\(mode)'s \(zh ? "zh" : "en") clause contains offer language: \(word)")
-                }
+                check(mode.onboardingClause(zh: zh), "\(mode)'s \(zh ? "zh" : "en") clause")
+                check(mode.shortLabel(zh: zh), "\(mode)'s \(zh ? "zh" : "en") label")
             }
+            for chunk in 0..<OnboardingView.modeChunks.count {
+                check(OnboardingView.modesTitle(zh: zh, chunk: chunk), "modes page \(chunk) title (\(zh ? "zh" : "en"))")
+                check(OnboardingView.modesBody(zh: zh, chunk: chunk), "modes page \(chunk) body (\(zh ? "zh" : "en"))")
+            }
+        }
+        #expect(inspected >= (GameMode.allCases.count * 4) + 4,
+                "the scan saw \(inspected) strings — it is measuring a smaller population than it claims")
+
+        // The four non-mode pages are string literals inside a `private` computed property, so the
+        // only instrument that can see them is the source. The floor matters as much as the rule.
+        let source = try String(
+            contentsOf: URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+                .appendingPathComponent("Sources/NihongoRideApp/OnboardingView.swift"),
+            encoding: .utf8)
+        #expect(source.count > 4_000, "read \(source.count) bytes — the scan is misdirected")
+        #expect(source.contains("Page(icon:"), "the pages array moved; this scan is measuring nothing")
+        let code = source.components(separatedBy: "\n")
+            .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("//") }
+            .joined(separator: "\n")
+        for word in forbidden where word != "$" {   // `$` is Swift interpolation, not a price
+            #expect(!code.contains(word),
+                    "OnboardingView's source contains offer language: \(word) — constraint 1")
         }
     }
 

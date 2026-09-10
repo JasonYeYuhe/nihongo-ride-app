@@ -382,8 +382,15 @@ struct ResolvesCallSiteTests {
             var cursor = line.startIndex
             while let hit = line.range(of: "-> Bool", range: cursor..<line.endIndex) {
                 cursor = hit.upperBound
+                // `)` as well as `?` and a space, because a closure type is routinely written
+                // parenthesised — `resolves: ((String) -> Bool)? = nil` is a defaulted predicate,
+                // and the first version of this walk stopped on the `)` and reported nothing. The
+                // rule it replaced DID catch that shape, so the rewrite was a net loss on it; the
+                // doc below enumerated the trade and this was not in the list.
+                // (v1.32 pre-submission review.)
                 var after = hit.upperBound
-                while after < line.endIndex, line[after] == "?" || line[after] == " " {
+                while after < line.endIndex,
+                      line[after] == "?" || line[after] == " " || line[after] == ")" {
                     after = line.index(after: after)
                 }
                 if after < line.endIndex, line[after] == "=" {
@@ -413,7 +420,10 @@ struct ResolvesCallSiteTests {
             }
         }
         // The count is of Bool-returning closure lines, not of `resolves:` ones, so the old
-        // threshold does not transfer. Measured at the commit that introduced this rule: 24.
+        // threshold does not transfer. Measured at HEAD, 2026-09-10: 22. (The comment here used
+        // to say 24, which was wrong at the commit it named as well — `git log -S` puts the rule
+        // at 331d85a, where the real count is also 22. A floor justified by a number nobody
+        // re-ran is a floor nobody can check.)
         #expect(inspected >= 16, "only \(inspected) predicate parameters seen — the scan is wrong")
         #expect(offenders.isEmpty, "\(offenders)")
     }
@@ -443,6 +453,23 @@ struct ResolvesCallSiteTests {
         // Negative: an optional predicate with no default.
         #expect(Self.defaultedPredicates(in: "    resolves: ((String) -> Bool)?,",
                                          file: "x").isEmpty)
+
+        // POSITIVE: the parenthesised forms, which the structural rewrite silently stopped
+        // catching and its predecessor caught. `NotificationKit` — the one module the doc says a
+        // default last survived in — has no second rule covering them, so this WAS the only cover
+        // and it was open. (v1.32 pre-submission review.)
+        for offending in ["    resolves: ((String) -> Bool)? = nil,",
+                          "    resolves: ((String) -> Bool) = { _ in true },",
+                          "    public func plan(rideable: ((Card) -> Bool)? = nil) -> [Item] {"] {
+            #expect(Self.defaultedPredicates(in: offending, file: "x").count == 1,
+                    "a parenthesised defaulted predicate is invisible to the rule: \(offending)")
+        }
+
+        // …and the negative that keeps the new `)` skip from swallowing an ordinary signature:
+        // a closure parameter with no default, followed by a returning arrow.
+        #expect(Self.defaultedPredicates(in: "    func f(resolves: (String) -> Bool) -> Int = 0 {",
+                                         file: "x").isEmpty,
+                "the `)` skip walked past the parameter list and read the function's own default")
     }
 
     /// The `rideable:` half of the declaration rule, calibrated on the exact shapes that would

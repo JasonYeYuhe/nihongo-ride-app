@@ -33,13 +33,24 @@ fi
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/store-gate-classify.XXXXXX")"
 trap 'rm -rf "$WORK" 2>/dev/null || true' EXIT
 
-# Real xcodebuild summary lines, copied from a run rather than invented — a synthetic log the
-# script's greps happen not to match would make every case below pass for the wrong reason.
+# xcodebuild summary lines in XCTest's REAL format. The first version of this block claimed they
+# were "copied from a run"; they were not, and both were strings XCTest cannot emit — which made
+# the `clean` case exercise a branch that never occurs and never exercise the branch that does.
+#
+# The format is XCTestCore's own, extracted from the binary on this machine (2026-09-10,
+# /Applications/Xcode.app/Contents/SharedFrameworks/XCTestCore.framework/Versions/A/XCTestCore):
+#
+#   Executed %lu test%s, with%@ %lu failure%s (%lu unexpected) in %.3f (%.3f) seconds
+#
+# where the %@ is either empty or " %lu test%s skipped and". So a run WITH skips reads
+# "...with 9 tests skipped and 0 failures...", and a run WITHOUT skips has no "skipped" clause at
+# all — it does not say "0 tests skipped". A synthetic log the script's greps happen not to match
+# would make every case below pass for the wrong reason, which is what was happening.
 write_log() {
   printf '%s\n' "$2" > "$WORK/$1.log"
 }
-write_log skipped   "Executed 9 tests, with 9 tests skipped, with 0 failures (0 unexpected) in 0.412 (0.418) seconds"
-write_log clean     "Executed 9 tests, with 0 tests skipped, with 0 failures (0 unexpected) in 3.104 (3.120) seconds"
+write_log skipped   "Executed 9 tests, with 9 tests skipped and 0 failures (0 unexpected) in 0.412 (0.418) seconds"
+write_log clean     "Executed 9 tests, with 0 failures (0 unexpected) in 3.104 (3.120) seconds"
 write_log noskipline "Test Suite 'NihongoRideMacTests.xctest' passed at 2026-09-10 12:00:00.000"
 
 FAILURES=0
