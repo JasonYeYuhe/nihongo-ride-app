@@ -554,6 +554,53 @@ true 5% refund rate, P(≥1) = 40%.
   Registered late and marked as such, because a co-intervention discovered at day 90 is a degree of
   freedom and one written down at day 0 is a covariate.
 
+> ### 📌 REGISTERED 2026-09-10 under constraint 3 — the first-launch intro now names all six modes
+>
+> `PLAN-WINDOW` constraint 3: *"A feature that substantially changes how far people ride changes
+> exposure-per-install, which is the denominator §K deliberately does not measure. Second-order and
+> tolerable — **register it, do not avoid it.**"* This is that registration, written before the
+> release ships rather than after a checkpoint is read.
+>
+> **What changed.** `OnboardingView` told every fresh install there were *"Three modes"* and named
+> Journey, Time Attack and Practice. Six ship: Verbs (v1.6), Sentence (v1.18) and Listen (v1.21)
+> were advertised nowhere a new user would look. The intro is now composed from `GameMode.allCases`
+> and names all six across two pages. The store description has the same defect and is **not**
+> touched — constraint 4 freezes it.
+>
+> **Why it is a constraint-3 change and not a copy tidy.** Distance is
+> `Double(entry.kana.count) * 10` (`GameCore/GameSession.swift:775`) — ten metres per kana of
+> whatever string the mode puts in `kana`, which is the headword for word modes and the whole
+> sentence for Sentence/Listen (`sentenceSession`, :538). So the mode a rider picks changes
+> metres-per-run by an order of magnitude. Measured over the shipped corpus by
+> `scripts/metres_per_prompt.py`, not estimated:
+>
+> | mode | n | mean kana | metres/prompt | prompts/run | metres/run | runs to Kyōto |
+> |---|---|---|---|---|---|---|
+> | word (Journey / Time Attack) | 7,071 | 3.7 | **37** | 12–20 | 446–743 | **34–56** |
+> | Sentence / Listen | 6,724 | 19.0 | **190** | 5–12 | 951–2,283 | **11–26** |
+> | Practice · easy | 51 | 14.9 | 149 | 8–12 | 1,192–1,788 | 14–21 |
+> | Practice · med | 75 | 23.5 | 235 | 8–12 | 1,880–2,820 | 9–13 |
+> | Practice · hard | 107 | 68.7 | **687** | 8–12 | 5,496–8,244 | **3–5** |
+>
+> **Why the number matters here specifically.** Kyōto sits at 25,000 m (`RideRoute.swift:174`) and
+> arriving there is the predicate that opens the SECOND offer entrance (`AppModel` sets
+> `openedANewOffer` on the ride that crosses it). So exposure-per-install is not a diffuse
+> second-order quantity in this app — it is the gate on one of the two places the offer appears.
+> A new user steered toward Sentence or Listen reaches that gate in a third to a fifth of the runs.
+>
+> **What this does NOT change**, stated so the registration is bounded: the price, the offer, the
+> placement, the store metadata, and the number of ENTRANCES. It changes which modes a new user
+> knows about. Nobody is pushed toward any of them — the six are listed in the order they were
+> added, with Journey first, exactly as the menu shows them — and the intro carries no offer
+> language, which `OnboardingModesTests.theIntroCarriesNoOfferLanguage` now enforces rather than
+> intends.
+>
+> **How to read a checkpoint against it.** Installs after this ships may convert at a different
+> rate per install than installs before it, for a reason that has nothing to do with the offer.
+> §K's bound is `3/N` on observed installs and does not move. But if the N = 100 or N = 200 reading
+> is close to a threshold, the cohort split at this release date is a covariate that was written
+> down in advance — which is the whole reason it is here and not discovered afterwards.
+
 **Day 0, before the SKU goes on sale — non-negotiable, and it is an OWNER action:** make one real
 ¥10 purchase on the owner's own Apple Account **in production** (sandbox never appears in
 `salesReports`), confirm the row appears and `--calibrate` still passes, then refund it. Record the

@@ -605,16 +605,13 @@ struct MenuView: View {
     }
 
     /// The mode picker's entries, in the order they were added to the app.
+    ///
+    /// Driven by `GameMode.allCases` rather than a hand-written list, so this picker and the
+    /// first-launch intro cannot disagree about which modes exist — they did, for three of the
+    /// six, until v1.32 §F1. The declaration order in `GameMode` IS the order they were added.
     private var modeOptions: [(mode: GameMode, label: String)] {
         let zh = model.languageCode == "zh"
-        return [
-            (.journey, zh ? "环游" : "Journey"),
-            (.timeAttack, zh ? "限时" : "Time"),
-            (.practice, zh ? "练习" : "Practice"),
-            (.conjugation, zh ? "变形" : "Verbs"),
-            (.sentence, zh ? "例句" : "Sentence"),
-            (.dictation, zh ? "听写" : "Listen"),
-        ]
+        return GameMode.allCases.map { ($0, $0.shortLabel(zh: zh)) }
     }
 
     private var streak: Int { model.journal.streakDays() }

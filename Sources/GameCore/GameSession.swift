@@ -22,6 +22,44 @@ public enum GameMode: String, Sendable, CaseIterable {
     case dictation     // hear a sentence and type it (v1.21); no SRS, same reason as .sentence
 }
 extension GameMode {
+    /// The mode's name on the menu capsule — the one place a learner reads it.
+    ///
+    /// It lives here, beside the mode, for the reason `completedUnitLabel` gives one property
+    /// down: a call site choosing its own string is how the unit labels drifted the first time.
+    /// The menu built this list by hand, and the ONBOARDING built a different one — which is how
+    /// three of the six modes came to be advertised nowhere a new user would look. (v1.32 §F1.)
+    public func shortLabel(zh: Bool) -> String {
+        switch self {
+        case .journey:     return zh ? "环游" : "Journey"
+        case .timeAttack:  return zh ? "限时" : "Time"
+        case .practice:    return zh ? "练习" : "Practice"
+        case .conjugation: return zh ? "变形" : "Verbs"
+        case .sentence:    return zh ? "例句" : "Sentence"
+        case .dictation:   return zh ? "听写" : "Listen"
+        }
+    }
+
+    /// One clause describing the mode, for the first-launch intro.
+    ///
+    /// Beside `shortLabel` and driven by `allCases` at the call site, so **a seventh mode cannot
+    /// ship unadvertised**: adding a case is a compile error here, and `OnboardingModesTests`
+    /// fails if the intro page stops naming one. That is the structural half of the fix — the
+    /// copy edit on its own would have drifted again the next time a mode was added, which is
+    /// exactly what happened between v1.6 and v1.21.
+    ///
+    /// Deliberately says nothing about the road, a route, or a destination: the intro carries no
+    /// offer language and must not gain any (`PLAN-WINDOW` constraint 1).
+    public func onboardingClause(zh: Bool) -> String {
+        switch self {
+        case .journey:     return zh ? "打字穿越日本,解锁地标" : "type across Japan and unlock landmarks"
+        case .timeAttack:  return zh ? "60 秒冲刺" : "a 60-second sprint"
+        case .practice:    return zh ? "沉浸式文章打字,平静不计分" : "calm, score-free passage typing"
+        case .conjugation: return zh ? "动词变形专项练习" : "drill verb conjugations"
+        case .sentence:    return zh ? "整句打字,不只是单词" : "type a whole sentence, not just a word"
+        case .dictation:   return zh ? "听一句,然后打出来" : "hear a sentence, then type it"
+        }
+    }
+
     /// Whether a lapsed entry in this mode is a WORD the learner can be shown as one.
     ///
     /// False for sentence and dictation, where `GameSession.sentenceSession` wraps each
