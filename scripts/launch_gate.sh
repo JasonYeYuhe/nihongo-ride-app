@@ -128,21 +128,21 @@ if [[ "$PLATFORM" == "iOS" ]]; then
         exit 1
     }
     echo
-    # Says what was MEASURED, not what a reader would like it to mean. Two limits, both real:
-    # the grep proves the substring `icloud-services` appears in the signature and reads nothing
-    # about the container identifier or environment; and this inspects the ARCHIVE, while the
-    # artifact Apple receives is re-signed by `xcodebuild -exportArchive`. A summary that claims
-    # more than its evidence is how a green gate stops meaning anything.
     # The container IDENTIFIER, not just the services key. `icloud-services` present with the
-    # wrong (or no) container is a runtime failure the services key alone cannot see, and this is
-    # a fixed known string — `CloudKitSyncController.containerID`. Checked here so the summary
-    # line below can name it truthfully.
+    # wrong container (or none) is a runtime failure the services key alone cannot see, and this
+    # is a fixed known string — `CloudKitSyncController.containerID`. `test_launch_gate.sh` has a
+    # wrong-container case, so this check is known to be able to fail.
     if ! codesign -d --entitlements - --xml "$APP" 2>/dev/null | grep -q "iCloud.com.jasonye.nihongoride"; then
         echo "FAIL: the signature carries no iCloud.com.jasonye.nihongoride container identifier."
         echo "      CloudKitSyncController opens exactly that container; a build signed for a"
         echo "      different one (or for none) reaches CKContainer with nothing behind it."
         exit 1
     fi
+    # Says what was MEASURED, not what a reader would like it to mean. Two limits, both real:
+    # each grep proves a substring appears in the signature and reads nothing about the iCloud
+    # ENVIRONMENT; and this inspects the ARCHIVE, while the artifact Apple receives is re-signed
+    # by `xcodebuild -exportArchive`. A summary that claims more than its evidence is how a green
+    # gate stops meaning anything.
     echo "CHECKED (in the ARCHIVE — the uploaded artifact is re-signed at export):"
     echo "  bundle shape, executable, the string com.apple.developer.icloud-services in the"
     echo "  signature, the iCloud container identifier, embedded extension."
