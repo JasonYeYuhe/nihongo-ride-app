@@ -7,6 +7,18 @@ they changed.
 
 ---
 
+> ### ✅ SUBMITTED 2026-09-11 — both platforms WAITING_FOR_REVIEW (mac 56 / iOS 57), IAP untouched
+>
+> §F done in order; F1, F2, §E's unblocked half, D1–D6 and CI phase 1 shipped. The five-way
+> pre-submission review (`wf_779f85ac-34d`) found two blockers — one in the ledger's wiring, and
+> one that was not in the code at all: the LIVE privacy and support pages said the app made no
+> network connections, false since v1.13's default-on iCloud sync. Both fixed before submitting,
+> the pages pushed to the public site with the owner's approval and confirmed live first.
+> `swift test` 766, `run_all_gates.sh` 10/0. iOS placement tests: **12/12 passed on two destinations** — iPhone 17 Pro 9 (`PaidRouteRowTests` 8, `StumbledWordsFlowTests` 1), iPad Pro 11-inch (M5) 3 (`TouchFlowTests`), 0 failures, run on the release candidate after submitting. The target's 13th method, `StoreScreenshotTests`, is opt-in behind `--with-screenshots` and was not run; it takes screenshots rather than asserting anything, and 1.32 changes no store screenshots. The script's new anchored caffeinate check counted its two wrappers in a real run.
+>
+> **Still owner-only and still open:** §H's two items — §K's day-0 known-positive purchase
+> (late) and §L's three manual gates. Full snapshot: `docs/STATE-2026-09-11.md`.
+
 ## §A What this stage is — and the mistake this file made first
 
 > ### ⚠ The first draft of this file repeated an error the owner already corrected, in writing, on 2026-08-31
