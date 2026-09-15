@@ -95,8 +95,13 @@ What is subtracted is fixed here so it cannot be decided per reading:
   * kind=redownload entries are listed and never subtracted; they feed no §K
     number, and they are recorded so nobody later moves them into N.
 Report rows are totals, not transactions, so an entry subtracts units from a
-cell. An entry claiming more units than its cell holds is a disagreement
-between the registry and the report, and it withholds the bound.
+cell, and a cell gives up at most the units it holds. An entry claiming more
+(the wrong Pacific day, the wrong country, or an awaiting-report row Apple has
+not published) is a disagreement between the registry and the report: the
+excess is never subtracted, the bound is withheld, and no figure it touches is
+printed as a count: the ADJUSTED PURCHASES line reads NOT PRINTED, and an N that
+should have lost walk units the report does not hold where the registry says
+(decision true) reads NOT SETTLED.
 
 --checkpoint
 ------------
@@ -137,13 +142,24 @@ calibration. On a match with calibration OK it PRINTS a draft registry entry
 and a draft §K sentence, each labelled "DRAFT — not recorded; the owner
 confirms". It writes nothing but the sales cache that fetching already writes.
 
+The platform is the code map's (PURCHASE), and nobody has seen which code Apple
+gives a Mac purchase of this in-app item — that is part of what the owner's
+known-positive tests. So: with no match, the same day · kind · country under
+the OTHER platform's code is listed with its codes and Device values and called
+what it is (NOT a match; the question is PURCHASE's map; flipping --platform is
+the wrong response); with a match, a Device value that contradicts --platform
+puts a WARNING on the draft. The draft §K sentence counts the days from day 0
+and says §K's "before the SKU goes on sale" was not met when it was not, and it
+says "to be registered", because nothing is registered until the owner does it.
+
 Exit codes: 0 ran (--checkpoint: bound printed, or the zero-purchase bound does
 not apply · --confirm-known-positive: matched and calibrated) · 2 vendor number
 not on file, or a usage error · 3 API failure ·
 4 calibration failed, or the known-positive registry is invalid (the instrument
 is not trustworthy — do not use the number) · 5 --checkpoint: bound withheld ·
 6 --confirm-known-positive: report day not published yet (PENDING) ·
-7 --confirm-known-positive: the built report has no matching row
+7 --confirm-known-positive: the built report has no matching row (including when
+the only candidate is under the other platform's code — that is not a match)
 """
 
 import argparse
@@ -179,6 +195,12 @@ REDOWNLOAD = {"3F", "F3"}                  # 4 units across the app's whole life
 # and anything NOT listed still lands in `unclassified` and fails calibration, so a code
 # nobody anticipated cannot hide inside this class.
 PURCHASE = {"IA1": "iOS", "IA9": "iOS", "FI1": "macOS"}
+# The report's Device column, as spelled in this vendor's cached reports (2026-09-16: Desktop, iPhone,
+# iPad, Apple Watch). NOT a classifier — platform comes from the code map above, and this app's own F7
+# lands on every device. It is read in ONE place: --confirm-known-positive warns when a matched row's
+# device contradicts the platform the code map gave it, because nobody has yet seen which code Apple
+# uses for a Mac purchase of this in-app item, and the owner's known-positive is what will show it.
+DEVICE_PLATFORM = {"Desktop": "macOS", "iPhone": "iOS", "iPad": "iOS"}
 EXPECTED_ABSENT = {
     "IAY": "IAP subscription — Stage 1 sells one non-consumable; a subscription code "
            "appearing means either a misconfigured product or the wrong app's rows",
@@ -503,11 +525,34 @@ def pacific_report_day(stamp):
     machine running this and the device that bought need not share a timezone, and a guess here
     moves the purchase to a report day that does not contain it.
     """
+    return _parse_stamp(stamp).astimezone(PACIFIC).date()
+
+
+def _parse_stamp(stamp):
     if not isinstance(stamp, str) or not _ISO_WITH_OFFSET.match(stamp):
         raise ValueError(f"{stamp!r} is not an ISO-8601 timestamp with an explicit UTC offset "
                          f"(e.g. 2026-09-17T10:00:00+09:00)")
-    moment = dt.datetime.fromisoformat(stamp[:-1] + "+00:00" if stamp.endswith("Z") else stamp)
-    return moment.astimezone(PACIFIC).date()
+    return dt.datetime.fromisoformat(stamp[:-1] + "+00:00" if stamp.endswith("Z") else stamp)
+
+
+def days_after_day0(stamp):
+    """Calendar days from §K's day 0 to the date `stamp` names in its OWN offset — the date on the
+    buyer's clock, which is the date §K's "Day 0" sentence is about (not the Pacific report day)."""
+    return (_parse_stamp(stamp).date() - DAY0).days
+
+
+def lateness(stamp):
+    """How a timestamp stands against §K's "Day 0, before the SKU goes on sale", in words a record can
+    carry. After day 0 the condition was not met — the SKU was on sale by day 0 (§K: "the true day 0
+    is 09-08 or 09-09, never later"). On or before day 0 a sales report cannot show whether it was
+    before the SKU went on sale, so the words say that instead of guessing either way."""
+    n = days_after_day0(stamp)
+    if n >= 1:
+        return (f"{n} {_plural(n, 'day', 'days')} after day 0 ({DAY0}); the SKU was on sale by day 0, "
+                f"so §K's \"before the SKU goes on sale\" was not met")
+    where = "on day 0" if n == 0 else f"{-n} {_plural(-n, 'day', 'days')} before day 0"
+    return (f"{where} ({DAY0}); whether that was before the SKU went on sale is not something a sales "
+            f"report can show — the owner states it")
 
 
 def pacific_today():
@@ -685,43 +730,59 @@ def apply_registry(cells, registry, start, end):
     decision = registry["decisions"]["exclude_walk_first_downloads_from_N"]
     in_window = [x for x in registry["entries"] if s <= x["report_day_pt"] <= e]
     walk_installs = [x for x in in_window if x["kind"] == "first_download"]
-    adjusted = dict(raw)
-    adj_terr = defaultdict(int, raw_terr)
-    for x in in_window:
-        kind, platform, n = x["kind"], x["platform"], x["units"]
-        if kind == "purchase":
-            adjusted["buy"] -= n
-            adjusted["buy_" + platform] -= n
-            adj_terr[x["country_code"]] -= n
-        elif kind == "refund":
-            adjusted["refund"] -= n
-            adj_terr[x["country_code"]] += n
-        elif kind == "first_download" and decision is True:
-            adjusted["dl"] -= n
-            adjusted["dl_" + platform] -= n
-    adjusted["net"] = adjusted["buy"] - adjusted["refund"]
 
-    # An entry can only subtract units its cell actually holds. One that claims more is either the
-    # wrong day (the Pacific cut), the wrong country, or a unit that was never a first download —
-    # and subtracting it anyway would take a stranger's unit out of the number.
+    # An entry subtracts from its CELL, and a cell can give up only the units it holds. An entry that
+    # claims more is the wrong day (the Pacific cut), the wrong country, a row Apple has not published
+    # yet (an awaiting-report entry), or a unit that was never a first download. Subtracting the
+    # excess anyway would take it out of a number that never contained it — a stranger's purchase in
+    # the same column, or nothing at all, printed as "refunded -1". So each cell gives up
+    # min(claimed, held), and the excess is a disagreement that withholds the bound, never a subtraction.
     claimed = defaultdict(int)
     for x in in_window:
-        platform = None if x["kind"] == "redownload" else x["platform"]   # redownload codes carry none
-        claimed[(x["report_day_pt"], x["kind"], platform, x["country_code"])] += x["units"]
-    problems, notes = [], []
+        claimed[_entry_cell(x)] += x["units"]
+    adjusted = dict(raw)
+    adj_terr = defaultdict(int, raw_terr)
+    problems, notes, short_cells = [], [], set()
+    unheld_walk_units = 0
     for cell in sorted(claimed, key=str):
+        day, kind, platform, country = cell
         held = cells.get(cell, 0)
+        taken = min(claimed[cell], max(held, 0))
+        if kind == "purchase":
+            adjusted["buy"] -= taken
+            adjusted["buy_" + platform] -= taken
+            adj_terr[country] -= taken
+        elif kind == "refund":
+            adjusted["refund"] -= taken
+            adj_terr[country] += taken
+        elif kind == "first_download" and decision is True:
+            adjusted["dl"] -= taken
+            adjusted["dl_" + platform] -= taken
         if held < claimed[cell]:
-            day, kind, platform, country = cell
             msg = (f"{day} {kind} {platform or '(any platform)'} {country}: the registry claims "
                    f"{claimed[cell]} unit(s), the report holds {held}")
-            (notes if kind == "redownload" else problems).append(msg)
+            if kind == "redownload":
+                notes.append(msg)
+            else:
+                problems.append(msg)
+                short_cells.add(cell)
+                if kind == "first_download":
+                    unheld_walk_units += claimed[cell] - max(held, 0)
+    adjusted["net"] = adjusted["buy"] - adjusted["refund"]
     return {"raw": raw, "adjusted": adjusted,
             "raw_territory": {c: u for c, u in raw_terr.items() if u},
             "adjusted_territory": {c: u for c, u in adj_terr.items() if u},
             "decision": decision, "in_window": in_window, "walk_installs": walk_installs,
             "walk_install_units": sum(x["units"] for x in walk_installs),
-            "problems": problems, "notes": notes}
+            "walk_install_units_unheld": unheld_walk_units,
+            "problems": problems, "short_cells": short_cells,
+            "problem_kinds": {cell[1] for cell in short_cells}, "notes": notes}
+
+
+def _entry_cell(x):
+    """The (day, kind, platform, country) cell a registry entry subtracts from."""
+    platform = None if x["kind"] == "redownload" else x["platform"]   # redownload codes carry none
+    return (x["report_day_pt"], x["kind"], platform, x["country_code"])
 
 
 def exclusion_control(apply=None):
@@ -732,7 +793,9 @@ def exclusion_control(apply=None):
     a working one prints on every day nobody is registered — which, until the owner's walk, is
     every day. So it is proven paired, on every calibration: matched entries move the adjusted
     figures by EXACTLY their units; the same report with no entries leaves adjusted equal to raw;
-    an entry whose row is not in the report is reported, not subtracted into a stranger's unit.
+    an entry whose row is not in the report, or that claims more units than its cell holds, is
+    reported AND subtracts no more than the cell holds — both halves checked, because either one
+    alone reads as working.
     """
     apply = apply or apply_registry
     fails = []
@@ -785,13 +848,24 @@ def exclusion_control(apply=None):
         fails.append(f"exclusion control: the owner's purchase alone should leave territory "
                      f"{{'CN': 1}} and net 1, got {alone['adjusted_territory']} and net "
                      f"{alone['adjusted']['net']}")
-    for orphan in (entry("c-orphan", "purchase", "2026-01-02", "US", "FI1"),
-                   entry("c-overclaim", "purchase", "2026-01-02", "JP", "FI1", units=3)):
+    # (entry, the adjusted figures it must leave): an orphan US purchase takes nothing; a claim of 3
+    # on the JP cell that holds 2 takes the 2 and not the CN customer's unit; a refund entry on a day
+    # with no refund row takes nothing from the real refund on the next day.
+    for orphan, want in ((entry("c-orphan", "purchase", "2026-01-02", "US", "FI1"),
+                          {"buy": 3, "buy_macOS": 2, "refund": 1}),
+                         (entry("c-overclaim", "purchase", "2026-01-02", "JP", "FI1", units=3),
+                          {"buy": 1, "buy_macOS": 0, "refund": 1}),
+                         (entry("c-refund-orphan", "refund", "2026-01-02", "JP", "FI1"),
+                          {"buy": 3, "buy_macOS": 2, "refund": 1})):
         r = apply(cells, registry(True, [orphan]), start, end)
         if not r["problems"]:
             fails.append(f"exclusion control: entry {orphan['id']} claims units its cell does not "
                          f"hold and nothing was reported — it would be subtracted from a number "
                          f"that never contained it")
+        got = {k: r["adjusted"].get(k) for k in want}
+        if got != want:
+            fails.append(f"exclusion control: entry {orphan['id']} left adjusted {got}, expected "
+                         f"{want} — it subtracted units its cell does not hold")
     return fails
 
 
@@ -945,21 +1019,37 @@ def run_checkpoint(registry, fetch, newest, until=None, daily=False):
     else:
         print("    registered walk first_download: none in the cohort window")
     undecided = walk_units if (walk and decision is None) else 0
+    # Decision true, but some registered walk units are not in the cell the registry names: they were
+    # not subtracted (a cell gives up only what it holds), yet the owner's install is still somewhere
+    # in N. So N is a ceiling, not a count, until the registry and the report agree.
+    unlocated = c["walk_install_units_unheld"] if decision is True else 0
     print(f"  N = {adj['dl']} (macOS {adj['dl_macOS']} · iOS {adj['dl_iOS']})  first-time downloads "
           f"F1+1F since {DAY0}"
-          + (f", UNADJUSTED — {undecided} undecided walk unit(s) inside it" if undecided else ""))
+          + (f", UNADJUSTED — {undecided} undecided walk unit(s) inside it" if undecided else "")
+          + (f", NOT SETTLED — {unlocated} registered walk unit(s) are not in the cell the registry "
+             f"names, so they were not subtracted (see BOUND WITHHELD)" if unlocated else ""))
 
+    # A purchase or refund entry the report does not hold makes every adjusted purchase figure a
+    # number about the registry rather than the report, so none is printed — a figure with a caveat
+    # is quoted without it.
+    purchases_disagree = bool(c["problem_kinds"] & {"purchase", "refund"})
     reg_buy = sum(x["units"] for x in c["in_window"] if x["kind"] == "purchase")
     reg_refund = sum(x["units"] for x in c["in_window"] if x["kind"] == "refund")
     print(f"  PURCHASES  raw gross {raw['buy']} (macOS {raw['buy_macOS']} · iOS {raw['buy_iOS']}) "
           f"· refunded {raw['refund']} · net {raw['net']}")
     print(f"    registered, always subtracted (§K: \"exclude it from the cohort\"): purchase "
-          f"{reg_buy} · refund {reg_refund}")
-    print(f"  ADJUSTED PURCHASES  gross {adj['buy']} (macOS {adj['buy_macOS']} · iOS "
-          f"{adj['buy_iOS']}) · refunded {adj['refund']} · net {adj['net']}")
-    if c["adjusted_territory"]:
-        print("    adjusted purchase territory: " + ", ".join(
-            f"{k}={v}" for k, v in sorted(c["adjusted_territory"].items(), key=lambda x: -x[1])))
+          f"{reg_buy} · refund {reg_refund}"
+          + (" — each only up to the units its cell holds" if purchases_disagree else ""))
+    if purchases_disagree:
+        print("  ADJUSTED PURCHASES  NOT PRINTED — the registry claims purchase or refund units the "
+              "report does not hold (listed under BOUND WITHHELD); a figure adjusted by entries the "
+              "report contradicts is not a count")
+    else:
+        print(f"  ADJUSTED PURCHASES  gross {adj['buy']} (macOS {adj['buy_macOS']} · iOS "
+              f"{adj['buy_iOS']}) · refunded {adj['refund']} · net {adj['net']}")
+        if c["adjusted_territory"]:
+            print("    adjusted purchase territory: " + ", ".join(
+                f"{k}={v}" for k, v in sorted(c["adjusted_territory"].items(), key=lambda x: -x[1])))
 
     in_window_ids = {x["id"] for x in c["in_window"]}
     if registry["entries"]:
@@ -967,6 +1057,9 @@ def run_checkpoint(registry, fetch, newest, until=None, daily=False):
         for x in registry["entries"]:
             if x["id"] not in in_window_ids:
                 effect = f"outside the cohort window {DAY0} .. {end}, not subtracted"
+            elif _entry_cell(x) in c["short_cells"]:
+                effect = ("its cell holds fewer units than the registry claims there — only what the "
+                          "cell holds is subtracted, and the bound is withheld")
             elif x["kind"] in ("purchase", "refund"):
                 effect = "subtracted from the purchase numerator"
             elif x["kind"] == "redownload":
@@ -992,7 +1085,7 @@ def run_checkpoint(registry, fetch, newest, until=None, daily=False):
 
     # Which pre-registered rows are reached. With an undecided walk install the answer can depend on
     # the decision; that is printed as UNDECIDED rather than resolved in either direction.
-    n_high, n_low = adj["dl"], adj["dl"] - undecided
+    n_high, n_low = adj["dl"], adj["dl"] - undecided - unlocated
 
     def by_n(threshold):
         if n_low >= threshold:
@@ -1009,7 +1102,10 @@ def run_checkpoint(registry, fetch, newest, until=None, daily=False):
     print(f"  {'REACHED' if end >= BACKSTOP_DATE else 'not reached':11}  {BACKSTOP_DATE} (day 180)  "
           f"refunds")
     print(f"  (read at N = {n_high}" + (f", or {n_low} if the undecided walk units are subtracted"
-                                        if undecided else "")
+                                        if undecided else
+                                        f", or {n_low} if the registered walk units the report does "
+                                        f"not hold where the registry says are in N elsewhere"
+                                        if unlocated else "")
           + f", with {end} the newest report day read)")
 
     reasons = []
@@ -1036,7 +1132,7 @@ def run_checkpoint(registry, fetch, newest, until=None, daily=False):
     if unbuilt:
         reasons.append(f"{len(unbuilt)} cohort report day(s) not built: {', '.join(unbuilt)} — a "
                        f"purchase on a day not yet read is indistinguishable from none")
-    if adj["net"] < 0:
+    if adj["net"] < 0 and not purchases_disagree:
         reasons.append(f"adjusted net purchases is {adj['net']}: more refunds than purchases in the "
                        f"window, so the numerator is not a count")
     if adj["dl"] <= 0:
@@ -1046,7 +1142,7 @@ def run_checkpoint(registry, fetch, newest, until=None, daily=False):
         print("BOUND WITHHELD:")
         for r in reasons:
             print(f"  - {r}")
-        if adj["net"] > 0:
+        if adj["net"] > 0 and not purchases_disagree:
             print(f"  (and the zero-purchase bound would not apply anyway: adjusted net purchases "
                   f"= {adj['net']})")
         return 4 if fails else 5
@@ -1106,12 +1202,14 @@ def run_confirm(registry, fetch, newest, kind, at, platform, country, today=None
         return 6
 
     buys, odd = [], []
+    rows_by_cell = defaultdict(list)
     for key in sorted(near):
         state, payload = near[key]
         if state != "data":
             continue
         for row in our_rows(payload):
             k, p = classify_row(row["pti"], row["units"])
+            rows_by_cell[(key, k, p, row["country"])].append(row)
             if k in ("purchase", "refund"):
                 buys.append(_describe_row(key, k, p, row))
             elif k == "unclassified":
@@ -1148,6 +1246,25 @@ def run_confirm(registry, fetch, newest, kind, at, platform, country, today=None
             if n > 0:
                 print(f"  note: {other} (not D) holds {n} {kind} unit(s) for {platform} · {country} — "
                       f"check --at and its offset; this is NOT a match")
+    # The same day, kind and country under the OTHER platform's code. This is where a Mac purchase
+    # lands if Apple reports it under a code PURCHASE maps to iOS — the very mapping the owner's
+    # known-positive exists to test — and there "no matching row" alone reads as "nothing was
+    # bought", with flipping --platform the obvious-looking fix that records the wrong platform.
+    other_platform = next(p for p in REGISTRY_PLATFORMS if p != platform)
+    other_cell = (D, kind, other_platform, country)
+    other_held = cells.get(other_cell, 0) if held <= 0 else 0
+    if other_held > 0:
+        print(f"  NOT A MATCH: the {D} report holds {other_held} {kind} unit(s) for {other_platform} · "
+              f"{country} — rows whose code PURCHASE maps to {other_platform}:")
+        for row in rows_by_cell[other_cell]:
+            read_as = DEVICE_PLATFORM.get(row["device"], "no platform this tool reads")
+            print(f"    {_describe_row(D, kind, other_platform, row)}  (Device {row['device']!r} → {read_as})")
+        print(f"    --platform says where the owner bought, which the owner knows first-hand. If it is "
+              f"right and one of these rows is that {kind}, what is in question is PURCHASE's "
+              f"platform map, not --platform. Re-running with --platform {other_platform} to get a "
+              f"match is the wrong response: it would draft a record saying a {platform} {kind} "
+              f"happened on {other_platform}. A customer's {other_platform} {kind} in the same cell "
+              f"looks exactly like this; the Device column is the only hint.")
 
     full = dict(fetch(LAUNCH_DATE, newest, True))
     full.update(near)                           # calibrate on exactly the report just refetched
@@ -1160,13 +1277,38 @@ def run_confirm(registry, fetch, newest, kind, at, platform, country, today=None
               "that fails calibration is not evidence.")
         return 4
     if held <= 0:
-        print(f"NO MATCHING ROW: the {D} report holds no {kind} units for {platform} · {country}.")
+        if other_held > 0:
+            print(f"NO MATCHING ROW for {platform} · {country}: the {D} report holds no {kind} units under "
+                  f"a code PURCHASE maps to {platform}, and {other_held} under a code it maps to "
+                  f"{other_platform} (listed above). That is NOT a match, and not a typo to fix by "
+                  f"re-running with --platform {other_platform}: the question is PURCHASE's platform map.")
+        else:
+            print(f"NO MATCHING ROW: the {D} report holds no {kind} units for {platform} · {country}.")
         return 7
 
     code = cell_codes[0] if len(cell_codes) == 1 else None
     if code is None:
         print(f"  WARNING: the cell carries {len(cell_codes)} product type codes; the draft leaves "
               f"matched_product_type null and it will not validate until the owner picks one")
+    # The draft's platform is PURCHASE's reading of the code. Where the Device column says otherwise,
+    # the draft would record the map's answer as if it were the device's, so it says so on its face.
+    devices = sorted({row["device"] for row in rows_by_cell[cell]})
+    device_word = ", ".join(d or "(empty)" for d in devices)
+    device_warnings = []
+    for device in devices:
+        read_as = DEVICE_PLATFORM.get(device)
+        if read_as is None:
+            device_warnings.append(
+                f"a matched row's Device is {device!r}, which this tool does not read as a platform "
+                f"({', '.join(f'{d} → {p}' for d, p in DEVICE_PLATFORM.items())}), so the draft's "
+                f"platform {platform} — PURCHASE's reading of {' + '.join(cell_codes)} — is not "
+                f"cross-checked against the device")
+        elif read_as != platform:
+            device_warnings.append(
+                f"a matched row's Device is {device!r} ({read_as}), which contradicts --platform "
+                f"{platform}: the draft's platform is PURCHASE's reading of {' + '.join(cell_codes)}, "
+                f"not the device's, and this report cannot say which one is the platform of the "
+                f"{kind} — the owner knows where they bought; do not record it until that is resolved")
     ids = {x["id"] for x in registry["entries"]}
     eid, suffix = f"{kind}-{D}-{platform}-{country}", 1
     while eid in ids:
@@ -1178,20 +1320,35 @@ def run_confirm(registry, fetch, newest, kind, at, platform, country, today=None
              "walk_step": "OWNER FILLS IN: the walk step this served",
              "evidence": [],
              "notes": f"drafted by sales_report.py --confirm-known-positive on {today} (Pacific); "
-                      f"the matched cell held {held} unit(s)"}
+                      f"the matched cell held {held} unit(s); Device column: {device_word}"
+                      + "".join(f"; WARNING: {w}" for w in device_warnings)}
     shown = f"{code or '?'} units={'-' if kind == 'refund' else ''}{held}"
-    calibrated = f"the full-window calibration ({LAUNCH_DATE} .. {newest}) passed on {today} (Pacific)"
+    # "reported for", never "made on": the platform in this sentence is the code map's reading.
+    reported = (f"It appears in the {D} (Pacific) daily sales report as {shown}, storefront {country} — "
+                f"reported for {platform}, the platform PURCHASE maps that code to; Device column: "
+                f"{device_word}. The full-window calibration ({LAUNCH_DATE} .. {newest}) passed on "
+                f"{today} (Pacific).")
+    to_register = f"To be registered as `{eid}` in docs/measurements/stage1-known-positives.json"
     if kind == "purchase":
-        sentence = (f"Day-0 known-positive purchase: made {at} on {platform}, storefront {country}; "
-                    f"it appears in the {D} (Pacific) daily sales report as {shown}, and "
-                    f"{calibrated}. Registered as `{eid}` in "
-                    f"docs/measurements/stage1-known-positives.json and excluded from the cohort.")
+        sentence = (f"Known-positive purchase for §K's day-0 step: made {at}, {lateness(at)}. "
+                    f"{reported} {to_register}; once registered it is excluded from the cohort.")
     else:
-        sentence = (f"Refund of the day-0 known-positive: it appears in the {D} (Pacific) daily "
-                    f"sales report as {shown} for {platform}, storefront {country}, and "
-                    f"{calibrated}. Registered as `{eid}` in "
-                    f"docs/measurements/stage1-known-positives.json and excluded from the purchase "
-                    f"numerator with its purchase.")
+        bought = [x for x in registry["entries"] if x["kind"] == "purchase" and x["status"] == "matched"
+                  and x["platform"] == platform and x["country_code"] == country]
+        if len(bought) == 1:
+            of = (f"the purchase registered as `{bought[0]['id']}`, made {bought[0]['local_timestamp']}, "
+                  f"{lateness(bought[0]['local_timestamp'])}")
+        elif bought:
+            of = (f"one of the {len(bought)} matched purchases registered for {platform} · {country} "
+                  f"({', '.join(x['id'] for x in bought)}) — the owner says which")
+        else:
+            of = (f"which purchase is not recorded yet: the registry holds no matched purchase entry "
+                  f"for {platform} · {country}")
+        sentence = (f"Refund of the known-positive purchase for §K's day-0 step ({of}); refund time "
+                    f"given as {at}. {reported} {to_register}; once registered it is excluded from the "
+                    f"purchase numerator together with its purchase.")
+    for w in device_warnings:
+        print(f"WARNING: {w}")
     print(f"{DRAFT_LABEL}. Registry entry:")
     print(json.dumps(entry, indent=2, ensure_ascii=False))
     print(f"{DRAFT_LABEL}. §K sentence:")

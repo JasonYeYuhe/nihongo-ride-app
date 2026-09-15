@@ -43,7 +43,7 @@ NEWEST = D(2026, 9, 20)
 # ---------------------------------------------------------------------------------------------------
 # synthetic reports
 
-def report_row(pti, units, country, route="app", proceeds="0", price="0", currency="JPY"):
+def report_row(pti, units, country, route="app", proceeds="0", price="0", currency="JPY", device="Desktop"):
     """One row in `_CONTROL_HEADER`'s shape. route: app (Apple Identifier), parent (IAP), other."""
     cells = [""] * 30
     cells[5] = "1.32"
@@ -56,13 +56,13 @@ def report_row(pti, units, country, route="app", proceeds="0", price="0", curren
     cells[14] = {"app": sr.APP_ID, "parent": "0", "other": "6761163709"}[route]
     cells[15] = price
     cells[17] = sr.APP_SKU if route == "parent" else ""
-    cells[24] = "Desktop"
+    cells[24] = device
     cells[25] = "iOS and macOS"
     return "\t".join(cells)
 
 
-def iap(pti, units, country):
-    return report_row(pti, units, country, route="parent", proceeds="128", price="150")
+def iap(pti, units, country, device="Desktop"):
+    return report_row(pti, units, country, route="parent", proceeds="128", price="150", device=device)
 
 
 def tsv(*rows):
@@ -350,10 +350,32 @@ def valid_registry():
     ], refund_decision=False)
 
 
+def live_registry_failures(path):
+    """Everything this suite holds against the owner-maintained registry at `path`: that it validates,
+    and NOTHING about what it holds. The owner is told to record the walk in that file, so a check that
+    pinned its content would turn run_all_gates.sh red on the owner's legitimate record, and the only
+    edit that restores green without touching a gate would be deleting that record. Whether any tool
+    writes the file is `test_writes`'s question, answered by scanning the source."""
+    _obj, problems = sr.load_registry(path)
+    return [f"the live registry {path} does not validate: {p}" for p in problems]
+
+
 def test_registry(check):
-    shipped, problems = sr.load_registry(sr.REGISTRY_PATH)
-    check(not problems, f"the shipped registry does not validate: {problems}")
-    check(shipped == registry(), f"the shipped registry is not the contract's initial shape: {shipped}")
+    failures = live_registry_failures(sr.REGISTRY_PATH)
+    check(not failures, "\n  ".join(failures))
+    with tempfile.TemporaryDirectory() as tmp:
+        recorded = Path(tmp) / "owner-recorded.json"         # what the walk card has the owner write
+        recorded.write_text(json.dumps(valid_registry(), indent=2), encoding="utf-8")
+        check(not live_registry_failures(recorded),
+              f"CONTROL: an owner's valid record (matched purchase, refund, walk installs, both decisions "
+              f"filled) fails the live-registry check, so recording the walk would break the gate: "
+              f"{live_registry_failures(recorded)}")
+        invalid = Path(tmp) / "owner-typo.json"
+        bad = valid_registry()
+        bad["entries"][0]["country_code"] = "JPN"
+        invalid.write_text(json.dumps(bad), encoding="utf-8")
+        check(bool(live_registry_failures(invalid)),
+              "CONTROL: an invalid registry passes the live-registry check")
     check(not sr.validate_registry(valid_registry()),
           f"POSITIVE CONTROL: a registry using every kind does not validate: "
           f"{sr.validate_registry(valid_registry())}")
@@ -472,9 +494,51 @@ def test_exclusion(check):
         r["adjusted"]["net"] = r["adjusted"]["buy"] - r["adjusted"]["refund"]
         return r
 
-    for broken in (identity, ignores_decision, silent, refund_as_purchase):
+    def uncapped(cells, reg, start, end):          # subtracts every claimed unit, held or not
+        r = sr.apply_registry(cells, reg, start, end)
+        adj = r["adjusted"] = dict(r["raw"])
+        for x in r["in_window"]:
+            if x["kind"] == "purchase":
+                adj["buy"] -= x["units"]
+                adj["buy_" + x["platform"]] -= x["units"]
+            elif x["kind"] == "refund":
+                adj["refund"] -= x["units"]
+            elif x["kind"] == "first_download" and r["decision"] is True:
+                adj["dl"] -= x["units"]
+                adj["dl_" + x["platform"]] -= x["units"]
+        adj["net"] = adj["buy"] - adj["refund"]
+        return r
+
+    for broken in (identity, ignores_decision, silent, refund_as_purchase, uncapped):
         check(bool(sr.exclusion_control(apply=broken)),
               f"CONTROL: the exclusion control passed a broken subtraction ({broken.__name__})")
+
+    # A cell gives up at most what it holds; the excess is a problem, never a subtraction.
+    one_install = {"2026-09-16": ("data", tsv(report_row("F1", 1, "JP")))}
+    cells, _ = sr.cell_tally(one_install)
+    window_ = (D(2026, 9, 9), D(2026, 9, 20))
+    for label, reg in (
+            ("awaiting purchase, no row", registry(None, [entry("b", status="awaiting-report", code=None,
+                                                                 day="2026-09-19")])),
+            ("awaiting refund, no row", registry(None, [entry("r", kind="refund", status="awaiting-report",
+                                                               code=None, day="2026-09-19")])),
+            ("walk install, decision true, no row", registry(True, [entry("w", kind="first_download",
+                                                                          platform="iOS", code="1F")]))):
+        r = sr.apply_registry(cells, reg, *window_)
+        check(r["adjusted"] == r["raw"] and r["problems"],
+              f"{label}: an entry whose row is not in the report must subtract nothing and be a problem — "
+              f"raw {r['raw']} adjusted {r['adjusted']} problems {r['problems']}")
+    two_buys, _ = sr.cell_tally({"2026-09-16": ("data", tsv(iap("FI1", 2, "JP"), iap("IA1", 1, "CN")))})
+    r = sr.apply_registry(two_buys, registry(None, [entry("b", units=3)]), *window_)
+    check(r["adjusted"]["buy"] == 1 and r["adjusted"]["buy_macOS"] == 0
+          and r["adjusted_territory"] == {"CN": 1} and r["problems"],
+          f"an entry claiming 3 of a cell's 2 units must take the 2 and report the 1: {r}")
+    r = sr.apply_registry(two_buys, registry(None, [entry("b", units=2)]), *window_)
+    check(r["adjusted"]["buy"] == 1 and r["adjusted_territory"] == {"CN": 1} and not r["problems"],
+          f"CONTROL: an entry claiming exactly the cell's 2 units must take both, with no problem: {r}")
+    r = sr.apply_registry(two_buys, registry(True, [entry("w", kind="first_download", code="F1")]), *window_)
+    check(r["walk_install_units_unheld"] == 1 and r["problem_kinds"] == {"first_download"},
+          f"a walk install with no row must count as 1 unheld walk unit: {r}")
 
     planted = "exclusion control: planted"
     per_day = sr.tally(window(end=D(2026, 9, 1)))[0]
@@ -545,7 +609,7 @@ def test_checkpoint(check):
     rc, out, _ = checkpoint(registry(True, [OWNER_BUY, walk]), base)
     check.rc_and_text("walk install, decision true", rc, 0, out,
                       must=("N = 12 first-time downloads", "3/12 = 25.00%", "walk installs subtracted",
-                            "3/126 = 2.38%"), must_not=("BOUND WITHHELD",))
+                            "3/126 = 2.38%"), must_not=("BOUND WITHHELD", "NOT SETTLED", "NOT PRINTED"))
     rc, out, _ = checkpoint(registry(False, [OWNER_BUY, walk]), base)
     check.rc_and_text("walk install, decision false", rc, 0, out,
                       must=("N = 13 first-time downloads", "walk installs counted"),
@@ -554,12 +618,51 @@ def test_checkpoint(check):
     wrong_country = entry("owner-buy", country="US")
     rc, out, _ = checkpoint(registry(None, [wrong_country]), base)
     check.rc_and_text("entry whose cell is empty", rc, 5, out,
-                      must=("the registry and the report disagree", "purchase macOS US"),
-                      must_not=("BOUND (rule",))
+                      must=("the registry and the report disagree", "purchase macOS US",
+                            "ADJUSTED PURCHASES  NOT PRINTED"),
+                      must_not=("BOUND (rule", "ADJUSTED PURCHASES  gross", "US=-1", "would not apply anyway"))
     walk_wrong = entry("walk-ios", kind="first_download", day="2026-09-12", platform="iOS", code="1F")
     rc, out, _ = checkpoint(registry(True, [OWNER_BUY, walk_wrong]), base)
     check.rc_and_text("walk install whose cell is empty", rc, 5, out,
-                      must=("first_download iOS JP: the registry claims 1 unit(s), the report holds 0",))
+                      must=("first_download iOS JP: the registry claims 1 unit(s), the report holds 0",
+                            "N = 13 (macOS 12 · iOS 1)", "NOT SETTLED — 1 registered walk unit(s)",
+                            "or 12 if the registered walk units the report does not hold",
+                            "ADJUSTED PURCHASES  gross 0"),
+                      must_not=("N = 12", "iOS 0)  first-time", "BOUND (rule"))
+
+    # An awaiting-report entry sits in the window before its row exists (the drafts tell the owner to
+    # record it that way). It must subtract nothing, and no adjusted purchase figure may be printed.
+    refund_awaiting = entry("owner-refund", kind="refund", day="2026-09-19", status="awaiting-report",
+                            code=None, stamp="2026-09-19T12:00:00-07:00")
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY, refund_awaiting]), base)
+    check.rc_and_text("refund entry awaiting its row", rc, 5, out,
+                      must=("2026-09-19 refund macOS JP: the registry claims 1 unit(s), the report holds 0",
+                            "ADJUSTED PURCHASES  NOT PRINTED",
+                            "owner-refund  refund macOS JP units=1 report day 2026-09-19 status=awaiting-report "
+                            "— its cell holds fewer units"),
+                      must_not=("refunded -1", "would not apply anyway", "BOUND (rule"))
+    buy_awaiting = entry("owner-buy", status="awaiting-report", code=None, day="2026-09-20")
+    customer_only = window(extra=cohort_extra(purchase_day=None, add={"2026-09-17": [iap("IA1", 1, "CN")]}))
+    rc, out, _ = checkpoint(registry(None, [buy_awaiting]), customer_only)
+    check.rc_and_text("purchase entry awaiting its row, a customer bought", rc, 5, out,
+                      must=("PURCHASES  raw gross 1 (macOS 0 · iOS 1) · refunded 0 · net 1",
+                            "ADJUSTED PURCHASES  NOT PRINTED"),
+                      must_not=("net 0", "JP=-1", "macOS -1", "BOUND (rule"))
+    rc, out, _ = checkpoint(registry(None, [buy_awaiting]), window(extra=cohort_extra(purchase_day=None)))
+    check.rc_and_text("purchase entry awaiting its row, nothing bought", rc, 5, out,
+                      must=("ADJUSTED PURCHASES  NOT PRINTED",),
+                      must_not=("gross -1", "more refunds than purchases", "BOUND (rule"))
+    refund_row = window(extra=cohort_extra(add={"2026-09-19": [iap("FI1", -1, "JP")]}))
+    refund_wrong_day = entry("owner-refund", kind="refund", day="2026-09-18", stamp="2026-09-18T12:00:00-07:00")
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY, refund_wrong_day]), refund_row)
+    check.rc_and_text("refund entry on the wrong Pacific day", rc, 5, out,
+                      must=("2026-09-18 refund macOS JP: the registry claims 1 unit(s), the report holds 0",
+                            "ADJUSTED PURCHASES  NOT PRINTED"),
+                      must_not=("adjusted net purchases is -1", "more refunds than purchases", "BOUND (rule"))
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), refund_row)
+    check.rc_and_text("CONTROL: an unregistered refund with no disagreement still reads net -1", rc, 5, out,
+                      must=("ADJUSTED PURCHASES  gross 0 (macOS 0 · iOS 0) · refunded 1 · net -1",
+                            "more refunds than purchases"), must_not=("NOT PRINTED",))
 
     rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), window(extra=cohort_extra(),
                                                                  states={"2026-09-18": "pending"}))
@@ -652,6 +755,11 @@ def draft_entry(out):
     return json.loads(body)
 
 
+def sentence(out):
+    marker = f"{sr.DRAFT_LABEL}. §K sentence:\n"
+    return out.split(marker, 1)[1].strip() if marker in out else ""
+
+
 def test_confirm(check):
     base = window(extra=cohort_extra())
     rc, out, fetch = confirm(base)
@@ -674,6 +782,24 @@ def test_confirm(check):
     check(drafted is not None and not sr.validate_registry(registry(None, [drafted])),
           f"the draft entry does not validate: {drafted and sr.validate_registry(registry(None, [drafted]))}")
 
+    # The §K sentence: late is said to be late, and nothing is said to be registered.
+    said = sentence(out)
+    for needle in ("made 2026-09-17T10:00:00+09:00, 8 days after day 0 (2026-09-09)",
+                   "§K's \"before the SKU goes on sale\" was not met",
+                   "To be registered as `purchase-2026-09-16-macOS-JP`", "once registered it is excluded",
+                   "reported for macOS, the platform PURCHASE maps that code to; Device column: Desktop"):
+        check(needle in said, f"the §K draft sentence lacks {needle!r}: {said}")
+    for needle in ("Day-0", "day-0 known-positive purchase:", "Registered as", "made 2026-09-17T10:00:00+09:00 on"):
+        check(needle not in said, f"the §K draft sentence carries {needle!r}: {said}")
+    on_day0 = window(extra=cohort_extra(purchase_day="2026-09-08"))
+    rc, out, _ = confirm(on_day0, at="2026-09-09T09:00:00+09:00")           # Pacific 2026-09-08
+    check.rc_and_text("CONTROL confirm: a purchase made on day 0", rc, 0, out,
+                      must=("on day 0 (2026-09-09); whether that was before the SKU went on sale is not "
+                            "something a sales report can show",), must_not=("was not met", "days after day 0"))
+    check(sr.days_after_day0("2026-09-10T08:59:00+09:00") == 1
+          and sr.days_after_day0("2026-09-09T23:59:00-07:00") == 0,
+          "days_after_day0 does not count the date on the buyer's own clock")
+
     rc, out, fetch = confirm(base, at="2026-09-21T17:00:00+09:00")          # Pacific 09-21 > newest
     check.rc_and_text("confirm: D after the newest report day", rc, 6, out, must=("PENDING",),
                       must_not=("DRAFT",))
@@ -687,6 +813,60 @@ def test_confirm(check):
     rc, out, _ = confirm(base, platform="iOS")
     check.rc_and_text("confirm: wrong platform", rc, 7, out,
                       must=("NO MATCHING ROW", "2026-09-16  FI1 → purchase/macOS"), must_not=("DRAFT",))
+
+    # A Mac purchase Apple reports under a code PURCHASE maps to iOS: exit 7, but never a flat "no row".
+    mac_as_ia1 = window(extra=cohort_extra(purchase_day=None, add={"2026-09-16": [iap("IA1", 1, "JP")]}))
+    rc, out, _ = confirm(mac_as_ia1, platform="macOS")
+    check.rc_and_text("confirm: a macOS purchase reported under IA1", rc, 7, out,
+                      must=("NOT A MATCH: the 2026-09-16 report holds 1 purchase unit(s) for iOS · JP",
+                            "    2026-09-16  IA1 → purchase/iOS  units=1  country=JP  device=Desktop",
+                            "(Device 'Desktop' → macOS)", "what is in question is PURCHASE's platform map",
+                            "Re-running with --platform iOS to get a match is the wrong response",
+                            "NO MATCHING ROW for macOS · JP", "the question is PURCHASE's platform map."),
+                      must_not=("DRAFT", "NO MATCHING ROW: the"))
+    rc, out, _ = confirm(window(extra=cohort_extra(purchase_day=None)), platform="macOS")
+    check.rc_and_text("CONTROL confirm: no purchase on either platform", rc, 7, out,
+                      must=("NO MATCHING ROW: the 2026-09-16 report holds no purchase units for macOS · JP.",),
+                      must_not=("NOT A MATCH", "PURCHASE's platform map"))
+    ios_other_day = window(extra=cohort_extra(purchase_day=None, add={"2026-09-17": [iap("IA1", 1, "JP")]}))
+    rc, out, _ = confirm(ios_other_day, platform="macOS")
+    check.rc_and_text("CONTROL confirm: the other platform's row on D+1 is not D", rc, 7, out,
+                      must=("NO MATCHING ROW: the",), must_not=("NOT A MATCH",))
+    ios_other_country = window(extra=cohort_extra(purchase_day=None, add={"2026-09-16": [iap("IA1", 1, "CN")]}))
+    rc, out, _ = confirm(ios_other_country, platform="macOS")
+    check.rc_and_text("CONTROL confirm: the other platform's row in another country", rc, 7, out,
+                      must=("NO MATCHING ROW: the",), must_not=("NOT A MATCH",))
+    refund_as_ia1 = window(extra=cohort_extra(add={"2026-09-19": [iap("IA1", -1, "JP", device="iPhone")]}))
+    rc, out, _ = confirm(refund_as_ia1, kind="refund", at="2026-09-19T12:00:00-07:00")
+    check.rc_and_text("confirm: a refund under the other platform's code", rc, 7, out,
+                      must=("NOT A MATCH: the 2026-09-19 report holds 1 refund unit(s) for iOS · JP",
+                            "(Device 'iPhone' → iOS)", "NO MATCHING ROW for macOS · JP"))
+
+    # A match whose Device contradicts --platform: the draft carries a WARNING, in print and in its notes.
+    rc, out, _ = confirm(mac_as_ia1, platform="iOS")
+    warning = ("WARNING: a matched row's Device is 'Desktop' (macOS), which contradicts --platform iOS: the "
+               "draft's platform is PURCHASE's reading of IA1, not the device's")
+    check.rc_and_text("confirm: matched under iOS, Device Desktop", rc, 0, out, must=(warning,))
+    drafted = draft_entry(out)
+    check(warning in out and out.index(warning) < out.index(f"{sr.DRAFT_LABEL}. Registry entry:")
+          and drafted is not None and "WARNING: a matched row's Device is 'Desktop' (macOS)" in drafted["notes"],
+          f"the Device warning is not on the draft: notes {drafted and drafted['notes']}")
+    check("reported for iOS" in sentence(out) and "Device column: Desktop" in sentence(out),
+          f"the §K draft sentence hides the device: {sentence(out)}")
+    iphone = window(extra=cohort_extra(purchase_day=None,
+                                       add={"2026-09-16": [iap("IA1", 1, "JP", device="iPhone")]}))
+    rc, out, _ = confirm(iphone, platform="iOS")
+    check.rc_and_text("CONTROL confirm: matched under iOS, Device iPhone", rc, 0, out,
+                      must=(sr.DRAFT_LABEL, "Device column: iPhone"), must_not=("WARNING",))
+    rc, out, _ = confirm(base, platform="macOS")
+    check.rc_and_text("CONTROL confirm: matched under macOS, Device Desktop", rc, 0, out,
+                      must=(sr.DRAFT_LABEL,), must_not=("WARNING",))
+    watch = window(extra=cohort_extra(purchase_day=None,
+                                      add={"2026-09-16": [iap("FI1", 1, "JP", device="Apple Watch")]}))
+    rc, out, _ = confirm(watch, platform="macOS")
+    check.rc_and_text("confirm: a Device value this tool does not read", rc, 0, out,
+                      must=("WARNING: a matched row's Device is 'Apple Watch', which this tool does not read as "
+                            "a platform",))
     rc, out, _ = confirm(base, country="CN")
     check.rc_and_text("confirm: wrong country", rc, 7, out, must=("NO MATCHING ROW",))
     rc, out, _ = confirm(base, at="2026-09-16T08:00:00+09:00")               # Pacific 09-15
@@ -722,6 +902,17 @@ def test_confirm(check):
     drafted = draft_entry(out)
     check(drafted is not None and drafted["kind"] == "refund"
           and not sr.validate_registry(registry(None, [drafted])), f"the refund draft is wrong: {drafted}")
+    said = sentence(out)
+    check("which purchase is not recorded yet: the registry holds no matched purchase entry for macOS · JP"
+          in said and "To be registered as `refund-2026-09-19-macOS-JP`" in said
+          and "Registered as" not in said and "day-0 known-positive:" not in said,
+          f"the refund draft sentence, with no purchase registered: {said}")
+    rc, out, _ = confirm(refund, kind="refund", at="2026-09-19T12:00:00-07:00", reg=registry(None, [OWNER_BUY]))
+    said = sentence(out)
+    check(rc == 0 and "the purchase registered as `owner-buy`, made 2026-09-17T10:00:00+09:00, 8 days after "
+          "day 0 (2026-09-09); the SKU was on sale by day 0, so §K's \"before the SKU goes on sale\" was not "
+          "met" in said and "Registered as" not in said,
+          f"the refund draft sentence, with the purchase registered: rc {rc}: {said}")
 
     fetch = FakeFetch(base)
     rc, out = capture(sr.run_confirm, registry(None, [entry("x", units=0)]), fetch, NEWEST, "purchase",
@@ -793,9 +984,18 @@ def test_cli(check):
             rc, out = capture(sr.main, ["--confirm-known-positive", "--kind", "purchase", "--at", AT,
                                         "--platform", "macOS", "--country", "JP"])
             check.rc_and_text("POSITIVE CONTROL main confirm", rc, 0, out, must=(sr.DRAFT_LABEL,))
+            # Through the REAL fetcher, not the injected seam: D-1..D+1 must reach collect() with the
+            # cache off, or confirm reads D from a TSV an earlier baseline or checkpoint run cached.
+            check(collect.calls == [(D(2026, 9, 15), D(2026, 9, 17), False), (sr.LAUNCH_DATE, NEWEST, True)],
+                  f"main --confirm-known-positive reached collect() as {collect.calls}, expected D-1..D+1 "
+                  f"with use_cache False, then the full window with the cache")
+            calls_before = len(collect.calls)
             rc, out = capture(sr.main, ["--checkpoint", "--until", "2026-09-20", "--daily"])
             check.rc_and_text("main checkpoint", rc, 0, out,
                               must=("BOUND (rule of three", "2026-09-16  dl=  1 (mac  1 ios  0)  buy=1"))
+            check(collect.calls[calls_before:] == [(sr.LAUNCH_DATE, NEWEST, True)],
+                  f"main --checkpoint reached collect() as {collect.calls[calls_before:]}, expected the full "
+                  f"window once, with the cache")
             check(reg_path.read_bytes() == before, "a mode wrote the registry")
 
             reg_path.write_text('{"schema": 1}', encoding="utf-8")
