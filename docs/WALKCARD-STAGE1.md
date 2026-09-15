@@ -197,9 +197,11 @@ python3 scripts/stage1_walk.py manifest "$EV" > "$EV.manifest.jsonl"; echo "exit
 **一个有时间约束的决定(不替你做,只说时机)。** 登记表里的 `exclude_walk_first_downloads_from_N` 决定走查造成的安装算不算进 N,
 也就改变 N = 35 / 100 / 200 何时触发、打印的上界是多少。§K 在分母重新计价(re-denomination)那件事上写下的原则,同样适用于这里:分母只能在看到读数**之前**定 ——
 “What is NOT available any more is deciding it after seeing a checkpoint”,而且改动要连同时间戳写进框里(“the change and its timestamp go in this box”)。
-而一旦登记表里有 `first_download` 条目、决定还是 null,`--checkpoint` 会把两个 N 都打印出来。所以**要么在走查之前、要么至少在第一次
-跑含有 walk 安装条目的 `--checkpoint` 之前**做出这个决定,并连同日期记进 §K(草稿见 `DRAFTS` §5)。今天(2026-09-16)跑过的
-`--checkpoint` 里还没有任何登记条目,没有显示过两个 N。
+**截止点只有一个:在任何一次窗口里包含 walk 安装报表日的 `--checkpoint` 之前**(和 §K 框写的一样)。注意工具看不见没登记的安装:
+走查当天之后,如果登记表里只贴了购买条目、没贴安装条目,`--checkpoint` 会把你的安装当成普通首次下载算进 N,并且**可能直接打印上界**
+(不会因为决定是 null 而扣住 —— 只有登记了 `first_download` 条目、决定还是 null 时才扣住,那时它会把两个 N 都打印出来)。
+所以最稳的做法是**走查之前就做出这个决定**,并连同日期记进 §K(草稿见 `DRAFTS` §5)。今天(2026-09-16)跑过的 `--checkpoint`
+窗口里还没有任何 walk 安装,也没有显示过两个 N。
 
 **时钟。** 自 day 0 起 N = 18,3.0/天(到 2026-09-14 太平洋日)。照这个速度,**N = 35 大约在 2026-09-20(太平洋日)到达,
 大约两天后才能在报表里读到**。N = 35 按 §K 本来就"record, falsifies nothing"。`--checkpoint` 在已知阳性匹配上之前,
@@ -344,7 +346,8 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 * 生产环境:`/Applications` 里的 App Store 二进制 + 你自己的 Apple 账号。不是 sandbox 测试账号。
 * **为什么在 Mac 上买:** macOS 的"冷安装"不是冷的(拖进废纸篓后 `~/Library/Containers/com.jasonye.nihongoride` 还在,
   购买记录会从磁盘读回来,而不是从 StoreKit),所以冷安装只能在 iOS 上做,所以购买必须在 Mac 上;
-  另外 Mac 购买会走 `FI1`,是 `PURCHASE` 集合里最没把握的那个代码。**局限,明说:** 它只证明一个平台的代码;`IA1` / `IA9` 仍然没被观察到。
+  另外 Mac 购买**预期**会以 `FI1` 上报 —— 这个预期**从未被观察过**(工具文档字符串原话:nobody has seen which code Apple gives a Mac purchase of this in-app item),
+  `FI1` 是 `PURCHASE` 集合里最没把握的那个代码;Apple 也可能用 `IA1` / `IA9` 上报一笔 Mac 购买,那时确认命令会退出 7 并打印 `NOT A MATCH`。**局限,明说:** 它只证明一个平台的代码;`IA1` / `IA9` 仍然没被观察到。
 
 **价格,明说,不替你判断:** §K 写的"¥10"是 SKU 的**基准地区 CHN** 价格(¥10.00,开发者收入 8.42)。你看到的价格取决于你账号的 storefront:
 日本 storefront 显示 **¥150**(收入 128),美国 **$0.99**(收入 0.84)。注意 "¥" 本身分不出人民币还是日元,看数字(10 还是 150)和收据邮件上的国家/地区。
@@ -548,14 +551,18 @@ python3 scripts/sales_report.py --calibrate > "$EV/k-09-calibrate.txt" 2>&1; ech
 python3 scripts/stage1_walk.py manifest "$EV" > "$EV.manifest.jsonl"; echo "exit=$?"
 ```
 
-你把条目贴进登记表之后:
+你把条目贴进登记表之后 —— **前提:`exclude_walk_first_downloads_from_N` 已经做出决定并带日期记进 §K**(见第 4 节"一个有时间约束的决定")。
+还没决定就先别跑这一条:这时窗口里已经有你的安装,工具看不见它们,会照常打印上界。决定是 true 的话,还要先把 walk 安装条目登记进去:
 
 ```bash
 python3 scripts/sales_report.py --checkpoint > "$EV/k-10-checkpoint.txt" 2>&1; echo "exit=$?"
 ```
 
 退出码:**0** 上界已打印,或零购买上界不适用 · **5** 上界被扣住(输出 `BOUND WITHHELD:` 和每一条原因,例如 `first_download`
-条目存在而对应决定还是 null;扣住的原因先于"净购买是否为零"判断,所以有陌生人的购买时也可能是 5,并附一句零购买上界本来也不适用)·
+条目存在而对应决定还是 null;扣住的原因先于"净购买是否为零"判断,所以有陌生人的购买时也可能是 5。**只有登记表和报表在购买/退款上对得上时**,
+才会附一句"零购买上界本来也不适用";对不上时(例如退款条目还是 awaiting-report、退款行还没出现)会打印 `ADJUSTED PURCHASES  NOT PRINTED`,
+关于零购买上界什么都不说 —— 这时要自己拿 raw `PURCHASES` 那一行和登记的单位数对比,才看得出有没有陌生人买过。N 那一行出现 `NOT SETTLED`
+表示决定是 true、但登记的 walk 安装在报表那一格里找不到)·
 **4** 校准失败,或登记表无效(`REGISTRY-INVALID`)。
 
 (可选)为首次下载条目找对应的报表日数据。报表行是汇总,**无法确定地把某一个单位归到某一次安装上**:

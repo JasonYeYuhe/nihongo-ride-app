@@ -63,7 +63,9 @@
 
 已知阳性本身就是一次**可以得到阴性结果**的测试。§K 说买了就要 “Record the date here”,所以这种结果也要记,而且不能套用变体 A。
 要知道的事实:如果购买行的产品类型代码不在 `PURCHASE` 里,`validate_registry` 不接受一个 `matched` 条目,`--checkpoint` 会一直扣住上界,
-直到分类器被改 —— 改分类器是仪器变更,由你决定,不是记录的一部分。
+直到分类器被改 —— 改分类器是仪器变更,由你决定,不是记录的一部分。**确认命令打印 `NOT A MATCH` 的情况也一样**(例如 Mac 购买以 `IA1` 上报,
+而 `PURCHASE` 把 `IA1` 映射到 iOS):平台写 macOS、代码写 `IA1` 的 `matched` 条目同样会被拒绝(`'IA1' is not a purchase code for 'macOS'`);
+条目只能保持 `awaiting-report`、代码留 null,要改的是 `PURCHASE` 的平台映射,同样是你决定的仪器变更。**不要**为了能记录而把平台改写成 iOS。
 
 ```markdown
 > ### Day 0 known-positive — purchase made <YYYY-MM-DD>, NOT confirmed as of <YYYY-MM-DD>
@@ -286,8 +288,8 @@
 
 **决定要先于读数,并写明日期。** `exclude_walk_first_downloads_from_N` 会改变 N。§K 在分母重新计价那件事上写下的原则是
 “What is NOT available any more is deciding it after seeing a checkpoint”,改动要 “the change and its timestamp go in this box”。
-而登记表里一旦有 `first_download` 条目、这个决定还是 null,`--checkpoint` 就会把两种 N 都打印出来。所以这个决定应在走查之前、
-至少在第一次跑含 walk 安装条目的 `--checkpoint` 之前做出,并把下面这段(日期是做决定的那一刻)记进 §K:
+而登记表里一旦有 `first_download` 条目、这个决定还是 null,`--checkpoint` 就会把两种 N 都打印出来;反过来,安装**没登记**时工具看不见它们,
+会照常打印上界。所以截止点是**任何一次窗口里包含 walk 安装报表日的 `--checkpoint` 之前**,最稳的是走查之前。把下面这段(日期是做决定的那一刻)记进 §K:
 
 ```markdown
 > **Decided <YYYY-MM-DDTHH:MM+09:00>, before any `--checkpoint` reading that held a walk install:**
@@ -311,7 +313,7 @@
    **这是清单里影响最大的一条,它直接翻转分支。** 退款之后你算不算「non-buyer」(`docs/PLAN-WINDOW.md` 的用语,不是 PLAN-STAGE1 的)也没写。
 2. **(Q3.2)走查造成的安装要不要从 N 里减掉?**(登记表 `exclude_walk_first_downloads_from_N`;**时机见 §5:要在看到含 walk 安装的读数之前定**)k 在 0 到 4 之间,前提是它们真是首次下载。
    不减:真实安装的上界是 3/(N−k),N = 35 时 k=0 为 8.6%、k=2 为 9.1%、k=4 为 9.7%;N = 100 时 3.00% → 3.06%。
-   没有哪条规则只因 k 翻转;变的是检查点什么时候触发、打印的上界是多少。null 期间 `--checkpoint` 扣住上界。
+   没有哪条规则只因 k 翻转;变的是检查点什么时候触发、打印的上界是多少。决定为 null **且登记表里有 `first_download` 条目**时 `--checkpoint` 扣住上界;没登记的安装工具看不见,不会因此扣住。
 3. **(Q3.3)家人的安装算不算 cohort?** 算:N 和那个 storefront 的下载数 +1(两台设备 +2),它的计数器也可能成为 “returned counter”
    (但 0 米时 `offerAppeared` 落在 nihonbashi 桶,除非那个账号骑过 25 km,否则触发不了 STOP)。不算:这些数不动,它的计数器忽略。
 4. **(Q3.5)退款把净额抵消,算不算 “exclude it from the cohort”?** (i) 算:从购买行到退款行之间(最长约 90 天)net = 1,GO 会因你那一单触发,

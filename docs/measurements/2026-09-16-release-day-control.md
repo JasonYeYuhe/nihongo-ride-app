@@ -85,7 +85,7 @@ the iOS date cannot be Pacific. The actual release days 08-15 and 08-17 are coun
 | certainly not a release date | 08-13, 08-14, 08-16, 08-18, 08-22, 09-01, 09-02, 09-03, 09-04, 09-09, 09-10, 09-12, 09-13, 09-14 |
 | release days currently counted as "other" | 08-10 (1.20 or 1.19); 08-03 … 08-09 (1.15–1.18) |
 
-**The handoff's September dates** (`docs/HANDOFF-STAGE1-GATES-PROMPT.md:148`): 09-04 is the iOS 1.31
+**The handoff's September dates** (`43d0da7:docs/HANDOFF-STAGE1-GATES-PROMPT.md:148`): 09-04 is the iOS 1.31
 submission day; 09-07 the macOS 1.31 submission day (a release that day is not ruled out); 09-09 is
 the Japan date of the 09-08 19:02 PDT live observation, and the macOS update-surge day; 09-10 had 1.32
 submitted at 17:24 and every row still 1.31. **None of the four is a Pacific release day. 09-11 is

@@ -622,6 +622,15 @@ def test_checkpoint(check):
                             "ADJUSTED PURCHASES  NOT PRINTED"),
                       must_not=("BOUND (rule", "ADJUSTED PURCHASES  gross", "US=-1", "would not apply anyway"))
     walk_wrong = entry("walk-ios", kind="first_download", day="2026-09-12", platform="iOS", code="1F")
+    # The listing of a SHORT walk install must say what was actually done with N, which the decision
+    # decides — not "only what the cell holds is subtracted" when nothing was (review 2026-09-16).
+    for decision, said, not_said in (
+            (False, "nothing is subtracted from N (decision false)", "only what the cell holds is subtracted"),
+            (None, "nothing is subtracted from N (decision pending)", "only what the cell holds is subtracted"),
+            (True, "only what the cell holds is subtracted", "nothing is subtracted from N")):
+        rc, out, _ = checkpoint(registry(decision, [OWNER_BUY, walk_wrong]), base)
+        check.rc_and_text(f"short walk install listing, decision {decision}", rc, 5, out,
+                          must=(said,), must_not=(not_said,))
     rc, out, _ = checkpoint(registry(True, [OWNER_BUY, walk_wrong]), base)
     check.rc_and_text("walk install whose cell is empty", rc, 5, out,
                       must=("first_download iOS JP: the registry claims 1 unit(s), the report holds 0",
@@ -951,6 +960,45 @@ def fake_collect(days_by_call):
     return collect
 
 
+def test_collect_cache(check):
+    """collect() is where use_cache is honoured. The --confirm refetch is only as fresh as these two
+    guards: dropping either `use_cache and` makes a confirm read a day cached before the owner's row
+    existed, and every seam-level test above would stay green (review 2026-09-16)."""
+    day = D(2026, 9, 16)
+    with tempfile.TemporaryDirectory() as tmp:
+        saved = (sr.CACHE_DIR, sr.fetch_day)
+        calls = []
+
+        def fake_fetch(token, vendor, d):
+            calls.append(d)
+            return "data", f"FRESH {d.isoformat()}"
+        try:
+            sr.CACHE_DIR = Path(tmp)
+            sr.fetch_day = fake_fetch
+            (Path(tmp) / f"{day.isoformat()}.tsv").write_text("STALE tsv", encoding="utf-8")
+            (Path(tmp) / f"{(day + dt.timedelta(days=1)).isoformat()}.nosales").write_text(
+                "STALE nosales", encoding="utf-8")
+            fresh = sr.collect(None, None, day, day + dt.timedelta(days=1), use_cache=False)
+            check(calls == [day, day + dt.timedelta(days=1)],
+                  f"collect(use_cache=False) must fetch every day, fetched {calls}")
+            check(fresh[day.isoformat()] == ("data", f"FRESH {day.isoformat()}") and
+                  fresh[(day + dt.timedelta(days=1)).isoformat()][1].startswith("FRESH"),
+                  f"collect(use_cache=False) returned cached payloads: {fresh}")
+            # Paired control: with the cache, the planted files answer and nothing is fetched.
+            for f in Path(tmp).iterdir():
+                f.unlink()
+            (Path(tmp) / f"{day.isoformat()}.tsv").write_text("STALE tsv", encoding="utf-8")
+            (Path(tmp) / f"{(day + dt.timedelta(days=1)).isoformat()}.nosales").write_text(
+                "STALE nosales", encoding="utf-8")
+            calls.clear()
+            cached = sr.collect(None, None, day, day + dt.timedelta(days=1), use_cache=True)
+            check(calls == [] and cached[day.isoformat()] == ("data", "STALE tsv") and
+                  cached[(day + dt.timedelta(days=1)).isoformat()] == ("nosales", "STALE nosales"),
+                  f"CONTROL: collect(use_cache=True) must answer from the planted cache: {calls} {cached}")
+        finally:
+            sr.CACHE_DIR, sr.fetch_day = saved
+
+
 def test_cli(check):
     usage = [
         ["--checkpoint", "--calibrate"], ["--checkpoint", "--json", "x.json"], ["--checkpoint", "--no-cache"],
@@ -1083,6 +1131,8 @@ def main():
     test_confirm(check)
     print("G. COMMAND LINE")
     test_cli(check)
+    print("G2. collect() HONOURS use_cache")
+    test_collect_cache(check)
     print("H. WRITES AND IMPORTS")
     test_writes(check)
 

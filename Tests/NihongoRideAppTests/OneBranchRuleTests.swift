@@ -57,6 +57,9 @@ import Foundation
 //   reported as acting on the decision: also spurious. What the handed closure does inside is not
 //   read — `ask: { if x { act() } }` passes — and neither is a returned decision acted on by
 //   anything other than the wrapper's closures or a `requestReview()` call.
+// * A nested closure argument or local that reuses the wrapper's closure name (`{ ask in … }`,
+//   `let ask = …`) reads as a use of the parameter outside the call: spurious, but loud. A member
+//   reached through a dot (`x.ask`, `.ask`, `\T.ask`) is not counted — a parameter never is.
 // * Only `Sources/` is scanned. Tests may call `decide()` and the record-level `apply` freely —
 //   that is what those APIs are public for.
 //
@@ -389,11 +392,14 @@ enum OneBranchRules {
                 guard let function = file.enclosingFunction(of: call.nameOffset), let body = function.body else { continue }
                 // The wrapper's closures are found by TYPE, never by name: a renamed parameter
                 // (`act`, `onAsked`) is the same wrapper. A label (`ask:`, colon directly after)
-                // is not a use of the parameter.
+                // is not a use of the parameter, and neither is a mention reached through a dot —
+                // `x.ask`, `.ask`, `\T.ask` — because a parameter can never be (review 2026-09-16).
                 let uses = { (name: String) in
                     file.mentions(of: name).filter { offset in
                         let after = offset + name.utf8.count
-                        return body.contains(offset) && !(after < file.code.count && file.code[after] == UInt8(ascii: ":"))
+                        let label = after < file.code.count && file.code[after] == UInt8(ascii: ":")
+                        let member = offset > 0 && file.code[offset - 1] == UInt8(ascii: ".")
+                        return body.contains(offset) && !label && !member
                     }
                 }
                 let closures = file.closureParameters(of: function)
@@ -721,6 +727,23 @@ enum OneBranchSamples {
         }
         """#)
 
+    /// Control: today's wrapper plus three look-alikes that are NOT the closure parameter — a member,
+    /// an implicit member and a key path sharing its name. Must pass.
+    static let appModelReviewMemberLookalikes = File(path: "Sources/NihongoRideApp/AppModel.swift", source: #"""
+        final class AppModel {
+            func considerReviewPrompt(now: Date = Date(), ask: () -> Void) {
+                guard let moment = pendingReviewMoment else { return }
+                pendingReviewMoment = nil
+                let isolated = Self.currentIsolation.touchesNothingOfTheUsers
+                reviewPromptLedger.requestIfEarned(moment: moment, now: now, suppressed: isolated, ask: ask)
+                _ = reviewPromptLedger.ask
+                log(.ask)
+                _ = \ReviewPromptLedger.ask
+                if !isolated { reviewPromptLedger.save(to: Self.settingsStore) }
+            }
+        }
+        """#)
+
     static let resultsViewToday = File(path: "Sources/NihongoRideApp/ResultsView.swift", source: #"""
         struct ResultsView: View {
             @Environment(\.requestReview) private var requestReview
@@ -985,6 +1008,12 @@ struct RequestIfEarnedOneBranchTests {
         #expect(renamed.violations.isEmpty && renamed.counts["wrappers"] == 1, "\(renamed.counts) \(renamed.violations)")
         let direct = OneBranchRules.reviewPrompt([S.reviewLedgerToday, S.resultsViewRequestsDirectly])
         #expect(direct.violations.isEmpty && direct.counts["reviewRequests"] == 1, "\(direct.counts) \(direct.violations)")
+    }
+
+    @Test("a member, implicit member or key path sharing the closure's name is not a use of the closure")
+    func memberLookalikesPass() {
+        let report = OneBranchRules.reviewPrompt([S.reviewLedgerToday, S.appModelReviewMemberLookalikes, S.resultsViewToday])
+        #expect(report.violations.isEmpty && report.counts["wrappers"] == 1, "\(report.counts) \(report.violations)")
     }
 
     @Test("a view that requests a review by itself is caught")

@@ -342,7 +342,7 @@ left exactly as written; these lines are added under it, never over it.
 
 * **2026-09-12** — `scripts/run_store_gates.sh` → exit 3, "Executed 11 tests, with 9 tests skipped
   and 0 failures"; all nine gates in `StoreGateTests.swift`, `test00_theStoreIsReachable` through
-  `test08_neverPurchasedIsNotEntitled`, skipped as inert (`docs/HANDOFF-STAGE1-GATES-PROMPT.md:45-55`).
+  `test08_neverPurchasedIsNotEntitled`, skipped as inert (`43d0da7:docs/HANDOFF-STAGE1-GATES-PROMPT.md:45-55`).
   **The toolchain was not recorded there**, so this line cannot say which Xcode it measured.
 * **2026-09-16** — Xcode 27.0 (27A266a) / macOS 27.0 (26A428): `scripts/run_store_gates.sh` → exit 3,
   "Executed 11 tests, with 9 tests skipped and 0 failures". All nine, `test00` … `test08`, were skipped
@@ -708,7 +708,9 @@ fired. *An agent cannot do this step and must not try.*
 >   agrees with the report, and adjusted net purchases are zero. The withholding reasons are checked
 >   first: if any holds it prints `BOUND WITHHELD:` with every reason and exits 5 (4 if calibration
 >   failed or the registry is invalid) — **including when a stranger's purchase has made net
->   purchases non-zero**, where it adds that the zero-purchase bound would not apply anyway. When no
+>   purchases non-zero**, where — only if the registry agrees with the report on purchases and refunds
+>   — it adds that the zero-purchase bound would not apply anyway (when they disagree it prints
+>   `ADJUSTED PURCHASES  NOT PRINTED` instead, and the raw purchase line is the one to read). When no
 >   reason holds and net purchases are non-zero it says the zero-purchase bound does not apply
 >   (exit 0). It evaluates none of §K's branches (GO / STOP / STOP BUILDING); that stays a reading.
 >   **This is stricter than §K's text, and new:** it comes from the 2026-09-12 handoff, and is based

@@ -1058,8 +1058,16 @@ def run_checkpoint(registry, fetch, newest, until=None, daily=False):
             if x["id"] not in in_window_ids:
                 effect = f"outside the cohort window {DAY0} .. {end}, not subtracted"
             elif _entry_cell(x) in c["short_cells"]:
-                effect = ("its cell holds fewer units than the registry claims there — only what the "
-                          "cell holds is subtracted, and the bound is withheld")
+                # What is subtracted still depends on the kind and, for a walk install, on the
+                # owner's decision: a short cell withholds the bound, it does not start a subtraction
+                # the decision never allowed (review 2026-09-16).
+                if x["kind"] == "first_download" and decision is not True:
+                    subtracted = ("nothing is subtracted from N (decision false)" if decision is False
+                                  else "nothing is subtracted from N (decision pending)")
+                else:
+                    subtracted = "only what the cell holds is subtracted"
+                effect = (f"its cell holds fewer units than the registry claims there — {subtracted}, "
+                          f"and the bound is withheld")
             elif x["kind"] in ("purchase", "refund"):
                 effect = "subtracted from the purchase numerator"
             elif x["kind"] == "redownload":
