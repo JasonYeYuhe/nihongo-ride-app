@@ -13,7 +13,9 @@ exactly as that run printed them.
 ## 1. What the control is
 
 `calibrate()` compares mean `F7` (update) units per day on `RELEASE_DAYS` against every other data
-day on or after 2026-08-01 (`scripts/sales_report.py:372-389`). It fails only if updates are **not**
+day on or after 2026-08-01 (`43d0da7:scripts/sales_report.py:372-389`; every `:NNN` below is a line in that
+commit, the instrument as it stood when these measurements were taken — later commits in this series moved the
+lines). It fails only if updates are **not**
 elevated on release days. The same comparison for downloads is **printed and never checked**
 (`:384-385`), although the module docstring states both halves: *"updates must be release-locked
 and downloads must not be"* (`:29`).
@@ -121,7 +123,8 @@ What each one shows:
 The control asks whether `F7` units are higher on release days. If release days were chosen as "the
 first day `F7` rows show the new version", every chosen day would have at least one `F7` unit **by
 construction**, and wherever two days are possible that rule picks the one where the wave starts.
-The control would then pass because of how the days were chosen, and could no longer fail. So §2
+A pass would then be biased by construction and would no longer be evidence — not strictly impossible to fail
+(a chosen day can still be a single-unit day), but uninformative when it passes. So §2
 dates nothing from an `F7` count. One cell leans on an update row — 1.25 macOS, 08-23, a single
 unit — and it is marked as such and kept out of the firm list. Download dates carry the same effect
 more weakly; that line only prints.
@@ -133,8 +136,11 @@ ratios were already known — which this paragraph does.
 
 ## 5. What was deliberately NOT changed, and why
 
-* **`RELEASE_DAYS`, the `DOWNLOAD` / `UPDATE` / `REDOWNLOAD` / `PURCHASE` sets, and every calibration
-  criterion are unchanged.** PLAN-STAGE1 §K's day-0 instruction is to "confirm the row appears and
+* **`RELEASE_DAYS`, the `DOWNLOAD` / `UPDATE` / `REDOWNLOAD` / `PURCHASE` sets, and the release-day
+  control are unchanged.** One thing was added to `calibrate()` in the same series: `exclusion_control()`,
+  a synthetic, data-independent check that the registry subtraction can fail — the same kind of check as
+  the existing `purchase_path_control()`. On the same cache, base and HEAD give the same ratios
+  (1.65x / 1.24x) and the same verdict. PLAN-STAGE1 §K's day-0 instruction is to "confirm the row appears and
   `--calibrate` still passes". "Still" only means something if the instrument before and after the
   owner's known-positive purchase is the same instrument. Changing it now would make that comparison
   one between two different instruments.

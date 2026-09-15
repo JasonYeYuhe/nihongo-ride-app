@@ -43,6 +43,10 @@
 * iOS 从 Xcode 装的、TestFlight 装的,用的是 Apple 的 sandbox 商店;§K 写明 sandbox 永远不会出现在 `salesReports` 里。
   而且它会以同一个 bundle id 覆盖掉 App Store 版本。
 * app 自己分不出来:关于页只显示 app 名和 `v` + 版本号,**没有 build 号**,也没有 Debug / TestFlight / App Store 的标记。
+* **下面的工具检查分不出 TestFlight。** 同一个 build 从 TestFlight 装,版本号和 build 号完全一样;Mac 上 TestFlight 装的 app 是否也带
+  `_MASReceipt`、`codesign` 的 Authority 是否不同,这里没人实测过(这台 Mac 上装着 TestFlight.app,但没有用它装过 Nihongo Ride)。
+  所以另外手工看一眼,并截图:**TestFlight app 里没有 Nihongo Ride 这一项**(Mac 和 iPhone 各看一次),并且 App Store 里 Nihongo Ride
+  页面显示的是"打开"。
 
 **Mac 上怎么确认**(在仓库目录里跑):
 
@@ -83,7 +87,9 @@ python3 scripts/stage1_walk.py ios-state --device "<你的 iPhone 名称>"; echo
 
 ## 2. 导航(Mac、iPhone、iPad 路径相同)
 
-**语言。** 界面语言不跟系统语言,新安装**永远是英文**。新安装会先出引导页,右上角〔Skip〕(中文界面是〔跳过〕)。
+**语言。** 界面语言不跟系统语言,数据为空的新安装**永远是英文**,并会先出引导页,右上角〔Skip〕(中文界面是〔跳过〕)。
+**但这台 Mac 例外:** Mac 上 App Store 版本和以前本地构建共用同一个容器,容器里的设置已经是 `hasSeenOnboarding` true、语言 `en`
+(2026-09-16 读取),所以 Mac 上**不会**出引导页,直接进菜单。iPhone 删除后重装、家人的新设备会出引导页。
 想换中文:菜单上的分段选择〔English〕|〔中文〕,或设置里〔GENERAL〕/〔通用〕卡片的〔Language〕/〔界面语言〕行。
 价格字符串跟 storefront 走,Apple 的购买/登录弹窗跟系统语言走,都不受这个设置影响。
 
@@ -154,7 +160,8 @@ python3 -c 'import datetime; print(datetime.datetime.now().astimezone().isoforma
 python3 scripts/stage1_walk.py manifest "$EV" > "$EV.manifest.jsonl"; echo "exit=$?"
 ```
 
-退出码 0。每行是一个文件的 `{"file", "sha256"}`,正好是登记表条目 `"evidence"` 要求的形状,可以直接贴(大小和 mtime 另存在工具的快照里)。
+退出码 0。每行是一个文件的 `{"file", "sha256"}`,正好是登记表条目 `"evidence"` 里**每一项**的形状(大小和 mtime 另存在工具的快照里)。
+贴进 `"evidence": [ … ]` 时**行与行之间要加逗号**,否则整个登记表是无效 JSON,之后的命令会以 `REGISTRY-INVALID` 开头的输出退出 4。
 
 ---
 
@@ -186,6 +193,13 @@ python3 scripts/stage1_walk.py manifest "$EV" > "$EV.manifest.jsonl"; echo "exit
 **Mac 容器现状:** `NihongoRide.entitlement.v1` **不存在**(检查 1 的前提成立);`NihongoRide.unlockOffer.v1` 已经是
 `{"counts":{},"launches":4,"furthestBucket":2}`(来自以前本地的沙盒 Release 构建)。App Store 版本会共用这个容器,
 所以 **Mac 上的计数器不会从零开始**。
+
+**一个有时间约束的决定(不替你做,只说时机)。** 登记表里的 `exclude_walk_first_downloads_from_N` 决定走查造成的安装算不算进 N,
+也就改变 N = 35 / 100 / 200 何时触发、打印的上界是多少。§K 在分母重新计价(re-denomination)那件事上写下的原则,同样适用于这里:分母只能在看到读数**之前**定 ——
+“What is NOT available any more is deciding it after seeing a checkpoint”,而且改动要连同时间戳写进框里(“the change and its timestamp go in this box”)。
+而一旦登记表里有 `first_download` 条目、决定还是 null,`--checkpoint` 会把两个 N 都打印出来。所以**要么在走查之前、要么至少在第一次
+跑含有 walk 安装条目的 `--checkpoint` 之前**做出这个决定,并连同日期记进 §K(草稿见 `DRAFTS` §5)。今天(2026-09-16)跑过的
+`--checkpoint` 里还没有任何登记条目,没有显示过两个 N。
 
 **时钟。** 自 day 0 起 N = 18,3.0/天(到 2026-09-14 太平洋日)。照这个速度,**N = 35 大约在 2026-09-20(太平洋日)到达,
 大约两天后才能在报表里读到**。N = 35 按 §K 本来就"record, falsifies nothing"。`--checkpoint` 在已知阳性匹配上之前,
@@ -219,7 +233,8 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 
 1. App Store app 里用**你自己的** Apple 账号安装 Nihongo Ride(装到 `/Applications`)。记下安装时刻(上面的时间命令)——
    这次安装在报表里可能是一个首次下载(F1)或重新下载,登记表草稿要用。
-2. 启动,只用:`open "/Applications/Nihongo Ride.app"`。新装会出引导页 →〔Skip〕。
+2. 启动,只用:`open "/Applications/Nihongo Ride.app"`。这台 Mac 的容器已记录看过引导页,所以**直接进菜单、没有〔Skip〕是正常的**
+   (见第 2 节"语言")。
 3. **在 Mac 上不要打开 The Road,更不要点〔One-time purchase〕。** Mac 要留给检查 1。
 4. 存两份输出:
 
@@ -512,9 +527,9 @@ python3 scripts/sales_report.py --confirm-known-positive --kind purchase --at <�
 | 退出码 | 意思 | 你接下来做什么 |
 |---|---|---|
 | **0** | D 上匹配到了,**并且**全窗口校准 OK。会打印一份**草稿**登记表条目和一句**草稿** §K 句子,都标着"未记录" | 读一遍。你同意的话,自己把条目贴进 `docs/measurements/stage1-known-positives.json`(没有任何工具会写它),`"evidence"` 用 manifest 的 sha256 填,§K 文字见 `DRAFTS`。然后才轮到步 7 |
-| **4** | 校准失败 —— 仪器不可信 | 不要记录匹配,不要退款。把输出留在证据文件夹,先查仪器 |
+| **4** | 校准失败 —— 仪器不可信;**或者**登记表本身无效(输出以 `REGISTRY-INVALID` 开头) | 不要记录匹配,不要退款。先看输出:以 `REGISTRY-INVALID` 开头 → 是你手改的 JSON 有问题(常见是 evidence 行之间漏了逗号),修好再跑,仪器没问题。**输出里有 `UNCLASSIFIED` 行** → 先看其中有没有 D 当天、你的国家、units 1 的那一行:那很可能就是你的购买,只是 Apple 用了一个 `PURCHASE` 里没有的产品类型代码 —— 这正是已知阳性要找的那种发现。不要改代码、不要记录、不要退款,由你决定下一步 |
 | **6** | PENDING:太平洋日 D 的报表还没发布 | 什么都不用做,明天再跑 |
-| **7** | 报表已经有了,但没有匹配的行 | **不要退款。** 看输出里列出的 D-1..D+1 购买类行和 UNCLASSIFIED 行;核对 `--at` / `--platform` / `--country` 有没有填错。其余原因这里没人观察过,由你判断 |
+| **7** | 报表已经有了,但没有匹配的行 | **不要退款。** 看输出里列出的 D-1..D+1 购买类行(有 UNCLASSIFIED 行时会是 4,不会是 7);核对 `--at` / `--country` 有没有填错。**如果输出说同一天、同一国家在另一个平台的代码下有一笔购买:那不是匹配,不要把 `--platform` 换成另一个平台重跑** —— 那等于把 Mac 上的购买记成 iOS;要问的是 `PURCHASE` 的平台映射,由你决定。其余原因这里没人观察过 |
 | 2 | 找不到 vendor number | 修好再跑;对这笔购买什么也没说明 |
 | 3 | API 失败 | 过会儿再跑;同上 |
 
@@ -527,6 +542,12 @@ python3 scripts/sales_report.py --calibrate > "$EV/k-09-calibrate.txt" 2>&1; ech
 应为 0。**不要**用 `--since 2026-09-09 --calibrate` 代替:那个窗口里没有任何 `RELEASE_DAYS` 里的日子,按设计退出 4
 ("no release days in window — cannot run the positive control"),2026-09-16 实测就是 4。
 
+贴条目之前,先把新生成的 k-08 / k-09 也算进清单(每次运行会覆盖之前的清单文件):
+
+```bash
+python3 scripts/stage1_walk.py manifest "$EV" > "$EV.manifest.jsonl"; echo "exit=$?"
+```
+
 你把条目贴进登记表之后:
 
 ```bash
@@ -534,7 +555,8 @@ python3 scripts/sales_report.py --checkpoint > "$EV/k-10-checkpoint.txt" 2>&1; e
 ```
 
 退出码:**0** 上界已打印,或零购买上界不适用 · **5** 上界被扣住(输出 `BOUND WITHHELD:` 和每一条原因,例如 `first_download`
-条目存在而对应决定还是 null)· **4** 校准失败。
+条目存在而对应决定还是 null;扣住的原因先于"净购买是否为零"判断,所以有陌生人的购买时也可能是 5,并附一句零购买上界本来也不适用)·
+**4** 校准失败,或登记表无效(`REGISTRY-INVALID`)。
 
 (可选)为首次下载条目找对应的报表日数据。报表行是汇总,**无法确定地把某一个单位归到某一次安装上**:
 
@@ -556,7 +578,10 @@ python3 scripts/sales_report.py --since <报表日 YYYY-MM-DD> --until <报表�
    python3 scripts/sales_report.py --confirm-known-positive --kind refund --at <退款批准时刻,ISO-8601 含时区> --platform macOS --country <两位国家码> > "$EV/r-03-confirm-refund.txt" 2>&1; echo "exit=$?"; cat "$EV/r-03-confirm-refund.txt"
    ```
 
-   退出码同上表。**明说一个没被观察过的地方:** 退款行落在哪个太平洋日、和批准邮件的时间差多少,这里没人见过真实的退款行。
+   退出码同上表。之后再算一次清单,把 r-01..r-03 算进去:
+   `python3 scripts/stage1_walk.py manifest "$EV" > "$EV.manifest.jsonl"; echo "exit=$?"`
+
+   **明说一个没被观察过的地方:** 退款行落在哪个太平洋日、和批准邮件的时间差多少,这里没人见过真实的退款行。
    命令只看 D-1..D+1,所以 7 也可能只是行落在别的日子 —— 不要据此下结论,把输出留下,由你判断是否换一个 `--at` 再跑。
 
 ---

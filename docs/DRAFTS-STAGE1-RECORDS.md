@@ -35,7 +35,7 @@
 > | platform · device · build | macOS · <Mac model>, macOS <version> · App Store 1.32 (56) |
 > | storefront · country code | <storefront> · `<XX>` — price shown on the button: `<price string, verbatim>` |
 > | units | 1 |
-> | matched product type code | `<FI1 | other code as printed>` |
+> | matched product type code | `<code exactly as printed by the confirm command>` |
 > | confirm | `python3 scripts/sales_report.py --confirm-known-positive --kind purchase --at <YYYY-MM-DDTHH:MM:SS+09:00> --platform macOS --country <XX>` → **exit 0** · transcript `<k-08-confirm-purchase.txt>` sha256 `<…>` |
 > | full-window calibration | `python3 scripts/sales_report.py --calibrate` → **exit 0** · transcript `<k-09-calibrate.txt>` sha256 `<…>` |
 > | refund requested | `<YYYY-MM-DD>` |
@@ -54,6 +54,41 @@
 > their sha256 are in `<manifest file name>`.
 ```
 
+变体 A 只适用于确认命令**退出 0**、全窗口校准**退出 0** 的情况。如果不是,用下面的 A2。
+
+---
+
+## 1b. §K day-0 记录 —— 变体 A2:买了,但没有确认上(确认命令退出 4 或 7)
+
+已知阳性本身就是一次**可以得到阴性结果**的测试。§K 说买了就要 “Record the date here”,所以这种结果也要记,而且不能套用变体 A。
+要知道的事实:如果购买行的产品类型代码不在 `PURCHASE` 里,`validate_registry` 不接受一个 `matched` 条目,`--checkpoint` 会一直扣住上界,
+直到分类器被改 —— 改分类器是仪器变更,由你决定,不是记录的一部分。
+
+```markdown
+> ### Day 0 known-positive — purchase made <YYYY-MM-DD>, NOT confirmed as of <YYYY-MM-DD>
+>
+> **Late, and recorded as late.** Day 0 was 2026-09-09. The paragraph above asks for this purchase
+> “Day 0, before the SKU goes on sale”; that condition was **not met**. The purchase was made <N>
+> days after day 0.
+>
+> **The known-positive did not come back positive.** A real production purchase was made
+> (`<YYYY-MM-DDTHH:MM:SS+09:00>`, Pacific report day `<YYYY-MM-DD>`, macOS, `<XX>`, price shown
+> `<price string, verbatim>`), and
+> `python3 scripts/sales_report.py --confirm-known-positive --kind purchase --at <…> --platform macOS --country <XX>`
+> exited **<4 | 7>** on `<YYYY-MM-DD>` (transcript `<k-08-confirm-purchase.txt>` sha256 `<…>`).
+>
+> What it printed for D-1..D+1, verbatim:
+>
+> ```
+> <the purchase-class and UNCLASSIFIED lines, and any other-platform notice, as printed>
+> ```
+>
+> **Consequence.** No `matched` registry entry exists, so `--checkpoint` keeps withholding the bound.
+> The instrument has not been shown to report this purchase; a later zero is still not a result.
+> Next step, decided by the owner: <e.g. investigate the product type code / wait and re-run / other>.
+> Refund: <not requested — or requested YYYY-MM-DD, with the reason it was requested before a match>.
+```
+
 ---
 
 ## 2. §K day-0 —— 变体 B:决定不做
@@ -66,10 +101,13 @@
 > **This is a decision, not a gap.** The owner decided not to make the purchase the paragraph above
 > describes. Reason: <the owner's reason>.
 >
+> **The precondition this abandons, as the paragraph states it:** “Day 0, before the SKU goes on sale
+> — non-negotiable, and it is an OWNER action”. It was already not met when this was decided (day 0
+> was 2026-09-09 and the SKU was on sale from then), and by this decision it never will be.
+>
 > **What that costs, in §K's own words.** The purchase is “the money instrument's known-positive,
-> and this project does not trust an instrument that has not fired.” So a zero stays unreadable:
-> “`PURCHASES gross 0` in this window is not a result and must not be read as one.” — “§K's own
-> day-0 row is the thing that makes a later zero interpretable, and it has not been walked.”
+> and this project does not trust an instrument that has not fired.” And: “§K's own day-0 row is the
+> thing that makes a later zero interpretable, and it has not been walked.”
 >
 > Accordingly `python3 scripts/sales_report.py --checkpoint` keeps withholding the zero-purchase
 > bound — it prints `BOUND WITHHELD:` with its reasons, among them that no `kind=purchase` entry has
@@ -133,6 +171,12 @@
 > 1.32 (build 57) are `READY_FOR_SALE` (ASC, 2026-09-16), so if one of these paths is broken the cost
 > is the row “after `READY_FOR_SALE`”: “a whole new version, and until it clears, live customers
 > meet a broken purchase.”
+```
+
+**表格行怎么填(决定不做的那几道)** —— 否则决定不做的行和没人回答的行看起来一模一样,而 §L 的框要求两者 “must not look alike”:
+
+```markdown
+| **<gate>** | <unchanged> | <unchanged> | <your mark> | <decision date YYYY-MM-DD> | — | deliberately not walked — see the box above |
 ```
 
 ---
@@ -239,6 +283,18 @@
 ]
 ```
 
+**决定要先于读数,并写明日期。** `exclude_walk_first_downloads_from_N` 会改变 N。§K 在分母重新计价那件事上写下的原则是
+“What is NOT available any more is deciding it after seeing a checkpoint”,改动要 “the change and its timestamp go in this box”。
+而登记表里一旦有 `first_download` 条目、这个决定还是 null,`--checkpoint` 就会把两种 N 都打印出来。所以这个决定应在走查之前、
+至少在第一次跑含 walk 安装条目的 `--checkpoint` 之前做出,并把下面这段(日期是做决定的那一刻)记进 §K:
+
+```markdown
+> **Decided <YYYY-MM-DDTHH:MM+09:00>, before any `--checkpoint` reading that held a walk install:**
+> walk-caused first-time downloads are <subtracted from | kept in> N
+> (`decisions.exclude_walk_first_downloads_from_N` = <true | false> in `docs/measurements/stage1-known-positives.json`).
+> Reason: <reason>.
+```
+
 两个决定字段(`"decisions"`)也只由你填:`exclude_walk_first_downloads_from_N` 为 null 且窗口里存在 `first_download` 条目时,
 `--checkpoint` 不减、打印未决条目数,并扣住上界;`exclude_owner_refund_from_refund_ceiling` 只记录和回显,这一轮没有工具评估 day-180 退款上限。
 
@@ -252,7 +308,7 @@
 1. **(Q3.4)你自己设备上的计数器算不算 “returned counter”?** §K 的 STOP 分支没说是谁的计数器。
    算:排除后零购买 + 你的设备在 kyoto 桶里 `offerAppeared > 0` → STOP(走查本身会产生 `offerAppeared`;它落不落在 kyoto 桶,取决于那台设备的累计里程是否 ≥ 25 km,未核实)。不算 → STOP BUILDING / UNINTERPRETABLE。
    **这是清单里影响最大的一条,它直接翻转分支。** 退款之后你算不算「non-buyer」(`docs/PLAN-WINDOW.md` 的用语,不是 PLAN-STAGE1 的)也没写。
-2. **(Q3.2)走查造成的安装要不要从 N 里减掉?**(登记表 `exclude_walk_first_downloads_from_N`)k 在 0 到 4 之间,前提是它们真是首次下载。
+2. **(Q3.2)走查造成的安装要不要从 N 里减掉?**(登记表 `exclude_walk_first_downloads_from_N`;**时机见 §5:要在看到含 walk 安装的读数之前定**)k 在 0 到 4 之间,前提是它们真是首次下载。
    不减:真实安装的上界是 3/(N−k),N = 35 时 k=0 为 8.6%、k=2 为 9.1%、k=4 为 9.7%;N = 100 时 3.00% → 3.06%。
    没有哪条规则只因 k 翻转;变的是检查点什么时候触发、打印的上界是多少。null 期间 `--checkpoint` 扣住上界。
 3. **(Q3.3)家人的安装算不算 cohort?** 算:N 和那个 storefront 的下载数 +1(两台设备 +2),它的计数器也可能成为 “returned counter”
@@ -263,6 +319,7 @@
 5. **(Q3.6)Apple 拒绝退款怎么办?** §K 没有规则。按 (i),GO 永久成立;按 (ii),登记的购买照样被减掉,只是永远没有退款行可匹配。
 6. **(Q3.7)已知阳性要不要等到退款行也出现才算完成?** 要:day 0 要等负数行出现才算完,可能几周。
    不要:day 180 的退款数为零时,那个零来自一条从未触发过的代码路径 —— 和购买为零是同一个问题。
+   事实说明,不是建议:`--checkpoint` 现在的实现是"不要" —— 购买条目一旦 `matched` 就可能打印上界,不等退款行;选"要"意味着要改这个实现。
 7. **(Q3.1)你的退款要不要从 day-180 退款上限里排除?**(登记表 `exclude_owner_refund_from_refund_ceiling`,只记录不应用)
    r = 1 时:购买和退款都算 → g ≤ 9 就触发停售;都排除 → “no action”;退款算但你那单不进分母 → g ≤ 10 触发。
    r = 2 且 g ≤ 18 时:都算 → 3 次退款 → 调查产品主张;排除 → 2 次,只有 g ≤ 10 才停售。另外 “units” 是毛还是净、“n ≤ 18” 的 n 是什么,都没定义。
@@ -301,7 +358,7 @@
 
 ## 7. 一个标记出来、但没有被使用的观察
 
-§L 那句前提(HEAD `43d0da7` 的第 663 行;本分支在 §J、§K 加了文字之后,它在第 731 行,内容逐字未变)字面上约束的是 **“before v1.30 is submitted”**。它字面上**没有**约束 v1.31 或 v1.32。
+§L 那句前提(`43d0da7` 的第 663 行;之后 §J、§K 加了文字,行号下移,**按原文定位,不要按行号**;内容逐字未变)字面上约束的是 **“before v1.30 is submitted”**。它字面上**没有**约束 v1.31 或 v1.32。
 
 这个观察在这里只是报告给你。本分支的任何文字都**没有**用它 —— 既没有用来论证"v1.31/v1.32 不需要这些检查",
 也没有用来把这句话扩展到后续版本。那句话保持逐字不变;怎么读它,由你决定。

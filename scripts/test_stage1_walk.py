@@ -1034,9 +1034,15 @@ def scan_source(source):
             for alias in node.names:
                 if alias.name.split(".")[0] in FORBIDDEN_IMPORTS:
                     problems.append(f"import: {alias.name} ({where(node)})")
+                # An alias hides the name every other rule looks for (`subprocess`, `os`).
+                if alias.name.split(".")[0] in ("os", "subprocess") and alias.asname:
+                    problems.append(f"import: {alias.name} as {alias.asname} ({where(node)})")
         elif isinstance(node, ast.ImportFrom):
-            if (node.module or "").split(".")[0] in FORBIDDEN_IMPORTS or (
-                    node.module in ("os", "subprocess") and fn is None):
+            # `from subprocess import run` / `from os import system` bind a bare name that no rule
+            # below can see, so they are refused wherever they appear — at module level AND inside
+            # a function (the first version checked only module level; review 2026-09-16).
+            if (node.module or "").split(".")[0] in FORBIDDEN_IMPORTS or \
+                    (node.module or "").split(".")[0] in ("os", "subprocess"):
                 problems.append(f"import: from {node.module} import … ({where(node)})")
         elif isinstance(node, ast.Name) and node.id == "subprocess" and fn != "_run_readonly":
             problems.append(f"subprocess-outside-runner: ({where(node)})")
@@ -1060,6 +1066,12 @@ def scan_source(source):
             if isinstance(func, ast.Attribute) and func.attr in WRITE_METHODS \
                     and fn not in WRITE_FUNCS:
                 problems.append(f"write-outside-snapshot: .{func.attr}() ({where(node)})")
+            # `.replace` is str.replace almost everywhere, so only a Path(...) receiver counts: that
+            # one is a rename on disk.
+            if isinstance(func, ast.Attribute) and func.attr == "replace" \
+                    and isinstance(func.value, ast.Call) and isinstance(func.value.func, ast.Name) \
+                    and func.value.func.id == "Path" and fn not in WRITE_FUNCS:
+                problems.append(f"write-outside-snapshot: Path(...).replace() ({where(node)})")
             is_open = (isinstance(func, ast.Name) and func.id == "open") or \
                 (isinstance(func, ast.Attribute) and func.attr == "open")
             if is_open:
@@ -1125,6 +1137,11 @@ PLANTED = [
     ("forbidden-substring", 'def _p13():\n    return "Product.purchase()"\n'),
     ("dynamic", 'def _p14():\n    return eval("1")\n'),
     ("tempfile-outside-devicectl", "def _p15():\n    return tempfile.mkdtemp()\n"),
+    # Found by review 2026-09-16: each of these bypassed the scan before.
+    ("import", "def _p16(argv):\n    from subprocess import run\n    return run(argv)\n"),
+    ("import", "def _p17(cmd):\n    from os import system\n    return system(cmd)\n"),
+    ("import", "def _p18(argv):\n    import subprocess as sp\n    return sp.run(argv)\n"),
+    ("write-outside-snapshot", "def _p19(p, q):\n    return Path(p).replace(q)\n"),
 ]
 
 

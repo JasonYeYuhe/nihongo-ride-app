@@ -673,7 +673,10 @@ fired. *An agent cannot do this step and must not try.*
 >
 > **Status, stated plainly.** The paragraph above is unchanged and still not walked: today is
 > **7 days after day 0** (2026-09-09). No record of it exists in this section, and none is implied
-> by this box. The owner's walk card is `docs/WALKCARD-STAGE1.md`; ready-to-paste text for both
+> by this box. **And its own precondition is already violated, not merely pending:** it is timed
+> "Day 0, before the SKU goes on sale — non-negotiable", the SKU has been on sale since day 0, and
+> walking it now cannot change that. "Not yet done" and "a written precondition was violated" are
+> not the same fact — §L's box below says so one level down. The owner's walk card is `docs/WALKCARD-STAGE1.md`; ready-to-paste text for both
 > outcomes, clearly marked as not recorded, is `docs/DRAFTS-STAGE1-RECORDS.md`.
 >
 > **What "`--calibrate` still passes" means, exactly.** The command
@@ -698,11 +701,17 @@ fired. *An agent cannot do this step and must not try.*
 >   owner decides so in that file.
 > * `python3 scripts/sales_report.py --checkpoint` prints the cohort since day 0 and prints a
 >   rule-of-three bound **only** when calibration passed, a `kind=purchase` entry is `matched`, no
->   owner decision that affects the bound is still open for entries in the window, and adjusted net
->   purchases are zero (when they are not zero it says the zero-purchase bound does not apply).
->   Otherwise it prints `BOUND WITHHELD:` with every reason and exits 5. That is this paragraph's own
->   rule ("this project does not trust an instrument that has not fired") made mechanical, not a new
->   one.
+>   owner decision that affects the bound is still open for entries in the window, the registry
+>   agrees with the report, and adjusted net purchases are zero. The withholding reasons are checked
+>   first: if any holds it prints `BOUND WITHHELD:` with every reason and exits 5 (4 if calibration
+>   failed or the registry is invalid) — **including when a stranger's purchase has made net
+>   purchases non-zero**, where it adds that the zero-purchase bound would not apply anyway. When no
+>   reason holds and net purchases are non-zero it says the zero-purchase bound does not apply
+>   (exit 0). It evaluates none of §K's branches (GO / STOP / STOP BUILDING); that stays a reading.
+>   **This is stricter than §K's text, and new:** it comes from the 2026-09-12 handoff, and is based
+>   on this paragraph's "this project does not trust an instrument that has not fired", but the
+>   reasons about pending owner decisions, registry/report disagreement and unbuilt report days are
+>   not in §K.
 >
 > **Unchanged by any of it:** no threshold, cohort definition, checkpoint, `RELEASE_DAYS` entry or
 > classification set (`DOWNLOAD`, `UPDATE`, `REDOWNLOAD`, `PURCHASE`) was changed.
@@ -718,9 +727,16 @@ fired. *An agent cannot do this step and must not try.*
 >
 > **Open questions for the owner**, none decided here: `docs/DRAFTS-STAGE1-RECORDS.md` §6 —
 > whose on-device counter is a "returned counter", whether walk installs and a family install leave
-> N, whether netting counts as exclusion, a refused refund, whether the refund row must be seen, the
-> date system, printed thresholds versus `3/N`, the base-to-N gap, which window, and (with a clearly
-> labelled agent recommendation) the release-day definition and the calibration blind spot.
+> N, whether netting counts as exclusion, a refused refund, whether the refund row must be seen,
+> whether the owner's refund counts toward the day-180 refund ceiling, the date system, printed
+> thresholds versus `3/N`, the base-to-N gap, which window, and (with a clearly labelled agent
+> recommendation) the release-day definition and the calibration blind spot. **Where the tooling
+> already embodies an answer, DRAFTS says so:** it subtracts the owner's purchase and refund
+> explicitly rather than relying on netting, and it can print the bound once the purchase is matched
+> without waiting for the refund row. **One of them has a deadline:** whether walk-caused installs
+> leave N changes N, and — by the principle this section applied to re-denomination, "What is NOT
+> available any more is deciding it after seeing a checkpoint" — it has to be decided, with its
+> timestamp, before any `--checkpoint` reading that holds a walk install.
 
 ## §L The three manual gates
 

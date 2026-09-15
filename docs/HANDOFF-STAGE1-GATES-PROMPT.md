@@ -1,5 +1,18 @@
 接手 Nihongo Ride —— Stage 1 的两件 owner 动作,2026-09-12
 
+> ### ⚠️ 2026-09-16 补:本文引用 `docs/PLAN-STAGE1.md` 的**行号已经失效**,按引文找,不要按行号找
+>
+> 2026-09-16 这一轮在 §J 末尾加了带日期的复测行、在 §K day-0 段落后加了一个框,之后的行号全部下移。本文正文保留原样不改
+> (它是 09-12 那一刻的交接),但下面这些引用请按**原文**定位:
+>
+> * "`PLAN-STAGE1.md:663` 那句话" = `Each needs a date, a device and an outcome written beside it **before v1.30 is submitted**.`
+>   —— 逐字未变,全文只出现一次;`git show 43d0da7:docs/PLAN-STAGE1.md | sed -n 663p` 可以取到原句做逐字比对。
+> * "`PLAN-STAGE1.md:650-655`" = 以 `**Day 0, before the SKU goes on sale — non-negotiable` 开头的那一段(逐字未变)。
+> * "`665-669` 的 ⚠️ 框" = 以 `> ### ⚠️ THAT PRECONDITION WAS NOT MET` 开头的框(逐字未变)。
+> * "`PLAN-STAGE1.md:503-505`" = `≥ 1 net purchase at any point → GO on H1.` 那一条。
+>
+> 这一轮做了什么、还剩什么,见 `docs/STATE-2026-09-16.md`。
+
 仓库 `/Users/jason/Documents/typing_app`,macOS + iOS 的日语打字练习 app,两端都已上线。**用中文跟我交流,代码里的标识符和注释用英文。**
 
 ---
