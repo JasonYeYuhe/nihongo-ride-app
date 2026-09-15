@@ -49,7 +49,8 @@
 > ```
 >
 > **Excluded from the cohort** by the registry: `kind=purchase` and `kind=refund` entries are always
-> subtracted from the purchase numerator (gross / refunded / net / purchase territory).
+> subtracted from the purchase numerator (gross / refunded / net / purchase territory), never by more
+> than the report cell holds.
 > Evidence (screenshots, the Apple receipt with the order ID) is kept outside git; the files and
 > their sha256 are in `<manifest file name>`.
 ```
@@ -315,7 +316,7 @@
    (但 0 米时 `offerAppeared` 落在 nihonbashi 桶,除非那个账号骑过 25 km,否则触发不了 STOP)。不算:这些数不动,它的计数器忽略。
 4. **(Q3.5)退款把净额抵消,算不算 “exclude it from the cohort”?** (i) 算:从购买行到退款行之间(最长约 90 天)net = 1,GO 会因你那一单触发,
    “at any point” 甚至可以读成 GO 已经永久触发。(ii) 不算,必须显式排除:GO 永远不会因你那一单触发。
-   事实说明,不是建议:按本轮约定,`--checkpoint` 实现的是 (ii) —— `purchase` 和 `refund` 条目总是从购买分子里减掉;选 (i) 意味着要改这个实现。
+   事实说明,不是建议:按本轮约定,`--checkpoint` 实现的是 (ii) —— `purchase` 和 `refund` 条目总是从购买分子里减掉(最多减到报表那一格实际持有的数量);选 (i) 意味着要改这个实现。
 5. **(Q3.6)Apple 拒绝退款怎么办?** §K 没有规则。按 (i),GO 永久成立;按 (ii),登记的购买照样被减掉,只是永远没有退款行可匹配。
 6. **(Q3.7)已知阳性要不要等到退款行也出现才算完成?** 要:day 0 要等负数行出现才算完,可能几周。
    不要:day 180 的退款数为零时,那个零来自一条从未触发过的代码路径 —— 和购买为零是同一个问题。

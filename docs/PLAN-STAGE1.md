@@ -697,8 +697,11 @@ fired. *An agent cannot do this step and must not try.*
 > * The exclusion is a registry the owner maintains and no tool writes:
 >   `docs/measurements/stage1-known-positives.json`. `kind=purchase` and `kind=refund` entries are
 >   always subtracted from the purchase numerator — the one exclusion this paragraph licenses
->   ("**exclude it from the cohort**"). Walk-caused first downloads are subtracted from N only if the
->   owner decides so in that file.
+>   ("**exclude it from the cohort**") — but never by more than the report cell actually holds: an
+>   entry the report does not (yet) contain subtracts nothing, and the disagreement withholds the
+>   bound instead of producing a negative or a hidden figure. Walk-caused first downloads are
+>   subtracted from N only if the owner decides so in that file. The draft sentence the confirm
+>   command prints states the lateness and says "to be registered", not "registered".
 > * `python3 scripts/sales_report.py --checkpoint` prints the cohort since day 0 and prints a
 >   rule-of-three bound **only** when calibration passed, a `kind=purchase` entry is `matched`, no
 >   owner decision that affects the bound is still open for entries in the window, the registry

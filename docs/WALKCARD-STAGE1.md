@@ -526,7 +526,7 @@ python3 scripts/sales_report.py --confirm-known-positive --kind purchase --at <�
 
 | 退出码 | 意思 | 你接下来做什么 |
 |---|---|---|
-| **0** | D 上匹配到了,**并且**全窗口校准 OK。会打印一份**草稿**登记表条目和一句**草稿** §K 句子,都标着"未记录" | 读一遍。你同意的话,自己把条目贴进 `docs/measurements/stage1-known-positives.json`(没有任何工具会写它),`"evidence"` 用 manifest 的 sha256 填,§K 文字见 `DRAFTS`。然后才轮到步 7 |
+| **0** | D 上匹配到了,**并且**全窗口校准 OK。会打印一份**草稿**登记表条目和一句**草稿** §K 句子,都标着"未记录"。**如果草稿上方有 `WARNING`**(匹配行的 Device 与 `--platform` 矛盾,或 Device 是工具不认识的值),它会同时写进草稿的 `notes` | 读一遍,先看有没有 `WARNING`;有的话先别记录,由你判断。你同意的话,自己把条目贴进 `docs/measurements/stage1-known-positives.json`(没有任何工具会写它),`"evidence"` 用 manifest 的 sha256 填,§K 文字见 `DRAFTS`。然后才轮到步 7 |
 | **4** | 校准失败 —— 仪器不可信;**或者**登记表本身无效(输出以 `REGISTRY-INVALID` 开头) | 不要记录匹配,不要退款。先看输出:以 `REGISTRY-INVALID` 开头 → 是你手改的 JSON 有问题(常见是 evidence 行之间漏了逗号),修好再跑,仪器没问题。**输出里有 `UNCLASSIFIED` 行** → 先看其中有没有 D 当天、你的国家、units 1 的那一行:那很可能就是你的购买,只是 Apple 用了一个 `PURCHASE` 里没有的产品类型代码 —— 这正是已知阳性要找的那种发现。不要改代码、不要记录、不要退款,由你决定下一步 |
 | **6** | PENDING:太平洋日 D 的报表还没发布 | 什么都不用做,明天再跑 |
 | **7** | 报表已经有了,但没有匹配的行 | **不要退款。** 看输出里列出的 D-1..D+1 购买类行(有 UNCLASSIFIED 行时会是 4,不会是 7);核对 `--at` / `--country` 有没有填错。**如果输出说同一天、同一国家在另一个平台的代码下有一笔购买:那不是匹配,不要把 `--platform` 换成另一个平台重跑** —— 那等于把 Mac 上的购买记成 iOS;要问的是 `PURCHASE` 的平台映射,由你决定。其余原因这里没人观察过 |
