@@ -438,6 +438,36 @@ def test_container(problems):
                            f"container [{label}, mac-state]: presence is state, not a FAIL")
             print(f"  {label:<21} → FAIL, isEntitled {entitled}")
 
+    # macOS 26's `defaults` says "The domain/default pair of (d, k) does not exist" for a missing
+    # key AND a missing domain (measured on the CI runner, 2026-09-16). With a readable plist file
+    # the domain exists, so it means the key; without one it must stay unknown, never "absent".
+    older = "{} defaults[1:2] \nThe domain/default pair of ({}, {}) does not exist\n"
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx, run = container_ctx(tmp, {W.OFFER_KEY: SWIFT_OFFER})
+        domain = str(ctx.container_prefs)[:-len(".plist")]
+        run.on([W.DEFAULTS, "read", domain, W.ENTITLEMENT_KEY],
+               done(1, "", older.format("2026-09-15 18:46:42.637", domain, W.ENTITLEMENT_KEY)))
+        readings = W.read_container_keys(ctx.container_prefs, [W.ENTITLEMENT_KEY], run)
+        ent = readings[W.ENTITLEMENT_KEY]
+        problems.check(ent.present is False and ent.presence_source.startswith(
+            "defaults read (cfprefsd): key not found"),
+            f"container [older defaults wording, file exists]: {ent.present} {ent.presence_source}")
+        print("  older wording + file  → absent via cfprefsd")
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx, run = context(tmp)
+        ctx.container_prefs.parent.mkdir(parents=True, exist_ok=True)   # directory, but no file
+        domain = str(ctx.container_prefs)[:-len(".plist")]
+        run.on([W.DEFAULTS, "export", domain, "-"], done(0, export_xml({})))
+        run.on([W.DEFAULTS, "read", domain],
+               done(1, "", older.format("2026-09-15 18:46:42.637", domain, W.ENTITLEMENT_KEY)))
+        readings = W.read_container_keys(ctx.container_prefs, [W.ENTITLEMENT_KEY], run)
+        ent = readings[W.ENTITLEMENT_KEY]
+        problems.check(ent.present is None,
+                       f"CONTROL container [older wording, NO file]: the sentence cannot tell a "
+                       f"missing domain from a missing key, so presence must stay unknown: "
+                       f"{ent.present} {ent.presence_source}")
+        print("  older wording, no file → unknown (not absent)")
+
     with tempfile.TemporaryDirectory() as tmp:
         # The broken instrument: defaults cannot run and the file is garbage. This must NOT PASS.
         ctx, run = context(tmp)

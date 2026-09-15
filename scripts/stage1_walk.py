@@ -750,6 +750,17 @@ def read_container_keys(prefs: Path, keys: List[str], run: Callable[..., Complet
         elif "Could not find key" in r.stderr:
             reading.present = False
             reading.presence_source = "defaults read (cfprefsd): key not found in the domain"
+        elif "domain/default pair" in r.stderr and "does not exist" in r.stderr \
+                and file_dict is not None:
+            # macOS 26's `defaults` prints ONE sentence for a missing domain and a missing key
+            # ("The domain/default pair of (<domain>, <key>) does not exist"); macOS 27's says
+            # "Could not find key". Measured 2026-09-16 on the CI runner vs this Mac. The sentence
+            # alone cannot tell the two apart — but a readable plist file means the domain exists,
+            # so here it can only be the key. Without a readable file it stays unknown (below).
+            reading.present = False
+            reading.presence_source = ("defaults read (cfprefsd): key not found in the domain "
+                                       "(older wording \"domain/default pair … does not exist\"; "
+                                       "the plist file exists, so the domain does)")
         elif "Domain" in r.stderr and "not found" in r.stderr and file_dict is None \
                 and not prefs.is_file():
             reading.present = False
