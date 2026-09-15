@@ -69,9 +69,15 @@ python3 scripts/stage1_walk.py mac-state; echo "exit=$?"
 
 ```bash
 python3 scripts/stage1_walk.py ios-state; echo "exit=$?"
+python3 scripts/stage1_walk.py ios-state --device "<你的 iPhone 名称>"; echo "exit=$?"
 ```
 
-退出码 **0**;**2** 表示没读到任何已配对设备。设备锁着时读不到已安装的版本 —— 解锁后重跑。它显示已安装的 `com.jasonye.nihongoride` 版本和 build,应为 1.32 / 57。
+第一条只列出和这台 Mac 配对的设备(名称、型号、系统、配对状态),**不查询任何设备上装了什么** —— 从里面抄下你那台 iPhone 的名称。
+第二条只查你点名的那一台,显示已安装的 `com.jasonye.nihongoride` 版本和 build,应为 1.32 / 57。
+
+* 退出码:**0** 读到了 · **2** 设备列表读取失败,或点名的那台读不到(锁着时就是这样 —— 解锁后重跑)。
+* **为什么必须点名:** 配对到这台 Mac 的设备里有不属于你的手机;而读一台设备的 app 列表会在那台设备上挂载开发者磁盘镜像、打开一条
+  CoreDevice 连接(2026-09-16 实测;不改动任何 app、账号或购买)。所以工具默认一台都不查。
 
 ---
 
@@ -148,7 +154,7 @@ python3 -c 'import datetime; print(datetime.datetime.now().astimezone().isoforma
 python3 scripts/stage1_walk.py manifest "$EV" > "$EV.manifest.jsonl"; echo "exit=$?"
 ```
 
-退出码 0。每行是一个文件的 sha256 + 大小 + mtime,可以直接贴进登记表条目的 `"evidence"`。
+退出码 0。每行是一个文件的 `{"file", "sha256"}`,正好是登记表条目 `"evidence"` 要求的形状,可以直接贴(大小和 mtime 另存在工具的快照里)。
 
 ---
 
@@ -200,6 +206,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
     退出码 **3** = ASC/API 失败 → 先查原因,不要继续。
   * 容器那一行:`NihongoRide.entitlement.v1` absent = PASS,这就是检查 1 的前提。**如果显示 present**,这台 Mac 不能做检查 1
     (见文末"一次做不完怎么办"),停下来自己决定。
+  * iOS 那一段不带 `--device` 时只列设备、不查询任何一台(见第 1 节)。
 * `baseline` 跑 `sales_report.py --calibrate --json …` 和 `sales_report.py --checkpoint`,把两份输出和各自退出码存到
   `"$HOME/Library/Application Support/NihongoRide-Stats/walk/<UTC-timestamp>/"`。预期 `--calibrate` 为 0;
   `--checkpoint` 为 5(上界被扣住:登记表里还没有匹配上的购买)。
@@ -235,7 +242,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 4. iPhone 保持解锁,在 Mac 上:
 
    ```bash
-   python3 scripts/stage1_walk.py ios-state > "$EV/s1-03-ios-state.txt" 2>&1; echo "exit=$?"
+   python3 scripts/stage1_walk.py ios-state --device "<你的 iPhone 名称>" > "$EV/s1-03-ios-state.txt" 2>&1; echo "exit=$?"
    ```
 
    应为 1.32 / 57。
@@ -402,7 +409,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 4. iPhone 解锁,在 Mac 上:
 
    ```bash
-   python3 scripts/stage1_walk.py ios-state > "$EV/g3-12-ios-state.txt" 2>&1; echo "exit=$?"
+   python3 scripts/stage1_walk.py ios-state --device "<你的 iPhone 名称>" > "$EV/g3-12-ios-state.txt" 2>&1; echo "exit=$?"
    ```
 
 5. 启动 → 引导页(英文)〔Skip〕→〔Settings〕→〔THE ROAD〕→ 截图 `g3-13-settings-row-cold.png`,等 10 秒 → `g3-14-settings-row-cold-10s.png` →
@@ -443,6 +450,7 @@ B 冷安装后 `已拥有 / 未拥有`,是否等了 2 分钟 `____`,是否点了
 * **家人自己的设备,登录的是家庭群组里的第二个 Apple 账号。** 不能用你的 Mac 或 iPhone 换账号来做:它们已经验证过,不管谁登录都显示〔OPENED〕(理由同检查 1)。
 * 这台设备从未验证过这项购买,也不是从你设备的备份恢复的。
 * 装的是 App Store 1.32,而且只从 App Store 装。这台设备如果没和你的 Mac 配对,`ios-state` 读不到它,build 号就没有工具能确认 —— 如实记下这一点。
+  即使它和你的 Mac 配对了,`ios-state --device` 也会在**家人的**设备上挂载开发者磁盘镜像:要不要对家人的设备跑,先征得家人同意,由你决定。
 * 购买项目 `familySharable` = false(2026-09-16 ASC 实测)。这道检查要验证的是:家人**不会**继承。
 
 > ### ➕ 阳性对照 —— 由本卡添加,§L 的原文里没有

@@ -24,11 +24,15 @@ repo; `baseline` additionally lets `sales_report.py` write its `--json` output i
 
 SUBCOMMANDS AND EXIT CODES
 --------------------------
-    python3 scripts/stage1_walk.py preflight      0 no FAIL · 1 any FAIL · 3 ASC/API failure
+    python3 scripts/stage1_walk.py preflight [--device NAME]
+                                                  0 no FAIL · 1 any FAIL · 3 ASC/API failure
                                                   (3 wins over 1: a preflight whose ASC half did
                                                   not run is incomplete, whatever else it found)
     python3 scripts/stage1_walk.py mac-state      0
-    python3 scripts/stage1_walk.py ios-state      0 · 2 no paired iOS device could be read
+    python3 scripts/stage1_walk.py ios-state [--device NAME]
+                                                  0 · 2 the device listing failed, or --device
+                                                  named a device whose apps could not be read.
+                                                  Without --device NO device's apps are queried.
     python3 scripts/stage1_walk.py baseline       0 both runs saved, --calibrate exited 0 and
                                                   --checkpoint exited 0 or 5 (5 = bound withheld,
                                                   the expected state before a matched
@@ -1031,27 +1035,52 @@ def read_device_apps(ctx: Context, device: dict) -> Dict[str, Any]:
     return result
 
 
-def check_ios(report: Report, ctx: Context, verdicts: bool = True) -> int:
-    """Returns how many physical iOS devices were read."""
+def check_ios(report: Report, ctx: Context, verdicts: bool = True,
+              device_selector: Optional[str] = None) -> Tuple[int, int]:
+    """Returns (physical devices listed, or -1 if the listing failed; devices whose apps were read).
+
+    **Only the device named by `device_selector` has its apps listed.** Everything paired with
+    this Mac is not everything the walk is about: on 2026-09-16 the paired devices included a
+    phone belonging to somebody other than the owner, and listing a device's apps mounts its
+    developer disk image and opens a tunnel to it (measured, see the module docstring). So the
+    default is to list the devices and query none of them; the owner names the one being walked.
+    """
     report.heading("Paired iOS devices (xcrun devicectl, read-only listings)")
     r, listing, problem = _devicectl_json(ctx.run, ["list", "devices", "--timeout", "30"],
                                           timeout=90)
-    facts: Dict[str, Any] = {"devices": []}
+    facts: Dict[str, Any] = {"devices": [], "selector": device_selector}
     report.facts["ios"] = facts
     if listing is None or _dig(listing, "info", "outcome") != "success":
         report.warn(f"devicectl list devices failed ({problem or _dig(listing, 'info', 'outcome')}"
                     f"; exit {r.returncode} {r.error}) — no iOS device checked")
-        return 0
+        return -1, 0
     devices, skipped = physical_ios_devices(listing)
     report.info(f"{len(devices)} physical iOS/iPadOS device(s); {skipped} simulator or non-iOS "
                 f"entries skipped")
-    if devices:
-        report.info("listing an unlocked device's apps mounts its developer disk image and opens "
-                    "a CoreDevice tunnel (measured 2026-09-16); it changes no app, account or "
-                    "purchase")
+    if device_selector is None:
+        for device in devices:
+            facts["devices"].append({"device": device})
+            report.info(f"{device['name']} · {device['model']} ({device['productType']}) · iOS "
+                        f"{device['os']} · {device['identifier']} · {device['pairingState']} · "
+                        f"apps not queried")
+        if devices:
+            report.info("no device's apps were queried. Name the device being walked with "
+                        "--device <name or identifier> to check its installed Nihongo Ride "
+                        "(listing a device's apps mounts its developer disk image)")
+        return len(devices), 0
+    chosen = [d for d in devices if device_selector in (d.get("identifier"), d.get("name"))]
+    if len(chosen) != 1:
+        names = ", ".join(repr(d.get("name")) for d in devices) or "none"
+        report.warn(f"--device {device_selector!r} matches {len(chosen)} paired physical iOS "
+                    f"device(s) (listed: {names}) — nothing was queried; pass the exact name, or "
+                    f"the identifier if two devices share a name")
+        return len(devices), 0
+    report.info("listing an unlocked device's apps mounts its developer disk image and opens "
+                "a CoreDevice tunnel (measured 2026-09-16); it changes no app, account or "
+                "purchase")
     readable = 0
     ok = report.passed if verdicts else report.info
-    for device in devices:
+    for device in chosen:
         label = (f"{device['name']} · {device['model']} ({device['productType']}) · iOS "
                  f"{device['os']} · {device['identifier']} · {device['pairingState']}")
         entry = {"device": device}
@@ -1088,7 +1117,7 @@ def check_ios(report: Report, ctx: Context, verdicts: bool = True) -> int:
                             f"Its default listing ('only developer apps') contained exactly the "
                             f"builtByDeveloper=True apps when measured; that an App Store copy "
                             f"reads False is unverified — confirm in the App Store app")
-    return readable
+    return len(devices), readable
 
 
 # =============================================================================================
@@ -1113,7 +1142,7 @@ def _finish(report: Report, ctx: Context, name: str, exit_code: int) -> int:
     return exit_code
 
 
-def cmd_preflight(ctx: Context, out=None) -> int:
+def cmd_preflight(ctx: Context, out=None, device: Optional[str] = None) -> int:
     report = Report(out)
     report.plain(f"stage1_walk preflight — {ctx.now().isoformat(timespec='seconds')} · expects "
                  f"release {EXPECTED_VERSION} (macOS {EXPECTED_MAC_BUILD} / iOS "
@@ -1123,7 +1152,7 @@ def cmd_preflight(ctx: Context, out=None) -> int:
     check_other_copies(report, ctx)
     check_processes(report, ctx)
     check_container(report, ctx, gate1=True)
-    check_ios(report, ctx)
+    check_ios(report, ctx, device_selector=device)
     code = 3 if report.api_failures else (1 if report.counts["FAIL"] else 0)
     return _finish(report, ctx, "preflight", code)
 
@@ -1137,10 +1166,12 @@ def cmd_mac_state(ctx: Context, out=None) -> int:
     return _finish(report, ctx, "mac-state", 0)
 
 
-def cmd_ios_state(ctx: Context, out=None) -> int:
+def cmd_ios_state(ctx: Context, out=None, device: Optional[str] = None) -> int:
     report = Report(out)
     report.plain(f"stage1_walk ios-state — {ctx.now().isoformat(timespec='seconds')}")
-    readable = check_ios(report, ctx, verdicts=False)
+    listed, readable = check_ios(report, ctx, verdicts=False, device_selector=device)
+    if device is None:
+        return _finish(report, ctx, "ios-state", 0 if listed >= 0 else 2)
     return _finish(report, ctx, "ios-state", 0 if readable else 2)
 
 
@@ -1235,9 +1266,13 @@ def cmd_manifest(ctx: Context, directory: str, out=None, err=None) -> int:
         return 2
     target = Path(os.path.abspath(str(target)))
     entries, skipped = manifest_entries(target)
+    # stdout is exactly the registry's evidence shape, {"file", "sha256"}, because
+    # sales_report.py's validator accepts nothing else and the walk card tells the owner to paste
+    # these lines into docs/measurements/stage1-known-positives.json. Size and mtime are kept, in
+    # the snapshot only, where nobody pastes from.
     lines = [json.dumps(e, ensure_ascii=False) for e in entries]
-    for line in lines:
-        print(line, file=out)
+    for e in entries:
+        print(json.dumps({"file": e["file"], "sha256": e["sha256"]}, ensure_ascii=False), file=out)
     for rel, why in skipped:
         print(f"manifest: skipped {rel} ({why})", file=err)
     if not entries:
@@ -1256,20 +1291,24 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="Read-only preflight and state snapshots for the Stage 1 owner walk.")
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("preflight", help="ASC, Mac binary, copies, processes, container, devices")
+    device_help = ("the one paired iOS device (exact name or identifier) whose installed "
+                   "Nihongo Ride is checked; without it no device's apps are queried")
+    preflight = sub.add_parser("preflight", help="ASC, Mac binary, copies, processes, container, devices")
+    preflight.add_argument("--device", help=device_help)
     sub.add_parser("mac-state", help="process, binary, decoded entitlement record, counters")
-    sub.add_parser("ios-state", help="paired devices and the installed app, when unlocked")
+    ios_state = sub.add_parser("ios-state", help="paired devices, and the named device's installed app")
+    ios_state.add_argument("--device", help=device_help)
     sub.add_parser("baseline", help="sales_report.py --calibrate and --checkpoint, saved")
     manifest = sub.add_parser("manifest", help="sha256/size/mtime JSON lines for a folder")
     manifest.add_argument("dir")
     args = parser.parse_args(argv)
     ctx = Context()
     if args.command == "preflight":
-        return cmd_preflight(ctx)
+        return cmd_preflight(ctx, device=args.device)
     if args.command == "mac-state":
         return cmd_mac_state(ctx)
     if args.command == "ios-state":
-        return cmd_ios_state(ctx)
+        return cmd_ios_state(ctx, device=args.device)
     if args.command == "baseline":
         return cmd_baseline(ctx)
     return cmd_manifest(ctx, args.dir)

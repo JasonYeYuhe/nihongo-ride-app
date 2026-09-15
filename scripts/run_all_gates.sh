@@ -146,7 +146,9 @@ echo
 
 run_swift_test
 
-# The four python self-tests. Until v1.32 §D6 these were run by nothing at all.
+# The python self-tests — six since 2026-09-16, when the sales instrument (test_sales_report.py)
+# and the Stage 1 walk tool (test_stage1_walk.py) got theirs. Until v1.32 §D6 these were run by
+# nothing at all.
 for t in scripts/test_*.py; do
   run_gate "$(basename "$t")" "" python3 "$t"
 done
@@ -228,8 +230,8 @@ printf '  gates run:   %d\n' "$TOTAL"
 # printed a clean summary. A threshold that the failure mode cannot cross is not a threshold.
 # Adding a gate raises the total and still passes; REMOVING one has to be done in a diff that also
 # moves this number, which is the whole point. (v1.32 pre-submission review.)
-FLOOR=10
-if [ -n "$HEADLESS" ]; then FLOOR=9; fi
+FLOOR=12
+if [ -n "$HEADLESS" ]; then FLOOR=11; fi
 if [ "$TOTAL" -lt "$FLOOR" ]; then
   echo
   echo "  ❌ only $TOTAL gate(s) ran. This script expects at least $FLOOR; a glob that matched nothing"

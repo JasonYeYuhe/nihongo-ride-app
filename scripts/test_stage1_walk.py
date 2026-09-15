@@ -557,9 +557,43 @@ def devicectl_ctx(tmp, apps_by_device):
 
 
 def test_devicectl(problems):
-    print("DEVICECTL — locked is WARN never FAIL; an empty listing is not 'not installed'")
+    print("DEVICECTL — only the named device is queried; locked is WARN never FAIL; empty is not 'not installed'")
     others = [app("com.1password.1password", "8.12.36", "81236040"),
               app("com.jasonye.wearform", "1.1.4", "15", by_developer=True)]
+
+    def apps_calls(run):
+        return [c for c in run.calls if c[:5] == [W.XCRUN, "devicectl", "device", "info", "apps"]]
+
+    # The pair that matters most: without --device NOTHING is queried; with it, only that device.
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx, run = devicectl_ctx(tmp, {"DEV-A": listing([app(W.BUNDLE_ID, "1.32", "57")]),
+                                       "DEV-B": LOCKED})
+        report = W.Report(io.StringIO())
+        listed, readable = W.check_ios(report, ctx, verdicts=True)
+        problems.check(apps_calls(run) == [],
+                       f"devicectl [no --device]: queried a device's apps anyway: {apps_calls(run)}")
+        problems.check((listed, readable) == (2, 0),
+                       f"devicectl [no --device]: (listed, readable) = {(listed, readable)}, expected (2, 0)")
+        problems.check(any("apps not queried" in ln and "js" in ln for ln in lines_at(report, "INFO"))
+                       and any("no device's apps were queried" in ln for ln in lines_at(report, "INFO")),
+                       f"devicectl [no --device]: must say plainly that nothing was queried: {report.lines}")
+        problems.check(not any("mounts its developer disk image and opens" in ln and "listing an unlocked"
+                               in ln for ln in report.lines),
+                       "devicectl [no --device]: printed the DDI side-effect notice although nothing ran")
+        print(f"  no --device        → listed {listed}, queried {len(apps_calls(run))}")
+    for selector, expected_calls in (("DEV-A", ["DEV-A"]), ("js", ["DEV-A"]), ("nope", [])):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx, run = devicectl_ctx(tmp, {"DEV-A": listing(others), "DEV-B": LOCKED})
+            report = W.Report(io.StringIO())
+            W.check_ios(report, ctx, verdicts=True, device_selector=selector)
+            queried = [c[c.index("--device") + 1] for c in apps_calls(run)]
+            problems.check(queried == expected_calls,
+                           f"devicectl [--device {selector}]: queried {queried}, expected {expected_calls}")
+            if not expected_calls:
+                problems.check(any("matches 0 paired" in ln for ln in lines_at(report, "WARN")),
+                               f"devicectl [--device {selector}]: an unmatched name must WARN: {report.lines}")
+            print(f"  --device {selector:<9} → queried {queried}")
+
     scenarios = [
         ("App Store build", [app(W.BUNDLE_ID, "1.32", "57")] + others, "PASS", "installed 1.32 (57)"),
         ("wrong build", [app(W.BUNDLE_ID, "1.31", "56")] + others, "WARN", "not 1.32 (57)"),
@@ -572,46 +606,51 @@ def test_devicectl(problems):
         with tempfile.TemporaryDirectory() as tmp:
             ctx, run = devicectl_ctx(tmp, {"DEV-A": listing(apps), "DEV-B": LOCKED})
             report = W.Report(io.StringIO())
-            readable = W.check_ios(report, ctx, verdicts=True)
+            listed, readable = W.check_ios(report, ctx, verdicts=True, device_selector="js")
             hits = [ln for ln in lines_at(report, level) if "js" in ln and needle in ln]
             problems.check(hits, f"devicectl [{label}]: expected a {level} with {needle!r}: "
                                  f"{report.lines}")
             problems.check(not lines_at(report, "FAIL"),
                            f"devicectl [{label}]: iOS checks must never FAIL: {report.lines}")
-            problems.check(any(w.startswith("WARN  locked phone ·") and
-                               w.endswith(": locked — unlock and re-run")
-                               for w in lines_at(report, "WARN")),
-                           f"devicectl [{label}]: locked device must WARN 'unlock and re-run': "
-                           f"{report.lines}")
-            if label == "not installed":
-                problems.check(not any("is not installed" in ln for ln in report.lines
-                                       if "locked phone" in ln),
-                               "devicectl: a locked device must never be called 'not installed'")
             problems.check(readable == (0 if label == "empty listing" else 1),
                            f"devicectl [{label}]: readable count {readable}")
-            apps_calls = [c for c in run.calls if c[:5] == [W.XCRUN, "devicectl", "device", "info",
-                                                            "apps"]]
-            problems.check(all("--include-all-apps" in c for c in apps_calls) and len(apps_calls) == 2,
-                           f"devicectl [{label}]: every apps listing must pass --include-all-apps "
-                           f"(the default listing hides App Store apps) and simulators/watches must "
-                           f"not be queried: {apps_calls}")
+            calls = apps_calls(run)
+            problems.check(all("--include-all-apps" in c for c in calls) and len(calls) == 1,
+                           f"devicectl [{label}]: exactly one apps listing, with --include-all-apps "
+                           f"(the default listing hides App Store apps): {calls}")
             problems.check("SECRET" not in "\n".join(report.lines),
                            "devicectl: serial numbers / UDIDs must not be printed")
             problems.check(any("mounts its developer disk image" in i
                                for i in lines_at(report, "INFO")),
                            f"devicectl [{label}]: the measured DDI side effect must be stated on "
-                           f"screen before devices are queried: {report.lines}")
+                           f"screen before the device is queried: {report.lines}")
             print(f"  {label:<19} → {level} (readable {readable})")
 
     with tempfile.TemporaryDirectory() as tmp:
+        ctx, run = devicectl_ctx(tmp, {"DEV-A": listing(others), "DEV-B": LOCKED})
+        report = W.Report(io.StringIO())
+        W.check_ios(report, ctx, verdicts=True, device_selector="locked phone")
+        problems.check(any(w.startswith("WARN  locked phone ·") and w.endswith(": locked — unlock and re-run")
+                           for w in lines_at(report, "WARN"))
+                       and not any("is not installed" in ln for ln in report.lines),
+                       f"devicectl [locked]: must WARN 'unlock and re-run' and never say 'not installed': "
+                       f"{report.lines}")
+        print("  locked phone        → WARN unlock and re-run")
+
+    with tempfile.TemporaryDirectory() as tmp:
         ctx, run = devicectl_ctx(tmp, {"DEV-A": listing([]), "DEV-B": LOCKED})
-        code = W.cmd_ios_state(ctx, out=io.StringIO())
-        problems.check(code == 2, f"ios-state with nothing readable: exit {code}, expected 2")
+        code = W.cmd_ios_state(ctx, out=io.StringIO(), device="js")
+        problems.check(code == 2, f"ios-state --device js with nothing readable: exit {code}, expected 2")
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx, run = devicectl_ctx(tmp, {"DEV-A": listing(others), "DEV-B": LOCKED})
+        code = W.cmd_ios_state(ctx, out=io.StringIO(), device="js")
+        problems.check(code == 0, f"ios-state --device js readable: exit {code}, expected 0")
     with tempfile.TemporaryDirectory() as tmp:
         ctx, run = devicectl_ctx(tmp, {"DEV-A": listing(others), "DEV-B": LOCKED})
         code = W.cmd_ios_state(ctx, out=io.StringIO())
-        problems.check(code == 0, f"ios-state with one readable device: exit {code}, expected 0")
-        print("  ios-state exit: nothing readable → 2 · one readable → 0")
+        problems.check(code == 0 and apps_calls(run) == [],
+                       f"ios-state without --device: exit {code}, queried {apps_calls(run)}; expected 0, none")
+    print("  ios-state exit: --device unreadable → 2 · readable → 0 · no --device → 0, nothing queried")
 
 
 # =================================================================================================
@@ -773,8 +812,7 @@ def test_manifest(problems):
         by_file = {r["file"]: r for r in rows}
         problems.check(code == 0, f"manifest exit {code}")
         chunks = by_file.get("stage1-walk-2026-09-17/sub/chunks.bin", {})
-        problems.check(chunks.get("sha256") == hashlib.sha256(big_bytes).hexdigest() and
-                       chunks.get("size") == len(big_bytes),
+        problems.check(chunks.get("sha256") == hashlib.sha256(big_bytes).hexdigest(),
                        f"manifest sha256 of a multi-chunk file: {chunks}")
         problems.check(set(by_file) == {"stage1-walk-2026-09-17/abc.txt",
                                         "stage1-walk-2026-09-17/sub/chunks.bin",
@@ -785,11 +823,30 @@ def test_manifest(problems):
         big = by_file.get("stage1-walk-2026-09-17/sub/million.bin", {})
         problems.check(abc.get("sha256") == SHA256_ABC == hashlib.sha256(b"abc").hexdigest(),
                        f"manifest sha256(abc) {abc.get('sha256')}")
-        problems.check(big.get("sha256") == SHA256_MILLION_A and big.get("size") == 1_000_000,
+        problems.check(big.get("sha256") == SHA256_MILLION_A,
                        f"manifest sha256/size of 1M 'a' {big}")
+        problems.check(all(set(r) == {"file", "sha256"} for r in rows),
+                       f"manifest stdout must be exactly the registry's evidence shape: {rows}")
+        # The contract between the two tools, checked with the instrument's OWN validator rather
+        # than a copy of its rule: an entry carrying these lines as evidence must validate.
+        sys.path.insert(0, str(Path(W.__file__).resolve().parent))
+        import sales_report as SR
+        entry = {"id": "t", "kind": "purchase", "report_day_pt": "2026-09-16", "platform": "macOS",
+                 "country_code": "JP", "units": 1, "status": "awaiting-report",
+                 "matched_product_type": None, "local_timestamp": "2026-09-17T10:00:00+09:00",
+                 "walk_step": "t", "evidence": rows, "notes": ""}
+        registry = {"schema": 1, "day0": "2026-09-09",
+                    "decisions": {"exclude_walk_first_downloads_from_N": None,
+                                  "exclude_owner_refund_from_refund_ceiling": None},
+                    "entries": [entry]}
+        ev_problems = [x for x in SR.validate_registry(registry) if "evidence" in x]
+        problems.check(rows and not ev_problems,
+                       f"manifest lines rejected by sales_report.validate_registry: {ev_problems}")
+        snap_rows = [json.loads(line) for line in
+                     next(ctx.snapshot_root.glob("*/manifest.jsonl")).read_text().splitlines()]
         problems.check(all(set(r) == {"file", "sha256", "size", "mtime"} and
-                           W.parse_iso(r["mtime"]).utcoffset() is not None for r in rows),
-                       f"manifest rows must carry file/sha256/size/mtime with an offset: {rows}")
+                           W.parse_iso(r["mtime"]).utcoffset() is not None for r in snap_rows),
+                       f"manifest snapshot must keep file/sha256/size/mtime with an offset: {snap_rows}")
         problems.check(".DS_Store" in err.getvalue() and "link.txt" in err.getvalue(),
                        f"manifest must report what it skipped: {err.getvalue()}")
         problems.check(W.cmd_manifest(ctx, str(evidence / "nope"), out=io.StringIO(),
