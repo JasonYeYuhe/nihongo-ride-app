@@ -31,8 +31,16 @@ import Foundation
 //
 // * Types are not resolved. A receiver counts as an entitlement ledger or record only when its
 //   name is DECLARED as one in the same file (`var ledger: EntitlementLedger`, `var r =
-//   ledger.record`, …), or it is reached through another object (`entitlements.ledger`). A copy
-//   bound with an inferred type from a function's return value is not recognised.
+//   ledger.record`, …), is a plain copy of a ledger (`var copy = entitlements.ledger`, and a later
+//   `let b = copy` — the statement must end at the name), or is reached through another object
+//   (`entitlements.ledger`). A copy from a function's return value (`let l = makeLedger()`), from a
+//   condition (`if var l = entitlements.ledger {`), with anything after the name (`?? fallback`),
+//   or of a copy that appears further down the file, is not recognised. Names are per FILE, not
+//   per scope: an entitlement-ledger copy named `ledger` makes every other `ledger.save(to:)` in
+//   that file (AppModel's unlock-offer copy) read as the entitlement ledger's — a spurious red.
+// * `apply(_:savingTo: nil)` counts as a save-in-one-call and is never reported by itself. The
+//   split it enables is caught at the caller's separate `save(to:)`, and only when that receiver
+//   resolves as above.
 // * Calls are found by NAME. A call written with a space before its parenthesis (`foo (x)`), a
 //   trailing closure that starts on the next line, or a regex literal containing braces is misread;
 //   both sides of a `#if` are scanned as plain text.
@@ -42,8 +50,32 @@ import Foundation
 // * The review request is found as a call named `requestReview`. Renaming the environment value
 //   would hide it — today that drops `reviewRequests` to zero and trips its floor, but only because
 //   there is exactly one such call.
+// * A review wrapper's closures are found by TYPE — a parameter whose type contains `->` — never by
+//   name. A closure typed through a typealias (`ask: ReviewAsk`) is not seen, so that wrapper is
+//   reported as handing requestIfEarned none of its closures: spurious, but loud. A function that
+//   calls requestIfEarned and takes an UNRELATED closure (`completion`) used outside the call is
+//   reported as acting on the decision: also spurious. What the handed closure does inside is not
+//   read — `ask: { if x { act() } }` passes — and neither is a returned decision acted on by
+//   anything other than the wrapper's closures or a `requestReview()` call.
 // * Only `Sources/` is scanned. Tests may call `decide()` and the record-level `apply` freely —
 //   that is what those APIs are public for.
+//
+// ## Refactors that change no behaviour but turn these red — a red here may be spurious
+//
+// Each was measured against the real sources. Read the flagged lines before editing either side.
+// * `requestIfEarned` rewritten with an early exit — `guard decision == .asked else { return
+//   decision }`, then the append and `ask()` unconditionally — reports "ask() and
+//   requestDates.append are no longer in the same conditional block": the rule wants both inside
+//   one `{ }` nested below the body.
+// * A private helper in RouteStore that still saves in one call — `private func apply(_ signal:
+//   StoreEntitlementSignal) { ledger.apply(signal, savingTo: defaults) }` — makes each call to it
+//   (`apply(await Self.readStore(...))`) report "mutates the entitlement record without saving it in
+//   the same call": its argument starts with `.entitled(`/`.revoked(` or contains `readStore(`, and
+//   it has no `savingTo:`.
+// * `product.purchase()` moved into a helper in RouteStore — `private func buy(_ product: Product)
+//   async throws -> Product.PurchaseResult { try await product.purchase() }` — reports "purchases
+//   outside the closure handed to purchasing": in the adapter only a call inside a function named
+//   `purchase` is accepted.
 
 // MARK: - The three rules
 
@@ -130,6 +162,19 @@ enum OneBranchRules {
             let parts = CallSiteScanner.receiverComponents(receiver)
             guard let last = parts.last else { return false }
             return parts.count == 1 ? (local[file.path]?.contains(last) ?? false) : global.contains(last)
+        }
+
+        // A plain COPY of the ledger (`var copy = entitlements.ledger`, then `let b = copy`) is the
+        // ledger for this rule — AppModel already copies a ledger that way to call a mutating method
+        // on it. The right-hand side resolves exactly as a receiver does, against the names found so
+        // far (so a copy of an EARLIER copy resolves), and the copy is added to its own file only: it
+        // is a local, not a property another type can reach.
+        let copyPattern = #"\b(?:var|let)\s+(\w+)\s*=\s*([\w.?!]+)[ \t]*(?=[\n;}]|$)"#
+        for file in files {
+            for (name, source) in CallSiteScanner.capturePairs(copyPattern, in: file.allCode)
+            where resolves(source, in: file, local: ledgerNames, global: allLedgerNames) {
+                ledgerNames[file.path, default: []].insert(name)
+            }
         }
 
         var ledgerLevelCalls = 0
@@ -342,10 +387,26 @@ enum OneBranchRules {
                 guard !isInHome(file, call.nameOffset) else { continue }
                 callSites += 1
                 guard let function = file.enclosingFunction(of: call.nameOffset), let body = function.body else { continue }
-                wrappers.insert(function.name)
-                for ask in file.calls(named: "ask") where body.contains(ask.nameOffset) && ask.receiver.isEmpty && !ask.dotPrefixed {
-                    if !call.extent.contains(ask.nameOffset) {
-                        report.violations.append("\(file.location(ask.nameOffset)) \(function.name) calls ask() itself around requestIfEarned — the caller is acting on the decision")
+                // The wrapper's closures are found by TYPE, never by name: a renamed parameter
+                // (`act`, `onAsked`) is the same wrapper. A label (`ask:`, colon directly after)
+                // is not a use of the parameter.
+                let uses = { (name: String) in
+                    file.mentions(of: name).filter { offset in
+                        let after = offset + name.utf8.count
+                        return body.contains(offset) && !(after < file.code.count && file.code[after] == UInt8(ascii: ":"))
+                    }
+                }
+                let closures = file.closureParameters(of: function)
+                let handed = closures.filter { name in uses(name).contains { call.extent.contains($0) } }
+                if !handed.isEmpty {
+                    // Only a function that hands requestIfEarned its own closure may be handed the act.
+                    wrappers.insert(function.name)
+                } else if !file.calls(named: "requestReview").contains(where: { request in call.closures.contains { $0.contains(request.nameOffset) } }) {
+                    report.violations.append("\(file.location(call.nameOffset)) \(function.name) hands requestIfEarned none of its closure parameters\(closures.isEmpty ? "" : " (\(closures.joined(separator: ", ")))") — the act is being done somewhere other than the recorded branch: \(file.excerpt(call))")
+                }
+                for name in closures {
+                    for offset in uses(name) where !call.extent.contains(offset) {
+                        report.violations.append("\(file.location(offset)) \(function.name) uses its closure `\(name)` outside requestIfEarned — the caller is acting on the decision")
                     }
                 }
             }
@@ -457,6 +518,28 @@ enum OneBranchSamples {
                 _ = copy.apply(.revoked(id: 1, at: Date()))
                 entitlements.ledger.save(to: Self.settingsStore)
                 UserDefaults.standard.set(nil, forKey: EntitlementLedger.defaultsKey)
+            }
+        }
+        """#)
+
+    /// A separate save whose argument holds an interpolated string — the call the lexer used to lose.
+    static let entitlementSaveWithInterpolation = File(path: "Sources/NihongoRideApp/AppModel.swift", source: #"""
+        final class AppModel {
+            func mirrorToTheWidget() {
+                entitlements.ledger.save(to: UserDefaults(suiteName: "group.\(Self.teamID)")!)
+            }
+        }
+        """#)
+
+    /// An untyped copy of the LEDGER (the idiom `buyTheRoadWest` uses for the offer ledger), applied
+    /// without saving and saved by the caller — then a copy of that copy saved again.
+    static let entitlementLedgerCopySplit = File(path: "Sources/NihongoRideApp/AppModel.swift", source: #"""
+        final class AppModel {
+            func revokeForDebugging() {
+                var ledger = entitlements.ledger
+                if ledger.apply(.revoked(id: 1, at: Date()), savingTo: nil) { ledger.save(to: Self.settingsStore) }
+                let copy = ledger
+                copy.save(to: Self.settingsStore)
             }
         }
         """#)
@@ -663,6 +746,48 @@ enum OneBranchSamples {
         }
         """#)
 
+    /// The same split with the parameter renamed: nothing in it is called `ask` any more.
+    static let appModelReviewRenamedSplit = File(path: "Sources/NihongoRideApp/AppModel.swift", source: #"""
+        final class AppModel {
+            func considerReviewPrompt(now: Date = Date(), act: () -> Void) {
+                guard let moment = pendingReviewMoment else { return }
+                let decision = reviewPromptLedger.requestIfEarned(moment: moment, now: now, ask: {})
+                if decision == .asked { act() }
+            }
+        }
+        """#)
+
+    /// The name kept, the closure forwarded instead of called.
+    static let appModelReviewForwardedSplit = File(path: "Sources/NihongoRideApp/AppModel.swift", source: #"""
+        final class AppModel {
+            func considerReviewPrompt(now: Date = Date(), ask: @escaping () -> Void) {
+                guard let moment = pendingReviewMoment else { return }
+                let decision = reviewPromptLedger.requestIfEarned(moment: moment, now: now, ask: {})
+                if decision == .asked { DispatchQueue.main.async(execute: ask) }
+            }
+        }
+        """#)
+
+    /// Control: renamed, and handed to requestIfEarned inside a trailing closure. Must pass.
+    static let appModelReviewRenamedToday = File(path: "Sources/NihongoRideApp/AppModel.swift", source: #"""
+        final class AppModel {
+            func considerReviewPrompt(now: Date = Date(), _ act: @escaping () -> Void) {
+                guard let moment = pendingReviewMoment else { return }
+                reviewPromptLedger.requestIfEarned(moment: moment, now: now) { act() }
+            }
+        }
+        """#)
+
+    /// Control: a function with no closure of its own that hands requestIfEarned the act directly. Must pass.
+    static let resultsViewRequestsDirectly = File(path: "Sources/NihongoRideApp/ResultsView.swift", source: #"""
+        struct ResultsView: View {
+            @Environment(\.requestReview) private var requestReview
+            func considerReview() {
+                model.reviewPromptLedger.requestIfEarned(moment: .arrival) { requestReview() }
+            }
+        }
+        """#)
+
     /// The view asks by itself.
     static let resultsViewAsksAlone = File(path: "Sources/NihongoRideApp/ResultsView.swift", source: #"""
         struct ResultsView: View {
@@ -747,6 +872,19 @@ struct EntitlementApplyOneBranchTests {
         let report = OneBranchRules.entitlementApply([S.entitlementHomeThatReturns, S.entitlementAdapterToday])
         #expect(report.violations.contains { $0.contains("no longer saves") }, "\(report.violations)")
     }
+
+    @Test("a separate save whose argument holds an interpolated string is caught")
+    func aSaveWithAnInterpolatedArgumentIsCaught() {
+        let report = OneBranchRules.entitlementApply([S.entitlementHome, S.entitlementAdapterToday, S.entitlementSaveWithInterpolation])
+        #expect(report.violations.contains { $0.contains("AppModel.swift:3") && $0.contains("apart from the apply") }, "\(report.violations)")
+    }
+
+    @Test("an untyped copy of the ledger, applied with savingTo: nil and saved by the caller, is caught")
+    func aLedgerCopySplitIsCaught() {
+        let report = OneBranchRules.entitlementApply([S.entitlementHome, S.entitlementAdapterToday, S.entitlementLedgerCopySplit])
+        #expect(report.violations.contains { $0.contains("AppModel.swift:4") && $0.contains("apart from the apply") }, "the copy's save was missed: \(report.violations)")
+        #expect(report.violations.contains { $0.contains("AppModel.swift:6") && $0.contains("apart from the apply") }, "the copy of the copy was missed: \(report.violations)")
+    }
 }
 
 @Suite("UnlockOfferLedger.purchasing records the attempt and the answer itself — no caller records")
@@ -824,7 +962,29 @@ struct RequestIfEarnedOneBranchTests {
     func theSplitAtTheCallSiteIsCaught() {
         let report = OneBranchRules.reviewPrompt([S.reviewLedgerToday, S.appModelReviewSplit, S.resultsViewToday])
         #expect(report.violations.contains { $0.contains("AppModel.swift:5") && $0.contains("decide() outside") }, "\(report.violations)")
-        #expect(report.violations.contains { $0.contains("AppModel.swift:7") && $0.contains("calls ask() itself") }, "\(report.violations)")
+        #expect(report.violations.contains { $0.contains("AppModel.swift:6") && $0.contains("hands requestIfEarned none") }, "\(report.violations)")
+        #expect(report.violations.contains { $0.contains("AppModel.swift:7") && $0.contains("uses its closure `ask` outside") }, "\(report.violations)")
+    }
+
+    /// Nothing in these is called `ask`, or the closure is forwarded rather than called — the
+    /// shapes a rule that looked for `ask()` by name let through.
+    @Test("the same split with the closure renamed or forwarded is caught")
+    func theSplitIsCaughtWhateverTheClosureIsCalled() {
+        let renamed = OneBranchRules.reviewPrompt([S.reviewLedgerToday, S.appModelReviewRenamedSplit, S.resultsViewToday])
+        #expect(renamed.violations.contains { $0.contains("AppModel.swift:4") && $0.contains("hands requestIfEarned none of its closure parameters (act)") }, "\(renamed.violations)")
+        #expect(renamed.violations.contains { $0.contains("AppModel.swift:5") && $0.contains("uses its closure `act` outside") }, "\(renamed.violations)")
+        #expect(renamed.violations.contains { $0.contains("ResultsView.swift:6") && $0.contains("requests a review outside") },
+                "a function that hands requestIfEarned none of its closures must not count as a wrapper: \(renamed.violations)")
+        let forwarded = OneBranchRules.reviewPrompt([S.reviewLedgerToday, S.appModelReviewForwardedSplit, S.resultsViewToday])
+        #expect(forwarded.violations.contains { $0.contains("AppModel.swift:5") && $0.contains("uses its closure `ask` outside") }, "\(forwarded.violations)")
+    }
+
+    @Test("a renamed closure handed through a trailing closure, and a direct request inside requestIfEarned, pass")
+    func renamedAndDirectShapesPass() {
+        let renamed = OneBranchRules.reviewPrompt([S.reviewLedgerToday, S.appModelReviewRenamedToday, S.resultsViewToday])
+        #expect(renamed.violations.isEmpty && renamed.counts["wrappers"] == 1, "\(renamed.counts) \(renamed.violations)")
+        let direct = OneBranchRules.reviewPrompt([S.reviewLedgerToday, S.resultsViewRequestsDirectly])
+        #expect(direct.violations.isEmpty && direct.counts["reviewRequests"] == 1, "\(direct.counts) \(direct.violations)")
     }
 
     @Test("a view that requests a review by itself is caught")

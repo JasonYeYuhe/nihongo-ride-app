@@ -129,6 +129,32 @@ enum CallSiteScanner {
             CallSiteScanner.calls(named: name, in: code)
         }
 
+        /// The internal names of `function`'s parameters whose TYPE is a function type — found by
+        /// the `->` in the type, never by the name: `ask: () -> Void`, `_ act: @escaping () -> Void`,
+        /// `onAsked: (() -> Void)?`. A closure typed through a typealias has no `->` here and is missed.
+        func closureParameters(of function: Declaration) -> [String] {
+            guard let parameters = function.parameters else { return [] }
+            var segments: [Range<Int>] = []
+            var depth = 0, start = parameters.lowerBound
+            for index in parameters {
+                switch code[index] {
+                case UInt8(ascii: "("), UInt8(ascii: "["), UInt8(ascii: "{"): depth += 1
+                case UInt8(ascii: ")"), UInt8(ascii: "]"), UInt8(ascii: "}"): depth -= 1
+                case UInt8(ascii: ",") where depth == 0: segments.append(start..<index); start = index + 1
+                default: break
+                }
+            }
+            segments.append(start..<parameters.upperBound)
+            return segments.compactMap { segment in
+                let parameter = text(segment)
+                guard let colon = parameter.firstIndex(of: ":"),
+                      parameter[parameter.index(after: colon)...].split(separator: "=", maxSplits: 1).first?.contains("->") == true
+                else { return nil }
+                return parameter[..<colon].split(whereSeparator: { !($0.isLetter || $0.isNumber || $0 == "_") })
+                    .last.map(String.init)     // `_ act` → `act`: the name the body uses
+            }
+        }
+
         /// True when `offset` lies inside a closure handed to a call named one of `names`.
         func isInsideClosure(handedTo names: Set<String>, _ offset: Int) -> Bool {
             names.contains { name in
@@ -176,7 +202,10 @@ enum CallSiteScanner {
     }
 
     /// Blanks comments (line, doc, and nested block) and string contents. Interpolations inside
-    /// strings are kept as code; their `\(` and `)` stay balanced.
+    /// strings are kept as code; their delimiters — `\(` (or `\#(`) and the closing `)` — are
+    /// blanked TOGETHER, so parentheses in the code view stay balanced. Blanking one without the
+    /// other made every call with an interpolated argument unmatched, and so invisible to every
+    /// rule; `shippedCodeViewsBalance` fails if that drifts again.
     static func lex(_ bytes: [UInt8]) -> (code: [UInt8], withStrings: [UInt8]) {
         var code = bytes
         var withStrings = bytes
@@ -207,7 +236,7 @@ enum CallSiteScanner {
                     var seen = 0
                     while seen < hashes, next < count, bytes[next] == UInt8(ascii: "#") { seen += 1; next += 1 }
                     if seen == hashes, next < count, bytes[next] == UInt8(ascii: "(") {
-                        for at in index..<next { blankString(at) }
+                        for at in index...next { blankString(at) }   // `\`, any `#`, and the `(`
                         stack.append(.interpolation(depth: 1))
                         index = next + 1
                         continue
@@ -545,6 +574,30 @@ enum CallSiteScanner {
         }
         return out
     }
+
+    /// Where a file's code view stops pairing `(` with `)` or `{` with `}`; empty when both pair up.
+    static func unbalanced(_ file: File) -> [String] {
+        var out: [String] = []
+        for (open, close) in [(UInt8(ascii: "("), UInt8(ascii: ")")), (UInt8(ascii: "{"), UInt8(ascii: "}"))] {
+            var depth = 0
+            for (index, byte) in file.code.enumerated() {
+                if byte == open { depth += 1 } else if byte == close { depth -= 1 }
+                if depth < 0 { out.append("\(file.location(index)) closes a \(Character(Unicode.Scalar(open))) that was never opened"); break }
+            }
+            if depth > 0 { out.append("\(file.path) leaves \(depth) \(Character(Unicode.Scalar(open))) unclosed") }
+        }
+        return out
+    }
+
+    /// Each match's first two groups, in order, across `text`.
+    static func capturePairs(_ pattern: String, in text: String) -> [(String, String)] {
+        guard let regex = try? NSRegularExpression(pattern: pattern) else { return [] }
+        return regex.matches(in: text, range: NSRange(text.startIndex..., in: text)).compactMap { match in
+            guard match.numberOfRanges > 2, let first = Range(match.range(at: 1), in: text),
+                  let second = Range(match.range(at: 2), in: text) else { return nil }
+            return (String(text[first]), String(text[second]))
+        }
+    }
 }
 
 @Suite("The call-site scanner reads code, not comments or strings")
@@ -572,6 +625,42 @@ struct CallSiteScannerTests {
         #expect(file.calls(named: "apply").isEmpty, "a commented or quoted apply was read as code")
         #expect(file.allCodeWithStrings.contains("https://example.com"), "the strings-kept view lost a string")
         #expect(!file.allCode.contains("example.com"), "the code view kept a string's contents")
+    }
+
+    /// The sample above puts a call INSIDE an interpolation, which stays balanced however the
+    /// delimiters are blanked. This puts interpolations inside a call's ARGUMENTS — the shape that
+    /// went unmatched and vanished from every rule when only the `)` was blanked.
+    @Test("a call whose arguments hold an interpolated string is still a call, with its arguments")
+    func interpolatedArgumentsKeepTheCall() throws {
+        let file = CallSiteScanner.File(path: "Sample.swift", source: ##"""
+            ledger.save(to: UserDefaults(suiteName: "group.\(Self.teamID)")!)
+            ledger.save(to: UserDefaults(suiteName: #"group.\#(Self.teamID)"#)!)
+            ledger.save(to: UserDefaults(suiteName: "g.\(names["a\(1)"] ?? "")")!)
+            let decision = ledger.requestIfEarned(moment: m, note: """
+                ride \(n)
+                """, ask: {})
+            """##)
+        let saves = file.calls(named: "save")
+        #expect(saves.map { file.line(of: $0.nameOffset) } == [1, 2, 3], "a call with an interpolated argument was lost: \(saves.map { file.line(of: $0.nameOffset) })")
+        #expect(saves.allSatisfy { $0.arguments.map { file.text($0).contains("suiteName:") } ?? false }, "a call's arguments were cut short")
+        let request = try #require(file.calls(named: "requestIfEarned").first, "a call with a multi-line interpolated argument was lost")
+        #expect(request.closures.count == 1 && file.line(of: request.extent.upperBound - 1) == 6)
+        #expect(file.calls(named: "teamID").isEmpty && file.mentions(of: "teamID").count == 2, "an interpolation is code, not a call")
+    }
+
+    /// Lexer drift shows up here first: every rule matches `(` with `)` and `{` with `}`, and a
+    /// view that leaves one unpaired silently drops every call that spans it.
+    @Test("every shipped file's code view has balanced parentheses and braces")
+    func shippedCodeViewsBalance() throws {
+        // Control, through the same function: no shipped file has an unpaired bracket inside a
+        // string or comment today, so only a planted one can show the check able to fail.
+        let broken = CallSiteScanner.File(path: "Broken.swift", source: "func f() {\n    g(\"}\")\n    h(x))\n")
+        #expect(CallSiteScanner.unbalanced(broken) == ["Broken.swift:3 closes a ( that was never opened", "Broken.swift leaves 1 { unclosed"],
+                "the balance check does not report what it must: \(CallSiteScanner.unbalanced(broken))")
+        let files = try CallSiteScanner.shippedSources.get()
+        #expect(files.count >= 80, "only \(files.count) Swift files under Sources/ — the check is reading nothing")
+        let unbalanced = files.flatMap(CallSiteScanner.unbalanced)
+        #expect(unbalanced.isEmpty, "\(unbalanced.count) unbalanced code view(s) — the lexer has drifted:\n\(unbalanced.prefix(10).joined(separator: "\n"))")
     }
 
     @Test("declarations are not calls; closures, receivers and enclosing functions are found")
@@ -612,6 +701,14 @@ struct CallSiteScannerTests {
         let record = try #require(file.functions(named: "record").first)
         #expect(record.modifiers.contains("private") && record.modifiers.contains("mutating"))
         #expect(file.typeBodies(named: "Buyer").count == 1)
+
+        let wrapper = CallSiteScanner.File(path: "Wrapper.swift", source: #"""
+            func consider(now: Date = Date(), _ act: @escaping @MainActor () -> Void, onAsked: (() -> Void)?,
+                          map: [String: (Int) -> Void] = [:], ask: Ask, count: Int = { 1 }()) {}
+            """#)
+        let function = try #require(wrapper.functions.first)
+        #expect(wrapper.closureParameters(of: function) == ["act", "onAsked", "map"],
+                "closure parameters must be found by their type: \(wrapper.closureParameters(of: function))")
     }
 
     /// Swift allows no trailing closure in a condition, so the brace after `if x.apply(y)` is the
