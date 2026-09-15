@@ -12,8 +12,10 @@ import EntitlementKit
 /// `swift test` the host process is SwiftPM's own binary and `Transaction.currentEntitlements`
 /// returns `[]` **silently, with no error**. A headless test of the rule written against real
 /// StoreKit would pass forever while exercising nothing. So the rule is pure and exhaustively
-/// tested; this file is the adapter, and it is proven separately on macOS against a local
-/// StoreKit configuration (`Tests/NihongoRideMacTests`).
+/// tested; this file is the adapter, and **no automated test observes it**. Its gates are written
+/// (`Tests/NihongoRideMacTests`), but all nine skip, because `SKTestSession` is inert for this app
+/// on this machine (measured 2026-09-16, Xcode 27.0). Until that changes, PLAN-STAGE1 §L's manual
+/// gates are the only purchase coverage this file has.
 ///
 /// ## What this file must never do
 ///

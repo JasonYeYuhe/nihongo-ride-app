@@ -336,6 +336,21 @@ signed in, Family Sharing, and a real cross-platform (macOS ↔ iOS) restore. Li
 because the macOS suite is green would be a lie. They need a walked-through date and device below
 before submission.
 
+**Re-checks, dated.** `PLAN-V1.32` asks for a dated line here on every toolchain bump, so that
+"still broken" is a measurement with a date. The Xcode 26.6 measurement at the top of this section is
+left exactly as written; these lines are added under it, never over it.
+
+* **2026-09-12** — `scripts/run_store_gates.sh` → exit 3, "Executed 11 tests, with 9 tests skipped
+  and 0 failures"; all nine gates in `StoreGateTests.swift`, `test00_theStoreIsReachable` through
+  `test08_neverPurchasedIsNotEntitled`, skipped as inert (`docs/HANDOFF-STAGE1-GATES-PROMPT.md:45-55`).
+  **The toolchain was not recorded there**, so this line cannot say which Xcode it measured.
+* **2026-09-16** — Xcode 27.0 (27A266a) / macOS 27.0 (26A428): `scripts/run_store_gates.sh` → exit 3,
+  "Executed 11 tests, with 9 tests skipped and 0 failures". All nine, `test00` … `test08`, were skipped
+  in `setUp` by the inert-session probe (`StoreGateTests.swift:83`) — that is, **before any `buy()`
+  ran**. Still MEASURED-BROKEN for this app on this toolchain. **Not re-run:** the minimal
+  non-App-Store app's "10/10" comparison, and the iOS-simulator measurements above; both remain
+  2026-08-30 measurements on Xcode 26.6.
+
 ## §K §G's pre-registration, fixed in advance
 
 > ### ⏱ DAY 0 = 2026-09-09. The window is open and the clock is running.
@@ -654,6 +669,59 @@ date here and **exclude it from the cohort**, or it will later look like the sig
 money instrument's known-positive, and this project does not trust an instrument that has not
 fired. *An agent cannot do this step and must not try.*
 
+> ### 🧾 ADDED 2026-09-16 — what the day-0 paragraph above now points at. The paragraph itself is unchanged.
+>
+> **Status, stated plainly.** The paragraph above is unchanged and still not walked: today is
+> **7 days after day 0** (2026-09-09). No record of it exists in this section, and none is implied
+> by this box. The owner's walk card is `docs/WALKCARD-STAGE1.md`; ready-to-paste text for both
+> outcomes, clearly marked as not recorded, is `docs/DRAFTS-STAGE1-RECORDS.md`.
+>
+> **What "`--calibrate` still passes" means, exactly.** The command
+> `python3 scripts/sales_report.py --calibrate`, over its default full window (2026-06-06 to the
+> newest published Pacific day). Not `--since … --calibrate`: the release-day positive control needs
+> a `RELEASE_DAYS` date inside the window and the latest one is 2026-08-24, so any window starting
+> after that exits **4** by design — measured 2026-09-16, `--since 2026-09-09 --calibrate` → exit 4,
+> "no release days in window — cannot run the positive control". On 2026-09-16 the full-window run
+> exits **0** (updates 1.65x, downloads 1.24x, `PURCHASES gross 0`).
+>
+> **Where confirming and excluding it now live.**
+> * `python3 scripts/sales_report.py --confirm-known-positive --kind purchase --at <ISO-8601 with offset> --platform macOS --country <XX>`
+>   computes the Pacific report day, refetches that day and its neighbours with no cache, lists every
+>   purchase-class and unclassified row, matches the purchase, and runs the full-window calibration.
+>   Exit 0 matched and calibration OK (it prints a **draft** registry entry and a **draft** sentence
+>   for this section, and writes neither) · 4 calibration failed · 6 report day not yet published ·
+>   7 no matching row. `--kind refund` does the same for the refund row.
+> * The exclusion is a registry the owner maintains and no tool writes:
+>   `docs/measurements/stage1-known-positives.json`. `kind=purchase` and `kind=refund` entries are
+>   always subtracted from the purchase numerator — the one exclusion this paragraph licenses
+>   ("**exclude it from the cohort**"). Walk-caused first downloads are subtracted from N only if the
+>   owner decides so in that file.
+> * `python3 scripts/sales_report.py --checkpoint` prints the cohort since day 0 and prints a
+>   rule-of-three bound **only** when calibration passed, a `kind=purchase` entry is `matched`, no
+>   owner decision that affects the bound is still open for entries in the window, and adjusted net
+>   purchases are zero (when they are not zero it says the zero-purchase bound does not apply).
+>   Otherwise it prints `BOUND WITHHELD:` with every reason and exits 5. That is this paragraph's own
+>   rule ("this project does not trust an instrument that has not fired") made mechanical, not a new
+>   one.
+>
+> **Unchanged by any of it:** no threshold, cohort definition, checkpoint, `RELEASE_DAYS` entry or
+> classification set (`DOWNLOAD`, `UPDATE`, `REDOWNLOAD`, `PURCHASE`) was changed.
+>
+> **Two findings about the instrument, recorded and deliberately not acted on**
+> (`docs/measurements/2026-09-16-release-day-control.md`). `RELEASE_DAYS` holds Japan-time
+> observation dates — roughly the Pacific day *after* each release, when the update wave lands — and
+> one of them, 08-22, has no source; the control still fails when quiet days are substituted, so it is
+> not vacuous. It does have a blind spot: with the update and download classifications swapped it
+> still passes (1.24x / 1.65x), because "downloads must not be release-locked" is printed and never
+> enforced. Neither is fixed now, because a changed instrument would make "still passes" compare two
+> different instruments across the known-positive.
+>
+> **Open questions for the owner**, none decided here: `docs/DRAFTS-STAGE1-RECORDS.md` §6 —
+> whose on-device counter is a "returned counter", whether walk installs and a family install leave
+> N, whether netting counts as exclusion, a refused refund, whether the refund row must be seen, the
+> date system, printed thresholds versus `3/N`, the base-to-N gap, which window, and (with a clearly
+> labelled agent recommendation) the release-day definition and the calibration blind spot.
+
 ## §L The three manual gates
 
 These cannot be automated on this machine and are therefore **not tested until somebody walks
@@ -694,11 +762,11 @@ Each needs a date, a device and an outcome written beside it **before v1.30 is s
 > a gate somebody decided to skip must not look alike, which is the same rule this box exists to
 > enforce one level up.
 
-| gate | why it cannot be automated | procedure | walked |
-|---|---|---|---|
-| **No App Store account signed in** | `SKTestSession` cannot simulate a signed-out Apple Account; the closest automatable proxy is `.loadProducts` erroring, which is a different thing and is named as a proxy in the test that does it | Sign out of the App Store on a Mac or device. Launch. Open Settings → The Road. **Expect:** the row is there, the screen opens, the price area says prices are unavailable and offers Retry, Restore is present, and nothing crashes. **Fail if:** the row is missing, or the screen claims the road is unlocked, or the app hangs. | ☐ |
-| **Family Sharing** | The SKU ships with Family Sharing **off**, and Apple documents that turning it on can never be undone — so the state to verify is that a family member does NOT inherit it | On a second Apple Account in the same family group, launch and open Settings → The Road. **Expect:** the offer, not the owned state. | ☐ |
-| **Cross-platform restore (macOS ↔ iOS)** | One Universal Purchase record covers both platforms on the STORE side; whether the entitlement resolves on the second device is client code and has never been observed | Buy on one platform. On the other, signed into the same Apple Account, launch and open Settings → The Road. **Expect:** owned, without tapping Restore. Then try it from a cold install. **Fail if:** Restore is needed and does not work. | ☐ |
+| gate | why it cannot be automated | procedure | walked | date | device | outcome |
+|---|---|---|---|---|---|---|
+| **No App Store account signed in** | `SKTestSession` cannot simulate a signed-out Apple Account; the closest automatable proxy is `.loadProducts` erroring, which is a different thing and is named as a proxy in the test that does it | Sign out of the App Store on a Mac or device. Launch. Open Settings → The Road. **Expect:** the row is there, the screen opens, the price area says prices are unavailable and offers Retry, Restore is present, and nothing crashes. **Fail if:** the row is missing, or the screen claims the road is unlocked, or the app hangs. | ☐ |  |  |  |
+| **Family Sharing** | The SKU ships with Family Sharing **off**, and Apple documents that turning it on can never be undone — so the state to verify is that a family member does NOT inherit it | On a second Apple Account in the same family group, launch and open Settings → The Road. **Expect:** the offer, not the owned state. | ☐ |  |  |  |
+| **Cross-platform restore (macOS ↔ iOS)** | One Universal Purchase record covers both platforms on the STORE side; whether the entitlement resolves on the second device is client code and has never been observed | Buy on one platform. On the other, signed into the same Apple Account, launch and open Settings → The Road. **Expect:** owned, without tapping Restore. Then try it from a cold install. **Fail if:** Restore is needed and does not work. | ☐ |  |  |  |
 
 **⚠️ And as of 2026-08-30 the AUTOMATED gates do not run either, so this manual list is the only
 purchase coverage that exists.**

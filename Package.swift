@@ -102,8 +102,10 @@ let package = Package(
         // Pure for a MEASURED reason, not a stylistic one: under `swift test` the host is
         // SwiftPM's own binary, where `Transaction.currentEntitlements` returns [] **silently**
         // — so a headless test written against real StoreKit would assert nothing while passing
-        // forever. The rule lives here where it can be exercised; the real store is proven on
-        // the macOS target against a local StoreKit configuration.
+        // forever. The rule lives here where it can be exercised. The real store is NOT proven by
+        // any automated test: its gates in Tests/NihongoRideMacTests all skip, because
+        // SKTestSession is inert for this app on this machine (measured 2026-09-16, Xcode 27.0),
+        // so PLAN-STAGE1 §L's manual gates are the only purchase coverage.
         .target(name: "EntitlementKit"),
         .testTarget(name: "EntitlementKitTests", dependencies: ["EntitlementKit", "SceneryKit"]),
 

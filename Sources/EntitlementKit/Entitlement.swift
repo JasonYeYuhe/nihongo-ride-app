@@ -35,7 +35,10 @@ import Foundation
 /// `Transaction.currentEntitlements` yields `[]` silently, with no error at all.** A headless
 /// test asserting "not entitled when nothing was purchased" against real StoreKit would therefore
 /// pass forever without exercising anything. This module is pure so its ~40 tests mean what they
-/// say; the real StoreKit is proven separately, against a local StoreKit configuration, on macOS.
+/// say. **The real StoreKit is not observed by any automated test.** Its gates exist, in
+/// `Tests/NihongoRideMacTests`, but all nine skip: `SKTestSession` is inert for this app on this
+/// machine (measured again 2026-09-16, Xcode 27.0), so nothing automated watches the adapter act on
+/// these rules. PLAN-STAGE1 §L's manual gates are the only purchase coverage there is.
 ///
 /// ## What is designed and what is observed
 ///
