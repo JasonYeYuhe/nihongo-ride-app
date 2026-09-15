@@ -1,0 +1,900 @@
+#!/usr/bin/env python3
+"""`sales_report.py`'s Stage 1 additions must do what the contract says, and every guard must fire.
+
+WHAT IS UNDER TEST. The money instrument grew four things at once — a known-positive registry, a
+`--checkpoint` readout that may print §K's rule-of-three bound, a `--confirm-known-positive` mode that
+finds the owner's own purchase in Apple's report, and an exclusion control inside every
+`--calibrate`. Each of them can fail in the one way this project keeps paying for: by printing the
+same words as the version that works. A bound printed from an unproven instrument reads exactly like
+a bound; a subtraction that subtracts nothing reads exactly like no owner rows; a classifier that
+disagrees with itself reads exactly like two correct totals.
+
+SO EVERY GUARD HERE IS PAIRED. Each withholding reason is tested against a baseline that PRINTS the
+bound with one variable changed, so a reason that fires on everything and a reason that fires on
+nothing both go red. The comparators are themselves controlled: the classification differential
+is run against a deliberately divergent cell tally and must report it; the exclusion control is run
+against broken subtractions and must fail; the write scanner is run on a planted write and must see it.
+
+No network, no cache, no vendor number, no `jwt`: every report is synthetic, in Apple's TSV shape,
+and driven through the real `our_rows` / `classify_row` / `tally` / `cell_tally`.
+
+    python3 scripts/test_sales_report.py
+"""
+import ast
+import contextlib
+import datetime as dt
+import io
+import json
+import sys
+import tempfile
+from collections import defaultdict
+from pathlib import Path
+
+SCRIPTS = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPTS))
+
+import sales_report as sr                                      # noqa: E402
+
+JWT_IMPORTED_AT_LOAD = "jwt" in sys.modules
+D = dt.date
+NEWEST = D(2026, 9, 20)
+
+
+# ---------------------------------------------------------------------------------------------------
+# synthetic reports
+
+def report_row(pti, units, country, route="app", proceeds="0", price="0", currency="JPY"):
+    """One row in `_CONTROL_HEADER`'s shape. route: app (Apple Identifier), parent (IAP), other."""
+    cells = [""] * 30
+    cells[5] = "1.32"
+    cells[6] = pti
+    cells[7] = str(units)
+    cells[8] = proceeds
+    cells[11] = currency
+    cells[12] = country
+    cells[13] = currency
+    cells[14] = {"app": sr.APP_ID, "parent": "0", "other": "6761163709"}[route]
+    cells[15] = price
+    cells[17] = sr.APP_SKU if route == "parent" else ""
+    cells[24] = "Desktop"
+    cells[25] = "iOS and macOS"
+    return "\t".join(cells)
+
+
+def iap(pti, units, country):
+    return report_row(pti, units, country, route="parent", proceeds="128", price="150")
+
+
+def tsv(*rows):
+    return "\n".join((sr._CONTROL_HEADER,) + tuple(rows))
+
+
+def cohort_extra(first_downloads=None, purchase_day="2026-09-16", add=None):
+    """Cohort rows: by default N = 13 (F1 JP on each of 09-09..09-20, 1F CN on 09-10) and the
+    owner's FI1 JP purchase on 09-16."""
+    extra = defaultdict(list)
+    if first_downloads is None:
+        for key in sr._day_keys(D(2026, 9, 9), NEWEST):
+            extra[key].append(report_row("F1", 1, "JP"))
+        extra["2026-09-10"].append(report_row("1F", 1, "CN"))
+    else:
+        for key, rows in first_downloads.items():
+            extra[key] += rows
+    if purchase_day:
+        extra[purchase_day].append(iap("FI1", 1, "JP"))
+    for key, rows in (add or {}).items():
+        extra[key] += rows
+    return extra
+
+
+def window(end=NEWEST, extra=None, flat_updates=False, states=None):
+    """LAUNCH_DATE..end, shaped so calibration passes: F1/1F/F7 all occur, release days elevated.
+    Background downloads stop before 2026-09-08, so the eve and the cohort hold only `extra`."""
+    days = {}
+    for key in sr._day_keys(sr.LAUNCH_DATE, end):
+        rows = [report_row("F7", 1 if flat_updates or key not in sr.RELEASE_DAYS else 5, "JP"),
+                report_row("F1", 9, "US", route="other")]           # another app's row: filtered
+        if key < "2026-09-08":
+            rows += [report_row("F1", 1, "US"), report_row("1F", 1, "US")]
+        rows += (extra or {}).get(key, [])
+        days[key] = ("data", tsv(*rows))
+    for key, state in (states or {}).items():
+        days[key] = (state, "")
+    return days
+
+
+class FakeFetch:
+    """`fetch(start, end, use_cache)`. A no-cache call sees `refetched` over the cached days."""
+
+    def __init__(self, cached, refetched=None):
+        self.cached, self.refetched, self.calls = cached, refetched or {}, []
+
+    def __call__(self, start, end, use_cache):
+        self.calls.append((start, end, use_cache))
+        source = self.cached if use_cache else {**self.cached, **self.refetched}
+        return {k: source.get(k, ("pending", "")) for k in sr._day_keys(start, end)}
+
+
+def registry(decision=None, entries=(), refund_decision=None):
+    return {"schema": 1, "day0": "2026-09-09",
+            "decisions": {"exclude_walk_first_downloads_from_N": decision,
+                          "exclude_owner_refund_from_refund_ceiling": refund_decision},
+            "entries": [dict(e) for e in entries]}
+
+
+def entry(eid, kind="purchase", day="2026-09-16", platform="macOS", country="JP", units=1,
+          status="matched", code="FI1", stamp="2026-09-17T10:00:00+09:00", evidence=()):
+    return {"id": eid, "kind": kind, "report_day_pt": day, "platform": platform,
+            "country_code": country, "units": units, "status": status,
+            "matched_product_type": code, "local_timestamp": stamp,
+            "walk_step": "§K day-0 known-positive", "evidence": list(evidence), "notes": ""}
+
+
+OWNER_BUY = entry("owner-buy")
+
+
+def capture(fn, *args, **kwargs):
+    out, err = io.StringIO(), io.StringIO()
+    with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+        try:
+            rc = fn(*args, **kwargs)
+        except SystemExit as e:
+            rc = e.code
+        except Exception as e:         # reported as a failed exit, so the rest of the suite still runs
+            rc = f"EXCEPTION {e!r}"
+    return rc, out.getvalue() + err.getvalue()
+
+
+@contextlib.contextmanager
+def patched(**attrs):
+    old = {k: getattr(sr, k) for k in attrs}
+    for k, v in attrs.items():
+        setattr(sr, k, v)
+    try:
+        yield
+    finally:
+        for k, v in old.items():
+            setattr(sr, k, v)
+
+
+class Checks:
+    def __init__(self):
+        self.problems, self.count = [], 0
+
+    def __call__(self, ok, message):
+        self.count += 1
+        if not ok:
+            self.problems.append(message)
+        return ok
+
+    def rc_and_text(self, label, got, want_rc, output, must=(), must_not=()):
+        self(got == want_rc, f"{label}: exit {got}, expected {want_rc}\n{output}")
+        for s in must:
+            self(s in output, f"{label}: output lacks {s!r}\n{output}")
+        for s in must_not:
+            self(s not in output, f"{label}: output carries {s!r}\n{output}")
+
+
+# ---------------------------------------------------------------------------------------------------
+# A. one classification rule
+
+KIND_FIELD = {"first_download": "dl", "update": "upd", "redownload": "redl", "purchase": "buy",
+              "refund": "refund", "unclassified": "unclassified"}
+
+
+def tally_vs_cells(days, cell_fn):
+    """Every disagreement between `tally` and a cell tally over the same report."""
+    per_day, _seen, _unc, terr, _plat, buy_terr, _proceeds = sr.tally(days)
+    cells, _codes = cell_fn(days)
+    diffs = []
+    agg = defaultdict(lambda: defaultdict(int))
+    cell_terr, cell_buy_terr = defaultdict(int), defaultdict(int)
+    for (day, kind, platform, country), u in cells.items():
+        if kind not in KIND_FIELD:
+            diffs.append(f"cell kind {kind!r} is not a kind tally knows")
+            continue
+        field = KIND_FIELD[kind]
+        agg[day][field] += u
+        if kind in ("first_download", "purchase"):
+            agg[day][f"{field}_{platform}"] += u
+        if kind == "first_download":
+            cell_terr[country] += u
+        if kind in ("purchase", "refund"):
+            cell_buy_terr[country] += u if kind == "purchase" else -u
+    for day in sorted(set(per_day) | set(agg)):
+        if day in per_day and per_day[day]["_state"] != "data":
+            if agg.get(day):
+                diffs.append(f"{day}: cells hold units for a day tally reads as {per_day[day]['_state']}")
+            continue
+        for field in ("dl", "dl_macOS", "dl_iOS", "upd", "redl", "buy", "buy_macOS", "buy_iOS",
+                      "refund", "unclassified"):
+            t = per_day[day][field] if day in per_day else 0
+            if t != agg[day][field]:
+                diffs.append(f"{day} {field}: tally {t}, cells {agg[day][field]}")
+    nz = lambda d: {k: v for k, v in d.items() if v}                   # noqa: E731
+    if nz(terr) != nz(cell_terr):
+        diffs.append(f"download territory: tally {nz(terr)}, cells {nz(cell_terr)}")
+    if nz(buy_terr) != nz(cell_buy_terr):
+        diffs.append(f"purchase territory: tally {nz(buy_terr)}, cells {nz(cell_buy_terr)}")
+    return diffs
+
+
+MIXED = {
+    "2026-09-01": ("data", tsv(
+        report_row("F1", 2, "JP"), report_row("1F", 1, "CN"), report_row("F7", 5, "US"),
+        report_row("3F", 1, "JP"), report_row("F3", 2, "DE"),
+        iap("IA1", 1, "CN"), iap("IA9", 1, "JP"), iap("FI1", 1, "JP"), iap("FI1", -1, "JP"),
+        iap("IA1", 0, "CN"), report_row("XX9", 1, "JP"), iap("IAY", 1, "US"),
+        report_row("F1", 7, "US", route="other"))),
+    "2026-09-02": ("data", tsv(report_row("F1", -1, "JP"), iap("IA1", -2, "CN"),
+                               report_row("1F", 3, "BR"))),
+    "2026-09-03": ("pending", ""),
+    "2026-09-04": ("nosales", "no sales"),
+}
+
+
+def divergent_cell_tally(days):
+    """A second classification rule, as someone might write it inline: F3 read as a download."""
+    cells, codes = defaultdict(int), defaultdict(set)
+    for key, (state, payload) in sorted(days.items()):
+        if state != "data":
+            continue
+        for row in sr.our_rows(payload):
+            kind, platform = sr.classify_row(row["pti"], row["units"])
+            if row["pti"] == "F3":
+                kind, platform = "first_download", "macOS"
+            cell = (key, kind, platform, row["country"])
+            cells[cell] += -row["units"] if kind == "refund" else row["units"]
+            codes[cell].add(row["pti"])
+    return cells, codes
+
+
+def test_classification(check):
+    table = [("F1", 1, ("first_download", "macOS")), ("1F", 1, ("first_download", "iOS")),
+             ("F7", 3, ("update", None)), ("3F", 1, ("redownload", None)),
+             ("F3", 1, ("redownload", None)), ("IA1", 1, ("purchase", "iOS")),
+             ("IA9", 2, ("purchase", "iOS")), ("FI1", 1, ("purchase", "macOS")),
+             ("FI1", 0, ("purchase", "macOS")), ("FI1", -1, ("refund", "macOS")),
+             ("IA1", -3, ("refund", "iOS")), ("IAY", 1, ("unclassified", None)),
+             ("", 1, ("unclassified", None)), ("F1 ", 1, ("unclassified", None))]
+    for pti, units, want in table:
+        got = sr.classify_row(pti, units)
+        check(got == want, f"classify_row({pti!r}, {units}) = {got}, expected {want}")
+
+    cells, _codes = sr.cell_tally(MIXED)
+    kinds = {k for (_d, k, _p, _c) in cells}
+    check(kinds == set(KIND_FIELD),
+          f"the differential's report must exercise every kind, exercised {sorted(kinds)}")
+    diffs = tally_vs_cells(MIXED, sr.cell_tally)
+    check(not diffs, "tally() and cell_tally() disagree:\n  " + "\n  ".join(diffs))
+    diffs = tally_vs_cells(MIXED, divergent_cell_tally)
+    check(bool(diffs), "CONTROL: a cell tally with its own F3 rule was not caught by the differential")
+    print(f"  classify_row table {len(table)} rows · tally vs cell_tally: {len(diffs)} "
+          f"disagreement(s) reported for the planted second rule")
+
+    # Structural: the rule has one home. A `pti in PURCHASE` anywhere else is a second rule.
+    source = Path(sr.__file__).read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    offenders = []
+    code_sets = ("DOWNLOAD", "UPDATE", "REDOWNLOAD", "PURCHASE")
+    for fn in tree.body:
+        if not isinstance(fn, ast.FunctionDef) or fn.name == "classify_row":
+            continue
+        for node in ast.walk(fn):
+            if not (isinstance(node, ast.Compare)
+                    and any(isinstance(op, (ast.In, ast.NotIn)) for op in node.ops)
+                    and any(isinstance(c, ast.Name) and c.id in code_sets for c in node.comparators)):
+                continue
+            if "pti" in (ast.get_source_segment(source, node.left) or ""):
+                offenders.append(f"{fn.name}:{node.lineno}")    # a ROW's code tested: a second rule
+    check(not offenders, f"product-type membership tested outside classify_row: {offenders}")
+    for name in ("tally", "cell_tally", "run_confirm"):
+        body = ast.get_source_segment(source, next(f for f in tree.body
+                                                   if isinstance(f, ast.FunctionDef) and f.name == name))
+        check("classify_row(" in body, f"{name} does not call classify_row")
+
+
+# ---------------------------------------------------------------------------------------------------
+# B. Pacific report day
+
+def test_pacific_day(check):
+    cases = [
+        ("2026-09-17T10:00+09:00", D(2026, 9, 16)),         # 18:00 PDT the day before
+        ("2026-09-17T17:00+09:00", D(2026, 9, 17)),         # 01:00 PDT
+        ("2026-09-17T16:30:00+09:00", D(2026, 9, 17)),      # 00:30 PDT — would be 09-16 under PST
+        ("2026-12-10T16:30:00+09:00", D(2026, 12, 9)),      # PST season: 23:30 PST the day before
+        ("2026-12-10T17:00:00+09:00", D(2026, 12, 10)),     # 00:00 PST
+        ("2026-09-14T12:00-07:00", D(2026, 9, 14)),
+        ("2026-09-15T07:30:00Z", D(2026, 9, 15)),
+        ("2026-09-15T06:30:00Z", D(2026, 9, 14)),
+        ("2026-09-17T10:00:00.250000+09:00", D(2026, 9, 16)),
+        ("2026-11-01T08:30:00Z", D(2026, 11, 1)),           # 01:30 PDT on the day DST ends
+        ("2027-03-14T07:59:00Z", D(2027, 3, 13)),           # 23:59 PST, the eve DST starts
+    ]
+    for stamp, want in cases:
+        try:
+            got = sr.pacific_report_day(stamp)
+        except ValueError as e:
+            got = f"ValueError({e})"
+        check(got == want, f"pacific_report_day({stamp!r}) = {got}, expected {want}")
+    # The winter case discriminates: a fixed UTC−7 reading of it lands on a different day.
+    fixed_pdt = dt.datetime.fromisoformat("2026-12-10T16:30:00+09:00").astimezone(
+        dt.timezone(dt.timedelta(hours=-7))).date()
+    check(fixed_pdt != D(2026, 12, 9), "CONTROL: the PST case does not tell PST from PDT")
+    rejects = ["2026-09-17T10:00:00", "2026-09-17", "2026-09-17 10:00:00+09:00",
+               "2026-09-17T10:00:00+0900", "2026-09-17T10:00:00+09", "2026-13-17T10:00:00+09:00",
+               "2026-09-17T10:00:00+24:00", "", None, 1726534800, "2026-09-17t10:00:00+09:00"]
+    for stamp in rejects:
+        try:
+            got = sr.pacific_report_day(stamp)
+            check(False, f"pacific_report_day({stamp!r}) accepted it as {got}")
+        except ValueError:
+            check(True, "")
+    print(f"  {len(cases)} conversions · {len(rejects)} rejections")
+
+
+# ---------------------------------------------------------------------------------------------------
+# C. registry validation
+
+SHA = "0" * 63 + "a"
+
+
+def valid_registry():
+    return registry(True, [
+        entry("buy", evidence=[{"file": "receipt.png", "sha256": SHA}]),
+        entry("refund", kind="refund", day="2026-09-30", code="FI1"),
+        entry("mac-install", kind="first_download", code="F1"),
+        entry("ios-install", kind="first_download", platform="iOS", code="1F"),
+        entry("ios-redl", kind="redownload", platform="iOS", code="3F"),
+        entry("pending", status="awaiting-report", code=None, stamp="2026-09-17T10:00:00Z"),
+    ], refund_decision=False)
+
+
+def test_registry(check):
+    shipped, problems = sr.load_registry(sr.REGISTRY_PATH)
+    check(not problems, f"the shipped registry does not validate: {problems}")
+    check(shipped == registry(), f"the shipped registry is not the contract's initial shape: {shipped}")
+    check(not sr.validate_registry(valid_registry()),
+          f"POSITIVE CONTROL: a registry using every kind does not validate: "
+          f"{sr.validate_registry(valid_registry())}")
+
+    def set_entry(i, **kv):
+        return lambda r: r["entries"][i].update(kv)
+
+    cases = [
+        ("kind 'sale'", set_entry(0, kind="sale"), "kind must be"),
+        ("platform 'macos'", set_entry(0, platform="macos"), "platform must be"),
+        ("status 'done'", set_entry(0, status="done"), "status must be"),
+        ("country JPN", set_entry(0, country_code="JPN"), "country_code must be"),
+        ("country jp", set_entry(0, country_code="jp"), "country_code must be"),
+        ("units 0", set_entry(0, units=0), "units must be"),
+        ("units -1", set_entry(0, units=-1), "units must be"),
+        ("units 1.0", set_entry(0, units=1.0), "units must be"),
+        ("units true", set_entry(0, units=True), "units must be"),
+        ("report day 2026/09/16", set_entry(0, report_day_pt="2026/09/16"), "report_day_pt must be"),
+        ("report day 2026-09-31", set_entry(0, report_day_pt="2026-09-31"), "report_day_pt must be"),
+        ("naive local_timestamp", set_entry(0, local_timestamp="2026-09-17T10:00:00"), "local_timestamp"),
+        ("duplicate id", set_entry(1, id="buy"), "duplicate id"),
+        ("empty id", set_entry(0, id=""), "id must be"),
+        ("unknown decision", lambda r: r["decisions"].update(exclude_everything=True), "unknown decision key"),
+        ("decision 'true'", lambda r: r["decisions"].update(exclude_walk_first_downloads_from_N="true"),
+         "must be true, false or null"),
+        ("decision 1", lambda r: r["decisions"].update(exclude_owner_refund_from_refund_ceiling=1),
+         "must be true, false or null"),
+        ("decision 0", lambda r: r["decisions"].update(exclude_walk_first_downloads_from_N=0),
+         "must be true, false or null"),
+        ("missing decision", lambda r: r["decisions"].pop("exclude_owner_refund_from_refund_ceiling"),
+         "missing decision"),
+        ("unknown entry key", set_entry(0, order_id="MX123"), "unknown key"),
+        ("missing entry key", lambda r: r["entries"][0].pop("notes"), "missing key 'notes'"),
+        ("schema 2", lambda r: r.update(schema=2), "schema must be 1"),
+        ("schema true", lambda r: r.update(schema=True), "schema must be 1"),
+        ("day0 09-08", lambda r: r.update(day0="2026-09-08"), "day0 must be"),
+        ("unknown top-level", lambda r: r.update(bound="3/N"), "unknown top-level key"),
+        ("missing entries", lambda r: r.pop("entries"), "missing top-level key 'entries'"),
+        ("entries not a list", lambda r: r.update(entries={}), "entries must be a list"),
+        ("matched without code", set_entry(0, matched_product_type=None), "needs its matched_product_type"),
+        ("purchase with F1", set_entry(0, matched_product_type="F1"), "is not a purchase code"),
+        ("macOS purchase with IA1", set_entry(0, matched_product_type="IA1"), "is not a purchase code"),
+        ("iOS install with F1", set_entry(3, matched_product_type="F1"), "is not a first_download code"),
+        ("redownload with F7", set_entry(4, matched_product_type="F7"), "is not a redownload code"),
+        ("awaiting with code", set_entry(5, matched_product_type="FI1"), "awaiting-report entry cannot"),
+        ("bad sha256", set_entry(0, evidence=[{"file": "x.png", "sha256": "ABC"}]), "evidence[0]"),
+        ("evidence extra key", set_entry(0, evidence=[{"file": "x", "sha256": SHA, "url": "u"}]),
+         "evidence[0]"),
+        ("walk_step not str", set_entry(0, walk_step=3), "walk_step must be"),
+    ]
+    for label, fn, needle in cases:
+        reg = valid_registry()
+        fn(reg)
+        found = sr.validate_registry(reg)
+        check(any(needle in p for p in found), f"registry mutation {label!r}: expected a problem "
+                                               f"containing {needle!r}, got {found}")
+    check(sr.validate_registry([]) and "JSON object" in sr.validate_registry([])[0],
+          "a list is accepted as a registry")
+
+    many = valid_registry()
+    many["entries"][0].update(kind="sale", country_code="JPN", units=0)
+    many["entries"][1].update(local_timestamp="2026-09-30T09:00:00")
+    many["decisions"]["exclude_walk_first_downloads_from_N"] = "yes"
+    found = sr.validate_registry(many)
+    for needle in ("kind must be", "country_code must be", "units must be", "local_timestamp",
+                   "must be true, false or null"):
+        check(any(needle in p for p in found), f"a five-defect registry did not report {needle!r}: {found}")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        dup = Path(tmp) / "dup.json"
+        dup.write_text('{"schema": 1, "day0": "2026-09-09", "decisions": '
+                       '{"exclude_walk_first_downloads_from_N": true, '
+                       '"exclude_walk_first_downloads_from_N": false, '
+                       '"exclude_owner_refund_from_refund_ceiling": null}, "entries": []}')
+        _obj, found = sr.load_registry(dup)
+        check(any("duplicate JSON key" in p for p in found), f"a duplicated JSON key was accepted: {found}")
+        broken = Path(tmp) / "broken.json"
+        broken.write_text('{"schema": 1,')
+        _obj, found = sr.load_registry(broken)
+        check(any("not valid JSON" in p for p in found), f"malformed JSON was accepted: {found}")
+        _obj, found = sr.load_registry(Path(tmp) / "absent.json")
+        check(any("cannot read" in p for p in found), f"a missing registry was accepted: {found}")
+    print(f"  {len(cases)} single-defect mutations against a registry that validates")
+
+
+# ---------------------------------------------------------------------------------------------------
+# D. exclusion
+
+def test_exclusion(check):
+    fails = sr.exclusion_control()
+    check(not fails, f"the exclusion control fails on the shipped code: {fails}")
+
+    def identity(cells, reg, start, end):          # subtracts nothing
+        r = sr.apply_registry(cells, reg, start, end)
+        r["adjusted"] = dict(r["raw"])
+        return r
+
+    def ignores_decision(cells, reg, start, end):  # subtracts walk installs whatever was decided
+        forced = json.loads(json.dumps(reg))
+        forced["decisions"]["exclude_walk_first_downloads_from_N"] = True
+        r = sr.apply_registry(cells, forced, start, end)
+        r["decision"] = reg["decisions"]["exclude_walk_first_downloads_from_N"]
+        return r
+
+    def silent(cells, reg, start, end):            # never reports an orphan entry
+        r = sr.apply_registry(cells, reg, start, end)
+        r["problems"] = []
+        return r
+
+    def refund_as_purchase(cells, reg, start, end):
+        r = sr.apply_registry(cells, reg, start, end)
+        for x in r["in_window"]:
+            if x["kind"] == "refund":
+                r["adjusted"]["refund"] += x["units"]
+                r["adjusted"]["buy"] -= x["units"]
+        r["adjusted"]["net"] = r["adjusted"]["buy"] - r["adjusted"]["refund"]
+        return r
+
+    for broken in (identity, ignores_decision, silent, refund_as_purchase):
+        check(bool(sr.exclusion_control(apply=broken)),
+              f"CONTROL: the exclusion control passed a broken subtraction ({broken.__name__})")
+
+    planted = "exclusion control: planted"
+    per_day = sr.tally(window(end=D(2026, 9, 1)))[0]
+    seen = {"F1": 1, "1F": 1, "F7": 1}
+    with patched(exclusion_control=lambda apply=None: [planted]):
+        fails, _out = capture(sr.calibrate, per_day, seen, [])
+    check(planted in fails, f"calibrate() does not run exclusion_control(): {fails}")
+    fails, _out = capture(sr.calibrate, per_day, seen, [])
+    check(not any("exclusion" in f for f in fails),
+          f"calibrate() reports exclusion failures on the shipped code: {fails}")
+
+    # Semantics the control does not cover: the window edge and redownloads.
+    cells, _ = sr.cell_tally({"2026-09-10": ("data", tsv(iap("FI1", 1, "JP"), report_row("3F", 2, "JP"),
+                                                         report_row("F1", 1, "JP")))})
+    outside = entry("late", day="2026-09-25")
+    redl = entry("redl", kind="redownload", day="2026-09-10", platform="iOS", code="3F", units=5)
+    r = sr.apply_registry(cells, registry(True, [outside, redl]), D(2026, 9, 9), D(2026, 9, 20))
+    check(r["adjusted"] == r["raw"], f"an out-of-window purchase or a redownload changed a number: {r}")
+    check(r["notes"] and not r["problems"], f"a redownload claiming 5 of 2 units should be a note only: {r}")
+
+
+# ---------------------------------------------------------------------------------------------------
+# E. --checkpoint
+
+def checkpoint(reg, days, newest=NEWEST, **kw):
+    fetch = FakeFetch(days)
+    rc, out = capture(sr.run_checkpoint, reg, fetch, newest, **kw)
+    return rc, out, fetch
+
+
+def test_checkpoint(check):
+    base = window(extra=cohort_extra())
+    rc, out, fetch = checkpoint(registry(None, [OWNER_BUY]), base)
+    check.rc_and_text("checkpoint baseline (every condition holds)", rc, 0, out,
+                      must=("BOUND (rule of three, 95%)", "N = 13 first-time downloads",
+                            "3/13 = 23.08%", "N + 114 = 127", "3/127 = 2.36%",
+                            "2026-09-08 first-time downloads (F1/1F): 0 — N is the same",
+                            "ADJUSTED PURCHASES  gross 0", "PURCHASES  raw gross 1",
+                            "OK — the instrument responds"),
+                      must_not=("BOUND WITHHELD",))
+    check(fetch.calls == [(sr.LAUNCH_DATE, NEWEST, True)], f"checkpoint fetched {fetch.calls}")
+
+    # Each withholding reason, against the baseline with one thing changed.
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), window(extra=cohort_extra(), flat_updates=True))
+    check.rc_and_text("calibration fails", rc, 4, out,
+                      must=("BOUND WITHHELD", "calibration failed", "CALIBRATION-FAIL"),
+                      must_not=("BOUND (rule",))
+
+    awaiting = entry("owner-buy", status="awaiting-report", code=None)
+    rc, out, _ = checkpoint(registry(None, [awaiting]), base)
+    check.rc_and_text("purchase entry awaiting-report", rc, 5, out,
+                      must=("no matched day-0 known-positive purchase",), must_not=("BOUND (rule",))
+    rc, out, _ = checkpoint(registry(None, []), base)
+    check.rc_and_text("no entries at all", rc, 5, out,
+                      must=("no matched day-0 known-positive purchase",
+                            "would not apply anyway: adjusted net purchases = 1"),
+                      must_not=("BOUND (rule",))
+    later = entry("owner-buy", day="2026-09-25")
+    rc, out, _ = checkpoint(registry(None, [later]), base)
+    check.rc_and_text("matched purchase outside the window", rc, 5, out,
+                      must=("no matched day-0 known-positive purchase", "owner-buy reports outside"))
+
+    walk = entry("walk-mac", kind="first_download", day="2026-09-12", code="F1")
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY, walk]), base)
+    check.rc_and_text("walk install, decision null", rc, 5, out,
+                      must=("owner decision pending", "UNADJUSTED — 1 undecided walk unit",
+                            "N = 13 (macOS 12"), must_not=("BOUND (rule",))
+    rc, out, _ = checkpoint(registry(True, [OWNER_BUY, walk]), base)
+    check.rc_and_text("walk install, decision true", rc, 0, out,
+                      must=("N = 12 first-time downloads", "3/12 = 25.00%", "walk installs subtracted",
+                            "3/126 = 2.38%"), must_not=("BOUND WITHHELD",))
+    rc, out, _ = checkpoint(registry(False, [OWNER_BUY, walk]), base)
+    check.rc_and_text("walk install, decision false", rc, 0, out,
+                      must=("N = 13 first-time downloads", "walk installs counted"),
+                      must_not=("BOUND WITHHELD",))
+
+    wrong_country = entry("owner-buy", country="US")
+    rc, out, _ = checkpoint(registry(None, [wrong_country]), base)
+    check.rc_and_text("entry whose cell is empty", rc, 5, out,
+                      must=("the registry and the report disagree", "purchase macOS US"),
+                      must_not=("BOUND (rule",))
+    walk_wrong = entry("walk-ios", kind="first_download", day="2026-09-12", platform="iOS", code="1F")
+    rc, out, _ = checkpoint(registry(True, [OWNER_BUY, walk_wrong]), base)
+    check.rc_and_text("walk install whose cell is empty", rc, 5, out,
+                      must=("first_download iOS JP: the registry claims 1 unit(s), the report holds 0",))
+
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), window(extra=cohort_extra(),
+                                                                 states={"2026-09-18": "pending"}))
+    check.rc_and_text("a cohort day not built", rc, 5, out,
+                      must=("cohort report day(s) not built: 2026-09-18",), must_not=("BOUND (rule",))
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), window(extra=cohort_extra(),
+                                                                 states={"2026-09-18": "nosales"}))
+    check.rc_and_text("a cohort day with no sales (a built report)", rc, 0, out,
+                      must=("N = 12 first-time downloads",), must_not=("BOUND WITHHELD",))
+
+    customer = cohort_extra(add={"2026-09-19": [iap("IA1", 1, "CN")]})
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), window(extra=customer))
+    check.rc_and_text("a customer purchase", rc, 0, out,
+                      must=("ZERO-PURCHASE BOUND DOES NOT APPLY: adjusted net purchases = 1",
+                            "adjusted purchase territory: CN=1"),
+                      must_not=("BOUND (rule", "BOUND WITHHELD"))
+
+    refunded = cohort_extra(add={"2026-09-19": [iap("FI1", -1, "JP")]})
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), window(extra=refunded))
+    check.rc_and_text("owner refund not registered", rc, 5, out,
+                      must=("adjusted net purchases is -1",), must_not=("BOUND (rule",))
+    owner_refund = entry("owner-refund", kind="refund", day="2026-09-19",
+                         stamp="2026-09-19T12:00:00-07:00")
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY, owner_refund]), window(extra=refunded))
+    check.rc_and_text("owner refund registered", rc, 0, out,
+                      must=("ADJUSTED PURCHASES  gross 0 (macOS 0 · iOS 0) · refunded 0 · net 0",
+                            "BOUND (rule of three"), must_not=("BOUND WITHHELD",))
+
+    no_installs = window(extra=cohort_extra(first_downloads={}))
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), no_installs)
+    check.rc_and_text("N = 0", rc, 5, out, must=("N = 0: 3/N is undefined",), must_not=("BOUND (rule",))
+
+    bad = registry(None, [entry("owner-buy", country="JPN")])
+    fetch = FakeFetch(base)
+    rc, out = capture(sr.run_checkpoint, bad, fetch, NEWEST)
+    check.rc_and_text("invalid registry", rc, 4, out, must=("REGISTRY-INVALID", "country_code must be"))
+    check(fetch.calls == [], f"an invalid registry still fetched: {fetch.calls}")
+
+    # The eve of day 0.
+    eve = cohort_extra(add={"2026-09-08": [report_row("1F", 2, "CN")]})
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), window(extra=eve))
+    check.rc_and_text("first downloads on 2026-09-08", rc, 0, out,
+                      must=("⚠️  2026-09-08 first-time downloads (F1/1F): 2 — N counts from 2026-09-09; "
+                            "had day 0 been 2026-09-08, N would be 15",))
+
+    # Which pre-registered rows are reached.
+    at35 = cohort_extra(first_downloads={"2026-09-09": [report_row("F1", 35, "JP")]})
+    at34 = cohort_extra(first_downloads={"2026-09-09": [report_row("F1", 34, "JP")]})
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), window(extra=at35))
+    check.rc_and_text("N = 35", rc, 0, out, must=("REACHED      N = 35", "not reached  N = 100"))
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), window(extra=at34))
+    check.rc_and_text("N = 34", rc, 0, out, must=("not reached  N = 35",), must_not=("REACHED      N = 35",))
+    walk35 = entry("walk-mac", kind="first_download", day="2026-09-09", code="F1")
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY, walk35]), window(extra=at35))
+    check.rc_and_text("N = 35 with one undecided walk unit", rc, 5, out,
+                      must=("UNDECIDED    N = 35", "or 34 if the undecided walk units are subtracted"))
+    at200 = cohort_extra(first_downloads={"2026-09-09": [report_row("F1", 200, "JP")]})
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), window(extra=at200))
+    check.rc_and_text("N = 200", rc, 0, out, must=("REACHED      N = 200, or 2027-03-08",))
+    long_window = window(end=D(2026, 12, 8), extra=cohort_extra())
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), long_window, newest=D(2026, 12, 10),
+                            until=D(2026, 12, 8))
+    check.rc_and_text("until 2026-12-08", rc, 0, out,
+                      must=("REACHED      2026-12-08 (day 90)", "not reached  2027-03-08 (day 180)  refunds"))
+    rc, out, fetch = checkpoint(registry(None, [OWNER_BUY]), long_window, newest=D(2026, 12, 10),
+                                until=D(2026, 12, 7))
+    check.rc_and_text("until 2026-12-07", rc, 0, out, must=("not reached  2026-12-08 (day 90)",))
+    check(fetch.calls == [(sr.LAUNCH_DATE, D(2026, 12, 7), True)], f"--until not honoured: {fetch.calls}")
+
+
+# ---------------------------------------------------------------------------------------------------
+# F. --confirm-known-positive
+
+AT = "2026-09-17T10:00:00+09:00"                    # → Pacific 2026-09-16
+
+
+def confirm(days, kind="purchase", at=AT, platform="macOS", country="JP", reg=None, refetched=None,
+            newest=NEWEST):
+    fetch = FakeFetch(days, refetched)
+    rc, out = capture(sr.run_confirm, reg or registry(), fetch, newest, kind, at, platform, country,
+                      today=D(2026, 9, 21))
+    return rc, out, fetch
+
+
+def draft_entry(out):
+    marker = f"{sr.DRAFT_LABEL}. Registry entry:\n"
+    if marker not in out:
+        return None
+    body = out.split(marker, 1)[1].split(f"\n{sr.DRAFT_LABEL}. §K sentence:", 1)[0]
+    return json.loads(body)
+
+
+def test_confirm(check):
+    base = window(extra=cohort_extra())
+    rc, out, fetch = confirm(base)
+    check.rc_and_text("confirm: the owner's purchase is on D", rc, 0, out,
+                      must=("Pacific report day D = 2026-09-16", "MATCH on 2026-09-16",
+                            "purchase-class rows on 2026-09-15 .. 2026-09-17: 1",
+                            "2026-09-16  FI1 → purchase/macOS  units=1  country=JP",
+                            "price=150 JPY", "UNCLASSIFIED rows on 2026-09-15 .. 2026-09-17: none",
+                            "DRAFT — not recorded; the owner confirms. Registry entry:",
+                            "DRAFT — not recorded; the owner confirms. §K sentence:",
+                            "appears in the 2026-09-16 (Pacific) daily sales report as FI1 units=1"),
+                      must_not=("WARNING", "NO MATCHING ROW"))
+    check(fetch.calls == [(D(2026, 9, 15), D(2026, 9, 17), False), (sr.LAUNCH_DATE, NEWEST, True)],
+          f"confirm fetched {fetch.calls}, expected D-1..D+1 without cache, then the full window")
+    drafted = draft_entry(out)
+    check(drafted is not None and drafted["report_day_pt"] == "2026-09-16"
+          and drafted["matched_product_type"] == "FI1" and drafted["local_timestamp"] == AT
+          and drafted["status"] == "matched",
+          f"the draft entry is wrong: {drafted}")
+    check(drafted is not None and not sr.validate_registry(registry(None, [drafted])),
+          f"the draft entry does not validate: {drafted and sr.validate_registry(registry(None, [drafted]))}")
+
+    rc, out, fetch = confirm(base, at="2026-09-21T17:00:00+09:00")          # Pacific 09-21 > newest
+    check.rc_and_text("confirm: D after the newest report day", rc, 6, out, must=("PENDING",),
+                      must_not=("DRAFT",))
+    check(fetch.calls == [], f"a pending confirm fetched {fetch.calls}")
+    pending_d = window(extra=cohort_extra(purchase_day=None))
+    rc, out, _ = confirm(pending_d, at="2026-09-20T12:00:00-07:00",
+                         refetched={"2026-09-20": ("pending", "")})
+    check.rc_and_text("confirm: D is today's newest but not built", rc, 6, out,
+                      must=("PENDING: Apple has not built the 2026-09-20 report",))
+
+    rc, out, _ = confirm(base, platform="iOS")
+    check.rc_and_text("confirm: wrong platform", rc, 7, out,
+                      must=("NO MATCHING ROW", "2026-09-16  FI1 → purchase/macOS"), must_not=("DRAFT",))
+    rc, out, _ = confirm(base, country="CN")
+    check.rc_and_text("confirm: wrong country", rc, 7, out, must=("NO MATCHING ROW",))
+    rc, out, _ = confirm(base, at="2026-09-16T08:00:00+09:00")               # Pacific 09-15
+    check.rc_and_text("confirm: the row is on D+1", rc, 7, out,
+                      must=("note: 2026-09-16 (not D) holds 1 purchase unit(s)",))
+
+    odd = window(extra=cohort_extra(add={"2026-09-17": [iap("IA7", 1, "JP")]}))
+    rc, out, _ = confirm(odd)
+    check.rc_and_text("confirm: an unknown code beside the purchase", rc, 4, out,
+                      must=("UNCLASSIFIED 2026-09-17  IA7 → unclassified", "NOT CONFIRMED"),
+                      must_not=("DRAFT",))
+
+    rc, out, _ = confirm(window(extra=cohort_extra(), flat_updates=True))
+    check.rc_and_text("confirm: calibration fails", rc, 4, out, must=("NOT CONFIRMED",),
+                      must_not=("DRAFT",))
+    rc, out, _ = confirm(window(extra=cohort_extra(), flat_updates=True), platform="iOS")
+    check.rc_and_text("confirm: calibration fails AND no row (4 wins over 7)", rc, 4, out,
+                      must=("NOT CONFIRMED",), must_not=("NO MATCHING ROW:",))
+    odd_d = window(extra=cohort_extra(add={"2026-09-16": [iap("IA7", 1, "JP")]}))["2026-09-16"]
+    rc, out, _ = confirm(base, refetched={"2026-09-16": odd_d})
+    check.rc_and_text("confirm: an unknown code only in the refetched D reaches calibration", rc, 4, out,
+                      must=("CALIBRATION-FAIL: 1 row(s) carry a code this classifier does not know: IA7",))
+
+    shared = window(extra=cohort_extra(add={"2026-09-16": [iap("FI1", 1, "JP")]}))
+    rc, out, _ = confirm(shared)
+    check.rc_and_text("confirm: a customer in the same cell", rc, 0, out,
+                      must=("WARNING: the matched cell holds 2 units",))
+
+    refund = window(extra=cohort_extra(add={"2026-09-19": [iap("FI1", -1, "JP")]}))
+    rc, out, _ = confirm(refund, kind="refund", at="2026-09-19T12:00:00-07:00")
+    check.rc_and_text("confirm: the owner's refund", rc, 0, out,
+                      must=("MATCH on 2026-09-19: refund", "as FI1 units=-1"))
+    drafted = draft_entry(out)
+    check(drafted is not None and drafted["kind"] == "refund"
+          and not sr.validate_registry(registry(None, [drafted])), f"the refund draft is wrong: {drafted}")
+
+    fetch = FakeFetch(base)
+    rc, out = capture(sr.run_confirm, registry(None, [entry("x", units=0)]), fetch, NEWEST, "purchase",
+                      AT, "macOS", "JP")
+    check.rc_and_text("confirm: invalid registry", rc, 4, out, must=("REGISTRY-INVALID",))
+    check(fetch.calls == [], f"an invalid registry still fetched: {fetch.calls}")
+
+    # D-1..D+1 are read from the no-cache fetch, and calibration sees that same report.
+    stale = window(extra=cohort_extra(purchase_day=None))
+    rc, out, _ = confirm(stale, refetched={"2026-09-16": base["2026-09-16"]})
+    check.rc_and_text("confirm: the row exists only in the refetched report", rc, 0, out,
+                      must=("MATCH on 2026-09-16",))
+    rc, out, _ = confirm(stale)
+    check.rc_and_text("CONTROL confirm: the same, with no row anywhere", rc, 7, out, must=("NO MATCHING ROW",))
+
+    taken = registry(None, [entry("purchase-2026-09-16-macOS-JP")])
+    rc, out, _ = confirm(base, reg=taken)
+    drafted = draft_entry(out)
+    check(drafted is not None and drafted["id"] == "purchase-2026-09-16-macOS-JP-2",
+          f"the draft reused an existing id: {drafted}")
+    check("the registry already holds 1 unit(s) for this cell" in out, "an already-registered cell is not noted")
+
+
+# ---------------------------------------------------------------------------------------------------
+# G. the command line
+
+def fake_collect(days_by_call):
+    calls = []
+
+    def collect(token, vendor, start, end, use_cache=True):
+        calls.append((start, end, use_cache))
+        if isinstance(days_by_call, Exception):
+            raise days_by_call
+        return {k: days_by_call.get(k, ("pending", "")) for k in sr._day_keys(start, end)}
+    collect.calls = calls
+    return collect
+
+
+def test_cli(check):
+    usage = [
+        ["--checkpoint", "--calibrate"], ["--checkpoint", "--json", "x.json"], ["--checkpoint", "--no-cache"],
+        ["--checkpoint", "--since", "2026-09-09"], ["--checkpoint", "--confirm-known-positive"],
+        ["--kind", "purchase"], ["--calibrate", "--country", "JP"],
+        ["--confirm-known-positive", "--kind", "purchase", "--at", AT, "--platform", "macOS"],
+        ["--confirm-known-positive", "--kind", "purchase", "--at", AT, "--platform", "macOS", "--country", "JPN"],
+        ["--confirm-known-positive", "--kind", "purchase", "--at", AT, "--platform", "macOS", "--country", "jp"],
+        ["--confirm-known-positive", "--kind", "purchase", "--at", "2026-09-17T10:00:00", "--platform",
+         "macOS", "--country", "JP"],
+        ["--confirm-known-positive", "--kind", "sale", "--at", AT, "--platform", "macOS", "--country", "JP"],
+        ["--confirm-known-positive", "--kind", "purchase", "--at", AT, "--platform", "macOS", "--country",
+         "JP", "--until", "2026-09-14"],
+        ["--confirm-known-positive", "--kind", "purchase", "--at", AT, "--platform", "macOS", "--country",
+         "JP", "--daily"],
+    ]
+    base = window(extra=cohort_extra())
+    collect = fake_collect(base)
+    with tempfile.TemporaryDirectory() as tmp:
+        reg_path = Path(tmp) / "registry.json"
+        reg_path.write_text(json.dumps(registry(None, [OWNER_BUY])), encoding="utf-8")
+        before = reg_path.read_bytes()
+        env = dict(resolve_vendor_number=lambda v: "12345678", make_jwt=lambda: "token",
+                   collect=collect, REGISTRY_PATH=reg_path, pacific_today=lambda: D(2026, 9, 21))
+        with patched(**env):
+            for argv in usage:
+                rc, out = capture(sr.main, argv)
+                check(rc == 2, f"usage error {argv} exited {rc}, expected 2\n{out}")
+            check(collect.calls == [], f"a usage error reached the report: {collect.calls}")
+
+            rc, out = capture(sr.main, ["--confirm-known-positive", "--kind", "purchase", "--at", AT,
+                                        "--platform", "macOS", "--country", "JP"])
+            check.rc_and_text("POSITIVE CONTROL main confirm", rc, 0, out, must=(sr.DRAFT_LABEL,))
+            rc, out = capture(sr.main, ["--checkpoint", "--until", "2026-09-20", "--daily"])
+            check.rc_and_text("main checkpoint", rc, 0, out,
+                              must=("BOUND (rule of three", "2026-09-16  dl=  1 (mac  1 ios  0)  buy=1"))
+            check(reg_path.read_bytes() == before, "a mode wrote the registry")
+
+            reg_path.write_text('{"schema": 1}', encoding="utf-8")
+            with patched(resolve_vendor_number=lambda v: None):
+                rc, out = capture(sr.main, ["--checkpoint"])
+                check.rc_and_text("main checkpoint, invalid registry, no vendor", rc, 4, out,
+                                  must=("--checkpoint: REGISTRY-INVALID", "missing top-level key 'entries'"))
+                reg_path.write_text(json.dumps(registry()), encoding="utf-8")
+                rc, out = capture(sr.main, ["--checkpoint"])
+                check.rc_and_text("main checkpoint, valid registry, no vendor", rc, 2, out,
+                                  must=("VENDOR-NUMBER-MISSING",))
+                rc, out = capture(sr.main, [])
+                check.rc_and_text("main default, no vendor", rc, 2, out, must=("VENDOR-NUMBER-MISSING",))
+
+        with patched(**dict(env, collect=fake_collect(RuntimeError("auth failed (401): planted")))):
+            for argv in (["--checkpoint"], ["--calibrate"],
+                         ["--confirm-known-positive", "--kind", "purchase", "--at", AT, "--platform", "macOS",
+                          "--country", "JP"]):
+                rc, out = capture(sr.main, argv)
+                check.rc_and_text(f"API failure {argv}", rc, 3, out, must=("API-FAILURE: auth failed",))
+
+        # The existing path is unchanged in shape: no new-mode text, same exit codes.
+        with patched(**dict(env, collect=fake_collect(base))):
+            rc, out = capture(sr.main, ["--calibrate", "--until", "2026-09-20"])
+            check.rc_and_text("main --calibrate", rc, 0, out,
+                              must=("window 2026-06-06 .. 2026-09-20  (107 days)", "calibration:\n",
+                                    "OK — the instrument responds"),
+                              must_not=("checkpoint", "DRAFT", "BOUND", "cohort"))
+        with patched(**dict(env, collect=fake_collect(window(extra=cohort_extra(), flat_updates=True)))):
+            rc, out = capture(sr.main, ["--calibrate"])
+            check.rc_and_text("main --calibrate on a broken report", rc, 4, out, must=("CALIBRATION-FAIL",))
+
+
+# ---------------------------------------------------------------------------------------------------
+# H. what the file may write, and what it may import
+
+WRITE_CALLS = {"write_text", "write_bytes", "replace", "rename", "unlink", "mkdir", "rmdir", "open",
+               "dump", "touch", "symlink_to"}
+
+
+def write_sites(source):
+    sites = []
+    for fn in ast.parse(source).body:
+        if not isinstance(fn, ast.FunctionDef):
+            continue
+        for node in ast.walk(fn):
+            if isinstance(node, ast.Call):
+                name = node.func.attr if isinstance(node.func, ast.Attribute) else getattr(node.func, "id", "")
+                if name in WRITE_CALLS:
+                    sites.append((fn.name, name))
+    return sites
+
+
+def test_writes(check):
+    source = Path(sr.__file__).read_text(encoding="utf-8")
+    sites = write_sites(source)
+    outside = sorted({s for s in sites if s[0] not in ("collect", "main")})
+    check(not outside, f"file writes outside collect (the cache) and main (--json): {outside}")
+    check(("collect", "write_text") in sites and ("main", "replace") in sites,
+          f"POSITIVE CONTROL: the scanner no longer sees the two writes that exist: {sites}")
+    planted = source + "\n\ndef run_confirm_planted():\n    REGISTRY_PATH.write_text('{}')\n"
+    check(("run_confirm_planted", "write_text") in write_sites(planted),
+          "CONTROL: the write scanner missed a planted registry write")
+    check(not JWT_IMPORTED_AT_LOAD, "importing sales_report imported jwt — CI installs nothing")
+    imports = [(fn.name if isinstance(fn, ast.FunctionDef) else "<module>")
+               for fn in ast.parse(source).body for node in ast.walk(fn)
+               if isinstance(node, (ast.Import, ast.ImportFrom))
+               and any(a.name.split(".")[0] == "jwt" for a in node.names)]
+    check(imports == ["make_jwt"], f"jwt is imported somewhere other than make_jwt: {imports}")
+
+
+def main():
+    check = Checks()
+    print("A. ONE CLASSIFICATION RULE")
+    test_classification(check)
+    print("B. PACIFIC REPORT DAY")
+    test_pacific_day(check)
+    print("C. REGISTRY VALIDATION")
+    test_registry(check)
+    print("D. EXCLUSION")
+    test_exclusion(check)
+    print("E. --checkpoint")
+    test_checkpoint(check)
+    print("F. --confirm-known-positive")
+    test_confirm(check)
+    print("G. COMMAND LINE")
+    test_cli(check)
+    print("H. WRITES AND IMPORTS")
+    test_writes(check)
+
+    if check.problems:
+        print(f"\n{len(check.problems)} FAILURE(S) of {check.count} checks:")
+        for p in check.problems:
+            print(f"\nFAIL  {p}")
+        return 1
+    print(f"\n{check.count} checks: one classification rule, Pacific days, a strict registry, a "
+          f"subtraction that is shown able to fail, every withholding reason paired, and no writes.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
