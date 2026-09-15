@@ -426,7 +426,9 @@ schemes:
       config: Debug
       # ⚠️ ONLY honoured here. Under `test:` or at the scheme's top level xcodegen writes NOTHING
       # and says nothing — the check is to grep the generated .xcscheme for
-      # StoreKitConfigurationFileReference, which is what `check_storekit_wiring.sh` does.
+      # StoreKitConfigurationFileReference, which `scripts/run_store_gates.sh` does inline right
+      # after `xcodegen generate` (it stops with exit 4, "HARNESS ERROR", when the reference is
+      # missing). There is no separate `check_storekit_wiring.sh`, and there never was one.
       #
       # Also measured: this reference is NOT what arms SKTestSession — the suite passes 9/10 with
       # it removed entirely, because the .storekit as a test-bundle resource is what matters. It

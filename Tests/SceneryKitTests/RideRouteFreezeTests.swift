@@ -308,11 +308,27 @@ struct RouteSelectorTests {
 @Suite("The purchase promises the finished thing, not a future catalogue")
 struct PurchasePromiseTests {
 
+    /// Each of these was in the draft that was cut, in one language or the other — or, for the two
+    /// "every route" phrases, in `xcode/NihongoRide.storekit`'s product description, which still
+    /// read "A second journey west, and every route after." long after all three live store
+    /// localizations had dropped the promise, because no scan read that file.
+    ///
+    /// One list for every file scanned, so a phrase added for one source cannot be missing from
+    /// another.
+    static let futureCatalogue = ["now and in future", "now and in the future", "added later",
+                                  "every route after", "and every route",
+                                  "以后的全部", "现在的和以后", "以后新增", "日后所有", "今後の道"]
+
+    static func forwardPromises(in copy: String) -> [String] {
+        futureCatalogue.filter { copy.contains($0) }
+    }
+
+    static let root = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+
     @Test("no shipping copy sells routes or scenery that do not exist yet")
     func theForwardPromiseIsGone() throws {
-        let road = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Sources/NihongoRideApp/RoadView.swift")
+        let road = Self.root.appendingPathComponent("Sources/NihongoRideApp/RoadView.swift")
         let source = try String(contentsOf: road, encoding: .utf8)
 
         // Strings only. The doc comments above `boundary` and `owned` deliberately quote the old
@@ -323,10 +339,7 @@ struct PurchasePromiseTests {
             .joined(separator: "\n")
         #expect(copy.contains("road west"), "the scan did not find the purchase copy at all")
 
-        // Each of these was in the draft that was cut, in one language or the other.
-        let futureCatalogue = ["now and in future", "now and in the future", "added later",
-                               "以后的全部", "现在的和以后", "以后新增", "日后所有", "今後の道"]
-        for phrase in futureCatalogue {
+        for phrase in Self.futureCatalogue {
             #expect(!copy.contains(phrase),
                     """
                     purchase copy contains "\(phrase)", which promises routes or scenery that are \
@@ -338,8 +351,53 @@ struct PurchasePromiseTests {
         }
 
         // Negative control: the scan must catch one when it is really there.
-        #expect(futureCatalogue.contains { "and every route added later".contains($0) },
+        #expect(!Self.forwardPromises(in: "and every route added later").isEmpty,
                 "the promise scan cannot detect its own forbidden phrases")
+    }
+
+    /// The local StoreKit configuration does not ship, but it is what a Debug run of the Mac app and
+    /// `StoreGateTests` present as the product, and it is the file somebody copies from the next
+    /// time the listing is edited. It was the last place the widened promise survived.
+    @Test("the local StoreKit configuration does not sell a future catalogue either")
+    func theStoreKitConfigurationPromisesTheFinishedThing() throws {
+        let url = Self.root.appendingPathComponent("xcode/NihongoRide.storekit")
+        let json = try #require(try JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any],
+                                "xcode/NihongoRide.storekit is not a JSON object")
+        let products = ((json["products"] as? [[String: Any]]) ?? [])
+            + ((json["nonRenewingSubscriptions"] as? [[String: Any]]) ?? [])
+        // Floor: the one product this app sells must be there, or everything below reads nothing.
+        #expect(products.contains { ($0["productID"] as? String) == "com.jasonye.nihongoride.scenery.lifetime" },
+                "the scan did not find the road-west product in the StoreKit configuration")
+
+        var localizationCount = 0
+        var textsRead = 0
+        for product in products {
+            for localization in (product["localizations"] as? [[String: Any]]) ?? [] {
+                localizationCount += 1
+                let locale = localization["locale"] as? String ?? "?"
+                for key in ["description", "displayName"] {
+                    guard let text = localization[key] as? String else {
+                        Issue.record("the \(locale) localization has no \(key) — the scan would pass it unread")
+                        continue
+                    }
+                    textsRead += 1
+                    for phrase in Self.forwardPromises(in: text) {
+                        Issue.record("""
+                            the StoreKit configuration's \(locale) \(key) "\(text)" contains \
+                            "\(phrase)": a promise of routes that are not built, and one the live \
+                            store localizations no longer make.
+                            """)
+                    }
+                }
+            }
+        }
+        #expect(localizationCount >= 1, "the product has no localizations — the scan read nothing")
+        #expect(textsRead == localizationCount * 2, "read \(textsRead) texts from \(localizationCount) localization(s)")
+
+        // Negative control, on the exact sentence this file used to carry.
+        #expect(Self.forwardPromises(in: "A second journey west, and every route after.")
+                    == ["every route after", "and every route"],
+                "the scan no longer catches the description it was extended to catch")
     }
 
     @Test("restore does not promise what StoreKit will not do")
