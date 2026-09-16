@@ -43,10 +43,11 @@ NEWEST = D(2026, 9, 20)
 # ---------------------------------------------------------------------------------------------------
 # synthetic reports
 
-def report_row(pti, units, country, route="app", proceeds="0", price="0", currency="JPY", device="Desktop"):
+def report_row(pti, units, country, route="app", proceeds="0", price="0", currency="JPY", device="Desktop",
+               version="1.32"):
     """One row in `_CONTROL_HEADER`'s shape. route: app (Apple Identifier), parent (IAP), other."""
     cells = [""] * 30
-    cells[5] = "1.32"
+    cells[5] = version
     cells[6] = pti
     cells[7] = str(units)
     cells[8] = proceeds
@@ -831,14 +832,22 @@ def test_second_control(check):
           == (Fr(161, 10), Fr(48, 7), Fr(33, 10), Fr(15, 7)),
           f"§6's recorded means (16.10, 6.86, 3.30, 2.14 per day) do not reproduce: {r}")
     check(r["check_a"] and r["check_b"] and not r["failures"], f"§6 recorded PASS / PASS: {r}")
-    rc, out = capture(sr.report_second_release_day_control, per_day)
+    # Other days before 2026-09-09: 08-14 (4), 09-02 (3), 09-03 (1), 09-04 (0) = 8 / 4; from it: 09-10 (3),
+    # 09-13 (1), 09-14 (3) = 7 / 3 — worked out by hand from the table above.
+    check((r["other_before_day0"], r["other_from_day0"], r["dl_other_before_day0"], r["dl_other_from_day0"])
+          == (BOX_OTHER_TO_0914[:4], BOX_OTHER_TO_0914[4:], Fr(2), Fr(7, 3)),
+          f"other-day first-time downloads split at 2026-09-09 should be 2.00/d over 4 days, 2.33/d over 3: {r}")
+    rc, out = capture(sr.report_second_release_day_control, per_day, recorded)
     for s in ("exposure days (10): " + ", ".join(BOX_EXPOSURE), "other days (7): " + ", ".join(BOX_OTHER_TO_0914),
               "updates (F7)                  exposure 16.10/d vs other 6.86/d = 2.35x",
               "first-time downloads (F1/1F)  exposure 3.30/d vs other 2.14/d = 1.54x",
+              "    other-day first-time downloads 2.00/d before 2026-09-09 over 4 day(s), 2.33/d from 2026-09-09 "
+              "over 3 day(s)\n",
               "OK — check A: updates elevated on exposure days · check B: update ratio 2.35x > first-time "
               "download ratio 1.54x"):
         check(s in out, f"the printed control lacks {s!r}:\n{out}")
-    check(rc == [] and "SECOND-CONTROL-FAIL" not in out, f"§6's values printed a failure: {rc}\n{out}")
+    check(rc == ([], []) and "SECOND-CONTROL-FAIL" not in out and "WARNING" not in out,
+          f"§6's values printed a failure or a registry warning: {rc}\n{out}")
     with patched(**SWAPPED):
         r = second(recorded)
     check(r["check_a"] and not r["check_b"] and _approx(r["upd_ratio"], 1.54) and _approx(r["dl_ratio"], 2.35),
@@ -922,12 +931,19 @@ def test_second_control(check):
         rc, out = capture(sr.main, ["--calibrate"])
     check.rc_and_text("E2 main --calibrate on a report the second control fails", rc, 0, out,
                       must=("OK — the instrument responds",), must_not=("second release-day", "SECOND-CONTROL"))
+    # calibrate()'s own input, typed from 2ec5786. The scan below reads function bodies only, so a module-level
+    # `RELEASE_DAYS = RELEASE_DAYS | {firm dates and next days}` passes it and every report above (V1_SPIKE_DAYS
+    # keep calibrate passing either way) while moving real --calibrate from 1.65x / 1.24x to 1.80x / 1.38x.
+    check(sr.RELEASE_DAYS == {"2026-08-11", "2026-08-16", "2026-08-18", "2026-08-20", "2026-08-22", "2026-08-24"},
+          f"RELEASE_DAYS, calibrate()'s known-positive days, changed: {sorted(sr.RELEASE_DAYS)} — '--calibrate still "
+          f"passes' would compare two instruments")
     # Structural, because a report on which calibrate() passes cannot show that it never READS the
     # definition (it could fold the exposure days into its own groups and still pass here).
     source = Path(sr.__file__).read_text(encoding="utf-8")
     names = {"FIRM_RELEASE_DATES_PT", "UNCERTAIN_RELEASE_DATES_PT", "EXPOSURE_CONTROL_START", "OTHER_DAYS_START",
              "SECOND_CONTROL_SOURCE", "release_day_groups", "second_release_day_control",
-             "report_second_release_day_control"}
+             "report_second_release_day_control", "unregistered_versions", "REGISTRY_WATCHED_AFTER",
+             "FIRST_SEEN_LAG_DAYS"}
     readers = second_control_readers(source, names)
     guarded = ("calibrate", "report_calibration", "purchase_path_control", "exclusion_control", "run_confirm", "main")
     check(not set(readers) & set(guarded),
@@ -938,9 +954,95 @@ def test_second_control(check):
                              "    fails = purchase_path_control()\n    _ = FIRM_RELEASE_DATES_PT\n", 1)
     check("calibrate" in second_control_readers(planted, names),
           "CONTROL: the scanner missed a planted read of the definition inside calibrate()")
+
+    # 7. Check B failing with no swap: first-time downloads are not release-locked at all (4 on exposure days
+    #    and on the other days before 2026-09-09) and fall to 1 from 2026-09-09. Other-day mean 25/13, so the
+    #    download ratio is 52/25 = 2.08x against updates 4/2 = 2.00x. The failure must name both causes and
+    #    carry both means, 4.00/d over 4 days (08-14, 09-02..09-04) and 1.00/d over 9 (09-10, 09-13..09-20).
+    early_other = {d: [report_row("F1", 3, "JP")] for d in BOX_OTHER_TO_0914[:4]}
+    fall = control_days(upd=(4, 2), dl=(4, 1), add=early_other)
+    r = second(fall)
+    check((r["dl_other_before_day0"], r["dl_other_from_day0"], len(r["other_before_day0"]), len(r["other_from_day0"]),
+           r["dl_ratio"]) == (4, 1, 4, 9, Fr(52, 25)) and r["check_a"] and not r["check_b"],
+          f"the falling-downloads fixture should read 4.00/d over 4, 1.00/d over 9, 2.08x, A pass, B fail: {r}")
+    b_text = ("check B: the update ratio 2.00x does NOT exceed the first-time download ratio 2.08x — either the shape "
+              "a swapped classification produces, OR first-time downloads falling on other days after Aug–Sep, "
+              "which needs no swap (other-day first-time downloads 4.00/d before 2026-09-09 over 4 day(s), 1.00/d "
+              "from 2026-09-09 over 9 day(s))")
+    check(r["failures"] == [b_text], f"check B's failure text: {r['failures']}")
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), fall)
+    check.rc_and_text("E2 checkpoint: check B fails on falling downloads alone", rc, 5, out,
+                      must=("SECOND-CONTROL-FAIL: " + b_text, withheld + " — " + b_text,
+                            "    other-day first-time downloads 4.00/d before 2026-09-09 over 4 day(s), 1.00/d from "
+                            "2026-09-09 over 9 day(s)\n"),
+                      must_not=("BOUND (rule", "WARNING"))
+
+    # 8. The release registry. Every row in these reports carries version 1.32 from 2026-06-06 unless given
+    #    another, so the only first appearances are the rows added here. Each case is paired with the passing
+    #    report above (exit 0, bound printed), with one row added — one F7 unit on an other day, which leaves
+    #    both checks passing, so a withheld bound can only be the registry's doing.
+    registry_withheld = "release registry incomplete: version 1.33 first seen 2026-09-19 — no FIRM_RELEASE_DATES_PT"
+    warning_1919 = ("  WARNING: version 1.33 first seen 2026-09-19 — its Pacific release date is not in "
+                    "FIRM_RELEASE_DATES_PT\n")
+
+    def new_version(*day_version):
+        return control_days(add={d: [report_row("F7", 1, "JP", version=v)] for d, v in day_version})
+
+    check(sr.REGISTRY_WATCHED_AFTER == "2026-09-12" and sr.FIRST_SEEN_LAG_DAYS == 3,
+          f"the registry check's constants moved: {sr.REGISTRY_WATCHED_AFTER}, {sr.FIRST_SEEN_LAG_DAYS}")
+    unreg = new_version(("2026-09-19", "1.33"))
+    check(sr.unregistered_versions(unreg) == [("1.33", "2026-09-19")] and not second(unreg)["failures"],
+          f"a version first seen 09-19 with no firm date must be named, with both checks still passing: "
+          f"{sr.unregistered_versions(unreg)} {second(unreg)['failures']}")
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), unreg)
+    check.rc_and_text("E2 registry: 1.33 first seen 2026-09-19, no firm date", rc, 5, out,
+                      must=(warning_1919, "BOUND WITHHELD:", registry_withheld,
+                            "OK — check A: updates elevated on exposure days"),
+                      must_not=("BOUND (rule", "SECOND-CONTROL-FAIL", withheld, "calibration failed"))
+    with patched(FIRM_RELEASE_DATES_PT=sr.FIRM_RELEASE_DATES_PT + ("2026-09-19",)):
+        rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), unreg)
+        grouped = second(unreg)["exposure"]
+    check.rc_and_text("E2 registry: the same, with 2026-09-19 added to FIRM_RELEASE_DATES_PT", rc, 0, out,
+                      must=("BOUND (rule of three",), must_not=("WARNING", "release registry", "BOUND WITHHELD"))
+    check(grouped[-2:] == ["2026-09-19", "2026-09-20"], f"CONTROL: the added line did not move 09-19/20: {grouped}")
+    # The lag's edge on both sides: 3 days after firm 09-11 is covered, 4 is not. The watched-after edge (09-12 /
+    # 09-13) cannot be seen from here, because the lag covers 09-13 as well — so the constant is pinned by hand above.
+    for day, want in (("2026-09-12", []), ("2026-09-13", []), ("2026-09-14", []),
+                      ("2026-09-15", [("1.33", "2026-09-15")])):
+        got = sr.unregistered_versions(new_version((day, "1.33")))
+        check(got == want, f"1.33 first seen {day} ({(D.fromisoformat(day) - D(2026, 9, 11)).days} days after firm "
+                           f"09-11): expected {want}, got {got}")
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), new_version(("2026-09-13", "1.33")))
+    check.rc_and_text("E2 registry: first seen 2 days after firm 2026-09-11", rc, 0, out,
+                      must=("BOUND (rule of three",), must_not=("WARNING", "release registry"))
+    # A release the box already sorted (1.31's rows begin 09-06, no firm date in the three days before) is not
+    # the registry's to report, and an old version reappearing after a newer one is not a first appearance.
+    check(sr.unregistered_versions(new_version(("2026-09-06", "1.31"))) == [],
+          "a version first seen by 2026-09-12 was reported, although the box sorted its days")
+    reappear = control_days(add={"2026-09-06": [report_row("F7", 1, "JP", version="1.31")],
+                                 "2026-09-19": [report_row("F1", 1, "JP", version="1.31")]})
+    check(sr.unregistered_versions(reappear) == [], "1.31 reappearing on 09-19 was taken for a new release")
+    # A later line must not silence an earlier missed one: 09-19 missed, 09-29 registered.
+    with patched(FIRM_RELEASE_DATES_PT=sr.FIRM_RELEASE_DATES_PT + ("2026-09-29",)):
+        got = sr.unregistered_versions(control_days(end=D(2026, 9, 30), add={
+            "2026-09-19": [report_row("F7", 1, "JP", version="1.33")],
+            "2026-09-29": [report_row("F7", 1, "JP", version="1.34")]}))
+    check(got == [("1.33", "2026-09-19")], f"registering 09-29 silenced the missed 09-19 release: {got}")
+    # Only first-time download and update rows count: 1.33 in a redownload row on 09-13 (2 days after firm 09-11)
+    # does not make its F7 rows on 09-19 a covered release.
+    early_redownload = control_days(add={"2026-09-13": [report_row("F3", 1, "JP", version="1.33")],
+                                         "2026-09-19": [report_row("F7", 1, "JP", version="1.33")]})
+    check(sr.unregistered_versions(early_redownload) == [("1.33", "2026-09-19")],
+          f"a redownload row decided a first appearance: {sr.unregistered_versions(early_redownload)}")
+    # A Version column that goes blank reads as a new version, so a format change withholds rather than blinds.
+    blank = sr.unregistered_versions(new_version(("2026-09-19", "")))
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), new_version(("2026-09-19", "")))
+    check(blank == [("", "2026-09-19")] and rc == 5 and "WARNING: version (blank) first seen 2026-09-19" in out,
+          f"a blank Version column from 09-19 must withhold, not blind: {blank} exit {rc}\n{out}")
     print("  groups pinned to the box's written-out days · §6's recorded figures reproduced · A alone, B alone "
           "(M4, tie, zero), both · excluded-day spike paired with an other-day spike · --calibrate and "
-          "--confirm-known-positive untouched")
+          "--confirm-known-positive untouched, RELEASE_DAYS pinned · check B names both causes with both means · "
+          "an unregistered version withholds, paired with its line added and with every edge")
 
 
 def second_control_readers(source, names):

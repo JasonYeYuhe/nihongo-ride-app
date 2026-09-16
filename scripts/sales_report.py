@@ -131,6 +131,12 @@ Its definition is the FIRM_RELEASE_DATES_PT block of constants. It is NOT part
 of `calibrate()`: `--calibrate` and `--confirm-known-positive` print and decide
 exactly what they did before it existed, so "`--calibrate` still passes" keeps
 comparing one instrument. When it fails, the bound is withheld with that reason.
+A release nobody added to FIRM_RELEASE_DATES_PT would put its release day and
+update wave among the other days without a word, so the report's Version column
+is read too: a version string first seen after 2026-09-12 with no firm date in
+the days before it prints a WARNING and withholds the bound ("release registry
+incomplete"). That adds no date and moves no day between groups; it only refuses
+to read groups known to be incomplete.
 
 WHY THE BOUND IS WITHHELD RATHER THAN FOOTNOTED
 -----------------------------------------------
@@ -171,7 +177,7 @@ not apply · --confirm-known-positive: matched and calibrated) · 2 vendor numbe
 not on file, or a usage error · 3 API failure ·
 4 calibration failed, or the known-positive registry is invalid (the instrument
 is not trustworthy — do not use the number) · 5 --checkpoint: bound withheld
-(including by a failed second release-day control) ·
+(including by a failed second release-day control, or an incomplete release registry) ·
 6 --confirm-known-positive: report day not published yet (PENDING) ·
 7 --confirm-known-positive: the built report has no matching row (including when
 the only candidate is under the other platform's code — that is not a match)
@@ -234,11 +240,19 @@ RELEASE_DAYS = {"2026-08-11", "2026-08-16", "2026-08-18",
 #   excluded days — every day before EXPOSURE_CONTROL_START, and every uncertain candidate release date
 #                   together with the day after each, except days already in the exposure set;
 #   other days    — all remaining data days from OTHER_DAYS_START.
-# Every date comes from release-timing evidence only (docs/measurements/2026-09-16-release-day-control.md
-# §2), never from update counts — picking a release day off the F7 rows makes this control pass by
-# construction.
+# The firm dates come from release-timing evidence (docs/measurements/2026-09-16-release-day-control.md
+# §2), not from the F7 rows — picking a release day off those rows makes this control pass by
+# construction. The rule around them is not that clean, and this comment used to say it was ("never from
+# update counts"): "and the day after each" was motivated by where the update wave landed (§2's 2 → 29
+# update units for 1.32, §3's M3 run), and the PASS measured in b3707d9 was predictable from the
+# 2026-09-16 M1–M3 runs — the exposure means are the average of M2's and M3's, and five of the seven
+# other days are M1's quiet days. On this cache it is a consistency check, not a blind test; only release
+# days after 2026-09-17 read it blind.
 # ⚠️ Each later release adds ONE line to FIRM_RELEASE_DATES_PT: its firm Pacific release date, recorded
 # at release time from the store's own release timestamp. The day after it is derived, never typed.
+# A missed line is no longer silent — `unregistered_versions` withholds the bound when a version first
+# appears after 2026-09-12 with no date here in the days before it — but the line it asks for still comes
+# from the store's timestamp, never from the day that version first appears in a report.
 FIRM_RELEASE_DATES_PT = (
     "2026-08-11",
     "2026-08-15",
@@ -255,6 +269,17 @@ EXPOSURE_CONTROL_START = "2026-08-11"       # "every day before 2026-08-11" is i
 OTHER_DAYS_START = "2026-08-01"             # "all remaining data days from 2026-08-01" — binds nothing
                                             # while the line above is later; both are the box's words
 SECOND_CONTROL_SOURCE = 'PLAN-STAGE1 §K "DECIDED 2026-09-17" item 11'
+# WHEN THE GROUPS ARE KNOWN TO BE INCOMPLETE (`unregistered_versions`). Neither constant is part of the box's
+# definition; they decide only when --checkpoint refuses to read it.
+# The newest firm date's next day as the box wrote it: the box sorted every day through it. A version first
+# seen later needs a firm date of its own. Fixed, not max(FIRM_RELEASE_DATES_PT)'s next day, because that
+# would let the line added for the NEXT release silence a release whose line was missed.
+REGISTRY_WATCHED_AFTER = "2026-09-12"
+# How many days after a firm date a version may first appear in F1/1F/F7 rows and still be taken as that
+# release. Measured on the cache through 2026-09-15, for the five releases with a firm date: 1.21 first
+# appears 0 days after it (08-11), 1.22 1 day (08-16), 1.23 1 day (08-18), 1.30 0 days (08-31), 1.32 0 days
+# (09-11).
+FIRST_SEEN_LAG_DAYS = 3
 
 PACIFIC = ZoneInfo("America/Los_Angeles")
 # §K: "DAY 0 = 2026-09-09". A constant here, not a registry field anybody can edit — the registry
@@ -991,6 +1016,41 @@ def release_day_groups():
     return exposure, uncertain
 
 
+def unregistered_versions(days):
+    """[(version, first report day)] for releases FIRM_RELEASE_DATES_PT does not reach, oldest first.
+
+    A version's first day is the first data day on which any F1, 1F or F7 row — a first-time download or
+    an update, by `classify_row` — carries that Version string, over the whole window read. It is
+    unregistered when that day is later than REGISTRY_WATCHED_AFTER AND no firm date lies 0 to
+    FIRST_SEEN_LAG_DAYS days before it. Its release day and update wave are then being counted as other
+    days, so the groups are known to be incomplete. Versions first seen by REGISTRY_WATCHED_AFTER are not
+    counted, however far from a firm date: those are the releases the box itself sorted into exposure,
+    excluded or other. An old version reappearing is not a first appearance. A Version column that goes
+    blank reads as a new version "", so a format change withholds rather than blinds this.
+
+    What it cannot see: a release first seen within FIRST_SEEN_LAG_DAYS of a firm date that belongs to
+    another release (on the cache, with the registry cut at 08-17, 1.24's first rows on 08-20 go unreported);
+    one platform shipping a version string the other already carries (1.31 macOS on 09-08, after 1.31 iOS
+    on 09-06); a release with no F1/1F/F7 row yet; a firm date typed wrong but close enough before the
+    version's first day to cover it.
+    """
+    firm = [dt.date.fromisoformat(f) for f in FIRM_RELEASE_DATES_PT]
+    first_seen = {}
+    for key, (state, payload) in sorted(days.items()):
+        if state != "data":
+            continue
+        for row in our_rows(payload):
+            if classify_row(row["pti"], row["units"])[0] in ("first_download", "update"):
+                first_seen.setdefault(row["version"], key)
+    return [(version, key) for version, key in sorted(first_seen.items(), key=lambda x: (x[1], x[0]))
+            if key > REGISTRY_WATCHED_AFTER
+            and not any(0 <= (dt.date.fromisoformat(key) - f).days <= FIRST_SEEN_LAG_DAYS for f in firm)]
+
+
+def _version_label(version):
+    return version or "(blank)"
+
+
 def _mean(per_day, keys, field):
     return fractions.Fraction(sum(per_day[d][field] for d in keys), len(keys)) if keys else None
 
@@ -1004,16 +1064,27 @@ def second_release_day_control(per_day):
     that: updates must be elevated MORE than first-time downloads. Means are exact fractions, so a tie
     is a tie and not a float's rounding. A ratio against a zero other-day mean is not a comparison, so
     it fails check B rather than passing as infinite — the conservative reading, which withholds.
+
+    Check B has a second way to fail that is not a swap. The exposure days sit in Aug–Sep 2026 until a
+    release is added, while other days run up to the reading date, so first-time downloads merely falling
+    after Aug–Sep raise the download ratio over the update ratio. The definition stays (the box binds it);
+    the failure names both causes, and the other-day first-time download mean is split at DAY0 — before
+    it, and from it on — so a reader can see whether downloads fell.
     """
     exposure_set, uncertain = release_day_groups()
     data = sorted(d for d in per_day if per_day[d]["_state"] == "data")
     exposure = [d for d in data if d in exposure_set]
     other = [d for d in data if d not in exposure_set and d not in uncertain
              and d >= EXPOSURE_CONTROL_START and d >= OTHER_DAYS_START]
+    before_day0 = [d for d in other if d < DAY0.isoformat()]
+    from_day0 = [d for d in other if d >= DAY0.isoformat()]
     r = {"exposure": exposure, "other": other,
          "exposure_unread": sorted(d for d in per_day if d in exposure_set and d not in exposure),
          "upd_exposure": _mean(per_day, exposure, "upd"), "upd_other": _mean(per_day, other, "upd"),
          "dl_exposure": _mean(per_day, exposure, "dl"), "dl_other": _mean(per_day, other, "dl"),
+         "other_before_day0": before_day0, "other_from_day0": from_day0,
+         "dl_other_before_day0": _mean(per_day, before_day0, "dl"),
+         "dl_other_from_day0": _mean(per_day, from_day0, "dl"),
          "upd_ratio": None, "dl_ratio": None, "check_a": False, "check_b": False, "failures": []}
     if not exposure or not other:
         r["failures"].append(f"{len(exposure)} exposure day(s) and {len(other)} other day(s) in the window "
@@ -1034,9 +1105,16 @@ def second_release_day_control(per_day):
         r["check_b"] = r["upd_ratio"] > r["dl_ratio"]
         if not r["check_b"]:
             r["failures"].append(f"check B: the update ratio {_times(r['upd_ratio'])} does NOT exceed the "
-                                 f"first-time download ratio {_times(r['dl_ratio'])} — the shape a swapped "
-                                 f"classification produces")
+                                 f"first-time download ratio {_times(r['dl_ratio'])} — either the shape a "
+                                 f"swapped classification produces, OR first-time downloads falling on other "
+                                 f"days after Aug–Sep, which needs no swap ({_other_day_downloads(r)})")
     return r
+
+
+def _other_day_downloads(r):
+    return (f"other-day first-time downloads {_rate(r['dl_other_before_day0'])} before {DAY0} over "
+            f"{len(r['other_before_day0'])} day(s), {_rate(r['dl_other_from_day0'])} from {DAY0} over "
+            f"{len(r['other_from_day0'])} day(s)")
 
 
 def _rate(value):
@@ -1047,8 +1125,10 @@ def _times(value):
     return "undefined" if value is None else f"{float(value):.2f}x"
 
 
-def report_second_release_day_control(per_day):
-    """`second_release_day_control`, printed for --checkpoint. Returns the failures."""
+def report_second_release_day_control(per_day, days):
+    """`second_release_day_control` and `unregistered_versions`, printed for --checkpoint.
+
+    Returns (the control's failures, the unregistered versions)."""
     r = second_release_day_control(per_day)
     print(f"second release-day control ({SECOND_CONTROL_SOURCE} — gates the bound only; --calibrate "
           f"does not run it):")
@@ -1061,12 +1141,20 @@ def report_second_release_day_control(per_day):
               f"{_rate(r['upd_other'])} = {_times(r['upd_ratio'])}")
         print(f"  first-time downloads (F1/1F)  exposure {_rate(r['dl_exposure'])} vs other "
               f"{_rate(r['dl_other'])} = {_times(r['dl_ratio'])}")
+        print(f"    {_other_day_downloads(r)}")
     for f in r["failures"]:
         print(f"  SECOND-CONTROL-FAIL: {f}")
     if not r["failures"]:
         print(f"  OK — check A: updates elevated on exposure days · check B: update ratio "
               f"{_times(r['upd_ratio'])} > first-time download ratio {_times(r['dl_ratio'])}")
-    return r["failures"]
+    unregistered = unregistered_versions(days)
+    for version, day in unregistered:
+        print(f"  WARNING: version {_version_label(version)} first seen {day} — its Pacific release date is "
+              f"not in FIRM_RELEASE_DATES_PT")
+    if unregistered:
+        print(f"    so that release's day and update wave are counted among the other days above: the groups "
+              f"are known to be incomplete, and the bound is withheld")
+    return r["failures"], unregistered
 
 
 def _day_keys(start, end):
@@ -1126,7 +1214,7 @@ def run_checkpoint(registry, fetch, newest, until=None, daily=False):
     print(f"window {LAUNCH_DATE} .. {end}  ({(end - LAUNCH_DATE).days + 1} days)")
     print(f"  report states: {_states_line(per_day, _day_keys(LAUNCH_DATE, end))}")
     fails = report_calibration(per_day, seen_codes, unclassified, FULL_WINDOW_CALIBRATION)
-    second = report_second_release_day_control(per_day)
+    second, unregistered = report_second_release_day_control(per_day, days)
 
     cells, _codes = cell_tally(days)
     c = apply_registry(cells, registry, DAY0, end)
@@ -1267,6 +1355,13 @@ def run_checkpoint(registry, fetch, newest, until=None, daily=False):
                        + "; ".join(second)
                        + " — see SECOND-CONTROL-FAIL above; §K: a failure here is \"a finding about the "
                          "instrument, not a reason to redefine it\"")
+    if unregistered:
+        reasons.append("release registry incomplete: "
+                       + "; ".join(f"version {_version_label(v)} first seen {d}" for v, d in unregistered)
+                       + f" — no FIRM_RELEASE_DATES_PT date on it or in the {FIRST_SEEN_LAG_DAYS} days "
+                         f"before, so the second release-day control's groups are known to be incomplete "
+                         f"(see WARNING above); the missing line is the release's firm Pacific date from the "
+                         f"store's own release timestamp (§K item 11), never the day it first appears here")
     if not any(x["kind"] == "purchase" and x["status"] == "matched" for x in c["in_window"]):
         elsewhere = [x["id"] for x in registry["entries"] if x["id"] not in in_window_ids
                      and x["kind"] == "purchase" and x["status"] == "matched"]
