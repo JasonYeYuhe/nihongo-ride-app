@@ -194,14 +194,16 @@ python3 scripts/stage1_walk.py manifest "$EV" > "$EV.manifest.jsonl"; echo "exit
 `{"counts":{},"launches":4,"furthestBucket":2}`(来自以前本地的沙盒 Release 构建)。App Store 版本会共用这个容器,
 所以 **Mac 上的计数器不会从零开始**。
 
-**一个有时间约束的决定(不替你做,只说时机)。** 登记表里的 `exclude_walk_first_downloads_from_N` 决定走查造成的安装算不算进 N,
+**一个有时间约束的决定 —— 已在 2026-09-17 做出。** 登记表里的 `exclude_walk_first_downloads_from_N` 决定走查造成的安装算不算进 N,
 也就改变 N = 35 / 100 / 200 何时触发、打印的上界是多少。§K 在分母重新计价(re-denomination)那件事上写下的原则,同样适用于这里:分母只能在看到读数**之前**定 ——
 “What is NOT available any more is deciding it after seeing a checkpoint”,而且改动要连同时间戳写进框里(“the change and its timestamp go in this box”)。
-**截止点只有一个:在任何一次窗口里包含 walk 安装报表日的 `--checkpoint` 之前**(和 §K 框写的一样)。注意工具看不见没登记的安装:
-走查当天之后,如果登记表里只贴了购买条目、没贴安装条目,`--checkpoint` 会把你的安装当成普通首次下载算进 N,并且**可能直接打印上界**
-(不会因为决定是 null 而扣住 —— 只有登记了 `first_download` 条目、决定还是 null 时才扣住,那时它会把两个 N 都打印出来)。
-所以最稳的做法是**走查之前就做出这个决定**,并连同日期记进 §K(草稿见 `DRAFTS` §5)。今天(2026-09-16)跑过的 `--checkpoint`
-窗口里还没有任何 walk 安装,也没有显示过两个 N。
+**这个决定已在 2026-09-17、任何走查之前,由代理在你的授权下做出,记在 §K 的 “DECIDED 2026-09-17” 框第 1 条:true —— 走查造成的安装从 N 里减掉**
+(登记表里 `exclude_walk_first_downloads_from_N` 已是 `true`)。
+**剩下的义务是登记,不是决定:** 每一次走查安装 —— Mac 上的安装、iPhone 上的安装和删除后的重新安装、家人设备上的安装 —— 都要在
+**任何一次窗口里包含它的太平洋报表日的 `--checkpoint` 之前**登记进登记表(框原文:“every walk install is registered before any `--checkpoint` whose window contains its Pacific report day”)。
+报表里是首次下载还是重新下载,按报表日的实际代码选 `kind`(见 `DRAFTS` §5)。注意工具看不见没登记的安装:
+走查当天之后,如果登记表里只贴了购买条目、没贴安装条目,`--checkpoint` 会把你的安装当成普通首次下载算进 N,并且**可能直接打印上界**。
+今天(2026-09-16)跑过的 `--checkpoint` 窗口里还没有任何 walk 安装,也没有显示过两个 N。
 
 **时钟。** 自 day 0 起 N = 18,3.0/天(到 2026-09-14 太平洋日)。照这个速度,**N = 35 大约在 2026-09-20(太平洋日)到达,
 大约两天后才能在报表里读到**。N = 35 按 §K 本来就"record, falsifies nothing"。`--checkpoint` 在已知阳性匹配上之前,
@@ -551,15 +553,20 @@ python3 scripts/sales_report.py --calibrate > "$EV/k-09-calibrate.txt" 2>&1; ech
 python3 scripts/stage1_walk.py manifest "$EV" > "$EV.manifest.jsonl"; echo "exit=$?"
 ```
 
-你把条目贴进登记表之后 —— **前提:`exclude_walk_first_downloads_from_N` 已经做出决定并带日期记进 §K**(见第 4 节"一个有时间约束的决定")。
-还没决定就先别跑这一条:这时窗口里已经有你的安装,工具看不见它们,会照常打印上界。决定是 true 的话,还要先把 walk 安装条目登记进去:
+你把条目贴进登记表之后 —— **前提:`exclude_walk_first_downloads_from_N` 的决定已在 2026-09-17 做出并记进 §K(“DECIDED 2026-09-17” 框第 1 条,true:走查安装从 N 里减掉)**,
+所以剩下的前提是**登记**:Mac 上的安装、iPhone 上的安装和重新安装、家人设备上的安装,凡是太平洋报表日落在这次 `--checkpoint` 窗口里的,都先登记进登记表(见第 4 节"一个有时间约束的决定")。
+还没登记完就先别跑这一条:这时窗口里已经有你的安装,工具看不见没登记的安装,会把它们算进 N,并可能照常打印上界。登记完再跑:
 
 ```bash
 python3 scripts/sales_report.py --checkpoint > "$EV/k-10-checkpoint.txt" 2>&1; echo "exit=$?"
 ```
 
 退出码:**0** 上界已打印,或零购买上界不适用 · **5** 上界被扣住(输出 `BOUND WITHHELD:` 和每一条原因,例如 `first_download`
-条目存在而对应决定还是 null;扣住的原因先于"净购买是否为零"判断,所以有陌生人的购买时也可能是 5。**只有登记表和报表在购买/退款上对得上时**,
+条目存在而对应决定还是 null(2026-09-17 起登记表里是 `true`,除非有人改回 null,不会再出现);**或者第二个发布日对照失败**:原因写
+`the second release-day control failed`,上方有 `SECOND-CONTROL-FAIL:` 行 —— §K “DECIDED 2026-09-17” 框第 11 条,曝光日的更新要多于其他日(check A),
+而且更新的升高倍数要大于首次下载的(check B)。它只卡 `--checkpoint` 的上界,`--calibrate` 和确认命令都不跑它;框原文:失败时
+“bounds stay withheld and that is a finding about the instrument, not a reason to redefine it” —— 不要为了让它通过去改定义,由你决定下一步。
+扣住的原因先于"净购买是否为零"判断,所以有陌生人的购买时也可能是 5。**只有登记表和报表在购买/退款上对得上时**,
 才会附一句"零购买上界本来也不适用";对不上时(例如退款条目还是 awaiting-report、退款行还没出现)会打印 `ADJUSTED PURCHASES  NOT PRINTED`,
 关于零购买上界什么都不说 —— 这时要自己拿 raw `PURCHASES` 那一行和登记的单位数对比,才看得出有没有陌生人买过。N 那一行出现 `NOT SETTLED`
 表示决定是 true、但登记的 walk 安装在报表那一格里找不到)·

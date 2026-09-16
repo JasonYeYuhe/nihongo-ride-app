@@ -89,10 +89,15 @@ def cohort_extra(first_downloads=None, purchase_day="2026-09-16", add=None):
 
 def window(end=NEWEST, extra=None, flat_updates=False, states=None):
     """LAUNCH_DATE..end, shaped so calibration passes: F1/1F/F7 all occur, release days elevated.
-    Background downloads stop before 2026-09-08, so the eve and the cohort hold only `extra`."""
+    Background downloads stop before 2026-09-08, so the eve and the cohort hold only `extra`.
+    Updates are elevated on `RELEASE_DAYS` (calibrate's control) AND on the second release-day
+    control's exposure days, so --checkpoint's bound is not withheld by a fixture that only one of the
+    two controls was ever asked to read; section E2 builds its own reports for that control."""
+    exposure, _uncertain = sr.release_day_groups()
     days = {}
     for key in sr._day_keys(sr.LAUNCH_DATE, end):
-        rows = [report_row("F7", 1 if flat_updates or key not in sr.RELEASE_DAYS else 5, "JP"),
+        elevated = key in sr.RELEASE_DAYS or key in exposure
+        rows = [report_row("F7", 5 if elevated and not flat_updates else 1, "JP"),
                 report_row("F1", 9, "US", route="other")]           # another app's row: filtered
         if key < "2026-09-08":
             rows += [report_row("F1", 1, "US"), report_row("1F", 1, "US")]
@@ -731,7 +736,11 @@ def test_checkpoint(check):
     at200 = cohort_extra(first_downloads={"2026-09-09": [report_row("F1", 200, "JP")]})
     rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), window(extra=at200))
     check.rc_and_text("N = 200", rc, 0, out, must=("REACHED      N = 200, or 2027-03-08",))
-    long_window = window(end=D(2026, 12, 8), extra=cohort_extra())
+    # One first download a day past NEWEST as well: a report whose downloads stop on 09-20 while it runs to
+    # 12-08 reads as downloads 9x release-locked, and the second release-day control rightly withholds on it.
+    long_window = window(end=D(2026, 12, 8), extra=cohort_extra(
+        add={key: [report_row("F1", 1, "JP")] for key in sr._day_keys(NEWEST + dt.timedelta(days=1),
+                                                                        D(2026, 12, 8))}))
     rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), long_window, newest=D(2026, 12, 10),
                             until=D(2026, 12, 8))
     check.rc_and_text("until 2026-12-08", rc, 0, out,
@@ -740,6 +749,208 @@ def test_checkpoint(check):
                                 until=D(2026, 12, 7))
     check.rc_and_text("until 2026-12-07", rc, 0, out, must=("not reached  2026-12-08 (day 90)",))
     check(fetch.calls == [(sr.LAUNCH_DATE, D(2026, 12, 7), True)], f"--until not honoured: {fetch.calls}")
+
+
+# ---------------------------------------------------------------------------------------------------
+# E2. the second release-day control (--checkpoint only)
+#
+# The groups below are typed from PLAN-STAGE1 §K's "DECIDED 2026-09-17" box, item 11, where they are
+# written out; none is computed by `release_day_groups`. A report built from the function under test's
+# own groups would move with any mutation of that function and grade itself.
+
+BOX_EXPOSURE = ["2026-08-11", "2026-08-12", "2026-08-15", "2026-08-16", "2026-08-17", "2026-08-18",
+                "2026-08-31", "2026-09-01", "2026-09-11", "2026-09-12"]
+BOX_EXCLUDED = ([f"2026-08-{d:02d}" for d in range(1, 11)] + ["2026-08-13"]
+                + [f"2026-08-{d:02d}" for d in range(19, 31)] + [f"2026-09-{d:02d}" for d in range(5, 10)])
+BOX_OTHER_TO_0914 = ["2026-08-14", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-10", "2026-09-13",
+                     "2026-09-14"]
+# docs/measurements/2026-09-16-release-day-control.md §6, "Per-day values", as recorded there: (F7, F1/1F).
+RECORDED_0916 = {"2026-08-11": (20, 5), "2026-08-12": (20, 4), "2026-08-14": (4, 4), "2026-08-15": (3, 3),
+                 "2026-08-16": (19, 4), "2026-08-17": (4, 1), "2026-08-18": (23, 3), "2026-08-31": (23, 5),
+                 "2026-09-01": (14, 1), "2026-09-02": (10, 3), "2026-09-03": (3, 1), "2026-09-04": (7, 0),
+                 "2026-09-10": (10, 3), "2026-09-11": (6, 5), "2026-09-12": (29, 2), "2026-09-13": (11, 1),
+                 "2026-09-14": (3, 3)}
+# calibrate()'s control is satisfied on three RELEASE_DAYS the second control excludes, in BOTH code sets,
+# so it passes whichever way updates and downloads are assigned and cannot be what withholds a bound.
+V1_SPIKE_DAYS = ("2026-08-20", "2026-08-22", "2026-08-24")
+SWAPPED = dict(UPDATE={"F1", "1F"}, DOWNLOAD={"F7": "macOS"})       # measurement document §3, M4
+
+
+def control_days(upd=(8, 2), dl=(4, 2), end=NEWEST, add=None, states=None):
+    """LAUNCH_DATE..end: F7 and F1 units per exposure / other day as given, 1 of each on excluded days
+    and before 2026-08-01, the owner's FI1 JP purchase on 2026-09-16 (an other day)."""
+    days = {}
+    for key in sr._day_keys(sr.LAUNCH_DATE, end):
+        if key in V1_SPIKE_DAYS:
+            u, d = 50, 50
+        elif key in BOX_EXPOSURE:
+            u, d = upd[0], dl[0]
+        elif key in BOX_EXCLUDED or key < "2026-08-01":
+            u, d = 1, 1
+        else:
+            u, d = upd[1], dl[1]
+        rows = [report_row("F7", u, "JP"), report_row("F1", d, "JP")]
+        if key == "2026-07-01":
+            rows.append(report_row("1F", 1, "CN"))
+        if key == "2026-09-16":
+            rows.append(iap("FI1", 1, "JP"))
+        rows += (add or {}).get(key, [])
+        days[key] = ("data", tsv(*rows))
+    for key, state in (states or {}).items():
+        days[key] = (state, "")
+    return days
+
+
+def second(days):
+    return sr.second_release_day_control(sr.tally(days)[0])
+
+
+def test_second_control(check):
+    Fr = sr.fractions.Fraction
+
+    # 1. The definition, against the box's written-out lists.
+    every = {k: ("data", tsv(report_row("F7", 1, "JP"))) for k in sr._day_keys(D(2026, 8, 1), D(2026, 9, 14))}
+    r = second(every)
+    check(r["exposure"] == BOX_EXPOSURE, f"exposure days {r['exposure']}, the box says {BOX_EXPOSURE}")
+    check(r["other"] == BOX_OTHER_TO_0914, f"other days {r['other']}, the box says {BOX_OTHER_TO_0914}")
+    neither = sorted(set(every) - set(r["exposure"]) - set(r["other"]))
+    check(neither == BOX_EXCLUDED, f"days in neither group {neither}, the box writes out {BOX_EXCLUDED}")
+    exposure, uncertain = sr.release_day_groups()
+    check("2026-08-12" in exposure and "2026-08-12" not in uncertain and "2026-08-31" not in uncertain,
+          "a day that is both exposure and 'the day after an uncertain date' must be exposure")
+
+    # 2. The recorded 2026-09-16 cache values reproduce §6's figures. Every day §6 does not list carries
+    #    97 of each, so any excluded day, or any day before 08-01, that leaks into a group moves a mean.
+    recorded = {}
+    for key in sr._day_keys(sr.LAUNCH_DATE, D(2026, 9, 14)):
+        u, d = RECORDED_0916.get(key, (97, 97))
+        recorded[key] = ("data", tsv(report_row("F7", u, "JP"), report_row("F1", d, "JP")))
+    per_day = sr.tally(recorded)[0]
+    r = sr.second_release_day_control(per_day)
+    check((r["upd_exposure"], r["upd_other"], r["dl_exposure"], r["dl_other"])
+          == (Fr(161, 10), Fr(48, 7), Fr(33, 10), Fr(15, 7)),
+          f"§6's recorded means (16.10, 6.86, 3.30, 2.14 per day) do not reproduce: {r}")
+    check(r["check_a"] and r["check_b"] and not r["failures"], f"§6 recorded PASS / PASS: {r}")
+    rc, out = capture(sr.report_second_release_day_control, per_day)
+    for s in ("exposure days (10): " + ", ".join(BOX_EXPOSURE), "other days (7): " + ", ".join(BOX_OTHER_TO_0914),
+              "updates (F7)                  exposure 16.10/d vs other 6.86/d = 2.35x",
+              "first-time downloads (F1/1F)  exposure 3.30/d vs other 2.14/d = 1.54x",
+              "OK — check A: updates elevated on exposure days · check B: update ratio 2.35x > first-time "
+              "download ratio 1.54x"):
+        check(s in out, f"the printed control lacks {s!r}:\n{out}")
+    check(rc == [] and "SECOND-CONTROL-FAIL" not in out, f"§6's values printed a failure: {rc}\n{out}")
+    with patched(**SWAPPED):
+        r = second(recorded)
+    check(r["check_a"] and not r["check_b"] and _approx(r["upd_ratio"], 1.54) and _approx(r["dl_ratio"], 2.35),
+          f"§6: the M4 swap should read updates 1.54x / downloads 2.35x and fail check B only: {r}")
+
+    # 3. A fails alone; B fails alone (the M4 swap, and a tie); both pass; the conservative edges.
+    both = second(control_days())
+    check(both["check_a"] and both["check_b"] and not both["failures"]
+          and (both["upd_ratio"], both["dl_ratio"]) == (4, 2), f"both pass: {both}")
+    a_only = second(control_days(upd=(2, 2), dl=(1, 2)))
+    check(not a_only["check_a"] and a_only["check_b"] and len(a_only["failures"]) == 1
+          and a_only["failures"][0].startswith("check A"), f"A fails (a tie), B passes: {a_only}")
+    with patched(**SWAPPED):
+        m4 = second(control_days())
+    check(m4["check_a"] and not m4["check_b"] and len(m4["failures"]) == 1
+          and m4["failures"][0].startswith("check B") and (m4["upd_ratio"], m4["dl_ratio"]) == (2, 4),
+          f"the M4 swap: A passes, B fails: {m4}")
+    tie = second(control_days(upd=(4, 2), dl=(4, 2)))
+    check(tie["check_a"] and not tie["check_b"], f"B is strict — equal ratios fail it: {tie}")
+    for label, kw in (("no other-day downloads", dict(dl=(2, 0))), ("no other-day updates", dict(upd=(3, 0)))):
+        r = second(control_days(**kw))
+        check(not r["check_b"] and any("undefined" in f for f in r["failures"]),
+              f"{label}: a ratio against zero must fail check B, not pass as infinite: {r}")
+    r = second(control_days(end=D(2026, 8, 10)))
+    check(r["failures"] and "cannot run" in r["failures"][0], f"no exposure day in the window must fail: {r}")
+    r = second(control_days(states={"2026-09-12": "pending"}))
+    check(len(r["exposure"]) == 9 and r["exposure_unread"] == ["2026-09-12"],
+          f"an exposure day that is not a data day is not counted and is listed: {r}")
+
+    # 4. A spike on an EXCLUDED day changes nothing; the same spike on an OTHER day does.
+    spike = [report_row("F7", 300, "JP")]
+    on_excluded = control_days(add={"2026-08-13": spike})
+    check(sr.tally(on_excluded)[0]["2026-08-13"]["upd"] == 301,
+          "CONTROL: the excluded-day spike did not land in the report")
+    check(second(on_excluded) == both, f"a spike on excluded 2026-08-13 changed the result: {second(on_excluded)}")
+    on_other = second(control_days(add={"2026-08-14": spike}))
+    check(on_other != both and not on_other["check_a"],
+          f"the same spike on other day 2026-08-14 must change the result and fail check A: {on_other}")
+
+    # 5. --checkpoint: prints the bound when it passes, withholds with the new reason when it fails.
+    withheld = "the second release-day control failed (PLAN-STAGE1 §K \"DECIDED 2026-09-17\" item 11)"
+    passing = ("BOUND (rule of three, 95%)", "OK — the instrument responds",
+               "second release-day control (PLAN-STAGE1 §K \"DECIDED 2026-09-17\" item 11 — gates the bound only",
+               "updates (F7)                  exposure 8.00/d vs other 2.00/d = 4.00x",
+               "first-time downloads (F1/1F)  exposure 4.00/d vs other 2.00/d = 2.00x", "OK — check A")
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), control_days())
+    check.rc_and_text("E2 checkpoint: second control passes", rc, 0, out, must=passing,
+                      must_not=("BOUND WITHHELD", "SECOND-CONTROL-FAIL", withheld))
+    for label, days, needle in (
+            ("check A fails", control_days(upd=(2, 2), dl=(1, 2)), "SECOND-CONTROL-FAIL: check A"),
+            ("check B fails (the M4 shape: updates 2x, downloads 4x)", control_days(upd=(4, 2), dl=(8, 2)),
+             "SECOND-CONTROL-FAIL: check B"),
+            ("spike on an other day", control_days(add={"2026-08-14": spike}), "SECOND-CONTROL-FAIL: check A")):
+        rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), days)
+        check.rc_and_text(f"E2 checkpoint: {label}", rc, 5, out,
+                          must=("BOUND WITHHELD:", withheld, needle, "OK — the instrument responds"),
+                          must_not=("BOUND (rule", "CALIBRATION-FAIL", "no matched day-0"))
+    # The literal swap also breaks exclusion_control (it drives F1/1F as downloads), so calibration fails
+    # and the exit is 4 — with the second control's reason listed beside it, not hidden behind it.
+    with patched(**SWAPPED):
+        rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), control_days())
+    check.rc_and_text("E2 checkpoint: the literal M4 swap", rc, 4, out,
+                      must=("BOUND WITHHELD:", "calibration failed", withheld, "SECOND-CONTROL-FAIL: check B"),
+                      must_not=("BOUND (rule",))
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), on_excluded)
+    check.rc_and_text("E2 checkpoint: spike on an excluded day", rc, 0, out, must=("BOUND (rule of three",),
+                      must_not=("BOUND WITHHELD", withheld))
+
+    # 6. --calibrate and --confirm-known-positive do not run it: on a report where it fails, both still pass
+    #    and print none of it — paired with the checkpoint above withholding on the same report.
+    a_fails = control_days(upd=(2, 2), dl=(1, 2))
+    per_day, seen, unclassified, *_ = sr.tally(a_fails)
+    fails, out = capture(sr.calibrate, per_day, seen, unclassified)
+    check(fails == [] and "second release-day" not in out and "SECOND-CONTROL" not in out,
+          f"calibrate() ran the second control or failed on it: {fails}\n{out}")
+    rc, out, _ = confirm(a_fails)
+    check.rc_and_text("E2 confirm on a report the second control fails", rc, 0, out, must=(sr.DRAFT_LABEL,),
+                      must_not=("second release-day", "SECOND-CONTROL"))
+    with patched(resolve_vendor_number=lambda v: "12345678", make_jwt=lambda: "token",
+                 collect=fake_collect(a_fails), pacific_today=lambda: D(2026, 9, 21)):
+        rc, out = capture(sr.main, ["--calibrate"])
+    check.rc_and_text("E2 main --calibrate on a report the second control fails", rc, 0, out,
+                      must=("OK — the instrument responds",), must_not=("second release-day", "SECOND-CONTROL"))
+    # Structural, because a report on which calibrate() passes cannot show that it never READS the
+    # definition (it could fold the exposure days into its own groups and still pass here).
+    source = Path(sr.__file__).read_text(encoding="utf-8")
+    names = {"FIRM_RELEASE_DATES_PT", "UNCERTAIN_RELEASE_DATES_PT", "EXPOSURE_CONTROL_START", "OTHER_DAYS_START",
+             "SECOND_CONTROL_SOURCE", "release_day_groups", "second_release_day_control",
+             "report_second_release_day_control"}
+    readers = second_control_readers(source, names)
+    guarded = ("calibrate", "report_calibration", "purchase_path_control", "exclusion_control", "run_confirm", "main")
+    check(not set(readers) & set(guarded),
+          f"the second control's definition is read by {sorted(set(readers) & set(guarded))}, which --calibrate or "
+          f"--confirm-known-positive run")
+    check("run_checkpoint" in readers, f"POSITIVE CONTROL: the scanner does not see run_checkpoint read it: {readers}")
+    planted = source.replace("    fails = purchase_path_control()\n",
+                             "    fails = purchase_path_control()\n    _ = FIRM_RELEASE_DATES_PT\n", 1)
+    check("calibrate" in second_control_readers(planted, names),
+          "CONTROL: the scanner missed a planted read of the definition inside calibrate()")
+    print("  groups pinned to the box's written-out days · §6's recorded figures reproduced · A alone, B alone "
+          "(M4, tie, zero), both · excluded-day spike paired with an other-day spike · --calibrate and "
+          "--confirm-known-positive untouched")
+
+
+def second_control_readers(source, names):
+    """Top-level functions whose body mentions any of `names`."""
+    return sorted({fn.name for fn in ast.parse(source).body if isinstance(fn, ast.FunctionDef)
+                   for node in ast.walk(fn) if isinstance(node, ast.Name) and node.id in names})
+
+
+def _approx(value, want):
+    return value is not None and f"{float(value):.2f}" == f"{want:.2f}"
 
 
 # ---------------------------------------------------------------------------------------------------
@@ -1127,6 +1338,8 @@ def main():
     test_exclusion(check)
     print("E. --checkpoint")
     test_checkpoint(check)
+    print("E2. THE SECOND RELEASE-DAY CONTROL (--checkpoint only)")
+    test_second_control(check)
     print("F. --confirm-known-positive")
     test_confirm(check)
     print("G. COMMAND LINE")

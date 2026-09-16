@@ -111,12 +111,26 @@ registry applied, the 2026-09-08 first-time download count (§K's day 0 is
 "09-08 or 09-09", and N is the same under both only while that count is
 zero), and §K's pre-registered
 checkpoint list with which rows have been reached. It prints the rule-of-three
-bound — 3/N and 3/(N+114) on the adjusted N — only when calibration passed, a
+bound — 3/N and 3/(N+114) on the adjusted N — only when calibration passed, the
+second release-day control below passed, a
 kind=purchase status=matched entry lies in the cohort window, no decision the
 bound depends on is null while entries it governs are in the window, the
 registry agrees with the report, every cohort report day is built, N > 0, and
 adjusted net purchases are exactly zero. Net above zero → the zero-purchase
 bound does not apply, and the tool says so and decides nothing.
+
+THE SECOND RELEASE-DAY CONTROL (--checkpoint only)
+--------------------------------------------------
+PLAN-STAGE1 §K, box "DECIDED 2026-09-17", item 11, pre-specified before it was
+measured: mean F7 units per EXPOSURE day (each firm Pacific release date and the
+day after) must exceed the mean per OTHER day (check A), and that update ratio
+must exceed the same ratio for first-time downloads (check B) — the half of
+"updates must be release-locked and downloads must not be" that `calibrate()`
+prints and never enforces, and whose absence let a swapped classification pass.
+Its definition is the FIRM_RELEASE_DATES_PT block of constants. It is NOT part
+of `calibrate()`: `--calibrate` and `--confirm-known-positive` print and decide
+exactly what they did before it existed, so "`--calibrate` still passes" keeps
+comparing one instrument. When it fails, the bound is withheld with that reason.
 
 WHY THE BOUND IS WITHHELD RATHER THAN FOOTNOTED
 -----------------------------------------------
@@ -156,7 +170,8 @@ Exit codes: 0 ran (--checkpoint: bound printed, or the zero-purchase bound does
 not apply · --confirm-known-positive: matched and calibrated) · 2 vendor number
 not on file, or a usage error · 3 API failure ·
 4 calibration failed, or the known-positive registry is invalid (the instrument
-is not trustworthy — do not use the number) · 5 --checkpoint: bound withheld ·
+is not trustworthy — do not use the number) · 5 --checkpoint: bound withheld
+(including by a failed second release-day control) ·
 6 --confirm-known-positive: report day not published yet (PENDING) ·
 7 --confirm-known-positive: the built report has no matching row (including when
 the only candidate is under the other platform's code — that is not a match)
@@ -164,6 +179,7 @@ the only candidate is under the other platform's code — that is not a match)
 
 import argparse
 import datetime as dt
+import fractions
 import gzip
 import json
 import os
@@ -208,6 +224,37 @@ EXPECTED_ABSENT = {
 # Days a version reached users. Used ONLY by --calibrate, as known-positive events.
 RELEASE_DAYS = {"2026-08-11", "2026-08-16", "2026-08-18",
                 "2026-08-20", "2026-08-22", "2026-08-24"}
+
+# THE SECOND RELEASE-DAY CONTROL — PLAN-STAGE1 §K, box "DECIDED 2026-09-17", item 11, written there
+# BEFORE it was measured. It gates ONLY --checkpoint's bound. Neither `calibrate()` nor `run_confirm()`
+# reads the names below (scripts/test_sales_report.py scans for it), and RELEASE_DAYS above is not one of
+# them, so "`--calibrate` still passes" keeps comparing one instrument across the known-positive. The
+# groups, in the box's words:
+#   exposure days — every firm Pacific release date and the day after each;
+#   excluded days — every day before EXPOSURE_CONTROL_START, and every uncertain candidate release date
+#                   together with the day after each, except days already in the exposure set;
+#   other days    — all remaining data days from OTHER_DAYS_START.
+# Every date comes from release-timing evidence only (docs/measurements/2026-09-16-release-day-control.md
+# §2), never from update counts — picking a release day off the F7 rows makes this control pass by
+# construction.
+# ⚠️ Each later release adds ONE line to FIRM_RELEASE_DATES_PT: its firm Pacific release date, recorded
+# at release time from the store's own release timestamp. The day after it is derived, never typed.
+FIRM_RELEASE_DATES_PT = (
+    "2026-08-11",
+    "2026-08-15",
+    "2026-08-17",
+    "2026-08-31",
+    "2026-09-11",
+)
+UNCERTAIN_RELEASE_DATES_PT = (
+    "2026-08-12", "2026-08-19", "2026-08-20", "2026-08-21", "2026-08-23", "2026-08-24", "2026-08-25",
+    "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-29", "2026-08-30", "2026-09-05", "2026-09-06",
+    "2026-09-07", "2026-09-08",
+)
+EXPOSURE_CONTROL_START = "2026-08-11"       # "every day before 2026-08-11" is in neither group
+OTHER_DAYS_START = "2026-08-01"             # "all remaining data days from 2026-08-01" — binds nothing
+                                            # while the line above is later; both are the box's words
+SECOND_CONTROL_SOURCE = 'PLAN-STAGE1 §K "DECIDED 2026-09-17" item 11'
 
 PACIFIC = ZoneInfo("America/Los_Angeles")
 # §K: "DAY 0 = 2026-09-09". A constant here, not a registry field anybody can edit — the registry
@@ -928,6 +975,100 @@ def report_calibration(per_day, seen_codes, unclassified, heading="calibration:"
 FULL_WINDOW_CALIBRATION = "calibration (the full default window — every check --calibrate runs):"
 
 
+def _day_after(key):
+    return (dt.date.fromisoformat(key) + dt.timedelta(days=1)).isoformat()
+
+
+def release_day_groups():
+    """(exposure, uncertain) day sets of the second release-day control, derived from the data above.
+
+    Exposure wins where the two meet ("except days already in the exposure set"): 08-12 is both an
+    uncertain candidate and the day after the firm 08-11, and it is an exposure day. The days before
+    EXPOSURE_CONTROL_START are excluded by rule and are not in the returned set.
+    """
+    exposure = frozenset(d for f in FIRM_RELEASE_DATES_PT for d in (f, _day_after(f)))
+    uncertain = frozenset(d for u in UNCERTAIN_RELEASE_DATES_PT for d in (u, _day_after(u))) - exposure
+    return exposure, uncertain
+
+
+def _mean(per_day, keys, field):
+    return fractions.Fraction(sum(per_day[d][field] for d in keys), len(keys)) if keys else None
+
+
+def second_release_day_control(per_day):
+    """§K item 11 over a tallied window. Pure: returns the groups, the means, the ratios and the failures.
+
+    `calibrate()`'s control asks only whether updates are higher on release days, and with the update
+    and download classifications swapped it still passes (M4 in the measurement document), because
+    first-time downloads are somewhat higher on release days too. Check B is the half that catches
+    that: updates must be elevated MORE than first-time downloads. Means are exact fractions, so a tie
+    is a tie and not a float's rounding. A ratio against a zero other-day mean is not a comparison, so
+    it fails check B rather than passing as infinite — the conservative reading, which withholds.
+    """
+    exposure_set, uncertain = release_day_groups()
+    data = sorted(d for d in per_day if per_day[d]["_state"] == "data")
+    exposure = [d for d in data if d in exposure_set]
+    other = [d for d in data if d not in exposure_set and d not in uncertain
+             and d >= EXPOSURE_CONTROL_START and d >= OTHER_DAYS_START]
+    r = {"exposure": exposure, "other": other,
+         "exposure_unread": sorted(d for d in per_day if d in exposure_set and d not in exposure),
+         "upd_exposure": _mean(per_day, exposure, "upd"), "upd_other": _mean(per_day, other, "upd"),
+         "dl_exposure": _mean(per_day, exposure, "dl"), "dl_other": _mean(per_day, other, "dl"),
+         "upd_ratio": None, "dl_ratio": None, "check_a": False, "check_b": False, "failures": []}
+    if not exposure or not other:
+        r["failures"].append(f"{len(exposure)} exposure day(s) and {len(other)} other day(s) in the window "
+                             f"— the control needs at least one of each and cannot run")
+        return r
+    if r["upd_other"]:
+        r["upd_ratio"] = r["upd_exposure"] / r["upd_other"]
+    if r["dl_other"]:
+        r["dl_ratio"] = r["dl_exposure"] / r["dl_other"]
+    r["check_a"] = r["upd_exposure"] > r["upd_other"]
+    if not r["check_a"]:
+        r["failures"].append(f"check A: updates are NOT elevated on exposure days "
+                             f"({_rate(r['upd_exposure'])} vs other {_rate(r['upd_other'])})")
+    if r["upd_ratio"] is None or r["dl_ratio"] is None:
+        r["failures"].append("check B: an other-day mean is zero, so a ratio against it is undefined and "
+                             "the update ratio cannot be shown to exceed the download ratio")
+    else:
+        r["check_b"] = r["upd_ratio"] > r["dl_ratio"]
+        if not r["check_b"]:
+            r["failures"].append(f"check B: the update ratio {_times(r['upd_ratio'])} does NOT exceed the "
+                                 f"first-time download ratio {_times(r['dl_ratio'])} — the shape a swapped "
+                                 f"classification produces")
+    return r
+
+
+def _rate(value):
+    return "n/a" if value is None else f"{float(value):.2f}/d"
+
+
+def _times(value):
+    return "undefined" if value is None else f"{float(value):.2f}x"
+
+
+def report_second_release_day_control(per_day):
+    """`second_release_day_control`, printed for --checkpoint. Returns the failures."""
+    r = second_release_day_control(per_day)
+    print(f"second release-day control ({SECOND_CONTROL_SOURCE} — gates the bound only; --calibrate "
+          f"does not run it):")
+    print(f"  exposure days ({len(r['exposure'])}): {', '.join(r['exposure']) or 'none'}")
+    if r["exposure_unread"]:
+        print(f"    not data days, not counted: {', '.join(r['exposure_unread'])}")
+    print(f"  other days ({len(r['other'])}): {', '.join(r['other']) or 'none'}")
+    if r["exposure"] and r["other"]:
+        print(f"  updates (F7)                  exposure {_rate(r['upd_exposure'])} vs other "
+              f"{_rate(r['upd_other'])} = {_times(r['upd_ratio'])}")
+        print(f"  first-time downloads (F1/1F)  exposure {_rate(r['dl_exposure'])} vs other "
+              f"{_rate(r['dl_other'])} = {_times(r['dl_ratio'])}")
+    for f in r["failures"]:
+        print(f"  SECOND-CONTROL-FAIL: {f}")
+    if not r["failures"]:
+        print(f"  OK — check A: updates elevated on exposure days · check B: update ratio "
+              f"{_times(r['upd_ratio'])} > first-time download ratio {_times(r['dl_ratio'])}")
+    return r["failures"]
+
+
 def _day_keys(start, end):
     day = start
     while day <= end:
@@ -985,6 +1126,7 @@ def run_checkpoint(registry, fetch, newest, until=None, daily=False):
     print(f"window {LAUNCH_DATE} .. {end}  ({(end - LAUNCH_DATE).days + 1} days)")
     print(f"  report states: {_states_line(per_day, _day_keys(LAUNCH_DATE, end))}")
     fails = report_calibration(per_day, seen_codes, unclassified, FULL_WINDOW_CALIBRATION)
+    second = report_second_release_day_control(per_day)
 
     cells, _codes = cell_tally(days)
     c = apply_registry(cells, registry, DAY0, end)
@@ -1120,6 +1262,11 @@ def run_checkpoint(registry, fetch, newest, until=None, daily=False):
     if fails:
         reasons.append("calibration failed — see CALIBRATION-FAIL above; no number from this run "
                        "can be trusted")
+    if second:
+        reasons.append(f"the second release-day control failed ({SECOND_CONTROL_SOURCE}) — "
+                       + "; ".join(second)
+                       + " — see SECOND-CONTROL-FAIL above; §K: a failure here is \"a finding about the "
+                         "instrument, not a reason to redefine it\"")
     if not any(x["kind"] == "purchase" and x["status"] == "matched" for x in c["in_window"]):
         elsewhere = [x["id"] for x in registry["entries"] if x["id"] not in in_window_ids
                      and x["kind"] == "purchase" and x["status"] == "matched"]

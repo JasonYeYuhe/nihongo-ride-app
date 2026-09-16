@@ -742,6 +742,7 @@ fired. *An agent cannot do this step and must not try.*
 > leave N changes N, and — by the principle this section applied to re-denomination, "What is NOT
 > available any more is deciding it after seeing a checkpoint" — it has to be decided, with its
 > timestamp, before any `--checkpoint` reading that holds a walk install.
+> Decided on 2026-09-17 under the owner's delegation — see the box below.
 
 > ### ⚖️ DECIDED 2026-09-17, under the owner's delegation — before any walk, and before any reading that holds walk data
 >

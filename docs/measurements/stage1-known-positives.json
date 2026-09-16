@@ -2,8 +2,8 @@
   "schema": 1,
   "day0": "2026-09-09",
   "decisions": {
-    "exclude_walk_first_downloads_from_N": null,
-    "exclude_owner_refund_from_refund_ceiling": null
+    "exclude_walk_first_downloads_from_N": true,
+    "exclude_owner_refund_from_refund_ceiling": true
   },
   "entries": []
 }
