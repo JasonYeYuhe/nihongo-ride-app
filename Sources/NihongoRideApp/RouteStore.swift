@@ -12,10 +12,15 @@ import EntitlementKit
 /// `swift test` the host process is SwiftPM's own binary and `Transaction.currentEntitlements`
 /// returns `[]` **silently, with no error**. A headless test of the rule written against real
 /// StoreKit would pass forever while exercising nothing. So the rule is pure and exhaustively
-/// tested; this file is the adapter, and **no automated test observes it**. Its gates are written
-/// (`Tests/NihongoRideMacTests`), but all nine skip, because `SKTestSession` is inert for this app
-/// on this machine (measured 2026-09-16, Xcode 27.0). Until that changes, PLAN-STAGE1 §L's manual
-/// gates are the only purchase coverage this file has.
+/// tested; this file is the adapter, and **no automated test observes its StoreKit side**. Its
+/// gates are written (`Tests/NihongoRideMacTests`), but all nine skip, because `SKTestSession` is
+/// inert for this app on this machine (measured 2026-09-16, Xcode 27.0). Until that changes,
+/// PLAN-STAGE1 §L's manual gates are the only coverage of how StoreKit's answers are READ here.
+///
+/// Two pieces are observed, because neither touches a StoreKit type: `observedNow(after:now:)`
+/// (`ObservedNowTests`), and what each purchase answer MEANS — `purchasePlan(for:revokedAt:now:)`,
+/// which `PurchasePlanTests` drives through every answer and whose word `purchase()` is scanned to
+/// follow. The translation from `Product.PurchaseResult` into a `PurchaseAnswer` is not.
 ///
 /// ## What this file must never do
 ///
@@ -192,8 +197,10 @@ final class RouteStore {
     /// This is not inventing a time. The adapter is observing this entitlement **now**, and it has
     /// already recorded that revocation, so "after it" is a true statement about the order of its
     /// own observations regardless of what the clock says between them.
-    nonisolated static func observedNow(after revoked: Date?) -> Date {
-        let now = Date()
+    ///
+    /// `now` is a parameter only so `purchasePlan(for:revokedAt:now:)` can be tested at a fixed
+    /// instant; left out, it is the wall clock, exactly as before it existed.
+    nonisolated static func observedNow(after revoked: Date?, now: Date = Date()) -> Date {
         guard let revoked, revoked > now else { return now }
         return revoked.addingTimeInterval(1)
     }
@@ -235,54 +242,127 @@ final class RouteStore {
 
     // MARK: - Buying
 
+    /// What StoreKit answered a purchase, with StoreKit taken out of it.
+    ///
+    /// `Product.PurchaseResult`, `VerificationResult` and `Transaction` cannot be constructed
+    /// outside StoreKit, so while `purchase()` decided what each answer meant inline, nothing could
+    /// observe the decision. `purchase()` now only TRANSLATES StoreKit's result into one of these,
+    /// and `purchasePlan(for:revokedAt:now:)` decides.
+    enum PurchaseAnswer: Equatable {
+        /// Verified, and already finished. Carries the transaction's `originalID`.
+        case verified(originalID: UInt64)
+        case unverified
+        /// Ask to Buy / SCA — may complete later via `Transaction.updates`.
+        case pending
+        case userCancelled
+        /// `@unknown default`: a result StoreKit added after this was written.
+        case unrecognised
+        /// `product.purchase()` threw. Carries the error's `localizedDescription`.
+        case threw(String)
+        /// Tapped before the product loaded. StoreKit was never asked.
+        case productMissing
+    }
+
+    /// Everything `purchase()` does about an answer.
+    struct PurchasePlan: Equatable {
+        /// Handed to the ledger in one `apply(_:savingTo:)`. Nil unless the answer opens the road.
+        let signal: StoreEntitlementSignal?
+        /// Nil leaves `notice` as it was — it never CLEARS one. A cancel did not clear an earlier
+        /// notice before this type existed, and does not now.
+        let notice: Notice?
+        /// `lastOutcome`, which every answer sets.
+        let outcome: UnlockOfferEvent
+        /// Whether to run the settle loop after applying `signal`.
+        let settles: Bool
+    }
+
+    /// **The one place a purchase answer is given a meaning.** Pure — no StoreKit, no clock of its
+    /// own, no state — so `PurchasePlanTests` can drive it through every answer, and `purchase()`
+    /// does exactly what it returns (that test also scans `purchase()` for a second decision).
+    nonisolated static func purchasePlan(for answer: PurchaseAnswer, revokedAt: Date?, now: Date) -> PurchasePlan {
+        switch answer {
+        case .verified(let originalID):
+            // Apply the transaction we ALREADY HAVE, before going anywhere near
+            // `currentEntitlements`.
+            //
+            // This is authoritative: StoreKit verified it, it is for our product, and it is not
+            // revoked. Throwing it away and then polling a channel this same file documents as
+            // not-immediately-consistent was strictly worse — it made the happy path depend on a
+            // measured race, when the answer was already in hand. The settle loop stays, but only
+            // as reconciliation.
+            //
+            // ⚠️ Stamped with `observedNow(after:now:)`, like `readStore`. **This is the one
+            // behaviour the 2026-09-17 seam changed:** until then this branch stamped the bare
+            // `Date()`, so after a refund with the clock moved backwards, a re-purchase compared
+            // OLDER than the revocation this device had recorded, and read as not entitled until a
+            // later store read answered — which the measured race can push past the settle loop's
+            // deadline, to `Transaction.updates` or the next launch.
+            return PurchasePlan(signal: .entitled(id: originalID, at: observedNow(after: revokedAt, now: now)),
+                                notice: nil, outcome: .purchaseSucceeded, settles: true)
+        case .unverified:
+            // The customer paid a sheet and StoreKit could not vouch for the result. Do not open
+            // the road; do say what state they are in.
+            return PurchasePlan(signal: nil, notice: .unverified, outcome: .purchaseUnverified, settles: false)
+        case .pending:
+            return PurchasePlan(signal: nil, notice: .pending, outcome: .purchasePending, settles: false)
+        case .userCancelled:
+            // No notice: the customer closed Apple's own sheet and knows what they did. It is still
+            // recorded — an attempt that was backed out of is the single most informative thing
+            // this experiment can observe short of a sale.
+            return PurchasePlan(signal: nil, notice: nil, outcome: .purchaseCancelled, settles: false)
+        case .unrecognised:
+            return PurchasePlan(signal: nil,
+                                notice: .failed(String(localized: "The purchase ended in an unexpected state. If you were charged, use Restore.")),
+                                outcome: .purchaseUnrecognised, settles: false)
+        case .threw(let description):
+            return PurchasePlan(signal: nil, notice: .failed(description), outcome: .purchaseFailed, settles: false)
+        case .productMissing:
+            return PurchasePlan(signal: nil, notice: .productMissing, outcome: .offerUnavailable, settles: false)
+        }
+    }
+
     func purchase() async {
-        guard let product else {
-            notice = .productMissing
-            lastOutcome = .offerUnavailable
-            return
-        }
-        isPurchasing = true
-        defer { isPurchasing = false }
-        do {
-            switch try await product.purchase() {
-            case .success(let verification):
-                switch verification {
-                case .verified(let transaction):
-                    await transaction.finish()
-                    // Apply the transaction we ALREADY HAVE, before going anywhere near
-                    // `currentEntitlements`.
-                    //
-                    // This is authoritative: StoreKit verified it, it is for our product, and it
-                    // is not revoked. Throwing it away and then polling a channel this same file
-                    // documents as not-immediately-consistent was strictly worse — it made the
-                    // happy path depend on a measured race, when the answer was already in hand.
-                    // The settle loop below stays, but only as reconciliation.
-                    ledger.apply(.entitled(id: transaction.originalID, at: Date()),
-                                 savingTo: defaults)
-                    await settleEntitlement()
-                    lastOutcome = .purchaseSucceeded
-                case .unverified:
-                    // The customer paid a sheet and StoreKit could not vouch for the result. Do
-                    // not open the road; do say what state they are in.
-                    notice = .unverified
-                    lastOutcome = .purchaseUnverified
+        let answer: PurchaseAnswer
+        if let product {
+            isPurchasing = true
+            do {
+                switch try await product.purchase() {
+                case .success(let verification):
+                    switch verification {
+                    case .verified(let transaction):
+                        // Finished BEFORE anything is applied, as it always was: an unfinished
+                        // transaction is redelivered through `Transaction.updates` on every launch.
+                        await transaction.finish()
+                        answer = .verified(originalID: transaction.originalID)
+                    case .unverified:
+                        answer = .unverified
+                    }
+                case .pending:
+                    answer = .pending
+                case .userCancelled:
+                    answer = .userCancelled
+                @unknown default:
+                    answer = .unrecognised
                 }
-            case .pending:
-                notice = .pending
-                lastOutcome = .purchasePending
-            case .userCancelled:
-                // No notice: the customer closed Apple's own sheet and knows what they did. It is
-                // still recorded — an attempt that was backed out of is the single most
-                // informative thing this experiment can observe short of a sale.
-                lastOutcome = .purchaseCancelled
-            @unknown default:
-                notice = .failed(String(localized: "The purchase ended in an unexpected state. If you were charged, use Restore."))
-                lastOutcome = .purchaseUnrecognised
+            } catch {
+                answer = .threw(error.localizedDescription)
             }
-        } catch {
-            notice = .failed(error.localizedDescription)
-            lastOutcome = .purchaseFailed
+        } else {
+            answer = .productMissing
         }
+        // Reset only if it was set. The product-missing branch never touched it, and still does not.
+        defer { if answer != .productMissing { isPurchasing = false } }
+
+        // Below this line nothing looks at `answer` — only at the plan. Deciding anything about the
+        // answer here would be the mapping written twice. `PurchasePlanTests` scans for it: the
+        // applied signal, the settle, `notice` and `lastOutcome` must each come from `plan`, and
+        // the transaction must be finished above this line. What the scan cannot see is a wrong
+        // translation ABOVE this line — `.pending` read as `.userCancelled` passes.
+        let plan = Self.purchasePlan(for: answer, revokedAt: ledger.record.revokedAt, now: Date())
+        if let signal = plan.signal { ledger.apply(signal, savingTo: defaults) }
+        if plan.settles { await settleEntitlement() }
+        if let notice = plan.notice { self.notice = notice }
+        lastOutcome = plan.outcome
     }
 
     func restore() async {
