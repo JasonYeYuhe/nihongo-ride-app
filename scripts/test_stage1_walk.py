@@ -155,6 +155,9 @@ def context(tmp, **overrides):
                     container_prefs=overrides.pop("container_prefs", Path(tmp) / "Containers" /
                                                   "Data/Library/Preferences/x.plist"),
                     snapshot_root=root, run=run,
+                    # Never the real ~/Library/Group Containers: a machine that legitimately holds a
+                    # local StoreKit config must not turn this self-test red (review 2026-09-17).
+                    octane_root=overrides.pop("octane_root", Path(tmp) / "Octane"),
                     asc_get=overrides.pop("asc_get", lambda ep: {}),
                     own_pid=4242,
                     now=lambda: dt.datetime(2026, 9, 16, 1, 2, 3, tzinfo=dt.timezone.utc))
@@ -521,6 +524,24 @@ def test_local_storekit_config(problems):
         W.check_local_storekit_config(report, ctx)
         problems.check(lines_at(report, "PASS") and not lines_at(report, "FAIL"),
                        f"octane [no group container at all]: expected PASS: {report.lines}")
+        # UNREADABLE is unknown, never absent: a config present behind a folder this user cannot
+        # search must FAIL, not PASS (the Python 3.14 Path.exists() trap). Skipped when running as
+        # root, where mode 000 does not deny.
+        if os.geteuid() != 0:
+            locked = Path(tmp) / "locked" / "Octane"
+            (locked / W.BUNDLE_ID).mkdir(parents=True)
+            (locked / W.BUNDLE_ID / "Configuration.storekit").write_text("{}")
+            os.chmod(locked, 0)
+            try:
+                ctx.octane_root = locked
+                report = W.Report(io.StringIO())
+                W.check_local_storekit_config(report, ctx)
+                problems.check(not lines_at(report, "PASS") and any(
+                    "could not establish" in f for f in lines_at(report, "FAIL")),
+                    f"octane [unreadable]: must FAIL as unknown, never PASS: {report.lines}")
+                print("  unreadable Octane folder → FAIL unknown (not PASS)")
+            finally:
+                os.chmod(locked, 0o755)
         # preflight must actually run the check (a helper nothing calls would pass the above forever)
         source = SCRIPT.read_text(encoding="utf-8")
         pre = source[source.index("def cmd_preflight"):source.index("def cmd_mac_state")]

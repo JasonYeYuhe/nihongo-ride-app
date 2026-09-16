@@ -56,10 +56,7 @@ if $UPLOAD && [[ "${NR_SKIP_SCHEMA_CHECK:-0}" != "1" ]]; then
     fi
 fi
 
-# Outside any iCloud-synced folder when the repo sits in one: codesign refuses bundles created
-# under ~/Documents since macOS 27, and the export re-signs inside this directory. See
-# scripts/build_root.sh (it prints where and why).
-BUILD_DIR="$(bash "$SCRIPT_DIR/build_root.sh" "$ROOT")/appstore"
+BUILD_DIR="$ROOT/build/appstore"
 ARCHIVE="$BUILD_DIR/NihongoRide.xcarchive"
 EXPORT="$BUILD_DIR/export"
 PROJECT="$ROOT/NihongoRide.xcodeproj"

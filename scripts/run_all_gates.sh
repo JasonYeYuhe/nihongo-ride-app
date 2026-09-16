@@ -118,14 +118,19 @@ run_swift_test() {
   printf '  %-34s ' "swift test"
   # Built outside any iCloud-synced folder: since macOS 27, codesign refuses every test bundle
   # created under ~/Documents (see scripts/build_root.sh). Same tests, different build directory.
-  local scratch
-  scratch="$(bash "$REPO/scripts/build_root.sh" "$REPO" 2>/dev/null)/swiftpm"
-  echo "swift test --scratch-path $scratch" > "$log"
+  local root scratch
+  : > "$log"
+  if ! root="$(bash "$REPO/scripts/build_root.sh" "$REPO" 2>>"$log")" || [ -z "$root" ]; then
+    printf 'FAILED (scripts/build_root.sh could not name a build root — see %s)\n' "$log"
+    FAILED+=("swift test (build_root.sh failed) — $log"); return
+  fi
+  scratch="$root/swiftpm"
+  echo "swift test --scratch-path $scratch" >> "$log"
   swift test --scratch-path "$scratch" >> "$log" 2>&1
   status=$?
   # The run must have REACHED a summary. A signal death mid-suite can leave status 0-ish output
   # and truncated text; "no summary line" is a failure, not silence.
-  if ! grep -qE "Test run with [0-9]+ tests" "$log"; then
+  if ! grep -qE "Test run with [0-9]+ tests?" "$log"; then
     printf 'FAILED (no summary line — the suite did not complete)\n'
     echo "        ┌─ last 20 lines (a signal death leaves truncated output)"
     tail -20 "$log" | sed 's/^/        │ /'
@@ -136,8 +141,18 @@ run_swift_test() {
   # Swift 6.3 prints ONE "Test run with N tests in M suites" line; Swift 6.4 prints one PER TEST
   # TARGET. Taking the last line reported "42 tests in 3 suites" for a run of 796 (measured
   # 2026-09-17) — the number shown and the run produced, computed two different ways. Sum them.
-  summary=$(grep -oE "Test run with [0-9]+ tests in [0-9]+ suites?" "$log" \
+  summary=$(grep -oE "Test run with [0-9]+ tests? in [0-9]+ suites?" "$log" \
     | awk '{t += $4; s += $7; n++} END {printf "Test run with %d tests in %d suites (%d summary line%s)", t, s, n, (n == 1 ? "" : "s")}')
+  # Per-target summaries (Swift 6.4) must be COMPLETE: one line per test target. A run cut short
+  # after some targets would otherwise print "ok" with a partial total. A single aggregate line
+  # (Swift 6.3, CI) is complete by construction. (Review 2026-09-17.)
+  local lines targets
+  lines=$(grep -cE "Test run with [0-9]+ tests? in [0-9]+ suites?" "$log")
+  targets=$(grep -c '\.testTarget(' "$REPO/Package.swift")
+  if [ "$lines" -gt 1 ] && [ "$lines" -lt "$targets" ]; then
+    printf 'FAILED (%s of %s test targets reported a summary — the run is incomplete)\n' "$lines" "$targets"
+    FAILED+=("swift test (incomplete: $lines/$targets targets) — $log"); return
+  fi
   if [ "$status" -ne 0 ]; then
     printf 'FAILED (exit %s) — %s\n' "$status" "$summary"
     echo "        ┌─ failing tests"

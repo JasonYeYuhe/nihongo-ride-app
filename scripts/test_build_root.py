@@ -4,8 +4,7 @@
 A helper that picks the right directory and that nothing calls would pass a unit test forever while
 every signed build still died under ~/Documents. So besides the three branches (plain directory,
 File Provider domain on the root, File Provider domain on an ANCESTOR) and the override, this reads
-the three scripts that build signed bundles and fails unless each one takes its paths from the
-helper.
+the gate runner and fails unless its `swift test` takes its scratch path from the helper.
 
 The attribute is planted with `xattr -w` on temp directories: the helper only reads it, so a
 planted value is indistinguishable from iCloud's for the question being asked.
@@ -57,8 +56,8 @@ def main():
         synced.mkdir()
         plant(synced)
         rc, out, err = run_helper(synced, {"NIHONGO_BUILD_CACHE": str(cache)})
-        check(rc == 0 and out == f"{cache}/NihongoRide-build" and "File Provider domain" in err,
-              f"domain on the root: expected {cache}/NihongoRide-build, got rc={rc} {out!r} ({err})")
+        check(rc == 0 and out.startswith(f"{cache}/NihongoRide-build/synced-") and "File Provider domain" in err,
+              f"domain on the root: expected {cache}/NihongoRide-build/synced-<tag>, got rc={rc} {out!r} ({err})")
         print(f"  domain on the root         → {out}")
 
         # The real layout: the attribute sits on ~/Documents, two levels above the repo root.
@@ -67,9 +66,27 @@ def main():
         repo.mkdir(parents=True)
         plant(ancestor)
         rc, out, err = run_helper(repo, {"NIHONGO_BUILD_CACHE": str(cache)})
-        check(rc == 0 and out == f"{cache}/NihongoRide-build",
-              f"domain on an ancestor: expected {cache}/NihongoRide-build, got rc={rc} {out!r} ({err})")
+        check(rc == 0 and out.startswith(f"{cache}/NihongoRide-build/typing_app-"),
+              f"domain on an ancestor: expected {cache}/NihongoRide-build/typing_app-<tag>, got rc={rc} {out!r} ({err})")
         print(f"  domain on an ancestor      → {out}")
+
+        # Two checkouts under the same synced folder (the live tree and an agent worktree) must not
+        # share one SwiftPM build directory: they would queue on its lock and evict each other.
+        worktree = repo / ".claude" / "worktrees" / "typing_app"
+        worktree.mkdir(parents=True)
+        rc2, out2, _ = run_helper(worktree, {"NIHONGO_BUILD_CACHE": str(cache)})
+        check(rc2 == 0 and out2.startswith(f"{cache}/NihongoRide-build/typing_app-") and out2 != out,
+              f"two checkouts with the same name must get different build roots: {out!r} vs {out2!r}")
+        print(f"  second checkout, same name → {out2}")
+
+        # A symlink to a checkout inside the synced folder is still inside it.
+        link = tmp / "elsewhere" / "repo-link"
+        link.parent.mkdir()
+        link.symlink_to(repo)
+        rc3, out3, err3 = run_helper(link, {"NIHONGO_BUILD_CACHE": str(cache)})
+        check(rc3 == 0 and out3 == out,
+              f"symlinked checkout: expected the real checkout's root {out!r}, got {out3!r} ({err3})")
+        print(f"  symlink to that checkout   → {out3}")
 
         rc, out, err = run_helper(repo, {"NIHONGO_BUILD_CACHE": str(cache),
                                          "NIHONGO_BUILD_ROOT": str(tmp / "chosen")})
@@ -79,10 +96,10 @@ def main():
 
     # Used, not merely present. Each script that signs bundles must take its build directory from
     # the helper; a hard-coded "$ROOT/build/…" or a bare `swift test` in the runner is the defect.
+    # (The App Store build scripts are deliberately NOT listed: they already build from an rsync'd
+    # copy under $TMPDIR, where this helper would change nothing — see build_root.sh's header.)
     uses = {
         "run_all_gates.sh": ("build_root.sh", "--scratch-path"),
-        "build-appstore.sh": ("build_root.sh",),
-        "build-appstore-ios.sh": ("build_root.sh",),
     }
     for name, needles in uses.items():
         text = (SCRIPTS / name).read_text(encoding="utf-8")
@@ -97,12 +114,12 @@ def main():
         if name == "run_all_gates.sh":
             check(invocations and all("--scratch-path" in line for line in invocations),
                   f"{name}: every `swift test` invocation must pass --scratch-path: {invocations}")
-    print("  run_all_gates.sh, build-appstore.sh, build-appstore-ios.sh take their paths from the helper")
+    print("  run_all_gates.sh takes its swift test scratch path from the helper")
 
     if failures:
         print(f"{len(failures)} FAILURE(S)")
         return 1
-    print("every branch holds against its pair, and the three signing scripts use it")
+    print("every branch holds against its pair, and the gate runner uses it")
     return 0
 
 

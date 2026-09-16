@@ -12,14 +12,22 @@
 # Finder information, or similar detritus not allowed". Measured three ways: `swift test` in-tree
 # died on 23/23 test bundles; clearing the attributes did not hold (they came back on the next
 # build); a hand-made Probe.app under build/ failed `codesign --sign -` while the identical bundle
-# under ~/Library/Caches signed. So every signed product — SwiftPM test bundles, the App Store
-# archive and its export — has to be built outside the synced folder, or not at all.
+# under ~/Library/Caches signed. So every signed product has to be built outside the synced folder.
+#
+# WHO USES IT: scripts/run_all_gates.sh, for `swift test --scratch-path`. The App Store build
+# scripts do NOT need it and do not call it: since macOS Sequoia they already re-exec from an
+# rsync'd copy under $TMPDIR whenever the tree carries com.apple.provenance (build-appstore.sh
+# ~lines 14-31), and inside that copy this helper would answer "<copy>/build" anyway. (The first
+# version of this change wired them in too and claimed it fixed the release export; review on
+# 2026-09-17 showed it changed nothing on that path, so it was taken out again.)
 #
 # RULE
 # ----
 # * NIHONGO_BUILD_ROOT set → that, verbatim (an explicit choice wins).
 # * The repo root, or any ancestor, carries the `com.apple.file-provider-domain-id` attribute →
-#   "${NIHONGO_BUILD_CACHE:-$HOME/Library/Caches}/NihongoRide-build".
+#   "${NIHONGO_BUILD_CACHE:-$HOME/Library/Caches}/NihongoRide-build/<checkout name>-<8 hex of its path>"
+#   — one directory PER CHECKOUT, so the live tree and an agent worktree never share a SwiftPM
+#   build lock or evict each other's products.
 # * Otherwise → "<repo>/build", exactly as before (CI, and any checkout outside a synced folder).
 #
 # The reason is printed on stderr so a build log says where its products went and why.
@@ -28,7 +36,8 @@
 set -euo pipefail
 
 ROOT="${1:-$(cd "$(dirname "$0")/.." && pwd)}"
-ROOT="$(cd "$ROOT" && pwd)"
+# -P: a symlink to a checkout inside ~/Documents must resolve to the synced path it really is.
+ROOT="$(cd "$ROOT" && pwd -P)"
 
 if [[ -n "${NIHONGO_BUILD_ROOT:-}" ]]; then
   echo "build root: $NIHONGO_BUILD_ROOT (NIHONGO_BUILD_ROOT)" >&2
@@ -39,7 +48,8 @@ fi
 dir="$ROOT"
 while :; do
   if domain="$(xattr -p com.apple.file-provider-domain-id "$dir" 2>/dev/null)"; then
-    out="${NIHONGO_BUILD_CACHE:-$HOME/Library/Caches}/NihongoRide-build"
+    tag="$(printf '%s' "$ROOT" | shasum | cut -c1-8)"
+    out="${NIHONGO_BUILD_CACHE:-$HOME/Library/Caches}/NihongoRide-build/$(basename "$ROOT")-$tag"
     echo "build root: $out ($dir is a File Provider domain: ${domain%%/*} — signed bundles built" \
          "under it are refused by codesign)" >&2
     echo "$out"

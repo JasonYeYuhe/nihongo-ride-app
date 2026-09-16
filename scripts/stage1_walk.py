@@ -81,6 +81,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import errno
 import os
 import plistlib
 import re
@@ -897,10 +898,20 @@ def check_local_storekit_config(report: Report, ctx: Context, verdicts: bool = T
     target = ctx.octane_root / BUNDLE_ID
     facts: Dict[str, Any] = {"path": str(target)}
     report.facts["local_storekit_config"] = facts
+    # os.stat, not Path.exists(): from Python 3.14 Path.exists()/is_dir() swallow EVERY OSError, so
+    # "cannot read" would read as "absent" and PASS (measured by review 2026-09-17 on 3.14.3). Only
+    # "not found" / "not a directory" may mean absent; any other error is unknown, and unknown FAILs.
+    def lookup(path: Path) -> Optional[bool]:
+        try:
+            os.stat(path)
+            return True
+        except OSError as exc:
+            if exc.errno in (errno.ENOENT, errno.ENOTDIR):
+                return False
+            raise
     try:
-        exists = target.exists()
-        listing = sorted(p.name for p in target.iterdir()) if exists and target.is_dir() else []
-        parent_readable = ctx.octane_root.is_dir() or not ctx.octane_root.exists()
+        exists = bool(lookup(target))
+        listing = sorted(os.listdir(target)) if exists and os.path.isdir(target) else []
     except OSError as exc:
         facts["error"] = str(exc)
         (report.fail if verdicts else report.warn)(
@@ -915,9 +926,6 @@ def check_local_storekit_config(report: Report, ctx: Context, verdicts: bool = T
             f"— non-App-Store builds of this id then read the LOCAL test store; whether it reroutes "
             f"the App Store build is unmeasured, so a §K purchase on this Mac could never reach "
             f"salesReports. Stop and decide before walking")
-    elif not parent_readable:
-        (report.fail if verdicts else report.warn)(
-            f"{ctx.octane_root} exists but is not a readable directory — presence unknown")
     else:
         (report.passed if verdicts else report.info)(
             f"no local StoreKit test configuration is stored for {BUNDLE_ID}")
