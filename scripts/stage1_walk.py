@@ -120,6 +120,13 @@ MAC_APP = Path("/Applications/Nihongo Ride.app")
 CONTAINER_PREFS = (Path.home() / "Library/Containers" / BUNDLE_ID /
                    "Data/Library/Preferences" / (BUNDLE_ID + ".plist"))
 SNAPSHOT_ROOT = Path.home() / "Library/Application Support/NihongoRide-Stats/walk"
+# Where StoreKit keeps the local test-store configuration a LIVE `SKTestSession` saves for a bundle
+# id. Measured 2026-09-17 (docs/measurements/2026-09-17-sktestsession-probe.md): once such a file
+# exists, later non-App-Store builds of that id take products from the LOCAL test store instead of
+# Apple's. Whether it can also reroute the App Store build is unmeasured — and a §K purchase that
+# landed in a local test store would never reach salesReports — so its absence is a precondition.
+OCTANE_ROOT = (Path.home() / "Library/Group Containers/group.com.apple.storekit/Documents"
+               / "Persistence/Octane")
 
 # The keys EntitlementKit writes (Entitlement.swift, UnlockOfferLedger.swift).
 ENTITLEMENT_KEY = "NihongoRide.entitlement.v1"
@@ -329,6 +336,7 @@ class Context:
     app_path: Path = MAC_APP
     container_prefs: Path = CONTAINER_PREFS
     snapshot_root: Path = SNAPSHOT_ROOT
+    octane_root: Path = OCTANE_ROOT
     run: Optional[Callable[..., Completed]] = None
     asc_get: Optional[Callable[[str], dict]] = None
     own_pid: int = field(default_factory=os.getpid)
@@ -883,6 +891,38 @@ def decode_offer(data: bytes) -> Tuple[Optional[dict], List[str]]:
     return obj, lines
 
 
+def check_local_storekit_config(report: Report, ctx: Context, verdicts: bool = True) -> None:
+    """A local StoreKit test configuration stored for THIS bundle id must not exist before the walk."""
+    report.heading(f"Local StoreKit test configuration: {ctx.octane_root / BUNDLE_ID}")
+    target = ctx.octane_root / BUNDLE_ID
+    facts: Dict[str, Any] = {"path": str(target)}
+    report.facts["local_storekit_config"] = facts
+    try:
+        exists = target.exists()
+        listing = sorted(p.name for p in target.iterdir()) if exists and target.is_dir() else []
+        parent_readable = ctx.octane_root.is_dir() or not ctx.octane_root.exists()
+    except OSError as exc:
+        facts["error"] = str(exc)
+        (report.fail if verdicts else report.warn)(
+            f"could not establish whether a local StoreKit test configuration is stored for "
+            f"{BUNDLE_ID} ({exc})")
+        return
+    facts["present"] = exists
+    if exists:
+        facts["contents"] = listing
+        (report.fail if verdicts else report.info)(
+            f"a local StoreKit test configuration IS stored for {BUNDLE_ID} ({', '.join(listing) or 'empty'}) "
+            f"— non-App-Store builds of this id then read the LOCAL test store; whether it reroutes "
+            f"the App Store build is unmeasured, so a §K purchase on this Mac could never reach "
+            f"salesReports. Stop and decide before walking")
+    elif not parent_readable:
+        (report.fail if verdicts else report.warn)(
+            f"{ctx.octane_root} exists but is not a readable directory — presence unknown")
+    else:
+        (report.passed if verdicts else report.info)(
+            f"no local StoreKit test configuration is stored for {BUNDLE_ID}")
+
+
 def check_container(report: Report, ctx: Context, gate1: bool = True) -> None:
     report.heading(f"Container defaults: {ctx.container_prefs}")
     readings = read_container_keys(ctx.container_prefs,
@@ -1163,6 +1203,7 @@ def cmd_preflight(ctx: Context, out=None, device: Optional[str] = None) -> int:
     check_other_copies(report, ctx)
     check_processes(report, ctx)
     check_container(report, ctx, gate1=True)
+    check_local_storekit_config(report, ctx)
     check_ios(report, ctx, device_selector=device)
     code = 3 if report.api_failures else (1 if report.counts["FAIL"] else 0)
     return _finish(report, ctx, "preflight", code)
@@ -1174,6 +1215,7 @@ def cmd_mac_state(ctx: Context, out=None) -> int:
     check_processes(report, ctx)
     check_mac_binary(report, ctx, verdicts=False)
     check_container(report, ctx, gate1=False)
+    check_local_storekit_config(report, ctx, verdicts=False)
     return _finish(report, ctx, "mac-state", 0)
 
 

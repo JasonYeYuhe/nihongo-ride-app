@@ -491,6 +491,44 @@ def test_container(problems):
         print("  no container dir      → PASS, defaults not run")
 
 
+def test_local_storekit_config(problems):
+    print("LOCAL STOREKIT CONFIG — absent is PASS, present is FAIL, for this bundle id only")
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx, run = context(tmp)
+        ctx.octane_root = Path(tmp) / "Octane"
+        (ctx.octane_root / "com.jasonye.skprobemac").mkdir(parents=True)   # another id: irrelevant
+        report = W.Report(io.StringIO())
+        W.check_local_storekit_config(report, ctx)
+        problems.check(any("no local StoreKit test configuration" in p for p in lines_at(report, "PASS"))
+                       and not lines_at(report, "FAIL"),
+                       f"octane [absent, other ids present]: expected PASS: {report.lines}")
+        (ctx.octane_root / W.BUNDLE_ID).mkdir()
+        (ctx.octane_root / W.BUNDLE_ID / "Configuration.storekit").write_text("{}")
+        report = W.Report(io.StringIO())
+        W.check_local_storekit_config(report, ctx)
+        fails = lines_at(report, "FAIL")
+        problems.check(len(fails) == 1 and "Configuration.storekit" in fails[0] and not lines_at(report, "PASS"),
+                       f"octane [present]: expected one FAIL naming the file: {report.lines}")
+        report = W.Report(io.StringIO())
+        W.check_local_storekit_config(report, ctx, verdicts=False)
+        problems.check(not lines_at(report, "FAIL") and any("IS stored" in i for i in lines_at(report, "INFO")),
+                       f"octane [present, mac-state]: state, not a FAIL: {report.lines}")
+        print("  other ids only → PASS · this id present → FAIL · mac-state → INFO")
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx, run = context(tmp)
+        ctx.octane_root = Path(tmp) / "no-storekit-group-container-yet" / "Octane"
+        report = W.Report(io.StringIO())
+        W.check_local_storekit_config(report, ctx)
+        problems.check(lines_at(report, "PASS") and not lines_at(report, "FAIL"),
+                       f"octane [no group container at all]: expected PASS: {report.lines}")
+        # preflight must actually run the check (a helper nothing calls would pass the above forever)
+        source = SCRIPT.read_text(encoding="utf-8")
+        pre = source[source.index("def cmd_preflight"):source.index("def cmd_mac_state")]
+        problems.check("check_local_storekit_config(report, ctx)" in pre,
+                       "cmd_preflight does not call check_local_storekit_config")
+        print("  no group container → PASS · preflight calls it")
+
+
 def test_real_defaults(problems):
     print("REAL /usr/bin/defaults ON A PLANTED TEMP PLIST — the truncation the reader must survive")
     if not Path(W.DEFAULTS).exists():
@@ -1202,7 +1240,7 @@ def test_source_scan(problems):
 def main():
     problems = Problems()
     for test in (test_mac_binary, test_other_copies, test_processes, test_entitlement_decode,
-                 test_defaults_parse, test_container, test_real_defaults, test_devicectl, test_asc,
+                 test_defaults_parse, test_container, test_local_storekit_config, test_real_defaults, test_devicectl, test_asc,
                  test_preflight_exit, test_manifest, test_baseline, test_allowlist,
                  test_source_scan):
         try:

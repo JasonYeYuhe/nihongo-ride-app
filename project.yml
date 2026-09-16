@@ -154,9 +154,11 @@ targets:
       # `approveAskToBuyTransaction` all silently no-op, and `Product.purchase()` then hangs
       # waiting for a dialog `disableDialogs` never disabled.
       #
-      # The failure is invisible from inside a naive gate: `Product.products(for:)` still resolves,
-      # because the SCHEME's storeKitConfiguration arms the app's store environment independently
-      # of the session. So a calibration that only asked "do products resolve" passed against a
+      # The failure is invisible from inside a naive gate: `Product.products(for:)` still resolves
+      # (on Xcode 26.6 because the SCHEME's storeKitConfiguration armed the app's store environment
+      # independently of the session; on Xcode 27.0 from Apple's sandbox — measured 2026-09-17, and
+      # the inertness itself was traced to the test host lacking get-task-allow, not to the
+      # sandbox; see docs/measurements/2026-09-17-sktestsession-probe.md). So a calibration that only asked "do products resolve" passed against a
       # completely inert session — the exact shape this project refuses to trust, one level up
       # from the one the harness was written to avoid.
       #

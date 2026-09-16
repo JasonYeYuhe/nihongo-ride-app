@@ -350,6 +350,16 @@ left exactly as written; these lines are added under it, never over it.
   ran**. Still MEASURED-BROKEN for this app on this toolchain. **Not re-run:** the minimal
   non-App-Store app's "10/10" comparison, and the iOS-simulator measurements above; both remain
   2026-08-30 measurements on Xcode 26.6.
+* **2026-09-17** — root cause found by a purchase-free probe, Xcode 27.0 / macOS 27.0
+  (`docs/measurements/2026-09-17-sktestsession-probe.md`): the session is inert whenever the test host
+  lacks `com.apple.security.get-task-allow`, **for any bundle id**, with or without an extension, and
+  live with it (`storekitagent`: "is not installed for development"; test process
+  `SKInternalErrorDomain Code=4`). `run_store_gates.sh` builds with `CODE_SIGNING_ALLOWED=NO`, which
+  lacks it. So the "minimal non-App-Store app passes, the difference is this app" reading below no
+  longer holds on this toolchain. The gates were **not** turned on: signing the harness that way would
+  run their simulated purchases against the local `.storekit`, forbidden this round, and a live session
+  for the real bundle id stores a local test-store configuration whose effect on the App Store build
+  before the owner's walk is unmeasured.
 
 ## §K §G's pre-registration, fixed in advance
 
@@ -881,6 +891,13 @@ alternatives, in this order, and none of them was the cause: the App Sandbox (tu
 A minimal, non-App-Store macOS app on this same machine drives the same session fine and passes
 10/10, so **the difference is this app, not the tooling** — the remaining untested differences are
 the real App Store bundle identifier and the embedded widget extension.
+
+> **Corrected 2026-09-17, left visible rather than replaced.** Re-measured on Xcode 27.0 with a
+> purchase-free probe: a minimal app signed the way the harness signs is equally inert, the bundle
+> identifier and the widget extension are not the cause, and the one difference is the
+> `get-task-allow` entitlement — see §J's 2026-09-17 line and
+> `docs/measurements/2026-09-17-sktestsession-probe.md`. On this toolchain the scheme's
+> `storeKitConfiguration` also no longer resolves products from the local file by itself.
 
 What made this visible is worth more than the gates would have been. The first calibration asked
 only *"do products resolve"* — and they do, because the scheme's `storeKitConfiguration` arms the

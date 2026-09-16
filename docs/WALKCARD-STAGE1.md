@@ -58,7 +58,12 @@ python3 scripts/stage1_walk.py mac-state; echo "exit=$?"
 
 * `preflight` 退出码:**0** 没有 FAIL · **1** 至少一个 FAIL · **3** ASC/API 失败。它检查
   `"/Applications/Nihongo Ride.app"` 存在、`CFBundleShortVersionString` 1.32、`CFBundleVersion` 56、
-  `Contents/_MASReceipt/receipt` 存在。
+  `Contents/_MASReceipt/receipt` 存在;以及(2026-09-17 加入)**这台 Mac 上没有为 `com.jasonye.nihongoride`
+  保存本地 StoreKit 测试商店配置**(`~/Library/Group Containers/group.com.apple.storekit/Documents/Persistence/Octane/com.jasonye.nihongoride`)。
+  理由:探针实测,这份配置一旦存在,这个 bundle id 的非 App Store 构建就会从**本地测试商店**取商品;它会不会连 App Store
+  版本也改道,没人测过 —— 若会,§K 那一单就永远到不了 `salesReports`。2026-09-17 查过:不存在。
+  **走查之前,这台 Mac 上不要用 Xcode 直接运行 Nihongo Ride,也不要改签名去跑 StoreKit 闸门**:那可能创建这份配置。万一 `preflight`
+  报这一项 FAIL,停下来,由你决定(不要自己删,先留证据)。
 * 这台 Mac 上还有同 bundle id 的旧副本(`build/macrel …` 1.17 (32)、`build/macrel 2 …` 1.5 (8)、archive、模拟器构建),
   LaunchServices 可能启动错的那个。**只用这一条命令启动 app:**
 

@@ -67,9 +67,12 @@ final class StoreGateTests: XCTestCase {
         //
         // `SKTestSession.init` does not throw when it fails. On this machine, for THIS app, it
         // logs `SKInternalErrorDomain Code=3` for every operation and hands back a live object
-        // that no-ops. Products still resolve, because the scheme's storeKitConfiguration arms the
-        // app's store environment independently — so without this check the whole file passes
-        // while every simulated refund, network error and Ask-to-Buy in it does nothing.
+        // that no-ops. On Xcode 26.6 products still resolved, because the scheme's
+        // storeKitConfiguration armed the app's store environment independently — so without this
+        // check the whole file passed while every simulated refund, network error and Ask-to-Buy
+        // in it did nothing. (On Xcode 27.0 the product comes from Apple's sandbox instead; the
+        // check is the same either way. Measured 2026-09-17: the cause is the test host lacking
+        // `com.apple.security.get-task-allow` — docs/measurements/2026-09-17-sktestsession-probe.md.)
         //
         // A green suite that proves nothing is worse than no suite. It is also worse than a red
         // one, because a permanently-red test trains people to ignore red. So the gates SKIP with
@@ -83,11 +86,12 @@ final class StoreGateTests: XCTestCase {
         try XCTSkipIf(inert,
                       """
                       SKTestSession is INERT for this app on this machine (SKInternalErrorDomain \
-                      Code=3). Products resolve but nothing can be simulated, so these gates \
+                      Code=3 on Xcode 26.6, Code=4 on 27.0). Products resolve but nothing can be simulated, so these gates \
                       would prove nothing. They are recorded as MANUAL in PLAN-STAGE1 §L. \
-                      Re-check on a toolchain update; a minimal non-App-Store macOS app on this \
-                      same machine drives the session fine, so the difference is this app, not \
-                      the tooling.
+                      Cause measured 2026-09-17 (Xcode 27.0): the harness builds without \
+                      com.apple.security.get-task-allow, and StoreKit refuses a test session for \
+                      any app "not installed for development". Enabling it would run these \
+                      gates' simulated purchases — an owner decision, see PLAN-STAGE1 §J.
                       """)
     }
 
