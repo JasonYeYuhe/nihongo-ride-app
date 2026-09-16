@@ -177,3 +177,18 @@ Per-day values, for anyone re-deriving it: 08-11 upd 20 dl 5 · 08-12 20/4 · 08
 Two limits, stated: the "other" group is seven days, so the ratio is noisy; and the M0–M6 ratios in §3
 had been seen before this definition was written, which is why it was taken from release-timing
 evidence alone and written down before being run.
+
+**Corrected 2026-09-17 (adversarial review), the paragraph above left as written.** "Taken from
+release-timing evidence alone" is true of the firm dates, not of the "and the next day" rule, which
+§2 and M3 motivated from where the update wave landed. The exposure-group means here (16.1 / 3.3) are
+exactly the average of M2's and M3's printed means, five of the seven other days are M1's quiet days,
+and M2 had already shown the release-date-only alternative failing check B. So this PASS was
+predictable (≈ 2.7x vs 1.3x) before it was run: a **consistency check, not a blind test**, and not
+independent evidence that the M4 blind spot is closed on real data. It stays a real test on release
+days that had not happened when it was written.
+
+A further limit found the same night: check B compares exposure days fixed in Aug–Sep 2026 with other
+days that keep accumulating to the reading date, so a plain fall in first-time downloads after Aug–Sep
+can fail it without any classification swap. The checkpoint's failure text names both causes and
+prints the other-day download mean before and after day 0 so a reader can tell them apart; the
+definition is not changed.

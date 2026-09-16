@@ -571,6 +571,9 @@ python3 scripts/sales_report.py --checkpoint > "$EV/k-10-checkpoint.txt" 2>&1; e
 `the second release-day control failed`,上方有 `SECOND-CONTROL-FAIL:` 行 —— §K “DECIDED 2026-09-17” 框第 11 条,曝光日的更新要多于其他日(check A),
 而且更新的升高倍数要大于首次下载的(check B)。它只卡 `--checkpoint` 的上界,`--calibrate` 和确认命令都不跑它;框原文:失败时
 “bounds stay withheld and that is a finding about the instrument, not a reason to redefine it” —— 不要为了让它通过去改定义,由你决定下一步。
+check B 失败**不一定**是分类对调:9 月之后"其他日"的首次下载如果整体下降,也会让它失败 —— 失败提示会同时点名这两种原因,并打印 day 0 前后其他日的首次下载均值,供你区分。
+**或者发布日期漏登**:原因写 `release registry incomplete`,上方有 `WARNING: version <v> first seen <day>` —— 有新版本出现在报表里,但它的太平洋发布日期没记进
+`FIRM_RELEASE_DATES_PT`(每次发布当天要做的一步,见 `docs/PLAN-ITERATION.md`)。补上 App Store 自己的发布时间戳即可,这不算改定义。
 扣住的原因先于"净购买是否为零"判断,所以有陌生人的购买时也可能是 5。**只有登记表和报表在购买/退款上对得上时**,
 才会附一句"零购买上界本来也不适用";对不上时(例如退款条目还是 awaiting-report、退款行还没出现)会打印 `ADJUSTED PURCHASES  NOT PRINTED`,
 关于零购买上界什么都不说 —— 这时要自己拿 raw `PURCHASES` 那一行和登记的单位数对比,才看得出有没有陌生人买过。N 那一行出现 `NOT SETTLED`

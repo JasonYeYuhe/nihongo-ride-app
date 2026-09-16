@@ -11,7 +11,9 @@
 > * "`665-669` 的 ⚠️ 框" = 以 `> ### ⚠️ THAT PRECONDITION WAS NOT MET` 开头的框(逐字未变)。
 > * "`PLAN-STAGE1.md:503-505`" = `≥ 1 net purchase at any point → GO on H1.` 那一条。
 >
-> 这一轮做了什么、还剩什么,见 `docs/STATE-2026-09-16.md`。
+> 这一轮做了什么、还剩什么,见 `docs/STATE-2026-09-16.md`;**2026-09-17 之后以 `docs/STATE-2026-09-17.md` 为准**。
+> 另外两处数字已过期:闸门地板现在是 **13**(`--headless` **12**),不是下文的 10 / 9;§K 的开放问题已在
+> 2026-09-17 由代理在 owner 授权下决定(§K "DECIDED 2026-09-17" 框),下文"原样交给 owner 决定"那一条已不再是待办。
 
 仓库 `/Users/jason/Documents/typing_app`,macOS + iOS 的日语打字练习 app,两端都已上线。**用中文跟我交流,代码里的标识符和注释用英文。**
 

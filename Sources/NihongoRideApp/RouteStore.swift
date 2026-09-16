@@ -355,8 +355,11 @@ final class RouteStore {
 
         // Below this line nothing looks at `answer` — only at the plan. Deciding anything about the
         // answer here would be the mapping written twice. `PurchasePlanTests` scans for it: the
-        // applied signal, the settle, `notice` and `lastOutcome` must each come from `plan`, and
-        // the transaction must be finished above this line. What the scan cannot see is a wrong
+        // applied signal, the settle, `notice` and `lastOutcome` must each come from `plan`;
+        // `lastOutcome` is written on every path and `notice` only when the plan carries one;
+        // nothing below returns early or reads `answer`; the signal is applied before the settle;
+        // no other file writes `notice` or `lastOutcome`; and the transaction is finished above
+        // this line. What the scan cannot see (its header lists the rest) is chiefly a wrong
         // translation ABOVE this line — `.pending` read as `.userCancelled` passes.
         let plan = Self.purchasePlan(for: answer, revokedAt: ledger.record.revokedAt, now: Date())
         if let signal = plan.signal { ledger.apply(signal, savingTo: defaults) }

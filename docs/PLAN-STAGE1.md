@@ -833,6 +833,34 @@ fired. *An agent cannot do this step and must not try.*
 >
 > **Reversing any of these after a reading it affects is a degree of freedom.** If one is reversed,
 > the reversal and its timestamp are added to this box; nothing above is reworded.
+>
+> #### ✍️ Corrections to this box, 2026-09-17 — found by adversarial review the same night; nothing above is reworded
+>
+> * **"Why now is the clean moment" says more than was true.** No reading had contained REAL walk or
+>   purchase data, and that part holds. But on 2026-09-16 the round-1 review's probes ran the
+>   checkpoint code against the real cohort (N = 18, newest 2026-09-14) with SYNTHETIC registry
+>   entries and printed rule-of-three bounds — a matched owner purchase with and without its refund
+>   row (3/18 = 16.67%), and two walk installs with the decision false (N = 36) and true (N = 34). So
+>   items 1, 3 and 5 were decided after bounds had been printed for their configurations on synthetic
+>   entries; the only real input those readings carried was N = 18, already recorded. And item 7 was
+>   decided 28 seconds after reading the Pacific 09-05..09-10 first-download counts, which the item
+>   itself cites. "The only `--checkpoint` readings ever run held no registered entry and never
+>   printed a bound" is true only of the command-line readings.
+> * **Item 11 was committed before it was run, but its result was not unknown.** The "and the day
+>   after each" rule was motivated by where the update wave landed — `2026-09-16-release-day-control.md`
+>   §2's 2 → 29 update units for 1.32 and §3's M3 run — so "never from update counts" is true of the
+>   firm dates and not of that rule. The exposure-group means (16.1 updates / 3.3 downloads a day) are
+>   exactly the average of the M2 and M3 means printed on 2026-09-16, five of the seven "other" days
+>   are M1's quiet days, and M2 had already shown that the release-date-only alternative fails check B.
+>   So the 2.35x / 1.54x PASS recorded in b3707d9 is a **consistency check**, predictable in advance
+>   (≈ 2.7x vs 1.3x), **not a blind test**; it is not independent evidence that the M4 blind spot is
+>   closed on real data. What the control does on FUTURE release days is still a real test.
+> * **"Every choice goes the conservative way" does not hold for every item.** Item 5 goes the other
+>   way on timing: completing the known-positive when the purchase row matches lets a bound print
+>   weeks before the refund row exists (chosen to match the tooling as built). Item 8 is mixed: `3/N`
+>   rules out slightly MORE than the printed figure at N = 35 (8.57% vs 8.6%) and N = 100 (3.00% vs
+>   3.1%) and less at N = 200 (1.50% vs 1.4%). Items 3, 4 and 10 have no direction to state — they fix
+>   a reading rather than move a number; item 11 withholds more, never less.
 
 ## §L The three manual gates
 
@@ -898,6 +926,10 @@ the real App Store bundle identifier and the embedded widget extension.
 > `get-task-allow` entitlement — see §J's 2026-09-17 line and
 > `docs/measurements/2026-09-17-sktestsession-probe.md`. On this toolchain the scheme's
 > `storeKitConfiguration` also no longer resolves products from the local file by itself.
+>
+> **And narrowed the same day:** the bundle identifier and the extension are not the cause of the
+> inertness measured WITHOUT `get-task-allow`. Whether `com.jasonye.nihongoride` itself goes live WITH
+> it was deliberately not run (see the probe document) and is not measured.
 
 What made this visible is worth more than the gates would have been. The first calibration asked
 only *"do products resolve"* — and they do, because the scheme's `storeKitConfiguration` arms the
@@ -914,6 +946,14 @@ toolchain update fixes the session, every gate starts running again with no edit
 And restated so the gap is not implied away: **iOS StoreKit behaviour is not observed by any
 automated test on this machine either.** The two targets share `Sources/NihongoRideApp`, so the
 adapter is the same code — which is an argument, not an observation.
+
+> **Added 2026-09-17 (`751a37a`).** `RouteStore.purchase()` was restructured on main: StoreKit's answer
+> is translated into a `PurchaseAnswer` and a pure, tested `purchasePlan` decides the signal, notice,
+> outcome and settle; a verified purchase is now stamped with `observedNow(after:)`. The App Store
+> 1.32 build (macOS 56 / iOS 57) does NOT contain this code, so a walk of these gates on 1.32 does not
+> observe it, and the StoreKit → `PurchaseAnswer` translation is observed by no automated test. The
+> first release that ships it carries an adapter no walk has seen; whether that release needs these
+> gates walked again is an owner decision, to be made before it is submitted.
 
 ## §M What is done, and what Stage 1 is still waiting on
 

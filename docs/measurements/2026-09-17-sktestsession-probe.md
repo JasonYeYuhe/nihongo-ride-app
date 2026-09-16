@@ -68,11 +68,31 @@ run, next section).
 ## Environment, before and after (the owner's walk Mac)
 
 `stage1_walk.py mac-state` identical; the sandboxed container plist byte-identical (sha256 `6ec1abf0…`);
-`NihongoRide.entitlement.v1` absent; `mdfind` for the bundle id lists the same 7 paths, no probe path; all
-13 probe `.app` bundles unregistered from LaunchServices and deleted; the probe's own `Octane/com.example.*`
-configs and preference files removed. One key a probe window added to the UNsandboxed
+`NihongoRide.entitlement.v1` absent; `mdfind` for the bundle id lists the same 7 paths, no probe path; the
+10 probe `.app` bundles unregistered from LaunchServices (`lsregister -u`, exit 0) and the 3 embedded widget
+`.appex` removed with `pluginkit -r` (`lsregister -u` on the `.appex` paths returned -10814), all build
+products deleted, and `lsregister -dump` shows no probe path; the probe's own `Octane/com.example.*` configs
+and preference files removed. One key a probe window added to the UNsandboxed
 `~/Library/Preferences/com.jasonye.nihongoride.plist` was removed again (content byte-identical to before,
-mtime changed).
+mtime changed). Not previously stated: the first removal attempt used the domain form
+`defaults delete com.jasonye.nihongoride <key>`, which resolved to the SANDBOXED container domain — the one
+the owner's walk reads — and changed nothing there ("key not found"; container sha256 identical before and
+after); the key was then removed by file path.
+
+## Evidence kept with this document (added 2026-09-17 after review)
+
+The probe's own capture of the system log kept only two message types, so three claims above were first
+made from `log show` read live and not saved. A review the same night re-read the system log and confirmed
+them; the filtered excerpts are now in `2026-09-17-sktestsession-probe-logs/`:
+
+* `not-installed-for-development.log` — 225 `storekitagent` refusals ("`<bundle id>` is not installed for
+  development"), 02:05–02:33 JST, including the 02:14 harness run's.
+* `storekitagent-config-and-context.log` — every `saveConfigurationData` call (35) and "Saving Octane
+  configuration" (9, all for `com.example.skprobe`, none for `com.jasonye.nihongoride`), and the
+  product-source context of each task: `XcodeTest[…/Octane/com.example.skprobe/]` (local test store) for the
+  live probe id, `Sandbox` for `com.example.skprobefresh` (6) and `com.jasonye.nihongoride` (12).
+
+Network and account lines were filtered out on purpose; nothing else from the system log is kept.
 
 ## Next step, after the walk (owner's decision)
 

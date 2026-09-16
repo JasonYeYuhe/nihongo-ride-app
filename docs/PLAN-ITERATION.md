@@ -56,6 +56,16 @@ safest item here: it touches no app code, so it cannot affect the measurement or
 > *"it is also the one with a perverse incentive attached."* Fast iteration is now that perverse
 > incentive arriving on purpose. **Write the release dates down** so day 90 can see them; do not
 > claim the cadence caused anything.
+>
+> **Made mechanical 2026-09-17 — a release step, not a reminder.** On the day a version becomes
+> available, append its **Pacific** release date(s) to `FIRM_RELEASE_DATES_PT` in
+> `scripts/sales_report.py` — one line per platform date if the two platforms differ — taken from the
+> store's own release timestamp (`https://itunes.apple.com/lookup?id=6777469778` and
+> `…&entity=desktopSoftware`, field `currentVersionReleaseDate`; it only shows the CURRENT version, so
+> read it that day). PLAN-STAGE1 §K's "DECIDED 2026-09-17" item 11 builds the checkpoint's second
+> release-day control from that list, and `--checkpoint` withholds its bound when a version appears in
+> the sales reports with no date recorded. The previous hand-kept list, `RELEASE_DAYS`, went stale for
+> three weeks because this was a sentence and not a step.
 
 ---
 
