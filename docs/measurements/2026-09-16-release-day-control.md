@@ -155,3 +155,25 @@ ratios were already known — which this paragraph does.
 The definition question, the M4 blind spot, and an explicitly-labelled agent recommendation (to be
 adopted, if at all, only after the known-positive is confirmed) are in
 `docs/DRAFTS-STAGE1-RECORDS.md` §6, items 12 and 13, as questions for the owner.
+
+## 6. 2026-09-17 — the second control, measured once after it was pre-specified
+
+Specified in `docs/PLAN-STAGE1.md` §K, box "DECIDED 2026-09-17", item 11, and committed in `d5a03c0`
+**before** this measurement was run. Same cache as §3 (Pacific data days through 2026-09-14), no
+network, nothing tuned afterwards.
+
+* exposure days (10): 08-11, 08-12, 08-15, 08-16, 08-17, 08-18, 08-31, 09-01, 09-11, 09-12
+* other days (7): 08-14, 09-02, 09-03, 09-04, 09-10, 09-13, 09-14
+* updates: exposure **16.10/d** vs other **6.86/d** = **2.35x** → check A **PASS**
+* first-time downloads: exposure **3.30/d** vs other **2.14/d** = **1.54x** → check B (2.35 > 1.54)
+  **PASS**
+* The M4 swap under this definition would read updates 1.54x / downloads 2.35x, so check B fails on
+  it: the blind spot recorded in §3 is closed for the bound.
+
+Per-day values, for anyone re-deriving it: 08-11 upd 20 dl 5 · 08-12 20/4 · 08-14 4/4 · 08-15 3/3 ·
+08-16 19/4 · 08-17 4/1 · 08-18 23/3 · 08-31 23/5 · 09-01 14/1 · 09-02 10/3 · 09-03 3/1 · 09-04 7/0 ·
+09-10 10/3 · 09-11 6/5 · 09-12 29/2 · 09-13 11/1 · 09-14 3/3.
+
+Two limits, stated: the "other" group is seven days, so the ratio is noisy; and the M0–M6 ratios in §3
+had been seen before this definition was written, which is why it was taken from release-timing
+evidence alone and written down before being run.
