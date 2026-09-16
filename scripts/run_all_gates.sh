@@ -116,7 +116,12 @@ run_gate() {
 run_swift_test() {
   local log="$LOGS/swift-test.log" status
   printf '  %-34s ' "swift test"
-  swift test > "$log" 2>&1
+  # Built outside any iCloud-synced folder: since macOS 27, codesign refuses every test bundle
+  # created under ~/Documents (see scripts/build_root.sh). Same tests, different build directory.
+  local scratch
+  scratch="$(bash "$REPO/scripts/build_root.sh" "$REPO" 2>/dev/null)/swiftpm"
+  echo "swift test --scratch-path $scratch" > "$log"
+  swift test --scratch-path "$scratch" >> "$log" 2>&1
   status=$?
   # The run must have REACHED a summary. A signal death mid-suite can leave status 0-ish output
   # and truncated text; "no summary line" is a failure, not silence.
@@ -128,7 +133,11 @@ run_swift_test() {
     FAILED+=("swift test (never completed) — $log"); return
   fi
   local summary
-  summary=$(grep -oE "Test run with [0-9]+ tests in [0-9]+ suites" "$log" | tail -1)
+  # Swift 6.3 prints ONE "Test run with N tests in M suites" line; Swift 6.4 prints one PER TEST
+  # TARGET. Taking the last line reported "42 tests in 3 suites" for a run of 796 (measured
+  # 2026-09-17) — the number shown and the run produced, computed two different ways. Sum them.
+  summary=$(grep -oE "Test run with [0-9]+ tests in [0-9]+ suites?" "$log" \
+    | awk '{t += $4; s += $7; n++} END {printf "Test run with %d tests in %d suites (%d summary line%s)", t, s, n, (n == 1 ? "" : "s")}')
   if [ "$status" -ne 0 ]; then
     printf 'FAILED (exit %s) — %s\n' "$status" "$summary"
     echo "        ┌─ failing tests"
@@ -146,8 +155,9 @@ echo
 
 run_swift_test
 
-# The python self-tests — six since 2026-09-16, when the sales instrument (test_sales_report.py)
-# and the Stage 1 walk tool (test_stage1_walk.py) got theirs. Until v1.32 §D6 these were run by
+# The python self-tests — seven since 2026-09-17: the sales instrument (test_sales_report.py) and
+# the Stage 1 walk tool (test_stage1_walk.py) got theirs on 2026-09-16, and the build-root helper
+# (test_build_root.py) on 2026-09-17. Until v1.32 §D6 these were run by
 # nothing at all.
 for t in scripts/test_*.py; do
   run_gate "$(basename "$t")" "" python3 "$t"
@@ -230,8 +240,8 @@ printf '  gates run:   %d\n' "$TOTAL"
 # printed a clean summary. A threshold that the failure mode cannot cross is not a threshold.
 # Adding a gate raises the total and still passes; REMOVING one has to be done in a diff that also
 # moves this number, which is the whole point. (v1.32 pre-submission review.)
-FLOOR=12
-if [ -n "$HEADLESS" ]; then FLOOR=11; fi
+FLOOR=13
+if [ -n "$HEADLESS" ]; then FLOOR=12; fi
 if [ "$TOTAL" -lt "$FLOOR" ]; then
   echo
   echo "  ❌ only $TOTAL gate(s) ran. This script expects at least $FLOOR; a glob that matched nothing"
