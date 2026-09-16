@@ -743,6 +743,86 @@ fired. *An agent cannot do this step and must not try.*
 > available any more is deciding it after seeing a checkpoint" — it has to be decided, with its
 > timestamp, before any `--checkpoint` reading that holds a walk install.
 
+> ### ⚖️ DECIDED 2026-09-17, under the owner's delegation — before any walk, and before any reading that holds walk data
+>
+> **Provenance.** On 2026-09-17 the owner answered the list of open questions in the box above with
+> *"好的 你继续全部做掉吧 你全权负责"* ("go ahead and do all of it; you have full authority"). The
+> 2026-09-12 handoff had said the refund question in particular must be handed to the owner and not
+> decided by an agent; this is the owner handing it back. Decided by the agent session under that
+> delegation, and dated here so the order of events is auditable, as the 2026-09-09 amendment above
+> was.
+>
+> **Why now is the clean moment, verified rather than asserted.** No walk step has happened: the
+> registry `docs/measurements/stage1-known-positives.json` has zero entries, no purchase row exists in
+> any report, and the only `--checkpoint` readings ever run (2026-09-16) held no registered entry and
+> never printed a bound. Every decision below changes what a later reading means; none of them has
+> been looked at through a reading that contains the thing it decides.
+>
+> **Every choice below goes the conservative way** — toward ruling out less, or toward
+> "uninterpretable" rather than "evidence" — and says which way that is.
+>
+> 1. **Walk-caused installs are not cohort.** The owner's Mac install, the owner's iPhone installs
+>    and reinstall, and the family member's install exist to operate the instrument, not because
+>    somebody arrived. Registered as `first_download` they are subtracted from N
+>    (`decisions.exclude_walk_first_downloads_from_N = true`). Direction: smaller N, larger `3/N`,
+>    less ruled out. **Obligation this creates:** every walk install is registered before any
+>    `--checkpoint` whose window contains its Pacific report day (an unregistered install is invisible
+>    to the tool).
+> 2. **Counters on walk devices are not "returned counters".** The STOP branch asks for evidence
+>    about willingness to pay from somebody who arrived; the owner's and the family member's devices
+>    opened the offer to test it. Direction: a zero whose only `offerAppeared` in `kyoto` comes from
+>    walk devices reads as **STOP BUILDING / UNINTERPRETABLE**, never as STOP.
+> 3. **Exclusion is explicit, not netting.** The owner's purchase and refund are subtracted through
+>    the registry; GO never fires on the owner's unit, whether or not the refund row has arrived.
+> 4. **A refused refund changes nothing about the exclusion.** If Apple declines it, the refusal is
+>    recorded and the purchase stays excluded.
+> 5. **What completes the known-positive.** The PURCHASE path's known-positive is complete when
+>    `--confirm-known-positive --kind purchase` exits 0 (row matched, full-window `--calibrate`
+>    passing). The refund row is the REFUND path's own known-positive, recorded separately when it is
+>    seen; until it is, any day-180 refund count is marked as coming from a path that has never fired.
+> 6. **The owner's refund is not a customer refund.** It is excluded from the day-180 refund ceiling
+>    (`decisions.exclude_owner_refund_from_refund_ceiling = true`), and so is the owner's unit. In that
+>    ceiling "units" means customer gross units sold and the `n` in "≥ 3 refunds at any n ≤ 18" is the
+>    same count. Direction: the ceiling judges only customers.
+> 7. **Calendar.** Report days are Pacific. The cohort is Pacific report days from **2026-09-09**,
+>    as recorded above, onward. Pacific 09-08 holds 0 first-time downloads and 09-07 holds 1 (cache,
+>    read 2026-09-17); keeping 09-09 leaves that one out. Direction: smaller N.
+> 8. **Thresholds are `3/N` on the observed, adjusted N** when a checkpoint fires. The 8.6% / 3.1% /
+>    1.4% figures are the calendar-era illustrations the 2026-09-09 amendment already calls "`3/N`,
+>    functions of N alone"; where they differ from `3/N` in the second decimal, `3/N` governs.
+> 9. **The ceiling denominator stays the pre-registered +114.** The 23 installs between that base
+>    (through 2026-08-27) and day 0 are in neither number, so the "against the ceiling" line
+>    understates exposure by at most 23 devices. Not changed: it is a registered quantity, and no
+>    decision rule reads that line.
+> 10. **The governing schedule is the 2026-09-09 amendment's** (N = 35 / N = 100 / 2026-12-08 interim /
+>     N = 200 or 2027-03-08 decision / refunds 2027-03-08). The older "Window: 90 days" and "at day 90"
+>     sentences are superseded by it for the decision. Exclusions apply to every registered entry whose
+>     Pacific report day lies between 2026-09-09 and the reading's newest report day.
+> 11. **A second release-day control, pre-specified here BEFORE it is measured, gates the bound only.**
+>     `--calibrate` and `--confirm-known-positive` are not changed by it, so "`--calibrate` still
+>     passes" keeps comparing one instrument across the known-positive. `--checkpoint` additionally
+>     requires, before printing any bound:
+>     * **exposure days** = the firm Pacific release dates {2026-08-11, 08-15, 08-17, 08-31, 09-11} and
+>       the day after each {08-12, 08-16, 08-18, 09-01, 09-12} — chosen from release-timing evidence
+>       only (`docs/measurements/2026-09-16-release-day-control.md` §2), never from update counts;
+>     * **excluded days** (in neither group) = every day before 2026-08-11, and every uncertain
+>       candidate release date the evidence lists {08-12, 08-19, 08-20, 08-21, 08-23, 08-24, 08-25,
+>       08-26, 08-27, 08-28, 08-29, 08-30, 09-05, 09-06, 09-07, 09-08} together with the day after
+>       each — except days already in the exposure set. Written out: 2026-08-01..08-10, 08-13,
+>       08-19..08-30, 09-05..09-09;
+>     * **other days** = all remaining data days from 2026-08-01 (through 2026-09-14 that is 08-14,
+>       09-02, 09-03, 09-04, 09-10, 09-13, 09-14 — seven days, a small group, stated);
+>     * **check A:** mean update (`F7`) units per exposure day > per other day;
+>     * **check B:** that update ratio > the same ratio for first-time downloads (`F1`/`1F`) — the
+>       check whose absence let the classification swap (M4) pass.
+>     Each later release adds its firm Pacific date and the next day, recorded at release time from
+>     the store's own release timestamp. The result on today's cache is measured **after** this box is
+>     committed and recorded in the measurement document, whatever it is; if it fails, bounds stay
+>     withheld and that is a finding about the instrument, not a reason to redefine it.
+>
+> **Reversing any of these after a reading it affects is a degree of freedom.** If one is reversed,
+> the reversal and its timestamp are added to this box; nothing above is reworded.
+
 ## §L The three manual gates
 
 These cannot be automated on this machine and are therefore **not tested until somebody walks
