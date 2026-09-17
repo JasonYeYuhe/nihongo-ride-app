@@ -78,12 +78,27 @@ struct V133LAccessibilityLayoutTests {
     }
 
     /// The Chinese UI showed "PRACTICE", "BLIND" and "ACC". Each is now one side of a `zh ?`.
+    ///
+    /// Read with strings kept and comments blanked. On the raw file the Chinese checks passed on
+    /// their own explanations: "练习", "提示已关" and "正确率" are each quoted in a comment beside the
+    /// label, so the review turned all three ternaries back to English and this stayed green. And each
+    /// Chinese word is held as the `zh` side of the ternary whose other side is the English word it
+    /// replaced, so a Chinese string elsewhere in the file cannot stand in for it.
     @Test("Practice has no English-only label left on screen")
     func practiceIsTranslated() throws {
-        let practice = try Self.source("PracticeView.swift")
+        let file = try #require(try CallSiteScanner.shippedSources.get()
+            .first { $0.path == "Sources/NihongoRideApp/PracticeView.swift" })
+        let practice = file.allCodeWithStrings
         for literal in ["Text(\"PRACTICE", "Text(\"BLIND\")", "stat(\"ACC\""] {
             #expect(!practice.contains(literal), "\(literal) is shown to Chinese readers untranslated")
         }
-        #expect(practice.contains("\"练习\"") && practice.contains("\"提示已关\"") && practice.contains("\"正确率\""))
+        for (zh, en) in [("练习", "PRACTICE"), ("提示已关", "BLIND"), ("正确率", "ACC")] {
+            #expect(practice.range(of: #"\?\s*"\#(zh)"\s*:\s*"\#(en)""#, options: .regularExpression) != nil,
+                    "no `? \"\(zh)\" : \"\(en)\"` in PracticeView's code")
+        }
+        // Control: the comment that quotes each Chinese word is not in the view read above.
+        let raw = try Self.source("PracticeView.swift")
+        #expect(raw.contains("// \"练习\" in Chinese") && !practice.contains("// \"练习\" in Chinese"),
+                "the comment view is not stripping comments, or the comment this control names moved")
     }
 }

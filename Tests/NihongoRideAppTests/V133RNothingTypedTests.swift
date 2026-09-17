@@ -126,7 +126,12 @@ struct V133RNothingTypedTests {
 
     // MARK: - The drill
 
-    @Test("a drill with nothing answered says so; one answered prompt does not", arguments: [0, 1, 2])
+    /// 0 untouched, 1 skipped, 2 one prompt answered, 3 one correct key into the first prompt and
+    /// nothing answered. The last is the ride's `.oneCorrectKey`, and it is the only row that reads
+    /// the summary's `correctKeystrokes`: without it, `ConjugationSummary` could snapshot that
+    /// counter as 0 — the review did exactly that — and every other row would still pass.
+    @Test("a drill with nothing answered says so; one answered prompt or one correct key does not",
+          arguments: [0, 1, 2, 3])
     func drill(_ arrangement: Int) throws {
         let model = AppModelTests.makeModel(vocab: VocabStore(entries: AppModelTests.verbEntries(3)))
         model.startConjugation()
@@ -134,6 +139,11 @@ struct V133RNothingTypedTests {
         switch arrangement {
         case 1: session.skip()
         case 2: for c in session.currentRomaji ?? "" { _ = session.input(c) }
+        case 3:
+            let first = try #require(session.currentRomaji?.first)
+            _ = session.input(first)
+            #expect(session.correctKeystrokes == 1 && (session.currentRomaji?.count ?? 0) > 1,
+                    "the arrangement did not press exactly one correct key short of an answer")
         default: break
         }
         let answered = session.promptsCompleted
@@ -143,6 +153,9 @@ struct V133RNothingTypedTests {
         case 2:
             #expect(answered == 1, "the arrangement did not answer a prompt")
             #expect(!summary.typedNothing)
+        case 3:
+            #expect(answered == 0, "one key answered a prompt — this row no longer isolates the key")
+            #expect(!summary.typedNothing, "a correct key into the first prompt is typing, as it is in the ride")
         default:
             #expect(answered == 0)
             #expect(summary.typedNothing, "arrangement \(arrangement): nothing was answered")
@@ -211,11 +224,131 @@ struct V133RNothingTypedTests {
             #expect(asks.count == 1, "\(type).typedNothing does not ask RunTyping exactly once (\(asks.count))")
         }
 
-        // …and both screens read it. `mentions` reads code only, so a comment naming it is not enough.
-        for view in ["ResultsView", "ConjugationResultsView"] {
+        // …and both screens read it, at every place it decides something. Pinned per site below.
+        for (view, sites) in Self.screenSites {
             let file = try #require(files.first { $0.path == "Sources/NihongoRideApp/\(view).swift" })
-            #expect(file.mentions(of: "typedNothing").count >= 2,
-                    "\(view) no longer decides its headline and its accuracy tile from typedNothing")
+            #expect(Self.screenProblems(file, sites: sites).isEmpty, "\(Self.screenProblems(file, sites: sites))")
         }
+    }
+
+    // MARK: - Where each results screen asks
+
+    /// The three decisions a results screen makes from `typedNothing`. A count of mentions held none
+    /// of them: the review turned the ride's headline into `if false {` and `>= 2` still counted the
+    /// accuracy tile and the Share guard. So each is found by its own shape.
+    enum Site: String, CaseIterable {
+        /// `if <summary>.typedNothing {` whose ELSE branch — not its then branch — draws the grade.
+        case headline
+        /// `<summary>.typedNothing ?` inside `scoreGrid`, the accuracy tile's "—".
+        case accuracyTile
+        /// `… typedNothing != true` in the condition of the `if` that shows the `ShareLink`.
+        case shareGuard
+    }
+
+    static let screenSites: [(view: String, sites: [Site])] = [
+        ("ResultsView", [.headline, .accuracyTile, .shareGuard]),
+        ("ConjugationResultsView", [.headline, .accuracyTile]),
+    ]
+
+    /// Every site in `sites` that no code mention of `typedNothing` in `file` satisfies, plus any
+    /// mention that is none of them (an unpinned new decision is a reason to extend this list).
+    static func screenProblems(_ file: CallSiteScanner.File, sites: [Site]) -> [String] {
+        let code = file.code
+        func next(after offset: Int) -> (byte: UInt8, at: Int)? {
+            let at = CallSiteScanner.skipSpace(code, offset)
+            return at < code.count ? (code[at], at) : nil
+        }
+        func block(openingAt open: Int) -> Range<Int>? {
+            guard code[open] == UInt8(ascii: "{"), let close = CallSiteScanner.matching(code, open: open) else { return nil }
+            return open..<(close + 1)
+        }
+        func linePrefix(_ offset: Int) -> String {
+            var start = offset
+            while start > 0, code[start - 1] != 10 { start -= 1 }
+            return String(decoding: code[start..<offset], as: UTF8.self).trimmingCharacters(in: .whitespaces)
+        }
+        let grades = file.calls(named: "grade").map(\.nameOffset)
+        let shares = file.calls(named: "ShareLink").map(\.nameOffset)
+        let scoreGrid = file.functions(named: "scoreGrid").compactMap(\.body)
+
+        func site(of mention: Int) -> Site? {
+            let end = mention + "typedNothing".utf8.count
+            // headline
+            if linePrefix(mention).range(of: #"^if\s+\w+\.$"#, options: .regularExpression) != nil,
+               let open = next(after: end), open.byte == UInt8(ascii: "{"), let then = block(openingAt: open.at),
+               let word = CallSiteScanner.word(in: code, at: CallSiteScanner.skipSpace(code, then.upperBound)),
+               word.0 == "else", let elseOpen = next(after: word.1), let otherwise = block(openingAt: elseOpen.at),
+               grades.contains(where: { otherwise.contains($0) }), !grades.contains(where: { then.contains($0) }) {
+                return .headline
+            }
+            // accuracyTile
+            if scoreGrid.contains(where: { $0.contains(mention) }), next(after: end)?.byte == UInt8(ascii: "?") {
+                return .accuracyTile
+            }
+            // shareGuard
+            let rest = String(decoding: code[end..<min(code.count, end + 12)], as: UTF8.self)
+            if CallSiteScanner.isInConditionHead(code, mention),
+               rest.range(of: #"^\s*!=\s*true\b"#, options: .regularExpression) != nil,
+               let brace = code[end...].firstIndex(of: UInt8(ascii: "{")), let body = block(openingAt: brace),
+               shares.contains(where: { body.contains($0) }) {
+                return .shareGuard
+            }
+            return nil
+        }
+
+        let mentions = file.mentions(of: "typedNothing")
+        let found = mentions.map { ($0, site(of: $0)) }
+        var problems = sites.filter { wanted in !found.contains { $0.1 == wanted } }
+            .map { "\(file.path): no \($0.rawValue) decided by typedNothing" }
+        problems += found.filter { $0.1 == nil || !sites.contains($0.1!) }
+            .map { "\(file.location($0.0)): a typedNothing this test does not know — pin it" }
+        return problems
+    }
+
+    /// Controls through the same function: the shipped shape passes, and each mutation the review
+    /// ran — plus the fix written only in a comment — is reported as exactly the site it removed.
+    @Test("control: each screen site is found by its shape, and each removal is named")
+    func screenSitesAreCalibrated() {
+        let shipped = """
+            struct R {
+                var content: some View {
+                    if summary.typedNothing {
+                        Text(title)
+                    } else {
+                        Text(flag)
+                        grade(for: summary)
+                    }
+                    if let card = shareCard, model.lastSummary?.typedNothing != true {
+                        ShareLink(item: card) { Text(share) }
+                    }
+                }
+                private func scoreGrid(_ summary: GameSummary) -> some View {
+                    let accuracyCard = summary.typedNothing
+                        ? (value: dash, spoken: nothing)
+                        : (value: percent, spoken: nil)
+                    return Text(accuracyCard.value)
+                }
+            }
+            """
+        let all: [Site] = [.headline, .accuracyTile, .shareGuard]
+        #expect(Self.screenProblems(.init(path: "Shipped.swift", source: shipped), sites: all).isEmpty,
+                "\(Self.screenProblems(.init(path: "Shipped.swift", source: shipped), sites: all))")
+        let mutants: [(String, String, Site)] = [
+            ("if summary.typedNothing {", "if false { // summary.typedNothing", .headline),
+            ("summary.typedNothing\n", "false\n", .accuracyTile),
+            (", model.lastSummary?.typedNothing != true {", " {", .shareGuard),
+        ]
+        for (old, new, removed) in mutants {
+            let source = shipped.replacingOccurrences(of: old, with: new)
+            #expect(source != shipped, "the \(removed) mutant did not apply")
+            #expect(Self.screenProblems(.init(path: "Mutant.swift", source: source), sites: all)
+                    == ["Mutant.swift: no \(removed.rawValue) decided by typedNothing"],
+                    "\(removed): \(Self.screenProblems(.init(path: "Mutant.swift", source: source), sites: all))")
+        }
+        // Branches swapped: the grade drawn for a run that typed nothing is not a headline decision.
+        let swapped = shipped.replacingOccurrences(of: "Text(title)", with: "grade(for: summary)")
+        #expect(Self.screenProblems(.init(path: "Swapped.swift", source: swapped), sites: all).contains {
+            $0.hasSuffix("no headline decided by typedNothing")
+        })
     }
 }

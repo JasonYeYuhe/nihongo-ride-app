@@ -896,17 +896,28 @@ private struct WordCard: View {
 /// Room the ride card keeps clear for its corner controls at the accessibility sizes.
 /// (v1.33 §B G.)
 enum RideCardLayout {
-    /// The widest corner glyph's layout width per point of font size. Measured 2026-09-17 by
-    /// laying out `Image(systemName:)` in an `NSHostingView` at 15, 24.7 and 29.6pt: `star` /
-    /// `star.fill` 1.27–1.32, `speaker.wave.2` 1.39–1.42. The speaker is the wider one, so it sets
-    /// the reserve for both corners — the line is centred, and `SpeakButton` shows whenever
+    /// The widest corner glyph's layout width per point of font size, with headroom. Measured
+    /// 2026-09-17 by laying out `Image(systemName:)` in an `NSHostingView` at 15, 24.7 and 29.6pt:
+    /// `star` / `star.fill` 1.27–1.32, `speaker.wave.2` 1.39–1.42. The speaker is the wider one, so
+    /// it sets the reserve for both corners — the line is centred, and `SpeakButton` shows whenever
     /// speech is on, which the card does not otherwise track.
-    static let widestCornerGlyphEm: CGFloat = 1.42
+    ///
+    /// **1.46, not the measured 1.42.** 1.42 was fitted to that one measurement: at AX1 keyboard-up
+    /// the speaker lays out 35pt wide at 24.7pt (the host reports whole points), so it reaches
+    /// 35 + 20 − 14 = 41pt against a reserve of 24.7 × 1.42 + 6 = 41.08 — 0.08pt to spare, on this
+    /// Mac's SF Symbols metrics and rounding. Another machine's (CI's macos-26 runner) can differ by
+    /// that much, and then the ★ or the speaker sits on the sentence again with nothing to say so.
+    /// At 1.46 the reserve clears the measured reach by ≥ 1pt in both layouts: 24.7 × 1.46 + 6 =
+    /// 42.07 against 41 keyboard-up, 29.6 × 1.46 + 4 = 47.28 against 45 keyboard-down. The cost is
+    /// accessibility sizes only — about 1pt more inset per side there (0.04 em) — because the
+    /// reserve is zero below them (`cornerControlReserve`'s guard). `V133GRideAndDrillLayoutTests`
+    /// re-measures the glyphs and still fails if the reserve drops below what they reach.
+    static let widestCornerGlyphEm: CGFloat = 1.46
 
     /// How far a corner control reaches past the card's own padding into its content: the
     /// control is `padding + glyph + padding` measured in from the card's edge, the content starts
-    /// `cardPadding` in. At AX1 that is 24.7 × 1.42 + 20 − 14 ≈ 41pt keyboard-up and
-    /// 29.6 × 1.42 + 28 − 24 ≈ 46pt keyboard-down; a sentence line on a 402pt phone keeps 272 of
+    /// `cardPadding` in. At AX1 that is 24.7 × 1.46 + 20 − 14 ≈ 42pt keyboard-up and
+    /// 29.6 × 1.46 + 28 − 24 ≈ 47pt keyboard-down; a sentence line on a 402pt phone keeps 270 of
     /// its 354pt. **Zero at every size below the accessibility sizes**, so the default layout does
     /// not move.
     static func cornerControlReserve(glyphPoints: CGFloat, controlPadding: CGFloat,

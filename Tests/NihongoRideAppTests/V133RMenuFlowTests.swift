@@ -126,5 +126,89 @@ struct V133RMenuFlowTests {
         let fixed = measure(Text(word).fixedSize())
         #expect(fixed.width == oneLine.width, "a fixed-size item changed width: \(fixed) vs \(oneLine)")
     }
+
+    /// `hostedWideItem` asks only for the flow's SIZE, which `sizeThatFits` answers — and
+    /// `placeSubviews` measures again on its own. The pre-submission review put back the pre-v1.33
+    /// placement (each item re-measured with `sizeThatFits(.unspecified)` and placed at that) and
+    /// the whole target stayed green: the flow reported 160pt while it drew the word one line wide,
+    /// centred, past both edges — the defect itself. So this reads where the item was PLACED.
+    ///
+    /// `PlacementProbe` wraps the item and the flow in a pass-through layout that records the
+    /// rectangle its parent placed it in: its size is whatever it was proposed there, so a flow
+    /// that placed the wide word at its natural width is caught at the width it drew.
+    @MainActor
+    @Test("a wide wrapping item is PLACED inside the row, at the size the row was broken with")
+    func hostedWideItemIsPlacedInsideTheRow() throws {
+        let word = String(repeating: "かもしれません", count: 3)
+        let flow = PlacementRecord(), item = PlacementRecord(), fixedItem = PlacementRecord()
+        func place<V: View>(_ record: PlacementRecord, _ content: V) {
+            let host = NSHostingView(rootView: PlacementProbe(record: flow) {
+                MenuFlow(spacing: 8, rowSpacing: 8) { PlacementProbe(record: record) { content } }
+            })
+            host.frame = CGRect(x: 0, y: 0, width: 160, height: 2_000)
+            host.layoutSubtreeIfNeeded()
+        }
+        let oneLine = NSHostingController(rootView: Text(word).fixedSize())
+            .sizeThatFits(in: CGSize(width: 10_000, height: 10_000))
+        #expect(oneLine.width > 160, "the arrangement is not wider than the row — it measures nothing")
+
+        place(item, Text(word).fixedSize(horizontal: false, vertical: true))
+        let placed = try #require(item.last, "the hosted flow never placed its item — the instrument is not laying out")
+        let row = try #require(flow.last)
+        #expect(row.width <= 160 + 0.5, "the flow itself was placed wider than the host: \(row)")
+        #expect(placed.width <= row.width + 0.5, "the item was placed \(placed.width)pt wide in a \(row.width)pt flow")
+        #expect(placed.minX >= row.minX - 0.5 && placed.maxX <= row.maxX + 0.5,
+                "the item was placed past the flow's edges: item \(placed), flow \(row)")
+        #expect(placed.height > oneLine.height * 1.5, "the placed item did not wrap: \(placed)")
+
+        // Control, through the same instrument: `.fixedSize()` ignores the narrowed proposal, so it
+        // is placed at its one-line width and overflows. If this were placed inside the row too, the
+        // probe would be reporting the flow's frame rather than the item's.
+        place(fixedItem, Text(word).fixedSize())
+        let overflowing = try #require(fixedItem.last)
+        #expect(abs(overflowing.width - oneLine.width) < 0.5 && overflowing.width > row.width,
+                "the control was not placed at its natural width — the probe cannot see an overflow: \(overflowing)")
+    }
     #endif
+
+    /// The stumbled-word chip is the item `MenuFlow` narrows for. `.fixedSize()` there — what it was
+    /// before v1.33, and what every menu chip still is — ignores the narrowed proposal, and the word
+    /// is clipped on both edges again with every flow test above still green, because they build
+    /// their own items.
+    @Test("the stumbled-word chip takes the row's width and keeps its height")
+    func stumbleChipFollowsTheProposal() throws {
+        let files = try CallSiteScanner.shippedSources.get()
+        let results = try #require(files.first { $0.path == "Sources/NihongoRideApp/ResultsView.swift" })
+        let chip = try #require(results.functions(named: "stumbleChip").first?.body, "stumbleChip(_:) moved")
+        let sizing = results.calls(named: "fixedSize").filter { chip.contains($0.nameOffset) }
+        #expect(sizing.map { results.text($0.arguments ?? 0..<0).filter { !$0.isWhitespace } }
+                == ["horizontal:false,vertical:true"],
+                "stumbleChip's sizing is \(sizing.map(results.excerpt)) — expected exactly one .fixedSize(horizontal: false, vertical: true)")
+    }
 }
+
+#if canImport(AppKit)
+/// Where a `PlacementProbe` was placed, in the hosting view's layout coordinates. Appended on every
+/// layout pass, so `last` is the settled one.
+@MainActor
+final class PlacementRecord {
+    private(set) var frames: [CGRect] = []
+    var last: CGRect? { frames.last }
+    func append(_ frame: CGRect) { frames.append(frame) }
+}
+
+/// A single-child layout that changes nothing — it proposes what it is proposed and places its
+/// child where it was placed — and records its own placed bounds.
+struct PlacementProbe: Layout {
+    let record: PlacementRecord
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) -> CGSize {
+        subviews.first?.sizeThatFits(proposal) ?? .zero
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) {
+        MainActor.assumeIsolated { record.append(bounds) }
+        subviews.first?.place(at: bounds.origin, anchor: .topLeading, proposal: proposal)
+    }
+}
+#endif

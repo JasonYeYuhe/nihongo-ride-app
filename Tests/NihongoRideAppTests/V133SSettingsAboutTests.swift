@@ -80,7 +80,13 @@ struct V133SIdentifierBreakTests {
 
 /// WCAG 2.x contrast, computed from the resolved colours rather than restated from the comments
 /// beside them, so a later change to either colour — or to `Theme` — is recomputed, not trusted.
-@Suite("V133S: small dim text in Settings and About reaches 4.5:1 wherever it can sit")
+///
+/// **Scope: the two fixes, not every small dim text.** Settings' captions and About's two counter
+/// lines are what v1.33 changed. Other small dim text is still below 4.5:1 and deliberately out of
+/// scope here — About's footer note (`footerNote`, `Theme.dim.opacity(0.7)`) among them — so this
+/// suite says nothing about it. (The title used to say "small dim text in Settings and About",
+/// which claimed that too.)
+@Suite("V133S: Settings' captions and About's counter lines reach 4.5:1 wherever they can sit")
 @MainActor
 struct V133SContrastTests {
 
@@ -163,6 +169,83 @@ struct V133SContrastTests {
             let before = Self.contrast(Self.over(Theme.dim.opacity(0.7), stop), stop)
             #expect(before < 4.5 && before > 2.5, "the old counters computed \(before):1 — measured 2.78:1")
         }
+    }
+
+    // MARK: The colours are where they are claimed to be
+
+    /// The two tests above check the CONSTANTS. The review set one Settings caption and one About
+    /// counter line back to `Theme.dim.opacity(0.7)` and both stayed green, because nothing said
+    /// the constants were used. Read on comment-stripped code, so the colour comments that quote the
+    /// old value (both constants have one) are not counted.
+    static let oldStyle = #"Theme\.dim\.opacity\(\s*0?\.7\s*\)"#
+
+    static func shipped(_ name: String) throws -> CallSiteScanner.File {
+        try #require(try CallSiteScanner.shippedSources.get().first { $0.path == "Sources/NihongoRideApp/\(name)" },
+                     "\(name) not found")
+    }
+
+    static func foregroundStyles(_ file: CallSiteScanner.File, _ argument: String) -> [CallSiteScanner.Call] {
+        file.calls(named: "foregroundStyle").filter {
+            $0.arguments.map { file.text($0).filter { !$0.isWhitespace } } == argument
+        }
+    }
+
+    /// Byte offsets of `pattern` in the comment- and string-stripped code, outside `excluded`.
+    static func matches(_ pattern: String, in file: CallSiteScanner.File, excluding excluded: Range<Int>? = nil) -> [Int] {
+        guard let regex = try? NSRegularExpression(pattern: pattern) else { return [] }
+        let code = file.allCode
+        return regex.matches(in: code, range: NSRange(code.startIndex..., in: code))
+            .compactMap { Range($0.range, in: code).map { code.utf8.distance(from: code.startIndex, to: $0.lowerBound) } }
+            .filter { excluded?.contains($0) != true }
+    }
+
+    @Test("Settings draws its captions in captionColor, three times, and no caption in the old colour")
+    func settingsUsesTheCaptionColor() throws {
+        // Control: the old-colour pattern finds code, spacing variants included, and not comments.
+        let sample = CallSiteScanner.File(path: "Sample.swift", source: """
+            // .foregroundStyle(Theme.dim.opacity(0.7))
+            Text(a).foregroundStyle(Theme.dim.opacity( .7 )) /* Theme.dim.opacity(0.7) */
+            """)
+        #expect(Self.matches(Self.oldStyle, in: sample).count == 1, "the old-colour pattern is miscalibrated")
+
+        let settings = try Self.shipped("SettingsView.swift")
+        // The Road card (Stage 1's one offer row) is frozen byte-for-byte in v1.33 and is not this
+        // fix's to hold, so it is left out of the old-colour check. Located by its identifier, which
+        // must lie inside the extent found — so the exclusion is the Road card and only it.
+        let road = try #require(settings.calls(named: "settingsCard").first {
+            $0.arguments.map { String(decoding: settings.codeWithStrings[$0], as: UTF8.self).contains("\"The Road\"") } ?? false
+        }, "the Road card moved")
+        let roadText = String(decoding: settings.codeWithStrings[road.extent], as: UTF8.self)
+        #expect(roadText.contains("\"roadRow\"") && !roadText.contains("\"Review Reminder\""),
+                "the excluded extent is not exactly the Road card")
+
+        let uses = Self.foregroundStyles(settings, "Self.captionColor")
+        #expect(uses.count == 3, "captionColor is drawn \(uses.count) time(s), expected the three captions (iCloud, reminder, read-aloud): \(uses.map { settings.location($0.nameOffset) })")
+        #expect(settings.mentions(of: "captionColor").count == uses.count + 1,
+                "captionColor is read somewhere other than a caption's foregroundStyle")
+        let old = Self.matches(Self.oldStyle, in: settings, excluding: road.extent)
+        #expect(old.isEmpty, "Theme.dim.opacity(0.7) is back at \(old.map(settings.location))")
+    }
+
+    @Test("About draws exactly its two counter lines in counterColor")
+    func aboutUsesTheCounterColor() throws {
+        let about = try Self.shipped("AboutView.swift")
+        let uses = Self.foregroundStyles(about, "Self.counterColor")
+        #expect(about.mentions(of: "counterColor").count == uses.count + 1,
+                "counterColor is read somewhere other than a foregroundStyle")
+        let lines = ["model.unlockOfferLedger.shareableSummary", "model.reviewPromptLedger.debugSummary"]
+        let texts = about.calls(named: "Text")
+        for line in lines {
+            let text = try #require(texts.first { $0.arguments.map { about.text($0).filter { !$0.isWhitespace } } == line },
+                                    "the counter line Text(\(line)) moved")
+            // Its modifier chain: from the Text to the next Text in the same block, or the block's end.
+            let block = try #require(about.innermostBlock(containing: text.nameOffset, within: 0..<about.code.count))
+            let end = texts.map(\.nameOffset).filter { $0 > text.nameOffset && block.contains($0) }.min() ?? block.upperBound
+            let chain = text.extent.upperBound..<end
+            #expect(uses.filter { chain.contains($0.nameOffset) }.count == 1,
+                    "Text(\(line)) is not drawn in counterColor")
+        }
+        #expect(uses.count == lines.count, "counterColor is drawn \(uses.count) time(s), expected the two counter lines")
     }
 }
 

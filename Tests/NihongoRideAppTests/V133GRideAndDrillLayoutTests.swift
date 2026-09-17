@@ -238,6 +238,15 @@ struct V133GRideAndDrillLayoutTests {
     /// The reserve is built from a measured em width; this re-measures the real glyphs' layout
     /// width rather than restating the constant, so the reserve is checked against the controls
     /// it is for — the ★ and `SpeakButton`'s speaker — at the AX1 sizes of both card layouts.
+    ///
+    /// **Why the comparison is `reserve >= reach` and not `reserve >= reach + 1`.** The first
+    /// constant (1.42) passed here by 0.08pt, fitted to one Mac's measurement, so a CI runner whose
+    /// SF Symbols metrics or rounding differ by a tenth of a point could fail — or, worse, a real
+    /// device could overlap while this passed. The headroom went into the product instead
+    /// (`RideCardLayout.widestCornerGlyphEm`, 1.46: ≥ 1pt at AX1 on this Mac in both layouts). The
+    /// test keeps asking only the product's question — does the reserve clear what the glyph
+    /// reaches on THIS machine — because demanding the headroom here would tie the test to this
+    /// Mac's numbers again. Mutation, 2026-09-17: 1.41 goes red on the speaker keyboard-up.
     @MainActor
     @Test("at the accessibility sizes the reserve clears both corner controls as SwiftUI lays them out")
     func cornerReserveClearsTheControls() {
@@ -259,6 +268,133 @@ struct V133GRideAndDrillLayoutTests {
         }
     }
     #endif
+
+    // MARK: 5b. Every rule above is handed the real size
+
+    /// The pure rules above are each tested at `accessibilitySize: false` and `true`, which says
+    /// nothing about what the views pass. The review passed a literal `false` at the verb's shrink
+    /// floor, the drill badge's label and the ride card's corner reserve, one at a time, and the
+    /// target stayed green each time — the AX5 fixes switched off, the tests unaware. So every call
+    /// to a rule that takes `accessibilitySize:` must pass `typeSize.isAccessibilitySize`, or a
+    /// `let` in an enclosing block that is exactly that, where `typeSize` is the view's
+    /// `@Environment(\.dynamicTypeSize)`.
+    static let accessibilityRules: [(receiver: String, name: String, minimumCalls: Int)] = [
+        ("ConjugationHUDLayout", "badgeLabel", 1),
+        ("ConjugationCardLayout", "verbScaleFloor", 1),
+        ("ConjugationCardLayout", "showsFormArrow", 1),
+        ("RideCardLayout", "cornerControlReserve", 1),
+    ]
+
+    /// What is wrong with the `accessibilitySize:` argument of each call to `receiver.name` in
+    /// `file`, and how many calls were read.
+    static func accessibilityArgumentProblems(_ file: CallSiteScanner.File, receiver: String, name: String)
+        -> (calls: Int, problems: [String]) {
+        let code = file.code
+        let calls = file.calls(named: name).filter { CallSiteScanner.receiverComponents($0.receiver) == [receiver] }
+        let environment = #"@Environment\(\s*\\\.dynamicTypeSize\s*\)\s*(?:private\s+)?var\s+typeSize\b"#
+        var problems: [String] = []
+        for call in calls {
+            let here = "\(file.location(call.nameOffset)) \(receiver).\(name)"
+            guard let arguments = call.arguments else { problems.append("\(here): no arguments"); continue }
+            // The `accessibilitySize:` argument, up to the next top-level comma.
+            let text = file.text(arguments)
+            guard let label = text.range(of: #"\baccessibilitySize\s*:"#, options: .regularExpression) else {
+                problems.append("\(here): no accessibilitySize: argument"); continue
+            }
+            var depth = 0
+            var value = ""
+            for character in text[label.upperBound...] {
+                if "([{".contains(character) { depth += 1 } else if ")]}".contains(character) { depth -= 1 }
+                if depth < 0 || (depth == 0 && character == ",") { break }
+                value.append(character)
+            }
+            value = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            if value != "typeSize.isAccessibilitySize" {
+                // A local: the nearest `let <value> =` before the call, in a block that holds the call.
+                let local = CallSiteScanner.occurrences(of: Array("let".utf8), in: code)
+                    .filter { $0 < call.nameOffset }
+                    .compactMap { at -> (Int, String)? in
+                        let nameStart = CallSiteScanner.skipSpace(code, at + 3, newlines: false)
+                        guard let (word, end) = CallSiteScanner.word(in: code, at: nameStart), word == value else { return nil }
+                        var lineEnd = end
+                        while lineEnd < code.count, code[lineEnd] != 10 { lineEnd += 1 }
+                        return (at, String(decoding: code[end..<lineEnd], as: UTF8.self).trimmingCharacters(in: .whitespaces))
+                    }
+                    .last
+                guard let (letOffset, initialiser) = local,
+                      initialiser == "= typeSize.isAccessibilitySize",
+                      file.innermostBlock(containing: letOffset, within: 0..<code.count)?.contains(call.nameOffset) == true
+                else {
+                    problems.append("\(here) is passed accessibilitySize: \(value), not the view's typeSize.isAccessibilitySize")
+                    continue
+                }
+            }
+            let owner = file.declarations
+                .filter { CallSiteScanner.typeKeywords.contains($0.keyword) && $0.body?.contains(call.nameOffset) == true }
+                .min { $0.body!.count < $1.body!.count }
+            if let owner, let body = owner.body,
+               file.text(body).range(of: environment, options: .regularExpression) != nil {
+                continue
+            }
+            problems.append("\(here): typeSize is not the enclosing view's @Environment(\\.dynamicTypeSize)")
+        }
+        return (calls.count, problems)
+    }
+
+    @Test("every accessibility-size rule is passed the view's real size, never a constant")
+    func rulesAreHandedTheRealSize() throws {
+        // Controls, through the same function: the shapes the views use pass; each mutation the
+        // review ran (a literal `false`), a local that is not the size, a local from another block,
+        // and a `typeSize` that is not the environment's are each reported.
+        let sample = CallSiteScanner.File(path: "Sample.swift", source: #"""
+            struct Good: View {
+                @Environment(\.dynamicTypeSize) private var typeSize
+                var body: some View {
+                    let accessibilitySize = typeSize.isAccessibilitySize
+                    Text(ConjugationHUDLayout.badgeLabel(zh: zh, accessibilitySize: accessibilitySize))
+                        .padding(.horizontal, RideCardLayout.cornerControlReserve(glyphPoints: g, controlPadding: 1,
+                            cardPadding: 2, accessibilitySize: typeSize.isAccessibilitySize))
+                }
+            }
+            struct Bad: View {
+                @Environment(\.dynamicTypeSize) private var typeSize
+                var other: some View {
+                    let accessibilitySize = typeSize.isAccessibilitySize
+                    return Text(x)
+                }
+                var body: some View {
+                    let big = typeSize >= .xxLarge
+                    Text(ConjugationHUDLayout.badgeLabel(zh: zh, accessibilitySize: false))
+                    Text(ConjugationHUDLayout.badgeLabel(zh: zh, accessibilitySize: big))
+                    Text(ConjugationHUDLayout.badgeLabel(zh: zh, accessibilitySize: accessibilitySize))
+                }
+            }
+            struct NotTheEnvironment: View {
+                let typeSize: DynamicTypeSize
+                var body: some View {
+                    Text(ConjugationHUDLayout.badgeLabel(zh: zh, accessibilitySize: typeSize.isAccessibilitySize))
+                }
+            }
+            """#)
+        let badge = Self.accessibilityArgumentProblems(sample, receiver: "ConjugationHUDLayout", name: "badgeLabel")
+        #expect(badge.calls == 5)
+        #expect(badge.problems.map { $0.split(separator: " ").first.map(String.init) ?? "" }
+                == ["Sample.swift:18", "Sample.swift:19", "Sample.swift:20", "Sample.swift:26"],
+                "\(badge.problems)")
+        let reserve = Self.accessibilityArgumentProblems(sample, receiver: "RideCardLayout", name: "cornerControlReserve")
+        #expect(reserve.calls == 1 && reserve.problems.isEmpty, "a multi-line call passing the size was reported: \(reserve.problems)")
+
+        let files = try CallSiteScanner.shippedSources.get()
+        for rule in Self.accessibilityRules {
+            var calls = 0
+            for file in files {
+                let result = Self.accessibilityArgumentProblems(file, receiver: rule.receiver, name: rule.name)
+                calls += result.calls
+                #expect(result.problems.isEmpty, "\(result.problems)")
+            }
+            #expect(calls >= rule.minimumCalls, "\(rule.receiver).\(rule.name) has \(calls) call(s) — the scan found nothing to check")
+        }
+    }
 
     // MARK: 6. Coach — the key pills
 
