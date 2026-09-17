@@ -435,9 +435,29 @@ def check_asc(report: Report, ctx: Context) -> None:
                 continue
             try:
                 newest = max(versions, key=lambda v: parse_iso(v["attributes"]["createdDate"]))
+                live = max((v for v in versions
+                            if (v.get("attributes") or {}).get("appStoreState")
+                            == EXPECTED_VERSION_STATE),
+                           key=lambda v: parse_iso(v["attributes"]["createdDate"]), default=None)
             except (KeyError, TypeError, ValueError) as exc:
                 report.api(f"{label}: a version has no usable createdDate ({exc})")
                 continue
+            # **The walk installs from the App Store, so the version that matters is the one ON
+            # SALE — not the newest record.** Between a submission and its release the newest
+            # record is the one in review, and comparing THAT to the expected release turned this
+            # check red for a walk it has no quarrel with: on 2026-09-18, minutes after v1.33 was
+            # submitted, preflight reported three FAILs against a store still serving exactly the
+            # 1.32 the constants name. A walk during a review window is legitimate; what it must
+            # know is that the copy can change under it, which is the WARNING below.
+            # (v1.33, 2026-09-18.)
+            if live is not None and live is not newest:
+                nattrs = newest.get("attributes") or {}
+                report.warn(f"ASC {label}: {nattrs.get('versionString')} is "
+                            f"{nattrs.get('appStoreState')} — newer than the {EXPECTED_VERSION} on "
+                            f"sale. The App Store still serves {EXPECTED_VERSION}, so the walk is "
+                            f"against that; if it goes live mid-walk your devices may install "
+                            f"different builds. Move the EXPECTED_* constants when it ships.")
+            newest = live if live is not None else newest
             attrs = newest.get("attributes") or {}
             vstr, state = attrs.get("versionString"), attrs.get("appStoreState")
             facts[label] = {"version": vstr, "state": state, "id": newest.get("id"),
@@ -447,10 +467,10 @@ def check_asc(report: Report, ctx: Context) -> None:
                            f"{attrs.get('platform')!r}")
                 continue
             if vstr == EXPECTED_VERSION and state == EXPECTED_VERSION_STATE:
-                report.passed(f"ASC {label}: newest version {vstr} {state} "
+                report.passed(f"ASC {label}: version on sale {vstr} {state} "
                               f"(created {attrs.get('createdDate')})")
             else:
-                report.fail(f"ASC {label}: newest version is {vstr} {state}, expected "
+                report.fail(f"ASC {label}: the version on sale is {vstr} {state}, expected "
                             f"{EXPECTED_VERSION} {EXPECTED_VERSION_STATE}. If a newer release "
                             f"shipped, update the EXPECTED_* constants in this file first.")
             build = get(f"/v1/appStoreVersions/{newest.get('id')}/build?fields[builds]=version")
@@ -481,9 +501,16 @@ def check_asc(report: Report, ctx: Context) -> None:
             facts["reviewSubmissions"] = histogram
             report.info("ASC review submissions by state: " +
                         ", ".join(f"{k} {v}" for k, v in sorted(histogram.items())))
+            # A submission in flight does not invalidate a walk of the copy on sale, and it is
+            # not the walk's business to wait for review — but it does mean the App Store copy can
+            # change between two devices' installs, so it is a WARNING with that reason rather
+            # than a FAIL that stops the walk. The version check above is what fails when the
+            # thing being walked is not the thing the constants name. (v1.33, 2026-09-18.)
             if open_subs:
-                report.fail(f"ASC: {len(open_subs)} review submission(s) not "
-                            f"{TERMINAL_SUBMISSION_STATE}: " + "; ".join(
+                report.warn(f"ASC: {len(open_subs)} review submission(s) not "
+                            f"{TERMINAL_SUBMISSION_STATE} — the App Store copy may change "
+                            f"mid-walk; record the version and build each device installed: "
+                            + "; ".join(
                                 f"{s.get('id')} {(s.get('attributes') or {}).get('platform')} "
                                 f"{(s.get('attributes') or {}).get('state')}" for s in open_subs))
             else:

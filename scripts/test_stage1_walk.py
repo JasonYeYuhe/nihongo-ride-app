@@ -790,13 +790,27 @@ def test_asc(problems):
     print("ASC — each expectation against its one-variable violation")
     scenarios = [
         ("as released", {}, 0, False),
-        ("newer version created later", {"versions": {"MAC_OS": [
+        # A newer version that is NOT on sale is a warning, not a failure: the walk installs from
+        # the App Store, which still serves 1.32. Measured on 2026-09-18, minutes after v1.33 was
+        # submitted — the old rule read the newest RECORD and reported three FAILs against a store
+        # that had not changed. The build check follows the same version, so it must not fail either.
+        ("newer version in review", {"versions": {"MAC_OS": [
             ("m132", "1.32", "READY_FOR_SALE", "2026-09-10T17:22:47-07:00"),
-            ("m133", "1.33", "PREPARE_FOR_SUBMISSION", "2026-09-20T09:00:00-07:00")]}}, 2, False),
+            ("m133", "1.33", "WAITING_FOR_REVIEW", "2026-09-20T09:00:00-07:00")]}}, 0, False),
+        # …and when the newer version IS the one on sale, the constants are stale and it fails,
+        # once for the version and once for its build.
+        ("newer version released", {"versions": {"MAC_OS": [
+            ("m132", "1.32", "READY_FOR_SALE", "2026-09-10T17:22:47-07:00"),
+            ("m133", "1.33", "READY_FOR_SALE", "2026-09-20T09:00:00-07:00")]}}, 2, False),
+        # Nothing on sale at all is not a walkable store.
+        ("nothing on sale", {"versions": {"MAC_OS": [
+            ("m133", "1.33", "WAITING_FOR_REVIEW", "2026-09-20T09:00:00-07:00")]}}, 2, False),
         ("iOS build 56", {"builds": {"i132": "56"}}, 1, False),
+        # An in-flight submission warns (the copy can change mid-walk) but does not stop a walk of
+        # the copy on sale.
         ("open submission", {"subs": [("COMPLETE", "IOS"), ("WAITING_FOR_REVIEW", "MAC_OS")]},
-         1, False),
-        ("unknown submission state", {"subs": [("SOMETHING_NEW", "IOS")]}, 1, False),
+         0, False),
+        ("unknown submission state", {"subs": [("SOMETHING_NEW", "IOS")]}, 0, False),
         ("familySharable true", {"iap": {"familySharable": True}}, 1, False),
         ("familySharable missing", {"drop_iap": ["familySharable"]}, 1, False),
         ("IAP not approved", {"iap": {"state": "DEVELOPER_ACTION_NEEDED"}}, 1, False),
@@ -811,6 +825,9 @@ def test_asc(problems):
             fails = lines_at(report, "FAIL")
             problems.check(len(fails) == expected_fails,
                            f"asc [{label}]: expected {expected_fails} FAIL, got {fails}")
+            warns = lines_at(report, "WARN")
+            if label in ("newer version in review", "open submission", "unknown submission state"):
+                problems.check(bool(warns), f"asc [{label}]: expected a WARNING, got none")
             problems.check(bool(report.api_failures) == expect_api,
                            f"asc [{label}]: api failures {report.api_failures}")
             print(f"  {label:<28} FAIL {len(fails)} · API {len(report.api_failures)}")

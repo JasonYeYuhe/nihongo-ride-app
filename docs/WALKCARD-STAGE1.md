@@ -56,6 +56,14 @@ python3 scripts/stage1_walk.py preflight; echo "exit=$?"
 python3 scripts/stage1_walk.py mac-state; echo "exit=$?"
 ```
 
+* **(2026-09-18 起)`preflight` 比对的是「在售」版本,不是最新记录。** v1.33 于 2026-09-18 提交,
+  在审期间 App Store 仍然发 1.32,所以 ASC 那几行现在是:在售 1.32(macOS 56 / iOS 57)PASS,
+  1.33 `WAITING_FOR_REVIEW` 只是 **WARN**,有未完成的审核提交也只是 **WARN**(不再 FAIL)。
+  两条 WARN 说的是同一件事:**走查期间线上版本可能从 1.32 变成 1.33**,所以每台设备装完后,
+  把它实际装到的版本号和构建号记下来(Mac 看「关于」页,iPhone 用 `ios-state --device`)。
+  两台设备装的如果不是同一个版本,这次 §L 记录要注明。1.33 上线后,请把 `scripts/stage1_walk.py`
+  里的 `EXPECTED_VERSION` / `EXPECTED_MAC_BUILD` / `EXPECTED_IOS_BUILD` 改成 1.33 / 57 / 58,
+  本卡里写 1.32 / 56 / 57 的地方也一并改。
 * `preflight` 退出码:**0** 没有 FAIL · **1** 至少一个 FAIL · **3** ASC/API 失败。它检查
   `"/Applications/Nihongo Ride.app"` 存在、`CFBundleShortVersionString` 1.32、`CFBundleVersion` 56、
   `Contents/_MASReceipt/receipt` 存在;以及(2026-09-17 加入)**这台 Mac 上没有为 `com.jasonye.nihongoride`
