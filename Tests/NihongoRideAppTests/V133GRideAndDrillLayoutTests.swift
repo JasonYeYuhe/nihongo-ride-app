@@ -50,9 +50,32 @@ struct V133GRideAndDrillLayoutTests {
                 "DynamicTypeSize changed shape; re-read what this test assumes")
         for size in Self.belowAccessibility {
             #expect(RideHUDLayout.showsScore(size), "default-size HUD must not change at \(size)")
+            for scoreIsTheRide in [false, true] {
+                #expect(RideHUDLayout.showsScore(size, scoreIsTheRide: scoreIsTheRide)
+                        && RideHUDLayout.showsCombo(size, scoreIsTheRide: scoreIsTheRide),
+                        "default-size HUD must not change at \(size)")
+            }
         }
         for size in Self.accessibility {
             #expect(!RideHUDLayout.showsScore(size), "\(size)")
+            #expect(RideHUDLayout.showsCombo(size), "\(size): a ride that drops its score keeps its combo")
+            // Time Attack: the score stays, the combo goes — exactly one pill hidden either way.
+            #expect(RideHUDLayout.showsScore(size, scoreIsTheRide: true), "\(size): Time Attack lost its score")
+            #expect(!RideHUDLayout.showsCombo(size, scoreIsTheRide: true), "\(size)")
+        }
+    }
+
+    @Test("Time Attack is the ride that keeps its score, and the drill is not")
+    func timeAttackKeepsItsScore() throws {
+        let game = Self.codeLines(try Self.source("GameView.swift"))
+        #expect(game.contains("private var scoreIsTheRide: Bool { session.mode == .timeAttack }"),
+                "GameView no longer derives scoreIsTheRide from Time Attack")
+        let combo = game.indices.filter { game[$0].hasPrefix("stat(icon: \"flame.fill\"") }
+        #expect(combo.count == 1, "GameView: expected one combo pill, found \(combo.count)")
+        for index in combo {
+            let previous = game[..<index].last { !$0.isEmpty } ?? ""
+            #expect(previous == "if RideHUDLayout.showsCombo(typeSize, scoreIsTheRide: scoreIsTheRide) {",
+                    "GameView:\(index + 1): the combo pill is not behind RideHUDLayout.showsCombo")
         }
     }
 
@@ -66,7 +89,10 @@ struct V133GRideAndDrillLayoutTests {
             #expect(scorePills.count == 1, "\(file): expected one score pill, found \(scorePills.count)")
             for index in scorePills {
                 let previous = lines[..<index].last { !$0.isEmpty } ?? ""
-                #expect(previous == "if RideHUDLayout.showsScore(typeSize) {",
+                let expected = file == "GameView.swift"
+                    ? "if RideHUDLayout.showsScore(typeSize, scoreIsTheRide: scoreIsTheRide) {"
+                    : "if RideHUDLayout.showsScore(typeSize) {"
+                #expect(previous == expected,
                         "\(file):\(index + 1): the score pill is not behind RideHUDLayout.showsScore")
             }
         }

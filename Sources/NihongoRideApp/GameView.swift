@@ -260,6 +260,10 @@ private struct HUDBar: View {
 
     private var zh: Bool { language == "zh" }
 
+    /// Time Attack is played FOR the score — it is what Game Center's leaderboard takes — so at
+    /// the accessibility sizes that ride keeps its score and drops the combo instead.
+    private var scoreIsTheRide: Bool { session.mode == .timeAttack }
+
     var body: some View {
         HStack(spacing: narrow ? 8 : 14) {
             // The conjugation HUD's v1.31 fix, which this row never got (v1.33 §B G). At AX5 —
@@ -276,15 +280,17 @@ private struct HUDBar: View {
                 .padding(.horizontal, 10).padding(.vertical, 6)
                 .background(Theme.accent2.opacity(0.85), in: Capsule())
                 .accessibilityLabel(zh ? "等级 \(session.currentLevelLabel)" : "Level \(session.currentLevelLabel)")
-            if RideHUDLayout.showsScore(typeSize) {
+            if RideHUDLayout.showsScore(typeSize, scoreIsTheRide: scoreIsTheRide) {
                 stat(icon: "star.fill", value: "\(session.score)", tint: Theme.gold,
                      label: zh ? "得分" : "Score")
             }
-            stat(icon: "flame.fill",
-                 value: session.combo >= 2 ? "×\(session.combo)" : "—",
-                 tint: session.combo >= 2 ? Theme.accent : Theme.dim,
-                 label: zh ? "连击" : "Combo",
-                 spoken: session.combo >= 2 ? "\(session.combo)" : (zh ? "无" : "none"))
+            if RideHUDLayout.showsCombo(typeSize, scoreIsTheRide: scoreIsTheRide) {
+                stat(icon: "flame.fill",
+                     value: session.combo >= 2 ? "×\(session.combo)" : "—",
+                     tint: session.combo >= 2 ? Theme.accent : Theme.dim,
+                     label: zh ? "连击" : "Combo",
+                     spoken: session.combo >= 2 ? "\(session.combo)" : (zh ? "无" : "none"))
+            }
             Spacer()
             if !narrow {
                 stat(icon: "bicycle", value: "\(Int(session.distanceMeters)) m", tint: Theme.accent2,
@@ -394,13 +400,26 @@ private struct HUDBar: View {
 /// not actionable mid-run, and the rider gets the number on the results screen and in the Ride
 /// Log. The live combo is not recoverable afterwards (results keep only the best one).
 ///
+/// **Except in Time Attack**, added at merge (2026-09-17): there the score is not informational —
+/// it is the point of the mode and what Game Center's leaderboard receives — and the 1.32
+/// simulator pass saw that HUD fit at AX5 already. Its progress pill is a bare count ("37", not
+/// "19/20"), roughly 45pt narrower than the ride row measured above, so with the combo hidden
+/// instead it comes to about 332pt late in a run (≈350 with a five-digit score) against 361.
+/// Arithmetic again, from the table's figures; the simulator pass re-shoots Time Attack at AX5.
+///
 /// Headless renders cannot see any of this (`ImageRenderer` ignores Dynamic Type), so the claim
 /// above is arithmetic until the AX5 simulator pass re-shoots both HUDs.
 enum RideHUDLayout {
     /// False at the accessibility sizes, true at every other size — so the default-size HUD is
-    /// exactly what it was.
-    static func showsScore(_ typeSize: DynamicTypeSize) -> Bool {
-        !typeSize.isAccessibilitySize
+    /// exactly what it was. `scoreIsTheRide` (Time Attack) keeps the score at every size.
+    static func showsScore(_ typeSize: DynamicTypeSize, scoreIsTheRide: Bool = false) -> Bool {
+        !typeSize.isAccessibilitySize || scoreIsTheRide
+    }
+
+    /// The pill a score-first ride drops at the accessibility sizes in the score's place. Exactly
+    /// one of the two is hidden at those sizes, and neither below them.
+    static func showsCombo(_ typeSize: DynamicTypeSize, scoreIsTheRide: Bool = false) -> Bool {
+        !typeSize.isAccessibilitySize || !scoreIsTheRide
     }
 }
 

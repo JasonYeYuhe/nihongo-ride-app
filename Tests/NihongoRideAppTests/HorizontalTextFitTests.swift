@@ -236,7 +236,32 @@ struct HorizontalTextFitTests {
     /// None of the five is a defect; all five belong in the count, because the count's job is to
     /// stop the population growing silently, and a population that excluded a whole syntactic form
     /// could not do that. (v1.32 pre-submission review.)
-    static let accepted = 39
+    ///
+    /// ⚠️ **Correction, 2026-09-17: `ListsView:143` WAS a defect.** "Wraps downward, so harmless"
+    /// was reasoned, not seen. Measured with CoreText and then on a simulator at AX5, the row's icon,
+    /// play button and menu left the name a 91pt column: "★ / Save / d", three letters a line, on
+    /// the list every install has. Wrapping downward one glyph at a time is the shape this file is
+    /// about. Fixed in v1.33 §B L.
+    ///
+    /// **39 → 26 in v1.33, and only six of the thirteen left because they gained a limit.** Recorded
+    /// per finding, because a ceiling that fell for the wrong reason would be read as progress:
+    ///
+    /// * **Gained a real `lineLimit` / shrink floor (6):** `GameView` HUD level capsule; the Ride
+    ///   Log's odometer and forecast label + count (4); Practice's BLIND badge.
+    /// * **Fixed by a layout switch, but left the scan's view only because the `Text` moved into a
+    ///   property or helper the scan does not look inside (6):** the About and Settings header
+    ///   titles; the drill answer kana and the coach's kana row (now one glyph helper under
+    ///   `ViewThatFits`); the Ride Log's BEST badge; the Word Lists row name. Each is pinned by a
+    ///   `V133*` layout test instead, which is the only thing now watching it.
+    /// * **Moved, not fixed (1):** Practice's keyboard hint went into a helper with the top-bar
+    ///   rework. It is the macOS-only branch, where accessibility sizes do not occur.
+    ///
+    /// Still counted though fixed by layout (the scan cannot see an `isAccessibilitySize` switch at
+    /// the call site): `ResultsView` stumbled-word chip and review word (`MenuFlow` / one column),
+    /// About's credit name and licence, Stats' conjugation card stats. And still counted because
+    /// NOT fixed, deliberately: the six `RoadView` findings — the offer screen is frozen for the
+    /// §K observation window (`docs/PLAN-V1.33.md` §C).
+    static let accepted = 26
 
     @Test("no NEW Text in a horizontal row without a line limit or a shrink allowance")
     func theShapeDoesNotGrow() throws {
