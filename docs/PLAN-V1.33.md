@@ -205,6 +205,10 @@ defect (65aae30).
 * At the accessibility sizes the sentence card insets its line by the width a corner control reaches into
   the card (the save-star fix), so a long sentence shrinks further than a short one — measured at about 74%
   of another sentence's glyph size on the same screen. Still larger than its kana reading and legible.
+* At the DEFAULT text size a narrow iPad still wraps a HUD value: on an iPad mini in portrait a journey's
+  distance pill reads "80" over "m" (seen in the second simulator pass, `C_hud_journey_after6_ipadmini_en_large`).
+  That is v1.32's behaviour, restored on purpose by round 2 — below the accessibility sizes the row wraps
+  rather than push the pause button off — so it is not a regression, and not fixed here.
 * On a word list over the 500-word cap ("1199/1200") neither accessibility-size row fits a 320pt phone or a
   400pt iPad window with the keyboard down: the pause button stays whole, the level capsule reads "…".
 * iPad windows narrower than 380pt at the accessibility sizes: Time Attack's second row has nothing left to
