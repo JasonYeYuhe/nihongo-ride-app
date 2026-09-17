@@ -48,11 +48,12 @@ struct V133RNothingTypedTests {
         let untouched = Self.session()
         #expect(GameSummary(from: untouched).typedNothing)
         // The 0/0 that printed "100%": asserted so the reason for "—" stays visible here.
-        #expect(GameSummary(from: untouched).accuracy == 1)
+        #expect(GameSummary(from: untouched).accuracy == 1 && GameSummary(from: untouched).pressedNoKey)
 
         let skipped = Self.session()
         skipped.skip()
         #expect(GameSummary(from: skipped).typedNothing, "a skip is not typing")
+        #expect(GameSummary(from: skipped).pressedNoKey, "a skip is not a key")
         #expect(!GameSummary(from: skipped).reviewWords.isEmpty,
                 "the skip's lapse must still reach the summary — only the headline changes")
 
@@ -61,18 +62,30 @@ struct V133RNothingTypedTests {
         #expect(refused.totalKeystrokes == 1 && refused.correctKeystrokes == 0,
                 "the arrangement did not refuse a key — this row measures nothing")
         #expect(GameSummary(from: refused).typedNothing)
+        // …but it pressed a key, and its accuracy is a real 0%, not the "—" of a run with no keys.
+        #expect(!GameSummary(from: refused).pressedNoKey, "a refused key is still a key pressed")
+        #expect(GameSummary(from: refused).accuracy == 0)
 
         let started = Self.session()
         let first = try #require(started.currentRomaji?.first)
         _ = started.input(first)
         #expect(started.correctKeystrokes == 1, "the arrangement did not accept a key")
-        #expect(!GameSummary(from: started).typedNothing)
+        #expect(!GameSummary(from: started).typedNothing && !GameSummary(from: started).pressedNoKey)
     }
 
     // MARK: - The ride: the log and the screen agree
 
     enum Arrangement: String, CaseIterable {
         case untouched, skippedOnly, refusedOnly, oneCorrectKey, oneWord
+    }
+
+    /// Whether the accuracy tile shows "—": only when no key at all was pressed. A refused-only
+    /// run typed nothing but shows its real 0%. Written out, not derived from the summary.
+    static func showsNoAccuracy(_ a: Arrangement) -> Bool {
+        switch a {
+        case .untouched, .skippedOnly: return true
+        case .refusedOnly, .oneCorrectKey, .oneWord: return false
+        }
     }
 
     /// Whether a RideRecord should exist for the arrangement. Written from what `logRun` has done
@@ -122,16 +135,21 @@ struct V133RNothingTypedTests {
                 "\(arrangement): the Ride Log says \(logged ? "a ride" : "no ride") and the screen says typedNothing = \(summary.typedNothing)")
         #expect(model.pendingReviewMoment?.wasLogged == logged,
                 "\(arrangement): the review prompt's input changed")
+        #expect(summary.pressedNoKey == Self.showsNoAccuracy(arrangement),
+                "\(arrangement): the accuracy tile's dash is \(summary.pressedNoKey ? "shown" : "not shown") for accuracy \(summary.accuracy)")
     }
 
     // MARK: - The drill
 
     /// 0 untouched, 1 skipped, 2 one prompt answered, 3 one correct key into the first prompt and
-    /// nothing answered. The last is the ride's `.oneCorrectKey`, and it is the only row that reads
-    /// the summary's `correctKeystrokes`: without it, `ConjugationSummary` could snapshot that
-    /// counter as 0 — the review did exactly that — and every other row would still pass.
+    /// nothing answered, 4 only wrong keys. Row 3 is the ride's `.oneCorrectKey`, and it is the only
+    /// row that reads the summary's `correctKeystrokes`: without it, `ConjugationSummary` could
+    /// snapshot that counter as 0 — the review did exactly that — and every other row would still
+    /// pass. It is also the drill the grade's `promptsCompleted > 0` guard is for: accuracy 1, not
+    /// typed-nothing, so the grade is drawn, and it must not say STEADY for 0 answers. Row 4 is the
+    /// ride's `.refusedOnly`: nothing answered, but its accuracy is a real 0%.
     @Test("a drill with nothing answered says so; one answered prompt or one correct key does not",
-          arguments: [0, 1, 2, 3])
+          arguments: [0, 1, 2, 3, 4])
     func drill(_ arrangement: Int) throws {
         let model = AppModelTests.makeModel(vocab: VocabStore(entries: AppModelTests.verbEntries(3)))
         model.startConjugation()
@@ -144,6 +162,10 @@ struct V133RNothingTypedTests {
             _ = session.input(first)
             #expect(session.correctKeystrokes == 1 && (session.currentRomaji?.count ?? 0) > 1,
                     "the arrangement did not press exactly one correct key short of an answer")
+        case 4:
+            _ = session.input("q"); _ = session.input("q")   // no romaji starts with q
+            #expect(session.totalKeystrokes == 2 && session.correctKeystrokes == 0,
+                    "the arrangement did not refuse two keys")
         default: break
         }
         let answered = session.promptsCompleted
@@ -152,15 +174,64 @@ struct V133RNothingTypedTests {
         switch arrangement {
         case 2:
             #expect(answered == 1, "the arrangement did not answer a prompt")
-            #expect(!summary.typedNothing)
+            #expect(!summary.typedNothing && !summary.pressedNoKey)
+            #expect(summary.grade == .steady, "one clean answer graded \(summary.grade), as it did before the guard")
         case 3:
             #expect(answered == 0, "one key answered a prompt — this row no longer isolates the key")
             #expect(!summary.typedNothing, "a correct key into the first prompt is typing, as it is in the ride")
+            #expect(summary.accuracy == 1 && !summary.pressedNoKey)
+            #expect(summary.grade == .lap, "0 answers graded \(summary.grade) — a tier above Another set for 0/3, as STEADY was")
+        case 4:
+            #expect(answered == 0)
+            #expect(summary.typedNothing, "only wrong keys answered nothing")
+            #expect(!summary.pressedNoKey && summary.accuracy == 0,
+                    "wrong keys were pressed: the tile shows their 0%, not a dash")
         default:
             #expect(answered == 0)
             #expect(summary.typedNothing, "arrangement \(arrangement): nothing was answered")
-            #expect(summary.accuracy == 1, "the 0/0 the tile no longer prints as 100%")
+            #expect(summary.accuracy == 1 && summary.pressedNoKey, "the 0/0 the tile no longer prints as 100%")
         }
+    }
+
+    // MARK: - The drill's grade needs an answer
+
+    /// Expected tiers written out. The ride's `RideGrade` has guarded `.steady` and `.building` with
+    /// `wordsCompleted > 0` since v1.12 §C; the drill's grade had no such guard, so a drill with a
+    /// correct key or two and no answer — not typed-nothing, accuracy 1 — drew STEADY for 0/12.
+    @Test("the drill grades a tier above Another set only when it answered something")
+    func drillGradeNeedsAnAnswer() {
+        typealias Row = (accuracy: Double, maxCombo: Int, answered: Int, expected: RideGrade)
+        let rows: [Row] = [
+            (1.0, 0, 0, .lap),        // one correct key, nothing answered: was .steady
+            (0.95, 0, 0, .lap),       // was .steady
+            (0.80, 0, 0, .lap),       // was .building
+            (1.0, 1, 1, .steady),     // one clean answer — unchanged
+            (0.92, 3, 4, .steady),
+            (0.80, 2, 3, .building),
+            (0.70, 2, 3, .lap),
+            (0.98, 6, 7, .flawless),
+            (0.98, 11, 12, .flawless),
+            (0.98, 5, 12, .steady),   // combo short of promptsCompleted − 1
+        ]
+        for row in rows {
+            #expect(ConjugationSummary.grade(accuracy: row.accuracy, maxCombo: row.maxCombo,
+                                             promptsCompleted: row.answered) == row.expected,
+                    "accuracy \(row.accuracy), combo \(row.maxCombo), \(row.answered) answered")
+        }
+    }
+
+    /// The view draws `ConjugationSummary.grade` and restates none of its thresholds — the grade
+    /// rule shipped without its guard precisely because it lived inline in the view.
+    @Test("ConjugationResultsView draws the drill's grade from ConjugationSummary.grade")
+    func drillGradeIsDrawnFromTheRule() throws {
+        let files = try CallSiteScanner.shippedSources.get()
+        let view = try #require(files.first { $0.path == "Sources/NihongoRideApp/ConjugationResultsView.swift" })
+        let body = try #require(view.functions(named: "grade").first?.body, "grade(for:) moved")
+        let text = view.text(body)
+        #expect(text.range(of: #"\bswitch\s+s\.grade\b"#, options: .regularExpression) != nil,
+                "grade(for:) no longer switches over s.grade")
+        #expect(text.range(of: #"\baccuracy\s*(?:>=|>|<|<=)"#, options: .regularExpression) == nil,
+                "grade(for:) compares accuracy itself again")
     }
 
     // MARK: - One rule, asked by the log and by both screens
@@ -233,16 +304,20 @@ struct V133RNothingTypedTests {
 
     // MARK: - Where each results screen asks
 
-    /// The three decisions a results screen makes from `typedNothing`. A count of mentions held none
-    /// of them: the review turned the ride's headline into `if false {` and `>= 2` still counted the
-    /// accuracy tile and the Share guard. So each is found by its own shape.
+    /// The three decisions a results screen makes about a run that typed nothing. A count of
+    /// mentions held none of them: the review turned the ride's headline into `if false {` and
+    /// `>= 2` still counted the accuracy tile and the Share guard. So each is found by its own shape,
+    /// and by the property it must ask.
     enum Site: String, CaseIterable {
         /// `if <summary>.typedNothing {` whose ELSE branch — not its then branch — draws the grade.
         case headline
-        /// `<summary>.typedNothing ?` inside `scoreGrid`, the accuracy tile's "—".
+        /// `<summary>.pressedNoKey ?` inside `scoreGrid`, the accuracy tile's "—". Not
+        /// `typedNothing`: a run of only wrong keys typed nothing and has a real 0%.
         case accuracyTile
         /// `… typedNothing != true` in the condition of the `if` that shows the `ShareLink`.
         case shareGuard
+
+        var property: String { self == .accuracyTile ? "pressedNoKey" : "typedNothing" }
     }
 
     static let screenSites: [(view: String, sites: [Site])] = [
@@ -250,8 +325,9 @@ struct V133RNothingTypedTests {
         ("ConjugationResultsView", [.headline, .accuracyTile]),
     ]
 
-    /// Every site in `sites` that no code mention of `typedNothing` in `file` satisfies, plus any
-    /// mention that is none of them (an unpinned new decision is a reason to extend this list).
+    /// Every site in `sites` that no code mention of its property in `file` satisfies, plus any
+    /// mention of `typedNothing` or `pressedNoKey` that is none of them (an unpinned new decision is
+    /// a reason to extend this list).
     static func screenProblems(_ file: CallSiteScanner.File, sites: [Site]) -> [String] {
         let code = file.code
         func next(after offset: Int) -> (byte: UInt8, at: Int)? {
@@ -271,8 +347,15 @@ struct V133RNothingTypedTests {
         let shares = file.calls(named: "ShareLink").map(\.nameOffset)
         let scoreGrid = file.functions(named: "scoreGrid").compactMap(\.body)
 
-        func site(of mention: Int) -> Site? {
-            let end = mention + "typedNothing".utf8.count
+        func site(of mention: Int, _ property: String) -> Site? {
+            let end = mention + property.utf8.count
+            guard property == "typedNothing" else {
+                // accuracyTile
+                if scoreGrid.contains(where: { $0.contains(mention) }), next(after: end)?.byte == UInt8(ascii: "?") {
+                    return .accuracyTile
+                }
+                return nil
+            }
             // headline
             if linePrefix(mention).range(of: #"^if\s+\w+\.$"#, options: .regularExpression) != nil,
                let open = next(after: end), open.byte == UInt8(ascii: "{"), let then = block(openingAt: open.at),
@@ -280,10 +363,6 @@ struct V133RNothingTypedTests {
                word.0 == "else", let elseOpen = next(after: word.1), let otherwise = block(openingAt: elseOpen.at),
                grades.contains(where: { otherwise.contains($0) }), !grades.contains(where: { then.contains($0) }) {
                 return .headline
-            }
-            // accuracyTile
-            if scoreGrid.contains(where: { $0.contains(mention) }), next(after: end)?.byte == UInt8(ascii: "?") {
-                return .accuracyTile
             }
             // shareGuard
             let rest = String(decoding: code[end..<min(code.count, end + 12)], as: UTF8.self)
@@ -296,12 +375,13 @@ struct V133RNothingTypedTests {
             return nil
         }
 
-        let mentions = file.mentions(of: "typedNothing")
-        let found = mentions.map { ($0, site(of: $0)) }
-        var problems = sites.filter { wanted in !found.contains { $0.1 == wanted } }
-            .map { "\(file.path): no \($0.rawValue) decided by typedNothing" }
-        problems += found.filter { $0.1 == nil || !sites.contains($0.1!) }
-            .map { "\(file.location($0.0)): a typedNothing this test does not know — pin it" }
+        let found = ["typedNothing", "pressedNoKey"].flatMap { property in
+            file.mentions(of: property).map { (offset: $0, property: property, site: site(of: $0, property)) }
+        }
+        var problems = sites.filter { wanted in !found.contains { $0.site == wanted } }
+            .map { "\(file.path): no \($0.rawValue) decided by \($0.property)" }
+        problems += found.filter { $0.site == nil || !sites.contains($0.site!) }
+            .map { "\(file.location($0.offset)): a \($0.property) this test does not know — pin it" }
         return problems
     }
 
@@ -323,7 +403,7 @@ struct V133RNothingTypedTests {
                     }
                 }
                 private func scoreGrid(_ summary: GameSummary) -> some View {
-                    let accuracyCard = summary.typedNothing
+                    let accuracyCard = summary.pressedNoKey
                         ? (value: dash, spoken: nothing)
                         : (value: percent, spoken: nil)
                     return Text(accuracyCard.value)
@@ -335,16 +415,22 @@ struct V133RNothingTypedTests {
                 "\(Self.screenProblems(.init(path: "Shipped.swift", source: shipped), sites: all))")
         let mutants: [(String, String, Site)] = [
             ("if summary.typedNothing {", "if false { // summary.typedNothing", .headline),
-            ("summary.typedNothing\n", "false\n", .accuracyTile),
+            ("summary.pressedNoKey\n", "false\n", .accuracyTile),
             (", model.lastSummary?.typedNothing != true {", " {", .shareGuard),
         ]
         for (old, new, removed) in mutants {
             let source = shipped.replacingOccurrences(of: old, with: new)
             #expect(source != shipped, "the \(removed) mutant did not apply")
             #expect(Self.screenProblems(.init(path: "Mutant.swift", source: source), sites: all)
-                    == ["Mutant.swift: no \(removed.rawValue) decided by typedNothing"],
+                    == ["Mutant.swift: no \(removed.rawValue) decided by \(removed.property)"],
                     "\(removed): \(Self.screenProblems(.init(path: "Mutant.swift", source: source), sites: all))")
         }
+        // The tile asking typedNothing again — a dash for a wrong-keys-only run — is not the tile.
+        let wrongProperty = shipped.replacingOccurrences(of: "summary.pressedNoKey\n", with: "summary.typedNothing\n")
+        #expect(Self.screenProblems(.init(path: "Wrong.swift", source: wrongProperty), sites: all)
+                == ["Wrong.swift: no accuracyTile decided by pressedNoKey",
+                    "Wrong.swift:14: a typedNothing this test does not know — pin it"],
+                "\(Self.screenProblems(.init(path: "Wrong.swift", source: wrongProperty), sites: all))")
         // Branches swapped: the grade drawn for a run that typed nothing is not a headline decision.
         let swapped = shipped.replacingOccurrences(of: "Text(title)", with: "grade(for: summary)")
         #expect(Self.screenProblems(.init(path: "Swapped.swift", source: swapped), sites: all).contains {

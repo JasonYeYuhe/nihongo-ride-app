@@ -387,11 +387,13 @@ struct ResultsView: View {
             : (icon: "bicycle", tint: Theme.accent2,
                value: "\(Int(summary.distanceMeters)) m", label: zh ? "距离" : "Distance",
                spoken: zh ? "\(Int(summary.distanceMeters)) 米" : "\(Int(summary.distanceMeters)) meters")
-        // A run that typed nothing has no accuracy: `GameSession.accuracy` defines 0/0 as 1, which
+        // A run that pressed no key has no accuracy: `GameSession.accuracy` defines 0/0 as 1, which
         // printed "100%" under a ride of nothing. "—" is a drawing, so VoiceOver gets words — the
-        // StatsView "Best WPM" tile's rule. (v1.33 §B R)
+        // StatsView "Best WPM" tile's rule. (v1.33 §B R) Asked as `pressedNoKey`, not
+        // `typedNothing`: a ride of only wrong keys also typed nothing — the headline still says
+        // so — but its 0% is real, and "—" / "Nothing typed" was not true of it. (v1.33 review)
         let accuracyCard: (icon: String, tint: Color, value: String, label: String, spoken: String?) =
-            summary.typedNothing
+            summary.pressedNoKey
             ? (icon: "scope", tint: Color.white, value: "—", label: zh ? "准确率" : "Accuracy",
                spoken: zh ? "没有输入" : "Nothing typed")
             : (icon: "scope", tint: Color.white,

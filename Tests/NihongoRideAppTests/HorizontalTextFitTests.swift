@@ -247,7 +247,11 @@ struct HorizontalTextFitTests {
     /// per finding, because a ceiling that fell for the wrong reason would be read as progress:
     ///
     /// * **Gained a real `lineLimit` / shrink floor (6):** `GameView` HUD level capsule; the Ride
-    ///   Log's odometer and forecast label + count (4); Practice's BLIND badge.
+    ///   Log's odometer and forecast label + count (4); Practice's BLIND badge. (Correction, same
+    ///   day, results-and-ride review: the HUD capsule's limit and floor now apply at the
+    ///   accessibility sizes only — at every size they pushed the pause button off an iPad mini at
+    ///   the default size — so below those sizes it wraps as in 1.32, on purpose. The scan still
+    ///   reads the conditional `lineLimit` as a limit, and cannot tell.)
     /// * **Fixed by a layout switch, but left the scan's view only because the `Text` moved into a
     ///   property or helper the scan does not look inside (6):** the About and Settings header
     ///   titles; the drill answer kana and the coach's kana row (now one glyph helper under

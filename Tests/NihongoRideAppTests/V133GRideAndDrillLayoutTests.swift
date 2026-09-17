@@ -98,8 +98,14 @@ struct V133GRideAndDrillLayoutTests {
         }
     }
 
-    /// The v1.31 fix, now on the ride's row too: no HUD value may wrap.
-    @Test("every HUD value and the level capsule carry a one-line limit")
+    /// The v1.31 fix, on the ride's row too — **at the accessibility sizes only**. It first shipped
+    /// at every size, and the results-and-ride review measured what that did at the default size: a
+    /// late journey row needs ~752pt, so the unwrappable row pushed the pause button off an iPad mini
+    /// in portrait and out of iPad Split View (`HUDBar`'s comment). Below the accessibility sizes the
+    /// values and the capsule carry 1.32's modifiers — none — again. Mutation, 2026-09-17: the
+    /// value's limit back to an unconditional `.lineLimit(1)` goes red here, and so does the
+    /// capsule's `.minimumScaleFactor(0.7)`.
+    @Test("the HUD's values and level capsule keep to one line at the accessibility sizes, and wrap as in 1.32 below them")
     func hudValuesNeverWrap() throws {
         let lines = Self.codeLines(try Self.source("GameView.swift"))
         guard let valueLine = lines.firstIndex(of: "Text(value).foregroundStyle(.white).monospacedDigit()"),
@@ -107,13 +113,56 @@ struct V133GRideAndDrillLayoutTests {
             Issue.record("the HUD's value Text or level capsule moved; update this test")
             return
         }
-        let valueChain = lines[(valueLine + 1)...].prefix { $0.hasPrefix(".") }
-        #expect(valueChain.contains(".lineLimit(1)"))
-        #expect(valueChain.contains(".fixedSize(horizontal: true, vertical: false)"))
-        let levelChain = lines[(levelLine + 1)...].prefix { $0.hasPrefix(".") }
-        #expect(levelChain.contains(".lineLimit(1)"))
-        #expect(levelChain.contains(".minimumScaleFactor(0.7)"))
+        let valueChain = Array(lines[(valueLine + 1)...].prefix { $0.hasPrefix(".") })
+        #expect(valueChain == [".lineLimit(typeSize.isAccessibilitySize ? 1 : nil)",
+                               ".fixedSize(horizontal: typeSize.isAccessibilitySize, vertical: false)"],
+                "the HUD value's modifiers are \(valueChain)")
+        let levelChain = Array(lines[(levelLine + 1)...].prefix { $0.hasPrefix(".") })
+        #expect(levelChain.contains(".lineLimit(typeSize.isAccessibilitySize ? 1 : nil)"), "\(levelChain)")
+        #expect(levelChain.contains(".minimumScaleFactor(typeSize.isAccessibilitySize ? 0.7 : 1)"), "\(levelChain)")
+        #expect(!levelChain.contains { $0.hasPrefix(".lineLimit(1") || $0.hasPrefix(".minimumScaleFactor(0.") || $0.hasPrefix(".fixedSize(") },
+                "the level capsule has an unconditional limit again: \(levelChain)")
     }
+
+    #if canImport(AppKit)
+    /// What makes the modifiers above "1.32's below the accessibility sizes" is that their false
+    /// forms — `lineLimit(nil)`, `minimumScaleFactor(1)`, `fixedSize` in neither axis — change
+    /// nothing. That is SwiftUI's behaviour, not this app's, so it is measured rather than assumed:
+    /// each HUD shape is laid out bare (1.32) and with the false forms, at a width that makes the
+    /// value wrap and at one that does not, and the sizes must be equal. Control: the true forms at
+    /// the narrow width must NOT equal the bare size, or the width is not narrow enough to tell.
+    @MainActor
+    @Test("the HUD modifiers' below-accessibility forms lay out exactly as no modifiers")
+    func hudModifiersAreInertBelowAccessibility() {
+        func size<V: View>(_ view: V, _ width: CGFloat) -> CGSize {
+            NSHostingController(rootView: view.font(.system(size: 17, weight: .semibold, design: .rounded)))
+                .sizeThatFits(in: CGSize(width: width, height: 1_000))
+        }
+        func pill<V: View>(_ value: V) -> some View {
+            HStack(spacing: 6) { Image(systemName: "checkmark.circle.fill"); value }
+                .padding(.horizontal, 9).padding(.vertical, 7)
+        }
+        let value = "1234/5678"
+        let level = "Journey · Beginner"
+        for width in [40, 400] as [CGFloat] {
+            let bare = size(pill(Text(value).monospacedDigit()), width)
+            let below = size(pill(Text(value).monospacedDigit()
+                .lineLimit(nil).fixedSize(horizontal: false, vertical: false)), width)
+            #expect(bare == below, "pill at \(width)pt: 1.32 \(bare), below-AX modifiers \(below)")
+
+            let bareLevel = size(Text(level).padding(.horizontal, 10), width)
+            let belowLevel = size(Text(level).lineLimit(nil).minimumScaleFactor(1).padding(.horizontal, 10), width)
+            #expect(bareLevel == belowLevel, "level at \(width)pt: 1.32 \(bareLevel), below-AX modifiers \(belowLevel)")
+        }
+        let narrowBare = size(pill(Text(value).monospacedDigit()), 40)
+        let narrowAX = size(pill(Text(value).monospacedDigit().lineLimit(1).fixedSize(horizontal: true, vertical: false)), 40)
+        #expect(narrowAX != narrowBare && narrowAX.height < narrowBare.height,
+                "control: at 40pt the one-line value should differ from the wrapping one (\(narrowAX) vs \(narrowBare))")
+        let narrowLevelBare = size(Text(level).padding(.horizontal, 10), 40)
+        let narrowLevelAX = size(Text(level).lineLimit(1).minimumScaleFactor(0.7).padding(.horizontal, 10), 40)
+        #expect(narrowLevelAX != narrowLevelBare, "control: the level capsule's one-line form is indistinguishable at 40pt")
+    }
+    #endif
 
     // MARK: 2. Drill HUD — the mode badge
 

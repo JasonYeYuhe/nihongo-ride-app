@@ -271,12 +271,26 @@ private struct HUDBar: View {
             // pass 2026-09-17, iPhone 17 Pro 402pt, `A_game-journey_en_ax5.png`): nothing in the
             // row had a line limit, so SwiftUI resolved a row wider than the screen by wrapping
             // every Text in it. ConjugationGameView's HUD comment says why the answer is "shrink,
-            // never wrap" and it applies here unchanged.
+            // never wrap".
+            //
+            // **Here that holds at the accessibility sizes only**, where `RideHUDLayout` hides one
+            // pill so a row that cannot wrap still fits a phone. Below them no pill is hidden, and a
+            // row that may not wrap does not get narrower — it pushes its last item, the pause
+            // button, off the screen. The results-and-ride review measured this HUDBar hosted on
+            // macOS: late in a journey ride the row needs ~752pt, so with the limits at every size an
+            // iPad mini in portrait (744pt) and iPad Split View (678pt and narrower) lost the pause
+            // button partly or wholly at the DEFAULT size — for a touch-only rider the only way to
+            // pause or end the ride — and by scaled-font arithmetic so did 375/393/402pt iPhones at
+            // xxLarge and xxxLarge, the ordinary Text Size slider. In 1.32 those values wrapped and
+            // the button stayed on screen. So below the accessibility sizes this capsule and the
+            // values in `stat` carry 1.32's modifiers again: no line limit, no shrink, no fixed
+            // size (`lineLimit(nil)`, `minimumScaleFactor(1)` and `fixedSize` in neither axis are
+            // the defaults — `V133GRideAndDrillLayoutTests` measures that). (v1.33 review)
             Text(session.currentLevelLabel)
                 .scaledSystemFont(14, weight: .heavy, design: .rounded)
                 .foregroundStyle(.white)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .lineLimit(typeSize.isAccessibilitySize ? 1 : nil)
+                .minimumScaleFactor(typeSize.isAccessibilitySize ? 0.7 : 1)
                 .padding(.horizontal, 10).padding(.vertical, 6)
                 .background(Theme.accent2.opacity(0.85), in: Capsule())
                 .accessibilityLabel(zh ? "等级 \(session.currentLevelLabel)" : "Level \(session.currentLevelLabel)")
@@ -356,10 +370,12 @@ private struct HUDBar: View {
         HStack(spacing: 6) {
             Image(systemName: icon).foregroundStyle(tint)
             // "0/12" wrapping to "0/1" over "2" is not a smaller number, it is a broken pill —
-            // the same two lines ConjugationHUD.stat carries since v1.31. (v1.33 §B G.)
+            // the same two lines ConjugationHUD.stat carries since v1.31. (v1.33 §B G.) At the
+            // accessibility sizes only: below them a value that cannot wrap pushes the pause button
+            // off a narrow screen at the default size, which is worse — see the level capsule.
             Text(value).foregroundStyle(.white).monospacedDigit()
-                .lineLimit(1)
-                .fixedSize(horizontal: true, vertical: false)
+                .lineLimit(typeSize.isAccessibilitySize ? 1 : nil)
+                .fixedSize(horizontal: typeSize.isAccessibilitySize, vertical: false)
         }
         .padding(.horizontal, narrow ? 9 : 12).padding(.vertical, 7)
         .background(.black.opacity(0.42), in: Capsule())
@@ -384,6 +400,10 @@ private struct HUDBar: View {
 /// | start: ★0, —, 0/20 | 391 | 313 | 315 |
 /// | mid: ★450, ×4, 7/20 | 429 | 345 | 321 |
 /// | late: ★2400, ×10, 19/20 | 477 | **377** | 353 |
+///
+/// The same fact is why the ride row carries its one-line limit at these sizes only (`HUDBar`):
+/// below them nothing here hides a pill, and an unwrappable row pushed the pause button off an iPad
+/// mini in portrait at the default size.
 ///
 /// The drill row has the same pills with a "Verbs" badge in the level's place, and what matters
 /// there is how much is left for the badge late in a drill (★1200, ×10, 11/12) on the three

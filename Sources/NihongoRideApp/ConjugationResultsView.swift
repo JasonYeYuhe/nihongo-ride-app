@@ -96,9 +96,11 @@ struct ConjugationResultsView: View {
     }
 
     private func scoreGrid(_ s: ConjugationSummary) -> some View {
-        // Nothing answered has no accuracy (0/0 is defined as 1, which printed "100%"). "—" is a
-        // drawing, so VoiceOver gets words. Same rule as ResultsView's tile. (v1.33 §B R)
-        let accuracy: (value: String, spoken: String?) = s.typedNothing
+        // No key pressed has no accuracy (0/0 is defined as 1, which printed "100%"). "—" is a
+        // drawing, so VoiceOver gets words. Same rule as ResultsView's tile, and like it asked as
+        // `pressedNoKey`: a drill of only wrong keys answered nothing, but its 0% is shown.
+        // (v1.33 §B R; v1.33 review)
+        let accuracy: (value: String, spoken: String?) = s.pressedNoKey
             ? ("—", zh ? "没有输入" : "Nothing typed")
             : ("\(Int(s.accuracy * 100))%", nil)
         let cards: [(icon: String, tint: Color, value: String, label: String, spoken: String?)] = [
@@ -161,22 +163,24 @@ struct ConjugationResultsView: View {
         .accessibilityValue(c.spoken ?? c.value)
     }
 
+    /// The tier is `ConjugationSummary.grade` — out of the view so its "answered anything" guard
+    /// can be tested; this only draws it. (v1.33 review)
     private func grade(for s: ConjugationSummary) -> some View {
         let (title, tint, line): (String, Color, String) = {
-            if s.accuracy >= 0.97 && s.maxCombo >= max(5, s.promptsCompleted - 1) {
+            switch s.grade {
+            case .flawless:
                 return (zh ? "完美" : "Flawless", Theme.gold,
                         zh ? "变形几乎全对,手感极佳。" : "Nearly every form correct. Pure flow.")
-            }
-            if s.accuracy >= 0.90 {
+            case .steady:
                 return (zh ? "稳健" : "Steady", Theme.done,
                         zh ? "节奏稳,变形准确。" : "Steady pace, accurate forms.")
-            }
-            if s.accuracy >= 0.75 {
+            case .building:
                 return (zh ? "有进步" : "Building", Theme.accent2,
                         zh ? "正在掌握变形规则,继续。" : "You're learning the forms. Keep going.")
+            case .lap:
+                return (zh ? "再练一组" : "Another set", Theme.accent,
+                        zh ? "多练几组,变形会越来越自然。" : "A few more sets and the forms will click.")
             }
-            return (zh ? "再练一组" : "Another set", Theme.accent,
-                    zh ? "多练几组,变形会越来越自然。" : "A few more sets and the forms will click.")
         }()
         return VStack(spacing: 6) {
             Text(title.uppercased())

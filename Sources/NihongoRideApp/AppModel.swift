@@ -49,6 +49,8 @@ struct GameSummary: Equatable {
     var wordsCompleted: Int
     /// Carried for `typedNothing` only — the second half of the rule `logRun` applies.
     var correctKeystrokes: Int
+    /// Carried for `pressedNoKey` only.
+    var totalKeystrokes: Int
     var accuracy: Double
     var distanceMeters: Double
     /// Distinct words that lapsed this run (skipped / hinted / many typos).
@@ -82,6 +84,7 @@ struct GameSummary: Equatable {
         maxCombo = session.maxCombo
         wordsCompleted = session.wordsCompleted
         correctKeystrokes = session.correctKeystrokes
+        totalKeystrokes = session.totalKeystrokes
         accuracy = session.accuracy
         distanceMeters = session.distanceMeters
         mode = session.mode
@@ -97,6 +100,13 @@ struct GameSummary: Equatable {
     var typedNothing: Bool {
         RunTyping.typedNothing(unitsCompleted: wordsCompleted, correctKeystrokes: correctKeystrokes)
     }
+
+    /// No key was pressed at all, so `accuracy` is 0/0 — which `GameSession.accuracy` defines as 1
+    /// — and there is no accuracy to show. Narrower than `typedNothing`: a run of only refused keys
+    /// also typed nothing, but its 0% is a real measurement, and the results screen shows it.
+    /// Asked of the keystroke count rather than of the Double, which cannot tell 0/0 from N/N.
+    /// (v1.33 review)
+    var pressedNoKey: Bool { totalKeystrokes == 0 }
 }
 
 extension GameSummary {
@@ -124,6 +134,8 @@ struct ConjugationSummary: Equatable {
     var promptCount: Int
     /// Carried for `typedNothing` only.
     var correctKeystrokes: Int
+    /// Carried for `pressedNoKey` only.
+    var totalKeystrokes: Int
     var accuracy: Double
 
     init(from session: ConjugationSession) {
@@ -132,6 +144,7 @@ struct ConjugationSummary: Equatable {
         promptsCompleted = session.promptsCompleted
         promptCount = session.promptCount
         correctKeystrokes = session.correctKeystrokes
+        totalKeystrokes = session.totalKeystrokes
         accuracy = session.accuracy
     }
 
@@ -140,6 +153,31 @@ struct ConjugationSummary: Equatable {
     /// answer — the ride's rule, asked of prompts. (v1.33 §B R)
     var typedNothing: Bool {
         RunTyping.typedNothing(unitsCompleted: promptsCompleted, correctKeystrokes: correctKeystrokes)
+    }
+
+    /// No key pressed, so accuracy is 0/0 (`ConjugationSession.accuracy` defines it as 1). A drill of
+    /// only wrong keys answered nothing too, but its 0% is shown. See `GameSummary.pressedNoKey`.
+    var pressedNoKey: Bool { totalKeystrokes == 0 }
+
+    /// How well the drill went, in the four tiers `ConjugationResultsView` draws — `RideGrade`'s
+    /// cases, `.lap` being "Another set".
+    var grade: RideGrade {
+        Self.grade(accuracy: accuracy, maxCombo: maxCombo, promptsCompleted: promptsCompleted)
+    }
+
+    /// `promptsCompleted > 0` guards `.steady` and `.building`, as `wordsCompleted > 0` has guarded
+    /// them in `RideGrade` since v1.12 §C, and for the same reason: accuracy is 1 at 0/0 and still
+    /// 1 after a correct key or two. v1.33's `typedNothing` headline covers a drill with no correct
+    /// key, but one with a correct key on the first prompt and no answer is not "nothing typed",
+    /// and it showed "Drill complete! STEADY — Steady pace, accurate forms." for 0/12. It now
+    /// grades `.lap`. `.flawless` needs no guard: its combo of 5 counts completed prompts
+    /// (`ConjugationSession` raises the combo only on a completed one). Every drill that answered
+    /// a prompt grades exactly as before. (v1.33 review)
+    static func grade(accuracy: Double, maxCombo: Int, promptsCompleted: Int) -> RideGrade {
+        if accuracy >= 0.97 && maxCombo >= max(5, promptsCompleted - 1) { return .flawless }
+        if accuracy >= 0.90 && promptsCompleted > 0 { return .steady }
+        if accuracy >= 0.75 && promptsCompleted > 0 { return .building }
+        return .lap
     }
 }
 
