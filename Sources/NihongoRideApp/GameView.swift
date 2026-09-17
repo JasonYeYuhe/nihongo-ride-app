@@ -254,8 +254,11 @@ private struct HUDBar: View {
     var wpm: Double = 0
     var onPause: (() -> Void)? = nil
 
-    /// iPhone width fits ~4 pills; distance + accuracy move to the results
-    /// screen there (they're informational, not actionable mid-run).
+    /// iPhone width fits ~4 pills; distance, accuracy and speed move to the results screen there
+    /// (they're informational, not actionable mid-run). **An iPad drops the same three at the
+    /// accessibility sizes** — the gates below read `narrow || typeSize.isAccessibilitySize`, not
+    /// this alone — because there the values may not wrap and the iPad's full row outgrew iPad
+    /// windows (`RideHUDLayout` has the measurement). Below those sizes an iPad keeps all seven.
     private var narrow: Bool { isPhoneIdiom }
 
     private var zh: Bool { language == "zh" }
@@ -274,8 +277,9 @@ private struct HUDBar: View {
             // never wrap".
             //
             // **Here that holds at the accessibility sizes only**, where `RideHUDLayout` hides one
-            // pill so a row that cannot wrap still fits a phone. Below them no pill is hidden, and a
-            // row that may not wrap does not get narrower — it pushes its last item, the pause
+            // pill and an iPad also hides distance, accuracy and speed (round 2, below), so a row
+            // that cannot wrap still fits a phone or an iPad window. Below them no pill is hidden,
+            // and a row that may not wrap does not get narrower — it pushes its last item, the pause
             // button, off the screen. The results-and-ride review measured this HUDBar hosted on
             // macOS: late in a journey ride the row needs ~752pt, so with the limits at every size an
             // iPad mini in portrait (744pt) and iPad Split View (678pt and narrower) lost the pause
@@ -286,6 +290,15 @@ private struct HUDBar: View {
             // values in `stat` carry 1.32's modifiers again: no line limit, no shrink, no fixed
             // size (`lineLimit(nil)`, `minimumScaleFactor(1)` and `fixedSize` in neither axis are
             // the defaults — `V133GRideAndDrillLayoutTests` measures that). (v1.33 review)
+            //
+            // **Round 2: the accessibility-size row had only been fitted to a phone.** On an iPad
+            // `narrow` is false, so that row kept distance, accuracy and speed as well, and with its
+            // values unable to wrap it measured 758pt at the start of a journey, 846pt late in one
+            // and 862pt late in a long Time Attack at AX1: the pause button partly or wholly off an
+            // iPad mini in portrait (744pt) and every narrower Split View or Stage Manager window,
+            // and partly off a portrait 820/834pt iPad late in a ride. So at these sizes an iPad
+            // shows the phone's pills (the two gates below); `RideHUDLayout` has the measurements.
+            // (v1.33 pre-submission review, round 2)
             Text(session.currentLevelLabel)
                 .scaledSystemFont(14, weight: .heavy, design: .rounded)
                 .foregroundStyle(.white)
@@ -305,8 +318,14 @@ private struct HUDBar: View {
                      label: zh ? "连击" : "Combo",
                      spoken: session.combo >= 2 ? "\(session.combo)" : (zh ? "无" : "none"))
             }
-            Spacer()
-            if !narrow {
+            // At the accessibility sizes the Spacer may collapse, as `ConjugationHUD`'s does: its
+            // default minimum was the last 8pt a 320pt Display Zoom iPhone lacked late in a journey
+            // (row 328pt against 320, the pause button 4pt off the edge). `minLength: nil` is the
+            // same value `Spacer()` builds — its only initializer defaults to nil — so below them
+            // this is 1.32's Spacer. (v1.33 pre-submission review, round 2)
+            Spacer(minLength: typeSize.isAccessibilitySize ? 0 : nil)
+            // A phone's rule at every size, and an iPad's at the accessibility sizes: see `narrow`.
+            if !(narrow || typeSize.isAccessibilitySize) {
                 stat(icon: "bicycle", value: "\(Int(session.distanceMeters)) m", tint: Theme.accent2,
                      label: zh ? "距离" : "Distance",
                      spoken: zh ? "\(Int(session.distanceMeters)) 米" : "\(Int(session.distanceMeters)) meters")
@@ -330,15 +349,15 @@ private struct HUDBar: View {
                            : "\(session.wordsCompleted) of \(session.wordCount)")
                      : "\(session.wordsCompleted)")
                 .accessibilityIdentifier("hudProgress")
-            if !narrow {
+            if !(narrow || typeSize.isAccessibilitySize) {
                 stat(icon: "scope",
                      value: "\(Int(session.accuracy * 100))%", tint: .white,
                      label: zh ? "正确率" : "Accuracy")
                 // Informational, so it follows the same width rule as distance and accuracy:
                 // the fixed ride layout fits about four pills on a phone and cannot reflow, and
-                // a shattered HUD is device-verified territory (Gate E). A phone rider still
-                // gets the number on the results screen and in the Ride Log, which is where it
-                // was already.
+                // a shattered HUD is device-verified territory (Gate E). A phone rider — and an
+                // iPad rider at the accessibility sizes — still gets the number on the results
+                // screen and in the Ride Log, which is where it was already.
                 stat(icon: "speedometer",
                      value: wpm >= 1 ? "\(Int(wpm))" : "—", tint: Theme.accent,
                      label: zh ? "速度" : "Speed",
@@ -405,6 +424,26 @@ private struct HUDBar: View {
 /// below them nothing here hides a pill, and an unwrappable row pushed the pause button off an iPad
 /// mini in portrait at the default size.
 ///
+/// **Everything above is a phone's row, and an iPad's was never checked** — found by round 2 of
+/// the pre-submission review, 2026-09-18. `HUDBar.narrow` is the device, so an iPad's row also held
+/// distance, accuracy and speed, and at AX1 with its values unable to wrap it was 758pt wide at the
+/// start of a journey, 792 mid-way, 846 late, and 825 / 862 late in a Time Attack with a four /
+/// five-digit score. The pause button was partly or wholly off every iPad window up to 744pt wide
+/// (an iPad mini in portrait) and partly off an 820 or 834pt portrait iPad late in a ride. So at
+/// these sizes an iPad hides those three pills too, as a phone does at every size, and keeps its
+/// own spacing and fonts: the same five rides then need 337 / 345 / 381 / 360 / 378pt on one line
+/// (49–49.5pt tall), and the pause button is wholly on screen at 400, 507, 678, 744, 820, 834, 1024,
+/// 1032 and 1376pt with the keyboard up or down. Narrower than that it is not: 41 of its 44pt are
+/// visible at 375pt late in a journey, 14 at 320. Measured with this `HUDBar` hosted on macOS in
+/// `GameView`'s padding, every `scaledSystemFont` scaled by 28/17 (macOS does not scale
+/// `@ScaledMetric`), after the Spacer change below. Below the accessibility sizes the same
+/// instrument read identical rows before and after, on a phone and on an iPad.
+///
+/// **And a phone's row can use all of its width.** Its Spacer may collapse at these sizes (as the
+/// drill's does), because a 320pt Display Zoom iPhone late in a journey measured 328pt — the pause
+/// button 4pt past the edge — and 320 without the Spacer's default minimum: on screen, with
+/// nothing to spare. A five-digit Time Attack is 318.5.
+///
 /// The drill row has the same pills with a "Verbs" badge in the level's place, and what matters
 /// there is how much is left for the badge late in a drill (★1200, ×10, 11/12) on the three
 /// phones: 58 / 49 / 37 with combo hidden, 82 / 73 / 61 with score hidden. "Verbs" needs 66 at its
@@ -416,7 +455,7 @@ private struct HUDBar: View {
 /// 393pt phone and 16pt over with the keyboard dismissed by the end of a good ride, and the drill
 /// badge truncated again; hiding the score fits every case above (the drill's 61 becomes 69 once
 /// its spacer may collapse — see `ConjugationHUD`). It is also the least essential
-/// by the rule `HUDBar.narrow` already applies to distance, accuracy and speed — informational,
+/// by the rule `HUDBar` already applies to distance, accuracy and speed — informational,
 /// not actionable mid-run, and the rider gets the number on the results screen and in the Ride
 /// Log. The live combo is not recoverable afterwards (results keep only the best one).
 ///

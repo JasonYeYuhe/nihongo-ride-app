@@ -161,8 +161,93 @@ struct V133GRideAndDrillLayoutTests {
         let narrowLevelBare = size(Text(level).padding(.horizontal, 10), 40)
         let narrowLevelAX = size(Text(level).lineLimit(1).minimumScaleFactor(0.7).padding(.horizontal, 10), 40)
         #expect(narrowLevelAX != narrowLevelBare, "control: the level capsule's one-line form is indistinguishable at 40pt")
+
+        // The row's Spacer (round 2): `Spacer(minLength: nil)` below the accessibility sizes. That is
+        // the value `Spacer()` builds — its only initializer defaults `minLength` to nil — and it is
+        // laid out here anyway, at a width where the Spacer's minimum decides the row's width.
+        // Control: the accessibility-size form, `minLength: 0`, must come out narrower there.
+        func row(_ spacer: Spacer) -> some View {
+            HStack(spacing: 8) { Text("N5").fixedSize(); spacer; Text("19/20").fixedSize() }
+        }
+        #expect(Spacer().minLength == nil)
+        for width in [10, 400] as [CGFloat] {
+            #expect(size(row(Spacer(minLength: nil)), width) == size(row(Spacer()), width),
+                    "Spacer(minLength: nil) and Spacer() lay out differently at \(width)pt")
+        }
+        #expect(size(row(Spacer(minLength: 0)), 10).width < size(row(Spacer()), 10).width,
+                "control: at 10pt a collapsible Spacer should make the row narrower")
     }
     #endif
+
+    // MARK: 1b. HUD — an iPad's row at the accessibility sizes
+
+    /// The text of the line that opens `block`, up to its `{` — an `if` condition, or a call.
+    static func blockHead(_ block: Range<Int>, in file: CallSiteScanner.File) -> String {
+        var start = block.lowerBound
+        while start > 0, file.code[start - 1] != 10 { start -= 1 }
+        return file.text(start..<block.lowerBound).trimmingCharacters(in: .whitespaces)
+    }
+
+    /// `RideHUDLayout`'s arithmetic was a phone's, and round 2 of the pre-submission review found
+    /// what that left out: `narrow` is the device, so an iPad at the accessibility sizes kept
+    /// distance, accuracy and speed, and with values that may not wrap its row — 846pt late in a
+    /// journey at AX1 — pushed the pause button off an iPad mini in portrait and out of every
+    /// narrower window. At those sizes an iPad now hides the three as a phone does. Pinned on
+    /// comment-blanked code, so a gate switched off as `if false { // if !(narrow || …` does not
+    /// pass: each of the three sits directly in a block whose condition is exactly
+    /// `if !(narrow || typeSize.isAccessibilitySize)`, and no other pill is behind an `if` on
+    /// `narrow`. The widths themselves are `RideHUDLayout`'s, measured with the real `HUDBar`.
+    /// Mutation, 2026-09-18: either gate back to `if !narrow {` goes red here.
+    /// (v1.33 pre-submission review, round 2)
+    @Test("an iPad hides distance, accuracy and speed at the accessibility sizes, as a phone always does")
+    func informationalPillsFollowThePhoneAtAccessibilitySizes() throws {
+        let file = try #require(try CallSiteScanner.shippedSources.get()
+            .first { $0.path == "Sources/NihongoRideApp/GameView.swift" })
+        let hud = try #require(file.typeBodies(named: "HUDBar").first, "GameView has no HUDBar")
+        let informational = ["bicycle", "scope", "speedometer"]
+        var icons: [String] = []
+        for call in file.calls(named: "stat") where hud.contains(call.nameOffset) && call.receiver.isEmpty {
+            let here = file.location(call.nameOffset)
+            let arguments = call.arguments.map { String(decoding: file.codeWithStrings[$0], as: UTF8.self) } ?? ""
+            guard let quoted = arguments.range(of: #"icon:\s*"[^"]*""#, options: .regularExpression) else {
+                Issue.record("\(here): a stat pill with no icon: literal")
+                continue
+            }
+            let icon = String(arguments[quoted].drop { $0 != "\"" }.dropFirst().dropLast())
+            icons.append(icon)
+            let block = try #require(file.innermostBlock(containing: call.nameOffset, within: hud))
+            let head = Self.blockHead(block, in: file)
+            if informational.contains(icon) {
+                #expect(head == "if !(narrow || typeSize.isAccessibilitySize)",
+                        "\(here): the \(icon) pill is behind `\(head)`")
+            } else {
+                #expect(!(head.hasPrefix("if") && head.contains("narrow")),
+                        "\(here): the \(icon) pill is hidden on a phone: `\(head)`")
+            }
+        }
+        #expect(icons.filter(informational.contains) == informational,
+                "HUDBar's pills are \(icons); expected distance, accuracy and speed once each, in that order")
+        #expect(icons.count == 6, "HUDBar's pills are \(icons)")
+    }
+
+    /// The same review's cheaper finding: a 320pt Display Zoom iPhone late in a journey needed a
+    /// 328pt row at AX1, the pause button 4pt past the edge, and the 8pt it lacked was the Spacer's
+    /// default minimum. So the row's Spacer may collapse at the accessibility sizes, as
+    /// `ConjugationHUD`'s already does, and is `Spacer()`'s value below them (measured above).
+    /// Mutation, 2026-09-18: `Spacer()` goes red here.
+    @Test("the ride row's Spacer may collapse at the accessibility sizes, and only there")
+    func rideSpacerCollapsesAtAccessibilitySizes() throws {
+        let file = try #require(try CallSiteScanner.shippedSources.get()
+            .first { $0.path == "Sources/NihongoRideApp/GameView.swift" })
+        let hud = try #require(file.typeBodies(named: "HUDBar").first, "GameView has no HUDBar")
+        let spacers = file.calls(named: "Spacer").filter { hud.contains($0.nameOffset) }
+        #expect(spacers.count == 1, "HUDBar has \(spacers.count) Spacer(s)")
+        for spacer in spacers {
+            let arguments = spacer.arguments.map { file.text($0).trimmingCharacters(in: .whitespacesAndNewlines) } ?? ""
+            #expect(arguments == "minLength: typeSize.isAccessibilitySize ? 0 : nil",
+                    "\(file.location(spacer.nameOffset)): Spacer(\(arguments))")
+        }
+    }
 
     // MARK: 2. Drill HUD — the mode badge
 
