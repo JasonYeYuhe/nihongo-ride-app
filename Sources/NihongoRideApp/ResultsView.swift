@@ -98,7 +98,7 @@ struct ResultsView: View {
                         // had already refused. Asked of the SAME rule `logRun` refuses it by, so
                         // the log and this screen cannot disagree. Says what happened, and nothing
                         // else: no flag, no grade. The buttons below do not change. (v1.33 §B R)
-                        Text(zh ? "第一个词还没打,这一程就结束了" : "The ride ended before the first word")
+                        Text(summary.mode.endedBeforeFirstUnitHeadline(zh: zh))
                             .scaledSystemFont(isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                             .foregroundStyle(.white)
                             .multilineTextAlignment(.center)

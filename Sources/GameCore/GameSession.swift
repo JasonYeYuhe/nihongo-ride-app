@@ -91,6 +91,18 @@ extension GameMode {
         return zh ? "完成句数" : "Sentences"
     }
 
+    /// The results headline for a ride that ended before anything was typed, in the same unit.
+    ///
+    /// v1.33 wrote "The ride ended before the first word" for every mode, and the simulator pass of
+    /// 2026-09-18 saw it on a sentence and a dictation run above a tile counting "Sentences" /
+    /// 完成句数 — the three-units-for-one-run shape the doc above records, on the screen that
+    /// replaced a false arrival. Beside `completedUnitLabel` so the two cannot name different units.
+    /// (v1.33 pre-submission review, round 3.)
+    public func endedBeforeFirstUnitHeadline(zh: Bool) -> String {
+        if lapsesAreWords { return zh ? "第一个词还没打,这一程就结束了" : "The ride ended before the first word" }
+        return zh ? "第一句还没打,这一程就结束了" : "The ride ended before the first sentence"
+    }
+
     /// The ride HUD's progress label, including the rule about Chinese.
     ///
     /// The HUD's Chinese has always been 进度 ("progress"), which is mode-neutral and therefore

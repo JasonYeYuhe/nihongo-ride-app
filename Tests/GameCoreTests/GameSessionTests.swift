@@ -821,6 +821,18 @@ struct LapsesAreWordsTests {
         #expect(GameMode.sentence.struggledLabel(zh: false)
                 != GameMode.journey.struggledLabel(zh: false))
 
+        // The typed-nothing headline names the same unit as the tile beside it. Expected strings
+        // written out, not derived from `completedUnitLabel`. (v1.33 round 3.)
+        for mode in GameMode.allCases {
+            let expected = mode.lapsesAreWords
+                ? ("The ride ended before the first word", "第一个词还没打,这一程就结束了")
+                : ("The ride ended before the first sentence", "第一句还没打,这一程就结束了")
+            #expect(mode.endedBeforeFirstUnitHeadline(zh: false) == expected.0, "\(mode)")
+            #expect(mode.endedBeforeFirstUnitHeadline(zh: true) == expected.1, "\(mode)")
+        }
+        #expect(GameMode.sentence.endedBeforeFirstUnitHeadline(zh: false).hasSuffix("sentence"))
+        #expect(GameMode.dictation.endedBeforeFirstUnitHeadline(zh: true).hasPrefix("第一句"))
+
         // The ride HUD, whose rule is asymmetric: Chinese is mode-neutral in all six modes and
         // English is not. It lived at the call site until the review measured that reverting
         // the call site left this whole suite green — the test can only see this file, so the

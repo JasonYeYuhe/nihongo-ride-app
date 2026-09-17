@@ -18,8 +18,8 @@ wrong screen fixed at every size.** Scope and evidence: `docs/PLAN-V1.33.md`.
     AX5, 2026-09-17. On iPad at those sizes the ride HUD now shows the phone's pill set (review
     round 2); iPad was measured with hosted layouts, not seen on an iPad simulator at AX5.
   * A ride or drill ended before anything was typed showed "You've arrived!" or "Drill complete!"
-    with a grade and 100% accuracy. It now says the ride ended before the first word, or the drill
-    before the first answer, using the same rule the Ride Log already applied when it refused to
+    with a grade and 100% accuracy. It now says the ride ended before its first word (or sentence, in
+    the sentence and dictation modes), or the drill before its first answer, using the same rule the Ride Log already applied when it refused to
     record such a run.
   * Practice's labels are in Chinese in the Chinese interface. Settings' three small captions and
     About's on-device counter lines reach 4.5:1 contrast; About's footer, contact line and credit
@@ -79,8 +79,8 @@ WHATS_NEW = {
         "Practice, Settings and About used to break words mid-letter, wrap numbers onto a second "
         "line and push words off the edges of the screen. They now rearrange to fit.\n"
         "• A ride or drill that ends before you type anything no longer congratulates you with a "
-        "grade and 100% accuracy. It says the ride ended before the first word, or the drill "
-        "before the first answer.\n"
+        "grade and 100% accuracy. It says the ride ended before its first word or sentence, or the "
+        "drill before its first answer.\n"
         "• Practice's labels now appear in Chinese when the app is in Chinese.\n"
         "• The small grey captions in Settings and the on-device counters in About are easier to "
         "read, and the accuracy chart shows your first ride instead of an empty chart."
@@ -90,7 +90,7 @@ WHATS_NEW = {
         "打字教练、词单、骑行日志、统计、练习、设置和关于页,此前会把单词从字母中间断开、"
         "把数字挤到第二行、把文字推出屏幕边缘。现在它们会重新排布以适应屏幕。\n"
         "• 一个字都还没打就结束的骑行或变形练习,不再显示“到站”“完成”、评级和 100% 准确率,"
-        "而是如实说明在第一个词(或第一题)之前就结束了。\n"
+        "而是如实说明在第一个词、第一句或第一题之前就结束了。\n"
         "• 中文界面下,练习模式的标签现在显示为中文。\n"
         "• 设置页的灰色说明小字和关于页的本机计数更易读了;只骑过一次时,准确率图表会显示这一次,"
         "而不是一片空白。"
@@ -104,7 +104,7 @@ WHATS_NEW = {
         "はみ出したり、文字が画面の端から押し出されたりしていました。"
         "今は画面に収まるように並び替えられます。\n"
         "• 何も入力しないうちに終えたライドやドリルで、「到着」「完了」の表示や評価、正確さ 100% が"
-        "出なくなりました。最初の単語(ドリルでは最初の解答)の前に終わったことをそのまま表示します。\n"
+        "出なくなりました。最初の単語や文(ドリルでは最初の解答)の前に終わったことをそのまま表示します。\n"
         "• 中国語表示のとき、練習モードのラベルも中国語で表示されるようになりました。\n"
         "• 設定画面の小さな灰色の説明文と情報画面の端末内カウンターが読みやすくなり、1 回だけの"
         "ライドでも正確さのグラフにその 1 回が表示されるようになりました。"
@@ -142,8 +142,8 @@ REVIEW_NOTES = (
     "its edges. Checked on an iPhone simulator at the largest accessibility size in English and "
     "Chinese.\n"
     "2) A ride or conjugation drill ended before anything was typed used to show a success "
-    "headline, a grade and 100% accuracy. It now says the run ended before the first word or "
-    "answer, and offers no Share card for it.\n"
+    "headline, a grade and 100% accuracy. It now says the run ended before its first word, "
+    "sentence or answer, and offers no Share card for it.\n"
     "3) Practice mode's labels are translated in the Chinese interface; the small captions in "
     "Settings and the on-device counter lines in About have higher contrast; a one-ride accuracy "
     "chart draws its single point.\n\n"

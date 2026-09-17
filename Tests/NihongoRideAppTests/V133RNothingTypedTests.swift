@@ -234,6 +234,19 @@ struct V133RNothingTypedTests {
                 "grade(for:) compares accuracy itself again")
     }
 
+    /// The ride's typed-nothing headline names the mode's unit through `GameMode`, not a literal: a
+    /// sentence run said "before the first word" above a "Sentences" tile (simulator pass, round 3).
+    @Test("ResultsView's typed-nothing headline comes from GameMode, in the mode's unit")
+    func rideHeadlineNamesTheModesUnit() throws {
+        let files = try CallSiteScanner.shippedSources.get()
+        let view = try #require(files.first { $0.path == "Sources/NihongoRideApp/ResultsView.swift" })
+        let code = view.allCodeWithStrings
+        #expect(code.contains("Text(summary.mode.endedBeforeFirstUnitHeadline(zh: zh))"),
+                "the headline no longer asks GameMode for its unit")
+        #expect(!code.contains("ended before the first") && !code.contains("还没打"),
+                "ResultsView writes the typed-nothing headline itself again")
+    }
+
     // MARK: - One rule, asked by the log and by both screens
 
     /// Everything `logRun` must satisfy, as a list of what is wrong. Empty means it asks the one
