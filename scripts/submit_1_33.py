@@ -13,22 +13,28 @@ wrong screen fixed at every size.** Scope and evidence: `docs/PLAN-V1.33.md`.
 
   * At the accessibility text sizes the results screen, the ride and drill HUDs, the coach, Word
     Lists, the Ride Log, Stats, Practice, Settings and About broke words mid-letter ("Word / s",
-    "Setting / s", "★ / Save / d"), wrapped the progress pill ("0/1" over "2"), and clipped words
-    off both screen edges. Measured with CoreText and seen on a simulator at AX5, 2026-09-17.
-  * A ride or drill ended before anything was typed showed "You've arrived!" with a grade and 100%
-    accuracy. It now says the run ended before the first word, using the same rule the Ride Log
-    already applied when it refused to record such a run.
-  * Practice's labels are in Chinese in the Chinese interface; small grey text in Settings and About
-    reaches 4.5:1 contrast; a one-ride accuracy chart shows its point instead of nothing.
+    "Setting / s", "Saved" as "Save / d"), wrapped the progress pill ("0/1" over "2"), and clipped
+    words off both screen edges. Measured with CoreText and seen on an iPhone simulator (402pt) at
+    AX5, 2026-09-17. On iPad at those sizes the ride HUD now shows the phone's pill set (review
+    round 2); iPad was measured with hosted layouts, not seen on an iPad simulator at AX5.
+  * A ride or drill ended before anything was typed showed "You've arrived!" or "Drill complete!"
+    with a grade and 100% accuracy. It now says the ride ended before the first word, or the drill
+    before the first answer, using the same rule the Ride Log already applied when it refused to
+    record such a run.
+  * Practice's labels are in Chinese in the Chinese interface. Settings' three small captions and
+    About's on-device counter lines reach 4.5:1 contrast; About's footer, contact line and credit
+    URLs and Settings' sync status do not yet (PLAN-V1.33 §G). A one-ride accuracy chart shows its
+    point instead of nothing.
 
 WHAT IS DELIBERATELY NOT IN IT
 ------------------------------
-**The purchase screen ("The Road") and its entrances are NOT fixed, although they break the same way
-at AX5.** The offer, its price, its placement and its presentation are frozen for the pre-registered
-observation window (`PLAN-WINDOW` constraint 1). Deferred by name in `PLAN-V1.33.md` §C, to the first
-release after `PLAN-STAGE1` §K's decision fires.
+**The purchase screen ("The Road") is NOT fixed, although it breaks the same way at AX5.** Its two
+entrances are left exactly as they are: the Settings row already fits at AX5, and the menu's route strip
+is already replaced by a sentence at the accessibility sizes. The offer, its price, its placement and its
+presentation are frozen for the pre-registered observation window (`PLAN-WINDOW` constraint 1).
+Deferred by name in `PLAN-V1.33.md` §C, to the first release after `PLAN-STAGE1` §K's decision fires.
 
-**No purchase change a customer can see.** Same product, price, content, placements. The purchase
+**No change to what a customer is offered.** Same product, price, content, placements. The purchase
 CODE was restructured (751a37a — `PLAN-V1.33.md` §D): each StoreKit answer is mapped by one pure,
 tested function, with one behaviour change — a re-purchase after a refund this device recorded is
 stamped after that refund even if the clock moved backwards. Said plainly in the review notes rather
@@ -72,20 +78,22 @@ WHATS_NEW = {
         "screen, the ride and drill displays, the typing coach, Word Lists, the Ride Log, Stats, "
         "Practice, Settings and About used to break words mid-letter, wrap numbers onto a second "
         "line and push words off the edges of the screen. They now rearrange to fit.\n"
-        "• A ride or drill that ends before you type anything no longer says you've arrived with "
-        "100% accuracy. It says the run ended before the first word.\n"
+        "• A ride or drill that ends before you type anything no longer congratulates you with a "
+        "grade and 100% accuracy. It says the ride ended before the first word, or the drill "
+        "before the first answer.\n"
         "• Practice's labels now appear in Chinese when the app is in Chinese.\n"
-        "• Small grey text in Settings and About is easier to read, and the accuracy chart shows "
-        "your first ride instead of an empty chart."
+        "• The small grey captions in Settings and the on-device counters in About are easier to "
+        "read, and the accuracy chart shows your first ride instead of an empty chart."
     ),
     "zh-Hans": (
         "• 最大字号下也能读了。开启辅助功能的超大字号后,结果页、骑行和变形练习的顶部信息栏、"
         "打字教练、词单、骑行日志、统计、练习、设置和关于页,此前会把单词从字母中间断开、"
         "把数字挤到第二行、把文字推出屏幕边缘。现在它们会重新排布以适应屏幕。\n"
-        "• 一个字都还没打就结束的骑行或练习,不再显示“到站”和 100% 准确率,"
-        "而是如实说明这一程在第一个词之前就结束了。\n"
+        "• 一个字都还没打就结束的骑行或变形练习,不再显示“到站”“完成”、评级和 100% 准确率,"
+        "而是如实说明在第一个词(或第一题)之前就结束了。\n"
         "• 中文界面下,练习模式的标签现在显示为中文。\n"
-        "• 设置和关于页里的灰色小字更易读了;只骑过一次时,准确率图表会显示这一次,而不是一片空白。"
+        "• 设置页的灰色说明小字和关于页的本机计数更易读了;只骑过一次时,准确率图表会显示这一次,"
+        "而不是一片空白。"
     ),
     # The app's interface is English or Chinese only, so the Japanese copy names what a Japanese
     # rider actually sees on screen.
@@ -95,11 +103,11 @@ WHATS_NEW = {
         "練習、設定、情報の各画面で、単語が文字の途中で折り返されたり、数字が 2 行目に"
         "はみ出したり、文字が画面の端から押し出されたりしていました。"
         "今は画面に収まるように並び替えられます。\n"
-        "• 何も入力しないうちに終えたライドやドリルで、「到着」や正確さ 100% と表示されなく"
-        "なりました。最初の単語の前に終わったことをそのまま表示します。\n"
+        "• 何も入力しないうちに終えたライドやドリルで、「到着」「完了」の表示や評価、正確さ 100% が"
+        "出なくなりました。最初の単語(ドリルでは最初の解答)の前に終わったことをそのまま表示します。\n"
         "• 中国語表示のとき、練習モードのラベルも中国語で表示されるようになりました。\n"
-        "• 設定と情報画面の小さな灰色の文字が読みやすくなり、1 回だけのライドでも正確さの"
-        "グラフにその 1 回が表示されるようになりました。"
+        "• 設定画面の小さな灰色の説明文と情報画面の端末内カウンターが読みやすくなり、1 回だけの"
+        "ライドでも正確さのグラフにその 1 回が表示されるようになりました。"
     ),
 }
 
@@ -109,7 +117,8 @@ DESCRIPTION_EDITS = {}
 REVIEW_NOTES = (
     "Nihongo Ride is a typing-practice app for learners of Japanese. It requires no account or "
     "login with the developer, and the developer collects no data.\n\n"
-    "VERSION 1.33 ADDS NO IN-APP PURCHASE AND CHANGES NONE THAT A CUSTOMER CAN SEE. The existing "
+    "VERSION 1.33 ADDS NO IN-APP PURCHASE AND DOES NOT CHANGE THE EXISTING ONE'S PRODUCT, PRICE, "
+    "CONTENT, SCREEN OR PLACEMENTS. The existing "
     "non-consumable com.jasonye.nihongoride.scenery.lifetime is approved and live: same product "
     "identifier, same price, same content, and the same two placements (Settings > \"The Road\", "
     "plus the menu's route strip once lifetime distance passes Kyoto). Restore Purchases is on the "
@@ -118,21 +127,26 @@ REVIEW_NOTES = (
     "One internal change to the purchase code, stated so it is not a surprise: the code that reads "
     "StoreKit's purchase result was restructured so that the meaning of each result (success, "
     "unverified, pending, cancelled, failed, unknown, product not loaded) is decided in one tested "
-    "function. Every result produces the same message and the same unlock as in 1.32. The only "
-    "behaviour difference: if a purchase was refunded and the device clock was later set "
-    "backwards, buying again now unlocks immediately instead of waiting for the next store "
-    "refresh.\n\n"
+    "function. Every result produces the same message and the same outcome as in 1.32, with one "
+    "exception: if this device had recorded a refund and its clock was later set backwards, buying "
+    "again now unlocks immediately instead of waiting for the store's own entitlement list to "
+    "confirm it.\n\n"
     "WHAT IS NEW.\n"
     "1) ACCESSIBILITY. At the larger Dynamic Type accessibility sizes, many screens broke words "
     "mid-letter, wrapped numbers onto a second line or pushed text off the screen edges: the "
     "results screen, the ride and drill status bars, the typing coach, Word Lists, the Ride Log, "
-    "Stats, Practice, Settings and About. These screens now rearrange at those sizes; the default "
-    "text sizes are unchanged. Checked on an iPhone simulator at the largest accessibility size in "
-    "English and Chinese.\n"
+    "Stats, Practice, Settings and About. These screens now rearrange at those sizes; on iPad the "
+    "ride status bar shows the same items as on iPhone at those sizes. At the default text size "
+    "these screens are unchanged except where content did not fit its container: a long "
+    "conjugation answer or typing-coach word now wraps inside its card instead of running past "
+    "its edges. Checked on an iPhone simulator at the largest accessibility size in English and "
+    "Chinese.\n"
     "2) A ride or conjugation drill ended before anything was typed used to show a success "
-    "headline and 100% accuracy. It now says the run ended before the first word.\n"
-    "3) Practice mode's labels are translated in the Chinese interface; small secondary text in "
-    "Settings and About has higher contrast; a one-ride accuracy chart draws its single point.\n\n"
+    "headline, a grade and 100% accuracy. It now says the run ended before the first word or "
+    "answer, and offers no Share card for it.\n"
+    "3) Practice mode's labels are translated in the Chinese interface; the small captions in "
+    "Settings and the on-device counter lines in About have higher contrast; a one-ride accuracy "
+    "chart draws its single point.\n\n"
     "Data handling is unchanged. There is no analytics SDK, no advertising, and no "
     "developer-operated server in this app. Optional iCloud sync uses the user's own private "
     "CloudKit database, which the developer cannot read, and the app is fully usable with it "

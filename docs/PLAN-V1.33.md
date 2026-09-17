@@ -114,10 +114,21 @@ argued. The walk card and preflight move to the 1.33 builds when 1.33 is live.
    ratchet, never raised.
 2. **Default size unchanged except where intended**: headless macOS renders (`NIHONGO_SHOT`, en + zh)
    compared against the baseline rendered from `3d6c59f` before any change (`scripts/compare_renders.py`,
-   pixels, candidate rendered twice more as controls). Intended differences, and only these: About (the
-   counter block's colour; the Chinese typo), Practice in Chinese (translated labels). **Menu identical.**
-   Settings and the coach are not in the headless set, so they are compared on the simulator at the
-   default size.
+   pixels, candidate rendered twice more as controls). **Menu identical.** Settings and the coach are not
+   in the headless set, so they are compared on the simulator at the default size.
+   Intended differences at the default size, all of them, as shipped (corrected after the pre-submission
+   review — the first version of this list named only About and Practice):
+   * About: the counter lines' colour; the Chinese disclosure's 核.
+   * Settings: the three captions' colour.
+   * Practice: the Chinese labels 练习 / 提示已关 / 正确率; with hints off the badge no longer shrinks — the
+     label does.
+   * A ride or drill that typed nothing: a new headline, no flag or check mark, no grade, no Share button;
+     its accuracy tile reads "—" only when no key at all was pressed.
+   * A drill that completed no prompt grades "Another set".
+   * A one-ride accuracy chart draws its point.
+   * Content wider than its container wraps instead of overflowing: a conjugation answer (e.g. 8+ kana
+     with the keyboard down on a 393pt phone), the coach's replay word, and any `MenuFlow` item wider
+     than its row (a stumbled-word chip).
 3. **AX5 fixed on a device**: the same scratch UI-test pass re-run after the change, English and Chinese,
    default size and AX5, screenshots before/after side by side for every §B item — sequentially, on one
    simulator no other session is driving.
@@ -133,3 +144,68 @@ argued. The walk card and preflight move to the 1.33 builds when 1.33 is live.
 
 Nothing in §B changes how far anyone rides. The refused-run headline changes a screen shown after a run
 that recorded nothing. Registered as "no exposure change" so a later reader does not have to re-derive it.
+
+## §G What was built, what the pre-submission review found, and what became of it (2026-09-17/18)
+
+Built in four worktrees (groups R, G, S, L) on 2794507, merged 2d297e1. Two review rounds before upload:
+round 1 (five lenses) on 2d297e1, fixed in 336a754, 68f2214 and 0024cd5; round 2 (three lenses, every
+non-NOTE finding given independent refuters) on f9cd5f8, fixed on the branch `v133-round2-fixes`.
+
+**Fixed**
+* Round 1, SERIOUS: the ride HUD's one-line limits applied at every size and pushed the pause button off
+  iPad mini portrait and Split View at the default size, and off phones at xxLarge / xxxLarge. The limits
+  now apply at the accessibility sizes only; below them the HUD is 1.32's (0024cd5).
+* Round 2, SERIOUS (found by two lenses independently, confirmed by four refuters): on an iPad at the
+  accessibility sizes the same one-line HUD row still needed ~760–850pt, so iPad mini portrait, 11-inch
+  iPads late in a ride and Split View windows lost the pause button — a touch-only rider's only way to
+  pause or end. `RideHUDLayout`'s arithmetic had covered phones only. **Decided:** at the accessibility
+  sizes an iPad shows the phone's pill set (distance, accuracy and speed hidden, as on phones, by the same
+  "informational, not actionable mid-ride" rule); values stay on one line. Chosen over restoring 1.32's
+  wrapping on iPad, which kept the button only at ≥678pt and brought back "0/1" over "2".
+* Round 2, NOTE made cheap: at the accessibility sizes the HUD's spacer may collapse (as the drill HUD's
+  already does), for 320pt Display Zoom iPhones.
+* Round 1, MINOR: a run of only wrong keys showed "—" / "Nothing typed" for a real 0% — the tile now asks
+  `pressedNoKey`. A drill with a correct key but no answer graded STEADY — `ConjugationSummary.grade` now
+  requires a completed prompt for Steady and Building.
+* Round 1, MINOR: the placement UI test only ever reached the typed-nothing results screen; it now types a
+  word first and proves it reached results (336a754); round 2 added a keyboard wait before typing.
+* Round 1 tests MINOR 1–7 (68f2214) and round 2 MINOR (group S/L pins read raw source, so a switch turned
+  off with its old condition left in a comment passed): each fixed with the mutation that now fails.
+* Round 1 S/L NOTE 3: three accessibility-size switches had no test — pinned (336a754). NOTE 1: Practice's
+  badge comment corrected (default size on phones: the label, not the badge, takes the squeeze).
+* The submit copy: "the default text sizes are unchanged", a contrast claim broader than the fix, the
+  Chinese "骑行或练习" (which names Practice mode, not the drill), and review notes that said the purchase
+  was unchanged "for a customer" before describing an unlock difference — all corrected before sending.
+* §D: the purchase lens re-derived `purchase()` path by path and found no behaviour change besides the
+  stamp, so the revert condition did not fire.
+
+**Deferred, by name**
+* Drill card at AX1: with the keyboard up an answer that wraps to a second row (11+ kana on a 402pt phone)
+  leaves the card ~30pt taller than its space even at every shrink floor (replica against the 386pt card
+  in the AX5 screenshot); keyboard-down unmeasured. Not yet seen on a device.
+* At the accessibility sizes VoiceOver no longer hears the hidden pills' live values (score in a ride,
+  combo in Time Attack, and on iPad now distance / accuracy / speed); they are on the results screen.
+* `ConjugationHUD` has had one-line limits at every size since v1.31, so a drill in a very narrow iPad
+  window can clip at the default size. Predates 1.33; unchanged.
+* Small dim text still below 4.5:1: About's footer note (2.79:1), contact line (3.23), email (3.46),
+  credit URLs (3.91); Settings' sync status (3.91). 1.33 fixed Settings' three captions and About's two
+  counter lines only.
+* §B S "English that reads unfinished" in About's disclosure: not changed; only the Chinese 核.
+* Group A, the Practice status bar: not changed — every lever found either flips the software keyboard's
+  appearance or rewrites the app shell (6e7e292's message lists them).
+* `isPurchasing`'s reset has no test (purchase lens NOTE); some new source pins match exact lines and will
+  go red on reformatting (tests lens NOTE).
+* The headless render tool shares one temp directory and settings suite between processes and prints
+  "wrote" on a failed write — a separate task, not in this release; this release's renders were run
+  sequentially.
+
+**Registered under PLAN-WINDOW**
+* Constraint 1: at the accessibility sizes Settings' header (Back above the title) and Language row stack,
+  so the "The Road" card sits lower for large-text users. The card, its text, identifier and counter
+  timing are unchanged; the Road screen renders pixel-identical at the default size and unchanged at AX5.
+* Constraint 3 (§F): "nothing changes how far anyone rides" is about mechanics — no queue, distance,
+  unlock or ride-length rule changed. The screens around a ride did change (typed-nothing results; one or
+  more HUD pills hidden at the accessibility sizes), which can only make large-text riding easier.
+* Constraint 4: the zh App Store screenshot of Practice still reads "PRACTICE" while the app now says 练习.
+  No screenshot is recaptured inside the window.
+* `site/` changed on 2026-09-11 (814f185, "works offline" wording), after day 0; not in the binary.
