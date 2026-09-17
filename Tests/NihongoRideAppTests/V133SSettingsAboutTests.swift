@@ -189,4 +189,45 @@ struct V133SHeaderSourceTests {
             #expect(body.contains("backButton"))
         }
     }
+
+    static func source(_ file: String) throws -> String {
+        try String(contentsOf: HorizontalTextFitTests.appDirectory.appendingPathComponent(file), encoding: .utf8)
+    }
+
+    /// The other three accessibility-size fixes of group S. The pre-submission review replaced each
+    /// switch with `if false` and every test stayed green, so they were unguarded; these pins are
+    /// what goes red now. Same limit as above — a pin that the switch exists, not a measurement.
+    @Test("the Language row stacks at accessibility sizes, and only there")
+    func languageRowSwitch() throws {
+        let source = try Self.source("SettingsView.swift")
+        let stacked = try #require(source.range(of: "rowLabel(icon: \"globe\""), "the stacked Language row is gone")
+        let shared = try #require(source.range(of: "row(icon: \"globe\""), "the shared Language row is gone")
+        let branch = try #require(source.range(of: "if typeSize.isAccessibilitySize {", options: .backwards,
+                                               range: source.startIndex..<stacked.lowerBound))
+        let head = source[branch.upperBound..<stacked.lowerBound]
+        #expect(head.count < 200 && !head.contains("}"),
+                "the stacked Language row is not the first thing inside an accessibility-size branch")
+        let elseBranch = try #require(source.range(of: "} else {", range: stacked.upperBound..<source.endIndex))
+        #expect(elseBranch.upperBound <= shared.lowerBound
+                && source[elseBranch.upperBound..<shared.lowerBound].count < 80,
+                "the shared Language row is not the else-branch of that switch")
+    }
+
+    @Test("About's credits stack and its section titles stay on one line at accessibility sizes")
+    func aboutCreditAndTitleSwitches() throws {
+        let source = try Self.source("AboutView.swift")
+        let creditStart = try #require(source.range(of: "private func credit("), "credit(…) moved")
+        let credit = HorizontalTextFitTests.functionBody(of: source, from: creditStart.lowerBound)
+        #expect(!credit.isEmpty && !credit.contains("private func section("), "the brace walk missed credit(…)")
+        #expect(credit.contains("if typeSize.isAccessibilitySize {"), "the credit rows no longer stack at AX sizes")
+        #expect(credit.contains("Text(Self.breakingIdentifiers(name))"),
+                "the stacked credit no longer breaks identifier-like names between their parts")
+
+        let sectionStart = try #require(source.range(of: "private func section(title:"), "section(title:body:) moved")
+        let section = HorizontalTextFitTests.functionBody(of: source, from: sectionStart.lowerBound)
+        #expect(!section.isEmpty && !section.contains("private func credit("), "the brace walk missed section(…)")
+        #expect(section.contains(".lineLimit(typeSize.isAccessibilitySize ? 1 : nil)")
+                && section.contains(".minimumScaleFactor(typeSize.isAccessibilitySize ? 0.5 : 1)"),
+                "\"ACKNOWLEDGEMENTS\" can break mid-word again at AX sizes")
+    }
 }

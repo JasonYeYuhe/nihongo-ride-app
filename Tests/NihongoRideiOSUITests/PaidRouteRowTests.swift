@@ -176,14 +176,38 @@ final class PaidRouteRowTests: XCTestCase {
         XCTAssertTrue(start.waitForExistence(timeout: 10))
         XCTAssertTrue(app.buttons["menuRouteEntrance"].exists,
                       "the entrance should exist on the menu, or this test proves nothing")
+
+        // TYPE one word before ending. Since v1.33 a run that typed nothing gets a different
+        // results screen (no 🏁, no grade, no Share — `RunTyping.typedNothing`), and a paused-
+        // and-ended run is exactly that. Left as it was, this test would only ever inspect the
+        // screen no real rider sees after a ride, and an offer added beside the grade or the
+        // Share button — the spot next to the rating prompt this test exists for — would pass.
+        // (v1.33 pre-submission review.) Hints on, as `TouchFlowTests` does, so there is romaji
+        // to read.
+        let assistance = app.segmentedControls.matching(
+            NSPredicate(format: "label IN {'Romaji assistance', '罗马字提示'}")).firstMatch
+        XCTAssertTrue(assistance.waitForExistence(timeout: 5), "assistance picker missing")
+        assistance.buttons.element(boundBy: 0).tap()
         tapWhenSettled(start)
 
-        // Finish the run the short way: pause and end it. What matters is reaching the results
-        // screen, not how the ride went.
+        let hint = app.staticTexts["romajiHint"]
+        XCTAssertTrue(hint.waitForExistence(timeout: 10), "romaji hint should be visible")
+        let romaji = hint.label.replacingOccurrences(of: "→ ", with: "")
+        XCTAssertFalse(romaji.isEmpty)
+        app.typeText(romaji)
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH '1/'"))
+                        .firstMatch.waitForExistence(timeout: 5),
+                      "one word should be completed, or this inspects the typed-nothing screen again")
+
+        // Then finish the short way: pause and end it.
         let pause = app.buttons["pauseButton"]
         if pause.waitForExistence(timeout: 10) { tapWhenSettled(pause) }
         let end = app.buttons["endRunButton"]
         if end.waitForExistence(timeout: 5) { tapWhenSettled(end) }
+        // Proof the screen being inspected IS the results screen. Absent, every absence below
+        // would pass on whatever screen the run had stalled on — a gap older than v1.33.
+        XCTAssertTrue(app.buttons["menuButton"].waitForExistence(timeout: 10),
+                      "the results screen was never reached, so the absences below prove nothing")
 
         for identifier in ["roadRow", "buyRoadWest", "restorePurchases", "menuRouteEntrance"] {
             XCTAssertEqual(app.descendants(matching: .any).matching(identifier: identifier).count, 0,

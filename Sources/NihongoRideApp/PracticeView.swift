@@ -232,8 +232,14 @@ struct PracticeView: View {
     /// read, so when the row is short it is the label beside it that yields, not this. Measured
     /// with CoreText, at XXXL with a custom text the one-row bar needs 381pt even with the label at
     /// its floor — against 369 with the keyboard up and 353 with it down — and the badge was the
-    /// only thing left to squeeze. At the default size it fits and nothing moves: the English
-    /// `practice-blind.png` top bar renders pixel-identical. (v1.33 §B L.)
+    /// only thing left to squeeze. (v1.33 §B L.)
+    ///
+    /// ⚠️ **This is NOT an accessibility-size-only change, and "nothing moves at the default size"
+    /// was true only of the 1000pt macOS render** (corrected in the pre-submission review). On a
+    /// 393pt phone at the default size with hints off, the one-row bar needs ~394pt ("PRACTICE ·
+    /// LONG") or ~423pt ("· MY TEXT") against 369 with the keyboard up (CoreText). Before, the row
+    /// could squeeze the badge or the label; now only the label yields (to ×0.8, inside its 0.5
+    /// floor). Kept deliberately: the badge can no longer break mid-word.
     @ViewBuilder
     private var hintsOffBadge: some View {
         if model.assistance == .off {
