@@ -20,6 +20,7 @@ struct PracticeView: View {
     private let paper = Color(red: 0.96, green: 0.94, blue: 0.88)
     private let paper2 = Color(red: 0.91, green: 0.88, blue: 0.80)
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.dynamicTypeSize) private var typeSize
     private let ink = Color(red: 0.12, green: 0.11, blue: 0.10)
     private let accent = Color(red: 0.85, green: 0.29, blue: 0.26)
 
@@ -165,40 +166,102 @@ struct PracticeView: View {
         }
     }
 
+    /// The label, the hints-off badge, and the controls.
+    ///
+    /// ⚠️ **At the accessibility sizes this is two rows: Next/Done first, the label and badge
+    /// under them.** Measured with CoreText for a 393pt phone at AX5, 2026-09-17 (v1.33 scan
+    /// finding #24): Next ▸ and Done cannot shrink and take 300pt; "PRACTICE · LONG" is 354 and
+    /// the BLIND capsule 135, against 369 with the keyboard up — 797 on one line. The label's 0.5
+    /// floor could not absorb that, so on a 402pt iPhone 17 Pro it collapsed to "PRACT…" (simulator
+    /// pass #8) and, with hints off, BLIND had nowhere to go. On their own row the label and badge
+    /// have the whole width: with the 8pt gap they need 497, which the label absorbs at ×0.64,
+    /// inside its floor, and the Chinese row (318) does not shrink at all. Controls first because
+    /// they are what the learner needs to reach; the label is decoration, which is also why it is
+    /// the part that yields.
+    ///
+    /// Below the accessibility sizes the bar is one row, exactly as before. (v1.33 §B L.)
+    @ViewBuilder
     private func topBar(_ s: GameSession) -> some View {
-        HStack {
-            // Passages ride a synthetic VocabEntry whose jlpt is hardcoded .n5, so the
-            // header claimed every passage was N5 — a Long passage full of N3 grammar
-            // included. The honest label for a passage is its LENGTH, which is the thing the
-            // user actually picked in the menu; the JLPT label stays for word-stream mode,
-            // where it is real. (v1.15 §L.)
-            Text("PRACTICE · \(practiceHeaderLabel(s))")
-                .scaledSystemFont(12, weight: .bold).tracking(3)
-                .foregroundStyle(ink.opacity(0.4))
-                // The label yields before the buttons do: it is decoration, they are controls.
-                .lineLimit(1)
-                .minimumScaleFactor(0.5)
-            if model.assistance == .off {
-                Text("BLIND").scaledSystemFont(11, weight: .heavy).tracking(2)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 8).padding(.vertical, 2)
-                    .background(accent, in: Capsule())
-                    .padding(.leading, 6)
-            }
-            Spacer()
-            if isTouchDevice {
-                // Touch-only iPads need tappable controls — Enter/Esc shortcuts
-                // don't exist on the software keyboard.
-                HStack(spacing: 10) {
-                    topButton(model.languageCode == "zh" ? "下一段 ▸" : "Next ▸",
-                              id: "practiceNext") { s.skip() }
-                    topButton(model.languageCode == "zh" ? "完成" : "Done",
-                              id: "practiceDone") { model.finishGame() }
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Spacer(minLength: 0)
+                    topControls(s)
                 }
-            } else {
-                Text(model.languageCode == "zh" ? "Enter 下一段 · Esc 结束" : "Enter for next · Esc to finish")
-                    .scaledSystemFont(12, weight: .medium).foregroundStyle(ink.opacity(0.35))
+                HStack {
+                    practiceLabel(s)
+                    hintsOffBadge
+                    Spacer(minLength: 0)
+                }
             }
+        } else {
+            HStack {
+                practiceLabel(s)
+                hintsOffBadge
+                Spacer()
+                topControls(s)
+            }
+        }
+    }
+
+    private func practiceLabel(_ s: GameSession) -> some View {
+        // Passages ride a synthetic VocabEntry whose jlpt is hardcoded .n5, so the
+        // header claimed every passage was N5 — a Long passage full of N3 grammar
+        // included. The honest label for a passage is its LENGTH, which is the thing the
+        // user actually picked in the menu; the JLPT label stays for word-stream mode,
+        // where it is real. (v1.15 §L.)
+        //
+        // "练习" in Chinese: this read "PRACTICE · 长" in the Chinese UI (simulator pass #8),
+        // and 练习 is what the app already calls this mode (`GameMode.displayName`, the Ride
+        // Log). The English string is unchanged byte for byte. (v1.33 §B L.)
+        Text((model.languageCode == "zh" ? "练习" : "PRACTICE") + " · \(practiceHeaderLabel(s))")
+            .scaledSystemFont(12, weight: .bold).tracking(3)
+            .foregroundStyle(ink.opacity(0.4))
+            // The label yields before the buttons do: it is decoration, they are controls.
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
+    }
+
+    /// The badge shown when romaji hints are off.
+    ///
+    /// Chinese says "提示已关", the words the ride and drill screens already use for the same state
+    /// (`assistance == .off`, `GameView.controls`) — not 盲打, which in Chinese means touch-typing
+    /// without looking at the keyboard, a different thing. It read "BLIND" in the Chinese UI.
+    ///
+    /// One line and a fixed width: the badge is a state the learner chose and must be able to
+    /// read, so when the row is short it is the label beside it that yields, not this. Measured
+    /// with CoreText, at XXXL with a custom text the one-row bar needs 381pt even with the label at
+    /// its floor — against 369 with the keyboard up and 353 with it down — and the badge was the
+    /// only thing left to squeeze. At the default size it fits and nothing moves: the English
+    /// `practice-blind.png` top bar renders pixel-identical. (v1.33 §B L.)
+    @ViewBuilder
+    private var hintsOffBadge: some View {
+        if model.assistance == .off {
+            Text(model.languageCode == "zh" ? "提示已关" : "BLIND")
+                .scaledSystemFont(11, weight: .heavy).tracking(2)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 8).padding(.vertical, 2)
+                .background(accent, in: Capsule())
+                .padding(.leading, 6)
+        }
+    }
+
+    @ViewBuilder
+    private func topControls(_ s: GameSession) -> some View {
+        if isTouchDevice {
+            // Touch-only iPads need tappable controls — Enter/Esc shortcuts
+            // don't exist on the software keyboard.
+            HStack(spacing: 10) {
+                topButton(model.languageCode == "zh" ? "下一段 ▸" : "Next ▸",
+                          id: "practiceNext") { s.skip() }
+                topButton(model.languageCode == "zh" ? "完成" : "Done",
+                          id: "practiceDone") { model.finishGame() }
+            }
+        } else {
+            Text(model.languageCode == "zh" ? "Enter 下一段 · Esc 结束" : "Enter for next · Esc to finish")
+                .scaledSystemFont(12, weight: .medium).foregroundStyle(ink.opacity(0.35))
         }
     }
 
@@ -216,6 +279,10 @@ struct PracticeView: View {
             // territory. It keeps the custom label in the same length class as its siblings —
             // SHORT / MED / LONG — so it costs nothing at any size. The learner chose the text
             // one tap ago and the menu names it.
+            //
+            // (v1.33 §B L rethought the row: at the accessibility sizes `topBar` gives the label
+            // its own line under the buttons, where "PRACTICE · MY TEXT" needs ×0.54 at AX5
+            // beside BLIND with the keyboard up, and ×0.50 with it down — at its 0.5 floor.)
             return zh ? "我的文本" : "MY TEXT"
         }
         guard model.practicePassages else { return s.currentLevelLabel }
@@ -370,10 +437,15 @@ struct PracticeView: View {
         let wpm = (elapsed < 2 || s.correctKeystrokes == 0)
             ? "—"
             : "\(Int((Double(s.correctKeystrokes) / 5.0) / (elapsed / 60)))"
+        // "正确率", not "ACC", in Chinese — the in-ride HUD's word for this number (`GameView`
+        // and `ConjugationGameView` both label it 正确率 beside the same 进度 used here). The
+        // results tiles say 准确率; this row is the HUD's counterpart, so it follows the HUD.
+        // "WPM" stays: the Chinese UI already writes it as WPM (Stats, the Ride Log). (v1.33 §B L.)
+        let zh = model.languageCode == "zh"
         return HStack(spacing: 34) {
             stat("WPM", wpm)
-            stat("ACC", "\(Int(s.accuracy * 100))%")
-            stat(model.languageCode == "zh" ? "进度" : "DONE", "\(s.wordsCompleted)/\(s.wordCount)")
+            stat(zh ? "正确率" : "ACC", "\(Int(s.accuracy * 100))%")
+            stat(zh ? "进度" : "DONE", "\(s.wordsCompleted)/\(s.wordCount)")
         }
         .foregroundStyle(ink.opacity(0.45))
     }

@@ -150,15 +150,40 @@ struct JournalView: View {
         .accessibilityValue(spoken)
     }
 
+    /// One line and a 0.7 shrink floor — **at the accessibility sizes only**, where the odometer and
+    /// forecast rows below need them. Everywhere else these are SwiftUI's own defaults (`nil`, `1`),
+    /// so the modifiers change nothing there.
+    ///
+    /// Not unconditional, and that was measured rather than assumed: with a plain
+    /// `.lineLimit(1).minimumScaleFactor(0.7)` the headless `journal.png` render CHANGED at the
+    /// default size (2026-09-17, ~450k pixels, en and zh) — `ImageRenderer` drew the odometer
+    /// numbers and forecast counts visibly smaller and the two cards shorter, although every one of
+    /// them fits. It does not shrink text the way a device does (`ScaledFont.swift`; the same
+    /// render already draws the recent-ride dates, which carry a shrink allowance, at two different
+    /// sizes). A device may well have been unaffected, but the macOS App Store screenshots come out
+    /// of that renderer, and "unchanged at the default size" is only provable where the value is
+    /// the default. (v1.33 §B L.)
+    private var accessibilityLineLimit: Int? { typeSize.isAccessibilitySize ? 1 : nil }
+    private var accessibilityShrinkFloor: CGFloat { typeSize.isAccessibilitySize ? 0.7 : 1 }
+
+    /// ⚠️ One line each, with a shrink floor, on the value AND the unit at the accessibility sizes —
+    /// the fix `dueChip` in `StatsView` got in v1.32 for "Tomorr / ow", applied to its twin here. A
+    /// lifetime count only grows: measured with CoreText for a 393pt phone at AX5 (2026-09-17, v1.33
+    /// scan finding #11/#12), "9999 words" is 305pt in a 313pt card and "12345 words" is 354, so the
+    /// learner's ten-thousandth word is the one that would break the number or "words" across two
+    /// lines. 354 → 313 is ×0.88, inside the 0.7 floor. Both fit untouched below the accessibility
+    /// sizes (160pt at XXXL), which is why the floor is not applied there. (v1.33 §B L.)
     private func odoRow(value: String, unit: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 6) {
             Text(value)
                 .scaledSystemFont(24, weight: .bold, design: .rounded)
                 .foregroundStyle(.white)
                 .monospacedDigit()
+                .lineLimit(accessibilityLineLimit).minimumScaleFactor(accessibilityShrinkFloor)
             Text(unit)
                 .scaledSystemFont(12, weight: .semibold, design: .rounded)
                 .foregroundStyle(Theme.dim)
+                .lineLimit(accessibilityLineLimit).minimumScaleFactor(accessibilityShrinkFloor)
         }
     }
 
@@ -183,6 +208,14 @@ struct JournalView: View {
         .accessibilityValue(spoken)
     }
 
+    /// ⚠️ The Stats "Tomorr / ow" defect's twin (v1.32 fixed it in `StatsView.dueChip`; this row
+    /// has the same label and was left out). Measured with CoreText for a 393pt phone at AX5,
+    /// 2026-09-17 (v1.33 scan finding #13/#14): "Tomorrow" beside 99 due is 289pt in a 313pt
+    /// card and fits; beside 100 it is 325, and beside 1000 it is 362 — so the row broke exactly
+    /// when a learner's backlog crossed three digits. One line and a 0.7 floor on the label and
+    /// the count at the accessibility sizes: 362 → 313 is ×0.86. At XXXL the widest case is 178pt,
+    /// so below the accessibility sizes the floor is not applied (see `accessibilityShrinkFloor`
+    /// for why that is measured, not just tidy). (v1.33 §B L.)
     private func forecastRow(_ label: String, count: Int, tint: Color) -> some View {
         HStack(spacing: 8) {
             Circle().fill(count > 0 ? tint : Color.white.opacity(0.12))
@@ -190,11 +223,13 @@ struct JournalView: View {
             Text(label)
                 .scaledSystemFont(13, weight: .medium, design: .rounded)
                 .foregroundStyle(Theme.dim)
+                .lineLimit(accessibilityLineLimit).minimumScaleFactor(accessibilityShrinkFloor)
             Spacer()
             Text("\(count)")
                 .scaledSystemFont(18, weight: .bold, design: .rounded)
                 .foregroundStyle(count > 0 ? .white : Theme.dim)
                 .monospacedDigit()
+                .lineLimit(accessibilityLineLimit).minimumScaleFactor(accessibilityShrinkFloor)
         }
     }
 
@@ -221,16 +256,7 @@ struct JournalView: View {
             return [bestPart, span].compactMap { $0 }.joined(separator: zh ? "," : " ")
         }()
         return VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline) {
-                cardTitle(zh ? "速度趋势" : "Speed trend", icon: "gauge.with.needle", tint: Theme.done)
-                Spacer()
-                if let best = bestSpoken {
-                    Text((zh ? "最佳 " : "BEST ") + "\(best) WPM")
-                        .scaledSystemFont(11, weight: .heavy, design: .rounded)
-                        .tracking(1)
-                        .foregroundStyle(Theme.gold)
-                }
-            }
+            trendHeader(best: bestSpoken)
             if series.count >= 2 {
                 RoadSparkline(values: series)
                     .frame(height: isPhoneIdiom ? 90 : 110)
@@ -247,6 +273,40 @@ struct JournalView: View {
         .accessibilityElement()
         .accessibilityLabel(zh ? "速度趋势" : "Speed trend")
         .accessibilityValue(trendSpoken)
+    }
+
+    /// The card title and, once a best exists, the BEST badge.
+    ///
+    /// ⚠️ **At the accessibility sizes the badge goes UNDER the title**, and no shrink allowance
+    /// could stand in for that. Measured with CoreText for a 393pt phone at AX5, 2026-09-17 (v1.33
+    /// scan finding #15): "SPEED TREND" with its icon is 310pt and "BEST 157 WPM" is 261, against
+    /// a 313pt card — squeezing both onto one line would take ×0.55, and splitting the width
+    /// evenly broke "SPEE / D". Under the title the badge has the whole card (261 of 313).
+    ///
+    /// Below the accessibility sizes the header is exactly what it was: at XXXL the one-line
+    /// header is 285pt of 313. (v1.33 §B L.)
+    @ViewBuilder
+    private func trendHeader(best: String?) -> some View {
+        let title = cardTitle(zh ? "速度趋势" : "Speed trend", icon: "gauge.with.needle", tint: Theme.done)
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 6) {
+                title
+                if let best { bestBadge(best) }
+            }
+        } else {
+            HStack(alignment: .firstTextBaseline) {
+                title
+                Spacer()
+                if let best { bestBadge(best) }
+            }
+        }
+    }
+
+    private func bestBadge(_ best: String) -> some View {
+        Text((zh ? "最佳 " : "BEST ") + "\(best) WPM")
+            .scaledSystemFont(11, weight: .heavy, design: .rounded)
+            .tracking(1)
+            .foregroundStyle(Theme.gold)
     }
 
     // MARK: Recent rides
@@ -309,6 +369,18 @@ struct JournalView: View {
         .accessibilityLabel(rideRowLabel(record))
     }
 
+    /// The mode icon's tile in the STACKED row, scaled against `.body` — the text style the glyph
+    /// inside it scales against (`scaledSystemFont` defaults to `.body`), so tile and glyph grow at
+    /// the same rate and keep the default proportions.
+    ///
+    /// The fixed 26×26 tile did not grow while its glyph did. Measured with CoreText, 2026-09-17:
+    /// the bicycle glyph is 23pt wide at the default size and 73pt at AX5, so on the device it
+    /// spilled out of its 26pt tile over "Today" / "今天" (simulator pass #13, 402pt iPhone 17 Pro).
+    /// Scaled, the tile is 81pt at AX5. Only the stacked row uses it: the inline row is never drawn
+    /// at the accessibility sizes, and at the default size this is 26 exactly. (v1.33 §B L.)
+    @ScaledMetric(relativeTo: .body) private var stackedIconTile: CGFloat = 26
+    @ScaledMetric(relativeTo: .body) private var stackedIconCorner: CGFloat = 7
+
     /// The accessibility-size arrangement: identity on one line, numbers on the next.
     private func stackedRideRow(_ record: RideRecord) -> some View {
         let style = modeStyle(record.mode)
@@ -317,8 +389,9 @@ struct JournalView: View {
                 Image(systemName: style.icon)
                     .scaledSystemFont(12, weight: .bold)
                     .foregroundStyle(style.tint)
-                    .frame(width: 26, height: 26)
-                    .background(style.tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 7))
+                    .frame(width: stackedIconTile, height: stackedIconTile)
+                    .background(style.tint.opacity(0.14),
+                                in: RoundedRectangle(cornerRadius: stackedIconCorner))
                 Text(dayLabel(record.date))
                     .scaledSystemFont(12, weight: .medium, design: .rounded)
                     .foregroundStyle(.white.opacity(0.85))

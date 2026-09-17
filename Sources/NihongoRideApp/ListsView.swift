@@ -20,6 +20,7 @@ extension View {
 /// own field), Esc/Back returns to the menu, zIndex handled by RootView.
 struct ListsView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
     private var zh: Bool { model.languageCode == "zh" }
 
     @State private var showingCreate = false
@@ -127,71 +128,119 @@ struct ListsView: View {
 
     // MARK: Rows
 
+    /// One list.
+    ///
+    /// ⚠️ **At the accessibility text sizes this row becomes two lines**, for the reason
+    /// `JournalView.rideRow` gives: a horizontal arrangement that cannot fit stops being one.
+    /// Measured with CoreText on 2026-09-17 for a 393pt phone at AX5 (v1.33 scan finding #16):
+    /// the icon, play button, menu and gaps take 230 of the card's 321pt, leaving the NAME a
+    /// 91pt column — "Saved" alone needs 141 — so the default list rendered as "★ / Save / d"
+    /// over "2 / words" on a 402pt iPhone 17 Pro (simulator pass #14). The default list always
+    /// exists, so every AX5 learner met it.
+    ///
+    /// Stacked, the identity keeps line 1 (icon, name, count) and the name gets 244pt of it;
+    /// the two controls move to line 2. Below the accessibility sizes the row is exactly what
+    /// it was (at XXXL the inline name column is 182pt against 113 for "Vocabulary").
+    ///
+    /// The residue, measured rather than hoped away: a single unbroken word wider than 244pt
+    /// at AX5 — "Vocabulary" is 255 — still breaks before its last letter. Names with spaces
+    /// wrap at the spaces. (v1.33 §B L.)
+    @ViewBuilder
     private func listRow(_ list: WordList) -> some View {
         let name = displayName(list)
         let count = list.ids.count
         let playable = model.playableCount(in: list)
-        return HStack(spacing: 12) {
-            Image(systemName: list.isDefault ? "star.fill" : "rectangle.stack")
-                .foregroundStyle(list.isDefault ? Theme.gold : Theme.accent2)
-                .scaledSystemFont(16)
-            Button {
-                model.selectedListID = list.id
-                model.screen = .listDetail
-            } label: {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(name).scaledSystemFont(16, weight: .semibold)
-                        .foregroundStyle(.white)
-                    Text(zh ? "\(count) 词" : "\(count) word\(count == 1 ? "" : "s")")
-                        .font(.caption).foregroundStyle(Theme.dim)
+        Group {
+            if typeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 12) {
+                        listIcon(list)
+                        openListButton(list, name: name, count: count)
+                    }
+                    HStack(spacing: 12) {
+                        playListButton(list, name: name, playable: playable)
+                        listActionsMenu(list, name: name)
+                        Spacer(minLength: 0)
+                    }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(zh ? "\(name),\(count) 词,打开" : "\(name), \(count) words, open")
-
-            // Play this list (resolve-then-guard lives in startListGame). Disabled
-            // when no words resolve on this device — not just when the list is empty.
-            Button { model.startListGame(list.id) } label: {
-                Image(systemName: "play.fill")
-                    .scaledSystemFont(14, weight: .bold)
-                    .foregroundStyle(playable > 0 ? .white : Theme.dim)
-                    .padding(8)
-                    .background(playable > 0 ? Theme.accent : Theme.card, in: Circle())
-            }
-            .buttonStyle(.plain)
-            .disabled(playable == 0)
-            .accessibilityLabel(zh ? "\(name),开始练习" : "Practice \(name)")
-
-            Menu {
-                if !list.isDefault {
-                    Button {
-                        renameText = list.name
-                        renameTarget = list
-                    } label: { Label(zh ? "重命名" : "Rename", systemImage: "pencil") }
-                    Button(role: .destructive) {
-                        deleteTarget = list
-                    } label: { Label(zh ? "删除" : "Delete", systemImage: "trash") }
+            } else {
+                HStack(spacing: 12) {
+                    listIcon(list)
+                    openListButton(list, name: name, count: count)
+                    playListButton(list, name: name, playable: playable)
+                    listActionsMenu(list, name: name)
                 }
-                Button(role: .destructive) {
-                    clearTarget = list
-                } label: { Label(zh ? "清空" : "Clear words", systemImage: "eraser") }
-            } label: {
-                Image(systemName: "ellipsis")
-                    .scaledSystemFont(16, weight: .bold)
-                    .foregroundStyle(Theme.dim)
-                    .padding(8)
-                    .contentShape(Rectangle())
             }
-            .menuStyle(.borderlessButton)
-            .disabled(model.wordListsReadOnly)
-            .fixedSize()
-            .accessibilityLabel(zh ? "\(name),更多操作" : "More actions for \(name)")
         }
         .padding(14)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: 14))
         .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Theme.cardStroke))
+    }
+
+    private func listIcon(_ list: WordList) -> some View {
+        Image(systemName: list.isDefault ? "star.fill" : "rectangle.stack")
+            .foregroundStyle(list.isDefault ? Theme.gold : Theme.accent2)
+            .scaledSystemFont(16)
+    }
+
+    private func openListButton(_ list: WordList, name: String, count: Int) -> some View {
+        Button {
+            model.selectedListID = list.id
+            model.screen = .listDetail
+        } label: {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(name).scaledSystemFont(16, weight: .semibold)
+                    .foregroundStyle(.white)
+                Text(zh ? "\(count) 词" : "\(count) word\(count == 1 ? "" : "s")")
+                    .font(.caption).foregroundStyle(Theme.dim)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(zh ? "\(name),\(count) 词,打开" : "\(name), \(count) words, open")
+    }
+
+    /// Play this list (resolve-then-guard lives in startListGame). Disabled
+    /// when no words resolve on this device — not just when the list is empty.
+    private func playListButton(_ list: WordList, name: String, playable: Int) -> some View {
+        Button { model.startListGame(list.id) } label: {
+            Image(systemName: "play.fill")
+                .scaledSystemFont(14, weight: .bold)
+                .foregroundStyle(playable > 0 ? .white : Theme.dim)
+                .padding(8)
+                .background(playable > 0 ? Theme.accent : Theme.card, in: Circle())
+        }
+        .buttonStyle(.plain)
+        .disabled(playable == 0)
+        .accessibilityLabel(zh ? "\(name),开始练习" : "Practice \(name)")
+    }
+
+    private func listActionsMenu(_ list: WordList, name: String) -> some View {
+        Menu {
+            if !list.isDefault {
+                Button {
+                    renameText = list.name
+                    renameTarget = list
+                } label: { Label(zh ? "重命名" : "Rename", systemImage: "pencil") }
+                Button(role: .destructive) {
+                    deleteTarget = list
+                } label: { Label(zh ? "删除" : "Delete", systemImage: "trash") }
+            }
+            Button(role: .destructive) {
+                clearTarget = list
+            } label: { Label(zh ? "清空" : "Clear words", systemImage: "eraser") }
+        } label: {
+            Image(systemName: "ellipsis")
+                .scaledSystemFont(16, weight: .bold)
+                .foregroundStyle(Theme.dim)
+                .padding(8)
+                .contentShape(Rectangle())
+        }
+        .menuStyle(.borderlessButton)
+        .disabled(model.wordListsReadOnly)
+        .fixedSize()
+        .accessibilityLabel(zh ? "\(name),更多操作" : "More actions for \(name)")
     }
 
     private var header: some View {
@@ -257,6 +306,7 @@ struct ListsView: View {
 /// (resolve-then-guard), and per-word removal. Non-game-screen contract.
 struct ListDetailView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
     private var zh: Bool { model.languageCode == "zh" }
 
     private var list: WordList? {
@@ -456,25 +506,50 @@ struct ListDetailView: View {
             .padding(.vertical, 8)
     }
 
+    /// ⚠️ **At the accessibility sizes the title may wrap, and Back moves above it** — the
+    /// arrangement `ScreenHeader` documents, for its reason: at those sizes the title alone can
+    /// fill the row, and a way out pushed off the screen is not a way out.
+    ///
+    /// Below them the title stays one line, as it always was. At AX5 that one line truncated the
+    /// default list to "★ Sav…" (simulator pass #14, 402pt iPhone 17 Pro). Letting it wrap BESIDE
+    /// Back would not be enough: measured with CoreText for a 393pt phone at AX5, 2026-09-17,
+    /// Back leaves the title 179pt and "Vocabulary" needs 274, so a one-word name would break
+    /// mid-word instead of truncating. Above Back it has the full 349. (v1.33 §B L.)
+    @ViewBuilder
     private var header: some View {
         let name = list.map { $0.isDefault ? AppModel.defaultListName(model.languageCode) : $0.name }
             ?? (zh ? "词单" : "List")
-        return HStack {
-            Text(name)
-                .scaledSystemFont(28, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
-                .foregroundStyle(.white).lineLimit(1)
-            Spacer()
-            Button(action: backToLists) {
-                Label(zh ? "返回" : "Back", systemImage: "chevron.left")
-                    .scaledSystemFont(14, weight: .semibold)
-                    .padding(.horizontal, 12).padding(.vertical, 8)
-                    .background(Theme.card, in: Capsule())
-                    .overlay(Capsule().strokeBorder(Theme.cardStroke))
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 10) {
+                backButton
+                Text(name)
+                    .scaledSystemFont(28, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
                     .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("listDetailBackButton")
+            .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            HStack {
+                Text(name)
+                    .scaledSystemFont(28, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
+                    .foregroundStyle(.white).lineLimit(1)
+                Spacer()
+                backButton
+            }
         }
+    }
+
+    private var backButton: some View {
+        Button(action: backToLists) {
+            Label(zh ? "返回" : "Back", systemImage: "chevron.left")
+                .scaledSystemFont(14, weight: .semibold)
+                .padding(.horizontal, 12).padding(.vertical, 8)
+                .background(Theme.card, in: Capsule())
+                .overlay(Capsule().strokeBorder(Theme.cardStroke))
+                .foregroundStyle(.white)
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("listDetailBackButton")
     }
 
     private func backToLists() {

@@ -19,6 +19,7 @@ struct StatsView: View {
     @ScaledMetric(relativeTo: .body) private var chartHeight: CGFloat = 130
 
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
     private var zh: Bool { model.languageCode == "zh" }
 
     var body: some View {
@@ -129,18 +130,8 @@ struct StatsView: View {
         let avg = series.isEmpty ? 0 : series.reduce(0) { $0 + $1.1 } / Double(series.count)
         return card(zh ? "正确率趋势" : "Accuracy trend", icon: "target",
                     a11y: zh ? "近期平均 \(Int(avg * 100))%" : "recent average \(Int(avg * 100)) percent") {
-            Chart(series, id: \.0) { point in
-                LineMark(x: .value(zh ? "局" : "Run", point.0), y: .value(zh ? "正确率" : "Accuracy", point.1))
-                    .foregroundStyle(Theme.accent.gradient).interpolationMethod(.catmullRom)
-                AreaMark(x: .value(zh ? "局" : "Run", point.0), y: .value(zh ? "正确率" : "Accuracy", point.1))
-                    .foregroundStyle(Theme.accent.opacity(0.12).gradient).interpolationMethod(.catmullRom)
-            }
-            .chartYScale(domain: 0...1)
-            .chartYAxis { AxisMarks(position: .trailing, values: [0, 0.5, 1]) { v in
-                AxisValueLabel { if let d = v.as(Double.self) { Text("\(Int(d * 100))%") } }
-            } }
-            .chartXAxis(.hidden)
-            .frame(height: chartHeight)
+            AccuracyTrendChart(series: series, zh: zh)
+                .frame(height: chartHeight)
         }
     }
 
@@ -175,9 +166,23 @@ struct StatsView: View {
                     dueChip(zh ? "明天" : "Tomorrow", f.tomorrow, Theme.accent2)
                     dueChip(zh ? "本周" : "This week", f.thisWeek, Theme.dim)
                 }
-                HStack(spacing: 18) {
-                    miniStat(zh ? "已练变形" : "Forms practiced", "\(reviewed)")
-                    if leeches > 0 { miniStat(zh ? "顽固变形" : "Tough forms", "\(leeches)") }
+                // ⚠️ One stat per line at the accessibility sizes. Measured with CoreText for a
+                // 393pt phone at AX5, 2026-09-17 (v1.33 scan findings #37/#38): "123 Forms
+                // practiced" is 363pt on its own and "4 Tough forms" 243, against a 317pt card —
+                // side by side that is 624, and the squeeze broke "practi / ced". A `FlowLayout`
+                // would not help: the first stat alone is wider than the card, so in a column it
+                // wraps at its space ("Forms / practiced") instead. Below the accessibility sizes
+                // the row is what it was (170 + 18 + 115 at XXXL). (v1.33 §B L.)
+                if typeSize.isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: 8) {
+                        miniStat(zh ? "已练变形" : "Forms practiced", "\(reviewed)")
+                        if leeches > 0 { miniStat(zh ? "顽固变形" : "Tough forms", "\(leeches)") }
+                    }
+                } else {
+                    HStack(spacing: 18) {
+                        miniStat(zh ? "已练变形" : "Forms practiced", "\(reviewed)")
+                        if leeches > 0 { miniStat(zh ? "顽固变形" : "Tough forms", "\(leeches)") }
+                    }
                 }
                 if reviewed == 0 {
                     Text(zh ? "在「变形」模式里练动词,这里会记录你的进度。"
@@ -339,5 +344,40 @@ struct StatsView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(title)
         .accessibilityValue(a11y)
+    }
+}
+
+/// The Stats "Accuracy trend" chart: one value per recent ride, oldest first.
+///
+/// ⚠️ **With exactly one ride it adds a `PointMark`, because a line and an area drawn through
+/// ONE point are nothing.** A learner's first ride is the moment this card first appears — the
+/// Stats screen shows it as soon as `statsHasRides` — and it appeared as an empty plot beside its
+/// three percentage labels (v1.33 simulator pass #21, 2026-09-17), reading as broken rather
+/// than as "one ride so far". The point is sized like the rider's own dot at the end of the Ride
+/// Log's sparkline (7pt), the one other place this app marks a latest ride.
+///
+/// Only at one point. With two or more the line already carries the data, and adding points there
+/// would change a chart that ships in `stats.png` and was not broken. Its own type, internal rather
+/// than private, so `V133LAccuracyTrendChartTests` can render exactly this view. (v1.33 §B L.)
+struct AccuracyTrendChart: View {
+    let series: [(Int, Double)]
+    let zh: Bool
+
+    var body: some View {
+        Chart(series, id: \.0) { point in
+            LineMark(x: .value(zh ? "局" : "Run", point.0), y: .value(zh ? "正确率" : "Accuracy", point.1))
+                .foregroundStyle(Theme.accent.gradient).interpolationMethod(.catmullRom)
+            AreaMark(x: .value(zh ? "局" : "Run", point.0), y: .value(zh ? "正确率" : "Accuracy", point.1))
+                .foregroundStyle(Theme.accent.opacity(0.12).gradient).interpolationMethod(.catmullRom)
+            if series.count == 1 {
+                PointMark(x: .value(zh ? "局" : "Run", point.0), y: .value(zh ? "正确率" : "Accuracy", point.1))
+                    .foregroundStyle(Theme.accent).symbolSize(40)
+            }
+        }
+        .chartYScale(domain: 0...1)
+        .chartYAxis { AxisMarks(position: .trailing, values: [0, 0.5, 1]) { v in
+            AxisValueLabel { if let d = v.as(Double.self) { Text("\(Int(d * 100))%") } }
+        } }
+        .chartXAxis(.hidden)
     }
 }
