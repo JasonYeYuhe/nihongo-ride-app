@@ -777,8 +777,10 @@ struct MenuFlow: Layout {
         var y = bounds.minY
         for row in rows(maxWidth: bounds.width, subviews: subviews) {
             var x = bounds.minX + (bounds.width - row.width) / 2   // center each row
-            for i in row.indices {
-                let size = subviews[i].sizeThatFits(.unspecified)
+            for (i, size) in zip(row.indices, row.sizes) {
+                // The size the row was broken with, so a narrowed item is placed at the width it
+                // was measured at. For an item that fits, that is `sizeThatFits(.unspecified)`,
+                // the value this line measured for itself before v1.33.
                 subviews[i].place(
                     at: CGPoint(x: x, y: y + (row.height - size.height) / 2),
                     proposal: ProposedViewSize(size))
@@ -788,19 +790,56 @@ struct MenuFlow: Layout {
         }
     }
 
-    private struct Row { var indices: [Int] = []; var width: CGFloat = 0; var height: CGFloat = 0 }
+    struct Row: Equatable {
+        var indices: [Int] = []
+        /// Each item's size, in `indices` order.
+        var sizes: [CGSize] = []
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+    }
 
     private func rows(maxWidth: CGFloat, subviews: Subviews) -> [Row] {
+        let sizes = subviews.map { sub -> CGSize in
+            let natural = sub.sizeThatFits(.unspecified)
+            guard let width = Self.narrowedWidth(natural: natural.width, maxWidth: maxWidth) else {
+                return natural
+            }
+            return sub.sizeThatFits(ProposedViewSize(width: width, height: nil))
+        }
+        return Self.rows(sizes: sizes, maxWidth: maxWidth, spacing: spacing)
+    }
+
+    /// The width to propose to an item whose natural width is `natural`, or nil to leave it at its
+    /// natural size.
+    ///
+    /// Nil for every item that fits, and for those the flow computes exactly what it computed
+    /// before (`V133RMenuFlowTests` holds the rows to a frozen copy of the old loop). Every menu
+    /// chip is `.fixedSize()` besides, so it ignores a narrower proposal even where one is made:
+    /// the menu cannot move by construction. An item wider than the row is proposed the row's
+    /// width. Before v1.33 it was given its natural width like the
+    /// rest and overflowed the row, centred, so it was clipped on BOTH edges: a stumbled-word chip
+    /// at AX5 on a 393pt phone is 65pt + the word, and a word of 8+ characters is wider than the
+    /// screen (ax-findings #27, CoreText-measured 2026-09-17). Proposed the row's width, a view
+    /// that can wrap (that chip, since this change) wraps inside it. (v1.33 §B R)
+    static func narrowedWidth(natural: CGFloat, maxWidth: CGFloat) -> CGFloat? {
+        natural > maxWidth ? maxWidth : nil
+    }
+
+    /// Greedy row breaking over measured sizes: an item joins the current row while the row,
+    /// with spacing, stays within `maxWidth`; an item always starts an empty row. Pure, so the
+    /// arithmetic is testable without a view hierarchy — it is the pre-v1.33 loop unchanged,
+    /// with the measurement moved out.
+    static func rows(sizes: [CGSize], maxWidth: CGFloat, spacing: CGFloat) -> [Row] {
         var rows: [Row] = []
         var row = Row()
-        for (i, sub) in subviews.enumerated() {
-            let size = sub.sizeThatFits(.unspecified)
+        for (i, size) in sizes.enumerated() {
             let advance = (row.indices.isEmpty ? 0 : spacing) + size.width
             if !row.indices.isEmpty, row.width + advance > maxWidth {
                 rows.append(row)
                 row = Row()
             }
             row.indices.append(i)
+            row.sizes.append(size)
             row.width += (row.indices.count == 1 ? 0 : spacing) + size.width
             row.height = max(row.height, size.height)
         }

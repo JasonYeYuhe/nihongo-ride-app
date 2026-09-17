@@ -19,11 +19,36 @@ import WidgetKit
 import SceneryKit
 import StoreReviewKit
 
+/// Whether a finished run typed nothing at all — the ONE rule for "this run did not happen".
+///
+/// `logRun` refuses to journal such a run, and the results screens stop congratulating it. Both
+/// ask this function, so the Ride Log and the screen the rider is looking at cannot disagree about
+/// whether a ride took place. Until v1.33 the rule existed once, inline in `logRun`, and the results
+/// screens never asked it: ending a ride before the first key showed "You've arrived!", a 🏁, a
+/// grade and 100% accuracy (0/0 is defined as perfect in `GameSession.accuracy`), and a drill showed
+/// "Drill complete! STEADY" for 0/12 — at every text size, in both languages. Seen in the simulator
+/// pass of 2026-09-17 (defect 5, `B_mode-timeAttack_afterEnd_p0_en_large.png`,
+/// `B_mode-conjugation_afterEnd_p0_en_large.png`). (v1.33 §B R)
+///
+/// A drill asks it with prompts in place of words. It has no journal to refuse, but it has the same
+/// 0/0 accuracy and the same unconditional headline, and "completed a unit or pressed a correct key"
+/// is the same question about it.
+///
+/// A skip is not typing, here or in the log: neither session counts a skip as completed. A run that
+/// only skipped still recorded its lapses (SRS, the review list); it simply typed nothing.
+enum RunTyping {
+    static func typedNothing(unitsCompleted: Int, correctKeystrokes: Int) -> Bool {
+        !(unitsCompleted > 0 || correctKeystrokes > 0)
+    }
+}
+
 /// A snapshot of a finished run, shown on the results screen.
 struct GameSummary: Equatable {
     var score: Int
     var maxCombo: Int
     var wordsCompleted: Int
+    /// Carried for `typedNothing` only — the second half of the rule `logRun` applies.
+    var correctKeystrokes: Int
     var accuracy: Double
     var distanceMeters: Double
     /// Distinct words that lapsed this run (skipped / hinted / many typos).
@@ -56,6 +81,7 @@ struct GameSummary: Equatable {
         score = session.score
         maxCombo = session.maxCombo
         wordsCompleted = session.wordsCompleted
+        correctKeystrokes = session.correctKeystrokes
         accuracy = session.accuracy
         distanceMeters = session.distanceMeters
         mode = session.mode
@@ -65,6 +91,11 @@ struct GameSummary: Equatable {
         var seen = Set<String>()
         reviewWords = session.lapsedEntries.filter { seen.insert($0.id).inserted }
         mistakes = session.mistakes
+    }
+
+    /// The run typed nothing — the same answer `logRun` gave when it refused to journal it.
+    var typedNothing: Bool {
+        RunTyping.typedNothing(unitsCompleted: wordsCompleted, correctKeystrokes: correctKeystrokes)
     }
 }
 
@@ -91,6 +122,8 @@ struct ConjugationSummary: Equatable {
     var maxCombo: Int
     var promptsCompleted: Int
     var promptCount: Int
+    /// Carried for `typedNothing` only.
+    var correctKeystrokes: Int
     var accuracy: Double
 
     init(from session: ConjugationSession) {
@@ -98,7 +131,15 @@ struct ConjugationSummary: Equatable {
         maxCombo = session.maxCombo
         promptsCompleted = session.promptsCompleted
         promptCount = session.promptCount
+        correctKeystrokes = session.correctKeystrokes
         accuracy = session.accuracy
+    }
+
+    /// Nothing answered: no prompt completed and no correct key pressed. A skipped prompt still
+    /// emitted its lapse to the conjugation SRS (`ConjugationSession.skip`), and is still not an
+    /// answer — the ride's rule, asked of prompts. (v1.33 §B R)
+    var typedNothing: Bool {
+        RunTyping.typedNothing(unitsCompleted: promptsCompleted, correctKeystrokes: correctKeystrokes)
     }
 }
 
@@ -2519,7 +2560,10 @@ final class AppModel {
     /// that isn't worth remembering.
     @discardableResult
     private func logRun(_ session: GameSession) -> RideRecord? {
-        guard session.wordsCompleted > 0 || session.correctKeystrokes > 0 else {
+        // The results screen asks the same function through `GameSummary.typedNothing`, so a run
+        // this refuses is never shown as an arrival. (v1.33 §B R)
+        guard !RunTyping.typedNothing(unitsCompleted: session.wordsCompleted,
+                                      correctKeystrokes: session.correctKeystrokes) else {
             runClock = nil
             return nil
         }

@@ -91,13 +91,26 @@ struct ResultsView: View {
                     // 2-5:1 against the clouds (the Codex review predicted exactly this),
                     // and dimming the whole arrival sky to fix a title would defeat the
                     // feature. The panel already owes its content 7:1.
-                    Text("🏁")
-                        .scaledSystemFont(50, relativeTo: .largeTitle)
-                        .accessibilityHidden(true)
-                    Text(zh ? "到站!" : "You've arrived!")
-                        .scaledSystemFont(isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
-                        .foregroundStyle(.white)
-                    grade(for: summary)
+                    if summary.typedNothing {
+                        // A run that typed nothing is not an arrival. It showed "You've arrived!",
+                        // the 🏁 and a grade over "0 m" and 100% accuracy — at every size, in both
+                        // languages (simulator pass 2026-09-17, defect 5) — for a run the Ride Log
+                        // had already refused. Asked of the SAME rule `logRun` refuses it by, so
+                        // the log and this screen cannot disagree. Says what happened, and nothing
+                        // else: no flag, no grade. The buttons below do not change. (v1.33 §B R)
+                        Text(zh ? "第一个词还没打,这一程就结束了" : "The ride ended before the first word")
+                            .scaledSystemFont(isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
+                            .foregroundStyle(.white)
+                            .multilineTextAlignment(.center)
+                    } else {
+                        Text("🏁")
+                            .scaledSystemFont(50, relativeTo: .largeTitle)
+                            .accessibilityHidden(true)
+                        Text(zh ? "到站!" : "You've arrived!")
+                            .scaledSystemFont(isPhoneIdiom ? 30 : 36, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
+                            .foregroundStyle(.white)
+                        grade(for: summary)
+                    }
                     scoreGrid(summary)
                     // Only where a lapsed entry really is a WORD. On a sentence or dictation
                     // run `GameSession.sentenceSession` wraps each sentence as a VocabEntry
@@ -144,8 +157,10 @@ struct ResultsView: View {
                 .accessibilityIdentifier("menuButton")
 
                 // Only shown once a card actually rendered — never a button that
-                // would hand the share sheet nothing.
-                if let card = shareCard {
+                // would hand the share sheet nothing. Nor for a run that typed nothing: the card
+                // prints a grade and "100%" for it, the claim the headline above stopped making.
+                // The card is still rendered on appear exactly as before. (v1.33 §B R)
+                if let card = shareCard, model.lastSummary?.typedNothing != true {
                     ShareLink(item: card, preview: SharePreview(card.title)) {
                         Label(zh ? "分享" : "Share", systemImage: "square.and.arrow.up")
                             .scaledSystemFont(18, weight: .semibold, design: .rounded)
@@ -295,7 +310,14 @@ struct ResultsView: View {
         .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(
             saved ? Theme.gold.opacity(0.5)
                   : (stumble.entryID == nil ? Theme.cardStroke.opacity(0.4) : Theme.cardStroke)))
-        .fixedSize()
+        // Width follows the proposal; height never truncates. Was `.fixedSize()`, which ignored
+        // every width proposal, so a word wider than the row could only overflow: at AX5 on a
+        // 393pt phone a chip is 65pt + the word, 7 characters (かもしれません) spill into the margin
+        // and 8+ are clipped on both edges (ax-findings #27, CoreText-measured 2026-09-17).
+        // `MenuFlow` now proposes the row's width to exactly such a chip, and this is what lets
+        // the word wrap inside it. A chip that fits is proposed its own natural size, which is
+        // the size it had. (v1.33 §B R)
+        .fixedSize(horizontal: false, vertical: true)
         .contentShape(Rectangle())
         // Composed tap + long-press rather than Button + simultaneousGesture, which lets a
         // long-press also toggle the ★ (the bug the review list already documents).
@@ -365,6 +387,15 @@ struct ResultsView: View {
             : (icon: "bicycle", tint: Theme.accent2,
                value: "\(Int(summary.distanceMeters)) m", label: zh ? "距离" : "Distance",
                spoken: zh ? "\(Int(summary.distanceMeters)) 米" : "\(Int(summary.distanceMeters)) meters")
+        // A run that typed nothing has no accuracy: `GameSession.accuracy` defines 0/0 as 1, which
+        // printed "100%" under a ride of nothing. "—" is a drawing, so VoiceOver gets words — the
+        // StatsView "Best WPM" tile's rule. (v1.33 §B R)
+        let accuracyCard: (icon: String, tint: Color, value: String, label: String, spoken: String?) =
+            summary.typedNothing
+            ? (icon: "scope", tint: Color.white, value: "—", label: zh ? "准确率" : "Accuracy",
+               spoken: zh ? "没有输入" : "Nothing typed")
+            : (icon: "scope", tint: Color.white,
+               value: "\(Int(summary.accuracy * 100))%", label: zh ? "准确率" : "Accuracy", spoken: nil)
         let cards: [(icon: String, tint: Color, value: String, label: String, spoken: String?)] = [
             (icon: "star.fill", tint: Theme.gold,
              value: "\(summary.score)", label: zh ? "得分" : "Score", spoken: nil),
@@ -379,8 +410,7 @@ struct ResultsView: View {
             (icon: "checkmark.circle.fill", tint: Theme.done,
              value: "\(summary.wordsCompleted)",
              label: summary.mode.completedUnitLabel(zh: zh), spoken: nil),
-            (icon: "scope", tint: Color.white,
-             value: "\(Int(summary.accuracy * 100))%", label: zh ? "准确率" : "Accuracy", spoken: nil),
+            accuracyCard,
             // "To review" is a promise, and on a run that persists no SRS it is a false one:
             // sentence, dictation and the weak-words cram all merge nothing into the schedule,
             // so nothing here will ever come back for review. The words are still worth naming
@@ -398,19 +428,39 @@ struct ResultsView: View {
                                         : summary.mode.struggledLabel(zh: zh),
              spoken: nil),
         ]
-        // Width-driven, not idiom-driven — see ConjugationResultsView.scoreGrid for the bug
-        // this replaces (iPad portrait treated as roomy, tiles off both screen edges).
-        return ViewThatFits(in: .horizontal) {
-            VStack(spacing: 14) {
-                HStack(spacing: 14) { ForEach(0..<3) { i in scoreCard(cards[i], flexible: false) } }
-                HStack(spacing: 14) { ForEach(3..<6) { i in scoreCard(cards[i], flexible: false) } }
-            }
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                ForEach(cards.indices, id: \.self) { i in
-                    scoreCard(cards[i], flexible: true)
+        return Group {
+            // One column at the accessibility sizes. Two columns broke the captions mid-word at AX5
+            // ("Word / s", "Dis- / tance", "Accu- / racy"; Chinese "准确 / 率") and set tiles of
+            // different heights side by side out of line — on the core loop's own screen
+            // (simulator pass 2026-09-17 on a 402pt iPhone 17 Pro, defects 1 and 26,
+            // `B_results_p1_en_ax5.png`). From this file's own padding, a caption had about 110pt
+            // in two columns and has about 278pt in one, where the longest ("Tough lines", "Best
+            // combo", 11 characters) should fit on one line — computed, not yet seen on a device. The fixed 150pt tiles of
+            // the wide row would break the same way on an iPad, so this is decided by text size,
+            // not by width. (v1.33 §B R)
+            if typeSize.isAccessibilitySize {
+                VStack(spacing: 12) {
+                    ForEach(cards.indices, id: \.self) { i in
+                        scoreCard(cards[i], flexible: true)
+                    }
+                }
+                .frame(maxWidth: 420)
+            } else {
+                // Width-driven, not idiom-driven — see ConjugationResultsView.scoreGrid for the bug
+                // this replaces (iPad portrait treated as roomy, tiles off both screen edges).
+                ViewThatFits(in: .horizontal) {
+                    VStack(spacing: 14) {
+                        HStack(spacing: 14) { ForEach(0..<3) { i in scoreCard(cards[i], flexible: false) } }
+                        HStack(spacing: 14) { ForEach(3..<6) { i in scoreCard(cards[i], flexible: false) } }
+                    }
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                        ForEach(cards.indices, id: \.self) { i in
+                            scoreCard(cards[i], flexible: true)
+                        }
+                    }
+                    .frame(maxWidth: 420)
                 }
             }
-            .frame(maxWidth: 420)
         }
     }
 
@@ -492,7 +542,14 @@ struct ResultsView: View {
             Text(persists ? (zh ? "复习这些词(点 ★ 收藏):" : "Review these (tap ★ to save):")
                           : (zh ? "这些让你吃力(点 ★ 收藏):" : "These gave you trouble (tap ★ to save):"))
                 .font(.caption).foregroundStyle(Theme.dim)
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 116), spacing: 8)], spacing: 8) {
+            // One column at the accessibility sizes. The adaptive grid makes two 168pt columns on a
+            // phone, and with the star and the speaker beside it the word keeps about 76pt — one
+            // kanji is 45pt at AX5, so 図書館 stacked one character per line (ax-findings #29,
+            // CoreText-measured 2026-09-17). One column gives the word about 250pt. (v1.33 §B R)
+            LazyVGrid(columns: typeSize.isAccessibilitySize
+                                ? [GridItem(.flexible(), spacing: 8)]
+                                : [GridItem(.adaptive(minimum: 116), spacing: 8)],
+                      spacing: 8) {
                 ForEach(words.prefix(12)) { word in
                     let saved = model.isSaved(word.id)
                     // Composed tap + long-press (NOT Button + simultaneousGesture,
@@ -513,11 +570,22 @@ struct ResultsView: View {
                             // most a chip this dense allows. No keyboard summon: results suppresses
                             // the keyboard (not a game screen). (v1.10 §A4.)
                             if canSpeak {
-                                Image(systemName: "speaker.wave.2")
-                                    .scaledSystemFont(12).foregroundStyle(Theme.accent2)
-                                    .frame(width: 28, height: 28)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture { model.speak(word.kana) }
+                                Group {
+                                    let glyph = Image(systemName: "speaker.wave.2")
+                                        .scaledSystemFont(12).foregroundStyle(Theme.accent2)
+                                    // At the accessibility sizes the scaled glyph (~37pt at AX5)
+                                    // overflowed the fixed 28pt frame onto its neighbours
+                                    // (ax-findings #29). There the frame is a floor, so the target
+                                    // is never smaller than 28pt and grows with its glyph; the
+                                    // default size keeps the fixed frame. (v1.33 §B R)
+                                    if typeSize.isAccessibilitySize {
+                                        glyph.frame(minWidth: 28, minHeight: 28)
+                                    } else {
+                                        glyph.frame(width: 28, height: 28)
+                                    }
+                                }
+                                .contentShape(Rectangle())
+                                .onTapGesture { model.speak(word.kana) }
                             }
                         }
                         Text(word.gloss(for: model.languageCode))
