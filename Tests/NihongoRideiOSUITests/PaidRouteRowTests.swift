@@ -194,6 +194,12 @@ final class PaidRouteRowTests: XCTestCase {
         XCTAssertTrue(hint.waitForExistence(timeout: 10), "romaji hint should be visible")
         let romaji = hint.label.replacingOccurrences(of: "→ ", with: "")
         XCTAssertFalse(romaji.isEmpty)
+        // The hint is on screen as soon as the game is, and focus may not be: `KeyCaptureView`
+        // retries `becomeFirstResponder()` while the transition animates, and `typeText` with no
+        // focused element errors. Wait for the keyboard as `TouchFlowTests` does. (v1.33
+        // pre-submission review, round 2)
+        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 10),
+                      "software keyboard must appear before typing")
         app.typeText(romaji)
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH '1/'"))
                         .firstMatch.waitForExistence(timeout: 5),

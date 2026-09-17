@@ -253,6 +253,15 @@ struct V133SContrastTests {
 /// see these two headers any more (their `Text`s moved into properties, which is its documented
 /// helper blind spot). What it can say is that the switch is still there and each Back button
 /// still carries exactly one identifier — `PaidRouteRowTests` lands on Settings by that one.
+///
+/// **Every pin here reads the code, never the comments** (`source(_:)`: comments blanked, strings
+/// kept, through `CallSiteScanner`). They first read the raw file, and round 2 of the pre-submission
+/// review switched each fix off the way this release's own calibration treats as realistic —
+/// `if false { // if typeSize.isAccessibilitySize {`, `.lineLimit(nil) // .lineLimit(typeSize…` —
+/// and all of them stayed green, because the old condition was still in the file, in the comment.
+/// Mutation, 2026-09-18: those five commented mutants (About's credit and Settings' Language row,
+/// About's section-title limits, Settings' header, and `JournalView.trendHeader` next door in
+/// `V133LAccessibilityLayoutTests`) each go red. (v1.33 pre-submission review, round 2)
 @Suite("V133S: the Settings and About headers switch at accessibility sizes")
 struct V133SHeaderSourceTests {
 
@@ -260,8 +269,7 @@ struct V133SHeaderSourceTests {
     func headersSwitch() throws {
         for (file, identifier) in [("SettingsView.swift", "settingsBackButton"),
                                    ("AboutView.swift", "aboutBackButton")] {
-            let source = try String(contentsOf: HorizontalTextFitTests.appDirectory.appendingPathComponent(file),
-                                    encoding: .utf8)
+            let source = try Self.source(file)
             #expect(source.components(separatedBy: "\"\(identifier)\"").count - 1 == 1,
                     "\(file) should carry \(identifier) exactly once")
             let start = try #require(source.range(of: "private var header: some View"), "\(file) has no header")
@@ -273,8 +281,11 @@ struct V133SHeaderSourceTests {
         }
     }
 
+    /// `file`'s code with its comments blanked and its strings kept (lines unchanged), so
+    /// a switch that survives only in a comment is not found — see the suite's note.
     static func source(_ file: String) throws -> String {
-        try String(contentsOf: HorizontalTextFitTests.appDirectory.appendingPathComponent(file), encoding: .utf8)
+        let raw = try String(contentsOf: HorizontalTextFitTests.appDirectory.appendingPathComponent(file), encoding: .utf8)
+        return CallSiteScanner.File(path: file, source: raw).allCodeWithStrings
     }
 
     /// The other three accessibility-size fixes of group S. The pre-submission review replaced each

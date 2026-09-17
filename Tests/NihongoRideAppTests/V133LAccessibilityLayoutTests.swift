@@ -26,9 +26,14 @@ struct V133LAccessibilityLayoutTests {
                    encoding: .utf8)
     }
 
-    /// The body of the first `declaration` found at or after `anchor` (or the file start).
+    /// The body of the first `declaration` found at or after `anchor` (or the file start), read with
+    /// comments blanked and strings kept. It read the raw file until round 2 of the pre-submission
+    /// review turned `trendHeader`'s switch into `if false { // typeSize.isAccessibilitySize` and
+    /// `theAccessibilitySwitchesAreStillThere` stayed green on the comment; mutation, 2026-09-18:
+    /// that mutant now goes red. `source(_:)` itself stays raw, because `practiceIsTranslated`'s
+    /// control needs to see a comment. (v1.33 pre-submission review, round 2)
     static func body(_ file: String, _ declaration: String, after anchor: String? = nil) throws -> String {
-        let text = try source(file)
+        let text = CallSiteScanner.File(path: file, source: try source(file)).allCodeWithStrings
         let start = anchor.flatMap { text.range(of: $0)?.lowerBound } ?? text.startIndex
         guard let found = text.range(of: declaration, range: start..<text.endIndex) else { return "" }
         return HorizontalTextFitTests.functionBody(of: text, from: found.lowerBound)
