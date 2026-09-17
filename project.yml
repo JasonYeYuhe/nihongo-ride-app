@@ -132,8 +132,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride
         PRODUCT_NAME: Nihongo Ride
-        MARKETING_VERSION: "1.32"
-        CURRENT_PROJECT_VERSION: "56"
+        MARKETING_VERSION: "1.33"
+        CURRENT_PROJECT_VERSION: "57"
         MACOSX_DEPLOYMENT_TARGET: "14.0"
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
@@ -271,8 +271,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride
         PRODUCT_NAME: Nihongo Ride
-        MARKETING_VERSION: "1.32"
-        CURRENT_PROJECT_VERSION: "57"
+        MARKETING_VERSION: "1.33"
+        CURRENT_PROJECT_VERSION: "58"
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
         # iPhone + iPad. iPhone runs portrait-only with narrow layout variants
         # (isPhoneIdiom); iPad keeps the 4:3 landscape-first design.
@@ -315,8 +315,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride.widget
         PRODUCT_NAME: NihongoRideWidget
-        MARKETING_VERSION: "1.32"
-        CURRENT_PROJECT_VERSION: "56"
+        MARKETING_VERSION: "1.33"
+        CURRENT_PROJECT_VERSION: "57"
         MACOSX_DEPLOYMENT_TARGET: "14.0"
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
@@ -349,8 +349,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jasonye.nihongoride.widget
         PRODUCT_NAME: NihongoRideWidget
-        MARKETING_VERSION: "1.32"
-        CURRENT_PROJECT_VERSION: "57"
+        MARKETING_VERSION: "1.33"
+        CURRENT_PROJECT_VERSION: "58"
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
         TARGETED_DEVICE_FAMILY: "1,2"
         SWIFT_VERSION: "6.0"
