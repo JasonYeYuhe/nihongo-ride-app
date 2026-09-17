@@ -244,6 +244,7 @@ struct GameView: View {
 // MARK: - HUD
 
 private struct HUDBar: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
     let session: GameSession
     let language: String
     /// Whole words per minute over RIDDEN time, from `AppModel.liveWPM`. Zero means "not yet
@@ -261,14 +262,24 @@ private struct HUDBar: View {
 
     var body: some View {
         HStack(spacing: narrow ? 8 : 14) {
+            // The conjugation HUD's v1.31 fix, which this row never got (v1.33 §B G). At AX5 —
+            // capped to AX1 here — a journey ride's progress pill read "0/1" over "2" (simulator
+            // pass 2026-09-17, iPhone 17 Pro 402pt, `A_game-journey_en_ax5.png`): nothing in the
+            // row had a line limit, so SwiftUI resolved a row wider than the screen by wrapping
+            // every Text in it. ConjugationGameView's HUD comment says why the answer is "shrink,
+            // never wrap" and it applies here unchanged.
             Text(session.currentLevelLabel)
                 .scaledSystemFont(14, weight: .heavy, design: .rounded)
                 .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
                 .padding(.horizontal, 10).padding(.vertical, 6)
                 .background(Theme.accent2.opacity(0.85), in: Capsule())
                 .accessibilityLabel(zh ? "等级 \(session.currentLevelLabel)" : "Level \(session.currentLevelLabel)")
-            stat(icon: "star.fill", value: "\(session.score)", tint: Theme.gold,
-                 label: zh ? "得分" : "Score")
+            if RideHUDLayout.showsScore(typeSize) {
+                stat(icon: "star.fill", value: "\(session.score)", tint: Theme.gold,
+                     label: zh ? "得分" : "Score")
+            }
             stat(icon: "flame.fill",
                  value: session.combo >= 2 ? "×\(session.combo)" : "—",
                  tint: session.combo >= 2 ? Theme.accent : Theme.dim,
@@ -338,13 +349,58 @@ private struct HUDBar: View {
                       label: String, spoken: String? = nil) -> some View {
         HStack(spacing: 6) {
             Image(systemName: icon).foregroundStyle(tint)
+            // "0/12" wrapping to "0/1" over "2" is not a smaller number, it is a broken pill —
+            // the same two lines ConjugationHUD.stat carries since v1.31. (v1.33 §B G.)
             Text(value).foregroundStyle(.white).monospacedDigit()
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
         }
         .padding(.horizontal, narrow ? 9 : 12).padding(.vertical, 7)
         .background(.black.opacity(0.42), in: Capsule())
         .accessibilityElement()
         .accessibilityLabel(label)
         .accessibilityValue(spoken ?? value)
+    }
+}
+
+/// What the two game HUDs — the ride's `HUDBar` and the drill's `ConjugationHUD` — drop at the
+/// accessibility text sizes, decided once so the two rows cannot drift apart. (v1.33 §B G.)
+///
+/// **One line limit is not enough on its own.** With the v1.31 fix a value can no longer wrap,
+/// but a row of unwrappable pills that is wider than the phone is pushed past both edges instead.
+/// Measured with CoreText at AX1 (both game screens cap there), pill widths calibrated against the
+/// 2026-09-17 simulator shot `A_game-conjugation_en_ax5.png` on a 402pt iPhone 17 Pro (the model
+/// read 4.7pt wide per pill; the figures below are corrected). Room for the row: 382pt on a 402pt
+/// phone with the keyboard up, 373 on a 393pt phone, 361 on a 393pt phone with it dismissed.
+///
+/// | ride row (level, score, combo, progress, pause) | all pills | combo hidden | score hidden |
+/// |---|---|---|---|
+/// | start: ★0, —, 0/20 | 391 | 313 | 315 |
+/// | mid: ★450, ×4, 7/20 | 429 | 345 | 321 |
+/// | late: ★2400, ×10, 19/20 | 477 | **377** | 353 |
+///
+/// The drill row has the same pills with a "Verbs" badge in the level's place, and what matters
+/// there is how much is left for the badge late in a drill (★1200, ×10, 11/12) on the three
+/// phones: 58 / 49 / 37 with combo hidden, 82 / 73 / 61 with score hidden. "Verbs" needs 66 at its
+/// 0.7 shrink floor.
+///
+/// **So the score goes, not the combo** — the combo was the first candidate, and the arithmetic
+/// is what moved it. The score is the pill whose width grows with the run (one digit to four);
+/// the combo is bounded at three characters. Hiding the combo leaves the ride row 4pt over on a
+/// 393pt phone and 16pt over with the keyboard dismissed by the end of a good ride, and the drill
+/// badge truncated again; hiding the score fits every case above (the drill's 61 becomes 69 once
+/// its spacer may collapse — see `ConjugationHUD`). It is also the least essential
+/// by the rule `HUDBar.narrow` already applies to distance, accuracy and speed — informational,
+/// not actionable mid-run, and the rider gets the number on the results screen and in the Ride
+/// Log. The live combo is not recoverable afterwards (results keep only the best one).
+///
+/// Headless renders cannot see any of this (`ImageRenderer` ignores Dynamic Type), so the claim
+/// above is arithmetic until the AX5 simulator pass re-shoots both HUDs.
+enum RideHUDLayout {
+    /// False at the accessibility sizes, true at every other size — so the default-size HUD is
+    /// exactly what it was.
+    static func showsScore(_ typeSize: DynamicTypeSize) -> Bool {
+        !typeSize.isAccessibilitySize
     }
 }
 
@@ -456,6 +512,11 @@ private struct TimerBar: View {
 
 private struct WordCard: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
+    /// The corner controls' glyph size — the ★ here and `SpeakButton` opposite it both use
+    /// `scaledSystemFont(compact ? 15 : 18)` — so the room reserved for them grows with them.
+    @ScaledMetric(relativeTo: .body) private var cornerGlyphCompact: CGFloat = 15
+    @ScaledMetric(relativeTo: .body) private var cornerGlyphRegular: CGFloat = 18
     let session: GameSession
     let language: String
     /// True while the on-screen keyboard occupies the lower screen (iOS) —
@@ -486,6 +547,19 @@ private struct WordCard: View {
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .minimumScaleFactor(0.4)   // long compounds shrink instead of clipping (narrow screens)
+                    // The ★ and the speaker are OVERLAYS in the card's top corners, and this is
+                    // the line they sit on. At the default size a sentence's first line stops
+                    // short of them; at AX5 (capped to AX1) the ★ sat on 「ギ」 of
+                    // 「フォークでケーキを食べます。」 and on 「て」 of 「白いシャツを着ています。」
+                    // (simulator pass 2026-09-17, `B_mode-sentence_game_{en,zh}_ax5.png`). So at
+                    // the accessibility sizes the line is inset by exactly how far a corner control
+                    // reaches past the card's own padding, on both sides so it stays centred.
+                    // Zero at every other size. (v1.33 §B G.)
+                    .padding(.horizontal, RideCardLayout.cornerControlReserve(
+                        glyphPoints: compact ? cornerGlyphCompact : cornerGlyphRegular,
+                        controlPadding: compact ? 10 : 14,
+                        cardPadding: compact ? 14 : 24,
+                        accessibilitySize: typeSize.isAccessibilitySize))
 
                 kanaReading
 
@@ -797,5 +871,28 @@ private struct WordCard: View {
             }
         }
         .frame(height: compact ? 22 : 26)
+    }
+}
+
+/// Room the ride card keeps clear for its corner controls at the accessibility sizes.
+/// (v1.33 §B G.)
+enum RideCardLayout {
+    /// The widest corner glyph's layout width per point of font size. Measured 2026-09-17 by
+    /// laying out `Image(systemName:)` in an `NSHostingView` at 15, 24.7 and 29.6pt: `star` /
+    /// `star.fill` 1.27–1.32, `speaker.wave.2` 1.39–1.42. The speaker is the wider one, so it sets
+    /// the reserve for both corners — the line is centred, and `SpeakButton` shows whenever
+    /// speech is on, which the card does not otherwise track.
+    static let widestCornerGlyphEm: CGFloat = 1.42
+
+    /// How far a corner control reaches past the card's own padding into its content: the
+    /// control is `padding + glyph + padding` measured in from the card's edge, the content starts
+    /// `cardPadding` in. At AX1 that is 24.7 × 1.42 + 20 − 14 ≈ 41pt keyboard-up and
+    /// 29.6 × 1.42 + 28 − 24 ≈ 46pt keyboard-down; a sentence line on a 402pt phone keeps 272 of
+    /// its 354pt. **Zero at every size below the accessibility sizes**, so the default layout does
+    /// not move.
+    static func cornerControlReserve(glyphPoints: CGFloat, controlPadding: CGFloat,
+                                     cardPadding: CGFloat, accessibilitySize: Bool) -> CGFloat {
+        guard accessibilitySize else { return 0 }
+        return max(0, glyphPoints * widestCornerGlyphEm + 2 * controlPadding - cardPadding)
     }
 }

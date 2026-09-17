@@ -160,6 +160,7 @@ struct ConjugationGameView: View {
 // MARK: - HUD (form-label badge + score + combo + progress + accuracy; no distance)
 
 private struct ConjugationHUD: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
     let session: ConjugationSession
     let language: String
     var onPause: (() -> Void)? = nil
@@ -168,6 +169,7 @@ private struct ConjugationHUD: View {
     private var zh: Bool { language == "zh" }
 
     var body: some View {
+        let accessibilitySize = typeSize.isAccessibilitySize
         HStack(spacing: narrow ? 8 : 14) {
             // **`lineLimit(1)` is not decoration here.** This row had none, and "Conjugate" is
             // nine characters where the ride's equivalent pill holds "N5" — so on a phone, as
@@ -178,7 +180,22 @@ private struct ConjugationHUD: View {
             //
             // Shrink before truncating, and never wrap: a label that wraps mid-word reads as a
             // broken screen, while a slightly smaller one reads as a label.
-            Text(zh ? "变形" : "Conjugate")
+            //
+            // **v1.33: that was still not enough at AX5.** The line limit held, and the badge
+            // shrank to its floor and then truncated to a bare "…" — in both languages, even the
+            // two-character 变形 (simulator pass 2026-09-17, `A_game-conjugation_{en,zh}_ax5.png`).
+            // Three things, all at the accessibility sizes only (`ConjugationHUDLayout`):
+            // * the score pill goes, as in the ride HUD — `RideHUDLayout` has the arithmetic;
+            // * the badge says the mode's own menu name, "Verbs" / 变形, instead of "Conjugate"
+            //   (66pt at its floor against 102), so the learner reads the word they tapped;
+            // * the badge is laid out FIRST. The measured shot shows why: 51pt was left over and
+            //   the Spacer took 18 of it while the badge got only its "…". An HStack splits the
+            //   leftover between the flexible children, so without a priority the badge gets half
+            //   of whatever room hiding a pill makes.
+            // Late in a drill (★1200, ×10, 11/12) that leaves the badge 82 / 73 / 61pt on a 402pt
+            // phone, a 393pt phone, and a 393pt phone with the keyboard dismissed; the last is 5
+            // short of "Verbs", which is why the Spacer may also collapse to zero there (+8).
+            Text(ConjugationHUDLayout.badgeLabel(zh: zh, accessibilitySize: accessibilitySize))
                 .scaledSystemFont(14, weight: .heavy, design: .rounded)
                 .foregroundStyle(.white)
                 .lineLimit(1)
@@ -186,13 +203,16 @@ private struct ConjugationHUD: View {
                 .padding(.horizontal, 10).padding(.vertical, 6)
                 .background(Theme.accent2.opacity(0.85), in: Capsule())
                 .accessibilityLabel(zh ? "动词变形模式" : "Conjugation mode")
-            stat(icon: "star.fill", value: "\(session.score)", tint: Theme.gold, label: zh ? "得分" : "Score")
+                .layoutPriority(accessibilitySize ? 1 : 0)
+            if RideHUDLayout.showsScore(typeSize) {
+                stat(icon: "star.fill", value: "\(session.score)", tint: Theme.gold, label: zh ? "得分" : "Score")
+            }
             stat(icon: "flame.fill",
                  value: session.combo >= 2 ? "×\(session.combo)" : "—",
                  tint: session.combo >= 2 ? Theme.accent : Theme.dim,
                  label: zh ? "连击" : "Combo",
                  spoken: session.combo >= 2 ? "\(session.combo)" : (zh ? "无" : "none"))
-            Spacer()
+            Spacer(minLength: accessibilitySize ? 0 : nil)
             stat(icon: "checkmark.circle.fill",
                  value: "\(session.promptsCompleted)/\(session.promptCount)", tint: Theme.done,
                  label: zh ? "进度" : "Done",
@@ -236,6 +256,20 @@ private struct ConjugationHUD: View {
     }
 }
 
+/// The drill HUD's accessibility-size choices that are not shared with the ride HUD.
+/// (v1.33 §B G; the shared one is `RideHUDLayout`.)
+enum ConjugationHUDLayout {
+    /// The mode badge. Today's "Conjugate" / 变形 at every size below the accessibility sizes;
+    /// at them, the mode's own menu chip name (`GameMode.shortLabel`) — "Verbs" / 变形 — because
+    /// "Conjugate" needs 102pt at its 0.7 shrink floor at AX1 and the row cannot give it that late
+    /// in a drill on any phone measured (see `ConjugationHUD`). Taken from the menu rather than
+    /// written again here, so the badge names the chip the learner tapped even if that is renamed.
+    static func badgeLabel(zh: Bool, accessibilitySize: Bool) -> String {
+        guard accessibilitySize else { return zh ? "变形" : "Conjugate" }
+        return GameMode.conjugation.shortLabel(zh: zh)
+    }
+}
+
 // MARK: - Progress bar
 
 private struct ConjugationProgressBar: View {
@@ -263,6 +297,14 @@ private struct ConjugationProgressBar: View {
 // MARK: - Prompt card
 
 private struct ConjugationCard: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
+    /// The verb's and its reading's resolved point sizes — the same `@ScaledMetric`s their
+    /// `scaledSystemFont` calls below build, so the verb's shrink floor can be stated in terms of
+    /// the reading. (v1.33 §B G, see `ConjugationCardLayout`.)
+    @ScaledMetric(relativeTo: .largeTitle) private var verbPointsCompact: CGFloat = 36
+    @ScaledMetric(relativeTo: .largeTitle) private var verbPointsRegular: CGFloat = 56
+    @ScaledMetric(relativeTo: .body) private var readingPointsCompact: CGFloat = 18
+    @ScaledMetric(relativeTo: .body) private var readingPointsRegular: CGFloat = 24
     let session: ConjugationSession
     let language: String
     var compact: Bool = false
@@ -270,16 +312,38 @@ private struct ConjugationCard: View {
     private var zh: Bool { language == "zh" }
 
     var body: some View {
+        let accessibilitySize = typeSize.isAccessibilitySize
         VStack(spacing: compact ? 10 : 18) {
             Text(zh ? "辞書形" : "Dictionary form")
                 .scaledSystemFont(compact ? 11 : 13, weight: .semibold, design: .rounded)
                 .foregroundStyle(Theme.dim)
                 .accessibilityHidden(true)
 
+            // **The verb was shrinking for HEIGHT, not width.** At AX5 (capped to AX1) 降る, 引く
+            // and 習う — two characters, ~93pt wide in a 354pt card — rendered at about 19pt,
+            // below their 30pt reading (simulator pass 2026-09-17, `A_game-conjugation_en_ax5.png`
+            // against `…_large.png`). With the keyboard up the card has about 363pt of content
+            // height at AX1 and its lines ask for 420 (CoreText, single-line heights); this Text
+            // and the gloss are the only children allowed to shrink, so the VStack took the
+            // whole shortfall out of the verb, down to its 0.4 floor. Letting the line wrap would
+            // change nothing — it was never too wide.
+            //
+            // So at the accessibility sizes: the floor is the reading's size (the verb can still
+            // give up height, never below its reading), and the arrow below — decoration, hidden
+            // from VoiceOver — goes, returning 35pt keyboard-up and 47 keyboard-down. That brings
+            // the keyboard-up demand to 385 against 363, a shortfall the verb (20pt above its new
+            // floor) and the gloss can absorb to within a couple of points. Keyboard down there is
+            // no shot to calibrate against; by the same arithmetic, with the room estimated from
+            // the phone's geometry, the card was about 33pt over before and about 15 after. Either
+            // way the verb cannot end up below its reading — that part is the floor, not the room.
             Text(session.currentSurface ?? "")
                 .scaledSystemFont(compact ? 36 : 56, weight: .bold, relativeTo: .largeTitle)
                 .foregroundStyle(.white)
-                .lineLimit(1).minimumScaleFactor(0.4)
+                .lineLimit(1)
+                .minimumScaleFactor(ConjugationCardLayout.verbScaleFloor(
+                    verbPoints: compact ? verbPointsCompact : verbPointsRegular,
+                    readingPoints: compact ? readingPointsCompact : readingPointsRegular,
+                    accessibilitySize: accessibilitySize))
             Text(session.currentDictKana ?? "")
                 .scaledSystemFont(compact ? 18 : 24, weight: .semibold, design: .rounded)
                 .foregroundStyle(.white.opacity(0.75))
@@ -288,11 +352,13 @@ private struct ConjugationCard: View {
                 .foregroundStyle(Theme.dim)
                 .lineLimit(1).minimumScaleFactor(0.5)
 
-            // The instruction: produce THIS form.
-            Image(systemName: "arrow.down")
-                .scaledSystemFont(compact ? 13 : 16, weight: .bold)
-                .foregroundStyle(Theme.accent2)
-                .accessibilityHidden(true)
+            // The instruction: produce THIS form. Not at the accessibility sizes — see the verb.
+            if ConjugationCardLayout.showsFormArrow(accessibilitySize: accessibilitySize) {
+                Image(systemName: "arrow.down")
+                    .scaledSystemFont(compact ? 13 : 16, weight: .bold)
+                    .foregroundStyle(Theme.accent2)
+                    .accessibilityHidden(true)
+            }
             // **This is the question.** In English the label is "\(japaneseLabel) / \(englishLabel)",
             // and the longest of the seven — ない形（否定） / Negative (-nai) — does not fit a
             // phone at 18pt. It was truncating to "…/ Negative (…", which is the one string on
@@ -338,15 +404,20 @@ private struct ConjugationCard: View {
         let done = session.completedKanaCount
         let hint = session.romajiVisible
         VStack(spacing: compact ? 6 : 10) {
-            HStack(spacing: 2) {
-                ForEach(Array(kana.enumerated()), id: \.offset) { index, character in
-                    let revealed = index < done || hint
-                    Text(revealed ? String(character) : "・")
-                        .scaledSystemFont(compact ? 26 : 40, weight: .semibold, design: .rounded, relativeTo: .largeTitle)
-                        .foregroundStyle(color(index: index, done: done, revealed: revealed))
-                        .scaleEffect(index == done ? 1.12 : 1)
-                        .animation(.smooth(duration: 0.15), value: done)
-                }
+            // **The typing target wraps; it never shrinks.** One HStack of glyphs cannot get
+            // narrower than its glyphs, so a long answer ran off both sides of the card. Measured
+            // with CoreText on a 393pt phone: at AX1 with the keyboard down a glyph is 49pt in a
+            // 313pt card, so 7 kana overflow — the past negative of any four-kana verb, the
+            // largest group (1,024 of 2,317) — and at the DEFAULT size with the keyboard down 8
+            // kana (318pt) already do; keyboard up, 11 at AX1 (372 of 345), e.g.
+            // トレーニングしなかった. (v1.33 §B G, scan finding #5.)
+            //
+            // `ViewThatFits` tries today's row first and keeps it whenever it fits, so every
+            // answer that fitted renders exactly as before; only one that could not be shown
+            // whole moves to `MenuFlow`, which centres each row the same way.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 2) { answerGlyphs(kana, done: done, hint: hint) }
+                MenuFlow(spacing: 2, rowSpacing: 4) { answerGlyphs(kana, done: done, hint: hint) }
             }
             .accessibilityElement()
             .accessibilityLabel(zh ? "答案" : "Answer")
@@ -384,6 +455,20 @@ private struct ConjugationCard: View {
         }
     }
 
+    /// The answer's glyphs, one per kana — laid out by whichever container `answer` picks, so
+    /// the row and its wrapped form draw the same glyphs.
+    @ViewBuilder
+    private func answerGlyphs(_ kana: [Character], done: Int, hint: Bool) -> some View {
+        ForEach(Array(kana.enumerated()), id: \.offset) { index, character in
+            let revealed = index < done || hint
+            Text(revealed ? String(character) : "・")
+                .scaledSystemFont(compact ? 26 : 40, weight: .semibold, design: .rounded, relativeTo: .largeTitle)
+                .foregroundStyle(color(index: index, done: done, revealed: revealed))
+                .scaleEffect(index == done ? 1.12 : 1)
+                .animation(.smooth(duration: 0.15), value: done)
+        }
+    }
+
     private func color(index: Int, done: Int, revealed: Bool) -> Color {
         if index < done { return Theme.done }
         if index == done { return Theme.accent }
@@ -402,5 +487,29 @@ private struct ConjugationCard: View {
             }
         }
         .frame(height: compact ? 22 : 26)
+    }
+}
+
+/// The drill card's accessibility-size rules, out of the view so they can be checked without a
+/// device. (v1.33 §B G; the reasoning and the measurements are at the call sites in
+/// `ConjugationCard`.)
+enum ConjugationCardLayout {
+    /// The dictionary-form verb's shrink floor at every size below the accessibility sizes —
+    /// unchanged, so the default-size card is exactly what it was.
+    static let defaultVerbScaleFloor: CGFloat = 0.4
+
+    /// The verb may shrink, but at the accessibility sizes never below the size of its own
+    /// reading: `verbPoints × floor ≥ readingPoints`. At AX1 that is 29.6 / 46.6 ≈ 0.64 with the
+    /// keyboard up and 39.5 / 72.5 ≈ 0.55 with it down; never lower than today's 0.4.
+    static func verbScaleFloor(verbPoints: CGFloat, readingPoints: CGFloat,
+                               accessibilitySize: Bool) -> CGFloat {
+        guard accessibilitySize, verbPoints > 0 else { return defaultVerbScaleFloor }
+        return min(1, max(defaultVerbScaleFloor, readingPoints / verbPoints))
+    }
+
+    /// The decorative arrow between the verb and the form it must become is dropped at the
+    /// accessibility sizes to give the card back the height the verb was losing.
+    static func showsFormArrow(accessibilitySize: Bool) -> Bool {
+        !accessibilitySize
     }
 }

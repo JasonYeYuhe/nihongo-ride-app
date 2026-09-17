@@ -14,6 +14,9 @@ import RomajiKana
 struct CoachView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// The key pills' resolved font size — the `@ScaledMetric` their row's
+    /// `scaledSystemFont(14, design: .monospaced)` builds. (v1.33 §B G.)
+    @ScaledMetric(relativeTo: .body) private var keyPillPoints: CGFloat = 14
     private var zh: Bool { model.languageCode == "zh" }
 
     var body: some View {
@@ -96,27 +99,63 @@ struct CoachView: View {
     /// mistakes can never do: it points.
     private func replayCard(_ replay: MistakeReplay) -> some View {
         VStack(spacing: 10) {
-            HStack(spacing: 2) {
-                ForEach(Array(replay.target.enumerated()), id: \.offset) { i, kana in
-                    Text(String(kana))
-                        .scaledSystemFont(isPhoneIdiom ? 28 : 34, weight: .bold, relativeTo: .title)
-                        .foregroundStyle(i == replay.index ? Theme.accent : .white)
-                        .padding(.horizontal, 2)
-                        .background(i == replay.index
-                                    ? Theme.accent.opacity(0.15) : .clear,
-                                    in: RoundedRectangle(cornerRadius: 6))
-                }
+            // The word the learner was typing, one glyph per kana so the trouble spot can be
+            // marked. This screen is NOT capped, and at AX5 a glyph cell is 59pt in a 297pt card
+            // on a 393pt phone (CoreText), so a fifth kana ran over the card's edges — こんにちは
+            // is 303pt. A passage's target is the whole passage, 31pt a kana at the default size,
+            // so past nine kana it runs off at the default size too (arithmetic; not seen on a
+            // device). `ViewThatFits` keeps today's row whenever it fits and only a target that
+            // could not be shown whole wraps, rows centred like the row was. (v1.33 §B G, scan
+            // finding #4.)
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 2) { replayGlyphs(replay) }
+                MenuFlow(spacing: 2, rowSpacing: 4) { replayGlyphs(replay) }
             }
             .accessibilityElement()
             .accessibilityLabel(zh ? "\(replay.target),问题出在第 \(replay.index + 1) 个假名 \(String(replay.kana))"
                                    : "\(replay.target), the trouble is at character \(replay.index + 1), \(String(replay.kana))")
 
-            HStack(spacing: 14) {
-                keyPill(typed: true, text: replay.typedPrefix + String(replay.rejected))
-                Text("→").foregroundStyle(Theme.dim).accessibilityHidden(true)
-                keyPill(typed: false, text: correctSpelling(for: replay))
+            // What they typed → what it wanted. **The romaji IS the lesson, so it stays on one
+            // line.** At AX5 the row was "gako → gakk / ou" (simulator pass 2026-09-17,
+            // `A_coach_{en,zh}_ax5.png`): 365pt of row in a 297pt card, resolved by breaking the
+            // correct spelling mid-word — and "konnichiwa → konnichiha" needs 635. So at the
+            // accessibility sizes the pills stack, each gets the card's whole width (10
+            // characters at full AX5 size), and a longer one shrinks rather than wraps — but
+            // never below the 14pt every default-size reader gets (`CoachLayout`). Past that it
+            // loses its START, not its end, because the end is where the refused key is.
+            // Every size below the accessibility sizes keeps today's row exactly. (v1.33 §B G.)
+            if typeSize.isAccessibilitySize {
+                let pillFloor = CoachLayout.legibleScaleFloor(basePoints: 14, scaledPoints: keyPillPoints)
+                VStack(spacing: 6) {
+                    keyPill(typed: true, text: replay.typedPrefix + String(replay.rejected))
+                        .lineLimit(1).minimumScaleFactor(pillFloor).truncationMode(.head)
+                    Text("↓").foregroundStyle(Theme.dim).accessibilityHidden(true)
+                    keyPill(typed: false, text: correctSpelling(for: replay))
+                        .lineLimit(1).minimumScaleFactor(pillFloor).truncationMode(.head)
+                }
+                .scaledSystemFont(14, design: .monospaced)
+            } else {
+                HStack(spacing: 14) {
+                    keyPill(typed: true, text: replay.typedPrefix + String(replay.rejected))
+                    Text("→").foregroundStyle(Theme.dim).accessibilityHidden(true)
+                    keyPill(typed: false, text: correctSpelling(for: replay))
+                }
+                .scaledSystemFont(14, design: .monospaced)
             }
-            .scaledSystemFont(14, design: .monospaced)
+        }
+    }
+
+    /// The replay word's glyphs, drawn the same whichever container `replayCard` lays them in.
+    @ViewBuilder
+    private func replayGlyphs(_ replay: MistakeReplay) -> some View {
+        ForEach(Array(replay.target.enumerated()), id: \.offset) { i, kana in
+            Text(String(kana))
+                .scaledSystemFont(isPhoneIdiom ? 28 : 34, weight: .bold, relativeTo: .title)
+                .foregroundStyle(i == replay.index ? Theme.accent : .white)
+                .padding(.horizontal, 2)
+                .background(i == replay.index
+                            ? Theme.accent.opacity(0.15) : .clear,
+                            in: RoundedRectangle(cornerRadius: 6))
         }
     }
 
@@ -185,5 +224,17 @@ struct CoachView: View {
                 .accessibilityIdentifier("coachDrillButton")
             }
         }
+    }
+}
+
+/// The coach's accessibility-size rule for text that must stay on one line. (v1.33 §B G.)
+enum CoachLayout {
+    /// The shrink floor that keeps a scaled font at or above its default-size `basePoints`:
+    /// `scaledPoints × floor ≥ basePoints`. 1 at the default size (no shrinking at all), about
+    /// 0.61 at AX1 (14 → 23pt) and 0.32 at AX5 (14 → 43.6pt) — a learner who chose large text may
+    /// see a long spelling smaller than they chose, but never smaller than everyone else's.
+    static func legibleScaleFloor(basePoints: CGFloat, scaledPoints: CGFloat) -> CGFloat {
+        guard scaledPoints > 0 else { return 1 }
+        return min(1, basePoints / scaledPoints)
     }
 }
