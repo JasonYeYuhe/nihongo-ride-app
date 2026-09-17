@@ -275,16 +275,31 @@ private struct HUDBar: View {
         // a 320pt Display Zoom iPhone with the level capsule past the left edge, and 26.5 in a 400pt
         // iPad window; Time Attack past 100 words left 36.5 at 320. Rows that did fit often paid with
         // the level capsule, truncated to "…" or clipped to a sliver (375pt with the keyboard down late
-        // in a journey, 375–402pt list rides, a 507pt iPad window). So at those sizes the row is offered
-        // to `ViewThatFits` twice: as it was, then with one more pill removed (`RideHUDLayout.shows`).
-        // Measured, `ViewThatFits` counts a one-line label's shrink toward its 0.7 floor as fitting
-        // and truncation as not (taken at 0.8 of its width, not at 0.6 —
-        // `V133GRideAndDrillLayoutTests`), so the first row gives way before the capsule would read
-        // "…". Below the accessibility sizes there is no second row and no `ViewThatFits`: the row
-        // is 1.32's. The flip is a change of view — onDisappear/onAppear fire, measured — which
-        // costs nothing here: this view holds no state, no appearance hook and no animation. Where
-        // VoiceOver focus goes if it sits on a pill at the moment of a flip is not measured.
-        // `RideHUDLayout` has the measurements. (v1.33 pre-submission review, round 3)
+        // in a journey, 375–402pt list rides, a 507pt iPad window). So at those sizes the row is
+        // offered to `ViewThatFits` twice: as it was, then with one more pill removed
+        // (`RideHUDLayout.shows`). Below the accessibility sizes there is no second row and no
+        // `ViewThatFits`: the row is 1.32's. (v1.33 pre-submission review, round 3)
+        //
+        // **`ViewThatFits` compares each row's IDEAL width**, so the first row is kept only while it
+        // fits with the level capsule unshrunk: the capsule is never shrunk or "…" in a first row.
+        // Round 3 wrote here that the capsule's shrink toward its 0.7 floor counted as room ("taken
+        // at 0.8 of its width"); its test had framed the label 10pt tall, which shrank it for HEIGHT.
+        // In every accessibility-size render of this HUD the first row was taken exactly when its
+        // ideal width fitted (`V133GRideAndDrillLayoutTests` measures the rule). (Round 4)
+        //
+        // **Round 4: the choice followed values that go down as well as up.** The first row's ideal
+        // width held the current combo and the current word's level label, so at tight widths the
+        // combo pill left as a streak passed ×9 and came back after every mistake, and a mixed-level
+        // list changed rows word to word — each change a rebuilt row and new VoiceOver elements. Late
+        // in a 150-word list on a 402pt phone with the keyboard up that row needed 363pt at "—", 369
+        // at ×9, 385 at ×10 and 401 at ×149, against 382; on a 430pt phone with it dismissed, 397 on
+        // an N1 word and 401 on an N5, against 398. So the first row reserves the widest combo and
+        // level label its ride can show (`IdealWidthReserve`, `RideHUDLayout.comboReserve` and
+        // `levelReserve`), leaving the progress count and the score, which only grow: the row changes
+        // at most once in a ride. That change is a change of view — onDisappear/onAppear fire,
+        // measured in round 3 — which costs nothing here: this view holds no state, no appearance
+        // hook and no animation. Where VoiceOver focus goes if it sits on a pill at that moment is
+        // not measured. `RideHUDLayout` has the measurements. (v1.33 pre-submission review, round 4)
         if typeSize.isAccessibilitySize {
             ViewThatFits(in: .horizontal) {
                 row(fallback: false)
@@ -310,19 +325,20 @@ private struct HUDBar: View {
             // **Here that holds at the accessibility sizes only**, where `RideHUDLayout` hides one
             // pill, an iPad also hides distance, accuracy and speed (round 2, below), and `body`
             // falls back to a row with one pill fewer (round 3), so a row that cannot wrap fits a
-            // phone of 320pt or wider and an iPad window of 400pt or wider in every ride measured, up
-            // to the 500-word list cap (`RideHUDLayout`); narrower iPad windows were not measured in
-            // round 3. Below them no pill is hidden, and a row that may not wrap does not get
-            // narrower — it pushes its last item, the pause button, off the screen. The results-and-ride review measured this HUDBar hosted on
-            // macOS: late in a journey ride the row needs ~752pt, so with the limits at every size an
-            // iPad mini in portrait (744pt) and iPad Split View (678pt and narrower) lost the pause
-            // button partly or wholly at the DEFAULT size — for a touch-only rider the only way to
-            // pause or end the ride — and by scaled-font arithmetic so did 375/393/402pt iPhones at
-            // xxLarge and xxxLarge, the ordinary Text Size slider. In 1.32 those values wrapped and
-            // the button stayed on screen. So below the accessibility sizes this capsule and the
-            // values in `stat` carry 1.32's modifiers again: no line limit, no shrink, no fixed
-            // size (`lineLimit(nil)`, `minimumScaleFactor(1)` and `fixedSize` in neither axis are
-            // the defaults — `V133GRideAndDrillLayoutTests` measures that). (v1.33 review)
+            // phone of 320pt or wider and an iPad window of 400pt or wider in every ride measured,
+            // up to the 500-word list cap (`RideHUDLayout`); narrower iPad windows were not
+            // measured in round 3. Below them no pill is hidden, and a row that may not wrap does
+            // not get narrower — it pushes its last item, the pause button, off the screen. The
+            // results-and-ride review measured this HUDBar hosted on macOS: late in a journey ride
+            // the row needs ~752pt, so with the limits at every size an iPad mini in portrait
+            // (744pt) and iPad Split View (678pt and narrower) lost the pause button partly or
+            // wholly at the DEFAULT size — for a touch-only rider the only way to pause or end the
+            // ride — and by scaled-font arithmetic so did 375/393/402pt iPhones at xxLarge and
+            // xxxLarge, the ordinary Text Size slider. In 1.32 those values wrapped and the button
+            // stayed on screen. So below the accessibility sizes this capsule and the values in
+            // `stat` carry 1.32's modifiers again: no line limit, no shrink, no fixed size
+            // (`lineLimit(nil)`, `minimumScaleFactor(1)` and `fixedSize` in neither axis are the
+            // defaults — `V133GRideAndDrillLayoutTests` measures that). (v1.33 review)
             //
             // **Round 2: the accessibility-size row had only been fitted to a phone.** On an iPad
             // `narrow` is false, so that row kept distance, accuracy and speed as well, and with its
@@ -332,8 +348,16 @@ private struct HUDBar: View {
             // and partly off a portrait 820/834pt iPad late in a ride. So at these sizes an iPad
             // shows the phone's pills (the two gates below); `RideHUDLayout` has the measurements.
             // (v1.33 pre-submission review, round 2)
+            //
+            // Round 4: what the first row reserves at the accessibility sizes — nothing below them and
+            // nothing in the second row (`RideHUDLayout.comboReserve`). The level capsule's reserve
+            // sits on its Text before the font, so the placeholders are set in that font; the combo's
+            // is inside `stat`. (v1.33 pre-submission review, round 4)
+            let levels = RideHUDLayout.levelReserve(typeSize, fallback: fallback, words: session.wordList)
+            let combos = RideHUDLayout.comboReserve(typeSize, fallback: fallback, wordCount: session.wordCount)
             if RideHUDLayout.shows(.level, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {
                 Text(session.currentLevelLabel)
+                    .reservingIdealWidth(for: levels)
                     .scaledSystemFont(14, weight: .heavy, design: .rounded)
                     .foregroundStyle(.white)
                     .lineLimit(typeSize.isAccessibilitySize ? 1 : nil)
@@ -348,10 +372,11 @@ private struct HUDBar: View {
             }
             if RideHUDLayout.shows(.combo, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {
                 stat(icon: "flame.fill",
-                     value: session.combo >= 2 ? "×\(session.combo)" : "—",
+                     value: RideHUDLayout.comboValue(session.combo),
                      tint: session.combo >= 2 ? Theme.accent : Theme.dim,
                      label: zh ? "连击" : "Combo",
-                     spoken: session.combo >= 2 ? "\(session.combo)" : (zh ? "无" : "none"))
+                     spoken: session.combo >= 2 ? "\(session.combo)" : (zh ? "无" : "none"),
+                     reserving: combos)
             }
             // At the accessibility sizes the Spacer may collapse, as `ConjugationHUD`'s does: its
             // default minimum was the last 8pt a 320pt Display Zoom iPhone lacked late in a journey
@@ -418,18 +443,25 @@ private struct HUDBar: View {
 
     /// One HUD telemetry pill, exposed to VoiceOver as a single labeled+valued
     /// element (the icon is decorative). `spoken` overrides the announced value
-    /// where the on-screen glyph would read poorly (e.g. "—", "150 m").
+    /// where the on-screen glyph would read poorly (e.g. "—", "150 m"). `reserving`: values whose
+    /// width the pill's ideal width covers without drawing them (`reservingIdealWidth`).
     private func stat(icon: String, value: String, tint: Color,
-                      label: String, spoken: String? = nil) -> some View {
+                      label: String, spoken: String? = nil, reserving: [String] = []) -> some View {
         HStack(spacing: 6) {
             Image(systemName: icon).foregroundStyle(tint)
             // "0/12" wrapping to "0/1" over "2" is not a smaller number, it is a broken pill —
             // the same two lines ConjugationHUD.stat carries since v1.31. (v1.33 §B G.) At the
             // accessibility sizes only: below them a value that cannot wrap pushes the pause button
             // off a narrow screen at the default size, which is worse — see the level capsule.
+            //
+            // The reserve goes AFTER `fixedSize`, which proposes no width to what it wraps: inside
+            // it the reserve would be asked for its ideal at every layout, the pill drawn at the
+            // widest value's width. (v1.33 pre-submission review, round 4 — measured in
+            // `V133GRideAndDrillLayoutTests`.)
             Text(value).foregroundStyle(.white).monospacedDigit()
                 .lineLimit(typeSize.isAccessibilitySize ? 1 : nil)
                 .fixedSize(horizontal: typeSize.isAccessibilitySize, vertical: false)
+                .reservingIdealWidth(for: reserving) { Text($0).monospacedDigit() }
         }
         .padding(.horizontal, narrow ? 9 : 12).padding(.vertical, 7)
         .background(.black.opacity(0.42), in: Capsule())
@@ -536,13 +568,56 @@ private struct HUDBar: View {
 /// cap — at "1199/1200" on a 320pt phone, or in a 400pt iPad window with the keyboard down, neither
 /// row fits; the second is kept, the pause button stays whole and the level capsule reads "…".
 ///
+/// **Round 4: the row changed as the values changed, not only as they grew** — found by round 3's
+/// review, 2026-09-18. `ViewThatFits` compares each row's IDEAL width, and the first row's held the
+/// current combo and the current word's level label, so at tight widths the combo pill left as a
+/// streak passed ×9 and came back after every mistake, and a list mixing levels changed rows word to
+/// word — and every change rebuilds the row, handing VoiceOver new elements. Late in a 150-word list
+/// ride on a 402pt phone with the keyboard up that row needed 363pt at "—", 369 at ×9, 385 at ×10
+/// and 401 at ×149, against the 382 available; on a 430pt phone with the keyboard dismissed, 397 on
+/// an N1 word and 401 on an N5, against 398. So at these sizes the first row reserves the widest
+/// value each of those two pills can show in THIS ride (`comboReserve`, `levelReserve`,
+/// `IdealWidthReserve`), and what is left in its ideal width is the progress count and the score,
+/// which only ever grow. The reserve is answered only when no width is proposed, so it moves no
+/// drawn pixel.
+///
+/// **So the row changes at most once in a ride**, measured by stepping whole rides key by key with
+/// the session mutated as a rider would — clean rides, and rides with a wrong key at the end of
+/// streaks of 1 to 40 words — over 10 rides (20-word journeys at N5, at N4 and over mixed levels;
+/// 150-word lists at N5 and mixed; a 300-word Time Attack; a five-sentence ride) at 12 widths and
+/// keyboard positions (320, 375, 402 and 430pt phones; 400 and 507pt iPad windows): 120 rides,
+/// 10,248 HUD states. Round 3's rows changed 143 times over the same rides — 22 times in one ride (a
+/// mixed-level 150-word list on a 430pt phone with the keyboard down) and 18 in another (that list
+/// at 402pt with the keyboard up). This row changed 26 times in 120 rides, never more than once, and
+/// always from the first row to the second: each change fell on the one key where the progress count
+/// or the score gained a digit (9→10 or 99→100 words; a score passing 1,000 or 10,000). The pause
+/// button was whole — 44 of 44pt — in all 10,248 states on both, and no first row shrank its level
+/// capsule.
+///
+/// The row a ride settles on is round 3's table with four additions: a 99/150 list ride now takes
+/// the second row at 393pt with the keyboard up (it already did with it down), at 402pt either way,
+/// and in a 507pt iPad window with the keyboard down; and a journey takes the second row from its
+/// start, not from its second word, in a 400pt iPad window with the keyboard up.
+/// Re-measured in full — 28 rides × phones 320–440pt and iPad windows 380–1376pt × keyboard up and
+/// down, 952 rows, plus 112 on macOS — the pause button is 44 of 44pt in every row, nothing wraps,
+/// the first row is taken exactly when its ideal width fits, and AX5 renders as AX1. 698 rows keep
+/// round 3's first row and are byte-identical to it; 233 keep round 3's second row, identical; in 21
+/// the reserve moves the ride to its second row, with the pause button whole and the level capsule
+/// full. Below the accessibility sizes, 7,448 renders on phone, iPad and Mac widths at the 7 sizes
+/// are byte-identical to 1.32's (two first renders in a process differed and re-rendered identical,
+/// as in round 3). **iPad windows under 400pt**, round 3's open note: at 380pt the pause button is
+/// whole in all 28 rides both ways, and a late 150- or 500-word list ride's second row shrinks the
+/// level capsule to 0.83 of its width, exactly as round 3's row does; 320pt windows are still
+/// unmeasured. (v1.33 pre-submission review, round 4)
+///
 /// Instrument: this `HUDBar` rendered with `ImageRenderer` on macOS inside a copy of `GameView`'s
 /// padding, its fonts scaled from the environment's size through iOS's body-size table so
 /// `GameView`'s cap clamps them, items read by pixel segmentation against the same row 2400pt wide,
 /// the row drawn cross-checked against `ViewThatFits`' own test in all 1080 accessibility-size
 /// cases. Below the accessibility sizes the 3780 renders on phone, iPad and Mac widths were
 /// byte-identical to 1.32's (the sweep's one mismatch re-rendered identical eight times).
-/// (v1.33 pre-submission review, round 3)
+/// (v1.33 pre-submission review, round 3.) Round 4 read the same instrument, with a verbatim copy of
+/// round 3's `HUDBar` beside this one as the before, and the session stepped key by key.
 ///
 /// `ImageRenderer` ignores Dynamic Type on its own, so every figure here is an instrument's, not a
 /// device's: the AX5 simulator pass re-shoots both HUDs.
@@ -576,6 +651,76 @@ enum RideHUDLayout {
     /// point. The drill has no second row.
     static func showsScore(_ typeSize: DynamicTypeSize) -> Bool {
         shows(.score, typeSize, scoreIsTheRide: false, fallback: false)
+    }
+
+    /// The combo pill's value: a dash until a streak of two, then "×n". Here rather than in `HUDBar`
+    /// so the widths `comboReserve` reserves are the strings the pill draws.
+    static func comboValue(_ combo: Int) -> String { combo >= 2 ? "×\(combo)" : "—" }
+
+    /// The combo values the ride row's first row reserves room for at the accessibility sizes
+    /// (round 4, `IdealWidthReserve`): the dash, and the longest streak the ride can reach. A streak
+    /// grows by one per word completed and restarts on a mistake, a reveal or a skip
+    /// (`GameSession`), so it cannot pass `wordCount`; the value's digits are tabular
+    /// (`monospacedDigit`), so "×\(wordCount)" is as wide as any value of as many digits and wider than
+    /// any of fewer — both measured in `V133GRideAndDrillLayoutTests`. Nothing below the accessibility
+    /// sizes, where there is no `ViewThatFits`, and nothing for the second row, its last child, which
+    /// is never measured to be chosen. Time Attack never shows this pill at those sizes.
+    static func comboReserve(_ typeSize: DynamicTypeSize, fallback: Bool, wordCount: Int) -> [String] {
+        guard typeSize.isAccessibilitySize, !fallback else { return [] }
+        return wordCount >= 2 ? [comboValue(0), comboValue(wordCount)] : [comboValue(0)]
+    }
+
+    /// The level labels the first row reserves room for, on the same terms as `comboReserve`: one
+    /// per JLPT level in the ride's queue, because the capsule shows the current word's
+    /// (`GameSession.currentLevelLabel`) and "N1" is narrower than "N5". A one-level ride reserves
+    /// its own label, which changes nothing.
+    static func levelReserve(_ typeSize: DynamicTypeSize, fallback: Bool, words: [VocabEntry]) -> [String] {
+        guard typeSize.isAccessibilitySize, !fallback else { return [] }
+        return Set(words.map(\.jlpt)).sorted { $0.rawValue < $1.rawValue }.map(\.label)
+    }
+}
+
+/// A view whose IDEAL width — its size when no width is proposed, which is what `ViewThatFits`
+/// compares — is the widest of its subviews, and whose size under any real proposal is its first
+/// subview's alone. The others are hidden placeholders: they are measured, never drawn.
+///
+/// **Round 4 of the pre-submission review.** A hidden placeholder in a `ZStack` would reserve the
+/// same width, and move what is drawn: the level capsule's `ZStack` would push the combo pill right,
+/// and a pill's own background would grow. Answering the reserve only when no width is proposed
+/// leaves every drawn frame where it was — `HStack` proposes real widths when it places its children
+/// — so wherever the first row is taken it renders byte for byte as round 3's (`RideHUDLayout` has
+/// the measurement; `V133GRideAndDrillLayoutTests` measures the Layout on its own).
+struct IdealWidthReserve: Layout {
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        guard let content = subviews.first else { return .zero }
+        let size = content.sizeThatFits(proposal)
+        guard proposal.width == nil else { return size }
+        let widest = subviews.dropFirst().map { $0.sizeThatFits(proposal).width }.max() ?? 0
+        return CGSize(width: max(size.width, widest), height: size.height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        for subview in subviews {
+            subview.place(at: bounds.origin, anchor: .topLeading, proposal: proposal)
+        }
+    }
+}
+
+extension View {
+    /// This view inside `IdealWidthReserve`, with one hidden placeholder per value (`placeholder`
+    /// builds it; the environment's font reaches it, a `Text` modifier on this view does not). No
+    /// values, no change: the view itself, as before round 4.
+    @ViewBuilder
+    func reservingIdealWidth(for values: [String],
+                             _ placeholder: @escaping (String) -> Text = { Text($0) }) -> some View {
+        if values.isEmpty {
+            self
+        } else {
+            IdealWidthReserve {
+                self
+                ForEach(values, id: \.self) { placeholder($0).hidden().accessibilityHidden(true) }
+            }
+        }
     }
 }
 

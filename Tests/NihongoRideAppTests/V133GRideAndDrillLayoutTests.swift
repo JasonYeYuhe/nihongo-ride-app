@@ -4,6 +4,7 @@ import SwiftUI
 #if canImport(AppKit)
 import AppKit
 #endif
+import VocabKit
 import GameCore
 @testable import NihongoRideApp
 
@@ -144,7 +145,7 @@ struct V133GRideAndDrillLayoutTests {
                     ? "if RideHUDLayout.shows(.score, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {"
                     : "if RideHUDLayout.showsScore(typeSize) {"
                 #expect(previous == expected,
-                        "\(file):\(index + 1): the score pill is not behind RideHUDLayout.showsScore")
+                        "\(file):\(index + 1): the score pill is not behind `\(expected)`")
             }
         }
     }
@@ -156,6 +157,12 @@ struct V133GRideAndDrillLayoutTests {
     /// values and the capsule carry 1.32's modifiers — none — again. Mutation, 2026-09-17: the
     /// value's limit back to an unconditional `.lineLimit(1)` goes red here, and so does the
     /// capsule's `.minimumScaleFactor(0.7)`.
+    ///
+    /// Round 4: the value's reserve comes after `fixedSize`, which proposes no width to what it
+    /// wraps — inside it, `IdealWidthReserve` would answer its reserved width at every layout and the
+    /// pill would be drawn as wide as the widest value (`idealWidthReserveChangesOnlyTheIdealWidth`
+    /// measures that). Mutation, 2026-09-18: the reserve moved above `.fixedSize` goes red here.
+    /// (v1.33 pre-submission review, round 4)
     @Test("the HUD's values and level capsule keep to one line at the accessibility sizes, and wrap as in 1.32 below them")
     func hudValuesNeverWrap() throws {
         let lines = Self.codeLines(try Self.source("GameView.swift"))
@@ -166,7 +173,8 @@ struct V133GRideAndDrillLayoutTests {
         }
         let valueChain = Array(lines[(valueLine + 1)...].prefix { $0.hasPrefix(".") })
         #expect(valueChain == [".lineLimit(typeSize.isAccessibilitySize ? 1 : nil)",
-                               ".fixedSize(horizontal: typeSize.isAccessibilitySize, vertical: false)"],
+                               ".fixedSize(horizontal: typeSize.isAccessibilitySize, vertical: false)",
+                               ".reservingIdealWidth(for: reserving) { Text($0).monospacedDigit() }"],
                 "the HUD value's modifiers are \(valueChain)")
         let levelChain = Array(lines[(levelLine + 1)...].prefix { $0.hasPrefix(".") })
         #expect(levelChain.contains(".lineLimit(typeSize.isAccessibilitySize ? 1 : nil)"), "\(levelChain)")
@@ -323,6 +331,12 @@ struct V133GRideAndDrillLayoutTests {
     /// on comment-blanked code. Mutations, 2026-09-18, each red here: the second row removed; the second
     /// row commented out; the two rows swapped; `ViewThatFits` at every size (the `if` removed); the
     /// else branch offering `row(fallback: true)`. (v1.33 pre-submission review, round 3)
+    ///
+    /// **And `row` only ever hands `fallback` on**, as `fallback: fallback` to the three `shows` gates
+    /// and the two reserves: every mention of the name in the body is half of such a pair. Round 3's
+    /// review found `let fallback = false` at the top of the row's `HStack` made both rows identical —
+    /// the fix switched off — with every test green. Mutations, 2026-09-18, each red here: that line;
+    /// `if let onPause, !fallback {`. (v1.33 pre-submission review, round 4)
     @Test("the ride row falls back through ViewThatFits at the accessibility sizes, and only there")
     func rideRowFallsBackAtAccessibilitySizesOnly() throws {
         let file = try #require(try CallSiteScanner.shippedSources.get()
@@ -354,42 +368,261 @@ struct V133GRideAndDrillLayoutTests {
             let parts = (file.calls(named: "stat") + file.calls(named: "Button")).filter { hud.contains($0.nameOffset) }
             #expect(parts.count == 7 && parts.allSatisfy { body.contains($0.nameOffset) },
                     "a pill or the pause button is built outside row(fallback:)")
+
+            let handedOn = try NSRegularExpression(pattern: #"\bfallback:\s*fallback\b(?=\s*[,)])"#)
+            let text = file.text(body)
+            let pairs = handedOn.numberOfMatches(in: text, range: NSRange(text.startIndex..., in: text))
+            let mentions = file.mentions(of: "fallback").filter { body.contains($0) }.count
+            #expect(pairs == 5 && mentions == 2 * pairs,
+                    "row(fallback:) mentions `fallback` \(mentions) times with \(pairs) `fallback: fallback` pairs; expected 10 and 5")
         }
     }
 
     #if canImport(AppKit)
-    /// What `HUDBar`'s `ViewThatFits` counts as fitting — SwiftUI's behaviour, so measured rather than
-    /// assumed. Round 3 was decided on the assumption that it compares ideal widths, so the level
-    /// capsule's shrink would not count as room. Measured, 2026-09-18, it does: a one-line Text with a
-    /// 0.7 floor was taken at 0.99, 0.9 and 0.8 of its width and not at 0.7, 0.5 or 0.3, where it
-    /// would truncate; a value with `fixedSize` is taken only at its full width. So the first row
-    /// stays while the capsule may shrink, and gives way to the second before the capsule would read
-    /// "…". Mutation, 2026-09-18: the truncating width claimed to be taken goes red.
-    /// (v1.33 pre-submission review, round 3)
+    /// Whether `ViewThatFits` takes a child at `width`: the child is marked by a frame taller than a
+    /// line, and the last child by a taller one still. **The marker must not be shorter than a line.**
+    /// Round 3's version framed the child 10pt tall, which made a 17pt Text shrink to fit the HEIGHT
+    /// and report that shrunk width — so it measured a shrinking label "taken at 0.8 of its width", and
+    /// a comment and a commit message said `ViewThatFits` counts the level capsule's shrink as room.
+    /// With a marker a line tall or more the same label is taken only at its full width.
+    /// (v1.33 pre-submission review, round 4)
     @MainActor
-    @Test("ViewThatFits keeps a row while its level capsule can shrink, and drops it before the capsule truncates")
-    func viewThatFitsCountsShrinkButNotTruncation() {
-        func taken<V: View>(_ first: V, at width: CGFloat) -> Bool {
-            NSHostingController(rootView: ViewThatFits(in: .horizontal) {
-                first.frame(height: 10)
-                Color.clear.frame(width: 1, height: 20)
-            }).sizeThatFits(in: CGSize(width: width, height: 100)).height == 10
-        }
-        func width<V: View>(_ view: V) -> CGFloat {
-            NSHostingController(rootView: view.fixedSize()).sizeThatFits(in: CGSize(width: 2_000, height: 100)).width
-        }
+    static func taken<V: View>(_ first: V, at width: CGFloat, marker: CGFloat = 60) -> Bool {
+        NSHostingController(rootView: ViewThatFits(in: .horizontal) {
+            first.frame(height: marker)
+            Color.clear.frame(width: 1, height: marker + 10)
+        }).sizeThatFits(in: CGSize(width: width, height: marker + 100)).height == marker
+    }
+
+    /// A view's ideal width: `fixedSize` proposes no width, as `ViewThatFits` asks.
+    @MainActor
+    static func idealWidth<V: View>(_ view: V) -> CGFloat {
+        NSHostingController(rootView: view.fixedSize()).sizeThatFits(in: CGSize(width: 2_000, height: 200)).width
+    }
+
+    /// What `HUDBar`'s `ViewThatFits` counts as fitting — SwiftUI's behaviour, so measured rather than
+    /// assumed. It compares each child's ideal width, so a one-line label with a 0.7 shrink floor is
+    /// taken at its full width and not 2pt narrower, where it could only shrink; a value with
+    /// `fixedSize` likewise. So `HUDBar`'s first row is kept only while it fits with the level capsule
+    /// unshrunk — the capsule is never shrunk or "…" in a first row. Round 3's version of this test
+    /// claimed the opposite because its marker squeezed the label's height (`taken`). Mutation,
+    /// 2026-09-18: the marker back to round 3's 10pt, which is the whole of round 3's finding, goes red
+    /// here. (Dropping the label's `lineLimit(1)` does NOT: a Text's ideal width is its single line
+    /// either way, which is the same fact this test is about.) (v1.33 pre-submission review, round 4)
+    @MainActor
+    @Test("ViewThatFits takes a row only at its unshrunk width")
+    func viewThatFitsTakesARowOnlyAtItsUnshrunkWidth() {
         let font = Font.system(size: 17, weight: .heavy, design: .rounded)
         let label = Text("Journey Beginner").font(font)
-        let full = width(label)
+        let full = Self.idealWidth(label)
         #expect(full > 100, "the instrument is not laying the label out: \(full)pt")
         let capsule = label.lineLimit(1).minimumScaleFactor(0.7)
-        #expect(taken(capsule, at: full.rounded(.up)))
-        #expect(taken(capsule, at: (full * 0.8).rounded(.up)), "shrinking to 0.8 no longer counts as fitting")
-        #expect(!taken(capsule, at: (full * 0.6).rounded(.down)), "a width the capsule could only truncate to was taken")
+        #expect(Self.taken(capsule, at: full.rounded(.up)), "a shrinkable label was not taken at its full width")
+        #expect(!Self.taken(capsule, at: full.rounded(.up) - 2), "a shrinking label was counted as room")
         let value = Text("149/150").font(font).monospacedDigit().lineLimit(1).fixedSize(horizontal: true, vertical: false)
-        let valueWidth = width(value)
-        #expect(taken(value, at: valueWidth.rounded(.up)))
-        #expect(!taken(value, at: valueWidth.rounded(.up) - 2), "a fixed-size value was taken narrower than itself")
+        let valueWidth = Self.idealWidth(value)
+        #expect(Self.taken(value, at: valueWidth.rounded(.up)))
+        #expect(!Self.taken(value, at: valueWidth.rounded(.up) - 2), "a fixed-size value was taken narrower than itself")
+    }
+    #endif
+
+    // MARK: 1c. HUD — the first row's ideal width grows only with the ride (round 4)
+
+    static func entries(_ levels: [JLPTLevel]) -> [VocabEntry] {
+        levels.enumerated().map { index, level in
+            VocabEntry(id: "reserve\(index)", surface: "みず", kana: "みず", partsOfSpeech: ["n"], jlpt: level, meanings: [:])
+        }
+    }
+
+    /// Round 4 of the pre-submission review. `ViewThatFits` compares ideal widths, and the first row's
+    /// depended on the current combo ("—", "×9", "×10") and the current word's level label ("N1" is
+    /// narrower than "N5"), so at tight widths the combo pill left as a streak passed ×9 and came
+    /// back after every mistake, and a mixed-level list changed rows word to word. So the first row,
+    /// at the accessibility sizes only, reserves the widest of each (`IdealWidthReserve`), and these
+    /// are the values reserved. Expected values are literals. Mutations, 2026-09-18, each red here:
+    /// `comboReserve` without the dash; `comboReserve` for the second row too; `levelReserve` below
+    /// the accessibility sizes; `levelReserve` of every JLPT level rather than the ride's.
+    /// (v1.33 pre-submission review, round 4)
+    @Test("the first row reserves the ride's widest combo and level label, at the accessibility sizes only")
+    func firstRowReservesTheRidesWidestValues() {
+        for (combo, shown) in [(0, "—"), (1, "—"), (2, "×2"), (9, "×9"), (10, "×10"), (149, "×149"), (499, "×499")] {
+            #expect(RideHUDLayout.comboValue(combo) == shown, "combo \(combo)")
+        }
+        let combos: [(wordCount: Int, reserve: [String])] =
+            [(0, ["—"]), (1, ["—"]), (2, ["—", "×2"]), (9, ["—", "×9"]), (20, ["—", "×20"]), (150, ["—", "×150"]),
+             (500, ["—", "×500"])]
+        let levels: [(levels: [JLPTLevel], reserve: [String])] =
+            [([], []), ([.n5, .n5], ["N5"]), ([.n4], ["N4"]), ([.n5, .n1, .n4, .n1], ["N1", "N4", "N5"]),
+             ([.n3, .n2, .n1, .n4, .n5], ["N1", "N2", "N3", "N4", "N5"])]
+        for size in Self.belowAccessibility {
+            for fallback in [false, true] {
+                for (wordCount, _) in combos {
+                    #expect(RideHUDLayout.comboReserve(size, fallback: fallback, wordCount: wordCount) == [], "\(size)")
+                }
+                for (list, _) in levels {
+                    #expect(RideHUDLayout.levelReserve(size, fallback: fallback, words: Self.entries(list)) == [], "\(size)")
+                }
+            }
+        }
+        for size in Self.accessibility {
+            for (wordCount, reserve) in combos {
+                #expect(RideHUDLayout.comboReserve(size, fallback: false, wordCount: wordCount) == reserve,
+                        "\(size), \(wordCount) words")
+                #expect(RideHUDLayout.comboReserve(size, fallback: true, wordCount: wordCount) == [],
+                        "\(size): the second row is ViewThatFits' last child and needs no reserve")
+            }
+            for (list, reserve) in levels {
+                #expect(RideHUDLayout.levelReserve(size, fallback: false, words: Self.entries(list)) == reserve,
+                        "\(size), levels \(list)")
+                #expect(RideHUDLayout.levelReserve(size, fallback: true, words: Self.entries(list)) == [], "\(size)")
+            }
+        }
+    }
+
+    /// The reserve's premises, on a real `GameSession` stepped key by key: a streak grows by one per
+    /// word completed, so the combo pill never shows more digits than "×\(wordCount)", and a clean ride
+    /// reaches that value (the reserve is not wider than the ride can be); every level label the ride
+    /// shows is one it reserved. Mutations, 2026-09-18, each red here: `comboReserve` without the dash;
+    /// `comboValue` with an ASCII "x"; a reserve a digit short ("×\(wordCount / 10)") and a
+    /// `levelReserve` of the first word's level only — those two with the literal table above moved to
+    /// match, so this test is the only one that sees them. An off-by-one reserve ("×\(wordCount - 1)")
+    /// is caught by the table, not here: it is the same width, which is all this asks about.
+    @Test("no combo or level label a ride shows is wider than its first row reserves")
+    func reserveCoversWhatARideShows() {
+        let mixed: [JLPTLevel] = [.n5, .n1, .n4, .n2, .n3]
+        for (count, streaks) in [(12, [12]), (12, [3, 1, 8]), (30, [9, 1, 10, 2, 8])] {
+            let words = (0..<count).map { index in
+                VocabEntry(id: "ride\(index)", surface: "ねこ", kana: "ねこ", partsOfSpeech: ["n"],
+                           jlpt: mixed[index % mixed.count], meanings: [:])
+            }
+            let session = GameSession(words: words, config: .init(newWordCount: count, reviewWordCount: 0))
+            let combos = RideHUDLayout.comboReserve(.accessibility1, fallback: false, wordCount: session.wordCount)
+            let labels = RideHUDLayout.levelReserve(.accessibility1, fallback: false, words: session.wordList)
+            let widest = combos.last ?? ""
+            var seen = Set<String>()
+            func check() {
+                let shown = RideHUDLayout.comboValue(session.combo)
+                #expect(combos.contains(shown) || (shown.hasPrefix("×") && shown.count <= widest.count),
+                        "\(count) words: the pill shows \(shown), the reserve is \(combos)")
+                #expect(session.currentLevelLabel.isEmpty || labels.contains(session.currentLevelLabel),
+                        "the level capsule shows \(session.currentLevelLabel), the reserve is \(labels)")
+                seen.insert(shown)
+            }
+            check()
+            for streak in streaks {
+                for _ in 0..<streak {
+                    while let key = session.expectedNextCharacters.sorted().first {
+                        let result = session.input(key)
+                        check()
+                        if case .completed = result { break }
+                    }
+                }
+                _ = session.input("q")
+                check()
+            }
+            #expect(session.isFinished)
+            if streaks == [count] {
+                #expect(seen.contains(widest), "a clean \(count)-word ride never showed \(widest): \(seen.sorted())")
+            }
+        }
+    }
+
+    /// The reserve reaches the pills: at the top of `row(fallback:)` the two reserves are asked with
+    /// the row's own `fallback`, the level capsule's Text carries its reserve before its font (so the
+    /// placeholders are set in that font), and the combo pill draws `comboValue` and is handed its
+    /// reserve. Pinned on comment-blanked code. Mutations, 2026-09-18, each red here: the level
+    /// capsule's `.reservingIdealWidth(for: levels)` removed; moved below `.scaledSystemFont`; the combo
+    /// pill without `reserving: combos`; `comboReserve` asked with `fallback: true`; the combo value
+    /// spelled out again at the call site instead of `RideHUDLayout.comboValue`.
+    /// (v1.33 pre-submission review, round 4)
+    @Test("the ride row hands its level capsule and combo pill the first row's reserve")
+    func rideRowHandsThePillsTheirReserve() throws {
+        let file = try #require(try CallSiteScanner.shippedSources.get()
+            .first { $0.path == "Sources/NihongoRideApp/GameView.swift" })
+        let hud = try #require(file.typeBodies(named: "HUDBar").first, "GameView has no HUDBar")
+        let row = try #require(file.functions(named: "row").first { hud.contains($0.keywordOffset) }?.body)
+        let code = Self.collapsed(file.text(row))
+        for declaration in ["let levels = RideHUDLayout.levelReserve(typeSize, fallback: fallback, words: session.wordList)",
+                            "let combos = RideHUDLayout.comboReserve(typeSize, fallback: fallback, wordCount: session.wordCount)"] {
+            #expect(code.contains(declaration), "row(fallback:) no longer declares `\(declaration)`")
+        }
+        #expect(code.contains("Text(session.currentLevelLabel) .reservingIdealWidth(for: levels) "
+                              + ".scaledSystemFont(14, weight: .heavy, design: .rounded)"),
+                "the level capsule's Text is not reserved, or not before its font")
+        for name in ["levels", "combos"] {
+            let uses = file.mentions(of: name).filter { row.contains($0) }.count
+            #expect(uses == 2, "`\(name)` is mentioned \(uses) times in row(fallback:); expected its declaration and one use")
+        }
+        let flames = file.calls(named: "stat").filter { call in
+            row.contains(call.nameOffset)
+                && (call.arguments.map { String(decoding: file.codeWithStrings[$0], as: UTF8.self) } ?? "")
+                    .contains("\"flame.fill\"")
+        }
+        #expect(flames.count == 1, "row(fallback:) has \(flames.count) combo pill(s)")
+        for flame in flames {
+            let arguments = flame.arguments.map { Self.collapsed(file.text($0)) } ?? ""
+            #expect(arguments.contains("value: RideHUDLayout.comboValue(session.combo),") && arguments.hasSuffix("reserving: combos"),
+                    "the combo pill is built as stat(\(arguments))")
+        }
+        #expect(file.calls(named: "reservingIdealWidth").filter { hud.contains($0.nameOffset) }.count == 2,
+                "HUDBar reserves somewhere other than the level capsule and the pill value")
+    }
+
+    #if canImport(AppKit)
+    /// `IdealWidthReserve` is only a fix if it changes what `ViewThatFits` compares and nothing it
+    /// draws. Measured with the HUD value's own modifiers at its two AX1 sizes (15 and 17pt × 28/17):
+    /// the reserved "—" answers the widest value's ideal width, lays out and renders byte for byte as
+    /// the plain "—" at a real width, and is taken by `ViewThatFits` at the widest value's width and not
+    /// 2pt narrower, where the plain one is. The reserve's premise — tabular digits, so "×\(wordCount)"
+    /// is as wide as any value of as many digits — is measured too. Control: the reserve INSIDE
+    /// `fixedSize` lays out at the widest value's width, which is why `stat` applies it after.
+    /// Mutations, 2026-09-18, each red here: the Layout reserving for every proposal (its
+    /// `guard proposal.width == nil` removed); the placeholders not `.hidden()`; the Layout ignoring
+    /// its placeholders. (v1.33 pre-submission review, round 4)
+    @MainActor
+    @Test("IdealWidthReserve changes a view's ideal width and nothing it draws")
+    func idealWidthReserveChangesOnlyTheIdealWidth() {
+        func value(_ text: String) -> some View {
+            Text(text).monospacedDigit().lineLimit(1).fixedSize(horizontal: true, vertical: false)
+        }
+        func laidOut<V: View>(_ view: V, at width: CGFloat) -> CGSize {
+            NSHostingController(rootView: view).sizeThatFits(in: CGSize(width: width, height: 200))
+        }
+        func pixels<V: View>(_ view: V, at width: CGFloat) -> Data? {
+            let renderer = ImageRenderer(content: ZStack(alignment: .leading) {
+                Color.white
+                HStack(spacing: 8) { view; Color.red.frame(width: 20, height: 20); Spacer(minLength: 0) }
+            }.frame(width: width, height: 60))
+            renderer.scale = 2
+            return renderer.cgImage?.dataProvider?.data as Data?
+        }
+        for points in [15 * 28 / 17, 17 * 28 / 17] as [CGFloat] {
+            let font = Font.system(size: points, weight: .semibold, design: .rounded)
+            let three = ["×100", "×111", "×149", "×150", "×499", "×500", "×999"].map { Self.idealWidth(value($0).font(font)) }
+            let two = ["×10", "×11", "×19", "×99"].map { Self.idealWidth(value($0).font(font)) }
+            #expect(Set(three).count == 1 && Set(two).count == 1 && two[0] < three[0],
+                    "\(points)pt: the combo's digits are not tabular — three digits \(three), two \(two)")
+
+            let reserve = ["—", "×150"]
+            let plain = value("—").font(font)
+            let reserved = value("—").reservingIdealWidth(for: reserve) { Text($0).monospacedDigit() }.font(font)
+            let widest = Self.idealWidth(value("×150").font(font))
+            #expect(widest > Self.idealWidth(plain) + 10, "\(points)pt: the instrument cannot tell the values apart")
+            #expect(Self.idealWidth(reserved) == widest, "\(points)pt: the reserve's ideal width is \(Self.idealWidth(reserved)), not \(widest)")
+            for width in [widest + 40, 400] {
+                #expect(laidOut(reserved, at: width) == laidOut(plain, at: width), "\(points)pt at \(width)pt: the reserve changed the layout")
+                let drawn = pixels(reserved, at: width)
+                #expect(drawn != nil && drawn == pixels(plain, at: width), "\(points)pt at \(width)pt: the reserve changed what is drawn")
+            }
+            #expect(Self.taken(reserved, at: widest.rounded(.up)), "\(points)pt: the reserved value was not taken at the widest width")
+            #expect(!Self.taken(reserved, at: widest.rounded(.up) - 2), "\(points)pt: the reserve does not reach ViewThatFits")
+            #expect(Self.taken(plain, at: widest.rounded(.up) - 2), "control: the plain value should fit 2pt under the widest")
+
+            let inside = Text("—").monospacedDigit().lineLimit(1)
+                .reservingIdealWidth(for: reserve) { Text($0).monospacedDigit() }
+                .fixedSize(horizontal: true, vertical: false).font(font)
+            #expect(laidOut(inside, at: 400).width == widest, "control: a reserve inside fixedSize should lay out at the widest width")
+        }
     }
     #endif
 
