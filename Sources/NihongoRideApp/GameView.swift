@@ -264,10 +264,41 @@ private struct HUDBar: View {
     private var zh: Bool { language == "zh" }
 
     /// Time Attack is played FOR the score — it is what Game Center's leaderboard takes — so at
-    /// the accessibility sizes that ride keeps its score and drops the combo instead.
+    /// the accessibility sizes that ride keeps its score and drops the combo instead, and its
+    /// second row drops the level capsule (`RideHUDLayout.fallbackDrops`).
     private var scoreIsTheRide: Bool { session.mode == .timeAttack }
 
     var body: some View {
+        // **Round 3: pills chosen by rules alone still outgrew the screen**, because at the
+        // accessibility sizes the values may not wrap and they grow with the ride. Late in a 150- or
+        // 500-word list ride ("149/150", "×149") the round-2 row left 20 of the pause button's 44pt on
+        // a 320pt Display Zoom iPhone with the level capsule past the left edge, and 26.5 in a 400pt
+        // iPad window; Time Attack past 100 words left 36.5 at 320. Rows that did fit often paid with
+        // the level capsule, truncated to "…" or clipped to a sliver (375pt with the keyboard down late
+        // in a journey, 375–402pt list rides, a 507pt iPad window). So at those sizes the row is offered
+        // to `ViewThatFits` twice: as it was, then with one more pill removed (`RideHUDLayout.shows`).
+        // Measured, `ViewThatFits` counts a one-line label's shrink toward its 0.7 floor as fitting
+        // and truncation as not (taken at 0.8 of its width, not at 0.6 —
+        // `V133GRideAndDrillLayoutTests`), so the first row gives way before the capsule would read
+        // "…". Below the accessibility sizes there is no second row and no `ViewThatFits`: the row
+        // is 1.32's. The flip is a change of view — onDisappear/onAppear fire, measured — which
+        // costs nothing here: this view holds no state, no appearance hook and no animation. Where
+        // VoiceOver focus goes if it sits on a pill at the moment of a flip is not measured.
+        // `RideHUDLayout` has the measurements. (v1.33 pre-submission review, round 3)
+        if typeSize.isAccessibilitySize {
+            ViewThatFits(in: .horizontal) {
+                row(fallback: false)
+                row(fallback: true)
+            }
+        } else {
+            row(fallback: false)
+        }
+    }
+
+    /// The ride row. `fallback` is the second row `ViewThatFits` is offered at the accessibility
+    /// sizes, with one more pill removed (`RideHUDLayout.shows`); below those sizes it is never asked
+    /// for, and it removes nothing there either.
+    private func row(fallback: Bool) -> some View {
         HStack(spacing: narrow ? 8 : 14) {
             // The conjugation HUD's v1.31 fix, which this row never got (v1.33 §B G). At AX5 —
             // capped to AX1 here — a journey ride's progress pill read "0/1" over "2" (simulator
@@ -277,10 +308,12 @@ private struct HUDBar: View {
             // never wrap".
             //
             // **Here that holds at the accessibility sizes only**, where `RideHUDLayout` hides one
-            // pill and an iPad also hides distance, accuracy and speed (round 2, below), so a row
-            // that cannot wrap still fits a phone or an iPad window. Below them no pill is hidden,
-            // and a row that may not wrap does not get narrower — it pushes its last item, the pause
-            // button, off the screen. The results-and-ride review measured this HUDBar hosted on
+            // pill, an iPad also hides distance, accuracy and speed (round 2, below), and `body`
+            // falls back to a row with one pill fewer (round 3), so a row that cannot wrap fits a
+            // phone of 320pt or wider and an iPad window of 400pt or wider in every ride measured, up
+            // to the 500-word list cap (`RideHUDLayout`); narrower iPad windows were not measured in
+            // round 3. Below them no pill is hidden, and a row that may not wrap does not get
+            // narrower — it pushes its last item, the pause button, off the screen. The results-and-ride review measured this HUDBar hosted on
             // macOS: late in a journey ride the row needs ~752pt, so with the limits at every size an
             // iPad mini in portrait (744pt) and iPad Split View (678pt and narrower) lost the pause
             // button partly or wholly at the DEFAULT size — for a touch-only rider the only way to
@@ -299,19 +332,21 @@ private struct HUDBar: View {
             // and partly off a portrait 820/834pt iPad late in a ride. So at these sizes an iPad
             // shows the phone's pills (the two gates below); `RideHUDLayout` has the measurements.
             // (v1.33 pre-submission review, round 2)
-            Text(session.currentLevelLabel)
-                .scaledSystemFont(14, weight: .heavy, design: .rounded)
-                .foregroundStyle(.white)
-                .lineLimit(typeSize.isAccessibilitySize ? 1 : nil)
-                .minimumScaleFactor(typeSize.isAccessibilitySize ? 0.7 : 1)
-                .padding(.horizontal, 10).padding(.vertical, 6)
-                .background(Theme.accent2.opacity(0.85), in: Capsule())
-                .accessibilityLabel(zh ? "等级 \(session.currentLevelLabel)" : "Level \(session.currentLevelLabel)")
-            if RideHUDLayout.showsScore(typeSize, scoreIsTheRide: scoreIsTheRide) {
+            if RideHUDLayout.shows(.level, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {
+                Text(session.currentLevelLabel)
+                    .scaledSystemFont(14, weight: .heavy, design: .rounded)
+                    .foregroundStyle(.white)
+                    .lineLimit(typeSize.isAccessibilitySize ? 1 : nil)
+                    .minimumScaleFactor(typeSize.isAccessibilitySize ? 0.7 : 1)
+                    .padding(.horizontal, 10).padding(.vertical, 6)
+                    .background(Theme.accent2.opacity(0.85), in: Capsule())
+                    .accessibilityLabel(zh ? "等级 \(session.currentLevelLabel)" : "Level \(session.currentLevelLabel)")
+            }
+            if RideHUDLayout.shows(.score, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {
                 stat(icon: "star.fill", value: "\(session.score)", tint: Theme.gold,
                      label: zh ? "得分" : "Score")
             }
-            if RideHUDLayout.showsCombo(typeSize, scoreIsTheRide: scoreIsTheRide) {
+            if RideHUDLayout.shows(.combo, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {
                 stat(icon: "flame.fill",
                      value: session.combo >= 2 ? "×\(session.combo)" : "—",
                      tint: session.combo >= 2 ? Theme.accent : Theme.dim,
@@ -432,17 +467,20 @@ private struct HUDBar: View {
 /// (an iPad mini in portrait) and partly off an 820 or 834pt portrait iPad late in a ride. So at
 /// these sizes an iPad hides those three pills too, as a phone does at every size, and keeps its
 /// own spacing and fonts: the same five rides then need 337 / 345 / 381 / 360 / 378pt on one line
-/// (49–49.5pt tall), and the pause button is wholly on screen at 400, 507, 678, 744, 820, 834, 1024,
-/// 1032 and 1376pt with the keyboard up or down. Narrower than that it is not: 41 of its 44pt are
-/// visible at 375pt late in a journey, 14 at 320. Measured with this `HUDBar` hosted on macOS in
-/// `GameView`'s padding, every `scaledSystemFont` scaled by 28/17 (macOS does not scale
-/// `@ScaledMetric`), after the Spacer change below. Below the accessibility sizes the same
-/// instrument read identical rows before and after, on a phone and on an iPad.
+/// (49–49.5pt tall), and for those rides the pause button is wholly on screen from 400 to 1376pt
+/// with the keyboard up or down. Measured with this `HUDBar` hosted on macOS in `GameView`'s
+/// padding, every `scaledSystemFont` scaled by 28/17 (macOS does not scale `@ScaledMetric`), after
+/// the Spacer change below. Below the accessibility sizes the same instrument read identical rows
+/// before and after, on a phone and on an iPad. **That held for 20-word rides and Time Attack under
+/// 100 words only** (round 3, below): a 150-word list ride late on left 26.5 of the 44pt at 400pt.
 ///
 /// **And a phone's row can use all of its width.** Its Spacer may collapse at these sizes (as the
 /// drill's does), because a 320pt Display Zoom iPhone late in a journey measured 328pt — the pause
-/// button 4pt past the edge — and 320 without the Spacer's default minimum: on screen, with
-/// nothing to spare. A five-digit Time Attack is 318.5.
+/// button 4pt past the edge — and 320 without the Spacer's default minimum. A five-digit Time Attack
+/// is 318.5. **Round 3 corrected what "fits" meant there:** the 320pt row fitted only by squeezing
+/// the level capsule to a clipped 20pt sliver (early in a journey, to "…"), and a ride of 100 words
+/// or more did not fit at all — 20 of the 44pt at 149/150, 36 at 99/150, 36.5 in a 110-word Time
+/// Attack.
 ///
 /// The drill row has the same pills with a "Verbs" badge in the level's place, and what matters
 /// there is how much is left for the badge late in a drill (★1200, ×10, 11/12) on the three
@@ -451,7 +489,8 @@ private struct HUDBar: View {
 ///
 /// **So the score goes, not the combo** — the combo was the first candidate, and the arithmetic
 /// is what moved it. The score is the pill whose width grows with the run (one digit to four);
-/// the combo is bounded at three characters. Hiding the combo leaves the ride row 4pt over on a
+/// the combo is bounded at three characters in a 20-word ride (not in a word-list ride, where it
+/// reaches "×499" — round 3, below). Hiding the combo leaves the ride row 4pt over on a
 /// 393pt phone and 16pt over with the keyboard dismissed by the end of a good ride, and the drill
 /// badge truncated again; hiding the score fits every case above (the drill's 61 becomes 69 once
 /// its spacer may collapse — see `ConjugationHUD`). It is also the least essential
@@ -466,19 +505,77 @@ private struct HUDBar: View {
 /// instead it comes to about 332pt late in a run (≈350 with a five-digit score) against 361.
 /// Arithmetic again, from the table's figures; the simulator pass re-shoots Time Attack at AX5.
 ///
-/// Headless renders cannot see any of this (`ImageRenderer` ignores Dynamic Type), so the claim
-/// above is arithmetic until the AX5 simulator pass re-shoots both HUDs.
+/// **Round 3: the rules alone do not fit, because the values grow** — found by round 2's review,
+/// 2026-09-18. A word-list ride takes every word in the list (up to 500), so late on the progress
+/// pill reads "149/150" or "499/500" and the combo "×149" or "×499", and Time Attack's count passes
+/// 100. So `HUDBar` offers `ViewThatFits` a second row that gives up one pill more,
+/// `fallbackDrops`: the combo where the queue is the target (its score is already hidden), the
+/// level capsule in Time Attack (its combo is already hidden, and the score is the point). Progress
+/// and pause are never given up. Pause button visible, of 44pt, at AX1, worst of keyboard up and
+/// down, round 2 → round 3:
+///
+/// | ride | 320pt phone | 375 | 393 / 402 | 400pt iPad window | 507 |
+/// |---|---|---|---|---|---|
+/// | list 149/150 ×149, 499/500 ×499 | 20 → 44 | 44 "…" → 44 | 44 "…" → 44 | 26.5 → 44 | 44 "…" → 44 |
+/// | list 99/150 ×99 | 36 → 44 | 44 "…" → 44 | 44 → 44 | 44 "…" → 44 | 44 → 44 |
+/// | Time Attack, 110 words, ★23599 | 36.5 → 44 | 44 "…" → 44 | 44 → 44 | 44 "…" → 44 | 44 → 44 |
+/// | journey late (19/20 ×19), N5 or N4 | 44 sliver → 44 | 44 "…" → 44 | 44 → 44 | 44 "…" → 44 | 44 → 44 |
+///
+/// ("…": the level capsule truncated in at least one keyboard position.) On every phone from 320 to
+/// 440pt and every iPad window from 400 to 1376pt, in all 14 rides measured — 20-word journeys
+/// early, mid-way and late at N5 and N4; list rides at 99/150, 149/150 and 499/500; Time Attack at
+/// 37, 70 and 110 words; sentence and dictation at 4/5 — the pause button is wholly on screen, no
+/// value wraps (rows 45pt tall on a phone, 49.5 on an iPad), and the level capsule is either whole
+/// or, in Time Attack's second row, absent: never shrunk, never "…". The second row is taken on a
+/// 320pt phone in every ride; on a 375pt phone late in a journey (keyboard down), in list rides and
+/// in Time Attack from 70 words; at 393–430pt only in list rides and (393) a 110-word Time Attack;
+/// on a 400pt iPad window in every ride, with the keyboard down at least; at 507pt only late in a
+/// 150- or 500-word list ride with the keyboard down. In those rides the first row always fits from
+/// 600pt up and on a 440pt phone, and wherever the first row is taken the HUD is pixel-identical to
+/// round 2's. AX5 renders as AX1. **Not fitted:** a grandfathered default list over the 500-word
+/// cap — at "1199/1200" on a 320pt phone, or in a 400pt iPad window with the keyboard down, neither
+/// row fits; the second is kept, the pause button stays whole and the level capsule reads "…".
+///
+/// Instrument: this `HUDBar` rendered with `ImageRenderer` on macOS inside a copy of `GameView`'s
+/// padding, its fonts scaled from the environment's size through iOS's body-size table so
+/// `GameView`'s cap clamps them, items read by pixel segmentation against the same row 2400pt wide,
+/// the row drawn cross-checked against `ViewThatFits`' own test in all 1080 accessibility-size
+/// cases. Below the accessibility sizes the 3780 renders on phone, iPad and Mac widths were
+/// byte-identical to 1.32's (the sweep's one mismatch re-rendered identical eight times).
+/// (v1.33 pre-submission review, round 3)
+///
+/// `ImageRenderer` ignores Dynamic Type on its own, so every figure here is an instrument's, not a
+/// device's: the AX5 simulator pass re-shoots both HUDs.
 enum RideHUDLayout {
-    /// False at the accessibility sizes, true at every other size — so the default-size HUD is
-    /// exactly what it was. `scoreIsTheRide` (Time Attack) keeps the score at every size.
-    static func showsScore(_ typeSize: DynamicTypeSize, scoreIsTheRide: Bool = false) -> Bool {
-        !typeSize.isAccessibilitySize || scoreIsTheRide
+    /// The ride row's pills a rule may hide. The progress pill and the pause button are not cases, on
+    /// purpose: the words-done count is the pill whose wrapping started §B G, and pause is a touch
+    /// rider's only way to stop or end a ride. (`V133GRideAndDrillLayoutTests` pins both
+    /// unconditional in `HUDBar`.)
+    enum Pill: CaseIterable { case level, score, combo }
+
+    /// Whether the ride row shows `pill`. Below the accessibility sizes, always, whatever `fallback`
+    /// says — so the default-size HUD is exactly what it was. At them the score goes, except in Time
+    /// Attack (`scoreIsTheRide`), which keeps its score and drops the combo; and `fallback` — the
+    /// second row `HUDBar` offers `ViewThatFits` — gives up one pill more, `fallbackDrops`.
+    static func shows(_ pill: Pill, _ typeSize: DynamicTypeSize, scoreIsTheRide: Bool, fallback: Bool) -> Bool {
+        guard typeSize.isAccessibilitySize else { return true }
+        if fallback, pill == fallbackDrops(scoreIsTheRide: scoreIsTheRide) { return false }
+        switch pill {
+        case .level: return true
+        case .score: return scoreIsTheRide
+        case .combo: return !scoreIsTheRide
+        }
     }
 
-    /// The pill a score-first ride drops at the accessibility sizes in the score's place. Exactly
-    /// one of the two is hidden at those sizes, and neither below them.
-    static func showsCombo(_ typeSize: DynamicTypeSize, scoreIsTheRide: Bool = false) -> Bool {
-        !typeSize.isAccessibilitySize || !scoreIsTheRide
+    /// The pill the second row gives up. A ride whose queue is the target keeps its level and drops
+    /// the combo (its score is already hidden); Time Attack keeps the score — the point of the mode —
+    /// and drops the level (its combo is already hidden).
+    static func fallbackDrops(scoreIsTheRide: Bool) -> Pill { scoreIsTheRide ? .level : .combo }
+
+    /// The drill's score pill (`ConjugationHUD`): the ride's rule for a ride whose score is not the
+    /// point. The drill has no second row.
+    static func showsScore(_ typeSize: DynamicTypeSize) -> Bool {
+        shows(.score, typeSize, scoreIsTheRide: false, fallback: false)
     }
 }
 

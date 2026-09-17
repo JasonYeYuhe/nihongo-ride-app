@@ -44,6 +44,9 @@ struct V133GRideAndDrillLayoutTests {
 
     // MARK: 1. HUD — the score pill
 
+    /// Below the accessibility sizes every pill shows in both rows, so the default-size HUD cannot
+    /// change. Mutation, 2026-09-18: the second row dropping its pill below them too goes red here.
+    /// (v1.33 pre-submission review, round 3)
     @Test("the score pill is hidden at exactly the accessibility sizes")
     func scoreHiddenOnlyAtAccessibilitySizes() {
         #expect(Self.accessibility.count == 5 && Self.belowAccessibility.count == 7,
@@ -51,20 +54,60 @@ struct V133GRideAndDrillLayoutTests {
         for size in Self.belowAccessibility {
             #expect(RideHUDLayout.showsScore(size), "default-size HUD must not change at \(size)")
             for scoreIsTheRide in [false, true] {
-                #expect(RideHUDLayout.showsScore(size, scoreIsTheRide: scoreIsTheRide)
-                        && RideHUDLayout.showsCombo(size, scoreIsTheRide: scoreIsTheRide),
-                        "default-size HUD must not change at \(size)")
+                for fallback in [false, true] {
+                    for pill in RideHUDLayout.Pill.allCases {
+                        #expect(RideHUDLayout.shows(pill, size, scoreIsTheRide: scoreIsTheRide, fallback: fallback),
+                                "default-size HUD must not change at \(size): \(pill) hidden")
+                    }
+                }
             }
         }
         for size in Self.accessibility {
             #expect(!RideHUDLayout.showsScore(size), "\(size)")
-            #expect(RideHUDLayout.showsCombo(size), "\(size): a ride that drops its score keeps its combo")
+            #expect(!RideHUDLayout.shows(.score, size, scoreIsTheRide: false, fallback: false), "\(size)")
+            #expect(RideHUDLayout.shows(.combo, size, scoreIsTheRide: false, fallback: false),
+                    "\(size): a ride that drops its score keeps its combo")
             // Time Attack: the score stays, the combo goes — exactly one pill hidden either way.
-            #expect(RideHUDLayout.showsScore(size, scoreIsTheRide: true), "\(size): Time Attack lost its score")
-            #expect(!RideHUDLayout.showsCombo(size, scoreIsTheRide: true), "\(size)")
+            #expect(RideHUDLayout.shows(.score, size, scoreIsTheRide: true, fallback: false), "\(size): Time Attack lost its score")
+            #expect(!RideHUDLayout.shows(.combo, size, scoreIsTheRide: true, fallback: false), "\(size)")
+            for scoreIsTheRide in [false, true] {
+                #expect(RideHUDLayout.shows(.level, size, scoreIsTheRide: scoreIsTheRide, fallback: false), "\(size)")
+            }
         }
     }
 
+    /// Round 3 of the pre-submission review: at the accessibility sizes `HUDBar` offers `ViewThatFits`
+    /// a second row, and that row gives up exactly one pill more — the combo in a ride whose queue is
+    /// the target, the level capsule in Time Attack — and never Time Attack's score. Progress and
+    /// pause cannot be given up at all: they are not `Pill`s, and `HUDBar` does not gate them
+    /// (`informationalPillsFollowThePhoneAtAccessibilitySizes`). Mutations, 2026-09-18, each red here:
+    /// `fallbackDrops` answering `.combo` for Time Attack; `shows` ignoring `fallback`; Time Attack's
+    /// second row dropping its score as well. (v1.33 pre-submission review, round 3)
+    @Test("the second row gives up exactly one pill more: the combo in a queue ride, the level in Time Attack")
+    func fallbackRowDropsOneMorePill() {
+        #expect(RideHUDLayout.Pill.allCases == [.level, .score, .combo],
+                "a new pill a rule may hide: decide whether it may, and update this test")
+        func shown(_ size: DynamicTypeSize, _ scoreIsTheRide: Bool, _ fallback: Bool) -> Set<RideHUDLayout.Pill> {
+            Set(RideHUDLayout.Pill.allCases.filter {
+                RideHUDLayout.shows($0, size, scoreIsTheRide: scoreIsTheRide, fallback: fallback)
+            })
+        }
+        for size in Self.accessibility {
+            for scoreIsTheRide in [false, true] {
+                let first = shown(size, scoreIsTheRide, false), second = shown(size, scoreIsTheRide, true)
+                let dropped: RideHUDLayout.Pill = scoreIsTheRide ? .level : .combo
+                #expect(RideHUDLayout.fallbackDrops(scoreIsTheRide: scoreIsTheRide) == dropped)
+                #expect(second.isSubset(of: first) && first.subtracting(second) == [dropped],
+                        "\(size), Time Attack \(scoreIsTheRide): first row \(first), second \(second)")
+            }
+            #expect(shown(size, true, true) == [.score], "\(size): Time Attack's second row must keep its score")
+            #expect(shown(size, false, true) == [.level], "\(size): a queue ride's second row")
+        }
+    }
+
+    /// Round 3: the combo and level pills are asked with the row's own `fallback`, or the second row
+    /// would not give them up. Mutations, 2026-09-18: either call site passing `fallback: false` goes
+    /// red here. (v1.33 pre-submission review, round 3)
     @Test("Time Attack is the ride that keeps its score, and the drill is not")
     func timeAttackKeepsItsScore() throws {
         let game = Self.codeLines(try Self.source("GameView.swift"))
@@ -74,8 +117,16 @@ struct V133GRideAndDrillLayoutTests {
         #expect(combo.count == 1, "GameView: expected one combo pill, found \(combo.count)")
         for index in combo {
             let previous = game[..<index].last { !$0.isEmpty } ?? ""
-            #expect(previous == "if RideHUDLayout.showsCombo(typeSize, scoreIsTheRide: scoreIsTheRide) {",
-                    "GameView:\(index + 1): the combo pill is not behind RideHUDLayout.showsCombo")
+            #expect(previous == "if RideHUDLayout.shows(.combo, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {",
+                    "GameView:\(index + 1): the combo pill is not behind RideHUDLayout.shows(.combo, …)")
+        }
+        // Round 3: the level capsule is the pill Time Attack's second row gives up.
+        let level = game.indices.filter { game[$0] == "Text(session.currentLevelLabel)" }
+        #expect(level.count == 1, "GameView: expected one level capsule, found \(level.count)")
+        for index in level {
+            let previous = game[..<index].last { !$0.isEmpty } ?? ""
+            #expect(previous == "if RideHUDLayout.shows(.level, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {",
+                    "GameView:\(index + 1): the level capsule is not behind RideHUDLayout.shows(.level, …)")
         }
     }
 
@@ -90,7 +141,7 @@ struct V133GRideAndDrillLayoutTests {
             for index in scorePills {
                 let previous = lines[..<index].last { !$0.isEmpty } ?? ""
                 let expected = file == "GameView.swift"
-                    ? "if RideHUDLayout.showsScore(typeSize, scoreIsTheRide: scoreIsTheRide) {"
+                    ? "if RideHUDLayout.shows(.score, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {"
                     : "if RideHUDLayout.showsScore(typeSize) {"
                 #expect(previous == expected,
                         "\(file):\(index + 1): the score pill is not behind RideHUDLayout.showsScore")
@@ -181,11 +232,21 @@ struct V133GRideAndDrillLayoutTests {
 
     // MARK: 1b. HUD — an iPad's row at the accessibility sizes
 
-    /// The text of the line that opens `block`, up to its `{` — an `if` condition, or a call.
-    static func blockHead(_ block: Range<Int>, in file: CallSiteScanner.File) -> String {
+    /// Where the line that opens `block` starts.
+    static func blockHeadStart(_ block: Range<Int>, in file: CallSiteScanner.File) -> Int {
         var start = block.lowerBound
         while start > 0, file.code[start - 1] != 10 { start -= 1 }
-        return file.text(start..<block.lowerBound).trimmingCharacters(in: .whitespaces)
+        return start
+    }
+
+    /// The text of the line that opens `block`, up to its `{` — an `if` condition, or a call.
+    static func blockHead(_ block: Range<Int>, in file: CallSiteScanner.File) -> String {
+        file.text(blockHeadStart(block, in: file)..<block.lowerBound).trimmingCharacters(in: .whitespaces)
+    }
+
+    /// `text` with every run of whitespace, newlines included, collapsed to one space.
+    static func collapsed(_ text: String) -> String {
+        text.split(whereSeparator: \.isWhitespace).joined(separator: " ")
     }
 
     /// `RideHUDLayout`'s arithmetic was a phone's, and round 2 of the pre-submission review found
@@ -199,6 +260,13 @@ struct V133GRideAndDrillLayoutTests {
     /// `narrow`. The widths themselves are `RideHUDLayout`'s, measured with the real `HUDBar`.
     /// Mutation, 2026-09-18: either gate back to `if !narrow {` goes red here.
     /// (v1.33 pre-submission review, round 2)
+    ///
+    /// **And the progress pill and the pause button are never conditional**, at any size, in either
+    /// row `ViewThatFits` is offered: the progress pill sits directly in the row's `HStack`, the pause
+    /// button directly in `if let onPause` (a touch device's) directly in that `HStack`. The pin above
+    /// once let the progress pill go behind `if !typeSize.isAccessibilitySize {` with every test green.
+    /// Mutations, 2026-09-18: that wrap, and the pause button behind `if !fallback {`, each go red
+    /// here. (v1.33 pre-submission review, round 3)
     @Test("an iPad hides distance, accuracy and speed at the accessibility sizes, as a phone always does")
     func informationalPillsFollowThePhoneAtAccessibilitySizes() throws {
         let file = try #require(try CallSiteScanner.shippedSources.get()
@@ -220,6 +288,8 @@ struct V133GRideAndDrillLayoutTests {
             if informational.contains(icon) {
                 #expect(head == "if !(narrow || typeSize.isAccessibilitySize)",
                         "\(here): the \(icon) pill is behind `\(head)`")
+            } else if icon == "checkmark.circle.fill" {
+                #expect(head == "HStack(spacing: narrow ? 8 : 14)", "\(here): the progress pill is behind `\(head)`")
             } else {
                 #expect(!(head.hasPrefix("if") && head.contains("narrow")),
                         "\(here): the \(icon) pill is hidden on a phone: `\(head)`")
@@ -227,8 +297,101 @@ struct V133GRideAndDrillLayoutTests {
         }
         #expect(icons.filter(informational.contains) == informational,
                 "HUDBar's pills are \(icons); expected distance, accuracy and speed once each, in that order")
+        #expect(icons.filter { $0 == "checkmark.circle.fill" }.count == 1, "HUDBar's pills are \(icons)")
         #expect(icons.count == 6, "HUDBar's pills are \(icons)")
+
+        let buttons = file.calls(named: "Button").filter { hud.contains($0.nameOffset) }
+        #expect(buttons.count == 1, "HUDBar has \(buttons.count) Button(s); expected the pause button")
+        for button in buttons {
+            let here = file.location(button.nameOffset)
+            let block = try #require(file.innermostBlock(containing: button.nameOffset, within: hud))
+            #expect(Self.blockHead(block, in: file) == "if let onPause",
+                    "\(here): the pause button is behind `\(Self.blockHead(block, in: file))`")
+            let outer = try #require(file.innermostBlock(containing: Self.blockHeadStart(block, in: file), within: hud))
+            #expect(Self.blockHead(outer, in: file) == "HStack(spacing: narrow ? 8 : 14)",
+                    "\(here): the pause button's `if let onPause` is behind `\(Self.blockHead(outer, in: file))`")
+        }
     }
+
+    /// Round 3 of the pre-submission review. The accessibility-size row's pills were chosen by rules
+    /// alone, and its values may not wrap, so as the values grew the row outgrew the screen: late in a
+    /// 150- or 500-word list ride ("149/150", "×149") it needed 368pt on a 320pt Display Zoom iPhone at
+    /// AX1 — 20 of the pause button's 44pt on screen — and tighter rows that did fit showed the level
+    /// capsule as "…". So at those sizes `HUDBar.body` offers `ViewThatFits(in: .horizontal)` the row
+    /// as it was and then `row(fallback: true)`, which `RideHUDLayout.shows` gives one pill fewer; below
+    /// them `body` is the one row and has no `ViewThatFits`, so the default-size HUD is 1.32's. Pinned
+    /// on comment-blanked code. Mutations, 2026-09-18, each red here: the second row removed; the second
+    /// row commented out; the two rows swapped; `ViewThatFits` at every size (the `if` removed); the
+    /// else branch offering `row(fallback: true)`. (v1.33 pre-submission review, round 3)
+    @Test("the ride row falls back through ViewThatFits at the accessibility sizes, and only there")
+    func rideRowFallsBackAtAccessibilitySizesOnly() throws {
+        let file = try #require(try CallSiteScanner.shippedSources.get()
+            .first { $0.path == "Sources/NihongoRideApp/GameView.swift" })
+        let hud = try #require(file.typeBodies(named: "HUDBar").first, "GameView has no HUDBar")
+        let fits = file.calls(named: "ViewThatFits").filter { hud.contains($0.nameOffset) }
+        #expect(fits.count == 1, "HUDBar has \(fits.count) ViewThatFits")
+        let rows = file.calls(named: "row").filter { hud.contains($0.nameOffset) && $0.receiver.isEmpty }
+        let arguments = rows.map { call in call.arguments.map { Self.collapsed(file.text($0)) } ?? "" }
+        #expect(arguments == ["fallback: false", "fallback: true", "fallback: false"], "HUDBar builds its rows as \(arguments)")
+        guard let fit = fits.first, rows.count == 3 else { return }
+
+        #expect(fit.arguments.map { Self.collapsed(file.text($0)) } == "in: .horizontal")
+        let accessible = try #require(file.innermostBlock(containing: fit.nameOffset, within: hud))
+        #expect(Self.blockHead(accessible, in: file) == "if typeSize.isAccessibilitySize",
+                "ViewThatFits is behind `\(Self.blockHead(accessible, in: file))`")
+        let children = fit.closures.map { Self.collapsed(file.text($0)) }
+        #expect(children == ["{ row(fallback: false) row(fallback: true) }"], "ViewThatFits is offered \(children)")
+
+        let below = try #require(file.innermostBlock(containing: rows[2].nameOffset, within: hud))
+        #expect(Self.blockHead(below, in: file) == "} else" && file.line(of: accessible.upperBound - 1) == file.line(of: below.lowerBound),
+                "the one-row branch is not the else of `if typeSize.isAccessibilitySize`")
+        #expect(Self.collapsed(file.text(below)) == "{ row(fallback: false) }", "below the accessibility sizes: \(file.text(below))")
+
+        // `row` is the whole row: every pill and the pause button are built inside it.
+        let rowFunctions = file.functions(named: "row").filter { hud.contains($0.keywordOffset) }
+        #expect(rowFunctions.count == 1, "HUDBar declares \(rowFunctions.count) row function(s)")
+        if let body = rowFunctions.first?.body {
+            let parts = (file.calls(named: "stat") + file.calls(named: "Button")).filter { hud.contains($0.nameOffset) }
+            #expect(parts.count == 7 && parts.allSatisfy { body.contains($0.nameOffset) },
+                    "a pill or the pause button is built outside row(fallback:)")
+        }
+    }
+
+    #if canImport(AppKit)
+    /// What `HUDBar`'s `ViewThatFits` counts as fitting — SwiftUI's behaviour, so measured rather than
+    /// assumed. Round 3 was decided on the assumption that it compares ideal widths, so the level
+    /// capsule's shrink would not count as room. Measured, 2026-09-18, it does: a one-line Text with a
+    /// 0.7 floor was taken at 0.99, 0.9 and 0.8 of its width and not at 0.7, 0.5 or 0.3, where it
+    /// would truncate; a value with `fixedSize` is taken only at its full width. So the first row
+    /// stays while the capsule may shrink, and gives way to the second before the capsule would read
+    /// "…". Mutation, 2026-09-18: the truncating width claimed to be taken goes red.
+    /// (v1.33 pre-submission review, round 3)
+    @MainActor
+    @Test("ViewThatFits keeps a row while its level capsule can shrink, and drops it before the capsule truncates")
+    func viewThatFitsCountsShrinkButNotTruncation() {
+        func taken<V: View>(_ first: V, at width: CGFloat) -> Bool {
+            NSHostingController(rootView: ViewThatFits(in: .horizontal) {
+                first.frame(height: 10)
+                Color.clear.frame(width: 1, height: 20)
+            }).sizeThatFits(in: CGSize(width: width, height: 100)).height == 10
+        }
+        func width<V: View>(_ view: V) -> CGFloat {
+            NSHostingController(rootView: view.fixedSize()).sizeThatFits(in: CGSize(width: 2_000, height: 100)).width
+        }
+        let font = Font.system(size: 17, weight: .heavy, design: .rounded)
+        let label = Text("Journey Beginner").font(font)
+        let full = width(label)
+        #expect(full > 100, "the instrument is not laying the label out: \(full)pt")
+        let capsule = label.lineLimit(1).minimumScaleFactor(0.7)
+        #expect(taken(capsule, at: full.rounded(.up)))
+        #expect(taken(capsule, at: (full * 0.8).rounded(.up)), "shrinking to 0.8 no longer counts as fitting")
+        #expect(!taken(capsule, at: (full * 0.6).rounded(.down)), "a width the capsule could only truncate to was taken")
+        let value = Text("149/150").font(font).monospacedDigit().lineLimit(1).fixedSize(horizontal: true, vertical: false)
+        let valueWidth = width(value)
+        #expect(taken(value, at: valueWidth.rounded(.up)))
+        #expect(!taken(value, at: valueWidth.rounded(.up) - 2), "a fixed-size value was taken narrower than itself")
+    }
+    #endif
 
     /// The same review's cheaper finding: a 320pt Display Zoom iPhone late in a journey needed a
     /// 328pt row at AX1, the pause button 4pt past the edge, and the 8pt it lacked was the Spacer's
