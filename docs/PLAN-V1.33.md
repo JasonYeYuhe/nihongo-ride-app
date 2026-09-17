@@ -147,9 +147,14 @@ that recorded nothing. Registered as "no exposure change" so a later reader does
 
 ## §G What was built, what the pre-submission review found, and what became of it (2026-09-17/18)
 
-Built in four worktrees (groups R, G, S, L) on 2794507, merged 2d297e1. Two review rounds before upload:
-round 1 (five lenses) on 2d297e1, fixed in 336a754, 68f2214 and 0024cd5; round 2 (three lenses, every
-non-NOTE finding given independent refuters) on f9cd5f8, fixed on the branch `v133-round2-fixes`.
+Built in four worktrees (groups R, G, S, L) on 2794507, merged 2d297e1. **Four review rounds before
+upload**, each finding given independent refuters or verifiers: round 1 (five lenses) on 2d297e1 → 336a754,
+68f2214, 0024cd5; round 2 (three lenses) on f9cd5f8 → fc39d7d, e59f02d; round 3 (the iPad HUD) → 47f50cb;
+round 4 (the same row, again) → 6b5b2e7. Plus a screenshot inspection of the whole simulator pass (five
+groups, 1,004 files, every claimed regression verified): it confirmed every §B item its screenshots could
+show, found the frozen surfaces unchanged (only a ±1px capture jitter that also appears between two
+captures of the same build), and produced one verified defect (the sentence-card inset below) and one copy
+defect (65aae30).
 
 **Fixed**
 * Round 1, SERIOUS: the ride HUD's one-line limits applied at every size and pushed the pause button off
@@ -176,10 +181,37 @@ non-NOTE finding given independent refuters) on f9cd5f8, fixed on the branch `v1
 * The submit copy: "the default text sizes are unchanged", a contrast claim broader than the fix, the
   Chinese "骑行或练习" (which names Practice mode, not the drill), and review notes that said the purchase
   was unchanged "for a customer" before describing an unlock difference — all corrected before sending.
+* Round 3, SERIOUS follow-on: the round-2 fix left the one-line row itself too wide on a 320pt Display Zoom
+  iPhone in a 100+ word list ride or a long Time Attack (pause button 20 of 44pt; v1.32 kept it whole).
+  **Decided:** at the accessibility sizes the row is offered through `ViewThatFits` and gives up one more
+  pill — the combo in queue rides, the level capsule in Time Attack, where the score is the mode. Progress
+  and pause can never be dropped (they are not in the enum the rule chooses from). Measured: the pause
+  button whole on every phone width from 320pt and every iPad window from 380pt, in 1,080 rows.
+* Round 4, MINOR: that row's width depended on the CURRENT combo and level label, so at tight widths the
+  combo pill blinked — gone at ×10, back after a mistake — and mixed-level lists flipped word to word, each
+  flip rebuilding the row. **Decided:** at the accessibility sizes the first row reserves the widest value
+  each ride can reach (the combo cannot pass the queue length; one label per JLPT level in the queue), so
+  the row's width depends only on values that grow. Measured by stepping 120 rides key by key (10,248
+  states): at most one change per ride, always in one direction, against up to 22 before.
+* Round 4 also corrected a false SwiftUI rule that round 3 had written into a comment and a green test
+  (`ViewThatFits` counting a label's shrink as room — it does not; the test had squeezed its own marker's
+  height). The rule now pinned is the measured one.
+* Round 3 + 4 records: a sentence or dictation run that typed nothing said "before the first word" above a
+  tile counting "Sentences" — the headline now comes from `GameMode`, beside `completedUnitLabel` (65aae30).
 * §D: the purchase lens re-derived `purchase()` path by path and found no behaviour change besides the
   stamp, so the revert condition did not fire.
 
 **Deferred, by name**
+* At the accessibility sizes the sentence card insets its line by the width a corner control reaches into
+  the card (the save-star fix), so a long sentence shrinks further than a short one — measured at about 74%
+  of another sentence's glyph size on the same screen. Still larger than its kana reading and legible.
+* On a word list over the 500-word cap ("1199/1200") neither accessibility-size row fits a 320pt phone or a
+  400pt iPad window with the keyboard down: the pause button stays whole, the level capsule reads "…".
+* iPad windows narrower than 380pt at the accessibility sizes: Time Attack's second row has nothing left to
+  give way (score, count and pause are all fixed width), so 23–41 of the pause button's 44pt show. Not a
+  regression — v1.32 showed 5–24 there.
+* Whether VoiceOver keeps focus across the one row change per ride is unmeasured: `NSHostingView` exposes no
+  accessibility children to a probe without an assistive client. The pills' labels and order are unchanged.
 * Drill card at AX1: with the keyboard up an answer that wraps to a second row (11+ kana on a 402pt phone)
   leaves the card ~30pt taller than its space even at every shrink floor (replica against the 386pt card
   in the AX5 screenshot); keyboard-down unmeasured. Not yet seen on a device.

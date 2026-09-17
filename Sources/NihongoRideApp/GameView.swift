@@ -590,7 +590,11 @@ private struct HUDBar: View {
 /// mixed-level 150-word list on a 430pt phone with the keyboard down) and 18 in another (that list
 /// at 402pt with the keyboard up). This row changed 26 times in 120 rides, never more than once, and
 /// always from the first row to the second: each change fell on the one key where the progress count
-/// or the score gained a digit (9→10 or 99→100 words; a score passing 1,000 or 10,000). The pause
+/// or the score gained a digit — 16 at 9→10 words, 5 at 99→100, and 5 on a score passing 100, 1,000
+/// or 10,000. **A score can pass 100 on the very first word**, so in a Time Attack ride at 320pt or
+/// in a 400pt iPad window with the keyboard down the first row lasts exactly one word (three of the
+/// 26; named because round 4's first draft of this paragraph implied the change always falls well
+/// into a ride, and the review counted the keys). The pause
 /// button was whole — 44 of 44pt — in all 10,248 states on both, and no first row shrank its level
 /// capsule.
 ///
