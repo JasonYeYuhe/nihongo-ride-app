@@ -8,7 +8,31 @@ import GameCore
 /// rule is handled by RootView.
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
     private var zh: Bool { model.languageCode == "zh" }
+
+    /// The small grey caption under a setting, at a colour that can be read.
+    ///
+    /// It was `Theme.dim.opacity(0.7)` — white at 0.45 × 0.7 = 0.315 — and measured **2.71–2.75:1**
+    /// on the simulator (`A_settings_en_large.png`, the iCloud and reminder captions), against
+    /// WCAG's 4.5:1 for text this size. Recomputed from the colour values rather than the screenshot, because the
+    /// caption scrolls over the whole background gradient and a screenshot samples one place:
+    ///
+    /// * the caption sits on `.panel()`, i.e. `Theme.card` (white at 0.06) over `Theme.background`;
+    ///   compositing is source-over on the sRGB values (the model predicts the simulator's card
+    ///   (35,43,70) and caption (105,110,128) pixels to within one unit);
+    /// * the LIGHTEST place it can sit is the gradient's bottom stop (0.10, 0.14, 0.26), so the
+    ///   card there is 0.94 × stop + 0.06 = (0.154, 0.192, 0.304), relative luminance 0.0317;
+    /// * white at 0.315 over that is (0.421, 0.446, 0.524), luminance 0.168 → (0.168 + 0.05) /
+    ///   (0.0317 + 0.05) = **2.67:1**;
+    /// * white at 0.50 → 4.46:1, still short; white at **0.51** → (0.586, 0.604, 0.659),
+    ///   luminance 0.324 → **4.57:1**, and 4.56:1 after 8-bit quantisation. At the top stop it is
+    ///   higher (card 0.019 → 5.0:1).
+    ///
+    /// So 0.51 is the smallest opacity that clears 4.5:1 everywhere the caption can be. Written once
+    /// because three captions use it and a fourth copy of a colour is how one of them drifts back.
+    /// `V133SContrastTests` recomputes this from the resolved colours. (v1.33 §B S)
+    static let captionColor = Color.white.opacity(0.51)
 
     var body: some View {
         @Bindable var model = model
@@ -18,14 +42,22 @@ struct SettingsView: View {
 
             // General preferences.
             settingsCard(title: zh ? "通用" : "General") {
-                row(icon: "globe", label: zh ? "界面语言" : "Language") {
-                    Picker("", selection: $model.languageCode) {
-                        Text("English").tag("en")
-                        Text("中文").tag("zh")
+                // **At the accessibility sizes the label goes above the picker**, the way the
+                // romaji row below already does on a phone. In the shared row the segmented
+                // picker keeps its 200pt and the label gets what is left: measured on an iPhone
+                // 17 Pro at AX5 (2026-09-17, `A_settings_en_ax5.png`) it read "Lan / gua / ge",
+                // one syllable a line. "Language" alone is ~199pt at AX5 against the card's
+                // ~305pt column, so on its own line it fits whole. Below AX1 the row is exactly
+                // what it was. (v1.33 §B S)
+                if typeSize.isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: 8) {
+                        rowLabel(icon: "globe", text: zh ? "界面语言" : "Language")
+                        languagePicker.frame(maxWidth: .infinity)
                     }
-                    .pickerStyle(.segmented)
-                    .frame(maxWidth: 200)
-                    .accessibilityLabel(zh ? "界面语言" : "Language")
+                } else {
+                    row(icon: "globe", label: zh ? "界面语言" : "Language") {
+                        languagePicker.frame(maxWidth: 200)
+                    }
                 }
                 // **The label and the picker share a row only where there is room for both.**
                 // On a phone there is not: "Romaji assistance" takes most of the width and the
@@ -72,7 +104,7 @@ struct SettingsView: View {
                     Text(zh
                          ? "数据存于你自己的 iCloud(私有库),仅你可见。"
                          : "Stored in your own private iCloud — visible only to you.")
-                        .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.7))
+                        .scaledSystemFont(11).foregroundStyle(Self.captionColor)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -99,7 +131,7 @@ struct SettingsView: View {
                 Text(zh
                      ? "默认关闭。开启后会按未来几天的实际到期数提醒你。"
                      : "Off by default. When on, reminders reflect each day's actual due count.")
-                    .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.7))
+                    .scaledSystemFont(11).foregroundStyle(Self.captionColor)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -136,7 +168,7 @@ struct SettingsView: View {
                 Text(zh
                      ? "默认关闭。开启后练习卡片上会出现朗读按钮,使用离线日语语音。"
                      : "Off by default. When on, a speaker button appears on the cards, using an offline Japanese voice.")
-                    .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.7))
+                    .scaledSystemFont(11).foregroundStyle(Self.captionColor)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -194,23 +226,68 @@ struct SettingsView: View {
 
     // MARK: Pieces
 
-    private var header: some View {
-        HStack {
-            Text(zh ? "设置" : "Settings")
-                .scaledSystemFont(32, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
-                .foregroundStyle(.white)
-            Spacer()
-            Button(action: model.backToMenu) {
-                Label(zh ? "返回" : "Back", systemImage: "chevron.left")
-                    .scaledSystemFont(14, weight: .semibold)
-                    .padding(.horizontal, 12).padding(.vertical, 8)
-                    .background(Theme.card, in: Capsule())
-                    .overlay(Capsule().strokeBorder(Theme.cardStroke))
-                    .foregroundStyle(.white)
+    /// Title and Back — side by side below the accessibility sizes, exactly as before; Back first,
+    /// then the title, at them.
+    ///
+    /// Measured on an iPhone 17 Pro at AX5 (2026-09-17, `A_settings_en_ax5.png`): "Setting / s"
+    /// beside the Back capsule. CoreText puts "Settings" at ~229pt and Back at ~162pt against a
+    /// 349pt row, so no wrapping of one word can fit both.
+    ///
+    /// **Why this is not `ScreenHeader`**, which the Ride Log and Stats use for the same fix: its
+    /// row below the accessibility sizes is not this one. It aligns on `.firstTextBaseline` where
+    /// this row centres, and it draws the title at 28pt on a phone where Settings draws 32pt —
+    /// adopting it would move Settings at the default size on every iPhone, which v1.33 does not
+    /// change. Adopting it on About (the same header shape) was tried and rendered: the page below
+    /// the header moved 2.5pt, because the baseline-aligned row is taller. So the same switch is
+    /// applied here, with this row's own pieces. (v1.33 §B S)
+    @ViewBuilder private var header: some View {
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 10) {
+                backButton
+                headerTitle
+                    // The same floor `ScreenHeader` gives its title: a narrow iPad split can
+                    // still be narrower than the word.
+                    .minimumScaleFactor(0.7)
             }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("settingsBackButton")
+            .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            HStack {
+                headerTitle
+                Spacer()
+                backButton
+            }
         }
+    }
+
+    private var headerTitle: some View {
+        Text(zh ? "设置" : "Settings")
+            .scaledSystemFont(32, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
+            .foregroundStyle(.white)
+    }
+
+    /// Written once: `PaidRouteRowTests` lands on Settings by finding `settingsBackButton`, and two
+    /// copies of the button would be two places to keep that identifier.
+    private var backButton: some View {
+        Button(action: model.backToMenu) {
+            Label(zh ? "返回" : "Back", systemImage: "chevron.left")
+                .scaledSystemFont(14, weight: .semibold)
+                .padding(.horizontal, 12).padding(.vertical, 8)
+                .background(Theme.card, in: Capsule())
+                .overlay(Capsule().strokeBorder(Theme.cardStroke))
+                .foregroundStyle(.white)
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("settingsBackButton")
+    }
+
+    /// Written once, like `assistancePicker`: both arrangements of the Language row render this.
+    private var languagePicker: some View {
+        Picker("", selection: Bindable(model).languageCode) {
+            Text("English").tag("en")
+            Text("中文").tag("zh")
+        }
+        .pickerStyle(.segmented)
+        .accessibilityLabel(zh ? "界面语言" : "Language")
     }
 
     /// The three options, written once. Both layouts above render THIS — the words are the

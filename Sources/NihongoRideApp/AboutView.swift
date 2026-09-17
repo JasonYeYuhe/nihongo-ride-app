@@ -6,6 +6,7 @@ import VocabKit
 /// attribution obligations under their respective licenses.
 struct AboutView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
     private var zh: Bool { model.languageCode == "zh" }
 
     private let bundleVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "1.0"
@@ -63,7 +64,12 @@ struct AboutView: View {
                 section(
                     title: zh ? "数据声明" : "Data disclosure",
                     body: zh
-                        ? "中英文释义、例句与文章主要由大语言模型(Gemini 3.1 Pro)起草并经多轮独立机器审核;读音与等级以 Bluskyo 数据为准,异常项已剔除。正式发布的母语审仍是必备的最后一步。"
+                        // "母语审核": the 核 was missing, so the sentence named its last step with
+                        // a word that is not one. It now says what the English beside it says —
+                        // a native-speaker review is still the required final step before
+                        // release — in the word the sentence already uses for the machine audit
+                        // (机器审核). (v1.33 §B S)
+                        ? "中英文释义、例句与文章主要由大语言模型(Gemini 3.1 Pro)起草并经多轮独立机器审核;读音与等级以 Bluskyo 数据为准,异常项已剔除。正式发布的母语审核仍是必备的最后一步。"
                         : "Chinese and English glosses, example sentences and passages are LLM-drafted (Gemini 3.1 Pro) and audited; readings & levels follow Bluskyo's authoritative data with errors removed. A native-speaker review pass is still the required final step before release."
                 )
                 stats
@@ -100,20 +106,30 @@ struct AboutView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(zh ? "关于" : "About")
-                    .scaledSystemFont(32, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
-                    .foregroundStyle(.white)
-                Spacer()
-                Button(action: model.backToMenu) {
-                    Label(zh ? "返回" : "Back", systemImage: "chevron.left")
-                        .scaledSystemFont(14, weight: .semibold)
-                        .padding(.horizontal, 12).padding(.vertical, 8)
-                        .background(Theme.card, in: Capsule())
-                        .overlay(Capsule().strokeBorder(Theme.cardStroke))
-                        .foregroundStyle(.white)
+            // Back first, then the title, at the accessibility sizes; the row as it was below them.
+            //
+            // CoreText at AX5 on a 393pt phone: "About" ~167pt + Back ~162pt + spacing = 345pt of
+            // a 349pt row — a 4pt margin, gone the moment the chevron's gap is a little wider than
+            // assumed or the phone a little narrower ("Abou / t" or "Ba / ck").
+            //
+            // **Not `ScreenHeader`, deliberately.** Tried on 2026-09-17 with `subtitle` made
+            // optional and rendered: `about.png` changed in 864,427 pixels — the whole page moved
+            // five pixels (2.5pt), because `ScreenHeader`'s row aligns on `.firstTextBaseline`
+            // where this one centres, which makes the row taller. It also draws a phone title at
+            // 28pt, not 32. So the same switch is written here with this header's own pieces, and
+            // the default size stays pixel-identical. (v1.33 §B S)
+            if typeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 10) {
+                    backButton
+                    headerTitle.minimumScaleFactor(0.7)
                 }
-                .buttonStyle(.plain)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                HStack {
+                    headerTitle
+                    Spacer()
+                    backButton
+                }
             }
             Text("Nihongo Ride · v\(bundleVersion)")
                 .scaledSystemFont(13, weight: .medium, design: .monospaced)
@@ -123,11 +139,44 @@ struct AboutView: View {
         }
     }
 
+    private var headerTitle: some View {
+        Text(zh ? "关于" : "About")
+            .scaledSystemFont(32, weight: .heavy, design: .rounded, relativeTo: .largeTitle)
+            .foregroundStyle(.white)
+    }
+
+    /// It had no identifier, so no UI test could land on About; `aboutBackButton` follows the
+    /// `<screen>BackButton` pattern of the others. Nothing matched this button before (checked:
+    /// no test under `Tests/` mentions About or queries a Back button by its label).
+    private var backButton: some View {
+        Button(action: model.backToMenu) {
+            Label(zh ? "返回" : "Back", systemImage: "chevron.left")
+                .scaledSystemFont(14, weight: .semibold)
+                .padding(.horizontal, 12).padding(.vertical, 8)
+                .background(Theme.card, in: Capsule())
+                .overlay(Capsule().strokeBorder(Theme.cardStroke))
+                .foregroundStyle(.white)
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("aboutBackButton")
+    }
+
     private func section(title: String, body: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title.uppercased())
                 .scaledSystemFont(11, weight: .black).tracking(3)
                 .foregroundStyle(Theme.accent)
+                // "ACKNOWLEDGEMENTS" is one word, so wrapping it can only break it: measured on an
+                // iPhone 17 Pro at AX5 (2026-09-17, `A_about_en_ax5.png`) it read
+                // "ACKNOWLEDGEMEN / TS". At the accessibility sizes it keeps one line and may
+                // shrink. CoreText, tracking held at 3pt: it needs ~443pt at AX5 against 349pt on
+                // a 393pt phone (×0.76) and 331pt on a 375pt one (×0.71); the floor of 0.5 leaves
+                // room for a narrower column still, and at AX5 half size is 17pt — half again
+                // larger than the 11pt this label is at the default size. Below AX1 these are the
+                // environment's own defaults (no line limit, no shrink), i.e. what it was.
+                // (v1.33 §B S)
+                .lineLimit(typeSize.isAccessibilitySize ? 1 : nil)
+                .minimumScaleFactor(typeSize.isAccessibilitySize ? 0.5 : 1)
             Text(body)
                 .scaledSystemFont(14)
                 .foregroundStyle(.white.opacity(0.82))
@@ -137,21 +186,42 @@ struct AboutView: View {
 
     private func credit(_ name: String, license: String, url: String, en: String, zh zhText: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 8) {
-                Text(name)
+            // **The name above its licence at the accessibility sizes**; side by side below them,
+            // as it was. Side by side, the two split one row: measured on an iPhone 17 Pro at AX5
+            // (2026-09-17, `B_about_p4_en_ax5.png`) the name took five lines — "Bluskyo", "/",
+            // "JLPT_V", "ocabula", "ry" — beside a licence that also took five, "derivat" /
+            // "ive)" among them, in a capsule turned into a blob. On its own line in the ~321pt
+            // card column every licence but one fits whole (CoreText: "BSD-3-Clause" and
+            // "CC BY-SA 4.0" ~254pt), and
+            // "MIT (Tanos CC BY derivative)" wraps at its spaces, onto two lines — which is why
+            // the badge is a rounded rectangle there: a two-line capsule's ends cut into its first
+            // and last letters. (v1.33 §B S)
+            if typeSize.isAccessibilitySize {
+                Text(Self.breakingIdentifiers(name))
                     .scaledSystemFont(15, weight: .semibold)
                     .foregroundStyle(.white)
                 Text(license)
                     .scaledSystemFont(11, weight: .bold, design: .monospaced)
                     .padding(.horizontal, 7).padding(.vertical, 2)
-                    .background(Theme.accent2.opacity(0.22), in: Capsule())
+                    .background(Theme.accent2.opacity(0.22), in: RoundedRectangle(cornerRadius: 8))
                     .foregroundStyle(Theme.accent2)
+            } else {
+                HStack(spacing: 8) {
+                    Text(name)
+                        .scaledSystemFont(15, weight: .semibold)
+                        .foregroundStyle(.white)
+                    Text(license)
+                        .scaledSystemFont(11, weight: .bold, design: .monospaced)
+                        .padding(.horizontal, 7).padding(.vertical, 2)
+                        .background(Theme.accent2.opacity(0.22), in: Capsule())
+                        .foregroundStyle(Theme.accent2)
+                }
             }
-            Text(zh ? zhText : en)
+            Text(typeSize.isAccessibilitySize ? Self.breakingIdentifiers(zh ? zhText : en) : (zh ? zhText : en))
                 .scaledSystemFont(13)
                 .foregroundStyle(.white.opacity(0.7))
                 .fixedSize(horizontal: false, vertical: true)
-            Text(url)
+            Text(typeSize.isAccessibilitySize ? Self.breakingIdentifiers(url) : url)
                 .scaledSystemFont(12, weight: .regular, design: .monospaced)
                 .foregroundStyle(Theme.dim)
         }
@@ -163,6 +233,25 @@ struct AboutView: View {
         // VoiceOver doesn't spell out "h-t-t-p-s-colon-slash-slash…".
         .accessibilityElement()
         .accessibilityLabel("\(name), \(license). \(zh ? zhText : en)")
+    }
+
+    /// `text` with a zero-width space after every underscore, so an identifier-like name can
+    /// break between its parts instead of wherever the column runs out.
+    ///
+    /// "JLPT_Vocabulary" and "THIRD_PARTY_LICENSES.md" are one unbreakable run to the line
+    /// breaker (an underscore is an ordinary letter to it, and "." before letters does not allow
+    /// a break either), and at AX5 each is wider than the card: CoreText lays them out as
+    /// "JLPT_Vocabul / ary" and "THIRD_PARTY_LI / CENSES.md)." — the simulator showed
+    /// "THIRD_PARTY_LICE / NSES.md" (`B_about_p8_en_ax5.png`). With U+200B after each underscore
+    /// they break as "JLPT_ / Vocabulary" and "THIRD_ / PARTY_ / LICENSES.md).": still broken, as
+    /// a name wider than the screen has to be, but between words that can each be read.
+    ///
+    /// A zero-width space has no advance in SF Pro or SF Mono (measured: identical widths with and
+    /// without it), so nothing moves where no break is needed. Used ONLY at the accessibility
+    /// sizes — below them the strings are passed through untouched — and never in the VoiceOver
+    /// label, which is built from the plain strings above. (v1.33 §B S)
+    nonisolated static func breakingIdentifiers(_ text: String) -> String {
+        text.replacingOccurrences(of: "_", with: "_\u{200B}")
     }
 
     private var stats: some View {
@@ -241,6 +330,27 @@ struct AboutView: View {
         .accessibilityIdentifier("contactAddress")
     }
 
+    /// The colour of the two counter lines — their colour only; their text and format are frozen
+    /// (PLAN-V1.33 §C: §K's STOP branch reads counters a customer copies back).
+    ///
+    /// They were `Theme.dim.opacity(0.7)`, white at 0.315, measured on the simulator at 2.78–2.84:1
+    /// (`B_about_p3_en_large.png`) against WCAG's 4.5:1. Recomputed from the colour values: the
+    /// block is NOT in a card — it sits straight on `Theme.background`, and scrolls over all of it,
+    /// so the worst case is the gradient's lightest stop, (0.10, 0.14, 0.26), luminance 0.0185.
+    /// Compositing is source-over on the sRGB values (predicts the simulator's (96,103,123) text
+    /// pixel over (23,32,61) to within one unit):
+    ///
+    /// * white at 0.315 → (0.384, 0.411, 0.493), luminance 0.141 → (0.141 + 0.05) / (0.0185 + 0.05)
+    ///   = **2.79:1**;
+    /// * white at 0.47 → 4.49:1, a hair short;
+    /// * white at **0.48** → (0.532, 0.553, 0.615), luminance 0.267 → **4.62:1** (4.61:1 after
+    ///   8-bit quantisation); 4.91:1 at the top stop.
+    ///
+    /// So 0.48 is the smallest opacity that clears 4.5:1 wherever the block can scroll. It is lower
+    /// than Settings' caption colour (0.51) because Settings' captions sit on a card, which lightens
+    /// what is behind them. `V133SContrastTests` recomputes both. (v1.33 §B S)
+    static let counterColor = Color.white.opacity(0.48)
+
     private var diagnostics: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text((zh ? "本机计数" : "On-device counters").uppercased())
@@ -256,12 +366,12 @@ struct AboutView: View {
                 .fixedSize(horizontal: false, vertical: true)
             Text(model.unlockOfferLedger.shareableSummary)
                 .scaledSystemFont(10, design: .monospaced)
-                .foregroundStyle(Theme.dim.opacity(0.7))
+                .foregroundStyle(Self.counterColor)
                 .textSelection(.enabled)
                 .fixedSize(horizontal: false, vertical: true)
             Text(model.reviewPromptLedger.debugSummary)
                 .scaledSystemFont(10, design: .monospaced)
-                .foregroundStyle(Theme.dim.opacity(0.7))
+                .foregroundStyle(Self.counterColor)
                 .textSelection(.enabled)
                 .fixedSize(horizontal: false, vertical: true)
         }
