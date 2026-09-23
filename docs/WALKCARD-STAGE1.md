@@ -18,7 +18,7 @@
 | 步 | 做什么 | 设备 | 你亲手的时间(估计,不是测量) | 自动化的部分 |
 |---|---|---|---|---|
 | 0 | 预检 + 销售基线快照 | Mac 终端 | ~5 分钟 | `stage1_walk.py preflight` / `baseline`,只读 |
-| 1 | 安装 App Store 1.32(Mac + iPhone),iPhone 上拍购买前的 OFFER | Mac、iPhone | ~15 分钟 | `preflight` 复查、`mac-state`、`ios-state` |
+| 1 | 安装 App Store 1.33(Mac + iPhone),iPhone 上拍购买前的 OFFER | Mac、iPhone | ~15 分钟 | `preflight` 复查、`mac-state`、`ios-state` |
 | 2 | §L 检查 1:未登录 App Store | Mac | ~12 分钟 | 无 |
 | 3 | §K 已知阳性购买(生产环境,你自己的账号) | Mac | ~5 分钟 | 无 —— 这一步永远不能自动化 |
 | 4 | §L 检查 3:跨平台恢复 + 冷安装 | iPhone | ~15 分钟(需要等 2 分钟时再加 ~3 分钟) | `ios-state` |
@@ -32,9 +32,9 @@
 
 ---
 
-## 1. 先确认:每一步都在 App Store 上的 1.32 上走
+## 1. 先确认:每一步都在 App Store 上的 1.33 上走
 
-**唯一有效的二进制:App Store 发布的 1.32 —— macOS 1.32 (build 56) / iOS 1.32 (build 57)。**
+**唯一有效的二进制:App Store 发布的 1.33 —— macOS 1.33 (build 57) / iOS 1.33 (build 58)。**
 2026-09-16 用 ASC GET 实测,两个平台都是 `READY_FOR_SALE`,没有进行中的审核提交。
 
 **不是**本地构建,**不是** TestFlight,**不是** Xcode 里点 Run。理由:
@@ -56,16 +56,13 @@ python3 scripts/stage1_walk.py preflight; echo "exit=$?"
 python3 scripts/stage1_walk.py mac-state; echo "exit=$?"
 ```
 
-* **(2026-09-18 起)`preflight` 比对的是「在售」版本,不是最新记录。** v1.33 于 2026-09-18 提交,
-  在审期间 App Store 仍然发 1.32,所以 ASC 那几行现在是:在售 1.32(macOS 56 / iOS 57)PASS,
-  1.33 `WAITING_FOR_REVIEW` 只是 **WARN**,有未完成的审核提交也只是 **WARN**(不再 FAIL)。
-  两条 WARN 说的是同一件事:**走查期间线上版本可能从 1.32 变成 1.33**,所以每台设备装完后,
-  把它实际装到的版本号和构建号记下来(Mac 看「关于」页,iPhone 用 `ios-state --device`)。
-  两台设备装的如果不是同一个版本,这次 §L 记录要注明。1.33 上线后,请把 `scripts/stage1_walk.py`
-  里的 `EXPECTED_VERSION` / `EXPECTED_MAC_BUILD` / `EXPECTED_IOS_BUILD` 改成 1.33 / 57 / 58,
-  本卡里写 1.32 / 56 / 57 的地方也一并改。
+* **(2026-09-24 起本卡以 1.33 为准。)** v1.33 于 2026-09-17(太平洋时间)在两个平台上线:macOS 1.33
+  (build 57) / iOS 1.33 (build 58)。`scripts/stage1_walk.py` 的 `EXPECTED_*` 常量和本卡里所有版本号已同步改成
+  1.33 / 57 / 58。**`preflight` 比对的是「在售」版本,不是最新记录**(2026-09-18 改):将来若有更新的版本
+  在审,它只会 WARN,并提醒你走查期间线上版本可能变化——每台设备装完后把实际装到的版本号和构建号记下来
+  (Mac 看「关于」页,iPhone 用 `ios-state --device`);两台设备装的不是同一个版本时,§L 记录要注明。
 * `preflight` 退出码:**0** 没有 FAIL · **1** 至少一个 FAIL · **3** ASC/API 失败。它检查
-  `"/Applications/Nihongo Ride.app"` 存在、`CFBundleShortVersionString` 1.32、`CFBundleVersion` 56、
+  `"/Applications/Nihongo Ride.app"` 存在、`CFBundleShortVersionString` 1.33、`CFBundleVersion` 57、
   `Contents/_MASReceipt/receipt` 存在;以及(2026-09-17 加入)**这台 Mac 上没有为 `com.jasonye.nihongoride`
   保存本地 StoreKit 测试商店配置**(`~/Library/Group Containers/group.com.apple.storekit/Documents/Persistence/Octane/com.jasonye.nihongoride`)。
   理由:探针实测,这份配置一旦存在,这个 bundle id 的非 App Store 构建就会从**本地测试商店**取商品;它会不会连 App Store
@@ -90,7 +87,7 @@ python3 scripts/stage1_walk.py ios-state --device "<你的 iPhone 名称>"; echo
 ```
 
 第一条只列出和这台 Mac 配对的设备(名称、型号、系统、配对状态),**不查询任何设备上装了什么** —— 从里面抄下你那台 iPhone 的名称。
-第二条只查你点名的那一台,显示已安装的 `com.jasonye.nihongoride` 版本和 build,应为 1.32 / 57。
+第二条只查你点名的那一台,显示已安装的 `com.jasonye.nihongoride` 版本和 build,应为 1.33 / 58。
 
 * 退出码:**0** 读到了 · **2** 设备列表读取失败,或点名的那台读不到(锁着时就是这样 —— 解锁后重跑)。
 * **为什么必须点名:** 配对到这台 Mac 的设备里有不属于你的手机;而读一台设备的 app 列表会在那台设备上挂载开发者磁盘镜像、打开一条
@@ -233,7 +230,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 ```
 
 * **现在还没装 App Store 版本,所以 Mac 二进制那几行不会是 PASS;`preflight` 此时如果退出 1,只要 FAIL 都在 Mac 二进制那几行,就是预期。** 需要看的是:
-  * ASC 那几行必须 PASS(两个平台 1.32 `READY_FOR_SALE`、build mac 56 / iOS 57、0 个进行中的审核提交、购买项目 `APPROVED` 且 `familySharable` false)。
+  * ASC 那几行必须 PASS(两个平台 1.33 `READY_FOR_SALE`、build mac 57 / iOS 58、0 个进行中的审核提交、购买项目 `APPROVED` 且 `familySharable` false)。
     退出码 **3** = ASC/API 失败 → 先查原因,不要继续。
   * 容器那一行:`NihongoRide.entitlement.v1` absent = PASS,这就是检查 1 的前提。**如果显示 present**,这台 Mac 不能做检查 1
     (见文末"一次做不完怎么办"),停下来自己决定。
@@ -244,7 +241,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 
 ---
 
-## 步 1 · 安装 App Store 1.32,并在 iPhone 上拍购买前的 OFFER
+## 步 1 · 安装 App Store 1.33,并在 iPhone 上拍购买前的 OFFER
 
 ### Mac
 
@@ -260,7 +257,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
    python3 scripts/stage1_walk.py mac-state > "$EV/s1-02-mac-state.txt" 2>&1; echo "exit=$?"
    ```
 
-   `preflight` 现在必须是 **exit 0**。`mac-state` 里进程路径在 `/Applications` 下、有 receipt、1.32 / 56、entitlement 记录不存在。
+   `preflight` 现在必须是 **exit 0**。`mac-state` 里进程路径在 `/Applications` 下、有 receipt、1.33 / 57、entitlement 记录不存在。
 5. (可选,和 §K 的计数器问题有关)菜单〔About & Credits〕/〔关于与致谢〕→〔ON-DEVICE COUNTERS〕/〔本机计数〕,截图 `s1-06-mac-about-counters.png`。
 6. ⌘Q 退出。
 
@@ -277,7 +274,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
    python3 scripts/stage1_walk.py ios-state --device "<你的 iPhone 名称>" > "$EV/s1-03-ios-state.txt" 2>&1; echo "exit=$?"
    ```
 
-   应为 1.32 / 57。
+   应为 1.33 / 58。
 5. 〔Settings〕→ 滚到〔THE ROAD〕→ 截图 `s1-04-iphone-settings-row-offer.png`(应为〔The road past Kyōto〕)。
 6. 点这一行 → The Road → **等至少 10 秒**让价格出来 → 截图 `s1-05-iphone-road-offer.png`(报价卡 + 价格按钮)。
 
@@ -293,7 +290,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 
 * **这台 Mac 从未验证过这项购买**:`preflight` 显示 `NihongoRide.entitlement.v1` absent。理由:`Entitlement.swift` 在商店沉默时
   **从不撤销**,所以一台曾经验证过的设备,不管谁登录,都会永远显示〔OPENED〕—— 那会是一次假的 FAIL。这就是检查 1 排在购买之前的原因。
-* 二进制是 `/Applications` 里的 App Store 1.32 (56)。
+* 二进制是 `/Applications` 里的 App Store 1.33 (57)。
 * app 没在运行。
 
 **操作**
@@ -343,7 +340,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 **截图清单:** `g1-00-appstore-signed-out.png` ·(如有)`g1-00b-launch-prompt.png` · `g1-01-settings-row.png` · `g1-02-road-after-10s.png` ·
 `g1-03-restore-card.png` ·(可选)`g1-04-after-retry.png` · `g1-05-mac-state.txt`
 
-**结果(你来填):** 日期时间(含时区)`____` · 设备 `Mac ____ / macOS ____` · app `1.32 (56)` · 退出登录的路径 `____` ·
+**结果(你来填):** 日期时间(含时区)`____` · 设备 `Mac ____ / macOS ____` · app `1.33 (57)` · 退出登录的路径 `____` ·
 设置行 `____` · 价格区域(10 秒后,逐字)`____` · Retry `有 / 无` · Restore `有 / 无` · 崩溃或卡死 `有 / 无` · 你的判断 `____`
 
 ---
@@ -413,7 +410,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 
 * 购买前的 OFFER 截图 `s1-05-iphone-road-offer.png` 已有。理由:没有它,"已拥有"证明不了什么。
 * 步 3 的购买已在 Mac 上完成;iPhone 的 App Store 登录的是**同一个** Apple 账号。
-* iPhone 上是 App Store 1.32 (57)(`s1-03-ios-state.txt`)。
+* iPhone 上是 App Store 1.33 (58)(`s1-03-ios-state.txt`)。
 * **还没有退款。** 理由:退款后看到"未拥有",分不清是恢复失败还是被撤销。
 * 这台 iPhone 不是从一台已验证过的设备的备份恢复出来的。
 
@@ -469,7 +466,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 B:(可选)`g3-11-about-counters-before-delete.png` · `g3-12-ios-state.txt` · `g3-13-settings-row-cold.png` · `g3-14-settings-row-cold-10s.png` · `g3-15-road-cold.png` ·
 (如有)`g3-16-road-cold-after-2min-relaunch.png` ·(如有)`g3-17-road-cold-after-restore.png`
 
-**结果(你来填):** 日期时间(含时区)`____` · 设备 `iPhone ____ / iOS ____` · app `1.32 (57)` ·
+**结果(你来填):** 日期时间(含时区)`____` · 设备 `iPhone ____ / iOS ____` · app `1.33 (58)` ·
 A 启动后 `已拥有 / 未拥有`,是否等了 2 分钟 `____`,是否点了 Restore 及之后 `____` ·
 B 冷安装后 `已拥有 / 未拥有`,是否等了 2 分钟 `____`,是否点了 Restore 及之后 `____` · 你的判断 `____`
 
@@ -482,7 +479,7 @@ B 冷安装后 `已拥有 / 未拥有`,是否等了 2 分钟 `____`,是否点了
 * **在购买之后、退款之前。** 理由:买之前或退款之后,本来就没有东西可继承,"没继承到"是空的。
 * **家人自己的设备,登录的是家庭群组里的第二个 Apple 账号。** 不能用你的 Mac 或 iPhone 换账号来做:它们已经验证过,不管谁登录都显示〔OPENED〕(理由同检查 1)。
 * 这台设备从未验证过这项购买,也不是从你设备的备份恢复的。
-* 装的是 App Store 1.32,而且只从 App Store 装。这台设备如果没和你的 Mac 配对,`ios-state` 读不到它,build 号就没有工具能确认 —— 如实记下这一点。
+* 装的是 App Store 1.33,而且只从 App Store 装。这台设备如果没和你的 Mac 配对,`ios-state` 读不到它,build 号就没有工具能确认 —— 如实记下这一点。
   即使它和你的 Mac 配对了,`ios-state --device` 也会在**家人的**设备上挂载开发者磁盘镜像:要不要对家人的设备跑,先征得家人同意,由你决定。
 * 购买项目 `familySharable` = false(2026-09-16 ASC 实测)。这道检查要验证的是:家人**不会**继承。
 
@@ -513,7 +510,7 @@ B 冷安装后 `已拥有 / 未拥有`,是否等了 2 分钟 `____`,是否点了
 
 **截图清单:** `g2-01-purchase-sharing-control.png` · `g2-02-settings-row.png` · `g2-03-settings-row-10s.png` · `g2-04-road.png` · `g2-05-road-after-relaunch.png`
 
-**结果(你来填):** 日期时间(含时区)`____` · 设备 `____ / 系统 ____` · app `1.32 (____)` · 阳性对照(购买项目共享可见)`是 / 否 / 未查` ·
+**结果(你来填):** 日期时间(含时区)`____` · 设备 `____ / 系统 ____` · app `1.33 (____)` · 阳性对照(购买项目共享可见)`是 / 否 / 未查` ·
 The Road 显示 `报价 / 已拥有` · 重启后 `____` · 你的判断 `____`
 
 ---
