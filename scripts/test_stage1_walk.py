@@ -95,7 +95,7 @@ class Problems(list):
 
 # --- Planting helpers ---------------------------------------------------------------------------
 
-def make_bundle(path, bundle_id=W.BUNDLE_ID, version="1.32", build="56", receipt=True, ios=False):
+def make_bundle(path, bundle_id=W.BUNDLE_ID, version="1.33", build="57", receipt=True, ios=False):
     path.mkdir(parents=True, exist_ok=True)
     info = {"CFBundleIdentifier": bundle_id, "CFBundleShortVersionString": version,
             "CFBundleVersion": build,
@@ -172,11 +172,11 @@ def test_mac_binary(problems):
     print("MAC BINARY — receipt and version, each as a pair")
     authority = "Authority=Apple Mac OS Application Signing\nTeamIdentifier=ABC\n"
     cases = [
-        ("1.32/56 with receipt", dict(version="1.32", build="56", receipt=True), []),
-        ("receipt ABSENT", dict(version="1.32", build="56", receipt=False), ["_MASReceipt"]),
+        ("1.33/57 with receipt", dict(version="1.33", build="57", receipt=True), []),
+        ("receipt ABSENT", dict(version="1.33", build="57", receipt=False), ["_MASReceipt"]),
         ("version 1.31/55", dict(version="1.31", build="55", receipt=True),
          ["CFBundleShortVersionString 1.31", "CFBundleVersion 55"]),
-        ("build mismatch only", dict(version="1.32", build="55", receipt=True),
+        ("build mismatch only", dict(version="1.33", build="55", receipt=True),
          ["CFBundleVersion 55"]),
     ]
     for label, spec, expected_fails in cases:
@@ -655,7 +655,7 @@ def test_devicectl(problems):
 
     # The pair that matters most: without --device NOTHING is queried; with it, only that device.
     with tempfile.TemporaryDirectory() as tmp:
-        ctx, run = devicectl_ctx(tmp, {"DEV-A": listing([app(W.BUNDLE_ID, "1.32", "57")]),
+        ctx, run = devicectl_ctx(tmp, {"DEV-A": listing([app(W.BUNDLE_ID, "1.33", "58")]),
                                        "DEV-B": LOCKED})
         report = W.Report(io.StringIO())
         listed, readable = W.check_ios(report, ctx, verdicts=True)
@@ -684,11 +684,11 @@ def test_devicectl(problems):
             print(f"  --device {selector:<9} → queried {queried}")
 
     scenarios = [
-        ("App Store build", [app(W.BUNDLE_ID, "1.32", "57")] + others, "PASS", "installed 1.32 (57)"),
-        ("wrong build", [app(W.BUNDLE_ID, "1.31", "56")] + others, "WARN", "not 1.32 (57)"),
+        ("App Store build", [app(W.BUNDLE_ID, "1.33", "58")] + others, "PASS", "installed 1.33 (58)"),
+        ("wrong build", [app(W.BUNDLE_ID, "1.32", "57")] + others, "WARN", "not 1.33 (58)"),
         ("not installed", others, "WARN", "is not installed"),
         ("empty listing", [], "WARN", "could not read its apps"),
-        ("built by developer", [app(W.BUNDLE_ID, "1.32", "57", by_developer=True)] + others,
+        ("built by developer", [app(W.BUNDLE_ID, "1.33", "58", by_developer=True)] + others,
          "WARN", "builtByDeveloper=True"),
     ]
     for label, apps, level, needle in scenarios:
@@ -748,13 +748,13 @@ def test_devicectl(problems):
 
 def fake_asc(**change):
     versions = {
-        "MAC_OS": [("m131", "1.31", "READY_FOR_SALE", "2026-08-31T01:18:00-07:00"),
-                   ("m132", "1.32", "READY_FOR_SALE", "2026-09-10T17:22:47-07:00")],
-        "IOS": [("i132", "1.32", "READY_FOR_SALE", "2026-09-10T17:20:00-07:00"),
-                ("i131", "1.31", "READY_FOR_SALE", "2026-08-31T01:10:00-07:00")],
+        "MAC_OS": [("m132", "1.32", "READY_FOR_SALE", "2026-09-10T17:22:47-07:00"),
+                   ("m133", "1.33", "READY_FOR_SALE", "2026-09-17T13:23:29-07:00")],
+        "IOS": [("i133", "1.33", "READY_FOR_SALE", "2026-09-17T13:23:37-07:00"),
+                ("i132", "1.32", "READY_FOR_SALE", "2026-09-10T17:20:00-07:00")],
     }
     versions.update(change.get("versions", {}))
-    builds = {"m132": "56", "i132": "57", "m133": "58"}
+    builds = {"m132": "56", "i132": "57", "m133": "57", "i133": "58", "m134": "59"}
     builds.update(change.get("builds", {}))
     subs = change.get("subs", [("COMPLETE", "IOS"), ("COMPLETE", "MAC_OS")])
     iap = {"productId": PID, "inAppPurchaseType": "NON_CONSUMABLE", "state": "APPROVED",
@@ -791,21 +791,22 @@ def test_asc(problems):
     scenarios = [
         ("as released", {}, 0, False),
         # A newer version that is NOT on sale is a warning, not a failure: the walk installs from
-        # the App Store, which still serves 1.32. Measured on 2026-09-18, minutes after v1.33 was
-        # submitted — the old rule read the newest RECORD and reported three FAILs against a store
-        # that had not changed. The build check follows the same version, so it must not fail either.
+        # the App Store, which still serves the release the constants name. Measured on 2026-09-18,
+        # minutes after v1.33 was submitted — the old rule read the newest RECORD and reported three
+        # FAILs against a store that had not changed. The build check follows the same version, so it
+        # must not fail either.
         ("newer version in review", {"versions": {"MAC_OS": [
-            ("m132", "1.32", "READY_FOR_SALE", "2026-09-10T17:22:47-07:00"),
-            ("m133", "1.33", "WAITING_FOR_REVIEW", "2026-09-20T09:00:00-07:00")]}}, 0, False),
+            ("m133", "1.33", "READY_FOR_SALE", "2026-09-17T13:23:29-07:00"),
+            ("m134", "1.34", "WAITING_FOR_REVIEW", "2026-09-30T09:00:00-07:00")]}}, 0, False),
         # …and when the newer version IS the one on sale, the constants are stale and it fails,
         # once for the version and once for its build.
         ("newer version released", {"versions": {"MAC_OS": [
-            ("m132", "1.32", "READY_FOR_SALE", "2026-09-10T17:22:47-07:00"),
-            ("m133", "1.33", "READY_FOR_SALE", "2026-09-20T09:00:00-07:00")]}}, 2, False),
+            ("m133", "1.33", "READY_FOR_SALE", "2026-09-17T13:23:29-07:00"),
+            ("m134", "1.34", "READY_FOR_SALE", "2026-09-30T09:00:00-07:00")]}}, 2, False),
         # Nothing on sale at all is not a walkable store.
         ("nothing on sale", {"versions": {"MAC_OS": [
-            ("m133", "1.33", "WAITING_FOR_REVIEW", "2026-09-20T09:00:00-07:00")]}}, 2, False),
-        ("iOS build 56", {"builds": {"i132": "56"}}, 1, False),
+            ("m134", "1.34", "WAITING_FOR_REVIEW", "2026-09-30T09:00:00-07:00")]}}, 2, False),
+        ("iOS build 57", {"builds": {"i133": "57"}}, 1, False),
         # An in-flight submission warns (the copy can change mid-walk) but does not stop a walk of
         # the copy on sale.
         ("open submission", {"subs": [("COMPLETE", "IOS"), ("WAITING_FOR_REVIEW", "MAC_OS")]},
@@ -870,7 +871,7 @@ def full_preflight_ctx(tmp, receipt=True, asc_change=None):
         return handler
     run.on([W.XCRUN, "devicectl", "list", "devices"], write_json(devices))
     run.on([W.XCRUN, "devicectl", "device", "info", "apps"],
-           write_json(listing([app(W.BUNDLE_ID, "1.32", "57"), app("com.x", "1", "1")])))
+           write_json(listing([app(W.BUNDLE_ID, "1.33", "58"), app("com.x", "1", "1")])))
     return ctx, run
 
 
