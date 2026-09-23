@@ -1,6 +1,6 @@
 # PLAN-V1.34 — the next phase: build for the rider who comes back, keep the window readable, and arrive at day 90 knowing why
 
-Written 2026-09-24 (JST), day 15 of the pre-registered window, six days after v1.33 shipped. Grounded in
+Written 2026-09-24 (JST), day 15 of the pre-registered window, a week after v1.33 went on sale. Grounded in
 a five-reader survey of the repo and its plans (`wf_df719bc7-168`: backlog, product plan, release record
 and lessons, codebase, measurement — 14 agents, every claim quoted to file:line) and a three-angle panel
 of candidate plans, each scored by two judges. **Rewritten after two adversarial reviews (Gemini 3.1 Pro,
@@ -50,34 +50,55 @@ the risk. Sizes are for implementation; §F budgets review and release separatel
 
 `ResultsView` shows the flag, grade, tiles, stumbled words and three buttons — and not one word about the
 streak (`RideJournal.streakDays`) or the review forecast (`DueForecast`), although both exist and the
-Journal computes its own copy of the forecast inside the view (`JournalView.swift:193-197`, a second
-predicate of the shape v1.26 §B taught this repo to remove). A rider who just finished sees "You've
-arrived!" and nothing that says *come back tomorrow, 12 words are due*.
+Ride Log already draws both (its `streakCard`, and a three-row forecast card fixed for AX5 in v1.33). A
+rider who just finished sees "You've arrived!" and nothing that says *come back tomorrow, 12 words are
+due* — on the one screen every ride ends on. **The Ride Log is not touched** (the first draft proposed
+replacing its forecast card; the Flash review read the code and it would have duplicated the streak and
+discarded a v1.33 fix).
 
-* **Change:** one composer in `AppModel` beside the numbers, `tomorrowLine(zh:)` — "3-day streak · 12
-  words and 4 forms due tomorrow" / "连续 3 天 · 明天到期 12 个词、4 个变形" — read by `ResultsView`
-  (under the stage line) and by `JournalView` in place of its private forecast. **Text only. No button,
-  no reminder prompt, nothing on the rating-prompt path** (`ReviewPrompt` fires on this screen; a second
-  ask here is the v1.30 collision on the time axis).
+* **Change:** one composer in `AppModel` beside the numbers, `tomorrowLine(zh:)`, read by `ResultsView`
+  under the stage line, from the same `dueForecast` and `streakDays` the Ride Log reads. **Text only. No
+  button, no reminder prompt, nothing on the rating-prompt path** (`ReviewPrompt` fires on this screen; a
+  second ask here is the v1.30 collision on the time axis). **The copy, decided before it is built** (the
+  Flash review asked for the edge cases):
+
+  | streak | due tomorrow | en | zh |
+  |---|---|---|---|
+  | ≥ 2 days | words and forms | "3-day streak · 12 words and 4 forms due tomorrow" | "连续 3 天 · 明天到期 12 个词、4 个变形" |
+  | ≥ 2 days | words only / forms only | "3-day streak · 12 words due tomorrow" / "… · 1 form due tomorrow" | "连续 3 天 · 明天到期 12 个词" / "… 1 个变形" |
+  | ≥ 2 days | nothing | "3-day streak · nothing due tomorrow" | "连续 3 天 · 明天没有到期的复习" |
+  | 1 day (today only) | any | the due half alone: "12 words due tomorrow" | "明天到期 12 个词" |
+  | any | any, run typed nothing | *(no line — the run recorded nothing)* | |
+
+  Singular forms in English ("1 word", "1 form", "1-day" never shown); Chinese counts as the tiles do.
+  "Tomorrow" is the same Pacific-independent local-day rule `DueForecast` already uses.
 * **Proof:** a Swift Testing suite whose expected strings are derived from raw `RideRecord`s with known
   dates, **not** from `streakDays` (memory: a test that grades itself); one mutation per bucket
   (today/tomorrow swapped; streak off by one) shown red; a wiring test in the shape of
-  `ReviewPromptWiringTests` driving a real ride through `finishGame` and reading the line off
-  `lastSummary`; `HorizontalTextFitTests.accepted` unchanged (the line gets a `lineLimit` + floor at AX
-  sizes from day one — it is the seventh instance of this repo's most-shipped shape if it does not);
-  simulator at default and AX5, en/zh, on the same 402pt device 1.33 used; a run that typed nothing shows
-  no tomorrow line (it recorded nothing).
+  `ReviewPromptWiringTests` driving a real ride through `finishGame` and reading `model.tomorrowLine(zh:)`
+  afterwards (not off `lastSummary`, which carries the run and not the calendar) — **and, because a
+  model-level test passes while the view draws nothing** (v1.26 §D's lesson, restated by the Pro
+  review), the line must be seen: the headless `results.png` render differs from the 1.33 baseline in
+  exactly the line's region and nowhere else, a source pin that `ResultsView` calls `tomorrowLine`
+  (comment-stripped), and the simulator pass reads the line's text with `inspect`. The line sits in a
+  `VStack`, which `HorizontalTextFitTests` deliberately does not scan, so that suite proves nothing here
+  (the Flash review's point) — the AX5 simulator pass is the layout proof, and the `Text` still gets a
+  `lineLimit` + floor so a long Chinese count cannot break mid-number. Simulator at default and AX5,
+  en/zh, on the same 402pt device 1.33 used; a run that typed nothing shows no tomorrow line.
 * **Registered under constraint 3:** a line that names tomorrow's due work can only raise days-ridden;
   direction up, magnitude unmeasurable, written in §K's template before `--submit` (§F).
 * **Risk:** wrong-denominator copy (v1.32 §C2's class) — the line names *cards due*, never *rides*.
 
-### B2 — Own text, kept: four frictions a returning "My text" rider hits · *1.5 days*
+### B2 — Own text, kept: two defects now, two improvements when there is evidence anyone pastes · *0.5 + 1.0 days*
 
 `CustomTextKit` shipped practice-only on purpose (`PLAN-ITERATION` §C3) and the question it exists to
-answer — will anyone paste their own material — has no instrument yet (§D). These four are what a rider
-who did paste meets on day two, none of them Stage 3, none touching SRS or sync:
+answer — will anyone paste their own material — has no instrument yet (§D). The Pro review's objection
+stands for the improvements and not for the defects: **items 2 and 4 are defects a rider who pasted once
+already meets and ship in v1.34; items 1 and 3 are improvements and move to v1.35, conditional on
+evidence that anyone pastes** — a session tally, or the owner's own report of using it. None is Stage 3,
+none touches SRS or sync:
 
-1. **A pasted text cannot be edited; a typo means delete and re-paste, losing every corrected reading**
+1. *(v1.35, conditional)* **A pasted text cannot be edited; a typo means delete and re-paste, losing every corrected reading**
    (`CustomSentence.source` is `let`, `CustomText.swift:23`; the store exposes add/remove/rename/
    setReading only). Add `edit(id:source:)` that re-splits and re-reads, keeping a corrected reading
    where the sentence is unchanged (by index) and where only its neighbours changed (by surface), and
@@ -86,7 +107,7 @@ who did paste meets on day two, none of them Stage 3, none touching SRS or sync:
 2. **A paste over 20,000 characters or 200 sentences is cut silently** (`CustomText.swift:111-112`; no
    notice in `CustomTextsView`). Say so in the add sheet, with the count kept and dropped. *0.25.*
    Proof: a 201-sentence fixture; the notice string pinned in both languages.
-3. **No "Practise this text" from the manager**: after correcting readings the rider closes the sheet,
+3. *(v1.35, conditional)* **No "Practise this text" from the manager**: after correcting readings the rider closes the sheet,
    reopens the picker, then Starts (`CustomTextsView.swift:154-196` offers only Done). Add the action
    on the detail screen. *0.25.* Proof: `AppModelTests` — the tap selects the id, the next `startGame`
    rides it (assert on the session's `customtext-…` ids).
@@ -107,9 +128,17 @@ At the accessibility sizes the ride HUD hides the score (Time Attack: the combo)
 distance/accuracy/speed — a 1.33 change for large-text riders that took a value away from VoiceOver
 riders at the same sizes (`PLAN-V1.33.md` §G, deferred by name). Expose the hidden pills' live values
 through the remaining HUD element's `accessibilityValue` (or an accessibility-only element), so VoiceOver
-reads "score 891, combo 6, 6 of 12" whichever pills are drawn. Proof: a hosted test that the spoken value
-carries every hidden pill's number; the Accessibility Inspector on the simulator at AX5; default size
-byte-identical (the value changes only when a pill is hidden). Not touching what is drawn.
+reads "score 891, combo 6, 6 of 12" whichever pills are drawn. Proof: the spoken string is composed by a
+pure function with its own table test (every hidden pill's number present, en/zh), and a comment-stripped
+source pin that the HUD's `accessibilityValue` reads that function — **not a hosted test of the live
+accessibility tree, which `NSHostingView` does not expose without an assistive client** (v1.33 §G measured
+that; the Flash review caught the first draft claiming otherwise); the simulator's Accessibility Inspector
+at AX5 reading the same tree VoiceOver reads — **stated as what it is, a simulator observation, not a
+device one**;
+default size byte-identical (the value changes only when a pill is hidden). The device check — VoiceOver
+on with the ride HUD at an accessibility size on a physical iPhone — is an owner errand after the walk
+(§H), because a development build must not land on a walk device before §L is recorded. Not touching
+what is drawn.
 
 ### B4 — The small dim text still under 4.5:1, on About only · *0.25 day*
 
@@ -125,16 +154,25 @@ already re-shoots Settings. Proof: `V133SContrastTests` extended; `about.png` di
 `PLAN-V1.33.md` §C lists it as unchecked whether the hint scrolls with the cursor. Simulator, a 40-kana
 sentence, three cursor positions. Fix only if it does not follow; then a source pin in the V133G shape.
 
-### B6 (v1.35) — Build a word list without riding into every word: search the corpus from Word Lists · *1.5 days*
+### B6 (v1.35) — Build a word list without riding into every word: search the corpus from Word Lists · *2 days, with a cut rule*
 
 Today a list can only be built by meeting a word in a ride or on a results screen (`ListsView.swift:502-503`
 says so in its empty-state copy); there is no search over the 7,072-entry corpus and no way to add "the N4
 verbs I know I am weak on" before riding. Add a search field on the list detail screen over surface,
-reading and gloss (`VocabStore` already indexes surface+reading), with add-to-this-list on each result.
-Registered under constraint 3 (a list built up front can be ridden — direction up). Proof: pure search
-tests over a fixture (kana, kanji, romaji-hiragana and gloss queries; a mutation red); a hosted layout test
-at AX sizes; simulator pass; `run_ios_placement_tests.sh` (UI changed). Risk: a text field on a screen
-reached from the menu — keyboard focus and Esc handling follow `ListsView`'s existing rename field.
+reading and gloss, with add-to-this-list on each result. **`VocabStore` has no search today** — its one
+index is an exact surface+reading map for resolving lapses (the Flash review corrected the first draft's
+"already indexes") — so a `search(_:)` over `surface`, `kana` and `meanings` (substring, kana-folded) is
+part of the item. Registered under constraint 3 (a list built up front can be ridden — direction up).
+Proof: pure search tests over a fixture (kana, kanji, romaji-hiragana and gloss queries; a mutation red);
+a hosted layout test at AX sizes; **a dedicated XCUITest that types into the search field and adds a
+result to a list** (the placement suite never visits Word Lists, so it proves nothing about this — it is
+run anyway, as §G says for any UI change, to guard the offer's placement); simulator pass. Risk: a text
+field on a screen reached from the menu — keyboard focus and Esc handling follow `ListsView`'s existing
+rename field.
+**Sizing, against the Pro review's "multi-week":** the comparable is `CustomTextKit` — tokenizer, store,
+editor and practice screen in one day's 17 commits (2026-09-01) — and the store's indexes already exist;
+two days is the budget, and **the cut rule is that if the feature is not green with its tests at the end
+of day two it moves whole to v1.36 rather than stretching v1.35.**
 
 ---
 
@@ -185,7 +223,10 @@ phase's UI diffs rendered with it. Mutations: a read-only target directory exits
 On the day a version goes on sale: the store's `currentVersionReleaseDate` for both platforms into
 `FIRM_RELEASE_DATES_PT` (the tests are now graded under a frozen `FIRM_BASE`, so the line moves no
 fixture — `bba723e`), `stage1_walk.py`'s `EXPECTED_*` and the walk card to the new builds, the cadence
-table in `PLAN-ITERATION` §G, STATE, memory. Done for 1.33 on 2026-09-24.
+table in `PLAN-ITERATION` §G, STATE, memory. **For 1.33 this was done on 2026-09-24, a week late:** no
+session was running on release day, and a "release-day step" assumes someone is present. The backstop
+held — `--checkpoint` withheld its bound with the registry WARNING until the line existed — and the
+next session's first act is the same preflight + checkpoint pair, which is what surfaces a missed line.
 
 ### C5 — The second release-day control's 09-17/18 reading, appended honestly · *0.1 day*
 
@@ -206,7 +247,7 @@ stale facts ("while v1.30 is in review"; the install-denominated checkpoints as 
 
 ## §D Track 3 — day 90 (v1.34 registration; v1.35–v1.36 the rest, owner-gated)
 
-### D1 — Register moderated-session participants in §K before anyone is recruited · *0.5 day, v1.34*
+### D1 — Register moderated-session participants in §K before anyone is recruited · *done 2026-09-24, before N = 35 was read*
 
 `PLAN-WINDOW` §E calls moderated sessions with 10–15 recruited users the most valuable item available
 and says *register them now*; `PLAN-V2-PRODUCT` §H specifies the instrument (watch a session, then a
@@ -216,7 +257,16 @@ registered by the owner as `first_download` the day they happen (the registry's 
 `exclude_walk_first_downloads_from_N` is already `true`); a participant purchase is excluded via a
 `kind=purchase` entry and GO never fires on it; participant counters are never "returned counters" for
 the STOP branch; recruitment happens outside the App Store where possible, with counts by territory
-recorded. **Written before the first recruit is contacted, or the sessions do not run.**
+recorded. **Written before the first recruit is contacted, or the sessions do not run** — and, the Flash
+review's blocker, **written before the N = 35 row is read**, because a §K rule written after a reading is
+the degree of freedom the pre-registration forbids: the box is in §K as of 2026-09-24 (the N = 34 reading
+of that morning held no participant). Two caveats the same review found, now in the box: participants use
+the existing `first_download` kind (a dedicated kind is an instrument change and waits for the
+known-positive), and the registry's reconciliation rule — an entry claiming more units than the report's
+cell holds withholds the bound — is not relaxed for them; the owner records real platform, country and
+install day. Before the first participant installs, `test_sales_report.py` gains a case with several
+registered `first_download` entries across countries and days against a synthetic report, so the
+subtraction and the withholding are both seen to work (tests only; the instrument is unchanged).
 
 ### D2 — The session kit · *1.5 days, v1.34/v1.35 (owner recruits)*
 
@@ -272,7 +322,10 @@ whose effect on the App Store build is unmeasured. **Precondition, in writing:**
 * `project.yml`'s macOS test target signed with `get-task-allow` (ad hoc; `run_store_gates.sh` currently
   passes `CODE_SIGNING_ALLOWED=NO`, the probe's measured-inert row, so the script changes too);
   `run_store_gates.sh` exit 0 with nine gates *executed*; one gate mutated red (a refund that does not
-  revoke); then the stored Octane configuration deleted and `stage1_walk.py preflight` exit 0. *0.5.*
+  revoke); then the stored Octane configuration deleted **by the script itself — a `trap` in
+  `run_store_gates.sh` that removes `…/Octane/com.jasonye.nihongoride` on every exit, live or inert, so a
+  later `run_all_gates.sh` cannot leave one behind for preflight to trip on** (the Flash review's
+  addition) — and `stage1_walk.py preflight` exit 0. *0.5.*
 * **iOS: a re-probe, not a build.** The repo holds a measured negative (`StoreGateTests.swift:14-22`,
   2026-08-30: a local `.storekit` never reaches the app on the iOS simulator under `xcodebuild test`),
   so the item is half a day on the current toolchain with the entitlement, recorded either way; an iOS
@@ -285,11 +338,13 @@ whose effect on the App Store build is unmeasured. **Precondition, in writing:**
 
 | release | target submit | contents | agent-days: build · verify+review · release |
 |---|---|---|---|
-| **v1.34** | ~2026-10-08 | B1–B5, C2, C3, C5, C6, D1, D2 (kit only) | 4 · 2 · 0.5 |
-| **v1.35** | ~2026-10-22 | B6; the N = 100 record (C1); session analysis if sessions ran (D2); the corpus 112-sentence residue behind the calibrated counter gate (`PLAN-WINDOW` §D item 3, `PLAN-ITERATION` §D — corrections by ear, the gate only flags, *1 day*); §E if the walk has happened | 2.5 · 2 · 0.5 |
-| **v1.36** | ~2026-11-05 | D3, D4 (optional), D5; session-driven fixes on open surfaces (*1–2, conditional*); whatever the N = 100 record and the walk surfaced | 3 · 2 · 0.5 |
+| **v1.34** | ~2026-10-08 | B1 (1), B2's two defects (0.5), B3 (0.5), B4 (0.25), B5 (0.25), C2 (0.5), C3 (0.5), C5 (0.1), C6 (0.25); D2's kit (1.5, documents — written in the same window, not release-gating) | **3.85 code + 1.5 docs** · 2 · 0.5 |
+| **v1.35** | ~2026-10-22 | B6 (2); B2's two improvements if there is evidence anyone pastes (1, conditional); the N = 100 record (C1, 0.25); session analysis if sessions ran (D2); the v1.26 headword residue (112 sentences a conjugated verb kept from dictionary matching — `docs/measurements/v126-uninspected-residue.json`) and the flagged `n5-kazoku` counter item, each correction by ear with its evidence; **two populations, not one gate** (`PLAN-WINDOW` §D item 3, `PLAN-ITERATION` §D; *1 day*); §E if the walk has happened | **3.25 firm + 2 conditional** · 2 · 0.5 |
+| **v1.36** | ~2026-11-05 | D3 (3.5, documents), D5 (0.5); session-driven fixes on open surfaces (*1–2, conditional*); D4 (2, optional); whatever the N = 100 record and the walk surfaced | **0.5 firm code + 3.5 docs + 1–2 conditional + 2 optional** · 2 · 0.5 |
 
-**The review and release budget is measured, not hoped:** v1.33 needed four adversarial review rounds
+**The build column is the sum of the items, not a round number** (the Flash review found the first
+draft's 4 against an itemised 6.85 for v1.34 — a 70% deficit that would have been paid in skipped review
+rounds). **The review and release budget is measured, not hoped:** v1.33 needed four adversarial review rounds
 and seven fix commits after its four implementation worktrees (`STATE-2026-09-18`); every release here
 budgets two rounds with independent refuters and a frozen-surface lens, and a third is taken rather than
 skipped when the second finds a SERIOUS. A release that carries nothing a rider can see is not shipped
@@ -340,7 +395,8 @@ build → upload → dry-run → metadata → submit, with `ListAgents` before a
   next `--checkpoint` whose window contains it (no tool writes that file).
 * Recruiting and moderating the sessions; supplying the package prices (D2).
 * Deciding, after the walk, whether the store-gate harness is signed (§E).
-* The `ta_score` device errand (D5).
+* The `ta_score` device errand (D5), and the VoiceOver check of B3 on a physical iPhone — both after the
+  walk, because both put a development build on a walk device.
 * Approving any public-site change (none planned) and any ASC write (each release's upload and submit;
   `ListAgents` first).
 * Reading §K's branches as a person when N = 100 and N = 200 fire.
@@ -401,5 +457,57 @@ build → upload → dry-run → metadata → submit, with `ListAgents` before a
 
 ## §K What the two reviews changed
 
-*(filled after the Gemini 3.1 Pro and Gemini 3.8 Flash reviews of this file; see the commit that
-records them.)*
+Both reviews ran in a throwaway copy of the repository (`agy`, sandboxed, the model reading the plan and
+every constraint document it names, plus the memory notes), on the first draft (`4cc213e`). **Neither
+would have approved that draft**; what each found, and what became of it:
+
+**Gemini 3.1 Pro** (6 findings):
+* *BLOCKER — B1's proof tested the model, not the screen.* Accepted: the proof now requires the line to be
+  seen (the `results.png` render differs from the baseline only in the line's region; a source pin; the
+  simulator reads it) — v1.26 §D's lesson, which the draft had cited elsewhere and forgotten here.
+* *BLOCKER — B3's Accessibility Inspector on the simulator is not a device.* Accepted in substance: the
+  proof is labelled as a simulator observation, and the device check is an owner errand after the walk
+  (§H), because a development build must not land on a walk device before §L is recorded. Not a blocker
+  for shipping: the accessibility tree the simulator shows is what the device speaks.
+* *SERIOUS — B6 at 1.5 days is "multi-week".* Partly accepted: resized to 2 days with a cut rule (not
+  green with its tests at the end of day two → moves whole to v1.36). The comparable is measured, not
+  argued: `CustomTextKit` shipped tokenizer, store, editor and screen in one day's 17 commits.
+* *SERIOUS — B2 polishes a feature nobody is known to use, before the sessions.* Accepted for the two
+  improvements (edit-after-paste, "Practise this text" → v1.35, conditional on evidence anyone pastes);
+  refused for the two defects (silent truncation, the macOS delete affordance), which a rider who pasted
+  once already meets.
+* *SERIOUS — B4 (About's remaining dim text) carries "the same risk" as Settings' caption, because About
+  houses the frozen counters.* **Refuted, and the plan says why:** the counters' *text* is frozen, not
+  About's layout; `about.png` is in the headless render set, so a pixel proof exists for About and not for
+  Settings — 1.33 changed the counters' colour with exactly that proof. The asymmetry is the reason the
+  plan splits the two, not an oversight.
+* *MINOR — "release-day mechanics done 2026-09-24" for a release that went on sale 09-17.* Accepted, with
+  the true story: done a week late because no session was running; the instrument's registry WARNING was
+  the backstop that caught it (C4).
+
+**Gemini 3.8 Flash** (13 findings):
+* *BLOCKER — D1 would write a §K rule inside v1.34, after N = 35 has been read.* **Accepted and acted on
+  the same night:** the participant-registration box is in §K, dated 2026-09-24, before the N = 35 row
+  was read (D1).
+* *SERIOUS — §F's build column understated the itemised sum by 70%.* Accepted: the column is now the sum,
+  with documents, conditional and optional work shown separately.
+* *SERIOUS — B6 cited the placement suite as proof, which never visits Word Lists.* Accepted: a dedicated
+  XCUITest; the placement suite still runs as the offer's regression guard, not as B6's proof.
+* *SERIOUS — B3's "hosted test" of the live accessibility tree is infeasible* (`NSHostingView` exposes none
+  without an assistive client, as v1.33 measured). Accepted: a pure composer with a table test and a
+  source pin; the tree is read on the simulator.
+* *SERIOUS — B1 misread `JournalView`*: it already has a streak card and a three-row forecast fixed for
+  AX5 in v1.33; replacing it would duplicate and degrade. Accepted: the line is confined to `ResultsView`.
+* *SERIOUS — participants as `first_download` hit the registry's reconciliation rule.* Accepted into the
+  §K box as a stated rule (withhold, never adjust), with the schema change deferred behind the known-
+  positive; a reconciliation test before the first recruit installs.
+* *MINOR × 5* — `lastSummary` does not carry the line (fixed: read `model.tomorrowLine`); `VocabStore` has
+  no search index (fixed: `search(_:)` is part of B6); the 112-sentence residue is a headword population,
+  not the counter gate's (fixed); `HorizontalTextFitTests` skips `VStack`s so it proves nothing about B1
+  (fixed: the AX5 pass is the proof); STATE-2026-09-24 "(done)" — true on disk at `5e6deae`, written after
+  the copy the review saw; the Octane teardown belongs in `run_store_gates.sh` as a `trap` (added to §E).
+* *NOTE — the tomorrow line's edge cases.* Accepted: the copy matrix in B1.
+
+**What neither review found, recorded because a clean review is a claim:** neither ran a line of code,
+and neither checked the second-control reading in C5 against the cache — that stays the next session's
+first act with the checkpoint pair.

@@ -862,6 +862,41 @@ fired. *An agent cannot do this step and must not try.*
 >   3.1%) and less at N = 200 (1.50% vs 1.4%). Items 3, 4 and 10 have no direction to state — they fix
 >   a reading rather than move a number; item 11 withholds more, never less.
 
+> ### 📌 REGISTERED 2026-09-24, before the N = 35 row was read — recruited session participants are walk installs
+>
+> **Provenance.** `PLAN-WINDOW` §E and `PLAN-V2-PRODUCT` §H ask for moderated sessions with 10–15
+> recruited users and say *register them now*, because recruited users install the app and so touch the
+> second clause of the window's test. `PLAN-V1.34` §D schedules the sessions, owner-gated. This box is
+> written **before anyone has been recruited and before the N = 35 row has been read**: the last reading
+> (2026-09-24 JST 01:00, cache through Pacific 2026-09-22) printed N = 34 with the bound withheld, and the
+> registry held zero entries. Written now so that it is not written after a reading it could affect
+> (:390-391 forbids exactly that). Decided by the agent session under the 2026-09-17 delegation.
+>
+> 1. **A session participant's install is a walk install** in the sense of item 1 of the 2026-09-17
+>    box: it exists because the owner asked, not because somebody arrived. The owner registers each one
+>    as `kind = first_download` (platform, country, Pacific report day, `notes: "session participant"`)
+>    the day it happens, and the existing decision `exclude_walk_first_downloads_from_N = true`
+>    subtracts it. Direction: smaller N, less ruled out.
+> 2. **A participant's purchase is the owner's purchase's kind**, not a customer's: registered as
+>    `kind = purchase` and subtracted; **GO never fires on it**; its refund, if any, is registered and is
+>    not a customer refund (items 3, 4 and 6 apply unchanged).
+> 3. **Counters on participant devices are not "returned counters"** (item 2 applies): a participant was
+>    asked to ride, so an `offerAppeared` in `kyoto` on their device is not evidence about arrival.
+> 4. **Recruitment happens outside the App Store where possible**, and the number of installs it
+>    produced, by territory and platform, is recorded beside the session tally.
+> 5. **The registry's reconciliation rule is not relaxed for participants.** An entry that claims more
+>    units in a `(day, kind, platform, country)` cell than the report holds withholds the bound; the
+>    owner records the participant's real platform, country and install day, and if the report disagrees
+>    the reading is withheld rather than adjusted — the conservative direction. A dedicated
+>    `participant_download` kind would be an instrument change and waits, like every instrument change,
+>    for the known-positive to be confirmed (2026-09-16 box).
+> 6. **No session runs before this box exists.** It now does; the obligation in item 1 of the 2026-09-17
+>    box (register before any `--checkpoint` whose window contains the install's report day) extends to
+>    participants word for word.
+>
+> Reversing any of these after a reading it affects is a degree of freedom; a reversal is appended
+> with its timestamp and nothing above is reworded.
+
 ## §L The three manual gates
 
 These cannot be automated on this machine and are therefore **not tested until somebody walks
