@@ -259,6 +259,7 @@ FIRM_RELEASE_DATES_PT = (
     "2026-08-17",
     "2026-08-31",
     "2026-09-11",
+    "2026-09-17",   # v1.33, both platforms: iTunes lookup currentVersionReleaseDate macOS 21:38Z / iOS 22:53Z
 )
 UNCERTAIN_RELEASE_DATES_PT = (
     "2026-08-12", "2026-08-19", "2026-08-20", "2026-08-21", "2026-08-23", "2026-08-24", "2026-08-25",

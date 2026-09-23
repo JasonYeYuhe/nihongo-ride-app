@@ -758,6 +758,15 @@ def test_checkpoint(check):
 # The groups below are typed from PLAN-STAGE1 §K's "DECIDED 2026-09-17" box, item 11, where they are
 # written out; none is computed by `release_day_groups`. A report built from the function under test's
 # own groups would move with any mutation of that function and grade itself.
+#
+# FIRM_RELEASE_DATES_PT as the box sorted days against it, frozen. The live tuple gains one line per release
+# (its own comment says so), and every list below is typed from these five dates: 09-13..09-20 are other days
+# to `control_days`, and 09-19 is a day no firm date reaches to the registry cases. Against the live tuple
+# they would move with every release — measured 2026-09-24, appending the 09-17 line turned 21 checks red
+# with nothing wrong, the shape of a suite that gets edited to pass — so `test_second_control` runs them
+# under patched(FIRM_RELEASE_DATES_PT=FIRM_BASE) and pins the live tuple by value on its own, where a release
+# line is a deliberate one-line diff. The "with the line added" cases build on FIRM_BASE for the same reason.
+FIRM_BASE = ("2026-08-11", "2026-08-15", "2026-08-17", "2026-08-31", "2026-09-11")
 
 BOX_EXPOSURE = ["2026-08-11", "2026-08-12", "2026-08-15", "2026-08-16", "2026-08-17", "2026-08-18",
                 "2026-08-31", "2026-09-01", "2026-09-11", "2026-09-12"]
@@ -806,7 +815,20 @@ def second(days):
     return sr.second_release_day_control(sr.tally(days)[0])
 
 
-def test_second_control(check):
+def second_control_fixtures(check):
+    """Every fixture-based check of the second control and the release registry.
+
+    The groups these reports are graded against are typed from the box, which sorted days against FIRM_BASE,
+    so this runs under patched(FIRM_RELEASE_DATES_PT=FIRM_BASE) from `test_second_control` and grades nothing
+    against another tuple: the guard fails first, with the reason, rather than 21 checks failing with numbers.
+    It asks the module for its derived exposure days rather than reading the tuple by name — that is the
+    precondition the fixtures actually rest on, it is what `test_second_control`'s scanner keeps out of here,
+    and it also fails if the module ever binds its groups at import, where a patch of the tuple would not reach.
+    """
+    grouped = sorted(sr.release_day_groups()[0])
+    check(grouped == BOX_EXPOSURE,
+          f"the second-control fixtures are grouping days by {grouped}, not the box's exposure days — they must "
+          f"run inside patched(FIRM_RELEASE_DATES_PT=FIRM_BASE)")
     Fr = sr.fractions.Fraction
 
     # 1. The definition, against the box's written-out lists.
@@ -999,7 +1021,7 @@ def test_second_control(check):
                       must=(warning_1919, "BOUND WITHHELD:", registry_withheld,
                             "OK — check A: updates elevated on exposure days"),
                       must_not=("BOUND (rule", "SECOND-CONTROL-FAIL", withheld, "calibration failed"))
-    with patched(FIRM_RELEASE_DATES_PT=sr.FIRM_RELEASE_DATES_PT + ("2026-09-19",)):
+    with patched(FIRM_RELEASE_DATES_PT=FIRM_BASE + ("2026-09-19",)):
         rc, out, _ = checkpoint(registry(None, [OWNER_BUY]), unreg)
         grouped = second(unreg)["exposure"]
     check.rc_and_text("E2 registry: the same, with 2026-09-19 added to FIRM_RELEASE_DATES_PT", rc, 0, out,
@@ -1023,7 +1045,7 @@ def test_second_control(check):
                                  "2026-09-19": [report_row("F1", 1, "JP", version="1.31")]})
     check(sr.unregistered_versions(reappear) == [], "1.31 reappearing on 09-19 was taken for a new release")
     # A later line must not silence an earlier missed one: 09-19 missed, 09-29 registered.
-    with patched(FIRM_RELEASE_DATES_PT=sr.FIRM_RELEASE_DATES_PT + ("2026-09-29",)):
+    with patched(FIRM_RELEASE_DATES_PT=FIRM_BASE + ("2026-09-29",)):
         got = sr.unregistered_versions(control_days(end=D(2026, 9, 30), add={
             "2026-09-19": [report_row("F7", 1, "JP", version="1.33")],
             "2026-09-29": [report_row("F7", 1, "JP", version="1.34")]}))
@@ -1042,7 +1064,51 @@ def test_second_control(check):
     print("  groups pinned to the box's written-out days · §6's recorded figures reproduced · A alone, B alone "
           "(M4, tie, zero), both · excluded-day spike paired with an other-day spike · --calibrate and "
           "--confirm-known-positive untouched, RELEASE_DAYS pinned · check B names both causes with both means · "
-          "an unregistered version withholds, paired with its line added and with every edge")
+          "an unregistered version withholds, paired with its line added and with every edge · all of it graded "
+          "under FIRM_BASE")
+
+
+def test_second_control(check):
+    # The live tuple, by value — as RELEASE_DAYS is pinned in section 6. The release step appends one line to it
+    # in sales_report.py; that line is a deliberate one-line diff HERE too, and must change nothing else in this
+    # file: every fixture-based check in `second_control_fixtures` types its groups from FIRM_BASE and runs
+    # under it. So a red check here means one of two things — a release was registered (pin the new line, from
+    # the store's timestamp as the tuple's comment says) or a fixture is reading the live tuple (fix the
+    # fixture) — and never that the documented release step broke the suite.
+    check(sr.FIRM_RELEASE_DATES_PT == FIRM_BASE + ("2026-09-17",),
+          f"FIRM_RELEASE_DATES_PT changed: {sr.FIRM_RELEASE_DATES_PT} — if a release was registered, pin its line "
+          f"here; no fixture-based check should have moved with it")
+    # The patch is load-bearing, and shown to be. Unpatched, control_days() is grouped by the live tuple, which
+    # is NOT the box's grouping — the 09-17 line moves 09-17 and 09-18 into exposure, and the lists in this file
+    # do not know that; patched, it is the box's grouping. A patch of the wrong name, or a module that bound its
+    # groups at import so setattr no longer reaches them, would fail one side or the other.
+    live = second(control_days())["exposure"]
+    with patched(FIRM_RELEASE_DATES_PT=FIRM_BASE):
+        base = second(control_days())["exposure"]
+    check(base == BOX_EXPOSURE, f"under FIRM_BASE the fixture is not grouped as the box wrote it: {base}")
+    moved = sorted(set(live) ^ set(base))
+    check(set(live) > set(base) and {"2026-09-17", "2026-09-18"} <= set(moved) and min(moved) > "2026-09-12",
+          f"CONTROL: unpatched, the live tuple should move 09-17/09-18, and only days after 09-12, into exposure "
+          f"— the patch is what holds the fixtures still: moved {moved}")
+    # Structural: `sr.FIRM_RELEASE_DATES_PT` is read by this function alone, so what each fixture asserts is fixed
+    # by the text of this file, not by which patch is active when it runs. Paired with a planted read.
+    source = Path(__file__).read_text(encoding="utf-8")
+    check(live_tuple_readers(source) == ["test_second_control"],
+          f"sr.FIRM_RELEASE_DATES_PT is read outside the pin: {live_tuple_readers(source)}")
+    planted = source.replace("def second_control_fixtures(check):\n",
+                             "def second_control_fixtures(check):\n    _ = sr.FIRM_RELEASE_DATES_PT\n", 1)
+    check("second_control_fixtures" in live_tuple_readers(planted),
+          "CONTROL: the scanner missed a planted read of the live tuple inside the fixtures")
+    with patched(FIRM_RELEASE_DATES_PT=FIRM_BASE):
+        second_control_fixtures(check)
+
+
+def live_tuple_readers(source):
+    """Top-level functions of this file whose body reads `sr.FIRM_RELEASE_DATES_PT` — the attribute, not the
+    name inside a string or a `patched(FIRM_RELEASE_DATES_PT=...)` keyword."""
+    return sorted(fn.name for fn in ast.parse(source).body if isinstance(fn, ast.FunctionDef)
+                  and any(isinstance(n, ast.Attribute) and n.attr == "FIRM_RELEASE_DATES_PT"
+                          and isinstance(n.value, ast.Name) and n.value.id == "sr" for n in ast.walk(fn)))
 
 
 def second_control_readers(source, names):
