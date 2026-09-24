@@ -265,7 +265,12 @@ modes carry their own live captions instead, drawn *before* any tap when the lev
 〔No sentences are available for dictation at this level — try another.〕/〔这个等级暂时没有可用于听写的句子,换个等级试试。〕.
 So in Verbs or Listen, a tap on the start button that leaves the menu unchanged is recorded as its own Q2
 code, **`silent-no-op`** — never as "notice appeared" — and what the participant does next still goes in
-the observed column under the codes above.
+the observed column under the codes above. A third state exists in 〔Listen〕/〔听写〕 only: when no
+dictation audio is available at all, the start button is drawn dim and does not respond
+(`MenuView.swift`: `let startable = !isDictation || model.dictationAvailable` … `.disabled(!startable)`),
+beside the caption 〔No sentences are available for dictation at this level — try another.〕/〔这个等级暂时没有可用于听写的句子,换个等级试试。〕.
+Record that as `silent-no-op` too, with "button dim" written beside it — a dim button and a live button
+that does nothing are different things to a participant.
 
 ### §4.3 Day 2 — the return (~7 minutes)
 

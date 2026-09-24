@@ -43,7 +43,7 @@ Interface language used: English <n> · 中文 <n> · switched during the study 
 #### Q1 — own text (kit §4.2)
 | code | count |
 |---|---|
-| pasted | fewer than 2 of n / 2 or more of n (n = <n>) — never the number when it is below 3 |
+| pasted | fewer than 2 of n / 2 or more of n (n = <n>) — one of those two phrases and nothing finer, whatever the count |
 | opened-not-pasted | |
 | looked-not-found | |
 | declined | |
