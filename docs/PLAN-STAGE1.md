@@ -990,6 +990,13 @@ adapter is the same code — which is an argument, not an observation.
 > first release that ships it carries an adapter no walk has seen; whether that release needs these
 > gates walked again is an owner decision, to be made before it is submitted.
 
+> **Added 2026-09-25.** The App Store build on sale since 2026-09-17 Pacific — 1.33, macOS build 57 /
+> iOS build 58 — DOES contain the restructured purchase adapter (`751a37a`), shipped under the
+> delegation recorded in `docs/PLAN-V1.33.md` §D. A walk of these gates on 1.33 therefore observes that
+> adapter, the code customers run. The 2026-09-17 note's sentence about 1.32 (macOS 56 / iOS 57) stays
+> true of 1.32 and is left as written. The gates' walked column is unchanged: ☐ ☐ ☐. The StoreKit →
+> `PurchaseAnswer` translation is still observed by no automated test (§D's stated cost).
+
 ## §M What is done, and what Stage 1 is still waiting on
 
 **Done and proven.** (`swift test` 632 green; `scripts/run_ios_placement_tests.sh` 7/7;
