@@ -7,7 +7,10 @@ directory holds counts, never people.** The kit's §6 is the rule; the short for
   order numbers, screenshots of a participant's screen, or dates of individual sessions.
 * Per-participant notes live outside the repository (the kit, §6). The registry entry for each install
   lives in `docs/measurements/stage1-known-positives.json` and is the owner's to write, the same day.
-* A cell below 3 is written `< 3`, not as its number.
+* A cell below 3 is written `< 3`, not as its number — with one exception, kit §6: the all-participants Q1
+  `pasted` count is written only as `fewer than 2 of n` or `2 or more of n` (the categories `PLAN-V1.34`
+  §D3's falsifier splits on), never as 0, 1 or 2. n itself (the `total` row) is written exactly.
+* No date of an individual session, so a batch header names the month(s) its sessions ran in, never days.
 * Quotes appear only in the quote section, only with per-quote consent given at the time, and without
   anything beside them that says who, where or when.
 * The prices used on the four cards are **not** recorded here. They are in the owner's private notes with
@@ -18,7 +21,7 @@ directory holds counts, never people.** The kit's §6 is the rule; the short for
 ## Template — copy below the rule, one block per batch
 
 ```markdown
-### Batch <k> — appended <YYYY-MM-DD> (JST) · sessions ran <YYYY-MM-DD> to <YYYY-MM-DD> · build(s) on sale: <macOS x.y (b) / iOS x.y (b)>
+### Batch <k> — appended <YYYY-MM-DD> (JST) · sessions ran in <YYYY-MM> (or <YYYY-MM> to <YYYY-MM>) · build(s) on sale: <macOS x.y (b) / iOS x.y (b)>
 
 Kit version: `docs/SESSIONS-STAGE1.md` at <commit>; Appendix A re-pinned: <yes/no, commit>.
 Card wording: unchanged from the kit / Card <S|B|C|L> reworded on <date> (wording in private notes).
@@ -40,7 +43,7 @@ Interface language used: English <n> · 中文 <n> · switched during the study 
 #### Q1 — own text (kit §4.2)
 | code | count |
 |---|---|
-| pasted | |
+| pasted | fewer than 2 of n / 2 or more of n (n = <n>) — never the number when it is below 3 |
 | opened-not-pasted | |
 | looked-not-found | |
 | declined | |
@@ -60,6 +63,7 @@ hit "no sentences" <n>. Found 〔My text〕 unprompted before the question: <n>.
 | asked-me | | |
 | other | | |
 | **notice never appeared** | <n> | — |
+| **`silent-no-op`** (Verbs/Listen only: start tapped, no notice, menu unchanged — kit §4.2) | <n or < 3> | — |
 
 #### Forced choice (kit §4.4) — by package and by the position it was shown in
 | package | shown 1st | shown 2nd | shown 3rd | shown 4th | chosen total | "never" total |
