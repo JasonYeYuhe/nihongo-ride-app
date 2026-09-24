@@ -72,6 +72,21 @@ struct CustomTextsView: View {
                         }
                     }
                     .buttonStyle(.plain)
+                    // The only delete a Mac user can reach. Measured 2026-09-25 by hosting this
+                    // view in an NSHostingView: with no `selection:` binding the List's table has
+                    // a `SelectionManagerBox<Never>` coordinator, a click on a row selects
+                    // nothing, Delete and Forward Delete do nothing even with a row selected, and
+                    // `.onDelete` fires only from the `delete:` responder action with a row
+                    // selected programmatically — which no gesture produces. `.onDelete` stays
+                    // for iOS, where it is the swipe; this is a second route to the same call,
+                    // not a second swipe.
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            model.removeCustomText(id: text.id)
+                        } label: {
+                            Label(zh ? "删除" : "Delete", systemImage: "trash")
+                        }
+                    }
                 }
                 .onDelete { offsets in
                     let ordered = model.customTexts.ordered
@@ -109,6 +124,9 @@ struct CustomTextAddView: View {
     private var zh: Bool { model.languageCode == "zh" }
 
     var body: some View {
+        // The kit's own cut, re-read on every keystroke, so the notice below the editor is
+        // about the text Add will store and not a restatement of the caps that could drift.
+        let truncation = CustomText.truncation(of: source)
         NavigationStack {
             Form {
                 Section {
@@ -123,9 +141,20 @@ struct CustomTextAddView: View {
                 } header: {
                     Text(zh ? "日语原文" : "Japanese text")
                 } footer: {
-                    Text(zh
-                         ? "只留在这台设备上,不会上传。含字母或数字的句子会保留但无法输入 —— 罗马字引擎打不出它们。"
-                         : "Stays on this device and is never uploaded. Sentences containing letters or digits are kept but cannot be typed — a romaji engine has no keys for them.")
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(zh
+                             ? "只留在这台设备上,不会上传。含字母或数字的句子会保留但无法输入 —— 罗马字引擎打不出它们。"
+                             : "Stays on this device and is never uploaded. Sentences containing letters or digits are kept but cannot be typed — a romaji engine has no keys for them.")
+                        // Said before Add, not after: the text is still added, cut exactly as
+                        // the notice says, and the learner decides whether that is the text
+                        // they wanted.
+                        if truncation.isTruncated {
+                            ForEach(Self.truncationNotice(truncation, zh: zh), id: \.self) { line in
+                                Text(line).foregroundStyle(.orange)
+                            }
+                            .accessibilityIdentifier("customTextTruncation")
+                        }
+                    }
                 }
                 if failed {
                     Text(zh ? "这段文字里没有可用的句子。" : "There are no sentences in that text.")
@@ -147,6 +176,34 @@ struct CustomTextAddView: View {
                 }
             }
         }
+    }
+
+    /// One line per cap that bit, in the order the caps apply. In one place, so the test that
+    /// pins the wording in both languages pins what the sheet shows.
+    static func truncationNotice(_ truncation: CustomText.Truncation, zh: Bool) -> [String] {
+        var lines: [String] = []
+        if truncation.droppedCharacters > 0 {
+            let kept = grouped(truncation.keptCharacters)
+            let dropped = grouped(truncation.droppedCharacters)
+            lines.append(zh
+                         ? "只保留前 \(kept) 个字符,已去掉 \(dropped) 个。"
+                         : "Only the first \(kept) characters are kept — \(dropped) dropped.")
+        }
+        if truncation.droppedSentences > 0 {
+            let kept = grouped(truncation.keptSentences)
+            let dropped = grouped(truncation.droppedSentences)
+            lines.append(zh
+                         ? "只保留前 \(kept) 句,已去掉 \(dropped) 句。"
+                         : "Only the first \(kept) sentences are kept — \(dropped) dropped.")
+        }
+        return lines
+    }
+
+    /// "20,000", whatever the device locale groups with — the notice is pinned to one spelling
+    /// in both languages, and a learner reading 20000 against a 20,000 cap should see the same
+    /// number twice.
+    private static func grouped(_ n: Int) -> String {
+        n.formatted(.number.locale(Locale(identifier: "en_US")))
     }
 }
 

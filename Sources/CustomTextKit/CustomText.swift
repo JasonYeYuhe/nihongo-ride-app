@@ -106,17 +106,56 @@ public struct CustomText: Identifiable, Codable, Hashable, Sendable {
     /// withheld from the typing queue, because a target nobody can type is a dead screen.
     public var typeableSentences: [CustomSentence] { sentences.filter(\.isTypeable) }
 
+    /// What the two caps did to a pasted text, so the add sheet can say so before the learner
+    /// taps Add. Until v1.34 a paste over either cap was cut without a word (`PLAN-V1.34` §B2).
+    public struct Truncation: Equatable, Sendable {
+        public let keptCharacters: Int
+        public let droppedCharacters: Int
+        public let keptSentences: Int
+        public let droppedSentences: Int
+
+        public init(keptCharacters: Int, droppedCharacters: Int,
+                    keptSentences: Int, droppedSentences: Int) {
+            self.keptCharacters = keptCharacters
+            self.droppedCharacters = droppedCharacters
+            self.keptSentences = keptSentences
+            self.droppedSentences = droppedSentences
+        }
+
+        public var isTruncated: Bool { droppedCharacters > 0 || droppedSentences > 0 }
+    }
+
+    /// The cut `make` will apply to this source, counted.
+    public static func truncation(of source: String) -> Truncation { cut(source).truncation }
+
+    /// **The one place both caps are applied.** `make` stores what this returns and the add
+    /// sheet's notice reads what this returns, so the two cannot describe different texts —
+    /// a second copy of the rule in the view is how a footer ends up honest about a text
+    /// other than the one that was saved. Characters first, then the sentence cap on what
+    /// survived them: a sentence lost to the character cap is counted once, as characters,
+    /// never a second time as a sentence.
+    static func cut(_ source: String) -> (source: String, sentences: [String], truncation: Truncation) {
+        let kept = String(source.prefix(maxSourceCharacters))
+        let all = CustomTextSplitter.sentences(in: kept)
+        let sentences = Array(all.prefix(maxSentences))
+        let truncation = Truncation(keptCharacters: kept.count,
+                                    droppedCharacters: source.count - kept.count,
+                                    keptSentences: sentences.count,
+                                    droppedSentences: all.count - sentences.count)
+        return (kept, sentences, truncation)
+    }
+
     /// Build from raw pasted text: split into sentences, read each one.
     public static func make(title: String, source: String, now: Date) -> CustomText {
-        let trimmed = String(source.prefix(maxSourceCharacters))
-        let sentences = CustomTextSplitter.sentences(in: trimmed).prefix(maxSentences).map {
+        let cut = cut(source)
+        let sentences = cut.sentences.map {
             CustomSentence(source: $0, tokens: JapaneseReading.tokens(for: $0))
         }
         let name = title.trimmingCharacters(in: .whitespacesAndNewlines)
         return CustomText(id: UUID().uuidString,
-                          title: name.isEmpty ? Self.defaultTitle(for: trimmed) : name,
+                          title: name.isEmpty ? Self.defaultTitle(for: cut.source) : name,
                           createdAt: now,
-                          sentences: Array(sentences))
+                          sentences: sentences)
     }
 
     /// A title taken from the text itself when the learner did not give one — the opening
