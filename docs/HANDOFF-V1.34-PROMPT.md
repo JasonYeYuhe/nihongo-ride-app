@@ -14,6 +14,7 @@
 
 **先做,再开工:**
 - `bash scripts/run_all_gates.sh`(地板 13);`python3 scripts/stage1_walk.py preflight`(直接读 ASC,不信文档);`ListAgents` 看有没有其他会话共用这个仓库。
+  - *2026-09-25 注:§C2 落地后地板是 **14**(`--headless` **13**)——`scripts/test_review_watch.py` 入闸;上一行的 13 是写这份交接时的数字。评论的**实时**读取(`python3 scripts/review_watch.py`)需要 ASC 密钥,不是闸门,发布日和检查点日各跑一次,输出逐字贴进检查点记录。*
 - `python3 scripts/sales_report.py --checkpoint`:如果 N=35 那一行打印 "reached",按 `stage1-checkpoints.md` 的规则**逐字**记录(先向我确认没有未登记的走查安装),不算界限、不评判分支。
 
 **这一轮的目标:按 `PLAN-V1.34.md` §F 的顺序把 v1.34 做出来并提交审核。**

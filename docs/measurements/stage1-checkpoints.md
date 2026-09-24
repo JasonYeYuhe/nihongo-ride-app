@@ -23,6 +23,10 @@ interim record, written regardless of N — also if the decision row has already
    computed from the same cached report days (the first entry shares its cache with the 2026-09-16,
    2026-09-17 and 2026-09-24 runs) — a reading written down first is not thereby blind.
 6. Append only; a correction is a dated line under the entry it corrects.
+7. *(added 2026-09-25, v1.34 §C2, before the first entry)* Run `python3 scripts/review_watch.py` the same
+   day and paste its full output into the entry verbatim — including its exit code and the "before day 0 /
+   since day 0 / total" lines, so "none since day 0" can be told from "none read". A flagged review is
+   read by a person against §K's "negatively"; the tool decides nothing.
 
 ## Entries
 
