@@ -234,14 +234,14 @@ struct ReviewPromptWiringTests {
     @Test("an isolated launch is suppressed, and an ordinary one is not")
     func isolationDecidesSuppression() {
         for (label, iso) in [
-            ("ui test", AppModel.launchIsolation(uiTest: true, layoutHarness: false, capturing: false,
+            ("ui test", AppModel.launchIsolation(uiTest: true, layoutHarness: false, captureTarget: nil,
                                                  supportOverride: nil, widgetOverride: nil, settingsOverride: nil)),
-            ("capture", AppModel.launchIsolation(uiTest: false, layoutHarness: false, capturing: true,
+            ("capture", AppModel.launchIsolation(uiTest: false, layoutHarness: false, captureTarget: "/tmp/capture",
                                                  supportOverride: nil, widgetOverride: nil, settingsOverride: nil)),
         ] {
             #expect(iso.touchesNothingOfTheUsers, "\(label) must be suppressed")
         }
-        let shipping = AppModel.launchIsolation(uiTest: false, layoutHarness: false, capturing: false,
+        let shipping = AppModel.launchIsolation(uiTest: false, layoutHarness: false, captureTarget: nil,
                                                 supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
         #expect(shipping.touchesNothingOfTheUsers == false,
                 "a shipping launch must be able to ask, or this feature does nothing")

@@ -12,14 +12,19 @@ Why this is a script and not three lines of Pillow inline:
 2. **PNG bytes are not stable** for these renders, so `cmp`/md5 report differences on
    screens the change cannot reach. Compare decoded pixels, never files.
 
-3. **Not every screen is deterministic.** The game/practice/results captures draw words
-   from a randomly ordered deck, so they differ run to run with no code change at all.
-   Comparing a "before" and "after" set without knowing which screens are stable turns
-   noise into a false alarm — and, worse, makes a real regression look like more noise.
-   `--control` takes a second render of the CANDIDATE's code and uses it to classify each
-   screen as STABLE or NOISY, then holds only the stable ones to a strict standard. (Second
-   render of the candidate, not the baseline: the baseline is usually a commit you no longer
-   have checked out, and the noise is a property of the capture, not of the change.)
+3. **Capture is seeded since v1.34 §C3, so every screen is deterministic.** Before that the
+   game/practice/results captures drew words from a randomly ordered deck and differed run
+   to run with no code change at all — and so did road.png, whose odometer text depended on
+   how far the random decks had ridden. `Screenshotter` now reseeds `DeckRandomness` per
+   screen, so two renders of the same binary are pixel-identical and a plain
+   `compare_renders.py A B` holds every screen to the strict standard. `--control` remains
+   for comparisons where that is NOT true: renders made by a tool older than §C3, or any
+   capture that bypasses the seam. It takes a second render of the CANDIDATE's code and uses
+   it to classify each screen as STABLE or NOISY, then holds only the stable ones to a strict
+   standard. (Second render of the candidate, not the baseline: the baseline is usually a
+   commit you no longer have checked out, and the noise is a property of the capture, not of
+   the change.) With a seeded capture it must report 0 noisy screens; anything else means the
+   tool has stopped being deterministic, which is itself a finding.
 
 Usage:
     NIHONGO_SHOT=/tmp/a swift run NihongoRideApp     # baseline, before the change

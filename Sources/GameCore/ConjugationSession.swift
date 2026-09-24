@@ -411,7 +411,7 @@ extension ConjugationSession {
                let f = ConjugationForm(rawValue: picked), forms.contains(f) {
                 return f
             }
-            return forms.randomElement() ?? .polite
+            return DeckRandomness.randomElement(forms) ?? .polite
         }
     }
 
@@ -447,8 +447,8 @@ extension ConjugationSession {
     public static func make(
         vocab: VocabStore = .shared,
         config: Config = .init(),
-        pick: ([VocabEntry], Int) -> [VocabEntry] = { entries, n in Array(entries.shuffled().prefix(n)) },
-        chooseForm: (String, [ConjugationForm]) -> ConjugationForm = { _, forms in forms.randomElement() ?? .polite }
+        pick: ([VocabEntry], Int) -> [VocabEntry] = { entries, n in Array(DeckRandomness.shuffled(entries).prefix(n)) },
+        chooseForm: (String, [ConjugationForm]) -> ConjugationForm = { _, forms in DeckRandomness.randomElement(forms) ?? .polite }
     ) -> ConjugationSession {
         let candidates = pool(vocab: vocab, level: config.level)
         let chosen = pick(candidates, config.promptCount)
@@ -509,8 +509,8 @@ extension ConjugationSession {
         due: [(entryID: String, formToken: String)],
         vocab: VocabStore = .shared,
         config: Config = .init(),
-        fillPick: ([VocabEntry], Int) -> [VocabEntry] = { entries, n in Array(entries.shuffled().prefix(n)) },
-        chooseForm: (String, [ConjugationForm]) -> ConjugationForm = { _, forms in forms.randomElement() ?? .polite }
+        fillPick: ([VocabEntry], Int) -> [VocabEntry] = { entries, n in Array(DeckRandomness.shuffled(entries).prefix(n)) },
+        chooseForm: (String, [ConjugationForm]) -> ConjugationForm = { _, forms in DeckRandomness.randomElement(forms) ?? .polite }
     ) -> ConjugationSession {
         var prompts: [ConjugationPrompt] = []
         var seen = Set<String>()

@@ -57,7 +57,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Headless screenshot mode: render screens to PNGs and exit (no window).
         if let dir = ProcessInfo.processInfo.environment["NIHONGO_SHOT"] {
-            Screenshotter.capture(into: dir)
+            // A render that could not be written is a failed run, not a quiet one: the gate
+            // that reads these PNGs must see a non-zero exit, or it compares against files
+            // that were never made (v1.34 §C3).
+            let failures = Screenshotter.capture(into: dir)
+            if failures > 0 { exit(1) }
             NSApp.terminate(nil)
             return
         }
@@ -85,8 +89,9 @@ final class IOSAppDelegate: NSObject, UIApplicationDelegate {
             // iOS sandbox: write into the app's Documents container.
             let dir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                Screenshotter.capture(into: dir)
-                exit(0)
+                // Non-zero when any screen failed to render or write, for the same reason as
+                // the macOS path: a silent partial capture is worse than no capture.
+                exit(Screenshotter.capture(into: dir) > 0 ? 1 : 0)
             }
         }
         return true

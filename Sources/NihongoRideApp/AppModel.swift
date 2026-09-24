@@ -958,9 +958,14 @@ final class AppModel {
     }
 
     /// Pure, so it can be asked about a configuration this process is not in.
+    ///
+    /// `captureTarget` is the absolute directory a headless capture writes its PNGs to — nil on
+    /// every other launch. It is an input rather than a flag because the capture's container
+    /// and settings suite are DERIVED from it (see the capture branch), and a pure function
+    /// cannot derive anything from a `Bool`.
     static func launchIsolation(uiTest: Bool,
                                 layoutHarness: Bool,
-                                capturing: Bool,
+                                captureTarget: String?,
                                 supportOverride: URL?,
                                 widgetOverride: URL?,
                                 settingsOverride: String?) -> LaunchIsolation {
@@ -972,20 +977,28 @@ final class AppModel {
                 settingsSuite: settingsOverride ?? "NihongoRideUITest",
                 syncAllowed: false)
         }
-        if capturing {
+        if let captureTarget {
             // Screenshot capture redirects its FILES and is kept away from the widget, the
             // journal and sync by three separate `!Screenshotter.isCapturing` guards at the
             // call sites. The review pointed out that leaving the other two fields nil here
             // means `touchesNothingOfTheUsers` would never flag capture — the "check the door
             // somebody remembered" shape, inside the value written to replace it. So capture
-            // now names all three, and the call-site guards become belt-and-braces rather than
+            // names all three, and the call-site guards become belt-and-braces rather than
             // the only thing standing between a render and the owner's widget.
+            //
+            // The container and the suite carry a digest of the TARGET directory, not a fixed
+            // name (v1.34 §C3). With one fixed `NihongoRideCapture` for every capture, two
+            // renders started together shared one odometer, one journal and one defaults suite
+            // and clobbered each other — v1.33's en/zh renders had to be run one after the
+            // other for that reason alone. The digest is stable, so the same target always maps
+            // to the same names (a re-run reproduces), and distinct targets never meet.
+            let name = "NihongoRideCapture-" + StableDigest.tag(captureTarget)
             let dir = FileManager.default.temporaryDirectory
-                .appendingPathComponent("NihongoRideCapture", isDirectory: true)
+                .appendingPathComponent(name, isDirectory: true)
             return LaunchIsolation(
                 supportBase: supportOverride ?? dir,
                 widgetContainer: widgetOverride ?? dir.appendingPathComponent("group", isDirectory: true),
-                settingsSuite: settingsOverride ?? "NihongoRideCapture",
+                settingsSuite: settingsOverride ?? name,
                 syncAllowed: false)
         }
         return LaunchIsolation(
@@ -998,7 +1011,7 @@ final class AppModel {
     /// This launch's isolation, read by every redirect below so they cannot disagree.
     static var currentIsolation: LaunchIsolation {
         launchIsolation(uiTest: isUITest, layoutHarness: isLayoutHarness,
-                        capturing: Screenshotter.isCapturing,
+                        captureTarget: Screenshotter.captureTarget,
                         supportOverride: supportDirectoryOverride,
                         widgetOverride: widgetContainerOverride,
                         settingsOverride: settingsSuiteOverride)
@@ -2389,7 +2402,9 @@ final class AppModel {
     /// never sees the store either.
     private func conjugationWeakFormPick() -> (String, [String]) -> String? {
         { [store = conjugationReviewStore] entryID, tokens in
-            var rng = SystemRandomNumberGenerator()
+            // The system generator on every launch but a capture, where the seeded one keeps
+            // `conjugation.png` the same picture twice (v1.34 §C3; see `DeckRandomness`).
+            var rng = DeckRandomness.Generator()
             return FormWeighting.weightedPick(entryID: entryID, formTokens: tokens, store: store, using: &rng)
         }
     }

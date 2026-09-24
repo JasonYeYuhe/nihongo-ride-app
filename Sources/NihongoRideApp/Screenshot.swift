@@ -11,23 +11,76 @@ import UIKit
 /// Renders the app's screens to PNGs via SwiftUI `ImageRenderer` (no window,
 /// no screen-recording permission). Triggered by `NIHONGO_SHOT=<dir>`:
 ///   NIHONGO_SHOT=/tmp/shot swift run NihongoRideApp
+///
+/// **This tool is a gate, and v1.34 §C3 made it stop lying in three ways** (each of them bit
+/// v1.33, and each is pinned by `CaptureToolTests`):
+///
+/// 1. **Per-target isolation.** The capture's files and settings suite used to be ONE fixed
+///    temp directory and ONE fixed suite named `NihongoRideCapture`, so two captures started
+///    together shared an odometer, a journal and a defaults domain and clobbered each other —
+///    v1.33's en and zh renders had to be run one after the other. `AppModel.launchIsolation`
+///    now derives both names from a digest of the absolute target directory (`captureTarget`,
+///    set here before the first model is built): distinct targets never meet, and the same
+///    target maps to the same names every time. The container is cleared at the start of a
+///    capture — "start from nothing" — because before it was, every run inherited the rides of
+///    every previous one, lifetime distance grew monotonically and dragged the scenery stage
+///    with it, so one screen's whole background changed between two builds for no reason in
+///    either build. Both the container and the suite are removed again at the end.
+///
+/// 2. **Honest output.** `render` used `try?` and then printed "wrote <path>" whatever had
+///    happened; two agents each printed 24 "wrote" lines into a directory that did not exist
+///    and the process exited 0. Now the target directory is created (with intermediates), a
+///    failure to create it names the path on stderr and returns non-zero, every render and
+///    write failure is reported and counted, "wrote" is printed only after the file exists
+///    with size > 0, and one summary line closes the run. The call sites exit non-zero when
+///    anything failed.
+///
+/// 3. **Determinism.** Every deck shuffle and form pick in GameCore goes through
+///    `DeckRandomness`; this file seeds it — the ONLY place that does — from each screen's
+///    file name, before that screen's model is built, so adding or removing a screen upstream
+///    cannot change a later one. Before this, 8–9 of 24 screens varied between two runs of the
+///    same binary, and so did `road.png`: its odometer sentence ("24.3 km still to Kyōto")
+///    counted the distance the random decks had ridden earlier in the same process. The plan's
+///    gate needs `road.png` and `menu.png` identical across releases, and §B1's proof needs
+///    `results.png` to differ from the baseline in exactly one region; neither was decidable
+///    while the capture itself was noise.
 enum Screenshotter {
     /// While true, views omit their `KeyCaptureView` background (an
     /// NSViewRepresentable that ImageRenderer can't render).
     @MainActor static var isCapturing = false
 
-    @MainActor static func capture(into directory: String) {
+    /// The absolute directory the capture in progress writes to, or nil outside capture.
+    /// `AppModel.currentIsolation` reads it, so it is set BEFORE the first model is built and
+    /// is never cleared: an `AppModel` that outlives the capture must keep resolving to the
+    /// throwaway container, not fall back to the owner's Application Support.
+    @MainActor static var captureTarget: String?
+
+    /// Screens this run wrote (file present, size > 0) and screens it could not.
+    @MainActor private(set) static var written = 0
+    @MainActor private(set) static var failed = 0
+
+    /// Renders every screen into `directory`, creating it if needed. Returns the number of
+    /// screens that failed to render or write — zero means every "wrote" line is true.
+    @MainActor @discardableResult
+    static func capture(into directory: String) -> Int {
+        // Absolute and standardised (`/private/tmp/x`, `/tmp/x/` and `/tmp/x` are one target),
+        // so the digest `launchIsolation` takes from it names the same container however the
+        // caller spelled the path. Messages name the directory as the caller gave it.
+        let target = URL(fileURLWithPath: directory).standardizedFileURL
+        written = 0
+        failed = 0
+        do {
+            try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
+        } catch {
+            report("cannot create \(directory): \(error.localizedDescription)")
+            report("capture aborted: nothing was written")
+            return 1
+        }
+        captureTarget = target.path
         isCapturing = true
-        // Start from nothing. `supportFileURL` redirects capture I/O to a FIXED temp
-        // directory, and nothing was clearing it — so every capture run inherited the rides
-        // logged by every previous one. Lifetime distance grew monotonically across runs and
-        // dragged the scenery stage with it, which made the render gate depend on how many
-        // times it had been run. It silently undermined every "unchanged" verdict it gave:
-        // screens drifted between comparisons, and one screen's whole background changed
-        // between two builds for no reason in either build. A gate has to be reproducible.
-        let captureRoot = FileManager.default.temporaryDirectory
-            .appendingPathComponent("NihongoRideCapture", isDirectory: true)
-        try? FileManager.default.removeItem(at: captureRoot)
+        // Start from nothing: the container and the defaults suite this target maps to. Both
+        // are keyed to the target, so this cannot touch another capture running alongside.
+        clearCaptureStores()
         // App Store mode: 1440×900 logical × @2x scale = 2880×1800 actual PNG,
         // the preferred macOS App Store screenshot resolution.
         let storeMode = ProcessInfo.processInfo.environment["NIHONGO_SHOT_STORE"] != nil
@@ -45,7 +98,12 @@ enum Screenshotter {
         let shotLang = ProcessInfo.processInfo.environment["NIHONGO_SHOT_LANG"] ?? "en"
         // Dev-only: force the read-aloud button on for a visual check (NIHONGO_TTS=1).
         let forceTTS = ProcessInfo.processInfo.environment["NIHONGO_TTS"] == "1"
-        let makeModel: () -> AppModel = {
+        // One model per screen, and the deck seed is reset from the screen's own name BEFORE
+        // the model exists, so every draw this screen makes — the deck, the practice re-roll,
+        // the drill's form picks — is the same in every run and independent of the screens
+        // rendered before it.
+        let makeModel: (String) -> AppModel = { screen in
+            DeckRandomness.seed = StableDigest.fnv1a64(screen)
             let m = AppModel.init()
             m.languageCode = shotLang
             // Store screenshots keep showing the hints — a fresh AppModel now defaults to
@@ -57,10 +115,10 @@ enum Screenshotter {
         }
 
         // Menu
-        render(RootView().environment(makeModel()), size: size, to: directory + "/menu.png")
+        render(RootView().environment(makeModel("menu")), size: size, to: directory + "/menu.png")
 
         // Mid-game (type a couple keys so the word card shows progress)
-        let game = makeModel()
+        let game = makeModel("game")
         game.startGame()
         if let romaji = game.session?.currentRomaji {
             for character in romaji.prefix(2) { _ = game.session?.input(character) }
@@ -68,7 +126,7 @@ enum Screenshotter {
         render(RootView().environment(game), size: size, to: directory + "/game.png")
 
         // Mid-journey (a later landmark approaching)
-        let mid = makeModel()
+        let mid = makeModel("game-mid")
         mid.startGame()
         for _ in 0 ..< 7 {
             guard let romaji = mid.session?.currentRomaji else { break }
@@ -78,7 +136,7 @@ enum Screenshotter {
         render(RootView().environment(mid), size: size, to: directory + "/game-mid.png")
 
         // Results (play a few words so the numbers are non-zero)
-        let results = makeModel()
+        let results = makeModel("results")
         results.startGame()
         results.session?.skip()   // one lapse so the review list shows
         for _ in 0 ..< 6 {
@@ -94,7 +152,7 @@ enum Screenshotter {
         // the panel, that a starred chip and a bare one read as different things, or that the
         // ride button does not crowd the buttons below it. v1.23 shipped a fix to this screen
         // with no execution evidence at all, which is the habit this replaces.
-        let sentenceResults = makeModel()
+        let sentenceResults = makeModel("results-sentence")
         sentenceResults.selectedMode = .sentence
         sentenceResults.startGame()
         // Skip one, so the review list is NOT empty. A results screen rendered with nothing in
@@ -144,7 +202,11 @@ enum Screenshotter {
         // (ImageRenderer does not lay out inside one), so a screen taller than the frame is
         // centred and clipped at BOTH ends — the first render of this one lost its header and the
         // §C boundary sentence, which is the one line a reviewer most needs to read.
-        let road = makeModel()
+        //
+        // Its odometer sentence counts the rides the screens above rode into this capture's
+        // container. Those decks are seeded, so the distance — and this screen — is the same
+        // in every run; before §C3 it moved by a tenth of a kilometre between two runs.
+        let road = makeModel("road")
         road.showRoad()
         render(RootView().environment(road),
                size: CGSize(width: size.width, height: max(size.height, 1400)),
@@ -171,7 +233,7 @@ enum Screenshotter {
             // `Screenshotter.isCapturing` gates the whole block, and `forceRideStage` refuses
             // outside capture.
             for stage in RideRoute.everyStage {
-                let m = makeModel()
+                let m = makeModel("stage-\(stage.id)-\(stage.romaji)")
                 m.startGame()
                 m.session?.skip()
                 for _ in 0 ..< 5 {
@@ -253,11 +315,12 @@ enum Screenshotter {
                size: CGSize(width: 84, height: 84), to: directory + "/acc-circular.png")
 
         // Practice (passage) mode — washi paper, full multi-sentence paragraph
-        let practice = makeModel()
+        let practice = makeModel("practice")
         practice.selectedMode = .practice
         practice.practiceSource = .passages
         practice.practicePassageLevel = .hard
-        // Re-roll until we land on one of the long multi-sentence paragraphs (kana > 40 chars)
+        // Re-roll until we land on one of the long multi-sentence paragraphs (kana > 40 chars).
+        // Seeded, so the re-roll lands on the same passage every run.
         for _ in 0 ..< 30 {
             practice.startGame()
             if let k = practice.session?.currentKana, k.count > 40 { break }
@@ -268,7 +331,7 @@ enum Screenshotter {
         render(RootView().environment(practice), size: size, to: directory + "/practice.png")
 
         // Practice BLIND mode (no romaji hint)
-        let blind = makeModel()
+        let blind = makeModel("practice-blind")
         blind.selectedMode = .practice
         blind.practiceSource = .passages
         blind.practicePassageLevel = .hard
@@ -285,7 +348,7 @@ enum Screenshotter {
         // Conjugation drill (v1.6) — dictionary form + target-form label; type a couple
         // keys so the answer shows progress. Pure-drawn (no native controls), so it
         // renders faithfully unlike the menu.
-        let conj = makeModel()
+        let conj = makeModel("conjugation")
         conj.selectedMode = .conjugation
         conj.startGame()
         if let romaji = conj.conjugationSession?.currentRomaji {
@@ -294,7 +357,7 @@ enum Screenshotter {
         render(RootView().environment(conj), size: size, to: directory + "/conjugation.png")
 
         // Conjugation results — complete a few prompts, then finish.
-        let conjResults = makeModel()
+        let conjResults = makeModel("conjugation-results")
         conjResults.selectedMode = .conjugation
         conjResults.startGame()
         for _ in 0 ..< 5 {
@@ -305,7 +368,7 @@ enum Screenshotter {
         render(RootView().environment(conjResults), size: size, to: directory + "/conjugation-results.png")
 
         // Stats screen (v1.9) — seed demo journal + conjugation data so the charts have content.
-        let stats = makeModel()
+        let stats = makeModel("stats")
         stats.seedDemoStatsData()
         stats.screen = .stats
         // Taller than the game viewport: the Stats screen scrolls at runtime, so capture the
@@ -315,7 +378,7 @@ enum Screenshotter {
 
         // About / Credits page — render the view directly so the screen-transition
         // animation doesn't catch it mid-flight.
-        let about = makeModel()
+        let about = makeModel("about")
         let aboutView = ZStack { Theme.background.ignoresSafeArea(); AboutView() }
             .preferredColorScheme(.dark)
             .environment(about)
@@ -325,7 +388,7 @@ enum Screenshotter {
         // Ride Log — seeded with an in-memory demo fortnight (never persisted).
         // Store mode keeps the standard frame (top-aligned; the ledger runs off
         // the bottom edge like a page below the fold). Dev mode renders tall.
-        let journal = makeModel()
+        let journal = makeModel("journal")
         journal.seedDemoJournal()
         let journalView = ZStack(alignment: .top) { Theme.background.ignoresSafeArea(); JournalView() }
             .preferredColorScheme(.dark)
@@ -341,7 +404,7 @@ enum Screenshotter {
         // First-launch onboarding (page 0). NOTE: ImageRenderer ignores the
         // dynamicTypeSize environment, so large-type layout must be verified on a
         // live device/simulator (C3 §7) — not here.
-        let onboarding = makeModel()
+        let onboarding = makeModel("onboarding")
         let onboardingView = ZStack { Theme.background.ignoresSafeArea(); OnboardingView() }
             .preferredColorScheme(.dark).environment(onboarding)
         render(onboardingView, size: size, to: directory + "/onboarding.png")
@@ -350,12 +413,60 @@ enum Screenshotter {
         // read-only — no list mutations here, so the capture never pollutes the
         // machine's real word-list data. (The ⋯ menu draws as a placeholder in
         // ImageRenderer like all native controls; fine at runtime.)
-        let lists = makeModel()
+        let lists = makeModel("lists")
         let listsView = ZStack { Theme.background.ignoresSafeArea(); ListsView() }
             .preferredColorScheme(.dark).environment(lists)
         render(listsView, size: size, to: directory + "/lists.png")
+
+        // Leave nothing behind: the seed (so nothing built after this draws seeded), the
+        // container and the suite. `isCapturing` and `captureTarget` stay set — see their docs.
+        DeckRandomness.seed = nil
+        clearCaptureStores()
+        if failed == 0 {
+            report("\(written) screens written to \(directory)")
+        } else {
+            report("\(failed) of \(written + failed) screens FAILED")
+        }
+        return failed
     }
 
+    /// Removes this capture's container and defaults suite. Called at the start of a capture
+    /// (so it starts from nothing) and at the end (so it leaves nothing). Failures are reported,
+    /// not swallowed: a container that could not be cleared is a run that did not start clean.
+    @MainActor private static func clearCaptureStores() {
+        let isolation = AppModel.currentIsolation
+        if let base = isolation.supportBase, FileManager.default.fileExists(atPath: base.path) {
+            do {
+                try FileManager.default.removeItem(at: base)
+            } catch {
+                report("could not clear capture container \(base.path): \(error.localizedDescription)")
+            }
+        }
+        if let suite = isolation.settingsSuite {
+            UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite)
+        }
+    }
+
+    private enum CaptureError: LocalizedError {
+        case renderProducedNoImage
+        case emptyFile
+
+        var errorDescription: String? {
+            switch self {
+            case .renderProducedNoImage: return "ImageRenderer produced no image"
+            case .emptyFile: return "file written but empty"
+            }
+        }
+    }
+
+    private static func report(_ line: String) {
+        FileHandle.standardError.write(Data((line + "\n").utf8))
+    }
+
+    /// Renders one view to `path`. "wrote" is printed only once the file is on disk with a
+    /// non-zero size; every other outcome is reported on stderr with the path and counted in
+    /// `failed`. No `try?` here — `CaptureToolTests` pins that, because the `try?` this
+    /// replaced is how 24 "wrote" lines were printed for a directory that did not exist.
     @MainActor private static func render(_ view: some View, size: CGSize,
                                           alignment: Alignment = .center, to path: String) {
         let renderer = ImageRenderer(content:
@@ -374,12 +485,18 @@ enum Screenshotter {
         #elseif os(iOS)
         data = renderer.uiImage?.pngData()
         #endif
-        guard let png = data else {
-            FileHandle.standardError.write(Data("screenshot render failed: \(path)\n".utf8))
-            return
+        do {
+            guard let png = data else { throw CaptureError.renderProducedNoImage }
+            try png.write(to: URL(fileURLWithPath: path))
+            let attributes = try FileManager.default.attributesOfItem(atPath: path)
+            let size = (attributes[.size] as? NSNumber)?.intValue ?? 0
+            guard size > 0 else { throw CaptureError.emptyFile }
+            written += 1
+            FileHandle.standardError.write(Data("wrote \(path)\n".utf8))
+        } catch {
+            failed += 1
+            report("FAILED \(path): \(error.localizedDescription)")
         }
-        try? png.write(to: URL(fileURLWithPath: path))
-        FileHandle.standardError.write(Data("wrote \(path)\n".utf8))
     }
 
     /// Render scale: 2× (macOS Retina, iPad @2x → 2752×2064) or 3× (iPhone @3x).
@@ -389,5 +506,27 @@ enum Screenshotter {
         #else
         2
         #endif
+    }
+}
+
+/// FNV-1a, 64-bit: a small, dependency-free digest for names that must come out the same in
+/// every process and every release — the capture container's tag (`AppModel.launchIsolation`)
+/// and the per-screen deck seeds (`Screenshotter`). Its published test vectors are pinned by
+/// `CaptureToolTests`, so a "tidy-up" that changed the digest — and with it every seeded
+/// screen's deck — would be caught before it was mistaken for a layout regression.
+enum StableDigest {
+    static func fnv1a64(_ string: String) -> UInt64 {
+        var hash: UInt64 = 0xcbf2_9ce4_8422_2325
+        for byte in string.utf8 {
+            hash ^= UInt64(byte)
+            hash = hash &* 0x0000_0100_0000_01b3
+        }
+        return hash
+    }
+
+    /// The low 32 bits of the digest as eight hex characters — short enough for a directory
+    /// name and a defaults suite, distinct enough that two targets on one machine never meet.
+    static func tag(_ string: String) -> String {
+        String(format: "%08x", UInt32(truncatingIfNeeded: fnv1a64(string)))
     }
 }

@@ -365,7 +365,7 @@ struct AppModelTests {
     @Test("a UI-test launch can reach nothing that belongs to the user")
     func uiTestLaunchIsIsolated() {
         let isolation = AppModel.launchIsolation(
-            uiTest: true, layoutHarness: false, capturing: false,
+            uiTest: true, layoutHarness: false, captureTarget: nil,
             supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
         #expect(isolation.touchesNothingOfTheUsers,
                 "a UI-test launch may not resolve any real location: \(isolation)")
@@ -481,7 +481,7 @@ struct AppModelTests {
     @Test("an ordinary launch is not isolated, so the check above means something")
     func ordinaryLaunchIsNotIsolated() {
         let normal = AppModel.launchIsolation(
-            uiTest: false, layoutHarness: false, capturing: false,
+            uiTest: false, layoutHarness: false, captureTarget: nil,
             supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
         #expect(normal.touchesNothingOfTheUsers == false)
         #expect(normal.supportBase == nil, "a shipping launch must use real Application Support")
@@ -498,13 +498,17 @@ struct AppModelTests {
     @Test("screenshot capture reaches nothing that belongs to the user either")
     func captureIsIsolated() {
         let capture = AppModel.launchIsolation(
-            uiTest: false, layoutHarness: false, capturing: true,
+            uiTest: false, layoutHarness: false, captureTarget: "/tmp/capture",
             supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
         #expect(capture.touchesNothingOfTheUsers,
                 "a capture launch may not resolve any real location: \(capture)")
-        #expect(capture.supportBase?.lastPathComponent == "NihongoRideCapture")
+        // The container carries the TARGET's digest, not a fixed name (v1.34 §C3): two captures
+        // into two targets must never share it. `CaptureToolTests` holds the derivation itself;
+        // this keeps the location throwaway and named, so a failure says which door opened.
+        #expect(capture.supportBase?.lastPathComponent == "NihongoRideCapture-" + StableDigest.tag("/tmp/capture"))
         #expect(capture.widgetContainer != nil, "capture could still write the real widget")
-        #expect(capture.settingsSuite != nil, "capture could still write the real settings")
+        #expect(capture.settingsSuite == capture.supportBase?.lastPathComponent,
+                "capture could still write the real settings, or its suite and container carry different tags")
         #expect(capture.syncAllowed == false, "capture could still push to the real CloudKit")
     }
 
@@ -514,14 +518,15 @@ struct AppModelTests {
     @Test("the layout harness still cannot sync")
     func layoutHarnessCannotSync() {
         let harness = AppModel.launchIsolation(
-            uiTest: false, layoutHarness: true, capturing: false,
+            uiTest: false, layoutHarness: true, captureTarget: nil,
             supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
         #expect(harness.syncAllowed == false)
-        // Screenshot capture keeps its fixed temp directory.
+        // Screenshot capture keeps a throwaway temp directory of its own — one per target
+        // since v1.34 §C3, so the name carries the target's digest.
         let capture = AppModel.launchIsolation(
-            uiTest: false, layoutHarness: false, capturing: true,
+            uiTest: false, layoutHarness: false, captureTarget: "/tmp/capture",
             supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
-        #expect(capture.supportBase?.lastPathComponent == "NihongoRideCapture")
+        #expect(capture.supportBase?.lastPathComponent == "NihongoRideCapture-" + StableDigest.tag("/tmp/capture"))
     }
 
     /// An explicit override always wins, because the unit-test target sets one per model and
@@ -531,7 +536,7 @@ struct AppModelTests {
     func overrideWins() {
         let mine = URL(fileURLWithPath: "/tmp/mine")
         let isolation = AppModel.launchIsolation(
-            uiTest: true, layoutHarness: true, capturing: true,
+            uiTest: true, layoutHarness: true, captureTarget: "/tmp/capture",
             supportOverride: mine, widgetOverride: mine, settingsOverride: "mine")
         #expect(isolation.supportBase == mine)
         #expect(isolation.widgetContainer == mine)
