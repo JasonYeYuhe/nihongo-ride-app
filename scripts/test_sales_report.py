@@ -753,6 +753,195 @@ def test_checkpoint(check):
 
 
 # ---------------------------------------------------------------------------------------------------
+# E1. registered session participants (PLAN-STAGE1 §K "REGISTERED 2026-09-24" box; PLAN-V1.34 §D1)
+#
+# A recruited participant's install is a walk install: the owner registers it as `first_download` with
+# its real platform, country and Pacific report day, and the existing decision subtracts it (box item
+# 1); the reconciliation rule is not relaxed for it (item 5). Nothing in the instrument changed for
+# this — the case exists so the subtraction is SEEN to land on several cells at once, on the right
+# platform, and to stop where a cell runs short, before the first participant installs.
+#
+# Every expected number below is worked out by hand from PARTICIPANT_DOWNLOADS and PARTICIPANTS and
+# written beside them; none is read back from apply_registry (a test that grades itself survives the
+# mutation it exists to catch).
+
+PARTICIPANT_DOWNLOADS = {           # cohort first-time downloads, Pacific day -> rows (F1 macOS, 1F iOS)
+    "2026-09-10": [report_row("F1", 3, "JP"), report_row("1F", 2, "CN")],      # macOS 3 · iOS 2
+    "2026-09-13": [report_row("1F", 4, "DE"), report_row("F1", 1, "CN")],      # macOS 1 · iOS 4
+    "2026-09-15": [report_row("F1", 2, "US"), report_row("1F", 1, "JP")],      # macOS 2 · iOS 1
+    "2026-09-18": [report_row("F1", 5, "JP"), report_row("1F", 3, "US")],      # macOS 5 · iOS 3
+}
+RAW_N, RAW_MAC, RAW_IOS = 21, 11, 10                # 3+2+4+1+2+1+5+3 · 3+1+2+5 · 2+4+1+3
+
+
+def participant(eid, day, platform, country, units=1):
+    """A `first_download` entry as the 2026-09-24 box has the owner record one."""
+    x = entry(eid, kind="first_download", day=day, platform=platform, country=country, units=units,
+              code={"macOS": "F1", "iOS": "1F"}[platform], stamp=f"{day}T12:00:00-07:00")
+    x["walk_step"] = "PLAN-STAGE1 §K 2026-09-24 box, item 1"
+    x["notes"] = "session participant"
+    return x
+
+
+PARTICIPANTS = [                    # five entries · six units · four countries · four days · both platforms
+    participant("p-jp-mac-0910", "2026-09-10", "macOS", "JP"),              # its cell holds 3
+    participant("p-cn-ios-0910", "2026-09-10", "iOS", "CN", units=2),       # its cell holds exactly 2
+    participant("p-de-ios-0913", "2026-09-13", "iOS", "DE"),                # its cell holds 4
+    participant("p-us-mac-0915", "2026-09-15", "macOS", "US"),              # its cell holds 2
+    participant("p-us-ios-0918", "2026-09-18", "iOS", "US"),                # its cell holds 3
+]
+SUBTRACTED, SUBTRACTED_MAC, SUBTRACTED_IOS = 6, 2, 4                        # 1+2+1+1+1 · 1+1 · 2+1+1
+N_ADJ, N_ADJ_MAC, N_ADJ_IOS = 15, 9, 6                                      # 21-6 · 11-2 · 10-4
+
+
+def test_participants(check):
+    # The fixture is what its comments say: three or more countries and report days, both platforms,
+    # and the arithmetic written beside it. A fixture that drifted would grade the wrong claim.
+    check({x["country_code"] for x in PARTICIPANTS} >= {"JP", "CN", "DE"}
+          and len({x["report_day_pt"] for x in PARTICIPANTS}) >= 3
+          and {x["platform"] for x in PARTICIPANTS} == {"macOS", "iOS"},
+          "the participant fixture no longer spans three countries, three days and both platforms")
+    check(sum(x["units"] for x in PARTICIPANTS) == SUBTRACTED
+          and sum(x["units"] for x in PARTICIPANTS if x["platform"] == "macOS") == SUBTRACTED_MAC
+          and sum(x["units"] for x in PARTICIPANTS if x["platform"] == "iOS") == SUBTRACTED_IOS
+          and (RAW_N - SUBTRACTED, RAW_MAC - SUBTRACTED_MAC, RAW_IOS - SUBTRACTED_IOS)
+          == (N_ADJ, N_ADJ_MAC, N_ADJ_IOS),
+          "the hand-written participant arithmetic does not add up")
+    check(not sr.validate_registry(registry(True, [OWNER_BUY] + PARTICIPANTS)),
+          f"participant entries in the box's shape do not validate: "
+          f"{sr.validate_registry(registry(True, [OWNER_BUY] + PARTICIPANTS))}")
+
+    base = window(extra=cohort_extra(first_downloads=PARTICIPANT_DOWNLOADS))
+    cells, _codes = sr.cell_tally(base)
+    cohort = (sr.DAY0, NEWEST)
+
+    # (a) N is the raw first-time downloads minus exactly the registered units; (b) each on its platform.
+    r = sr.apply_registry(cells, registry(True, [OWNER_BUY] + PARTICIPANTS), *cohort)
+    check((r["raw"]["dl"], r["raw"]["dl_macOS"], r["raw"]["dl_iOS"]) == (RAW_N, RAW_MAC, RAW_IOS),
+          f"CONTROL: the planted rows do not tally to raw {RAW_N} ({RAW_MAC} · {RAW_IOS}): {r['raw']}")
+    check((r["adjusted"]["dl"], r["adjusted"]["dl_macOS"], r["adjusted"]["dl_iOS"])
+          == (N_ADJ, N_ADJ_MAC, N_ADJ_IOS),
+          f"participants: five entries over four cells must leave N = {N_ADJ} ({N_ADJ_MAC} · {N_ADJ_IOS}), "
+          f"got {r['adjusted']}")
+    check(r["walk_install_units"] == SUBTRACTED and r["walk_install_units_unheld"] == 0
+          and not r["problems"] and not r["notes"],
+          f"participants: {SUBTRACTED} units all held by their cells must leave no problem: {r}")
+    rc, out, _ = checkpoint(registry(True, [OWNER_BUY] + PARTICIPANTS), base)
+    check.rc_and_text("participants: checkpoint, decision true", rc, 0, out,
+                      must=(f"FIRST-TIME DOWNLOADS  raw {RAW_N} (macOS {RAW_MAC} · iOS {RAW_IOS})",
+                            f"registered walk first_download: 5 entries · {SUBTRACTED} unit(s) · SUBTRACTED "
+                            f"(decision true)",
+                            f"N = {N_ADJ} (macOS {N_ADJ_MAC} · iOS {N_ADJ_IOS})  first-time downloads F1+1F "
+                            f"since 2026-09-09\n",
+                            f"BOUND (rule of three, 95%) — zero adjusted net purchases in N = {N_ADJ} "
+                            f"first-time downloads (F1+1F) since 2026-09-09, walk installs subtracted, "
+                            f"decision true:",
+                            "3/15 = 20.00%", "N + 114 = 129", "3/129 = 2.33%",
+                            f"(read at N = {N_ADJ}, with 2026-09-20 the newest report day read)")
+                      + tuple(f"{x['id']}  first_download {x['platform']} {x['country_code']} units={x['units']} "
+                              f"report day {x['report_day_pt']} status=matched — subtracted from N"
+                              for x in PARTICIPANTS),
+                      must_not=("BOUND WITHHELD", "NOT SETTLED", "UNADJUSTED", f"N = {RAW_N}",
+                                "disagree", "fewer units"))
+
+    # (c) The reconciliation rule holds for participants (box item 5). One entry claims 3 of the 2 units
+    # its cell holds: the cell gives up its 2, the third is a disagreement that withholds the bound, and
+    # N is printed as the ceiling it now is — not silently as 14. Paired with the baseline above, where
+    # the same entry claims exactly the 2 the cell holds and the bound is printed.
+    over = [participant("p-cn-ios-0910", "2026-09-10", "iOS", "CN", units=3) if x["id"] == "p-cn-ios-0910"
+            else x for x in PARTICIPANTS]
+    short = "2026-09-10 first_download iOS CN: the registry claims 3 unit(s), the report holds 2"
+    r = sr.apply_registry(cells, registry(True, [OWNER_BUY] + over), *cohort)
+    check((r["adjusted"]["dl"], r["adjusted"]["dl_macOS"], r["adjusted"]["dl_iOS"]) == (N_ADJ, N_ADJ_MAC, N_ADJ_IOS)
+          and r["walk_install_units_unheld"] == 1 and r["problems"] == [short]
+          and r["problem_kinds"] == {"first_download"},
+          f"participants: a claim of 3 on a cell of 2 must take the 2, report the 1 as {short!r}, and leave "
+          f"N = {N_ADJ}: {r}")
+    rc, out, _ = checkpoint(registry(True, [OWNER_BUY] + over), base)
+    check.rc_and_text("participants: one entry claims more than its cell holds", rc, 5, out,
+                      must=("BOUND WITHHELD:", f"  - the registry and the report disagree — {short}",
+                            f"N = {N_ADJ} (macOS {N_ADJ_MAC} · iOS {N_ADJ_IOS})  first-time downloads F1+1F since "
+                            f"2026-09-09, NOT SETTLED — 1 registered walk unit(s) are not in the cell the "
+                            f"registry names, so they were not subtracted (see BOUND WITHHELD)",
+                            f"(read at N = {N_ADJ}, or {N_ADJ - 1} if the registered walk units the report does "
+                            f"not hold where the registry says are in N elsewhere",
+                            "p-cn-ios-0910  first_download iOS CN units=3 report day 2026-09-10 status=matched — "
+                            "its cell holds fewer units than the registry claims there — only what the cell "
+                            "holds is subtracted, and the bound is withheld",
+                            "p-jp-mac-0910  first_download macOS JP units=1 report day 2026-09-10 status=matched "
+                            "— subtracted from N",
+                            "ADJUSTED PURCHASES  gross 0"),
+                      must_not=("BOUND (rule", f"N = {N_ADJ - 1} (", f"N = {RAW_N}", "NOT PRINTED"))
+    # The same rule when the owner records the wrong platform: a cell that holds nothing gives nothing.
+    wrong = PARTICIPANTS + [participant("p-de-mac-0913", "2026-09-13", "macOS", "DE")]
+    empty = "2026-09-13 first_download macOS DE: the registry claims 1 unit(s), the report holds 0"
+    rc, out, _ = checkpoint(registry(True, [OWNER_BUY] + wrong), base)
+    check.rc_and_text("participants: one entry names a cell the report has empty", rc, 5, out,
+                      must=(f"  - the registry and the report disagree — {empty}",
+                            f"N = {N_ADJ} (macOS {N_ADJ_MAC} · iOS {N_ADJ_IOS})  first-time downloads F1+1F since "
+                            f"2026-09-09, NOT SETTLED — 1 registered walk unit(s)",
+                            f"registered walk first_download: 6 entries · {SUBTRACTED + 1} unit(s) · SUBTRACTED"),
+                      must_not=("BOUND (rule", f"N = {N_ADJ - 1} (", "macOS 8"))
+
+    # (d) The decision, not the entries, is what subtracts: false leaves N raw and says so; null leaves
+    # it raw, says it is unadjusted, and withholds.
+    r = sr.apply_registry(cells, registry(False, [OWNER_BUY] + PARTICIPANTS), *cohort)
+    check((r["adjusted"]["dl"], r["adjusted"]["dl_macOS"], r["adjusted"]["dl_iOS"]) == (RAW_N, RAW_MAC, RAW_IOS)
+          and r["adjusted"]["buy"] == 0 and r["walk_install_units"] == SUBTRACTED and not r["problems"],
+          f"participants, decision false: N must stay raw ({RAW_N} · {RAW_MAC} · {RAW_IOS}) with the {SUBTRACTED} "
+          f"units still listed, while the owner's purchase is still subtracted: {r}")
+    rc, out, _ = checkpoint(registry(False, [OWNER_BUY] + PARTICIPANTS), base)
+    check.rc_and_text("participants: checkpoint, decision false", rc, 0, out,
+                      must=(f"registered walk first_download: 5 entries · {SUBTRACTED} unit(s) · not subtracted "
+                            f"(decision false)",
+                            f"N = {RAW_N} (macOS {RAW_MAC} · iOS {RAW_IOS})  first-time downloads F1+1F since "
+                            f"2026-09-09\n",
+                            f"BOUND (rule of three, 95%) — zero adjusted net purchases in N = {RAW_N} first-time "
+                            f"downloads (F1+1F) since 2026-09-09, walk installs counted, decision false:",
+                            "3/21 = 14.29%", "N + 114 = 135", "3/135 = 2.22%",
+                            "p-us-ios-0918  first_download iOS US units=1 report day 2026-09-18 status=matched — "
+                            "counted in N (decision false)"),
+                      must_not=(f"N = {N_ADJ}", "subtracted from N", "BOUND WITHHELD"))
+    rc, out, _ = checkpoint(registry(None, [OWNER_BUY] + PARTICIPANTS), base)
+    check.rc_and_text("participants: checkpoint, decision null", rc, 5, out,
+                      must=(f"N = {RAW_N} (macOS {RAW_MAC} · iOS {RAW_IOS})  first-time downloads F1+1F since "
+                            f"2026-09-09, UNADJUSTED — {SUBTRACTED} undecided walk unit(s) inside it",
+                            f"owner decision pending: decisions.exclude_walk_first_downloads_from_N is null while "
+                            f"the cohort window holds 5 first_download entries ({SUBTRACTED} unit(s))",
+                            f"(read at N = {RAW_N}, or {N_ADJ} if the undecided walk units are subtracted"),
+                      must_not=("BOUND (rule", f"N = {N_ADJ} ("))
+
+    # (e) A participant dated outside the cohort window — after the newest report day, or on the eve of
+    # day 0 — is neither subtracted nor a reason to withhold, whether or not the report holds a row there.
+    outside = PARTICIPANTS + [participant("p-late", "2026-09-25", "macOS", "JP"),
+                              participant("p-eve", "2026-09-08", "iOS", "CN")]
+    with_eve = window(extra=cohort_extra(first_downloads=PARTICIPANT_DOWNLOADS,
+                                         add={"2026-09-08": [report_row("1F", 1, "CN")]}))
+    r = sr.apply_registry(sr.cell_tally(with_eve)[0], registry(True, [OWNER_BUY] + outside), *cohort)
+    check(r["adjusted"]["dl"] == N_ADJ and r["walk_install_units"] == SUBTRACTED and not r["problems"]
+          and {x["id"] for x in r["in_window"]} == {"owner-buy"} | {x["id"] for x in PARTICIPANTS},
+          f"participants outside the window changed N or entered the window: {r}")
+    rc, out, _ = checkpoint(registry(True, [OWNER_BUY] + outside), with_eve)
+    check.rc_and_text("participants: two entries outside the cohort window", rc, 0, out,
+                      must=(f"registered walk first_download: 5 entries · {SUBTRACTED} unit(s) · SUBTRACTED",
+                            f"N = {N_ADJ} (macOS {N_ADJ_MAC} · iOS {N_ADJ_IOS})  first-time downloads F1+1F since "
+                            f"2026-09-09\n",
+                            "p-late  first_download macOS JP units=1 report day 2026-09-25 status=matched — "
+                            "outside the cohort window 2026-09-09 .. 2026-09-20, not subtracted",
+                            "p-eve  first_download iOS CN units=1 report day 2026-09-08 status=matched — "
+                            "outside the cohort window 2026-09-09 .. 2026-09-20, not subtracted",
+                            "⚠️  2026-09-08 first-time downloads (F1/1F): 1 — N counts from 2026-09-09; had day 0 "
+                            f"been 2026-09-08, N would be {N_ADJ + 1}",
+                            f"BOUND (rule of three, 95%) — zero adjusted net purchases in N = {N_ADJ} "),
+                      must_not=("BOUND WITHHELD", "disagree", "7 entries", f"N = {N_ADJ - 1} ",
+                                f"N = {N_ADJ - 2} "))
+    print(f"  {len(PARTICIPANTS)} participant entries · {SUBTRACTED} units over four cells, three countries, "
+          f"both platforms: N {RAW_N} → {N_ADJ} ({RAW_MAC} → {N_ADJ_MAC} · {RAW_IOS} → {N_ADJ_IOS}) · an "
+          f"over-claim and an empty cell withhold with N unmoved · decision false and null leave N raw · "
+          f"entries outside the window do nothing")
+
+
+# ---------------------------------------------------------------------------------------------------
 # E2. the second release-day control (--checkpoint only)
 #
 # The groups below are typed from PLAN-STAGE1 §K's "DECIDED 2026-09-17" box, item 11, where they are
@@ -1506,6 +1695,8 @@ def main():
     test_exclusion(check)
     print("E. --checkpoint")
     test_checkpoint(check)
+    print("E1. REGISTERED SESSION PARTICIPANTS (§K box 2026-09-24)")
+    test_participants(check)
     print("E2. THE SECOND RELEASE-DAY CONTROL (--checkpoint only)")
     test_second_control(check)
     print("F. --confirm-known-positive")
