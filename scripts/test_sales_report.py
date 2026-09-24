@@ -758,8 +758,9 @@ def test_checkpoint(check):
 # A recruited participant's install is a walk install: the owner registers it as `first_download` with
 # its real platform, country and Pacific report day, and the existing decision subtracts it (box item
 # 1); the reconciliation rule is not relaxed for it (item 5). Nothing in the instrument changed for
-# this — the case exists so the subtraction is SEEN to land on several cells at once, on the right
-# platform, and to stop where a cell runs short, before the first participant installs.
+# this — the case exists so the subtraction is SEEN to land on five cells at once (five entries in five
+# distinct (day, platform, country) cells across four countries, four days and both platforms), on the
+# right platform and country, and to stop where a cell runs short, before the first participant installs.
 #
 # Every expected number below is worked out by hand from PARTICIPANT_DOWNLOADS and PARTICIPANTS and
 # written beside them; none is read back from apply_registry (a test that grades itself survives the
@@ -795,12 +796,16 @@ N_ADJ, N_ADJ_MAC, N_ADJ_IOS = 15, 9, 6                                      # 21
 
 
 def test_participants(check):
-    # The fixture is what its comments say: three or more countries and report days, both platforms,
-    # and the arithmetic written beside it. A fixture that drifted would grade the wrong claim.
-    check({x["country_code"] for x in PARTICIPANTS} >= {"JP", "CN", "DE"}
-          and len({x["report_day_pt"] for x in PARTICIPANTS}) >= 3
+    # The fixture is exactly what its comment says: five entries in five distinct (day, platform,
+    # country) cells, across four countries, four report days and both platforms, with the arithmetic
+    # written beside it. A fixture that drifted would grade the wrong claim.
+    cells_planted = {(x["report_day_pt"], x["platform"], x["country_code"]) for x in PARTICIPANTS}
+    check(len(PARTICIPANTS) == 5 and len(cells_planted) == 5
+          and {x["country_code"] for x in PARTICIPANTS} == {"JP", "CN", "DE", "US"}
+          and len({x["report_day_pt"] for x in PARTICIPANTS}) == 4
           and {x["platform"] for x in PARTICIPANTS} == {"macOS", "iOS"},
-          "the participant fixture no longer spans three countries, three days and both platforms")
+          "the participant fixture is no longer five entries in five distinct (day, platform, country) cells "
+          "across four countries, four days and both platforms")
     check(sum(x["units"] for x in PARTICIPANTS) == SUBTRACTED
           and sum(x["units"] for x in PARTICIPANTS if x["platform"] == "macOS") == SUBTRACTED_MAC
           and sum(x["units"] for x in PARTICIPANTS if x["platform"] == "iOS") == SUBTRACTED_IOS
@@ -821,7 +826,8 @@ def test_participants(check):
           f"CONTROL: the planted rows do not tally to raw {RAW_N} ({RAW_MAC} · {RAW_IOS}): {r['raw']}")
     check((r["adjusted"]["dl"], r["adjusted"]["dl_macOS"], r["adjusted"]["dl_iOS"])
           == (N_ADJ, N_ADJ_MAC, N_ADJ_IOS),
-          f"participants: five entries over four cells must leave N = {N_ADJ} ({N_ADJ_MAC} · {N_ADJ_IOS}), "
+          f"participants: five entries in five cells across four countries must leave N = {N_ADJ} "
+          f"({N_ADJ_MAC} · {N_ADJ_IOS}), "
           f"got {r['adjusted']}")
     check(r["walk_install_units"] == SUBTRACTED and r["walk_install_units_unheld"] == 0
           and not r["problems"] and not r["notes"],
@@ -873,6 +879,10 @@ def test_participants(check):
                             "ADJUSTED PURCHASES  gross 0"),
                       must_not=("BOUND (rule", f"N = {N_ADJ - 1} (", f"N = {RAW_N}", "NOT PRINTED"))
     # The same rule when the owner records the wrong platform: a cell that holds nothing gives nothing.
+    # This entry is also the section's one near-miss on the country dimension: on 2026-09-13 the report
+    # holds macOS 1 (CN) and iOS 4 (DE), so (macOS, DE) is wrong-platform relative to the DE row and
+    # wrong-country relative to the macOS row at once. A country-blind subtraction would take the CN
+    # unit and print macOS 11-3 = 8 — the must_not "macOS 8" below is what catches it.
     wrong = PARTICIPANTS + [participant("p-de-mac-0913", "2026-09-13", "macOS", "DE")]
     empty = "2026-09-13 first_download macOS DE: the registry claims 1 unit(s), the report holds 0"
     rc, out, _ = checkpoint(registry(True, [OWNER_BUY] + wrong), base)
@@ -935,8 +945,9 @@ def test_participants(check):
                             f"BOUND (rule of three, 95%) — zero adjusted net purchases in N = {N_ADJ} "),
                       must_not=("BOUND WITHHELD", "disagree", "7 entries", f"N = {N_ADJ - 1} ",
                                 f"N = {N_ADJ - 2} "))
-    print(f"  {len(PARTICIPANTS)} participant entries · {SUBTRACTED} units over four cells, three countries, "
-          f"both platforms: N {RAW_N} → {N_ADJ} ({RAW_MAC} → {N_ADJ_MAC} · {RAW_IOS} → {N_ADJ_IOS}) · an "
+    print(f"  {len(PARTICIPANTS)} participant entries · {SUBTRACTED} units in {len(cells_planted)} cells, "
+          f"{len({x['country_code'] for x in PARTICIPANTS})} countries, both platforms: "
+          f"N {RAW_N} → {N_ADJ} ({RAW_MAC} → {N_ADJ_MAC} · {RAW_IOS} → {N_ADJ_IOS}) · an "
           f"over-claim and an empty cell withhold with N unmoved · decision false and null leave N raw · "
           f"entries outside the window do nothing")
 

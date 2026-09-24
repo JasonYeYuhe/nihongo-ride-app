@@ -249,6 +249,13 @@ stale facts ("while v1.30 is in review"; the install-denominated checkpoints as 
 
 ### D1 — Register moderated-session participants in §K before anyone is recruited · *done 2026-09-24, before N = 35 was read*
 
+*Addendum 2026-09-25:* the test half of this item landed in commit `c79d10a` — `test_sales_report.py`
+section E1 plants five registered `first_download` entries in five distinct (day, platform, country)
+cells across four countries and both platforms against a synthetic report, and grades the subtraction,
+the withholding on an over-claim and on an empty cell, the false/null decisions, and entries outside the
+window. `sales_report.py` itself is unchanged. The "done 2026-09-24" in the heading is the §K
+registration; the sentence above about the test case is now past tense as of this addendum.
+
 `PLAN-WINDOW` §E calls moderated sessions with 10–15 recruited users the most valuable item available
 and says *register them now*; `PLAN-V2-PRODUCT` §H specifies the instrument (watch a session, then a
 forced choice between concrete packages). Recruited users install the app, so clause two of §A's test
