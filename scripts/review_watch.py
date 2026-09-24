@@ -63,7 +63,8 @@ EXIT CODES — there are exactly two
        not be started (any OSError from the runner, not just "not found"), the body was empty,
        non-JSON or carried `errors`, `data` or `links` had the wrong shape, a paging link pointed
        off the API, the collected count disagreed with `meta.paging.total`, a review lacked a field
-       this tool prints — or anything else went wrong: `main` has a last-resort `except Exception`
+       this tool prints, the opt-in `--json` file could not be written (the report is still
+       printed, but the "exit 0" line is not) — or anything else went wrong: `main` has a last-resort `except Exception`
        that prints the HARNESS ERROR line with the exception and returns 2, so an unanticipated
        failure is never a traceback with exit 1. NEVER 0 for reviews it could not read: a run that
        cannot read prints no "since day 0" count at all, so "0 since day 0" is only ever printed
@@ -461,7 +462,18 @@ def main(argv: Optional[List[str]] = None, get: Optional[Callable[[str], dict]] 
         return EXIT_HARNESS
     render(reviews, len(pages), now(), out, total)
     if args.json:
-        _dump_json(Path(args.json), pages, reviews)
+        # The opt-in dump sits under the same contract as the read: a dump that cannot be written
+        # is a HARNESS ERROR (exit 2) and the "exit 0" line is never printed — the review found
+        # this path outside the handler, dying with a traceback and exit 1, which the header
+        # says never happens.
+        # `except OSError`, not `except Exception`: the self-test pins main to exactly ONE
+        # last-resort `except Exception`, the one around the read; a dump can only fail as an
+        # OSError (missing directory, permissions, a path that is a directory).
+        try:
+            _dump_json(Path(args.json), pages, reviews)
+        except OSError as exc:
+            out.write(f"HARNESS ERROR: could not write --json {args.json}: {type(exc).__name__}: {exc}\n")
+            return EXIT_HARNESS
         out.write(f"dumped pages and parsed reviews to {args.json}\n")
     out.write(f"exit {EXIT_OK} (the read succeeded)\n")
     return EXIT_OK

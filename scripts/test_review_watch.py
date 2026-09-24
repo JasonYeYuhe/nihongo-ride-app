@@ -575,6 +575,17 @@ def test_paging_and_json(problems):
         problems.check(sorted(p.name for p in Path(tmp).iterdir()) == ["reviews.json"],
                        f"--json wrote more than the named file: {list(Path(tmp).iterdir())}")
         print(f"  --json → {target.name} holds the raw page and the parsed review")
+        # PAIR: a --json path that cannot be written is a HARNESS ERROR (exit 2), and the "exit 0"
+        # line is never printed — the fix round's verifier found this path outside main's handler,
+        # dying with a FileNotFoundError traceback and exit 1. The report itself is still printed:
+        # the read succeeded, only the dump failed, and the line says which.
+        bad = Path(tmp) / "no-such-dir" / "reviews.json"
+        code, text = run_main(getter(first=page([LIVE_REVIEW])), argv=["--json", str(bad)])
+        problems.check(code == 2 and "HARNESS ERROR: could not write --json" in text
+                       and "exit 0" not in text and "since day 0 (2026-09-09):  0" in text,
+                       f"--json to an unwritable path: exit {code}:\n{text[-600:]}")
+        problems.check(not bad.parent.exists(), "--json created a directory it was not asked for")
+        print(f"  --json to an unwritable path → exit {code}, HARNESS ERROR, no \"exit 0\" line")
         # PAIR: without --json the same run writes nothing — checked where a stray write would
         # land. The process moves into a fresh cwd and HOME (and Path.home()) points at a second
         # fresh directory for the run; both must still be empty afterwards. (The earlier form of
