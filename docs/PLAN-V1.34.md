@@ -203,6 +203,16 @@ clean fixture not, a missing key → exit 2) **does** join the gates (FLOOR 13 �
 live read is a command run on every release day and every checkpoint day, its output pasted into the
 checkpoint entry. Risk: the endpoint shows reviews visible to the API and may lag storefronts — the
 output says so.
+*2026-09-25: done — `scripts/review_watch.py` and `scripts/test_review_watch.py`; `run_all_gates.sh` FLOOR is 14
+(headless 13) from this date. First live read (2026-09-24T15:54Z, read-only): 1 lifetime review, 2026-07-10 PT,
+CHN, rating 5, before day 0, body contains 付费; 0 reviews since day 0. The Latin terms match at a word start
+("repayment" does not flag), the CJK terms as substrings; the tool reports the READ in its exit code and the
+flag in its text, and a person reads "negatively". Same day, after review: the vocabulary is wider than the
+list in parentheses above — 收费 (the word the one real review uses twice), 买/買, 有料, 料金, 支払, 解锁, and
+buy, bought, charge(d), price, cost, iap, in-app with any of three hyphens; "unpaid"/"prepaid" stay unflagged
+by the word-start rule, written down in the tool's header. The collected count is reconciled with the API's
+`meta.paging.total` (a mismatch is exit 2), and every failure — including one the tool never anticipated —
+is exit 2 with the HARNESS ERROR line: the tool has exactly two exit codes.*
 
 ### C3 — The headless render tool stops lying · *0.5 day*
 
