@@ -315,8 +315,19 @@ Designing costs nothing measurable; shipping moves 75% of impressions.
   costs a cancel and a resubmit — minutes, measured. After `READY_FOR_SALE` it costs a whole new
   version with live customers meeting a broken purchase.** Two of the three need only a Mac and an
   iPhone.
+  * *Corrected 2026-09-25:* "while the version is in review" is stale. No version has been in review
+    since 2026-09-17: read from App Store Connect on 2026-09-25 (GET only, `scripts/asc_api.sh`), every
+    version on both platforms is `READY_FOR_SALE` — iOS 1.30, 1.31, 1.32, 1.33; macOS 1.29, 1.31, 1.32,
+    1.33 (the macOS 1.30 record was reused for 1.31, `PLAN-ITERATION` §G) — with 1.33 on sale since
+    2026-09-17 Pacific on both. The cost of a failed gate is therefore the one this bullet's own second
+    sentence names: a whole new version with live customers meeting a broken purchase. The gates are
+    still unwalked (`PLAN-STAGE1` §L, ☐ ☐ ☐).
 * **§K's day-0 known-positive purchase.** An agent cannot do it and must not try.
 * **Whether to adopt §F's install-denominated checkpoints.** Free to decide now, not later.
+  * *Corrected 2026-09-25:* decided. Adopted on 2026-09-09, day 0 or day 1, before any outcome number
+    was read — `PLAN-STAGE1` §K: "**§F's re-denomination is ADOPTED.** Checkpoints now fire at
+    **cumulative new installs since day 0: N = 35, N = 100, N = 200** — whenever they arrive — not at
+    day 15/42/90." The item is closed.
 
 ---
 

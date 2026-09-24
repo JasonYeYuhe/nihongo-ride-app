@@ -192,3 +192,45 @@ days that keep accumulating to the reading date, so a plain fall in first-time d
 can fail it without any classification swap. The checkpoint's failure text names both causes and
 prints the other-day download mean before and after day 0 so a reader can tell them apart; the
 definition is not changed.
+
+## 7. 2026-09-25 — the second control with 1.33's release days as exposure days: two readings, quoted
+
+`FIRM_RELEASE_DATES_PT` gained `2026-09-17` on 2026-09-24 (JST) (v1.33, both platforms, from the store's
+`currentVersionReleaseDate`; §K item 11: "Each later release adds its firm Pacific date and the next
+day, recorded at release time from the store's own release timestamp"), so the control's exposure set
+grew by 09-17 and 09-18. §6 holds no reading with those days in it. Two readings exist. Both are quoted
+from their sources; neither is recomputed here.
+
+**(a) 2026-09-24, cache through Pacific 2026-09-22.** Source: `docs/STATE-2026-09-24.md`, "Measurement",
+whose sentence is: "the second release-day control reads 2.55x updates / 1.58x downloads with
+09-17/09-18 as exposure days." `docs/PLAN-V1.34.md` §C5 gives that run's group sizes as 12 exposure
+days / 13 other days. The tool's verbatim output of that day was not kept, so this reading exists only
+as those two sentences; nothing finer about it can be quoted.
+
+**(b) 2026-09-25 (JST), cache through Pacific 2026-09-23.** Source: that day's `--checkpoint` run, its
+"second release-day control" block copied word for word:
+
+```
+second release-day control (PLAN-STAGE1 §K "DECIDED 2026-09-17" item 11 — gates the bound only; --calibrate does not run it):
+  exposure days (12): 2026-08-11, 2026-08-12, 2026-08-15, 2026-08-16, 2026-08-17, 2026-08-18, 2026-08-31, 2026-09-01, 2026-09-11, 2026-09-12, 2026-09-17, 2026-09-18
+  other days (14): 2026-08-14, 2026-09-02, 2026-09-03, 2026-09-04, 2026-09-10, 2026-09-13, 2026-09-14, 2026-09-15, 2026-09-16, 2026-09-19, 2026-09-20, 2026-09-21, 2026-09-22, 2026-09-23
+  updates (F7)                  exposure 15.67/d vs other 6.00/d = 2.61x
+  first-time downloads (F1/1F)  exposure 3.17/d vs other 2.00/d = 1.58x
+    other-day first-time downloads 2.00/d before 2026-09-09 over 4 day(s), 2.00/d from 2026-09-09 over 10 day(s)
+  OK — check A: updates elevated on exposure days · check B: update ratio 2.61x > first-time download ratio 1.58x
+```
+
+The two readings differ in the update ratio (2.55x, then 2.61x) and in the other-day count (13, then
+14); (b)'s other-day list ends with 2026-09-23, the one report day (a)'s cache did not yet hold. That is
+all this section says about the difference. `--checkpoint` prints no per-day values, so the per-day
+list §6 carries is not appended for these days; anyone re-deriving them needs the cache, not this file.
+
+**Neither reading is blind**, in the terms §6's correction uses. The 2026-09-24 survey run printed (a)
+before this section existed; (b) was printed the next day, also before this section was written; and
+this section is written after both were seen. The exposure days 09-17 and 09-18 were not chosen from
+update counts — they follow the documented rule ("release day and the next day") from the store's own
+timestamps — but the rule itself, as §6's correction records, was motivated from where the update wave
+landed. So what stands here is a consistency check on release days that had not happened when the
+definition was written (the one thing §6's correction said it would stay a real test of): the
+definition held on two new days, 2.55x / 2.61x against 1.58x, and it was read, then written down — not
+written down, then read.
