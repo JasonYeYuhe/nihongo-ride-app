@@ -606,6 +606,15 @@ Removing `.contentShape` fails that test and only that test. The suite is now 8 
 > (macOS 1.30 is still in review and the purchase is not approved), so amending it now is free,
 > which it will not be in a week. The alternative — shipping the measurement on an entrance that
 > responds on a caption line — would have biased it the other way and been invisible.
+>
+> *Corrected 2026-09-25:* "macOS 1.30 is still in review and the purchase is not approved" is stale.
+> No version has been in review since 2026-09-17: read from App Store Connect on 2026-09-25 (GET only,
+> `scripts/asc_api.sh`), every version on both platforms is `READY_FOR_SALE` — iOS 1.30, 1.31, 1.32,
+> 1.33; macOS 1.29, 1.31, 1.32, 1.33 (the macOS 1.30 record was reused for 1.31, as §G's table
+> records) — with 1.33 on sale since 2026-09-17 Pacific on both, and the purchase is approved
+> (`docs/STATE-2026-09-24.md`). §K's day 0 has started: it was 2026-09-09 (§E's second correction
+> above). The amendment this box registered was made before day 0, so its "free" claim was true when
+> written; it is no longer true now, and nothing here is re-amended.
 
 ---
 

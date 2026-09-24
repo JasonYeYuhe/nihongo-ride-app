@@ -195,7 +195,7 @@ definition is not changed.
 
 ## 7. 2026-09-25 — the second control with 1.33's release days as exposure days: two readings, quoted
 
-`FIRM_RELEASE_DATES_PT` gained `2026-09-17` on 2026-09-24 (v1.33, both platforms, from the store's
+`FIRM_RELEASE_DATES_PT` gained `2026-09-17` on 2026-09-24 (JST) (v1.33, both platforms, from the store's
 `currentVersionReleaseDate`; §K item 11: "Each later release adds its firm Pacific date and the next
 day, recorded at release time from the store's own release timestamp"), so the control's exposure set
 grew by 09-17 and 09-18. §6 holds no reading with those days in it. Two readings exist. Both are quoted
