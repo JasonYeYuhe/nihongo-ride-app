@@ -128,6 +128,22 @@ struct ResultsView: View {
                         reviewList(summary.reviewWords)
                     }
                     stageLine
+                    // Tomorrow, said out loud: the streak and what comes due, on the one screen
+                    // every ride ends on. Text only — no button, no ask. The rating prompt fires
+                    // on this screen, and a second ask beside it is the v1.30 collision on the
+                    // time axis. Absent for a run that typed nothing, by the headline's own rule.
+                    // A limit and a floor because the line sits in a VStack, which
+                    // HorizontalTextFitTests deliberately does not scan: at AX5 a Chinese count
+                    // must shrink rather than break mid-number. (v1.34 §B1)
+                    if let line = model.tomorrowLine(zh: zh) {
+                        Text(line)
+                            .font(.caption)
+                            .foregroundStyle(Theme.dim)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.7)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                     coachEntry
                     stumbledWords
                 }

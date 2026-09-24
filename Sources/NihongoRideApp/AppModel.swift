@@ -1112,6 +1112,15 @@ final class AppModel {
             // that does nothing, and on Practice it returned to the menu — the harness silently
             // showed the wrong screen, which is worse than failing.
             selectedMode = .journey
+            // The AX5 pass reads the tomorrow line (v1.34 §B1), and its streak half needs a rider
+            // who rode yesterday — which a fresh simulator container never holds, so without this
+            // the pass could only ever see the due half. NIHONGO_DEBUG_DEMO_JOURNAL seeds the demo
+            // fortnight (ridden through today, streak 4) before the ride. The `finishGame()` below
+            // then persists that journal, demo rides included — the write this whole function is
+            // gated to the simulator for, and the reason this hook lives inside the same gate.
+            if ProcessInfo.processInfo.environment["NIHONGO_DEBUG_DEMO_JOURNAL"] != nil {
+                seedDemoJournal()
+            }
             startGame()
             session?.skip()                       // one lapse so the review list has a row
             for _ in 0 ..< 6 {
@@ -1522,6 +1531,30 @@ final class AppModel {
     var conjugationLeechCount: Int {
         conjugationReviewStore.leeches(resolves: vocab.resolvesID,
                                        rideable: conjugationRideable).count
+    }
+
+    // MARK: Results screen (v1.34 §B1) — tomorrow, said out loud
+
+    /// The line under the results panel's stage line: the streak, and what comes due tomorrow.
+    ///
+    /// Nil for a run that typed nothing. That is the rule `logRun` refuses the ride by and the
+    /// rule the headline stops claiming an arrival by (v1.33 §B R); a screen that has just declined
+    /// to show a flag or a grade must not then promise tomorrow's work on the strength of a ride
+    /// that recorded nothing. Asked of `lastSummary` rather than of the journal so this cannot drift
+    /// from the headline sitting six lines above it.
+    ///
+    /// The three numbers are the SAME reads the Ride Log's streak card and forecast card and the
+    /// Stats screen make — `streakDays()`, `dueForecast(resolves:)`, `conjugationDueForecast` — so
+    /// this line and those screens cannot disagree, which is the shape twenty-one defects in this
+    /// project have had in common. Read live, not off `lastSummary`: the summary carries the run,
+    /// and the streak and the forecast are about the calendar.
+    func tomorrowLine(zh: Bool) -> String? {
+        guard lastSummary?.typedNothing != true else { return nil }
+        return TomorrowLine.compose(
+            streakDays: journal.streakDays(),
+            wordsDue: reviewStore.dueForecast(resolves: vocab.resolvesID).tomorrow,
+            formsDue: conjugationDueForecast.tomorrow,
+            zh: zh)
     }
 
     /// Capture-only: seed demo journal + conjugation data so the Stats screenshot has content
@@ -2651,8 +2684,11 @@ final class AppModel {
     }
 
     /// Fills the in-memory journal with a believable two-week history for
-    /// headless screenshot rendering ONLY. Never persisted: nothing here calls
-    /// `save`, and the screenshot process exits without finishing a run.
+    /// headless screenshot rendering. Nothing here calls `save`, and the screenshot
+    /// process exits without finishing a run. The one caller that DOES finish a run
+    /// afterwards is the simulator layout harness (`jumpToDebugScreen`, under
+    /// `NIHONGO_DEBUG_DEMO_JOURNAL`), whose `finishGame()` persists whatever journal it
+    /// then holds — into a disposable simulator container, which is what its gate is for.
     func seedDemoJournal() {
         var demo = RideJournal()
         let calendar = Calendar.current
