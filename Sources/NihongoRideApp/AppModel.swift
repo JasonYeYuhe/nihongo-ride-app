@@ -990,8 +990,14 @@ final class AppModel {
             // name (v1.34 §C3). With one fixed `NihongoRideCapture` for every capture, two
             // renders started together shared one odometer, one journal and one defaults suite
             // and clobbered each other — v1.33's en/zh renders had to be run one after the
-            // other for that reason alone. The digest is stable, so the same target always maps
-            // to the same names (a re-run reproduces), and distinct targets never meet.
+            // other for that reason alone. The digest is of the string `NIHONGO_SHOT` was set
+            // to, exactly as spelled (`Screenshotter.captureTarget` reads the environment, it
+            // is not assigned by the capture), so the same command always maps to the same
+            // names (a re-run reproduces, and finds any container a crashed run left), and
+            // distinct targets never meet. Being read from the environment is also what puts
+            // the App struct's eager `AppModel()` — built before `capture` runs — in here
+            // rather than in the owner's Application Support; `captureIsolationIsConsumed`
+            // holds the doors, and the §C3 record shows a full render touching no owner file.
             let name = "NihongoRideCapture-" + StableDigest.tag(captureTarget)
             let dir = FileManager.default.temporaryDirectory
                 .appendingPathComponent(name, isDirectory: true)

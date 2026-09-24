@@ -86,7 +86,10 @@ final class IOSAppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         if ProcessInfo.processInfo.environment["NIHONGO_SHOT"] != nil {
-            // iOS sandbox: write into the app's Documents container.
+            // iOS sandbox: write into the app's Documents container. The environment value
+            // itself is only the digest source for the throwaway container and defaults suite
+            // (`Screenshotter.captureTarget` read it at first use, before this app's eager
+            // `AppModel()` was built); `dir` is where the PNGs go.
             let dir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                 // Non-zero when any screen failed to render or write, for the same reason as

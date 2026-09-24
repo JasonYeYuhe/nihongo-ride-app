@@ -19,13 +19,23 @@ import UIKit
 ///    temp directory and ONE fixed suite named `NihongoRideCapture`, so two captures started
 ///    together shared an odometer, a journal and a defaults domain and clobbered each other —
 ///    v1.33's en and zh renders had to be run one after the other. `AppModel.launchIsolation`
-///    now derives both names from a digest of the absolute target directory (`captureTarget`,
-///    set here before the first model is built): distinct targets never meet, and the same
-///    target maps to the same names every time. The container is cleared at the start of a
-///    capture — "start from nothing" — because before it was, every run inherited the rides of
-///    every previous one, lifetime distance grew monotonically and dragged the scenery stage
-///    with it, so one screen's whole background changed between two builds for no reason in
-///    either build. Both the container and the suite are removed again at the end.
+///    now derives both names from a digest of the target directory: distinct targets never
+///    meet, and the same command maps to the same names every time. `captureTarget` and
+///    `isCapturing` are read from `NIHONGO_SHOT` when first touched, not set by `capture` —
+///    the process is in capture mode from its first instruction, so the eager
+///    `@State private var model = AppModel()` in `NihongoRideApp`, built before
+///    `applicationDidFinishLaunching` ever calls `capture`, is isolated too. (It was not
+///    before: that one model read the owner's Application Support and bumped the launch
+///    counter in the dev binary's defaults domain on every headless render. The review
+///    measured it; `CaptureToolTests.captureStateComesFromTheEnvironment` pins the
+///    declarations, `AppModelTests.captureIsolationIsConsumed` pins that a set target reaches
+///    every door, and the §C3 record shows a full render leaving the owner's files untouched.)
+///    The container and suite are cleared BEFORE EVERY SCREEN's model is built — "start from
+///    nothing", per screen — because before it was, every run inherited the rides of every
+///    previous one, lifetime distance grew monotonically and dragged the scenery stage with it,
+///    so one screen's whole background changed between two builds for no reason in either
+///    build; and within one run, inserting a ride screen moved four screens below it. Both the
+///    container and the suite are removed again at the end.
 ///
 /// 2. **Honest output.** `render` used `try?` and then printed "wrote <path>" whatever had
 ///    happened; two agents each printed 24 "wrote" lines into a directory that did not exist
@@ -37,23 +47,38 @@ import UIKit
 ///
 /// 3. **Determinism.** Every deck shuffle and form pick in GameCore goes through
 ///    `DeckRandomness`; this file seeds it — the ONLY place that does — from each screen's
-///    file name, before that screen's model is built, so adding or removing a screen upstream
-///    cannot change a later one. Before this, 8–9 of 24 screens varied between two runs of the
-///    same binary, and so did `road.png`: its odometer sentence ("24.3 km still to Kyōto")
-///    counted the distance the random decks had ridden earlier in the same process. The plan's
-///    gate needs `road.png` and `menu.png` identical across releases, and §B1's proof needs
-///    `results.png` to differ from the baseline in exactly one region; neither was decidable
-///    while the capture itself was noise.
+///    file name, before that screen's model is built. Together with the per-screen clearing
+///    in (1) that makes each screen a function of its own name and the code: the deck is
+///    seeded and the stores are empty, so adding, removing or reordering a screen upstream
+///    changes nothing below it (shown by mutation in the §C3 record, not claimed). Before
+///    this, 8–9 of 24 screens varied between two runs of the same binary, and so did
+///    `road.png`: its odometer sentence ("24.3 km still to Kyōto") counted the distance the
+///    random decks had ridden earlier in the same process. The plan's gate needs `road.png`
+///    and `menu.png` identical across releases, and §B1's proof needs `results.png` to differ
+///    from the baseline in exactly one region; neither was decidable while the capture itself
+///    was noise.
 enum Screenshotter {
-    /// While true, views omit their `KeyCaptureView` background (an
-    /// NSViewRepresentable that ImageRenderer can't render).
-    @MainActor static var isCapturing = false
+    /// True for the whole life of a headless-render process and false on every other launch:
+    /// read from the environment when first touched, which happens inside the first
+    /// `AppModel.init` — before `capture` runs. While true, views omit their `KeyCaptureView`
+    /// background (an NSViewRepresentable that ImageRenderer can't render), models start from
+    /// default settings and persist none, and the widget, Game Center and sync stay closed.
+    /// Settable so a test can put one model into capture mode and restore it.
+    @MainActor static var isCapturing = ProcessInfo.processInfo.environment["NIHONGO_SHOT"] != nil
 
-    /// The absolute directory the capture in progress writes to, or nil outside capture.
-    /// `AppModel.currentIsolation` reads it, so it is set BEFORE the first model is built and
-    /// is never cleared: an `AppModel` that outlives the capture must keep resolving to the
-    /// throwaway container, not fall back to the owner's Application Support.
-    @MainActor static var captureTarget: String?
+    /// The capture target exactly as the environment spelled it, or nil outside capture.
+    /// `AppModel.currentIsolation` derives the throwaway container and defaults suite from a
+    /// digest of it, so it is initialised from `NIHONGO_SHOT` rather than assigned by
+    /// `capture`: every model this process builds, including the App struct's eager one, then
+    /// resolves to the throwaway container. RAW, not standardised — the digest must be the
+    /// same on every run of the same command, and `standardizedFileURL` strips `/private`
+    /// only once the directory exists, so a first run and its re-run used to get two
+    /// containers. On iOS the environment value is the digest source only; the PNGs go to
+    /// the Documents container the call site passes. Never cleared: an `AppModel` that
+    /// outlives the capture must keep resolving to the throwaway container, not fall back to
+    /// the owner's Application Support. Settable so a test can point one model at a target
+    /// of its own and restore it.
+    @MainActor static var captureTarget: String? = ProcessInfo.processInfo.environment["NIHONGO_SHOT"]
 
     /// Screens this run wrote (file present, size > 0) and screens it could not.
     @MainActor private(set) static var written = 0
@@ -63,12 +88,22 @@ enum Screenshotter {
     /// screens that failed to render or write — zero means every "wrote" line is true.
     @MainActor @discardableResult
     static func capture(into directory: String) -> Int {
-        // Absolute and standardised (`/private/tmp/x`, `/tmp/x/` and `/tmp/x` are one target),
-        // so the digest `launchIsolation` takes from it names the same container however the
-        // caller spelled the path. Messages name the directory as the caller gave it.
-        let target = URL(fileURLWithPath: directory).standardizedFileURL
+        // Cleared however this function leaves, so nothing built after a capture in the same
+        // process draws seeded — a defer, not the last statement, so a future throwing step
+        // cannot skip it.
+        defer {
+            DeckRandomness.seed = nil
+        }
         written = 0
         failed = 0
+        // A production launch arrives here with `captureTarget` and `isCapturing` already set
+        // from the environment; that is what kept the App struct's eager model isolated. A
+        // test that calls `capture` directly has no `NIHONGO_SHOT` in its environment, so it
+        // is given its argument as the target here (and restores both afterwards). Nothing
+        // else may assign the target: `CaptureToolTests.captureStateComesFromTheEnvironment`.
+        if captureTarget == nil { captureTarget = directory }
+        isCapturing = true
+        let target = URL(fileURLWithPath: directory, isDirectory: true)
         do {
             try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
         } catch {
@@ -76,11 +111,6 @@ enum Screenshotter {
             report("capture aborted: nothing was written")
             return 1
         }
-        captureTarget = target.path
-        isCapturing = true
-        // Start from nothing: the container and the defaults suite this target maps to. Both
-        // are keyed to the target, so this cannot touch another capture running alongside.
-        clearCaptureStores()
         // App Store mode: 1440×900 logical × @2x scale = 2880×1800 actual PNG,
         // the preferred macOS App Store screenshot resolution.
         let storeMode = ProcessInfo.processInfo.environment["NIHONGO_SHOT_STORE"] != nil
@@ -98,12 +128,25 @@ enum Screenshotter {
         let shotLang = ProcessInfo.processInfo.environment["NIHONGO_SHOT_LANG"] ?? "en"
         // Dev-only: force the read-aloud button on for a visual check (NIHONGO_TTS=1).
         let forceTTS = ProcessInfo.processInfo.environment["NIHONGO_TTS"] == "1"
-        // One model per screen, and the deck seed is reset from the screen's own name BEFORE
-        // the model exists, so every draw this screen makes — the deck, the practice re-roll,
-        // the drill's form picks — is the same in every run and independent of the screens
-        // rendered before it.
+        // One model per screen, and each starts from nothing twice over, BEFORE the model
+        // exists. The deck: the seed is reset from the screen's own name, so every draw this
+        // screen makes — the deck, the practice re-roll, the drill's form picks — is the same
+        // in every run. The stores: the capture container and its defaults suite are cleared,
+        // so the odometer, journal, review stores, stumble ledger, word lists and settings are
+        // empty for this screen rather than the sum of what the screens above rode into them.
+        // The screens that read persisted state, and now read it at zero: `road` and
+        // `road-iap-review` (both distance sentences and the stretch rows, from lifetime
+        // distance), every ride's backdrop (`rideStage` is resolved from lifetime distance
+        // when the run starts: `game`, `game-mid`, `results`, `results-sentence`,
+        // `conjugation-results`), `about` (the diagnostics line names the current stretch),
+        // `journal` and `stats` (the totals take the larger of the demo journal and the
+        // odometer), and `menu` (streak and due count). Before this, removing ONE upstream
+        // ride screen moved road.png, road-iap-review.png, about.png and conjugation-results.png,
+        // and the render gate would have filed each as a layout regression. The share card is
+        // the exception by design: it is drawn from the results model's in-memory summary.
         let makeModel: (String) -> AppModel = { screen in
             DeckRandomness.seed = StableDigest.fnv1a64(screen)
+            clearCaptureStores()
             let m = AppModel.init()
             m.languageCode = shotLang
             // Store screenshots keep showing the hints — a fresh AppModel now defaults to
@@ -203,9 +246,13 @@ enum Screenshotter {
         // centred and clipped at BOTH ends — the first render of this one lost its header and the
         // §C boundary sentence, which is the one line a reviewer most needs to read.
         //
-        // Its odometer sentence counts the rides the screens above rode into this capture's
-        // container. Those decks are seeded, so the distance — and this screen — is the same
-        // in every run; before §C3 it moved by a tenth of a kilometre between two runs.
+        // Its odometer sentences read a lifetime distance of ZERO: `makeModel` cleared the
+        // container before this model was built, so the rides the screens above finished do
+        // not reach it. That is what makes this screen a function of its own name — before
+        // the per-screen clearing it counted those rides, so the sentence moved by a tenth of
+        // a kilometre between two runs of the old tool, and by 0.6 km when one upstream ride
+        // screen was removed from the seeded one. What it shows is the offer as a rider who
+        // has not set out sees it: the full free road still ahead.
         let road = makeModel("road")
         road.showRoad()
         render(RootView().environment(road),
@@ -418,9 +465,8 @@ enum Screenshotter {
             .preferredColorScheme(.dark).environment(lists)
         render(listsView, size: size, to: directory + "/lists.png")
 
-        // Leave nothing behind: the seed (so nothing built after this draws seeded), the
-        // container and the suite. `isCapturing` and `captureTarget` stay set — see their docs.
-        DeckRandomness.seed = nil
+        // Leave nothing behind: the container and the suite (the seed is cleared by the defer
+        // at the top). `isCapturing` and `captureTarget` stay set — see their docs.
         clearCaptureStores()
         if failed == 0 {
             report("\(written) screens written to \(directory)")
@@ -430,9 +476,11 @@ enum Screenshotter {
         return failed
     }
 
-    /// Removes this capture's container and defaults suite. Called at the start of a capture
-    /// (so it starts from nothing) and at the end (so it leaves nothing). Failures are reported,
-    /// not swallowed: a container that could not be cleared is a run that did not start clean.
+    /// Removes this capture's container and defaults suite. Called before every screen's model
+    /// is built (so each screen starts from nothing) and at the end (so the run leaves
+    /// nothing). Both names are keyed to this process's target, so this cannot touch another
+    /// capture running alongside. Failures are reported, not swallowed: a container that could
+    /// not be cleared is a screen that did not start clean.
     @MainActor private static func clearCaptureStores() {
         let isolation = AppModel.currentIsolation
         if let base = isolation.supportBase, FileManager.default.fileExists(atPath: base.path) {

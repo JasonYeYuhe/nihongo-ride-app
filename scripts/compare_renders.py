@@ -12,19 +12,26 @@ Why this is a script and not three lines of Pillow inline:
 2. **PNG bytes are not stable** for these renders, so `cmp`/md5 report differences on
    screens the change cannot reach. Compare decoded pixels, never files.
 
-3. **Capture is seeded since v1.34 §C3, so every screen is deterministic.** Before that the
-   game/practice/results captures drew words from a randomly ordered deck and differed run
-   to run with no code change at all — and so did road.png, whose odometer text depended on
-   how far the random decks had ridden. `Screenshotter` now reseeds `DeckRandomness` per
-   screen, so two renders of the same binary are pixel-identical and a plain
-   `compare_renders.py A B` holds every screen to the strict standard. `--control` remains
-   for comparisons where that is NOT true: renders made by a tool older than §C3, or any
-   capture that bypasses the seam. It takes a second render of the CANDIDATE's code and uses
-   it to classify each screen as STABLE or NOISY, then holds only the stable ones to a strict
-   standard. (Second render of the candidate, not the baseline: the baseline is usually a
-   commit you no longer have checked out, and the noise is a property of the capture, not of
-   the change.) With a seeded capture it must report 0 noisy screens; anything else means the
-   tool has stopped being deterministic, which is itself a finding.
+3. **Capture is seeded since v1.34 §C3, so every screen is deterministic WITHIN ONE CALENDAR
+   DAY.** Before that the game/practice/results captures drew words from a randomly ordered
+   deck and differed run to run with no code change at all — and so did road.png, whose
+   odometer text depended on how far the random decks had ridden. `Screenshotter` now
+   reseeds `DeckRandomness` per screen and clears the capture's stores before each one, so
+   two renders of the same binary on the same day are pixel-identical and a plain
+   `compare_renders.py A B` holds every screen to the strict standard. The one thing the seed
+   does not fix is the clock: journal.png and stats.png draw the wall-clock date (the demo
+   fortnight is placed relative to today — "Today", "Yesterday", "9/23"; the words-per-day
+   axis is labelled with day numbers; today's stud is ringed), so they, and any screen that
+   shows a relative date, change across local midnight. A baseline and a candidate must
+   therefore be rendered on the same local day, or compared with `--control`, which remains
+   for every comparison where determinism does NOT hold: a pair straddling midnight, renders
+   made by a tool older than §C3, or any capture that bypasses the seam. It takes a second
+   render of the CANDIDATE's code and uses it to classify each screen as STABLE or NOISY,
+   then holds only the stable ones to a strict standard. (Second render of the candidate,
+   not the baseline: the baseline is usually a commit you no longer have checked out, and
+   the noise is a property of the capture, not of the change.) With a seeded capture on one
+   day it must report 0 noisy screens; anything else means the tool has stopped being
+   deterministic, which is itself a finding.
 
 Usage:
     NIHONGO_SHOT=/tmp/a swift run NihongoRideApp     # baseline, before the change
@@ -100,7 +107,8 @@ def main() -> int:
                 if verdict != "same":
                     noisy.add(n)
         print(f"control: {len(noisy)} of {len(base)} screens vary run-to-run "
-              f"(random deck order) — they cannot be held to a pixel standard")
+              f"(a date-bearing screen, or a capture that bypassed the seed) — they cannot be "
+              f"held to a pixel standard")
         if noisy:
             print("  noisy: " + ", ".join(sorted(noisy)))
         print()

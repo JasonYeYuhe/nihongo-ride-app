@@ -69,6 +69,38 @@ struct DeckRandomnessTests {
         #expect(drawA == drawB)
     }
 
+    /// A seeded generator that never advanced would pass `seededIsReproducible`: the same seed
+    /// gives the same answer twice because it gives the same answer always. The review made the
+    /// seeded branches draw from a COPY of the generator and every determinism test stayed
+    /// green — while under capture every `randomElement` in a screen returned the same index and
+    /// the practice re-roll redrew the same passage thirty times. So: two successive seeded
+    /// shuffles of thirty elements differ, ten successive seeded picks are not one value, two
+    /// successive `Generator.next()` values differ. And `withSeed` hands back the seed it FOUND,
+    /// not nil — nested here so the outer lock keeps another test's draw from interleaving.
+    @Test("seeded draws advance, and withSeed restores the seed it found")
+    func seededDrawsAdvance() {
+        let (a, b) = DeckRandomness.withSeed(11) {
+            (DeckRandomness.shuffled(Array(0 ..< 30)), DeckRandomness.shuffled(Array(0 ..< 30)))
+        }
+        #expect(Set(a) == Set(0 ..< 30) && Set(b) == Set(0 ..< 30), "a seeded shuffle must keep every element once")
+        #expect(a != b, "two successive seeded shuffles agreed — the seeded generator is not advancing")
+        let picks = DeckRandomness.withSeed(11) { (0 ..< 10).map { _ in DeckRandomness.randomElement(Array(0 ..< 1000))! } }
+        #expect(Set(picks).count > 1, "ten successive seeded picks from a thousand all agreed")
+        let (x, y) = DeckRandomness.withSeed(11) { () -> (UInt64, UInt64) in
+            var g = DeckRandomness.Generator()
+            let x = g.next()
+            return (x, g.next())
+        }
+        #expect(x != y, "two successive seeded Generator.next() values agreed")
+        let restored: (inner: UInt64?, outer: UInt64?) = DeckRandomness.withSeed(99) {
+            let inner = DeckRandomness.withSeed(5) { DeckRandomness.seed }
+            return (inner, DeckRandomness.seed)
+        }
+        #expect(restored.inner == 5)
+        #expect(restored.outer == 99, "withSeed restored \(String(describing: restored.outer)), not the 99 it found")
+        #expect(DeckRandomness.seed == nil, "withSeed must restore the previous seed")
+    }
+
     /// The generator's outputs are published (SplitMix64, Steele/Lea/Flood 2014); pinning them
     /// against values this repository did not compute means a "tidy-up" of the mixer changes
     /// every seeded screen visibly here, not silently in a render comparison months later.
@@ -84,7 +116,10 @@ struct DeckRandomnessTests {
 
     /// A seam one call site bypasses is not a seam: that screen would vary run to run again,
     /// and the render gate would call the noise a regression. Comment-stripped scan of every
-    /// GameCore source except the seam itself.
+    /// GameCore source except the seam itself. The needles are every way Swift and libc offer
+    /// to draw: the first list had only the four this tree used, and the review wrote a
+    /// Fisher–Yates over `Int.random(in:)` into `makeSaved` that was neither routed nor an
+    /// offender.
     @Test("every shuffle and pick in GameCore goes through the seam")
     func everyDrawGoesThroughTheSeam() throws {
         let dir = URL(fileURLWithPath: #filePath)
@@ -94,7 +129,8 @@ struct DeckRandomnessTests {
             .filter { $0.hasSuffix(".swift") }
         #expect(files.contains("GameSession.swift") && files.contains("ConjugationSession.swift"),
                 "the scan is looking in the wrong place: \(files)")
-        let needles = ["shuffle(", "shuffled(", "randomElement(", "SystemRandomNumberGenerator"]
+        let needles = [".random(", "Int.random", "Bool.random", "Double.random", "randomElement(",
+                       "shuffle(", "shuffled(", "SystemRandomNumberGenerator", "arc4random", "drand48"]
         var routed = 0
         var offenders: [String] = []
         for file in files where file != "DeckRandomness.swift" {
