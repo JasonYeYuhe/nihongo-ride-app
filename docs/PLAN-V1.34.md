@@ -254,7 +254,7 @@ section E1 plants five registered `first_download` entries in five distinct (day
 cells across four countries and both platforms against a synthetic report, and grades the subtraction,
 the withholding on an over-claim and on an empty cell, the false/null decisions, and entries outside the
 window. `sales_report.py` itself is unchanged. The "done 2026-09-24" in the heading is the §K
-registration; the sentence above about the test case is now past tense as of this addendum.
+registration; the sentence below about the test case is now past tense as of this addendum.
 
 `PLAN-WINDOW` §E calls moderated sessions with 10–15 recruited users the most valuable item available
 and says *register them now*; `PLAN-V2-PRODUCT` §H specifies the instrument (watch a session, then a
