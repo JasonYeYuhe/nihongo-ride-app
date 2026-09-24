@@ -233,8 +233,8 @@ def test_flags(problems):
         ("Great app, love the road", []),
         ("很好用,每天都在骑", []),
         ("楽しいです", []),
-        ("the display is crisp", []),          # contains "pay" inside a word: not a purchase
-        ("repayment plan", []),                # ditto — "pay" is not at a word start
+        ("repayment plan", []),                # "pay" inside a word, not at a word start: clean
+        ("the display is crisp", []),          # plain clean text ("display" holds no term at all)
         ("", []),
     ]
     for text, expected in pairs:

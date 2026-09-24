@@ -29,8 +29,9 @@ THE FLAG
 --------
 A review whose title or body contains purchase vocabulary is printed LOUDLY, in en, zh and ja:
 Latin terms (purchase, purchased, paid, pay, refund, in-app) match case-insensitively at a word
-start — "Refunded" and "PAID" match, "display" does not (it contains "pay" but not at a word
-start); CJK terms (购买, 付费, 退款, 内购, 購入, 課金, 返金) match as substrings. The flag is a
+start — "Refunded" and "PAID" match, "repayment" does not (it contains "pay", but not at a word
+start; the self-test's mutation of this rule is what fails on it); CJK terms (购买, 付费, 退款,
+内购, 購入, 課金, 返金) match as substrings. The flag is a
 prompt for a PERSON to read the review against §K's sentence — "negatively" is a human reading;
 this tool decides nothing. The lifetime review's body contains 付费 and is a real-data control
 for the flagger (`scripts/test_review_watch.py`).

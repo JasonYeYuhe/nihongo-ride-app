@@ -206,7 +206,7 @@ output says so.
 *2026-09-25: done — `scripts/review_watch.py` and `scripts/test_review_watch.py`; `run_all_gates.sh` FLOOR is 14
 (headless 13) from this date. First live read (2026-09-24T15:54Z, read-only): 1 lifetime review, 2026-07-10 PT,
 CHN, rating 5, before day 0, body contains 付费; 0 reviews since day 0. The Latin terms match at a word start
-("display" does not flag), the CJK terms as substrings; the tool reports the READ in its exit code and the
+("repayment" does not flag), the CJK terms as substrings; the tool reports the READ in its exit code and the
 flag in its text, and a person reads "negatively".*
 
 ### C3 — The headless render tool stops lying · *0.5 day*
