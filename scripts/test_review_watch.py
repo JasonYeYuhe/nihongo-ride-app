@@ -14,9 +14,20 @@ the key, or any cache (the tool has none). Pages are dicts shaped like the API's
 the positive control for parsing is the app's one lifetime review EXACTLY as
 `scripts/asc_api.sh GET /v1/apps/6777469778/customerReviews` returned it on 2026-09-25 — every
 attribute, the relationship and the links block included, so the parser is graded against the
-real shape, not against a shape this file imagined. That review's body contains 付费, which
-makes it a real-data control for the flagger as well. The tool's GET layer is exercised through
-an injected getter or an injected runner that returns canned `Completed` results.
+real shape, not against a shape this file imagined. That review's title contains 收费 and its
+body contains 收费 and 付费, which makes it a real-data control for the flagger as well. The
+tool's GET layer is exercised through an injected getter or an injected runner that returns
+canned `Completed` results; the two OS-level failures (the runner's subprocess call raising
+PermissionError, and an exception the tool never anticipated) are exercised by monkeypatching
+the tool's `subprocess.run` and by a getter that raises, and both must end as exit 2 with the
+HARNESS ERROR line — the tool has exactly two exit codes, and a source pin checks that `main`
+keeps the last-resort handler that makes that true.
+
+THE PRINT-ONLY RUN. "Writes nothing" is tested where a stray write would land: the process is
+moved into a fresh temporary cwd with HOME (and `Path.home()`) pointed at a second fresh
+temporary directory for the duration of one print-only run, and both must still be empty after
+it. A scratch mutation that wrote a cache file into cwd made this line red (recorded in the
+commit that added it), so it is a check that can fail, not a certification.
 
 THE NO-SIDE-EFFECTS SCAN. The tool's source is parsed and must contain no network import, no
 subprocess use outside its single guarded runner, no file write outside the opt-in `--json`
@@ -33,6 +44,7 @@ import datetime as dt
 import importlib.util
 import io
 import json
+import os
 import sys
 import tempfile
 import traceback
@@ -156,7 +168,7 @@ def test_parse_live_shape(problems):
                                            tzinfo=dt.timezone(dt.timedelta(hours=-7)))),
         ("day_pt", r.day_pt, dt.date(2026, 7, 10)),
         ("since_day0", r.since_day0, False),
-        ("flags", r.flags, ["付费"]),
+        ("flags", r.flags, ["付费", "收费"]),
     ]
     for label, got, want in checks:
         problems.check(got == want, f"live review: {label} = {got!r}, expected {want!r}")
@@ -211,36 +223,73 @@ def test_parse_live_shape(problems):
 # =================================================================================================
 
 def test_flags(problems):
-    print("FLAG — each purchase term is found; each clean twin is not; the pay/display trap")
+    print("FLAG — each purchase term is found; each clean twin is not; the word-start rule")
     pairs = [
         # (text, expected terms)
-        ("我已经购买了", ["购买"]),
+        ("我已经购买了", ["购买", "买"]),      # 买 sits inside 购买: substrings are substrings
         ("返金してほしい", ["返金"]),
         ("I want a refund", ["refund"]),
         ("REFUNDED without asking", ["refund"]),
-        ("Purchased the scenery, worth it", ["purchase"]),
+        ("Purchased the scenery, worth it", ["purchased"]),
+        ("purchases are confusing", ["purchase"]),
         ("I paid and nothing happened", ["paid"]),
         ("Why should I pay for this", ["pay"]),
         ("the in-app offer is confusing", ["in-app"]),
+        ("the in‐app offer", ["in‐app"]),          # U+2010 HYPHEN
+        ("the in‑app offer", ["in‑app"]),          # U+2011 NON-BREAKING HYPHEN
+        ("bought it, nothing unlocked", ["bought"]),
+        ("do not buy", ["buy"]),
+        ("charged twice", ["charged"]),
+        ("a charge I did not expect", ["charge"]),
+        ("price too high", ["price"]),
+        ("the cost is absurd", ["cost"]),
+        ("the IAP failed", ["iap"]),
         ("付费入口在哪里", ["付费"]),
         ("退款", ["退款"]),
         ("内购太贵", ["内购"]),
         ("購入しました", ["購入"]),
         ("課金要素あり", ["課金"]),
-        (LIVE_REVIEW["attributes"]["body"], ["付费"]),                 # real data
+        ("收费太贵", ["收费"]),
+        ("买了没解锁", ["买", "解锁"]),
+        ("有料版を買った", ["買", "有料"]),
+        ("支払いました", ["支払"]),
+        ("料金が高い", ["料金"]),
+        (LIVE_REVIEW["attributes"]["title"], ["收费"]),                 # real data: the title
+        (LIVE_REVIEW["attributes"]["body"], ["付费", "收费"]),           # real data: the body
         ("Refund and 退款 both", ["refund", "退款"]),
         # clean twins
         ("Great app, love the road", []),
         ("很好用,每天都在骑", []),
         ("楽しいです", []),
         ("repayment plan", []),                # "pay" inside a word, not at a word start: clean
+        ("unpaid version", []),                # "paid" inside "unpaid": clean by decision (header)
+        ("prepaid card", []),                  # "paid" inside "prepaid": clean by decision (header)
         ("the display is crisp", []),          # plain clean text ("display" holds no term at all)
+        ("discharge the battery", []),         # "charge" inside a word: clean
         ("", []),
     ]
     for text, expected in pairs:
         got = W.purchase_terms(text)
         problems.check(got == expected, f"purchase_terms({text!r}) = {got}, expected {expected}")
         print(f"  {text[:34]!r:<38} → {got if got else 'clean'}")
+    # No Latin term is dead in the alternation: each one, placed in a sentence, is the term the
+    # tool reports. (With "purchase" listed before "purchased", the latter could never be reported.)
+    for term in W.LATIN_TERMS:
+        got = W.purchase_terms(f"well, {term} then")
+        problems.check(got == [term], f"LATIN term {term!r} is dead: purchase_terms reported {got}")
+    problems.check(len(set(W.LATIN_TERMS)) == len(W.LATIN_TERMS), "LATIN_TERMS lists a term twice")
+    problems.check(len(set(W.CJK_TERMS)) == len(W.CJK_TERMS), "CJK_TERMS lists a term twice")
+    for term in W.CJK_TERMS:
+        got = W.purchase_terms(f"很好{term}了")
+        problems.check(term in got, f"CJK term {term!r} not reported for text containing it: {got}")
+    print(f"  every one of {len(W.LATIN_TERMS)} Latin terms is reportable (none dead) · "
+          f"every one of {len(W.CJK_TERMS)} CJK terms found")
+    for must in ("收费", "买", "買", "有料", "料金", "支払", "解锁",
+                 "购买", "付费", "退款", "内购", "購入", "課金", "返金"):
+        problems.check(must in W.CJK_TERMS, f"CJK_TERMS lost {must!r}")
+    for must in ("purchase", "purchased", "paid", "pay", "refund", "in-app", "buy", "bought",
+                 "charge", "charged", "price", "cost", "iap", "in‐app", "in‑app"):
+        problems.check(must in W.LATIN_TERMS, f"LATIN_TERMS lost {must!r}")
     # Title alone must flag: the vocabulary may be in either field.
     only_title = W.parse_reviews([page([review("t", "2026-09-10T08:00:00-07:00",
                                                 title="退款", body="ok")])])[0]
@@ -278,7 +327,8 @@ def test_report(problems):
         "PURCHASE VOCABULARY: refund, 退款",
         "SUMMARY: since day 0: 2 review(s), 1 flagged · before day 0: 1 · total 3",
         "2026-07-10 PT · rating 5/5 · CHN · id 00000193-f7fb-5203-538a-6cdb00000000 · "
-        "purchase vocabulary: 付费",
+        "purchase vocabulary: 付费, 收费",
+        "API meta.paging.total: 3   (equals the 3 collected; a mismatch is exit 2)",
         "may lag the storefronts",
         "America/Los_Angeles",
         "exit 0 (the read succeeded)",
@@ -301,9 +351,9 @@ def test_report(problems):
                    f"moved review: counts wrong:\n{text2}")
     problems.check(LIVE_REVIEW["attributes"]["body"] in since_section(text2),
                    "moved review: body not listed verbatim under SINCE DAY 0")
-    problems.check("PURCHASE VOCABULARY: 付费" in since_section(text2),
-                   "moved review: 付费 not flagged loudly")
-    print("  same review moved to 2026-09-10: listed, body verbatim, flagged 付费")
+    problems.check("PURCHASE VOCABULARY: 付费, 收费" in since_section(text2),
+                   "moved review: 付费 and 收费 not flagged loudly")
+    print("  same review moved to 2026-09-10: listed, body verbatim, flagged 付费, 收费")
     # PAIR on the Pacific boundary: 2026-09-09T06:59:59Z is still 2026-09-08 in Los Angeles
     # (PDT, UTC−7); one second later it is day 0. A UTC comparison would put both on day 0.
     edge_before = review("e0", "2026-09-09T06:59:59Z")
@@ -325,6 +375,35 @@ def test_report(problems):
                    f"no reviews at all: totals must read 0:\n{t5}")
     problems.check(t4 != t5, "'none since day 0' and 'none at all' printed the same report")
     print("  'none since day 0' (total 1) ≠ 'none at all' (total 0)")
+    # PAIR on the API's own count: equal → exit 0 with the cross-check line; fewer collected than
+    # meta.paging.total → exit 2 and no count printed (the API said reviews exist and none were
+    # read); the field absent → allowed, and the header says the cross-check did not happen.
+    code, t6 = run_main(getter(first=page([LIVE_REVIEW], total=1)))
+    problems.check(code == 0 and "API meta.paging.total: 1   (equals the 1 collected" in t6,
+                   f"total equal: exit {code}:\n{t6}")
+    code, t7 = run_main(getter(first=page([], total=5)))
+    problems.check(code == 2 and "HARNESS ERROR" in t7 and "meta.paging.total = 5" in t7,
+                   f"total 5, collected 0: exit {code}, expected 2:\n{t7}")
+    for forbidden in ("since day 0 (2026-09-09):", "SUMMARY:", "(none visible", "total reviews",
+                      "exit 0"):
+        problems.check(forbidden not in t7, f"total mismatch printed {forbidden!r}:\n{t7}")
+    code, t7b = run_main(getter(first=page([LIVE_REVIEW], total=5)))
+    problems.check(code == 2 and "HARNESS ERROR" in t7b and "total reviews" not in t7b,
+                   f"total 5, collected 1: exit {code}, expected 2:\n{t7b}")
+    code, t7c = run_main(getter(first=page([LIVE_REVIEW], total=0)))
+    problems.check(code == 2 and "HARNESS ERROR" in t7c and "total reviews" not in t7c,
+                   f"total 0, collected 1: exit {code}, expected 2:\n{t7c}")
+    code, t7d = run_main(getter(first=page([LIVE_REVIEW], total="1")))
+    problems.check(code == 2 and "HARNESS ERROR" in t7d and "not a whole number" in t7d,
+                   f"total '1' (text): exit {code}, expected 2:\n{t7d}")
+    no_meta = page([LIVE_REVIEW])
+    del no_meta["meta"]
+    code, t8 = run_main(getter(first=no_meta))
+    problems.check(code == 0 and "API meta.paging.total: not supplied" in t8
+                   and "total reviews (lifetime, as the API shows them): 1" in t8,
+                   f"total absent: exit {code}, expected 0 with the 'not supplied' line:\n{t8}")
+    print("  meta.paging.total: equal → exit 0 · 5 vs 0 collected → exit 2, no count · "
+          "5 vs 1 / 0 vs 1 / '1' → exit 2 · absent → exit 0, 'not supplied'")
     # No high-water mark: two runs over the same pages print the same report.
     g = getter(first=page([LIVE_REVIEW, since_clean, since_flag]))
     _, a = run_main(g)
@@ -390,6 +469,55 @@ def test_harness_error(problems):
     problems.check(code == 2 and "total reviews" not in text,
                    f"second page failed: exit {code}, must be 2 with no total:\n{text}")
     print(f"  {'second page fails':<36} → exit {code}, no partial total")
+    # The two shapes that used to escape as a traceback with exit 1 (review finding, 2026-09-25):
+    # `links` that is not an object, and the runner's subprocess call raising an OSError other
+    # than FileNotFoundError. Both must be exit 2 with the HARNESS ERROR line and no count.
+    forbidden_lines = ("since day 0 (2026-09-09):", "SUMMARY:", "(none visible", "total reviews",
+                       "exit 0")
+    code, text = run_main(lambda endpoint: {"data": [], "links": ["x"]})
+    problems.check(code == 2 and "HARNESS ERROR" in text and "`links` is not an object" in text,
+                   f"links as a list: exit {code}, expected 2 with HARNESS ERROR:\n{text}")
+    for forbidden in forbidden_lines:
+        problems.check(forbidden not in text, f"links as a list printed {forbidden!r}:\n{text}")
+    print(f"  {'links is a list':<36} → exit {code}, HARNESS ERROR, no count")
+
+    def raise_permission(*args, **kwargs):
+        raise PermissionError(13, "Permission denied", "/bin/bash")
+    original_run = W.subprocess.run
+    W.subprocess.run = raise_permission
+    try:
+        code, text = run_main(None)  # get=None → the tool's own asc_get(_run_get) path
+    finally:
+        W.subprocess.run = original_run
+    problems.check(code == 2 and "HARNESS ERROR" in text and "PermissionError" in text,
+                   f"runner PermissionError: exit {code}, expected 2 with HARNESS ERROR:\n{text}")
+    for forbidden in forbidden_lines:
+        problems.check(forbidden not in text, f"runner PermissionError printed {forbidden!r}:\n{text}")
+    print(f"  {'subprocess.run → PermissionError':<36} → exit {code}, HARNESS ERROR, no count")
+    # The last resort: a failure this tool never anticipated is still exit 2 with the line, and
+    # the source pin below keeps main's `except Exception` handler in place.
+
+    def get_explodes(endpoint):
+        raise RuntimeError("something nobody planned for")
+    code, text = run_main(get_explodes)
+    problems.check(code == 2 and "HARNESS ERROR: unexpected RuntimeError" in text
+                   and "something nobody planned for" in text,
+                   f"unanticipated exception: exit {code}, expected 2 with HARNESS ERROR:\n{text}")
+    for forbidden in forbidden_lines:
+        problems.check(forbidden not in text, f"unanticipated exception printed {forbidden!r}:\n{text}")
+    print(f"  {'getter raises RuntimeError':<36} → exit {code}, HARNESS ERROR, no count")
+    tree = ast.parse(SCRIPT.read_text(encoding="utf-8"))
+    mains = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name == "main"]
+    last_resort = [
+        h for m in mains for n in ast.walk(m) if isinstance(n, ast.Try) for h in n.handlers
+        if isinstance(h.type, ast.Name) and h.type.id == "Exception"
+        and any(isinstance(r, ast.Return) and isinstance(r.value, ast.Name)
+                and r.value.id == "EXIT_HARNESS" for r in ast.walk(h))
+    ]
+    problems.check(len(mains) == 1 and len(last_resort) == 1,
+                   "source pin: main must have exactly one `except Exception` handler that "
+                   f"returns EXIT_HARNESS (found {len(last_resort)} in {len(mains)} main(s))")
+    print("  source pin: main keeps its last-resort `except Exception` → EXIT_HARNESS")
     # The runner guard: anything but a GET through asc_api.sh is refused before it runs.
     for argv in ([W.BASH, str(W.ASC_API), "POST", "/v1/x"],
                  [W.BASH, str(W.ASC_API), "GET", "https://elsewhere/v1/x"],
@@ -440,19 +568,46 @@ def test_paging_and_json(problems):
         problems.check(code == 0 and target.exists(), f"--json: exit {code}, exists {target.exists()}")
         dumped = json.loads(target.read_text(encoding="utf-8"))
         problems.check(dumped.get("pages") == [page([LIVE_REVIEW])]
-                       and dumped["reviews"][0]["flags"] == ["付费"]
+                       and dumped["reviews"][0]["flags"] == ["付费", "收费"]
                        and dumped["reviews"][0]["since_day0"] is False
                        and dumped["reviews"][0]["day_pt"] == "2026-07-10",
                        f"--json: content wrong: {json.dumps(dumped, ensure_ascii=False)[:400]}")
         problems.check(sorted(p.name for p in Path(tmp).iterdir()) == ["reviews.json"],
                        f"--json wrote more than the named file: {list(Path(tmp).iterdir())}")
         print(f"  --json → {target.name} holds the raw page and the parsed review")
-        # PAIR: without --json the same run writes nothing into that directory.
-        other = Path(tmp) / "empty"
-        other.mkdir()
-        run_main(getter(first=page([LIVE_REVIEW])))
-        problems.check(list(other.iterdir()) == [], "a print-only run wrote a file")
-        print("  print-only run → nothing written")
+        # PAIR: without --json the same run writes nothing — checked where a stray write would
+        # land. The process moves into a fresh cwd and HOME (and Path.home()) points at a second
+        # fresh directory for the run; both must still be empty afterwards. (The earlier form of
+        # this check watched a directory the tool was never pointed at, so it could not fail; a
+        # scratch mutation writing a cache file into cwd turns this one red.)
+        cwd_dir = Path(tmp) / "cwd"
+        home_dir = Path(tmp) / "home"
+        cwd_dir.mkdir()
+        home_dir.mkdir()
+        saved_cwd = os.getcwd()
+        saved_home = os.environ.get("HOME")
+        saved_path_home = Path.__dict__["home"]  # the classmethod object itself, not a bound copy
+        os.chdir(cwd_dir)
+        os.environ["HOME"] = str(home_dir)
+        Path.home = classmethod(lambda cls: cls(str(home_dir)))
+        try:
+            problems.check(Path.cwd() == cwd_dir.resolve() and Path.home() == home_dir,
+                           f"print-only setup: cwd {Path.cwd()} home {Path.home()}")
+            code, _ = run_main(getter(first=page([LIVE_REVIEW])))
+        finally:
+            Path.home = saved_path_home
+            if saved_home is None:
+                os.environ.pop("HOME", None)
+            else:
+                os.environ["HOME"] = saved_home
+            os.chdir(saved_cwd)
+        stray_cwd = sorted(p.name for p in cwd_dir.iterdir())
+        stray_home = sorted(p.name for p in home_dir.iterdir())
+        problems.check(code == 0, f"print-only run: exit {code}")
+        ok_cwd = problems.check(stray_cwd == [], f"a print-only run wrote into cwd: {stray_cwd}")
+        ok_home = problems.check(stray_home == [], f"a print-only run wrote into HOME: {stray_home}")
+        print(f"  print-only run in a fresh cwd with a fresh HOME → "
+              f"{'both still empty' if ok_cwd and ok_home else 'WROTE A FILE (must not)'}")
 
 
 # =================================================================================================

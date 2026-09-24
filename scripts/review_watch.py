@@ -20,6 +20,14 @@ It also prints the count of reviews BEFORE day 0 and the lifetime total, so a re
 "none since day 0" from "none at all" — the app has one lifetime review (2026-07-10, CHN), and a
 run that printed only "0 since day 0" would look identical for an app the API had never heard of.
 
+The lifetime total is cross-checked against the API's own count. Every page carries
+`meta.paging.total` (measured 2026-09-25: `{"total": 1, "limit": 200}`); when it is present, the
+number of reviews collected across all pages must equal it, and a mismatch — in either direction —
+is a HARNESS ERROR (exit 2, no count printed), because a run that collected fewer reviews than the
+API says exist has not read the reviews. When the API omits the field the run is allowed and the
+header says so ("API meta.paging.total: not supplied"), so the reader knows the cross-check did not
+happen rather than that it passed.
+
 "Since day 0" compares the review's `createdDate` converted to its America/Los_Angeles calendar
 day — the Pacific report day `sales_report.py` uses for the sales cohort — against 2026-09-09.
 So a review and a purchase on the same clock land on the same side of day 0. The API returns
@@ -27,24 +35,41 @@ So a review and a purchase on the same clock land on the same side of day 0. The
 
 THE FLAG
 --------
-A review whose title or body contains purchase vocabulary is printed LOUDLY, in en, zh and ja:
-Latin terms (purchase, purchased, paid, pay, refund, in-app) match case-insensitively at a word
-start — "Refunded" and "PAID" match, "repayment" does not (it contains "pay", but not at a word
-start; the self-test's mutation of this rule is what fails on it); CJK terms (购买, 付费, 退款,
-内购, 購入, 課金, 返金) match as substrings. The flag is a
-prompt for a PERSON to read the review against §K's sentence — "negatively" is a human reading;
-this tool decides nothing. The lifetime review's body contains 付费 and is a real-data control
-for the flagger (`scripts/test_review_watch.py`).
+A review whose title or body contains purchase vocabulary is printed LOUDLY, in en, zh and ja.
+Latin terms (`LATIN_TERMS`: purchased, purchase, paid, pay, refund, buy, bought, charged, charge,
+price, cost, iap, and in-app with an ASCII hyphen, a U+2010 hyphen or a U+2011 non-breaking
+hyphen) match case-insensitively at a WORD START with no end boundary — "Refunded", "PAID",
+"payment" and "purchases" match; "repayment", "unpaid" and "prepaid" do NOT (each contains a term,
+but not at a word start). That last is a decision, not an oversight: a review saying "unpaid" or
+"prepaid" is about paying, but the word-start rule is what keeps "repayment", "display" and
+"discharge" out, and every review since day 0 is printed in full for a person to read whether it
+is flagged or not — so the rule stays simple and the two words stay clean fixtures in the
+self-test. Two terms are listed longer-first (purchased before purchase, charged before charge)
+so that each listed term can be the one reported; the self-test asserts that no Latin term is
+dead in the alternation. CJK terms (`CJK_TERMS`: 购买, 付费, 退款, 内购, 購入, 課金, 返金, and since
+2026-09-25 收费, 买, 買, 有料, 料金, 支払, 解锁) match as substrings; 收费 is the word the one real
+review uses twice, in its title and in its body. Substrings are substrings: 买 sits inside 购买,
+so a review saying 购买 reports both — the flag is a prompt, not a count, and the redundancy is
+left visible rather than hidden by a rule that would need its own tests. The flag is a prompt for
+a PERSON to read the review against §K's sentence — "negatively" is a human reading; this tool
+decides nothing. The lifetime review's title contains 收费 and its body contains 收费 and 付费, so
+it is a real-data control for the flagger (`scripts/test_review_watch.py`).
 
-EXIT CODES
-----------
+EXIT CODES — there are exactly two
+----------------------------------
     0  the read succeeded. Flags are printed, not encoded: a flagged review exits 0, and the exit
        code is about whether the reviews could be READ, not about what they said.
-    2  HARNESS ERROR: the key could not be loaded (asc_api.sh exit 2), asc_api.sh failed, the
-       body was empty, non-JSON or carried `errors`, a paging link pointed off the API, or a
-       review lacked a field this tool prints. NEVER 0 for reviews it could not read: a run that
+    2  HARNESS ERROR: the key could not be loaded (asc_api.sh exit 2), asc_api.sh failed or could
+       not be started (any OSError from the runner, not just "not found"), the body was empty,
+       non-JSON or carried `errors`, `data` or `links` had the wrong shape, a paging link pointed
+       off the API, the collected count disagreed with `meta.paging.total`, a review lacked a field
+       this tool prints — or anything else went wrong: `main` has a last-resort `except Exception`
+       that prints the HARNESS ERROR line with the exception and returns 2, so an unanticipated
+       failure is never a traceback with exit 1. NEVER 0 for reviews it could not read: a run that
        cannot read prints no "since day 0" count at all, so "0 since day 0" is only ever printed
-       by a run that read the endpoint.
+       by a run that read the endpoint and reconciled its count with the API's.
+    There is no other exit code. (argparse's own exit 2 on a bad flag is the same number, and it
+    happens before any read.)
 
 WHAT IT NEVER DOES (and `scripts/test_review_watch.py` scans this file to keep it that way)
 -------------------------------------------------------------------------------------------
@@ -78,6 +103,7 @@ import json
 import re
 import subprocess
 import sys
+import traceback
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
@@ -97,8 +123,14 @@ ENDPOINT = f"/v1/apps/{APP_ID}/customerReviews?limit=200&sort=createdDate"
 DAY0 = dt.date(2026, 9, 9)
 PACIFIC = ZoneInfo("America/Los_Angeles")
 
-LATIN_TERMS = ("purchase", "purchased", "paid", "pay", "refund", "in-app")
-CJK_TERMS = ("购买", "付费", "退款", "内购", "購入", "課金", "返金")
+# Longer-first where one term prefixes another (purchased/purchase, charged/charge): the regex
+# alternation is leftmost-first, so the shorter one listed first would make the longer one dead.
+# The three in-app spellings differ only in the hyphen: ASCII, U+2010 HYPHEN, U+2011 NON-BREAKING
+# HYPHEN — review text is typed on phones and pasted from anywhere, so the hyphen is not assumed.
+LATIN_TERMS = ("purchased", "purchase", "paid", "pay", "refund", "buy", "bought", "charged",
+               "charge", "price", "cost", "iap", "in-app", "in‐app", "in‑app")
+CJK_TERMS = ("购买", "付费", "退款", "内购", "購入", "課金", "返金",
+             "收费", "买", "買", "有料", "料金", "支払", "解锁")
 _LATIN_RE = re.compile(r"(?<![A-Za-z])(" + "|".join(re.escape(t) for t in LATIN_TERMS) + r")",
                        re.IGNORECASE)
 
@@ -142,6 +174,8 @@ def _run_get(argv: List[str], timeout: float) -> Completed:
                               stdin=subprocess.DEVNULL)
     except FileNotFoundError as exc:
         return Completed(argv, None, "", "", f"not found: {exc}")
+    except OSError as exc:  # PermissionError, a broken pipe, … — anything the OS refused
+        return Completed(argv, None, "", "", f"could not run ({type(exc).__name__}): {exc}")
     except subprocess.TimeoutExpired:
         return Completed(argv, None, "", "", f"timed out after {timeout:.0f}s")
     return Completed(argv, proc.returncode, proc.stdout or "", proc.stderr or "")
@@ -176,7 +210,12 @@ def asc_get_all(endpoint: str, get: Callable[[str], dict]) -> List[dict]:
         if not isinstance(payload.get("data"), list):
             raise HarnessError(f"GET {current}: `data` is not a list")
         pages.append(payload)
-        nxt = (payload.get("links") or {}).get("next")
+        links = payload.get("links")
+        if links is None:
+            links = {}
+        if not isinstance(links, dict):
+            raise HarnessError(f"GET {current}: `links` is not an object: {json.dumps(links)[:200]}")
+        nxt = links.get("next")
         if not nxt:
             break
         if not str(nxt).startswith(ASC_BASE) or len(pages) >= 20:
@@ -184,6 +223,33 @@ def asc_get_all(endpoint: str, get: Callable[[str], dict]) -> List[dict]:
                                f"{len(pages)} pages")
         current = str(nxt)[len(ASC_BASE):]
     return pages
+
+
+def api_total(pages: List[dict]) -> Optional[int]:
+    """The API's own `meta.paging.total`, reconciled with the number of `data` items collected
+    across all pages. None when no page supplies it (the header then says the cross-check did not
+    happen). A total that is present but not a whole number, totals that differ between pages, or
+    a total that differs from the collected count are harness errors: the reviews were not read."""
+    collected = sum(len(page["data"]) for page in pages)
+    totals: List[int] = []
+    for page in pages:
+        meta = page.get("meta")
+        paging = meta.get("paging") if isinstance(meta, dict) else None
+        if not isinstance(paging, dict) or "total" not in paging:
+            continue
+        total = paging["total"]
+        if isinstance(total, bool) or not isinstance(total, int) or total < 0:
+            raise HarnessError(f"meta.paging.total is {total!r}, not a whole number")
+        totals.append(total)
+    if not totals:
+        return None
+    if len(set(totals)) != 1:
+        raise HarnessError(f"meta.paging.total differs between pages: {totals}")
+    if totals[0] != collected:
+        raise HarnessError(f"collected {collected} review(s) across {len(pages)} page(s) but the "
+                           f"API says meta.paging.total = {totals[0]}; the reviews were not all "
+                           f"read")
+    return totals[0]
 
 
 # =============================================================================================
@@ -288,6 +354,8 @@ def parse_reviews(pages: List[dict]) -> List[Review]:
 
 CAVEAT = ("NOTE: this endpoint shows the reviews visible to the App Store Connect API. It may lag "
           "the storefronts; a review a storefront shows may not be here yet.")
+NOT_READ = ("The reviews were NOT read. This is not \"no reviews\" — nothing below this line was "
+            "observed, and exit 2 says so.\n")
 
 
 def _indent(text: str, prefix: str) -> str:
@@ -295,7 +363,8 @@ def _indent(text: str, prefix: str) -> str:
     return "\n".join(prefix + line for line in lines)
 
 
-def render(reviews: List[Review], pages: int, now: dt.datetime, out) -> None:
+def render(reviews: List[Review], pages: int, now: dt.datetime, out,
+           total: Optional[int] = None) -> None:
     since = [r for r in reviews if r.since_day0]
     before = [r for r in reviews if not r.since_day0]
     flagged = [r for r in since if r.flags]
@@ -309,6 +378,12 @@ def render(reviews: List[Review], pages: int, now: dt.datetime, out) -> None:
       f"day (the Pacific report day sales_report.py uses) is on or after {DAY0}.\n")
     w("\n")
     w(f"total reviews (lifetime, as the API shows them): {len(reviews)}\n")
+    if total is None:
+        w("API meta.paging.total: not supplied — the collected count was NOT cross-checked "
+          "against the API's own count\n")
+    else:
+        w(f"API meta.paging.total: {total}   (equals the {len(reviews)} collected; a mismatch "
+          f"is exit 2)\n")
     w(f"before day 0 ({DAY0}): {len(before)}   (counted; not the guardrail's subject)\n")
     w(f"since day 0 ({DAY0}):  {len(since)}   ({len(flagged)} with purchase vocabulary)\n")
     w("\n")
@@ -373,13 +448,18 @@ def main(argv: Optional[List[str]] = None, get: Optional[Callable[[str], dict]] 
             return asc_get(endpoint, _run_get)
     try:
         pages = asc_get_all(ENDPOINT, get)
+        total = api_total(pages)
         reviews = parse_reviews(pages)
     except HarnessError as exc:
         out.write(f"HARNESS ERROR: {exc}\n")
-        out.write("The reviews were NOT read. This is not \"no reviews\" — nothing below this "
-                  "line was observed, and exit 2 says so.\n")
+        out.write(NOT_READ)
         return EXIT_HARNESS
-    render(reviews, len(pages), now(), out)
+    except Exception as exc:  # the last resort: an unanticipated failure is still exit 2, never 1
+        out.write(f"HARNESS ERROR: unexpected {type(exc).__name__}: {exc}\n")
+        out.write(_indent(traceback.format_exc().rstrip(), "    | ") + "\n")
+        out.write(NOT_READ)
+        return EXIT_HARNESS
+    render(reviews, len(pages), now(), out, total)
     if args.json:
         _dump_json(Path(args.json), pages, reviews)
         out.write(f"dumped pages and parsed reviews to {args.json}\n")
