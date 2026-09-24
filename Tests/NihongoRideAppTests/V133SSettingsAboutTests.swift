@@ -81,11 +81,13 @@ struct V133SIdentifierBreakTests {
 /// WCAG 2.x contrast, computed from the resolved colours rather than restated from the comments
 /// beside them, so a later change to either colour — or to `Theme` — is recomputed, not trusted.
 ///
-/// **Scope: the two fixes, not every small dim text.** Settings' captions and About's two counter
-/// lines are what v1.33 changed. Other small dim text is still below 4.5:1 and deliberately out of
-/// scope here — About's footer note (`footerNote`, `Theme.dim.opacity(0.7)`) among them — so this
-/// suite says nothing about it. (The title used to say "small dim text in Settings and About",
-/// which claimed that too.)
+/// **Scope: the two 1.33 fixes, not every small dim text.** Settings' captions and About's two
+/// counter lines are what v1.33 changed, and this suite says nothing about the rest. (The title
+/// used to say "small dim text in Settings and About", which claimed that too.) The rest of
+/// About's small dim text — the footer note among it — is v1.34 §B4's, held by
+/// `V134B4AboutContrastTests` below with the same model; Settings' sync-status caption is still
+/// under the line and still nobody's, because it sits on the screen that carries the frozen road
+/// card (PLAN-V1.34 §B4).
 @Suite("V133S: Settings' captions and About's counter lines reach 4.5:1 wherever they can sit")
 @MainActor
 struct V133SContrastTests {
@@ -246,6 +248,168 @@ struct V133SContrastTests {
                     "Text(\(line)) is not drawn in counterColor")
         }
         #expect(uses.count == lines.count, "counterColor is drawn \(uses.count) time(s), expected the two counter lines")
+    }
+}
+
+/// v1.34 §B4 — the small dim text 1.33 left under 4.5:1 on About, and only About.
+///
+/// The same model as `V133SContrastTests` (its helpers are reused, so a change to the model, to
+/// `Theme.card` or to the gradient reaches both suites), and the same shape per call site: the new
+/// constant clears 4.5:1 wherever the text can sit, AND the colour it replaced computed under —
+/// without the second half a suite like this cannot fail. The expected figures are written out
+/// from PLAN-V1.33 §G's list and the arithmetic in the constants' comments, and the new colours
+/// are held to their stated values, not just to the threshold: a constant raised "to be safe"
+/// would also go red, because "the smallest opacity that clears" is the claim.
+///
+/// Every colour About draws in `Theme.dim` was measured for this item, not only the four the
+/// plan lists, and the seven straight on the background share one worst case (the gradient's
+/// bottom stop) while the two on a card share another (`Theme.card` over that stop). What is
+/// deliberately NOT held here: the two counter lines, whose colour 1.33 fixed and whose text is
+/// frozen (`aboutUsesTheCounterColor` above); and text that is not dim — the coral section titles
+/// (5.65:1), the sky version line (8.15:1) and the licence badges (4.28:1 on their tinted
+/// background, the one small text on About still under the line, left because it is the brand
+/// colour and PLAN-V1.34 §I keeps brand-colour contrast on the day-91 list).
+@Suite("V134B4: About's remaining small dim text reaches 4.5:1 wherever it can sit")
+@MainActor
+struct V134B4AboutContrastTests {
+
+    typealias Model = V133SContrastTests
+
+    static func bottomStop() throws -> Model.RGB {
+        let stops = try Model.gradientStops()
+        // The bottom stop is the lighter one — the worst case for white text — or the argument
+        // in the constants' comments is about the wrong stop.
+        try #require(Model.luminance(stops[1]) > Model.luminance(stops[0]))
+        return stops[1]
+    }
+
+    // MARK: Straight on the background
+
+    @Test("dimTextColor clears 4.5:1 at both stops, at 4.62:1 on the lighter one; 0.47 computes 4.49:1")
+    func dimTextColorOnTheBackground() throws {
+        for stop in try Model.gradientStops() {
+            let now = Model.contrast(Model.over(AboutView.dimTextColor, stop), stop)
+            #expect(now >= 4.5, "dim text at \(now):1 over \(stop)")
+        }
+        let bottom = try Self.bottomStop()
+        let stated = Model.contrast(Model.over(AboutView.dimTextColor, bottom), bottom)
+        #expect(abs(stated - 4.62) < 0.01, "dimTextColor computes \(stated):1 at the bottom stop; its comment says 4.62")
+        // The smallest-opacity claim: one hundredth less does not clear.
+        let step = Model.contrast(Model.over(Color.white.opacity(0.47), bottom), bottom)
+        #expect(step < 4.5 && step > 4.45, "white at 0.47 computes \(step):1 — expected 4.49")
+    }
+
+    @Test("the colours the background text replaced computed 2.79, 3.23, 3.46 and 4.24 to one")
+    func oldBackgroundColoursWereUnder() throws {
+        let bottom = try Self.bottomStop()
+        // (the old colour, its contrast at the bottom stop as PLAN-V1.33 §G lists it, what wore it)
+        let cases: [(Color, Double, String)] = [
+            (Theme.dim.opacity(0.7), 2.79, "the footer note"),
+            (Theme.dim.opacity(0.8), 3.23, "the contact and counter prompts"),
+            (Theme.dim.opacity(0.85), 3.46, "the address"),
+            (Theme.dim, 4.24, "the subtitle and the two small-caps titles"),
+        ]
+        for (color, expected, what) in cases {
+            let before = Model.contrast(Model.over(color, bottom), bottom)
+            #expect(before < 4.5, "\(what) computed \(before):1 in its old colour — this suite could not fail")
+            #expect(abs(before - expected) < 0.01, "\(what) computed \(before):1, the plan measured \(expected)")
+        }
+    }
+
+    // MARK: On a card
+
+    @Test("dimTextOnCardColor clears 4.5:1 on the card at both stops, at 4.57:1 on the lighter one; 0.50 computes 4.46:1")
+    func dimTextOnCardColorOnTheCard() throws {
+        for stop in try Model.gradientStops() {
+            let card = Model.over(Theme.card, stop)
+            let now = Model.contrast(Model.over(AboutView.dimTextOnCardColor, card), card)
+            #expect(now >= 4.5, "card text at \(now):1 over card \(card)")
+        }
+        let card = Model.over(Theme.card, try Self.bottomStop())
+        let stated = Model.contrast(Model.over(AboutView.dimTextOnCardColor, card), card)
+        #expect(abs(stated - 4.57) < 0.01, "dimTextOnCardColor computes \(stated):1 on the bottom card; its comment says 4.57")
+        let step = Model.contrast(Model.over(Color.white.opacity(0.50), card), card)
+        #expect(step < 4.5 && step > 4.4, "white at 0.50 computes \(step):1 on the card — expected 4.46")
+    }
+
+    @Test("Theme.dim on the card — the credit URLs and stat labels — computed 3.91:1")
+    func oldCardColourWasUnder() throws {
+        let card = Model.over(Theme.card, try Self.bottomStop())
+        let before = Model.contrast(Model.over(Theme.dim, card), card)
+        #expect(before < 4.5 && abs(before - 3.91) < 0.01, "Theme.dim on the card computed \(before):1, the plan measured 3.91")
+    }
+
+    // MARK: The colours are where they are claimed to be
+
+    /// `Theme.dim` — bare, or with any `.opacity(...)` — anywhere in About's code. After this item
+    /// About draws no `Theme.dim` at all; every dim text goes through one of the two constants, and
+    /// the constants' own comments quote the old colour, which is why this reads comment-stripped
+    /// code. `\b` keeps `Theme.dimTextColor` (were anyone to move the constant) from matching.
+    static let anyDim = #"Theme\.dim\b"#
+
+    /// The nine `Text`s, each by a fragment of its argument that no other `Text` on About has,
+    /// read with strings kept (`codeWithStrings`) because seven of them are string literals.
+    static let onTheBackground = [
+        "Type your way across Japan",           // the header subtitle
+        "\"Contact\").uppercased()",             // the Contact title
+        "Questions, thoughts, or a route",      // the contact prompt
+        "yyyyy.yeyuhe@gmail.com",               // the address
+        "\"On-device counters\").uppercased()",  // the counters title
+        "pasting the counters below helps",     // the counters prompt
+        "Thanks to the maintainers",            // the footer note
+    ]
+    static let onACard = [
+        "Self.breakingIdentifiers(url) : url",  // each credit's URL
+        "label.uppercased()",                   // each stat's label
+    ]
+
+    /// `text`'s modifier chain, as `aboutUsesTheCounterColor` walks it: from the end of the `Text`
+    /// call to the next `Text` in the same block, or the block's end.
+    static func chain(of text: CallSiteScanner.Call, in file: CallSiteScanner.File) throws -> Range<Int> {
+        let block = try #require(file.innermostBlock(containing: text.nameOffset, within: 0..<file.code.count))
+        let end = file.calls(named: "Text").map(\.nameOffset)
+            .filter { $0 > text.nameOffset && block.contains($0) }.min() ?? block.upperBound
+        return text.extent.upperBound..<end
+    }
+
+    static func theText(containing fragment: String, in file: CallSiteScanner.File) throws -> CallSiteScanner.Call {
+        let hits = file.calls(named: "Text").filter {
+            $0.arguments.map { String(decoding: file.codeWithStrings[$0], as: UTF8.self).contains(fragment) } ?? false
+        }
+        #expect(hits.count == 1, "\(hits.count) Text(...) on About contain \(fragment); the fragment is not unique")
+        return try #require(hits.first, "no Text(...) on About contains \(fragment) — it moved or was reworded")
+    }
+
+    @Test("the old-colour pattern finds bare and opacity uses in code, spacing included, and not comments or the new names")
+    func patternCalibration() {
+        let sample = CallSiteScanner.File(path: "Sample.swift", source: """
+            // .foregroundStyle(Theme.dim.opacity(0.7))
+            Text(a).foregroundStyle(Theme.dim.opacity( .8 )) /* Theme.dim */
+            Text(b).foregroundStyle(Theme.dim)
+            Text(c).foregroundStyle(Theme.dimTextColor).background(Theme.dim.opacity(0.85))
+            """)
+        #expect(Model.matches(Self.anyDim, in: sample).count == 3, "the any-dim pattern is miscalibrated")
+    }
+
+    @Test("About draws its seven background texts in dimTextColor, its two card texts in dimTextOnCardColor, and nothing in Theme.dim")
+    func aboutUsesTheTwoConstants() throws {
+        let about = try Model.shipped("AboutView.swift")
+        let old = Model.matches(Self.anyDim, in: about)
+        #expect(old.isEmpty, "Theme.dim is back on About at \(old.map(about.location))")
+
+        for (constant, fragments) in [("dimTextColor", Self.onTheBackground), ("dimTextOnCardColor", Self.onACard)] {
+            let uses = Model.foregroundStyles(about, "Self.\(constant)")
+            #expect(about.mentions(of: constant).count == uses.count + 1,
+                    "\(constant) is read somewhere other than a foregroundStyle")
+            for fragment in fragments {
+                let text = try Self.theText(containing: fragment, in: about)
+                let chain = try Self.chain(of: text, in: about)
+                #expect(uses.filter { chain.contains($0.nameOffset) }.count == 1,
+                        "the Text containing \(fragment) is not drawn in \(constant)")
+            }
+            #expect(uses.count == fragments.count,
+                    "\(constant) is drawn \(uses.count) time(s), expected \(fragments.count): \(uses.map { about.location($0.nameOffset) })")
+        }
     }
 }
 
