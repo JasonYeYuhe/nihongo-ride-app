@@ -12,6 +12,15 @@ import ReviewKit
 /// - `seededIsReproducible`: the seeded branch of `shuffle` calling `shuffle()` → `first == second` fails.
 /// - `splitMixKnownAnswer`: one mixing constant changed → the first output fails.
 /// - `everyDrawGoesThroughTheSeam`: one `DeckRandomness.shuffle(&pool)` reverted to `pool.shuffle()` → an offender.
+///
+/// The C3 review (2026-09-25) found two mutations that list missed, both green against 8fb7b4b.
+/// Mutation, 2026-09-25, on the fixed branch (filtered run with `CaptureToolTests` and
+/// `AppModelTests`; each restored after): each goes red, and where.
+/// - U1, seeded draws that never advance (the seeded `shuffle`, `randomElement` and
+///   `Generator.next()` each drawing from a copy of the generator): `seededDrawsAdvance`, on
+///   `a != b` (two successive shuffles), `Set(picks).count > 1` and `x != y` (two `next()`s).
+/// - U8, a Fisher–Yates over `Int.random(in:)` in place of `DeckRandomness.shuffle(&words)`
+///   in `GameSession.makeSaved`: `everyDrawGoesThroughTheSeam`, `offenders.isEmpty`.
 @Suite("DeckRandomness: the seam every deck draw goes through")
 struct DeckRandomnessTests {
 

@@ -12,6 +12,24 @@ import GameCore
 /// - `renderIsHonest`: the `try?` put back in front of `png.write` → the pin names the line.
 /// - `onlyCaptureSeeds`: `DeckRandomness.seed = 1` added to `AppModel.init` → a second setter.
 /// - `captureReseedsPerScreen`: `makeModel` seeding from a constant instead of the screen name.
+///
+/// The C3 review (2026-09-25) then found mutations that list missed, all of them green against
+/// 8fb7b4b. Mutation, 2026-09-25, on the fixed branch (filtered run of this suite,
+/// `AppModelTests` and `DeckRandomnessTests`; each restored after): each goes red, and where.
+/// - U7, the consumer severed (`captureTarget: nil` in `AppModel.currentIsolation`):
+///   `AppModelTests.captureIsolationIsConsumed` on three doors — `supportFileURL` not
+///   redirected, `settingsStore` is `.standard`, `touchesNothingOfTheUsers` false — and
+///   `captureWritesEveryScreenOrSaysSo` refuses to ride (its isolation guard records the issue).
+/// - U3, `failed += 1` deleted from `render`'s catch: `captureWritesEveryScreenOrSaysSo`,
+///   `refused == Self.defaultScreenCount` and `refused == pngs.count`.
+/// - U4, `if failures > 0 { exit(1) }` replaced by `_ = failures` at the macOS call site:
+///   `renderIsHonest`, the verbatim exit-line pin.
+/// - C4, `clearCaptureStores()` moved after `AppModel.init()` in `makeModel`:
+///   `captureReseedsPerScreen`, `seedAt < clearAt && clearAt < initAt`.
+/// - C1, `captureTarget` declared `String?` with no environment initialiser and `capture`
+///   assigning it unconditionally: `captureStateComesFromTheEnvironment`, on the declaration
+///   pin and on the nil-fallback-only assignment pin.
+/// (U1 and U8 are `DeckRandomnessTests`' records.)
 @MainActor
 @Suite("v1.34 §C3: the headless render tool")
 struct CaptureToolTests {

@@ -138,12 +138,20 @@ enum Screenshotter {
         // `road-iap-review` (both distance sentences and the stretch rows, from lifetime
         // distance), every ride's backdrop (`rideStage` is resolved from lifetime distance
         // when the run starts: `game`, `game-mid`, `results`, `results-sentence`,
-        // `conjugation-results`), `about` (the diagnostics line names the current stretch),
-        // `journal` and `stats` (the totals take the larger of the demo journal and the
-        // odometer), and `menu` (streak and due count). Before this, removing ONE upstream
-        // ride screen moved road.png, road-iap-review.png, about.png and conjugation-results.png,
-        // and the render gate would have filed each as a layout regression. The share card is
-        // the exception by design: it is drawn from the results model's in-memory summary.
+        // `conjugation-results`), `about` (the diagnostics counter line names the furthest
+        // stretch), `journal` (the review forecast counts what the review store holds) and
+        // `stats` (both take their totals as the larger of the demo journal and the odometer),
+        // and `menu` (streak and due count). What the clearing moved, measured by rendering
+        // before and after it (en and zh): the road's sentences and stretch rows (the full free
+        // road; Kawasaki unreached); about.png's counter line, whose furthest-stretch word went
+        // kawasaki → nihonbashi; conjugation-results.png's backdrop, Kawasaki's torii → the
+        // Nihonbashi tower on the Nihonbashi dawn; and journal.png's review forecast, whose
+        // "Tomorrow" row went 7 → 0 — the 7 were the words the upstream rides had put into the
+        // review store. The journal's totals did not move: the demo journal is the larger.
+        // Before this, removing ONE upstream ride screen moved road.png, road-iap-review.png,
+        // about.png and conjugation-results.png, and the render gate would have filed each as a
+        // layout regression. The share card is the exception by design: it is drawn from the
+        // results model's in-memory summary.
         let makeModel: (String) -> AppModel = { screen in
             DeckRandomness.seed = StableDigest.fnv1a64(screen)
             clearCaptureStores()
