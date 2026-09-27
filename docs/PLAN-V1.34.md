@@ -119,6 +119,25 @@ discarded a v1.33 fix).
   `results.png` comparison (§G.2) and the simulator pass at default and AX5 (§G.3), as the proof
   bullet above requires. No unit test stands in for it.
 
+  *Release review, 2026-09-27 (on merged main `cbf71bf`):* **(a) The render proof, restated as measured.**
+  The proof bullet above says `results.png` must differ "in exactly the line's region and nowhere else".
+  It cannot, and the reason is geometry, not a defect: the panel is vertically centred, so one more line
+  moves everything above it up by half a line and everything below it down by half a line. Measured on
+  the C3 tool's renders of the pre-change tree (`3069351`) and of `cbf71bf`, en and zh, three runs each,
+  sequential, the same day: every row of the after-render is the before-render shifted by exactly 33 px
+  (2x) up or down, to within the panel's translucency over the fixed backdrop (Δ ≤ 48), except the new
+  line's own glyph rows (19 rows on `results-sentence.png`, 15–18 on `results.png`) and, on
+  `results.png`, 10 rows where the backdrop's lane marking meets the panel's new bottom edge — the
+  buttons below the panel move further out of the 700pt capture frame, which on a device is a scroll
+  view. Every other screen of the set is pixel-identical, including `road.png`, `road-iap-review.png` and
+  `menu.png`. **(b) Who sees the line.** "The one screen every ride ends on" is not exact: journey, Time
+  Attack, sentence and dictation rides end there; Practice runs (custom texts included) return to the
+  menu and never show it; the conjugation drill has its own results screen, which is unchanged; and a
+  weak-words or stumbled-words cram also ends on this screen although it records no ride. **(c)
+  Decided:** the line is shown only after a run that was journalled — the same `logRun` predicate that
+  decides whether a ride record exists — so a cram shows none (it adds no day to the streak the line
+  states), and English capitalises the due half when it starts the line ("Nothing due tomorrow").
+
 ### B2 — Own text, kept: two defects now, two improvements when there is evidence anyone pastes · *0.5 + 1.0 days*
 
 `CustomTextKit` shipped practice-only on purpose (`PLAN-ITERATION` §C3) and the question it exists to
@@ -165,6 +184,14 @@ none touches SRS or sync:
    worktree — never `/Applications/Nihongo Ride.app` — and the walk card's rule holds: do not run the
    app from Xcode on this Mac before the owner's walk. The check waits for the walk or runs as a
    `swift run` from a worktree, which creates no StoreKit configuration (preflight is re-run after it).
+   *Addendum 2026-09-27 (release review):* measured first, with a hosted `NSHostingView` probe under
+   `swift test`: with plain-button rows and no `selection:` binding no gesture selects a row, so
+   `.onDelete` was unreachable on macOS — the defect is real. Fixed with a context-menu **Delete** on
+   every row (secondary click on a Mac; the same menu is a press-and-hold on iPhone and iPad, where
+   `.onDelete`'s swipe also stays). **No swipe action was added:** on iOS `.onDelete` already gives the
+   swipe, and a second one would replace it. On a Mac the Delete is therefore only in the context menu,
+   which nothing on screen advertises — the defect is fixed, the affordance is discoverable only the
+   usual macOS way.
 
 Registered under constraint 3 (a rider with own material rides further; second-order, already registered
 for §C3 and repeated). Risk: SRS boundary — every change stays in `.practice`; the app-level test that
@@ -213,6 +240,13 @@ were: the licence badges (brand `accent2` on their tinted badge, 4.28:1), with t
 brand-colour contrast on the day-91 list (§I). Settings is untouched, its sync-status caption (3.91)
 included.
 
+*Release review, 2026-09-27:* the headless `about.png` shows **fourteen** of those sixteen lines: the
+capture draws About without its scroll view in a 1000×1100 frame, and the header subtitle and the footer
+note fall outside it. Measured on `3069351` vs `cbf71bf` (en, zh, three runs each): `about.png` differs
+only in colour (peak Δ 28), in rows 249–2127 (en) and 282–2093 (zh) — the recoloured lines — with no
+pixel row or column shifted; the counter lines (from about row 2150) are unchanged. The two lines outside
+the frame are held by the source diff (colour arguments only) and seen on the simulator pass.
+
 ### B5 — Measure, then maybe fix: the Sentence-mode romaji hint on long sentences · *0.25 day*
 
 `PLAN-V1.33.md` §C lists it as unchecked whether the hint scrolls with the cursor. Simulator, a 40-kana
@@ -227,6 +261,20 @@ one 14pt line of the 402pt phone's keyboard-up card (354pt) holds 38 characters 
 the arrow and its space), so 1.33 cut every hint longer than that — 2,540 sentences. Accepted, because
 the rider needs the upcoming romaji more than the tail of what they already typed; the kana row's cursor
 and the next-key chips stay visible. Revisit if the simulator pass shows the typed row unusable.
+
+*Release review, 2026-09-27:* the paragraph above names one of the costs the measurements found; all of
+them, from `V134B5RomajiHintTests`' header (hosted layout on macOS at 402pt with the phone layout forced,
+not a device): **(1)** keyboard up, default size — in every sentence whose hint takes two lines (hints
+over 38 characters: 2,540 sentences) the typed-romaji row is squeezed from 24 to 17–18pt before the first
+key, and late in a sentence it drops from two lines to one at its 0.5 floor (13pt); the characters it
+cuts are the last ones typed, in sentences longer than about 55 characters (88). **(2)** Keyboard down,
+default size, a 56-character hint — the kana (the typing target) shrinks from 1.33's 102pt to 93pt, whole.
+**(3)** AX1 cap, keyboard up, 476pt of screen — the 56-character hint halves the surface line (62 → 31pt),
+as three lines did; the 67- and 76-character hints keep it. **(4)** AX1 cap, keyboard down — the card is
+~300pt over budget in 1.33 already; the kana row drops from two lines to one (66 → 33pt) for the 56- and
+67-character hints. The decision stands on the same ground: in 1.33 the rider could not read the romaji
+past the 38th character of any of those 2,540 sentences at all, and every cost above leaves the typing
+target and its cursor on screen. The simulator pass is the check that the typed row stays usable.
 
 ### B6 (v1.35) — Build a word list without riding into every word: search the corpus from Word Lists · *2 days, with a cut rule*
 

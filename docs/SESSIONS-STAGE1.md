@@ -666,6 +666,13 @@ checklist has to name the default the way the picker prints it.
 branch's `Sources/` is byte-identical to `04947be`'s (`git diff --stat 04947be HEAD -- Sources` is empty),
 which is the tree v1.33 shipped from.
 
+*Corrected 2026-09-27:* that was true of the branch this kit was written on. On merged main for v1.34,
+`Sources/` is not unchanged — v1.34 adds the results screen's tomorrow line, the paste notice and the
+context-menu Delete for pasted texts, the HUD's VoiceOver values, the wrapping romaji hint and About's
+recolour (`docs/PLAN-V1.34.md` §B). None of them touches sync, Game Center or what leaves the device, so
+the claims in the table still hold; the line numbers cited may have moved. Re-grep every 〔〕 string
+against the build a participant installs (§8's first item says so).
+
 | claim in §3 | where it is true |
 |---|---|
 | progress stays on the device | `Sources/NihongoRideApp/CloudKitSyncController.swift:10-11` — "The local JSON files remain the system-of-record" |
