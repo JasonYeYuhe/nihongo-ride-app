@@ -17,9 +17,9 @@ import VocabKit
 /// red). The wiring from a real ride through `finishGame` to `model.tomorrowLine(zh:)`, for words
 /// AND forms, with every count computed by THIS file from the raw cards and never by `dueForecast`
 /// (memory: a test that grades itself), over arrangements that put cards in every neighbouring
-/// bucket — overdue, today, tomorrow, three days out, and a retired entry — so a read of the wrong
-/// window cannot agree by accident. The view — a model-level test passes while the screen draws
-/// nothing (v1.26 §D), so the shipped `ResultsView` source is read with `//` AND `/* */` comments
+/// bucket — overdue, today, tomorrow, two and three days out, a retired entry, and (forms) a card
+/// whose verb resolves but cannot be drilled — so a read of the wrong window cannot agree by
+/// accident. The view — a model-level test passes while the screen draws nothing (v1.26 §D), so the shipped `ResultsView` source is read with `//` AND `/* */` comments
 /// stripped, and its chain is pinned line for line. The line's colour, computed over every panel the
 /// arrival backdrop can produce. Its line limit and floor, measured with CoreText at AX5. And the
 /// simulator hook, pinned to the gate that keeps the writing harness off a real device.
@@ -279,25 +279,27 @@ struct V134B1TomorrowLineTests {
         return card
     }
 
-    /// Words: a backlog the ride cannot clear, cards due tomorrow, cards due in three days, and two
-    /// cards whose entries were retired (one due tomorrow, one overdue). A Journey ride takes at
-    /// most eight due words (`GameSession.Config.reviewWordCount`), so ten overdue cards leave a
-    /// backlog after it. Every neighbour of "today + tomorrow" is populated AFTER the ride, and the
-    /// test says so before it reads the line, so each wrong window disagrees with the right one:
-    /// tomorrow alone misses the backlog, adding the week counts the day+3 cards, and dropping the
+    /// Words: a backlog the ride cannot clear, cards due tomorrow, a card due in two days, cards due
+    /// in three days, and two cards whose entries were retired (one due tomorrow, one overdue). A
+    /// Journey ride takes at most eight due words (`GameSession.Config.reviewWordCount`), so ten
+    /// overdue cards leave a backlog after it. Every neighbour of "today + tomorrow" is populated
+    /// AFTER the ride, and the test says so before it reads the line, so each wrong window disagrees
+    /// with the right one: tomorrow alone misses the backlog, a window one day too wide (through
+    /// day+2) counts `d0`, adding the week counts the day+2 and day+3 cards, and dropping the
     /// retired-entry filter counts `gone-t` and `gone-o`.
-    @Test("words: the line counts the backlog and tomorrow, never three days out, never a retired entry")
+    @Test("words: the line counts the backlog and tomorrow, never two or three days out, never a retired entry")
     func wordsReadTodayAndTomorrow() throws {
         var entries = [AppModelTests.entry("a", "水", "みず"), AppModelTests.entry("b", "火", "ひ"),
                        AppModelTests.entry("c", "山", "やま")]
-        let backlog = (0..<10).map { "o\($0)" }, tomorrow = ["t0", "t1"], later = ["w0", "w1"]
-        let kana = ["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ"]
-        for (i, id) in (backlog + tomorrow + later).enumerated() {
+        let backlog = (0..<10).map { "o\($0)" }, tomorrow = ["t0", "t1"], dayTwo = ["d0"], later = ["w0", "w1"]
+        let kana = ["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ"]
+        for (i, id) in (backlog + tomorrow + dayTwo + later).enumerated() {
             entries.append(AppModelTests.entry(id, kana[i], kana[i]))
         }
         var cards: [String: SRSCard] = [:]
         for (i, id) in backlog.enumerated() { cards[id] = Self.card(id, due: Self.noon(-1 - i)) }
         for id in tomorrow { cards[id] = Self.card(id, due: Self.noon(1)) }
+        for id in dayTwo { cards[id] = Self.card(id, due: Self.noon(2)) }
         for id in later { cards[id] = Self.card(id, due: Self.noon(3)) }
         cards["gone-t"] = Self.card("gone-t", due: Self.noon(1))
         cards["gone-o"] = Self.card("gone-o", due: Self.noon(-2))
@@ -311,11 +313,12 @@ struct V134B1TomorrowLineTests {
         let live = raw.filter { known.contains($0.entry) }
         let backlogLeft = live.filter { Self.dayOffset($0.due) <= 0 }.count
         let dueTomorrow = live.filter { Self.dayOffset($0.due) == 1 }.count
-        let thisWeek = live.filter { (2...6).contains(Self.dayOffset($0.due)) }.count
+        let dayAfter = live.filter { Self.dayOffset($0.due) == 2 }.count
+        let thisWeek = live.filter { (3...6).contains(Self.dayOffset($0.due)) }.count
         let retired = raw.filter { !known.contains($0.entry) && Self.dayOffset($0.due) <= 1 }.count
         #expect(backlogLeft >= 1, "the ride cleared the backlog — tomorrow alone would agree")
-        #expect(dueTomorrow >= 1 && thisWeek >= 1 && retired >= 1,
-                "an empty neighbour: tomorrow \(dueTomorrow), week \(thisWeek), retired \(retired)")
+        #expect(dueTomorrow >= 1 && dayAfter >= 1 && thisWeek >= 1 && retired >= 1,
+                "an empty neighbour: tomorrow \(dueTomorrow), day+2 \(dayAfter), day+3…6 \(thisWeek), retired \(retired)")
         let due = Self.dueByTomorrow(raw, known: known)
         #expect(due == backlogLeft + dueTomorrow && due >= 2, "raw cards say \(due)")
 
@@ -331,17 +334,24 @@ struct V134B1TomorrowLineTests {
     /// conjugation store, so the forms count was 0 whatever the model read (round-2 review, three
     /// mutations green). A Journey ride never writes conjugation cards, so the seeded dates are
     /// still the dates when the line is read: one overdue, one due today, one tomorrow — counted —
-    /// and one three days out and one whose verb is retired — not counted. Rideable verbs from
-    /// `AppModelTests.verbEntries`, the same seed `ConjugationRideableTests` counts as rideable.
-    @Test("forms: the line counts overdue, today and tomorrow, never three days out, never a retired verb")
+    /// and one two days out, one three days out, one whose verb is retired, and one due tomorrow
+    /// whose verb resolves but cannot be drilled — not counted. Rideable verbs from
+    /// `AppModelTests.verbEntries`, the same seed `ConjugationRideableTests` counts as rideable; the
+    /// undrillable one is that suite's `stranded` door, an entry present with `vc: nil`, so only
+    /// the forms read's `rideable:` filter keeps it out.
+    @Test("forms: the line counts overdue, today and tomorrow, never two or three days out, never a retired or undrillable verb")
     func formsReadTodayAndTomorrow() throws {
-        let verbs = AppModelTests.verbEntries(4)
-        let vocab = VocabStore(entries: Self.vocab().entries + verbs)
+        let verbs = AppModelTests.verbEntries(5)
+        let stranded = VocabEntry(id: "stranded", surface: "開ける", kana: "あける",
+                                  partsOfSpeech: ["v"], jlpt: .n5,
+                                  meanings: ["en": ["to open"], "zh": ["打开"]], vc: nil)
+        let vocab = VocabStore(entries: Self.vocab().entries + verbs + [stranded])
         let cal = Calendar.current
         let dueToday = cal.startOfDay(for: Date()).addingTimeInterval(60)   // today, whatever the hour
         let form = [Self.formCard("v0", due: Self.noon(-1)), Self.formCard("v1", due: dueToday),
-                    Self.formCard("v2", due: Self.noon(1)), Self.formCard("v3", due: Self.noon(3)),
-                    Self.formCard("gone", due: Self.noon(1))]
+                    Self.formCard("v2", due: Self.noon(1)), Self.formCard("v4", due: Self.noon(2)),
+                    Self.formCard("v3", due: Self.noon(3)), Self.formCard("gone", due: Self.noon(1)),
+                    Self.formCard("stranded", due: Self.noon(1))]
         let model = Self.seededRider(
             vocab: vocab, rides: [Self.noonRide(daysAgo: 2), Self.noonRide(daysAgo: 1)],
             review: ReviewStore(), conjugation: ConjugationReviewStore(
@@ -351,9 +361,14 @@ struct V134B1TomorrowLineTests {
 
         let known = Self.ids(vocab)
         let rawForms = Self.forms(model.conjugationReviewStore)
-        #expect(rawForms.count == 5, "the ride changed the conjugation store; this arrangement assumed it cannot")
-        let formsDue = Self.dueByTomorrow(rawForms, known: known)
-        #expect(formsDue == 3, "raw forms say \(formsDue): v0 overdue, v1 today, v2 tomorrow — not v3, not gone")
+        #expect(rawForms.count == 7, "the ride changed the conjugation store; this arrangement assumed it cannot")
+        let strandedCard = try #require(model.conjugationReviewStore.cards["stranded#te"])
+        #expect(model.vocab.resolvesID("stranded") && !model.conjugationRideable(strandedCard),
+                "`stranded` must resolve and be undrillable, or only `resolves:` is being measured")
+        // Drillable is the one property the raw cards do not carry, so it is written out by name:
+        // `stranded` has no verb class, and nothing else in this seed lacks one.
+        let formsDue = Self.dueByTomorrow(rawForms, known: known.subtracting(["stranded"]))
+        #expect(formsDue == 3, "raw forms say \(formsDue): v0 overdue, v1 today, v2 tomorrow — not v4, not v3, not gone, not stranded")
         let wordsDue = Self.dueByTomorrow(Self.words(model.reviewStore), known: known)
         #expect(wordsDue >= 2, "the words half is plural in the string below; raw cards say \(wordsDue)")
 
