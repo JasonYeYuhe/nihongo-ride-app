@@ -137,6 +137,24 @@ none touches SRS or sync:
 2. **A paste over 20,000 characters or 200 sentences is cut silently** (`CustomText.swift:111-112`; no
    notice in `CustomTextsView`). Say so in the add sheet, with the count kept and dropped. *0.25.*
    Proof: a 201-sentence fixture; the notice string pinned in both languages.
+
+   *Addendum 2026-09-27 (after the round-2 review of `0981c82`):* the notice is **one line, in the unit of
+   the cap that bounded the stored text, with the dropped count taken over the whole paste.** Stored is
+   the first 200 sentences of the first 20,000 characters. If the stored text has 200 sentences and the
+   whole paste has more → "Only the first 200 sentences are kept — N dropped." / "只保留前 200 句,已去掉
+   N 句。" (N = sentences in the whole paste − 200); otherwise, if the paste is over 20,000 characters →
+   "Only the first 20,000 characters are kept — M dropped." / "只保留前 20,000 个字符,已去掉 M 个。"
+   (M = paste length − 20,000); otherwise nothing. The first draft printed one line per cap and its
+   character line said 20,000 were kept when 200 forty-character sentences (8,000) were stored — for
+   ordinary Japanese nearly every paste over the character cap also fills the sentence cap. The sheet
+   now computes the notice in `.onChange(of: source)` into state rather than in `body`. Measured cost
+   of `CustomText.truncation(of:)` (optimised build of the kit, this Mac, median of 7): 20,000
+   characters ≈ 5 ms (500 forty-character sentences) and ≈ 4.5 ms (one run-on sentence); 200,000
+   characters ≈ 49–59 ms when the whole paste must be split (5,000 forty-character or 2,000
+   hundred-character sentences) and ≈ 6–7 ms when it need not (one run-on sentence). Debug build:
+   8–17 ms and 84–87 ms. One case the rule reads coarsely: when the 200th stored sentence is itself
+   cut by the character cap AND the paste has a 201st, the line says sentences and does not also say
+   the 200th was shortened.
 3. *(v1.35, conditional)* **No "Practise this text" from the manager**: after correcting readings the rider closes the sheet,
    reopens the picker, then Starts (`CustomTextsView.swift:154-196` offers only Done). Add the action
    on the detail screen. *0.25.* Proof: `AppModelTests` — the tap selects the id, the next `startGame`

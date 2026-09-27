@@ -72,6 +72,21 @@ struct CustomTextsView: View {
                         }
                     }
                     .buttonStyle(.plain)
+                    // The only delete a Mac user can reach. Measured 2026-09-25 by hosting this
+                    // view in an NSHostingView: with no `selection:` binding the List's table has
+                    // a `SelectionManagerBox<Never>` coordinator, a click on a row selects
+                    // nothing, Delete and Forward Delete do nothing even with a row selected, and
+                    // `.onDelete` fires only from the `delete:` responder action with a row
+                    // selected programmatically — which no gesture produces. `.onDelete` stays
+                    // for iOS, where it is the swipe; this is a second route to the same call,
+                    // not a second swipe.
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            model.removeCustomText(id: text.id)
+                        } label: {
+                            Label(zh ? "删除" : "Delete", systemImage: "trash")
+                        }
+                    }
                 }
                 .onDelete { offsets in
                     let ordered = model.customTexts.ordered
@@ -105,6 +120,10 @@ struct CustomTextAddView: View {
     @State private var title = ""
     @State private var source = ""
     @State private var failed = false
+    /// The kit's own count of what Add will cut, re-read when the text changes and not on every
+    /// body evaluation: it splits the paste, which measured (2026-09-27, optimised build, this
+    /// Mac) ~5 ms for 20,000 characters and ~50 ms for 200,000 — `PLAN-V1.34` §B2, addendum.
+    @State private var truncation: CustomText.Truncation?
 
     private var zh: Bool { model.languageCode == "zh" }
 
@@ -120,12 +139,20 @@ struct CustomTextAddView: View {
                         .frame(minHeight: 220)
                         .font(.system(size: 17))
                         .accessibilityIdentifier("customTextSource")
+                        .onChange(of: source) { truncation = CustomText.truncation(of: source) }
                 } header: {
                     Text(zh ? "日语原文" : "Japanese text")
                 } footer: {
-                    Text(zh
-                         ? "只留在这台设备上,不会上传。含字母或数字的句子会保留但无法输入 —— 罗马字引擎打不出它们。"
-                         : "Stays on this device and is never uploaded. Sentences containing letters or digits are kept but cannot be typed — a romaji engine has no keys for them.")
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(zh
+                             ? "只留在这台设备上,不会上传。含字母或数字的句子会保留但无法输入 —— 罗马字引擎打不出它们。"
+                             : "Stays on this device and is never uploaded. Sentences containing letters or digits are kept but cannot be typed — a romaji engine has no keys for them.")
+                        // Said before Add, not after: the text is still added, cut exactly as
+                        // the notice says, and the learner decides whether that is the text
+                        // they wanted. Handed the state unfiltered; the notice view draws a line
+                        // for every non-nil truncation.
+                        CustomTextTruncationNotice(truncation: truncation, zh: zh)
+                    }
                 }
                 if failed {
                     Text(zh ? "这段文字里没有可用的句子。" : "There are no sentences in that text.")
@@ -146,6 +173,44 @@ struct CustomTextAddView: View {
                     .accessibilityIdentifier("customTextConfirm")
                 }
             }
+        }
+    }
+
+    /// The one line, in the unit of the cap that bounded what is stored (`CustomText.Truncation`).
+    /// In one place, so the test that pins the wording in both languages pins what the sheet shows.
+    static func truncationNotice(_ truncation: CustomText.Truncation, zh: Bool) -> String {
+        switch truncation {
+        case let .sentences(kept, dropped):
+            return zh
+                ? "只保留前 \(grouped(kept)) 句,已去掉 \(grouped(dropped)) 句。"
+                : "Only the first \(grouped(kept)) sentences are kept — \(grouped(dropped)) dropped."
+        case let .characters(kept, dropped):
+            return zh
+                ? "只保留前 \(grouped(kept)) 个字符,已去掉 \(grouped(dropped)) 个。"
+                : "Only the first \(grouped(kept)) characters are kept — \(grouped(dropped)) dropped."
+        }
+    }
+
+    /// "20,000", whatever the device locale groups with — the notice is pinned to one spelling
+    /// in both languages, and a learner reading 20000 against a 20,000 cap should see the same
+    /// number twice.
+    private static func grouped(_ n: Int) -> String {
+        n.formatted(.number.locale(Locale(identifier: "en_US")))
+    }
+}
+
+/// The add sheet's truncation line: one orange line for every non-nil truncation, nothing for nil.
+/// Its own view so a test can render it (`V134B2CustomTextTests`) — a condition that hid one unit
+/// of the notice would put the silent cut back, and a source pin cannot see what is drawn.
+struct CustomTextTruncationNotice: View {
+    let truncation: CustomText.Truncation?
+    let zh: Bool
+
+    var body: some View {
+        if let truncation {
+            Text(CustomTextAddView.truncationNotice(truncation, zh: zh))
+                .foregroundStyle(.orange)
+                .accessibilityIdentifier("customTextTruncation")
         }
     }
 }
