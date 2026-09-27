@@ -375,7 +375,7 @@ private struct HUDBar: View {
                      value: RideHUDLayout.comboValue(session.combo),
                      tint: session.combo >= 2 ? Theme.accent : Theme.dim,
                      label: zh ? "连击" : "Combo",
-                     spoken: session.combo >= 2 ? "\(session.combo)" : (zh ? "无" : "none"),
+                     spoken: RideHUDSpoken.comboWords(session.combo, zh: zh),
                      reserving: combos)
             }
             // At the accessibility sizes the Spacer may collapse, as `ConjugationHUD`'s does: its
@@ -388,7 +388,7 @@ private struct HUDBar: View {
             if !(narrow || typeSize.isAccessibilitySize) {
                 stat(icon: "bicycle", value: "\(Int(session.distanceMeters)) m", tint: Theme.accent2,
                      label: zh ? "距离" : "Distance",
-                     spoken: zh ? "\(Int(session.distanceMeters)) 米" : "\(Int(session.distanceMeters)) meters")
+                     spoken: RideHUDSpoken.distanceWords(session.distanceMeters, zh: zh))
             }
             stat(icon: "checkmark.circle.fill",
                  // Time Attack shows a bare count: its queue is a pool, not a target, and the
@@ -406,21 +406,23 @@ private struct HUDBar: View {
                  label: session.mode.hudProgressLabel(zh: zh),
                  // After its own value, the values THIS row hides — the one element drawn in
                  // every row is where a VoiceOver rider can still hear them. Nil, and so
-                 // nothing, below the accessibility sizes (`RideHUDSpoken`). (v1.34 §B3)
-                 spoken: (session.mode.queueLengthIsTheTarget
-                     ? (zh ? "\(session.wordsCompleted) / \(session.wordCount)"
-                           : "\(session.wordsCompleted) of \(session.wordCount)")
-                     : "\(session.wordsCompleted)")
-                     + (RideHUDSpoken.hiddenValues(typeSize: typeSize, scoreIsTheRide: scoreIsTheRide,
-                                                   fallback: fallback, narrow: narrow,
-                                                   level: session.currentLevelLabel,
-                                                   score: session.score, combo: session.combo,
-                                                   distanceMeters: session.distanceMeters,
-                                                   accuracy: session.accuracy, wpm: wpm, zh: zh) ?? ""))
+                 // nothing, below the accessibility sizes (`RideHUDSpoken`). (v1.34 §B3) The
+                 // joining is `progressWords`, not an expression here: written inline, one pair of
+                 // parentheses decided whether the suffix followed the whole ternary or only Time
+                 // Attack's branch, and no test could see which. (v1.34 §B3, review round 2)
+                 spoken: RideHUDSpoken.progressWords(
+                     queueLengthIsTheTarget: session.mode.queueLengthIsTheTarget,
+                     completed: session.wordsCompleted, count: session.wordCount, zh: zh,
+                     hidden: RideHUDSpoken.hiddenValues(typeSize: typeSize, scoreIsTheRide: scoreIsTheRide,
+                                                        fallback: fallback, narrow: narrow,
+                                                        level: session.currentLevelLabel,
+                                                        score: session.score, combo: session.combo,
+                                                        distanceMeters: session.distanceMeters,
+                                                        accuracy: session.accuracy, wpm: wpm, zh: zh)))
                 .accessibilityIdentifier("hudProgress")
             if !(narrow || typeSize.isAccessibilitySize) {
                 stat(icon: "scope",
-                     value: "\(Int(session.accuracy * 100))%", tint: .white,
+                     value: RideHUDSpoken.accuracyWords(session.accuracy), tint: .white,
                      label: zh ? "正确率" : "Accuracy")
                 // Informational, so it follows the same width rule as distance and accuracy:
                 // the fixed ride layout fits about four pills on a phone and cannot reflow, and
@@ -428,10 +430,9 @@ private struct HUDBar: View {
                 // iPad rider at the accessibility sizes — still gets the number on the results
                 // screen and in the Ride Log, which is where it was already.
                 stat(icon: "speedometer",
-                     value: wpm >= 1 ? "\(Int(wpm))" : "—", tint: Theme.accent,
+                     value: RideHUDSpoken.speedValue(wpm), tint: Theme.accent,
                      label: zh ? "速度" : "Speed",
-                     spoken: wpm >= 1 ? (zh ? "每分钟 \(Int(wpm)) 词" : "\(Int(wpm)) words per minute")
-                                      : (zh ? "尚未开始计算" : "not yet"))
+                     spoken: RideHUDSpoken.speedWords(wpm, zh: zh))
                     .accessibilityIdentifier("hudSpeed")
             }
             if let onPause {
@@ -711,8 +712,9 @@ enum RideHUDLayout {
 /// from a VoiceOver rider at the same sizes, who had heard each as its pill's own
 /// `accessibilityValue` (v1.33 §G, deferred by name). So the one pill drawn in every row —
 /// progress — carries the hidden pills' values after its own: "6 of 12, score 891, combo 6". The
-/// spoken forms are the pills' (`HUDBar.stat`'s `spoken:` arguments), so a rider hears the same
-/// words whichever row `ViewThatFits` draws; `V134B3HUDSpokenTests` holds the two sets together.
+/// spoken forms are the pills' — the same functions below that the pills call for their `value:` and
+/// `spoken:` (review round 2) — so a rider hears the same words whichever row `ViewThatFits` draws;
+/// `V134B3HUDSpokenTests` pins both call sites.
 ///
 /// **Nil below the accessibility sizes**, where nothing is hidden, so the progress pill's value is
 /// byte for byte what it was and the default-size renders and VoiceOver strings cannot change. A
@@ -745,20 +747,71 @@ enum RideHUDSpoken {
         if hid({ RideHUDLayout.shows(.score, $0, scoreIsTheRide: scoreIsTheRide, fallback: fallback) }) {
             parts.append(zh ? "得分 \(score)" : "score \(score)")
         }
+        // Each value in its pill's own words, from the one function the pill itself calls: the
+        // composer formats no number of its own. (v1.34 §B3, review round 2)
         if hid({ RideHUDLayout.shows(.combo, $0, scoreIsTheRide: scoreIsTheRide, fallback: fallback) }) {
-            let streak = combo >= 2 ? "\(combo)" : (zh ? "无" : "none")
-            parts.append(zh ? "连击 \(streak)" : "combo \(streak)")
+            parts.append((zh ? "连击 " : "combo ") + comboWords(combo, zh: zh))
         }
         if hid({ RideHUDLayout.showsInformational(narrow: narrow, $0) }) {
-            parts.append(zh ? "距离 \(Int(distanceMeters)) 米" : "distance \(Int(distanceMeters)) meters")
-            parts.append(zh ? "正确率 \(Int(accuracy * 100))%" : "accuracy \(Int(accuracy * 100))%")
-            let pace = wpm >= 1 ? (zh ? "每分钟 \(Int(wpm)) 词" : "\(Int(wpm)) words per minute")
-                                : (zh ? "尚未开始计算" : "not yet")
-            parts.append(zh ? "速度 \(pace)" : "speed \(pace)")
+            parts.append((zh ? "距离 " : "distance ") + distanceWords(distanceMeters, zh: zh))
+            parts.append((zh ? "正确率 " : "accuracy ") + accuracyWords(accuracy))
+            parts.append((zh ? "速度 " : "speed ") + speedWords(wpm, zh: zh))
         }
         guard !parts.isEmpty else { return nil }
         let separator = zh ? "、" : ", "
         return parts.map { separator + $0 }.joined()
+    }
+
+    // MARK: The pills' words — one function each, called by the pill and by the composer
+
+    /// Round 2 of the v1.34 review: the composer had written each pill's form out again, so the two
+    /// could drift with every test green — rounding the accuracy in one place (0.978 heard as "98%"
+    /// while the pill and the results screen draw "97%"), or `wpm > 1` against the pill's `>= 1`
+    /// (exactly 1.0 heard as "not yet" while the pill says "1 words per minute"). Now each form is
+    /// one function that `HUDBar`'s pill calls for what it draws or speaks and `hiddenValues` calls
+    /// for what it appends; `V134B3HUDSpokenTests` pins both call sites and writes the boundary
+    /// cases out.
+
+    /// The progress pill's spoken value: its own count — "6 of 12" / "6 / 12" in a ride whose queue
+    /// is the target, the bare count in Time Attack — followed by `hidden`, nil as nothing. The
+    /// suffix follows the WHOLE count, whichever branch it came from.
+    static func progressWords(queueLengthIsTheTarget: Bool, completed: Int, count: Int, zh: Bool,
+                              hidden: String?) -> String {
+        let own = queueLengthIsTheTarget ? (zh ? "\(completed) / \(count)" : "\(completed) of \(count)")
+                                         : "\(completed)"
+        return own + (hidden ?? "")
+    }
+
+    /// The combo pill's spoken value: the streak from two, "none" / 无 below (the pill draws "—").
+    static func comboWords(_ combo: Int, zh: Bool) -> String {
+        combo >= 2 ? "\(combo)" : (zh ? "无" : "none")
+    }
+
+    /// The distance pill's spoken value, whole metres truncated as the drawn "150 m" is.
+    static func distanceWords(_ meters: Double, zh: Bool) -> String {
+        zh ? "\(Int(meters)) 米" : "\(Int(meters)) meters"
+    }
+
+    /// The accuracy pill's value, drawn and spoken: the percentage TRUNCATED, as `Int(_:)` does and
+    /// as the results screen draws it (0.978 is "97%"). The pill has no `spoken:`; VoiceOver reads
+    /// this.
+    static func accuracyWords(_ accuracy: Double) -> String {
+        "\(Int(accuracy * 100))%"
+    }
+
+    /// Whether the speed is a number yet: from 1 wpm, `RunClock.wpm`'s "meaningful" — below it the
+    /// pill draws "—" and speaks "not yet". 1.0 itself is a number.
+    static func paceIsKnown(_ wpm: Double) -> Bool { wpm >= 1 }
+
+    /// The speed pill's drawn value: whole words per minute, "—" before `paceIsKnown`.
+    static func speedValue(_ wpm: Double) -> String {
+        paceIsKnown(wpm) ? "\(Int(wpm))" : "—"
+    }
+
+    /// The speed pill's spoken value, built on `speedValue`'s number.
+    static func speedWords(_ wpm: Double, zh: Bool) -> String {
+        guard paceIsKnown(wpm) else { return zh ? "尚未开始计算" : "not yet" }
+        return zh ? "每分钟 \(speedValue(wpm)) 词" : "\(speedValue(wpm)) words per minute"
     }
 }
 
@@ -1236,23 +1289,42 @@ private struct WordCard: View {
                 // the upcoming romaji nowhere on this row, while the kana row's cursor and the
                 // next-key chips were whole. Offered one line's height, 1.33's Text takes it and
                 // cuts the token; offered room, it wraps (`V134B5RomajiHintTests` measures both).
-                // So the hint takes the height it needs (`fixedSize`, at most three lines, a 0.6
-                // shrink floor for the AX1 cap), and a hint long enough to outgrow a phone's line
-                // gets a break opportunity between every two characters
+                // So the hint takes the height it needs (`fixedSize`, at most TWO lines, shrinking
+                // to a 0.45 floor rather than taking a third), and a hint long enough to outgrow a
+                // phone's line gets a break opportunity between every two characters
                 // (`RomajiHintLayout.breakable`): without them the line breaker has only the
-                // space after the arrow, and a 56-character hint on the 322pt card shrank to fit
-                // three lines instead of filling them at full size. A word's hint passes through
-                // unchanged and renders byte for byte as in 1.33 — which is why the lines keep
-                // 1.33's leading alignment: `.multilineTextAlignment(.center)` moved a one-line
-                // word's glyphs by a fraction of a point (measured), and a wrapped hint's block is
-                // centred on the card either way. VoiceOver reads the plain romaji, never the
-                // inserted characters. (v1.34 §B5)
+                // space after the arrow and any hyphen (`KanaRomanizer` writes ー as "-"), and a
+                // 56-character hint on the 322pt card shrank instead of filling its lines at full
+                // size. A word's hint passes through unchanged, and where it fits its line — every
+                // phone card at the default size, 240pt and wider (the longest word, "→ " and 18
+                // characters, is 222.5pt at 18pt) — it renders byte for byte as in 1.33. Where a
+                // word's hint needs a second line it does not: at the AX1 cap (the longest word is
+                // 366.5pt at 29.6pt) and in a 208pt iPad Slide Over card, 1.33 wrapped the token by
+                // character or cut it, and this chain breaks it at the arrow's space and shrinks it
+                // if it must. The lines keep 1.33's leading alignment: `.multilineTextAlignment(
+                // .center)` moved a one-line word's glyphs by a fraction of a point (measured), and
+                // a wrapped hint's block is centred on the card either way. VoiceOver reads the
+                // plain romaji, never the inserted characters. (v1.34 §B5)
+                //
+                // **Two lines, not three (review round 2, measured 2026-09-27).** The card does not
+                // grow for the hint: SwiftUI takes its extra lines from the card's other rows. The
+                // ride hosted on macOS as a 402pt phone (patched to the phone layout for the
+                // measurement only), 30-kana sentence, default size: with three lines and the
+                // keyboard down (778pt of screen), the example sentence under the card lost a line
+                // (77 → 58pt, cut) and the kana shrank (1.33's 102 → 90pt); with at most two, the
+                // example is whole and the kana 93pt. At the AX1 cap with the keyboard up (476pt of
+                // screen), three lines halved the surface line (62 → 31pt) for every long hint; two
+                // keep it for the 67- and 76-character ones.
+                // The cost is the hint's size: 67 and 76 characters shrink to fit two lines on the
+                // 322pt card (the 0.45 floor keeps whole every hint that three lines at 0.6 kept
+                // whole). What two lines still take — the typed-romaji row with the keyboard up —
+                // `V134B5RomajiHintTests`' header records.
                 let hint = session.currentRomaji ?? ""
                 Text("→ \(RomajiHintLayout.breakable(hint))")
                     .scaledSystemFont(compact ? 14 : 18, weight: .regular, design: .monospaced)
                     .foregroundStyle(Theme.dim)
-                    .lineLimit(3)
-                    .minimumScaleFactor(0.6)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.45)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityLabel("→ \(hint)")
                     .accessibilityIdentifier("romajiHint")
@@ -1336,11 +1408,12 @@ enum RideCardLayout {
 
 /// Where the ride card's romaji hint may break. (v1.34 §B5)
 ///
-/// Romaji has no spaces, so to the line breaker a sentence's hint is one word: the only break it
-/// offers is the space after the arrow, and under a line limit a token longer than its line is
-/// shrunk or cut rather than wrapped — `WordCard.romaji` has the device observation and
-/// `V134B5RomajiHintTests` the measurements. The answer is `AboutView.breakingIdentifiers`'
-/// (v1.33 §B S): a zero-width space is a break opportunity with no advance (re-measured here for
+/// Romaji has no spaces, so to the line breaker a sentence's hint is nearly one word: the only
+/// breaks it offers are the space after the arrow and a hyphen, which is how `KanaRomanizer` writes
+/// ー (review round 2: the observed hint's "jizennime-rude" has one). Under a line limit, a stretch
+/// with no break that is longer than its line is shrunk or cut rather than wrapped.
+/// `WordCard.romaji` has the device observation and `V134B5RomajiHintTests` the measurements. The
+/// answer is `AboutView.breakingIdentifiers`' (v1.33 §B S): a zero-width space is a break opportunity with no advance (re-measured here for
 /// SF Mono at 14 and 18pt: "a", U+200B, "a" is exactly two advances), so a token that carries one
 /// between every two characters fills its lines like a paragraph and, where no break is needed,
 /// draws byte for byte as it did without them.
@@ -1349,7 +1422,8 @@ enum RomajiHintLayout {
     ///
     /// * **Above every word.** The longest word's romaji in the corpus is 18 characters
     ///   ("kashikomarimashita"; the next longest are 14), so the word modes' hints pass through
-    ///   untouched and render byte for byte as in 1.33.
+    ///   untouched — and render byte for byte as in 1.33 wherever they fit their line, which at the
+    ///   default size is every phone card (`WordCard.romaji` says where a word's hint needs two).
     /// * **Exactly the shortest hint that can outgrow a phone's line at the default size.** SF Mono
     ///   advances 11.13pt at 18pt, so the keyboard-down card on a 402pt phone (402 − 2×16 − 2×24 =
     ///   322pt) holds 28 characters — the arrow, its space and 26 of romaji — and the narrowest
