@@ -897,6 +897,38 @@ fired. *An agent cannot do this step and must not try.*
 > Reversing any of these after a reading it affects is a degree of freedom; a reversal is appended
 > with its timestamp and nothing above is reworded.
 
+> ### 📌 REGISTERED 2026-09-27 (JST) under constraint 3, before v1.34 is submitted — a results-screen line that names tomorrow's due work, and two custom-text defects
+>
+> `PLAN-WINDOW` constraint 3: *"A feature that substantially changes how far people ride changes
+> exposure-per-install… Second-order and tolerable — **register it, do not avoid it.**"* This is that
+> registration for v1.34 (PLAN-V1.34 §B1 and §B2), written before `--submit` as §F requires, and after the
+> N = 35 row was read (2026-09-25) — a registration of a product change, not a §K rule.
+>
+> **What changed.** (1) The results screen that journey, Time Attack, sentence and dictation rides end on
+> now draws one line of text under the stage line, after a ride that was journalled: the streak (when it
+> is two days or more) and how many words and forms will be due tomorrow (today's unreviewed cards plus
+> tomorrow's), from the same `streakDays` and `dueForecast` reads the Ride Log already makes. Text only: no
+> button, no prompt, nothing on the rating-prompt path. A run that typed nothing and a weak-words or
+> stumbled-words cram show no line; Practice runs (custom texts included) return to the menu and the
+> conjugation drill has its own, unchanged, results screen, so neither shows it. (2) A pasted text over
+> 200 sentences or 20,000 characters now says so in the add sheet, instead of being cut silently; and a
+> pasted text can be deleted from its context menu on every platform (secondary click on a Mac, where it
+> could not be deleted before; press-and-hold on iPhone and iPad, alongside the existing swipe). Nothing else a rider can see changed on the surfaces the window freezes: the offer
+> screen, the Settings road card, the menu route strip, prices and About's counter text are
+> byte-identical (§G's render and diff checks).
+>
+> **Expected effect, direction and magnitude.** A line that names tomorrow's due work can only make a
+> rider more likely to come back; direction **up** on days-ridden, magnitude **unmeasurable** here (no
+> instrument in this window observes return visits). The custom-text changes act on riders who already
+> paste, a population no instrument has yet seen (PLAN-V1.34 §D2's sessions are the first); second-order,
+> direction up. Nothing changes how far a ride goes: no queue, distance, unlock or ride-length rule moved.
+>
+> **How to read a checkpoint against it.** §K's bound is `3/N` on observed installs and does not move.
+> A rider who returns more often converts per install at most slightly differently for a reason unrelated
+> to the offer; at N = 100 that is invisible. If a reading lands close to a threshold, the cohort split at
+> v1.34's Pacific release date (appended to `FIRM_RELEASE_DATES_PT` on release day) is the covariate
+> to look at.
+
 ## §L The three manual gates
 
 These cannot be automated on this machine and are therefore **not tested until somebody walks
