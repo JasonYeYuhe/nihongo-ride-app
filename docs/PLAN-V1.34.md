@@ -149,6 +149,20 @@ the screen that carries the frozen road card, and no headless Settings render ex
 did not move (1.33's proof for that screen was the simulator, at AX5 only); it waits for a release that
 already re-shoots Settings. Proof: `V133SContrastTests` extended; `about.png` differs only in those pixels.
 
+*Addendum 2026-09-27:* the item's scope grew from the four call sites above to **nine**, because
+measuring every small dim text on About with the same source-over model at the gradient's bottom stop
+(the worst case) found five more under 4.5:1: the header subtitle (plain `Theme.dim`, 4.24:1; 4.46 at
+the top stop, so under at every scroll position), the "Contact" title (4.24), the "On-device counters"
+title (4.24), the counters' prompt line (3.23, the contact prompt's colour) and the three stat labels
+(`Theme.dim` on the stat card, 3.91). All nine are now at white 0.48 on the background (4.62:1) or 0.51
+on a card (4.57:1) — colour only, no text, font or layout change — so `about.png` (en, zh) differs in
+nine text roles, fifteen drawn lines (six credit URLs, three stat labels), not four; §G.2's list of
+intended differences for About is that. `V134B4AboutContrastTests` holds them, and after the review
+also holds what each text sits on (walked to `body` from the source) and every other dim white text on
+About by rule. Left as they were: the licence badges (brand `accent2` on their tinted badge, 4.28:1),
+with the rest of brand-colour contrast on the day-91 list (§I). Settings is untouched, its sync-status
+caption (3.91) included.
+
 ### B5 — Measure, then maybe fix: the Sentence-mode romaji hint on long sentences · *0.25 day*
 
 `PLAN-V1.33.md` §C lists it as unchecked whether the hint scrolls with the cursor. Simulator, a 40-kana

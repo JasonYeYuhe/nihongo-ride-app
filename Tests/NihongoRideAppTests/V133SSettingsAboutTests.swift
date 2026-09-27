@@ -263,12 +263,19 @@ struct V133SContrastTests {
 ///
 /// Every colour About draws in `Theme.dim` was measured for this item, not only the four the
 /// plan lists, and the seven straight on the background share one worst case (the gradient's
-/// bottom stop) while the two on a card share another (`Theme.card` over that stop). What is
-/// deliberately NOT held here: the two counter lines, whose colour 1.33 fixed and whose text is
-/// frozen (`aboutUsesTheCounterColor` above); and text that is not dim — the coral section titles
-/// (5.65:1), the sky version line (8.15:1) and the licence badges (4.28:1 on their tinted
-/// background, the one small text on About still under the line, left because it is the brand
-/// colour and PLAN-V1.34 §I keeps brand-colour contrast on the day-91 list).
+/// bottom stop) while the two on a card share another (`Theme.card` over that stop).
+///
+/// **"All" is held by a rule, not by the list** (added after the review): every `Text` on About
+/// drawn in white at an opacity — whichever way it is written — must clear 4.5:1 over the backdrop
+/// the source actually puts it on, at no less than that backdrop's constant; and nothing between
+/// any `Text` and the page may change its alpha (`everyDimWhiteTextClears`,
+/// `nothingElseChangesWhatIsDrawn`, `eachTextSitsWhereItsConstantAssumes`, below). That rule
+/// covers the two counter lines' placement and alpha too; their COLOUR stays pinned where 1.33
+/// pinned it (`aboutUsesTheCounterColor` above), beside their frozen text. What is deliberately
+/// NOT held here: text that is not dim — the coral section titles (5.65:1), the sky version line
+/// (8.15:1) and the licence badges (4.28:1 on their tinted background, the one small text on About
+/// still under the line, left because it is the brand colour and PLAN-V1.34 §I keeps brand-colour
+/// contrast on the day-91 list).
 @Suite("V134B4: About's remaining small dim text reaches 4.5:1 wherever it can sit")
 @MainActor
 struct V134B4AboutContrastTests {
@@ -409,6 +416,504 @@ struct V134B4AboutContrastTests {
             }
             #expect(uses.count == fragments.count,
                     "\(constant) is drawn \(uses.count) time(s), expected \(fragments.count): \(uses.map { about.location($0.nameOffset) })")
+        }
+    }
+
+    // MARK: What each text sits on, and everything applied to it — read from the source
+
+    /// The review of this item took promised texts under 4.5:1 three ways with every test above
+    /// green, because they hold the constants and which `Text` reads which, and take the rest on
+    /// trust: `.background(Theme.card, …)` added around the contact block (white 0.48 on a card,
+    /// 4.23:1), the stat card's backdrop swapped for white at 0.12 (0.51 on it, 4.07:1), and
+    /// `.opacity(0.6)` after the footer note's `.italic()` (2.56:1). What follows holds what the
+    /// text is DRAWN as: every modifier between the `Text` and the page — its own chain up to the
+    /// next sibling statement, then each enclosing view's, climbing out of the builder (`some View`
+    /// property or function) that holds it to every place that builder is used, through
+    /// `let content = …` to its uses, as far as `body`. Backdrops are read from that walk and their
+    /// colours from the source (`Theme` in NihongoRideApp.swift, the constants here), as
+    /// `gradientStops()` reads the gradient, so a changed backdrop changes the arithmetic.
+    ///
+    /// Outside the walk, stated rather than held: the page itself sits on `Theme.background`
+    /// (`Screenshot.swift`'s ZStack; the app's root draws the same gradient behind every flat
+    /// screen), and `.overlay` is taken as not changing the backdrop (About's two overlays are the
+    /// card strokes, drawn at the edge).
+
+    /// One modifier: `.name(arguments)`, with its trailing `{ closure }` if it has one.
+    struct Link {
+        let name: String
+        let arguments: Range<Int>?
+        let closure: Range<Int>?
+        let offset: Int
+    }
+
+    /// One way a `Text` reaches the page: every link applied on the way, innermost first.
+    struct Path {
+        var links: [Link] = []
+        var reachesBody = false
+    }
+
+    typealias Paint = (rgb: Model.RGB, alpha: Double)
+
+    /// Modifiers that neither paint behind a text nor change its colour or alpha. Anything else on a
+    /// text's way to the page is a failure until someone says which it is — the list is the claim.
+    static let inert: Set<String> = [
+        "scaledSystemFont", "fixedSize", "textSelection", "italic", "tracking", "lineLimit",
+        "minimumScaleFactor", "padding", "frame", "overlay", "accessibilityElement",
+        "accessibilityLabel", "accessibilityValue", "accessibilityIdentifier",
+    ]
+
+    /// The colour an expression names, read from the source: `.white` / `Color.white`,
+    /// `Color(red:green:blue:)`, `Theme.x` (NihongoRideApp.swift), `Self.x` / `AboutView.x`
+    /// (AboutView.swift), each with any `.opacity(…)` suffixes. Nil for anything else — a material,
+    /// a semantic style, a view — so an unreadable backdrop or colour fails instead of passing.
+    nonisolated static func paint(_ expression: String, about: CallSiteScanner.File, app: CallSiteScanner.File,
+                      depth: Int = 0) -> Paint? {
+        var base = expression.filter { !$0.isWhitespace }
+        var factor = 1.0
+        while let match = base.wholeMatch(of: /(.+)\.opacity\(([0-9.]+)\)/), let value = Double(match.2) {
+            factor *= value
+            base = String(match.1)
+        }
+        switch base {
+        case ".white", "Color.white": return ((1, 1, 1), factor)
+        case ".black", "Color.black": return ((0, 0, 0), factor)
+        default: break
+        }
+        if let match = base.wholeMatch(of: /Color\(red:([0-9.]+),green:([0-9.]+),blue:([0-9.]+)\)/),
+           let r = Double(match.1), let g = Double(match.2), let b = Double(match.3) {
+            return ((r, g, b), factor)
+        }
+        guard depth < 4, let match = base.wholeMatch(of: /(Theme|Self|AboutView)\.(\w+)/),
+              let definition = try? Regex(#"static\s+let\s+"# + String(match.2) + #"\s*=\s*([^\n]+)"#)
+        else { return nil }
+        let (file, type) = match.1 == "Theme" ? (app, "Theme") : (about, "AboutView")
+        guard let body = file.typeBodies(named: type).first,
+              let found = String(decoding: file.code[body], as: UTF8.self).firstMatch(of: definition),
+              let value = found.output[1].substring,
+              let inner = paint(String(value), about: about, app: app, depth: depth + 1)
+        else { return nil }
+        return (inner.rgb, inner.alpha * factor)
+    }
+
+    nonisolated static func over(_ paint: Paint, _ bg: Model.RGB) -> Model.RGB {
+        let a = paint.alpha
+        return (a * paint.rgb.r + (1 - a) * bg.r, a * paint.rgb.g + (1 - a) * bg.g, a * paint.rgb.b + (1 - a) * bg.b)
+    }
+
+    /// Walks About's source. Every offset is into `file.code` (comments and string contents blanked).
+    struct Walker {
+        let file: CallSiteScanner.File
+        let app: CallSiteScanner.File
+        let type: Range<Int>
+        let blocks: [Range<Int>]
+
+        struct NoAboutView: Error {}
+
+        init(_ file: CallSiteScanner.File, app: CallSiteScanner.File) throws {
+            guard let type = file.typeBodies(named: "AboutView").first else { throw NoAboutView() }
+            self.file = file
+            self.app = app
+            self.type = type
+            var stack: [Int] = [], found: [Range<Int>] = []
+            for index in type {
+                if file.code[index] == UInt8(ascii: "{") { stack.append(index) }
+                else if file.code[index] == UInt8(ascii: "}"), let open = stack.popLast() { found.append(open..<(index + 1)) }
+            }
+            blocks = found.filter { $0 != type }
+        }
+
+        /// The chain that starts at `end`: consecutive `.name(…)` / `.name { … }` links, up to the
+        /// first thing that is not one — the next sibling statement, or the end of the block.
+        func links(after end: Int) -> [Link] {
+            let code = file.code
+            var index = end
+            var out: [Link] = []
+            while true {
+                let dot = CallSiteScanner.skipSpace(code, index)
+                guard dot < code.count, code[dot] == UInt8(ascii: "."),
+                      let (name, afterName) = CallSiteScanner.word(in: code, at: dot + 1) else { break }
+                var cursor = CallSiteScanner.skipSpace(code, afterName, newlines: false)
+                var arguments: Range<Int>?
+                if cursor < code.count, code[cursor] == UInt8(ascii: "("),
+                   let close = CallSiteScanner.matching(code, open: cursor) {
+                    arguments = (cursor + 1)..<close
+                    cursor = close + 1
+                }
+                var closure: Range<Int>?
+                let brace = CallSiteScanner.skipSpace(code, cursor, newlines: false)
+                if brace < code.count, code[brace] == UInt8(ascii: "{"),
+                   let close = CallSiteScanner.matching(code, open: brace) {
+                    closure = brace..<(close + 1)
+                    cursor = close + 1
+                }
+                out.append(Link(name: name, arguments: arguments, closure: closure, offset: dot))
+                index = cursor
+            }
+            return out
+        }
+
+        /// The builder whose body is `block`: a function, or a `var name: some View` property.
+        func builder(of block: Range<Int>) -> (name: String, isFunction: Bool)? {
+            if let function = file.functions.first(where: { $0.body == block }) { return (function.name, true) }
+            var start = block.lowerBound
+            while start > 0, file.code[start - 1] != UInt8(ascii: "\n") { start -= 1 }
+            let head = String(decoding: file.code[start..<block.lowerBound], as: UTF8.self)
+            guard let match = head.firstMatch(of: /\bvar\s+(\w+)\s*:\s*some\s+View\s*$/) else { return nil }
+            return (String(match.1), false)
+        }
+
+        /// The innermost builder whose body contains `offset`.
+        func builder(containing offset: Int) -> String? {
+            blocks.filter { $0.contains(offset) }.sorted { $0.count < $1.count }
+                .lazy.compactMap { self.builder(of: $0)?.name }.first
+        }
+
+        /// Where a builder is used: a function's calls, a property's mentions (not its declaration).
+        func uses(of builder: (name: String, isFunction: Bool)) -> [(offset: Int, end: Int)] {
+            if builder.isFunction {
+                return file.calls(named: builder.name).filter { type.contains($0.nameOffset) }
+                    .map { ($0.nameOffset, $0.extent.upperBound) }
+            }
+            return file.mentions(of: builder.name).filter { type.contains($0) && !declares($0) }
+                .map { ($0, $0 + builder.name.utf8.count) }
+        }
+
+        private func declares(_ offset: Int) -> Bool {
+            var index = offset - 1
+            while index >= 0, file.code[index] == 32 || file.code[index] == 9 { index -= 1 }
+            guard index >= 2, String(decoding: file.code[(index - 2)...index], as: UTF8.self) == "var" else { return false }
+            return index == 2 || !CallSiteScanner.isIdentifier(file.code[index - 3])
+        }
+
+        /// `content` for `let content = VStack(…) { … }` when `block` is that closure; nil otherwise.
+        func binding(of block: Range<Int>) -> String? {
+            let code = file.code
+            var index = block.lowerBound - 1
+            func skip() { while index >= 0, [32, 9, 10, 13].contains(code[index]) { index -= 1 } }
+            func word() -> String? {
+                let end = index + 1
+                while index >= 0, CallSiteScanner.isIdentifier(code[index]) { index -= 1 }
+                return end > index + 1 ? String(decoding: code[(index + 1)..<end], as: UTF8.self) : nil
+            }
+            skip()
+            if index >= 0, code[index] == UInt8(ascii: ")") {
+                var depth = 0
+                while index >= 0 {
+                    if code[index] == UInt8(ascii: ")") { depth += 1 }
+                    else if code[index] == UInt8(ascii: "(") { depth -= 1; if depth == 0 { break } }
+                    index -= 1
+                }
+                index -= 1
+                skip()
+            }
+            guard word() != nil else { return nil }
+            skip()
+            guard index >= 1, code[index] == UInt8(ascii: "="),
+                  !"=!<>".utf8.contains(code[index - 1]) else { return nil }
+            index -= 1
+            skip()
+            guard let name = word() else { return nil }
+            skip()
+            guard let keyword = word(), keyword == "let" || keyword == "var" else { return nil }
+            return name
+        }
+
+        /// Every way from `offset` to `body`, each with the links applied on the way — starting with
+        /// the chain at `end` when given. A builder used twice gives two paths; one used nowhere, none.
+        func paths(from offset: Int, after end: Int?, depth: Int = 0) -> [Path] {
+            var links = end.map { self.links(after: $0) } ?? []
+            guard depth < 16 else { return [Path(links: links)] }
+            let enclosing = blocks.filter { $0.lowerBound < offset && offset < $0.upperBound }.sorted { $0.count < $1.count }
+            for block in enclosing {
+                if let owner = builder(of: block) {
+                    if owner.name == "body" && !owner.isFunction { return [Path(links: links, reachesBody: true)] }
+                    return uses(of: owner).flatMap { use in
+                        paths(from: use.offset, after: use.end, depth: depth + 1)
+                            .map { Path(links: links + $0.links, reachesBody: $0.reachesBody) }
+                    }
+                }
+                links += self.links(after: block.upperBound)
+                if let name = binding(of: block) {
+                    let scope = enclosing.first { $0.count > block.count } ?? type
+                    let prefix = links
+                    return file.mentions(of: name).filter { scope.contains($0) && $0 > block.upperBound }.flatMap { use in
+                        paths(from: use, after: use + name.utf8.count, depth: depth + 1)
+                            .map { Path(links: prefix + $0.links, reachesBody: $0.reachesBody) }
+                    }
+                }
+            }
+            return [Path(links: links)]
+        }
+
+        func firstArgument(_ arguments: Range<Int>) -> String {
+            var depth = 0
+            for index in arguments {
+                switch file.code[index] {
+                case UInt8(ascii: "("), UInt8(ascii: "["), UInt8(ascii: "{"): depth += 1
+                case UInt8(ascii: ")"), UInt8(ascii: "]"), UInt8(ascii: "}"): depth -= 1
+                case UInt8(ascii: ",") where depth == 0: return file.text(arguments.lowerBound..<index)
+                default: break
+                }
+            }
+            return file.text(arguments)
+        }
+
+        enum Backdrop { case none, paint(Paint, String), unreadable(String) }
+
+        /// What a link paints behind the text. `.background(colour, …)` and `.panel()` paint;
+        /// the one `.background { … }` About has — the key-capture view, which draws nothing — does
+        /// not, and is recognised by what it contains; any other backdrop is unreadable, and fails.
+        func backdrop(_ link: Link) -> Backdrop {
+            switch link.name {
+            case "panel":
+                return V134B4AboutContrastTests.paint("Theme.card", about: file, app: app)
+                    .map { .paint($0, "Theme.card") } ?? .unreadable("panel")
+            case "background":
+                if let arguments = link.arguments {
+                    let first = firstArgument(arguments).filter { !$0.isWhitespace }
+                    return V134B4AboutContrastTests.paint(first, about: file, app: app)
+                        .map { .paint($0, first) } ?? .unreadable(first)
+                }
+                let closure = link.closure.map { file.text($0) } ?? ""
+                let painters = ["Theme.", "Color", ".fill", "Rectangle", "Capsule", "Circle", ".white",
+                                ".black", "Image", "Material", "Gradient", "Text("]
+                if closure.contains("KeyCaptureView("), !painters.contains(where: closure.contains) { return .none }
+                return .unreadable(closure.split(whereSeparator: \.isWhitespace).joined(separator: " "))
+            default:
+                return .none
+            }
+        }
+
+        /// The painted backdrops on a path, innermost first.
+        func paints(_ links: [Link]) -> [(paint: Paint, expression: String, link: Link)] {
+            links.compactMap { link in
+                if case .paint(let paint, let expression) = backdrop(link) { return (paint, expression, link) }
+                return nil
+            }
+        }
+    }
+
+    static func walker() throws -> Walker {
+        try Walker(try Model.shipped("AboutView.swift"), app: try Model.shipped("NihongoRideApp.swift"))
+    }
+
+    /// A `Text` on About whose arguments are exactly `arguments` (whitespace ignored).
+    static func theText(exactly arguments: String, in file: CallSiteScanner.File) throws -> CallSiteScanner.Call {
+        let hits = file.calls(named: "Text").filter {
+            $0.arguments.map { file.text($0).filter { !$0.isWhitespace } } == arguments
+        }
+        #expect(hits.count == 1, "\(hits.count) Text(...) on About read exactly \(arguments)")
+        return try #require(hits.first, "no Text(\(arguments)) on About")
+    }
+
+    @Test("the source reader resolves each colour About uses to what the app resolves it to")
+    func paintCalibration() throws {
+        let walker = try Self.walker()
+        let cases: [(String, Color)] = [
+            ("Self.dimTextColor", AboutView.dimTextColor),
+            ("Self.dimTextOnCardColor", AboutView.dimTextOnCardColor),
+            ("Self.counterColor", AboutView.counterColor),
+            ("Theme.card", Theme.card),
+            ("Theme.dim", Theme.dim),
+            ("Theme.dim.opacity(0.7)", Theme.dim.opacity(0.7)),
+            (".white.opacity(0.82)", Color.white.opacity(0.82)),
+            (".white", Color.white),
+            ("Theme.accent", Theme.accent),
+            ("Theme.backgroundTop", Theme.backgroundTop),
+        ]
+        for (expression, color) in cases {
+            let read = try #require(Self.paint(expression, about: walker.file, app: walker.app),
+                                    "\(expression) could not be read from the source")
+            let resolved = Model.resolved(color)
+            #expect(abs(read.alpha - resolved.alpha) < 0.0005
+                    && abs(read.rgb.r - resolved.rgb.r) < 0.0005 && abs(read.rgb.g - resolved.rgb.g) < 0.0005
+                    && abs(read.rgb.b - resolved.rgb.b) < 0.0005,
+                    "\(expression) reads as \(read) from the source; the app resolves it to \(resolved)")
+        }
+        // Control: what it cannot read, it says so.
+        for unreadable in [".ultraThinMaterial", ".secondary", "Theme.nothing", "Rectangle().fill(.red)"] {
+            #expect(Self.paint(unreadable, about: walker.file, app: walker.app) == nil, "\(unreadable) read as a colour")
+        }
+    }
+
+    @Test("the walk climbs through a builder and a let binding to body, and sees every link on the way")
+    func walkCalibration() throws {
+        let sample = CallSiteScanner.File(path: "Sample.swift", source: """
+            struct AboutView: View {
+                var body: some View {
+                    let content = VStack(spacing: 2) {
+                        part
+                        Text(b).foregroundStyle(.white) // .opacity(0.1)
+                    }
+                    .padding(1)
+                    return Group { content }.frame(maxWidth: 1).opacity(0.5)
+                }
+                private var part: some View {
+                    VStack { Text(a).italic().foregroundStyle(.white) /* .opacity(0.2) */ }
+                        .background(Theme.card, in: Capsule())
+                }
+                private var unused: some View { Text(c).foregroundStyle(.white) }
+            }
+            """)
+        let app = try Model.shipped("NihongoRideApp.swift")
+        let walker = try Walker(sample, app: app)
+        let a = try Self.theText(exactly: "a", in: sample)
+        #expect(walker.links(after: a.extent.upperBound).map(\.name) == ["italic", "foregroundStyle"])
+        let paths = walker.paths(from: a.nameOffset, after: nil)
+        #expect(paths.count == 1 && paths.allSatisfy(\.reachesBody))
+        #expect(paths.first?.links.map(\.name) == ["background", "padding", "frame", "opacity"],
+                "the walk saw \(paths.map { $0.links.map(\.name) })")
+        #expect(walker.paints(paths.first?.links ?? []).map(\.expression) == ["Theme.card"])
+        #expect(walker.builder(containing: paths.first?.links.first?.offset ?? 0) == "part")
+        let c = try Self.theText(exactly: "c", in: sample)
+        #expect(walker.paths(from: c.nameOffset, after: nil).isEmpty, "a builder used nowhere reached the page")
+    }
+
+    @Test("every Text on About has one foregroundStyle, and nothing on its way to the page changes its alpha or is unread")
+    func nothingElseChangesWhatIsDrawn() throws {
+        let walker = try Self.walker()
+        let about = walker.file
+        let texts = about.calls(named: "Text").filter { walker.type.contains($0.nameOffset) }
+        #expect(texts.count >= 20, "only \(texts.count) Text calls found on About — the scan is blind")
+        for text in texts {
+            let at = about.location(text.nameOffset)
+            let own = walker.links(after: text.extent.upperBound)
+            #expect(own.filter { $0.name == "foregroundStyle" }.count == 1,
+                    "\(at): the Text's own chain has \(own.filter { $0.name == "foregroundStyle" }.count) foregroundStyle, expected exactly one")
+            let paths = walker.paths(from: text.nameOffset, after: nil)
+            #expect(!paths.isEmpty && paths.allSatisfy(\.reachesBody), "\(at): the walk did not reach body")
+            for link in own + paths.flatMap(\.links) {
+                let where_ = about.location(link.offset)
+                #expect(link.name != "opacity", "\(at): .opacity at \(where_) changes the drawn alpha of this text")
+                #expect(link.name != "foregroundColor" && (link.name != "foregroundStyle" || own.contains { $0.offset == link.offset }),
+                        "\(at): a second colour at \(where_)")
+                #expect(Self.inert.contains(link.name) || ["foregroundStyle", "background", "panel"].contains(link.name),
+                        "\(at): .\(link.name) at \(where_) is not classified — say whether it changes what this text is drawn as")
+                if case .unreadable(let what) = walker.backdrop(link) {
+                    Issue.record("\(at): the backdrop at \(where_) cannot be read as a colour: \(what)")
+                }
+            }
+        }
+    }
+
+    @Test("the seven background texts sit on no backdrop; the URL and stat labels sit on exactly their builder's Theme.card")
+    func eachTextSitsWhereItsConstantAssumes() throws {
+        let walker = try Self.walker()
+        for fragment in Self.onTheBackground {
+            let text = try Self.theText(containing: fragment, in: walker.file)
+            let paths = walker.paths(from: text.nameOffset, after: nil)
+            #expect(!paths.isEmpty && paths.allSatisfy(\.reachesBody), "the Text containing \(fragment) does not reach body")
+            for path in paths {
+                let links = walker.links(after: text.extent.upperBound) + path.links
+                let unread = links.filter { if case .unreadable = walker.backdrop($0) { return true } else { return false } }
+                #expect(unread.isEmpty, "the Text containing \(fragment) is drawn on a backdrop that cannot be read, at \(unread.map { walker.file.location($0.offset) })")
+                let paints = walker.paints(links)
+                #expect(paints.isEmpty, "the Text containing \(fragment) is drawn on \(paints.map { "\($0.expression) at \(walker.file.location($0.link.offset))" }), not straight on the background")
+            }
+        }
+        for (fragment, builder) in zip(Self.onACard, ["credit", "stat"]) {
+            let text = try Self.theText(containing: fragment, in: walker.file)
+            let paths = walker.paths(from: text.nameOffset, after: nil)
+            #expect(!paths.isEmpty && paths.allSatisfy(\.reachesBody), "the Text containing \(fragment) does not reach body")
+            for path in paths {
+                let paints = walker.paints(walker.links(after: text.extent.upperBound) + path.links)
+                #expect(paints.count == 1 && paints.first?.expression == "Theme.card" && paints.first?.link.name == "background"
+                        && walker.builder(containing: paints.first?.link.offset ?? 0) == builder,
+                        "the Text containing \(fragment) is drawn on \(paints.map { "\($0.expression) in \(walker.builder(containing: $0.link.offset) ?? "?")" }), expected exactly \(builder)'s .background(Theme.card, …)")
+            }
+        }
+    }
+
+    /// The rule, not a list: every `Text` on About drawn in white at an opacity — `Theme.dim`, a
+    /// constant, `.white.opacity(x)`, `Color.white.opacity(x)` — clears 4.5:1 over the backdrop the
+    /// walk finds for it (read from the source), at both stops, on every path; and its opacity is at
+    /// least the constant for that backdrop (`dimTextColor` straight on the background,
+    /// `dimTextOnCardColor` on `Theme.card`). A dim text on any other backdrop fails until it has a
+    /// constant. The section body (white 0.82) and the credit descriptions (0.7 on a card) pass by
+    /// this rule at the numbers written out below, not by being named.
+    @Test("every dim white text on About clears 4.5:1 over the backdrop the source puts it on, at no less than its backdrop's constant")
+    func everyDimWhiteTextClears() throws {
+        let walker = try Self.walker()
+        let about = walker.file
+        let stops = try Model.gradientStops()
+        let white: Model.RGB = (1, 1, 1)
+        let onBackground = Model.resolved(AboutView.dimTextColor).alpha
+        let onCard = Model.resolved(AboutView.dimTextOnCardColor).alpha
+        let card = try #require(Self.paint("Theme.card", about: about, app: walker.app))
+        func same(_ a: Paint, _ b: Paint) -> Bool {
+            abs(a.alpha - b.alpha) < 1e-9 && abs(a.rgb.r - b.rgb.r) < 1e-9 && abs(a.rgb.g - b.rgb.g) < 1e-9 && abs(a.rgb.b - b.rgb.b) < 1e-9
+        }
+
+        var dim: [Int] = []
+        for text in about.calls(named: "Text") where walker.type.contains(text.nameOffset) {
+            let at = about.location(text.nameOffset)
+            let own = walker.links(after: text.extent.upperBound)
+            guard let style = own.first(where: { $0.name == "foregroundStyle" }), let arguments = style.arguments else {
+                Issue.record("\(at): no foregroundStyle of its own")
+                continue
+            }
+            let expression = about.text(arguments).filter { !$0.isWhitespace }
+            guard let foreground = Self.paint(expression, about: about, app: walker.app) else {
+                Issue.record("\(at): foregroundStyle(\(expression)) cannot be read as a colour")
+                continue
+            }
+            guard foreground.rgb == white, foreground.alpha < 1 else { continue }
+            dim.append(text.nameOffset)
+            for path in walker.paths(from: text.nameOffset, after: nil) {
+                let paints = walker.paints(own + path.links)
+                for stop in stops {
+                    let backdrop = paints.reversed().reduce(stop) { Self.over($1.paint, $0) }
+                    let ratio = Model.contrast(Self.over(foreground, backdrop), backdrop)
+                    #expect(ratio >= 4.5, "\(at): \(expression) computes \(ratio):1 over \(paints.map(\.expression)) on \(stop)")
+                }
+                if paints.isEmpty {
+                    #expect(foreground.alpha >= onBackground - 1e-9 && expression != "Self.dimTextOnCardColor",
+                            "\(at): \(expression) straight on the background, under dimTextColor's opacity")
+                } else if paints.count == 1, let only = paints.first, same(only.paint, card) {
+                    #expect(foreground.alpha >= onCard - 1e-9 && expression != "Self.dimTextColor" && expression != "Self.counterColor",
+                            "\(at): \(expression) on a card, under dimTextOnCardColor's opacity")
+                } else {
+                    Issue.record("\(at): \(expression) on \(paints.map(\.expression)) — a backdrop with no constant for it")
+                }
+            }
+        }
+
+        // Control: the enumeration sees every dim white text there is today — the nine this item
+        // recoloured, the two counter lines, the section body and the credit description.
+        let expected = try (Self.onTheBackground + Self.onACard + ["breakingIdentifiers(zh ? zhText : en)"])
+            .map { try Self.theText(containing: $0, in: about).nameOffset }
+            + ["model.unlockOfferLedger.shareableSummary", "model.reviewPromptLedger.debugSummary", "body"]
+            .map { try Self.theText(exactly: $0, in: about).nameOffset }
+        #expect(Set(expected).isSubset(of: Set(dim)) && expected.count == 13,
+                "the enumeration missed \(Set(expected).subtracting(dim).map(about.location))")
+    }
+
+    @Test("over the backdrops read from the source: footer 4.62, URL 4.57, section body 10.70, credit description 7.16 at the bottom stop")
+    func sourceBackdropsComputeTheStatedNumbers() throws {
+        let walker = try Self.walker()
+        let about = walker.file
+        let bottom = try Self.bottomStop()
+        // (the Text, its colour as written, its contrast at the bottom stop and at the top stop)
+        let cases: [(CallSiteScanner.Call, String, Double, Double)] = [
+            (try Self.theText(containing: "Thanks to the maintainers", in: about), "Self.dimTextColor", 4.62, 4.91),
+            (try Self.theText(containing: "Self.breakingIdentifiers(url) : url", in: about), "Self.dimTextOnCardColor", 4.57, 5.03),
+            (try Self.theText(exactly: "body", in: about), ".white.opacity(0.82)", 10.70, 12.13),
+            (try Self.theText(containing: "breakingIdentifiers(zh ? zhText : en)", in: about), ".white.opacity(0.7)", 7.16, 8.16),
+        ]
+        let top = try Model.gradientStops()[0]
+        for (text, expression, atBottom, atTop) in cases {
+            let at = about.location(text.nameOffset)
+            let style = try #require(walker.links(after: text.extent.upperBound).first { $0.name == "foregroundStyle" })
+            #expect(about.text(try #require(style.arguments)).filter { !$0.isWhitespace } == expression,
+                    "\(at) is no longer drawn in \(expression)")
+            let foreground = try #require(Self.paint(expression, about: about, app: walker.app))
+            let path = try #require(walker.paths(from: text.nameOffset, after: nil).first)
+            let paints = walker.paints(walker.links(after: text.extent.upperBound) + path.links)
+            for (stop, stated) in [(bottom, atBottom), (top, atTop)] {
+                let backdrop = paints.reversed().reduce(stop) { Self.over($1.paint, $0) }
+                let ratio = Model.contrast(Self.over(foreground, backdrop), backdrop)
+                #expect(abs(ratio - stated) < 0.01, "\(at) computes \(ratio):1 over \(paints.map(\.expression)); written out as \(stated)")
+            }
         }
     }
 }

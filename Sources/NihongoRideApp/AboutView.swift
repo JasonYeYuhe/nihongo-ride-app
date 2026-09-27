@@ -359,16 +359,20 @@ struct AboutView: View {
     /// (`.opacity(0.8)`, 3.23:1), the address (`.opacity(0.85)`, 3.46:1) — and, measured for this
     /// item rather than listed in 1.33, the header's subtitle and the two small-caps titles at
     /// plain `Theme.dim`, white at 0.45: over the bottom stop that is (0.505, 0.527, 0.593),
-    /// luminance 0.240 → **4.24:1**, over the line at the top stop (4.47:1) and under it once the
-    /// page has scrolled. None of these is in a card, so the worst case is the counters' worst
-    /// case: white at 0.47 → 4.49:1 (4.48 after 8-bit quantisation), white at **0.48** →
-    /// 4.62:1. The same number as `counterColor` in a second constant, deliberately: the counters'
+    /// luminance 0.240 → **4.24:1**, and 4.46:1 (4.465 unrounded) at the top stop — under the line
+    /// there too, so these three never cleared 4.5:1 wherever the page was scrolled (this said
+    /// "over the line at the top stop (4.47:1)" until the review recomputed it). None of these is
+    /// in a card — `V134B4AboutContrastTests` walks each one to `body` and finds no backdrop — so
+    /// the worst case is the counters' worst case: white at 0.47 → 4.49:1 (4.48 after 8-bit
+    /// quantisation), white at **0.48** → 4.62:1. The same number as `counterColor` in a second constant, deliberately: the counters'
     /// colour is held beside their frozen text and pinned to exactly its two readers
     /// (`V133SContrastTests.aboutUsesTheCounterColor`); the prose is not frozen and should not
     /// share that pin. `V134B4AboutContrastTests` recomputes both. (v1.34 §B4)
     static let dimTextColor = Color.white.opacity(0.48)
 
-    /// The credit URLs and the stat labels, which sit on `Theme.card`, not on the background.
+    /// The credit URLs and the stat labels, which sit on `Theme.card`, not on the background —
+    /// the `.background(Theme.card, …)` of `credit` and of `stat`, which the tests read from this
+    /// file and composite, so a changed card there changes their arithmetic.
     ///
     /// The card is white at 0.06 over the gradient, so it is lighter than what is behind it and
     /// the same white needs more opacity to stand off it. At the bottom stop the card is
