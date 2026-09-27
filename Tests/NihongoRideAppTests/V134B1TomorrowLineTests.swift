@@ -14,7 +14,9 @@ import VocabKit
 ///
 /// Six claims, held apart because each fails differently. The copy matrix, row by row, every
 /// expected string written out by hand (mutating the streak threshold to ≥ 3 turns the 2-day rows
-/// red). The wiring from a real ride through `finishGame` to `model.tomorrowLine(zh:)`, for words
+/// red), English capitalised where the due half starts the line. Which runs get a line at all: only
+/// one `finishGame` journalled — never a weak-words cram, a run that typed nothing, or a conjugation
+/// drill's results. The wiring from a real ride through `finishGame` to `model.tomorrowLine(zh:)`, for words
 /// AND forms, with every count computed by THIS file from the raw cards and never by `dueForecast`
 /// (memory: a test that grades itself), over arrangements that put cards in every neighbouring
 /// bucket — overdue, today, tomorrow, two and three days out, a retired entry, and (forms) a card
@@ -43,6 +45,8 @@ struct V134B1TomorrowLineTests {
 
     /// PLAN-V1.34 §B1's table, plus the rows it names in prose: the boundary (2 days is a streak,
     /// 1 is not, 0 — a chain that broke — is not), the English singulars, and a count past 99.
+    /// English is a sentence: when the due half starts the line it starts with a capital
+    /// ("Nothing due tomorrow"; a digit is left as it is), and after the streak prefix it does not.
     nonisolated static let matrix: [Row] = [
         Row(streak: 3, words: 12, forms: 4,
             en: "3-day streak · 12 words and 4 forms due tomorrow",
@@ -66,7 +70,10 @@ struct V134B1TomorrowLineTests {
             en: "1 form due tomorrow",
             zh: "明天到期 1 个变形"),
         Row(streak: 1, words: 0, forms: 0,
-            en: "nothing due tomorrow",
+            en: "Nothing due tomorrow",
+            zh: "明天没有到期的复习"),
+        Row(streak: 0, words: 0, forms: 0,
+            en: "Nothing due tomorrow",
             zh: "明天没有到期的复习"),
         Row(streak: 0, words: 5, forms: 0,
             en: "5 words due tomorrow",
@@ -106,6 +113,32 @@ struct V134B1TomorrowLineTests {
                     #expect(!en.contains("streak") && !en.contains("-day") && !en.contains(" · "), Comment(rawValue: en))
                     #expect(!zh.contains("连续") && !zh.contains(" · "), Comment(rawValue: zh))
                 }
+            }
+        }
+    }
+
+    /// The capital, held over every due combination rather than the rows the table spells out:
+    /// without the streak the line's first character is never a lower-case letter, and with it the
+    /// due half after " · " starts lower-case and is otherwise the same words. Chinese never changes.
+    @Test("English capitalises whichever half starts the line; the due half after the streak stays lower-case")
+    func capitalisation() throws {
+        for words in [0, 1, 12] {
+            for forms in [0, 1, 4] {
+                for streak in [0, 1] {
+                    let en = TomorrowLine.compose(streakDays: streak, wordsDue: words, formsDue: forms, zh: false)
+                    let first = try #require(en.first)
+                    #expect(first.isNumber || first.isUppercase, Comment(rawValue: en))
+                }
+                let bare = TomorrowLine.compose(streakDays: 1, wordsDue: words, formsDue: forms, zh: false)
+                let prefixed = TomorrowLine.compose(streakDays: 3, wordsDue: words, formsDue: forms, zh: false)
+                #expect(prefixed.hasPrefix("3-day streak · "), Comment(rawValue: prefixed))
+                let tail = String(prefixed.dropFirst("3-day streak · ".count))
+                let tailFirst = try #require(tail.first)
+                #expect(tailFirst.isNumber || tailFirst.isLowercase, Comment(rawValue: prefixed))
+                #expect(tail.lowercased() == bare.lowercased(), "\(prefixed) against \(bare)")
+                let zhBare = TomorrowLine.compose(streakDays: 1, wordsDue: words, formsDue: forms, zh: true)
+                let zhPrefixed = TomorrowLine.compose(streakDays: 3, wordsDue: words, formsDue: forms, zh: true)
+                #expect(zhPrefixed == "连续 3 天 · " + zhBare, Comment(rawValue: zhPrefixed))
             }
         }
     }
@@ -190,10 +223,13 @@ struct V134B1TomorrowLineTests {
         #expect(model.tomorrowLine(zh: true) == "明天到期 \(due) 个词")
     }
 
-    /// The same rule the headline and `logRun` apply. Seeded with a streak so that, were the guard
-    /// missing, the line would have something to say — "2-day streak · nothing due tomorrow" — and
-    /// nil is the guard's doing and nothing else's.
-    @Test("a run that typed nothing has no tomorrow line")
+    /// `logRun` refuses a run that typed nothing, so it was not journalled and the line is nil —
+    /// the journal predicate, which subsumes the headline's `typedNothing` rule (there is no second
+    /// guard in `tomorrowLine`; see its doc). Seeded with a streak so that, were the guard missing,
+    /// the line would have something to say — "2-day streak · nothing due tomorrow" — and nil is
+    /// the guard's doing and nothing else's. The journal is counted, so "not journalled" is measured
+    /// rather than assumed.
+    @Test("a run that typed nothing was not journalled and has no tomorrow line")
     func typedNothingHasNoLine() throws {
         let model = ReviewPromptWiringTests.seededJournal([Self.noonRide(daysAgo: 2),
                                                            Self.noonRide(daysAgo: 1)])
@@ -202,6 +238,62 @@ struct V134B1TomorrowLineTests {
         #expect(model.screen == .results)
         #expect(try #require(model.lastSummary).typedNothing,
                 "the arrangement typed something — this measures nothing")
+        #expect(model.journal.count == 2, "logRun journalled a run that typed nothing")
+        #expect(model.lastRunWasJournalled == false)
+        #expect(model.tomorrowLine(zh: false) == nil)
+        #expect(model.tomorrowLine(zh: true) == nil)
+    }
+
+    /// Rides the weak-words cram the way the menu does — `startWeakWords`, the real entry point —
+    /// and types every word, so the cram is a run that typed something and only `logsRide` keeps
+    /// it out of the journal. A real ride first, on a two-day chain: its line is asserted, so the
+    /// flag is shown to be REPLACED by the cram, not merely false from the start. After the cram
+    /// the streak still reads three days — saying so on the cram's screen would credit the cram
+    /// with the day the ride before it earned — so the line is nil.
+    @Test("a weak-words cram, typed in full, logs no ride and has no tomorrow line")
+    func weakWordsCramHasNoLine() throws {
+        let model = ReviewPromptWiringTests.seededJournal([Self.noonRide(daysAgo: 2),
+                                                           Self.noonRide(daysAgo: 1)])
+        ReviewPromptWiringTests.rideCleanly(model)
+        #expect(model.journal.count == 3, "today's ride was not logged — the arrangement is wrong")
+        #expect(model.lastRunWasJournalled)
+        let before = try #require(model.tomorrowLine(zh: false), "a journalled ride shows the line")
+        #expect(before.hasPrefix("3-day streak · "), Comment(rawValue: before))
+
+        #expect(!model.weakWordsRunIDs.isEmpty, "no weak words to cram — the cram below never starts")
+        model.startWeakWords()
+        let cram = try #require(model.session, "startWeakWords did not start a run")
+        #expect(cram.config.recordsSRS == false, "startWeakWords no longer starts a cram")
+        while let romaji = model.session?.currentRomaji, model.session?.isFinished == false {
+            for ch in romaji { _ = model.session?.input(ch) }
+        }
+        model.finishGame()
+        #expect(model.screen == .results)
+        #expect(try #require(model.lastSummary).typedNothing == false,
+                "the cram typed nothing — typedNothing, not the cram, would be what is measured")
+        #expect(model.journal.count == 3, "the cram was journalled")
+        #expect(model.lastRunWasJournalled == false)
+        #expect(model.tomorrowLine(zh: false) == nil)
+        #expect(model.tomorrowLine(zh: true) == nil)
+    }
+
+    /// A conjugation drill's results replace a ride's, and a drill is not a ride: the flag the ride
+    /// left behind must not survive onto the drill's screen. `ConjugationResultsView` does not call
+    /// the line today; this holds the model's answer so a later caller cannot inherit a stale yes.
+    @Test("a conjugation drill after a ride leaves no tomorrow line behind")
+    func conjugationDrillResetsTheLine() throws {
+        let vocab = VocabStore(entries: Self.vocab().entries + AppModelTests.verbEntries(5))
+        let model = Self.seededRider(vocab: vocab, rides: [Self.noonRide(daysAgo: 1)],
+                                     review: ReviewStore(), conjugation: ConjugationReviewStore())
+        ReviewPromptWiringTests.rideCleanly(model)
+        #expect(model.journal.count == 2, "today's ride was not logged — the arrangement is wrong")
+        #expect(model.tomorrowLine(zh: false) != nil, "a journalled ride shows the line")
+
+        model.startConjugation()
+        #expect(model.conjugationSession != nil, "startConjugation did not start a drill")
+        model.finishConjugation()
+        #expect(model.screen == .results && model.resultsAreConjugation)
+        #expect(model.lastRunWasJournalled == false)
         #expect(model.tomorrowLine(zh: false) == nil)
         #expect(model.tomorrowLine(zh: true) == nil)
     }
