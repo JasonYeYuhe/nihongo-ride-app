@@ -332,8 +332,9 @@ struct V133GRideAndDrillLayoutTests {
     /// row commented out; the two rows swapped; `ViewThatFits` at every size (the `if` removed); the
     /// else branch offering `row(fallback: true)`. (v1.33 pre-submission review, round 3)
     ///
-    /// **And `row` only ever hands `fallback` on**, as `fallback: fallback` to the three `shows` gates
-    /// and the two reserves: every mention of the name in the body is half of such a pair. Round 3's
+    /// **And `row` only ever hands `fallback` on**, as `fallback: fallback` to the three `shows` gates,
+    /// the two reserves and (v1.34 §B3) the progress pill's spoken suffix: every mention of the name
+    /// in the body is half of such a pair. Round 3's
     /// review found `let fallback = false` at the top of the row's `HStack` made both rows identical —
     /// the fix switched off — with every test green. Mutations, 2026-09-18, each red here: that line;
     /// `if let onPause, !fallback {`. (v1.33 pre-submission review, round 4)
@@ -373,8 +374,11 @@ struct V133GRideAndDrillLayoutTests {
             let text = file.text(body)
             let pairs = handedOn.numberOfMatches(in: text, range: NSRange(text.startIndex..., in: text))
             let mentions = file.mentions(of: "fallback").filter { body.contains($0) }.count
-            #expect(pairs == 5 && mentions == 2 * pairs,
-                    "row(fallback:) mentions `fallback` \(mentions) times with \(pairs) `fallback: fallback` pairs; expected 10 and 5")
+            // Six since v1.34 §B3: the three `shows` gates, the two reserves, and the progress
+            // pill's `RideHUDSpoken.hiddenValues` — the suffix must be the row's own, or the row
+            // `ViewThatFits` draws would speak the other row's hidden values.
+            #expect(pairs == 6 && mentions == 2 * pairs,
+                    "row(fallback:) mentions `fallback` \(mentions) times with \(pairs) `fallback: fallback` pairs; expected 12 and 6")
         }
     }
 
