@@ -228,6 +228,103 @@ phase's UI diffs rendered with it. Mutations: a read-only target directory exits
 (`supportBase.lastPathComponent == "NihongoRideCapture"`) are updated to the new shape, not weakened —
 `touchesNothingOfTheUsers` must still flag capture.
 
+#### §C3 — done 2026-09-27
+
+*Addendum 2026-09-27 (branch `worktree-wf_dcd165f6-a62-1`, code at `189b505`). This is "the §C3 record"
+the code's comments cite; the scratchpad paths below are the raw evidence and are ephemeral — the record is
+this text.*
+
+**What the tool does now.** (1) *Isolation per target:* the capture's container and defaults suite are named
+`NihongoRideCapture-<8 hex of FNV-1a(NIHONGO_SHOT as spelled)>`, and `Screenshotter.isCapturing` /
+`captureTarget` are read from the environment at first use, so the App struct's eager model is isolated too.
+(2) *Each screen starts from its own name:* before every screen's model the deck seed is set from the
+screen's file name, the container and suite are cleared, and — for the named screens only — a fixture is put
+back: a lifetime odometer of 700 m for `road` (and `road-iap-review`, same model), `about` and
+`conjugation-results` (`Screenshotter.fixedOdometerMetres`, written with the odometer's own writer after the
+clear and before `AppModel.init`), and seven review cards due tomorrow for `journal`
+(`AppModel.seedDemoReviewForecast`, capture-only, never persisted). (3) *Honest output:* the target is created
+(a target that cannot be created → the path named on stderr, "capture aborted: nothing was written", return
+**1**, nothing created); every render/write failure is reported with its path and counted; "wrote" only after
+the file exists with size > 0; a container that cannot be cleared, or a fixture that cannot be written, is
+counted (`unprepared`); `capture` returns failed + unprepared and both call sites exit 1 on non-zero; one
+summary line closes the run. (4) *Leaves nothing:* the container and suite are removed at the end, and the
+seed is cleared by a `defer` that is `capture`'s first statement. (5) *Shipping is unchanged:* with no seed
+every helper calls the system generator, and `DeckRandomness`'s two stores are declared with no initialiser
+and assigned only in the `seed` setter.
+
+**Proofs.**
+* *Mutations, each shown red, each restored byte-for-byte.* 2026-09-25 (recorded in the test headers):
+  `StableDigest.tag` constant → `captureIsolationPerTarget`, `digestKnownAnswers`; `try?` back in `render` →
+  `renderIsHonest`; a seed set in `AppModel.init` → `onlyCaptureSeeds`; `makeModel` seeding from a constant →
+  `captureReseedsPerScreen`; U7 consumer severed → `AppModelTests.captureIsolationIsConsumed`; U3 `failed += 1`
+  deleted and U4 the macOS exit line replaced → `captureWritesEveryScreenOrSaysSo`, `renderIsHonest`; C4 clear
+  after init → `captureReseedsPerScreen`; C1 target assigned by `capture` → `captureStateComesFromTheEnvironment`;
+  U1 seeded draws that never advance → `DeckRandomnessTests.seededDrawsAdvance`; U8 a Fisher–Yates over
+  `Int.random` → `everyDrawGoesThroughTheSeam`. 2026-09-27 (round 2's mutations, all green against `47dafc7`,
+  now red; logs in scratchpad `v134/agents/c3-final/mut/`):
+
+  | mutation | caught by |
+  |---|---|
+  | A `seeded` given `= SplitMix64(seed: 0x5EED)` | `DeckRandomnessTests.seamStartsUnseeded` (`statics == […]`) and `shippingLaunchesDiffer` (`first != second`: two child launches drew the same deck) |
+  | B abort's `return 1` → `return 0` | `captureWritesEveryScreenOrSaysSo`, `aborted == 1` |
+  | C failure line without `\(path)` | `renderIsHonest` (verbatim pin) and `captureWritesEveryScreenOrSaysSo` (every FAILED line names its file) |
+  | D `written += 1` hoisted above the write | `captureWritesEveryScreenOrSaysSo`, `written == 0` after the read-only capture, both closing lines |
+  | E end-of-run `clearCaptureStores()` deleted | `expectLeftNothing`, no container after the writable and read-only captures |
+  | F the `defer` turned into a leading `do` | `expectLeftNothing`, `seed == nil`; `captureReseedsPerScreen`, `opening == ["defer {", …]` |
+  | G a failed clear not counted (the NOTE) | `captureWritesEveryScreenOrSaysSo`, `unprepared == 16` (15 models + the end) |
+  | H the fixed-odometer line deleted | `captureReseedsPerScreen`, seed → clear → odometer → init |
+  | I `seedDemoReviewForecast`'s capture guard deleted | `reviewForecastFixture`, `reviewStore.count == 0` |
+
+  Source pins now strip `//` and `/* */` comments (string-aware), themselves checked against a written-out
+  answer (`codeLinesStripsBothCommentKinds`).
+* *Independence, by render mutation.* With the `results-sentence` model, ride and render removed, the other
+  23 PNGs were byte-identical (`cmp`) to the unmutated run (en, 2026-09-27); only `results-sentence.png` was
+  missing. Restored byte-for-byte (`Screenshot.swift` sha1 `f99c518c…`).
+* *The owner's files, before and after one full render* of the committed binary (sha1 `71c42e87…`, en,
+  2026-09-27 15:21 JST), mtime and sha1 each: `~/Library/Application Support/NihongoRide/{history,odometer,
+  review,word-lists}.json`, `~/Library/Preferences/NihongoRideApp.plist` (the dev binary's domain) and the App
+  Group's `widget-snapshot.json` — all six unchanged; no `NihongoRideCapture-<tag>` container and no suite plist
+  left behind. (For contrast, the 1.33 tool re-rendered the same day changed `NihongoRideApp.plist` on every
+  run — the eager model's launch counter.)
+* *Three identical runs.* en and zh rendered **concurrently** in each of three rounds (scratchpad
+  `v134/c3-final/{en,en2,en3,zh,zh2,zh3}`): en 24/24 and 24/24 byte-identical to run 1, zh the same;
+  `compare_renders.py --control` reports 0 noisy screens.
+* *The subpixel observation (round 2, not reproduced today).* Two review agents rendered the `47dafc7` binary
+  31 + 9 times. Every sequential run and every two-process concurrent pair matched pixel for pixel — except
+  once: a zh render that was the first run of the day, concurrent with an en render, differed from a later
+  sequential zh render on `game-mid`, `results` and `results-sentence` at luminance Δ ≤ 2; and with FOUR
+  captures at once (2 en + 2 zh, three rounds) one render per language in one round differed the same way on
+  `game-mid` and `results`. Each process wrote its own directory and container, so this is not shared state; it
+  is attributed to rasterising under load. `compare_renders.py` classifies it SUBPIXEL and a strict comparison
+  exits 0; used as `--control`, such a run marks those screens noisy. So "two concurrent captures equal a
+  sequential pair" holds at the pixel standard as measured for two processes, and at the SUBPIXEL standard
+  beyond; a CHANGED-level difference between two runs of one binary on one day would be a finding.
+
+**The baseline, decided.** The scratchpad's `baseline-1.33` directory is no longer on disk (checked 2026-09-27),
+so the 1.33 baseline was re-rendered the same day: the 1.33 tree (`04947be`; `Sources/` unchanged since
+`d232f42`) with the 1.33 tool, sequentially, en and zh ×3 (scratchpad `v134/agents/c3-final/base133/`; the
+target directories had to be created first — the 1.33 tool's `try?` wrote nothing into a missing directory
+and exited 0, reproduced today). Its road read 24.3 km on en run 1 and zh runs 2 and 3, 24.4 on en 2–3, 24.2 on
+zh 1 — the old tool's random rides. Against it, this tool's render (en and zh, every run):
+* **byte-identical to every 1.33 run (14 screens):** `about`, `conjugation-results`, `menu`, `journal`, `stats`,
+  `onboarding`, `lists`, the four widgets, the three accessories — `journal` and `stats` only because both were
+  rendered on the same local day;
+* **byte-identical to every 1.33 run that read 24.3 km (2):** `road.png` and `road-iap-review.png` (en run 1;
+  zh runs 2 and 3); against the 24.4/24.2 runs they differ only in the two distance sentences, i.e. by the
+  1.33 tool's own noise;
+* **different by construction (the eight deck screens):** `game`, `game-mid`, `results`, `results-sentence`,
+  `practice`, `practice-blind`, `conjugation`, `share-card` — seeded decks against 1.33's random ones
+  (`share-card` happened to match en run 1).
+
+From this date, **every later render comparison in v1.34 — §G.2's "`road.png`, `road-iap-review.png` and
+`menu.png` identical", §B1's "`results.png` differs from the baseline in exactly the line's region" — uses as its
+baseline this tool's render of the pre-change tree, made on the same local day as the candidate (journal and
+stats are date-bearing), three runs.** The 1.33-tool renders are evidence for the sixteen screens above only.
+Against the branch's previous commit (`47dafc7`), this commit moves exactly five headless screens at the
+default size, en and zh: `road`, `road-iap-review` (the distance sentences and the Kawasaki tick),
+`about` (the counter line: nihonbashi → kawasaki), `conjugation-results` (the Kawasaki backdrop) and
+`journal` (Tomorrow 0 → 7).
+
 ### C4 — Release-day mechanics, every release · *0.1 each*
 
 On the day a version goes on sale: the store's `currentVersionReleaseDate` for both platforms into
@@ -385,6 +482,9 @@ build → upload → dry-run → metadata → submit, with `ListAgents` before a
    pixel by pixel against the 1.33 baseline — with C3 done, in parallel; until then sequentially. Every
    intended difference named per screen before the comparison is read. `road.png`, `road-iap-review.png`
    and `menu.png` identical.
+   *2026-09-27: "the 1.33 baseline" here and in §B1 now means this tool's render of the pre-change tree on the
+   same local day — see §C3's 2026-09-27 addendum, which also records which screens reproduce 1.33 byte for
+   byte.*
 3. **Accessibility sizes on a device:** the simulator pass at default and AX5, en/zh, on the same 402pt
    iPhone and the iPad mini, every changed screen before/after; the harness lives in the session
    scratchpad and is re-created from `PLAN-V1.33` §E's description (it is scratch by design — it drives
