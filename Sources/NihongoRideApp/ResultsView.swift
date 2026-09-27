@@ -163,10 +163,12 @@ struct ResultsView: View {
                         reviewList(summary.reviewWords)
                     }
                     stageLine
-                    // Tomorrow, said out loud: the streak and what comes due, on the one screen
-                    // every ride ends on. Text only — no button, no ask. The rating prompt fires
-                    // on this screen, and a second ask beside it is the v1.30 collision on the
-                    // time axis. Absent for a run that typed nothing, by the headline's own rule.
+                    // Tomorrow, said out loud: the streak and what comes due, on the screen a
+                    // ride ends on. Text only — no button, no ask. The rating prompt fires on this
+                    // screen, and a second ask beside it is the v1.30 collision on the time axis.
+                    // Absent unless this run was journalled (`AppModel.tomorrowLine`): so after a
+                    // run that typed nothing, and after a weak-words or stumbled-words cram, which
+                    // also end here but add no day to the streak the line would state.
                     // A limit and a floor because the line sits in a VStack, which
                     // HorizontalTextFitTests deliberately does not scan; both are measured, see
                     // `tomorrowLineLimit`. Its own colour, not the stage line's `Theme.dim`, which

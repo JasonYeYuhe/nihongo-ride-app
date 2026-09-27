@@ -244,6 +244,47 @@ struct V134B1TomorrowLineTests {
         #expect(model.tomorrowLine(zh: true) == nil)
     }
 
+    /// A journalled ride, then a run that typed nothing: the second run must CLEAR the flag the
+    /// first one set. `typedNothingHasNoLine` starts from a fresh model, where the flag is false by
+    /// default, so it cannot tell "finishGame reset it" from "it was never set"; this one can — a
+    /// flag kept from the ride before would put "3-day streak · …" under a headline that says the
+    /// run ended before its first word. (Release review, 2026-09-27.)
+    @Test("a journalled ride, then a run that typed nothing: the second run clears the line")
+    func typedNothingAfterARideClearsTheLine() throws {
+        // Its own sandbox and a vocabulary larger than one ride's queue (12 new words), because the
+        // shared helper's three words are all scheduled after the first ride and a second
+        // `startGame` would then stay on the menu — `finishGame` would never run for it.
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("TomorrowLineTests-\(UUID().uuidString)", isDirectory: true)
+        AppModel.supportDirectoryOverride = dir
+        AppModel.widgetContainerOverride = dir.appendingPathComponent("group", isDirectory: true)
+        let suite = "TomorrowLine-\(UUID().uuidString)"
+        AppModel.settingsDefaults = UserDefaults(suiteName: suite)
+        AppModel.settingsSuiteOverride = suite
+        var journal = RideJournal()
+        journal.append(Self.noonRide(daysAgo: 2))
+        journal.append(Self.noonRide(daysAgo: 1))
+        try journal.save(to: AppModel.supportFileURL("history.json"))
+        let kana = ["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ",
+                    "そ", "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね"]
+        let model = AppModel(vocab: VocabStore(entries: kana.enumerated().map { i, k in
+            AppModelTests.entry("w\(i)", k, k) }))
+        #expect(model.journal.count == 2, "the journal seed did not load")
+        ReviewPromptWiringTests.rideCleanly(model)
+        #expect(model.journal.count == 3, "today's ride was not logged — the arrangement is wrong")
+        #expect(model.lastRunWasJournalled)
+        #expect(model.tomorrowLine(zh: false)?.hasPrefix("3-day streak · ") == true)
+        model.startGame()
+        #expect(model.session != nil, "the second run did not start — this measures nothing")
+        model.finishGame()
+        #expect(try #require(model.lastSummary).typedNothing,
+                "the second run typed something — this measures nothing")
+        #expect(model.journal.count == 3, "logRun journalled a run that typed nothing")
+        #expect(model.lastRunWasJournalled == false)
+        #expect(model.tomorrowLine(zh: false) == nil)
+        #expect(model.tomorrowLine(zh: true) == nil)
+    }
+
     /// Rides the weak-words cram the way the menu does — `startWeakWords`, the real entry point —
     /// and types every word, so the cram is a run that typed something and only `logsRide` keeps
     /// it out of the journal. A real ride first, on a two-day chain: its line is asserted, so the
