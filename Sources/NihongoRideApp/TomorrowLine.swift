@@ -16,6 +16,11 @@ import Foundation
 /// forms — never rides: a line that promised "12 rides" would be the wrong-denominator copy of
 /// v1.32 §C2. English singulars come from `countLabel` ("1 word", "1 form"); the Chinese counter
 /// 个 does not inflect, exactly as the tiles above the line write their counts.
+///
+/// English is written as a sentence: whichever half starts the line starts with a capital. With
+/// the streak prefix that is "3-day streak", so the due half after the " · " stays lower-case;
+/// without it the due half IS the start of the line — "Nothing due tomorrow", "12 words due
+/// tomorrow" (a digit has no case and is left as it is). Chinese has no case and is unchanged.
 enum TomorrowLine {
     static func compose(streakDays: Int, wordsDue: Int, formsDue: Int, zh: Bool) -> String {
         let due: String
@@ -32,7 +37,7 @@ enum TomorrowLine {
         case (false, false):
             due = zh ? "明天没有到期的复习" : "nothing due tomorrow"
         }
-        guard streakDays >= 2 else { return due }
+        guard streakDays >= 2 else { return zh ? due : due.prefix(1).uppercased() + due.dropFirst() }
         return (zh ? "连续 \(streakDays) 天 · " : "\(streakDays)-day streak · ") + due
     }
 }

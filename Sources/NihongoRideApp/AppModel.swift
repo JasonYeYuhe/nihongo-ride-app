@@ -389,6 +389,12 @@ final class AppModel {
     private(set) var lastConjugationSummary: ConjugationSummary?
     /// True while the results screen is showing a conjugation drill (vs a ride).
     private(set) var resultsAreConjugation = false
+    /// Whether the run `lastSummary` describes was appended to the ride journal — the value
+    /// `logRun` returned in `finishGame`, and nothing re-derived from it. False after a weak-words
+    /// or stumbled-words cram (`RunCompletion.logsRide` is false, so `logRun` is never asked),
+    /// after a run that typed nothing (`logRun` refuses it), and after a conjugation drill's
+    /// results (a drill is not a ride). Read by `tomorrowLine(zh:)`. (v1.34 §B1)
+    private(set) var lastRunWasJournalled = false
 
     /// When this app asked for an App Store review, and — the reason it exists — every time it
     /// decided NOT to, by reason. Local, on-device, never transmitted: *Data Not Collected*
@@ -1557,11 +1563,16 @@ final class AppModel {
 
     /// The line under the results panel's stage line: the streak, and what comes due tomorrow.
     ///
-    /// Nil for a run that typed nothing. That is the rule `logRun` refuses the ride by and the
-    /// rule the headline stops claiming an arrival by (v1.33 §B R); a screen that has just declined
-    /// to show a flag or a grade must not then promise tomorrow's work on the strength of a ride
-    /// that recorded nothing. Asked of `lastSummary` rather than of the journal so this cannot drift
-    /// from the headline sitting six lines above it.
+    /// Shown only after a ride that counted — one `finishGame` appended to the journal
+    /// (`lastRunWasJournalled`, set from the same `appended != nil` the review-prompt moment reads).
+    /// The streak this line states is the one that ride extended; a weak-words or stumbled-words
+    /// cram logs no ride and adds no day, so after a cram "3-day streak" would credit it with a day
+    /// it did not ride, and the line is nil. A run that typed nothing is nil by the same predicate:
+    /// `logRun` refuses exactly the runs `GameSummary.typedNothing` names (both ask
+    /// `RunTyping.typedNothing` of the same two counts), so the journal predicate subsumes the
+    /// typed-nothing rule and there is no second guard here — one that no run could reach would be
+    /// a claim nothing tests. The headline six lines above still reads `typedNothing`; for a run
+    /// that logs a ride the two answers are the same answer.
     ///
     /// The numbers come from the SAME reads the Ride Log's streak card and forecast card and the
     /// Stats screen make — `streakDays()`, `dueForecast(resolves:)`, `conjugationDueForecast` — so
@@ -1578,7 +1589,7 @@ final class AppModel {
     /// separate Today and Tomorrow rows — it is read on the day, this line is about the next one —
     /// so this number is exactly the sum of those two rows, never a third count.
     func tomorrowLine(zh: Bool) -> String? {
-        guard lastSummary?.typedNothing != true else { return nil }
+        guard lastRunWasJournalled else { return nil }
         let words = reviewStore.dueForecast(resolves: vocab.resolvesID)
         let forms = conjugationDueForecast
         return TomorrowLine.compose(
@@ -2468,6 +2479,7 @@ final class AppModel {
         stopSpeaking()
         lastConjugationSummary = ConjugationSummary(from: conjugationSession)
         resultsAreConjugation = true
+        lastRunWasJournalled = false   // a drill is not a ride; the last ride's answer must not outlive it
         self.conjugationSession = nil
         refreshWidgetSnapshot()   // conjugation due count moved
         refreshReminders()        // …and so did the badge / the next 7 days of reminders
@@ -2517,6 +2529,9 @@ final class AppModel {
         // answer.
         let hadArrivedBeforeThisRide = hasArrivedAtKyoto
         let appended = completion.logsRide ? logRun(session) : nil   // a cram doesn't log a ride / odometer
+        // The results screen's tomorrow line is shown only after a ride that counted, and "counted"
+        // is this value — the one that decided whether a RideRecord exists (v1.34 §B1).
+        lastRunWasJournalled = appended != nil
         // Built from `appended` and not from `session`, deliberately: the accuracy that gates
         // the prompt is then the same number the Ride Log shows, and "was this a real ride" is
         // answered by the value that decided whether a RideRecord exists at all. Two sides, one
