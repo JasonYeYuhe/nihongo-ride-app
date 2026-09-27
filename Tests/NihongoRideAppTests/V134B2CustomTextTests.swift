@@ -7,8 +7,10 @@ import CustomTextKit
 /// v1.34 §B2 — the two defects in the learner's own texts: the silent cut, and the Mac's missing
 /// delete. What is held here: the notice's wording, that what Add stores through the model is the
 /// text the notice describes, that the sheet draws the notice whenever there is one and keeps Add
-/// enabled, that Add's action adds the editor's text under no condition on the truncation, and the
-/// shape of the Mac's delete. The cut's own numbers live in
+/// enabled, that the notice is ABOVE the editor — in its section's header, since the simulator
+/// pass (2026-09-27) found the footer 3,800pt down the sheet after a long paste — that Add's
+/// action adds the editor's text under no condition on the truncation, and the shape of the Mac's
+/// delete. The cut's own numbers live in
 /// `CustomTextTruncationTests`, beside the cut.
 ///
 /// What is NOT held here: the state plumbing between the editor and the notice view. The pins
@@ -156,7 +158,7 @@ struct V134B2CustomTextTests {
                 Comment(rawValue: "the onChange action is \(file.excerpt(change))"))
 
         // The notice view is built once, in the sheet, from the state — and not inside any
-        // condition: its innermost block is the footer's VStack, so nothing decides which
+        // condition: its innermost block is the header's VStack, so nothing decides which
         // truncations are shown except the notice view, which the render test below holds.
         let notices = file.calls(named: "CustomTextTruncationNotice")
         #expect(notices.count == 1, Comment(rawValue: "CustomTextTruncationNotice is built \(notices.count) times"))
@@ -167,7 +169,7 @@ struct V134B2CustomTextTests {
         let stacks = file.calls(named: "VStack").filter { sheet.contains($0.nameOffset) }
         let block = file.innermostBlock(containing: notice.nameOffset, within: sheet)
         #expect(block != nil && stacks.contains { $0.closures.first == block },
-                "the notice is inside a condition, not directly in the footer's VStack")
+                "the notice is inside a condition, not directly in the header's VStack")
 
         // The view renders the one function, with its own truncation and language.
         let body = try #require(file.typeBodies(named: "CustomTextTruncationNotice").first)
@@ -186,6 +188,67 @@ struct V134B2CustomTextTests {
             #expect(hits.allSatisfy { wording.contains($0) }, Comment(rawValue:
                 "\(fragment) is written somewhere other than truncationNotice"))
         }
+    }
+
+    /// The labelled trailing closures that follow `offset` — `header: { … } footer: { … }` after a
+    /// `Section`'s content closure, which the scanner does not attach to the call — each from `{`
+    /// through `}`, read on the comment- and string-blanked code so a brace in either is not one.
+    static func labelledClosures(after offset: Int, in file: CallSiteScanner.File) -> [(label: String, body: Range<Int>)] {
+        var out: [(String, Range<Int>)] = []
+        var cursor = offset
+        while true {
+            let start = CallSiteScanner.skipSpace(file.code, cursor)
+            guard let (label, afterLabel) = CallSiteScanner.word(in: file.code, at: start),
+                  afterLabel < file.code.count, file.code[afterLabel] == UInt8(ascii: ":") else { break }
+            let open = CallSiteScanner.skipSpace(file.code, afterLabel + 1)
+            guard open < file.code.count, file.code[open] == UInt8(ascii: "{"),
+                  let close = CallSiteScanner.matching(file.code, open: open) else { break }
+            out.append((label, open..<(close + 1)))
+            cursor = close + 1
+        }
+        return out
+    }
+
+    /// Simulator pass, 2026-09-27 (SERIOUS): after a 230-sentence paste the notice was on no
+    /// screen. It sat in the editor Section's FOOTER, and the editor grows to fit the paste — 3,495pt
+    /// tall, the footer about 3,800pt down the sheet — while Add is in the toolbar. So the notice is
+    /// in the editor Section's HEADER now: above the editor, under the section's label, at a place
+    /// that depends on the title field above it and not on the paste. Held on the source: the one
+    /// `Section` whose content is the `TextEditor` is followed by `header:` then `footer:`; the
+    /// header is exactly the label and then the notice (in that order, nothing else), and the
+    /// footer is the privacy line alone, 1.33's footer. Mutation, 2026-09-27: the notice moved back
+    /// into the footer's VStack → red here. Not held: that the header is on screen on a device —
+    /// that is the simulator re-run's to show; this pins the order a Form draws a section in.
+    @Test("the notice sits in the editor section's header, under its label, above the editor — not in the footer")
+    func noticeIsAboveTheEditor() throws {
+        let file = try Self.shipped("CustomTextsView.swift")
+        let sheet = try #require(file.typeBodies(named: "CustomTextAddView").first)
+
+        let editors = file.calls(named: "TextEditor").filter { sheet.contains($0.nameOffset) }
+        #expect(editors.count == 1, Comment(rawValue: "\(editors.count) editors in the add sheet"))
+        let editor = try #require(editors.first)
+        let sections = file.calls(named: "Section").filter { section in
+            sheet.contains(section.nameOffset) && section.closures.first?.contains(editor.nameOffset) == true
+        }
+        #expect(sections.count == 1, Comment(rawValue: "\(sections.count) sections hold the editor"))
+        let content = try #require(sections.first?.closures.first)
+
+        let labelled = Self.labelledClosures(after: content.upperBound, in: file)
+        #expect(labelled.map(\.label) == ["header", "footer"],
+                Comment(rawValue: "the editor's section is followed by \(labelled.map(\.label))"))
+        let header = try #require(labelled.first { $0.label == "header" }?.body)
+        let footer = try #require(labelled.first { $0.label == "footer" }?.body)
+
+        let notice = try #require(file.calls(named: "CustomTextTruncationNotice").first)
+        #expect(header.contains(notice.nameOffset), "the notice is not in the editor section's header")
+        #expect(!footer.contains(notice.nameOffset) && !content.contains(notice.nameOffset),
+                "the notice is below the editor")
+        #expect(Self.squeezed(header, in: file, strings: true)
+                == #"{VStack(alignment:.leading,spacing:6){Text(zh?"日语原文":"Japanesetext")CustomTextTruncationNotice(truncation:truncation,zh:zh)}}"#,
+                Comment(rawValue: "the header is \(String(decoding: file.codeWithStrings[header], as: UTF8.self))"))
+        #expect(Self.squeezed(footer, in: file, strings: true)
+                == #"{Text(zh?"只留在这台设备上,不会上传。含字母或数字的句子会保留但无法输入——罗马字引擎打不出它们。":"Staysonthisdeviceandisneveruploaded.Sentencescontaininglettersordigitsarekeptbutcannotbetyped—aromajienginehasnokeysforthem.")}"#,
+                Comment(rawValue: "the footer is \(String(decoding: file.codeWithStrings[footer], as: UTF8.self))"))
     }
 
     #if canImport(AppKit)

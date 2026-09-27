@@ -1012,12 +1012,25 @@ private struct WordCard: View {
                     // (simulator pass 2026-09-17, `B_mode-sentence_game_{en,zh}_ax5.png`). So at
                     // the accessibility sizes the line is inset by exactly how far a corner control
                     // reaches past the card's own padding, on both sides so it stays centred.
-                    // Zero at every other size. (v1.33 §B G.)
+                    // (v1.33 §B G.)
+                    //
+                    // And on a SENTENCE card with the keyboard up, at every size (simulator pass,
+                    // 2026-09-27). "Stops short of them" was vertical: the card centres its rows
+                    // in the height it is given, and the slack above the surface kept a full
+                    // first line below the ★. v1.34 §B5's second hint line spends that slack —
+                    // late in a long sentence none is left — and the ★ sat on 「魅」 of
+                    // 「新しい事業の将来性に魅力を感じて投資を決めた。」 on the 402pt phone. Only
+                    // sentence cards carry a hint long enough to wrap, and only the keyboard-up
+                    // card lost the slack (keyboard down, 1.33 and 1.34 lay out alike), so that is
+                    // where the rule now also applies. Zero on every other card below the
+                    // accessibility sizes. The cost, measured: a long sentence's surface is drawn
+                    // in 298pt instead of 354pt there, so it shrinks ~16% — PLAN-V1.34 §B5.
                     .padding(.horizontal, RideCardLayout.cornerControlReserve(
                         glyphPoints: compact ? cornerGlyphCompact : cornerGlyphRegular,
                         controlPadding: compact ? 10 : 14,
                         cardPadding: compact ? 14 : 24,
-                        accessibilitySize: typeSize.isAccessibilitySize))
+                        accessibilitySize: typeSize.isAccessibilitySize,
+                        sentenceUnderKeyboard: compact && session.mode == .sentence))
 
                 kanaReading
 
@@ -1275,12 +1288,26 @@ private struct WordCard: View {
             // What the learner has typed so far. It was truncating on a sentence, so past a
             // certain length they could see neither what they still owed (the kana line) nor
             // what they had already entered.
+            //
+            // **When it is cut, it is cut at the head (simulator pass, 2026-09-27).** Since the
+            // hint below takes its two lines (v1.34 §B5), this row is the one the card squeezes:
+            // with the keyboard up, late in a long sentence, it is offered one line and drops to
+            // it at its 0.5 floor. At the AX1 cap that line (about 16pt on the 354pt card) holds
+            // about 35 characters, and a 51-character sentence was drawn
+            // "kanojohageimeidekatsudoushiteorihon…" with 45 typed — the ten characters just
+            // typed were the ones hidden. Cut at the head, the oldest characters give way and the
+            // newest, the ones the rider is checking, stay: the line starts "…" and ends
+            // "myouhahiko". (On two lines the head mode cuts the head of the SECOND line: the first
+            // line stays, the second starts "…" and still ends with the last key typed.) Where the
+            // row fits, nothing changes — a truncation mode acts only on text that is cut, and
+            // `V134B5RomajiHintTests` measures both, the kept tail and the unchanged pixels.
             Text(session.typedRomaji.isEmpty ? " " : session.typedRomaji)
                 .scaledSystemFont(compact ? 20 : 26, weight: .bold, design: .monospaced)
                 .foregroundStyle(Theme.accent2)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(0.5)
+                .truncationMode(.head)
                 .accessibilityIdentifier("typedRomaji")
 
             if session.romajiVisible {
@@ -1400,11 +1427,14 @@ enum RideCardLayout {
     /// control is `padding + glyph + padding` measured in from the card's edge, the content starts
     /// `cardPadding` in. At AX1 that is 24.7 × 1.46 + 20 − 14 ≈ 42pt keyboard-up and
     /// 29.6 × 1.46 + 28 − 24 ≈ 47pt keyboard-down; a sentence line on a 402pt phone keeps 270 of
-    /// its 354pt. **Zero at every size below the accessibility sizes**, so the default layout does
-    /// not move.
+    /// its 354pt. **Zero below the accessibility sizes, except on a sentence card with the keyboard
+    /// up** (`sentenceUnderKeyboard`, simulator pass 2026-09-27): there, at the default size,
+    /// 15 × 1.46 + 20 − 14 ≈ 27.9pt, and the sentence line keeps 298 of its 354pt. Every other
+    /// default-size layout — a word card, and any card with the keyboard down — does not move.
     static func cornerControlReserve(glyphPoints: CGFloat, controlPadding: CGFloat,
-                                     cardPadding: CGFloat, accessibilitySize: Bool) -> CGFloat {
-        guard accessibilitySize else { return 0 }
+                                     cardPadding: CGFloat, accessibilitySize: Bool,
+                                     sentenceUnderKeyboard: Bool = false) -> CGFloat {
+        guard accessibilitySize || sentenceUnderKeyboard else { return 0 }
         return max(0, glyphPoints * widestCornerGlyphEm + 2 * controlPadding - cardPadding)
     }
 }

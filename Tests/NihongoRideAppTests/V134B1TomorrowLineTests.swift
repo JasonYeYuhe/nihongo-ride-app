@@ -47,49 +47,52 @@ struct V134B1TomorrowLineTests {
     /// 1 is not, 0 — a chain that broke — is not), the English singulars, and a count past 99.
     /// English is a sentence: when the due half starts the line it starts with a capital
     /// ("Nothing due tomorrow"; a digit is left as it is), and after the streak prefix it does not.
+    /// Since the simulator pass (2026-09-27) a count is joined to its noun or measure word by
+    /// U+00A0 NO-BREAK SPACE, and 明天 / 到期 / 变形 by U+2060 WORD JOINER — spelled as escapes here
+    /// so they can be seen; `noBreakInsideAJoin` measures what they do.
     nonisolated static let matrix: [Row] = [
         Row(streak: 3, words: 12, forms: 4,
-            en: "3-day streak · 12 words and 4 forms due tomorrow",
-            zh: "连续 3 天 · 明天到期 12 个词、4 个变形"),
+            en: "3-day streak · 12\u{00A0}words and 4\u{00A0}forms due tomorrow",
+            zh: "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 12\u{00A0}个词、4\u{00A0}个变\u{2060}形"),
         Row(streak: 3, words: 12, forms: 0,
-            en: "3-day streak · 12 words due tomorrow",
-            zh: "连续 3 天 · 明天到期 12 个词"),
+            en: "3-day streak · 12\u{00A0}words due tomorrow",
+            zh: "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 12\u{00A0}个词"),
         Row(streak: 3, words: 0, forms: 1,
-            en: "3-day streak · 1 form due tomorrow",
-            zh: "连续 3 天 · 明天到期 1 个变形"),
+            en: "3-day streak · 1\u{00A0}form due tomorrow",
+            zh: "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 1\u{00A0}个变\u{2060}形"),
         Row(streak: 3, words: 0, forms: 0,
             en: "3-day streak · nothing due tomorrow",
-            zh: "连续 3 天 · 明天没有到期的复习"),
+            zh: "连续 3\u{00A0}天 · 明\u{2060}天没有到\u{2060}期的复习"),
         Row(streak: 1, words: 12, forms: 0,
-            en: "12 words due tomorrow",
-            zh: "明天到期 12 个词"),
+            en: "12\u{00A0}words due tomorrow",
+            zh: "明\u{2060}天到\u{2060}期 12\u{00A0}个词"),
         Row(streak: 1, words: 12, forms: 4,
-            en: "12 words and 4 forms due tomorrow",
-            zh: "明天到期 12 个词、4 个变形"),
+            en: "12\u{00A0}words and 4\u{00A0}forms due tomorrow",
+            zh: "明\u{2060}天到\u{2060}期 12\u{00A0}个词、4\u{00A0}个变\u{2060}形"),
         Row(streak: 1, words: 0, forms: 1,
-            en: "1 form due tomorrow",
-            zh: "明天到期 1 个变形"),
+            en: "1\u{00A0}form due tomorrow",
+            zh: "明\u{2060}天到\u{2060}期 1\u{00A0}个变\u{2060}形"),
         Row(streak: 1, words: 0, forms: 0,
             en: "Nothing due tomorrow",
-            zh: "明天没有到期的复习"),
+            zh: "明\u{2060}天没有到\u{2060}期的复习"),
         Row(streak: 0, words: 0, forms: 0,
             en: "Nothing due tomorrow",
-            zh: "明天没有到期的复习"),
+            zh: "明\u{2060}天没有到\u{2060}期的复习"),
         Row(streak: 0, words: 5, forms: 0,
-            en: "5 words due tomorrow",
-            zh: "明天到期 5 个词"),
+            en: "5\u{00A0}words due tomorrow",
+            zh: "明\u{2060}天到\u{2060}期 5\u{00A0}个词"),
         Row(streak: 2, words: 1, forms: 1,
-            en: "2-day streak · 1 word and 1 form due tomorrow",
-            zh: "连续 2 天 · 明天到期 1 个词、1 个变形"),
+            en: "2-day streak · 1\u{00A0}word and 1\u{00A0}form due tomorrow",
+            zh: "连续 2\u{00A0}天 · 明\u{2060}天到\u{2060}期 1\u{00A0}个词、1\u{00A0}个变\u{2060}形"),
         Row(streak: 2, words: 1, forms: 0,
-            en: "2-day streak · 1 word due tomorrow",
-            zh: "连续 2 天 · 明天到期 1 个词"),
+            en: "2-day streak · 1\u{00A0}word due tomorrow",
+            zh: "连续 2\u{00A0}天 · 明\u{2060}天到\u{2060}期 1\u{00A0}个词"),
         Row(streak: 2, words: 0, forms: 2,
-            en: "2-day streak · 2 forms due tomorrow",
-            zh: "连续 2 天 · 明天到期 2 个变形"),
+            en: "2-day streak · 2\u{00A0}forms due tomorrow",
+            zh: "连续 2\u{00A0}天 · 明\u{2060}天到\u{2060}期 2\u{00A0}个变\u{2060}形"),
         Row(streak: 30, words: 100, forms: 0,
-            en: "30-day streak · 100 words due tomorrow",
-            zh: "连续 30 天 · 明天到期 100 个词"),
+            en: "30-day streak · 100\u{00A0}words due tomorrow",
+            zh: "连续 30\u{00A0}天 · 明\u{2060}天到\u{2060}期 100\u{00A0}个词"),
     ]
 
     @Test("the copy matrix, row by row, in both languages", arguments: matrix)
@@ -138,7 +141,7 @@ struct V134B1TomorrowLineTests {
                 #expect(tail.lowercased() == bare.lowercased(), "\(prefixed) against \(bare)")
                 let zhBare = TomorrowLine.compose(streakDays: 1, wordsDue: words, formsDue: forms, zh: true)
                 let zhPrefixed = TomorrowLine.compose(streakDays: 3, wordsDue: words, formsDue: forms, zh: true)
-                #expect(zhPrefixed == "连续 3 天 · " + zhBare, Comment(rawValue: zhPrefixed))
+                #expect(zhPrefixed == "连续 3\u{00A0}天 · " + zhBare, Comment(rawValue: zhPrefixed))
             }
         }
     }
@@ -206,8 +209,8 @@ struct V134B1TomorrowLineTests {
 
         let line = try #require(model.tomorrowLine(zh: false))
         #expect(line.hasPrefix("3-day streak · "), Comment(rawValue: line))
-        #expect(line == "3-day streak · \(due) words due tomorrow", Comment(rawValue: line))
-        #expect(model.tomorrowLine(zh: true) == "连续 3 天 · 明天到期 \(due) 个词")
+        #expect(line == "3-day streak · \(due)\u{00A0}words due tomorrow", Comment(rawValue: line))
+        #expect(model.tomorrowLine(zh: true) == "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 \(due)\u{00A0}个词")
     }
 
     @Test("a rider with no prior rides gets the due half alone — no streak, never '1-day'")
@@ -218,9 +221,9 @@ struct V134B1TomorrowLineTests {
         #expect(due == 3, "three words ridden for the first time should all be due tomorrow; raw cards say \(due)")
 
         let line = try #require(model.tomorrowLine(zh: false))
-        #expect(line == "\(due) words due tomorrow", Comment(rawValue: line))
+        #expect(line == "\(due)\u{00A0}words due tomorrow", Comment(rawValue: line))
         #expect(!line.contains("streak") && !line.contains("1-day"), Comment(rawValue: line))
-        #expect(model.tomorrowLine(zh: true) == "明天到期 \(due) 个词")
+        #expect(model.tomorrowLine(zh: true) == "明\u{2060}天到\u{2060}期 \(due)\u{00A0}个词")
     }
 
     /// `logRun` refuses a run that typed nothing, so it was not journalled and the line is nil —
@@ -456,8 +459,8 @@ struct V134B1TomorrowLineTests {
         #expect(due == backlogLeft + dueTomorrow && due >= 2, "raw cards say \(due)")
 
         let line = try #require(model.tomorrowLine(zh: false))
-        #expect(line == "\(due) words due tomorrow", Comment(rawValue: line))
-        #expect(model.tomorrowLine(zh: true) == "明天到期 \(due) 个词")
+        #expect(line == "\(due)\u{00A0}words due tomorrow", Comment(rawValue: line))
+        #expect(model.tomorrowLine(zh: true) == "明\u{2060}天到\u{2060}期 \(due)\u{00A0}个词")
         // Agreement, not the oracle: the Ride Log's Today and Tomorrow rows sum to the line.
         let log = model.reviewStore.dueForecast(resolves: model.vocab.resolvesID)
         #expect(log.today + log.tomorrow == due, "the Ride Log shows \(log.today) + \(log.tomorrow)")
@@ -506,8 +509,8 @@ struct V134B1TomorrowLineTests {
         #expect(wordsDue >= 2, "the words half is plural in the string below; raw cards say \(wordsDue)")
 
         let line = try #require(model.tomorrowLine(zh: false))
-        #expect(line == "3-day streak · \(wordsDue) words and \(formsDue) forms due tomorrow", Comment(rawValue: line))
-        #expect(model.tomorrowLine(zh: true) == "连续 3 天 · 明天到期 \(wordsDue) 个词、\(formsDue) 个变形")
+        #expect(line == "3-day streak · \(wordsDue)\u{00A0}words and \(formsDue)\u{00A0}forms due tomorrow", Comment(rawValue: line))
+        #expect(model.tomorrowLine(zh: true) == "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 \(wordsDue)\u{00A0}个词、\(formsDue)\u{00A0}个变\u{2060}形")
         // Agreement, not the oracle: Stats' conjugation Today and Tomorrow rows sum to the line.
         let stats = model.conjugationDueForecast
         #expect(stats.today + stats.tomorrow == formsDue, "Stats shows \(stats.today) + \(stats.tomorrow)")
@@ -656,12 +659,22 @@ struct V134B1TomorrowLineTests {
     /// How many lines CoreText breaks `text` into at `points` in a column `width` wide — the same
     /// measurement `V133SSettingsAboutTests` makes with the system UI font.
     static func lineCount(_ text: String, points: Double, width: Double) throws -> Int {
+        try Self.lineTexts(text, points: points, width: width).count
+    }
+
+    /// The same layout, as the text of each line CoreText made — trailing spaces included, so a
+    /// line that ends "7 " is visible as one.
+    static func lineTexts(_ text: String, points: Double, width: Double) throws -> [String] {
         let font = try #require(CTFontCreateUIFontForLanguage(.system, points, nil))
         let setter = CTFramesetterCreateWithAttributedString(
             NSAttributedString(string: text, attributes: [.font: font]))
         let path = CGPath(rect: CGRect(x: 0, y: 0, width: width, height: 100_000), transform: nil)
         let frame = CTFramesetterCreateFrame(setter, CFRange(location: 0, length: 0), path, nil)
-        return (CTFrameGetLines(frame) as? [CTLine] ?? []).count
+        let utf16 = text as NSString
+        return (CTFrameGetLines(frame) as? [CTLine] ?? []).map { line in
+            let range = CTLineGetStringRange(line)
+            return utf16.substring(with: NSRange(location: range.location, length: range.length))
+        }
     }
 
     /// The column the line gets on the 402pt iPhone 17 Pro the AX5 pass uses, from the source:
@@ -684,12 +697,20 @@ struct V134B1TomorrowLineTests {
     /// and largeTitle from); 40pt, `.caption2`'s, is measured too because the review used it.
     /// The control: at the old limit of two, the English row does NOT fit at the floor, or this
     /// instrument could not have seen the finding.
-    @Test("at AX5 the widest rows fit the accessibility limit at the floor, and did not fit two lines")
+    ///
+    /// **Since the simulator pass (2026-09-27) the English row has no room above the floor.** A
+    /// count may no longer end a line, so "999 " cannot hang at the end of the second line as it
+    /// did, and the row breaks "365-day streak · " / "999 words and " / "999 forms due tomorrow" —
+    /// the third line is the one that must fit, and it fits 322pt at 0.70 and not at 0.71 (before
+    /// the no-break spaces the row fit three lines from 0.865). The same holds for every row that
+    /// names 999 words and 999 forms, whatever the streak, which is why the whole grid below is
+    /// measured and not one row: rows of two-digit counts need 0.745.
+    @Test("at AX5 every row fits the accessibility limit at the floor, and the widest did not fit two lines")
     func widestRowsFitAtAX5() throws {
         let column = try Self.panelColumn()
         #expect(column == 322, "the column was 322pt when the limit was measured; now \(column)pt — re-measure")
-        let widest = ["365-day streak · 999 words and 999 forms due tomorrow",
-                      "连续 365 天 · 明天到期 999 个词、999 个变形"]
+        let widest = ["365-day streak · 999\u{00A0}words and 999\u{00A0}forms due tomorrow",
+                      "连续 365\u{00A0}天 · 明\u{2060}天到\u{2060}期 999\u{00A0}个词、999\u{00A0}个变\u{2060}形"]
         // The rows are the composer's own output, not a guess at it.
         #expect(TomorrowLine.compose(streakDays: 365, wordsDue: 999, formsDue: 999, zh: false) == widest[0])
         #expect(TomorrowLine.compose(streakDays: 365, wordsDue: 999, formsDue: 999, zh: true) == widest[1])
@@ -701,16 +722,133 @@ struct V134B1TomorrowLineTests {
                 #expect(lines <= limit, "\(points)pt × \(floor): \(lines) lines for a limit of \(limit) — \(row)")
             }
         }
-        // Measured 2026-09-27: at 43pt the English row fits three lines from a 0.865 scale down and
-        // the Chinese row fits three at full size, so the floor has room.
-        let enRoom = try Self.lineCount(widest[0], points: 43 * 0.86, width: column)
+        // Every row of the grid, not only the longest by characters: with the joins, a two-day
+        // streak with 999 and 999 is as wide as a 365-day one.
+        for zh in [false, true] {
+            for streak in Self.gridStreaks { for words in Self.gridCounts { for forms in Self.gridCounts {
+                let row = TomorrowLine.compose(streakDays: streak, wordsDue: words, formsDue: forms, zh: zh)
+                for points in [43.0, 40.0] {
+                    let lines = try Self.lineCount(row, points: points * floor, width: column)
+                    #expect(lines <= limit, "\(points)pt × \(floor): \(lines) lines — \(row)")
+                }
+            } } }
+        }
+        // Measured 2026-09-27, after the joins: the English row fits three lines at the floor and
+        // not one hundredth above it; the Chinese row fits three at full size.
+        let enAbove = try Self.lineCount(widest[0], points: 43 * 0.71, width: column)
+        #expect(enAbove > limit, "the English row now fits three lines at 0.71 — the room above the floor has changed; update the comments here and on `tomorrowLineLimit`")
+        #expect(try Self.lineTexts(widest[0], points: 43 * floor, width: column)
+                == ["365-day streak · ", "999\u{00A0}words and ", "999\u{00A0}forms due tomorrow"])
         let zhFull = try Self.lineCount(widest[1], points: 43, width: column)
-        #expect(enRoom <= limit && zhFull <= limit, "en at 0.86: \(enRoom) lines; zh at full size: \(zhFull)")
+        #expect(zhFull <= limit, "zh at full size: \(zhFull)")
         // The control: two lines at the floor truncated the English row.
         let twoLineControl = try Self.lineCount(widest[0], points: 43 * floor, width: column)
         #expect(twoLineControl > 2,
                 "control: the English row fits two lines at the floor — the instrument cannot see the finding")
     }
+
+    nonisolated static let gridStreaks = [0, 1, 2, 4, 9, 10, 99, 100, 365, 999]
+    nonisolated static let gridCounts = [0, 1, 7, 9, 10, 12, 99, 100, 999]
+
+    /// A line's text with its trailing breaking spaces removed — never U+00A0, which cannot end a
+    /// line — so "7 " reads as ending in its count.
+    static func trimmed(_ line: String) -> String {
+        var line = line
+        while let last = line.last, last == " " || last == "\n" { line.removeLast() }
+        return line
+    }
+
+    /// Simulator pass, 2026-09-27, AX5, 402pt phone: the line wrapped as "4-day streak · 7 / words
+    /// due / tomorrow" and "连续 4 天 · 明天到 / 期 7 个词". The instrument is calibrated on exactly
+    /// those two strings first — CoreText, at `.caption`'s 43pt in the 322pt column, must break the
+    /// 1.34 build's text where the device did, or it measures some other layout. Then, over the
+    /// grid of streaks and counts in both languages, at 43 and 40pt and every scale SwiftUI may
+    /// draw at down to the floor, and at the default size's 12pt in the same column: no line ends
+    /// in a count (English: its noun is on the next line; Chinese: its measure word is), and no
+    /// line break falls inside 明天, 到期 or 变形. Mutation, 2026-09-27: the composer's U+00A0 after
+    /// the English count back to a space → red here (and in the matrix); U+2060 in 到期 removed → red.
+    @Test("a count never ends a line and 明天 / 到期 / 变形 never break, at every size the line is drawn")
+    func noBreakInsideAJoin() throws {
+        let column = try Self.panelColumn()
+        // The control: the device's breaks, reproduced from the strings the device drew.
+        #expect(try Self.lineTexts("4-day streak · 7 words due tomorrow", points: 43, width: column)
+                == ["4-day streak · 7 ", "words due ", "tomorrow"])
+        #expect(try Self.lineTexts("连续 4 天 · 明天到期 7 个词", points: 43, width: column)
+                == ["连续 4 天 · 明天到", "期 7 个词"])
+        // The same two rows as composed now, with the device's numbers (the demo journal's).
+        let en = TomorrowLine.compose(streakDays: 4, wordsDue: 7, formsDue: 0, zh: false)
+        let zh = TomorrowLine.compose(streakDays: 4, wordsDue: 7, formsDue: 0, zh: true)
+        #expect(en == "4-day streak · 7\u{00A0}words due tomorrow")
+        #expect(zh == "连续 4\u{00A0}天 · 明\u{2060}天到\u{2060}期 7\u{00A0}个词")
+        #expect(try Self.lineTexts(en, points: 43, width: column)
+                == ["4-day streak · ", "7\u{00A0}words due ", "tomorrow"])
+        #expect(try Self.lineTexts(zh, points: 43, width: column)
+                == ["连续 4\u{00A0}天 · 明\u{2060}天", "到\u{2060}期 7\u{00A0}个词"])
+
+        let joined: Set<String> = ["明天", "到期", "变形"]
+        var layouts = 0, wrapped = 0
+        let scales = [1.0, 0.95, 0.9, 0.85, 0.8, 0.75, Double(ResultsView.tomorrowLineScaleFloor)]
+        #expect(scales.last == 0.7)
+        let sizes: [Double] = [43, 40].flatMap { points in scales.map { points * $0 } } + [12]
+        for zh in [false, true] {
+            for streak in Self.gridStreaks { for words in Self.gridCounts { for forms in Self.gridCounts {
+                let row = TomorrowLine.compose(streakDays: streak, wordsDue: words, formsDue: forms, zh: zh)
+                for points in sizes {
+                    let lines = try Self.lineTexts(row, points: points, width: column)
+                    layouts += 1
+                    if lines.count > 1 { wrapped += 1 }
+                    for (line, next) in zip(lines, lines.dropFirst()) {
+                        let end = Self.trimmed(line)
+                        #expect(end.last?.isNumber != true,
+                                "\(points)pt: a line ends in its count — \(lines)")
+                        let seam = String([end.last, next.first].compactMap { $0 })
+                        #expect(!joined.contains(seam), "\(points)pt: \(seam) is broken — \(lines)")
+                        #expect(end.last != "\u{2060}" && end.last != "\u{00A0}"
+                                    && next.first != "\u{2060}" && next.first != "\u{00A0}",
+                                "\(points)pt: a break beside a joiner — \(lines)")
+                    }
+                }
+            } } }
+        }
+        // The grid is not vacuous: most of its layouts wrap, so there were breaks to place.
+        #expect(layouts == 2 * 10 * 9 * 9 * 15 && wrapped > layouts / 2, "\(wrapped) of \(layouts) layouts wrapped")
+    }
+
+    /// The joins draw nothing different where the line does not wrap: every matrix row, composed
+    /// now, renders byte for byte as the same row with a plain space and no word joiner, at 12pt
+    /// (the default size's `.caption`) and 43pt, offered room — so `results.png`, which draws the
+    /// line on one row, cannot move. Advances measured too: U+00A0 is a space's, U+2060 is zero.
+    @Test("where the line fits one row, the joins render byte for byte as plain spaces")
+    func joinsDrawNothingDifferent() throws {
+        func plain(_ s: String) -> String {
+            s.replacingOccurrences(of: "\u{00A0}", with: " ").replacingOccurrences(of: "\u{2060}", with: "")
+        }
+        func bitmap(_ s: String, _ points: CGFloat) -> V134B5RomajiHintTests.Bitmap? {
+            V134B5RomajiHintTests.render(Text(s).font(.system(size: points)).foregroundStyle(.white).fixedSize(),
+                                         width: 4_000, height: nil)
+        }
+        var compared = 0, carryingAJoin = 0
+        for row in Self.matrix {
+            for text in [row.en, row.zh] {
+                if plain(text) != text { carryingAJoin += 1 }
+                for points in [12.0, 43.0] as [CGFloat] {
+                    let joined = try #require(bitmap(text, points)), bare = try #require(bitmap(plain(text), points))
+                    #expect(joined == bare, "\(points)pt: \(text) drew differently from its plain form")
+                    compared += 1
+                }
+            }
+        }
+        // Every row carries a join but the three English rows that say nothing is due.
+        #expect(compared == Self.matrix.count * 4 && carryingAJoin == 2 * Self.matrix.count - 3,
+                "\(carryingAJoin) of \(2 * Self.matrix.count) rows carry a join")
+        // Control: the comparison sees a one-character difference.
+        #expect(bitmap("7 words", 12) != bitmap("8 words", 12))
+        let font = try #require(CTFontCreateUIFontForLanguage(.system, 43, nil))
+        func advance(_ s: String) -> Double { NSAttributedString(string: s, attributes: [.font: font]).size().width }
+        #expect(advance("7\u{00A0}words") == advance("7 words"))
+        #expect(advance("到\u{2060}期") == advance("到期"))
+    }
+
     #endif
 
     // MARK: - The colour

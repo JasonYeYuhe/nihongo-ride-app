@@ -58,6 +58,14 @@ import RomajiKana
 /// 122 sentences are 55 or longer); with it down (18pt, 322pt) every hint over 26 characters
 /// shrinks, 41 characters to 12pt, and to 10pt or less from 50 (413 sentences).
 ///
+/// **Simulator pass, 2026-09-27: the typed row's cut reaches further, and now takes the oldest
+/// characters.** At the AX5 setting (the ride caps it at AX1), keyboard up, late in a 51-character
+/// sentence, the typed row was one line at about 16pt reading "kanojohageimeidekatsudoushiteorihon…"
+/// with 45 typed — the ten just typed hidden, in a sentence shorter than the ~55 characters the
+/// default-size measurement above names. The row now truncates at the head (section 5): cut
+/// characters are the oldest, the last ones typed are drawn. What is cut, and from how many
+/// characters, is unchanged; only which end.
+///
 /// **The instrument.** A character is DRAWN if replacing it with "#" changes the rendered pixels,
 /// and the rows that change say which line it is on. So "every character is drawn, on two lines"
 /// is read off the pixels, not inferred from a height. Its control is 1.33's chain offered one
@@ -555,6 +563,249 @@ struct V134B5RomajiHintTests {
         }
         #expect(calls.count == 1 && calls.first?.hasPrefix("Sources/NihongoRideApp/GameView.swift:") == true,
                 "RomajiHintLayout.breakable is called at \(calls)")
+    }
+
+    // MARK: 5. The typed row, cut at the head (simulator pass, 2026-09-27)
+
+    /// The typed-romaji row's shipped chain (`typedRowChainIsPinned` pins it), `scaledSystemFont`
+    /// resolved.
+    @MainActor
+    static func typed(_ romaji: String, points: CGFloat) -> some View {
+        Text(romaji.isEmpty ? " " : romaji)
+            .font(.system(size: points, weight: .bold, design: .monospaced))
+            .foregroundStyle(Theme.accent2)
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
+            .minimumScaleFactor(0.5)
+            .truncationMode(.head)
+    }
+
+    /// The same chain without `.truncationMode(.head)` — 1.33's typed row, and 1.34's before the
+    /// simulator pass.
+    @MainActor
+    static func typedTail(_ romaji: String, points: CGFloat) -> some View {
+        Text(romaji.isEmpty ? " " : romaji)
+            .font(.system(size: points, weight: .bold, design: .monospaced))
+            .foregroundStyle(Theme.accent2)
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
+            .minimumScaleFactor(0.5)
+    }
+
+    /// The simulator's sentence (zh, AX5 capped to AX1, keyboard up): 51 characters, of which 45
+    /// were typed when the row read "kanojohageimeidekatsudoushiteorihon…".
+    static let typedObserved = "kanojohageimeidekatsudoushiteorihonmyouhahikoukaida"
+    /// 65 characters: the corpus's longest hint less its last two.
+    static let typed65 = String(longest.prefix(65))
+
+    /// One line of the row's font at its 0.5 floor: what the card offers the row late in a long
+    /// sentence with the keyboard up (the file's header; the simulator measured ~16pt at AX1).
+    @MainActor
+    static func floorLine(_ points: CGFloat, width: CGFloat) -> CGFloat {
+        laidOut(Text("m").font(.system(size: points * 0.5, weight: .bold, design: .monospaced)), width: width, height: nil).height
+    }
+
+    #if canImport(AppKit)
+    /// The simulator pass's SERIOUS finding, reproduced and fixed. Offered one line at its floor —
+    /// the card's offer late in a long sentence with the keyboard up — the row without the modifier
+    /// draws the first characters and cuts the LAST ones, the ones just typed: at the AX1 cap on the
+    /// 354pt keyboard-up card, 18 of the 51 (the device drew 35 of them) and 32 of 65; at the
+    /// default size, the 65-character string's last 9, as §B5's release review recorded. That is
+    /// the control. With `.truncationMode(.head)` the same offer draws the LAST characters and cuts
+    /// the first: every cut character comes before every drawn one, and the final ten — the count
+    /// the device hid — are all drawn. Also at the AX1 keyboard-down card (42.8pt in 322pt).
+    ///
+    /// Stated, measured: on TWO lines the head mode cuts the head of the second line, not of the
+    /// text — the first line stays whole and the second begins "…" and ends with the last
+    /// character typed. Offered two lines at its floor at the AX1 keyboard-down card, 51
+    /// characters lose characters 24–27; the newest are drawn there too. (At the AX1 keyboard-up
+    /// card two floor lines hold 70 characters, past the corpus's longest sentence.)
+    @MainActor
+    @Test("cut at the head: the newest typed characters are drawn where the tail cut them")
+    func typedRowKeepsTheNewestCharacters() throws {
+        #expect(Self.typedObserved.count == 51 && Self.typed65.count == 65)
+        let cases: [(points: CGFloat, width: CGFloat, romaji: String, tailCut: Int)] = [
+            (20 * Self.ax1, 354, Self.typedObserved, 18),
+            (20 * Self.ax1, 354, Self.typed65, 32),
+            (26 * Self.ax1, 322, Self.typedObserved, 28),
+            (26 * Self.ax1, 322, Self.typed65, 42),
+            (20, 354, Self.typed65, 9),
+        ]
+        for (points, width, romaji, tailCut) in cases {
+            let label = "\(romaji.count) characters, \(points)pt in \(width)pt, one line at the floor"
+            let line = Self.floorLine(points, width: width)
+            let before = try #require(Self.drawn(romaji, width: width, height: line) { Self.typedTail($0, points: points) })
+            #expect(before.missing == Array((romaji.count - tailCut)..<romaji.count),
+                    "control, \(label): the tail chain cut \(before.missing), expected the last \(tailCut)")
+            let after = try #require(Self.drawn(romaji, width: width, height: line) { Self.typed($0, points: points) })
+            #expect(after.lines == 1, "\(label): \(after.lines) lines")
+            #expect(!after.missing.isEmpty && after.missing == Array(0..<after.missing.count),
+                    "\(label): the head chain cut \(after.missing) — not the oldest characters")
+            #expect(Set(after.missing).isDisjoint(with: (romaji.count - 10)..<romaji.count),
+                    "\(label): the head chain cut one of the last ten typed")
+        }
+        // Two lines, stated: the second line's head goes, the first line and the newest stay.
+        let big = 26 * Self.ax1
+        let two = try #require(Self.drawn(Self.typedObserved, width: 322, height: 2 * Self.floorLine(big, width: 322)) {
+            Self.typed($0, points: big)
+        })
+        #expect(two.lines == 2 && two.missing == Array(24...27),
+                "two floor lines at the AX1 keyboard-down card: cut \(two.missing), \(two.lines) lines")
+    }
+
+    /// Where the row fits, the modifier changes nothing: a typed string of 20 characters or fewer
+    /// — and the empty row's " " — renders byte for byte as the chain without it, at both card
+    /// widths, at the default size and the AX1 cap, offered room, one line at full size, or one
+    /// line at the floor. And so do the long strings wherever they fit: 51 characters on one floor
+    /// line at the default size, 51 and 65 offered room at the AX1 keyboard-up card (two lines).
+    @MainActor
+    @Test("a typed row that fits renders byte for byte as the chain without the head mode")
+    func fittingTypedRowIsUnchanged() throws {
+        var compared = 0
+        for (points, width) in [(20, 354), (26, 322)] as [(CGFloat, CGFloat)] {
+            for scale in [1, Self.ax1] {
+                let size = points * scale
+                let full = Self.laidOut(Text("m").font(.system(size: size, weight: .bold, design: .monospaced)),
+                                        width: width, height: nil).height
+                for romaji in ["", "k", "kanojoha", "kanojohageimeidekats"] {
+                    #expect(romaji.count <= 20)
+                    for height in [nil, full, Self.floorLine(size, width: width)] as [CGFloat?] {
+                        let old = try #require(Self.render(Self.typedTail(romaji, points: size), width: width, height: height))
+                        let new = try #require(Self.render(Self.typed(romaji, points: size), width: width, height: height))
+                        #expect(old == new, "\"\(romaji)\" at \(size)pt in \(width)pt, offered \(String(describing: height)): the pixels moved")
+                        compared += 1
+                    }
+                }
+            }
+        }
+        #expect(compared == 2 * 2 * 4 * 3)
+        let fits: [(CGFloat, CGFloat, String, CGFloat?)] = [
+            (20, 354, Self.typedObserved, Self.floorLine(20, width: 354)),
+            (20 * Self.ax1, 354, Self.typedObserved, nil),
+            (20 * Self.ax1, 354, Self.typed65, nil),
+        ]
+        for (points, width, romaji, height) in fits {
+            let whole = try #require(Self.drawn(romaji, width: width, height: height) { Self.typedTail($0, points: points) })
+            #expect(whole.missing.isEmpty, "\(romaji.count) at \(points)pt: the arrangement cuts it — it measures nothing")
+            #expect(Self.render(Self.typedTail(romaji, points: points), width: width, height: height)
+                    == Self.render(Self.typed(romaji, points: points), width: width, height: height),
+                    "\(romaji.count) characters at \(points)pt in \(width)pt fit, and the pixels moved")
+        }
+        // Control: the comparison sees a one-character difference.
+        #expect(Self.render(Self.typedTail("kanojoha", points: 20), width: 354, height: nil)
+                != Self.render(Self.typedTail("kanojohb", points: 20), width: 354, height: nil))
+    }
+    #endif
+
+    /// The typed row's chain in `WordCard`, read with BOTH comment forms stripped (the B1 suite's
+    /// stripper — the shared one sees only `//`), line for line: the replica above is this chain
+    /// with `scaledSystemFont` resolved. Mutation, 2026-09-27: `.truncationMode(.head)` deleted
+    /// from the source → red here.
+    @MainActor
+    @Test("the typed row's modifier chain, head truncation included")
+    func typedRowChainIsPinned() throws {
+        let lines = V134B1TomorrowLineTests.codeLines(try V133GRideAndDrillLayoutTests.source("GameView.swift"))
+        let starts = lines.indices.filter { lines[$0] == "Text(session.typedRomaji.isEmpty ? \" \" : session.typedRomaji)" }
+        #expect(starts.count == 1, "the typed row is built \(starts.count) times in GameView")
+        let start = try #require(starts.first, "WordCard's typed row moved; update this test")
+        let expected = [
+            "Text(session.typedRomaji.isEmpty ? \" \" : session.typedRomaji)",
+            ".scaledSystemFont(compact ? 20 : 26, weight: .bold, design: .monospaced)",
+            ".foregroundStyle(Theme.accent2)",
+            ".multilineTextAlignment(.center)",
+            ".lineLimit(2)",
+            ".minimumScaleFactor(0.5)",
+            ".truncationMode(.head)",
+            ".accessibilityIdentifier(\"typedRomaji\")",
+        ]
+        let found = Array(lines[start...].filter { !$0.isEmpty }.prefix(expected.count))
+        #expect(found == expected, "the typed row's chain is now:\n\(found.joined(separator: "\n"))")
+        #expect(lines[..<start].last { !$0.isEmpty } == "VStack(spacing: compact ? 5 : 8) {",
+                "the typed row is no longer the first row of WordCard.romaji")
+    }
+
+    // MARK: 6. The ★ and the surface on a sentence card with the keyboard up (simulator pass, 2026-09-27)
+
+    /// The simulator pass saw the ★ drawn over the top-right of 「魅」, late in
+    /// 「新しい事業の将来性に魅力を感じて投資を決めた。」, default size, keyboard up. Measured once,
+    /// outside this file (the ride hosted on macOS as a 402pt phone with the keyboard-up layout
+    /// forced by a temporary patch, reverted; not committed, for the reason the header's round-2
+    /// measurement gives): the card centres its rows in the height it is given, and in 1.33 that
+    /// left 8.5pt above the surface — its frame 22.5pt below the card's top, its ink clear of the ★
+    /// by 5pt. With §B5's second hint line the slack is 2.5pt at the start and middle of that
+    /// sentence and 0 late in it (frame at 16.5, then 14.0 = the card's padding), the ★'s glyph
+    /// spans 10.0–28.3pt, and the two share 3 and then 6 pixels (at 3×). Over eight corpus
+    /// sentences of 8–28 characters at 0/50/90% typed, 1.33's chain overlapped once (24
+    /// characters, late) and 1.34's in ten of the 24 cases; with the keyboard down the two
+    /// chains lay out alike (one pre-existing 6-pixel overlap, 24 characters, in both). So the
+    /// cause is §B5, on the keyboard-up sentence card, and the lever is v1.33's corner reserve,
+    /// applied there at every size: the line keeps out of the columns the corner controls occupy,
+    /// whatever the vertical slack. In the probe: every case clear of the ★'s columns.
+    /// Cost, same probe: long sentences' surface ink 16–18% shorter (23 characters 203 → 171px,
+    /// 28 characters 171 → 140px), the card 10–14pt shorter.
+    ///
+    /// Held here: the rule by value, the reserve against the controls' real layout widths at the
+    /// default size's corner glyphs, and the call site. Mutations, 2026-09-27: the rule's guard back
+    /// to `accessibilitySize` alone → red in `sentenceReserveByValue`; the call's
+    /// `sentenceUnderKeyboard:` argument set to `false` → red in `sentenceReserveIsHandedTheCard`.
+    @Test("a sentence card with the keyboard up keeps the corner reserve at every size; nothing else below AX does")
+    func sentenceReserveByValue() {
+        func reserve(_ glyph: CGFloat, _ pad: CGFloat, _ card: CGFloat, ax: Bool, sentence: Bool) -> CGFloat {
+            RideCardLayout.cornerControlReserve(glyphPoints: glyph, controlPadding: pad, cardPadding: card,
+                                                accessibilitySize: ax, sentenceUnderKeyboard: sentence)
+        }
+        // Keyboard up at the default size: 15 × 1.46 + 2 × 10 − 14 = 27.9pt, and the 354pt line of
+        // the 402pt phone keeps 298.2pt.
+        #expect(abs(reserve(15, 10, 14, ax: false, sentence: true) - 27.9) < 1e-9)
+        #expect(abs(354 - 2 * reserve(15, 10, 14, ax: false, sentence: true) - 298.2) < 1e-9)
+        #expect(reserve(15, 10, 14, ax: false, sentence: false) == 0, "a word card below AX must not move")
+        #expect(reserve(15, 10, 14, ax: true, sentence: false) == reserve(15, 10, 14, ax: false, sentence: true),
+                "the sentence card gets the accessibility sizes' rule, not a second one")
+        // The default argument is the old rule: every caller that does not say otherwise is unchanged.
+        #expect(RideCardLayout.cornerControlReserve(glyphPoints: 15, controlPadding: 10, cardPadding: 14,
+                                                    accessibilitySize: false) == 0)
+    }
+
+    #if canImport(AppKit)
+    /// The reserve keeps the sentence line out of the corner controls' columns at the default size:
+    /// what the ★ (either state) and the speaker reach past the card's padding, laid out by SwiftUI
+    /// at the keyboard-up card's 15pt, is inside it — the same measurement
+    /// `V133GRideAndDrillLayoutTests.cornerReserveClearsTheControls` makes at AX1.
+    @MainActor
+    @Test("at the default size the keyboard-up reserve clears both corner controls as SwiftUI lays them out")
+    func sentenceReserveClearsTheControls() {
+        func layoutWidth(_ symbol: String, _ points: CGFloat) -> CGFloat {
+            NSHostingView(rootView: Image(systemName: symbol).font(.system(size: points)).fixedSize()).fittingSize.width
+        }
+        let reserve = RideCardLayout.cornerControlReserve(glyphPoints: 15, controlPadding: 10, cardPadding: 14,
+                                                          accessibilitySize: false, sentenceUnderKeyboard: true)
+        for symbol in ["star", "star.fill", "speaker.wave.2"] {
+            let width = layoutWidth(symbol, 15)
+            #expect(width > 7.5, "\(symbol) measured \(width)pt — the instrument is not laying out")
+            let reach = width + 2 * 10 - 14
+            #expect(reserve >= reach, "\(symbol) at 15pt reaches \(reach)pt, reserve \(reserve)pt")
+        }
+    }
+    #endif
+
+    /// The one call, in `WordCard`, comment-stripped: the accessibility size as before (the V133G
+    /// scan holds that argument) and the new flag exactly as the keyboard-up sentence card.
+    @Test("the surface's reserve is handed the keyboard-up sentence card")
+    func sentenceReserveIsHandedTheCard() throws {
+        let file = try #require(try CallSiteScanner.shippedSources.get().first { $0.path == "Sources/NihongoRideApp/GameView.swift" })
+        let calls = file.calls(named: "cornerControlReserve").filter {
+            CallSiteScanner.receiverComponents($0.receiver) == ["RideCardLayout"]
+        }
+        #expect(calls.count == 1, "cornerControlReserve is called \(calls.count) times in GameView")
+        let call = try #require(calls.first)
+        let card = try #require(file.typeBodies(named: "WordCard").first)
+        #expect(card.contains(call.nameOffset), "the reserve is no longer applied in WordCard")
+        let arguments = try #require(call.arguments)
+        let squeezed = String(decoding: file.code[arguments], as: UTF8.self).filter { !$0.isWhitespace }
+        #expect(squeezed == "glyphPoints:compact?cornerGlyphCompact:cornerGlyphRegular,controlPadding:compact?10:14,"
+                + "cardPadding:compact?14:24,accessibilitySize:typeSize.isAccessibilitySize,"
+                + "sentenceUnderKeyboard:compact&&session.mode==.sentence",
+                "the reserve is handed \(squeezed)")
     }
 
     /// The practice screen's hint is its own row and v1.34 does not touch it: `romajiGuide`,
