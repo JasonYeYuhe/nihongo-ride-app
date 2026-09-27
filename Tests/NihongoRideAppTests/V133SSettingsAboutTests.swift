@@ -265,11 +265,16 @@ struct V133SContrastTests {
 /// plan lists, and the seven straight on the background share one worst case (the gradient's
 /// bottom stop) while the two on a card share another (`Theme.card` over that stop).
 ///
-/// **"All" is held by a rule, not by the list** (added after the review): every `Text` on About
-/// drawn in white at an opacity — whichever way it is written — must clear 4.5:1 over the backdrop
-/// the source actually puts it on, at no less than that backdrop's constant; and nothing between
-/// any `Text` and the page may change its alpha (`everyDimWhiteTextClears`,
-/// `nothingElseChangesWhatIsDrawn`, `eachTextSitsWhereItsConstantAssumes`, below). That rule
+/// **"All" is held by a rule, not by the list** (added after the review): every `Text` and `Label`
+/// on About drawn in dim text — any colour but full opaque white or a brand accent as written, so
+/// white at an opacity and an opaque grey alike (widened after the second review, which found the
+/// rule read only white at an opacity, and only in a `Text`) — must clear 4.5:1 over the backdrop
+/// the source actually puts it on, white at an opacity at no less than that backdrop's constant; and
+/// nothing between any of them and the page may change its alpha or draw in a layer with it — no
+/// `.opacity`, no `ZStack`, no overlay but the card's edge stroke (`everyDimWhiteTextClears`,
+/// `nothingElseChangesWhatIsDrawn`, `eachTextSitsWhereItsConstantAssumes`, below). What it
+/// enumerates is `Text` and `Label` calls in `AboutView`; the other SwiftUI views that draw a title
+/// are checked absent from About, and a `Button` may only take its label as a closure. That rule
 /// covers the two counter lines' placement and alpha too; their COLOUR stays pinned where 1.33
 /// pinned it (`aboutUsesTheCounterColor` above), beside their frozen text. What is deliberately
 /// NOT held here: text that is not dim — the coral section titles (5.65:1), the sky version line
@@ -435,8 +440,16 @@ struct V134B4AboutContrastTests {
     ///
     /// Outside the walk, stated rather than held: the page itself sits on `Theme.background`
     /// (`Screenshot.swift`'s ZStack; the app's root draws the same gradient behind every flat
-    /// screen), and `.overlay` is taken as not changing the backdrop (About's two overlays are the
-    /// card strokes, drawn at the edge).
+    /// screen).
+    ///
+    /// Layers are held too (after the second review, which drew a `Theme.card` as a `ZStack`
+    /// sibling behind the contact texts and an `.overlay(Color.black.opacity(0.5))` over the footer
+    /// note, both green, because the walk read modifiers and a `ZStack`'s other children are not
+    /// modifiers, and `.overlay` was on the inert list). Now every block a text's path passes
+    /// through must be the body of a container that draws nothing of its own (`containers` —
+    /// a `ZStack` is named and fails), and `.overlay` is off the inert list: the one overlay About
+    /// has, the card's hairline `.strokeBorder`, passes only as an edge stroke drawn outside a
+    /// padding that insets every edge (`isEdgeStroke`); any other overlay fails.
 
     /// One modifier: `.name(arguments)`, with its trailing `{ closure }` if it has one.
     struct Link {
@@ -446,9 +459,17 @@ struct V134B4AboutContrastTests {
         let offset: Int
     }
 
-    /// One way a `Text` reaches the page: every link applied on the way, innermost first.
+    /// A block a path passes through, named by what it is the body of (`owner(of:)`).
+    struct Container {
+        let name: String
+        let offset: Int
+    }
+
+    /// One way a `Text` reaches the page: every link applied on the way, innermost first, and
+    /// every block it passes through on the way.
     struct Path {
         var links: [Link] = []
+        var containers: [Container] = []
         var reachesBody = false
     }
 
@@ -456,11 +477,36 @@ struct V134B4AboutContrastTests {
 
     /// Modifiers that neither paint behind a text nor change its colour or alpha. Anything else on a
     /// text's way to the page is a failure until someone says which it is — the list is the claim.
+    /// `.overlay` was on it until the second review drew black at 0.5 over the footer with it; it is
+    /// now classified per use (`isEdgeStroke`).
     static let inert: Set<String> = [
         "scaledSystemFont", "fixedSize", "textSelection", "italic", "tracking", "lineLimit",
-        "minimumScaleFactor", "padding", "frame", "overlay", "accessibilityElement",
+        "minimumScaleFactor", "padding", "frame", "accessibilityElement",
         "accessibilityLabel", "accessibilityValue", "accessibilityIdentifier",
     ]
+
+    /// The blocks a text may be inside on its way to the page: containers that lay their children
+    /// out side by side or one at a time and draw nothing themselves — plus `Button`, whose closure
+    /// is its label, and the branches of an `if`. Anything else fails until it is classified; a
+    /// `ZStack` draws its other children behind or over the text, so it is never on this list.
+    nonisolated static let containers: Set<String> = ["VStack", "HStack", "Group", "ScrollView", "Button", "if"]
+
+    /// The text-bearing views the enumeration reads. Other SwiftUI views that draw a title
+    /// (`checkedAbsent`) must not appear on About, so the enumeration is every text there is.
+    static let textViews = ["Text", "Label"]
+    static let checkedAbsent = ["Link", "Toggle", "TextField", "SecureField", "TextEditor", "Picker",
+                                "Menu", "Stepper", "LabeledContent", "DisclosureGroup", "navigationTitle"]
+
+    /// The brand colours, as written — not dim text, and on PLAN-V1.34 §I's day-91 list.
+    nonisolated static let brandAccents: Set<String> = ["Theme.accent", "Theme.accent2"]
+
+    /// Whether a text drawn in `expression` (read as `paint`) is dim text for the rule: anything that
+    /// is not full opaque white and not a brand accent as written — white at an opacity, an opaque
+    /// grey, a brand colour at an opacity, any other colour.
+    nonisolated static func isDim(_ expression: String, _ paint: Paint) -> Bool {
+        if paint.rgb == (1, 1, 1) && paint.alpha == 1 { return false }
+        return !brandAccents.contains(expression)
+    }
 
     /// The colour an expression names, read from the source: `.white` / `Color.white`,
     /// `Color(red:green:blue:)`, `Theme.x` (NihongoRideApp.swift), `Self.x` / `AboutView.x`
@@ -622,27 +668,124 @@ struct V134B4AboutContrastTests {
         /// the chain at `end` when given. A builder used twice gives two paths; one used nowhere, none.
         func paths(from offset: Int, after end: Int?, depth: Int = 0) -> [Path] {
             var links = end.map { self.links(after: $0) } ?? []
+            var containers: [Container] = []
             guard depth < 16 else { return [Path(links: links)] }
             let enclosing = blocks.filter { $0.lowerBound < offset && offset < $0.upperBound }.sorted { $0.count < $1.count }
             for block in enclosing {
                 if let owner = builder(of: block) {
-                    if owner.name == "body" && !owner.isFunction { return [Path(links: links, reachesBody: true)] }
+                    if owner.name == "body" && !owner.isFunction {
+                        return [Path(links: links, containers: containers, reachesBody: true)]
+                    }
+                    let (prefix, held) = (links, containers)
                     return uses(of: owner).flatMap { use in
                         paths(from: use.offset, after: use.end, depth: depth + 1)
-                            .map { Path(links: links + $0.links, reachesBody: $0.reachesBody) }
+                            .map { Path(links: prefix + $0.links, containers: held + $0.containers, reachesBody: $0.reachesBody) }
                     }
                 }
+                containers.append(Container(name: self.owner(of: block), offset: block.lowerBound))
                 links += self.links(after: block.upperBound)
                 if let name = binding(of: block) {
                     let scope = enclosing.first { $0.count > block.count } ?? type
-                    let prefix = links
+                    let (prefix, held) = (links, containers)
                     return file.mentions(of: name).filter { scope.contains($0) && $0 > block.upperBound }.flatMap { use in
                         paths(from: use, after: use + name.utf8.count, depth: depth + 1)
-                            .map { Path(links: prefix + $0.links, reachesBody: $0.reachesBody) }
+                            .map { Path(links: prefix + $0.links, containers: held + $0.containers, reachesBody: $0.reachesBody) }
                     }
                 }
             }
-            return [Path(links: links)]
+            return [Path(links: links, containers: containers)]
+        }
+
+        /// What `block` is the body of: `if` for a branch of an `if` / `else`, otherwise the name of
+        /// the call it is the trailing closure of (`VStack`, `ZStack`, `Button`, `background`, …),
+        /// read backwards over any argument list. `?` when there is no name.
+        func owner(of block: Range<Int>) -> String {
+            let code = file.code
+            var start = block.lowerBound
+            while start > 0, code[start - 1] != 10 { start -= 1 }
+            let head = String(decoding: code[start..<block.lowerBound], as: UTF8.self).trimmingCharacters(in: .whitespaces)
+            if !head.contains("{"), head.hasPrefix("if ") || head.hasPrefix("} else") || head == "else" { return "if" }
+            var index = block.lowerBound - 1
+            func skip() { while index >= 0, [32, 9, 10, 13].contains(code[index]) { index -= 1 } }
+            skip()
+            if index >= 0, code[index] == UInt8(ascii: ")") {
+                var depth = 0
+                while index >= 0 {
+                    if code[index] == UInt8(ascii: ")") { depth += 1 }
+                    else if code[index] == UInt8(ascii: "(") { depth -= 1; if depth == 0 { break } }
+                    index -= 1
+                }
+                index -= 1
+                skip()
+            }
+            let end = index + 1
+            while index >= 0, CallSiteScanner.isIdentifier(code[index]) { index -= 1 }
+            let name = end > index + 1 ? String(decoding: code[(index + 1)..<end], as: UTF8.self) : "?"
+            return name == "else" ? "if" : name
+        }
+
+        /// `arguments` split at its top-level commas, whitespace removed.
+        func split(_ arguments: Range<Int>) -> [String] {
+            var parts: [String] = []
+            var depth = 0, start = arguments.lowerBound
+            for index in arguments {
+                switch file.code[index] {
+                case UInt8(ascii: "("), UInt8(ascii: "["), UInt8(ascii: "{"): depth += 1
+                case UInt8(ascii: ")"), UInt8(ascii: "]"), UInt8(ascii: "}"): depth -= 1
+                case UInt8(ascii: ",") where depth == 0:
+                    parts.append(file.text(start..<index)); start = index + 1
+                default: break
+                }
+            }
+            parts.append(file.text(start..<arguments.upperBound))
+            return parts.map { $0.filter { !$0.isWhitespace } }.filter { !$0.isEmpty }
+        }
+
+        static let allEdges: Set<String> = ["top", "bottom", "leading", "trailing"]
+
+        /// The edges a `.padding(…)` insets by at least a point, as written: `padding()` and
+        /// `padding(n)` all four, `padding(.horizontal, n)` two, `padding(.top, n)` one. An amount
+        /// that is not a literal (`isPhoneIdiom ? 22 : 40`, `EdgeInsets(…)`) counts for nothing.
+        func paddedEdges(_ link: Link) -> Set<String> {
+            guard link.name == "padding" else { return [] }
+            let parts = link.arguments.map(split) ?? []
+            let named: [String: Set<String>] = [
+                ".all": Self.allEdges, ".horizontal": ["leading", "trailing"], ".vertical": ["top", "bottom"],
+                ".top": ["top"], ".bottom": ["bottom"], ".leading": ["leading"], ".trailing": ["trailing"],
+            ]
+            guard let first = parts.first else { return Self.allEdges }
+            if let edges = named[first] {
+                guard parts.count > 1 else { return edges }
+                return (Double(parts[1]) ?? 0) >= 1 ? edges : []
+            }
+            return parts.count == 1 && (Double(first) ?? 0) >= 1 ? Self.allEdges : []
+        }
+
+        /// Whether `link` is `.overlay(<shape>().strokeBorder(<colour>))` — a default-width hairline
+        /// drawn inside the view's edge — applied after paddings on the same path (`links`, innermost
+        /// first) that inset the text from all four edges, so the stroke cannot lie over it. That is
+        /// the card outline in `credit` and the back button's capsule. Any other overlay — a colour,
+        /// a closure, a wider stroke, a stroke with no padding between it and the text — is false.
+        func isEdgeStroke(_ link: Link, on links: [Link]) -> Bool {
+            guard link.name == "overlay", link.closure == nil, let arguments = link.arguments,
+                  let index = links.firstIndex(where: { $0.offset == link.offset }) else { return false }
+            let argument = split(arguments)
+            guard argument.count == 1,
+                  let match = argument[0].wholeMatch(of: /(?:RoundedRectangle\(cornerRadius:[0-9.]+\)|Capsule\(\)|Rectangle\(\))\.strokeBorder\(([A-Za-z0-9_.()]+)\)/),
+                  V134B4AboutContrastTests.paint(String(match.1), about: file, app: app) != nil
+            else { return false }
+            return links[..<index].reduce(into: Set<String>()) { $0.formUnion(paddedEdges($1)) }.isSuperset(of: Self.allEdges)
+        }
+
+        /// What on a path draws in a layer with the text other than behind it through a readable
+        /// `.background`: a container that is not in `containers` (a `ZStack` among them), and an
+        /// overlay that is not an edge stroke. `own` is the text's own chain. Empty when there is none.
+        func layers(_ path: Path, own: [Link]) -> [String] {
+            let links = own + path.links
+            return path.containers.filter { !V134B4AboutContrastTests.containers.contains($0.name) }
+                .map { "\($0.name) { … } at \(file.location($0.offset))" }
+                + links.filter { $0.name == "overlay" && !isEdgeStroke($0, on: links) }
+                .map { ".overlay(…) at \(file.location($0.offset))" }
         }
 
         func firstArgument(_ arguments: Range<Int>) -> String {
@@ -695,6 +838,13 @@ struct V134B4AboutContrastTests {
 
     static func walker() throws -> Walker {
         try Walker(try Model.shipped("AboutView.swift"), app: try Model.shipped("NihongoRideApp.swift"))
+    }
+
+    /// Every `Text` and `Label` inside `AboutView`, in source order.
+    static func textViews(_ walker: Walker) -> [CallSiteScanner.Call] {
+        textViews.flatMap { walker.file.calls(named: $0) }
+            .filter { walker.type.contains($0.nameOffset) }
+            .sorted { $0.nameOffset < $1.nameOffset }
     }
 
     /// A `Text` on About whose arguments are exactly `arguments` (whitespace ignored).
@@ -767,27 +917,120 @@ struct V134B4AboutContrastTests {
         #expect(walker.builder(containing: paths.first?.links.first?.offset ?? 0) == "part")
         let c = try Self.theText(exactly: "c", in: sample)
         #expect(walker.paths(from: c.nameOffset, after: nil).isEmpty, "a builder used nowhere reached the page")
+        // The blocks on the way, named by what they are the body of: `part`'s VStack, then the
+        // `content` VStack, then the Group's closure — a property's body is a builder, not a block.
+        #expect(paths.first?.containers.map(\.name) == ["VStack", "VStack", "Group"],
+                "the walk named the blocks \(paths.map { $0.containers.map(\.name) })")
+        #expect(paths.allSatisfy { walker.layers($0, own: []).isEmpty })
     }
 
-    @Test("every Text on About has one foregroundStyle, and nothing on its way to the page changes its alpha or is unread")
+    @Test("the walk names a ZStack, an if branch and a Button label, and tells an edge stroke from any other overlay")
+    func layerCalibration() throws {
+        let sample = CallSiteScanner.File(path: "Sample.swift", source: """
+            struct AboutView: View {
+                var body: some View {
+                    VStack {
+                        ZStack(alignment: .leading) {
+                            Theme.card
+                            Text(z).foregroundStyle(.white)
+                        }
+                        if flag { Text(i).foregroundStyle(.white) } else { Text(e).foregroundStyle(.white) }
+                        Button(action: go) { Label(l, systemImage: "x").foregroundStyle(.white) }.buttonStyle(.plain)
+                        Text(s).padding(14).overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Theme.cardStroke))
+                        Text(h).padding(.horizontal, 12).padding(.vertical, 8).overlay(Capsule().strokeBorder(Theme.cardStroke))
+                        Text(k).overlay(Color.black.opacity(0.5))
+                        Text(t).padding(.top, 6).overlay(Capsule().strokeBorder(Theme.cardStroke))
+                        Text(w).padding(14).overlay(Capsule().strokeBorder(Theme.cardStroke, lineWidth: 20))
+                        Text(v).padding(14).overlay { Theme.card }
+                        Text(n).padding(isPhoneIdiom ? 22 : 40).overlay(Capsule().strokeBorder(Theme.cardStroke))
+                    }
+                }
+            }
+            """)
+        let walker = try Walker(sample, app: try Model.shipped("NihongoRideApp.swift"))
+        func path(_ argument: String, _ name: String = "Text") throws -> (Path, [Link]) {
+            let hits = sample.calls(named: name).filter {
+                $0.arguments.map { walker.firstArgument($0).filter { !$0.isWhitespace } } == argument
+            }
+            let call = try #require(hits.count == 1 ? hits.first : nil, "\(name)(\(argument)) is not unique in the sample")
+            let paths = walker.paths(from: call.nameOffset, after: nil)
+            try #require(paths.count == 1 && paths[0].reachesBody, "\(name)(\(argument)) did not reach body")
+            return (paths[0], walker.links(after: call.extent.upperBound))
+        }
+        let (z, zOwn) = try path("z")
+        #expect(z.containers.map(\.name) == ["ZStack", "VStack"])
+        #expect(walker.layers(z, own: zOwn).count == 1 && walker.layers(z, own: zOwn).first?.hasPrefix("ZStack") == true,
+                "a ZStack sibling behind the text was not seen: \(walker.layers(z, own: zOwn))")
+        for argument in ["i", "e"] {
+            let (branch, own) = try path(argument)
+            #expect(branch.containers.map(\.name) == ["if", "VStack"] && walker.layers(branch, own: own).isEmpty)
+        }
+        let (l, lOwn) = try path("l", "Label")
+        #expect(l.containers.map(\.name) == ["Button", "VStack"] && l.links.map(\.name).first == "buttonStyle"
+                && walker.layers(l, own: lOwn).isEmpty)
+        for (argument, isStroke) in [("s", true), ("h", true), ("k", false), ("t", false), ("w", false), ("v", false), ("n", false)] {
+            let (p, own) = try path(argument)
+            let overlay = try #require((own + p.links).first { $0.name == "overlay" })
+            #expect(walker.isEdgeStroke(overlay, on: own + p.links) == isStroke,
+                    "Text(\(argument))'s overlay classified as \(isStroke ? "not " : "")an edge stroke")
+            #expect(walker.layers(p, own: own).isEmpty == isStroke)
+        }
+    }
+
+    @Test("the rule's idea of dim: anything but full white or a brand accent as written")
+    func dimCalibration() throws {
+        let walker = try Self.walker()
+        let cases: [(String, Bool)] = [
+            (".white", false), ("Color.white", false), ("Theme.accent", false), ("Theme.accent2", false),
+            ("Self.dimTextColor", true), (".white.opacity(0.82)", true), (".white.opacity(0.99)", true),
+            ("Color(red:0.3,green:0.3,blue:0.3)", true), ("Color(red:0.9,green:0.9,blue:0.9)", true),
+            ("Theme.accent.opacity(0.5)", true), ("Theme.accent2.opacity(0.3)", true), (".black", true),
+            ("Theme.cardStroke", true),
+        ]
+        for (expression, dim) in cases {
+            let paint = try #require(Self.paint(expression, about: walker.file, app: walker.app), "\(expression) unreadable")
+            #expect(Self.isDim(expression, paint) == dim, "\(expression) classified as \(dim ? "not " : "")dim")
+        }
+    }
+
+    @Test("every Text and Label on About has one foregroundStyle, and nothing on its way to the page changes its alpha, layers over or under it, or is unread")
     func nothingElseChangesWhatIsDrawn() throws {
         let walker = try Self.walker()
         let about = walker.file
-        let texts = about.calls(named: "Text").filter { walker.type.contains($0.nameOffset) }
-        #expect(texts.count >= 20, "only \(texts.count) Text calls found on About — the scan is blind")
+        let texts = Self.textViews(walker)
+        #expect(texts.count >= 21, "only \(texts.count) Text/Label calls found on About — the scan is blind")
+        #expect(texts.contains { $0.name == "Label" }, "the back button's Label was not enumerated")
+        // The enumeration is every text there is: no other title-drawing view on About, and every
+        // Button's label is a closure the walk reads, not a title string.
+        for name in Self.checkedAbsent {
+            let found = about.calls(named: name).filter { walker.type.contains($0.nameOffset) }
+            #expect(found.isEmpty, "\(name) at \(found.map { about.location($0.nameOffset) }) draws text this suite does not enumerate")
+        }
+        for button in about.calls(named: "Button") where walker.type.contains(button.nameOffset) {
+            #expect(button.arguments.map { walker.split($0).allSatisfy { $0.hasPrefix("action:") } } ?? true && !button.closures.isEmpty,
+                    "\(about.location(button.nameOffset)): a Button with a title the enumeration does not read")
+        }
         for text in texts {
             let at = about.location(text.nameOffset)
             let own = walker.links(after: text.extent.upperBound)
             #expect(own.filter { $0.name == "foregroundStyle" }.count == 1,
-                    "\(at): the Text's own chain has \(own.filter { $0.name == "foregroundStyle" }.count) foregroundStyle, expected exactly one")
+                    "\(at): the \(text.name)'s own chain has \(own.filter { $0.name == "foregroundStyle" }.count) foregroundStyle, expected exactly one")
             let paths = walker.paths(from: text.nameOffset, after: nil)
             #expect(!paths.isEmpty && paths.allSatisfy(\.reachesBody), "\(at): the walk did not reach body")
+            for path in paths {
+                let layers = walker.layers(path, own: own)
+                #expect(layers.isEmpty, "\(at): drawn in a layer with \(layers) — a ZStack sibling or an overlay can cover the text or sit behind it, and the walk cannot read it as a backdrop")
+            }
             for link in own + paths.flatMap(\.links) {
                 let where_ = about.location(link.offset)
                 #expect(link.name != "opacity", "\(at): .opacity at \(where_) changes the drawn alpha of this text")
                 #expect(link.name != "foregroundColor" && (link.name != "foregroundStyle" || own.contains { $0.offset == link.offset }),
                         "\(at): a second colour at \(where_)")
-                #expect(Self.inert.contains(link.name) || ["foregroundStyle", "background", "panel"].contains(link.name),
+                // `.buttonStyle(.plain)` draws nothing at rest; its pressed state is momentary feedback
+                // and is not held. Any other button style is unclassified.
+                let plainButton = link.name == "buttonStyle" && link.arguments.map { walker.split($0) == [".plain"] } == true
+                #expect(Self.inert.contains(link.name) || plainButton
+                        || ["foregroundStyle", "background", "panel", "overlay"].contains(link.name),
                         "\(at): .\(link.name) at \(where_) is not classified — say whether it changes what this text is drawn as")
                 if case .unreadable(let what) = walker.backdrop(link) {
                     Issue.record("\(at): the backdrop at \(where_) cannot be read as a colour: \(what)")
@@ -796,7 +1039,7 @@ struct V134B4AboutContrastTests {
         }
     }
 
-    @Test("the seven background texts sit on no backdrop; the URL and stat labels sit on exactly their builder's Theme.card")
+    @Test("the seven background texts sit on no backdrop and in no layer; the URL and stat labels sit on exactly their builder's Theme.card")
     func eachTextSitsWhereItsConstantAssumes() throws {
         let walker = try Self.walker()
         for fragment in Self.onTheBackground {
@@ -804,6 +1047,8 @@ struct V134B4AboutContrastTests {
             let paths = walker.paths(from: text.nameOffset, after: nil)
             #expect(!paths.isEmpty && paths.allSatisfy(\.reachesBody), "the Text containing \(fragment) does not reach body")
             for path in paths {
+                let layers = walker.layers(path, own: walker.links(after: text.extent.upperBound))
+                #expect(layers.isEmpty, "the Text containing \(fragment) is drawn in a layer with \(layers)")
                 let links = walker.links(after: text.extent.upperBound) + path.links
                 let unread = links.filter { if case .unreadable = walker.backdrop($0) { return true } else { return false } }
                 #expect(unread.isEmpty, "the Text containing \(fragment) is drawn on a backdrop that cannot be read, at \(unread.map { walker.file.location($0.offset) })")
@@ -816,6 +1061,8 @@ struct V134B4AboutContrastTests {
             let paths = walker.paths(from: text.nameOffset, after: nil)
             #expect(!paths.isEmpty && paths.allSatisfy(\.reachesBody), "the Text containing \(fragment) does not reach body")
             for path in paths {
+                let layers = walker.layers(path, own: walker.links(after: text.extent.upperBound))
+                #expect(layers.isEmpty, "the Text containing \(fragment) is drawn in a layer with \(layers)")
                 let paints = walker.paints(walker.links(after: text.extent.upperBound) + path.links)
                 #expect(paints.count == 1 && paints.first?.expression == "Theme.card" && paints.first?.link.name == "background"
                         && walker.builder(containing: paints.first?.link.offset ?? 0) == builder,
@@ -824,14 +1071,18 @@ struct V134B4AboutContrastTests {
         }
     }
 
-    /// The rule, not a list: every `Text` on About drawn in white at an opacity — `Theme.dim`, a
-    /// constant, `.white.opacity(x)`, `Color.white.opacity(x)` — clears 4.5:1 over the backdrop the
-    /// walk finds for it (read from the source), at both stops, on every path; and its opacity is at
-    /// least the constant for that backdrop (`dimTextColor` straight on the background,
-    /// `dimTextOnCardColor` on `Theme.card`). A dim text on any other backdrop fails until it has a
-    /// constant. The section body (white 0.82) and the credit descriptions (0.7 on a card) pass by
-    /// this rule at the numbers written out below, not by being named.
-    @Test("every dim white text on About clears 4.5:1 over the backdrop the source puts it on, at no less than its backdrop's constant")
+    /// The rule, not a list: every `Text` and `Label` on About drawn in DIM text — anything that is
+    /// not full opaque white and not a brand accent as written (`isDim`): white at an opacity
+    /// (`Theme.dim`, a constant, `.white.opacity(x)`), an opaque grey, a brand colour at an opacity —
+    /// clears 4.5:1 over the backdrop the walk finds for it (read from the source), at both stops, on
+    /// every path. A dim text sits straight on the background or on exactly one `Theme.card`, and on
+    /// any other backdrop fails until it has a constant; white at an opacity is also held to at least
+    /// that backdrop's constant (`dimTextColor` straight on the background, `dimTextOnCardColor` on
+    /// `Theme.card`). The section body (white 0.82) and the credit descriptions (0.7 on a card) pass
+    /// by this rule at the numbers written out below, not by being named. (Until the second review
+    /// the rule read only white at an opacity, in a `Text`: an opaque grey, or dim text in a `Label`,
+    /// was outside it while the suite's title said "all".)
+    @Test("every dim text on About, in a Text or a Label, clears 4.5:1 over the backdrop the source puts it on; dim white at no less than its backdrop's constant")
     func everyDimWhiteTextClears() throws {
         let walker = try Self.walker()
         let about = walker.file
@@ -845,7 +1096,7 @@ struct V134B4AboutContrastTests {
         }
 
         var dim: [Int] = []
-        for text in about.calls(named: "Text") where walker.type.contains(text.nameOffset) {
+        for text in Self.textViews(walker) {
             let at = about.location(text.nameOffset)
             let own = walker.links(after: text.extent.upperBound)
             guard let style = own.first(where: { $0.name == "foregroundStyle" }), let arguments = style.arguments else {
@@ -857,8 +1108,9 @@ struct V134B4AboutContrastTests {
                 Issue.record("\(at): foregroundStyle(\(expression)) cannot be read as a colour")
                 continue
             }
-            guard foreground.rgb == white, foreground.alpha < 1 else { continue }
+            guard Self.isDim(expression, foreground) else { continue }
             dim.append(text.nameOffset)
+            let dimWhite = foreground.rgb == white
             for path in walker.paths(from: text.nameOffset, after: nil) {
                 let paints = walker.paints(own + path.links)
                 for stop in stops {
@@ -867,10 +1119,10 @@ struct V134B4AboutContrastTests {
                     #expect(ratio >= 4.5, "\(at): \(expression) computes \(ratio):1 over \(paints.map(\.expression)) on \(stop)")
                 }
                 if paints.isEmpty {
-                    #expect(foreground.alpha >= onBackground - 1e-9 && expression != "Self.dimTextOnCardColor",
+                    #expect(!dimWhite || foreground.alpha >= onBackground - 1e-9 && expression != "Self.dimTextOnCardColor",
                             "\(at): \(expression) straight on the background, under dimTextColor's opacity")
                 } else if paints.count == 1, let only = paints.first, same(only.paint, card) {
-                    #expect(foreground.alpha >= onCard - 1e-9 && expression != "Self.dimTextColor" && expression != "Self.counterColor",
+                    #expect(!dimWhite || foreground.alpha >= onCard - 1e-9 && expression != "Self.dimTextColor" && expression != "Self.counterColor",
                             "\(at): \(expression) on a card, under dimTextOnCardColor's opacity")
                 } else {
                     Issue.record("\(at): \(expression) on \(paints.map(\.expression)) — a backdrop with no constant for it")
@@ -878,8 +1130,10 @@ struct V134B4AboutContrastTests {
             }
         }
 
-        // Control: the enumeration sees every dim white text there is today — the nine this item
-        // recoloured, the two counter lines, the section body and the credit description.
+        // Control: the enumeration sees every dim text there is today — the nine this item
+        // recoloured, the two counter lines, the section body and the credit description. (The
+        // back button's Label and every brand-colour text are enumerated and are not dim; an opaque
+        // grey and a dim Label are shown red by mutation, and `dimCalibration` holds the classes.)
         let expected = try (Self.onTheBackground + Self.onACard + ["breakingIdentifiers(zh ? zhText : en)"])
             .map { try Self.theText(containing: $0, in: about).nameOffset }
             + ["model.unlockOfferLedger.shareableSummary", "model.reviewPromptLedger.debugSummary", "body"]
