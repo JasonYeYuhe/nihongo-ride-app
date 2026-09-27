@@ -958,9 +958,14 @@ final class AppModel {
     }
 
     /// Pure, so it can be asked about a configuration this process is not in.
+    ///
+    /// `captureTarget` is the absolute directory a headless capture writes its PNGs to — nil on
+    /// every other launch. It is an input rather than a flag because the capture's container
+    /// and settings suite are DERIVED from it (see the capture branch), and a pure function
+    /// cannot derive anything from a `Bool`.
     static func launchIsolation(uiTest: Bool,
                                 layoutHarness: Bool,
-                                capturing: Bool,
+                                captureTarget: String?,
                                 supportOverride: URL?,
                                 widgetOverride: URL?,
                                 settingsOverride: String?) -> LaunchIsolation {
@@ -972,20 +977,35 @@ final class AppModel {
                 settingsSuite: settingsOverride ?? "NihongoRideUITest",
                 syncAllowed: false)
         }
-        if capturing {
+        if let captureTarget {
             // Screenshot capture redirects its FILES and is kept away from the widget, the
             // journal and sync by three separate `!Screenshotter.isCapturing` guards at the
             // call sites. The review pointed out that leaving the other two fields nil here
             // means `touchesNothingOfTheUsers` would never flag capture — the "check the door
             // somebody remembered" shape, inside the value written to replace it. So capture
-            // now names all three, and the call-site guards become belt-and-braces rather than
+            // names all three, and the call-site guards become belt-and-braces rather than
             // the only thing standing between a render and the owner's widget.
+            //
+            // The container and the suite carry a digest of the TARGET directory, not a fixed
+            // name (v1.34 §C3). With one fixed `NihongoRideCapture` for every capture, two
+            // renders started together shared one odometer, one journal and one defaults suite
+            // and clobbered each other — v1.33's en/zh renders had to be run one after the
+            // other for that reason alone. The digest is of the string `NIHONGO_SHOT` was set
+            // to, exactly as spelled (`Screenshotter.captureTarget` reads the environment, it
+            // is not assigned by the capture), so the same command always maps to the same
+            // names (a re-run reproduces, and finds any container a crashed run left), and
+            // distinct targets never meet. Being read from the environment is also what puts
+            // the App struct's eager `AppModel()` — built before `capture` runs — in here
+            // rather than in the owner's Application Support; `captureIsolationIsConsumed`
+            // holds the doors, and `docs/PLAN-V1.34.md` §C3's 2026-09-27 addendum records the
+            // owner's files' stamps before and after one full render: unchanged.
+            let name = "NihongoRideCapture-" + StableDigest.tag(captureTarget)
             let dir = FileManager.default.temporaryDirectory
-                .appendingPathComponent("NihongoRideCapture", isDirectory: true)
+                .appendingPathComponent(name, isDirectory: true)
             return LaunchIsolation(
                 supportBase: supportOverride ?? dir,
                 widgetContainer: widgetOverride ?? dir.appendingPathComponent("group", isDirectory: true),
-                settingsSuite: settingsOverride ?? "NihongoRideCapture",
+                settingsSuite: settingsOverride ?? name,
                 syncAllowed: false)
         }
         return LaunchIsolation(
@@ -998,7 +1018,7 @@ final class AppModel {
     /// This launch's isolation, read by every redirect below so they cannot disagree.
     static var currentIsolation: LaunchIsolation {
         launchIsolation(uiTest: isUITest, layoutHarness: isLayoutHarness,
-                        capturing: Screenshotter.isCapturing,
+                        captureTarget: Screenshotter.captureTarget,
                         supportOverride: supportDirectoryOverride,
                         widgetOverride: widgetContainerOverride,
                         settingsOverride: settingsSuiteOverride)
@@ -2389,7 +2409,9 @@ final class AppModel {
     /// never sees the store either.
     private func conjugationWeakFormPick() -> (String, [String]) -> String? {
         { [store = conjugationReviewStore] entryID, tokens in
-            var rng = SystemRandomNumberGenerator()
+            // The system generator on every launch but a capture, where the seeded one keeps
+            // `conjugation.png` the same picture twice (v1.34 §C3; see `DeckRandomness`).
+            var rng = DeckRandomness.Generator()
             return FormWeighting.weightedPick(entryID: entryID, formTokens: tokens, store: store, using: &rng)
         }
     }
@@ -2677,6 +2699,24 @@ final class AppModel {
             ))
         }
         journal = demo
+    }
+
+    /// Capture-only: seven review cards due TOMORROW, so the Ride Log's forecast card renders
+    /// its highlighted "Tomorrow" row rather than three zeros (2026-09-27). Until v1.34 §C3
+    /// cleared the capture's stores per screen, that row showed the words the ride screens
+    /// above had just put into the shared review store — 7 of them — so the render exercised
+    /// the non-empty layout by accident; this puts it back on purpose, the same in every run.
+    /// Built with the store's own `record` (a clean first review is SM-2 interval 1: due the
+    /// next calendar day), from the first seven N5 words in the store's own order, and never
+    /// persisted. No-op outside capture, so no rider's schedule can be touched by it.
+    func seedDemoReviewForecast() {
+        guard Screenshotter.isCapturing else { return }
+        var store = ReviewStore()
+        let now = Date()
+        for entry in vocab.ordered(level: .n5).prefix(7) {
+            store.record(entryID: entry.id, outcome: TypingOutcome(completed: true), on: now)
+        }
+        reviewStore = store
     }
 
     /// Redirects every persisted store somewhere harmless. Nil in the shipping app.

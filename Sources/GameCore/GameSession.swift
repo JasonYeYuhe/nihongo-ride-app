@@ -368,7 +368,7 @@ public final class GameSession {
         var pool = matching.map { passages.passages.filter($0) }
             ?? passages.passages.filter { $0.level == level }
         if pool.isEmpty { pool = passages.passages }   // safety net
-        pool.shuffle()
+        DeckRandomness.shuffle(&pool)
         let words = pool.prefix(max(8, config.newWordCount)).map { passage -> VocabEntry in
             VocabEntry(
                 id: "passage-\(passage.id)",
@@ -403,7 +403,7 @@ public final class GameSession {
         // Level-scoped first; if that level has no typeable sentence yet, fall back to the
         // whole corpus rather than starting an empty run.
         if pool.isEmpty { pool = vocab.ordered().filter { $0.isTypeableSentence } }
-        pool.shuffle()
+        DeckRandomness.shuffle(&pool)
         return sentenceSession(from: Array(pool.prefix(max(5, config.newWordCount))),
                                config: config, now: now)
     }
@@ -446,7 +446,7 @@ public final class GameSession {
         now: @escaping () -> Date = Date.init
     ) -> GameSession {
         var pool = sentenceEntries(ids: ids, vocab: vocab)
-        pool.shuffle()
+        DeckRandomness.shuffle(&pool)
         return sentenceSession(from: Array(pool.prefix(max(5, config.newWordCount))),
                                config: config, now: now)
     }
@@ -501,7 +501,7 @@ public final class GameSession {
             .filter { $0.isTypeableSentence && !excluded.contains($0.id) }
         // No whole-corpus fallback: an empty level pool must leave the run empty so the
         // caller's build-then-guard can say so, rather than quietly drilling another level.
-        pool.shuffle()
+        DeckRandomness.shuffle(&pool)
         return sentenceSession(from: Array(pool.prefix(max(5, config.newWordCount))),
                                config: config, mode: .dictation, now: now)
     }
@@ -534,7 +534,7 @@ public final class GameSession {
         now: @escaping () -> Date = Date.init
     ) -> GameSession {
         var pool = dictationEntries(ids: ids, vocab: vocab, excluding: excluded)
-        pool.shuffle()
+        DeckRandomness.shuffle(&pool)
         return sentenceSession(from: Array(pool.prefix(max(5, config.newWordCount))),
                                config: config, mode: .dictation, now: now)
     }
@@ -618,7 +618,7 @@ public final class GameSession {
             .filter { !seen.contains($0.id) }
             .prefix(config.newWordCount)
         var words = dueWords + Array(newWords)
-        words.shuffle()
+        DeckRandomness.shuffle(&words)
         return GameSession(words: words, review: review, config: config, now: now)
     }
 
@@ -633,7 +633,7 @@ public final class GameSession {
         now: @escaping () -> Date = Date.init
     ) -> GameSession {
         var words = ids.compactMap { vocab.entry(id: $0) }
-        words.shuffle()
+        DeckRandomness.shuffle(&words)
         var savedConfig = config
         savedConfig.mode = .journey
         return GameSession(words: words, review: review, config: savedConfig, now: now)
@@ -651,7 +651,7 @@ public final class GameSession {
         now: @escaping () -> Date = Date.init
     ) -> GameSession {
         var words = ids.compactMap { vocab.entry(id: $0) }
-        words.shuffle()
+        DeckRandomness.shuffle(&words)
         var weakConfig = config
         weakConfig.mode = .journey
         weakConfig.recordsSRS = false

@@ -365,7 +365,7 @@ struct AppModelTests {
     @Test("a UI-test launch can reach nothing that belongs to the user")
     func uiTestLaunchIsIsolated() {
         let isolation = AppModel.launchIsolation(
-            uiTest: true, layoutHarness: false, capturing: false,
+            uiTest: true, layoutHarness: false, captureTarget: nil,
             supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
         #expect(isolation.touchesNothingOfTheUsers,
                 "a UI-test launch may not resolve any real location: \(isolation)")
@@ -476,12 +476,102 @@ struct AppModelTests {
         #expect(model.syncStatus == .off, "a UI-test launch started CloudKit sync")
     }
 
+    /// The capture analogue of the test above, and until v1.34 §C3's review it did not exist:
+    /// the review handed `currentIsolation` a `nil` in place of `Screenshotter.captureTarget`
+    /// — the one consumer of the capture decision — and all 879 tests stayed green, while a
+    /// real `NIHONGO_SHOT` launch in that state resolved every store to the owner's Application
+    /// Support and `.standard`. Capture's ride screens call startGame/finishGame, whose saves
+    /// are gated by the load outcome and not by `isCapturing`, so that state logs invented
+    /// rides into the owner's iCloud-synced journal with a green suite. The four tests around
+    /// this one all call the pure `launchIsolation(...)` with literals; this one sets what a
+    /// headless launch has — the target and the flag — and reads the doors.
+    ///
+    /// The doors are read BEFORE any model is built, and the ride happens only once they
+    /// resolve to the throwaway container: under the severed consumer this goes red without
+    /// itself riding into the owner's data.
+    @Test("a capture launch actually lands in the per-target container, door by door")
+    func captureIsolationIsConsumed() throws {
+        let savedSupport = AppModel.supportDirectoryOverride
+        let savedWidget = AppModel.widgetContainerOverride
+        let savedDefaults = AppModel.settingsDefaults
+        let savedSuite = AppModel.settingsSuiteOverride
+        let savedTarget = Screenshotter.captureTarget
+        let savedCapturing = Screenshotter.isCapturing
+        defer {
+            AppModel.isUITestOverride = nil
+            AppModel.supportDirectoryOverride = savedSupport
+            AppModel.widgetContainerOverride = savedWidget
+            AppModel.settingsDefaults = savedDefaults
+            AppModel.settingsSuiteOverride = savedSuite
+            Screenshotter.captureTarget = savedTarget
+            Screenshotter.isCapturing = savedCapturing
+        }
+        // Every explicit override cleared, so the ONLY thing keeping this out of the user's data
+        // is the capture branch itself, reached through the static it reads in production.
+        AppModel.supportDirectoryOverride = nil
+        AppModel.widgetContainerOverride = nil
+        AppModel.settingsDefaults = nil
+        AppModel.settingsSuiteOverride = nil
+        AppModel.isUITestOverride = false
+        Screenshotter.captureTarget = "/tmp/vp-x"
+        Screenshotter.isCapturing = true
+
+        let container = "NihongoRideCapture-" + StableDigest.tag("/tmp/vp-x")
+        let review = AppModel.supportFileURL("review.json").path
+        let filesRedirected = review.contains(container)
+        #expect(filesRedirected, "Application Support is not redirected: \(review)")
+        #expect(AppModel.settingsStore != UserDefaults.standard,
+                "settings still resolve to the user's own UserDefaults")
+        let isolation = AppModel.currentIsolation
+        #expect(isolation.touchesNothingOfTheUsers,
+                "currentIsolation reports a shipping launch during capture: \(isolation)")
+        guard filesRedirected, isolation.touchesNothingOfTheUsers, let base = isolation.supportBase else {
+            return   // recorded above; riding now would write the owner's own journal
+        }
+        defer {
+            try? FileManager.default.removeItem(at: base)
+            UserDefaults(suiteName: container)?.removePersistentDomain(forName: container)
+        }
+
+        // …and the doors that cannot be read directly, observed by their effects.
+        let before = Self.realUserFileStamps()
+        let model = AppModel(vocab: VocabStore(entries: [
+            Self.entry("a", "水", "みず"), Self.entry("b", "火", "ひ")]))
+        model.startGame()
+        model.session?.skip()
+        // One word typed through, so the run is a ride the journal and odometer LOG (a run that
+        // typed nothing is refused by `logRun`) — the write the stamps below must not see.
+        if let romaji = model.session?.currentRomaji {
+            for character in romaji { _ = model.session?.input(character) }
+        }
+        model.finishGame()
+        model.refreshWidgetSnapshot()
+        let after = Self.realUserFileStamps()
+        let touched = after.filter { before[$0.key] != $0.value }.keys.sorted()
+        #expect(touched.isEmpty, "a capture launch wrote the user's own data: \(touched)")
+        #expect(model.syncStatus == .off, "a capture launch started CloudKit sync")
+        #expect(model.journal.totalRuns == 1, "the ride was not logged at all, so the check above saw nothing")
+
+        // The negative control, through the same doors: with no target and no flag they resolve
+        // to the shipping locations, so the assertions above cannot be satisfied by a
+        // `currentIsolation` that isolates every launch. No model is built here.
+        Screenshotter.captureTarget = nil
+        Screenshotter.isCapturing = false
+        let shipping = AppModel.currentIsolation
+        #expect(shipping.touchesNothingOfTheUsers == false, "with no target, currentIsolation still isolates: \(shipping)")
+        #expect(AppModel.settingsStore == UserDefaults.standard, "with no target, settings do not resolve to .standard")
+        let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.path ?? "/nowhere"
+        let plain = AppModel.supportFileURL("review.json").path
+        #expect(plain.hasPrefix(support) && !plain.contains("NihongoRideCapture"),
+                "with no target, files do not resolve to the real Application Support: \(plain)")
+    }
+
     /// The negative control. Without it the assertion above is satisfied by a function that
     /// isolates EVERY launch, which would silently disable sync in the shipping app.
     @Test("an ordinary launch is not isolated, so the check above means something")
     func ordinaryLaunchIsNotIsolated() {
         let normal = AppModel.launchIsolation(
-            uiTest: false, layoutHarness: false, capturing: false,
+            uiTest: false, layoutHarness: false, captureTarget: nil,
             supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
         #expect(normal.touchesNothingOfTheUsers == false)
         #expect(normal.supportBase == nil, "a shipping launch must use real Application Support")
@@ -498,13 +588,17 @@ struct AppModelTests {
     @Test("screenshot capture reaches nothing that belongs to the user either")
     func captureIsIsolated() {
         let capture = AppModel.launchIsolation(
-            uiTest: false, layoutHarness: false, capturing: true,
+            uiTest: false, layoutHarness: false, captureTarget: "/tmp/capture",
             supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
         #expect(capture.touchesNothingOfTheUsers,
                 "a capture launch may not resolve any real location: \(capture)")
-        #expect(capture.supportBase?.lastPathComponent == "NihongoRideCapture")
+        // The container carries the TARGET's digest, not a fixed name (v1.34 §C3): two captures
+        // into two targets must never share it. `CaptureToolTests` holds the derivation itself;
+        // this keeps the location throwaway and named, so a failure says which door opened.
+        #expect(capture.supportBase?.lastPathComponent == "NihongoRideCapture-" + StableDigest.tag("/tmp/capture"))
         #expect(capture.widgetContainer != nil, "capture could still write the real widget")
-        #expect(capture.settingsSuite != nil, "capture could still write the real settings")
+        #expect(capture.settingsSuite == capture.supportBase?.lastPathComponent,
+                "capture could still write the real settings, or its suite and container carry different tags")
         #expect(capture.syncAllowed == false, "capture could still push to the real CloudKit")
     }
 
@@ -514,14 +608,15 @@ struct AppModelTests {
     @Test("the layout harness still cannot sync")
     func layoutHarnessCannotSync() {
         let harness = AppModel.launchIsolation(
-            uiTest: false, layoutHarness: true, capturing: false,
+            uiTest: false, layoutHarness: true, captureTarget: nil,
             supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
         #expect(harness.syncAllowed == false)
-        // Screenshot capture keeps its fixed temp directory.
+        // Screenshot capture keeps a throwaway temp directory of its own — one per target
+        // since v1.34 §C3, so the name carries the target's digest.
         let capture = AppModel.launchIsolation(
-            uiTest: false, layoutHarness: false, capturing: true,
+            uiTest: false, layoutHarness: false, captureTarget: "/tmp/capture",
             supportOverride: nil, widgetOverride: nil, settingsOverride: nil)
-        #expect(capture.supportBase?.lastPathComponent == "NihongoRideCapture")
+        #expect(capture.supportBase?.lastPathComponent == "NihongoRideCapture-" + StableDigest.tag("/tmp/capture"))
     }
 
     /// An explicit override always wins, because the unit-test target sets one per model and
@@ -531,7 +626,7 @@ struct AppModelTests {
     func overrideWins() {
         let mine = URL(fileURLWithPath: "/tmp/mine")
         let isolation = AppModel.launchIsolation(
-            uiTest: true, layoutHarness: true, capturing: true,
+            uiTest: true, layoutHarness: true, captureTarget: "/tmp/capture",
             supportOverride: mine, widgetOverride: mine, settingsOverride: "mine")
         #expect(isolation.supportBase == mine)
         #expect(isolation.widgetContainer == mine)
