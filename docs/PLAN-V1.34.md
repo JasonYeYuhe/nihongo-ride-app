@@ -290,15 +290,16 @@ and assigned only in the `seed` setter.
   `v134/c3-final/{en,en2,en3,zh,zh2,zh3}`): en 24/24 and 24/24 byte-identical to run 1, zh the same;
   `compare_renders.py --control` reports 0 noisy screens.
 * *The subpixel observation (round 2, not reproduced today).* Two review agents rendered the `47dafc7` binary
-  31 + 9 times. Every sequential run and every two-process concurrent pair matched pixel for pixel — except
-  once: a zh render that was the first run of the day, concurrent with an en render, differed from a later
-  sequential zh render on `game-mid`, `results` and `results-sentence` at luminance Δ ≤ 2; and with FOUR
-  captures at once (2 en + 2 zh, three rounds) one render per language in one round differed the same way on
-  `game-mid` and `results`. Each process wrote its own directory and container, so this is not shared state; it
-  is attributed to rasterising under load. `compare_renders.py` classifies it SUBPIXEL and a strict comparison
-  exits 0; used as `--control`, such a run marks those screens noisy. So "two concurrent captures equal a
-  sequential pair" holds at the pixel standard as measured for two processes, and at the SUBPIXEL standard
-  beyond; a CHANGED-level difference between two runs of one binary on one day would be a finding.
+  31 + 9 times. What was measured: every **sequential** run matched every other pixel for pixel. **Concurrent**
+  runs usually matched too, but not always: once, a zh render that was the first run of the day, made
+  concurrently with an en render, differed from a later sequential zh render on three screens — `game-mid`,
+  `results` and `results-sentence` — at luminance Δ ≤ 2 (SUBPIXEL); and with FOUR captures at once (2 en + 2 zh,
+  three rounds) one render per language in one round differed the same way on `game-mid` and `results`. Each
+  process wrote its own directory and container, so this is not shared state; it is attributed to rasterising
+  under load. `compare_renders.py` classifies it SUBPIXEL and a strict comparison exits 0; used as `--control`,
+  such a run marks those screens noisy, so **a `--control` render is made sequentially**. So "two concurrent
+  captures equal a sequential pair" holds at the SUBPIXEL standard, not at the pixel standard; a CHANGED-level
+  difference between two runs of one binary on one day would be a finding.
 
 **The baseline, decided.** The scratchpad's `baseline-1.33` directory is no longer on disk (checked 2026-09-27),
 so the 1.33 baseline was re-rendered the same day: the 1.33 tree (`04947be`; `Sources/` unchanged since

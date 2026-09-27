@@ -16,14 +16,15 @@ Why this is a script and not three lines of Pillow inline:
    DAY.** Before that the game/practice/results captures drew words from a randomly ordered
    deck and differed run to run with no code change at all — and so did road.png, whose
    odometer text depended on how far the random decks had ridden. `Screenshotter` now
-   reseeds `DeckRandomness` per screen and clears the capture's stores before each one, so
-   two renders of the same binary on the same day are pixel-identical in every sequential
-   run and every two-process concurrent pair measured, and a plain `compare_renders.py A B`
-   holds every screen to the strict standard. Measured once otherwise (v1.34 round 2, the
-   2026-09-27 addendum to PLAN-V1.34 §C3): under concurrent load — the day's first zh run
-   beside an en run, and one run per language when four captures ran at once — game-mid,
-   results and results-sentence came out at luminance Δ ≤ 2 from every other run. That is
-   classified SUBPIXEL below and a strict comparison still exits 0. The one thing the seed
+   reseeds `DeckRandomness` per screen and clears the capture's stores before each one.
+   What was measured (v1.34 round 2 and 2026-09-27; the 2026-09-27 addendum to PLAN-V1.34
+   §C3): two renders of the same binary on the same day, each made SEQUENTIALLY, were
+   pixel-identical every time. Renders made CONCURRENTLY were usually pixel-identical too, but
+   not always: once, a zh render (the day's first run, made beside an en render) differed
+   from a later sequential zh render on game-mid, results and results-sentence at luminance
+   Δ ≤ 2; and with four captures at once, one render per language in one round differed the
+   same way on game-mid and results. Those differences are classified SUBPIXEL below, so a
+   plain `compare_renders.py A B` still exits 0 on them. The one thing the seed
    does not fix is the clock: journal.png and stats.png draw the wall-clock date (the demo
    fortnight is placed relative to today — "Today", "Yesterday", "9/23"; the words-per-day
    axis is labelled with day numbers; today's stud is ringed), so they, and any screen that
@@ -34,12 +35,12 @@ Why this is a script and not three lines of Pillow inline:
    render of the CANDIDATE's code and uses it to classify each screen as STABLE or NOISY,
    then holds only the stable ones to a strict standard. (Second render of the candidate,
    not the baseline: the baseline is usually a commit you no longer have checked out, and
-   the noise is a property of the capture, not of the change.) With a seeded capture on one
-   day, rendered sequentially or two at a time, it reports 0 noisy screens. A control made
-   under heavier concurrent load can mark screens noisy on SUBPIXEL differences alone (the
-   observation above; render controls sequentially or in pairs to avoid it); a noisy screen
-   whose control difference is CHANGED-level (above Δ32) means the tool has stopped being
-   deterministic, which is itself a finding.
+   the noise is a property of the capture, not of the change.) Make every --control render
+   SEQUENTIALLY: sequential renders have always matched pixel for pixel, while a control
+   rendered concurrently can mark screens noisy on SUBPIXEL differences alone (the
+   observation above). A noisy screen whose control difference is
+   CHANGED-level (above Δ32) means the tool has stopped being deterministic, which is itself
+   a finding.
 
 Usage:
     NIHONGO_SHOT=/tmp/a swift run NihongoRideApp     # baseline, before the change

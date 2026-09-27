@@ -27,6 +27,14 @@ import ReviewKit
 /// `seed` still read nil. Mutation, 2026-09-27 (`--filter DeckRandomnessTests`; restored
 /// byte-for-byte after, shasum c74a172c…): red in `seamStartsUnseeded` (`statics == [ … ]`) and
 /// in `shippingLaunchesDiffer` (`first != second`: two child launches drew the same deck).
+///
+/// `shippingLaunchesDiffer` then compared deck and draw as ONE string, so a fixed unseeded
+/// `Generator` draw hid behind the random deck: mutation "unseeded `Generator.next()` returns a
+/// constant" (`return 0x1234_5678_9ABC_DEF0`) left it green. It now compares the two separately.
+/// Mutation, 2026-09-27 (`--filter DeckRandomnessTests`; restored byte-for-byte after, shasum
+/// 176494c7…): red in `shippingLaunchesDiffer` (`first[1] != second[1]`) and in `unseededIsRandom`
+/// (`generator.next() != generator.next()`); with the old one-string comparison the launch test
+/// stayed green.
 @Suite("DeckRandomness: the seam every deck draw goes through")
 struct DeckRandomnessTests {
 
@@ -323,11 +331,18 @@ struct DeckRandomnessTests {
             #expect(child.terminationStatus == 0, "probe launch \(n) exited \(child.terminationStatus)")
             return (try? String(contentsOf: out, encoding: .utf8)) ?? ""
         }
-        let first = try launch(1)
-        let second = try launch(2)
-        #expect(first.hasSuffix(" seed=nil") && first.split(separator: " ").first?.split(separator: ",").count == 30,
-                "probe launch 1 reported nothing usable: \"\(first)\"")
-        #expect(second.hasSuffix(" seed=nil"), "probe launch 2 reported nothing usable: \"\(second)\"")
-        #expect(first != second, "two unseeded launches drew the same first deck and draw — a shipping launch is seeded: \(first)")
+        // Each report is "<deck> <draw> seed=nil". The deck and the draw are compared SEPARATELY:
+        // compared as one string, a random deck would hide a Generator draw that is the same on
+        // every launch.
+        let first = try launch(1).split(separator: " ").map(String.init)
+        let second = try launch(2).split(separator: " ").map(String.init)
+        for (n, report) in [(1, first), (2, second)] {
+            #expect(report.count == 3 && report[0].split(separator: ",").count == 30
+                        && UInt64(report[1]) != nil && report[2] == "seed=nil",
+                    "probe launch \(n) reported nothing usable: \(report)")
+        }
+        guard first.count == 3, second.count == 3 else { return }
+        #expect(first[0] != second[0], "two unseeded launches drew the same first deck — a shipping launch is seeded: \(first[0])")
+        #expect(first[1] != second[1], "two unseeded launches made the same first Generator draw — a shipping launch's Generator is fixed: \(first[1])")
     }
 }
