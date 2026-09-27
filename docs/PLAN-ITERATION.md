@@ -544,9 +544,20 @@ Unchanged and repeated because a fast cadence is exactly when these get skipped:
 * **`PLAN-STAGE1` §L's three manual purchase gates**, still unwalked. While v1.30 is in review a
   failed gate costs a cancel and a resubmit — minutes, measured. After `READY_FOR_SALE` it costs a
   whole new version with live customers meeting a broken purchase.
+  * *Corrected 2026-09-25:* "while v1.30 is in review" is stale. No version has been in review since
+    2026-09-17: read from App Store Connect on 2026-09-25 (GET only, `scripts/asc_api.sh`), every
+    version on both platforms is `READY_FOR_SALE` — iOS 1.30, 1.31, 1.32, 1.33; macOS 1.29, 1.31, 1.32,
+    1.33 (the macOS 1.30 record was reused for 1.31, as §G's table records) — with 1.33 on sale since
+    2026-09-17 Pacific on both. The cost of a failed gate is therefore the one this bullet's own second
+    sentence names: a whole new version with live customers meeting a broken purchase. The gates are
+    still unwalked (`PLAN-STAGE1` §L, ☐ ☐ ☐).
 * **§K's day-0 known-positive purchase.**
 * **Whether to denominate §K's checkpoints by installs rather than dates** — free to decide only
   before day 0.
+  * *Corrected 2026-09-25:* decided. The install-denominated checkpoints were adopted on 2026-09-09, day
+    0 or day 1, before any outcome number was read — `PLAN-STAGE1` §K: "**§F's re-denomination is
+    ADOPTED.** Checkpoints now fire at **cumulative new installs since day 0: N = 35, N = 100, N = 200**
+    — whenever they arrive — not at day 15/42/90." The item is closed.
 
 ---
 
@@ -595,6 +606,15 @@ Removing `.contentShape` fails that test and only that test. The suite is now 8 
 > (macOS 1.30 is still in review and the purchase is not approved), so amending it now is free,
 > which it will not be in a week. The alternative — shipping the measurement on an entrance that
 > responds on a caption line — would have biased it the other way and been invisible.
+>
+> *Corrected 2026-09-25:* "macOS 1.30 is still in review and the purchase is not approved" is stale.
+> No version has been in review since 2026-09-17: read from App Store Connect on 2026-09-25 (GET only,
+> `scripts/asc_api.sh`), every version on both platforms is `READY_FOR_SALE` — iOS 1.30, 1.31, 1.32,
+> 1.33; macOS 1.29, 1.31, 1.32, 1.33 (the macOS 1.30 record was reused for 1.31, as §G's table
+> records) — with 1.33 on sale since 2026-09-17 Pacific on both, and the purchase is approved
+> (`docs/STATE-2026-09-24.md`). §K's day 0 has started: it was 2026-09-09 (§E's second correction
+> above). The amendment this box registered was made before day 0, so its "free" claim was true when
+> written; it is no longer true now, and nothing here is re-amended.
 
 ---
 

@@ -170,10 +170,11 @@ echo
 
 run_swift_test
 
-# The python self-tests — seven since 2026-09-17: the sales instrument (test_sales_report.py) and
-# the Stage 1 walk tool (test_stage1_walk.py) got theirs on 2026-09-16, and the build-root helper
-# (test_build_root.py) on 2026-09-17. Until v1.32 §D6 these were run by
-# nothing at all.
+# The python self-tests — eight since 2026-09-25: the sales instrument (test_sales_report.py) and
+# the Stage 1 walk tool (test_stage1_walk.py) got theirs on 2026-09-16, the build-root helper
+# (test_build_root.py) on 2026-09-17, and the review watch (test_review_watch.py, the §K guardrail
+# reader's fixture test — its LIVE read needs the ASC key and is not a gate) on 2026-09-25
+# (v1.34 §C2). Until v1.32 §D6 these were run by nothing at all.
 for t in scripts/test_*.py; do
   run_gate "$(basename "$t")" "" python3 "$t"
 done
@@ -255,8 +256,8 @@ printf '  gates run:   %d\n' "$TOTAL"
 # printed a clean summary. A threshold that the failure mode cannot cross is not a threshold.
 # Adding a gate raises the total and still passes; REMOVING one has to be done in a diff that also
 # moves this number, which is the whole point. (v1.32 pre-submission review.)
-FLOOR=13
-if [ -n "$HEADLESS" ]; then FLOOR=12; fi
+FLOOR=14
+if [ -n "$HEADLESS" ]; then FLOOR=13; fi
 if [ "$TOTAL" -lt "$FLOOR" ]; then
   echo
   echo "  ❌ only $TOTAL gate(s) ran. This script expects at least $FLOOR; a glob that matched nothing"
