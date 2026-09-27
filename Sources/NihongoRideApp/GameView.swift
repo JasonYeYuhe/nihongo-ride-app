@@ -799,8 +799,11 @@ enum RideHUDSpoken {
         "\(Int(accuracy * 100))%"
     }
 
-    /// Whether the speed is a number yet: from 1 wpm, `RunClock.wpm`'s "meaningful" — below it the
-    /// pill draws "—" and speaks "not yet". 1.0 itself is a number.
+    /// Whether the speed is a number yet: from 1 wpm — below it the pill draws "—" and speaks "not
+    /// yet". 1.0 itself is a number. The 1 is this function's own threshold, not `RunClock.wpm`'s:
+    /// RunClock says "not meaningful" only with 0 (under two seconds of riding, or no correct
+    /// keystroke), and `GameView`'s ticker hands the HUD `liveWPM` rounded to a whole number, so a
+    /// raw 0.3 arrives here as 0 and a raw 0.5 as 1.
     static func paceIsKnown(_ wpm: Double) -> Bool { wpm >= 1 }
 
     /// The speed pill's drawn value: whole words per minute, "—" before `paceIsKnown`.

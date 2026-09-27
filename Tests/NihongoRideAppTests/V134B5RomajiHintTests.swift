@@ -31,7 +31,10 @@ import RomajiKana
 ///   0.5 floor (13pt). In that line 54 typed characters were measured whole and 65 lost their last
 ///   9, so near the end of a sentence longer than about 55 characters (88 in the corpus; 24 longer
 ///   than 59) the last typed characters are cut. Three lines and two cost the same here: at 14pt
-///   every corpus hint needs two.
+///   on the 354pt card no corpus hint takes a third line (two full-size lines hold 78 characters
+///   after the arrow; the corpus's longest is 67), and hints of 8–38 characters (4,184 of the
+///   6,724 sentences) fit one line and take no second one. (Review round 3 measured these; round
+///   2's text said every corpus hint needed two lines at 14pt, which was false.)
 /// * Default size, keyboard down (778pt), 56 characters: three lines (872f14d) took the example
 ///   sentence from 77 to 58pt — a line cut — and the kana from 1.33's 102 to 90pt; two lines (this
 ///   file's chain) leave the example whole and the kana at 93pt (shrunk, whole).
@@ -47,8 +50,13 @@ import RomajiKana
 /// So the chain takes at most two lines, not three: the example's cut and the AX1 surface squeeze
 /// were what three lines cost, and a lower line limit or a lower floor were the only levers taken.
 /// The typed-row cut late in the 24 longest sentences and the AX1 keyboard-down kana are what two
-/// lines still cost; one line would cost them nothing and shrink every hint over 40 characters
-/// (2,007 sentences) to 10pt or less, so they are reported rather than traded.
+/// lines still cost; one line would cost them nothing and shrink the hint instead, so they are
+/// reported rather than traded. On one line, measured in review round 3 (round 2's text said every
+/// hint over 40 characters shrank to 10pt or less, which was false): with the keyboard up (14pt,
+/// 354pt) every hint over 38 characters shrinks (2,540 sentences), 41 characters to about 13.3pt,
+/// and to 10pt or less only from about 55 (drawn at 10pt at 54–55 characters and 9.75pt at 56;
+/// 122 sentences are 55 or longer); with it down (18pt, 322pt) every hint over 26 characters
+/// shrinks, 41 characters to 12pt, and to 10pt or less from 50 (413 sentences).
 ///
 /// **The instrument.** A character is DRAWN if replacing it with "#" changes the rendered pixels,
 /// and the rows that change say which line it is on. So "every character is drawn, on two lines"

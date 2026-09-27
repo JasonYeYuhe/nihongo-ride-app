@@ -134,8 +134,9 @@ struct V134B3HUDSpokenTests {
     }
 
     /// The forms the pills use for a value that is not a number yet: a streak under two is "none"
-    /// / 无 (the pill draws "—"), and a speed under 1 wpm — `RunClock.wpm`'s "not meaningful yet" —
-    /// is "not yet" / 尚未开始计算 (the pill draws "—"). Whole numbers, never fractions.
+    /// / 无 (the pill draws "—"), and a speed under 1 wpm — `RideHUDSpoken.paceIsKnown`'s threshold;
+    /// `RunClock.wpm`'s "not meaningful yet" is 0 alone — is "not yet" / 尚未开始计算 (the pill draws
+    /// "—"). Whole numbers, never fractions.
     @Test("a streak under two is none, a speed under one is not yet, and the numbers are whole")
     func valueForms() {
         for combo in [0, 1] {
@@ -356,7 +357,8 @@ struct V134B3HUDSpokenTests {
     /// Mutations, 2026-09-27, each red here: the suffix dropped from `spoken:`; `fallback: false`
     /// passed instead of the row's; a second call from the score pill's `value:`; (review round 2)
     /// the call site written back inline as 1.34's first draft with its outer parentheses removed;
-    /// `progressWords`' parentheses removed.
+    /// `progressWords`' parentheses removed; (review round 3) `stat`'s `.accessibilityValue(spoken ?? value)`
+    /// → `.accessibilityValue(value)`.
     @Test("the progress pill's spoken value reads the composer with the row's own fallback, and nothing drawn does")
     func progressPillSpeaksTheSuffix() throws {
         let files = try CallSiteScanner.shippedSources.get()
@@ -400,6 +402,16 @@ struct V134B3HUDSpokenTests {
                 "progressWords' shape changed")
         #expect(!text[valueLabel.upperBound..<spokenLabel.lowerBound].contains("RideHUDSpoken"),
                 "the progress pill's drawn value reads the composer")
+        // The last hop (review round 3): `stat` hands `spoken:` to VoiceOver. Its one
+        // `.accessibilityValue`, comment-blanked, exactly — `.accessibilityValue(value)` would
+        // compile, draw the same pill, and drop every spoken value above.
+        let stats = file.functions(named: "stat").filter { hud.contains($0.keywordOffset) }
+        let statBody = try #require(stats.count == 1 ? stats.first?.body : nil, "HUDBar declares \(stats.count) stat")
+        let statCode = V133GRideAndDrillLayoutTests.collapsed(String(decoding: file.codeWithStrings[statBody], as: UTF8.self))
+        let values = statCode.components(separatedBy: ".accessibilityValue(").count - 1
+        #expect(values == 1, "HUDBar.stat sets .accessibilityValue \(values) times")
+        #expect(statCode.hasSuffix(".accessibilityElement() .accessibilityLabel(label) .accessibilityValue(spoken ?? value) }"),
+                "HUDBar.stat no longer ends in .accessibilityValue(spoken ?? value): \(statCode.suffix(120))")
 
         var sites: [(path: String, offset: Int)] = []
         for other in files {

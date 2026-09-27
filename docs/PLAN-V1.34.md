@@ -154,6 +154,16 @@ already re-shoots Settings. Proof: `V133SContrastTests` extended; `about.png` di
 `PLAN-V1.33.md` §C lists it as unchecked whether the hint scrolls with the cursor. Simulator, a 40-kana
 sentence, three cursor positions. Fix only if it does not follow; then a source pin in the V133G shape.
 
+*Addendum 2026-09-27 (review round 3), the decision:* the hint wraps to at most two lines
+(`lineLimit(2)`, a 0.45 shrink floor; `V134B5RomajiHintTests` pins the chain). The card does not grow
+for the second line, so with the keyboard up at the default size, near the end of a sentence longer than
+about 55 romaji characters (88 of the corpus's 6,724 typeable sentences; 24 are longer than 59) the
+typed-romaji row loses its second line and clips its last characters. 1.33 clipped the hint instead:
+one 14pt line of the 402pt phone's keyboard-up card (354pt) holds 38 characters after the arrow (40 with
+the arrow and its space), so 1.33 cut every hint longer than that — 2,540 sentences. Accepted, because
+the rider needs the upcoming romaji more than the tail of what they already typed; the kana row's cursor
+and the next-key chips stay visible. Revisit if the simulator pass shows the typed row unusable.
+
 ### B6 (v1.35) — Build a word list without riding into every word: search the corpus from Word Lists · *2 days, with a cut rule*
 
 Today a list can only be built by meeting a word in a ride or on a results screen (`ListsView.swift:502-503`
