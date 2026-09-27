@@ -120,13 +120,14 @@ struct CustomTextAddView: View {
     @State private var title = ""
     @State private var source = ""
     @State private var failed = false
+    /// The kit's own count of what Add will cut, re-read when the text changes and not on every
+    /// body evaluation: it splits the paste, which measured (2026-09-27, optimised build, this
+    /// Mac) ~5 ms for 20,000 characters and ~50 ms for 200,000 — `PLAN-V1.34` §B2, addendum.
+    @State private var truncation: CustomText.Truncation?
 
     private var zh: Bool { model.languageCode == "zh" }
 
     var body: some View {
-        // The kit's own cut, re-read on every keystroke, so the notice below the editor is
-        // about the text Add will store and not a restatement of the caps that could drift.
-        let truncation = CustomText.truncation(of: source)
         NavigationStack {
             Form {
                 Section {
@@ -138,6 +139,7 @@ struct CustomTextAddView: View {
                         .frame(minHeight: 220)
                         .font(.system(size: 17))
                         .accessibilityIdentifier("customTextSource")
+                        .onChange(of: source) { truncation = CustomText.truncation(of: source) }
                 } header: {
                     Text(zh ? "日语原文" : "Japanese text")
                 } footer: {
@@ -147,13 +149,9 @@ struct CustomTextAddView: View {
                              : "Stays on this device and is never uploaded. Sentences containing letters or digits are kept but cannot be typed — a romaji engine has no keys for them.")
                         // Said before Add, not after: the text is still added, cut exactly as
                         // the notice says, and the learner decides whether that is the text
-                        // they wanted.
-                        if truncation.isTruncated {
-                            ForEach(Self.truncationNotice(truncation, zh: zh), id: \.self) { line in
-                                Text(line).foregroundStyle(.orange)
-                            }
-                            .accessibilityIdentifier("customTextTruncation")
-                        }
+                        // they wanted. Handed the state unfiltered; the notice view draws a line
+                        // for every non-nil truncation.
+                        CustomTextTruncationNotice(truncation: truncation, zh: zh)
                     }
                 }
                 if failed {
@@ -178,25 +176,19 @@ struct CustomTextAddView: View {
         }
     }
 
-    /// One line per cap that bit, in the order the caps apply. In one place, so the test that
-    /// pins the wording in both languages pins what the sheet shows.
-    static func truncationNotice(_ truncation: CustomText.Truncation, zh: Bool) -> [String] {
-        var lines: [String] = []
-        if truncation.droppedCharacters > 0 {
-            let kept = grouped(truncation.keptCharacters)
-            let dropped = grouped(truncation.droppedCharacters)
-            lines.append(zh
-                         ? "只保留前 \(kept) 个字符,已去掉 \(dropped) 个。"
-                         : "Only the first \(kept) characters are kept — \(dropped) dropped.")
+    /// The one line, in the unit of the cap that bounded what is stored (`CustomText.Truncation`).
+    /// In one place, so the test that pins the wording in both languages pins what the sheet shows.
+    static func truncationNotice(_ truncation: CustomText.Truncation, zh: Bool) -> String {
+        switch truncation {
+        case let .sentences(kept, dropped):
+            return zh
+                ? "只保留前 \(grouped(kept)) 句,已去掉 \(grouped(dropped)) 句。"
+                : "Only the first \(grouped(kept)) sentences are kept — \(grouped(dropped)) dropped."
+        case let .characters(kept, dropped):
+            return zh
+                ? "只保留前 \(grouped(kept)) 个字符,已去掉 \(grouped(dropped)) 个。"
+                : "Only the first \(grouped(kept)) characters are kept — \(grouped(dropped)) dropped."
         }
-        if truncation.droppedSentences > 0 {
-            let kept = grouped(truncation.keptSentences)
-            let dropped = grouped(truncation.droppedSentences)
-            lines.append(zh
-                         ? "只保留前 \(kept) 句,已去掉 \(dropped) 句。"
-                         : "Only the first \(kept) sentences are kept — \(dropped) dropped.")
-        }
-        return lines
     }
 
     /// "20,000", whatever the device locale groups with — the notice is pinned to one spelling
@@ -204,6 +196,22 @@ struct CustomTextAddView: View {
     /// number twice.
     private static func grouped(_ n: Int) -> String {
         n.formatted(.number.locale(Locale(identifier: "en_US")))
+    }
+}
+
+/// The add sheet's truncation line: one orange line for every non-nil truncation, nothing for nil.
+/// Its own view so a test can render it (`V134B2CustomTextTests`) — a condition that hid one unit
+/// of the notice would put the silent cut back, and a source pin cannot see what is drawn.
+struct CustomTextTruncationNotice: View {
+    let truncation: CustomText.Truncation?
+    let zh: Bool
+
+    var body: some View {
+        if let truncation {
+            Text(CustomTextAddView.truncationNotice(truncation, zh: zh))
+                .foregroundStyle(.orange)
+                .accessibilityIdentifier("customTextTruncation")
+        }
     }
 }
 
