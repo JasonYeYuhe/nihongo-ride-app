@@ -50,8 +50,8 @@ from release_numbers import numbers            # noqa: E402
 
 VERSION = "1.34"
 TARGETS = [
-    {"name": "macOS", "platform": "MAC_OS", "build_num": "58"},
-    {"name": "iOS",   "platform": "IOS",    "build_num": "59"},
+    {"name": "macOS", "platform": "MAC_OS", "build_num": "59"},
+    {"name": "iOS",   "platform": "IOS",    "build_num": "60"},
 ]
 
 # Measured, never typed. This release's copy quotes no corpus number.
