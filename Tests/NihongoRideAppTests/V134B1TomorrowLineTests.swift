@@ -1,19 +1,31 @@
 import Testing
 import Foundation
+import SwiftUI
+#if canImport(AppKit)
+import AppKit
+#endif
 import JournalKit
 import ReviewKit
+import ConjugationReviewKit
 import VocabKit
 @testable import NihongoRideApp
 
 /// v1.34 §B1 — "Tomorrow, said out loud": the results screen states the streak and what comes due.
 ///
-/// Four claims, held apart because each fails differently. The copy matrix, row by row, every
+/// Six claims, held apart because each fails differently. The copy matrix, row by row, every
 /// expected string written out by hand (mutating the streak threshold to ≥ 3 turns the 2-day rows
-/// red). The wiring from a real ride through `finishGame` to `model.tomorrowLine(zh:)`, with the
-/// words-due count computed by THIS file from the raw `SRSCard`s and never by `dueForecast` (memory:
-/// a test that grades itself). The view — a model-level test passes while the screen draws nothing
-/// (v1.26 §D), so the shipped `ResultsView` source is read with comments stripped. And the simulator
-/// hook, pinned to the gate that keeps the writing harness off a real device.
+/// red). The wiring from a real ride through `finishGame` to `model.tomorrowLine(zh:)`, for words
+/// AND forms, with every count computed by THIS file from the raw cards and never by `dueForecast`
+/// (memory: a test that grades itself), over arrangements that put cards in every neighbouring
+/// bucket — overdue, today, tomorrow, three days out, and a retired entry — so a read of the wrong
+/// window cannot agree by accident. The view — a model-level test passes while the screen draws
+/// nothing (v1.26 §D), so the shipped `ResultsView` source is read with `//` AND `/* */` comments
+/// stripped, and its chain is pinned line for line. The line's colour, computed over every panel the
+/// arrival backdrop can produce. Its line limit and floor, measured with CoreText at AX5. And the
+/// simulator hook, pinned to the gate that keeps the writing harness off a real device.
+///
+/// What none of this proves: that the line is SEEN. That is the headless `results.png` render and
+/// the simulator pass (PLAN-V1.34 §B1's proof, §G.2/§G.3), which run after merge — not a unit test.
 @MainActor
 @Suite("v1.34 §B1: the results screen says what comes tomorrow")
 struct V134B1TomorrowLineTests {
@@ -119,26 +131,44 @@ struct V134B1TomorrowLineTests {
                           distanceMeters: 500, duration: 60)
     }
 
-    /// The count the line must show, read from the raw cards: those whose `dueDate` falls on
-    /// tomorrow's calendar day. Calendar arithmetic here and not `dueForecast` — the read the line
-    /// is wired to is exactly the thing this number must be independent of.
-    static func cardsDueTomorrow(_ store: ReviewStore) -> Int {
+    /// Which calendar day a due date falls on, counted from today: 0 today, 1 tomorrow, 3 three
+    /// days out, negative when overdue. Calendar arithmetic here and never `dueForecast` — the read
+    /// the line is wired to is exactly the thing the numbers below must be independent of.
+    static func dayOffset(_ due: Date) -> Int {
         let cal = Calendar.current
-        let tomorrow = cal.date(byAdding: .day, value: 1, to: cal.startOfDay(for: Date()))!
-        return store.cards.values.filter { cal.isDate($0.dueDate, inSameDayAs: tomorrow) }.count
+        return cal.dateComponents([.day], from: cal.startOfDay(for: Date()), to: cal.startOfDay(for: due)).day!
     }
+
+    /// The count the line must show, from the raw cards: every card due on or before tomorrow's
+    /// calendar day — overdue, due today and not reviewed, or due tomorrow — whose entry still
+    /// exists. What will be waiting when the rider opens the app tomorrow (PLAN-V1.34 §B1 addendum
+    /// 2026-09-27). `known` is the set of entry ids THIS file put in the vocabulary.
+    static func dueByTomorrow(_ dues: [(entry: String, due: Date)], known: Set<String>) -> Int {
+        dues.filter { known.contains($0.entry) && dayOffset($0.due) <= 1 }.count
+    }
+
+    static func words(_ store: ReviewStore) -> [(entry: String, due: Date)] {
+        store.cards.values.map { (entry: $0.id, due: $0.dueDate) }
+    }
+
+    static func forms(_ store: ConjugationReviewStore) -> [(entry: String, due: Date)] {
+        store.cards.values.map { (entry: $0.sourceID, due: $0.dueDate) }
+    }
+
+    static func ids(_ vocab: VocabStore) -> Set<String> { Set(vocab.entries.map(\.id)) }
 
     /// Yesterday and the day before, seeded through the journal's own writer, then today's ride:
     /// three consecutive days. The words-due count is the three ridden words — SM-2's first success
     /// is a one-day interval — and the arrangement is asserted before the line is read, so a ride
-    /// that reviewed nothing cannot agree with "nothing due" for the wrong reason.
+    /// that reviewed nothing cannot agree with "nothing due" for the wrong reason. (This one holds
+    /// the streak half; which buckets the due half reads is `wordsReadTodayAndTomorrow`'s job.)
     @Test("a third consecutive day, ridden cleanly, reads the streak and the cards due tomorrow")
     func thirdDayRide() throws {
         let model = ReviewPromptWiringTests.seededJournal([Self.noonRide(daysAgo: 2),
                                                            Self.noonRide(daysAgo: 1)])
         ReviewPromptWiringTests.rideCleanly(model)
         #expect(model.journal.count == 3, "today's ride was not logged — nothing below measures the line")
-        let due = Self.cardsDueTomorrow(model.reviewStore)
+        let due = Self.dueByTomorrow(Self.words(model.reviewStore), known: Self.ids(model.vocab))
         #expect(due == 3, "three words ridden for the first time should all be due tomorrow; raw cards say \(due)")
 
         let line = try #require(model.tomorrowLine(zh: false))
@@ -151,7 +181,7 @@ struct V134B1TomorrowLineTests {
     func firstDayRide() throws {
         let model = AppModelTests.makeModel(vocab: Self.vocab())
         ReviewPromptWiringTests.rideCleanly(model)
-        let due = Self.cardsDueTomorrow(model.reviewStore)
+        let due = Self.dueByTomorrow(Self.words(model.reviewStore), known: Self.ids(model.vocab))
         #expect(due == 3, "three words ridden for the first time should all be due tomorrow; raw cards say \(due)")
 
         let line = try #require(model.tomorrowLine(zh: false))
@@ -197,21 +227,223 @@ struct V134B1TomorrowLineTests {
         #expect(line.hasPrefix("4-day streak · "), Comment(rawValue: line))
     }
 
+    // MARK: - Which cards the due half counts: today + tomorrow, never the week, never a retired entry
+
+    /// A sandboxed model whose journal, review store and conjugation store are all seeded before
+    /// `init` reads them — `AppModelTests.seeded` seeds the stores and `seededJournal` the journal,
+    /// and the forms test needs a streak, words and forms at once. Each seed is checked after load:
+    /// a helper that silently seeded nothing would make every assertion below read zero and pass.
+    static func seededRider(vocab: VocabStore, rides: [RideRecord],
+                            review: ReviewStore, conjugation: ConjugationReviewStore) -> AppModel {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("V134B1-\(UUID().uuidString)", isDirectory: true)
+        AppModel.supportDirectoryOverride = dir
+        AppModel.widgetContainerOverride = dir.appendingPathComponent("group", isDirectory: true)
+        let suite = "V134B1-\(UUID().uuidString)"
+        AppModel.settingsDefaults = UserDefaults(suiteName: suite)
+        AppModel.settingsSuiteOverride = suite
+        var journal = RideJournal()
+        for ride in rides { journal.append(ride) }
+        try? journal.save(to: AppModel.supportFileURL("history.json"))
+        let encoder = JSONEncoder()
+        try? encoder.encode(review).write(to: AppModel.supportFileURL("review.json"))
+        try? encoder.encode(conjugation).write(to: AppModel.supportFileURL("conjugation-review.json"))
+        let model = AppModel(vocab: vocab)
+        #expect(model.journal.count == rides.count, "the journal seed did not load")
+        #expect(model.reviewStore.count == review.count, "the review seed did not load")
+        #expect(model.conjugationReviewStore.count == conjugation.count, "the conjugation seed did not load")
+        return model
+    }
+
+    /// Noon on the calendar day `offset` days from today (negative: overdue). Noon for the reason
+    /// `noonRide` gives: a date near midnight would move day with the clock the suite runs at.
+    static func noon(_ offset: Int) -> Date {
+        let cal = Calendar.current
+        return cal.date(byAdding: .day, value: offset, to: cal.startOfDay(for: Date()))!
+            .addingTimeInterval(12 * 3600)
+    }
+
+    static func card(_ id: String, due: Date) -> SRSCard {
+        var card = SRSCard(id: id)
+        card.dueDate = due
+        card.totalReviews = 1
+        card.repetitions = 1
+        return card
+    }
+
+    static func formCard(_ sourceID: String, due: Date) -> ConjugationSRSCard {
+        var card = ConjugationSRSCard(id: "\(sourceID)#te")
+        card.dueDate = due
+        card.totalReviews = 1
+        card.repetitions = 1
+        return card
+    }
+
+    /// Words: a backlog the ride cannot clear, cards due tomorrow, cards due in three days, and two
+    /// cards whose entries were retired (one due tomorrow, one overdue). A Journey ride takes at
+    /// most eight due words (`GameSession.Config.reviewWordCount`), so ten overdue cards leave a
+    /// backlog after it. Every neighbour of "today + tomorrow" is populated AFTER the ride, and the
+    /// test says so before it reads the line, so each wrong window disagrees with the right one:
+    /// tomorrow alone misses the backlog, adding the week counts the day+3 cards, and dropping the
+    /// retired-entry filter counts `gone-t` and `gone-o`.
+    @Test("words: the line counts the backlog and tomorrow, never three days out, never a retired entry")
+    func wordsReadTodayAndTomorrow() throws {
+        var entries = [AppModelTests.entry("a", "水", "みず"), AppModelTests.entry("b", "火", "ひ"),
+                       AppModelTests.entry("c", "山", "やま")]
+        let backlog = (0..<10).map { "o\($0)" }, tomorrow = ["t0", "t1"], later = ["w0", "w1"]
+        let kana = ["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ"]
+        for (i, id) in (backlog + tomorrow + later).enumerated() {
+            entries.append(AppModelTests.entry(id, kana[i], kana[i]))
+        }
+        var cards: [String: SRSCard] = [:]
+        for (i, id) in backlog.enumerated() { cards[id] = Self.card(id, due: Self.noon(-1 - i)) }
+        for id in tomorrow { cards[id] = Self.card(id, due: Self.noon(1)) }
+        for id in later { cards[id] = Self.card(id, due: Self.noon(3)) }
+        cards["gone-t"] = Self.card("gone-t", due: Self.noon(1))
+        cards["gone-o"] = Self.card("gone-o", due: Self.noon(-2))
+        let vocab = VocabStore(entries: entries)
+        let model = Self.seededRider(vocab: vocab, rides: [], review: ReviewStore(cards: cards),
+                                     conjugation: ConjugationReviewStore())
+        ReviewPromptWiringTests.rideCleanly(model)
+        #expect(model.journal.count == 1, "the ride was not logged — nothing below measures the line")
+
+        let raw = Self.words(model.reviewStore), known = Self.ids(vocab)
+        let live = raw.filter { known.contains($0.entry) }
+        let backlogLeft = live.filter { Self.dayOffset($0.due) <= 0 }.count
+        let dueTomorrow = live.filter { Self.dayOffset($0.due) == 1 }.count
+        let thisWeek = live.filter { (2...6).contains(Self.dayOffset($0.due)) }.count
+        let retired = raw.filter { !known.contains($0.entry) && Self.dayOffset($0.due) <= 1 }.count
+        #expect(backlogLeft >= 1, "the ride cleared the backlog — tomorrow alone would agree")
+        #expect(dueTomorrow >= 1 && thisWeek >= 1 && retired >= 1,
+                "an empty neighbour: tomorrow \(dueTomorrow), week \(thisWeek), retired \(retired)")
+        let due = Self.dueByTomorrow(raw, known: known)
+        #expect(due == backlogLeft + dueTomorrow && due >= 2, "raw cards say \(due)")
+
+        let line = try #require(model.tomorrowLine(zh: false))
+        #expect(line == "\(due) words due tomorrow", Comment(rawValue: line))
+        #expect(model.tomorrowLine(zh: true) == "明天到期 \(due) 个词")
+        // Agreement, not the oracle: the Ride Log's Today and Tomorrow rows sum to the line.
+        let log = model.reviewStore.dueForecast(resolves: model.vocab.resolvesID)
+        #expect(log.today + log.tomorrow == due, "the Ride Log shows \(log.today) + \(log.tomorrow)")
+    }
+
+    /// Forms, the half no wiring test used to reach: every other test here rides with an empty
+    /// conjugation store, so the forms count was 0 whatever the model read (round-2 review, three
+    /// mutations green). A Journey ride never writes conjugation cards, so the seeded dates are
+    /// still the dates when the line is read: one overdue, one due today, one tomorrow — counted —
+    /// and one three days out and one whose verb is retired — not counted. Rideable verbs from
+    /// `AppModelTests.verbEntries`, the same seed `ConjugationRideableTests` counts as rideable.
+    @Test("forms: the line counts overdue, today and tomorrow, never three days out, never a retired verb")
+    func formsReadTodayAndTomorrow() throws {
+        let verbs = AppModelTests.verbEntries(4)
+        let vocab = VocabStore(entries: Self.vocab().entries + verbs)
+        let cal = Calendar.current
+        let dueToday = cal.startOfDay(for: Date()).addingTimeInterval(60)   // today, whatever the hour
+        let form = [Self.formCard("v0", due: Self.noon(-1)), Self.formCard("v1", due: dueToday),
+                    Self.formCard("v2", due: Self.noon(1)), Self.formCard("v3", due: Self.noon(3)),
+                    Self.formCard("gone", due: Self.noon(1))]
+        let model = Self.seededRider(
+            vocab: vocab, rides: [Self.noonRide(daysAgo: 2), Self.noonRide(daysAgo: 1)],
+            review: ReviewStore(), conjugation: ConjugationReviewStore(
+                cards: Dictionary(uniqueKeysWithValues: form.map { ($0.id, $0) })))
+        ReviewPromptWiringTests.rideCleanly(model)
+        #expect(model.journal.count == 3, "today's ride was not logged — nothing below measures the line")
+
+        let known = Self.ids(vocab)
+        let rawForms = Self.forms(model.conjugationReviewStore)
+        #expect(rawForms.count == 5, "the ride changed the conjugation store; this arrangement assumed it cannot")
+        let formsDue = Self.dueByTomorrow(rawForms, known: known)
+        #expect(formsDue == 3, "raw forms say \(formsDue): v0 overdue, v1 today, v2 tomorrow — not v3, not gone")
+        let wordsDue = Self.dueByTomorrow(Self.words(model.reviewStore), known: known)
+        #expect(wordsDue >= 2, "the words half is plural in the string below; raw cards say \(wordsDue)")
+
+        let line = try #require(model.tomorrowLine(zh: false))
+        #expect(line == "3-day streak · \(wordsDue) words and \(formsDue) forms due tomorrow", Comment(rawValue: line))
+        #expect(model.tomorrowLine(zh: true) == "连续 3 天 · 明天到期 \(wordsDue) 个词、\(formsDue) 个变形")
+        // Agreement, not the oracle: Stats' conjugation Today and Tomorrow rows sum to the line.
+        let stats = model.conjugationDueForecast
+        #expect(stats.today + stats.tomorrow == formsDue, "Stats shows \(stats.today) + \(stats.tomorrow)")
+    }
+
     // MARK: - The view, and the hook
 
     static func source(_ file: String) throws -> String {
         try V133GRideAndDrillLayoutTests.source(file)
     }
 
+    /// Source lines with BOTH comment forms removed — `//` to the end of the line, and `/* … */`
+    /// nested as Swift nests it — one output line per input line, each trimmed. The shared
+    /// `V133GRideAndDrillLayoutTests.codeLines` blanks only lines that START with `//`, so the
+    /// round-2 review wrapped the drawing block in `/* … */` and every pin here stayed green while
+    /// the view drew nothing. String literals are skipped so a "//" inside one is not a comment.
+    static func codeLines(_ source: String) -> [String] {
+        var out = "", depth = 0, inString = false
+        var i = source.startIndex
+        while i < source.endIndex {
+            let c = source[i], next = source.index(after: i)
+            let n: Character? = next < source.endIndex ? source[next] : nil
+            if depth > 0 {
+                if c == "*", n == "/" { depth -= 1; i = source.index(after: next); continue }
+                if c == "/", n == "*" { depth += 1; i = source.index(after: next); continue }
+                if c == "\n" { out.append(c) }
+                i = next
+                continue
+            }
+            if inString {
+                out.append(c)
+                if c == "\\", let n { out.append(n); i = source.index(after: next); continue }
+                if c == "\"" || c == "\n" { inString = false }
+                i = next
+                continue
+            }
+            if c == "/", n == "/" {
+                while i < source.endIndex, source[i] != "\n" { i = source.index(after: i) }
+                continue
+            }
+            if c == "/", n == "*" { depth = 1; i = source.index(after: next); continue }
+            if c == "\"" { inString = true }
+            out.append(c)
+            i = next
+        }
+        return out.components(separatedBy: "\n").map { $0.trimmingCharacters(in: .whitespaces) }
+    }
+
+    /// The stripper is an instrument, so it is tested before it is trusted: it keeps the line count
+    /// (the pin below reads indentation off the raw lines by index), it removes a block comment
+    /// that spans lines and one that sits mid-line, it leaves a "//" inside a string alone, and —
+    /// the control — the SHIPPED ResultsView with its drawing block wrapped in `/* … */` has no
+    /// call left, which is the mutation the shared stripper let through.
+    @Test("the comment stripper sees // and /* */, and keeps the line count")
+    func strippedSeesBlockComments() throws {
+        let sample = "a // x\n/* one\ntwo */ b\nc /* d */ e\nlet u = \"http://x\"\n/* /* nested */ still */ f"
+        #expect(Self.codeLines(sample) == ["a", "", "b", "c  e", "let u = \"http://x\"", "f"])
+
+        let shipped = try Self.source("ResultsView.swift")
+        #expect(Self.codeLines(shipped).count == shipped.components(separatedBy: "\n").count)
+        let open = "if let line = model.tomorrowLine(zh: zh) {"
+        let start = try #require(shipped.range(of: open), "the drawing block moved")
+        let close = try #require(shipped.range(of: "}\n", range: start.upperBound..<shipped.endIndex))
+        let wrapped = shipped.replacingCharacters(in: start.lowerBound..<close.upperBound,
+                                                  with: "/*" + shipped[start.lowerBound..<close.lowerBound] + "}*/\n")
+        #expect(Self.codeLines(wrapped).filter { $0.contains("tomorrowLine(") }.isEmpty,
+                "a block-commented call still counts as code")
+        #expect(!V133GRideAndDrillLayoutTests.codeLines(wrapped).filter { $0.contains("tomorrowLine(") }.isEmpty,
+                "control: the //-only stripper should still see the commented call, or this proves nothing")
+    }
+
     /// **A scan, not a behavioural test.** `tomorrowLine` is a model method, so every test above
-    /// stays green with the one line in `ResultsView` deleted — v1.26 §B's measurement. Deletion is
-    /// what a scan can see. The Text's limit and floor are pinned here too, because the line sits
-    /// in a `VStack` and `HorizontalTextFitTests` deliberately does not look there.
+    /// stays green with the one line in `ResultsView` deleted — v1.26 §B's measurement. So the
+    /// drawing block is pinned LINE FOR LINE on comment-stripped code: the call with the view's own
+    /// `zh` (the round-2 review set it to `zh: false` and the old pin, which read only
+    /// `model.tomorrowLine(`, stayed green), the colour, limit and floor by their names — their
+    /// values are pinned below — and nothing else in the chain. An added modifier turns this red,
+    /// `.opacity(0)` included, but that is a side effect: that the line is SEEN is the headless
+    /// render's and the simulator pass's to show, after merge.
     @Test("ResultsView draws the line once, under the stage line and above the coach entry, text only")
     func resultsViewDrawsTheLine() throws {
         let raw = try Self.source("ResultsView.swift").components(separatedBy: "\n")
-        let code = V133GRideAndDrillLayoutTests.codeLines(raw.joined(separator: "\n"))
-        let calls = code.indices.filter { code[$0].contains("model.tomorrowLine(") }
+        let code = Self.codeLines(raw.joined(separator: "\n"))
+        let calls = code.indices.filter { code[$0].contains("tomorrowLine(") }
         #expect(calls.count == 1, "ResultsView must call tomorrowLine exactly once, found \(calls.count)")
         let call = try #require(calls.first)
         let stage = try #require(code.firstIndex(of: "stageLine"), "the bare `stageLine` statement is gone")
@@ -227,14 +459,22 @@ struct V134B1TomorrowLineTests {
             #expect(indent(i) >= indent(stage), "line \(i + 1) leaves the panel's block: \(code[i])")
         }
 
-        // The Text and its chain: the limit and the floor, and nothing a finger could act on.
-        let chain = code[(call + 1)..<coach].joined(separator: "\n")
-        #expect(chain.contains("Text(line)"))
-        #expect(chain.contains(".lineLimit("), "a long Chinese count must not break mid-number")
-        #expect(chain.contains(".minimumScaleFactor("), "…and needs a floor to shrink to")
-        for forbidden in ["Button(", "onTapGesture", ".sheet(", "Link(", "confirmationDialog", ".alert("] {
-            #expect(!chain.contains(forbidden), "the tomorrow line must be text only, found \(forbidden)")
-        }
+        // The block, exactly. Nothing a finger could act on, because nothing else is allowed.
+        let between = code[(stage + 1)..<call].filter { !$0.isEmpty }
+        #expect(between.isEmpty, "something sits between the stage line and the call: \(between)")
+        #expect(Array(code[call..<coach].filter { !$0.isEmpty }) == [
+            "if let line = model.tomorrowLine(zh: zh) {",
+            "Text(line)",
+            ".font(.caption)",
+            ".foregroundStyle(Self.tomorrowLineColor)",
+            ".multilineTextAlignment(.center)",
+            ".lineLimit(Self.tomorrowLineLimit(accessibilitySize: typeSize.isAccessibilitySize))",
+            ".minimumScaleFactor(Self.tomorrowLineScaleFloor)",
+            ".fixedSize(horizontal: false, vertical: true)",
+            "}",
+        ])
+        #expect(code.contains("@Environment(\\.dynamicTypeSize) private var typeSize"),
+                "`typeSize` is no longer the environment's Dynamic Type size")
 
         // …and no other screen draws it. The plan puts it on the results screen and nowhere else.
         let files = try FileManager.default.contentsOfDirectory(
@@ -243,10 +483,155 @@ struct V134B1TomorrowLineTests {
         #expect(files.count >= 20, "the scanner found only \(files.count) sources; it is broken, not clean")
         var callers: [String] = []
         for file in files where file.lastPathComponent != "AppModel.swift" {
-            let lines = V133GRideAndDrillLayoutTests.codeLines(try String(contentsOf: file, encoding: .utf8))
+            let lines = Self.codeLines(try String(contentsOf: file, encoding: .utf8))
             if lines.contains(where: { $0.contains("tomorrowLine(") }) { callers.append(file.lastPathComponent) }
         }
         #expect(callers == ["ResultsView.swift"], "found \(callers)")
+    }
+
+    // MARK: - The limit and the floor, by value and by measurement
+
+    /// By value, so `.lineLimit(nil)` / `.minimumScaleFactor(1.0)` — or a constant quietly moved —
+    /// is red here rather than green by name (round-2 review). Two below the accessibility sizes is
+    /// the line's first build, which the default-size renders were taken with.
+    @Test("the line limit is 2 below the accessibility sizes and 3 at them; the floor is 0.7")
+    func limitAndFloorByValue() {
+        #expect(DynamicTypeSize.allCases.filter(\.isAccessibilitySize).count == 5)
+        for size in DynamicTypeSize.allCases {
+            #expect(ResultsView.tomorrowLineLimit(accessibilitySize: size.isAccessibilitySize)
+                    == (size.isAccessibilitySize ? 3 : 2), "\(size)")
+        }
+        #expect(ResultsView.tomorrowLineScaleFloor == 0.7)
+    }
+
+    #if canImport(AppKit)
+    /// How many lines CoreText breaks `text` into at `points` in a column `width` wide — the same
+    /// measurement `V133SSettingsAboutTests` makes with the system UI font.
+    static func lineCount(_ text: String, points: Double, width: Double) throws -> Int {
+        let font = try #require(CTFontCreateUIFontForLanguage(.system, points, nil))
+        let setter = CTFramesetterCreateWithAttributedString(
+            NSAttributedString(string: text, attributes: [.font: font]))
+        let path = CGPath(rect: CGRect(x: 0, y: 0, width: width, height: 100_000), transform: nil)
+        let frame = CTFramesetterCreateFrame(setter, CFRange(location: 0, length: 0), path, nil)
+        return (CTFrameGetLines(frame) as? [CTLine] ?? []).count
+    }
+
+    /// The column the line gets on the 402pt iPhone 17 Pro the AX5 pass uses, from the source:
+    /// the screen's own padding on a phone and `arrivalPanel`'s compact horizontal padding, each
+    /// read rather than copied, so a change to either is re-measured here.
+    static func panelColumn() throws -> Double {
+        let results = Self.codeLines(try Self.source("ResultsView.swift")).joined(separator: "\n")
+        let screen = try #require(results.firstMatch(of: /\.padding\(isPhoneIdiom \? ([0-9]+) : [0-9]+\)/),
+                                  "ResultsView's content padding moved")
+        let backdrop = Self.codeLines(try Self.source("RideArrivalBackdrop.swift")).joined(separator: "\n")
+        let panel = try #require(backdrop.firstMatch(of: /\.padding\(\.horizontal, compact \? ([0-9]+) : [0-9]+\)/),
+                                 "arrivalPanel's horizontal padding moved")
+        return 402 - 2 * (try #require(Double(screen.1))) - 2 * (try #require(Double(panel.1)))
+    }
+
+    /// The widest realistic rows, in both languages, fit the accessibility-size limit at the floor
+    /// on the AX5 phone, so SwiftUI never has to truncate — the round-2 finding was that two lines
+    /// cut "due tomorrow" off the English streak rows. `.caption` at AX5 is 43pt in Apple's Dynamic
+    /// Type table (the same table `V133GRideAndDrillLayoutTests.accessibilityScales` copies body
+    /// and largeTitle from); 40pt, `.caption2`'s, is measured too because the review used it.
+    /// The control: at the old limit of two, the English row does NOT fit at the floor, or this
+    /// instrument could not have seen the finding.
+    @Test("at AX5 the widest rows fit the accessibility limit at the floor, and did not fit two lines")
+    func widestRowsFitAtAX5() throws {
+        let column = try Self.panelColumn()
+        #expect(column == 322, "the column was 322pt when the limit was measured; now \(column)pt — re-measure")
+        let widest = ["365-day streak · 999 words and 999 forms due tomorrow",
+                      "连续 365 天 · 明天到期 999 个词、999 个变形"]
+        // The rows are the composer's own output, not a guess at it.
+        #expect(TomorrowLine.compose(streakDays: 365, wordsDue: 999, formsDue: 999, zh: false) == widest[0])
+        #expect(TomorrowLine.compose(streakDays: 365, wordsDue: 999, formsDue: 999, zh: true) == widest[1])
+        let limit = ResultsView.tomorrowLineLimit(accessibilitySize: true)
+        let floor = Double(ResultsView.tomorrowLineScaleFloor)
+        for points in [43.0, 40.0] {
+            for row in widest {
+                let lines = try Self.lineCount(row, points: points * floor, width: column)
+                #expect(lines <= limit, "\(points)pt × \(floor): \(lines) lines for a limit of \(limit) — \(row)")
+            }
+        }
+        // Measured 2026-09-27: at 43pt the English row fits three lines from a 0.865 scale down and
+        // the Chinese row fits three at full size, so the floor has room.
+        let enRoom = try Self.lineCount(widest[0], points: 43 * 0.86, width: column)
+        let zhFull = try Self.lineCount(widest[1], points: 43, width: column)
+        #expect(enRoom <= limit && zhFull <= limit, "en at 0.86: \(enRoom) lines; zh at full size: \(zhFull)")
+        // The control: two lines at the floor truncated the English row.
+        let twoLineControl = try Self.lineCount(widest[0], points: 43 * floor, width: column)
+        #expect(twoLineControl > 2,
+                "control: the English row fits two lines at the floor — the instrument cannot see the finding")
+    }
+    #endif
+
+    // MARK: - The colour
+
+    typealias RGB = V133SContrastTests.RGB
+
+    /// A number from a source file, read rather than copied, so a change there is recomputed here.
+    static func sourceNumber(_ path: String, _ pattern: Regex<(Substring, Substring)>) throws -> Double {
+        let url = V133GRideAndDrillLayoutTests.appDirectory.deletingLastPathComponent().appendingPathComponent(path)
+        let code = Self.codeLines(try String(contentsOf: url, encoding: .utf8)).joined(separator: "\n")
+        let match = try #require(code.firstMatch(of: pattern), "\(path): the value moved")
+        return try #require(Double(match.1))
+    }
+
+    /// Every colour the arrival panel can resolve to: black at `RidePalette.cardAlpha` over the
+    /// backdrop, which is the scene under a black scrim of `textScrim + 0.15`, and `textScrim` is
+    /// never below `baseScrim`. Scenes over a 0.1 RGB grid, from black to white, and scrims from
+    /// the lowest the backdrop can use up to fully black — a superset of the real skies, so the
+    /// worst case here is no better than the worst real one.
+    static func arrivalPanels() throws -> [RGB] {
+        let cardAlpha = try Self.sourceNumber("SceneryKit/RidePalette.swift", /public static let cardAlpha = ([0-9.]+)/)
+        let baseScrim = try Self.sourceNumber("SceneryKit/RidePalette.swift", /public static let baseScrim = ([0-9.]+)/)
+        let extra = try Self.sourceNumber("NihongoRideApp/RideArrivalBackdrop.swift",
+                                          /Color\.black\.opacity\(stage\.palette\.textScrim \+ ([0-9.]+)\)/)
+        let panelCode = Self.codeLines(try Self.source("RideArrivalBackdrop.swift"))
+        #expect(panelCode.contains(".background(.black.opacity(RidePalette.cardAlpha),"),
+                "arrivalPanel no longer backs its content with black at cardAlpha")
+        let lowest = baseScrim + extra
+        #expect(abs(lowest - 0.25) < 1e-9, "the lowest scrim was 0.25 when this was computed; now \(lowest)")
+        let grid = (0...10).map { Double($0) / 10 }
+        var panels: [RGB] = []
+        for scrim in [lowest, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0] {
+            for r in grid { for g in grid { for b in grid {
+                let backdrop = V133SContrastTests.over(Color.black.opacity(scrim), (r, g, b))
+                panels.append(V133SContrastTests.over(Color.black.opacity(cardAlpha), backdrop))
+            } } }
+        }
+        return panels
+    }
+
+    static func worstContrast(_ color: Color, over panels: [RGB]) -> Double {
+        panels.map { V133SContrastTests.contrast(V133SContrastTests.over(color, $0), $0) }.min() ?? 0
+    }
+
+    /// The line's colour clears WCAG AA's 4.5:1 for small text over every panel above, with 8-bit
+    /// quantisation applied at the worst one; `Theme.dim`, which it first copied from the stage
+    /// line, computes under — the control, or this suite could not fail. And 0.46 is the smallest:
+    /// one hundredth less does not clear. (Round-2 review: 4.41–4.53:1 measured for `Theme.dim`.)
+    @MainActor
+    @Test("the tomorrow line's colour clears 4.5:1 on every arrival panel, and Theme.dim does not")
+    func tomorrowLineColorClearsAA() throws {
+        let panels = try Self.arrivalPanels()
+        #expect(panels.count == 7 * 1331)
+        let now = Self.worstContrast(ResultsView.tomorrowLineColor, over: panels)
+        #expect(now >= 4.5, "the tomorrow line computes to \(now):1 at its worst")
+        let dim = Self.worstContrast(Theme.dim, over: panels)
+        #expect(dim < 4.5 && dim > 4.3, "control: Theme.dim computed \(dim):1 — measured 4.41:1")
+        let lower = V133SContrastTests.resolved(ResultsView.tomorrowLineColor).alpha - 0.01
+        #expect(Self.worstContrast(Color.white.opacity(lower), over: panels) < 4.5,
+                "white at \(lower) also clears — the constant is not the smallest opacity that does")
+
+        // 8-bit: the worst panel and the text over it, each rounded to a byte, still clear.
+        func q(_ c: RGB) -> RGB { ((c.r * 255).rounded() / 255, (c.g * 255).rounded() / 255, (c.b * 255).rounded() / 255) }
+        let worst = try #require(panels.min {
+            V133SContrastTests.contrast(V133SContrastTests.over(ResultsView.tomorrowLineColor, $0), $0)
+                < V133SContrastTests.contrast(V133SContrastTests.over(ResultsView.tomorrowLineColor, $1), $1)
+        })
+        let quantised = V133SContrastTests.contrast(q(V133SContrastTests.over(ResultsView.tomorrowLineColor, worst)), q(worst))
+        #expect(quantised >= 4.5, "after 8-bit quantisation: \(quantised):1 over \(worst)")
     }
 
     /// `jumpToDebugScreen` writes — its `finishGame` persists SRS and a ride — and is gated to the
@@ -255,7 +640,7 @@ struct V134B1TomorrowLineTests {
     /// source: the block does not compile on macOS, where this suite runs.
     @Test("the demo-journal hook sits in the results case, inside the simulator-only gate, before the ride")
     func hookIsGatedToTheSimulator() throws {
-        let code = V133GRideAndDrillLayoutTests.codeLines(try Self.source("AppModel.swift"))
+        let code = Self.codeLines(try Self.source("AppModel.swift"))
         let hooks = code.indices.filter { code[$0].contains("NIHONGO_DEBUG_DEMO_JOURNAL") }
         #expect(hooks.count == 1, "one hook, found \(hooks.count)")
         let hook = try #require(hooks.first)

@@ -88,6 +88,36 @@ discarded a v1.33 fix).
 * **Registered under constraint 3:** a line that names tomorrow's due work can only raise days-ridden;
   direction up, magnitude unmeasurable, written in §K's template before `--submit` (§F).
 * **Risk:** wrong-denominator copy (v1.32 §C2's class) — the line names *cards due*, never *rides*.
+* **Addendum 2026-09-27 — round-2 review of the first build (42d04b1), decided by the orchestrator
+  under the owner's delegation.** Three decisions; the text above stays as written.
+  1. **"Due tomorrow" is `today` + `tomorrow`, not the tomorrow bucket.** The text above says the line
+     uses "the local-day rule `DueForecast` already uses", and the first build read that as the
+     `tomorrow` bucket alone. The buckets are disjoint and `today` holds everything overdue and due
+     today that the ride did not review, and a card still due tonight is still due tomorrow. So for a
+     rider with a backlog the line said "nothing due tomorrow" while the Ride Log and Stats would list
+     that backlog the next morning. The review found this false. The line now counts, for words and
+     forms alike, what will be due when the rider opens the app tomorrow: each forecast's `today` plus
+     its `tomorrow`. The copy matrix is unchanged, and "nothing due tomorrow" now means exactly that.
+     The Ride Log keeps its separate Today/Tomorrow rows (it is not touched, as above); the line's
+     number is the sum of those two rows, and `AppModel.tomorrowLine`'s comment says why.
+  2. **Colour: `ResultsView.tomorrowLineColor`, white at 0.46, not `Theme.dim`.** On the arrival panel
+     (black at `RidePalette.cardAlpha` 0.85 over a backdrop scrimmed at ≥ 0.25), `Theme.dim` computes
+     to 4.41:1 at its worst (a black scene), under AA's 4.5:1 for small text. White at 0.46 is the
+     smallest opacity that clears it everywhere: 4.57:1 at its worst (a white scene), 4.58:1 over
+     black. Computed by source-over on the sRGB values, as `V133SContrastTests` does. **Deferred by
+     name:** the stage line directly above keeps `Theme.dim` in this release, at **4.41:1**. It is
+     1.33's line, not B1's, and changing it moves a pixel the §G.2 comparison would otherwise hold
+     identical. Next release that re-shoots the results screen.
+  3. **AX5: limit 3 at the accessibility sizes, 2 below them, floor 0.7.** `.caption` is 43pt at AX5
+     (Apple's table; the review's 40pt is `.caption2`). The column on the 402pt phone is 402 − 2×24 −
+     2×16 = 322pt, from the source. With CoreText, the widest English row ("365-day streak · 999 words
+     and 999 forms due tomorrow") needs a 0.59 scale for two lines, so it truncated. For three lines
+     it needs 0.865. The widest Chinese row fits three lines at full size. Below the accessibility
+     sizes nothing changes. Pinned by value and measured in `V134B1TomorrowLineTests`.
+
+  **What still has to be shown after merge:** that the line is *seen*. That proof is the headless
+  `results.png` comparison (§G.2) and the simulator pass at default and AX5 (§G.3), as the proof
+  bullet above requires. No unit test stands in for it.
 
 ### B2 — Own text, kept: two defects now, two improvements when there is evidence anyone pastes · *0.5 + 1.0 days*
 

@@ -1543,17 +1543,28 @@ final class AppModel {
     /// that recorded nothing. Asked of `lastSummary` rather than of the journal so this cannot drift
     /// from the headline sitting six lines above it.
     ///
-    /// The three numbers are the SAME reads the Ride Log's streak card and forecast card and the
+    /// The numbers come from the SAME reads the Ride Log's streak card and forecast card and the
     /// Stats screen make — `streakDays()`, `dueForecast(resolves:)`, `conjugationDueForecast` — so
     /// this line and those screens cannot disagree, which is the shape twenty-one defects in this
     /// project have had in common. Read live, not off `lastSummary`: the summary carries the run,
     /// and the streak and the forecast are about the calendar.
+    ///
+    /// "Due tomorrow" is each forecast's `today` PLUS its `tomorrow`, for words and forms alike —
+    /// what will be waiting when the rider opens the app tomorrow. The buckets are disjoint and
+    /// `today` holds everything overdue and everything due today that this ride did not review; a
+    /// card still due tonight is still due tomorrow. Read alone, `tomorrow` told a rider with a
+    /// backlog "nothing due tomorrow" while the Ride Log and Stats would list that backlog the next
+    /// morning (v1.34 round-2 review; PLAN-V1.34 §B1 addendum 2026-09-27). The Ride Log keeps its
+    /// separate Today and Tomorrow rows — it is read on the day, this line is about the next one —
+    /// so this number is exactly the sum of those two rows, never a third count.
     func tomorrowLine(zh: Bool) -> String? {
         guard lastSummary?.typedNothing != true else { return nil }
+        let words = reviewStore.dueForecast(resolves: vocab.resolvesID)
+        let forms = conjugationDueForecast
         return TomorrowLine.compose(
             streakDays: journal.streakDays(),
-            wordsDue: reviewStore.dueForecast(resolves: vocab.resolvesID).tomorrow,
-            formsDue: conjugationDueForecast.tomorrow,
+            wordsDue: words.today + words.tomorrow,
+            formsDue: forms.today + forms.tomorrow,
             zh: zh)
     }
 

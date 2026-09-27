@@ -7,7 +7,9 @@ import Foundation
 /// copy matrix from PLAN-V1.34 §B1, decided before it was built, and it is pure so the matrix can
 /// be held row by row against strings written out by hand rather than against the function itself.
 /// `AppModel.tomorrowLine(zh:)` supplies the three numbers from the reads the Ride Log and Stats
-/// already make; nothing here counts anything.
+/// already make; nothing here counts anything. "Due tomorrow" means due when the rider opens the
+/// app tomorrow — the caller passes each forecast's `today` + `tomorrow`, because a card due or
+/// overdue today and not reviewed is still due tomorrow (see `tomorrowLine(zh:)`).
 ///
 /// The streak half is shown only from two days: "1-day streak" is a rider on their first day, and
 /// saying so would announce the absence of a streak. The due half always names cards — words and
