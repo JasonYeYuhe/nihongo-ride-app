@@ -138,6 +138,34 @@ discarded a v1.33 fix).
   decides whether a ride record exists — so a cram shows none (it adds no day to the streak the line
   states), and English capitalises the due half when it starts the line ("Nothing due tomorrow").
 
+  *Addendum 2026-09-27 (simulator pass, 402pt clone, `cbf71bf`):* at AX5 the line was whole and
+  inside the panel, but it broke badly: "4-day streak · 7 / words due / tomorrow" — the count ends
+  line 1, its noun starts line 2 — and "连续 4 天 · 明天到 / 期 7 个词", splitting 到期. **Decided by
+  the orchestrator, done:** `TomorrowLine.compose` joins what must stay together with characters
+  that forbid a break. U+00A0 NO-BREAK SPACE goes between each count and its noun ("7 words",
+  "4 forms"), and between each number and its measure word ("7 个词", "4 个变形", and the streak's
+  "4 天"). U+2060 WORD JOINER goes inside 明天, 到期 and 变形. Nothing else changes. **Measured with
+  CoreText** in `V134B1TomorrowLineTests.noBreakInsideAJoin`, which is calibrated first on the
+  device's own strings. At `.caption`'s 43pt in the 322pt column, CoreText breaks the `cbf71bf` text
+  exactly where the simulator did. The composed text now breaks as "4-day streak · " / "7 words due "
+  / "tomorrow" and "连续 4 天 · 明天" / "到期 7 个词". The test then covers a grid of 1,620 rows:
+  streaks 0–999, words and forms 0–999, both languages. It checks them at 43 and 40pt, at every scale
+  from 1.0 down to the 0.7 floor, and at the default size's 12pt. No line ends in a count, and no
+  break falls inside 明天, 到期 or 变形. **Pixels:** every matrix row, composed now, renders byte for
+  byte as its plain-space form at 12 and 43pt. A no-break space has a space's advance and the word
+  joiner has none, so where the line fits one row nothing moves. The headless set bears this out:
+  rendered from this change and from `359e4e5` on the same evening, en and zh, sequentially, all 24
+  screens are pixel-identical (`compare_renders.py`), `results.png` and `results-sentence.png`
+  included. **VoiceOver** reads a no-break
+  space as a space and does not speak U+2060, a default-ignorable format character. That is stated
+  from the characters' definitions, not heard on a device. **Cost, measured:** the English rows
+  that name 999 words and 999 forms now need the whole 0.7 floor to fit three lines at AX5. Their
+  third line, "999 forms due tomorrow", fits 322pt at 0.70 and not at 0.71; before the joins these
+  rows fit from 0.865. No room is left above the floor for them, and rows with two-digit counts fit
+  from 0.745. `widestRowsFitAtAX5` now holds the whole grid at the floor, not one row. **Not
+  joined:** 个 and its noun. The decision named the number–measure-word pair only, so the widest
+  Chinese row at 43pt breaks "明天到期 999 个" / "词、999 个变形".
+
 ### B2 — Own text, kept: two defects now, two improvements when there is evidence anyone pastes · *0.5 + 1.0 days*
 
 `CustomTextKit` shipped practice-only on purpose (`PLAN-ITERATION` §C3) and the question it exists to
@@ -174,6 +202,32 @@ none touches SRS or sync:
    8–17 ms and 84–87 ms. One case the rule reads coarsely: when the 200th stored sentence is itself
    cut by the character cap AND the paste has a 201st, the line says sentences and does not also say
    the 200th was shortened.
+
+   *Addendum 2026-09-27 (simulator pass, 402pt clone, `cbf71bf`):* after a 230-sentence paste
+   (3,212 characters, over the 200 cap), "Only the first 200 sentences are kept — 30 dropped." was
+   on no screen. It sat in the editor Section's **footer**, and the editor grows to fit the paste.
+   It was 3,495pt tall, the footer about 3,800pt down the sheet, and the keyboard at 583pt, while
+   Add is in the toolbar. A notice exists only for a paste over the cap, which is long by
+   definition, so in the footer it was off screen every time it had something to say. **Moved to
+   the editor Section's header**, under the "Japanese text" / 「日语原文」 label, in a
+   `VStack(alignment: .leading, spacing: 6)`. That was chosen over a Section of its own because it
+   keeps the label's look. With no notice the header is the label alone in a VStack. `cbf71bf`
+   already built the footer that way, and the simulator pass found that sheet unchanged from 1.33's
+   plain footer text. A Section of its own would draw the notice as a grouped row. The footer is
+   1.33's privacy line again. The header's place depends on the title field above it, not on the
+   paste. In the captures the editor's cell began at 319pt (default) and 425pt (AX5) after the
+   paste, because the Form did not scroll to the caret, and the header sits directly above that
+   cell. Pinned by `V134B2CustomTextTests.noticeIsAboveTheEditor` on the source. The Section whose
+   content is the editor is followed by `header:` then `footer:`, and the header is exactly the
+   label and then the notice. Mutation: the `cbf71bf` file (notice back in the footer) is red, with
+   4 issues. The "drawn whenever non-nil" render test is unchanged and green. **Estimated, not yet
+   seen:** iOS 26's header font is about 17pt semibold at the default size and 51pt at AX5 (read off
+   the label's captured frames). At the default size the English notice takes two lines (about
+   40pt), moves the editor about 46pt down and sits whole above the keyboard. **At AX5 with the
+   keyboard up the English notice needs about five lines (300pt) starting near 400pt, so its last
+   two lines ("kept — 30 / dropped.") would fall under the keyboard.** The Chinese notice needs
+   three lines (180pt) and just fits. These are CoreText estimates from the captured frames. The
+   simulator re-run, keyboard up, both languages, default and AX5, is the proof.
 3. *(v1.35, conditional)* **No "Practise this text" from the manager**: after correcting readings the rider closes the sheet,
    reopens the picker, then Starts (`CustomTextsView.swift:154-196` offers only Done). Add the action
    on the detail screen. *0.25.* Proof: `AppModelTests` — the tap selects the id, the next `startGame`
@@ -275,6 +329,73 @@ as three lines did; the 67- and 76-character hints keep it. **(4)** AX1 cap, key
 67-character hints. The decision stands on the same ground: in 1.33 the rider could not read the romaji
 past the 38th character of any of those 2,540 sentences at all, and every cost above leaves the typing
 target and its cursor on screen. The simulator pass is the check that the typed row stays usable.
+
+*Addendum 2026-09-27 (simulator pass, 402pt clone, `cbf71bf`):* two findings on the ride card,
+both with the keyboard up.
+
+**(1) SERIOUS — the typed-romaji row cut its newest characters, at the accessibility sizes too.**
+The AX5 setting is capped to AX1 on this screen. There, keyboard up, late in a 51-character
+sentence with 45 typed, the row was one line at about 16pt reading
+"kanojohageimeidekatsudoushiteorihon…". The ten characters just typed were the ones hidden, and
+1.33 had wrapped this row to two lines. The release review above records the cut only at the
+default size, from about 55 characters. At the AX1 cap it starts at about 35. **Changed:** the row
+truncates at the head (`.truncationMode(.head)` in `WordCard.romaji`). **Measured** with
+`V134B5RomajiHintTests`' own instrument: a character is drawn if replacing it with "#" changes the
+pixels. The row's full chain was offered one line at its 0.5 floor, the card's offer late in a long
+sentence. At the AX1 cap on the 354pt keyboard-up card, the chain without the modifier cut the last
+18 of 51 characters and the last 32 of 65. With it, the first 18 and the first 32 are cut and the
+last ones are drawn. The same holds at the AX1 keyboard-down card (28 and 42 characters) and at the
+default size (65 characters: the last 9 become the first 9). **What the rider now sees:** "…"
+followed by the newest characters, ending with the key just typed. How many are cut, and from how
+many characters, is unchanged; only which end changes. On **two** lines the head mode cuts the head
+of the second line, not of the text. Offered two floor lines at the AX1 keyboard-down card, 51
+characters lose characters 24–27, and the first line and the newest characters stay. Where the row
+fits nothing changes. Typed strings of up to 20 characters, and the empty row, render byte for byte
+as the chain without the modifier: both cards, default and AX1, offered room, one full line or one
+floor line. So do 51 characters on one floor line at the default size, and 51 and 65 characters
+offered room at AX1. Pinned line for line with both comment forms stripped. Mutations, both red: the
+modifier deleted, and the modifier wrapped in `/* */`.
+
+**(2) MINOR — the ★ over the surface: caused by B5 on the keyboard-up sentence card, fixed there;
+pre-existing with the keyboard down, recorded.** At the default size, keyboard up, late in
+「新しい事業の将来性に魅力を感じて投資を決めた。」 the ★ was drawn over the top-right of 「魅」.
+**Investigated** with a hosted probe: the ride laid out as a 402pt phone, the keyboard-up layout
+forced by a temporary patch, 1.33's hint chain against 1.34's on the same sentence at 0, 29 and 53
+typed. The patch was reverted and the probe is not committed. The card centres its rows in the
+height it is given.
+* In 1.33 that left 8.5pt above the surface. Its frame started 22.5pt below the card's top, and its
+  ink stayed 5pt clear of the ★'s ink.
+* §B5's second hint line spends that slack. The frame starts at 16.5pt at 0 and 29 typed, and at
+  14.0pt (the card's own padding, no slack left) at 53 typed. The ★'s glyph spans 10.0–28.3pt, so
+  the two share 3, 3 and 6 pixels at 3×.
+* Over eight corpus sentences of 8–28 characters at 0, 50 and 90% typed, 1.33's chain overlapped
+  once (24 characters, late) and 1.34's in 10 of the 24 cases.
+* **With the keyboard down the two chains lay out alike**: one 6-pixel overlap, the 24-character
+  sentence, in both. That case predates B5 and is recorded here, not changed.
+
+**Levers measured** in the same probe:
+* `fixedSize` or `layoutPriority` on the surface makes it worse: the surface then starts at 14.0pt
+  at every position.
+* A 4 or 6pt top padding still overlaps late in the 28-character sentence, by 22 and 8 pixels.
+* v1.33's corner reserve clears every case, because it keeps the line out of the columns the corner
+  controls occupy, whatever the vertical slack.
+
+**Changed:** `RideCardLayout.cornerControlReserve` also applies on a sentence card with the keyboard
+up, at every size (`sentenceUnderKeyboard: compact && session.mode == .sentence`). Word cards and
+keyboard-down cards below the accessibility sizes do not move. At the default size the reserve is
+27.9pt a side, so the 402pt phone's 354pt sentence line keeps 298pt.
+**Cost, measured in the probe:**
+* The surface ink of long sentences is 16–18% shorter at 3×: 23 characters 203 → 171px, 28
+  characters 171 → 140px.
+* 16 characters lose 2%. Sentences of 8–13 characters keep their size and wrap in narrower lines.
+* The card is 10–14pt shorter.
+* The typed row at mid-sentence is somewhat smaller in the longest sentences (23 characters at 29
+  typed: ink 50 → 40px). The kana row is unchanged.
+
+Pinned in section 6 of `V134B5RomajiHintTests`: the rule by value, the reserve against the ★'s and
+the speaker's layout widths at 15pt, and the call site. Mutations, both red: the rule's guard back
+to `accessibilitySize` alone, and the call passing `false`. The headless renders cannot show either
+change, because a Mac never draws the keyboard-up card. The simulator re-run is the proof.
 
 ### B6 (v1.35) — Build a word list without riding into every word: search the corpus from Word Lists · *2 days, with a cut rule*
 

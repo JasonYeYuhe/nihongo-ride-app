@@ -107,8 +107,14 @@ struct ResultsView: View {
     /// is 402 − 2 × 24 (this screen's padding) − 2 × 16 (`arrivalPanel`'s compact padding) =
     /// 322pt. The widest realistic English row, "365-day streak · 999 words and 999 forms due
     /// tomorrow", needs a 0.59 scale to fit two lines there — under the floor, so two lines
-    /// truncated it, tail first, cutting "due tomorrow". It fits three lines at 0.865, and the
+    /// truncated it, tail first, cutting "due tomorrow". It fit three lines at 0.865, and the
     /// widest Chinese row fits three at full size. (v1.34 round-2 review)
+    ///
+    /// Since the simulator pass (2026-09-27) a count may not end a line (`TomorrowLine`'s no-break
+    /// spaces), and the English rows that name 999 words and 999 forms fit three lines at this
+    /// floor and not one hundredth above it — the third line, "999 forms due tomorrow", is the one
+    /// that must fit. Rows of two-digit counts fit from 0.745. No room is left above the floor for
+    /// the widest rows; `V134B1TomorrowLineTests` measures the whole grid of counts at the floor.
     static func tomorrowLineLimit(accessibilitySize: Bool) -> Int { accessibilitySize ? 3 : 2 }
 
     /// The shrink floor the limit above was measured against.

@@ -141,18 +141,29 @@ struct CustomTextAddView: View {
                         .accessibilityIdentifier("customTextSource")
                         .onChange(of: source) { truncation = CustomText.truncation(of: source) }
                 } header: {
-                    Text(zh ? "日语原文" : "Japanese text")
-                } footer: {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(zh
-                             ? "只留在这台设备上,不会上传。含字母或数字的句子会保留但无法输入 —— 罗马字引擎打不出它们。"
-                             : "Stays on this device and is never uploaded. Sentences containing letters or digits are kept but cannot be typed — a romaji engine has no keys for them.")
+                        Text(zh ? "日语原文" : "Japanese text")
                         // Said before Add, not after: the text is still added, cut exactly as
                         // the notice says, and the learner decides whether that is the text
                         // they wanted. Handed the state unfiltered; the notice view draws a line
                         // for every non-nil truncation.
+                        //
+                        // In the HEADER, above the editor — not the footer, below it (simulator
+                        // pass, 2026-09-27). The editor grows to fit what is pasted, so the
+                        // footer sits under the whole paste: after a 230-sentence paste the
+                        // editor was 3,495pt tall and the notice about 3,800pt down the sheet,
+                        // off screen, while Add sat in the toolbar. The notice only exists for a
+                        // paste over the cap, which is long by definition, so in the footer it
+                        // was off screen whenever it had something to say. The header's place
+                        // depends on the title field above it and not on the paste. Under the
+                        // label, which keeps its look: with no notice the header is the label
+                        // alone, as the footer's text was alone in its VStack before this.
                         CustomTextTruncationNotice(truncation: truncation, zh: zh)
                     }
+                } footer: {
+                    Text(zh
+                         ? "只留在这台设备上,不会上传。含字母或数字的句子会保留但无法输入 —— 罗马字引擎打不出它们。"
+                         : "Stays on this device and is never uploaded. Sentences containing letters or digits are kept but cannot be typed — a romaji engine has no keys for them.")
                 }
                 if failed {
                     Text(zh ? "这段文字里没有可用的句子。" : "There are no sentences in that text.")
