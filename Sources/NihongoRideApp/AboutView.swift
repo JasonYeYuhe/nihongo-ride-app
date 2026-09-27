@@ -135,7 +135,7 @@ struct AboutView: View {
                 .scaledSystemFont(13, weight: .medium, design: .monospaced)
                 .foregroundStyle(Theme.accent2)
             Text(zh ? "打字环游日本 · macOS / iOS · SwiftUI" : "Type your way across Japan · macOS / iOS · SwiftUI")
-                .scaledSystemFont(14).foregroundStyle(Theme.dim)
+                .scaledSystemFont(14).foregroundStyle(Self.dimTextColor)
         }
     }
 
@@ -223,7 +223,7 @@ struct AboutView: View {
                 .fixedSize(horizontal: false, vertical: true)
             Text(typeSize.isAccessibilitySize ? Self.breakingIdentifiers(url) : url)
                 .scaledSystemFont(12, weight: .regular, design: .monospaced)
-                .foregroundStyle(Theme.dim)
+                .foregroundStyle(Self.dimTextOnCardColor)
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -268,7 +268,7 @@ struct AboutView: View {
     private func stat(label: String, value: String) -> some View {
         VStack(spacing: 4) {
             Text(value).scaledSystemFont(22, weight: .bold, design: .rounded).foregroundStyle(.white)
-            Text(label.uppercased()).scaledSystemFont(10, weight: .bold).tracking(2).foregroundStyle(Theme.dim)
+            Text(label.uppercased()).scaledSystemFont(10, weight: .bold).tracking(2).foregroundStyle(Self.dimTextOnCardColor)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
@@ -316,14 +316,14 @@ struct AboutView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text((zh ? "联系" : "Contact").uppercased())
                 .scaledSystemFont(10, weight: .black).tracking(2)
-                .foregroundStyle(Theme.dim)
+                .foregroundStyle(Self.dimTextColor)
             Text(zh ? "有问题、看法,或者想要某条路线 —— 写信来。"
                     : "Questions, thoughts, or a route you want — write in.")
-                .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.8))
+                .scaledSystemFont(11).foregroundStyle(Self.dimTextColor)
                 .fixedSize(horizontal: false, vertical: true)
             Text(verbatim: "yyyyy.yeyuhe@gmail.com")
                 .scaledSystemFont(11, design: .monospaced)
-                .foregroundStyle(Theme.dim.opacity(0.85))
+                .foregroundStyle(Self.dimTextColor)
                 .textSelection(.enabled)
         }
         .padding(.top, 6)
@@ -351,18 +351,51 @@ struct AboutView: View {
     /// what is behind them. `V133SContrastTests` recomputes both. (v1.33 §B S)
     static let counterColor = Color.white.opacity(0.48)
 
+    /// Every other small dim text on About that sits straight on the background, at
+    /// `counterColor`'s arithmetic.
+    ///
+    /// 1.33 recoloured the two counter lines and left the rest (PLAN-V1.33 §G): the footer note
+    /// (`Theme.dim.opacity(0.7)`, 2.79:1 at the bottom stop), the contact and counter prompts
+    /// (`.opacity(0.8)`, 3.23:1), the address (`.opacity(0.85)`, 3.46:1) — and, measured for this
+    /// item rather than listed in 1.33, the header's subtitle and the two small-caps titles at
+    /// plain `Theme.dim`, white at 0.45: over the bottom stop that is (0.505, 0.527, 0.593),
+    /// luminance 0.240 → **4.24:1**, and 4.46:1 (4.465 unrounded) at the top stop — under the line
+    /// there too, so these three never cleared 4.5:1 wherever the page was scrolled (this said
+    /// "over the line at the top stop (4.47:1)" until the review recomputed it). None of these is
+    /// in a card — `V134B4AboutContrastTests` walks each one to `body` and finds no backdrop — so
+    /// the worst case is the counters' worst case: white at 0.47 → 4.49:1 (4.48 after 8-bit
+    /// quantisation), white at **0.48** → 4.62:1. The same number as `counterColor` in a second constant, deliberately: the counters'
+    /// colour is held beside their frozen text and pinned to exactly its two readers
+    /// (`V133SContrastTests.aboutUsesTheCounterColor`); the prose is not frozen and should not
+    /// share that pin. `V134B4AboutContrastTests` recomputes both. (v1.34 §B4)
+    static let dimTextColor = Color.white.opacity(0.48)
+
+    /// The credit URLs and the stat labels, which sit on `Theme.card`, not on the background —
+    /// the `.background(Theme.card, …)` of `credit` and of `stat`, which the tests read from this
+    /// file and composite, so a changed card there changes their arithmetic.
+    ///
+    /// The card is white at 0.06 over the gradient, so it is lighter than what is behind it and
+    /// the same white needs more opacity to stand off it. At the bottom stop the card is
+    /// (0.154, 0.192, 0.304), luminance 0.0317; `Theme.dim` over that is (0.535, 0.555, 0.617),
+    /// luminance 0.270 → **3.91:1**; white at 0.50 → 4.46:1, still short; white at **0.51** →
+    /// (0.585, 0.604, 0.659), luminance 0.324 → 4.57:1 (4.56 quantised), 5.03:1 at the top stop.
+    /// It is `SettingsView.captionColor`'s number for `SettingsView.captionColor`'s reason — the
+    /// same card over the same gradient — written here rather than read from Settings so that
+    /// every colour About draws is next to the arithmetic that produced it. (v1.34 §B4)
+    static let dimTextOnCardColor = Color.white.opacity(0.51)
+
     private var diagnostics: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text((zh ? "本机计数" : "On-device counters").uppercased())
                 .scaledSystemFont(10, weight: .black).tracking(2)
-                .foregroundStyle(Theme.dim)
+                .foregroundStyle(Self.dimTextColor)
             // "The two lines below" was true until `shareableSummary` gained its own second line
             // for the kyoto column. Counts the blocks rather than the lines, so the sentence stays
             // true the next time either summary grows.
             Text(zh
                  ? "只存在这台设备上,从不上传。如果你写信来,把下面的计数一起贴上会很有帮助。"
                  : "Local to this device and never transmitted. If you write in, pasting the counters below helps.")
-                .scaledSystemFont(11).foregroundStyle(Theme.dim.opacity(0.8))
+                .scaledSystemFont(11).foregroundStyle(Self.dimTextColor)
                 .fixedSize(horizontal: false, vertical: true)
             Text(model.unlockOfferLedger.shareableSummary)
                 .scaledSystemFont(10, design: .monospaced)
@@ -384,7 +417,7 @@ struct AboutView: View {
              ? "感谢所有开源项目的维护者,以及让 Tatoeba 句子被翻译成数十种语言的志愿者们。"
              : "Thanks to the maintainers of every open project above, and to the volunteers who translated Tatoeba sentences into dozens of languages.")
             .scaledSystemFont(12)
-            .foregroundStyle(Theme.dim.opacity(0.7))
+            .foregroundStyle(Self.dimTextColor)
             .italic()
     }
 }
