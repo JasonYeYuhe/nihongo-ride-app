@@ -79,6 +79,41 @@ struct ResultsView: View {
             .foregroundStyle(Theme.dim)
     }
 
+    /// The tomorrow line's colour: white at the smallest opacity that clears WCAG AA's 4.5:1 for
+    /// small text on the arrival panel wherever the panel can sit.
+    ///
+    /// The panel is black at `RidePalette.cardAlpha` (0.85) over the backdrop, whose black scrim
+    /// is `textScrim + 0.15` ≥ `baseScrim + 0.15` = 0.25. So every channel of the panel is
+    /// 0.15 × (1 − scrim) × scene ∈ [0, 0.1125]. Source-over on the sRGB values, the model
+    /// `V133SContrastTests.calibration` checks against the simulator's pixels:
+    ///
+    /// * `Theme.dim`, white at 0.45 — the stage line's colour, which this line first copied —
+    ///   over a black scene: text 0.45, luminance 0.1706 → (0.1706 + 0.05) / 0.05 = **4.41:1**;
+    ///   over a white scene: panel 0.1125 (0.0121), text 0.512 (0.2252) → 4.43:1. Under 4.5:1.
+    /// * white at **0.46**: black scene → text 0.46, luminance 0.1789 → **4.58:1** (4.56:1
+    ///   after 8-bit quantisation); white scene → panel 0.1125, text 0.5208 (0.2338) → **4.57:1**,
+    ///   its worst case over the whole sweep of scenes and scrims.
+    ///
+    /// The stage line above keeps `Theme.dim` in this release (PLAN-V1.34 §B1 addendum
+    /// 2026-09-27, deferred by name at 4.41:1). `V134B1TomorrowLineTests` recomputes both from the
+    /// resolved colours over a sweep of scenes and scrims. (v1.34 §B1)
+    static let tomorrowLineColor = Color.white.opacity(0.46)
+
+    /// Two lines below the accessibility sizes — unchanged from the line's first build, so the
+    /// default size does not move — and three at them.
+    ///
+    /// Measured with CoreText (`V134B1TomorrowLineTests`): `.caption` is 43pt at AX5 (Apple's
+    /// Dynamic Type table; 40pt is `.caption2`), and the panel's text column on the 402pt phone
+    /// is 402 − 2 × 24 (this screen's padding) − 2 × 16 (`arrivalPanel`'s compact padding) =
+    /// 322pt. The widest realistic English row, "365-day streak · 999 words and 999 forms due
+    /// tomorrow", needs a 0.59 scale to fit two lines there — under the floor, so two lines
+    /// truncated it, tail first, cutting "due tomorrow". It fits three lines at 0.865, and the
+    /// widest Chinese row fits three at full size. (v1.34 round-2 review)
+    static func tomorrowLineLimit(accessibilitySize: Bool) -> Int { accessibilitySize ? 3 : 2 }
+
+    /// The shrink floor the limit above was measured against.
+    static let tomorrowLineScaleFloor: CGFloat = 0.7
+
     private var content: some View {
         let summary = model.lastSummary
 
@@ -128,6 +163,23 @@ struct ResultsView: View {
                         reviewList(summary.reviewWords)
                     }
                     stageLine
+                    // Tomorrow, said out loud: the streak and what comes due, on the one screen
+                    // every ride ends on. Text only — no button, no ask. The rating prompt fires
+                    // on this screen, and a second ask beside it is the v1.30 collision on the
+                    // time axis. Absent for a run that typed nothing, by the headline's own rule.
+                    // A limit and a floor because the line sits in a VStack, which
+                    // HorizontalTextFitTests deliberately does not scan; both are measured, see
+                    // `tomorrowLineLimit`. Its own colour, not the stage line's `Theme.dim`, which
+                    // computes under 4.5:1 on this panel — see `tomorrowLineColor`. (v1.34 §B1)
+                    if let line = model.tomorrowLine(zh: zh) {
+                        Text(line)
+                            .font(.caption)
+                            .foregroundStyle(Self.tomorrowLineColor)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(Self.tomorrowLineLimit(accessibilitySize: typeSize.isAccessibilitySize))
+                            .minimumScaleFactor(Self.tomorrowLineScaleFloor)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                     coachEntry
                     stumbledWords
                 }
