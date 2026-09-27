@@ -265,22 +265,35 @@ struct V133SContrastTests {
 /// plan lists, and the seven straight on the background share one worst case (the gradient's
 /// bottom stop) while the two on a card share another (`Theme.card` over that stop).
 ///
-/// **"All" is held by a rule, not by the list** (added after the review): every `Text` and `Label`
-/// on About drawn in dim text — any colour but full opaque white or a brand accent as written, so
-/// white at an opacity and an opaque grey alike (widened after the second review, which found the
-/// rule read only white at an opacity, and only in a `Text`) — must clear 4.5:1 over the backdrop
-/// the source actually puts it on, white at an opacity at no less than that backdrop's constant; and
-/// nothing between any of them and the page may change its alpha or draw in a layer with it — no
-/// `.opacity`, no `ZStack`, no overlay but the card's edge stroke (`everyDimWhiteTextClears`,
-/// `nothingElseChangesWhatIsDrawn`, `eachTextSitsWhereItsConstantAssumes`, below). What it
-/// enumerates is `Text` and `Label` calls in `AboutView`; the other SwiftUI views that draw a title
-/// are checked absent from About, and a `Button` may only take its label as a closure. That rule
-/// covers the two counter lines' placement and alpha too; their COLOUR stays pinned where 1.33
-/// pinned it (`aboutUsesTheCounterColor` above), beside their frozen text. What is deliberately
-/// NOT held here: text that is not dim — the coral section titles (5.65:1), the sky version line
-/// (8.15:1) and the licence badges (4.28:1 on their tinted background, the one small text on About
-/// still under the line, left because it is the brand colour and PLAN-V1.34 §I keeps brand-colour
-/// contrast on the day-91 list).
+/// **What the rule holds, exactly** (added after the review, widened after the second): every
+/// `Text` and `Label` call in `AboutView` drawn in dim text — any colour but full opaque white or a
+/// brand accent as written, so white at an opacity and an opaque grey alike — must clear 4.5:1 at
+/// both stops over the backdrops the source puts on its walk (the gradient, and each
+/// `.background(<colour>)` or `.panel` between the text and `body` that `backdrop(_:)` reads), white
+/// at an opacity at no less than that backdrop's constant (`everyDimWhiteTextClears`,
+/// `eachTextSitsWhereItsConstantAssumes`, below). On the same walk, every modifier must be inert, a
+/// readable backdrop or the card's edge stroke, and every block a container that draws nothing —
+/// no `.opacity`, no `ZStack`, no overlay but the edge stroke (`nothingElseChangesWhatIsDrawn`). The
+/// `checkedAbsent` views are held absent from About, and a `Button` may only take its label as a
+/// closure. That covers the two counter lines' placement and alpha too; their COLOUR stays pinned
+/// where 1.33 pinned it (`aboutUsesTheCounterColor` above), beside their frozen text.
+///
+/// **Not held here** — the walk reads the colours, containers and overlays on a text's path, and no
+/// more; it does not see:
+/// - layout overlap without a modifier: a negative `.padding` or a negative stack `spacing:` that
+///   pulls a sibling over a text;
+/// - shapes inside a closure-form `.background { … }` that are not on `backdrop(_:)`'s painter list;
+/// - title-bearing views the enumeration does not read and `checkedAbsent` does not name:
+///   `ShareLink`, `ProgressView`, `GroupBox`, `NavigationLink`, `Section`, `Gauge`, `DatePicker`,
+///   `ColorPicker`;
+/// - a pressed-state dimming (`.buttonStyle(.plain)` is classified by what it draws at rest);
+/// - text that is not dim: the coral section titles (5.65:1), the sky version line (8.15:1), and the
+///   brand-colour licence badges (4.28:1 on their tinted background, the one small text on About
+///   still under the line, left because PLAN-V1.34 §I keeps brand-colour contrast on the day-91
+///   list).
+///
+/// This change is colour only; its proof is the render comparison of `about.png` (en, zh) against
+/// the 1.33 baseline, not this suite.
 @Suite("V134B4: About's remaining small dim text reaches 4.5:1 wherever it can sit")
 @MainActor
 struct V134B4AboutContrastTests {
@@ -442,7 +455,7 @@ struct V134B4AboutContrastTests {
     /// (`Screenshot.swift`'s ZStack; the app's root draws the same gradient behind every flat
     /// screen).
     ///
-    /// Layers are held too (after the second review, which drew a `Theme.card` as a `ZStack`
+    /// Layers on the walk are held too (after the second review, which drew a `Theme.card` as a `ZStack`
     /// sibling behind the contact texts and an `.overlay(Color.black.opacity(0.5))` over the footer
     /// note, both green, because the walk read modifiers and a `ZStack`'s other children are not
     /// modifiers, and `.overlay` was on the inert list). Now every block a text's path passes
@@ -491,8 +504,8 @@ struct V134B4AboutContrastTests {
     /// `ZStack` draws its other children behind or over the text, so it is never on this list.
     nonisolated static let containers: Set<String> = ["VStack", "HStack", "Group", "ScrollView", "Button", "if"]
 
-    /// The text-bearing views the enumeration reads. Other SwiftUI views that draw a title
-    /// (`checkedAbsent`) must not appear on About, so the enumeration is every text there is.
+    /// The text-bearing views the enumeration reads. The title-drawing views in `checkedAbsent` must
+    /// not appear on About; the ones in the suite's "not held" list are neither read nor checked.
     static let textViews = ["Text", "Label"]
     static let checkedAbsent = ["Link", "Toggle", "TextField", "SecureField", "TextEditor", "Picker",
                                 "Menu", "Stepper", "LabeledContent", "DisclosureGroup", "navigationTitle"]
@@ -1000,8 +1013,8 @@ struct V134B4AboutContrastTests {
         let texts = Self.textViews(walker)
         #expect(texts.count >= 21, "only \(texts.count) Text/Label calls found on About — the scan is blind")
         #expect(texts.contains { $0.name == "Label" }, "the back button's Label was not enumerated")
-        // The enumeration is every text there is: no other title-drawing view on About, and every
-        // Button's label is a closure the walk reads, not a title string.
+        // None of the `checkedAbsent` title-drawing views on About (the suite doc lists those not
+        // checked), and every Button's label is a closure the walk reads, not a title string.
         for name in Self.checkedAbsent {
             let found = about.calls(named: name).filter { walker.type.contains($0.nameOffset) }
             #expect(found.isEmpty, "\(name) at \(found.map { about.location($0.nameOffset) }) draws text this suite does not enumerate")
