@@ -21,6 +21,12 @@ import ReviewKit
 ///   `a != b` (two successive shuffles), `Set(picks).count > 1` and `x != y` (two `next()`s).
 /// - U8, a Fisher–Yates over `Int.random(in:)` in place of `DeckRandomness.shuffle(&words)`
 ///   in `GameSession.makeSaved`: `everyDrawGoesThroughTheSeam`, `offenders.isEmpty`.
+///
+/// Round 2 (2026-09-27) found mutation A green on the FULL suite: `seeded` given an initialiser
+/// (`= SplitMix64(seed: 0x5EED)`), so every shipping launch drew the same first deck while
+/// `seed` still read nil. Mutation, 2026-09-27 (`--filter DeckRandomnessTests`; restored
+/// byte-for-byte after, shasum c74a172c…): red in `seamStartsUnseeded` (`statics == [ … ]`) and
+/// in `shippingLaunchesDiffer` (`first != second`: two child launches drew the same deck).
 @Suite("DeckRandomness: the seam every deck draw goes through")
 struct DeckRandomnessTests {
 
@@ -160,5 +166,168 @@ struct DeckRandomnessTests {
         #expect(offenders.isEmpty, Comment(rawValue:
             "a deck draw bypasses DeckRandomness, so its screen varies run to run under capture:\n"
             + offenders.joined(separator: "\n")))
+    }
+
+    // MARK: A shipping launch never draws seeded
+
+    /// The source's lines with every comment removed — `//` and `/* … */`, nested and across
+    /// lines — string literals kept, each line trimmed, the line count unchanged. A twin of
+    /// `CaptureToolTests.codeLines` (the two test targets share no module), checked there
+    /// against a written-out answer.
+    static func codeLines(_ source: String) -> [String] {
+        let chars = Array(source)
+        var out = ""
+        var i = 0
+        var blockDepth = 0
+        var inString = false
+        var multiline = false
+        func at(_ k: Int) -> Character? { k < chars.count ? chars[k] : nil }
+        while i < chars.count {
+            let c = chars[i]
+            let next = at(i + 1)
+            if blockDepth > 0 {
+                if c == "/" && next == "*" { blockDepth += 1; i += 2; continue }
+                if c == "*" && next == "/" { blockDepth -= 1; i += 2; continue }
+                if c == "\n" { out.append(c) }
+                i += 1
+                continue
+            }
+            if inString {
+                out.append(c)
+                if c == "\\", let next { out.append(next); i += 2; continue }
+                if multiline {
+                    if c == "\"" && next == "\"" && at(i + 2) == "\"" {
+                        out += "\"\""; i += 3; inString = false; multiline = false; continue
+                    }
+                } else if c == "\"" || c == "\n" {
+                    inString = false
+                }
+                i += 1
+                continue
+            }
+            if c == "/" && next == "/" {
+                while i < chars.count && chars[i] != "\n" { i += 1 }
+                continue
+            }
+            if c == "/" && next == "*" { blockDepth = 1; i += 2; continue }
+            if c == "\"" {
+                inString = true
+                if next == "\"" && at(i + 2) == "\"" { multiline = true; out += "\"\"\""; i += 3; continue }
+            }
+            out.append(c)
+            i += 1
+        }
+        return out.components(separatedBy: "\n").map { $0.trimmingCharacters(in: .whitespaces) }
+    }
+
+    /// A shipping launch never sets `seed`, so the shipping app is unchanged only if the seam's
+    /// stores START empty. The review gave `seeded` an initialiser (`= SplitMix64(seed: 0x5EED)`,
+    /// mutation A): `seed` still read nil, every helper took the seeded branch, every in-process
+    /// test stayed green — they compare draws inside one process, and a fixed-seed generator
+    /// advances — and every user would have got the same first deck on every launch. So, from
+    /// the comment-stripped source: the file declares exactly these statics, the two stores
+    /// with NO initialiser, and the only lines that assign either store are the two inside the
+    /// `seed` setter (`withSeed` goes through that setter). `shippingLaunchesDiffer` is the
+    /// same property measured across two real processes.
+    @Test("the seam's stores are declared with no initialiser and assigned only by the seed setter")
+    func seamStartsUnseeded() throws {
+        let file = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Sources/GameCore/DeckRandomness.swift")
+        let lines = Self.codeLines(try String(contentsOf: file, encoding: .utf8))
+        let statics = lines.filter { $0.range(of: #"\bstatic\s+(var|let)\b"#, options: .regularExpression) != nil }
+        #expect(statics == [
+            "private static let lock = NSRecursiveLock()",
+            "nonisolated(unsafe) private static var storedSeed: UInt64?",
+            "nonisolated(unsafe) private static var seeded: SplitMix64?",
+            "public static var seed: UInt64? {",
+        ], Comment(rawValue: "DeckRandomness's static stores changed — a store with an initialiser, or a new one, "
+                   + "can make a shipping launch draw seeded:\n" + statics.joined(separator: "\n")))
+        guard let seedAt = lines.firstIndex(of: "public static var seed: UInt64? {"),
+              let setAt = lines[seedAt...].firstIndex(where: { $0.hasPrefix("set {") }) else {
+            Issue.record("the seed property or its setter was not found; the pin is reading nothing")
+            return
+        }
+        var depth = 0
+        var setEnd = setAt
+        scan: for index in setAt ..< lines.count {
+            for character in lines[index] {
+                if character == "{" { depth += 1 }
+                if character == "}" { depth -= 1 }
+            }
+            if depth == 0 { setEnd = index; break scan }
+        }
+        let assignments = lines.indices.filter {
+            lines[$0].range(of: #"\b(storedSeed|seeded)\s*=[^=]"#, options: .regularExpression) != nil
+        }
+        #expect(assignments.map { lines[$0] } == ["storedSeed = newValue", "seeded = newValue.map(SplitMix64.init(seed:))"],
+                "the seam's stores are assigned somewhere new: \(assignments.map { "\($0 + 1): \(lines[$0])" })")
+        #expect(assignments.allSatisfy { $0 > setAt && $0 < setEnd },
+                "a store is assigned outside the seed setter (setter spans lines \(setAt + 1)–\(setEnd + 1))")
+    }
+
+    static let probeEnvironment = "NIHONGO_DECK_PROBE_OUT"
+
+    /// The child half of `shippingLaunchesDiffer`, and a no-op in every other run: when the
+    /// parent launches this process with `NIHONGO_DECK_PROBE_OUT` set, it writes the process's
+    /// FIRST unseeded shuffle of thirty and first `Generator` draw to that file.
+    @Test("probe for shippingLaunchesDiffer (a no-op unless launched by it)")
+    func shippingLaunchProbe() throws {
+        guard let out = ProcessInfo.processInfo.environment[Self.probeEnvironment] else { return }
+        let deck = DeckRandomness.shuffled(Array(0 ..< 30))
+        var generator = DeckRandomness.Generator()
+        let draw = generator.next()
+        let line = deck.map(String.init).joined(separator: ",") + " \(draw) seed=\(String(describing: DeckRandomness.seed))"
+        try line.write(toFile: out, atomically: true, encoding: .utf8)
+    }
+
+    /// Mutation A measured the way a user would meet it: two LAUNCHES. This process's own test
+    /// runner is started twice as a child, filtered to `shippingLaunchProbe`, and each child
+    /// reports the first deck and generator draw it made with no seed set. Two unseeded launches
+    /// agree on a 30-card shuffle with probability 1/30!; a seam that starts seeded makes them
+    /// agree always. Cheapest real cross-process check available under `swift test`: the runner
+    /// (`swiftpm-testing-helper`) and the test bundle are already built, so a child costs one
+    /// process launch and no build. Run any other way (no `--test-bundle-path` in the
+    /// arguments), it records an issue rather than passing without measuring.
+    @Test("two launches with no seed draw different first decks")
+    func shippingLaunchesDiffer() throws {
+        if ProcessInfo.processInfo.environment[Self.probeEnvironment] != nil { return }   // we are the child
+        let arguments = CommandLine.arguments
+        guard let bundleFlag = arguments.firstIndex(of: "--test-bundle-path"), bundleFlag + 1 < arguments.count else {
+            Issue.record("not run by swiftpm-testing-helper (\(arguments.first ?? "?")): no child can be launched, so nothing was measured")
+            return
+        }
+        // The parent's own arguments, minus any filter or skip, plus the probe's filter.
+        var childArguments: [String] = []
+        var index = 1
+        while index < arguments.count {
+            if arguments[index] == "--filter" || arguments[index] == "--skip" { index += 2; continue }
+            childArguments.append(arguments[index])
+            index += 1
+        }
+        childArguments += ["--filter", "shippingLaunchProbe"]
+        func launch(_ n: Int) throws -> String {
+            let out = FileManager.default.temporaryDirectory
+                .appendingPathComponent("NihongoDeckProbe-\(UUID().uuidString).txt")
+            defer { try? FileManager.default.removeItem(at: out) }
+            let child = Process()
+            child.executableURL = URL(fileURLWithPath: arguments[0])
+            child.arguments = childArguments
+            var environment = ProcessInfo.processInfo.environment
+            environment[Self.probeEnvironment] = out.path
+            child.environment = environment
+            child.standardOutput = FileHandle.nullDevice
+            child.standardError = FileHandle.nullDevice
+            try child.run()
+            child.waitUntilExit()
+            #expect(child.terminationStatus == 0, "probe launch \(n) exited \(child.terminationStatus)")
+            return (try? String(contentsOf: out, encoding: .utf8)) ?? ""
+        }
+        let first = try launch(1)
+        let second = try launch(2)
+        #expect(first.hasSuffix(" seed=nil") && first.split(separator: " ").first?.split(separator: ",").count == 30,
+                "probe launch 1 reported nothing usable: \"\(first)\"")
+        #expect(second.hasSuffix(" seed=nil"), "probe launch 2 reported nothing usable: \"\(second)\"")
+        #expect(first != second, "two unseeded launches drew the same first deck and draw — a shipping launch is seeded: \(first)")
     }
 }

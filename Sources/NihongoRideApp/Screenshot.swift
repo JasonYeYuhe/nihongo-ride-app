@@ -2,6 +2,7 @@ import SwiftUI
 import GameCore
 import SceneryKit
 import WidgetSharedKit
+import SyncKit
 #if os(macOS)
 import AppKit
 #elseif os(iOS)
@@ -29,28 +30,33 @@ import UIKit
 ///    counter in the dev binary's defaults domain on every headless render. The review
 ///    measured it; `CaptureToolTests.captureStateComesFromTheEnvironment` pins the
 ///    declarations, `AppModelTests.captureIsolationIsConsumed` pins that a set target reaches
-///    every door, and the §C3 record shows a full render leaving the owner's files untouched.)
+///    every door, and `docs/PLAN-V1.34.md` §C3's 2026-09-27 addendum records the owner's
+///    files' stamps before and after one full render: unchanged.)
 ///    The container and suite are cleared BEFORE EVERY SCREEN's model is built — "start from
 ///    nothing", per screen — because before it was, every run inherited the rides of every
 ///    previous one, lifetime distance grew monotonically and dragged the scenery stage with it,
 ///    so one screen's whole background changed between two builds for no reason in either
 ///    build; and within one run, inserting a ride screen moved four screens below it. Both the
-///    container and the suite are removed again at the end.
+///    container and the suite are removed again at the end. A container that cannot be cleared
+///    is counted, not just reported: that screen did not start from nothing. Four screens then
+///    get a FIXED lifetime odometer on top of the empty stores — see `fixedOdometerMetres`.
 ///
 /// 2. **Honest output.** `render` used `try?` and then printed "wrote <path>" whatever had
 ///    happened; two agents each printed 24 "wrote" lines into a directory that did not exist
 ///    and the process exited 0. Now the target directory is created (with intermediates), a
-///    failure to create it names the path on stderr and returns non-zero, every render and
-///    write failure is reported and counted, "wrote" is printed only after the file exists
-///    with size > 0, and one summary line closes the run. The call sites exit non-zero when
-///    anything failed.
+///    failure to create it names the path on stderr and returns 1 with nothing written, every
+///    render and write failure is reported with its path and counted, "wrote" is printed only
+///    after the file exists with size > 0, and one summary line closes the run. The call sites
+///    exit non-zero when anything failed.
 ///
 /// 3. **Determinism.** Every deck shuffle and form pick in GameCore goes through
 ///    `DeckRandomness`; this file seeds it — the ONLY place that does — from each screen's
 ///    file name, before that screen's model is built. Together with the per-screen clearing
 ///    in (1) that makes each screen a function of its own name and the code: the deck is
 ///    seeded and the stores are empty, so adding, removing or reordering a screen upstream
-///    changes nothing below it (shown by mutation in the §C3 record, not claimed). Before
+///    changes nothing below it (shown by a render mutation recorded in `docs/PLAN-V1.34.md`
+///    §C3's 2026-09-27 addendum: with `results-sentence` removed, the other 23 screens were
+///    byte-identical to the unmutated run). Before
 ///    this, 8–9 of 24 screens varied between two runs of the same binary, and so did
 ///    `road.png`: its odometer sentence ("24.3 km still to Kyōto") counted the distance the
 ///    random decks had ridden earlier in the same process. The plan's gate needs `road.png`
@@ -83,19 +89,32 @@ enum Screenshotter {
     /// Screens this run wrote (file present, size > 0) and screens it could not.
     @MainActor private(set) static var written = 0
     @MainActor private(set) static var failed = 0
+    /// Store preparations that failed: a capture container that could not be cleared (before a
+    /// screen or at the end), or a fixed odometer that could not be written. Each is a screen
+    /// that did not start in the state its name promises, or a run that left something behind.
+    @MainActor private(set) static var unprepared = 0
+    /// Every line this run reported on stderr, in order — so a test can read what the run SAID
+    /// (the path in a failure line, the summary) and not only what it returned.
+    @MainActor private(set) static var reported: [String] = []
 
     /// Renders every screen into `directory`, creating it if needed. Returns the number of
-    /// screens that failed to render or write — zero means every "wrote" line is true.
+    /// screens that failed to render or write plus the number of store preparations that
+    /// failed (`unprepared`) — zero means every "wrote" line is true and every screen started
+    /// from the state it names. When the directory cannot be created, nothing is rendered and
+    /// it returns 1: not a count of screens, just non-zero, so the call sites exit 1.
     @MainActor @discardableResult
     static func capture(into directory: String) -> Int {
         // Cleared however this function leaves, so nothing built after a capture in the same
-        // process draws seeded — a defer, not the last statement, so a future throwing step
-        // cannot skip it.
+        // process draws seeded — a defer, and the FIRST statement, so no return or future
+        // throwing step above it can skip it (`CaptureToolTests.captureReseedsPerScreen` pins
+        // its place; `captureWritesEveryScreenOrSaysSo` reads the seed after every capture).
         defer {
             DeckRandomness.seed = nil
         }
         written = 0
         failed = 0
+        unprepared = 0
+        reported = []
         // A production launch arrives here with `captureTarget` and `isCapturing` already set
         // from the environment; that is what kept the App struct's eager model isolated. A
         // test that calls `capture` directly has no `NIHONGO_SHOT` in its environment, so it
@@ -134,27 +153,34 @@ enum Screenshotter {
         // in every run. The stores: the capture container and its defaults suite are cleared,
         // so the odometer, journal, review stores, stumble ledger, word lists and settings are
         // empty for this screen rather than the sum of what the screens above rode into them.
-        // The screens that read persisted state, and now read it at zero: `road` and
-        // `road-iap-review` (both distance sentences and the stretch rows, from lifetime
-        // distance), every ride's backdrop (`rideStage` is resolved from lifetime distance
-        // when the run starts: `game`, `game-mid`, `results`, `results-sentence`,
-        // `conjugation-results`), `about` (the diagnostics counter line names the furthest
-        // stretch), `journal` (the review forecast counts what the review store holds) and
-        // `stats` (both take their totals as the larger of the demo journal and the odometer),
-        // and `menu` (streak and due count). What the clearing moved, measured by rendering
-        // before and after it (en and zh): the road's sentences and stretch rows (the full free
-        // road; Kawasaki unreached); about.png's counter line, whose furthest-stretch word went
-        // kawasaki → nihonbashi; conjugation-results.png's backdrop, Kawasaki's torii → the
-        // Nihonbashi tower on the Nihonbashi dawn; and journal.png's review forecast, whose
-        // "Tomorrow" row went 7 → 0 — the 7 were the words the upstream rides had put into the
-        // review store. The journal's totals did not move: the demo journal is the larger.
-        // Before this, removing ONE upstream ride screen moved road.png, road-iap-review.png,
-        // about.png and conjugation-results.png, and the render gate would have filed each as a
-        // layout regression. The share card is the exception by design: it is drawn from the
-        // results model's in-memory summary.
+        // The screens that read persisted state: `road` and `road-iap-review` (both distance
+        // sentences and the stretch rows, from lifetime distance), every ride's backdrop
+        // (`rideStage` is resolved from lifetime distance when the run starts: `game`,
+        // `game-mid`, `results`, `results-sentence`, `conjugation-results`), `about` (the
+        // diagnostics counter line names the furthest stretch), `journal` (the review forecast
+        // counts what the review store holds) and `stats` (both take their totals as the
+        // larger of the demo journal and the odometer), and `menu` (streak and due count).
+        // What the clearing alone moved, measured by rendering before and after it (en and
+        // zh, 2026-09-25): the road's sentences and stretch rows (the full free road; Kawasaki
+        // unreached); about.png's counter line, furthest kawasaki → nihonbashi;
+        // conjugation-results.png's backdrop, Kawasaki's torii → the Nihonbashi tower; and
+        // journal.png's review forecast, "Tomorrow" 7 → 0 (the 7 were words the upstream
+        // rides had put into the review store). The journal's totals did not move: the demo
+        // journal is the larger. Before the clearing, removing ONE upstream ride screen moved
+        // road.png, road-iap-review.png, about.png and conjugation-results.png, and the render
+        // gate would have filed each as a layout regression.
+        //
+        // 2026-09-27: what the clearing took away is now put back AS A FIXTURE, named per
+        // screen and the same in every run — a fixed lifetime odometer for the road, About and
+        // the conjugation results (`fixedOdometerMetres`, written here, after the clear and
+        // before the model reads it), and seven cards due tomorrow for the Ride Log's forecast
+        // (`seedDemoReviewForecast`, below). Every other screen still starts from nothing.
+        // The share card is the exception by design: it is drawn from the results model's
+        // in-memory summary.
         let makeModel: (String) -> AppModel = { screen in
             DeckRandomness.seed = StableDigest.fnv1a64(screen)
             clearCaptureStores()
+            if let metres = fixedOdometerMetres[screen] { writeFixedOdometer(metres) }
             let m = AppModel.init()
             m.languageCode = shotLang
             // Store screenshots keep showing the hints — a fresh AppModel now defaults to
@@ -254,13 +280,14 @@ enum Screenshotter {
         // centred and clipped at BOTH ends — the first render of this one lost its header and the
         // §C boundary sentence, which is the one line a reviewer most needs to read.
         //
-        // Its odometer sentences read a lifetime distance of ZERO: `makeModel` cleared the
-        // container before this model was built, so the rides the screens above finished do
-        // not reach it. That is what makes this screen a function of its own name — before
-        // the per-screen clearing it counted those rides, so the sentence moved by a tenth of
-        // a kilometre between two runs of the old tool, and by 0.6 km when one upstream ride
-        // screen was removed from the seeded one. What it shows is the offer as a rider who
-        // has not set out sees it: the full free road still ahead.
+        // Its odometer sentences read the FIXED lifetime `fixedOdometerMetres["road"]` (700 m:
+        // "24.3 km still to Kyōto", Kawasaki reached), written into the container `makeModel`
+        // had just cleared — not the rides the screens above finished. That is what makes this
+        // screen a function of its own name — before the per-screen clearing it counted those
+        // rides, so the sentence moved by a tenth of a kilometre between two runs of the old
+        // tool, and by 0.6 km when one upstream ride screen was removed from the seeded one —
+        // and the fixed value is the one 1.33's baseline read on the runs where it read 24.3, so
+        // this frozen screen can be held to 1.33 byte for byte.
         let road = makeModel("road")
         road.showRoad()
         render(RootView().environment(road),
@@ -445,6 +472,7 @@ enum Screenshotter {
         // the bottom edge like a page below the fold). Dev mode renders tall.
         let journal = makeModel("journal")
         journal.seedDemoJournal()
+        journal.seedDemoReviewForecast()
         let journalView = ZStack(alignment: .top) { Theme.background.ignoresSafeArea(); JournalView() }
             .preferredColorScheme(.dark)
             .environment(journal)
@@ -481,20 +509,61 @@ enum Screenshotter {
         } else {
             report("\(failed) of \(written + failed) screens FAILED")
         }
-        return failed
+        if unprepared > 0 {
+            report("\(unprepared) capture-store step(s) FAILED: a screen did not start from the state it names, or the run left its container behind")
+        }
+        return failed + unprepared
+    }
+
+    /// Capture-only: the lifetime odometer three models are built on, written into the capture
+    /// container after that screen's clear and before its `AppModel.init` — so the model reads
+    /// it the way it reads a rider's, `recordLaunch` included (that is where About's
+    /// furthest-stretch word comes from). A fixture: no rider's distance is involved, and
+    /// nothing outside `capture` reads this table.
+    ///
+    /// Why these screens and why 700 m (2026-09-27). The per-screen clearing made each screen a
+    /// function of its own name, and in doing so moved the frozen Road screen to a lifetime of
+    /// zero ("25.0 km still to Kyōto", Kawasaki unreached), so `road.png` could no longer be
+    /// held to 1.33's baseline, which read the rides of the screens above it: "24.3 km still to
+    /// Kyōto", Kawasaki (from 400 m) reached, Hakone (from 1 200 m) not. Kyōto is at 25 000 m
+    /// and the sentence prints one decimal, so any lifetime in (650, 750] reads 24.3; `RoadView`
+    /// prints nothing more precise than that sentence and the reached ticks. The screens are
+    /// the ones that read lifetime distance and are not deck-random: `road` (whose model also
+    /// renders `road-iap-review`), `about` (the counter line's `furthest kawasaki`) and
+    /// `conjugation-results` (the Kawasaki backdrop, resolved when its run starts). The ride
+    /// screens stay at zero: their decks are seeded, so they differ from 1.33's by construction
+    /// and matching their stage would buy nothing.
+    static let fixedOdometerMetres: [String: Double] = [
+        "road": 700,
+        "about": 700,
+        "conjugation-results": 700,
+    ]
+
+    /// Writes `fixedOdometerMetres`' value with the odometer's own writer. A write that fails is
+    /// counted in `unprepared`: that screen would silently render at zero instead.
+    @MainActor private static func writeFixedOdometer(_ metres: Double) {
+        let url = AppModel.supportFileURL("odometer.json")
+        do {
+            try OdometerLog(slots: ["capture-fixture": .init(distanceMeters: metres)]).save(to: url)
+        } catch {
+            unprepared += 1
+            report("could not write the fixed odometer \(url.path): \(error.localizedDescription)")
+        }
     }
 
     /// Removes this capture's container and defaults suite. Called before every screen's model
     /// is built (so each screen starts from nothing) and at the end (so the run leaves
     /// nothing). Both names are keyed to this process's target, so this cannot touch another
-    /// capture running alongside. Failures are reported, not swallowed: a container that could
-    /// not be cleared is a screen that did not start clean.
+    /// capture running alongside. Failures are reported AND counted in `unprepared`: a container
+    /// that could not be cleared is a screen that did not start clean (or, at the end, a run
+    /// that left its stores behind), and `capture`'s return — the exit code — says so.
     @MainActor private static func clearCaptureStores() {
         let isolation = AppModel.currentIsolation
         if let base = isolation.supportBase, FileManager.default.fileExists(atPath: base.path) {
             do {
                 try FileManager.default.removeItem(at: base)
             } catch {
+                unprepared += 1
                 report("could not clear capture container \(base.path): \(error.localizedDescription)")
             }
         }
@@ -515,7 +584,8 @@ enum Screenshotter {
         }
     }
 
-    private static func report(_ line: String) {
+    @MainActor private static func report(_ line: String) {
+        reported.append(line)
         FileHandle.standardError.write(Data((line + "\n").utf8))
     }
 

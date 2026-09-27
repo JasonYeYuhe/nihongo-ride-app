@@ -997,7 +997,8 @@ final class AppModel {
             // distinct targets never meet. Being read from the environment is also what puts
             // the App struct's eager `AppModel()` — built before `capture` runs — in here
             // rather than in the owner's Application Support; `captureIsolationIsConsumed`
-            // holds the doors, and the §C3 record shows a full render touching no owner file.
+            // holds the doors, and `docs/PLAN-V1.34.md` §C3's 2026-09-27 addendum records the
+            // owner's files' stamps before and after one full render: unchanged.
             let name = "NihongoRideCapture-" + StableDigest.tag(captureTarget)
             let dir = FileManager.default.temporaryDirectory
                 .appendingPathComponent(name, isDirectory: true)
@@ -2698,6 +2699,24 @@ final class AppModel {
             ))
         }
         journal = demo
+    }
+
+    /// Capture-only: seven review cards due TOMORROW, so the Ride Log's forecast card renders
+    /// its highlighted "Tomorrow" row rather than three zeros (2026-09-27). Until v1.34 §C3
+    /// cleared the capture's stores per screen, that row showed the words the ride screens
+    /// above had just put into the shared review store — 7 of them — so the render exercised
+    /// the non-empty layout by accident; this puts it back on purpose, the same in every run.
+    /// Built with the store's own `record` (a clean first review is SM-2 interval 1: due the
+    /// next calendar day), from the first seven N5 words in the store's own order, and never
+    /// persisted. No-op outside capture, so no rider's schedule can be touched by it.
+    func seedDemoReviewForecast() {
+        guard Screenshotter.isCapturing else { return }
+        var store = ReviewStore()
+        let now = Date()
+        for entry in vocab.ordered(level: .n5).prefix(7) {
+            store.record(entryID: entry.id, outcome: TypingOutcome(completed: true), on: now)
+        }
+        reviewStore = store
     }
 
     /// Redirects every persisted store somewhere harmless. Nil in the shipping app.

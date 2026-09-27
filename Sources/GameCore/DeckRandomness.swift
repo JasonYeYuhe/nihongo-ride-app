@@ -16,7 +16,12 @@ import Foundation
 /// helper calls exactly what its call site called before: `shuffle()`, `shuffled()`,
 /// `randomElement()`, and `SystemRandomNumberGenerator` behind `Generator`. Only
 /// `Screenshotter` sets a seed (a test pins that), and it reseeds before each screen so adding
-/// or removing a screen upstream cannot change a later one.
+/// or removing a screen upstream cannot change a later one. That holds only because the two
+/// stores below START empty: they are declared with no initialiser and assigned only inside
+/// the `seed` setter (`withSeed` goes through it). An initialiser on either would make every
+/// shipping launch draw the same deck while `seed` still read nil — the round-2 review wrote
+/// exactly that and the whole suite stayed green — so `DeckRandomnessTests.seamStartsUnseeded`
+/// pins the declarations and `shippingLaunchesDiffer` measures it across two real launches.
 ///
 /// **Concurrency.** The seeded state is global and lock-protected. `withSeed` holds the lock
 /// for its whole body, so a test that seeds, builds two sessions and compares them cannot be
