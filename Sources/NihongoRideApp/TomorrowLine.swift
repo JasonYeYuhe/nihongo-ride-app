@@ -27,8 +27,9 @@ import Foundation
 /// of one line, its noun on the next — and as "连续 4 天 · 明天到 / 期 7 个词", splitting the word
 /// 到期. So the composer joins what must stay together with characters that forbid a break and
 /// draw nothing different: U+00A0 NO-BREAK SPACE between a count and its noun ("7\u{00A0}words",
-/// "4\u{00A0}forms") or its measure word ("7\u{00A0}个词", "4\u{00A0}天"), which has a space's
-/// advance, and U+2060 WORD JOINER inside 明天, 到期 and 变形, which has none. Measured with CoreText
+/// "4\u{00A0}forms") or its measure word ("7\u{00A0}个\u{2060}词", "4\u{00A0}天"), which has a space's
+/// advance, and U+2060 WORD JOINER inside 明天, 到期 and 变形 and between 个 and its noun (the verifier
+/// found "…7 个" / "词" still possible), which has none. Measured with CoreText
 /// in `V134B1TomorrowLineTests` (the device's two breaks reproduced first, as the control); the
 /// line's pixels where it does not wrap are unchanged. VoiceOver reads a no-break space as a space
 /// and ignores the word joiner, a default-ignorable format character, so the spoken line is the
@@ -38,13 +39,13 @@ enum TomorrowLine {
         let due: String
         switch (wordsDue > 0, formsDue > 0) {
         case (true, true):
-            due = zh ? "明\u{2060}天到\u{2060}期 \(wordsDue)\u{00A0}个词、\(formsDue)\u{00A0}个变\u{2060}形"
+            due = zh ? "明\u{2060}天到\u{2060}期 \(wordsDue)\u{00A0}个\u{2060}词、\(formsDue)\u{00A0}个\u{2060}变\u{2060}形"
                      : "\(count(wordsDue, "word")) and \(count(formsDue, "form")) due tomorrow"
         case (true, false):
-            due = zh ? "明\u{2060}天到\u{2060}期 \(wordsDue)\u{00A0}个词"
+            due = zh ? "明\u{2060}天到\u{2060}期 \(wordsDue)\u{00A0}个\u{2060}词"
                      : "\(count(wordsDue, "word")) due tomorrow"
         case (false, true):
-            due = zh ? "明\u{2060}天到\u{2060}期 \(formsDue)\u{00A0}个变\u{2060}形"
+            due = zh ? "明\u{2060}天到\u{2060}期 \(formsDue)\u{00A0}个\u{2060}变\u{2060}形"
                      : "\(count(formsDue, "form")) due tomorrow"
         case (false, false):
             due = zh ? "明\u{2060}天没有到\u{2060}期的复习" : "nothing due tomorrow"

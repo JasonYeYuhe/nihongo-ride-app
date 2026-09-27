@@ -53,25 +53,25 @@ struct V134B1TomorrowLineTests {
     nonisolated static let matrix: [Row] = [
         Row(streak: 3, words: 12, forms: 4,
             en: "3-day streak · 12\u{00A0}words and 4\u{00A0}forms due tomorrow",
-            zh: "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 12\u{00A0}个词、4\u{00A0}个变\u{2060}形"),
+            zh: "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 12\u{00A0}个\u{2060}词、4\u{00A0}个\u{2060}变\u{2060}形"),
         Row(streak: 3, words: 12, forms: 0,
             en: "3-day streak · 12\u{00A0}words due tomorrow",
-            zh: "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 12\u{00A0}个词"),
+            zh: "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 12\u{00A0}个\u{2060}词"),
         Row(streak: 3, words: 0, forms: 1,
             en: "3-day streak · 1\u{00A0}form due tomorrow",
-            zh: "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 1\u{00A0}个变\u{2060}形"),
+            zh: "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 1\u{00A0}个\u{2060}变\u{2060}形"),
         Row(streak: 3, words: 0, forms: 0,
             en: "3-day streak · nothing due tomorrow",
             zh: "连续 3\u{00A0}天 · 明\u{2060}天没有到\u{2060}期的复习"),
         Row(streak: 1, words: 12, forms: 0,
             en: "12\u{00A0}words due tomorrow",
-            zh: "明\u{2060}天到\u{2060}期 12\u{00A0}个词"),
+            zh: "明\u{2060}天到\u{2060}期 12\u{00A0}个\u{2060}词"),
         Row(streak: 1, words: 12, forms: 4,
             en: "12\u{00A0}words and 4\u{00A0}forms due tomorrow",
-            zh: "明\u{2060}天到\u{2060}期 12\u{00A0}个词、4\u{00A0}个变\u{2060}形"),
+            zh: "明\u{2060}天到\u{2060}期 12\u{00A0}个\u{2060}词、4\u{00A0}个\u{2060}变\u{2060}形"),
         Row(streak: 1, words: 0, forms: 1,
             en: "1\u{00A0}form due tomorrow",
-            zh: "明\u{2060}天到\u{2060}期 1\u{00A0}个变\u{2060}形"),
+            zh: "明\u{2060}天到\u{2060}期 1\u{00A0}个\u{2060}变\u{2060}形"),
         Row(streak: 1, words: 0, forms: 0,
             en: "Nothing due tomorrow",
             zh: "明\u{2060}天没有到\u{2060}期的复习"),
@@ -80,19 +80,19 @@ struct V134B1TomorrowLineTests {
             zh: "明\u{2060}天没有到\u{2060}期的复习"),
         Row(streak: 0, words: 5, forms: 0,
             en: "5\u{00A0}words due tomorrow",
-            zh: "明\u{2060}天到\u{2060}期 5\u{00A0}个词"),
+            zh: "明\u{2060}天到\u{2060}期 5\u{00A0}个\u{2060}词"),
         Row(streak: 2, words: 1, forms: 1,
             en: "2-day streak · 1\u{00A0}word and 1\u{00A0}form due tomorrow",
-            zh: "连续 2\u{00A0}天 · 明\u{2060}天到\u{2060}期 1\u{00A0}个词、1\u{00A0}个变\u{2060}形"),
+            zh: "连续 2\u{00A0}天 · 明\u{2060}天到\u{2060}期 1\u{00A0}个\u{2060}词、1\u{00A0}个\u{2060}变\u{2060}形"),
         Row(streak: 2, words: 1, forms: 0,
             en: "2-day streak · 1\u{00A0}word due tomorrow",
-            zh: "连续 2\u{00A0}天 · 明\u{2060}天到\u{2060}期 1\u{00A0}个词"),
+            zh: "连续 2\u{00A0}天 · 明\u{2060}天到\u{2060}期 1\u{00A0}个\u{2060}词"),
         Row(streak: 2, words: 0, forms: 2,
             en: "2-day streak · 2\u{00A0}forms due tomorrow",
-            zh: "连续 2\u{00A0}天 · 明\u{2060}天到\u{2060}期 2\u{00A0}个变\u{2060}形"),
+            zh: "连续 2\u{00A0}天 · 明\u{2060}天到\u{2060}期 2\u{00A0}个\u{2060}变\u{2060}形"),
         Row(streak: 30, words: 100, forms: 0,
             en: "30-day streak · 100\u{00A0}words due tomorrow",
-            zh: "连续 30\u{00A0}天 · 明\u{2060}天到\u{2060}期 100\u{00A0}个词"),
+            zh: "连续 30\u{00A0}天 · 明\u{2060}天到\u{2060}期 100\u{00A0}个\u{2060}词"),
     ]
 
     @Test("the copy matrix, row by row, in both languages", arguments: matrix)
@@ -210,7 +210,7 @@ struct V134B1TomorrowLineTests {
         let line = try #require(model.tomorrowLine(zh: false))
         #expect(line.hasPrefix("3-day streak · "), Comment(rawValue: line))
         #expect(line == "3-day streak · \(due)\u{00A0}words due tomorrow", Comment(rawValue: line))
-        #expect(model.tomorrowLine(zh: true) == "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 \(due)\u{00A0}个词")
+        #expect(model.tomorrowLine(zh: true) == "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 \(due)\u{00A0}个\u{2060}词")
     }
 
     @Test("a rider with no prior rides gets the due half alone — no streak, never '1-day'")
@@ -223,7 +223,7 @@ struct V134B1TomorrowLineTests {
         let line = try #require(model.tomorrowLine(zh: false))
         #expect(line == "\(due)\u{00A0}words due tomorrow", Comment(rawValue: line))
         #expect(!line.contains("streak") && !line.contains("1-day"), Comment(rawValue: line))
-        #expect(model.tomorrowLine(zh: true) == "明\u{2060}天到\u{2060}期 \(due)\u{00A0}个词")
+        #expect(model.tomorrowLine(zh: true) == "明\u{2060}天到\u{2060}期 \(due)\u{00A0}个\u{2060}词")
     }
 
     /// `logRun` refuses a run that typed nothing, so it was not journalled and the line is nil —
@@ -460,7 +460,7 @@ struct V134B1TomorrowLineTests {
 
         let line = try #require(model.tomorrowLine(zh: false))
         #expect(line == "\(due)\u{00A0}words due tomorrow", Comment(rawValue: line))
-        #expect(model.tomorrowLine(zh: true) == "明\u{2060}天到\u{2060}期 \(due)\u{00A0}个词")
+        #expect(model.tomorrowLine(zh: true) == "明\u{2060}天到\u{2060}期 \(due)\u{00A0}个\u{2060}词")
         // Agreement, not the oracle: the Ride Log's Today and Tomorrow rows sum to the line.
         let log = model.reviewStore.dueForecast(resolves: model.vocab.resolvesID)
         #expect(log.today + log.tomorrow == due, "the Ride Log shows \(log.today) + \(log.tomorrow)")
@@ -510,7 +510,7 @@ struct V134B1TomorrowLineTests {
 
         let line = try #require(model.tomorrowLine(zh: false))
         #expect(line == "3-day streak · \(wordsDue)\u{00A0}words and \(formsDue)\u{00A0}forms due tomorrow", Comment(rawValue: line))
-        #expect(model.tomorrowLine(zh: true) == "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 \(wordsDue)\u{00A0}个词、\(formsDue)\u{00A0}个变\u{2060}形")
+        #expect(model.tomorrowLine(zh: true) == "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 \(wordsDue)\u{00A0}个\u{2060}词、\(formsDue)\u{00A0}个\u{2060}变\u{2060}形")
         // Agreement, not the oracle: Stats' conjugation Today and Tomorrow rows sum to the line.
         let stats = model.conjugationDueForecast
         #expect(stats.today + stats.tomorrow == formsDue, "Stats shows \(stats.today) + \(stats.tomorrow)")
@@ -710,7 +710,7 @@ struct V134B1TomorrowLineTests {
         let column = try Self.panelColumn()
         #expect(column == 322, "the column was 322pt when the limit was measured; now \(column)pt — re-measure")
         let widest = ["365-day streak · 999\u{00A0}words and 999\u{00A0}forms due tomorrow",
-                      "连续 365\u{00A0}天 · 明\u{2060}天到\u{2060}期 999\u{00A0}个词、999\u{00A0}个变\u{2060}形"]
+                      "连续 365\u{00A0}天 · 明\u{2060}天到\u{2060}期 999\u{00A0}个\u{2060}词、999\u{00A0}个\u{2060}变\u{2060}形"]
         // The rows are the composer's own output, not a guess at it.
         #expect(TomorrowLine.compose(streakDays: 365, wordsDue: 999, formsDue: 999, zh: false) == widest[0])
         #expect(TomorrowLine.compose(streakDays: 365, wordsDue: 999, formsDue: 999, zh: true) == widest[1])
@@ -734,13 +734,17 @@ struct V134B1TomorrowLineTests {
             } } }
         }
         // Measured 2026-09-27, after the joins: the English row fits three lines at the floor and
-        // not one hundredth above it; the Chinese row fits three at full size.
+        // not one hundredth above it; the Chinese row fits three from 0.98 (below).
         let enAbove = try Self.lineCount(widest[0], points: 43 * 0.71, width: column)
         #expect(enAbove > limit, "the English row now fits three lines at 0.71 — the room above the floor has changed; update the comments here and on `tomorrowLineLimit`")
         #expect(try Self.lineTexts(widest[0], points: 43 * floor, width: column)
                 == ["365-day streak · ", "999\u{00A0}words and ", "999\u{00A0}forms due tomorrow"])
-        let zhFull = try Self.lineCount(widest[1], points: 43, width: column)
-        #expect(zhFull <= limit, "zh at full size: \(zhFull)")
+        // Joining 个 to its noun (release review of the simulator fix) costs the widest Chinese row
+        // its full-size fit: measured 2026-09-27, it needs three lines from 0.98 and fits at every
+        // scale from there down to the floor; not at 1.0.
+        #expect(try Self.lineCount(widest[1], points: 43 * 0.98, width: column) <= limit)
+        #expect(try Self.lineCount(widest[1], points: 43, width: column) > limit,
+                "the widest zh row fits three lines at full size again — update this measurement")
         // The control: two lines at the floor truncated the English row.
         let twoLineControl = try Self.lineCount(widest[0], points: 43 * floor, width: column)
         #expect(twoLineControl > 2,
@@ -779,13 +783,13 @@ struct V134B1TomorrowLineTests {
         let en = TomorrowLine.compose(streakDays: 4, wordsDue: 7, formsDue: 0, zh: false)
         let zh = TomorrowLine.compose(streakDays: 4, wordsDue: 7, formsDue: 0, zh: true)
         #expect(en == "4-day streak · 7\u{00A0}words due tomorrow")
-        #expect(zh == "连续 4\u{00A0}天 · 明\u{2060}天到\u{2060}期 7\u{00A0}个词")
+        #expect(zh == "连续 4\u{00A0}天 · 明\u{2060}天到\u{2060}期 7\u{00A0}个\u{2060}词")
         #expect(try Self.lineTexts(en, points: 43, width: column)
                 == ["4-day streak · ", "7\u{00A0}words due ", "tomorrow"])
         #expect(try Self.lineTexts(zh, points: 43, width: column)
-                == ["连续 4\u{00A0}天 · 明\u{2060}天", "到\u{2060}期 7\u{00A0}个词"])
+                == ["连续 4\u{00A0}天 · 明\u{2060}天", "到\u{2060}期 7\u{00A0}个\u{2060}词"])
 
-        let joined: Set<String> = ["明天", "到期", "变形"]
+        let joined: Set<String> = ["明天", "到期", "变形", "个词", "个变"]
         var layouts = 0, wrapped = 0
         let scales = [1.0, 0.95, 0.9, 0.85, 0.8, 0.75, Double(ResultsView.tomorrowLineScaleFloor)]
         #expect(scales.last == 0.7)

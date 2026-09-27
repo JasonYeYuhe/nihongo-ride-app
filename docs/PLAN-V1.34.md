@@ -165,6 +165,11 @@ discarded a v1.33 fix).
   from 0.745. `widestRowsFitAtAX5` now holds the whole grid at the floor, not one row. **Not
   joined:** 个 and its noun. The decision named the number–measure-word pair only, so the widest
   Chinese row at 43pt breaks "明天到期 999 个" / "词、999 个变形".
+  *Verifier follow-up, 2026-09-27:* 个 parted from its noun at small counts too ("…1 个" / "变形" at
+  43pt), so U+2060 now joins 个 to 词 and to 变形 as well. Measured: the seam check covers them
+  (removing the join: 2,885 "个变/个词 is broken" issues), and the widest Chinese row now needs 0.98
+  for three lines at AX5 (it fitted at full size before this join); every row still fits three lines
+  at the 0.7 floor.
 
 ### B2 — Own text, kept: two defects now, two improvements when there is evidence anyone pastes · *0.5 + 1.0 days*
 
@@ -228,6 +233,13 @@ none touches SRS or sync:
    two lines ("kept — 30 / dropped.") would fall under the keyboard.** The Chinese notice needs
    three lines (180pt) and just fits. These are CoreText estimates from the captured frames. The
    simulator re-run, keyboard up, both languages, default and AX5, is the proof.
+   *Verifier follow-up, 2026-09-27:* the keyboard's glass input view begins at about 539pt, not
+   583pt (the key rows start there), and what lies under it is blurred; so at AX5 with the keyboard
+   up part of the notice is covered in **both** languages, not only English. Accepted for this
+   release and stated plainly: the notice is now in the right place at every size and whole at the
+   default size; at the largest text sizes, while the keyboard is up, its later lines are under the
+   keyboard until the rider dismisses it or scrolls. A layout that keeps it clear at AX5 (a compact
+   notice, or the counts moved into the header label) is the next release's question.
 3. *(v1.35, conditional)* **No "Practise this text" from the manager**: after correcting readings the rider closes the sheet,
    reopens the picker, then Starts (`CustomTextsView.swift:154-196` offers only Done). Add the action
    on the detail screen. *0.25.* Proof: `AppModelTests` — the tap selects the id, the next `startGame`
