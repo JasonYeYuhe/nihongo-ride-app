@@ -7,8 +7,16 @@ import CustomTextKit
 /// v1.34 §B2 — the two defects in the learner's own texts: the silent cut, and the Mac's missing
 /// delete. What is held here: the notice's wording, that what Add stores through the model is the
 /// text the notice describes, that the sheet draws the notice whenever there is one and keeps Add
-/// enabled, and the shape of the Mac's delete. The cut's own numbers live in
+/// enabled, that Add's action adds the editor's text under no condition on the truncation, and the
+/// shape of the Mac's delete. The cut's own numbers live in
 /// `CustomTextTruncationTests`, beside the cut.
+///
+/// What is NOT held here: the state plumbing between the editor and the notice view. The pins
+/// read the sheet's `.onChange(of: source)` action and the one `CustomTextTruncationNotice(...)`
+/// it builds; the render test holds the notice VIEW. Nothing reads the declaration of the
+/// `@State private var truncation`, and no test runs the sheet — so a property observer on that
+/// state (a `didSet` that sets it back to nil for one unit, say) could still hide the notice
+/// with every test here green.
 ///
 /// The source pins read `CustomTextsView.swift` through `CallSiteScanner`, so a modifier named in
 /// a comment does not count and a string quoted in a comment does not count (both `//` and
@@ -69,7 +77,10 @@ struct V134B2CustomTextTests {
     /// Through `AppModel.addCustomText` — the path the Add button takes — and not through
     /// `CustomText.make`, so a second cut or a normalisation in the add path is caught. Both
     /// numbers are compared: what is stored against the notice's kept, and the paste's hand-counted
-    /// total less what is stored against the notice's dropped.
+    /// total less what is stored against the notice's dropped. The third fixture opens with
+    /// whitespace, has a blank line between sentences and closes with whitespace: the notice counts
+    /// those characters toward the 20,000, so an add path that trimmed the paste or collapsed its
+    /// blank lines would store more of the last sentence than the notice says.
     @Test("a text added through the model is the text the notice describes, in both units")
     func addedThroughTheModelMatchesTheNotice() throws {
         let model = CustomTextRunTests.model()
@@ -97,12 +108,33 @@ struct V134B2CustomTextTests {
         #expect(storedCharacters == 20_000)
         #expect(.characters(kept: storedCharacters, dropped: 25_000 - storedCharacters) == characterNotice,
                 "stored \(storedCharacters) of 25,000 characters; the notice says \(characterNotice)")
+
+        // Whitespace: "  \n\n" (4), 150 sentences of 100 with a blank line ("\n\n") between each
+        // (15,000 + 149 × 2), "\n\n" (2), one sentence of 10,000 う, "\n\n  " (4) — 25,308
+        // characters. Before the う sentence: 4 + 15,298 + 2 = 15,304, of which 304 are
+        // whitespace. The first 20,000 therefore hold 4,696 う. Stored sentences are trimmed, so
+        // what is stored is 15,000 + 4,696 = 19,696 characters: the notice's 20,000 less the 304.
+        // Trimmed first, the paste would store 4,700 う (19,700); blank lines collapsed, more.
+        let body = Array(repeating: String(repeating: "あ", count: 99) + "。", count: 150).joined(separator: "\n\n")
+        let padded = "  \n\n" + body + "\n\n" + String(repeating: "う", count: 9_999) + "。" + "\n\n  "
+        #expect(padded.count == 25_308)
+        let paddedNotice = try #require(CustomText.truncation(of: padded))
+        #expect(paddedNotice == .characters(kept: 20_000, dropped: 5_308))
+        let paddedID = try #require(model.addCustomText(title: "w", source: padded))
+        let paddedStored = try #require(model.customTexts.text(id: paddedID))
+        #expect(paddedStored.sentences.count == 151)
+        #expect(paddedStored.sentences.last?.source == String(repeating: "う", count: 4_696))
+        let paddedCharacters = paddedStored.sentences.reduce(0) { $0 + $1.source.count }
+        #expect(paddedCharacters == 19_696)
+        #expect(.characters(kept: paddedCharacters + 304, dropped: 25_308 - (paddedCharacters + 304)) == paddedNotice,
+                "stored \(paddedCharacters) characters plus 304 of whitespace; the notice says \(paddedNotice)")
     }
 
     // MARK: 3. The sheet
 
     /// The sheet reads the KIT's count — not a restated `count > 20_000` — into its state when the
-    /// text changes, and hands that state unfiltered to the notice view.
+    /// text changes, and hands that state unfiltered to the notice view. Not held: what happens to
+    /// the state in between — a property observer on `truncation` is outside every range read here.
     @Test("the add sheet reads CustomText.truncation(of: source) on change and hands it to the notice")
     func addSheetUsesTheOneCut() throws {
         let file = try Self.shipped("CustomTextsView.swift")
@@ -159,7 +191,9 @@ struct V134B2CustomTextTests {
     #if canImport(AppKit)
     /// The notice view draws the line for EVERY non-nil truncation, in both units and both
     /// languages, and nothing for nil. Measured by hosting it: its size must equal the size of the
-    /// hand-written line drawn the same way, and a hidden unit measures zero.
+    /// hand-written line drawn the same way, and a hidden unit measures zero. This holds the view,
+    /// not the state plumbing: it builds the notice from a truncation it chose itself, so it cannot
+    /// see a sheet whose `@State` never carries that truncation to the view.
     @Test("the notice view draws the line for every non-nil truncation and nothing for nil")
     func theNoticeIsDrawnWheneverThereIsOne() {
         let proposal = CGSize(width: 320, height: 10_000)
@@ -196,6 +230,37 @@ struct V134B2CustomTextTests {
         #expect(Self.squeezed(disables.first?.arguments, in: file)
                 == "source.trimmingCharacters(in:.whitespacesAndNewlines).isEmpty",
                 Comment(rawValue: "Add is disabled by \(disables.first.map(file.excerpt) ?? "nothing")"))
+    }
+
+    /// Add adds what was pasted, whatever the notice says: its action is the one
+    /// `model.addCustomText(title: title, source: source)` under no condition but the model's own
+    /// answer. A truncated paste refused (`if truncation == nil, …`) would put the silent cut back
+    /// as a silent refusal.
+    @Test("Add's action calls addCustomText with the editor's text, under no condition on the truncation")
+    func addCallsTheModelWithoutACondition() throws {
+        let file = try Self.shipped("CustomTextsView.swift")
+        let sheet = try #require(file.typeBodies(named: "CustomTextAddView").first)
+
+        let adds = file.calls(named: "Button").filter { button in
+            sheet.contains(button.nameOffset)
+                && Self.squeezed(button.arguments, in: file, strings: true) == #"zh?"添加":"Add""#
+        }
+        #expect(adds.count == 1, Comment(rawValue: "\(adds.count) Add buttons in the add sheet"))
+        let add = try #require(adds.first)
+        #expect(add.closures.count == 1, Comment(rawValue: "Add has \(add.closures.count) closures"))
+        let action = try #require(add.closures.first)
+
+        let calls = file.calls(named: "addCustomText")
+        #expect(calls.count == 1, Comment(rawValue: "addCustomText is called \(calls.count) times"))
+        let call = try #require(calls.first)
+        #expect(action.contains(call.nameOffset), "addCustomText is called outside Add's action")
+        #expect(call.receiver == "model")
+        #expect(Self.squeezed(call.arguments, in: file) == "title:title,source:source")
+
+        #expect(file.mentions(of: "truncation").filter(action.contains).isEmpty,
+                "Add's action reads the truncation")
+        #expect(Self.squeezed(action, in: file) == "{ifmodel.addCustomText(title:title,source:source)!=nil{dismiss()}else{failed=true}}",
+                Comment(rawValue: "Add's action is \(file.excerpt(add))"))
     }
 
     // MARK: 4. The delete on the Mac
