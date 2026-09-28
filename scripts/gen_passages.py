@@ -21,6 +21,9 @@ import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from corpus_io import escape_residue   # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 PASSAGES = ROOT / "Sources/VocabKit/Resources/passages.json"
 MODEL = "gemini-3.1-pro-preview"
@@ -91,6 +94,10 @@ def validate(item, seen_kana):
         return None, f"{len(sentences)} sentences"
     if len(item.get("en", "")) < 20 or len(item.get("zh", "")) < 10:
         return None, "translation too short"
+    for lang in ("en", "zh"):
+        residue = escape_residue(item[lang])
+        if residue:
+            return None, f"{lang} carries {residue}"
     return kana, None
 
 
