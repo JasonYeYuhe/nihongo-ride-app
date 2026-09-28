@@ -729,6 +729,39 @@ are known. Each release's `PLAN-V1.3x` record states it.
 by file, then C2/C5/C6/D1/D2 as docs and tools, then the verification of §G, then the copy, then
 build → upload → dry-run → metadata → submit, with `ListAgents` before any ASC write.
 
+*Submission record, 2026-09-28 (JST), ten days ahead of the ~10-08 target:* v1.34 went to App Review on
+both platforms. **macOS build 59 / iOS build 60**, built from `281fc45`, whose sources are identical to
+`06b001b`. Builds 58 / 59 were uploaded from `524cf90` on 2026-09-27 and are superseded, because the
+simulator pass's fixes came after them. They were never attached to a version.
+* Before the ASC writes: the §G.3 re-run above, the signing preflight (console unlocked,
+  login keychain `no-timeout`, a codesign probe), and the macOS launch gate (PASS, still running
+  after 16 s). The iOS artifact gate is structural only, the documented gap.
+* `check_versions.py --archive` on both archives: 1.34 / 59 and 1.34 / 60, app and widget.
+* `ListAgents` before `--metadata` and again before `--submit`. The only claude process with its
+  working directory in this repository was the submitting session.
+* `submit_1_34.py --metadata --platform=both` created the versions (macOS
+  `40fb9c28-65ec-4c58-a436-c7448a9ef933`, iOS `6e584fde-5bc2-40c2-a6bc-7066429210f5`). What's New
+  en-US / zh-Hans / ja (676 / 253 / 361 characters) and the review notes (1,978) were each read
+  back identical.
+* `--submit --platform=both`: both builds VALID, attached, submissions `72cd7a1a-…` (macOS) and
+  `9e6acb98-…` (iOS), both read back `WAITING_FOR_REVIEW`.
+* **Independent read-back** after the submit, by a separate read-only script:
+  * the attached builds are 59 and 60;
+  * `releaseType` is `AFTER_APPROVAL`, as 1.33's was;
+  * every locale's What's New equals the script's and contains no ★;
+  * against 1.33, per platform and locale, description, keywords, promotional text, marketing and
+    support URLs are equal, and the screenshot sets are identical by source checksum (macOS 6 per
+    locale, iOS 11 in 2 sets; ja has none on either, as before). No differences.
+* `com.jasonye.nihongoride.scenery.lifetime` is `APPROVED`, `familySharable` false. The script
+  declared `iap=None` and touched no IAP endpoint.
+* The §K registration (constraint 3) was appended to `PLAN-STAGE1.md` on 2026-09-27, before the
+  submit.
+* **After the submit, on `0fffd59`** (the same sources): `run_all_gates.sh` ran 14 gates. 12 passed,
+  1 had documented no coverage (the store gates), 1 was vacuous (`check_vocab_diff.py`, no corpus
+  change), 0 failed. `SIM_NAME=NihongoRide-Placement run_ios_placement_tests.sh` passed 9 methods
+  on the phone and 3 on the iPad Pro 11" with 0 failures. These are the first runs of both on the
+  simulator-pass fixes. Had either failed, the submission would have been withdrawn before review.
+
 ---
 
 ## §G The verification standard (from 1.33, kept)
