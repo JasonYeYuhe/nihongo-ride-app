@@ -745,6 +745,32 @@ build → upload → dry-run → metadata → submit, with `ListAgents` before a
    iPhone and the iPad mini, every changed screen before/after; the harness lives in the session
    scratchpad and is re-created from `PLAN-V1.33` §E's description (it is scratch by design — it drives
    the app and must never enter the repo).
+   *Re-run record, 2026-09-28 (JST), the proof three addenda above defer to (§B1, §B2, §B5's
+   "simulator re-run"):* the five screens the simulator-pass fixes touch (`results`, `results-demo`,
+   `sentence-n1`, `custom-paste`, `about`), en/zh, default and AX5, on the same `NihongoRide-VisualPass`
+   402pt clone (code `06b001b`) and the iPad mini (code `281fc45`, which changes only build numbers).
+   Both runs passed 20 of 20 methods (the other screens' methods skip), with no runner restarts.
+   Every screenshot of the five screens was looked at.
+   * **Tomorrow line:** it is whole at both sizes on both devices. At AX5 on the iPhone it breaks as
+     "4-day streak · / 7 words due / tomorrow" and "连续 4 天 · 明天 / 到期 7 个词", as CoreText predicted.
+     At the default size it is one line (14.3pt tall).
+   * **Typed row:** at AX5 (capped to AX1) with the keyboard up, it was captured with 50 of a
+     56-character romaji typed and 49 of 55. It reads "…oatarashiishousetsugaraigetsukankou" and
+     "…omoniaisatsunoshuukanwoshikkarishit": the newest characters are drawn, and the two-line hint
+     is under it. On the iPad the head is cut
+     the same way.
+   * **★:** clear of the sentence in every keyboard-up sentence capture, default and AX5, on both
+     devices.
+   * **Paste notice:** it sits under the "Japanese text" / 「日语原文」 label, directly above the
+     editor. It is whole at the default size in both languages ("Only the first 200 sentences are
+     kept — / 30 dropped.") and whole at AX5 on the iPad. At AX5 on the iPhone with the keyboard up,
+     **only its first two lines are above the keyboard**: "Only the first / 200" in English and
+     "只保留前 200 / 句,已去掉 30" in Chinese. The rest is under the keyboard's blurred glass. This is
+     the cost §B2's verifier follow-up accepted. The English half-sentence names the cap but not the
+     loss, so that follow-up's next-release question (a compact notice, or the counts in the header
+     label) is the more pressing one.
+   * **About:** the English AX5 bottom capture now exists. The counters' text is unchanged.
+   The screenshots are kept outside the repo, in `~/Library/Caches/NihongoRide-v134-work/visualpass/after2/`.
 4. `run_ios_placement_tests.sh` when UI changed (`SIM_NAME=NihongoRide-Placement` when the default
    device is busy).
 5. Pre-submission review: a lens per file group, the purchase adapter if `RouteStore` changed (it should
