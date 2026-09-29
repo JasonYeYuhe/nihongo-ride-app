@@ -62,6 +62,9 @@ public struct VocabStore: Sendable {
     /// hand — see there for why that distinction cost a release candidate.
     private let verbs: Set<WrittenAndRead>
 
+    /// The word-search index, built on the first search rather than at launch (see ``search``).
+    private let searchIndex: LazySearchIndex
+
     /// The shared store, loaded once from the bundled N5 starter pack.
     public static let shared = VocabStore.loadBundled()
 
@@ -81,7 +84,21 @@ public struct VocabStore: Sendable {
             .filter { $0.partsOfSpeech.contains { $0 == "v" || $0.hasPrefix("v") } }
             .map { WrittenAndRead(surface: $0.surface,
                                   reading: KanaScript.katakanaToHiragana($0.kana)) })
+        self.searchIndex = LazySearchIndex(entries: entries)
     }
+
+    /// At most `limit` entries matching `query`, best first — the Word Lists search (v1.35 §B6).
+    /// `WordSearchIndex` has the matching and ranking rules.
+    ///
+    /// The index is built on the first call, not in `init`: `VocabStore.shared` is loaded at
+    /// launch, and a learner who never opens a list's search should not pay for folding 7,071
+    /// entries' glosses. Built once, then shared by every copy of this store.
+    public func search(_ query: String, limit: Int) -> [VocabEntry] {
+        searchIndex.index.search(query, limit: limit)
+    }
+
+    /// The index itself, for callers that want each result's tier.
+    public var wordSearchIndex: WordSearchIndex { searchIndex.index }
 
     /// The い-row kana a godan 連用形 ends in, and the う-row kana its dictionary form ends in.
     private static let renyoToDictionary: [Character: Character] = [
@@ -198,5 +215,28 @@ public struct VocabStore: Sendable {
             }
         }
         return VocabStore(entries: all)
+    }
+}
+
+/// Builds a `WordSearchIndex` once, on first use, from any thread.
+///
+/// `@unchecked Sendable` because the lock is what makes it safe, and it is the only mutable state:
+/// `built` is written once, under `lock`, and read only under it. A class rather than a `lazy var`
+/// because `VocabStore` is a `Sendable` struct shared as a `static let`, and a lazy property would
+/// need a mutating getter the shared store cannot call.
+final class LazySearchIndex: @unchecked Sendable {
+    private let entries: [VocabEntry]
+    private let lock = NSLock()
+    private var built: WordSearchIndex?
+
+    init(entries: [VocabEntry]) { self.entries = entries }
+
+    var index: WordSearchIndex {
+        lock.lock()
+        defer { lock.unlock() }
+        if let built { return built }
+        let index = WordSearchIndex(entries: entries)
+        built = index
+        return index
     }
 }

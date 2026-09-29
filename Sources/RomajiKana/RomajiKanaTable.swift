@@ -23,19 +23,31 @@ public struct RomajiKanaTable: Sendable {
     let producersByOutput: [String: [Production]]
     /// Longest kana `output` length (for slicing the target). Typically 2.
     let maxOutputLength: Int
+    /// The production each romaji key names — the direction a blind conversion reads the table
+    /// (`RomajiReading`). First wins on a repeated key: the Mozc file lists `fu` twice, both
+    /// times as ふ.
+    let producerByRomaji: [String: Production]
+    /// Longest romaji key, for the longest-match scan in `RomajiReading`.
+    let maxRomajiLength: Int
 
     /// The shared default table, parsed once from the bundled Mozc resource.
     public static let shared = RomajiKanaTable.loadBundled()
 
     init(productions: [Production]) {
         var byOutput: [String: [Production]] = [:]
+        var byRomaji: [String: Production] = [:]
         var maxLen = 1
+        var maxRomaji = 1
         for production in productions where !production.output.isEmpty {
             byOutput[production.output, default: []].append(production)
             maxLen = max(maxLen, production.output.count)
+            if byRomaji[production.romaji] == nil { byRomaji[production.romaji] = production }
+            maxRomaji = max(maxRomaji, production.romaji.count)
         }
         producersByOutput = byOutput
         maxOutputLength = maxLen
+        producerByRomaji = byRomaji
+        maxRomajiLength = maxRomaji
     }
 
     /// Productions that output exactly `kana`.

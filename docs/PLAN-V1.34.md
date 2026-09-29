@@ -429,6 +429,32 @@ editor and practice screen in one day's 17 commits (2026-09-01) — and the stor
 two days is the budget, and **the cut rule is that if the feature is not green with its tests at the end
 of day two it moves whole to v1.36 rather than stretching v1.35.**
 
+*2026-09-29: implemented on branch `v135/b6` (one commit, not merged); the XCUITest is written and wired
+but NOT yet run, and the simulator pass has not happened — both are the orchestrator's.*
+* **Search** (`VocabKit/WordSearch.swift`, `VocabStore.search(_:limit:)`): substring over written form,
+  reading and every en/zh gloss, both sides folded alike (NFKC, katakana → hiragana through `KanaScript`,
+  lowercase, a dash after kana → ー); a Latin query that is romaji all the way through is also matched as
+  the hiragana it spells (`RomajiKana/RomajiReading.swift`, the Mozc table read the other way, with `nn`
+  before a vowel read as ん + n-row). Tiers exact → prefix (a gloss word's start counts) → substring;
+  within a tier N5 first, then corpus order. Retirement in this corpus is deletion, so the index cannot
+  hold a retired word; the three retirements are pinned by id. Every one of the 7,071 entries' own romaji
+  hints reads back as its reading.
+* **Measured** (this Mac, release build, 2026-09-29, 20 keystroke-sized queries × 20): median 0.6 ms,
+  p95 1.2 ms, worst 1.7 ms ("m"); index build 31 ms, lazy on first use and started when search opens.
+  Debug build (what `swift test` runs): mean 13 ms, worst 24 ms, build 239 ms.
+* **UI** (`ListsView.swift`, `ListDetailView`): "Search the dictionary" opens a field (focused) and
+  results in place of the three launchers; Done is cancel-role with `.keyboardShortcut(.cancelAction)`
+  (plus `onExitCommand` on macOS). The screen's `KeyCaptureView` is removed while search shows — on iOS it
+  re-takes first responder for 5 s after appearing and on every activation. Each result is one button
+  (label "水, みず, water", value in list / not in list, an "Add to list" action while it can add); adds
+  go through `AppModel.addWord`. At 500 words every row is disabled and a notice says why. Nothing in a
+  row has a line limit; at the accessibility sizes the add control moves under the text. The empty
+  state now names search first.
+* **Tests:** `WordSearchTests` (15), `RomajiReadingTests` (5, three of them over 33 argument cases), `V135B6WordSearchTests` (18:
+  copy and states, the corpus's worst row laid out at default + AX1–AX5 in both languages and two phone
+  columns and read from pixels, pins for what needs a device); 21 mutations run, each red.
+  `WordListSearchFlowTests` (XCUITest, iPhone) joins `run_ios_placement_tests.sh` — 14 methods.
+
 ---
 
 ## §C Track 2 — the window (spread across the three releases; docs and tools, no product change)

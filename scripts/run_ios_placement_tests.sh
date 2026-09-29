@@ -19,12 +19,14 @@
 # WHAT IT RUNS, and what it still does not (v1.32 §D5)
 # ----------------------------------------------------
 # TWO invocations, because the target holds suites about two different devices:
-#   iPhone 17 Pro   PaidRouteRowTests (8) + StumbledWordsFlowTests (1)
+#   iPhone 17 Pro   PaidRouteRowTests (8) + StumbledWordsFlowTests (1) + WordListSearchFlowTests (1)
 #   iPad Pro 11"    TouchFlowTests (3) — App Review rejection 2.1(a), the touch-only path
 # `StoreScreenshotTests` (1) is opt-in behind `--with-screenshots`: it skips by default, and a
 # skip line in a gate's output reads like a test that ran.
 #
-# That is all 13 methods in the target. Before v1.32 §D5 the script ran 8 of them.
+# That is all 14 methods in the target. Before v1.32 §D5 the script ran 8 of them.
+# `WordListSearchFlowTests` joined in v1.35 §B6: the search on a list's detail screen, which the
+# placement suite never visits — the offer's placement tests still run beside it as its guard.
 #
 # `TouchFlowTests` (3) is still orphaned ON PURPOSE. Its own header says it needs an **iPad**
 # simulator, and running it on the iPhone clone this script uses would defeat its purpose
@@ -230,6 +232,7 @@ caffeinate -d -i xcodebuild test \
   -destination "platform=iOS Simulator,name=$SIM_NAME" \
   -only-testing:NihongoRideiOSUITests/PaidRouteRowTests \
   -only-testing:NihongoRideiOSUITests/StumbledWordsFlowTests \
+  -only-testing:NihongoRideiOSUITests/WordListSearchFlowTests \
   $SHOT_TESTING \
   -derivedDataPath "$WORK/DerivedData" \
   -clonedSourcePackagesDirPath "$WORK/SourcePackages" \
