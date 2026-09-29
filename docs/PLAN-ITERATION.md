@@ -654,6 +654,7 @@ see the warning below before re-pulling this table.**
 | 1.31 | iOS submitted **2026-09-05** (build 56, live 09-06); macOS submitted **2026-09-07** (build 55, live 09-09). **Both live 2026-09-09 = §K's day 0.** ASC's `createdDate` says 08-31 for macOS — wrong, see above |
 | 1.32 | both submitted 2026-09-10 (mac 56 / iOS 57), both live **2026-09-11** PT (`FIRM_RELEASE_DATES_PT`) |
 | 1.33 | both submitted 2026-09-17 20:23Z (mac 57 / iOS 58), both live **2026-09-17** PT — macOS 21:38Z, iOS 22:53Z per the store's `currentVersionReleaseDate`; approved within two hours |
+| 1.34 | both submitted 2026-09-28 05:44Z (mac 59 / iOS 60), both live **2026-09-28** PT. The store's `currentVersionReleaseDate` read 19:46:37Z from one lookup and 2026-09-29 03:29:03Z from the others; which platform each timestamp belongs to is not known, and both fall on 09-28 PT. At 17:49Z iOS was `IN_REVIEW` and macOS `WAITING_FOR_REVIEW`; both were `READY_FOR_SALE` when read at 2026-09-29 05:00Z. Builds 58/59 were uploaded first and superseded |
 
 **Superseded on 2026-09-05: the platforms have separated, and this table's header no longer
 holds for every row.** Every release from 1.23 to 1.30 shipped both platforms together within

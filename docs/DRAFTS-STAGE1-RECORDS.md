@@ -138,7 +138,7 @@
 > |---|---|---|---|
 > | No App Store account signed in | `<YYYY-MM-DDTHH:MM+09:00>` | <Mac model>, macOS <version>, App Store 1.32 (56); signed out via <path used> | <outcome>. Price area after ≥ 10 s, verbatim: `<…>`. <If it differs from Expect:> Expect reads “the price area says prices are unavailable and offers Retry”; observed `<…>`; owner's judgement: <…>. |
 > | Family Sharing | `<…>` | family member's own <device>, <OS version>, App Store 1.32 (<build>) | <offer shown / owned shown>, after launch and after one relaunch. Positive control added by the walk card (not by this table) — Purchase Sharing visible on that device: <yes / no / not checked>. <Any Expect mismatch, verbatim.> |
-> | Cross-platform restore (macOS ↔ iOS) | `<…>` | purchase on the Mac; iPhone <model>, iOS <version>, App Store 1.32 (57) | Direction walked: macOS → iOS only. Pre-purchase offer screenshot: `<file>`. Relaunch: <owned / not owned>; waited 2 min: <no / yes>; Restore tapped: <no / yes → result>. Cold install (delete + reinstall): <owned / not owned>; waited 2 min: <…>; Restore tapped: <…>. <Any Expect / Fail-if mismatch, verbatim.> |
+> | Cross-platform restore (macOS ↔ iOS) | `<…>` | purchase on the Mac; iPhone <model>, iOS <version>, App Store 1.34 (60) | Direction walked: macOS → iOS only. Pre-purchase offer screenshot: `<file>`. Relaunch: <owned / not owned>; waited 2 min: <no / yes>; Restore tapped: <no / yes → result>. Cold install (delete + reinstall): <owned / not owned>; waited 2 min: <…>; Restore tapped: <…>. <Any Expect / Fail-if mismatch, verbatim.> |
 >
 > Evidence is kept outside git: `<manifest file name>` (sha256 per file).
 ```
@@ -148,7 +148,7 @@
 ```markdown
 | **No App Store account signed in** | <unchanged> | <unchanged> | <your mark> | <YYYY-MM-DD> | <Mac model, macOS version, 1.32 (56)> | <one-line outcome> |
 | **Family Sharing** | <unchanged> | <unchanged> | <your mark> | <YYYY-MM-DD> | <family device, OS version, 1.32 (build)> | <one-line outcome> |
-| **Cross-platform restore (macOS ↔ iOS)** | <unchanged> | <unchanged> | <your mark> | <YYYY-MM-DD> | <Mac → iPhone model, iOS version, 1.32 (57)> | <one-line outcome> |
+| **Cross-platform restore (macOS ↔ iOS)** | <unchanged> | <unchanged> | <your mark> | <YYYY-MM-DD> | <Mac → iPhone model, iOS version, 1.34 (60)> | <one-line outcome> |
 ```
 
 ---
