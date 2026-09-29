@@ -429,6 +429,88 @@ editor and practice screen in one day's 17 commits (2026-09-01) — and the stor
 two days is the budget, and **the cut rule is that if the feature is not green with its tests at the end
 of day two it moves whole to v1.36 rather than stretching v1.35.**
 
+*2026-09-29: implemented on branch `v135/b6` (one commit, not merged); the XCUITest is written and wired
+but NOT yet run, and the simulator pass has not happened — both are the orchestrator's.*
+* **Search** (`VocabKit/WordSearch.swift`, `VocabStore.search(_:limit:)`): substring over written form,
+  reading and every en/zh gloss, both sides folded alike (NFKC, katakana → hiragana through `KanaScript`,
+  lowercase, a dash after kana → ー); a Latin query that is romaji all the way through is also matched as
+  the hiragana it spells (`RomajiKana/RomajiReading.swift`, the Mozc table read the other way, with `nn`
+  before a vowel read as ん + n-row). Tiers exact → prefix (a gloss word's start counts) → substring;
+  within a tier N5 first, then corpus order. Retirement in this corpus is deletion, so the index cannot
+  hold a retired word; the three retirements are pinned by id. Every one of the 7,071 entries' own romaji
+  hints reads back as its reading.
+* **Measured** (this Mac, release build, 2026-09-29, 20 keystroke-sized queries × 20): median 0.6 ms,
+  p95 1.2 ms, worst 1.7 ms ("m"); index build 31 ms, lazy on first use and started when search opens.
+  Debug build (what `swift test` runs): mean 13 ms, worst 24 ms, build 239 ms.
+* **UI** (`ListsView.swift`, `ListDetailView`): "Search the dictionary" opens a field (focused) and
+  results in place of the three launchers; Done is cancel-role with `.keyboardShortcut(.cancelAction)`
+  (plus `onExitCommand` on macOS). The screen's `KeyCaptureView` is removed while search shows — on iOS it
+  re-takes first responder for 5 s after appearing and on every activation. Each result is one button
+  (label "水, みず, water", value in list / not in list, an "Add to list" action while it can add); adds
+  go through `AppModel.addWord`. At 500 words every row is disabled and a notice says why. Nothing in a
+  row has a line limit; at the accessibility sizes the add control moves under the text. The empty
+  state now names search first.
+* **Tests:** `WordSearchTests` (15), `RomajiReadingTests` (5, three of them over 33 argument cases), `V135B6WordSearchTests` (18:
+  copy and states, the corpus's worst row laid out at default + AX1–AX5 in both languages and two phone
+  columns and read from pixels, pins for what needs a device); 21 mutations run, each red.
+  `WordListSearchFlowTests` (XCUITest, iPhone) joins `run_ios_placement_tests.sh` — 14 methods.
+* **Review fixes** (same branch, second commit): the row's gloss was 3.91:1 on its card and the panel's
+  dim lines 4.24/4.47:1 on the gradient — now About's `dimTextOnCardColor` (4.57:1) and `dimTextColor`
+  (4.62:1), every colour in the row and panel computed by `V135B6WordSearchTests`; a disabled row under
+  `.plain` drew its text at about half brightness (gloss 71/255, ~2:1), so the row has its own button
+  style and the renderer shows all three states' text pixels equal. Half-width ｶﾞ/ﾊﾟ compose (NFKC then
+  NFC). ん before a vowel or `y` is found under every spelling the ride accepts (`n'`, `nn`, `xn`, `n`):
+  `RomajiReading.readings` gives the first (Hepburn) reading first and the ん alternatives after, branching on at
+  most four ambiguous n's. VoiceOver hears "N words found" / "No words match" when the results appear or
+  empty. A gone list no longer shows the copy that points at the search button. The timing test asserts
+  the median of 100 `VocabStore.search` calls (debug 12.9 ms) under 100 ms. Release-build timings above
+  were measured before the multi-reading change and not re-measured.
+* **Second review fixes** (same branch, third commit, after merging main at d476e8b): VoiceOver spoke on
+  about every other keystroke of romaji, because a keystroke that ended mid-kana ("tabem", "miz", "gak")
+  read as nothing and found nothing — measured before the fix, 32 announcements over the 61 keystrokes
+  of tabemono, tomodachi, jitensha, nomimono, shukudai, atarashii, water and school (64 over 136 for
+  twenty words), and sighted learners saw the no-results line flash. `RomajiReading.partialReadings`
+  reads the text before an unfinished tail (tabem → たべ, gakk → がっ, a final n also as the n-row's
+  start), matched as a prefix, never exact; and `ListDetailView.SearchAnnouncer` speaks only after the
+  outcome has held 0.8 s, and only when its kind differs from the last one spoken. After: one
+  announcement per word at 1.2 s a key and at 0.25 s a key, eight over 61 keystrokes; no keystroke of
+  the eight words finds nothing. Within a tier, rows the text or the first (Hepburn) reading reaches come before
+  rows only another ん reading reaches (shinnyuu → 侵入 before 親友; tennin, kanyuu, shinyou likewise).
+  The worst-row test re-derived from the merged corpus (zh: n1-b1104, 17 characters; n2-b962's 25 was
+  corrected in step 5). Contrast: every view the detail screen's body reaches is now in the scan, its
+  list checked complete against the source; six texts moved to de57aad's constants, colour only — the
+  word row's gloss (3.91:1), a removed word's label (3.91:1) and note (2.67:1), the unplayable hint and
+  the notes under disabled Sentences / Dictation launchers (4.24:1). The launchers' own labels are left:
+  white on the coral and sky capsules is brand-colour contrast (§I's day-91 list), and disabled they are
+  inactive controls. Debug timing with the partial readings: median 16.4 ms (was 12.8), kinenonanani
+  (16 readings) 34 ms.
+* **Third review fixes** (same branch, fourth commit): an English word typed a letter at a time stops on
+  a consonant, and its partial reading was ranked as the query's own: "wat" gave 35 of its 50 rows to
+  わ-words and put 私 third, ahead of 時計 (watch). A partial reading is now an alternative even when
+  there is no complete reading, so the words the text reaches come first within a tier ("wat" → 時計
+  before 私, "tomor" → 明日 and あさって before 友達, "teac" → 湯飲み before 手洗い). *Corrected after the
+  third verification (orchestrator, 2026-09-30):* ranking every gloss word first also pushed the word
+  being typed out of the 50 results at 43 keystrokes of N5 hints ("at" for 新しい, "as" for 朝 and 明日,
+  "ar" for ありがとう — all 50 rows gloss hits), so for a query with no complete reading the level now
+  comes before the alternative key: N5 first, and within a level the text's words first ("wat" → 水,
+  見る, 時計, then 私). `typedWordStaysInTheResults` surveys all 1,041 such N5 keystrokes: one misses
+  (ニュース at "ny"); the round-3 order is red there with 43. The first reading is called what it is —
+  the Hepburn reading, the spelling the app's romaji hints teach — not "the IME's": a plain longest match
+  over the bundled table reads shinnyuu as しんゆう (now a control in `RomajiReadingTests`). The contrast
+  scan reads the body itself (the alert's message Text exempted by name) and signatures that span lines,
+  and fails when a `some View` member is not matched; both probes (a `Theme.dim.opacity(0.5)` Text in the
+  body, a three-line-signature helper) were green before and are red now. VoiceOver: clearing the field
+  ends what was said at once, so a query replaced inside 0.8 s is announced; leaving the screen (Back,
+  Esc, disappearing) drops a pending line, and a cancelled wait says nothing. `disabledRowIsNotDimmed`
+  flaked (3 of 30 suite runs byte-exact, always addable vs full, by exactly 1 level on 6–20 bytes): the
+  renderer draws a glyph's anti-aliased edge one level differently the first time or two it draws it, so
+  the result depended on test order. It now compares within 1 level of 255 (the dimming it catches is 66,
+  its 10% control up to 24): 30 of 30. **Release timing** (this Mac, M1 Pro, 2026-09-30, a scratch
+  package outside the repo depending on the worktree; every prefix of 20 learner queries, 20 rounds, 2,920
+  keystrokes): median 0.70 ms, p95 1.26 ms, worst 9.9 ms (one scheduling outlier; the next worst 4.0);
+  the slowest query, kinenonanani (16 readings), p95 2.1 ms; tabem p95 1.1 ms. Index build median 47 ms
+  (31 ms at the first commit). No query near the 8 ms p95 line, so the three romaji walks stay separate.
+
 ---
 
 ## §C Track 2 — the window (spread across the three releases; docs and tools, no product change)
