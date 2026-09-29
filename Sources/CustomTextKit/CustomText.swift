@@ -120,6 +120,13 @@ public struct CustomText: Identifiable, Codable, Hashable, Sendable {
     /// both, with the character line reporting 20,000 kept when 200 forty-character sentences
     /// (8,000) were what was stored — for ordinary Japanese, nearly every paste over the character
     /// cap also hits the sentence cap, so that draft was false in the common case.
+    ///
+    /// **"All there" means the stored 200th sentence IS the paste's 200th (v1.35).** 1.34 counted
+    /// in sentences whenever 200 were stored and the paste had more, including when the character
+    /// cut had shortened the 200th: 199 sentences of 100, then one of 5,000 and a 201st, stored
+    /// 199 whole sentences and the first 100 characters of the 200th, and the notice said "1
+    /// sentence dropped" while 4,902 characters were gone — the one coarse case `PLAN-V1.34` §B2's
+    /// addendum recorded. That paste lost to the character cap, so it is counted in characters.
     public enum Truncation: Equatable, Sendable {
         /// `kept` sentences stored (the cap) and `dropped` more in the paste.
         case sentences(kept: Int, dropped: Int)
@@ -133,11 +140,18 @@ public struct CustomText: Identifiable, Codable, Hashable, Sendable {
         let stored = cut(source)
         let characters = source.count
         if stored.sentences.count == maxSentences {
-            let whole = characters > maxSourceCharacters
-                ? CustomTextSplitter.sentences(in: source).count
-                : stored.found
-            if whole > maxSentences {
-                return .sentences(kept: maxSentences, dropped: whole - maxSentences)
+            if characters <= maxSourceCharacters {
+                // Nothing was cut by characters, so the stored split IS the paste's split.
+                if stored.found > maxSentences {
+                    return .sentences(kept: maxSentences, dropped: stored.found - maxSentences)
+                }
+            } else {
+                // Compared as text, not by length: the character cut can also take a closing 」
+                // off the end of an otherwise whole 200th, and that sentence was cut too.
+                let whole = CustomTextSplitter.sentences(in: source)
+                if whole.count > maxSentences, whole[maxSentences - 1] == stored.sentences.last {
+                    return .sentences(kept: maxSentences, dropped: whole.count - maxSentences)
+                }
             }
         }
         if characters > maxSourceCharacters {

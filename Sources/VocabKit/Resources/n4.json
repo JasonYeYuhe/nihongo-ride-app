@@ -493,7 +493,7 @@
   "jlpt": 4,
   "meanings": {
    "en": [
-    "less than",
+    "not more than",
     "below"
    ],
    "zh": [
@@ -501,7 +501,7 @@
    ]
   },
   "exJP": "10歳以下は無料だ。",
-  "exEN": "Under 10 years old is free.",
+  "exEN": "It is free for ages 10 and under.",
   "exZH": "10岁以下免费。"
  },
  {
@@ -732,7 +732,8 @@
   "jlpt": 4,
   "meanings": {
    "en": [
-    "more than",
+    "not less than",
+    "beyond",
     "above"
    ],
    "zh": [
@@ -1350,15 +1351,17 @@
   "meanings": {
    "en": [
     "inside",
-    "within"
+    "within",
+    "among"
    ],
    "zh": [
     "内",
-    "里面"
+    "里面",
+    "当中"
    ]
   },
   "exJP": "三つのうち一つを選ぶ。",
-  "exEN": "Choose one from inside the three.",
+  "exEN": "Choose one of the three.",
   "exZH": "从三个当中选一个。",
   "exKana": "みっつのうちひとつをえらぶ",
   "exTokens": [
@@ -24180,7 +24183,7 @@
    "batch": "batch-12",
    "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
   },
-  "exKana": "せんせいはしゅうまつになんをなさいますか",
+  "exKana": "せんせいはしゅうまつになにをなさいますか",
   "exTokens": [
    [
     "先生",
@@ -24200,7 +24203,7 @@
    ],
    [
     "何",
-    "なん"
+    "なに"
    ],
    [
     "を",

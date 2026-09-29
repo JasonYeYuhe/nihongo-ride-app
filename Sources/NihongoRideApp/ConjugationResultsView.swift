@@ -186,7 +186,9 @@ struct ConjugationResultsView: View {
             Text(title.uppercased())
                 .scaledSystemFont(14, weight: .black, design: .rounded).tracking(4)
                 .foregroundStyle(tint)
-            Text(line).scaledSystemFont(13).foregroundStyle(Theme.dim)
+            // Straight on the arrival panel, like the ride results' grade line: `Theme.dim` was
+            // 4.41:1 here, under AA's 4.5:1. See `ResultsView.panelCaptionColor`. (v1.35 §F item 4)
+            Text(line).scaledSystemFont(13).foregroundStyle(ResultsView.panelCaptionColor)
         }
     }
 }

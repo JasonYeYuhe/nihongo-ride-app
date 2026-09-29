@@ -35022,7 +35022,7 @@
    "sense": "congratulatory gift or celebration",
    "senseListed": false
   },
-  "exKana": "ともだちのけっこんのいわいになんをおくるかかんがえている",
+  "exKana": "ともだちのけっこんのいわいになにをおくるかかんがえている",
   "exTokens": [
    [
     "友達",
@@ -35050,7 +35050,7 @@
    ],
    [
     "何",
-    "なん"
+    "なに"
    ],
    [
     "を",
@@ -37220,7 +37220,7 @@
    "readingGateOverride": "Sudachi regresses to the common reading for exactly this class of entry, so it is not a valid arbiter here; three independent judges unanimously found the reading forced. forcedBy: 年の暮れ is read としのくれ",
    "targetGateOverride": "target appears inside the compound that forces the reading (年の暮れ / 働き盛り / 下の句); the morphological matcher cannot see it there, but the surface is literally present"
   },
-  "exKana": "としのくれはなんかといそがしい",
+  "exKana": "としのくれはなにかといそがしい",
   "exTokens": [
    [
     "年の暮れ",
@@ -37232,7 +37232,7 @@
    ],
    [
     "何",
-    "なん"
+    "なに"
    ],
    [
     "か",
@@ -53007,18 +53007,14 @@
     "喷气式飞机"
    ]
   },
-  "exJP": "ジェットきに乗る。",
+  "exJP": "ジェット機に乗る。",
   "exEN": "Ride a jet plane.",
   "exZH": "乘坐喷气式飞机。",
   "exKana": "じぇっときにのる",
   "exTokens": [
    [
-    "ジェット",
-    "じぇっと"
-   ],
-   [
-    "き",
-    "き"
+    "ジェット機",
+    "じぇっとき"
    ],
    [
     "に",
