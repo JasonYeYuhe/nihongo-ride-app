@@ -130,11 +130,12 @@ struct V135VerbsHUDSpokenTests {
     ///   beside the chain rather than around it (`if X { EmptyView() } else` on the line above an
     ///   `if !narrow {`) is a block this list does not have;
     /// * `narrow` declared once, exactly `private var narrow: Bool { isPhoneIdiom }`, and no other
-    ///   name bound in the type — so `narrow` cannot start meaning the size.
+    ///   plain `let` / `var` name bound in the type (a tuple pattern such as `let (narrow, _) = …`
+    ///   is not read — measured green in review round 2).
     ///
     /// What it does not hold: the global `isPhoneIdiom` (TouchSupport.swift) is read by name, not
-    /// pinned; a modifier that hides a drawn pill (`.opacity(0)`, `.hidden()`) is not a block and is
-    /// not read here. Before v1.35's review round 1 this test read each pill's innermost block only,
+    /// pinned; a modifier that hides a drawn pill (`.opacity(0)`, `.hidden()`), or an expression
+    /// that is not a block (a ternary choosing `EmptyView()`, `AnyView`), is not read here. Before v1.35's review round 1 this test read each pill's innermost block only,
     /// and a nested gate or a redefined `narrow` stayed green (measured below).
     ///
     /// Mutations, 2026-09-29, each red here: the accuracy gate as `if !(narrow || typeSize.isAccessibilitySize) {`;
@@ -230,7 +231,8 @@ struct V135VerbsHUDSpokenTests {
 
     /// The number is formatted once. Both HUDs' score pills draw `RideHUDSpoken.scoreWords`, and both
     /// composers append it — so the drill's spoken score cannot drift from its drawn one, nor from the
-    /// ride's. The drill's composer, comment-blanked, formats no number of its own and uses the ride's
+    /// ride's. The drill's composer, comment-blanked, has no interpolation, `Int(` or `.joined` of its
+    /// own (`String(score)` is not banned — review round 2) and uses the ride's
     /// separator helper. Mutations, 2026-09-29, each red here: the drill's score pill back to
     /// `value: "\(session.score)"`; the ride's score pill likewise; the drill composer appending
     /// `"score \(score)"`; the ride composer's `"score \(score)"` restored; the drill composer
@@ -305,8 +307,9 @@ struct V135VerbsHUDSpokenTests {
     /// so no change to `stat` could fail it; the first mutation below was green then.
     ///
     /// **The instrument is not deterministic, so a pair is rendered up to three times.** Measured on
-    /// 2026-09-29, all on unchanged rendering code: in the 8 whole `swift test` runs the
-    /// implementation recorded, this test failed in one, a 63.9s run, and
+    /// 2026-09-29, all on unchanged rendering code: in the whole `swift test` runs the
+    /// implementation recorded (11, 8 with their summary line kept), this test — then comparing a
+    /// single pair, before the retry was added — failed in one, a 63.9s run, and
     /// `V134B3HUDSpokenTests`' test of the same name (which renders once) failed in another, a 107.3s
     /// run; the other 6 passed. In review, B3's test failed once in 17 filtered runs of three suites
     /// (`V135…|V134B3…|V133G…`, a 1.4s run), and both passed in 6 more whole runs and in one whole
