@@ -262,10 +262,11 @@ struct CustomTextAddView: View {
     /// 2026-09-29, the same instrument, 72 Chinese layouts: 2 columns × 2 units × 6 counts × no
     /// language / zh-Hans / ja). In this wording 放不下 is wholly in lines one and two in 9 of the
     /// 72, and usually split ("句,30 句放不" / "下。"). Put before the count — "保留 20,000 字,放不下
-    /// 999,999 字。" — it is in line two in all 72, and the dropped count falls to line three in
-    /// 27: 20,000 kept with 1,000 or more dropped at 338pt; at 311pt, 200 kept with 99,999 or more
-    /// and 20,000 kept with 999 or more. At 999,999 no order of these words has both: "放不下
-    /// 999,999" alone is 378pt (374pt under ja), wider than either column, and line one's "保留
+    /// 999,999 字。" — it ends by line two in all 72 (split 放 / 不下 across lines one and two in
+    /// the 18 at 338pt with 200 kept), and the dropped count falls to line three in 27: 20,000
+    /// kept with 1,000 or more dropped at 338pt; at 311pt, 200 kept with 99,999 or more and 20,000
+    /// kept with 999 or more. No single order passes every 999,999 layout: "放不下 999,999" alone
+    /// is 378pt (374pt under ja), wider than either column, and with 20,000 kept line one's "保留
     /// 20,000" is 290pt of 311, with no room for the verb's 150. Two other wordings did worse:
     /// "保留 N 句,另 M 句放不下。" had the verb in two lines in 7 of 72 and the dropped count
     /// past them in 5; "放得下 N 句,M 句放不下。" had the verb in 4 and pushed the kept count off
@@ -296,10 +297,12 @@ struct CustomTextAddView: View {
     ///
     /// **The remedy is plural unless one thing is left out.** The first draft said "You can add
     /// those as another text." / "可以另外添加为一篇文本。" at every count, and one text holds at
-    /// most 200 sentences and 20,000 characters: 450 sentences leave out 250, which is two more
-    /// texts, and a 999,999-character paste leaves out 979,999, which is 49. "Further texts" /
-    /// "其余部分可以另外添加" is true at every count; "it as another text" is kept for exactly one
-    /// sentence or one character, which always fits one. (The store keeps 50 texts and drops the
+    /// most 200 sentences and 20,000 characters: 450 sentences leave out 250, at least two more
+    /// texts, and a 999,999-character paste leaves out 979,999, at least 49. "Further texts" /
+    /// "其余部分可以另外添加" is true at every count. "It as another text" is kept for exactly one
+    /// character, which one more text always holds; one left-out SENTENCE is "You can add it
+    /// separately.", because a single sentence can run past 20,000 characters (no terminator, or
+    /// an opener never closed) and would itself be cut (review of bd8605b). (The store keeps 50 texts and drops the
     /// oldest past that, `CustomTextStore.add` — the rest can still be added; not all of a
     /// remainder over 50 texts can be kept at once, and the sentence does not say it can.)
     static func confirmationMessage(_ truncation: CustomText.Truncation, zh: Bool) -> String {
@@ -307,7 +310,7 @@ struct CustomTextAddView: View {
         case let .sentences(kept, dropped):
             return zh
                 ? "添加后只保留前 \(grouped(kept)) 句,最后 \(grouped(dropped)) 句不会保存。其余部分可以另外添加。"
-                : "Add keeps the first \(grouped(kept)) sentences and leaves out \(dropped == 1 ? "the last one. You can add it as another text." : "the last \(grouped(dropped)). You can add the rest as further texts.")"
+                : "Add keeps the first \(grouped(kept)) sentences and leaves out \(dropped == 1 ? "the last one. You can add it separately." : "the last \(grouped(dropped)). You can add the rest as further texts.")"
         case let .characters(kept, dropped):
             return zh
                 ? "添加后只保留前 \(grouped(kept)) 个字符,最后 \(grouped(dropped)) 个不会保存。其余部分可以另外添加。"

@@ -201,10 +201,11 @@ struct V135NoticeTests {
                 == "Add keeps the first 20,000 characters and leaves out the last 5,308. You can add the rest as further texts.")
         #expect(CustomTextAddView.confirmationMessage(characters, zh: true)
                 == "添加后只保留前 20,000 个字符,最后 5,308 个不会保存。其余部分可以另外添加。")
-        // The singular, in both units: exactly one left out, which one more text always holds.
+        // The singular, in both units. One character always fits one more text; one sentence need
+        // not (it can run past 20,000 characters), so it is added "separately", not "as another text".
         let one = CustomText.Truncation.sentences(kept: 200, dropped: 1)
         #expect(CustomTextAddView.confirmationMessage(one, zh: false)
-                == "Add keeps the first 200 sentences and leaves out the last one. You can add it as another text.")
+                == "Add keeps the first 200 sentences and leaves out the last one. You can add it separately.")
         #expect(CustomTextAddView.confirmationMessage(one, zh: true)
                 == "添加后只保留前 200 句,最后 1 句不会保存。其余部分可以另外添加。")
         let oneCharacter = CustomText.Truncation.characters(kept: 20_000, dropped: 1)
@@ -214,8 +215,8 @@ struct V135NoticeTests {
                 == "添加后只保留前 20,000 个字符,最后 1 个不会保存。其余部分可以另外添加。")
 
         // More left out than one text holds (200 sentences, 20,000 characters): the first draft
-        // said "You can add those as another text." here, which was false — 250 sentences are two
-        // more texts and 979,999 characters are 49. Nothing in the message may say "another".
+        // said "You can add those as another text." here, which was false — 250 sentences are at
+        // least two more texts and 979,999 characters at least 49. Nothing in the message may say "another".
         let beyondOneText: [CustomText.Truncation] = [
             .sentences(kept: 200, dropped: 250), .characters(kept: 20_000, dropped: 979_999),
         ]
