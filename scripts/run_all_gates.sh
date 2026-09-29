@@ -255,14 +255,31 @@ run_vocab_gate() {
       VACUOUS+=("check_vocab_diff.py"); return
     fi
   fi
+  # ONE array is the command. The .cmd file, the row label and the "(manifest: …)" line are all
+  # derived from it, and it is what runs. They used to be three separate strings beside the real
+  # argv, so a flag dropped from the call still showed in the log and in the row, and a probe
+  # that looked for "--base X" in the output was satisfied by the label (v1.35 round 4). The
+  # guard also prints what it RECEIVED on its own first line; the probes read that line.
   # Bash 3.2 (macOS's /bin/bash) treats "${a[@]}" of an EMPTY array as unbound under `set -u`;
   # the `+` form expands to nothing instead.
-  echo "  check_vocab_diff.py --base $base ${VOCAB_MANIFEST_ARGS[*]+${VOCAB_MANIFEST_ARGS[*]}}" \
-    > "$LOGS/check_vocab_diff.cmd"
-  run_gate "check_vocab_diff.py --base $base" "" \
-    python3 scripts/check_vocab_diff.py --base "$base" ${VOCAB_MANIFEST_ARGS[@]+"${VOCAB_MANIFEST_ARGS[@]}"}
-  if [ -n "$manifest" ]; then
-    printf '  %-34s %s\n' "" "(manifest: $manifest — scripts/release_numbers.py CORPUS_MANIFEST)"
+  local -a cmd
+  cmd=(python3 scripts/check_vocab_diff.py --base "$base" ${VOCAB_MANIFEST_ARGS[@]+"${VOCAB_MANIFEST_ARGS[@]}"})
+  printf '%q ' "${cmd[@]}" > "$LOGS/check_vocab_diff.cmd"
+  echo >> "$LOGS/check_vocab_diff.cmd"
+  local i label cmd_base="" cmd_manifest=""
+  for ((i = 2; i < ${#cmd[@]}; i++)); do
+    case "${cmd[$i]}" in
+      --base) cmd_base="${cmd[$((i + 1))]:-}" ;;
+      --manifest) cmd_manifest="${cmd[$((i + 1))]:-}" ;;
+    esac
+  done
+  label="${cmd[1]##*/}"
+  if [ -n "$cmd_base" ]; then label="$label --base $cmd_base"; else label="$label (no --base)"; fi
+  run_gate "$label" "" "${cmd[@]}"
+  if [ -n "$cmd_manifest" ]; then
+    printf '  %-34s %s\n' "" "(manifest: $cmd_manifest — scripts/release_numbers.py CORPUS_MANIFEST)"
+  elif [ -n "$manifest" ]; then
+    printf '  %-34s %s\n' "" "(NO --manifest passed, although CORPUS_MANIFEST names $manifest)"
   fi
 }
 

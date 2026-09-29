@@ -265,6 +265,14 @@ def main():
                     help="permit removing an EXACT duplicate gloss and nothing else")
     args = ap.parse_args()
 
+    # What this process was actually handed, on one line, before anything else. The gate runner
+    # labels its row and writes a .cmd file; both are the runner's description of the call. This
+    # line is the guard's, so a flag the runner dropped cannot show here (v1.35 round 4), and
+    # scripts/test_check_vocab_diff.py's runner probes read it.
+    print(f"check_vocab_diff.py received: --base {args.base} "
+          f"--manifest {args.manifest if args.manifest else '(none)'}"
+          f"{' --allow-dedupe' if args.allow_dedupe else ''}")
+
     manifest, reason = (load_manifest(args.manifest) if args.manifest else (None, ""))
     if manifest:
         print(f"structural change declared: {reason}")

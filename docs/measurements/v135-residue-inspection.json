@@ -1274,7 +1274,7 @@
     "kind": "A-reading",
     "confidence": "high",
     "current": "exJP 今、何時ですか。 / exKana いまなんどきですか / exTokens [何時, なんどき]",
-    "evidence": "何時 asking the time is なんじ. なんどき is an archaic reading that survives in いつ何時; nobody asks the time with it, and both translations ask the clock time. Sudachi tokenises 何時 as ナンドキ in modes A and C and its lookup offers only いつ / なんどき, so the corpus copied its default (7f71a3d, v1.18 B) and no instrument ever had なんじ to test: the sentence was in the dictation pool, grading against なんどき.",
+    "evidence": "何時 asking the time is なんじ. なんどき is an archaic reading that survives in いつ何時; nobody asks the time with it, and both translations ask the clock time. Sudachi tokenises 何時 as ナンドキ in modes A and C and its lookup offers only いつ / なんどき, so the corpus copied its default (4ceba24 (v1.18 A) generated it with gen_sentence_kana from Sudachi's ナンドキ, and 7f71a3d (v1.18 B) carried it into the punctuation-free exKana) and no instrument ever had なんじ to test: the sentence was in the dictation pool, grading against なんどき.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
     "resolution": "exKana and the 何時 token now read なんじ. Withheld from dictation: calibrated 1b is silent on 何時 (v135-dictation-remeasure.json 'round3').",
@@ -1286,12 +1286,13 @@
     "kind": "gloss",
     "confidence": "high",
     "current": "meanings.en ['more than', 'above'] / zh ['以上']",
-    "evidence": "以上 includes its boundary (18歳以上 admits 18); 'more than' excludes it — the error round 2 corrected in 以下 (n4-g012).",
+    "evidence": "以上 includes its boundary (18歳以上 admits 18); 'more than' excludes it — the error round 2 corrected in 以下 (n4-g012). Round 4: replacing 'more than' outright dropped the sense the card's own example uses (期待以上だった, 'It was more than expected.'); 'beyond' carries that sense without reintroducing the numeric boundary error.",
     "disposition": "corrected",
     "refuterVotes": "not put to refuters: the same inclusive-boundary correction round 2 made to 以下, declared the same way",
-    "resolution": "meanings.en ['not less than', 'above'] (removeEN + finalEN). zh 以上 is inclusive in normal Chinese usage and unchanged; the idiomatic example 期待以上だった is unchanged."
+    "resolution": "meanings.en ['not less than', 'beyond', 'above'] (removeEN 'more than' + finalEN; 'beyond' added in round 4 for the example's 'more than expected' sense). zh 以上 is inclusive in normal Chinese usage and unchanged; the idiomatic example 期待以上だった is unchanged."
    }
   ],
+  "votes": "n5-g022: 2 of 2 refuter votes upheld (refuted: false x2, severity_if_real SERIOUS). The raw votes and their full reasoning are in the round-2 review workflow's output, outside the repo: ~/Library/Caches/NihongoRide-v135-work/corpus-round2.json, reviews[0].votes, finding D-R2-1. n4-g018 was not put to refuters.",
   "sweep": {
    "what": "every exTokens pair whose surface contains 何, in all five level files (57 tokens), plus a grep of exJP for 何時 / 何人 / 何日 / 何方 / 何故 / 何処 / 何者 and of passages.json (Japanese side: none).",
    "wrong": [

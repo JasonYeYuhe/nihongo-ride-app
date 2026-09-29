@@ -37,6 +37,11 @@ Since v1.35 round 3 the runner probes also commit the fixture change, because tw
 in an uncommitted fixture: CI mode could drop `--base` unnoticed (the guard's default, HEAD,
 was the probe's base too), and local mode compared against HEAD~1, which a release's closing
 version-bump commit empties. Local mode now compares against release_numbers.BASELINE_REF.
+
+Since v1.35 round 4: a local probe with BASELINE_REF = the fixture's HEAD and the change still
+UNCOMMITTED, so a vacuity check that ignored the working tree is caught; and the runner probes
+read the guard's own "received: --base … --manifest …" line rather than the runner's row label,
+which a dropped flag used to leave intact.
 """
 import ast
 import copy
@@ -428,6 +433,13 @@ def _run_runner(wt, tmp, extra):
     return out.returncode, text
 
 
+def _received(base, manifest):
+    """The line check_vocab_diff.py prints about what it was ACTUALLY handed. The runner's row
+    label and .cmd file are the runner's own account of the call, so an expectation met by them
+    is met even when the flag never reached the guard (v1.35 round 4); this line is the guard's."""
+    return f"check_vocab_diff.py received: --base {base} --manifest {manifest}\n"
+
+
 def runner_probes(with_kana):
     """run_all_gates.sh's vocabulary gate, end to end, on a fixture.
 
@@ -491,7 +503,7 @@ def runner_probes(with_kana):
         ci = ["--vocab-base", "HEAD"]
         case("CI mode, the rewrite declared in CORPUS_MANIFEST", False, [declared],
              fixture_rel, ci,
-             expect=("structural change declared", f"--manifest {fixture_rel}"))
+             expect=("structural change declared", _received("HEAD", fixture_rel)))
         case("CI mode, the same rewrite with its declaration dropped", True, [],
              fixture_rel, ci, expect=("exKana OVERWRITTEN",))
         case("CI mode, CORPUS_MANIFEST = None", True, None, None, ci,
@@ -504,27 +516,41 @@ def runner_probes(with_kana):
         # plus the fixture.
         case("local mode, the rewrite declared (compared against BASELINE_REF)", False,
              real_entries + [declared], fixture_rel, [],
-             expect=(f"--base {baseline}", "structural change declared"))
+             expect=(_received(baseline, fixture_rel), "structural change declared"))
         case("local mode, the same rewrite with its declaration dropped", True,
              real_entries, fixture_rel, [], expect=("exKana OVERWRITTEN",))
 
-        # The rewrite COMMITTED, as a push delivers it: the tree now equals HEAD.
+        # BASELINE_REF = the fixture's HEAD, and the rewrite still UNCOMMITTED. Nothing differs
+        # between BASELINE_REF and HEAD; the one corpus change is in the working tree. The
+        # vacuity check must see it (v1.35 round 4): a check reading only commits —
+        # `git diff --name-only "$base" HEAD -- …` — calls this VACUOUS (exit 3) while every
+        # other probe still passes, because in all of them BASELINE_REF..HEAD already holds a
+        # corpus change (the release's, or the committed fixture). Mutation-checked: that line
+        # fails both of these.
         before = subprocess.run(["git", "-C", str(wt), "rev-parse", "HEAD"],
                                 capture_output=True, text=True, check=True).stdout.strip()
+        case("local mode, BASELINE_REF = HEAD, the rewrite uncommitted and declared "
+             "(inspected, not vacuous)", False, [declared], fixture_rel, [],
+             expect=(_received(before, fixture_rel), "structural change declared"),
+             baseline_at=before)
+        case("local mode, BASELINE_REF = HEAD, the rewrite uncommitted, declaration dropped",
+             True, [], fixture_rel, [], expect=("exKana OVERWRITTEN",), baseline_at=before)
+
+        # The rewrite COMMITTED, as a push delivers it: the tree now equals HEAD.
         _commit(wt, [rel], "fixture: the declared corpus rewrite")
         pushed = ["--vocab-base", before]
         case("CI mode, the rewrite committed, the base before it, declaration dropped "
              "(fails only if --base reaches the guard)", True, [], fixture_rel, pushed,
-             expect=("exKana OVERWRITTEN", f"--base {before}"))
+             expect=("exKana OVERWRITTEN", _received(before, fixture_rel)))
         case("CI mode, the rewrite committed, the base before it, declared", False,
-             [declared], fixture_rel, pushed, expect=(f"--base {before}",))
+             [declared], fixture_rel, pushed, expect=(_received(before, fixture_rel),))
 
         # …and a release's closing version bump on top, touching no corpus file.
         (wt / "fixture-version-bump.txt").write_text("1.35\n", encoding="utf-8")
         head = _commit(wt, ["fixture-version-bump.txt"], "fixture: version bump")
         case("local mode after a corpus-free version-bump commit, declared (not vacuous)",
              False, real_entries + [declared], fixture_rel, [],
-             expect=(f"--base {baseline}", "structural change declared"))
+             expect=(_received(baseline, fixture_rel), "structural change declared"))
         case("local mode after a corpus-free version-bump commit, declaration dropped",
              True, real_entries, fixture_rel, [], expect=("exKana OVERWRITTEN",))
 
