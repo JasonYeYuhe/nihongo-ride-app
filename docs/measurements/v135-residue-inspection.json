@@ -1092,6 +1092,7 @@
     "evidence": "何 before を is なに. exKana and the 何 token said なん, Sudachi's default. The dictation record already held the voice's proof, '何 なん -> なに' (v1.29, instrument 1b). Re-measured on the corrected tokens: the なに render is byte-identical to the exJP audio (sha1 4f31a7052ac6), the なん render is not (256919535cc7). Released to dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何 as the object before を is なに (PLAN-V1.25: 'なんを is not a possible reading of anything'), and both translations mean 'what to give'. The second re-ran calibrated 1b on a scratch copy and got 'says 何 = なに not なん'. exKana and the 何 token corrected; released to dictation.",
     "dictation": "released to dictation: instrument 1b confirms 何 = なに on the corrected tokens"
    },
    {
@@ -1102,6 +1103,7 @@
     "evidence": "何も (+ negative, 'nothing') is なにも. exKana and the 何 token said なん, Sudachi's default. The dictation record already held the voice's proof, '何 なん -> なに' (v1.29, instrument 1b). Re-measured on the corrected tokens: the なに render is byte-identical to the exJP audio (sha1 48855e9e4c24), the なん render is not (25166cda5ba5). Released to dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何も with a negative ('nothing') is なにも; なんも is a colloquial, mostly regional contraction the sentence does not call for. The second re-rendered in a fresh scratch cache and reproduced the proof. Corrected; released to dictation.",
     "dictation": "released to dictation: instrument 1b confirms 何 = なに on the corrected tokens"
    },
    {
@@ -1112,6 +1114,7 @@
     "evidence": "何よりも ('above all') is なによりも. exKana and the 何 token said なん, Sudachi's default. The dictation record already held the voice's proof, '何 なん -> なに' (v1.29, instrument 1b). Re-measured on the corrected tokens: the なに render is byte-identical to the exJP audio (sha1 9a8b2e2c0a02), the なん render is not (b807eb9115ea). Released to dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何よりも ('above all') is listed only as なにより(も); the なん rule (before d/n/t sounds, counters, だ/です) does not apply before より, and n1-b348 already reads なにより. The second reproduced the byte match (9a8b2e2c0a02). Corrected; released to dictation.",
     "dictation": "released to dictation: instrument 1b confirms 何 = なに on the corrected tokens"
    },
    {
@@ -1122,6 +1125,7 @@
     "evidence": "何より ('above all') is なにより. exKana and the 何 token said なん, Sudachi's default. The dictation record already held the voice's proof, '何 なん -> なに' (v1.29, instrument 1b). Re-measured on the corrected tokens: the なに render is byte-identical to the exJP audio (sha1 9559bbb36579), the なん render is not (bb6ad36cc46f). Released to dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何より is the fixed adverb なにより (大辞泉, 大辞林), and the formal 我が社 / 重んずる rule out a casual なんより. The second re-ran calibrated 1b on a scratch copy. Corrected; released to dictation.",
     "dictation": "released to dictation: instrument 1b confirms 何 = なに on the corrected tokens"
    },
    {
@@ -1132,6 +1136,7 @@
     "evidence": "何か ('something / anything') is なにか. exKana and the 何 token said なん, Sudachi's default. The dictation record already held the voice's proof, '何 なん -> なに' (v1.29, instrument 1b). Re-measured on the corrected tokens: the なに render is byte-identical to the exJP audio (sha1 48758f47445c), the なん render is not (cbf383c179b8). Released to dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何か ('any trouble') is なにか; なんか is a casual contraction that clashes with the polite 気軽に相談してください, and this is not the 私/わたくし register case. The second reproduced the byte match (48758f47445c). Corrected; released to dictation.",
     "dictation": "released to dictation: instrument 1b confirms 何 = なに on the corrected tokens"
    },
    {
@@ -1142,6 +1147,7 @@
     "evidence": "何か ('something') is なにか. exKana and the 何 token said なん, Sudachi's default. The dictation record already held the voice's proof, '何 なん -> なに' (v1.29, instrument 1b). Re-measured on the corrected tokens: the なに render is byte-identical to the exJP audio (sha1 8c07930baafb), the なん render is not (b01a8d65c408). Released to dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何か, the object 'something' of 呟いた, is なにか in narrative; なんか would also read as the hedge 'somehow'. The second reproduced the 1b probe. Corrected; released to dictation.",
     "dictation": "released to dictation: instrument 1b confirms 何 = なに on the corrected tokens"
    },
    {
@@ -1152,6 +1158,7 @@
     "evidence": "何か ('something') is なにか. exKana and the 何 token said なん, Sudachi's default. The dictation record already held the voice's proof, '何 なん -> なに' (v1.29, instrument 1b). Re-measured on the corrected tokens: the なに render is byte-identical to the exJP audio (sha1 b978e521fe52), the なん render is not (0eeab7bd2996). Released to dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何か written in kanji in a neutral sentence is なにか; なんか is colloquial and normally written in kana. The second reproduced 1b in a fresh cache. Corrected; released to dictation.",
     "dictation": "released to dictation: instrument 1b confirms 何 = なに on the corrected tokens"
    },
    {
@@ -1162,6 +1169,7 @@
     "evidence": "〜は何か ('what is it that …', written register) is なにか. exKana and the 何 token said なん, Sudachi's default. The dictation record already held the voice's proof, '何 なん -> なに' (v1.29, instrument 1b). Re-measured on the corrected tokens: the なに render is byte-identical to the exJP audio (sha1 9563079c3956), the なん render is not (e6123683ff03). Released to dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 〜は何か is the interrogative predicate of a formal exam-style question, read なにか; なんか would make it a filler. The second noted the claim rests on the grammar, with the audio agreeing. Corrected; released to dictation.",
     "dictation": "released to dictation: instrument 1b confirms 何 = なに on the corrected tokens"
    },
    {
@@ -1172,6 +1180,7 @@
     "evidence": "何も (+ negative, 'nothing') is なにも. exKana and the 何 token said なん, Sudachi's default. Re-measured with instrument 1b: the なに render is byte-identical to the exJP audio (sha1 1a54120d7abd), the なん render is not (85765a12769a). 私 stays わたくし (the register class PLAN-V1.25 declines); the voice says わたし, so the sentence stays withheld from dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何も with a negative is なにも, and なんも clashes with the entry's own formal わたくし. Both reproduced the なに byte match. Corrected; stays withheld because the voice says 私 = わたし.",
     "dictation": "stays withheld from dictation: 1b confirms 何 = なに but the voice says 私 = わたし (わたくし is the declined register class)"
    },
    {
@@ -1182,6 +1191,7 @@
     "evidence": "何か ('something') is なにか. exKana and the 何 token said なん, Sudachi's default; the dictation record's instrument 2 had named なに and instrument 1b was silent (v1.29). Silent again on the corrected tokens (neither なに 4da233c8aa59 nor なん b3d80d943205 is byte-identical to 360545f94f7c), so the correction rests on the grammar and the two refuters, not on audio, and the sentence stays withheld from dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何か modifying よからぬこと is なにか (NHK accent dictionary ナニカ), and なんか clashes with the literary よからぬ. The second reproduced every figure on a fresh render. Corrected; stays withheld (1b silent).",
     "dictation": "stays withheld from dictation: 1b is silent on the corrected tokens, so the voice is not proven to say なに"
    },
    {
@@ -1192,6 +1202,7 @@
     "evidence": "何か ('something') is なにか. exKana and the 何 token said なん, Sudachi's default; the dictation record's instrument 2 had named なに and instrument 1b was silent (v1.29). Silent again on the corrected tokens (neither なに be5bbac5694f nor なん 504c49b2c46c is byte-identical to 3b74712bc4cf), so the correction rests on the grammar and the two refuters, not on audio, and the sentence stays withheld from dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何か ('some ulterior motive') is なにか in written Japanese; なんか is a tolerated casual pronunciation, not a reading to teach. The second reproduced every figure. Corrected; stays withheld (1b silent).",
     "dictation": "stays withheld from dictation: 1b is silent on the corrected tokens, so the voice is not proven to say なに"
    },
    {
@@ -1202,6 +1213,7 @@
     "evidence": "何か ('anything') is なにか. exKana and the 何 token said なん, Sudachi's default; the dictation record's instrument 2 had named なに and instrument 1b was silent (v1.29). Silent again on the corrected tokens (neither なに 9a72876affe1 nor なん d7f16df79a27 is byte-identical to e72f7868a610), so the correction rests on the grammar and the two refuters, not on audio, and the sentence stays withheld from dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何か in a polite ます question is なにか; the register rule (私/わたくし, 明日/あす, 日本/にっぽん) covers two standard readings, not a casual contraction. The second filed the audio as a lead only. Corrected; stays withheld (1b silent).",
     "dictation": "stays withheld from dictation: 1b is silent on the corrected tokens, so the voice is not proven to say なに"
    },
    {
@@ -1212,9 +1224,11 @@
     "evidence": "何かと ('one thing or another', a set adverb) is なにかと. exKana and the 何 token said なん, Sudachi's default; the dictation record's instrument 2 had named なに and instrument 1b was silent (v1.29). Silent again on the corrected tokens (neither なに 3bafcdecf9ef nor なん 7283ddc5c529 is byte-identical to 5f1d5499422a), so the correction rests on the grammar and the two refuters, not on audio, and the sentence stays withheld from dictation.",
     "disposition": "corrected",
     "refuterVotes": "2 of 2 upheld",
+    "resolution": "Both refuters upheld: 何かと is the fixed adverb なにかと ('in one way or another', ナニカト), which has no casual なんかと reading. The second reproduced every figure. Corrected; stays withheld (1b silent).",
     "dictation": "stays withheld from dictation: 1b is silent on the corrected tokens, so the voice is not proven to say なに"
    }
-  ]
+  ],
+  "votes": "26 of 26 refuter votes upheld (two per row, each independent). The raw votes and their full reasoning are in the round-2 review workflow's output (corpus-round2.json, 'votes'), outside the repo; each row's 'resolution' summarises both, as round 1's rows do."
  },
  "openFollowUps": [
   {
@@ -1232,6 +1246,61 @@
   {
    "what": "the 112 residue sentences are still outside every automated reading gate",
    "why": "this was a one-time hand inspection; v126-uninspected-residue.json is unchanged."
+  },
+  {
+   "what": "n5-g022 withheld from dictation",
+   "why": "its 何時 is corrected to なんじ on grammar and two refuters; instrument 1b is silent on the corrected tokens. A future instrument may decide it."
+  },
+  {
+   "what": "readings no instrument is offered",
+   "why": "instruments 1 and 2 test only Sudachi's lookup readings plus the corpus's own headword readings. 何時 had no なんじ, so a wrong exKana sat in the dictation pool unflagged; 何分 likewise has only なにぶん (no なんぷん). A scan for lexemes whose standard reading is absent from that candidate set would find the rest of the class."
+  },
+  {
+   "what": "n1-b1232 headword 何々 taught as どれどれ",
+   "why": "recorded by the round-3 sweep; a headword identity change, left to a human."
   }
- ]
+ ],
+ "roundThree": {
+  "source": "the review of round 2",
+  "counts": {
+   "defect": 2,
+   "corrected": 2,
+   "withheldFromDictation": 1
+  },
+  "items": [
+   {
+    "id": "n5-g022",
+    "verdict": "defect",
+    "kind": "A-reading",
+    "confidence": "high",
+    "current": "exJP 今、何時ですか。 / exKana いまなんどきですか / exTokens [何時, なんどき]",
+    "evidence": "何時 asking the time is なんじ. なんどき is an archaic reading that survives in いつ何時; nobody asks the time with it, and both translations ask the clock time. Sudachi tokenises 何時 as ナンドキ in modes A and C and its lookup offers only いつ / なんどき, so the corpus copied its default (7f71a3d, v1.18 B) and no instrument ever had なんじ to test: the sentence was in the dictation pool, grading against なんどき.",
+    "disposition": "corrected",
+    "refuterVotes": "2 of 2 upheld",
+    "resolution": "exKana and the 何時 token now read なんじ. Withheld from dictation: calibrated 1b is silent on 何時 (v135-dictation-remeasure.json 'round3').",
+    "dictation": "withheld: 1b confirms 今 = いま and is silent on the disputed 何時; the comparative favours なんじ (a lead)"
+   },
+   {
+    "id": "n4-g018",
+    "verdict": "defect",
+    "kind": "gloss",
+    "confidence": "high",
+    "current": "meanings.en ['more than', 'above'] / zh ['以上']",
+    "evidence": "以上 includes its boundary (18歳以上 admits 18); 'more than' excludes it — the error round 2 corrected in 以下 (n4-g012).",
+    "disposition": "corrected",
+    "refuterVotes": "not put to refuters: the same inclusive-boundary correction round 2 made to 以下, declared the same way",
+    "resolution": "meanings.en ['not less than', 'above'] (removeEN + finalEN). zh 以上 is inclusive in normal Chinese usage and unchanged; the idiomatic example 期待以上だった is unchanged."
+   }
+  ],
+  "sweep": {
+   "what": "every exTokens pair whose surface contains 何, in all five level files (57 tokens), plus a grep of exJP for 何時 / 何人 / 何日 / 何方 / 何故 / 何処 / 何者 and of passages.json (Japanese side: none).",
+   "wrong": [
+    "n5-g022 何時 なんどき (corrected above) — the only unusual reading found"
+   ],
+   "standard": "何 なん before です/でし/だ/と/で/なり/て (21); 何 なに before を/も/か/より (15, after rounds 1–2); 何度 なんど (8); 何事 なにごと (2); 何気 なにげ (2); 何日 なんにち (n3-b901, 'what day of the month'); 何分 なにぶん (n2-b937, 'after all', not a count of minutes); 何々 なになに (n2-b1207); 何か なにか (n3-b131); 何より なにより (n1-b348); 何卒 なにとぞ (n1-b127); 如何に いかに (2). No 何人, 何方, 何故 or 何処 occurs in any sentence.",
+   "followUps": [
+    "n1-b1232: headword 何々 taught with kana どれどれ ('let me see'). The usual reading of 何々 is なになに (as n2-b1207 has it); どれどれ is normally kana or 何れ何れ. It has no example sentence, and changing a headword's surface or kana is an identity change for learners' cards, so it is recorded, not corrected."
+   ]
+  }
+ }
 }

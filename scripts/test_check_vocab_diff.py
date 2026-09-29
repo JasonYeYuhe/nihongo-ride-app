@@ -32,6 +32,11 @@ a clean tree with HEAD and printed a vacuous "ok". So three more groups of probe
     does not exist fails — in CI mode and in local mode;
   * a pin that every guard invocation in the runner carries the manifest arguments and that
     the path is read from release_numbers.py rather than typed.
+
+Since v1.35 round 3 the runner probes also commit the fixture change, because two defects hid
+in an uncommitted fixture: CI mode could drop `--base` unnoticed (the guard's default, HEAD,
+was the probe's base too), and local mode compared against HEAD~1, which a release's closing
+version-bump commit empties. Local mode now compares against release_numbers.BASELINE_REF.
 """
 import ast
 import copy
@@ -372,21 +377,49 @@ def _fixture_worktree():
                            capture_output=True, text=True)
 
 
-def _point_release_numbers_at(wt, value):
-    """Make the fixture's release_numbers.py name `value` (a repo-relative path, or None)."""
+def _set_release_numbers(wt, name, value):
+    """Make the fixture's release_numbers.py set `name` (CORPUS_MANIFEST or BASELINE_REF) to
+    `value` (a string, or None), the one place a release names either."""
     rn = wt / "scripts/release_numbers.py"
     text = rn.read_text(encoding="utf-8")
-    new, n = re.subn(r"^CORPUS_MANIFEST = .*$", f"CORPUS_MANIFEST = {value!r}", text,
-                     count=1, flags=re.M)
+    new, n = re.subn(rf"^{name} = .*$", f"{name} = {value!r}", text, count=1, flags=re.M)
     if n != 1:
-        raise SystemExit("probe setup failed: release_numbers.py has no `CORPUS_MANIFEST = …` "
-                         "line to point at a fixture — the runner probes would test nothing")
+        raise SystemExit(f"probe setup failed: release_numbers.py has no `{name} = …` line to "
+                         "point at a fixture — the runner probes would test nothing")
     rn.write_text(new, encoding="utf-8")
+
+
+def _point_release_numbers_at(wt, value):
+    """Make the fixture's release_numbers.py name `value` (a repo-relative path, or None)."""
+    _set_release_numbers(wt, "CORPUS_MANIFEST", value)
+
+
+def _read_release_numbers(wt, name):
+    m = re.search(rf"^{name} = (.*?)(\s+#.*)?$",
+                  (wt / "scripts/release_numbers.py").read_text(encoding="utf-8"), re.M)
+    return ast.literal_eval(m.group(1)) if m else None
+
+
+def _commit(wt, paths, message):
+    """Commit `paths` in the fixture, with an identity of its own (CI has none configured) and
+    no hooks. Only the named paths: the fixture manifest and the re-pointed release_numbers.py
+    stay uncommitted. The commit dies with the fixture worktree (it is never on a branch)."""
+    git = ["git", "-C", str(wt), "-c", "user.name=vocab-probe",
+           "-c", "user.email=vocab-probe@example.invalid", "-c", "commit.gpgsign=false"]
+    subprocess.run(git + ["add", "--", *paths], capture_output=True, text=True, check=True)
+    subprocess.run(git + ["commit", "-q", "--no-verify", "-m", message, "--", *paths],
+                   capture_output=True, text=True, check=True)
+    return subprocess.run(["git", "-C", str(wt), "rev-parse", "HEAD"],
+                          capture_output=True, text=True, check=True).stdout.strip()
 
 
 def _run_runner(wt, tmp, extra):
     logs = tmp / f"logs-{len(list(tmp.glob('logs-*')))}"
-    env = dict(os.environ, GATE_LOG_DIR=str(logs))
+    # No bytecode cache. The runner imports the fixture's release_numbers.py, which these probes
+    # rewrite between runs; a .pyc is reused when the source's size and whole-second mtime
+    # match, and a 40-character ref replaced by another 40-character ref within one second
+    # matches both. Measured: the runner then read the PREVIOUS probe's BASELINE_REF.
+    env = dict(os.environ, GATE_LOG_DIR=str(logs), PYTHONDONTWRITEBYTECODE="1")
     out = subprocess.run(["bash", str(wt / "scripts/run_all_gates.sh"), "--vocab-only", *extra],
                          capture_output=True, text=True, cwd=str(wt), env=env)
     text = out.stdout + out.stderr
@@ -400,33 +433,53 @@ def runner_probes(with_kana):
 
     The fixture rewrites one reviewed exKana — the change a release declares — and names a
     fixture manifest through the worktree's own release_numbers.py, the way a release does.
+
+    Two windows the first version of these probes could not see (v1.35 round 3):
+
+      * CI mode with the change UNCOMMITTED and `--vocab-base HEAD` passes or fails the same
+        way whether or not the runner hands `--base` to the guard, because the guard's own
+        default IS HEAD. So the change is then committed and the commit before it is the base,
+        as CI sees a push: the tree equals HEAD, and a runner that dropped `--base` compares
+        HEAD with itself and goes green. Those probes fail it.
+      * Local mode used HEAD~1. A release's last commit is a version bump that touches no
+        corpus file, after which HEAD~1..tree is empty and the gate said VACUOUS for a release
+        carrying 20+ corrections. So a corpus-free commit goes on top and local mode must still
+        inspect, against release_numbers.BASELINE_REF.
     """
     failures = []
     fixture_rel = "fixture-corpus-manifest.json"
     declared = {"id": with_kana["id"], "rewrite": ["exKana"]}
     with _fixture_worktree() as (wt, tmp):
-        # The fixture is HEAD, so the "real" manifest is HEAD's — read from the fixture's own
-        # release_numbers.py before it is re-pointed, not from the working tree's.
-        m = re.search(r"^CORPUS_MANIFEST = (.*?)(\s+#.*)?$",
-                      (wt / "scripts/release_numbers.py").read_text(encoding="utf-8"), re.M)
-        real_path = ast.literal_eval(m.group(1)) if m else None
+        # The fixture is HEAD, so the "real" manifest and baseline are HEAD's — read from the
+        # fixture's own release_numbers.py before it is re-pointed, not from the working tree's.
+        real_path = _read_release_numbers(wt, "CORPUS_MANIFEST")
+        baseline = _read_release_numbers(wt, "BASELINE_REF")
+        if not baseline:
+            raise SystemExit("probe setup failed: the fixture's release_numbers.py has no "
+                             "BASELINE_REF, so local mode has no window to be probed in")
         real_entries = (json.loads((wt / real_path).read_text(encoding="utf-8"))["entries"]
                         if real_path else [])
-        target = wt / "Sources/VocabKit/Resources/n5.json"
+        rel = "Sources/VocabKit/Resources/n5.json"
+        target = wt / rel
         entries = json.loads(target.read_text(encoding="utf-8"))
         for e in entries:
             if e["id"] == with_kana["id"]:
                 e["exKana"] = e["exKana"] + "ん"
         target.write_text(json.dumps(entries, ensure_ascii=False), encoding="utf-8")
 
-        def case(name, must_fail, manifest_entries, point_at, extra, expect=()):
+        def case(name, must_fail, manifest_entries, point_at, extra, expect=(), code_wanted=None,
+                 baseline_at=baseline):
             if manifest_entries is not None:
                 (wt / fixture_rel).write_text(json.dumps(
                     {"reason": "runner probe", "entries": manifest_entries},
                     ensure_ascii=False), encoding="utf-8")
             _point_release_numbers_at(wt, point_at)
+            _set_release_numbers(wt, "BASELINE_REF", baseline_at)
             code, out = _run_runner(wt, tmp, extra)
-            ok = (code == 1) if must_fail else (code == 0)
+            wanted = code_wanted if code_wanted is not None else (1 if must_fail else 0)
+            ok = code == wanted
+            if not ok:
+                out += f"\n(exit {code}, wanted {wanted})"
             missing = [t for t in expect if t not in out]
             if ok and missing:
                 ok = False
@@ -445,14 +498,50 @@ def runner_probes(with_kana):
              expect=("exKana OVERWRITTEN",))
         case("CI mode, CORPUS_MANIFEST names a file that does not exist", True, None,
              "docs/measurements/no-such-manifest.json", ci, expect=("does not exist",))
-        # Local mode: no base, so the runner compares against HEAD~1 — the last commit's
-        # corpus change as well as the working tree. That window holds whatever the real
-        # release manifest declares, so the fixture manifest is the real one plus the fixture.
-        case("local mode, the rewrite declared (compared against HEAD~1)", False,
+        # Local mode: no base, so the runner compares against release_numbers.BASELINE_REF —
+        # this release's whole corpus change as well as the working tree. That window holds
+        # whatever the real release manifest declares, so the fixture manifest is the real one
+        # plus the fixture.
+        case("local mode, the rewrite declared (compared against BASELINE_REF)", False,
              real_entries + [declared], fixture_rel, [],
-             expect=("--base HEAD~1", "structural change declared"))
+             expect=(f"--base {baseline}", "structural change declared"))
         case("local mode, the same rewrite with its declaration dropped", True,
              real_entries, fixture_rel, [], expect=("exKana OVERWRITTEN",))
+
+        # The rewrite COMMITTED, as a push delivers it: the tree now equals HEAD.
+        before = subprocess.run(["git", "-C", str(wt), "rev-parse", "HEAD"],
+                                capture_output=True, text=True, check=True).stdout.strip()
+        _commit(wt, [rel], "fixture: the declared corpus rewrite")
+        pushed = ["--vocab-base", before]
+        case("CI mode, the rewrite committed, the base before it, declaration dropped "
+             "(fails only if --base reaches the guard)", True, [], fixture_rel, pushed,
+             expect=("exKana OVERWRITTEN", f"--base {before}"))
+        case("CI mode, the rewrite committed, the base before it, declared", False,
+             [declared], fixture_rel, pushed, expect=(f"--base {before}",))
+
+        # …and a release's closing version bump on top, touching no corpus file.
+        (wt / "fixture-version-bump.txt").write_text("1.35\n", encoding="utf-8")
+        head = _commit(wt, ["fixture-version-bump.txt"], "fixture: version bump")
+        case("local mode after a corpus-free version-bump commit, declared (not vacuous)",
+             False, real_entries + [declared], fixture_rel, [],
+             expect=(f"--base {baseline}", "structural change declared"))
+        case("local mode after a corpus-free version-bump commit, declaration dropped",
+             True, real_entries, fixture_rel, [], expect=("exKana OVERWRITTEN",))
+
+        # VACUOUS only when no level file differs from BASELINE_REF — and a change to another
+        # resource (the dictation exclusions) is not a corpus change for this guard.
+        case("local mode, BASELINE_REF = HEAD and a clean tree: vacuous", False,
+             real_entries + [declared], fixture_rel, [], code_wanted=3,
+             expect=("vacuous",), baseline_at=head)
+        excl = wt / "Sources/VocabKit/Resources/dictation-exclusions.json"
+        excl.write_text(excl.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+        case("local mode, BASELINE_REF = HEAD, only dictation-exclusions.json changed: vacuous",
+             False, real_entries + [declared], fixture_rel, [], code_wanted=3,
+             expect=("vacuous",), baseline_at=head)
+        case("local mode, BASELINE_REF names no commit", True, real_entries + [declared],
+             fixture_rel, [], expect=("is not a commit",), baseline_at="0" * 40)
+        case("local mode, BASELINE_REF = None", True, real_entries + [declared],
+             fixture_rel, [], expect=("cannot read BASELINE_REF",), baseline_at=None)
     return failures
 
 
@@ -473,8 +562,15 @@ def runner_pins():
     typed = re.findall(r"docs/measurements/[\w.-]*manifest[\w.-]*\.json", text)
     if typed:
         problems.append(f"the runner types a manifest path instead of reading it: {typed}")
+    # Local mode's window is the release, read from release_numbers.BASELINE_REF — not HEAD~1,
+    # which a corpus-free version-bump commit empties, and not a typed ref.
+    if "r.BASELINE_REF" not in text:
+        problems.append("local mode does not read BASELINE_REF from release_numbers.py")
+    if re.search(r'^\s*base="HEAD(~1)?"', text, re.M):
+        problems.append("local mode assigns a HEAD-relative base instead of BASELINE_REF")
     _report(not problems, True, "pin: every guard call in run_all_gates.sh carries "
-            "release_numbers.CORPUS_MANIFEST", "\n".join(problems), failures)
+            "release_numbers.CORPUS_MANIFEST, and local mode compares against "
+            "release_numbers.BASELINE_REF", "\n".join(problems), failures)
     return failures
 
 

@@ -5,8 +5,8 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 784,
- "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made. v1.35 released 1: n4-g386's exKana was corrected from なん to なに (何 before を), which is what instrument 1b had proven the voice says; re-measured on the corrected sentence, 1b (calibrated: 0 spurious decoy matches, 0 contradictions of instrument 1) confirms 何 = なに, and the なん render is not byte-identical. n2-b103 (金 corrected to かね) stays withheld: 1b proves the voice still says 私 = わたし, and it also says 金 = きん. v1.35 round 2 released 8 more: thirteen withheld sentences had 何 corrected from なん to なに (docs/measurements/v135-residue-manifest.json), nine of them the complaint '何 なん -> なに' instrument 1b had already proven. Re-measured on the corrected tokens (calibrated: 0 spurious byte matches in 26 decoys, 0 contradictions of instrument 1 in 39), 8 confirm 何 = なに and are released; n2-b884 confirms なに but still says 私 = わたし, so it stays withheld; the four whose v1.29 evidence was 'undecided' stay withheld because 1b is still silent on them.",
+ "excludedCount": 785,
+ "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made. v1.35 released 1: n4-g386's exKana was corrected from なん to なに (何 before を), which is what instrument 1b had proven the voice says; re-measured on the corrected sentence, 1b (calibrated: 0 spurious decoy matches, 0 contradictions of instrument 1) confirms 何 = なに, and the なん render is not byte-identical. n2-b103 (金 corrected to かね) stays withheld: 1b proves the voice still says 私 = わたし, and it also says 金 = きん. v1.35 round 2 released 8 more: thirteen withheld sentences had 何 corrected from なん to なに (docs/measurements/v135-residue-manifest.json), eight of them the complaint '何 なん -> なに' instrument 1b had already proven (the ninth, n2-b884, was withheld for 私 alone). Re-measured on the corrected tokens (calibrated: 0 spurious byte matches in 26 decoys, 0 contradictions of instrument 1 in 39), 8 confirm 何 = なに and are released; n2-b884 confirms なに but still says 私 = わたし, so it stays withheld; the four whose v1.29 evidence was 'undecided' stay withheld because 1b is still silent on them. v1.35 round 3 withheld 1: n5-g022 (今、何時ですか。) had been in the pool with exKana なんどき, a reading no instrument could question — Sudachi offers only いつ / なんどき for 何時, so the standard なんじ was never a candidate, and instrument 2 compared なんどき with いつ alone. Its exKana is corrected to なんじ; re-measured on the corrected tokens, calibrated 1b (0 spurious matches in 2 decoys, 0 contradictions of instrument 1 in 39) confirms 今 = いま and is silent on 何時, so the voice is not proven to say the corrected reading and the sentence is withheld. The comparative favours なんじ (span DTW 0.0273 against なんどき 0.0771), which is a lead, not a verdict.",
  "excluded": [
   {
    "id": "n1-b007",
@@ -69,7 +69,7 @@
    "id": "n1-b065",
    "exJP": "彼の親切には何か下心がありそうだ。",
    "exKana": "かれのしんせつにはなにかしたごころがありそうだ",
-   "heardInstead": "何 なん -> なに",
+   "heardInstead": "何 なん -> なに  (v1.29 instrument 2; the corpus has since been corrected to なに)",
    "evidence": "undecided (v1.35: exKana corrected 何 なん -> なに, the reading instrument 2 had named; instrument 1b re-measured on the corrected tokens is still silent — neither the なに nor the なん substitution renders byte-identical to the exJP audio (3b74712bc4cf vs be5bbac5694f / 504c49b2c46c) — so the voice is not proven to say the corrected reading, and the sentence stays withheld)"
   },
   {
@@ -1766,7 +1766,7 @@
    "id": "n1-g343",
    "exJP": "彼は何かよからぬことを企んでいる。",
    "exKana": "かれはなにかよからぬことをたくらんでいる",
-   "heardInstead": "何 なん -> なに",
+   "heardInstead": "何 なん -> なに  (v1.29 instrument 2; the corpus has since been corrected to なに)",
    "evidence": "undecided (v1.35: exKana corrected 何 なん -> なに, the reading instrument 2 had named; instrument 1b re-measured on the corrected tokens is still silent — neither the なに nor the なん substitution renders byte-identical to the exJP audio (360545f94f7c vs 4da233c8aa59 / b3d80d943205) — so the voice is not proven to say the corrected reading, and the sentence stays withheld)"
   },
   {
@@ -2004,7 +2004,7 @@
    "id": "n2-b1100",
    "exJP": "その件について何か心当たりはありますか。",
    "exKana": "そのけんについてなにかこころあたりはありますか",
-   "heardInstead": "何 なん -> なに",
+   "heardInstead": "何 なん -> なに  (v1.29 instrument 2; the corpus has since been corrected to なに)",
    "evidence": "undecided (v1.35: exKana corrected 何 なん -> なに, the reading instrument 2 had named; instrument 1b re-measured on the corrected tokens is still silent — neither the なに nor the なん substitution renders byte-identical to the exJP audio (e72f7868a610 vs 9a72876affe1 / d7f16df79a27) — so the voice is not proven to say the corrected reading, and the sentence stays withheld)"
   },
   {
@@ -3363,7 +3363,7 @@
    "id": "n3-b234",
    "exJP": "年の暮れは何かと忙しい。",
    "exKana": "としのくれはなにかといそがしい",
-   "heardInstead": "何 なん -> なに",
+   "heardInstead": "何 なん -> なに  (v1.29 instrument 2; the corpus has since been corrected to なに)",
    "evidence": "undecided (v1.35: exKana corrected 何 なん -> なに, the reading instrument 2 had named; instrument 1b re-measured on the corrected tokens is still silent — neither the なに nor the なん substitution renders byte-identical to the exJP audio (5f1d5499422a vs 3bafcdecf9ef / 7283ddc5c529) — so the voice is not proven to say the corrected reading, and the sentence stays withheld)"
   },
   {
@@ -5311,6 +5311,13 @@
    "exKana": "わたくしはがくせいです",
    "heardInstead": "私 わたくし -> わたし",
    "evidence": "proven (v1.29, instrument 1b)"
+  },
+  {
+   "id": "n5-g022",
+   "exJP": "今、何時ですか。",
+   "exKana": "いまなんじですか",
+   "heardInstead": "何時 なんどき -> なんじ  (no instrument heard this: the v1.35 round-2 data review found it; the corpus has since been corrected to なんじ)",
+   "evidence": "undecided (v1.35 round 3: exKana corrected 何時 なんどき -> なんじ. It had been in the dictation pool since v1.21 because no instrument could test なんじ: Sudachi's lookup offers only いつ / なんどき, so instrument 1 was silent and instrument 2 compared なんどき (0.1303) with いつ (0.1314) alone. Instrument 1b re-measured on the corrected tokens is silent on 何時 — neither なんじ (4f19f171322a) nor なんどき (2aa5dfeba8ef) renders byte-identical to the exJP audio (b0ef718b85a7) — so the voice is not proven to say the corrected reading, and the sentence is withheld. The comparative favours なんじ, span DTW 0.0273 against なんどき 0.0771: a lead, not a verdict)"
   },
   {
    "id": "n5-g024",
