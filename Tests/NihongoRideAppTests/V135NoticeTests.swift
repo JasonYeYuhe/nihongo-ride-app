@@ -8,9 +8,9 @@ import CustomTextKit
 import AppKit
 #endif
 
-/// v1.35 step 2 (`PLAN-V1.34` §F, the owner's decision of 2026-09-29): the add sheet's
-/// over-the-cap notice must reach the learner before the cut text is stored — at every Dynamic
-/// Type size, keyboard up or down, on every device, and with VoiceOver.
+/// v1.35 step 2 (`PLAN-V1.34` §F, the v1.35 owner's-decision addendum, 2026-09-29): the add
+/// sheet's over-the-cap notice must reach the learner before the cut text is stored — at every
+/// Dynamic Type size, keyboard up or down, on every device, and with VoiceOver.
 ///
 /// **What the 1.34 simulator re-run measured** (iPhone 17 Pro, 402 × 874pt, AX5, keyboard up,
 /// after a 230-sentence paste): the notice starts at y=406, 338pt wide, about 53pt semibold with
@@ -77,11 +77,11 @@ struct V135NoticeTests {
             .map { (text as NSString).substring(with: $0) }
     }
 
-    /// Whether `kept` ends inside line one and `dropped` (its first occurrence after `kept`) ends
-    /// by the end of line two. Nil when either number is not in the text at all, so a wording that
-    /// lost a number cannot pass as one that placed it well.
-    static func countsReadable(_ text: String, kept: Int, dropped: Int, width: CGFloat,
-                               language: String?) -> Bool? {
+    /// The line, counted from 1, in which `kept` ends and the line in which `dropped` (its first
+    /// occurrence after `kept`) ends, at the AX5 size. Nil when either number is not in the text
+    /// at all, so a wording that lost a number cannot pass as one that placed it well.
+    static func countLines(_ text: String, kept: Int, dropped: Int, width: CGFloat,
+                           language: String?) -> (kept: Int, dropped: Int)? {
         let ns = text as NSString
         let keptRange = ns.range(of: grouped(kept))
         guard keptRange.location != NSNotFound else { return nil }
@@ -89,10 +89,18 @@ struct V135NoticeTests {
         let droppedRange = ns.range(of: grouped(dropped), options: [], range: after)
         guard droppedRange.location != NSNotFound else { return nil }
         let lines = lineRanges(text, points: ax5HeaderPoints, width: width, language: language)
-        guard lines.count >= 1 else { return false }
-        let lineOneEnd = NSMaxRange(lines[0])
-        let lineTwoEnd = lines.count >= 2 ? NSMaxRange(lines[1]) : lineOneEnd
-        return NSMaxRange(keptRange) <= lineOneEnd && NSMaxRange(droppedRange) <= lineTwoEnd
+        func line(endingAt end: Int) -> Int {
+            (lines.firstIndex { end <= NSMaxRange($0) } ?? lines.count) + 1
+        }
+        return (line(endingAt: NSMaxRange(keptRange)), line(endingAt: NSMaxRange(droppedRange)))
+    }
+
+    /// Whether `kept` ends inside line one and `dropped` ends by the end of line two. Both halves
+    /// are needed, and the calibration below has a control that fails each one alone.
+    static func countsReadable(_ text: String, kept: Int, dropped: Int, width: CGFloat,
+                               language: String?) -> Bool? {
+        countLines(text, kept: kept, dropped: dropped, width: width, language: language)
+            .map { $0.kept == 1 && $0.dropped <= 2 }
     }
 
     /// The control first: the 1.34 strings, laid out by this instrument at 53pt semibold in 338pt,
@@ -117,6 +125,25 @@ struct V135NoticeTests {
                                     kept: 200, dropped: 30, width: 338, language: nil) == false)
         #expect(Self.countsReadable("Keeps 20,000, cuts 5,308 characters.",
                                     kept: 20_000, dropped: 5_308, width: 338, language: nil) == false)
+        // Both of those fail BOTH halves — the kept count is off line one and the dropped count
+        // past line two — so a check that forgot either half would still say no to them. One
+        // control for each half alone, measured (2026-09-29) the same in both columns:
+        // "Keeps 200 " / "sentences, " / "cuts 30." — 200 in line one, 30 in line three — the
+        // owner's candidate in its sentence form, with the unit after the kept count; and
+        // "Only the first " / "200 fit, 30 " / "don't." — both counts in line two.
+        let controls: [(text: String, lines: (kept: Int, dropped: Int))] = [
+            ("Keeps 200 sentences, cuts 30.", (1, 3)),
+            ("Only the first 200 fit, 30 don't.", (2, 2)),
+        ]
+        for width in Self.columns {
+            for control in controls {
+                let placed = Self.countLines(control.text, kept: 200, dropped: 30, width: width, language: nil)
+                #expect(placed?.kept == control.lines.kept && placed?.dropped == control.lines.dropped,
+                        Comment(rawValue: "\(width)pt: \(Self.lineTexts(control.text, points: Self.ax5HeaderPoints, width: width, language: nil))"))
+                #expect(Self.countsReadable(control.text, kept: 200, dropped: 30, width: width, language: nil) == false,
+                        Comment(rawValue: "the check passed \"\(control.text)\" at \(width)pt"))
+            }
+        }
     }
 
     /// Every dropped count the plan names, both units, both languages, both columns — and, for
@@ -166,19 +193,40 @@ struct V135NoticeTests {
 
         let sentences = CustomText.Truncation.sentences(kept: 200, dropped: 30)
         #expect(CustomTextAddView.confirmationMessage(sentences, zh: false)
-                == "Add keeps the first 200 sentences and leaves out the last 30. You can add those as another text.")
+                == "Add keeps the first 200 sentences and leaves out the last 30. You can add the rest as further texts.")
         #expect(CustomTextAddView.confirmationMessage(sentences, zh: true)
-                == "添加后只保留前 200 句,最后 30 句不会保存。可以另外添加为一篇文本。")
+                == "添加后只保留前 200 句,最后 30 句不会保存。其余部分可以另外添加。")
         let characters = CustomText.Truncation.characters(kept: 20_000, dropped: 5_308)
         #expect(CustomTextAddView.confirmationMessage(characters, zh: false)
-                == "Add keeps the first 20,000 characters and leaves out the last 5,308. You can add those as another text.")
+                == "Add keeps the first 20,000 characters and leaves out the last 5,308. You can add the rest as further texts.")
         #expect(CustomTextAddView.confirmationMessage(characters, zh: true)
-                == "添加后只保留前 20,000 个字符,最后 5,308 个不会保存。可以另外添加为一篇文本。")
+                == "添加后只保留前 20,000 个字符,最后 5,308 个不会保存。其余部分可以另外添加。")
+        // The singular, in both units: exactly one left out, which one more text always holds.
         let one = CustomText.Truncation.sentences(kept: 200, dropped: 1)
         #expect(CustomTextAddView.confirmationMessage(one, zh: false)
                 == "Add keeps the first 200 sentences and leaves out the last one. You can add it as another text.")
         #expect(CustomTextAddView.confirmationMessage(one, zh: true)
-                == "添加后只保留前 200 句,最后 1 句不会保存。可以另外添加为一篇文本。")
+                == "添加后只保留前 200 句,最后 1 句不会保存。其余部分可以另外添加。")
+        let oneCharacter = CustomText.Truncation.characters(kept: 20_000, dropped: 1)
+        #expect(CustomTextAddView.confirmationMessage(oneCharacter, zh: false)
+                == "Add keeps the first 20,000 characters and leaves out the last one. You can add it as another text.")
+        #expect(CustomTextAddView.confirmationMessage(oneCharacter, zh: true)
+                == "添加后只保留前 20,000 个字符,最后 1 个不会保存。其余部分可以另外添加。")
+
+        // More left out than one text holds (200 sentences, 20,000 characters): the first draft
+        // said "You can add those as another text." here, which was false — 250 sentences are two
+        // more texts and 979,999 characters are 49. Nothing in the message may say "another".
+        let beyondOneText: [CustomText.Truncation] = [
+            .sentences(kept: 200, dropped: 250), .characters(kept: 20_000, dropped: 979_999),
+        ]
+        for cut in beyondOneText {
+            let english = CustomTextAddView.confirmationMessage(cut, zh: false)
+            #expect(!english.contains("another") && english.hasSuffix("You can add the rest as further texts."),
+                    Comment(rawValue: english))
+            let chinese = CustomTextAddView.confirmationMessage(cut, zh: true)
+            #expect(!chinese.contains("一篇") && chinese.hasSuffix("其余部分可以另外添加。"),
+                    Comment(rawValue: chinese))
+        }
     }
 
     /// **Replaces 1.34's "Add's action calls addCustomText with the editor's text, under no

@@ -148,6 +148,29 @@ struct CustomTextTruncationTests {
         #expect(text.sentences.last?.source == String(repeating: "あ", count: 99) + "。")
     }
 
+    /// Every other fixture past 20,000 characters repeats one sentence, so the 199th, 200th and
+    /// 201st are the same text and a comparison of the wrong pair — the paste's 200th against the
+    /// stored 199th, say — gets the right answer by accident (measured 2026-09-29: with
+    /// `stored.sentences[maxSentences - 2]` in place of `.last`, every test above stayed green).
+    /// Here every sentence is different: only the paste's 200th compared with the stored 200th
+    /// finds them equal, so only that comparison counts this paste in sentences.
+    @Test("205 distinct sentences over 20,000 characters: only the 200th against the 200th says sentences")
+    func distinctSentencesPinTheComparedPair() {
+        // Sentence i is 99 of the CJK ideograph U+4E00 + i and a 。 (100). 205 of them: 20,500
+        // characters. The first 20,000 are sentences 0…199, whole; 200…204 are the 5 past both caps.
+        let distinct = (0..<205).map { i in
+            String(repeating: Character(UnicodeScalar(0x4E00 + i)!), count: 99) + "。"
+        }
+        let source = distinct.joined()
+        #expect(source.count == 20_500)
+        let whole = CustomTextSplitter.sentences(in: source)
+        #expect(whole == distinct, "the fixture: the splitter finds the 205 sentences it was built from")
+        #expect(Set(whole).count == 205, "the fixture: no two sentences are the same text")
+        #expect(CustomText.truncation(of: source) == .sentences(kept: 200, dropped: 5))
+        let text = CustomText.make(title: "t", source: source, now: t0)
+        #expect(text.sentences.map(\.source) == Array(distinct.prefix(200)))
+    }
+
     @Test("200,000 characters of 40-character sentences: 4,800 dropped")
     func aVeryLongPaste() {
         let source = Self.sentences(5_000, length: 40)

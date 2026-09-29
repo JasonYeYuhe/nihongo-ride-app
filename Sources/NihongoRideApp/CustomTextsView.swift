@@ -206,13 +206,13 @@ struct CustomTextAddView: View {
                     // The simulator re-run then showed the cost at AX5 with the keyboard up:
                     // two lines of the notice readable, and the English one's dropped count
                     // under the keyboard.
-                    // The v1.35 decision (§F, 2026-09-29) is that the learner must meet the cut
-                    // before the cut text is stored at every size, keyboard up or down, on any
-                    // device — which no layout guarantees (a Form scrolled away, a smaller
-                    // phone, a larger size), and a confirmation does. Counted fresh here and not
-                    // read from `truncation`, so the question is about the text being added
-                    // even if the notice's state were stale. Add stays enabled: a cut paste is
-                    // still the learner's to add.
+                    // The v1.35 decision (`PLAN-V1.34` §F, the v1.35 owner's-decision addendum,
+                    // 2026-09-29) is that the learner must meet the cut before the cut text is
+                    // stored at every size, keyboard up or down, on any device — which no layout
+                    // guarantees (a Form scrolled away, a smaller phone, a larger size), and a
+                    // confirmation does. Counted fresh here and not read from `truncation`, so
+                    // the question is about the text being added even if the notice's state
+                    // were stale. Add stays enabled: a cut paste is still the learner's to add.
                     Button(zh ? "添加" : "Add") {
                         if let cut = CustomText.truncation(of: source) { confirming = cut }
                         else { commit() }
@@ -257,6 +257,21 @@ struct CustomTextAddView: View {
     /// confirmation on Add says it in full. Chinese says 字 where the confirmation says 个字符:
     /// with 个字符, line two was "个字" alone at 338pt and a dropped count of 99,999 went to line
     /// three.
+    ///
+    /// **放不下 comes after the dropped count, and so it can fall to line three** (measured
+    /// 2026-09-29, the same instrument, 72 Chinese layouts: 2 columns × 2 units × 6 counts × no
+    /// language / zh-Hans / ja). In this wording 放不下 is wholly in lines one and two in 9 of the
+    /// 72, and usually split ("句,30 句放不" / "下。"). Put before the count — "保留 20,000 字,放不下
+    /// 999,999 字。" — it is in line two in all 72, and the dropped count falls to line three in
+    /// 27: 20,000 kept with 1,000 or more dropped at 338pt; at 311pt, 200 kept with 99,999 or more
+    /// and 20,000 kept with 999 or more. At 999,999 no order of these words has both: "放不下
+    /// 999,999" alone is 378pt (374pt under ja), wider than either column, and line one's "保留
+    /// 20,000" is 290pt of 311, with no room for the verb's 150. Two other wordings did worse:
+    /// "保留 N 句,另 M 句放不下。" had the verb in two lines in 7 of 72 and the dropped count
+    /// past them in 5; "放得下 N 句,M 句放不下。" had the verb in 4 and pushed the kept count off
+    /// line one in 30 ("放得下 " alone, then "20,000"). So the wording stays: the counts are what
+    /// the two lines must carry, and the confirmation on Add says what is left out, in a full
+    /// sentence, before anything is stored.
     static func truncationNotice(_ truncation: CustomText.Truncation, zh: Bool) -> String {
         switch truncation {
         case let .sentences(kept, dropped):
@@ -278,16 +293,25 @@ struct CustomTextAddView: View {
 
     /// What Add is about to do, in full: both counts with their unit, and what the learner can do
     /// about the rest.
+    ///
+    /// **The remedy is plural unless one thing is left out.** The first draft said "You can add
+    /// those as another text." / "可以另外添加为一篇文本。" at every count, and one text holds at
+    /// most 200 sentences and 20,000 characters: 450 sentences leave out 250, which is two more
+    /// texts, and a 999,999-character paste leaves out 979,999, which is 49. "Further texts" /
+    /// "其余部分可以另外添加" is true at every count; "it as another text" is kept for exactly one
+    /// sentence or one character, which always fits one. (The store keeps 50 texts and drops the
+    /// oldest past that, `CustomTextStore.add` — the rest can still be added; not all of a
+    /// remainder over 50 texts can be kept at once, and the sentence does not say it can.)
     static func confirmationMessage(_ truncation: CustomText.Truncation, zh: Bool) -> String {
         switch truncation {
         case let .sentences(kept, dropped):
             return zh
-                ? "添加后只保留前 \(grouped(kept)) 句,最后 \(grouped(dropped)) 句不会保存。可以另外添加为一篇文本。"
-                : "Add keeps the first \(grouped(kept)) sentences and leaves out \(dropped == 1 ? "the last one" : "the last \(grouped(dropped))"). You can add \(dropped == 1 ? "it" : "those") as another text."
+                ? "添加后只保留前 \(grouped(kept)) 句,最后 \(grouped(dropped)) 句不会保存。其余部分可以另外添加。"
+                : "Add keeps the first \(grouped(kept)) sentences and leaves out \(dropped == 1 ? "the last one. You can add it as another text." : "the last \(grouped(dropped)). You can add the rest as further texts.")"
         case let .characters(kept, dropped):
             return zh
-                ? "添加后只保留前 \(grouped(kept)) 个字符,最后 \(grouped(dropped)) 个不会保存。可以另外添加为一篇文本。"
-                : "Add keeps the first \(grouped(kept)) characters and leaves out \(dropped == 1 ? "the last one" : "the last \(grouped(dropped))"). You can add \(dropped == 1 ? "it" : "those") as another text."
+                ? "添加后只保留前 \(grouped(kept)) 个字符,最后 \(grouped(dropped)) 个不会保存。其余部分可以另外添加。"
+                : "Add keeps the first \(grouped(kept)) characters and leaves out \(dropped == 1 ? "the last one. You can add it as another text." : "the last \(grouped(dropped)). You can add the rest as further texts.")"
         }
     }
 
