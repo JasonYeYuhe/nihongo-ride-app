@@ -38,13 +38,14 @@ final class WordListSearchFlowTests: XCTestCase {
         element.tap()
     }
 
+    @MainActor
     private func dumpOnFailure(_ app: XCUIApplication, _ name: String) -> String {
         let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         shot.lifetime = .keepAlways
         shot.name = name
         add(shot)
         return (app.buttons.allElementsBoundByIndex.map { "\($0.identifier)=\($0.label)" }
-                + app.staticTexts.allElementsBoundByIndex.map(\.label)).joined(separator: " | ")
+                + app.staticTexts.allElementsBoundByIndex.map { $0.label }).joined(separator: " | ")
     }
 
     @MainActor
@@ -68,7 +69,7 @@ final class WordListSearchFlowTests: XCTestCase {
         name.tap()
         name.typeText("B6 search")
         let create = alert.buttons.matching(NSPredicate(format: "label IN {'Create', '创建'}")).firstMatch
-        XCTAssertTrue(create.exists, "no Create button: \(alert.buttons.allElementsBoundByIndex.map(\.label))")
+        XCTAssertTrue(create.exists, "no Create button: \(alert.buttons.allElementsBoundByIndex.map { $0.label })")
         create.tap()
 
         // Creating a list opens it.
