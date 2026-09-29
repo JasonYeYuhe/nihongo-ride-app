@@ -263,26 +263,23 @@ struct V134B3HUDSpokenTests {
         let file = try #require(try CallSiteScanner.shippedSources.get()
             .first { $0.path == "Sources/NihongoRideApp/GameView.swift" })
         let hud = try #require(file.typeBodies(named: "HUDBar").first)
-        func pill(_ icon: String) -> String? {
-            let calls = file.calls(named: "stat").filter { hud.contains($0.nameOffset) && $0.receiver.isEmpty }
+        /// Every `icon` pill in HUDBar — v1.35: today's row's and the compressed rows', two of each —
+        /// as one argument list per pill; each must pass the checks below.
+        func pills(_ icon: String) -> [String] {
+            file.calls(named: "stat").filter { hud.contains($0.nameOffset) && $0.receiver.isEmpty }
                 .compactMap { $0.arguments }
                 .map { V133GRideAndDrillLayoutTests.collapsed(String(decoding: file.codeWithStrings[$0], as: UTF8.self)) }
                 .filter { $0.hasPrefix("icon: \"\(icon)\"") }
-            return calls.count == 1 ? calls[0] : nil
         }
-        /// `argument` is one whole argument: followed by the next one or by the end of the call.
-        func passes(_ arguments: String?, _ argument: String) -> Bool {
-            guard let arguments else { return false }
-            return arguments.hasSuffix(", " + argument) || arguments.contains(", " + argument + ", ")
+        /// `argument` is one whole argument of every pill: followed by the next one or by the end of the call.
+        func passes(_ arguments: [String], _ argument: String) -> Bool {
+            arguments.count == 2 && arguments.allSatisfy { $0.hasSuffix(", " + argument) || $0.contains(", " + argument + ", ") }
         }
-        let combo = try #require(pill("flame.fill"), "HUDBar has no single combo pill")
-        let distance = try #require(pill("bicycle"), "HUDBar has no single distance pill")
-        let accuracy = try #require(pill("scope"), "HUDBar has no single accuracy pill")
-        let speed = try #require(pill("speedometer"), "HUDBar has no single speed pill")
+        let combo = pills("flame.fill"), distance = pills("bicycle"), accuracy = pills("scope"), speed = pills("speedometer")
         #expect(passes(combo, "spoken: RideHUDSpoken.comboWords(session.combo, zh: zh)"), "combo pill: \(combo)")
         #expect(passes(distance, "spoken: RideHUDSpoken.distanceWords(session.distanceMeters, zh: zh)"), "distance pill: \(distance)")
         #expect(passes(accuracy, "value: RideHUDSpoken.accuracyWords(session.accuracy)"), "accuracy pill: \(accuracy)")
-        #expect(!accuracy.contains("spoken:"), "the accuracy pill speaks something other than what it draws: \(accuracy)")
+        #expect(!accuracy.contains { $0.contains("spoken:") }, "the accuracy pill speaks something other than what it draws: \(accuracy)")
         #expect(passes(speed, "value: RideHUDSpoken.speedValue(wpm)"), "speed pill: \(speed)")
         #expect(passes(speed, "spoken: RideHUDSpoken.speedWords(wpm, zh: zh)"), "speed pill: \(speed)")
 
@@ -363,7 +360,10 @@ struct V134B3HUDSpokenTests {
     func progressPillSpeaksTheSuffix() throws {
         let files = try CallSiteScanner.shippedSources.get()
         let file = try #require(files.first { $0.path == "Sources/NihongoRideApp/GameView.swift" })
-        let hud = try #require(file.typeBodies(named: "HUDBar").first, "GameView has no HUDBar")
+        let hudBody = try #require(file.typeBodies(named: "HUDBar").first, "GameView has no HUDBar")
+        // v1.35: today's row's progress pill. The compressed rows' reads `RideHUDSpoken.shedValues`
+        // (`V135HUDRowTests.compressedPillsMirrorTodaysRow`).
+        let hud = try #require(file.functions(named: "row").first { hudBody.contains($0.keywordOffset) }?.body)
         let progress = file.calls(named: "stat").filter { hud.contains($0.nameOffset) && $0.receiver.isEmpty }
             .filter { call in
                 call.arguments.map { String(decoding: file.codeWithStrings[$0], as: UTF8.self) }?
@@ -405,7 +405,7 @@ struct V134B3HUDSpokenTests {
         // The last hop (review round 3): `stat` hands `spoken:` to VoiceOver. Its one
         // `.accessibilityValue`, comment-blanked, exactly — `.accessibilityValue(value)` would
         // compile, draw the same pill, and drop every spoken value above.
-        let stats = file.functions(named: "stat").filter { hud.contains($0.keywordOffset) }
+        let stats = file.functions(named: "stat").filter { hudBody.contains($0.keywordOffset) }
         let statBody = try #require(stats.count == 1 ? stats.first?.body : nil, "HUDBar declares \(stats.count) stat")
         let statCode = V133GRideAndDrillLayoutTests.collapsed(String(decoding: file.codeWithStrings[statBody], as: UTF8.self))
         let values = statCode.components(separatedBy: ".accessibilityValue(").count - 1

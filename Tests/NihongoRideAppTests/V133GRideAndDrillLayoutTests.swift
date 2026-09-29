@@ -114,20 +114,22 @@ struct V133GRideAndDrillLayoutTests {
         let game = Self.codeLines(try Self.source("GameView.swift"))
         #expect(game.contains("private var scoreIsTheRide: Bool { session.mode == .timeAttack }"),
                 "GameView no longer derives scoreIsTheRide from Time Attack")
+        // v1.35: two of each — today's row's, then the compressed rows' (`V135HUDRowTests` pins theirs
+        // against today's); the first is today's, behind 1.33's rule.
         let combo = game.indices.filter { game[$0].hasPrefix("stat(icon: \"flame.fill\"") }
-        #expect(combo.count == 1, "GameView: expected one combo pill, found \(combo.count)")
-        for index in combo {
+        #expect(combo.count == 2, "GameView: expected two combo pills, found \(combo.count)")
+        for (index, gate) in zip(combo, ["if RideHUDLayout.shows(.combo, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {",
+                                         "if shows(.combo) {"]) {
             let previous = game[..<index].last { !$0.isEmpty } ?? ""
-            #expect(previous == "if RideHUDLayout.shows(.combo, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {",
-                    "GameView:\(index + 1): the combo pill is not behind RideHUDLayout.shows(.combo, …)")
+            #expect(previous == gate, "GameView:\(index + 1): the combo pill is behind `\(previous)`, not `\(gate)`")
         }
         // Round 3: the level capsule is the pill Time Attack's second row gives up.
         let level = game.indices.filter { game[$0] == "Text(session.currentLevelLabel)" }
-        #expect(level.count == 1, "GameView: expected one level capsule, found \(level.count)")
-        for index in level {
+        #expect(level.count == 2, "GameView: expected two level capsules, found \(level.count)")
+        for (index, gate) in zip(level, ["if RideHUDLayout.shows(.level, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {",
+                                         "if shows(.level) {"]) {
             let previous = game[..<index].last { !$0.isEmpty } ?? ""
-            #expect(previous == "if RideHUDLayout.shows(.level, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {",
-                    "GameView:\(index + 1): the level capsule is not behind RideHUDLayout.shows(.level, …)")
+            #expect(previous == gate, "GameView:\(index + 1): the level capsule is behind `\(previous)`, not `\(gate)`")
         }
     }
 
@@ -138,12 +140,13 @@ struct V133GRideAndDrillLayoutTests {
         for file in ["GameView.swift", "ConjugationGameView.swift"] {
             let lines = Self.codeLines(try Self.source(file))
             let scorePills = lines.indices.filter { lines[$0].hasPrefix("stat(icon: \"star.fill\"") }
-            #expect(scorePills.count == 1, "\(file): expected one score pill, found \(scorePills.count)")
-            for index in scorePills {
+            // v1.35: the ride has two — today's row's, behind the rule, and the compressed rows'.
+            let gates = file == "GameView.swift"
+                ? ["if RideHUDLayout.shows(.score, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {", "if shows(.score) {"]
+                : ["if RideHUDLayout.showsScore(typeSize) {"]
+            #expect(scorePills.count == gates.count, "\(file): expected \(gates.count) score pill(s), found \(scorePills.count)")
+            for (index, expected) in zip(scorePills, gates) {
                 let previous = lines[..<index].last { !$0.isEmpty } ?? ""
-                let expected = file == "GameView.swift"
-                    ? "if RideHUDLayout.shows(.score, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {"
-                    : "if RideHUDLayout.showsScore(typeSize) {"
                 #expect(previous == expected,
                         "\(file):\(index + 1): the score pill is not behind `\(expected)`")
             }
@@ -176,11 +179,15 @@ struct V133GRideAndDrillLayoutTests {
                                ".fixedSize(horizontal: typeSize.isAccessibilitySize, vertical: false)",
                                ".reservingIdealWidth(for: reserving) { Text($0).monospacedDigit() }"],
                 "the HUD value's modifiers are \(valueChain)")
-        let levelChain = Array(lines[(levelLine + 1)...].prefix { $0.hasPrefix(".") })
-        #expect(levelChain.contains(".lineLimit(typeSize.isAccessibilitySize ? 1 : nil)"), "\(levelChain)")
-        #expect(levelChain.contains(".minimumScaleFactor(typeSize.isAccessibilitySize ? 0.7 : 1)"), "\(levelChain)")
-        #expect(!levelChain.contains { $0.hasPrefix(".lineLimit(1") || $0.hasPrefix(".minimumScaleFactor(0.") || $0.hasPrefix(".fixedSize(") },
-                "the level capsule has an unconditional limit again: \(levelChain)")
+        // v1.35: every level capsule — today's row's and the compressed rows'.
+        _ = levelLine
+        for capsule in lines.indices where lines[capsule] == "Text(session.currentLevelLabel)" {
+            let levelChain = Array(lines[(capsule + 1)...].prefix { $0.hasPrefix(".") })
+            #expect(levelChain.contains(".lineLimit(typeSize.isAccessibilitySize ? 1 : nil)"), "\(levelChain)")
+            #expect(levelChain.contains(".minimumScaleFactor(typeSize.isAccessibilitySize ? 0.7 : 1)"), "\(levelChain)")
+            #expect(!levelChain.contains { $0.hasPrefix(".lineLimit(1") || $0.hasPrefix(".minimumScaleFactor(0.") || $0.hasPrefix(".fixedSize(") },
+                    "the level capsule has an unconditional limit again: \(levelChain)")
+        }
     }
 
     #if canImport(AppKit)
@@ -279,7 +286,12 @@ struct V133GRideAndDrillLayoutTests {
     func informationalPillsFollowThePhoneAtAccessibilitySizes() throws {
         let file = try #require(try CallSiteScanner.shippedSources.get()
             .first { $0.path == "Sources/NihongoRideApp/GameView.swift" })
-        let hud = try #require(file.typeBodies(named: "HUDBar").first, "GameView has no HUDBar")
+        let hudBody = try #require(file.typeBodies(named: "HUDBar").first, "GameView has no HUDBar")
+        // v1.35: today's row, `row(fallback:)`. The compressed rows gate every pill on
+        // `RideHUDRungs` instead, and draw no informational pill at these sizes
+        // (`V135HUDRowTests.offeredRows`, `compressedPillsMirrorTodaysRow`).
+        let hud = try #require(file.functions(named: "row").first { hudBody.contains($0.keywordOffset) }?.body,
+                               "HUDBar has no row(fallback:)")
         let informational = ["bicycle", "scope", "speedometer"]
         var icons: [String] = []
         for call in file.calls(named: "stat") where hud.contains(call.nameOffset) && call.receiver.isEmpty {
@@ -343,32 +355,47 @@ struct V133GRideAndDrillLayoutTests {
         let file = try #require(try CallSiteScanner.shippedSources.get()
             .first { $0.path == "Sources/NihongoRideApp/GameView.swift" })
         let hud = try #require(file.typeBodies(named: "HUDBar").first, "GameView has no HUDBar")
+        // v1.35: three `ViewThatFits` — a phone's at these sizes (round 3's, unchanged), an iPad's
+        // at them (round 3's two rows, then the last rung), and an iPad's and a Mac's below them (the
+        // ladder); a phone below them has the one row and no `ViewThatFits`. The whole body is pinned
+        // against `RideHUDRungs.offered` in `V135HUDRowTests.bodyIsTheTable`; this keeps round 3's
+        // own shapes.
         let fits = file.calls(named: "ViewThatFits").filter { hud.contains($0.nameOffset) }
-        #expect(fits.count == 1, "HUDBar has \(fits.count) ViewThatFits")
+        #expect(fits.count == 3, "HUDBar has \(fits.count) ViewThatFits")
         let rows = file.calls(named: "row").filter { hud.contains($0.nameOffset) && $0.receiver.isEmpty }
         let arguments = rows.map { call in call.arguments.map { Self.collapsed(file.text($0)) } ?? "" }
-        #expect(arguments == ["fallback: false", "fallback: true", "fallback: false"], "HUDBar builds its rows as \(arguments)")
-        guard let fit = fits.first, rows.count == 3 else { return }
+        #expect(arguments == ["fallback: false", "fallback: true", "fallback: false", "fallback: true", "fallback: false", "fallback: false"],
+                "HUDBar builds its rows as \(arguments)")
+        guard fits.count == 3, rows.count == 6 else { return }
 
-        #expect(fit.arguments.map { Self.collapsed(file.text($0)) } == "in: .horizontal")
-        let accessible = try #require(file.innermostBlock(containing: fit.nameOffset, within: hud))
+        for fit in fits {
+            #expect(fit.arguments.map { Self.collapsed(file.text($0)) } == "in: .horizontal")
+        }
+        let phone = try #require(file.innermostBlock(containing: fits[0].nameOffset, within: hud))
+        #expect(Self.blockHead(phone, in: file) == "if narrow", "the phone's ViewThatFits is behind `\(Self.blockHead(phone, in: file))`")
+        let accessible = try #require(file.innermostBlock(containing: Self.blockHeadStart(phone, in: file), within: hud))
         #expect(Self.blockHead(accessible, in: file) == "if typeSize.isAccessibilitySize",
                 "ViewThatFits is behind `\(Self.blockHead(accessible, in: file))`")
-        let children = fit.closures.map { Self.collapsed(file.text($0)) }
-        #expect(children == ["{ row(fallback: false) row(fallback: true) }"], "ViewThatFits is offered \(children)")
+        let children = fits.map { fit in fit.closures.map { Self.collapsed(file.text($0)) } }
+        #expect(children[0] == ["{ row(fallback: false) row(fallback: true) }"], "a phone's ViewThatFits is offered \(children[0])")
+        #expect(children[1] == ["{ row(fallback: false) row(fallback: true) compressed(rung: 6) }"],
+                "an iPad's ViewThatFits at the accessibility sizes is offered \(children[1])")
 
-        let below = try #require(file.innermostBlock(containing: rows[2].nameOffset, within: hud))
-        #expect(Self.blockHead(below, in: file) == "} else" && file.line(of: accessible.upperBound - 1) == file.line(of: below.lowerBound),
-                "the one-row branch is not the else of `if typeSize.isAccessibilitySize`")
+        let below = try #require(file.innermostBlock(containing: rows[4].nameOffset, within: hud))
+        #expect(Self.blockHead(below, in: file) == "} else if narrow" && file.line(of: accessible.upperBound - 1) == file.line(of: below.lowerBound),
+                "the one-row branch is not a phone's, after `if typeSize.isAccessibilitySize`")
         #expect(Self.collapsed(file.text(below)) == "{ row(fallback: false) }", "below the accessibility sizes: \(file.text(below))")
 
-        // `row` is the whole row: every pill and the pause button are built inside it.
+        // `row` is the whole of today's row: every pill and the pause button are built inside it, and
+        // the compressed rows build their own (v1.35) — seven each, nowhere else.
         let rowFunctions = file.functions(named: "row").filter { hud.contains($0.keywordOffset) }
         #expect(rowFunctions.count == 1, "HUDBar declares \(rowFunctions.count) row function(s)")
-        if let body = rowFunctions.first?.body {
+        let compressed = file.functions(named: "compressed").filter { hud.contains($0.keywordOffset) }.first?.body
+        if let body = rowFunctions.first?.body, let compressed {
             let parts = (file.calls(named: "stat") + file.calls(named: "Button")).filter { hud.contains($0.nameOffset) }
-            #expect(parts.count == 7 && parts.allSatisfy { body.contains($0.nameOffset) },
-                    "a pill or the pause button is built outside row(fallback:)")
+            #expect(parts.count == 14 && parts.filter { body.contains($0.nameOffset) }.count == 7
+                    && parts.filter { compressed.contains($0.nameOffset) }.count == 7,
+                    "a pill or the pause button is built outside row(fallback:) and compressed(rung:)")
 
             let handedOn = try NSRegularExpression(pattern: #"\bfallback:\s*fallback\b(?=\s*[,)])"#)
             let text = file.text(body)
@@ -568,8 +595,9 @@ struct V133GRideAndDrillLayoutTests {
             #expect(arguments.contains("value: RideHUDLayout.comboValue(session.combo),") && arguments.hasSuffix("reserving: combos"),
                     "the combo pill is built as stat(\(arguments))")
         }
-        #expect(file.calls(named: "reservingIdealWidth").filter { hud.contains($0.nameOffset) }.count == 2,
-                "HUDBar reserves somewhere other than the level capsule and the pill value")
+        // Two in today's row (the capsule's, `stat`'s value) and the compressed rows' level capsule (v1.35).
+        #expect(file.calls(named: "reservingIdealWidth").filter { hud.contains($0.nameOffset) }.count == 3,
+                "HUDBar reserves somewhere other than the level capsules and the pill value")
     }
 
     #if canImport(AppKit)

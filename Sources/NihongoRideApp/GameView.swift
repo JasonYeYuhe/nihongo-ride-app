@@ -22,6 +22,13 @@ struct GameView: View {
     @State private var addToListsID: String?
     private let ticker = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
 
+    /// The ride screen's padding, on every side, so also what the HUD row's width is short of the
+    /// window's. A function rather than the literal it was so the HUD's hosted tests
+    /// (`V135HUDRowTests`) lay the row out in the width this screen gives it, not in a copy.
+    static func padding(phone: Bool, keyboardUp: Bool) -> CGFloat {
+        phone ? (keyboardUp ? 10 : 16) : (keyboardUp ? 14 : 32)
+    }
+
     var body: some View {
         if let session = model.session {
             play(session)
@@ -56,7 +63,7 @@ struct GameView: View {
                         controls
                     }
                 }
-                .padding(isPhoneIdiom ? (keyboardUp ? 10 : 16) : (keyboardUp ? 14 : 32))
+                .padding(Self.padding(phone: isPhoneIdiom, keyboardUp: keyboardUp))
             }
             .blur(radius: isPaused ? 8 : 0)
             .summonKeyboardOnTap()
@@ -243,7 +250,9 @@ struct GameView: View {
 
 // MARK: - HUD
 
-private struct HUDBar: View {
+/// Internal, not private, so `V135HUDRowTests` can host it and each row it offers `ViewThatFits`
+/// (`row(fallback:)`, `compressed(rung:)`) in an `NSHostingView`. (v1.35)
+struct HUDBar: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     let session: GameSession
     let language: String
@@ -300,20 +309,56 @@ private struct HUDBar: View {
         // measured in round 3 — which costs nothing here: this view holds no state, no appearance
         // hook and no animation. Where VoiceOver focus goes if it sits on a pill at that moment is
         // not measured. `RideHUDLayout` has the measurements. (v1.33 pre-submission review, round 4)
+        //
+        // **v1.35: an iPad or a Mac below the accessibility sizes gets a ladder too.** 1.32's row,
+        // kept there by round 1, wraps where it does not fit — "80" over "m" on an iPad mini in
+        // portrait — and of 8,384 iPad cells hosted at the default size (16 ride states, windows
+        // 320–1366pt every 4pt, keyboard up and down) it wrapped in 1,526 and put the pause button
+        // past its width in 2,250. So `ViewThatFits` is offered, in order: today's row, unchanged —
+        // the same function, so wherever it fits it is today's row and not a copy of it; the same
+        // seven pills and pause in `HUDRowLayout`, which closes the row's gaps down to 6pt before
+        // anything goes; then rows that each shed one more pill, in `RideHUDRungs.shedOrder`. The
+        // compressed rows reserve the widest value a ride can show where a value can shrink
+        // (`RideHUDRungs`), so once today's row is left the ladder only moves down; today's row
+        // reserves nothing (it is today's), so a ride can step between it and the compressed row
+        // of the same pills, which differ only in the gap at the row's centre (`V135HUDRowTests`
+        // measures how often, and how far anything moves). At the accessibility sizes an iPad keeps
+        // round 3's two rows and then sheds the last pill it can: in 149 of 8,384 AX1 cells, windows
+        // of 320–424pt, their pause button was up to 107pt past the row's width. Phones are offered
+        // exactly what they were. `RideHUDRungs.offered` is this body as a table. (v1.35)
         if typeSize.isAccessibilitySize {
+            if narrow {
+                ViewThatFits(in: .horizontal) {
+                    row(fallback: false)
+                    row(fallback: true)
+                }
+            } else {
+                ViewThatFits(in: .horizontal) {
+                    row(fallback: false)
+                    row(fallback: true)
+                    compressed(rung: 6)
+                }
+            }
+        } else if narrow {
+            row(fallback: false)
+        } else {
             ViewThatFits(in: .horizontal) {
                 row(fallback: false)
-                row(fallback: true)
+                compressed(rung: 0)
+                compressed(rung: 1)
+                compressed(rung: 2)
+                compressed(rung: 3)
+                compressed(rung: 4)
+                compressed(rung: 5)
+                compressed(rung: 6)
             }
-        } else {
-            row(fallback: false)
         }
     }
 
     /// The ride row. `fallback` is the second row `ViewThatFits` is offered at the accessibility
     /// sizes, with one more pill removed (`RideHUDLayout.shows`); below those sizes it is never asked
     /// for, and it removes nothing there either.
-    private func row(fallback: Bool) -> some View {
+    func row(fallback: Bool) -> some View {
         HStack(spacing: narrow ? 8 : 14) {
             // The conjugation HUD's v1.31 fix, which this row never got (v1.33 §B G). At AX5 —
             // capped to AX1 here — a journey ride's progress pill read "0/1" over "2" (simulator
@@ -433,6 +478,96 @@ private struct HUDBar: View {
                      value: RideHUDSpoken.speedValue(wpm), tint: Theme.accent,
                      label: zh ? "速度" : "Speed",
                      spoken: RideHUDSpoken.speedWords(wpm, zh: zh))
+                    .accessibilityIdentifier("hudSpeed")
+            }
+            if let onPause {
+                Button(action: onPause) {
+                    Image(systemName: "pause.fill")
+                        .scaledSystemFont(17, weight: .bold)
+                        .foregroundStyle(.white)
+                        .frame(width: 44, height: 34)
+                        .background(.black.opacity(0.42), in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(zh ? "暂停" : "Pause")
+                .accessibilityIdentifier("pauseButton")
+            }
+        }
+        .scaledSystemFont(narrow ? 15 : 17, weight: .semibold, design: .rounded)
+    }
+
+    /// A row below today's on the iPad and Mac ladder (`body`): the pills `RideHUDRungs.shows` keeps
+    /// at `rung` — 0 is all seven — in today's order, in `HUDRowLayout`, with the pause button last.
+    /// Each pill is built as in `row(fallback:)`; what differs is the container, the reserves (the
+    /// widest value each pill can show in this ride, `RideHUDRungs`), and the spoken suffix, which is
+    /// what THIS rung sheds (`RideHUDSpoken.shedValues`), carried by the progress pill — or, in
+    /// Time Attack's last rung, which sheds the count, by the score pill. (v1.35)
+    func compressed(rung: Int) -> some View {
+        func shows(_ pill: RideHUDRungs.Pill) -> Bool {
+            RideHUDRungs.shows(pill, rung: rung, scoreIsTheRide: scoreIsTheRide)
+        }
+        let hidden = RideHUDSpoken.shedValues(rung: rung, scoreIsTheRide: scoreIsTheRide,
+                                              level: session.currentLevelLabel, score: session.score,
+                                              combo: session.combo, distanceMeters: session.distanceMeters,
+                                              queueLengthIsTheTarget: session.mode.queueLengthIsTheTarget,
+                                              completed: session.wordsCompleted, count: session.wordCount,
+                                              progressLabel: session.mode.hudProgressLabel(zh: zh),
+                                              accuracy: session.accuracy, wpm: wpm, zh: zh)
+        return HUDRowLayout(leading: RideHUDRungs.leading(rung: rung, scoreIsTheRide: scoreIsTheRide)) {
+            if shows(.level) {
+                Text(session.currentLevelLabel)
+                    .reservingIdealWidth(for: RideHUDRungs.levelReserve(words: session.wordList))
+                    .scaledSystemFont(14, weight: .heavy, design: .rounded)
+                    .foregroundStyle(.white)
+                    .lineLimit(typeSize.isAccessibilitySize ? 1 : nil)
+                    .minimumScaleFactor(typeSize.isAccessibilitySize ? 0.7 : 1)
+                    .padding(.horizontal, 10).padding(.vertical, 6)
+                    .background(Theme.accent2.opacity(0.85), in: Capsule())
+                    .accessibilityLabel(zh ? "等级 \(session.currentLevelLabel)" : "Level \(session.currentLevelLabel)")
+            }
+            if shows(.score) {
+                stat(icon: "star.fill", value: RideHUDSpoken.scoreWords(session.score), tint: Theme.gold,
+                     label: zh ? "得分" : "Score",
+                     spoken: shows(.progress) ? nil : RideHUDSpoken.scoreWords(session.score, hidden: hidden))
+            }
+            if shows(.combo) {
+                stat(icon: "flame.fill",
+                     value: RideHUDLayout.comboValue(session.combo),
+                     tint: session.combo >= 2 ? Theme.accent : Theme.dim,
+                     label: zh ? "连击" : "Combo",
+                     spoken: RideHUDSpoken.comboWords(session.combo, zh: zh),
+                     reserving: RideHUDRungs.comboReserve(wordCount: session.wordCount))
+            }
+            if shows(.distance) {
+                stat(icon: "bicycle", value: "\(Int(session.distanceMeters)) m", tint: Theme.accent2,
+                     label: zh ? "距离" : "Distance",
+                     spoken: RideHUDSpoken.distanceWords(session.distanceMeters, zh: zh))
+            }
+            if shows(.progress) {
+                stat(icon: "checkmark.circle.fill",
+                     value: session.mode.queueLengthIsTheTarget
+                         ? "\(session.wordsCompleted)/\(session.wordCount)"
+                         : "\(session.wordsCompleted)",
+                     tint: Theme.done,
+                     label: session.mode.hudProgressLabel(zh: zh),
+                     spoken: RideHUDSpoken.progressWords(
+                         queueLengthIsTheTarget: session.mode.queueLengthIsTheTarget,
+                         completed: session.wordsCompleted, count: session.wordCount, zh: zh,
+                         hidden: hidden))
+                    .accessibilityIdentifier("hudProgress")
+            }
+            if shows(.accuracy) {
+                stat(icon: "scope",
+                     value: RideHUDSpoken.accuracyWords(session.accuracy), tint: .white,
+                     label: zh ? "正确率" : "Accuracy",
+                     reserving: RideHUDRungs.accuracyReserve)
+            }
+            if shows(.speed) {
+                stat(icon: "speedometer",
+                     value: RideHUDSpoken.speedValue(wpm), tint: Theme.accent,
+                     label: zh ? "速度" : "Speed",
+                     spoken: RideHUDSpoken.speedWords(wpm, zh: zh),
+                     reserving: RideHUDRungs.speedReserve)
                     .accessibilityIdentifier("hudSpeed")
             }
             if let onPause {
@@ -691,7 +826,7 @@ enum RideHUDLayout {
     /// is never measured to be chosen. Time Attack never shows this pill at those sizes.
     static func comboReserve(_ typeSize: DynamicTypeSize, fallback: Bool, wordCount: Int) -> [String] {
         guard typeSize.isAccessibilitySize, !fallback else { return [] }
-        return wordCount >= 2 ? [comboValue(0), comboValue(wordCount)] : [comboValue(0)]
+        return RideHUDRungs.comboReserve(wordCount: wordCount)
     }
 
     /// The level labels the first row reserves room for, on the same terms as `comboReserve`: one
@@ -700,8 +835,107 @@ enum RideHUDLayout {
     /// its own label, which changes nothing.
     static func levelReserve(_ typeSize: DynamicTypeSize, fallback: Bool, words: [VocabEntry]) -> [String] {
         guard typeSize.isAccessibilitySize, !fallback else { return [] }
-        return Set(words.map(\.jlpt)).sorted { $0.rawValue < $1.rawValue }.map(\.label)
+        return RideHUDRungs.levelReserve(words: words)
     }
+}
+
+/// The iPad and Mac ride row's ladder below the accessibility sizes, and the one rung an iPad adds
+/// at them (`HUDBar.body`). (v1.35)
+///
+/// **What it fixes.** Below the accessibility sizes 1.32's row — all seven pills and, on a touch
+/// device, the pause button — is kept (v1.33 round 1: a row that may not wrap pushed the pause button
+/// off an iPad mini), so where it does not fit it wraps: "80" over "m" on an iPad mini in portrait
+/// (v1.33 §G, deferred), "100" over "%" at a journey's start in a 680pt window (v1.35 step 3), and
+/// in narrower Split View and Stage Manager windows it put the pause button past the window's edge.
+/// So where today's row does not fit, the same pills are offered with the row's gaps closed (rung 0
+/// in `HUDRowLayout`), and then rows that shed one pill more each (rungs 1–6), in `shedOrder`.
+///
+/// **The order.** Distance, accuracy and speed first — informational, not actionable mid-ride, and
+/// what a phone never shows (v1.33's rule) — then, in a ride whose queue is the target, v1.33's
+/// accessibility-size order: the score, then the combo, then the level capsule. Time Attack is played
+/// for the score, so it sheds the combo, then the level, and then — its last rung only — the count,
+/// whose progress the timer bar above already draws, and which its score pill then speaks. That last
+/// step breaks v1.33's "progress is never shed", in Time Attack only; keeping the count and shedding
+/// the score instead is the owner's call (`V135HUDRowTests` has the widths where it applies). Rungs 3,
+/// 4 and 5 are exactly the phone's row and the two accessibility-size rows, pill for pill.
+///
+/// **Reserves.** `ViewThatFits` compares ideal widths, so a compressed rung reserves the widest value
+/// each pill it shows can take in this ride where the value can get narrower mid-ride: the level
+/// labels in the queue, the combo's dash and its longest streak, "100%", and the speed's dash and three
+/// digits (a rider above 99 wpm is measured, in `V135HUDRowTests`; 1,000 is not a speed). The score,
+/// the count and the distance only grow. So once a ride has left today's row the ladder only moves
+/// down. Today's row reserves nothing — it is today's — so a ride can move between it and rung 0, the
+/// same pills; `V135HUDRowTests` measures how often and how far anything moves when it does.
+enum RideHUDRungs {
+    /// Every item a rung may shed, in the row's order. The pause button is not one.
+    enum Pill: CaseIterable { case level, score, combo, distance, progress, accuracy, speed }
+
+    /// The last rung: every pill but one shed, and the pause button.
+    static let last = 6
+
+    /// The order the rungs shed pills in: rung `n` sheds the first `n`.
+    static func shedOrder(scoreIsTheRide: Bool) -> [Pill] {
+        scoreIsTheRide ? [.distance, .accuracy, .speed, .combo, .level, .progress]
+                       : [.distance, .accuracy, .speed, .score, .combo, .level]
+    }
+
+    /// Whether rung `rung` draws `pill`.
+    static func shows(_ pill: Pill, rung: Int, scoreIsTheRide: Bool) -> Bool {
+        !shedOrder(scoreIsTheRide: scoreIsTheRide).prefix(rung).contains(pill)
+    }
+
+    /// How many of the pills rung `rung` draws sit left of today's Spacer: the level, the score and
+    /// the combo, those of them it keeps. `HUDRowLayout` keeps them left and the rest right, as the
+    /// Spacer does in today's row.
+    static func leading(rung: Int, scoreIsTheRide: Bool) -> Int {
+        [Pill.level, .score, .combo].filter { shows($0, rung: rung, scoreIsTheRide: scoreIsTheRide) }.count
+    }
+
+    /// A child `HUDBar.body` offers `ViewThatFits`: today's row (`row(fallback:)`), or a rung of this
+    /// ladder (`compressed(rung:)`).
+    enum Row: Hashable, CustomStringConvertible {
+        case today(fallback: Bool)
+        case compressed(rung: Int)
+        /// The child as `HUDBar.body` builds it.
+        var description: String {
+            switch self {
+            case .today(let fallback): "row(fallback: \(fallback))"
+            case .compressed(let rung): "compressed(rung: \(rung))"
+            }
+        }
+    }
+
+    /// `HUDBar.body` as a table: the children it offers `ViewThatFits`, in order (one child: no
+    /// `ViewThatFits`). A phone is offered exactly what it was; an iPad at the accessibility sizes
+    /// round 3's two rows and then the last rung; an iPad or a Mac below them today's row and then
+    /// the whole ladder.
+    static func offered(narrow: Bool, _ typeSize: DynamicTypeSize) -> [Row] {
+        switch (narrow, typeSize.isAccessibilitySize) {
+        case (true, false): [.today(fallback: false)]
+        case (true, true): [.today(fallback: false), .today(fallback: true)]
+        case (false, true): [.today(fallback: false), .today(fallback: true), .compressed(rung: last)]
+        case (false, false): [.today(fallback: false)] + (0...last).map { .compressed(rung: $0) }
+        }
+    }
+
+    /// The combo values a row reserves: the dash, and the longest streak the ride can reach — a
+    /// streak cannot pass the queue's length (`RideHUDLayout.comboReserve` has the argument).
+    static func comboReserve(wordCount: Int) -> [String] {
+        wordCount >= 2 ? [RideHUDLayout.comboValue(0), RideHUDLayout.comboValue(wordCount)]
+                       : [RideHUDLayout.comboValue(0)]
+    }
+
+    /// The level labels a row reserves: one per JLPT level in the ride's queue.
+    static func levelReserve(words: [VocabEntry]) -> [String] {
+        Set(words.map(\.jlpt)).sorted { $0.rawValue < $1.rawValue }.map(\.label)
+    }
+
+    /// The accuracy's widest value (`RideHUDSpoken.accuracyWords`): a ride starts at it and can
+    /// come back to it.
+    static let accuracyReserve = [RideHUDSpoken.accuracyWords(1)]
+
+    /// The speed's: the dash before a pace is known, and three tabular digits.
+    static let speedReserve = [RideHUDSpoken.speedValue(0), "000"]
 }
 
 /// What VoiceOver hears of the values the accessibility-size row hides. (v1.34 §B3)
@@ -760,6 +994,45 @@ enum RideHUDSpoken {
         return suffix(parts, zh: zh)
     }
 
+    /// What a compressed rung (`HUDBar.compressed(rung:)`, `RideHUDRungs`) sheds, as the suffix the
+    /// pill that carries it appends: each shed pill's spoken value in HUD order, compared against rung
+    /// 0 — the full row, the base of an iPad or a Mac, the only devices offered these rungs — so nil at
+    /// rung 0. The count is spoken as its pill's label and its words ("words 110" / "进度 110") only
+    /// in Time Attack's last rung, the one rung that sheds it; the score pill carries that suffix.
+    /// (v1.35)
+    static func shedValues(rung: Int, scoreIsTheRide: Bool, level: String, score: Int, combo: Int,
+                           distanceMeters: Double, queueLengthIsTheTarget: Bool, completed: Int, count: Int,
+                           progressLabel: String, accuracy: Double, wpm: Double, zh: Bool) -> String? {
+        func shed(_ pill: RideHUDRungs.Pill) -> Bool {
+            !RideHUDRungs.shows(pill, rung: rung, scoreIsTheRide: scoreIsTheRide)
+        }
+        var parts: [String] = []
+        if !level.isEmpty, shed(.level) {
+            parts.append(zh ? "等级 \(level)" : "level \(level)")
+        }
+        if shed(.score) {
+            parts.append((zh ? "得分 " : "score ") + scoreWords(score))
+        }
+        if shed(.combo) {
+            parts.append((zh ? "连击 " : "combo ") + comboWords(combo, zh: zh))
+        }
+        if shed(.distance) {
+            parts.append((zh ? "距离 " : "distance ") + distanceWords(distanceMeters, zh: zh))
+        }
+        if shed(.progress) {
+            parts.append((zh ? progressLabel : progressLabel.lowercased()) + " "
+                         + progressWords(queueLengthIsTheTarget: queueLengthIsTheTarget, completed: completed,
+                                         count: count, zh: zh, hidden: nil))
+        }
+        if shed(.accuracy) {
+            parts.append((zh ? "正确率 " : "accuracy ") + accuracyWords(accuracy))
+        }
+        if shed(.speed) {
+            parts.append((zh ? "速度 " : "speed ") + speedWords(wpm, zh: zh))
+        }
+        return suffix(parts, zh: zh)
+    }
+
     /// The hidden values as the suffix the progress pill appends: each led by the list separator —
     /// ", " in English, "、" in Chinese — or nil when nothing is hidden. Shared with the drill's
     /// composer (`ConjugationHUDSpoken`, v1.35), so the two HUDs cannot punctuate apart.
@@ -793,6 +1066,12 @@ enum RideHUDSpoken {
     /// Both HUDs' score pills and both composers call this, so the number a VoiceOver rider hears
     /// after the progress count is the one the pill draws at the default size. (v1.35)
     static func scoreWords(_ score: Int) -> String { "\(score)" }
+
+    /// The score pill's spoken value where it carries a rung's suffix (Time Attack's last rung, which
+    /// sheds the count): its own words, then `hidden`, nil as nothing — `progressWords`' shape.
+    static func scoreWords(_ score: Int, hidden: String?) -> String {
+        scoreWords(score) + (hidden ?? "")
+    }
 
     /// The combo pill's spoken value: the streak from two, "none" / 无 below (the pill draws "—").
     static func comboWords(_ combo: Int, zh: Bool) -> String {
@@ -871,6 +1150,90 @@ extension View {
                 ForEach(values, id: \.self) { placeholder($0).hidden().accessibilityHidden(true) }
             }
         }
+    }
+}
+
+/// The container of the ride row's compressed rungs (`HUDBar.compressed(rung:)`), on an iPad or a Mac.
+/// (v1.35)
+///
+/// Each item is proposed its ideal width, so no value wraps. Where the row has room they sit as in
+/// today's row — `HStack(spacing: 14)` with a `Spacer` after the first `leading` items: those at the
+/// left, the rest at the right, `spacing` between neighbours. Short of room it closes the gap at the
+/// centre first, down to `minimumGap`, then every other gap evenly down to `minimumGap`. Its ideal
+/// width — what `ViewThatFits` compares — is every item's ideal width and `minimumGap` between each.
+/// The row never reaches past its own frame into `GameView`'s margin, so it stays as wide as the
+/// JourneyBar below it; a row that cannot fit even so (the last rung in a window narrower than any
+/// measured) keeps its right end, the pause button, in the frame and loses its left.
+struct HUDRowLayout: Layout {
+    /// How many items sit left of where today's row has its `Spacer`.
+    var leading: Int
+    /// Today's row's spacing on an iPad or a Mac.
+    var spacing: CGFloat = 14
+    /// The narrowest gap the row closes to.
+    static let minimumGap: CGFloat = 6
+
+    /// Each item's ideal width, and its size when proposed that width.
+    private func measure(_ subviews: Subviews) -> (ideal: [CGFloat], drawn: [CGSize]) {
+        let ideal = subviews.map { $0.sizeThatFits(.unspecified).width }
+        let drawn = zip(subviews, ideal).map { $0.sizeThatFits(ProposedViewSize(width: $1, height: nil)) }
+        return (ideal, drawn)
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let (ideal, drawn) = measure(subviews)
+        let height = drawn.map(\.height).max() ?? 0
+        guard let width = proposal.width, width.isFinite else {
+            let gaps = CGFloat(max(0, subviews.count - 1)) * Self.minimumGap
+            return CGSize(width: ideal.reduce(0, +) + gaps, height: height)
+        }
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let (_, drawn) = measure(subviews)
+        let xs = Self.positions(widths: drawn.map(\.width), leading: leading, width: bounds.width,
+                                spacing: spacing)
+        for (index, subview) in subviews.enumerated() {
+            subview.place(at: CGPoint(x: bounds.minX + xs[index], y: bounds.midY), anchor: .leading,
+                          proposal: ProposedViewSize(width: drawn[index].width, height: drawn[index].height))
+        }
+    }
+
+    /// Where each item's left edge goes in a row `width` wide — the whole rule, as a pure function
+    /// so `V135HUDRowTests` can write its cases out.
+    static func positions(widths: [CGFloat], leading: Int, width: CGFloat, spacing: CGFloat) -> [CGFloat] {
+        let count = widths.count
+        guard count > 0 else { return [] }
+        let total = widths.reduce(0, +)
+        let split = leading > 0 && leading < count
+        var gaps = Array(repeating: spacing, count: count - 1)
+        var start: CGFloat = 0
+        if split {
+            let centre = width - total - spacing * CGFloat(count - 2)
+            if centre >= minimumGap {
+                gaps[leading - 1] = centre
+            } else if count > 2, (width - total - minimumGap) / CGFloat(count - 2) >= minimumGap {
+                let even = (width - total - minimumGap) / CGFloat(count - 2)
+                gaps = gaps.indices.map { $0 == leading - 1 ? minimumGap : even }
+            } else {
+                gaps = Array(repeating: minimumGap, count: count - 1)
+                start = width - total - minimumGap * CGFloat(count - 1)
+            }
+        } else if count > 1 {
+            let even = (width - total) / CGFloat(count - 1)
+            gaps = Array(repeating: max(minimumGap, min(spacing, even)), count: count - 1)
+            let row = total + gaps.reduce(0, +)
+            start = leading == 0 || row > width ? width - row : 0
+        } else {
+            start = leading == 0 || widths[0] > width ? width - widths[0] : 0
+        }
+        var xs: [CGFloat] = []
+        var x = start
+        for index in 0..<count {
+            xs.append(x)
+            if index < count - 1 { x += widths[index] + gaps[index] }
+        }
+        return xs
     }
 }
 

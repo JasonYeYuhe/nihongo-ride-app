@@ -278,8 +278,9 @@ struct V135VerbsHUDSpokenTests {
             .compactMap { $0.arguments }
             .map { V133GRideAndDrillLayoutTests.collapsed(String(decoding: ride.codeWithStrings[$0], as: UTF8.self)) }
             .filter { $0.hasPrefix("icon: \"star.fill\"") }
-        #expect(rideScore.count == 1 && rideScore[0].contains("value: RideHUDSpoken.scoreWords(session.score), "),
-                "the ride's score pill: \(rideScore)")
+        // v1.35: two — today's row's and the compressed rows'.
+        #expect(rideScore.count == 2 && rideScore.allSatisfy { $0.contains("value: RideHUDSpoken.scoreWords(session.score), ") },
+                "the ride's score pills: \(rideScore)")
         let rideComposer = try #require(ride.typeBodies(named: "RideHUDSpoken").first)
         let rideBody = try #require(ride.functions(named: "hiddenValues").first { rideComposer.contains($0.keywordOffset) }?.body)
         let rideText = V133GRideAndDrillLayoutTests.collapsed(String(decoding: ride.codeWithStrings[rideBody], as: UTF8.self))
