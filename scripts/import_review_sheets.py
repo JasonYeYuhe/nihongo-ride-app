@@ -20,18 +20,22 @@ or bare text, which is auto-routed: pure hiragana → kana, CJK → zh, latin �
 
 Dry-run by default — prints every planned change. Add --apply to write.
 
+--apply writes only the files a change touched, through corpus_io.CorpusFile, so a correction
+changes that entry's bytes and nothing else. Until 2026-09-29 it wrote all six files back with
+json.dumps(indent=2): one correction reformatted n1..n5.json (indent=1) whole — the v1.26 incident
+corpus_io exists to prevent, found by the v1.35 step-1 review.
+
 Usage:
     python3 scripts/import_review_sheets.py review-sheets-returned/ [--apply]
 """
 import argparse
 import csv
-import json
 import re
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from corpus_io import residue_reasons   # noqa: E402
+from corpus_io import CorpusFile, residue_reasons   # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "Sources/VocabKit/Resources"
@@ -184,13 +188,24 @@ def apply_passage_row(row, entries_by_id, fname, changes):
             changes.unparsed.append((fname, row["id"], f"{key} not valid for passage"))
 
 
-def write_back(changes, datasets, apply: bool):
-    """datasets: {filename: (json_path, list_data, by_id)}"""
+def shown(path):
+    """`path` relative to the repo when it is inside it, as given when it is not (a test's copy)."""
+    try:
+        return path.relative_to(ROOT)
+    except ValueError:
+        return path
+
+
+def write_back(changes, datasets, apply: bool, blocklist=BLOCKLIST):
+    """datasets: {filename: (CorpusFile, by_id)} — by_id holds the same entry objects as the
+    CorpusFile's data, so an edit made through it is what gets written."""
+    touched = set()
     for fname, rid, field, old, new in changes.fixes:
         print(f"FIX  {fname} {rid} {field}: {old!r} → {new!r}")
+        touched.add(fname)
         if not apply:
             continue
-        entry = datasets[fname][2][rid]
+        entry = datasets[fname][1][rid]
         if field == "kana":
             entry["kana"] = new
         elif field == "surface":
@@ -213,50 +228,69 @@ def write_back(changes, datasets, apply: bool):
         print(f"DROP {fname} {rid}" + (f" (blocklist: {kana})" if kana else ""))
         if kana:
             bad_readings.append(kana)
+        touched.add(fname)
         if not apply:
             continue
-        path, data, by_id = datasets[fname]
-        data[:] = [e for e in data if e["id"] != rid]
+        corpus, by_id = datasets[fname]
+        corpus.data[:] = [e for e in corpus.data if e["id"] != rid]
         by_id.pop(rid, None)
 
     for fname, rid, why in changes.unparsed:
         print(f"SKIP {fname} {rid}: {why}")
 
+    # Every file a change lands in must round-trip before ANY is written: a refusal half way
+    # through would leave some corrections on disk and the rest not. The dry run says so too,
+    # since it is where a reviewer reads what --apply will do.
+    refused = [datasets[f][0].path for f in sorted(touched) if not datasets[f][0].round_trips()]
+    if refused:
+        print("\nREFUSED: " + ", ".join(str(shown(p)) for p in refused) + " cannot be written "
+              "back byte for byte (corpus_io.CorpusFile), so writing would reformat the whole file.")
+        if apply:
+            raise SystemExit("nothing written")
+
     if not apply:
         print("\n(dry run — nothing written; add --apply)")
         return
 
-    for fname, (path, data, _) in datasets.items():
-        path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"wrote {path.relative_to(ROOT)}")
+    # Only the files a change landed in are written; the rest are not opened for writing at all.
+    for fname, (corpus, _) in datasets.items():
+        if fname in touched:
+            corpus.write()
+            print(f"wrote {shown(corpus.path)}")
+    if not touched:
+        print("no corpus file changed")
 
     if bad_readings:
-        with BLOCKLIST.open("a", encoding="utf-8") as f:
+        with blocklist.open("a", encoding="utf-8") as f:
             f.write(f"# native review import\n")
             for kana in bad_readings:
                 f.write(kana + "\n")
-        print(f"appended {len(bad_readings)} readings to {BLOCKLIST.relative_to(ROOT)}")
+        print(f"appended {len(bad_readings)} readings to {shown(blocklist)}")
 
     print("\nNOW RUN: swift test  (typeability + integrity gates)")
 
 
-def main():
+def load_datasets(resources=RES):
+    """{name: (CorpusFile, by_id)} for n5..n1 and passages, read from `resources`."""
+    datasets = {}
+    for name in ["n5", "n4", "n3", "n2", "n1", "passages"]:
+        corpus = CorpusFile(resources / f"{name}.json")
+        datasets[name] = (corpus, {e["id"]: e for e in corpus.data})
+    return datasets
+
+
+def main(argv=None, resources=RES, blocklist=BLOCKLIST):
+    """`resources` and `blocklist` are the repo's own unless a caller names others —
+    scripts/test_import_review_sheets.py points both at a scratch copy."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("sheets_dir", type=Path)
     parser.add_argument("--apply", action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if not args.sheets_dir.is_dir():
         sys.exit(f"not a directory: {args.sheets_dir}")
 
-    datasets = {}
-    for level in ["n5", "n4", "n3", "n2", "n1"]:
-        path = RES / f"{level}.json"
-        data = json.loads(path.read_text(encoding="utf-8"))
-        datasets[level] = (path, data, {e["id"]: e for e in data})
-    ppath = RES / "passages.json"
-    pdata = json.loads(ppath.read_text(encoding="utf-8"))
-    datasets["passages"] = (ppath, pdata, {e["id"]: e for e in pdata})
+    datasets = load_datasets(resources)
 
     changes = Changes()
     found = 0
@@ -270,10 +304,10 @@ def main():
                 print(f"skipping {csv_path.name} (unknown level)")
                 continue
             for row in rows:
-                apply_vocab_row(row, datasets[level][2], level, changes)
+                apply_vocab_row(row, datasets[level][1], level, changes)
         elif name == "passages":
             for row in rows:
-                apply_passage_row(row, datasets["passages"][2], "passages", changes)
+                apply_passage_row(row, datasets["passages"][1], "passages", changes)
         else:
             print(f"skipping {csv_path.name}")
             continue
@@ -284,7 +318,7 @@ def main():
         sys.exit("no vocab-*.csv / passages.csv found in that directory")
 
     print()
-    write_back(changes, datasets, args.apply)
+    write_back(changes, datasets, args.apply, blocklist)
     print(f"\n{changes.summary()}")
 
 

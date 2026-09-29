@@ -16,6 +16,7 @@
 > 2026-09-17 由代理在 owner 授权下决定(§K "DECIDED 2026-09-17" 框),下文"原样交给 owner 决定"那一条已不再是待办。
 > 2026-09-25 起地板是 **14**(`--headless` **13**):v1.34 §C2 的 `scripts/test_review_watch.py`(§K 评论守卫读取器的夹具自测)入闸;实时读取本身不是闸门。
 > 2026-09-29 起(含 `scripts/test_escape_residue.py` 的提交合入后)地板是 **15**(`--headless` **14**):语料写入脚本(两个生成脚本、`pilot_gate`、`import_review_sheets`)拒收引号转义残留的自测入闸 —— 3e9407a 把 18 条练习译文的撇号写成了 `'''`,见 `Tests/VocabKitTests/CorpusEscapeResidueTests.swift`。
+> 2026-09-29 起(含 `scripts/test_import_review_sheets.py` 的提交合入后)地板是 **16**(`--headless` **15**):`import_review_sheets.py --apply` 改为经 `corpus_io.CorpusFile` 只写被改动的文件,一条更正只改那一条的字节 —— 此前它把 n1..n5 全部按 indent=2 重写(v1.26 的整文件重排),见 PLAN-V1.34 §F "Step 1 done" 的 Recorded 条目。
 
 仓库 `/Users/jason/Documents/typing_app`,macOS + iOS 的日语打字练习 app,两端都已上线。**用中文跟我交流,代码里的标识符和注释用英文。**
 
