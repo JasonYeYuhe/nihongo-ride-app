@@ -205,7 +205,8 @@ private struct ConjugationHUD: View {
                 .accessibilityLabel(zh ? "动词变形模式" : "Conjugation mode")
                 .layoutPriority(accessibilitySize ? 1 : 0)
             if RideHUDLayout.showsScore(typeSize) {
-                stat(icon: "star.fill", value: "\(session.score)", tint: Theme.gold, label: zh ? "得分" : "Score")
+                stat(icon: "star.fill", value: RideHUDSpoken.scoreWords(session.score), tint: Theme.gold,
+                     label: zh ? "得分" : "Score")
             }
             stat(icon: "flame.fill",
                  value: session.combo >= 2 ? "×\(session.combo)" : "—",
@@ -216,8 +217,15 @@ private struct ConjugationHUD: View {
             stat(icon: "checkmark.circle.fill",
                  value: "\(session.promptsCompleted)/\(session.promptCount)", tint: Theme.done,
                  label: zh ? "进度" : "Done",
-                 spoken: zh ? "\(session.promptsCompleted) / \(session.promptCount)"
-                            : "\(session.promptsCompleted) of \(session.promptCount)")
+                 // After its own count, the score this row hides at the accessibility sizes — the
+                 // ride HUD's §B3 fix, which 1.34 gave the ride row only. Nil below those sizes, so
+                 // there the value is 1.34's "6 of 12" / "6 / 12" byte for byte: the drill's count is
+                 // always done-of-total, the ride's `queueLengthIsTheTarget` form, so the same joiner
+                 // builds it. (v1.35; `ConjugationHUDSpoken` says what the row hides and why only that.)
+                 spoken: RideHUDSpoken.progressWords(
+                     queueLengthIsTheTarget: true,
+                     completed: session.promptsCompleted, count: session.promptCount, zh: zh,
+                     hidden: ConjugationHUDSpoken.hiddenValues(typeSize: typeSize, score: session.score, zh: zh)))
                 .accessibilityIdentifier("hudProgress")
             if !narrow {
                 stat(icon: "scope", value: "\(Int(session.accuracy * 100))%", tint: .white,
@@ -267,6 +275,38 @@ enum ConjugationHUDLayout {
     static func badgeLabel(zh: Bool, accessibilitySize: Bool) -> String {
         guard accessibilitySize else { return zh ? "变形" : "Conjugate" }
         return GameMode.conjugation.shortLabel(zh: zh)
+    }
+}
+
+/// What VoiceOver hears of the values the drill row hides at the accessibility sizes. (v1.35 —
+/// `PLAN-V1.34.md` §F, step 3.)
+///
+/// 1.33 hid the drill's score pill at those sizes by the ride's rule (`RideHUDLayout.showsScore`),
+/// and 1.34 §B3 gave the ride row's progress pill the hidden values (`RideHUDSpoken`) but not this
+/// row's: a VoiceOver rider at AX1–AX5 heard "6 of 12" and no score anywhere mid-drill. Same
+/// conventions as the ride's composer: the suffix is compared against the default size, each value
+/// is led by ", " / "、" (`RideHUDSpoken.suffix`), the number is `RideHUDSpoken.scoreWords` — the
+/// function the score pill draws with — and it is nil where nothing is hidden, which is every size
+/// below the accessibility sizes, so the default-size value and render cannot change.
+///
+/// **The score is the only value this row hides relative to the default size, at any size on
+/// either idiom.** The combo and the progress count are drawn at every size. The mode badge changes
+/// its words at the accessibility sizes ("Verbs" for "Conjugate") but is still drawn, and it is a
+/// label, not a value. The accuracy pill is gated on `!narrow` alone, at every size: on a phone it
+/// is not drawn at the default size either, so a phone rider at AX5 has lost nothing the default
+/// size shows; on an iPad it is drawn at the accessibility sizes too — this row, unlike the ride's
+/// (`RideHUDLayout.showsInformational`), never hides it there — and VoiceOver reads it as its own
+/// pill. Neither case belongs in the suffix. The drill has no second row, so there is no `fallback`.
+/// `V135VerbsHUDSpokenTests` pins the accuracy pill's gate, so a change to it has to come back here.
+enum ConjugationHUDSpoken {
+    static func hiddenValues(typeSize: DynamicTypeSize, score: Int, zh: Bool) -> String? {
+        // The ride's comparison: hidden at this size AND shown at the default size.
+        func hid(_ shows: (DynamicTypeSize) -> Bool) -> Bool { !shows(typeSize) && shows(RideHUDSpoken.defaultSize) }
+        var parts: [String] = []
+        if hid(RideHUDLayout.showsScore) {
+            parts.append((zh ? "得分 " : "score ") + RideHUDSpoken.scoreWords(score))
+        }
+        return RideHUDSpoken.suffix(parts, zh: zh)
     }
 }
 

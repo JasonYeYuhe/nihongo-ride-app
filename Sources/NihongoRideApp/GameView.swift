@@ -367,7 +367,7 @@ private struct HUDBar: View {
                     .accessibilityLabel(zh ? "等级 \(session.currentLevelLabel)" : "Level \(session.currentLevelLabel)")
             }
             if RideHUDLayout.shows(.score, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {
-                stat(icon: "star.fill", value: "\(session.score)", tint: Theme.gold,
+                stat(icon: "star.fill", value: RideHUDSpoken.scoreWords(session.score), tint: Theme.gold,
                      label: zh ? "得分" : "Score")
             }
             if RideHUDLayout.shows(.combo, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {
@@ -745,7 +745,7 @@ enum RideHUDSpoken {
             parts.append(zh ? "等级 \(level)" : "level \(level)")
         }
         if hid({ RideHUDLayout.shows(.score, $0, scoreIsTheRide: scoreIsTheRide, fallback: fallback) }) {
-            parts.append(zh ? "得分 \(score)" : "score \(score)")
+            parts.append((zh ? "得分 " : "score ") + scoreWords(score))
         }
         // Each value in its pill's own words, from the one function the pill itself calls: the
         // composer formats no number of its own. (v1.34 §B3, review round 2)
@@ -757,6 +757,13 @@ enum RideHUDSpoken {
             parts.append((zh ? "正确率 " : "accuracy ") + accuracyWords(accuracy))
             parts.append((zh ? "速度 " : "speed ") + speedWords(wpm, zh: zh))
         }
+        return suffix(parts, zh: zh)
+    }
+
+    /// The hidden values as the suffix the progress pill appends: each led by the list separator —
+    /// ", " in English, "、" in Chinese — or nil when nothing is hidden. Shared with the drill's
+    /// composer (`ConjugationHUDSpoken`, v1.35), so the two HUDs cannot punctuate apart.
+    static func suffix(_ parts: [String], zh: Bool) -> String? {
         guard !parts.isEmpty else { return nil }
         let separator = zh ? "、" : ", "
         return parts.map { separator + $0 }.joined()
@@ -781,6 +788,11 @@ enum RideHUDSpoken {
                                          : "\(completed)"
         return own + (hidden ?? "")
     }
+
+    /// The score pill's value, drawn and spoken: the whole score, as the pill has always drawn it.
+    /// Both HUDs' score pills and both composers call this, so the number a VoiceOver rider hears
+    /// after the progress count is the one the pill draws at the default size. (v1.35)
+    static func scoreWords(_ score: Int) -> String { "\(score)" }
 
     /// The combo pill's spoken value: the streak from two, "none" / 无 below (the pill draws "—").
     static func comboWords(_ combo: Int, zh: Bool) -> String {
