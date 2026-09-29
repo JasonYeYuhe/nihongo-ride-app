@@ -368,12 +368,7 @@ struct ListDetailView: View {
                 if list.ids.isEmpty {
                     if !searching { emptyState }
                 } else {
-                    if searching {
-                        Text(zh ? "词单里的词 · \(list.ids.count)" : "In this list · \(list.ids.count)")
-                            .font(.caption.weight(.semibold)).foregroundStyle(Theme.dim)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .padding(.top, 6)
-                    }
+                    if searching { inThisListCaption(count: list.ids.count) }
                     if model.playableCount(in: list) == 0 {
                         unplayableHint
                     }
@@ -382,7 +377,7 @@ struct ListDetailView: View {
                     }
                 }
             } else {
-                emptyState
+                unavailableState
             }
             Spacer(minLength: 12)
         }
@@ -404,8 +399,16 @@ struct ListDetailView: View {
                     suppressSoftwareKeyboard: true)
             }
         }
-        .onChange(of: query) { _, new in
+        .onChange(of: query) { old, new in
+            let before = Self.searchOutcome(query: old, count: results.count)
             results = model.vocab.search(new, limit: Self.searchLimit)
+            // WCAG 4.1.3: the result list appearing or emptying is a status a VoiceOver user
+            // cannot see. Said when the set goes from none to some or some to none — not at
+            // every keystroke, which would interrupt the typing it reports on.
+            let after = Self.searchOutcome(query: new, count: results.count)
+            if let line = Self.searchAnnouncement(from: before, to: after, limit: Self.searchLimit, zh: zh) {
+                AccessibilityNotification.Announcement(line).post()
+            }
         }
         // Cap / validation errors from an add — the same alert ListsView shows.
         .alert(zh ? "无法完成" : "Can't do that",
@@ -462,11 +465,11 @@ struct ListDetailView: View {
             if trimmed.isEmpty {
                 Text(zh ? "可以输入假名、罗马字(如 mizu)、汉字,或英文、中文词义。"
                         : "Type kana, romaji (like mizu), kanji, or a meaning in English or Chinese.")
-                    .font(.callout).foregroundStyle(Theme.dim)
+                    .font(.callout).foregroundStyle(Self.dimTextColor)
                     .fixedSize(horizontal: false, vertical: true)
             } else if results.isEmpty {
                 Text(Self.noResults(trimmed, zh: zh))
-                    .font(.callout).foregroundStyle(Theme.dim)
+                    .font(.callout).foregroundStyle(Self.dimTextColor)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("wordSearchNoResults")
             } else {
@@ -487,7 +490,7 @@ struct ListDetailView: View {
                 if results.count == Self.searchLimit {
                     Text(zh ? "只显示前 \(Self.searchLimit) 个结果,多输入几个字可以缩小范围。"
                             : "Showing the first \(Self.searchLimit). Type more to narrow it down.")
-                        .font(.caption).foregroundStyle(Theme.dim)
+                        .font(.caption).foregroundStyle(Self.dimTextColor)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -576,6 +579,53 @@ struct ListDetailView: View {
         let max = WordListStore.maxWordsPerList
         return zh ? "该词单已满(\(max) 词)。移除一个词后才能再添加。"
                   : "This list is full (\(max) words). Remove a word to add another."
+    }
+
+    /// "In this list · 12", between the results and the list's own words while search is open.
+    private func inThisListCaption(count: Int) -> some View {
+        Text(zh ? "词单里的词 · \(count)" : "In this list · \(count)")
+            .font(.caption.weight(.semibold)).foregroundStyle(Self.dimTextColor)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.top, 6)
+    }
+
+    /// The small dim text the search panel draws straight on `Theme.background` — its hint, the
+    /// no-results line, the first-50 note, the "In this list" caption — and the empty-list and
+    /// unavailable-list lines, which point to it. `Theme.dim` (white at 0.45) there computes 4.24:1 at the gradient's lighter bottom
+    /// stop and 4.47:1 at the top: under the line at both. This is About's `dimTextColor`, white at
+    /// 0.48 → 4.62:1 at the bottom stop, the smallest opacity that clears (0.47 → 4.49:1), read
+    /// from there rather than copied so the two screens' dim text is one number with one proof
+    /// (`V134B4AboutContrastTests`). `V135B6WordSearchTests.panelTextClears` recomputes it for
+    /// every colour the panel draws. (v1.35 §B6 review)
+    static let dimTextColor = AboutView.dimTextColor
+
+    /// What the result list says to VoiceOver: nothing typed yet, nothing matched, or a count.
+    enum SearchOutcome: Equatable {
+        case idle
+        case none
+        case some(Int)
+    }
+
+    static func searchOutcome(query: String, count: Int) -> SearchOutcome {
+        if query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return .idle }
+        return count == 0 ? .none : .some(count)
+    }
+
+    /// The line VoiceOver hears when the result list changes, or nil. Said when results appear
+    /// where there were none (from an empty field or a query that matched nothing), and when
+    /// they go to none from anything else; not when a count moves while there are results, nor
+    /// when the field is cleared — the pattern of `CustomTextAddView.announcement` (v1.35 §F),
+    /// which re-reads its notice only when it appears, goes or changes kind.
+    static func searchAnnouncement(from old: SearchOutcome, to new: SearchOutcome, limit: Int, zh: Bool) -> String? {
+        switch (old, new) {
+        case (.some, .some), (.none, .none), (_, .idle): return nil
+        case (_, .none): return zh ? "没有匹配的词。" : "No words match."
+        case (_, .some(let count)):
+            if count >= limit {
+                return zh ? "显示前 \(limit) 个词。" : "Showing the first \(limit) words."
+            }
+            return zh ? "找到 \(count) 个词。" : "\(countLabel(count, "word")) found."
+        }
     }
 
     /// A fixed 48pt tall button clips its own label once the text outgrows it — the row that
@@ -723,11 +773,28 @@ struct ListDetailView: View {
         .background(Theme.card, in: RoundedRectangle(cornerRadius: 10))
     }
 
+    /// A list that is gone — deleted on another device while this screen was open, or an id that
+    /// no longer resolves. Until the v1.35 §B6 review this branch showed `emptyState`, which
+    /// tells the learner to search the dictionary: a button this branch does not draw, for a list
+    /// that cannot take a word. It says what happened and where to go instead.
+    private var unavailableState: some View {
+        Text(Self.unavailableText(zh: zh))
+            .font(.callout).foregroundStyle(Self.dimTextColor)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.vertical, 8)
+    }
+
+    static func unavailableText(zh: Bool) -> String {
+        zh ? "这个词单已不存在,可能已在另一台设备上删除。返回即可查看你的词单。"
+           : "This list isn't here any more — it may have been deleted on another device. Go back to see your lists."
+    }
+
     /// Until v1.35 this said a list could only be filled by riding, which was true; search is the
-    /// second way, and the copy names it first because it is the one on this screen.
+    /// second way, and the copy names it first because it is the one on this screen — drawn only
+    /// for a live list, where that button is.
     private var emptyState: some View {
         Text(Self.emptyStateText(zh: zh))
-            .font(.callout).foregroundStyle(Theme.dim)
+            .font(.callout).foregroundStyle(Self.dimTextColor)
             .fixedSize(horizontal: false, vertical: true)
             .padding(.vertical, 8)
     }
@@ -855,7 +922,7 @@ struct WordSearchResultRow: View {
             .background(Theme.card, in: RoundedRectangle(cornerRadius: 10))
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(RowStyle())
         .disabled(state != .addable)
         .accessibilityLabel(Self.accessibilityLabel(surface: surface, reading: reading, gloss: gloss))
         .accessibilityValue(Self.accessibilityValue(state, zh: zh))
@@ -880,7 +947,7 @@ struct WordSearchResultRow: View {
             }
             Text(gloss)
                 .font(.system(size: Self.glossPoints * scale))
-                .foregroundStyle(Theme.dim)
+                .foregroundStyle(Self.glossColor)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -889,7 +956,32 @@ struct WordSearchResultRow: View {
     private var icon: some View {
         Image(systemName: state == .inList ? "checkmark.circle.fill" : "plus.circle.fill")
             .font(.system(size: Self.iconPoints * scale))
-            .foregroundStyle(state == .inList ? Theme.gold : state == .addable ? Theme.accent : Theme.dim)
+            .foregroundStyle(state == .inList ? Theme.gold : state == .addable ? Theme.accent : Self.glossColor)
+    }
+
+    /// The gloss, and the full-list icon, on the row's `Theme.card`. `Theme.dim` there computed
+    /// **3.91:1** (the card is white at 0.06 over the gradient, lighter than what is behind it).
+    /// This is About's `dimTextOnCardColor`, white at 0.51 → 4.57:1 on the card at the bottom
+    /// stop, 5.03:1 at the top — the smallest that clears (0.50 → 4.46:1) — read from there so the
+    /// app has one "dim on a card" number (`V134B4AboutContrastTests` proves it). The row's other
+    /// colours — white, `Theme.accent2`, `Theme.gold`, `Theme.accent` — are recomputed with this
+    /// one by `V135B6WordSearchTests.rowTextClears`, in every state; and the disabled rows draw
+    /// the same pixels as an addable one (`disabledRowIsNotDimmed`). (v1.35 §B6 review)
+    static let glossColor = AboutView.dimTextOnCardColor
+
+    /// The row's button style: the label as drawn, shrunk a little while pressed. Not `.plain`,
+    /// because `.plain` dims a DISABLED button's whole label — measured in the renderer,
+    /// 2026-09-29: the gloss went from 137 to 71 of 255 and the white word to 131 on an in-list
+    /// or full-list row, about 2:1 on the card — and every row of a full list is disabled. Here
+    /// `.disabled` still does what it is for (no action, VoiceOver's "dimmed"), the icon and the
+    /// value say which state the row is in, and the text keeps the colours whose contrast
+    /// `rowTextClears` computes. The press feedback is a scale, not an opacity, for the same
+    /// reason. (v1.35 §B6 review)
+    struct RowStyle: ButtonStyle {
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+                .scaleEffect(configuration.isPressed ? 0.98 : 1)
+        }
     }
 
     static func accessibilityLabel(surface: String, reading: String?, gloss: String) -> String {

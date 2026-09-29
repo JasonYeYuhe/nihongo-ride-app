@@ -454,6 +454,17 @@ but NOT yet run, and the simulator pass has not happened — both are the orches
   copy and states, the corpus's worst row laid out at default + AX1–AX5 in both languages and two phone
   columns and read from pixels, pins for what needs a device); 21 mutations run, each red.
   `WordListSearchFlowTests` (XCUITest, iPhone) joins `run_ios_placement_tests.sh` — 14 methods.
+* **Review fixes** (same branch, second commit): the row's gloss was 3.91:1 on its card and the panel's
+  dim lines 4.24/4.47:1 on the gradient — now About's `dimTextOnCardColor` (4.57:1) and `dimTextColor`
+  (4.62:1), every colour in the row and panel computed by `V135B6WordSearchTests`; a disabled row under
+  `.plain` drew its text at about half brightness (gloss 71/255, ~2:1), so the row has its own button
+  style and the renderer shows all three states' text pixels equal. Half-width ｶﾞ/ﾊﾟ compose (NFKC then
+  NFC). ん before a vowel or `y` is found under every spelling the ride accepts (`n'`, `nn`, `xn`, `n`):
+  `RomajiReading.readings` gives the IME's reading first and the ん alternatives after, branching on at
+  most four ambiguous n's. VoiceOver hears "N words found" / "No words match" when the results appear or
+  empty. A gone list no longer shows the copy that points at the search button. The timing test asserts
+  the median of 100 `VocabStore.search` calls (debug 12.9 ms) under 100 ms. Release-build timings above
+  were measured before the multi-reading change and not re-measured.
 
 ---
 

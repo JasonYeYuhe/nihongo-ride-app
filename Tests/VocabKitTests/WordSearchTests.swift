@@ -49,6 +49,9 @@ struct WordSearchTests {
         entry("f-daigaku", "大学", "だいがく", .n5, en: ["university"], zh: ["大学"]),
         entry("f-konnichiha", "こんにちは", "こんにちは", .n5, en: ["hello"], zh: ["你好"]),
         entry("f-tshirt", "Tシャツ", "ティーシャツ", .n4, en: ["T-shirt"], zh: ["T恤"]),
+        entry("f-pan", "パン", "パン", .n5, en: ["bread"], zh: ["面包"]),
+        // Two gloss items in each language: the second is found as well as the first.
+        entry("f-kiru", "切る", "きる", .n4, en: ["to cut", "to switch off"], zh: ["切", "关掉"]),
         // A second entry under an id already used: the index keeps the first, as `entry(id:)` does.
         entry("f-mizu", "水（重複）", "みず", .n5, en: ["water (duplicate)"], zh: ["水"]),
     ]
@@ -90,6 +93,21 @@ struct WordSearchTests {
         #expect(Self.ids("t-shirt") == ["f-tshirt"])
     }
 
+    /// Half-width katakana with a voiced or semi-voiced mark: ｶﾞ is two scalars, and Foundation's
+    /// NFKC leaves them カ + U+3099 rather than ガ. Mutation, 2026-09-29: `fold` without the
+    /// canonical composition after NFKC → red on both (and ｺｰﾋｰ above stays green — it has no
+    /// mark, which is why the first version's test did not see this).
+    @Test("half-width katakana with ﾞ or ﾟ finds the word: ｶﾞｯｺｳ, ﾊﾟﾝ")
+    func halfWidthVoicedMarks() {
+        #expect(Self.ids("ｶﾞｯｺｳ") == ["f-gakkou"], "\(Self.ids("ｶﾞｯｺｳ"))")
+        #expect(Self.ids("ﾊﾟﾝ") == ["f-pan"], "\(Self.ids("ﾊﾟﾝ"))")
+        #expect(WordSearchIndex.fold("ｶﾞｯｺｳ") == "がっこう")
+        #expect(WordSearchIndex.fold("ﾊﾟﾝ") == "ぱん")
+        // The shipped corpus, through the store the screen calls.
+        #expect(Self.store.search("ｶﾞｯｺｳ", limit: 5).first?.id == "n5-gakkou")
+        #expect(Self.store.search("ﾊﾟﾝ", limit: 5).first?.id == "n5-k043")
+    }
+
     /// "mizu" is the case the item names. The fixture has no English gloss containing "mizu", so
     /// only the reading can find 水 here. Case and full-width Latin fold first.
     @Test("a romaji query also matches the reading it spells")
@@ -118,6 +136,28 @@ struct WordSearchTests {
         #expect(Self.ids("瀑布") == ["f-taki"])
     }
 
+    /// Every gloss ITEM is indexed, not only the first one a language lists. Mutation,
+    /// 2026-09-29: `entry.meanings[$0]?.prefix(1)` in the index → red in both languages.
+    @Test("a later gloss item is found, in English and in Chinese")
+    func laterGlossItems() {
+        let switchOff = Self.index.matches("switch off", limit: 10).map { "\($0.entry.id):\($0.tier)" }
+        #expect(switchOff == ["f-kiru:prefix"], "\(switchOff)")
+        let closeOff = Self.index.matches("关掉", limit: 10).map { "\($0.entry.id):\($0.tier)" }
+        #expect(closeOff == ["f-kiru:exact"], "\(closeOff)")
+        #expect(Self.ids("to cut") == ["f-kiru"], "the first item still")
+    }
+
+    /// A query of several words keeps one space between them and matches that phrase: "to eat" is
+    /// the whole gloss, "toeat" is nothing. Mutation, 2026-09-29: `joined(separator: "")` → red.
+    @Test("a multi-word query matches the words with their space")
+    func multiWordQuery() {
+        #expect(Self.index.matches("to eat", limit: 10).map { "\($0.entry.id):\($0.tier)" } == ["f-taberu:exact"])
+        #expect(Self.ids("to   eat") == ["f-taberu"], "runs of spaces fold to one")
+        #expect(Self.ids(" to\teat ") == ["f-taberu"], "a tab is a space, and the ends are trimmed")
+        #expect(Self.ids("toeat").isEmpty)
+        #expect(Self.ids("switch  off") == ["f-kiru"])
+    }
+
     // MARK: 2. Ranking
 
     /// Exact, then prefix, then substring — and a gloss's words each count as a start, so "eat"
@@ -130,6 +170,17 @@ struct WordSearchTests {
         #expect(eat == ["f-taberu:prefix", "f-seki:substring"])
         let mizu = Self.index.matches("みず", limit: 10).map(\.tier)
         #expect(mizu == [.exact, .exact, .prefix, .prefix])
+    }
+
+    /// A romaji query ranks by the tier its READING reaches, as a kana query does: mizu is an
+    /// exact match for 水 and 見ず and a prefix of 湖 and 水着. Mutation, 2026-09-29: the reading's
+    /// matches flattened to `.substring` → red (the kana query above stays green).
+    @Test("romaji ranks like the kana it spells: exact, then prefix")
+    func romajiTiers() {
+        let mizu = Self.index.matches("mizu", limit: 10).map { "\($0.entry.id):\($0.tier)" }
+        #expect(mizu == ["f-mizu:exact", "f-mizu-n1:exact", "f-mizuumi:prefix", "f-mizugi:prefix"], "\(mizu)")
+        let gakko = Self.index.matches("gakko", limit: 10).map { "\($0.entry.id):\($0.tier)" }
+        #expect(gakko == ["f-gakkou:prefix"], "\(gakko)")
     }
 
     /// 見ず (N1) comes before 水 (N5) in corpus order and ties it on the exact tier; the level
@@ -219,31 +270,99 @@ struct WordSearchTests {
         #expect(Self.store.entries.count == 7_071)
     }
 
-    /// The cost of one keystroke, on this Mac, in whatever configuration `swift test` built.
-    /// Printed so the record can quote it; bounded loosely so a regression by an order of
-    /// magnitude fails without a slow CI runner failing on noise. The frame budget on a phone is
-    /// 16.7 ms; the release-build figure is what the plan records.
+    /// ん before a vowel or y, spelled every way the ride accepts it, finds the word — on real
+    /// corpus words, through the store the screen calls. The ride's acceptance is asked, not
+    /// assumed: `KanaInputMatcher` must complete each spelling first, or the row is not a spelling
+    /// the ride takes. Mutations, 2026-09-29: the `readings` loop in `matches` reduced to the
+    /// first reading → red on tanni, tani, gennin, genin, kinnyou, kinyou.
+    @Test("each ん spelling the ride accepts finds 単位, 原因 and 金曜", arguments: [
+        ("n3-b594", "たんい", ["tan'i", "tanni", "taxni", "tani"]),
+        ("n4-g127", "げんいん", ["gen'in", "gennin", "gexnin", "genin", "genninn"]),
+        ("n3-b034", "きんよう", ["kin'you", "kinnyou", "kixnyou", "kinyou"]),
+    ])
+    func nSpellingsFindTheWord(_ c: (id: String, kana: String, spellings: [String])) throws {
+        let entry = try #require(Self.store.entry(id: c.id))
+        #expect(KanaScript.katakanaToHiragana(entry.kana) == c.kana)
+        for spelling in c.spellings {
+            var matcher = KanaInputMatcher(target: entry.kana)
+            let accepted = spelling.allSatisfy { matcher.input($0) != .rejected } && matcher.isComplete
+            #expect(accepted, "control: the ride does not accept \(spelling) for \(c.kana)")
+            let ids = Self.store.search(spelling, limit: 50).map(\.id)
+            #expect(ids.contains(c.id), "\(spelling) did not find \(c.id): \(ids.prefix(8))")
+        }
+        // The IME's reading still wins where it is a word: konnichiha is こんにちは, first.
+        #expect(Self.store.search("konnichiha", limit: 5).first?.id == "n5-konnichiwa")
+    }
+
+    /// The same property over the whole corpus: every entry whose hint writes ん with an
+    /// apostrophe, re-spelled with nn, xn and a lone n in its place, still reads as its reading.
+    /// This is what `RomajiReading.maxAmbiguousN` is measured against.
+    @Test("every corpus hint with n', re-spelled nn / xn / n, still reads as its reading")
+    func everyNSpellingFindsTheWord() {
+        var misses: [String] = []
+        var checked = 0
+        for entry in Self.store.entries where entry.romaji.contains("n'") {
+            let reading = KanaScript.katakanaToHiragana(entry.kana)
+            for replacement in ["nn", "xn", "n"] {
+                let spelling = entry.romaji.replacingOccurrences(of: "n'", with: replacement)
+                checked += 1
+                if !RomajiReading.readings(fromRomaji: spelling).contains(reading) {
+                    misses.append("\(entry.id) \(reading) \(spelling)")
+                }
+            }
+        }
+        print("WORDSEARCH n-SPELLINGS: \(checked) spellings of \(checked / 3) entries, \(misses.count) misses")
+        // Measured 2026-09-29: 44 entries, 132 spellings. A floor, so a hint format that stopped
+        // writing n' (and left this loop empty) cannot pass as "no misses".
+        #expect(checked >= 132, "only \(checked) spellings — the corpus has fewer n' hints than measured")
+        #expect(misses.isEmpty, "\(misses.count) misses: \(misses.prefix(20))")
+    }
+
+    /// `VocabStore.search` builds its index on the first search, once, and every copy of the
+    /// store shares it. Mutations, 2026-09-29: `built = index` removed from `LazySearchIndex`
+    /// (a rebuild per keystroke) → red; the index built in `VocabStore.init` → red on the 0.
+    @Test("VocabStore.search builds the index once, on the first search, shared by copies")
+    func buildOnce() {
+        let store = VocabStore(entries: Array(Self.store.entries.prefix(500)))
+        #expect(store.searchIndex.buildCount == 0, "built before anyone searched")
+        _ = store.search("a", limit: 5)
+        _ = store.search("mizu", limit: 5)
+        let copy = store
+        _ = copy.search("水", limit: 5)
+        _ = copy.wordSearchIndex
+        #expect(store.searchIndex.buildCount == 1, "built \(store.searchIndex.buildCount) times")
+    }
+
+    /// The cost of one keystroke on the path the screen calls — `VocabStore.search`, its lazy
+    /// index built by the first call and reused — in whatever configuration `swift test` built.
+    /// The figures are printed for the record; the assertion is on the MEDIAN of five rounds of
+    /// twenty queries, against a bound about eight times the debug median measured here (12.9 ms, 2026-09-29), so a
+    /// loaded machine's outliers cannot trip it and an order-of-magnitude regression still does.
+    /// The first version asserted the worst single query under 100 ms and failed 4 of 21 suite
+    /// runs under load. The frame budget on a phone is 16.7 ms; the release-build figure is what
+    /// the plan records.
     @Test("a keystroke-sized query over the whole corpus costs well under a frame")
     func timing() {
         let queries = ["m", "mi", "miz", "mizu", "み", "みず", "水", "w", "wa", "wat", "water",
                        "t", "ta", "tab", "tabe", "吃", "e", "a", "ko-hi-", "の"]
+        let store = VocabStore(entries: Self.store.entries)
         let clock = ContinuousClock()
-        let buildStart = clock.now
-        let index = WordSearchIndex(entries: Self.store.entries)
-        let build = clock.now - buildStart
-        var worst = Duration.zero
-        var total = Duration.zero
-        for _ in 0..<3 {
+        let firstStart = clock.now
+        _ = store.search("m", limit: 50)
+        let first = clock.now - firstStart
+        var samples: [Duration] = []
+        for _ in 0..<5 {
             for query in queries {
                 let start = clock.now
-                _ = index.search(query, limit: 50)
-                let spent = clock.now - start
-                worst = max(worst, spent)
-                total += spent
+                _ = store.search(query, limit: 50)
+                samples.append(clock.now - start)
             }
         }
-        let mean = total / (3 * queries.count)
-        print("WORDSEARCH TIMING: index build \(build), mean query \(mean), worst query \(worst), \(Self.store.entries.count) entries")
-        #expect(worst < .milliseconds(100), "worst query \(worst)")
+        samples.sort()
+        let median = samples[samples.count / 2]
+        let p95 = samples[samples.count * 95 / 100]
+        print("WORDSEARCH TIMING: first search (builds the index) \(first), median query \(median), p95 \(p95), worst \(samples.last!), \(samples.count) queries, \(Self.store.entries.count) entries")
+        #expect(store.searchIndex.buildCount == 1, "the index was built \(store.searchIndex.buildCount) times")
+        #expect(median < .milliseconds(100), "median query \(median)")
     }
 }

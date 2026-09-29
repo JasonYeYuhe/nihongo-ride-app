@@ -63,7 +63,8 @@ public struct VocabStore: Sendable {
     private let verbs: Set<WrittenAndRead>
 
     /// The word-search index, built on the first search rather than at launch (see ``search``).
-    private let searchIndex: LazySearchIndex
+    /// Internal, not private, so a test can count its builds (`LazySearchIndex.buildCount`).
+    let searchIndex: LazySearchIndex
 
     /// The shared store, loaded once from the bundled N5 starter pack.
     public static let shared = VocabStore.loadBundled()
@@ -220,14 +221,15 @@ public struct VocabStore: Sendable {
 
 /// Builds a `WordSearchIndex` once, on first use, from any thread.
 ///
-/// `@unchecked Sendable` because the lock is what makes it safe, and it is the only mutable state:
-/// `built` is written once, under `lock`, and read only under it. A class rather than a `lazy var`
+/// `@unchecked Sendable` because the lock is what makes it safe, and it guards the only mutable
+/// state: `built` and its counter `builds` are written once, under `lock`, and read only under it. A class rather than a `lazy var`
 /// because `VocabStore` is a `Sendable` struct shared as a `static let`, and a lazy property would
 /// need a mutating getter the shared store cannot call.
 final class LazySearchIndex: @unchecked Sendable {
     private let entries: [VocabEntry]
     private let lock = NSLock()
     private var built: WordSearchIndex?
+    private var builds = 0
 
     init(entries: [VocabEntry]) { self.entries = entries }
 
@@ -237,6 +239,15 @@ final class LazySearchIndex: @unchecked Sendable {
         if let built { return built }
         let index = WordSearchIndex(entries: entries)
         built = index
+        builds += 1
         return index
+    }
+
+    /// How many times the index has been built — 0 until the first search, 1 ever after. What
+    /// `WordSearchTests.buildOnce` reads.
+    var buildCount: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return builds
     }
 }

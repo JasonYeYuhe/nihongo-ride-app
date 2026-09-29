@@ -6,12 +6,16 @@ import RomajiKana
 ///
 /// **What a query matches.** Substring over each entry's written form, its reading and every
 /// gloss in every language the entry carries (en and zh today). Both sides are folded the same
-/// way (`fold`): NFKC (full-width Latin and half-width katakana become what a learner means),
-/// katakana → hiragana through `KanaScript` — the one rule the typing engine uses, not a second
-/// copy — lowercased, and a dash typed after kana read as the long-vowel mark ー. A Latin query
-/// that is romaji all the way through (`RomajiReading`) is ALSO matched as the hiragana it spells
-/// against the written form and the reading, so "mizu" finds 水/みず while "water" still finds
-/// it by its gloss.
+/// way (`fold`): NFKC, then canonical composition (full-width Latin and half-width katakana
+/// become what a learner means — ｶﾞｯｺｳ is ガッコウ; Foundation's NFKC alone leaves the half-width
+/// voiced marks as combining marks, カ + U+3099, and matched nothing), katakana → hiragana
+/// through `KanaScript` — the one rule the typing engine uses, not a second copy — lowercased,
+/// and a dash typed after kana read as the long-vowel mark ー. A Latin query that is romaji all
+/// the way through (`RomajiReading`) is ALSO matched as the hiragana it spells against the
+/// written form and the reading, so "mizu" finds 水/みず while "water" still finds it by its
+/// gloss. Where the spelling of a ん leaves the reading open ("tanni": たんい or たんに), every
+/// reading `RomajiReading.readings` gives is tried, so each way the ride accepts ん finds the
+/// word.
 ///
 /// **Ranking.** Three tiers, best first: exact (a whole field equals the query — the written
 /// form, the reading, or one gloss item), prefix (a field starts with it; for a gloss, any word
@@ -81,7 +85,7 @@ public struct WordSearchIndex: Sendable {
         let folded = Self.fold(words.joined(separator: " "))
         guard !folded.isEmpty else { return [] }
         let text = Array(folded.utf8)
-        let reading = RomajiReading.hiragana(fromRomaji: folded).map { Array($0.utf8) }
+        let readings = RomajiReading.readings(fromRomaji: folded).map { Array($0.utf8) }
 
         var found: [(row: Int, tier: Tier)] = []
         for index in rows.indices {
@@ -94,7 +98,7 @@ public struct WordSearchIndex: Sendable {
                     if best == .exact { break }
                 }
             }
-            if let reading, best != .exact {
+            for reading in readings where best != .exact {
                 best = Self.better(best, Self.tier(of: row.kana, query: reading, wordStarts: false))
                 best = Self.better(best, Self.tier(of: row.surface, query: reading, wordStarts: false))
             }
@@ -113,8 +117,12 @@ public struct WordSearchIndex: Sendable {
 
     /// The one normalisation both the corpus and a query go through.
     public static func fold(_ text: String) -> String {
-        let normalised = KanaScript.katakanaToHiragana(text.precomposedStringWithCompatibilityMapping)
-            .lowercased()
+        // NFKC and then NFC: `precomposedStringWithCompatibilityMapping` maps ﾞ/ﾟ to the
+        // combining U+3099/U+309A and does not compose them onto the kana before (measured
+        // 2026-09-29: ｶﾞｯｺｳ → カ U+3099 ッコウ), so ｶﾞｯｺｳ and ﾊﾟﾝ found nothing. The canonical
+        // composition that follows makes them ガ and パ.
+        let composed = text.precomposedStringWithCompatibilityMapping.precomposedStringWithCanonicalMapping
+        let normalised = KanaScript.katakanaToHiragana(composed).lowercased()
         var scalars = String.UnicodeScalarView()
         var previousIsKana = false
         for scalar in normalised.unicodeScalars {

@@ -19,7 +19,10 @@ import WordListsKit
 /// only a device can exercise — focus, Esc, the key-capture view stepping aside — which
 /// `WordListSearchFlowTests` (XCUITest, iPhone) drives for real (section 3). Whether the field
 /// takes the keyboard on a phone is that test's and the simulator pass's question, not this
-/// file's.
+/// file's. Added in the review (sections 4–6): pins that the screen calls the copy and cap
+/// functions section 1 tests; the VoiceOver status announcement, table-tested; and the contrast of
+/// every colour the row and the panel draw, computed with `V133SContrastTests`' model over the
+/// backdrops read from the source, with the disabled rows' pixels measured.
 @MainActor
 @Suite("v1.35 §B6: search from Word Lists")
 struct V135B6WordSearchTests {
@@ -345,10 +348,17 @@ struct V135B6WordSearchTests {
     @Test("the UI test's identifiers exist, and the runner runs it on the iPhone")
     func uiTestIsWired() throws {
         let root = CallSiteScanner.repoRoot
-        let uiTest = try String(contentsOf: root.appendingPathComponent(
-            "Tests/NihongoRideiOSUITests/WordListSearchFlowTests.swift"), encoding: .utf8)
-        let source = try String(contentsOf: HorizontalTextFitTests.appDirectory
-            .appendingPathComponent("ListsView.swift"), encoding: .utf8)
+        // Both read with comments blanked (strings kept): the first version read them raw, and a
+        // commented-out identifier passed. Mutation, 2026-09-29: `// .accessibilityIdentifier(
+        // "wordSearchOpen")` in ListsView → red; the same line commented in the UI test → red.
+        let uiTest = CallSiteScanner.File(
+            path: "WordListSearchFlowTests.swift",
+            source: try String(contentsOf: root.appendingPathComponent(
+                "Tests/NihongoRideiOSUITests/WordListSearchFlowTests.swift"), encoding: .utf8)).allCodeWithStrings
+        let source = CallSiteScanner.File(
+            path: "ListsView.swift",
+            source: try String(contentsOf: HorizontalTextFitTests.appDirectory
+                .appendingPathComponent("ListsView.swift"), encoding: .utf8)).allCodeWithStrings
         for identifier in ["wordSearchOpen", "wordSearchField", "wordSearchClose", "newListButton", "practiceListButton"] {
             #expect(uiTest.contains("\"\(identifier)\""), "the UI test does not use \(identifier)")
             #expect(source.contains(".accessibilityIdentifier(\"\(identifier)\")"), "ListsView has no \(identifier)")
@@ -360,14 +370,282 @@ struct V135B6WordSearchTests {
         #expect(VocabStore.shared.search("mizu", limit: 1).first?.id == "n5-mizu",
                 "the UI test types mizu and expects n5-mizu at the top")
 
+        // The script is shell, not Swift: read raw, and its `-only-testing` line must not be a
+        // `#` comment.
         let script = try String(contentsOf: root.appendingPathComponent("scripts/run_ios_placement_tests.sh"),
                                 encoding: .utf8)
         let iPhone = try #require(script.range(of: "caffeinate -d -i xcodebuild test").map { start in
             script[start.lowerBound..<(script.range(of: "IPHONE_STATUS=$?")?.lowerBound ?? script.endIndex)]
         })
         #expect(iPhone.contains("-only-testing:NihongoRideiOSUITests/WordListSearchFlowTests \\"))
+        #expect(!iPhone.split(separator: "\n").contains {
+            $0.contains("WordListSearchFlowTests") && $0.trimmingCharacters(in: .whitespaces).hasPrefix("#")
+        }, "the UI test's -only-testing line is commented out")
         #expect(iPhone.contains("name=$SIM_NAME"), "the first invocation is no longer the iPhone's")
         #expect(uiTest.contains("final class WordListSearchFlowTests: XCTestCase"))
         #expect(script.contains("That is all 14 methods in the target."))
     }
+
+    // MARK: 4. The view uses what section 1 tests
+
+    /// Section 1 tests `fullNotice`, `state(inList:wordCount:cap:)`, `noResults` and
+    /// `emptyStateText` as functions; these pins say the screen calls them, where it should, read
+    /// with comments blanked. Mutations, 2026-09-29, each red: `if full` → `if false`; the row's
+    /// `wordCount: list.ids.count` → `wordCount: 0`; the empty state's text replaced by the old
+    /// ★-only literal; `.disabled(state != .addable)` removed from the row.
+    @Test("the panel shows the cap notice and disables rows at the cap; the empty state and no-results use their copy")
+    func capAndCopyAreWired() throws {
+        let panel = try Self.detail("private func searchPanel")
+        #expect(panel.contains("let full = list.ids.count >= WordListStore.maxWordsPerList"))
+        #expect(panel.contains("if full { Text(Self.fullNotice(zh: zh))"))
+        #expect(panel.contains("state: WordSearchResultRow.state(inList: inList, wordCount: list.ids.count, cap: WordListStore.maxWordsPerList),"))
+        #expect(panel.contains("let inList = members.contains(entry.id)") && panel.contains("let members = Set(list.ids)"))
+        #expect(panel.contains("} else if results.isEmpty { Text(Self.noResults(trimmed, zh: zh))"))
+        #expect(panel.contains("if results.count == Self.searchLimit {"))
+        let file = try #require(try CallSiteScanner.shippedSources.get()
+            .first { $0.path == "Sources/NihongoRideApp/ListsView.swift" })
+        let row = try #require(file.typeBodies(named: "WordSearchResultRow").first)
+        let rowCode = Self.collapsed(String(decoding: file.codeWithStrings[row], as: UTF8.self))
+        #expect(rowCode.contains(".disabled(state != .addable)"))
+        #expect(rowCode.contains("if state == .addable { Button(Self.addActionName(zh: zh), action: add) }"))
+        let empty = try Self.detail("private var emptyState")
+        #expect(empty.contains("Text(Self.emptyStateText(zh: zh))"))
+        let body = try Self.detail("var body: some View")
+        #expect(body.contains("if list.ids.isEmpty { if !searching { emptyState } }"),
+                "the empty state is drawn somewhere other than an empty live list with search closed")
+        #expect(body.contains("} else { unavailableState }"), "a gone list shows something other than unavailableState")
+        #expect(body.components(separatedBy: "emptyState").count == 2, "emptyState is drawn twice")
+    }
+
+    /// A list that is gone draws no search button (the panel and the launchers are both under
+    /// `if let list, !list.deleted`), so its line must not send the learner to one. It used to
+    /// be `emptyState`, which does.
+    @Test("a gone list's line names no button it does not draw, in both languages")
+    func unavailableCopy() {
+        let en = ListDetailView.unavailableText(zh: false)
+        let zh = ListDetailView.unavailableText(zh: true)
+        #expect(en == "This list isn't here any more — it may have been deleted on another device. Go back to see your lists.")
+        #expect(zh == "这个词单已不存在,可能已在另一台设备上删除。返回即可查看你的词单。")
+        for text in [en, zh] {
+            #expect(!text.contains("Search") && !text.contains("搜索") && !text.contains("★"), "\(text)")
+        }
+    }
+
+    // MARK: 5. VoiceOver hears the result list appear and empty (WCAG 4.1.3)
+
+    /// Table: every transition between nothing typed, no match and a count. Spoken only when the
+    /// set goes from none (or nothing typed) to some, or from anything to none; never when a count
+    /// moves while there are results, nor on clearing the field. Mutation, 2026-09-29: the
+    /// `(.some, .some)` case removed → red on the 12 → 3 row (every keystroke would speak).
+    @Test("the announcement fires on none → some and some → none only, with the count or 'no words match'")
+    func announcementTable() {
+        typealias O = ListDetailView.SearchOutcome
+        let limit = ListDetailView.searchLimit
+        let rows: [(O, O, String?, String?)] = [
+            (.idle, .idle, nil, nil),
+            (.idle, .some(1), "1 word found.", "找到 1 个词。"),
+            (.idle, .some(3), "3 words found.", "找到 3 个词。"),
+            (.idle, .some(limit), "Showing the first 50 words.", "显示前 50 个词。"),
+            (.idle, .none, "No words match.", "没有匹配的词。"),
+            (.some(12), .some(3), nil, nil),
+            (.some(3), .some(limit), nil, nil),
+            (.some(3), .none, "No words match.", "没有匹配的词。"),
+            (.some(3), .idle, nil, nil),
+            (.none, .none, nil, nil),
+            (.none, .some(2), "2 words found.", "找到 2 个词。"),
+            (.none, .idle, nil, nil),
+        ]
+        for (old, new, en, zh) in rows {
+            #expect(ListDetailView.searchAnnouncement(from: old, to: new, limit: limit, zh: false) == en, "\(old) → \(new)")
+            #expect(ListDetailView.searchAnnouncement(from: old, to: new, limit: limit, zh: true) == zh, "\(old) → \(new)")
+        }
+        #expect(ListDetailView.searchOutcome(query: "", count: 0) == .idle)
+        #expect(ListDetailView.searchOutcome(query: "  ", count: 0) == .idle)
+        #expect(ListDetailView.searchOutcome(query: "zzqx", count: 0) == .none)
+        #expect(ListDetailView.searchOutcome(query: "mizu", count: 4) == .some(4))
+    }
+
+    /// The view posts it, from the query's change, with the outcome before and after the search.
+    /// Mutation, 2026-09-29: the `.post()` line removed → red.
+    @Test("the query's onChange posts the announcement from the outcomes around the search")
+    func announcementIsPosted() throws {
+        let body = try Self.detail("var body: some View")
+        #expect(body.contains(".onChange(of: query) { old, new in let before = Self.searchOutcome(query: old, count: results.count) results = model.vocab.search(new, limit: Self.searchLimit)"))
+        #expect(body.contains("let after = Self.searchOutcome(query: new, count: results.count) if let line = Self.searchAnnouncement(from: before, to: after, limit: Self.searchLimit, zh: zh) { AccessibilityNotification.Announcement(line).post() }"))
+    }
+
+    // MARK: 6. Contrast — every text in the row and the panel, on what it sits on
+
+    typealias Model = V133SContrastTests
+
+    /// The arguments of every `.foregroundStyle(…)` in `text`.
+    static func foregroundArguments(_ text: String) -> [String] {
+        var arguments: [String] = []
+        var from = text.startIndex
+        while let open = text.range(of: ".foregroundStyle(", range: from..<text.endIndex) {
+            var depth = 1
+            var index = open.upperBound
+            while index < text.endIndex {
+                if text[index] == "(" { depth += 1 }
+                if text[index] == ")" { depth -= 1; if depth == 0 { break } }
+                index = text.index(after: index)
+            }
+            arguments.append(String(text[open.upperBound..<index]))
+            from = index
+        }
+        return arguments
+    }
+
+    /// The colour names in a `foregroundStyle` argument — `Theme.x`, `Self.x`, `.white` — so a
+    /// ternary over states yields every colour any state draws.
+    static func colourNames(_ argument: String) -> [String] {
+        let regex = try! NSRegularExpression(pattern: #"\b(?:Theme|Self|AboutView|ListDetailView|WordSearchResultRow|Color)\.[A-Za-z0-9]+|(?<![A-Za-z0-9_)])\.(?:white|black|primary|secondary|gray|grey)\b"#)
+        return regex.matches(in: argument, range: NSRange(argument.startIndex..., in: argument))
+            .compactMap { Range($0.range, in: argument).map { String(argument[$0]) } }
+    }
+
+    /// Every `foregroundStyle` in `text` names only colours in `known`, with no opacity or
+    /// constructed colour beside them, and each clears 4.5:1 over every backdrop in `backdrops`.
+    /// Returns how many colour uses it checked, so a scan that found nothing cannot pass.
+    static func checkEveryColour(in text: String, where place: String, known: [String: Color],
+                                 over backdrops: [Model.RGB]) -> Int {
+        var checked = 0
+        for argument in foregroundArguments(text) {
+            #expect(!argument.contains("opacity") && !argument.contains("Color("),
+                    "\(place): .foregroundStyle(\(argument)) changes a colour this test cannot compute")
+            let names = colourNames(argument)
+            #expect(!names.isEmpty, "\(place): .foregroundStyle(\(argument)) names no colour this test reads")
+            for name in names {
+                guard let colour = known[name] else {
+                    Issue.record("\(place): \(name) is not a colour this test has computed for this backdrop")
+                    continue
+                }
+                for backdrop in backdrops {
+                    let ratio = Model.contrast(Model.over(colour, backdrop), backdrop)
+                    #expect(ratio >= 4.5, "\(place): \(name) at \(ratio):1 over \(backdrop)")
+                }
+                checked += 1
+            }
+        }
+        #expect(text.contains(".foregroundColor(") == false, "\(place): a foregroundColor this test does not read")
+        return checked
+    }
+
+    /// The row sits on `Theme.card` over the gradient; every colour it draws — word, reading, gloss
+    /// and each state's icon — clears 4.5:1 on that card at both stops. The gloss was `Theme.dim`,
+    /// 3.91:1 (the control below). Mutations, 2026-09-29: the gloss back to `Theme.dim` → red
+    /// (an unknown colour); `glossColor` = white at 0.50 → red (4.46:1).
+    @Test("every colour the result row draws clears 4.5:1 on its card, in every state")
+    func rowTextClears() throws {
+        let file = try #require(try CallSiteScanner.shippedSources.get()
+            .first { $0.path == "Sources/NihongoRideApp/ListsView.swift" })
+        let row = try #require(file.typeBodies(named: "WordSearchResultRow").first)
+        let rowCode = Self.collapsed(String(decoding: file.codeWithStrings[row], as: UTF8.self))
+        // The backdrop, read from the source: one card, and nothing else behind or over the text.
+        #expect(rowCode.components(separatedBy: ".background(").count == 2
+                && rowCode.contains(".background(Theme.card, in: RoundedRectangle(cornerRadius: 10))"))
+        #expect(!rowCode.contains(".overlay") && !rowCode.contains(".opacity(") && !rowCode.contains("ZStack"))
+        // Not `.plain`, which dims a disabled row's text (`disabledRowIsNotDimmed`).
+        #expect(rowCode.contains(".buttonStyle(RowStyle())") && !rowCode.contains(".buttonStyle(.plain)"))
+        let cards = try Model.gradientStops().map { Model.over(Theme.card, $0) }
+        let checked = Self.checkEveryColour(in: rowCode, where: "WordSearchResultRow", known: [
+            ".white": .white, "Theme.accent2": Theme.accent2, "Self.glossColor": WordSearchResultRow.glossColor,
+            "Theme.gold": Theme.gold, "Theme.accent": Theme.accent,
+        ], over: cards)
+        #expect(checked == 6, "checked \(checked) colour uses: word, reading, gloss, and the icon's three states")
+
+        let bottomCard = try #require(cards.last)
+        let gloss = Model.contrast(Model.over(WordSearchResultRow.glossColor, bottomCard), bottomCard)
+        #expect(abs(gloss - 4.57) < 0.01, "the gloss computes \(gloss):1 on the bottom card; its comment says 4.57")
+        let before = Model.contrast(Model.over(Theme.dim, bottomCard), bottomCard)
+        #expect(before < 4.5 && abs(before - 3.91) < 0.01, "control: Theme.dim on the card computed \(before):1, the review measured 3.91")
+    }
+
+    /// The panel's texts sit straight on the gradient (the panel and the screen's content draw no
+    /// backdrop of their own — read below); every colour they draw clears 4.5:1 at both stops.
+    /// The hint, no-results line, first-50 note and "In this list" caption were `Theme.dim`:
+    /// 4.24:1 at the bottom stop, 4.47:1 at the top (the control). Mutation, 2026-09-29: the
+    /// hint back to `Theme.dim` → red.
+    ///
+    /// Not held: the open button while the lists file cannot be read is `.disabled` under
+    /// `.buttonStyle(.plain)`, which draws it dimmed — an inactive control, which WCAG 1.4.3
+    /// exempts, and the one state here that says "not now" by being dim. The field's own text and
+    /// placeholder are the system's `roundedBorder` field, drawn on its own bezel.
+    @Test("every colour the search panel draws clears 4.5:1 on the background at both stops")
+    func panelTextClears() throws {
+        let stops = try Model.gradientStops()
+        let known: [String: Color] = [
+            "Self.dimTextColor": ListDetailView.dimTextColor, "Theme.gold": Theme.gold,
+            "Theme.accent": Theme.accent, "Theme.accent2": Theme.accent2,
+        ]
+        var checked = 0
+        for declaration in ["private func searchPanel", "private var searchField", "private var searchCloseButton",
+                            "private var searchOpenButton", "private func inThisListCaption",
+                            "private var emptyState", "private var unavailableState"] {
+            let text = try Self.detail(declaration)
+            #expect(!text.isEmpty && text.count < 5000, "\(declaration): the brace walk returned \(text.count) characters")
+            #expect(!text.contains(".background(") && !text.contains(".panel(") && !text.contains(".opacity("),
+                    "\(declaration) draws a backdrop or an opacity this test does not compose")
+            checked += Self.checkEveryColour(in: text, where: declaration, known: known, over: stops)
+        }
+        #expect(checked == 9, "checked \(checked) colour uses: full notice, hint, no results, first 50, Done, open, caption, empty, gone")
+        // The screen's content draws nothing behind the panel: its only background is the
+        // key-capture view, which draws nothing and is absent while search is open.
+        let body = try Self.detail("var body: some View")
+        #expect(body.components(separatedBy: ".background").count == 2
+                && body.contains(".background { if !Screenshotter.isCapturing && !searchIsShowing { KeyCaptureView("))
+
+        let bottom = stops[1], top = stops[0]
+        let now = Model.contrast(Model.over(ListDetailView.dimTextColor, bottom), bottom)
+        #expect(abs(now - 4.62) < 0.01, "dimTextColor computes \(now):1 at the bottom stop; its comment says 4.62")
+        let beforeBottom = Model.contrast(Model.over(Theme.dim, bottom), bottom)
+        let beforeTop = Model.contrast(Model.over(Theme.dim, top), top)
+        #expect(abs(beforeBottom - 4.24) < 0.01 && abs(beforeTop - 4.47) < 0.01,
+                "control: Theme.dim computed \(beforeBottom) / \(beforeTop), the review measured 4.24 / 4.47")
+    }
+
+    #if canImport(AppKit)
+    /// The arithmetic above holds only if a disabled row — in the list, or the list full — draws
+    /// its text in the colours it names. It did not: under `.buttonStyle(.plain)` a disabled row
+    /// drew the gloss at 71 of 255 instead of 137 and the word at 131 instead of 255 (this test's
+    /// first run, 2026-09-29), about 2:1 on the card, on every row of a full list. Measured in the
+    /// renderer: the text side of the row (the icon, which does change, is on the trailing side)
+    /// draws the same pixels in all three states, and the gloss's solid glyph is the grey the
+    /// model computes over the card (on the renderer's black). Control: the same row at 0.9
+    /// opacity differs, so a dimming of disabled content is seen. Mutation, 2026-09-29:
+    /// `.buttonStyle(.plain)` back on the row → red. macOS rendering; the iOS look is the
+    /// simulator pass's to confirm.
+    @MainActor
+    @Test("a disabled row draws its text as an addable one does, in the colour computed")
+    func disabledRowIsNotDimmed() throws {
+        func render(_ state: WordSearchResultRow.State, opacity: Double = 1) -> V134B5RomajiHintTests.Bitmap? {
+            V134B5RomajiHintTests.render(Self.row("水", "みず", "████ water", scale: 1, state: state).opacity(opacity),
+                                         width: 358, height: nil)
+        }
+        func textSide(_ bitmap: V134B5RomajiHintTests.Bitmap) -> [UInt8] {
+            let columns = bitmap.width * 7 / 10
+            return (0..<bitmap.height).flatMap { y in bitmap.bytes[(y * bitmap.width * 4)..<(y * bitmap.width * 4 + columns * 4)] }
+        }
+        let addable = try #require(render(.addable))
+        let inList = try #require(render(.inList))
+        let full = try #require(render(.listFull))
+        let dimmed = try #require(render(.addable, opacity: 0.9))
+        #expect(textSide(addable) == textSide(inList), "an in-list row draws its text differently")
+        #expect(textSide(addable) == textSide(full), "a full-list row draws its text differently")
+        #expect(textSide(addable) != textSide(dimmed), "control: the comparison does not see a 10% dimming")
+
+        // The gloss's block glyphs are solid: their pixels are the gloss colour over the card over
+        // black. Most common grey in the text side between the card and the white word.
+        let black: Model.RGB = (0, 0, 0)
+        let expected = Model.over(WordSearchResultRow.glossColor, Model.over(Theme.card, black))
+        let target = Int((expected.r * 255).rounded())
+        let side = textSide(addable)
+        var hits = 0
+        for pixel in stride(from: 0, to: side.count, by: 4)
+        where abs(Int(side[pixel]) - target) <= 2 && side[pixel] == side[pixel + 1] && side[pixel] == side[pixel + 2] {
+            hits += 1
+        }
+        #expect(hits > 500, "only \(hits) pixels at the computed gloss grey \(target) — the row draws another colour")
+    }
+    #endif
 }
