@@ -15,6 +15,7 @@ import SwiftUI
 ///   HUD pills) so a huge accessibility size can't blow out the fixed game layout.
 struct ScaledSystemFont: ViewModifier {
     @ScaledMetric private var size: CGFloat
+    @Environment(\.emulatedTextScale) private var emulatedTextScale
     private let weight: Font.Weight
     private let design: Font.Design
     private let monospacedDigit: Bool
@@ -30,7 +31,8 @@ struct ScaledSystemFont: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        let resolved = maxScaled.map { Swift.min(size, $0) } ?? size
+        let scaled = size * emulatedTextScale
+        let resolved = maxScaled.map { Swift.min(scaled, $0) } ?? scaled
         var font = Font.system(size: resolved, weight: weight, design: design)
         if monospacedDigit { font = font.monospacedDigit() }
         return content.font(font)
@@ -59,4 +61,21 @@ extension View {
                                   relativeTo: style, monospacedDigit: monospacedDigit,
                                   maxScaled: maxScaled))
     }
+}
+
+extension EnvironmentValues {
+    /// A factor on every `scaledSystemFont` size, applied where `@ScaledMetric` would scale it and
+    /// before `maxScaled` caps it — **1 in the app, which never sets it**, so every size is what it
+    /// was (a product by 1 is exact). It exists for hosted tests: macOS does not scale `@ScaledMetric`
+    /// for any `dynamicTypeSize`, so a test that lays out an iOS screen at, say, AX1 on a Mac sets
+    /// this to that size's body-point ratio (28/17) as well as the size itself.
+    ///
+    /// **Why a test seam is in shipped code.** It cannot live in the test module: the reading has to
+    /// happen inside `ScaledSystemFont`, the shipped modifier every screen's fonts go through, and a
+    /// test can neither add a stored `@Environment` to a shipped type nor reach the `Font` it builds.
+    /// The alternatives were a copy of the HUD's fonts in the tests (a copy is what the hosted tests
+    /// exist not to measure) or no hosted measurement above the default size at all.
+    /// `V135HUDRowTests.emulatedTextScaleIsNeverSet` pins that no shipped source sets it, that this
+    /// default is 1 and that the product above is the only use. (v1.35)
+    @Entry var emulatedTextScale: CGFloat = 1
 }

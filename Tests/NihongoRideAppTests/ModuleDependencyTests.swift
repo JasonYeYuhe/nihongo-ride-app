@@ -86,6 +86,8 @@ struct ModuleDependencyTests {
     static let platformModules: Set<String> = [
         "Testing", "Foundation", "XCTest", "SwiftUI", "CloudKit", "UIKit", "AppKit", "os",
         "Combine", "UserNotifications", "WidgetKit", "StoreKit", "AVFoundation", "Observation",
+        // v1.35: the SDK's hashing, for `V135HUDRowTests`' f37fab7 digests.
+        "CryptoKit",
     ]
 
     /// Every `.testTarget` and the dependency list it declares.
