@@ -29,6 +29,9 @@ import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from corpus_io import escape_residue   # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "Sources/VocabKit/Resources"
 MODEL = "gemini-3.1-pro-preview"
@@ -120,6 +123,10 @@ def validate(item, entry, seen_jp):
         return "duplicate sentence"
     if re.search(r"[a-zA-Z0-9]", jp):
         return "latin chars in exJP"
+    for key, text in (("exJP", jp), ("exEN", en), ("exZH", zh)):
+        residue = escape_residue(text)
+        if residue:
+            return f"{key} carries {residue}"
     return None
 
 

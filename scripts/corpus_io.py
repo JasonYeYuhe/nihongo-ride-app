@@ -30,7 +30,31 @@ TWO THINGS, and the second is the durable one:
     some way this module does not anticipate stops here instead of landing an unreviewable diff.
 """
 import json
+import re
 from pathlib import Path
+
+
+# What a quoting layer leaves in text when it is applied and never undone. 3e9407a shipped 20
+# apostrophes as `'''` in 18 Practice translations — a shell-quoted `'\''` read back by an
+# interpreter that takes `\'` as `'` — and nothing read the text until a person saw it on an
+# iPad in the v1.34 simulator pass. None of these shapes has a legitimate use anywhere in the
+# corpus. `Tests/VocabKitTests/CorpusEscapeResidueTests.swift` holds every shipped file to the
+# SAME rule and is the authority; this copy lets a generator refuse the text before merging it.
+# Change one, change both — `scripts/test_escape_residue.py` runs the Swift test's own cases here.
+_RESIDUE = (
+    (re.compile(r"''"), "a run of ASCII apostrophes (shell `'\\''` read back as `'''`, or SQL `''`)"),
+    (re.compile(r"\\"), "a backslash (an escape nobody undid)"),
+    (re.compile(r'""'), "a doubled double quote (CSV quoting)"),
+    (re.compile(r"&(?:[A-Za-z][A-Za-z0-9]*|#[0-9]+|#[xX][0-9A-Fa-f]+);"), "an HTML character reference"),
+)
+
+
+def escape_residue(text):
+    """What is wrong with `text`, or None when nothing is."""
+    for pattern, why in _RESIDUE:
+        if pattern.search(text):
+            return why
+    return None
 
 
 class CorpusFile:
