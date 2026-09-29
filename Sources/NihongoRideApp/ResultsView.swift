@@ -114,7 +114,9 @@ struct ResultsView: View {
     ///
     /// Not this constant's business: the dim captions on the score tiles and the word chips sit on
     /// `Theme.card` (white 0.06) over the panel, a lighter background (about 4.14:1 at worst in the
-    /// same model), and are a separate question, left as they were.
+    /// same model) — and a SAVED chip or review cell sits on `Theme.gold` at 0.14 instead, where
+    /// `Theme.dim` computes to about 3.81:1 at worst (review of b425ac3). Both are a separate
+    /// question, left as they were.
     static let panelCaptionColor = Color.white.opacity(0.46)
 
     /// Two lines below the accessibility sizes — unchanged from the line's first build, so the

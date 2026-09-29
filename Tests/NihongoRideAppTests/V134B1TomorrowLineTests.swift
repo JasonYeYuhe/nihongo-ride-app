@@ -920,7 +920,7 @@ struct V134B1TomorrowLineTests {
             }
         } } }
         // The grid is not vacuous: most of its layouts wrap, so there were breaks to place
-        // (measured 2026-09-29: 77% to 91% per phone and language).
+        // (measured 2026-09-29 on the 26-size grid: 71% to 90% per phone and language).
         #expect(sizes.count == 26, "\(sizes.count) sizes")
         #expect(measured == 10 * 13 * 13 * 26 && wrapped > measured / 2, "\(wrapped) of \(measured) layouts wrapped")
     }
@@ -1016,8 +1016,13 @@ struct V134B1TomorrowLineTests {
                     "\(identifier) spells \(n) otherwise than the paste notice")
         }
         #expect(!code.contains { $0.contains("Locale.current") || $0.contains("autoupdatingCurrent")
-                                   || $0.contains(".formatted(.number)") },
+                                   || $0.contains(".formatted(.number)") || $0.contains("NumberFormatter")
+                                   || $0.contains("format:") },
                 "TomorrowLine reads the device's locale somewhere")
+        // …and number(_:) is the only place a count is formatted: a count interpolated through
+        // `n.formatted()` elsewhere would follow the device (review of b425ac3, measured green then).
+        let formatting = code.filter { $0.contains(".formatted(") }
+        #expect(formatting.count == 1, "TomorrowLine formats a number outside number(_:): \(formatting)")
         // Control: the device's locale would matter. The same count in two other locales.
         #expect(7_071.formatted(.number.locale(Locale(identifier: "de_DE"))) == "7.071")
         #expect(7_071.formatted(.number.locale(Locale(identifier: "fr_FR"))) != "7,071")
