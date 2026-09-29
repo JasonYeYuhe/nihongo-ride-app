@@ -18,7 +18,8 @@ REPO = Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "Sources/VocabKit/Resources"
 
 # Set to this release's corpus-change manifest, or None when the release changes no corpus.
-CORPUS_MANIFEST = None        # v1.30 ships the paid route and touches no vocabulary file
+CORPUS_MANIFEST = "docs/measurements/v135-residue-manifest.json"   # v1.35 corrects seven residue entries
+# Was None from v1.27 through v1.34 ("v1.30 ships the paid route and touches no vocabulary file").
 
 
 # Advanced with every release. v1.27 moved it from 60c9ed9 (the v1.25 baseline) to the v1.26

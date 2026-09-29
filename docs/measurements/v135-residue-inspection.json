@@ -1,0 +1,710 @@
+{
+ "measurement": "v1.35 hand inspection of the v1.26 uninspected residue (docs/measurements/v126-uninspected-residue.json)",
+ "population": "all 112 ids in the residue; none skipped",
+ "method": "Per entry: Sudachi (SplitMode.C, .venv-jp) on exJP against exKana; exTokens concatenation against exJP and exKana; the audio arbiter (check_forces_reading.py / check_dictation_readings.py, caches outside the repo) where a reading was in doubt; the inspector's own judgement of naturalness, sense and both translations. Every defect was then put to two independent refuters; a correction ships only when both upheld it.",
+ "counts": {
+  "ok": 100,
+  "defect": 9,
+  "uncertain": 3,
+  "corrected": 7,
+  "declined": 2,
+  "recordedUncertain": 3
+ },
+ "manifest": "docs/measurements/v135-residue-manifest.json",
+ "note": "'ok' means no defect was found by this method, not that the sentence is proven; 'uncertain' rows are recorded and unchanged. v126-uninspected-residue.json is left as it is: this is a one-time hand inspection, and those 112 sentences are still outside every automated reading gate.",
+ "items": [
+  {
+   "id": "n1-b1093",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 恋:こい+し(する)+て+いる gives the same reading as exKana. The tokens line up. 同じ職場の同僚 repeats itself slightly but is a common natural phrase. The EN 'is in love with' and the ZH 爱上了 both fit 恋している."
+  },
+  {
+   "id": "n1-b1102",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana, and こだわっ has dictionary form こだわる. The tokens line up. The sentence is natural, and the sense 'particular about' matches meanings[1]."
+  },
+  {
+   "id": "n1-b1292",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 報じ:ほうじ has dictionary form 報ずる. The じ-stem is the correct conjugation of a ずる verb. Arbiter comparative: the shipped exKana 0.06048 beats the rival ほうずて 0.07887. PROOF silent."
+  },
+  {
+   "id": "n1-b1302",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi and the tokens match exKana. 不満をぼやく is a natural pairing. The EN and ZH (咕哝抱怨) are accurate."
+  },
+  {
+   "id": "n1-b1323",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 面し:めんし has dictionary form 面する, and it matches exKana. The tokens line up. This is the textbook use of 海に面する. The EN and ZH are accurate."
+  },
+  {
+   "id": "n1-b1331",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi and the tokens match exKana. The sentence is natural. 'complicated' matches the sense given in exMeta (puzzling/tangled). The EN and ZH are accurate."
+  },
+  {
+   "id": "n1-b1531",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 手振り:てぶり and 制し:せいし match exKana. Arbiter comparative: shipped 0.02471 against the rival てふり 0.04144, favouring the shipped reading. 制する in the sense 制止する (手で制する) is standard."
+  },
+  {
+   "id": "n1-b1937",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 即し:そくし has dictionary form 即する and matches exKana. The tokens line up. 現実に即した is a set expression. The EN and ZH are accurate."
+  },
+  {
+   "id": "n1-b1980",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 聞き手:ききて and 徹し:てっし match exKana. Arbiter comparative: shipped 0.03008 against the rival きくて 0.04474. 聞き手に徹する is idiomatic. The EN ('stuck strictly to the role of a listener') and the ZH are accurate."
+  },
+  {
+   "id": "n1-b2083",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 眼鏡:めがね, 周り:まわり and 風景:ふうけい all match exKana. The tokens line up, including the comma. Arbiter comparative: shipped 0.01564 against the rival がんきょう 0.06404. The sentence is natural, and the EN and ZH are accurate."
+  },
+  {
+   "id": "n1-b289",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 準じ:じゅんじ has dictionary form 準ずる and matches exKana. 決定+さ+れる is tokenised consistently. Arbiter comparative: shipped 0.03738 against the rival じゅんずて 0.04600. The more common pairing would be 経験や能力に応じて."
+  },
+  {
+   "id": "n1-b366",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi and the tokens match exKana, including the comma. This is the prototypical use of ばてる (from summer heat). The EN and ZH are accurate."
+  },
+  {
+   "id": "n1-b413",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 有し:ゆうし has dictionary form 有する and matches exKana. The tokens line up. The formal register suits 有する. The EN and ZH are accurate."
+  },
+  {
+   "id": "n1-b550",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 小動物:しょうどうぶつ and 逃げ去っ:にげさっ match exKana. Arbiter comparative: shipped 0.02503 against the rival こどうぶつ 0.05599. The sentence is natural, and the EN 'nimbly' and ZH 敏捷地 are accurate."
+  },
+  {
+   "id": "n1-b640",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 反し:はんし has dictionary form 反する and matches exKana. The tokens line up. 校則に反する is standard. The EN 'violates' and ZH 违反 are accurate."
+  },
+  {
+   "id": "n1-b674",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi and the tokens match exKana. 乗り換えにまごつく is natural. The EN and ZH (手足无措) are accurate."
+  },
+  {
+   "id": "n1-b841",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi and the tokens match exKana. With 地震の影響で, the sentence clearly means the clock has moved out of position, which matches exMeta 'to slip out of position'."
+  },
+  {
+   "id": "n1-g008",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi reads 後継ぎ as アトツギ, and its normalized_form is 跡継ぎ, so Sudachi treats them as the same lexeme. Arbiter PROOF: the kanji sentence's audio is byte-identical to あとつぎがいない, which is decisive for the reading."
+  },
+  {
+   "id": "n1-g046",
+   "verdict": "defect",
+   "kind": "B-word",
+   "evidence": "驕る taught, sentence writes 奢る. Split vote (1 upheld, 1 refuted): same lexeme おごる, the haughty sense is attested with 奢 (奢る平家), sense and reading match; already on knownVariantSpelling. Not corrected.",
+   "disposition": "declined",
+   "refuterVotes": "1 of 2 upheld"
+  },
+  {
+   "id": "n1-g048",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi: 彼:かれ / を / おだてる:おだてる (lemma おだてる), so the joined reading equals exKana. Tokenizing the headword 煽てる gives おだてる, which matches the taught kana. Tokens join to exJP and exKana."
+  },
+  {
+   "id": "n1-g070",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi: 友達:ともだち / を / からかう, which equals exKana. The headword 揶揄う reads からかう, as taught. Tokens are consistent. The headword is written in kana, so no reading is in doubt."
+  },
+  {
+   "id": "n1-g111",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi: 子ども:こども / お母さん:おかあさん / 服:ふく / しがみつい (lemma しがみつく) / た, which equals exKana. Tokens are consistent."
+  },
+  {
+   "id": "n1-g122",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi: 称し:しょうし (lemma 称する, the suru class), which equals exKana, and the headword reads しょうする. Tokens are consistent. Arbiter: the rival たたえている was far (0.1695)."
+  },
+  {
+   "id": "n1-g140",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi: たくましい / 体格:たいかく / の / 若者:わかもの, which equals exKana. The headword 逞しい reads たくましい. Tokens are consistent. The headword is written in kana, and 体格 and 若者 have no competing readings."
+  },
+  {
+   "id": "n1-g143",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi: 危機:きき / 脱し:だっし (lemma 脱する), which equals exKana. Tokens are consistent. Arbiter: the taught reading was nearest (0.0162), against だつした at 0.0482 and ぬけた at 0.0749; the proof was silent."
+  },
+  {
+   "id": "n1-g219",
+   "verdict": "defect",
+   "kind": "C-sense-grammar",
+   "evidence": "'to warp' is for material (wood), wrong for a face, and 'will' imposed a future. exEN now 'My face twists in pain.'. Reading ゆがむ is correct; the voice's ひずむ is already recorded and excluded.",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld"
+  },
+  {
+   "id": "n1-g306",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi: 子供:こども / 足:あし / 裏:うら / こっそり / くすぐっ (lemma くすぐる) / た, which equals exKana. Tokens are consistent."
+  },
+  {
+   "id": "n1-g333",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi: 大切:たいせつ / 大学:だいがく / 入学試験:にゅうがくしけん / しくじっ (lemma しくじる) / て / しまっ / た, which equals exKana. Tokens are consistent."
+  },
+  {
+   "id": "n1-k102",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "This entry is deliberately tokenless."
+  },
+  {
+   "id": "n2-b031",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana exactly (祖父:そふ, かわい+がっ, a suffix split that the tokens follow). Arbiter: taught 0.048 vs rival そふ→じじ 0.051, silent, both far; no reading is in doubt. exEN and exZH ('非常疼爱他的猫') are correct."
+  },
+  {
+   "id": "n2-b040",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana (接着剤 せっちゃくざい, お皿 お+さら). Arbiter prefers the taught reading, 0.057 vs 0.072. Natural sentence. exEN ('attached ... with glue') is slightly loose but correct in meaning; exZH '粘了起来' is fine."
+  },
+  {
+   "id": "n2-b087",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. Arbiter prefers the taught reading, 0.019 vs 0.048. Natural sentence, correct translations. Tokens are consistent."
+  },
+  {
+   "id": "n2-b095",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana (吹奏楽 すいそうがく + 部 ぶ, 属し ぞくし). On the full sentence the comparative flagged a rival: すいそうらくぶ 0.066 and しょくし 0.075 were nearer than taught 0.084. I followed that lead up, and it is noise."
+  },
+  {
+   "id": "n2-b098",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi: 存じ:ぞんじ (dictionary form 存ずる), then おり:おる, ます; this matches exKana, and the tokens (存じ/て/おり/ます) line up. Arbiter prefers the taught reading, 0.036 vs そんじ 0.049. Standard humble phrasing."
+  },
+  {
+   "id": "n2-b1010",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. Arbiter prefers the taught reading, 0.026 vs 0.032. Natural sentence, and it uses the listed 'lean against' sense. Translations are correct."
+  },
+  {
+   "id": "n2-b1016",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. 敵 in a game context is てき (arbiter: てき 0.055 vs かたき 0.066). Natural sentence, and the 'beat' sense is listed. Translations are correct."
+  },
+  {
+   "id": "n2-b103",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "evidence": "金を奪った means money (exEN 'stole my money', exZH 我的钱), read かね; exKana had Sudachi's きん (gold). exKana and the 金 token now read かね. 私 わたくし is the declined register class and is untouched. Stays out of dictation (voice says わたし and きん).",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld"
+  },
+  {
+   "id": "n2-b1083",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana (落ち葉 おちば). Arbiter prefers the taught reading, 0.053 vs らくよう 0.056; both far and uninformative, and おちば is certain. Natural sentence, correct translations."
+  },
+  {
+   "id": "n2-b1118",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana (何度 なんど). Arbiter prefers the taught reading, 0.076 vs なんたび 0.095."
+  },
+  {
+   "id": "n2-b114",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. つまずく is the modern standard spelling (arbiter: taught 0.022 vs つまづ 0.025, the two sound nearly the same). Natural sentence, correct translations."
+  },
+  {
+   "id": "n2-b1229",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana (魚 さかな, 裏側 うらがわ). Arbiter prefers the taught reading, 0.035 vs うお 0.080 and りがわ 0.069. 裏側に is a little redundant with ひっくり返す but acceptable ('flipped onto its other side')."
+  },
+  {
+   "id": "n2-b1240",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana (授業+中 ちゅう). Arbiter prefers the taught reading, 0.070 vs じゅう 0.078. 授業中 is standardly じゅぎょうちゅう. Natural sentence, correct translations."
+  },
+  {
+   "id": "n2-b1268",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi: 命じ:めいじ (dictionary form 命ずる), matching exKana. Arbiter prefers the taught reading, 0.032 vs みょうじ 0.052. Natural sentence, correct translations. Headword kana めいずる is correct."
+  },
+  {
+   "id": "n2-b1292",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana (論じ:ろんじ, dictionary form 論ずる). The headword span is correct. 日本 is read にっぽん, a valid reading, and PLAN-V1.25 explicitly declines rewriting 日本/にっぽん outside the headword as a register choice."
+  },
+  {
+   "id": "n2-b198",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. Arbiter prefers the taught reading, 0.035. Natural sentence, correct translations."
+  },
+  {
+   "id": "n2-b377",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. Arbiter prefers the taught reading, 0.033 vs 0.063. 手袋をはめる is the standard collocation and matches the listed 'put on' sense. Translations are correct."
+  },
+  {
+   "id": "n2-b500",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. Arbiter prefers the taught reading, 0.022 vs そく 0.089. 足がくたびれる is attested usage for tiring from exertion. Translations are correct."
+  },
+  {
+   "id": "n2-b603",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. Arbiter prefers the taught reading, 0.036 vs ちょう 0.044. The 'tear into pieces' sense is the core meaning of ちぎる; the listed 'to cut up fine' is JMdict wording for the same sense."
+  },
+  {
+   "id": "n2-b678",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi reading = exKana exactly; ぶつけ has dictionary form ぶつける; tokens rebuild exJP and exKana. Arbiter comparative: taught 0.0292 vs rival 指=し 0.0924 (PROOF silent)."
+  },
+  {
+   "id": "n2-b680",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi = exKana; tokens consistent; arbiter PROOF: YES (byte-identical to exKana). Natural sentence."
+  },
+  {
+   "id": "n2-b723",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi = exKana; tokens consistent; arbiter PROOF: YES. Natural; translations accurate."
+  },
+  {
+   "id": "n2-b727",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi = exKana; tokens consistent; PROOF silent, and no kanji in the sentence has a rival reading. Natural; よこす correctly means sending toward the speaker, and exEN's 'sent me' captures that."
+  },
+  {
+   "id": "n2-b759",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi = exKana; tokens consistent. Arbiter comparative: taught 0.0172 vs 後ろ=あと 0.0491. Natural; 'startle' sense matches the meanings and both translations."
+  },
+  {
+   "id": "n2-b815",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi = exKana; tokens (お/弁当 split) consistent; PROOF silent and no ambiguous kanji. Natural; translations accurate."
+  },
+  {
+   "id": "n2-b818",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi = exKana; tokens consistent. Arbiter comparative: taught 0.0230 vs 上=じょう 0.0478. The subject changes across the て-clause (causal て), which is natural Japanese."
+  },
+  {
+   "id": "n2-b838",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi = exKana; tokens consistent; PROOF silent and no ambiguous kanji. 〜と with a past-tense main clause is natural. exZH 凋谢 is slightly broader than しぼむ (wilt or close up), but acceptable."
+  },
+  {
+   "id": "n2-b841",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi = exKana; tokens (気持ち/よさ/そう/に) consistent; PROOF silent, and 指 has no plausible rival reading here. Natural; translations accurate."
+  },
+  {
+   "id": "n2-b943",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi: 熱し:ねっし, dictionary form 熱する. exKana and tokens agree. It escaped the gates only because it is a suru verb. Arbiter comparative with the corpus exKana: taught 0.0853, ねつし 0.0904, あつし 0.1252 (thin margin)."
+  },
+  {
+   "id": "n2-b962",
+   "verdict": "defect",
+   "kind": "C-sense-grammar",
+   "evidence": "Gloss, not example: meanings en[2]/zh[2] carried a leaked generator note 'typo of hikkurikaeru' / '疑为…笔误' on the ひっくりかえる entry itself. Now 'to be overturned' / '倾覆' (refuter's better wording; 'to capsize' is boat-specific).",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld"
+  },
+  {
+   "id": "n2-b975",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi = exKana; tokens consistent; arbiter PROOF: YES (byte-identical). Natural; translations accurate."
+  },
+  {
+   "id": "n2-k003",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Deliberately tokenless and display-only (isTypeableSentence is false), so no reading is taught or graded. The example is a loan phrase, not a Japanese clause."
+  },
+  {
+   "id": "n2-k006",
+   "verdict": "uncertain",
+   "kind": "C-sense-grammar",
+   "evidence": "1足す1はイコール2です doubles 'equals' (は and イコール); redundant rather than ungrammatical, colloquially attested. Display-only. No change.",
+   "disposition": "recorded-uncertain"
+  },
+  {
+   "id": "n2-k056",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Deliberately tokenless because of the digits (Sudachi reads 10 as いちれい, the documented reason in VocabEntry.exampleKana), and not offered as a typing target. Natural sentence; exEN and exZH accurate."
+  },
+  {
+   "id": "n3-b316",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi C reading matches exKana exactly (たちあがっ from たちあがる, ゆずる). The headword is written only in kana, so there is no kanji reading that could disagree. vc godan_r is correct. The sentence is natural. exEN is correct."
+  },
+  {
+   "id": "n3-b336",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi reads 適し as てきし (dictionary form 適する), and the headword alone as てきする, both matching the taught kana. Arbiter: proof silent; comparative taught 0.04999 vs てっし 0.08035. Natural collocation (Xに適している)."
+  },
+  {
+   "id": "n3-b350",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana exactly. The headword is written only in kana. vc ichidan is correct. The sentence uses 取り上げる in the \"take up / feature a topic\" sense, which matches exMeta.sense, exEN (\"covered\") and exZH (报道)."
+  },
+  {
+   "id": "n3-b430",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi reads 愛し as あいし (dictionary form 愛する), matching exKana; the headword alone reads あいする. The sentence is natural. EN and ZH are correct, and the gloss audit rated this entry \"aligned\". Tokens are consistent."
+  },
+  {
+   "id": "n3-b622",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana exactly, and vc ichidan is correct. The earlier review (n3-full-review minorItems[20]) noted that 通り過ぎた is written in hiragana."
+  },
+  {
+   "id": "n3-b653",
+   "verdict": "uncertain",
+   "kind": "C-sense-grammar",
+   "evidence": "Reading correct (罰せ:ばっせ). 正しく罰せられる is grammatical but reads like a calque of 'properly punished'; borderline style, left to a human. No change.",
+   "disposition": "recorded-uncertain"
+  },
+  {
+   "id": "n3-g084",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "This is one of the 14 display-only sentences pinned in sentencesWithoutReadings, because Sudachi reads the digits 15 as いちご. Nothing is typed, so no reading can be taught wrongly."
+  },
+  {
+   "id": "n3-g085",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Display-only (it contains the digit 3). Sudachi reads 終了 as しゅうりょう, matching the taught kana. 終了する as a suru-verb is natural. EN and ZH match."
+  },
+  {
+   "id": "n3-g108",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Display-only. Sudachi misreads the digit in 2つ as ふつ, which is exactly why this sentence was made display-only. Sudachi reads 比較 as ひかく, matching the taught kana. The sentence is natural."
+  },
+  {
+   "id": "n3-g148",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "The sentence writes the word in kana, which is the more common everyday spelling of 大人しい. The reading is identical to the taught kana, so nothing false is taught. Sudachi reads the headword alone as おとなしい."
+  },
+  {
+   "id": "n3-g241",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Display-only (it contains the digits 50). Sudachi reads 計っ as はかっ (dictionary form 計る), matching the taught kana."
+  },
+  {
+   "id": "n3-g258",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana exactly. The headword is written only in kana, and vc ichidan is correct. The sentence is natural, in the \"summarize / put together\" sense. EN and ZH match. Tokens are consistent."
+  },
+  {
+   "id": "n3-k030",
+   "verdict": "defect",
+   "kind": "C-sense-grammar",
+   "evidence": "exJP spelled 機 in hiragana (ジェットきに乗る), a form no writer uses, so the sentence never showed the headword ジェット機 and Sudachi split off a stray き token. exJP now ジェット機に乗る。, exTokens regenerated; exKana unchanged.",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld"
+  },
+  {
+   "id": "n4-b010",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana exactly, and the headword おっしゃい is in kana. Note: the voice disagrees."
+  },
+  {
+   "id": "n4-b021",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana exactly, and the headword くださる appears as ください. The dictation record's '本 ほん -> ぽん' is marked undecided (instrument 2 only), and ぽん is not a reading of standalone 本 here, so it is instrument noise."
+  },
+  {
+   "id": "n4-b022",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana, and the tokens agree. The suffix くん is conventionally written in kana, which is correct orthography for this card. exZH renders くん as 同学, a reasonable localization."
+  },
+  {
+   "id": "n4-b034",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana, and the tokens agree. The surface ごらんになる is in kana, matching the headword. Addressing someone as 先生は…ごらんになりましたか is natural, so the EN and ZH direct-address translation is fine."
+  },
+  {
+   "id": "n4-b052",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana, and the tokens agree. ため in kana is the normal orthography. The sense (purpose) matches the card, and the translations are correct."
+  },
+  {
+   "id": "n4-b129",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana, and the headword ほめ is read correctly. 私 is read わたくし, while the voice says わたし (recorded as proven in dictation-reading-mismatches.json, so the sentence is already out of dictation)."
+  },
+  {
+   "id": "n4-b160",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana, the tokens agree, and the headword もらい is read correctly. The Japanese is natural and the translations are correct."
+  },
+  {
+   "id": "n4-g012",
+   "verdict": "defect",
+   "kind": "C-sense-grammar",
+   "evidence": "以下 includes the boundary (aged 10 or younger); 'Under 10' excluded age 10. exEN now 'It is free for ages 10 and under.'. Display-only by design (digits), so no reading moves.",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld"
+  },
+  {
+   "id": "n4-g020",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. The headword 致す is written いたし, which is standard for the humble auxiliary and passes via kana."
+  },
+  {
+   "id": "n4-g032",
+   "verdict": "defect",
+   "kind": "C-sense-grammar",
+   "evidence": "〜のうち here is 'among / of', not physical 'inside'; 'Choose one from inside the three' was unidiomatic. exEN now 'Choose one of the three.'. Reading confirmed (arbiter: taught 0.00951, nearest).",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld"
+  },
+  {
+   "id": "n4-g043",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi gives お/いで/に/なる, which equals exKana; the tokens agree. おいでになる is conventionally written in kana. The respectful 'come' sense matches exEN 'will be here' and exZH 会来. The sentence is terse but grammatical."
+  },
+  {
+   "id": "n4-g076",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "The reading is correct: Sudachi gives 固い:かたい, and the arbiter puts かたい (0.02585) far ahead of こい (0.11851)."
+  },
+  {
+   "id": "n4-g220",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "The headword 是非 is written ぜひ, which is common and passes usesTheWord through the kana field. Sudachi matches exKana. Partial-substitution PROOF shows the voice says わたし for 私 (今度ぜひわたしの家に… is byte-identical)."
+  },
+  {
+   "id": "n4-g239",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana, and the tokens agree. だいぶ in kana is standard and avoids the おおいた and だいぶん ambiguity. The arbiter puts the shipped reading nearest (0.03995) ahead of 体→たい (0.06052)."
+  },
+  {
+   "id": "n4-g292",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana, the tokens agree, and the headword いじめ is read correctly. 'mistreat' for いじめる with an animal object is an apt translation, and exZH 欺负 is correct."
+  },
+  {
+   "id": "n4-g386",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "evidence": "何 before を is なに, not なん; the corpus had copied Sudachi's 何:なん default. exKana and the 何 token now read なに. Released back into dictation: 1b confirms the voice says なに (v135-dictation-remeasure.json).",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld"
+  },
+  {
+   "id": "n4-k016",
+   "verdict": "defect",
+   "kind": "B-word",
+   "evidence": "Sentence writes けしゴム for 消しゴム. Refuted by both refuters: same lexeme and same reading, orthography only; exKana correct. Not corrected.",
+   "disposition": "declined",
+   "refuterVotes": "0 of 2 upheld"
+  },
+  {
+   "id": "n5-b012",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi 机:つくえ/の/上:うえ/に/本:ほん/が/あり(ある)/ます matches exKana exactly. exTokens concatenate to exJP and to exKana. 上 here is only うえ. Existence ある with an inanimate subject, matching 'to be'. EN/ZH are accurate."
+  },
+  {
+   "id": "n5-b078",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi output matches exKana token for token (毎朝 まいあさ, 一緒 いっしょ, 散歩 さんぽ + し). Tokens round-trip. 公園を散歩する uses the path を, which is natural. EN/ZH are accurate."
+  },
+  {
+   "id": "n5-b095",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana exactly. 部屋 へや, 掃除 そうじ. Tokens round-trip. Natural sentence. EN/ZH are accurate."
+  },
+  {
+   "id": "n5-b117",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "The headword span でき(る) is read correctly, and ことができる matches the 'to be able to' sense. The one reading question is the non-headword 私, read わたくし. Sudachi reads ワタクシ, which is where the exKana came from."
+  },
+  {
+   "id": "n5-b164",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana exactly. Tokens round-trip. Natural sentence. EN/ZH are accurate."
+  },
+  {
+   "id": "n5-b197",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana (練習 れんしゅう + し/て/い/ます). Tokens round-trip, and the katakana ピアノ token reads ぴあの, consistent with the corpus convention. Habitual ～ています is natural."
+  },
+  {
+   "id": "n5-b207",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana, あび(あびる). The headword is kana-only and the sentence writes it in kana too, so there is no kanji reading at risk. シャワーをあびる is the standard collocation."
+  },
+  {
+   "id": "n5-b245",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana exactly, and かかり(かかる) is in the 'take (time)' sense the card teaches. Tokens round-trip. EN/ZH are accurate."
+  },
+  {
+   "id": "n5-b313",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. The sentence writes the headword 所 in kana (ところ), which is why no gate sees it."
+  },
+  {
+   "id": "n5-b328",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana, はき(はく). ズボンをはく is the correct lower-body verb and matches the card's sense. Tokens round-trip. EN/ZH are accurate."
+  },
+  {
+   "id": "n5-b366",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. 今 いま, 宿題 しゅくだい. 宿題をやる is the natural colloquial 'do homework', matching the 'to do' sense. Tokens round-trip. EN/ZH are accurate."
+  },
+  {
+   "id": "n5-g078",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. し(する) is the irregular stem し, which is correct for ます. 放課後 ほうかご. Tokens round-trip. EN 'play soccer' and ZH 踢足球 correctly render サッカーをする."
+  },
+  {
+   "id": "n5-gohan",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Sudachi matches exKana. The sentence writes ご飯 as ごはん, the same word in a common kana spelling, so this is not a B defect. 食べ たべ. Tokens round-trip."
+  },
+  {
+   "id": "n5-k008",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "The entry is deliberately tokenless and has no exKana, so it is not a typeable sentence (VocabEntry.isTypeableSentence needs exKana) and no reading is taught from it. Sudachi reads キロ as キロ."
+  },
+  {
+   "id": "n5-k009",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Display-only (no exKana). The quantity after the object is natural, and plain 買う is grammatical. EN 'I buy 1 kilogram of sugar' and ZH 我买一千克糖 are accurate."
+  },
+  {
+   "id": "n5-k010",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Display-only (no exKana). Natural sentence. EN and ZH (一公里) are accurate."
+  },
+  {
+   "id": "n5-k012",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Display-only (no exKana). 200グラムの肉をください is natural shop Japanese. 肉を200グラムください is also common, but the difference is only style. EN/ZH are accurate."
+  },
+  {
+   "id": "n5-k058",
+   "verdict": "ok",
+   "kind": "none",
+   "evidence": "Display-only (no exKana). A distance used as a bare quantity before 走る is natural. EN 'I ran 100 meters' and ZH 我跑了100米 are accurate and in the right past tense."
+  },
+  {
+   "id": "n5-kuru",
+   "verdict": "uncertain",
+   "kind": "C-sense-grammar",
+   "evidence": "Reading correct (来:き). exZH 朋友来了 may read as perfective against non-past 来ます; 了 can also announce an arrival, so a low-confidence tense note only. No change.",
+   "disposition": "recorded-uncertain"
+  }
+ ]
+}

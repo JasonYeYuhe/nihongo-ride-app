@@ -1,0 +1,35 @@
+{
+ "measurement": "scripts/check_propagated_exclusions.py --evidence <one-row class> --calibrate (run once per id)",
+ "date": "2026-09-29",
+ "voice": "com.apple.voice.compact.ja-JP.Kyoko",
+ "question": "Two withheld sentences had their exKana corrected in v1.35 (docs/measurements/v135-residue-manifest.json), so their recorded evidence described sentences that no longer exist. Each was re-labelled to a one-row evidence class and re-measured with instrument 1b on the corrected tokens, as v1.29 did for the 'nearest' class. Audio caches were outside the repo (DICTATION_WAV_CACHE).",
+ "calibration": {
+  "n4-g386": {
+   "rebuildIdentity": "1/1 — string handling only, no linguistic weight",
+   "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+   "negativeControl": "2 decoy substitutions, 0 spurious byte matches"
+  },
+  "n2-b103": {
+   "rebuildIdentity": "1/1 — string handling only, no linguistic weight",
+   "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+   "negativeControl": "2 decoy substitutions, 0 spurious byte matches"
+  }
+ },
+ "verdicts": {
+  "n4-g386": {
+   "verdict": "RELEASE",
+   "detail": "the disputed 何 is confirmed: 先生は週末になにをなさいますか。 renders byte-identical to the exJP audio (sha1 a37b031b019b); the なん substitution does not (da502d68d3a2). The corpus now says なに, so the record's own complaint '何 なん -> なに' is what the correction applied."
+  },
+  "n2-b103": {
+   "verdict": "KEEP",
+   "detail": "1b: 私 = わたし, not the corpus わたくし. Also 金 = きん, not the corrected かね: 彼は私をだましてきんを奪った。 and かれはわたしをだましてきんをうばった both render byte-identical to the exJP audio (fce72e22e1ab); the かね spellings do not (11f074e1b3a3). The correction to かね rests on the meaning, not on the voice."
+  }
+ },
+ "alsoChecked": {
+  "n3-k030": "exJP changed ジェットきに乗る。 -> ジェット機に乗る。 and the sentence is in the dictation pool. Both render byte-identical (sha1 1b8ed80de3c9), so its dictation audio does not change."
+ },
+ "dictationPool": {
+  "before": 5931,
+  "after": 5932
+ }
+}

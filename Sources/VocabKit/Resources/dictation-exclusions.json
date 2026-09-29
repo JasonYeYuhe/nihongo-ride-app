@@ -5,8 +5,8 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 793,
- "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made. v1.28 released 10 more: the 15 whose evidence was 'propagated' were never measured — they inherited a verdict from a DIFFERENT sentence under the comment 'a voice does not change its mind between sentences'. Measured directly (scripts/check_propagated_exclusions.py), 10 are proven to say their corpus reading, 2 to say something else, 3 stay withheld undecided. The comment is false: 畑 is proven はたけ in n1-b432 and ばたけ in n1-b1000. A release requires the DISPUTED word to be confirmed in that sentence — an earlier predicate released n2-g210 on 彼=かれ while 何, the reason it was withheld, was never confirmed. v1.29 re-decided the 910 'nearest' exclusions with instrument 1b: 161 released, 227 confirmed misread (upgraded from instrument 2's 67%-accurate verdict to proof), 522 undecided and still withheld. Silence is not evidence in either direction.",
+ "excludedCount": 792,
+ "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made. v1.28 released 10 more: the 15 whose evidence was 'propagated' were never measured — they inherited a verdict from a DIFFERENT sentence under the comment 'a voice does not change its mind between sentences'. Measured directly (scripts/check_propagated_exclusions.py), 10 are proven to say their corpus reading, 2 to say something else, 3 stay withheld undecided. The comment is false: 畑 is proven はたけ in n1-b432 and ばたけ in n1-b1000. A release requires the DISPUTED word to be confirmed in that sentence — an earlier predicate released n2-g210 on 彼=かれ while 何, the reason it was withheld, was never confirmed. v1.29 re-decided the 910 'nearest' exclusions with instrument 1b: 161 released, 227 confirmed misread (upgraded from instrument 2's 67%-accurate verdict to proof), 522 undecided and still withheld. Silence is not evidence in either direction. v1.35 released 1: n4-g386's exKana was corrected from なん to なに (何 before を), which is what instrument 1b had proven the voice says; re-measured on the corrected sentence, 1b (calibrated: 0 spurious decoy matches, 0 contradictions of instrument 1) confirms 何 = なに, and the なん render is not byte-identical. n2-b103 (金 corrected to かね) stays withheld: 1b proves the voice still says 私 = わたし, and it also says 金 = きん.",
  "evidence": "docs/measurements/dictation-reading-mismatches.json",
  "excluded": [
   {
@@ -2078,9 +2078,6 @@
   },
   {
    "id": "n4-g379"
-  },
-  {
-   "id": "n4-g386"
   },
   {
    "id": "n4-g390"

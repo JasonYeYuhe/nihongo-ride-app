@@ -28013,7 +28013,7 @@
   "exJP": "彼は私をだまして金を奪った。",
   "exEN": "He tricked me and stole my money.",
   "exZH": "他骗走了我的钱。",
-  "exKana": "かれはわたくしをだましてきんをうばった",
+  "exKana": "かれはわたくしをだましてかねをうばった",
   "exTokens": [
    [
     "彼",
@@ -28041,7 +28041,7 @@
    ],
    [
     "金",
-    "きん"
+    "かね"
    ],
    [
     "を",
@@ -95451,12 +95451,12 @@
    "en": [
     "to tumble down",
     "to turn over",
-    "to be upset (typo of hikkurikaeru)"
+    "to be overturned"
    ],
    "zh": [
     "倒下",
     "翻转",
-    "倾覆 (疑为ひっくりかえる的笔误)"
+    "倾覆"
    ]
   },
   "exJP": "強風で自転車が横にひっくりかえった。",

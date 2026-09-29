@@ -5,8 +5,8 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 793,
- "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made.",
+ "excludedCount": 792,
+ "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made. v1.35 released 1: n4-g386's exKana was corrected from なん to なに (何 before を), which is what instrument 1b had proven the voice says; re-measured on the corrected sentence, 1b (calibrated: 0 spurious decoy matches, 0 contradictions of instrument 1) confirms 何 = なに, and the なん render is not byte-identical. n2-b103 (金 corrected to かね) stays withheld: 1b proves the voice still says 私 = わたし, and it also says 金 = きん.",
  "excluded": [
   {
    "id": "n1-b007",
@@ -1961,9 +1961,9 @@
   {
    "id": "n2-b103",
    "exJP": "彼は私をだまして金を奪った。",
-   "exKana": "かれはわたくしをだましてきんをうばった",
+   "exKana": "かれはわたくしをだましてかねをうばった",
    "heardInstead": "私 わたくし -> わたし",
-   "evidence": "proven"
+   "evidence": "proven (v1.35, instrument 1b): re-measured after the v1.35 correction of 金 from きん to かね. The voice says 私 = わたし, not わたくし, as recorded before; it also says 金 = きん, not the corrected かね — the whole-kana spelling かれはわたしをだましてきんをうばった renders byte-identical to the exJP audio, and the かね spelling does not."
   },
   {
    "id": "n2-b1033",
@@ -4842,13 +4842,6 @@
    "exKana": "てがみをともだちのいえにとどけました",
    "heardInstead": "家 いえ -> け",
    "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
-  },
-  {
-   "id": "n4-g386",
-   "exJP": "先生は週末に何をなさいますか。",
-   "exKana": "せんせいはしゅうまつになんをなさいますか",
-   "heardInstead": "何 なん -> なに",
-   "evidence": "proven (v1.29, instrument 1b)"
   },
   {
    "id": "n4-g390",
