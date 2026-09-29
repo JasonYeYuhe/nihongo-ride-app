@@ -28,11 +28,17 @@ import RomajiKana
 /// teach) — come before rows only another ん reading or a partial reading reaches: "shinnyuu" is
 /// 侵入 (しんにゅう, the first reading) before 親友 (しんゆう, which the hints spell shin'yuu — and
 /// which a plain longest match over the bundled table gives, so this order is the hints' choice,
-/// not the table's). A partial reading is an alternative even when there is no complete one: an
-/// English word typed a letter at a time stops on a consonant ("wat", "tomor", "teac") and reads
-/// as the start of a kana word too (わ, とも, てあ), and those words come after the ones its text
-/// reaches — "wat" is 時計 (watch) before 私 (わたし). A romaji prefix ("tabem") reaches nothing as
-/// text, so its partial reading's words still come first. Then N5 first, then corpus order.
+/// not the table's). Then N5 first, then corpus order.
+///
+/// **A query with no complete reading** — an English word typed a letter at a time ("wat",
+/// "tomor", "teac"), or romaji stopped on a consonant ("tabem", "at") — reads only as the start of
+/// a kana word (わ, とも, てあ, たべ, あ). There the JLPT level comes BEFORE the alternative key:
+/// within a tier, N5 first, and within a level the words the text reaches come before those only
+/// the partial reading reaches — "wat" is 水, 見る, 時計 (watch), then 私 (わたし). Ranking every
+/// gloss word first instead (round 3 of the B6 review) pushed the word being typed out of the 50
+/// results at 43 keystrokes of N5 hints ("at" for 新しい, "as" for 朝 and 明日, "ar" for ありがとう —
+/// all 50 rows were gloss hits); this order keeps it in at every keystroke but one
+/// (`typedWordStaysInTheResults` pins the corpus).
 ///
 /// **What it never returns.** A duplicate — the index keeps the first entry for an id, as
 /// `VocabStore.entry(id:)` does. And a retired word: this corpus retires a word by DELETING the
@@ -135,11 +141,15 @@ public struct WordSearchIndex: Sendable {
             guard let best = Self.better(primary, secondary) else { continue }
             found.append((index, best, primary != best))
         }
+        // With a complete reading the alternative key comes before the level; with none, after it
+        // (the ranking note above).
+        let alternativeFirst = !complete.isEmpty
         found.sort { a, b in
             if a.tier != b.tier { return a.tier < b.tier }
-            if a.alternative != b.alternative { return !a.alternative }
+            if alternativeFirst, a.alternative != b.alternative { return !a.alternative }
             let ra = rows[a.row], rb = rows[b.row]
             if ra.entry.jlpt != rb.entry.jlpt { return ra.entry.jlpt < rb.entry.jlpt }
+            if a.alternative != b.alternative { return !a.alternative }
             return ra.order < rb.order
         }
         return found.prefix(limit).map { (rows[$0.row].entry, $0.tier) }

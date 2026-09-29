@@ -386,7 +386,9 @@ struct WordSearchTests {
                 gloss.lowercased().split(whereSeparator: { !$0.isLetter && !$0.isNumber }).contains { $0.hasPrefix(q) }
             }
         }
-        let prefix = found.filter { $0.tier == .prefix }
+        // Within one level of the prefix tier (the level comes first when there is no complete
+        // reading — see WordSearch's ranking note).
+        let prefix = found.filter { $0.tier == .prefix && $0.entry.jlpt == found.first { $0.entry.id == c.kanaID }?.entry.jlpt }
         let lastGloss = try #require(prefix.lastIndex { glossReaches($0.entry) }, "control: \(q) reaches no gloss")
         let firstKanaOnly = try #require(prefix.firstIndex { !glossReaches($0.entry) }, "control: \(q) reaches no kana-only word")
         #expect(lastGloss < firstKanaOnly, "\(q): \(rows.prefix(14))")
@@ -404,6 +406,32 @@ struct WordSearchTests {
                 "control: \(b.surface) does not beat \(a.surface) on level or corpus order")
         #expect(RomajiReading.readings(fromRomaji: q).isEmpty && !RomajiReading.partialReadings(fromRomaji: q).isEmpty,
                 "control: \(q) has a complete reading, or no partial one")
+    }
+
+    /// The word being typed stays in the 50 results at every keystroke of its hint that has no
+    /// complete reading but a partial one — N5 over the whole corpus. Measured 2026-09-30: ranking
+    /// every gloss word first (B6 review round 3) dropped it at 43 such keystrokes ("at" for 新しい,
+    /// "as" for 朝, "ar" for ありがとう); level before the alternative key drops it at one.
+    @Test("the N5 word being typed stays in the results at every partial keystroke of its hint")
+    func typedWordStaysInTheResults() {
+        var pairs = 0
+        var missing: [String] = []
+        for entry in Self.store.entries where entry.jlpt == .n5 {
+            let hint = KanaRomanizer.romaji(for: entry.kana)
+            guard hint.count > 1 else { continue }
+            for end in 1 ..< hint.count {
+                let prefix = String(hint.prefix(end))
+                guard RomajiReading.readings(fromRomaji: prefix).isEmpty,
+                      !RomajiReading.partialReadings(fromRomaji: prefix).isEmpty else { continue }
+                pairs += 1
+                if !Self.store.search(prefix, limit: 50).contains(where: { $0.id == entry.id }) {
+                    missing.append("\(entry.surface) at \"\(prefix)\"")
+                }
+            }
+        }
+        print("WORDSEARCH typed-word survey: \(pairs) N5 partial keystrokes, \(missing.count) missing: \(missing)")
+        #expect(pairs > 500, "control: the survey saw only \(pairs) keystrokes")
+        #expect(missing.count <= 1, "\(missing.count) N5 keystrokes lose the word being typed: \(missing.prefix(20))")
     }
 
     /// The same rule does not bury romaji typed a letter at a time: a prefix like "tabem" reaches

@@ -488,8 +488,13 @@ but NOT yet run, and the simulator pass has not happened — both are the orches
   a consonant, and its partial reading was ranked as the query's own: "wat" gave 35 of its 50 rows to
   わ-words and put 私 third, ahead of 時計 (watch). A partial reading is now an alternative even when
   there is no complete reading, so the words the text reaches come first within a tier ("wat" → 時計
-  before 私, "tomor" → 明日 and あさって before 友達, "teac" → 湯飲み before 手洗い); a romaji prefix
-  reaches nothing as text, so "tabem" is still 食べる, 食べ物. The first reading is called what it is —
+  before 私, "tomor" → 明日 and あさって before 友達, "teac" → 湯飲み before 手洗い). *Corrected after the
+  third verification (orchestrator, 2026-09-30):* ranking every gloss word first also pushed the word
+  being typed out of the 50 results at 43 keystrokes of N5 hints ("at" for 新しい, "as" for 朝 and 明日,
+  "ar" for ありがとう — all 50 rows gloss hits), so for a query with no complete reading the level now
+  comes before the alternative key: N5 first, and within a level the text's words first ("wat" → 水,
+  見る, 時計, then 私). `typedWordStaysInTheResults` surveys all 1,041 such N5 keystrokes: one misses
+  (ニュース at "ny"); the round-3 order is red there with 43. The first reading is called what it is —
   the Hepburn reading, the spelling the app's romaji hints teach — not "the IME's": a plain longest match
   over the bundled table reads shinnyuu as しんゆう (now a control in `RomajiReadingTests`). The contrast
   scan reads the body itself (the alert's message Text exempted by name) and signatures that span lines,
