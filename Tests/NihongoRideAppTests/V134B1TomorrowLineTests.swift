@@ -711,12 +711,15 @@ struct V134B1TomorrowLineTests {
         return phone - 2 * (try #require(Double(screen.1))) - 2 * (try #require(Double(panel.1)))
     }
 
-    /// `.caption`'s point size at every Dynamic Type size, from Apple's table: 11, 11, 11, 12, 13,
-    /// 15 and 17pt below the accessibility sizes (xSmall to xxxLarge; 12 is the default), and 22,
-    /// 26, 32, 37 and 43pt at AX1 to AX5. 40pt, `.caption2`'s AX5, is kept because the round-2
-    /// review measured with it. Each size carries whether the accessibility limit applies to it.
+    /// `.caption`'s point size at every Dynamic Type size, a superset of Apple's table. Below the
+    /// accessibility sizes it is 11pt at xSmall to Medium and 12pt at Large (the default); at xLarge,
+    /// xxLarge and xxxLarge the table as two agents recalled it disagrees (review of 765d179): 13,
+    /// 15 and 17pt, or 14, 16 and 18pt, and one of those rows may be `.caption2`'s. Not settled
+    /// here, so both are measured, and "every `.caption` size" holds whichever is right. 22, 26, 32,
+    /// 37 and 43pt at AX1 to AX5; 40pt, `.caption2`'s AX5, is kept because the round-2 review
+    /// measured with it. Each size carries whether the accessibility limit applies to it.
     nonisolated static let captionSizes: [(points: Double, accessibility: Bool)] =
-        [11, 12, 13, 15, 17].map { ($0, false) } + [22, 26, 32, 37, 40, 43].map { ($0, true) }
+        [11, 12, 13, 14, 15, 16, 17, 18].map { ($0, false) } + [22, 26, 32, 37, 40, 43].map { ($0, true) }
 
     /// The limit and the floor, read on the main actor for the nonisolated grids.
     nonisolated static func layoutRule(phone: Double) async throws -> (column: Double, below: Int, at: Int, floor: Double) {
@@ -918,7 +921,8 @@ struct V134B1TomorrowLineTests {
         } } }
         // The grid is not vacuous: most of its layouts wrap, so there were breaks to place
         // (measured 2026-09-29: 77% to 91% per phone and language).
-        #expect(measured == 10 * 13 * 13 * 23 && wrapped > measured / 2, "\(wrapped) of \(measured) layouts wrapped")
+        #expect(sizes.count == 26, "\(sizes.count) sizes")
+        #expect(measured == 10 * 13 * 13 * 26 && wrapped > measured / 2, "\(wrapped) of \(measured) layouts wrapped")
     }
 
     /// The joins draw nothing different where the line does not wrap: every matrix row, composed
@@ -988,6 +992,37 @@ struct V134B1TomorrowLineTests {
 
     #endif
 
+    /// The grouping is the same whatever the rider's device is set to, which is the reason
+    /// `TomorrowLine.number` names a locale: `.formatted(.number)` alone reads the device's, so a
+    /// German iPhone would write "7.071" and a French one "7 071" (the control below), and every
+    /// row of the matrix would still pass on a Mac set to en_US, the only kind this suite has run
+    /// on. So the formatter is read from the source (comment-stripped): its one statement formats in
+    /// a locale named by a literal identifier, that locale groups as the paste notice does, and
+    /// nothing in the file asks for the device's. Review of 765d179: switching to the device locale
+    /// was green.
+    @Test("the line's counts are grouped in a fixed locale, never the device's")
+    func groupingLocaleIsFixed() throws {
+        let code = Self.codeLines(try Self.source("TomorrowLine.swift"))
+        let start = try #require(code.firstIndex(of: "private static func number(_ n: Int) -> String {"),
+                                 "TomorrowLine.number moved")
+        let body = code[(start + 1)...].prefix { $0 != "}" }.filter { !$0.isEmpty }
+        #expect(body.count == 1, "number(_:) is no longer one statement: \(Array(body))")
+        let statement = try #require(body.first)
+        let fixed = try #require(statement.wholeMatch(of: /n\.formatted\(\.number\.locale\(Locale\(identifier: "([A-Za-z_]+)"\)\)\)/),
+                                 "number(_:) no longer formats in a locale named by a literal: \(statement)")
+        let identifier = String(fixed.1)
+        for (n, spelled) in [(7_071, "7,071"), (16_219, "16,219"), (999, "999")] {
+            #expect(n.formatted(.number.locale(Locale(identifier: identifier))) == spelled,
+                    "\(identifier) spells \(n) otherwise than the paste notice")
+        }
+        #expect(!code.contains { $0.contains("Locale.current") || $0.contains("autoupdatingCurrent")
+                                   || $0.contains(".formatted(.number)") },
+                "TomorrowLine reads the device's locale somewhere")
+        // Control: the device's locale would matter. The same count in two other locales.
+        #expect(7_071.formatted(.number.locale(Locale(identifier: "de_DE"))) == "7.071")
+        #expect(7_071.formatted(.number.locale(Locale(identifier: "fr_FR"))) != "7,071")
+    }
+
     // MARK: - The colour
 
     typealias RGB = V133SContrastTests.RGB
@@ -1031,7 +1066,7 @@ struct V134B1TomorrowLineTests {
     }
 
     /// The panel captions' colour clears WCAG AA's 4.5:1 for small text over every panel above, with
-    /// 8-bit quantisation applied at the worst one; `Theme.dim`, which both lines used to have,
+    /// 8-bit quantisation applied at the worst one; `Theme.dim`, which all of them used to have,
     /// computes under — the control, or this suite could not fail. And 0.46 is the smallest: one
     /// hundredth less does not clear. (Round-2 review: 4.41–4.53:1 measured for `Theme.dim`.)
     @MainActor
@@ -1058,7 +1093,8 @@ struct V134B1TomorrowLineTests {
     }
 
     /// The stage line, computed the same way from the colour the shipped source draws it in. 1.34
-    /// deferred it by name at 4.41:1 (PLAN-V1.34 §B1 addendum) and 1.35 fixed it (§F, item 4). The
+    /// deferred it by name at 4.41:1 (PLAN-V1.34 §B1 addendum) and 1.35 fixed it (§F, item 4). It is
+    /// defined once, so the block read here is the one every platform draws. The
     /// colour is read off `stageLine`'s comment-stripped block and looked up by its expression, so
     /// `Theme.dim` computes red here, and an expression this table does not know fails rather than
     /// passing unmeasured. The block is pinned line for line too: the fix was colour only, so the
@@ -1067,6 +1103,11 @@ struct V134B1TomorrowLineTests {
     @Test("the stage line clears 4.5:1 on every arrival panel, in the tomorrow line's colour, nothing else changed")
     func stageLineClearsAA() throws {
         let code = Self.codeLines(try Self.source("ResultsView.swift"))
+        // One definition. The block below is read from the first, so a second one, say an iOS copy
+        // under `#if os(macOS) … #else`, in `Theme.dim`, was green (review of 765d179).
+        let definitions = code.filter { $0.contains(/\b(var|let|func)\s+stageLine\b/) }
+        #expect(definitions == ["private var stageLine: some View {"],
+                "stageLine must be defined exactly once, found \(definitions.count): \(definitions)")
         let start = try #require(code.firstIndex(of: "private var stageLine: some View {"), "the stage line moved")
         let end = try #require(code[start...].firstIndex(of: "}"))
         let block = code[start...end].filter { !$0.isEmpty }
@@ -1089,6 +1130,125 @@ struct V134B1TomorrowLineTests {
         let color = try #require(known[style], "the stage line draws in \(style), which this test cannot compute; add it")
         let worst = Self.worstContrast(color, over: try Self.arrivalPanels())
         #expect(worst >= 4.5, "the stage line computes to \(worst):1 at its worst")
+    }
+
+    /// Where each `Text` and `Label` in a results view is drawn: straight on the arrival panel, which
+    /// is measured below, or somewhere else, said where. Keyed by the constructor's first
+    /// comment-stripped line with any `.foregroundStyle(…)` on it removed, so a colour change is
+    /// measured rather than reported as a new text. A text added to either file is unknown here and
+    /// red until it is placed; one removed is red too.
+    static let resultsTexts: [String: [String: (count: Int, onPanel: Bool, why: String)]] = [
+        "ResultsView.swift": [
+            #"Text(zh ? "本程路段:\(model.rideStage.name)""#: (1, true, "the stage line"),
+            #"Text(summary.mode.endedBeforeFirstUnitHeadline(zh: zh))"#: (1, true, "the headline of a run that typed nothing"),
+            #"Text(zh ? "到站!" : "You've arrived!")"#: (1, true, "the headline"),
+            #"Text(line)"#: (2, true, "the tomorrow line, and the grade's line under its title"),
+            #"Text(title.uppercased())"#: (1, true, "the grade's title, in its tint"),
+            #"Text(persists ? (zh ? "复习这些词(点 ★ 收藏):" : "Review these (tap ★ to save):")"#: (1, true, "the review list's heading"),
+            #"Text(zh ? "还有 \(words.count - 12) 个…" : "+\(words.count - 12) more…")"#: (1, true, "the review list's +N more"),
+            #"Text(summary.mode == .dictation"#: (1, true, "the stumbled-words heading"),
+            #"Text("🏁")"#: (1, false, "an emoji, drawn in its own colours and hidden from VoiceOver"),
+            #"Text(zh ? "再来一程 ▶" : "Ride again ▶")"#: (1, false, "a Theme.accent capsule, under the panel"),
+            #"Text(zh ? "回到主页" : "Menu")"#: (1, false, "a Theme.card capsule, under the panel"),
+            #"Label(zh ? "分享" : "Share", systemImage: "square.and.arrow.up")"#: (1, false, "a Theme.card capsule, under the panel"),
+            #"Text(advice.title)"#: (1, false, "the coach entry's Theme.card capsule"),
+            #"Text(stumble.reading)"#: (1, false, "a stumbled-word chip, on Theme.card"),
+            #"Text(stumble.surface)"#: (1, false, "a stumbled-word chip, on Theme.card"),
+            #"Text(zh ? "骑这 \(count) 个词" : rideLabel(count))"#: (1, false, "the ride-these button's Theme.accent capsule"),
+            #"Text(c.value)"#: (1, false, "a score tile, on Theme.card (`.panel`)"),
+            #"Text(c.label).font(.caption)"#: (1, false, "a score tile, on Theme.card (`.panel`)"),
+            #"Text(word.surface)"#: (1, false, "a review-list cell, on Theme.card"),
+            #"Text(word.gloss(for: model.languageCode))"#: (1, false, "a review-list cell, on Theme.card"),
+            #".accessibilityAction(named: Text(zh ? "加入词单" : "Add to lists")) { addToListsTarget = word.id }"#:
+                (1, false, "an accessibility action's name, not drawn"),
+        ],
+        "ConjugationResultsView.swift": [
+            #"Text(zh ? "第一题还没答,这组就结束了" : "The drill ended before the first answer")"#: (1, true, "the headline of a drill that answered nothing"),
+            #"Text("✓").scaledSystemFont(50, weight: .bold, relativeTo: .largeTitle)"#: (1, true, "the check mark"),
+            #"Text(zh ? "完成!" : "Drill complete!")"#: (1, true, "the headline"),
+            #"Text(title.uppercased())"#: (1, true, "the grade's title, in its tint"),
+            #"Text(line).scaledSystemFont(13)"#: (1, true, "the grade's line under its title"),
+            #"Text(zh ? "再练一组 ▶" : "Practice again ▶")"#: (1, false, "a Theme.accent capsule, under the panel"),
+            #"Text(zh ? "回到主页" : "Menu")"#: (1, false, "a Theme.card capsule, under the panel"),
+            #"Text(c.value).scaledSystemFont(28, weight: .bold, design: .rounded, relativeTo: .largeTitle)"#:
+                (1, false, "a score tile, on Theme.card (`.panel`)"),
+            #"Text(c.label).font(.caption)"#: (1, false, "a score tile, on Theme.card (`.panel`)"),
+        ],
+    ]
+
+    static func withoutColour(_ line: String) -> String {
+        line.replacing(/\.foregroundStyle\([^)]*\)/, with: "")
+    }
+
+    /// Every text straight on the arrival panel, on both results screens, clears 4.5:1 over every
+    /// panel the backdrop can produce, in the colour its own source draws it in. `panelCaptionColor`'s
+    /// first version was pinned for the stage line alone while the stumbled-words heading, the review
+    /// list's heading and "+N more" and the grade's line (on both screens) stayed `Theme.dim` at 4.41:1
+    /// (review of 765d179). Now every `Text` and `Label` in both files is placed (`resultsTexts`), each
+    /// panel one's modifier chain is read from the comment-stripped source, and its one
+    /// `.foregroundStyle` is looked up and computed; an expression this table does not know fails
+    /// rather than passing unmeasured. A grade title's `tint` is each tint its function assigns.
+    @MainActor
+    @Test("every text straight on the arrival panel clears 4.5:1, on both results screens")
+    func everyPanelTextClearsAA() throws {
+        let panels = try Self.arrivalPanels()
+        let named: [String: Color] = ["gold": Theme.gold, "done": Theme.done, "accent": Theme.accent,
+                                      "accent2": Theme.accent2, "dim": Theme.dim]
+        var measured = 0
+        for (file, expected) in Self.resultsTexts.sorted(by: { $0.key < $1.key }) {
+            let code = Self.codeLines(try Self.source(file))
+            let texts = code.indices.filter { code[$0].contains(/(^|[^A-Za-z.])(Text|Label)\(/) }
+            let found = Dictionary(grouping: texts, by: { Self.withoutColour(code[$0]) })
+            for (line, at) in found.sorted(by: { $0.key < $1.key }) {
+                #expect(expected[line]?.count == at.count,
+                        "\(file): \(at.count) × \(line), expected \(expected[line]?.count ?? 0); place it in resultsTexts")
+            }
+            for (line, place) in expected where found[line] == nil {
+                Issue.record("\(file): \(line) (\(place.why)) is gone; the table is stale")
+            }
+            for (line, place) in expected where place.onPanel {
+                for i in found[line] ?? [] {
+                    // The constructor's line and its chain: continuation lines of the text's own
+                    // expression (`?` / `:`) and modifiers, up to the next statement.
+                    var chain = [code[i]]
+                    for next in code[(i + 1)...] {
+                        guard next.isEmpty || next.hasPrefix(".") || next.hasPrefix("?") || next.hasPrefix(":") else { break }
+                        chain.append(next)
+                    }
+                    let styles = chain.flatMap { $0.matches(of: /\.foregroundStyle\(([^)]*)\)/).map { String($0.1) } }
+                    #expect(styles.count == 1, "\(file): \(place.why) sets its colour \(styles.count) times: \(styles)")
+                    guard let style = styles.first else { continue }
+                    let colours: [Color]
+                    switch style {
+                    case "Self.panelCaptionColor", "ResultsView.panelCaptionColor": colours = [ResultsView.panelCaptionColor]
+                    case ".white": colours = [.white]
+                    case let s where s.hasPrefix("Theme."):
+                        colours = [try #require(named[String(s.dropFirst("Theme.".count))], "\(file): \(s) is not in this table")]
+                    case "tint":
+                        // Every Theme colour the enclosing function names outside a foregroundStyle:
+                        // the four grade tints its switch returns.
+                        let fn = try #require(code[..<i].lastIndex { $0.contains(/^(private )?func grade\(/) },
+                                              "\(file): a `tint` outside grade(for:)")
+                        let end = code[(i + 1)...].firstIndex { $0.contains(/^(private |static )*(func|var)\s/) } ?? code.count
+                        let tints = Set(code[fn..<end].filter { !$0.contains("foregroundStyle") }
+                            .flatMap { $0.matches(of: /Theme\.([A-Za-z0-9]+)/).map { String($0.1) } })
+                        #expect(tints == ["gold", "done", "accent2", "accent"], "\(file): the grade's tints are \(tints)")
+                        colours = try tints.sorted().map { try #require(named[$0]) }
+                    default:
+                        Issue.record("\(file): \(place.why) draws in \(style), which this test cannot compute; add it")
+                        continue
+                    }
+                    for colour in colours {
+                        let worst = Self.worstContrast(colour, over: panels)
+                        #expect(worst >= 4.5, "\(file): \(place.why) (\(style)) computes to \(worst):1 at its worst")
+                    }
+                    measured += 1
+                }
+            }
+        }
+        // Nine on the ride results (the tomorrow line and the grade's line share `Text(line)`) and
+        // five on the drill's, so an extractor that matched nothing cannot pass.
+        #expect(measured == 14, "measured \(measured) panel texts")
     }
 
     /// `jumpToDebugScreen` writes — its `finishGame` persists SRS and a ride — and is gated to the

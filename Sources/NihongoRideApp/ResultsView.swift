@@ -83,29 +83,38 @@ struct ResultsView: View {
             .foregroundStyle(Self.panelCaptionColor)
     }
 
-    /// The colour of the two `.caption` lines drawn straight on the arrival panel, the stage line
-    /// and the tomorrow line under it: white at the smallest opacity that clears WCAG AA's 4.5:1 for
-    /// small text on the panel wherever the panel can sit.
+    /// The colour of every small text drawn straight on the arrival panel, not on a card or a
+    /// capsule: white at the smallest opacity that clears WCAG AA's 4.5:1 for small text on the panel
+    /// wherever the panel can sit. On this screen that is the grade's line under its title (13pt), the
+    /// review list's heading (`.caption`) and its "+N more" (`.caption2`), the stumbled-words heading
+    /// (13pt semibold, "The words that stopped you"), the stage line and the tomorrow line (both
+    /// `.caption`); on `ConjugationResultsView`, which sits on the same panel, its grade line (13pt).
+    /// Everything else drawn straight on the panel is white or a grade tint, which clear it by far.
     ///
     /// The panel is black at `RidePalette.cardAlpha` (0.85) over the backdrop, whose black scrim
     /// is `textScrim + 0.15` ≥ `baseScrim + 0.15` = 0.25. So every channel of the panel is
     /// 0.15 × (1 − scrim) × scene ∈ [0, 0.1125]. Source-over on the sRGB values, the model
     /// `V133SContrastTests.calibration` checks against the simulator's pixels:
     ///
-    /// * `Theme.dim`, white at 0.45, which both lines used to have: over a black scene the text is
-    ///   0.45, luminance 0.1706 → (0.1706 + 0.05) / 0.05 = **4.41:1**. Over a white scene the panel
-    ///   is 0.1125 (0.0121) and the text 0.512 (0.2252) → 4.43:1. Under 4.5:1.
+    /// * `Theme.dim`, white at 0.45, which every one of those texts used to have: over a black scene
+    ///   the text is 0.45, luminance 0.1706 → (0.1706 + 0.05) / 0.05 = **4.41:1**. Over a white
+    ///   scene the panel is 0.1125 (0.0121) and the text 0.512 (0.2252) → 4.43:1. Under 4.5:1.
     /// * white at **0.46**: black scene → text 0.46, luminance 0.1789 → **4.58:1** (4.56:1
     ///   after 8-bit quantisation); white scene → panel 0.1125, text 0.5208 (0.2338) → **4.57:1**,
     ///   its worst case over the whole sweep of scenes and scrims.
     ///
-    /// One constant for both lines, not a second 0.46: they are the same font on the same panel, one
-    /// above the other. The tomorrow line was given 0.46 in 1.34 while the stage line kept
-    /// `Theme.dim` (PLAN-V1.34 §B1 addendum 2026-09-27, deferred by name at 4.41:1). Two constants
-    /// would let them drift apart again, and neither would be the other's control. In 1.35 (§F,
-    /// item 4) the stage line joined the tomorrow line; nothing but its colour changed.
-    /// `V134B1TomorrowLineTests` recomputes both lines from the resolved colours over a sweep of
-    /// scenes and scrims, and reads which colour each line draws from this file. (v1.34 §B1, v1.35)
+    /// One constant for all of them, not a second 0.46: they are small text on the same panel. The
+    /// tomorrow line was given 0.46 in 1.34 while the stage line kept `Theme.dim` (PLAN-V1.34 §B1
+    /// addendum 2026-09-27, deferred by name at 4.41:1). Two constants would let them drift apart
+    /// again, and neither would be the other's control. In 1.35 (§F, item 4) the stage line joined
+    /// the tomorrow line, and after that fix's review the other five texts above joined them; nothing
+    /// but their colour changed. `V134B1TomorrowLineTests` lists every text in both results views,
+    /// reads the colour each one on the panel draws in from the source, and recomputes it over a
+    /// sweep of scenes and scrims. (v1.34 §B1, v1.35)
+    ///
+    /// Not this constant's business: the dim captions on the score tiles and the word chips sit on
+    /// `Theme.card` (white 0.06) over the panel, a lighter background (about 4.14:1 at worst in the
+    /// same model), and are a separate question, left as they were.
     static let panelCaptionColor = Color.white.opacity(0.46)
 
     /// Two lines below the accessibility sizes — unchanged from the line's first build, so the
@@ -209,9 +218,9 @@ struct ResultsView: View {
                     // also end here but add no day to the streak the line would state.
                     // A limit and a floor because the line sits in a VStack, which
                     // HorizontalTextFitTests deliberately does not scan; both are measured, see
-                    // `tomorrowLineLimit`. Its colour is `panelCaptionColor`, which the stage line
-                    // shares since 1.35; in 1.34 the stage line was `Theme.dim`, under 4.5:1 on
-                    // this panel. (v1.34 §B1)
+                    // `tomorrowLineLimit`. Its colour is `panelCaptionColor`, which every small text
+                    // straight on this panel shares since 1.35; in 1.34 the others were `Theme.dim`,
+                    // under 4.5:1 on this panel. (v1.34 §B1)
                     if let line = model.tomorrowLine(zh: zh) {
                         Text(line)
                             .font(.caption)
@@ -352,7 +361,8 @@ struct ResultsView: View {
                          ? (zh ? "这些词没听出来" : "The words you could not catch")
                          : (zh ? "这些词卡住了你" : "The words that stopped you"))
                         .scaledSystemFont(13, weight: .semibold, design: .rounded)
-                        .foregroundStyle(Theme.dim)
+                        // Straight on the arrival panel: `Theme.dim` was 4.41:1 here. (v1.35 §F item 4)
+                        .foregroundStyle(Self.panelCaptionColor)
                     MenuFlow(spacing: 8, rowSpacing: 8) {
                         ForEach(displayed, id: \.self) { stumble in
                             stumbleChip(stumble)
@@ -624,7 +634,8 @@ struct ResultsView: View {
                 .foregroundStyle(tint)
             Text(line)
                 .scaledSystemFont(13, weight: .regular)
-                .foregroundStyle(Theme.dim)
+                // Straight on the arrival panel: `Theme.dim` was 4.41:1 here. (v1.35 §F item 4)
+                .foregroundStyle(Self.panelCaptionColor)
         }
     }
 
@@ -636,7 +647,9 @@ struct ResultsView: View {
         return VStack(spacing: 8) {
             Text(persists ? (zh ? "复习这些词(点 ★ 收藏):" : "Review these (tap ★ to save):")
                           : (zh ? "这些让你吃力(点 ★ 收藏):" : "These gave you trouble (tap ★ to save):"))
-                .font(.caption).foregroundStyle(Theme.dim)
+                // This heading and the "+N more" below are straight on the arrival panel, where
+                // `Theme.dim` was 4.41:1; the cells between them are on cards. (v1.35 §F item 4)
+                .font(.caption).foregroundStyle(Self.panelCaptionColor)
             // One column at the accessibility sizes. The adaptive grid makes two 168pt columns on a
             // phone, and with the star and the speaker beside it the word keeps about 76pt — one
             // kanji is 45pt at AX5, so 図書館 stacked one character per line (ax-findings #29,
@@ -709,7 +722,7 @@ struct ResultsView: View {
             }
             if words.count > 12 {
                 Text(zh ? "还有 \(words.count - 12) 个…" : "+\(words.count - 12) more…")
-                    .font(.caption2).foregroundStyle(Theme.dim)
+                    .font(.caption2).foregroundStyle(Self.panelCaptionColor)
             }
         }
         .frame(maxWidth: 540)

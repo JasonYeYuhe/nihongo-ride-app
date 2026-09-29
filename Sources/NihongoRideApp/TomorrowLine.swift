@@ -63,6 +63,9 @@ enum TomorrowLine {
 
     /// "7,071", in both languages and whatever the device locale groups with: the paste notice's
     /// spelling (`CustomTextAddView.grouped`), so the app writes a count in a sentence one way.
+    /// Hence the named locale: `.formatted(.number)` alone would write "7.071" on a German device,
+    /// and every test here, run on a Mac set to en_US, would still pass. `V134B1TomorrowLineTests.
+    /// groupingLocaleIsFixed` reads this statement and fails if the locale stops being a literal.
     ///
     /// Grouped, although the tiles above this line on the same screen are not ("1100 m", a score of
     /// 12345): those are figures in a box, drawn from a `String`. This is a count in a sentence,
