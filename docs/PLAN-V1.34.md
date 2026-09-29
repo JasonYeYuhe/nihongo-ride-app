@@ -745,6 +745,30 @@ under its cut rule.** The order:
    planned day; `n5-kazoku` is not forced to a resolution (`PLAN-ITERATION` §D).
 6. B6, search from Word Lists, with its 2-day cut rule. If it misses, it moves whole to v1.36.
 
+*Step 1 done, 2026-09-29 (main `e7197f6`).* `0205e50` was merged onto `060ced9` as `fb3f770`
+and reviewed through five lenses, with two refuters for each finding. There was no BLOCKER or
+SERIOUS. The data lens confirmed the change byte for byte: 20 `'''` → `'` in 18 `meanings.en`, and
+nothing else. All 73 translations of the June batch equal Gemini's raw output in the chat log. A
+wider scan of all 240,180 strings and 126,298 keys found no other residue.
+Two fix rounds followed (`f9af2b7`, `e7197f6`), each verified by mutation:
+* the rule matches code points on both sides — Swift `.literal` / NSString; `String.contains` and
+  the native-string regex compared graphemes and depended on string storage;
+* the walker is pinned on synthetic nested JSON: a walker that skipped the corpus's `exTokens`
+  arrays of arrays still cleared the 100,000-string floor;
+* `pilot_gate.gates` refuses residue. It is the path `apply_batch.py`, the live example merge,
+  goes through; the branch had guarded only the generators;
+* `import_review_sheets.py` refuses residue in every field a correction writes;
+* the Python reader of the Swift cases accounts for every literal and refuses raw or multi-line
+  ones;
+* the comments now say the defect shipped through 1.34, not 1.33.
+`run_all_gates.sh`: 15 run, 0 failed; the floor is 15 (`--headless` 14).
+**Recorded, not fixed:**
+* `import_review_sheets --apply` rewrites all six corpus files at indent=2. This predates the
+  branch; it is the whole-file reformat `corpus_io.CorpusFile` exists to prevent, and a separate
+  task.
+* `check_vocab_diff.py` never reads `passages.json`.
+* `exMeta.sense` from `apply_batch.py` is checked only by the Swift test.
+
 **Records run alongside** and do not wait for a release: the N = 35 entry once the owner answers, and the
 N = 100 entry when it is reached.
 **Cut:** B2's two improvements (no evidence anyone pastes) and the About licence badges (the day-91

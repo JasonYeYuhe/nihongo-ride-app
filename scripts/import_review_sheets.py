@@ -30,6 +30,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from corpus_io import residue_reasons   # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "Sources/VocabKit/Resources"
 BLOCKLIST = ROOT / "design/known-bad-readings.txt"
@@ -94,6 +97,19 @@ class Changes:
                 f"{len(self.drops)} drops, {len(self.unparsed)} rows I couldn't parse")
 
 
+def refuse_residue(fields, fname, rid, changes):
+    """True, with the row reported as skipped, when any text the correction would write carries
+    quoting residue. A returned sheet has been through a spreadsheet and a CSV writer, both of
+    which quote, and a quoting layer applied and never undone is how 18 Practice translations
+    shipped `'''` (3e9407a). The whole correction is refused, not only the damaged field, so a
+    row is never half-applied. CorpusEscapeResidueTests would catch it at gate time; this stops
+    it before the JSON is written."""
+    reasons = residue_reasons(fields.items())
+    if reasons:
+        changes.unparsed.append((fname, rid, "correction refused: " + "; ".join(reasons)))
+    return bool(reasons)
+
+
 def apply_vocab_row(row, entries_by_id, fname, changes):
     status = normalize_status(row.get("status", ""))
     if status == "":
@@ -114,6 +130,8 @@ def apply_vocab_row(row, entries_by_id, fname, changes):
     fields = parse_correction(row.get("correction", ""))
     if not fields or "?" in fields:
         changes.unparsed.append((fname, row["id"], f"correction={row.get('correction')}"))
+        return
+    if refuse_residue(fields, fname, row["id"], changes):
         return
     for key, value in fields.items():
         if key == "kana":
@@ -149,6 +167,8 @@ def apply_passage_row(row, entries_by_id, fname, changes):
     fields = parse_correction(row.get("correction", ""))
     if not fields or "?" in fields:
         changes.unparsed.append((fname, row["id"], f"correction={row.get('correction')}"))
+        return
+    if refuse_residue(fields, fname, row["id"], changes):
         return
     for key, value in fields.items():
         if key == "display":
