@@ -40,7 +40,11 @@ from pathlib import Path
 # iPad in the v1.34 simulator pass. None of these shapes has a legitimate use anywhere in the
 # corpus. `Tests/VocabKitTests/CorpusEscapeResidueTests.swift` holds every shipped file to the
 # SAME rule and is the authority; this copy lets a generator refuse the text before merging it.
-# Change one, change both — `scripts/test_escape_residue.py` runs the Swift test's own cases here.
+# Both match CODE POINTS: `re` always has, and since 2026-09-29 the Swift rule's substring checks
+# use `.literal` — its `String.contains` compared grapheme clusters, so it missed `it''` followed
+# by U+0301, which this copy caught. For these patterns the two now agree on every input, not
+# only on the listed cases. Change one, change both — `scripts/test_escape_residue.py` runs the
+# Swift test's own cases here.
 _RESIDUE = (
     (re.compile(r"''"), "a run of ASCII apostrophes (shell `'\\''` read back as `'''`, or SQL `''`)"),
     (re.compile(r"\\"), "a backslash (an escape nobody undid)"),
@@ -55,6 +59,18 @@ def escape_residue(text):
         if pattern.search(text):
             return why
     return None
+
+
+def residue_reasons(fields):
+    """`["<name> carries <why>", …]` for each `(name, text)` in `fields` that carries residue, in
+    the order given; empty when none does. The wording is the generators' own, so a refusal reads
+    the same whichever path raised it. Every field is checked, including after a hit."""
+    reasons = []
+    for name, text in fields:
+        why = escape_residue(text)
+        if why:
+            reasons.append(f"{name} carries {why}")
+    return reasons
 
 
 class CorpusFile:

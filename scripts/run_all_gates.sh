@@ -170,12 +170,13 @@ echo
 
 run_swift_test
 
-# The python self-tests — nine since 2026-09-28: the sales instrument (test_sales_report.py) and
+# The python self-tests — nine since 2026-09-29: the sales instrument (test_sales_report.py) and
 # the Stage 1 walk tool (test_stage1_walk.py) got theirs on 2026-09-16, the build-root helper
 # (test_build_root.py) on 2026-09-17, the review watch (test_review_watch.py, the §K guardrail
 # reader's fixture test — its LIVE read needs the ASC key and is not a gate) on 2026-09-25
-# (v1.34 §C2), and the generators' quoting-residue refusal (test_escape_residue.py — 3e9407a's
-# `I'''m`) on 2026-09-28. Until v1.32 §D6 these were run by nothing at all.
+# (v1.34 §C2), and the corpus writers' quoting-residue refusal (test_escape_residue.py — 3e9407a's
+# `I'''m`) on 2026-09-29, when its merge reached main. Until v1.32 §D6 these were run by nothing
+# at all.
 for t in scripts/test_*.py; do
   run_gate "$(basename "$t")" "" python3 "$t"
 done

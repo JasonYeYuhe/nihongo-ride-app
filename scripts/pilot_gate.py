@@ -39,6 +39,7 @@ except SystemExit:
 sys.argv = _argv
 
 from sudachipy import Dictionary, SplitMode   # noqa: E402
+from corpus_io import residue_reasons   # noqa: E402
 
 JP_END = ("。", "!", "?", "！", "？")
 
@@ -287,6 +288,9 @@ def gates(item, entry, tokenizer, seen, levels):
             bad.append(f"generation artifact in {field}: {text[:60]!r}")
     if not jp:
         return ["empty"]
+    # Quoting residue — 3e9407a's `I'''m`. apply_batch.py merges examples through this function,
+    # not through gen_examples.validate, so without this line the live path would not refuse it.
+    bad.extend(residue_reasons((("jp", jp), ("en", en), ("zh", zh))))
     if not (5 <= len(jp) <= 40):
         bad.append(f"length {len(jp)}")
     if not jp.endswith(JP_END):
