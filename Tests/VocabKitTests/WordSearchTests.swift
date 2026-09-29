@@ -306,9 +306,9 @@ struct WordSearchTests {
     /// first reading → red on tanni, tani, gennin, genin, kinnyou, kinyou.
     ///
     /// The konnichiha line at the end holds only because こんいちは is not a word: this test says
-    /// nothing about ranking. Where both readings are words, the IME's comes first by the rule
-    /// `imeReadingRanksFirst` pins (the first version of this comment claimed that rule before the
-    /// code had it: shinnyuu listed 親友 above 侵入).
+    /// nothing about ranking. Where both readings are words, the first (Hepburn) reading's comes
+    /// first by the rule `hepburnReadingRanksFirst` pins (the first version of this comment claimed
+    /// that rule before the code had it: shinnyuu listed 親友 above 侵入).
     @Test("each ん spelling the ride accepts finds 単位, 原因 and 金曜", arguments: [
         ("n3-b594", "たんい", ["tan'i", "tanni", "taxni", "tani"]),
         ("n4-g127", "げんいん", ["gen'in", "gennin", "gexnin", "genin", "genninn"]),
@@ -324,35 +324,100 @@ struct WordSearchTests {
             let ids = Self.store.search(spelling, limit: 50).map(\.id)
             #expect(ids.contains(c.id), "\(spelling) did not find \(c.id): \(ids.prefix(8))")
         }
-        // The IME's reading is the only word here: konnichiha is こんにちは, first.
+        // The first reading is the only word here: konnichiha is こんにちは, first.
         #expect(Self.store.search("konnichiha", limit: 5).first?.id == "n5-konnichiwa")
     }
 
-    /// Where the IME's reading of a spelling and another ん reading are both words, the IME's comes
-    /// first within the tier — the reading a learner who types these letters into any IME gets —
-    /// and the other is still found. Each pair is one tier (both exact) and the other word is the
+    /// Where the first reading of a spelling and another ん reading are both words, the first one's
+    /// word comes first within the tier and the other is still found. The first reading is the
+    /// Hepburn one — the spelling the app's romaji hints teach (`everyHintReadsBack`): the hints
+    /// write しんにゅう shinnyuu and しんゆう shin'yuu. It is not "what a converter gives": a plain
+    /// longest match over the bundled table reads shinnyuu as しんゆう, the `nn` key first (the
+    /// control below). Each pair is one tier (both exact) and the other word is the
     /// easier level or the earlier entry, so without the rule it came first: measured 2026-09-29,
     /// 親友 (N3) over 侵入 (N2), 店員 (N4) over 転任 (N1), 勧誘 over 加入 and 信用 (N3) over 屎尿 (N1).
     /// Mutation, 2026-09-29: the `alternative` key removed from the sort → red on all four.
-    @Test("the IME's reading's word ranks before a word only another ん reading reaches", arguments: [
+    @Test("the first (Hepburn) reading's word ranks before a word only another ん reading reaches", arguments: [
         ("shinnyuu", "n2-b1139", "n3-b555"),   // 侵入 しんにゅう before 親友 しんゆう
         ("tennin", "n1-b333", "n4-g279"),      // 転任 てんにん before 店員 てんいん
         ("kanyuu", "n1-b1408", "n1-b758"),     // 加入 かにゅう before 勧誘 かんゆう
         ("shinyou", "n1-b1124", "n3-g032"),    // 屎尿 しにょう before 信用 しんよう
     ])
-    func imeReadingRanksFirst(_ c: (query: String, ime: String, alternative: String)) throws {
+    func hepburnReadingRanksFirst(_ c: (query: String, first: String, alternative: String)) throws {
         let found = Self.store.wordSearchIndex.matches(c.query, limit: 50)
-        let ime = try #require(found.firstIndex { $0.entry.id == c.ime }, "\(c.query) did not find \(c.ime)")
+        let first = try #require(found.firstIndex { $0.entry.id == c.first }, "\(c.query) did not find \(c.first)")
         let other = try #require(found.firstIndex { $0.entry.id == c.alternative }, "\(c.query) did not find \(c.alternative)")
-        #expect(found[ime].tier == .exact && found[other].tier == .exact, "control: not one tier — \(found[ime].tier), \(found[other].tier)")
-        #expect(ime < other, "\(c.query): \(found.prefix(6).map { "\($0.entry.surface)" })")
+        #expect(found[first].tier == .exact && found[other].tier == .exact, "control: not one tier — \(found[first].tier), \(found[other].tier)")
+        #expect(first < other, "\(c.query): \(found.prefix(6).map { "\($0.entry.surface)" })")
+        // The first reading is the one the hints teach: the first word's hint IS the query, and
+        // the other word's is not (it writes its ん with an apostrophe).
+        let firstHint = Self.store.entry(id: c.first)?.romaji, otherHint = Self.store.entry(id: c.alternative)?.romaji
+        #expect(firstHint == c.query && otherHint != c.query, "hints: \(firstHint ?? "nil"), \(otherHint ?? "nil")")
         // Control: the other word would win on the tie-breaks alone.
-        let a = found[ime].entry, b = found[other].entry
+        let a = found[first].entry, b = found[other].entry
         #expect(b.jlpt < a.jlpt || (b.jlpt == a.jlpt && Self.order(b.id) < Self.order(a.id)),
                 "control: \(b.surface) does not beat \(a.surface) on level or corpus order")
     }
 
     static func order(_ id: String) -> Int { store.entries.firstIndex { $0.id == id } ?? .max }
+
+    /// An English word typed a letter at a time stops on a consonant, and what comes before the
+    /// consonant reads as kana: "wat" as わ, "tomor" as とも, "teac" as てあ. Those partial readings
+    /// are alternatives, like a second ん reading — the words the text reaches come first within
+    /// the tier. Measured 2026-09-29 before this: "wat" gave 35 of its 50 rows to わ-words and put
+    /// 私 (わたし) third, ahead of 時計 (watch); "tomor" put 友達 second, ahead of あさって (the day
+    /// after tomorrow); "teac" put 手洗い ahead of 湯飲み (teacup). A romaji prefix reaches nothing
+    /// as text, so its partial reading's words are still first: "tabem" is 食べる and 食べ物.
+    /// Mutation, 2026-09-29: the partial reading treated as primary when there is no complete one
+    /// (`isFirst = position == 0`, the round-2 rule) → red on wat, tomor and teac.
+    @Test("a partial reading ranks after the words the text reaches, even with no complete reading", arguments: [
+        ("wat", ["n5-g067"], "n5-g012"),                   // 時計 (watch) before 私 (わたし)
+        ("tomor", ["n5-ashita", "n5-b005"], "n5-tomodachi"), // 明日, あさって before 友達 (ともだち)
+        ("teac", ["n2-b1282"], "n2-b618"),                 // 湯飲み (teacup) before 手洗い (てあらい)
+    ])
+    func partialReadingIsAnAlternative(_ c: (query: String, glossIDs: [String], kanaID: String)) throws {
+        let found = Self.store.wordSearchIndex.matches(c.query, limit: 50)
+        let rows = found.map { "\($0.entry.surface)" }
+        // Every row a gloss word starting with the query reaches comes before every prefix-tier row
+        // that only the partial reading reaches.
+        let q = c.query
+        func glossReaches(_ e: VocabEntry) -> Bool {
+            e.meanings.values.joined().contains { gloss in
+                gloss.lowercased().split(whereSeparator: { !$0.isLetter && !$0.isNumber }).contains { $0.hasPrefix(q) }
+            }
+        }
+        let prefix = found.filter { $0.tier == .prefix }
+        let lastGloss = try #require(prefix.lastIndex { glossReaches($0.entry) }, "control: \(q) reaches no gloss")
+        let firstKanaOnly = try #require(prefix.firstIndex { !glossReaches($0.entry) }, "control: \(q) reaches no kana-only word")
+        #expect(lastGloss < firstKanaOnly, "\(q): \(rows.prefix(14))")
+        // The named words, and the control that the kana word wins the tie-breaks against the last
+        // of them without the rule (明日 beats 友達 on corpus order alone, あさって does not).
+        let kanaRow = try #require(found.firstIndex { $0.entry.id == c.kanaID }, "\(q) did not find \(c.kanaID)")
+        var glossRow = 0
+        for id in c.glossIDs {
+            glossRow = try #require(found.firstIndex { $0.entry.id == id }, "\(q) did not find \(id)")
+            #expect(glossRow < kanaRow, "\(q): \(id) at \(glossRow + 1), \(c.kanaID) at \(kanaRow + 1) — \(rows.prefix(14))")
+        }
+        let a = found[glossRow].entry, b = found[kanaRow].entry
+        #expect(found[glossRow].tier == found[kanaRow].tier, "control: not one tier")
+        #expect(b.jlpt < a.jlpt || (b.jlpt == a.jlpt && Self.order(b.id) < Self.order(a.id)),
+                "control: \(b.surface) does not beat \(a.surface) on level or corpus order")
+        #expect(RomajiReading.readings(fromRomaji: q).isEmpty && !RomajiReading.partialReadings(fromRomaji: q).isEmpty,
+                "control: \(q) has a complete reading, or no partial one")
+    }
+
+    /// The same rule does not bury romaji typed a letter at a time: a prefix like "tabem" reaches
+    /// no gloss, so its partial reading's words are the whole result, and the word being typed is
+    /// first. And "wat" still finds 私 — later, not gone.
+    @Test("a romaji prefix still finds its word first, and 'wat' still finds 私")
+    func romajiPrefixStillFirst() {
+        #expect(Self.store.search("tabem", limit: 50).prefix(2).map(\.id) == ["n5-taberu", "n5-b106"],
+                "\(Self.store.search("tabem", limit: 5).map(\.surface))")
+        #expect(Self.store.search("tabemo", limit: 5).first?.id == "n5-b106")
+        #expect(Self.store.search("miz", limit: 5).first?.id == "n5-mizu")
+        #expect(Self.store.search("tomod", limit: 5).first?.id == "n5-tomodachi")
+        #expect(Self.store.search("wat", limit: 50).map(\.id).contains("n5-g012"))
+    }
 
     /// The same property over the whole corpus: every entry whose hint writes ん with an
     /// apostrophe, re-spelled with nn, xn and a lone n in its place, still reads as its reading.

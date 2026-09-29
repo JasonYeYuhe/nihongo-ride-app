@@ -502,6 +502,7 @@ struct V135B6WordSearchTests {
             "announcer.changed(to: Self.searchOutcome(query: new, count: results.count), at: .now)",
             "announceTask?.cancel() announceTask = Task { @MainActor in",
             "try? await Task.sleep(for: SearchAnnouncer.settleDelay)",
+            "guard !Task.isCancelled else { return }",
             "if let line = announcer.due(at: .now, limit: Self.searchLimit, zh: zh) {",
             "AccessibilityNotification.Announcement(line).post() } } }",
         ]
@@ -514,6 +515,56 @@ struct V135B6WordSearchTests {
         #expect(reset.contains("announceTask?.cancel()") && reset.contains("announcer = SearchAnnouncer()"))
         #expect(try Self.detail("private func openSearch").contains("resetAnnouncer()"))
         #expect(try Self.detail("private func closeSearch").contains("resetAnnouncer()"))
+    }
+
+    /// Leaving the screen drops a pending line (round 3): Back and Esc go through `backToLists`,
+    /// which resets before it moves the screen, and the view resets on disappearing, whatever moved
+    /// it. And a cancelled task says nothing — `try?` swallows the sleep's cancellation, so the
+    /// task checks. Mutations, 2026-09-29, each red here: `resetAnnouncer()` removed from
+    /// `backToLists`; the `.onDisappear` removed; the `Task.isCancelled` guard removed (red in
+    /// `announcementIsPosted`).
+    @Test("leaving the screen cancels a pending announcement")
+    func leavingCancelsTheAnnouncement() throws {
+        let back = try Self.detail("private func backToLists")
+        #expect(back.contains("resetAnnouncer() model.selectedListID = nil"), "\(back)")
+        let body = try Self.detail("var body: some View")
+        #expect(body.contains(".onDisappear { resetAnnouncer() }"), "\(body)")
+        #expect(body.contains("onCommand: { command in if command == .escape { backToLists() } }"),
+                "Esc no longer leaves through backToLists")
+        #expect(try Self.detail("private var backButton").contains("Button(action: backToLists)"))
+    }
+
+    /// The announcer forgets what it said when the field empties, at once — not when the empty field
+    /// has settled, which a quick retype never lets happen. Replayed at the speed that bit: "water"
+    /// settles and is said; the field is cleared and "mizu" typed within 0.3 s. Measured before
+    /// (round 2's announcer), 2026-09-29: mizu's results were never said. Mutation, 2026-09-29: the
+    /// idle branch of `changed` removed → red here.
+    @Test("a query replaced before the empty field settles is announced")
+    func replacedQueryIsAnnounced() {
+        typealias A = ListDetailView.SearchAnnouncer
+        let limit = ListDetailView.searchLimit
+        let t0 = ContinuousClock.now
+        func at(_ ms: Int) -> ContinuousClock.Instant { t0.advanced(by: .milliseconds(ms)) }
+        var a = A()
+        a.changed(to: .some(12), at: at(0))
+        #expect(a.due(at: at(800), limit: limit, zh: false) == "12 words found.")
+        // Cleared, and a new query typed well inside the delay: the empty field never settles.
+        a.changed(to: .idle, at: at(1000))
+        #expect(a.announced == .idle, "clearing the field did not end what was said")
+        a.changed(to: .some(4), at: at(1300))
+        #expect(a.due(at: at(1800), limit: limit, zh: false) == nil, "the empty field settled — not the case this is about")
+        #expect(a.due(at: at(2100), limit: limit, zh: false) == "4 words found.")
+        // A line pending when the field empties is dropped: nothing is said about an empty field.
+        a.changed(to: .none, at: at(3000))
+        a.changed(to: .idle, at: at(3200))
+        #expect(a.due(at: at(4000), limit: limit, zh: false) == nil)
+        #expect(a.due(at: at(5000), limit: limit, zh: false) == nil)
+        // Control: the same keystrokes without the clear — a query edited in place — say nothing new.
+        var b = A()
+        b.changed(to: .some(12), at: at(0))
+        _ = b.due(at: at(800), limit: limit, zh: false)
+        b.changed(to: .some(4), at: at(1300))
+        #expect(b.due(at: at(2100), limit: limit, zh: false) == nil)
     }
 
     /// The announcer on a synthetic clock. It says nothing until the last change is
@@ -715,6 +766,12 @@ struct V135B6WordSearchTests {
     /// their labels only; the notes under the Sentences and Dictation launchers sit outside them, on
     /// the gradient.
     static let screen: [(declaration: String, backdrop: Backdrop, backgrounds: [String], exempt: String?)] = [
+        // The body itself: text drawn straight in it sits on the gradient (round 3 — the scan
+        // walked only the views the body names, so a Text written in the body was never read).
+        // Its one background is the key-capture view, which draws nothing (held at the end of
+        // `screenTextClears`); its one Text is the alert's message, which the system draws, and
+        // is exempted by name (`alertMessage`).
+        ("var body: some View", .gradient, [], nil),
         ("private var header", .gradient, [], nil),
         ("private var backButton", .card, ["Theme.card, in: Capsule()"], nil),
         ("private func searchPanel", .gradient, [], nil),
@@ -761,15 +818,23 @@ struct V135B6WordSearchTests {
         let type = try #require(file.typeBodies(named: "ListDetailView").first)
         let code = String(decoding: file.codeWithStrings[type], as: UTF8.self)
         var all: [String: String] = [:]   // name → declaration prefix
-        // One line from the name to the brace: a `var` with a value (`bodyPoints: CGFloat = 17`)
-        // has no brace on its line, and a match allowed to run on would take the next
+        // From the name to the opening brace, across lines — a helper whose parameters are laid
+        // out one per line has its `-> some View` lines below its name (round 3: the one-line
+        // version missed such a helper, and the text it drew was never scanned). The signature
+        // may not run into another declaration: a `var` with a value (`bodyPoints: CGFloat = 17`)
+        // has no brace of its own, and a match allowed to run on would take the next
         // declaration's signature for its own (the first run found bodyPoints "reachable").
-        let declaration = try Regex(#"((?:private\s+)?(?:var|func)\s+(\w+))([^{}\n]*)\{"#)
+        let declaration = try Regex(#"((?:private\s+)?(?:var|func)\s+(\w+))((?:(?!\b(?:var|func|let|struct|enum|init)\b)[^{}])*)\{"#)
         for match in code.matches(of: declaration) {
             guard let signature = match.output[3].substring, signature.contains("some View"),
                   let prefix = match.output[1].substring, let name = match.output[2].substring else { continue }
             all[String(name)] = collapsed(String(prefix))
         }
+        // And every `some View` declaration the type has is one of them: a signature this scan
+        // cannot read is red here rather than silently unscanned.
+        let declared = code.matches(of: try Regex(#"(?:->|:)\s*some\s+View\b"#)).count
+        #expect(declared == all.count,
+                "ListDetailView declares \(declared) `some View` members; the scan matched \(all.count): \(all.keys.sorted())")
         var reachable = Set<String>()
         var queue = [try detail("var body: some View")]
         while let text = queue.popLast() {
@@ -783,13 +848,22 @@ struct V135B6WordSearchTests {
         return (reachable, all)
     }
 
-    /// Completeness of `screen`: every view the body reaches is placed there, and nothing else is.
-    /// Calibrated: the walk finds `backButton` through `header` only, and `searchField` through
-    /// `searchPanel` only. Mutation, 2026-09-29: the `unplayableHint` row removed from `screen` → red.
-    @Test("the contrast scan's list is every view ListDetailView's body reaches")
+    /// The alert's message: drawn by the system in its own panel, not on this screen's gradient, so
+    /// it is the one Text in `body` the scan leaves — by name, exactly once.
+    static let alertMessage = #"message: { Text(errorMessage ?? "") }"#
+
+    /// Completeness of `screen`: the body and every view it reaches are placed there, and nothing
+    /// else is. Calibrated: the walk finds `backButton` through `header` only, and `searchField`
+    /// through `searchPanel` only. Mutation, 2026-09-29: the `unplayableHint` row removed from
+    /// `screen` → red. Probe, round 3: a helper whose signature spans three lines, called from the
+    /// body and drawing `Theme.dim.opacity(0.5)` → red here (the one-line scan did not see it, and
+    /// was green).
+    @Test("the contrast scan's list is the body and every view it reaches")
     func screenIsComplete() throws {
         let (reachable, all) = try Self.reachableViews()
         let listed = Set(Self.screen.map { String($0.declaration.split(separator: " ").last!) })
+            .subtracting(["View"])   // "var body: some View"
+        #expect(Self.screen.contains { $0.declaration == "var body: some View" }, "the body is not scanned")
         #expect(reachable == listed, "reached but not listed: \(reachable.subtracting(listed).sorted()); listed but not reached: \(listed.subtracting(reachable).sorted())")
         #expect(all.count >= 15 && all["body"] != nil, "control: the declaration scan found \(all.keys.sorted())")
         let body = try Self.detail("var body: some View")
@@ -827,6 +901,14 @@ struct V135B6WordSearchTests {
             #expect(!text.isEmpty && text.count < 6000, "\(place.declaration): the brace walk returned \(text.count) characters")
             #expect(Self.modifierArguments("background", in: text) == place.backgrounds,
                     "\(place.declaration) draws backgrounds \(Self.modifierArguments("background", in: text))")
+            if place.declaration == "var body: some View" {
+                // The key-capture background (checked exactly below) and the alert's message.
+                #expect(text.components(separatedBy: ".background {").count == 2)
+                #expect(text.components(separatedBy: Self.alertMessage).count == 2,
+                        "the alert's message is not `\(Self.alertMessage)` exactly once")
+                text = text.replacingOccurrences(of: ".background {", with: "")
+                    .replacingOccurrences(of: Self.alertMessage, with: "")
+            }
             #expect(!text.contains(".background {") && !text.contains("ZStack") && !text.contains(".panel("),
                     "\(place.declaration) draws a backdrop this test does not compose")
             let overlays = Self.modifierArguments("overlay", in: text)
@@ -842,7 +924,7 @@ struct V135B6WordSearchTests {
                                                                over: place.backdrop == .card ? cards : stops)
         }
         let total = checked.values.reduce(0, +)
-        print("B6 SCREEN CONTRAST: \(total) colour uses — \(checked.sorted { $0.key < $1.key }.map { "\($0.key.split(separator: " ").last!) \($0.value)" })")
+        print("B6 SCREEN CONTRAST: \(total) colour uses — \(checked.sorted { $0.key < $1.key }.map { "\($0.key.hasPrefix("var body") ? "body" : String($0.key.split(separator: " ").last!)) \($0.value)" })")
         // header 2, Back 1, panel 4, Done 1, open 1, caption 1, sentence note 1, dictation note 1,
         // unplayable 1, word row 5 (a removed word's label, both branches; gloss; note; −), gone 1, empty 1.
         #expect(total == 20, "checked \(total) colour uses")
@@ -879,6 +961,22 @@ struct V135B6WordSearchTests {
     /// opacity differs, so a dimming of disabled content is seen. Mutation, 2026-09-29:
     /// `.buttonStyle(.plain)` back on the row → red. macOS rendering; the iOS look is the
     /// simulator pass's to confirm.
+    ///
+    /// **Equal within one level of 255, not byte for byte** (round 3). The byte-exact version
+    /// failed about one run in seven to twenty, always on addable ≠ full. The cause, measured
+    /// 2026-09-30 from `ImageRenderer`'s own `cgImage` bytes (sRGB, 8 bits, no conversion of ours
+    /// in between): the renderer draws a glyph's anti-aliased edge one level differently the first
+    /// time or two it draws that glyph at that size than once it has drawn it before — 24–25 bytes
+    /// of the 452,512 in this row, by exactly 1. Rendering the three states 30 times in one process
+    /// gave the sequence addable 0 1 1 1…, in-list 0 1 1 1…, full 1 1 1…: the first two renders
+    /// cold, everything after warm, and the full row (rendered third) already warm. Whether THIS
+    /// test's first render is cold depends on which other test drew 水 and みず at these sizes
+    /// first — test order — which is why it flaked on addable vs full and never on a later pair.
+    /// Warming up first was tried and is not enough: one of six probe processes still saw a
+    /// render change after its first round. The dimming this test exists to catch is 66 levels
+    /// (`.plain`: 137 → 71), and the control's 10% is up to 24; a tolerance of 1 sees both, and no
+    /// renderer cache state can move a pixel past it. `tolerance` is asserted below the
+    /// control's effect, so it cannot be widened into blindness.
     @MainActor
     @Test("a disabled row draws its text as an addable one does, in the colour computed")
     func disabledRowIsNotDimmed() throws {
@@ -890,13 +988,27 @@ struct V135B6WordSearchTests {
             let columns = bitmap.width * 7 / 10
             return (0..<bitmap.height).flatMap { y in bitmap.bytes[(y * bitmap.width * 4)..<(y * bitmap.width * 4 + columns * 4)] }
         }
+        /// The largest difference of any byte, and how many bytes differ.
+        func delta(_ a: [UInt8], _ b: [UInt8]) -> (max: Int, count: Int) {
+            guard a.count == b.count else { return (.max, .max) }
+            var largest = 0, count = 0
+            for i in a.indices where a[i] != b[i] {
+                largest = max(largest, abs(Int(a[i]) - Int(b[i])))
+                count += 1
+            }
+            return (largest, count)
+        }
+        let tolerance = 1
         let addable = try #require(render(.addable))
         let inList = try #require(render(.inList))
         let full = try #require(render(.listFull))
         let dimmed = try #require(render(.addable, opacity: 0.9))
-        #expect(textSide(addable) == textSide(inList), "an in-list row draws its text differently")
-        #expect(textSide(addable) == textSide(full), "a full-list row draws its text differently")
-        #expect(textSide(addable) != textSide(dimmed), "control: the comparison does not see a 10% dimming")
+        let inListDelta = delta(textSide(addable), textSide(inList))
+        let fullDelta = delta(textSide(addable), textSide(full))
+        let dimmedDelta = delta(textSide(addable), textSide(dimmed))
+        #expect(inListDelta.max <= tolerance, "an in-list row draws its text differently: \(inListDelta)")
+        #expect(fullDelta.max <= tolerance, "a full-list row draws its text differently: \(fullDelta)")
+        #expect(dimmedDelta.max > 10 * tolerance, "control: the comparison does not see a 10% dimming: \(dimmedDelta)")
 
         // The gloss's block glyphs are solid: their pixels are the gloss colour over the card over
         // black. Most common grey in the text side between the card and the white word.

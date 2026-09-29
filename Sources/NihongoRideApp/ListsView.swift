@@ -412,11 +412,16 @@ struct ListDetailView: View {
             announceTask?.cancel()
             announceTask = Task { @MainActor in
                 try? await Task.sleep(for: SearchAnnouncer.settleDelay)
+                // A cancelled sleep returns at once; a cancelled task says nothing.
+                guard !Task.isCancelled else { return }
                 if let line = announcer.due(at: .now, limit: Self.searchLimit, zh: zh) {
                     AccessibilityNotification.Announcement(line).post()
                 }
             }
         }
+        // Leaving the screen by any route — Back, Esc, the model moving the screen — drops a line
+        // still waiting to be said about a list the learner has left (round 3).
+        .onDisappear { resetAnnouncer() }
         // Cap / validation errors from an add — the same alert ListsView shows.
         .alert(zh ? "无法完成" : "Can't do that",
                isPresented: Binding(get: { errorMessage != nil },
@@ -551,10 +556,12 @@ struct ListDetailView: View {
         results = []
         resetAnnouncer()
         searching = true
-        // The index is built on the first search (`VocabStore.search`): ~31 ms on this Mac in a
-        // release build, 2026-09-29, against ~0.6 ms for a query once built. Built here, off the
-        // main actor, it is ready before the first keystroke instead of costing that keystroke a
-        // frame or two. Read-only — the store is a Sendable value and the lazy index is locked.
+        // The index is built on the first search (`VocabStore.search`): ~47 ms on this Mac in a
+        // release build (re-measured 2026-09-30, median of 15; 31 ms at the first commit, before
+        // the corpus merge and the ん readings), against ~0.7 ms for a keystroke once built. Built
+        // here, off the main actor, it is ready before the first keystroke instead of costing that
+        // keystroke a frame or two. Read-only — the store is a Sendable value and the lazy index is
+        // locked.
         let vocab = model.vocab
         Task.detached(priority: .userInitiated) { _ = vocab.wordSearchIndex }
     }
@@ -662,6 +669,13 @@ struct ListDetailView: View {
     ///
     /// Pure, with the time passed in, so the replay can run on a synthetic clock; the view calls
     /// `changed` from the query's onChange and `due` from a task that sleeps `settleDelay`.
+    ///
+    /// **An emptied field resets at once** (round 3). Clearing the field says nothing, but it does
+    /// end what was said: the next results are news. The first version waited for the empty field
+    /// to SETTLE before it forgot the last line, so a learner who cleared "water" and typed "mizu"
+    /// inside 0.8 s — select-all and retype, or delete and go on — heard nothing about mizu's
+    /// results: some → some. Now `changed(to: .idle)` sets `announced` to idle then and there, and
+    /// drops any line still pending (there is nothing to say about an empty field).
     struct SearchAnnouncer {
         static let settleDelay: Duration = .milliseconds(800)
 
@@ -670,6 +684,12 @@ struct ListDetailView: View {
         private var changedAt: ContinuousClock.Instant?
 
         mutating func changed(to outcome: SearchOutcome, at time: ContinuousClock.Instant) {
+            if outcome == .idle {
+                announced = .idle
+                pending = nil
+                changedAt = nil
+                return
+            }
             pending = outcome
             changedAt = time
         }
@@ -907,6 +927,8 @@ struct ListDetailView: View {
     }
 
     private func backToLists() {
+        // A pending announcement is about this screen's results; the lists screen is next.
+        resetAnnouncer()
         model.selectedListID = nil
         model.screen = .lists
     }

@@ -24,9 +24,15 @@ import RomajiKana
 /// form, the reading, or one gloss item), prefix (a field starts with it; for a gloss, any word
 /// in it does, so "eat" is a prefix of "to eat"), substring (anywhere). An entry takes the best
 /// tier any of its fields reaches. Within a tier, rows the query reaches as typed — its text, or
-/// the IME's reading of it (the first of `readings`, or of `partialReadings` when there is no
-/// complete one) — come before rows only another ん reading or a partial reading reaches: "shinnyuu"
-/// is 侵入 (しんにゅう, the IME's) before 親友 (しんゆう). Then N5 first, then corpus order.
+/// its first reading (`readings.first`: the Hepburn reading, the spelling the app's romaji hints
+/// teach) — come before rows only another ん reading or a partial reading reaches: "shinnyuu" is
+/// 侵入 (しんにゅう, the first reading) before 親友 (しんゆう, which the hints spell shin'yuu — and
+/// which a plain longest match over the bundled table gives, so this order is the hints' choice,
+/// not the table's). A partial reading is an alternative even when there is no complete one: an
+/// English word typed a letter at a time stops on a consonant ("wat", "tomor", "teac") and reads
+/// as the start of a kana word too (わ, とも, てあ), and those words come after the ones its text
+/// reaches — "wat" is 時計 (watch) before 私 (わたし). A romaji prefix ("tabem") reaches nothing as
+/// text, so its partial reading's words still come first. Then N5 first, then corpus order.
 ///
 /// **What it never returns.** A duplicate — the index keeps the first entry for an id, as
 /// `VocabStore.entry(id:)` does. And a retired word: this corpus retires a word by DELETING the
@@ -91,16 +97,16 @@ public struct WordSearchIndex: Sendable {
         let folded = Self.fold(words.joined(separator: " "))
         guard !folded.isEmpty else { return [] }
         let text = Array(folded.utf8)
-        // The IME's reading first — or, when the query stops mid-kana, the IME's reading of what
-        // precedes the tail — then the ん alternatives and the partial readings.
+        // The first (Hepburn) reading, then the ん alternatives, then the partial readings — which
+        // are alternatives even when there is no complete reading (see the ranking note above).
         let complete = RomajiReading.readings(fromRomaji: folded)
         let partial = RomajiReading.partialReadings(fromRomaji: folded)
-        let readings = (complete.map { (Array($0.utf8), false) } + partial.map { (Array($0.utf8), true) })
+        let readings = complete.map { (Array($0.utf8), false) } + partial.map { (Array($0.utf8), true) }
 
         var found: [(row: Int, tier: Tier, alternative: Bool)] = []
         for index in rows.indices {
             let row = rows[index]
-            // What the text itself and the first reading reach…
+            // What the text itself and the first complete reading reach…
             var primary = Self.tier(of: row.surface, query: text, wordStarts: false)
             primary = Self.better(primary, Self.tier(of: row.kana, query: text, wordStarts: false))
             if primary != .exact {
@@ -109,17 +115,18 @@ public struct WordSearchIndex: Sendable {
                     if primary == .exact { break }
                 }
             }
-            // …and what only another reading reaches.
+            // …and what only another reading reaches: a later ん reading, or any partial one.
             var secondary: Tier?
             for (position, (reading, isPartial)) in readings.enumerated() {
-                // Past the first reading only `secondary` can move, and nothing beats exact.
-                if position > 0, primary == .exact || secondary == .exact { break }
+                let isFirst = position == 0 && !isPartial
+                // Past the first complete reading only `secondary` can move, and nothing beats exact.
+                if !isFirst, primary == .exact || secondary == .exact { break }
                 var tier = Self.better(Self.tier(of: row.kana, query: reading, wordStarts: false),
                                        Self.tier(of: row.surface, query: reading, wordStarts: false))
                 // A partial reading is the start of the word being typed, never all of it: み for
                 // "miz" is not an exact match for 身.
                 if isPartial, tier == .exact { tier = .prefix }
-                if position == 0 {
+                if isFirst {
                     primary = Self.better(primary, tier)
                 } else {
                     secondary = Self.better(secondary, tier)

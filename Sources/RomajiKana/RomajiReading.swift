@@ -2,10 +2,10 @@
 ///
 /// `KanaInputMatcher` is target-aware: it knows the word and asks whether a key is on a path to
 /// it. A search box has no target — "mizu" has to become みず before there is anything to compare
-/// with — so this reads the same Mozc table the other way round, by longest match, the way an IME
-/// converts as you type. It exists for word search (`VocabKit.WordSearchIndex`, v1.35 §B6).
+/// with — so this reads the same Mozc table the other way round, by longest match, with one rule
+/// of its own for ん (below). It exists for word search (`VocabKit.WordSearchIndex`, v1.35 §B6).
 /// `readings` answers nothing rather than a half-conversion, because "みz" matches nothing a
-/// learner meant; `partialReadings` answers what an IME would show while the learner is still
+/// learner meant; `partialReadings` answers what has been read so far while the learner is still
 /// typing — the reading before the unfinished tail, み for "miz" — which search matches as the
 /// start of a word.
 ///
@@ -20,20 +20,22 @@ public enum RomajiReading {
     /// How many ambiguous `n`s one query branches on — the first four it meets, in reading order.
     /// Each doubles the readings, so four is at most sixteen, and it bounds the work: without it a
     /// query of twenty `na`s followed by a letter that reads as nothing would try 2²⁰ paths before
-    /// answering none. Past the fourth, an ambiguous `n` takes the IME's reading only. No corpus
+    /// answering none. Past the fourth, an ambiguous `n` takes the first reading's side only. No corpus
     /// word needs more: `WordSearchTests.everyNSpellingFindsTheWord` spells every entry whose
     /// hint has an `n'` each way the ride accepts, and all are found.
     public static let maxAmbiguousN = 4
 
-    /// The IME's reading of `romaji` — the first of `readings`: `nn` before a vowel is ん and
-    /// then the n-row, `n` before a vowel is the n-row. Nil when it is not romaji all the way
-    /// through.
+    /// The first reading of `romaji` — the first of `readings`, the Hepburn reading, which is the
+    /// spelling the app's romaji hints (`KanaRomanizer`) teach: `nn` before a vowel is ん and then
+    /// the n-row, `n` before a vowel is the n-row. (A plain longest match over the table reads
+    /// `nn` as ん first — shinnyuu as しんゆう — so this is the hints' order, not the table's.) Nil
+    /// when it is not romaji all the way through.
     public static func hiragana(fromRomaji romaji: String, table: RomajiKanaTable = .shared) -> String? {
         readings(fromRomaji: romaji, table: table).first
     }
 
-    /// Every hiragana `romaji` can spell under the ride's ん keys, the IME's reading first, no
-    /// repeats; empty when it is not romaji all the way through.
+    /// Every hiragana `romaji` can spell under the ride's ん keys, the first (Hepburn) reading
+    /// first, no repeats; empty when it is not romaji all the way through.
     ///
     /// * Input is lowercased first; only `a`–`z`, `-` (the long-vowel mark ー, the table's own
     ///   rule) and `'` (after n: `kin'youbi`) are romaji. Anything else — a space, a digit, a
@@ -60,15 +62,15 @@ public enum RomajiReading {
         collect(romaji, partial: false, table: table)
     }
 
-    /// The readings of a query that stops partway through a kana — what the IME shows while the
-    /// learner is still typing: "tabem" → たべ, "miz" → み, "gakk" → がっ, "kiny" → きん and き. Each is
+    /// The readings of a query that stops partway through a kana — what has been read so far while
+    /// the learner is still typing: "tabem" → たべ, "miz" → み, "gakk" → がっ, "kiny" → きん and き. Each is
     /// the reading of the query's longest complete prefix, on a path whose remaining letters are a
     /// proper prefix of a table key ("m" of "ma", "ch" of "chi"), so more typing could complete
     /// them. A lone final `n` is such a tail as well as ん ("tabemon" → たべも, the start of
     /// たべもの, besides `readings`' たべもん), because "n" is also the start of "na". Empty when the query is not romaji up to that tail, when
     /// the tail could not become a key ("mizq"), or when nothing before the tail reads ("sh").
     /// Never a reading `readings` already gives. The ん alternatives are read as in `readings`,
-    /// the IME's first.
+    /// the first reading's first.
     ///
     /// Why search needs it (v1.35 §B6 review): without it every keystroke that ended mid-kana read
     /// as nothing, so "tabemono" typed a letter at a time found words at た, none at "tab", some at

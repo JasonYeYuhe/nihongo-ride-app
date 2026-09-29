@@ -43,7 +43,7 @@ struct RomajiReadingTests {
 
     /// The ride accepts `n'`, `nn`, `xn` and a lone `n` for ん before a vowel or `y` — it knows
     /// the word. Search does not, so each spelling must yield the ん reading among its readings,
-    /// and the IME's reading stays first. Mutations, 2026-09-29: dropping the `nn` → ん + bare
+    /// and the first (Hepburn) reading stays first. Mutations, 2026-09-29: dropping the `nn` → ん + bare
     /// vowel branch → red on tanni, gennin, kinnyou; dropping the lone-`n` branch → red on tani,
     /// genin, kinyou; setting `maxAmbiguousN` to 0 → red on both.
     @Test("every ん spelling the ride accepts yields the ん reading", arguments: [
@@ -56,10 +56,14 @@ struct RomajiReadingTests {
                 "\(c.romaji) → \(RomajiReading.readings(fromRomaji: c.romaji))")
     }
 
-    /// The first reading is the IME's, so the corpus-wide hint round trip and konnichiha keep
-    /// their answers; the others follow, with no repeats.
-    @Test("the IME's reading comes first, then the other ん readings")
-    func imeReadingFirst() {
+    /// The first reading is the Hepburn one — the spelling the app's romaji hints teach
+    /// (`KanaRomanizer`: しんにゅう is shinnyuu, しんゆう is shin'yuu) — so the corpus-wide hint round
+    /// trip and konnichiha keep their answers; the others follow, with no repeats. It is NOT what
+    /// a plain longest match over the bundled table gives: that takes the `nn` key first and reads
+    /// shinnyuu as しんゆう and konnichiha as こんいちは (the control at the end). So the order is a
+    /// choice this type makes, to agree with the hints, not a property of the table.
+    @Test("the first (Hepburn) reading comes first, then the other ん readings")
+    func hepburnReadingFirst() {
         #expect(RomajiReading.readings(fromRomaji: "konnichiha") == ["こんにちは", "こんいちは"])
         #expect(RomajiReading.hiragana(fromRomaji: "konnichiha") == "こんにちは")
         #expect(RomajiReading.readings(fromRomaji: "tanni") == ["たんに", "たんい"])
@@ -70,6 +74,34 @@ struct RomajiReadingTests {
         #expect(RomajiReading.readings(fromRomaji: "kannji") == ["かんじ"], "nn before a consonant is the table's ん")
         let many = RomajiReading.readings(fromRomaji: "nanininuneno")
         #expect(many.count == Set(many).count, "a reading repeated: \(many)")
+        #expect(RomajiReading.hiragana(fromRomaji: "shinnyuu") == "しんにゅう")
+        #expect(KanaRomanizer.romaji(for: "しんにゅう") == "shinnyuu" && KanaRomanizer.romaji(for: "しんゆう") == "shin'yuu",
+                "the hints no longer spell these the way this comment says")
+        // Control: the plain longest match over the same table reads them the other way.
+        #expect(Self.plainLongestMatch("shinnyuu") == "しんゆう", "\(Self.plainLongestMatch("shinnyuu") ?? "nil")")
+        #expect(Self.plainLongestMatch("konnichiha") == "こんいちは")
+    }
+
+    /// The bundled table read by longest match and nothing else — no ん branching.
+    static func plainLongestMatch(_ romaji: String) -> String? {
+        let table = RomajiKanaTable.shared
+        var remaining = Array(romaji)
+        var output = ""
+        while !remaining.isEmpty {
+            var length = min(table.maxRomajiLength, remaining.count)
+            var matched = false
+            while length > 0 {
+                if let production = table.producerByRomaji[String(remaining[0..<length])] {
+                    output += production.output
+                    remaining = Array(production.pending) + remaining[length...]
+                    matched = true
+                    break
+                }
+                length -= 1
+            }
+            if !matched { return nil }
+        }
+        return output
     }
 
     /// The branching is bounded: a long run of ambiguous n's ending in a letter that reads as
@@ -101,7 +133,7 @@ struct RomajiReadingTests {
         ("tomodach", ["ともだ"]),         // ch is a proper prefix of chi
         ("jitens", ["じてん"]),           // n before a consonant is ん; the s is unfinished
         ("tabemon", ["たべも"]),          // a lone final n also starts the n-row: たべもの
-        ("kiny", ["き", "きん"]),          // ny of nyo (the IME's), and ん + the y of yo
+        ("kiny", ["き", "きん"]),          // ny of nyo (the first reading's), and ん + the y of yo
         ("matc", ["ま"]),                // tc of tch
         ("water", ["わて"]),              // English that reads as romaji up to a tail: a reading too
     ])
