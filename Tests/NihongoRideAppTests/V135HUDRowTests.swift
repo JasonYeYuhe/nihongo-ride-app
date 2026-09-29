@@ -388,6 +388,22 @@ struct V135HUDRowTests {
         #expect(abs(idealLayout - (items + 6 * 6)) < 0.01, "the layout's ideal width is \(idealLayout), its items \(items)")
         #expect(V133GRideAndDrillLayoutTests.taken(layout, at: idealLayout.rounded(.up)))
         #expect(!V133GRideAndDrillLayoutTests.taken(layout, at: idealLayout.rounded(.up) - 1))
+        // Every rung, not only rung 0: the same vertical centring with fewer leading items (rungs 4–6
+        // shed the score, then the combo, then the level). Review of 727be4f: a layout that top-aligned
+        // only rows whose leading side is shorter than today's passed every other test here.
+        for leading in [2, 1] {
+            let stackN = HStack(spacing: 14) {
+                capsule(texts[0]); if leading == 2 { pill(texts[2]) }; Spacer()
+                pill(texts[4]); pill(texts[6])
+            }
+            let layoutN = HUDRowLayout(leading: leading) {
+                capsule(texts[0]); if leading == 2 { pill(texts[2]) }
+                pill(texts[4]); pill(texts[6])
+            }
+            let roomy = Self.ideal(stackN).width.rounded(.up) + 40
+            #expect(Self.pixels(stackN, width: roomy) == Self.pixels(layoutN, width: roomy),
+                    "with \(leading) leading item(s) the layout draws the row differently from the stack")
+        }
     }
     #endif
 

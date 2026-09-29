@@ -345,7 +345,8 @@ struct V134B3HUDSpokenTests {
                 == "0 / 5")
     }
 
-    /// The progress pill — the one element drawn in every row — is where the suffix is heard: its
+    /// The progress pill — the one element drawn in every `row(fallback:)` row (Time Attack's last
+    /// compressed rung draws none — v1.35 step 4b) — is where the suffix is heard: its
     /// `spoken:` argument is exactly `RideHUDSpoken.progressWords(...)` handed the pill's own count
     /// and `RideHUDSpoken.hiddenValues(...)` with the row's own `fallback`, the view's `typeSize` and
     /// its `narrow`; and `progressWords` joins the two in exactly the shape that suffixes the whole

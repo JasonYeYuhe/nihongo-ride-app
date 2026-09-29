@@ -322,9 +322,10 @@ struct HUDBar: View {
         // seven pills and pause in `HUDRowLayout`, which closes the row's gaps down to 6pt before
         // anything goes; then rows that each shed one more pill, in `RideHUDRungs.shedOrder`. The
         // compressed rows reserve the widest value a ride can show where a value can shrink
-        // (`RideHUDRungs`), so once today's row is left the ladder only moves down; today's row
-        // reserves nothing (it is today's), so a ride can step between it and the compressed row
-        // of the same pills. Today's row is offered from the first width at which it is one line
+        // (`RideHUDRungs`), so once today's row is left the ladder only moves down mid-ride (at xxxLarge a
+        // ride's finishing key, whose level label is empty, can bring today's row back for its last frame —
+        // review H3). Today's row reserves nothing (it is today's), so a ride can step between it and
+        // the compressed row of the same pills. Today's row is offered from the first width at which it is one line
         // (`OneLineFit`: its HStack wraps a value at proposals up to 9.5pt WIDER than its own ideal
         // width), to within 0.25pt, whatever height the screen proposes; there the compressed row
         // draws the same pixels, so those steps move nothing, in either axis (`V135HUDRowTests`
@@ -905,7 +906,9 @@ enum RideHUDLayout {
 /// VoiceOver gets new elements; where its focus goes then is not measured.
 ///
 /// At the accessibility sizes an iPad's two rows reserve the ride's level labels, the second too
-/// (`RideHUDLayout.levelReserve`), so there the ladder only moves down as well.
+/// (`RideHUDLayout.levelReserve`), so there the ladder only moves down as well — mid-ride. At a
+/// finishing key the finished session's empty level label can bring a wider row back for one frame
+/// (at xxxLarge; review H3 of the step-4b review).
 enum RideHUDRungs {
     /// Every item a rung may shed, in the row's order. The pause button is not one.
     enum Pill: CaseIterable { case level, score, combo, distance, progress, accuracy, speed }
