@@ -949,14 +949,16 @@ fired. *An agent cannot do this step and must not try.*
 >    * one written form, ジェットき→ジェット機;
 >    * three English translations;
 >    * four glosses (以下 / 以上 made inclusive; 内 gains "among"; ひっくりかえる loses an editor's
->      "typo" note);
->    * 18 Practice passage translations that showed `I'''m`.
->    The dictation pool gains a net 8 sentences (9 released with proof, 1 withheld).
+>      "typo" note).
+>    The dictation pool gains a net 8 sentences (9 released with proof, 1 withheld). Outside that
+>    manifest, 18 English translations of Practice passages had every apostrophe tripled
+>    (`I'''m`, `isn'''t`, `father'''s`) and are corrected (`passages.json`, step 1).
 > 4. **Accessibility.**
 >    * The Verbs drill speaks the score its HUD hides at the accessibility sizes.
->    * On narrow iPad windows and the Mac, the ride HUD no longer wraps values mid-token: a row that does
->      not fit is first drawn compressed, then sheds its least ride-critical pills. Each value it sheds is
->      spoken.
+>    * On iPad, the ride HUD no longer wraps values mid-token when its row runs out of room (an iPad
+>      mini in portrait, Split View, Slide Over): a row that does not fit is first drawn compressed,
+>      then sheds its least ride-critical pills. Each value it sheds is spoken. The Mac shares the code
+>      but its row fits at every window size measured, so nothing changes there.
 >    * The results screen's small panel text meets 4.5:1.
 >    * The tomorrow line stays whole at four-digit counts.
 >
@@ -967,6 +969,9 @@ fired. *An agent cannot do this step and must not try.*
 > **Expected effect, direction and magnitude.**
 > * A list built up front can be ridden, so search can only add riding: direction **up** on
 >   days-ridden, magnitude **unmeasurable** here (no instrument in this window sees list use).
+> * The paste confirmation adds one way to store nothing: a rider who pastes over the cap and taps
+>   Cancel. Pasting over the cap is rare and Cancel leaves the text in the editor; direction neutral
+>   to slightly down for that rider, magnitude negligible.
 > * The paste confirmation, the corpus corrections and the HUD fixes change what a rider reads or types.
 >   They change nothing about how far a ride goes: no queue, distance, unlock or ride-length rule moved.
 >   Second-order, direction up or neutral.

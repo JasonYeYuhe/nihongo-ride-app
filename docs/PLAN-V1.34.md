@@ -866,8 +866,8 @@ with two refuters. Every fix round was verified by mutation.
   meets 4.5:1. The tomorrow line groups four-digit counts in en_US and takes a fourth line at the
   accessibility sizes where it needs one, never truncating a count, on 402 and 375pt phones.
 * **Step 4b, the iPad HUD** (merged `46e8c06`). This extends the "100 / %" wrap the v1.34 review
-  found: 1,526 of 4,608 hosted iPad cells wrapped at the default size, and 2,250 pushed the pause
-  button past the edge. The design (three designs, two judges) keeps today's row where it is one
+  found: of 8,384 hosted iPad cells at the default size (16 ride states, windows 320–1366pt, keyboard
+  up and down), 1,526 wrapped a value and 2,250 pushed the pause button past the edge. The design (three designs, two judges) keeps today's row where it is one
   line (`OneLineFit`); otherwise it draws a compressed row of the same seven pills, then rungs that
   shed distance, accuracy, speed, score, combo and level in that order. Every value is drawn whole,
   and every shed value is spoken on the progress pill.
@@ -875,7 +875,8 @@ with two refuters. Every fix round was verified by mutation.
   * Every cell that fitted in 1.34 is byte-identical, except at AX1: 86 cells in 320–384pt windows
     where 1.34 squeezed its level capsule, and 33 cells in about 4pt-wide bands where round 2's
     level reserve sheds the level earlier by design (23,895 of 23,928 fitted AX1 cells identical in
-    the verifier's dense sweep).
+    the round-2 verifier's dense sweep — a probe outside the repo; the in-repo sweep pins 612/612 of
+    its own AX1 cells).
   * Switching between today's row and the compressed row moves nothing, horizontally or vertically.
   * The ladder never moves back up mid-ride, AX1 mixed-level rides included (the round-2 fix).
   * Owner-revisitable choices: no bleed into GameView's margin (except over-cap lists at AX1 in
@@ -901,7 +902,9 @@ with two refuters. Every fix round was verified by mutation.
   placement suites down. It was fixed and re-run 13/13 before anything shipped (memory note
   `feedback-swiftpm-gates-do-not-compile-ui-tests`).
 
-*§G verification, 2026-09-30, on `46e8c06` (sources equal the release commit's):*
+*§G verification, 2026-09-30 — gates, UI tests and renders on `46e8c06` (its sources equal the
+release commit's); the simulator pass in two runs, on `b1d087b` (paste, lists, results) and on
+`46e8c06` (HUD, game, and the paste re-run):*
 * `run_all_gates.sh`: 15 run, 14 passed, 1 documented no coverage, 0 failed; 1,079 Swift tests.
 * `run_ios_placement_tests.sh`: 13/13 — PaidRouteRowTests 8, StumbledWordsFlowTests 1,
   WordListSearchFlowTests 1, TouchFlowTests 3 on the iPad Pro 11".
@@ -919,6 +922,36 @@ with two refuters. Every fix round was verified by mutation.
     the score.
 * Frozen surfaces: `git diff 281fc45` touches no RoadView, RouteStore, EntitlementKit, Settings
   road card, menu route strip, About counter text, `.storekit` or store metadata.
+
+*Whole-release review, 2026-09-30, on `0b1407e`.* It ran four lenses: frozen surfaces, copy
+against code, integration, and release mechanics, with two refuters for each non-NOTE finding. It
+found no BLOCKER or SERIOUS.
+* The frozen lens found nothing touched: no purchase code, no placement, no store metadata, no new
+  network use, no new store. The live privacy page's statements still hold. One NOTE: the page's
+  local-storage list does not name pasted texts or word lists. That predates 1.35 and belongs to
+  the site repo, so ask before pushing there.
+* Copy fixed before `--metadata`:
+  * the iPad bullet said "a narrow window", but a full-screen iPad mini in portrait wrapped too;
+  * zh now says the 18 fixes were in the English translations;
+  * zh and ja now say the accessibility text sizes, as 1.34 did;
+  * ja uses メッセージ, not 通知 (which reads as a push notification), and quotes the English UI
+    labels (「Word Lists」, 上部表示);
+  * "easier to read" is now "a little more contrast" (0.45 → 0.46 white at the default size);
+  * review note 3 is a full sentence, and 1.34's "no modal, no badge, nothing about the purchase on
+    the results screen" is back.
+* Records fixed:
+  * the §K box keeps the 18 passage fixes out of the 22-entry manifest list and names their real
+    shapes;
+  * the Mac's row never wrapped at any measured window, so the HUD fix is registered as iPad-only;
+  * a new downward path is registered (Cancel stores nothing);
+  * the 4b record's denominator is 8,384 cells, not 4,608;
+  * the §G record names both simulator runs' commits.
+* Recorded, not changed:
+  * CI's gates job now takes 15–17 minutes against its 30-minute timeout, because of the 4b hosted
+    sweeps;
+  * one new Swift 6 concurrency warning: the nonisolated `SearchAnnouncer.due` calls the
+    MainActor-inferred `ListDetailView.searchAnnouncement`. It is a warning, not an error, and the
+    function is pure. It is left for v1.36 rather than change sources after §G.
 
 **Records run alongside** and do not wait for a release: the N = 35 entry once the owner answers, and the
 N = 100 entry when it is reached.
