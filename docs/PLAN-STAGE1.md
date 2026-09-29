@@ -929,6 +929,52 @@ fired. *An agent cannot do this step and must not try.*
 > v1.34's Pacific release date (appended to `FIRM_RELEASE_DATES_PT` on release day) is the covariate
 > to look at.
 
+> ### 📌 REGISTERED 2026-09-30 (JST) under constraint 3, before v1.35 is submitted — search the dictionary from a word list, a paste confirmation, 22 corpus corrections, and two HUD accessibility fixes
+>
+> `PLAN-WINDOW` constraint 3: *"A feature that substantially changes how far people ride changes
+> exposure-per-install… Second-order and tolerable — **register it, do not avoid it.**"* This is that
+> registration for v1.35 (`PLAN-V1.34` §F, the owner's v1.35 addendum of 2026-09-29, and §B6), written
+> before `--submit`. It registers product changes; it adds no §K rule.
+>
+> **What changed.**
+> 1. **Word Lists.** A list's screen can now search the whole dictionary by writing, reading, romaji or
+>    gloss, and add a result to that list (PLAN-V1.34 §B6). Before, a list could only be filled by meeting
+>    a word in a ride or on a results screen. Nothing was added to the menu or to any purchase surface.
+> 2. **Pasted texts.** A paste over 200 sentences or 20,000 characters shows the counts first. Add now
+>    asks for confirmation before storing the cut text, and only in that case. VoiceOver announces the
+>    notice.
+> 3. **Corpus.** 22 entries were corrected by evidence (`docs/measurements/v135-residue-manifest.json`):
+>    * readings a rider types — 何 read なん where standard Japanese reads なに (14 sentences),
+>      金 きん→かね, 何時 なんどき→なんじ;
+>    * one written form, ジェットき→ジェット機;
+>    * three English translations;
+>    * four glosses (以下 / 以上 made inclusive; 内 gains "among"; ひっくりかえる loses an editor's
+>      "typo" note);
+>    * 18 Practice passage translations that showed `I'''m`.
+>    The dictation pool gains a net 8 sentences (9 released with proof, 1 withheld).
+> 4. **Accessibility.**
+>    * The Verbs drill speaks the score its HUD hides at the accessibility sizes.
+>    * On narrow iPad windows and the Mac, the ride HUD no longer wraps values mid-token: a row that does
+>      not fit is first drawn compressed, then sheds its least ride-critical pills. Each value it sheds is
+>      spoken.
+>    * The results screen's small panel text meets 4.5:1.
+>    * The tomorrow line stays whole at four-digit counts.
+>
+> Nothing else a rider can see changed on the surfaces the window freezes. The offer screen, the Settings
+> road card, the menu route strip, prices, About's counter text and the store metadata are unchanged (§G's
+> render and diff checks).
+>
+> **Expected effect, direction and magnitude.**
+> * A list built up front can be ridden, so search can only add riding: direction **up** on
+>   days-ridden, magnitude **unmeasurable** here (no instrument in this window sees list use).
+> * The paste confirmation, the corpus corrections and the HUD fixes change what a rider reads or types.
+>   They change nothing about how far a ride goes: no queue, distance, unlock or ride-length rule moved.
+>   Second-order, direction up or neutral.
+>
+> **How to read a checkpoint against it.** §K's bound is `3/N` on observed installs and does not move. If
+> a reading lands close to a threshold, the covariate to look at is the cohort split at v1.35's Pacific
+> release date, which is appended to `FIRM_RELEASE_DATES_PT` on release day.
+
 ## §L The three manual gates
 
 These cannot be automated on this machine and are therefore **not tested until somebody walks

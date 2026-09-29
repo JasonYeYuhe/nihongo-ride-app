@@ -851,6 +851,75 @@ Two fix rounds followed (`f9af2b7`, `e7197f6`), each verified by mutation:
 * `check_vocab_diff.py` never reads `passages.json`.
 * `exMeta.sense` from `apply_batch.py` is checked only by the Swift test.
 
+*Steps 2–6 done, 2026-09-29/30 (main `46e8c06` before the release commit).* Each step was
+implemented in its own worktree and reviewed through at least two lenses, each non-NOTE finding
+with two refuters. Every fix round was verified by mutation.
+* **Step 2, the paste notice** (merged `5d411ac`). A design panel ran three designs past two judges.
+  The notice now leads with the counts, in wording measured to put both numbers in the first two
+  lines at AX5 on 338 and 311pt columns. Over a cap, Add asks first; Cancel stores nothing. That
+  reverses 1.34's "Add under no condition", because the AX5 cost 1.34 accepted was measured on the
+  simulator re-run. The alert's title carries no numbers. VoiceOver announces the notice when it
+  appears or changes unit. The kit reports characters when the 200th sentence is itself cut.
+* **Step 3, the Verbs HUD** (merged `46e8c06`). Its progress pill speaks the score the row hides at
+  the accessibility sizes: "1 of 12, score 110" / "1 / 12、得分 110", read on the simulator.
+* **Step 4, the results screen** (merged `380e402`). Every small text straight on the arrival panel
+  meets 4.5:1. The tomorrow line groups four-digit counts in en_US and takes a fourth line at the
+  accessibility sizes where it needs one, never truncating a count, on 402 and 375pt phones.
+* **Step 4b, the iPad HUD** (merged `46e8c06`). This extends the "100 / %" wrap the v1.34 review
+  found: 1,526 of 4,608 hosted iPad cells wrapped at the default size, and 2,250 pushed the pause
+  button past the edge. The design (three designs, two judges) keeps today's row where it is one
+  line (`OneLineFit`); otherwise it draws a compressed row of the same seven pills, then rungs that
+  shed distance, accuracy, speed, score, combo and level in that order. Every value is drawn whole,
+  and every shed value is spoken on the progress pill.
+  * Measured: 0 wraps and no ink outside the row at L, xxxL and AX1, across 8,384 cells per size.
+  * Every cell that fitted in 1.34 is byte-identical, except at AX1: 86 cells in 320–384pt windows
+    where 1.34 squeezed its level capsule, and 33 cells in about 4pt-wide bands where round 2's
+    level reserve sheds the level earlier by design (23,895 of 23,928 fitted AX1 cells identical in
+    the verifier's dense sweep).
+  * Switching between today's row and the compressed row moves nothing, horizontally or vertically.
+  * The ladder never moves back up mid-ride, AX1 mixed-level rides included (the round-2 fix).
+  * Owner-revisitable choices: no bleed into GameView's margin (except over-cap lists at AX1 in
+    windows under 332pt, where the last rung reaches up to 12pt into it — measured and pinned);
+    Time Attack's last rung keeps the score and speaks the count.
+* **Step 5, the corpus** (merged `d476e8b`). The 112-sentence residue was inspected sentence by
+  sentence (100 ok, 9 defect, 3 uncertain); 7 corrections were upheld by two refuters each. The
+  review of those found the same 何-read-なん defect in 13 more sentences, and its sweep found 何時
+  read なんどき. 22 entries in `v135-residue-manifest.json` in all, with 9 released into dictation
+  on instrument-1b proof and 1 withheld.
+  The vocabulary gate now reads the release manifest in CI and locally, and was proven red when a
+  declaration is dropped.
+* **Step 6, B6** (merged `b1d087b`; the UI test fixed in `c9dec6d`). Search the dictionary from a
+  list: writing, reading, romaji (every ん spelling the ride accepts; partial romaji while typing),
+  English and Chinese gloss. One-tap add; VoiceOver hears results settle. Every text on the screen
+  meets 4.5:1. Release timing: median 0.70 ms and p95 1.26 ms per keystroke; a 47 ms index build,
+  off the first keystroke.
+  Four review rounds followed. The last one found that ranking English prefixes gloss-first had
+  dropped the word being typed at 43 N5 keystrokes; with no complete reading, the level now ranks
+  before the alternative key, and the survey pins it at 1.
+  **The XCUITest failed to BUILD at its first run.** It had been written by an agent that could not
+  run xcodebuild, and the SwiftPM gates never compile the UI target. The failed build also took the
+  placement suites down. It was fixed and re-run 13/13 before anything shipped (memory note
+  `feedback-swiftpm-gates-do-not-compile-ui-tests`).
+
+*§G verification, 2026-09-30, on `46e8c06` (sources equal the release commit's):*
+* `run_all_gates.sh`: 15 run, 14 passed, 1 documented no coverage, 0 failed; 1,079 Swift tests.
+* `run_ios_placement_tests.sh`: 13/13 — PaidRouteRowTests 8, StumbledWordsFlowTests 1,
+  WordListSearchFlowTests 1, TouchFlowTests 3 on the iPad Pro 11".
+* Headless renders against 1.34 (`281fc45`), en and zh, three runs each, the same night: only
+  `results.png`, `results-sentence.png` and `conjugation-results.png` differ, sub-pixel (peak Δ3,
+  the panel captions' 0.45 → 0.46 white). The other 21 are byte-identical, `road.png`,
+  `road-iap-review.png`, `menu.png` and `about.png` among them.
+* Simulator pass on `NihongoRide-VisualPass` (402pt) and the iPad mini, en/zh × default/AX5: 80
+  cells, all OK (one harness navigation miss on the first run, OK on the re-run).
+  * Paste, both caps: the notice's counts are above the keyboard at AX5. Cancel leaves the text
+    intact (3,212 / 25,500 characters). The alert's Add stores 200 sentences / 118 sentences.
+  * B6: the keyboard opens without a tap; "mizu" finds 水 and adds it; "water" finds 水, 水分, 水道 and
+    湯 (zh glosses).
+  * The HUD pills are whole on the iPad at default and AX5, and the Verbs progress value speaks
+    the score.
+* Frozen surfaces: `git diff 281fc45` touches no RoadView, RouteStore, EntitlementKit, Settings
+  road card, menu route strip, About counter text, `.storekit` or store metadata.
+
 **Records run alongside** and do not wait for a release: the N = 35 entry once the owner answers, and the
 N = 100 entry when it is reached.
 **Cut:** B2's two improvements (no evidence anyone pastes) and the About licence badges (the day-91
