@@ -953,6 +953,22 @@ found no BLOCKER or SERIOUS.
     MainActor-inferred `ListDetailView.searchAnnouncement`. It is a warning, not an error, and the
     function is pure. It is left for v1.36 rather than change sources after §G.
 
+*Submission record, 2026-09-30 (JST).* v1.35 went to App Review on both platforms: macOS build 60
+and iOS build 61, built from `fdb2b5f`, whose sources equal `46e8c06`.
+* The final `run_all_gates.sh` ran on `fdb2b5f` before `--submit`, as the v1.34 lesson requires: 15
+  run, 0 failed.
+* The macOS launch gate passed. `check_versions.py --archive` confirmed both archives.
+* `ListAgents` was checked before the ASC writes. The only claude process in the repository was the
+  submitting session.
+* `--metadata` created versions `f07b3c3f-…` (macOS) and `6cded9c5-…` (iOS). What's New (868 / 312 /
+  482 characters) and the review notes (2,033) were each read back identical.
+* `--submit`: submissions `05da4a8b-…` and `1db9fdc2-…`, both read back `WAITING_FOR_REVIEW`.
+* Independent read-back:
+  * the builds are 60 and 61;
+  * `releaseType` is `AFTER_APPROVAL`;
+  * listing metadata and screenshots equal 1.34's in every locale;
+  * the IAP is `APPROVED`, `familySharable` false.
+
 **Records run alongside** and do not wait for a release: the N = 35 entry once the owner answers, and the
 N = 100 entry when it is reached.
 **Cut:** B2's two improvements (no evidence anyone pastes) and the About licence badges (the day-91
