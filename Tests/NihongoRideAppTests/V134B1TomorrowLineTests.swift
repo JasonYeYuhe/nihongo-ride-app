@@ -44,7 +44,8 @@ struct V134B1TomorrowLineTests {
     }
 
     /// PLAN-V1.34 §B1's table, plus the rows it names in prose: the boundary (2 days is a streak,
-    /// 1 is not, 0 — a chain that broke — is not), the English singulars, and a count past 99.
+    /// 1 is not, 0 — a chain that broke — is not), the English singulars, a count past 99, and
+    /// (v1.35) counts past 999.
     /// English is a sentence: when the due half starts the line it starts with a capital
     /// ("Nothing due tomorrow"; a digit is left as it is), and after the streak prefix it does not.
     /// Since the simulator pass (2026-09-27) a count is joined to its noun or measure word by
@@ -93,6 +94,19 @@ struct V134B1TomorrowLineTests {
         Row(streak: 30, words: 100, forms: 0,
             en: "30-day streak · 100\u{00A0}words due tomorrow",
             zh: "连续 30\u{00A0}天 · 明\u{2060}天到\u{2060}期 100\u{00A0}个\u{2060}词"),
+        // Four digits and more are grouped with a comma in both languages, the paste notice's
+        // spelling (v1.35): the whole vocabulary owed, a four-digit forms count, and the most forms
+        // there can be (7 forms × 2,317 verbs). A 1,000-day streak is 2.7 years of daily rides and
+        // is here for its spelling only; the layout grids below stop at 999.
+        Row(streak: 3, words: 7_071, forms: 1_000,
+            en: "3-day streak · 7,071\u{00A0}words and 1,000\u{00A0}forms due tomorrow",
+            zh: "连续 3\u{00A0}天 · 明\u{2060}天到\u{2060}期 7,071\u{00A0}个\u{2060}词、1,000\u{00A0}个\u{2060}变\u{2060}形"),
+        Row(streak: 1, words: 0, forms: 16_219,
+            en: "16,219\u{00A0}forms due tomorrow",
+            zh: "明\u{2060}天到\u{2060}期 16,219\u{00A0}个\u{2060}变\u{2060}形"),
+        Row(streak: 1_000, words: 9_999, forms: 0,
+            en: "1,000-day streak · 9,999\u{00A0}words due tomorrow",
+            zh: "连续 1,000\u{00A0}天 · 明\u{2060}天到\u{2060}期 9,999\u{00A0}个\u{2060}词"),
     ]
 
     @Test("the copy matrix, row by row, in both languages", arguments: matrix)
@@ -617,7 +631,7 @@ struct V134B1TomorrowLineTests {
             "if let line = model.tomorrowLine(zh: zh) {",
             "Text(line)",
             ".font(.caption)",
-            ".foregroundStyle(Self.tomorrowLineColor)",
+            ".foregroundStyle(Self.panelCaptionColor)",
             ".multilineTextAlignment(.center)",
             ".lineLimit(Self.tomorrowLineLimit(accessibilitySize: typeSize.isAccessibilitySize))",
             ".minimumScaleFactor(Self.tomorrowLineScaleFloor)",
@@ -644,13 +658,14 @@ struct V134B1TomorrowLineTests {
 
     /// By value, so `.lineLimit(nil)` / `.minimumScaleFactor(1.0)` — or a constant quietly moved —
     /// is red here rather than green by name (round-2 review). Two below the accessibility sizes is
-    /// the line's first build, which the default-size renders were taken with.
-    @Test("the line limit is 2 below the accessibility sizes and 3 at them; the floor is 0.7")
+    /// the line's first build, which the default-size renders were taken with. Four at them since
+    /// v1.35 (three in 1.34): `everyRowFits` and `accessibilityLimitControls` say why.
+    @Test("the line limit is 2 below the accessibility sizes and 4 at them; the floor is 0.7")
     func limitAndFloorByValue() {
         #expect(DynamicTypeSize.allCases.filter(\.isAccessibilitySize).count == 5)
         for size in DynamicTypeSize.allCases {
             #expect(ResultsView.tomorrowLineLimit(accessibilitySize: size.isAccessibilitySize)
-                    == (size.isAccessibilitySize ? 3 : 2), "\(size)")
+                    == (size.isAccessibilitySize ? 4 : 2), "\(size)")
         }
         #expect(ResultsView.tomorrowLineScaleFloor == 0.7)
     }
@@ -658,13 +673,14 @@ struct V134B1TomorrowLineTests {
     #if canImport(AppKit)
     /// How many lines CoreText breaks `text` into at `points` in a column `width` wide — the same
     /// measurement `V133SSettingsAboutTests` makes with the system UI font.
-    static func lineCount(_ text: String, points: Double, width: Double) throws -> Int {
+    nonisolated static func lineCount(_ text: String, points: Double, width: Double) throws -> Int {
         try Self.lineTexts(text, points: points, width: width).count
     }
 
     /// The same layout, as the text of each line CoreText made — trailing spaces included, so a
-    /// line that ends "7 " is visible as one.
-    static func lineTexts(_ text: String, points: Double, width: Double) throws -> [String] {
+    /// line that ends "7 " is visible as one. Nonisolated (v1.35) so the grids below can run one
+    /// phone and one language per case, side by side: the grid grew to 3,380 rows on two phones.
+    nonisolated static func lineTexts(_ text: String, points: Double, width: Double) throws -> [String] {
         let font = try #require(CTFontCreateUIFontForLanguage(.system, points, nil))
         let setter = CTFramesetterCreateWithAttributedString(
             NSAttributedString(string: text, attributes: [.font: font]))
@@ -677,102 +693,169 @@ struct V134B1TomorrowLineTests {
         }
     }
 
-    /// The column the line gets on the 402pt iPhone 17 Pro the AX5 pass uses, from the source:
-    /// the screen's own padding on a phone and `arrivalPanel`'s compact horizontal padding, each
-    /// read rather than copied, so a change to either is re-measured here.
-    static func panelColumn() throws -> Double {
+    /// The phones the line is measured on. 402pt is the iPhone 17 Pro the AX5 pass uses. 375pt is
+    /// the narrowest iPhone that runs iOS 17, this app's floor (`project.yml`): the SE of the 2nd
+    /// and 3rd generation, the XS, the 11 Pro, and the 12 and 13 mini. The 320pt SE stopped at iOS 15.
+    nonisolated static let phones: [Double] = [402, 375]
+
+    /// The column the line gets on a phone `phone` points wide, from the source: the screen's own
+    /// padding on a phone and `arrivalPanel`'s compact horizontal padding, each read rather than
+    /// copied, so a change to either is re-measured here. 402 → 322pt, 375 → 295pt.
+    static func panelColumn(phone: Double = 402) throws -> Double {
         let results = Self.codeLines(try Self.source("ResultsView.swift")).joined(separator: "\n")
         let screen = try #require(results.firstMatch(of: /\.padding\(isPhoneIdiom \? ([0-9]+) : [0-9]+\)/),
                                   "ResultsView's content padding moved")
         let backdrop = Self.codeLines(try Self.source("RideArrivalBackdrop.swift")).joined(separator: "\n")
         let panel = try #require(backdrop.firstMatch(of: /\.padding\(\.horizontal, compact \? ([0-9]+) : [0-9]+\)/),
                                  "arrivalPanel's horizontal padding moved")
-        return 402 - 2 * (try #require(Double(screen.1))) - 2 * (try #require(Double(panel.1)))
+        return phone - 2 * (try #require(Double(screen.1))) - 2 * (try #require(Double(panel.1)))
     }
 
-    /// The widest realistic rows, in both languages, fit the accessibility-size limit at the floor
-    /// on the AX5 phone, so SwiftUI never has to truncate — the round-2 finding was that two lines
-    /// cut "due tomorrow" off the English streak rows. `.caption` at AX5 is 43pt in Apple's Dynamic
-    /// Type table (the same table `V133GRideAndDrillLayoutTests.accessibilityScales` copies body
-    /// and largeTitle from); 40pt, `.caption2`'s, is measured too because the review used it.
-    /// The control: at the old limit of two, the English row does NOT fit at the floor, or this
-    /// instrument could not have seen the finding.
+    /// `.caption`'s point size at every Dynamic Type size, from Apple's table: 11, 11, 11, 12, 13,
+    /// 15 and 17pt below the accessibility sizes (xSmall to xxxLarge; 12 is the default), and 22,
+    /// 26, 32, 37 and 43pt at AX1 to AX5. 40pt, `.caption2`'s AX5, is kept because the round-2
+    /// review measured with it. Each size carries whether the accessibility limit applies to it.
+    nonisolated static let captionSizes: [(points: Double, accessibility: Bool)] =
+        [11, 12, 13, 15, 17].map { ($0, false) } + [22, 26, 32, 37, 40, 43].map { ($0, true) }
+
+    /// The limit and the floor, read on the main actor for the nonisolated grids.
+    nonisolated static func layoutRule(phone: Double) async throws -> (column: Double, below: Int, at: Int, floor: Double) {
+        try await MainActor.run {
+            (try Self.panelColumn(phone: phone),
+             ResultsView.tomorrowLineLimit(accessibilitySize: false),
+             ResultsView.tomorrowLineLimit(accessibilitySize: true),
+             Double(ResultsView.tomorrowLineScaleFloor))
+        }
+    }
+
+    /// One phone and one language: the grids below run as four cases, side by side.
+    struct Layout: Sendable, CustomTestStringConvertible {
+        let phone: Double
+        let zh: Bool
+        var testDescription: String { "\(Int(phone))pt phone, \(zh ? "zh" : "en")" }
+    }
+    nonisolated static let layouts = phones.flatMap { phone in [false, true].map { Layout(phone: phone, zh: $0) } }
+
+    /// Every row of the grid, in both languages, on both phones, fits its line limit at every size
+    /// the line is drawn at, so SwiftUI never has to truncate it. Below the accessibility sizes the
+    /// limit is two lines at FULL size: the line never shrinks there, so the default-size renders
+    /// cannot move. At the accessibility sizes the limit is four lines at the 0.7 floor.
     ///
-    /// **Since the simulator pass (2026-09-27) the English row has no room above the floor.** A
-    /// count may no longer end a line, so "999 " cannot hang at the end of the second line as it
-    /// did, and the row breaks "365-day streak · " / "999 words and " / "999 forms due tomorrow" —
-    /// the third line is the one that must fit, and it fits 322pt at 0.70 and not at 0.71 (before
-    /// the no-break spaces the row fit three lines from 0.865). The same holds for every row that
-    /// names 999 words and 999 forms, whatever the streak, which is why the whole grid below is
-    /// measured and not one row: rows of two-digit counts need 0.745.
-    @Test("at AX5 every row fits the accessibility limit at the floor, and the widest did not fit two lines")
-    func widestRowsFitAtAX5() throws {
-        let column = try Self.panelColumn()
-        #expect(column == 322, "the column was 322pt when the limit was measured; now \(column)pt — re-measure")
-        let widest = ["365-day streak · 999\u{00A0}words and 999\u{00A0}forms due tomorrow",
-                      "连续 365\u{00A0}天 · 明\u{2060}天到\u{2060}期 999\u{00A0}个\u{2060}词、999\u{00A0}个\u{2060}变\u{2060}形"]
-        // The rows are the composer's own output, not a guess at it.
-        #expect(TomorrowLine.compose(streakDays: 365, wordsDue: 999, formsDue: 999, zh: false) == widest[0])
-        #expect(TomorrowLine.compose(streakDays: 365, wordsDue: 999, formsDue: 999, zh: true) == widest[1])
-        let limit = ResultsView.tomorrowLineLimit(accessibilitySize: true)
-        let floor = Double(ResultsView.tomorrowLineScaleFloor)
-        for points in [43.0, 40.0] {
-            for row in widest {
-                let lines = try Self.lineCount(row, points: points * floor, width: column)
-                #expect(lines <= limit, "\(points)pt × \(floor): \(lines) lines for a limit of \(limit) — \(row)")
+    /// Why four (v1.35; three in 1.34). Measured with this instrument on 2026-09-29, at AX5 (43pt)
+    /// with three lines: on the 402pt phone the English rows past 999 needed down to 0.63
+    /// ("2-day streak · 16,219 words and 16,219 forms due tomorrow"), and 228 of 1,690 went under
+    /// the floor. On the 375pt phone even 1.34's own rows of 999 words and 999 forms needed 0.64 at
+    /// AX5 (0.685 at 40pt), so 1.34 already truncated there. The Chinese rows fit three
+    /// lines on both phones (0.89 at worst). With four lines every row fits at full size on the
+    /// 402pt phone, and on the 375pt phone the widest needs 0.925 at AX5 and 0.995 at 40pt. A count
+    /// is never dropped, and the text keeps its accessibility size instead of shrinking toward 0.7
+    /// of it. The line sits in the results screen's scroll view, so the extra line costs height and
+    /// nothing else. `accessibilityLimitControls` holds the old limit's failures.
+    @Test("every row fits its limit at every text size, on the 402pt and the 375pt phone, never truncated",
+          arguments: layouts)
+    nonisolated func everyRowFits(_ layout: Layout) async throws {
+        let rule = try await Self.layoutRule(phone: layout.phone)
+        #expect(rule.column == (layout.phone == 402 ? 322 : 295),
+                "the column was \(layout.phone == 402 ? 322 : 295)pt when this was measured; now \(rule.column)pt, so re-measure")
+        var rows = 0, fourDigit = 0
+        for streak in Self.gridStreaks { for words in Self.gridCounts { for forms in Self.gridCounts {
+            let row = TomorrowLine.compose(streakDays: streak, wordsDue: words, formsDue: forms, zh: layout.zh)
+            rows += 1
+            if max(words, forms) >= 1_000 { fourDigit += 1 }
+            for size in Self.captionSizes {
+                let (points, limit) = size.accessibility ? (size.points * rule.floor, rule.at)
+                                                         : (size.points, rule.below)
+                let lines = try Self.lineCount(row, points: points, width: rule.column)
+                #expect(lines <= limit, "\(size.points)pt at \(points / size.points): \(lines) lines for a limit of \(limit) — \(row)")
             }
-        }
-        // Every row of the grid, not only the longest by characters: with the joins, a two-day
-        // streak with 999 and 999 is as wide as a 365-day one.
-        for zh in [false, true] {
-            for streak in Self.gridStreaks { for words in Self.gridCounts { for forms in Self.gridCounts {
-                let row = TomorrowLine.compose(streakDays: streak, wordsDue: words, formsDue: forms, zh: zh)
-                for points in [43.0, 40.0] {
-                    let lines = try Self.lineCount(row, points: points * floor, width: column)
-                    #expect(lines <= limit, "\(points)pt × \(floor): \(lines) lines — \(row)")
-                }
-            } } }
-        }
-        // Measured 2026-09-27, after the joins: the English row fits three lines at the floor and
-        // not one hundredth above it; the Chinese row fits three from 0.98 (below).
-        let enAbove = try Self.lineCount(widest[0], points: 43 * 0.71, width: column)
-        #expect(enAbove > limit, "the English row now fits three lines at 0.71 — the room above the floor has changed; update the comments here and on `tomorrowLineLimit`")
-        #expect(try Self.lineTexts(widest[0], points: 43 * floor, width: column)
-                == ["365-day streak · ", "999\u{00A0}words and ", "999\u{00A0}forms due tomorrow"])
-        // Joining 个 to its noun (release review of the simulator fix) costs the widest Chinese row
-        // its full-size fit: measured 2026-09-27, it needs three lines from 0.98 and fits at every
-        // scale from there down to the floor; not at 1.0.
-        #expect(try Self.lineCount(widest[1], points: 43 * 0.98, width: column) <= limit)
-        #expect(try Self.lineCount(widest[1], points: 43, width: column) > limit,
-                "the widest zh row fits three lines at full size again — update this measurement")
-        // The control: two lines at the floor truncated the English row.
-        let twoLineControl = try Self.lineCount(widest[0], points: 43 * floor, width: column)
-        #expect(twoLineControl > 2,
-                "control: the English row fits two lines at the floor — the instrument cannot see the finding")
+        } } }
+        // The grid is what the comment says it is: 13 × 13 counts, of which the ones past 999
+        // are most of the rows, so a regression there cannot hide in a corner.
+        #expect(rows == 10 * 13 * 13 && fourDigit == 10 * (13 * 13 - 9 * 9), "\(rows) rows, \(fourDigit) past 999")
     }
 
+    /// The controls, so the grid above can fail. 1.34's limit of three truncates, on the 402pt phone
+    /// only past 999, and on the 375pt phone at 999: the instrument sees what v1.35 fixed. Two
+    /// lines truncate the widest English row, the round-2 finding. And the measurements the comments
+    /// here and on `tomorrowLineLimit` quote, so a font or composer change that moves them is seen.
+    @Test("controls: three lines truncated four-digit rows on the 402pt phone and 999 on the 375pt one")
+    func accessibilityLimitControls() throws {
+        let wide = try Self.panelColumn(phone: 402), narrow = try Self.panelColumn(phone: 375)
+        #expect(wide == 322 && narrow == 295)
+        let floor = Double(ResultsView.tomorrowLineScaleFloor)
+        let limit = ResultsView.tomorrowLineLimit(accessibilitySize: true)
+        let fourDigits = TomorrowLine.compose(streakDays: 2, wordsDue: 1_000, formsDue: 9_999, zh: false)
+        let threeDigits = TomorrowLine.compose(streakDays: 365, wordsDue: 999, formsDue: 999, zh: false)
+        // The rows are the composer's own output, not a guess at it.
+        #expect(fourDigits == "2-day streak · 1,000\u{00A0}words and 9,999\u{00A0}forms due tomorrow")
+        #expect(threeDigits == "365-day streak · 999\u{00A0}words and 999\u{00A0}forms due tomorrow")
+
+        // 1.34: three lines at the floor held 999 on the 402pt phone and not four digits…
+        #expect(try Self.lineCount(threeDigits, points: 43 * floor, width: wide) <= 3)
+        #expect(try Self.lineCount(fourDigits, points: 43 * floor, width: wide) > 3,
+                "control: the four-digit row fits three lines at the floor on the 402pt phone")
+        // …and not even 999 on the 375pt phone, at 43pt or at 40pt.
+        let twoDay999 = TomorrowLine.compose(streakDays: 2, wordsDue: 999, formsDue: 999, zh: false)
+        for (row, points) in [(threeDigits, 43.0), (twoDay999, 43.0), (twoDay999, 40.0)] {
+            #expect(try Self.lineCount(row, points: points * floor, width: narrow) > 3,
+                    "control: \(row) fits three lines at \(points)pt × the floor on the 375pt phone")
+        }
+        // Two lines, the round-2 finding: the widest row does not fit two at the floor.
+        #expect(try Self.lineCount(threeDigits, points: 43 * floor, width: wide) > 2)
+
+        // Now: four lines, at full size on the 402pt phone.
+        #expect(limit == 4)
+        #expect(try Self.lineTexts(fourDigits, points: 43, width: wide)
+                == ["2-day streak · ", "1,000\u{00A0}words and ", "9,999\u{00A0}forms due ", "tomorrow"])
+        #expect(try Self.lineTexts(threeDigits, points: 43, width: wide)
+                == ["365-day streak · ", "999\u{00A0}words and ", "999\u{00A0}forms due ", "tomorrow"])
+        // On the 375pt phone the widest row needs 0.925 at AX5 (measured 2026-09-29): four lines
+        // there and not at 0.93, and five at full size. Above the floor, so it shrinks and is whole.
+        let widest = TomorrowLine.compose(streakDays: 2, wordsDue: 16_219, formsDue: 16_219, zh: false)
+        #expect(try Self.lineCount(widest, points: 43 * 0.925, width: narrow) <= limit)
+        #expect(try Self.lineCount(widest, points: 43 * 0.93, width: narrow) > limit,
+                "the widest row fits four lines at 0.93 on the 375pt phone; update the comments here and on `tomorrowLineLimit`")
+        // Chinese never needed a fourth line: its widest rows fit three at the floor on both phones.
+        let zhWidest = TomorrowLine.compose(streakDays: 999, wordsDue: 9_999, formsDue: 16_219, zh: true)
+        for column in [wide, narrow] {
+            #expect(try Self.lineCount(zhWidest, points: 43 * floor, width: column) <= 3, "\(column)pt: \(zhWidest)")
+        }
+    }
+
+    /// Streaks to 999. A four-digit streak is 1,000 consecutive days of rides, 2.7 years, and is
+    /// left out of the layout grids (the matrix holds its spelling). Counts to 9,999 for words (the
+    /// vocabulary is 7,071 entries) and 16,219 for forms (7 forms × 2,317 verbs with a verb class,
+    /// the most there can be); both counts take every value, so the grid is a superset.
     nonisolated static let gridStreaks = [0, 1, 2, 4, 9, 10, 99, 100, 365, 999]
-    nonisolated static let gridCounts = [0, 1, 7, 9, 10, 12, 99, 100, 999]
+    nonisolated static let gridCounts = [0, 1, 7, 9, 10, 12, 99, 100, 999, 1_000, 7_071, 9_999, 16_219]
 
     /// A line's text with its trailing breaking spaces removed — never U+00A0, which cannot end a
     /// line — so "7 " reads as ending in its count.
-    static func trimmed(_ line: String) -> String {
+    nonisolated static func trimmed(_ line: String) -> String {
         var line = line
         while let last = line.last, last == " " || last == "\n" { line.removeLast() }
         return line
     }
 
+    /// Each count with what it must stay with, as the composer writes it: the English count and its
+    /// noun ("7,071 words"), the streak and "-day"; the Chinese count, 个 and its noun, and the
+    /// streak and 天. Each must sit whole on one line, which also catches a break inside "7,071".
+    nonisolated static func units(streak: Int, words: Int, forms: Int, zh: Bool) -> [String] {
+        func n(_ v: Int) -> String { v.formatted(.number.locale(Locale(identifier: "en_US"))) }
+        var units: [String] = []
+        if streak >= 2 { units.append(zh ? "\(n(streak))\u{00A0}天" : "\(n(streak))-day") }
+        if words > 0 { units.append(zh ? "\(n(words))\u{00A0}个\u{2060}词" : "\(n(words))\u{00A0}word") }
+        if forms > 0 { units.append(zh ? "\(n(forms))\u{00A0}个\u{2060}变\u{2060}形" : "\(n(forms))\u{00A0}form") }
+        return units
+    }
+
     /// Simulator pass, 2026-09-27, AX5, 402pt phone: the line wrapped as "4-day streak · 7 / words
     /// due / tomorrow" and "连续 4 天 · 明天到 / 期 7 个词". The instrument is calibrated on exactly
     /// those two strings first — CoreText, at `.caption`'s 43pt in the 322pt column, must break the
-    /// 1.34 build's text where the device did, or it measures some other layout. Then, over the
-    /// grid of streaks and counts in both languages, at 43 and 40pt and every scale SwiftUI may
-    /// draw at down to the floor, and at the default size's 12pt in the same column: no line ends
-    /// in a count (English: its noun is on the next line; Chinese: its measure word is), and no
-    /// line break falls inside 明天, 到期 or 变形. Mutation, 2026-09-27: the composer's U+00A0 after
-    /// the English count back to a space → red here (and in the matrix); U+2060 in 到期 removed → red.
-    @Test("a count never ends a line and 明天 / 到期 / 变形 never break, at every size the line is drawn")
-    func noBreakInsideAJoin() throws {
+    /// 1.34 build's text where the device did, or it measures some other layout. The grid is
+    /// `noBreakInsideAJoin`, below.
+    @Test("the instrument breaks the 1.34 build's text where the device did")
+    func noBreakCalibration() throws {
         let column = try Self.panelColumn()
         // The control: the device's breaks, reproduced from the strings the device drew.
         #expect(try Self.lineTexts("4-day streak · 7 words due tomorrow", points: 43, width: column)
@@ -788,34 +871,54 @@ struct V134B1TomorrowLineTests {
                 == ["4-day streak · ", "7\u{00A0}words due ", "tomorrow"])
         #expect(try Self.lineTexts(zh, points: 43, width: column)
                 == ["连续 4\u{00A0}天 · 明\u{2060}天", "到\u{2060}期 7\u{00A0}个\u{2060}词"])
+        // The unit check below can see a count parted from its noun: on the device's own string
+        // "7 words" is on no one line.
+        let device = try Self.lineTexts("4-day streak · 7 words due tomorrow", points: 43, width: column)
+        #expect(!device.contains { $0.contains("7 word") }, "control: the unit check could not see the device's break")
+    }
 
+    /// Over the grid of streaks and counts, on both phones, at every `.caption` size at full size
+    /// and at 43 and 40pt at every scale SwiftUI may draw at down to the floor: no line ends in a
+    /// count (English: its noun is on the next line; Chinese: its measure word is), each count sits
+    /// whole on one line with what it must stay with (`units`, so "7,071" cannot break at its
+    /// comma), and no line break falls inside 明天, 到期 or 变形. Mutation, 2026-09-27: the
+    /// composer's U+00A0 after the English count back to a space → red here (and in the matrix);
+    /// U+2060 in 到期 removed → red.
+    @Test("a count never ends a line and 明天 / 到期 / 变形 never break, at every size the line is drawn",
+          arguments: layouts)
+    nonisolated func noBreakInsideAJoin(_ layout: Layout) async throws {
+        let rule = try await Self.layoutRule(phone: layout.phone)
         let joined: Set<String> = ["明天", "到期", "变形", "个词", "个变"]
-        var layouts = 0, wrapped = 0
-        let scales = [1.0, 0.95, 0.9, 0.85, 0.8, 0.75, Double(ResultsView.tomorrowLineScaleFloor)]
+        var measured = 0, wrapped = 0
+        let scales = [1.0, 0.95, 0.9, 0.85, 0.8, 0.75, rule.floor]
         #expect(scales.last == 0.7)
-        let sizes: [Double] = [43, 40].flatMap { points in scales.map { points * $0 } } + [12]
-        for zh in [false, true] {
-            for streak in Self.gridStreaks { for words in Self.gridCounts { for forms in Self.gridCounts {
-                let row = TomorrowLine.compose(streakDays: streak, wordsDue: words, formsDue: forms, zh: zh)
-                for points in sizes {
-                    let lines = try Self.lineTexts(row, points: points, width: column)
-                    layouts += 1
-                    if lines.count > 1 { wrapped += 1 }
-                    for (line, next) in zip(lines, lines.dropFirst()) {
-                        let end = Self.trimmed(line)
-                        #expect(end.last?.isNumber != true,
-                                "\(points)pt: a line ends in its count — \(lines)")
-                        let seam = String([end.last, next.first].compactMap { $0 })
-                        #expect(!joined.contains(seam), "\(points)pt: \(seam) is broken — \(lines)")
-                        #expect(end.last != "\u{2060}" && end.last != "\u{00A0}"
-                                    && next.first != "\u{2060}" && next.first != "\u{00A0}",
-                                "\(points)pt: a break beside a joiner — \(lines)")
-                    }
+        let sizes: [Double] = Self.captionSizes.map(\.points)
+            + [43, 40].flatMap { points in scales.dropFirst().map { points * $0 } }
+        for streak in Self.gridStreaks { for words in Self.gridCounts { for forms in Self.gridCounts {
+            let row = TomorrowLine.compose(streakDays: streak, wordsDue: words, formsDue: forms, zh: layout.zh)
+            let units = Self.units(streak: streak, words: words, forms: forms, zh: layout.zh)
+            for points in sizes {
+                let lines = try Self.lineTexts(row, points: points, width: rule.column)
+                measured += 1
+                if lines.count > 1 { wrapped += 1 }
+                for unit in units {
+                    #expect(lines.contains { $0.contains(unit) }, "\(points)pt: \(unit) is split — \(lines)")
                 }
-            } } }
-        }
-        // The grid is not vacuous: most of its layouts wrap, so there were breaks to place.
-        #expect(layouts == 2 * 10 * 9 * 9 * 15 && wrapped > layouts / 2, "\(wrapped) of \(layouts) layouts wrapped")
+                for (line, next) in zip(lines, lines.dropFirst()) {
+                    let end = Self.trimmed(line)
+                    #expect(end.last?.isNumber != true,
+                            "\(points)pt: a line ends in its count — \(lines)")
+                    let seam = String([end.last, next.first].compactMap { $0 })
+                    #expect(!joined.contains(seam), "\(points)pt: \(seam) is broken — \(lines)")
+                    #expect(end.last != "\u{2060}" && end.last != "\u{00A0}"
+                                && next.first != "\u{2060}" && next.first != "\u{00A0}",
+                            "\(points)pt: a break beside a joiner — \(lines)")
+                }
+            }
+        } } }
+        // The grid is not vacuous: most of its layouts wrap, so there were breaks to place
+        // (measured 2026-09-29: 77% to 91% per phone and language).
+        #expect(measured == 10 * 13 * 13 * 23 && wrapped > measured / 2, "\(wrapped) of \(measured) layouts wrapped")
     }
 
     /// The joins draw nothing different where the line does not wrap: every matrix row, composed
@@ -851,6 +954,36 @@ struct V134B1TomorrowLineTests {
         func advance(_ s: String) -> Double { NSAttributedString(string: s, attributes: [.font: font]).size().width }
         #expect(advance("7\u{00A0}words") == advance("7 words"))
         #expect(advance("到\u{2060}期") == advance("到期"))
+    }
+
+    /// Why a count past 999 is grouped (v1.35, `TomorrowLine.number`). The Ride Log's Today and
+    /// Tomorrow rows, whose sum the line states, and its streak card draw `Text("\(count)")`, and
+    /// SwiftUI formats that `Int` with the locale's grouping separator. Rendered, not assumed: in
+    /// en_US `Text("\(7071)")` draws the same pixels as "7,071" and not the pixels of "7071" (the
+    /// control, so the comparison is shown to see a comma). If SwiftUI stops grouping, this goes
+    /// red and the line's spelling should be decided again with it. The paste notice spells the
+    /// same number the same way.
+    @Test("a four-digit count is grouped as the Ride Log draws it and as the paste notice spells it")
+    func fourDigitCountsAreGrouped() throws {
+        func bitmap(_ text: Text) -> V134B5RomajiHintTests.Bitmap? {
+            V134B5RomajiHintTests.render(text.font(.system(size: 20)).foregroundStyle(.white).fixedSize()
+                .environment(\.locale, Locale(identifier: "en_US")), width: 400, height: nil)
+        }
+        let interpolated = try #require(bitmap(Text("\(7071)")))
+        #expect(interpolated == bitmap(Text(verbatim: "7,071")),
+                "SwiftUI no longer groups an interpolated Int; the line's grouping no longer matches the Ride Log")
+        #expect(interpolated != bitmap(Text(verbatim: "7071")), "control: the comparison cannot see the comma")
+        // The Ride Log draws its counts that way: the forecast rows and the streak.
+        let journal = Self.codeLines(try Self.source("JournalView.swift"))
+        #expect(journal.contains("Text(\"\\(count)\")") && journal.contains("Text(\"\\(streak)\")"),
+                "the Ride Log no longer draws its counts with Text(\"\\(n)\"); re-check the grouping")
+        // The paste notice's spelling, in both languages.
+        for zh in [false, true] {
+            let notice = CustomTextAddView.truncationNotice(.characters(kept: 20_000, dropped: 7_071), zh: zh)
+            #expect(notice.contains("20,000") && notice.contains("7,071"), Comment(rawValue: notice))
+        }
+        #expect(TomorrowLine.compose(streakDays: 1, wordsDue: 7_071, formsDue: 0, zh: false).hasPrefix("7,071\u{00A0}"))
+        #expect(TomorrowLine.compose(streakDays: 1, wordsDue: 7_071, formsDue: 0, zh: true).contains(" 7,071\u{00A0}"))
     }
 
     #endif
@@ -897,31 +1030,65 @@ struct V134B1TomorrowLineTests {
         panels.map { V133SContrastTests.contrast(V133SContrastTests.over(color, $0), $0) }.min() ?? 0
     }
 
-    /// The line's colour clears WCAG AA's 4.5:1 for small text over every panel above, with 8-bit
-    /// quantisation applied at the worst one; `Theme.dim`, which it first copied from the stage
-    /// line, computes under — the control, or this suite could not fail. And 0.46 is the smallest:
-    /// one hundredth less does not clear. (Round-2 review: 4.41–4.53:1 measured for `Theme.dim`.)
+    /// The panel captions' colour clears WCAG AA's 4.5:1 for small text over every panel above, with
+    /// 8-bit quantisation applied at the worst one; `Theme.dim`, which both lines used to have,
+    /// computes under — the control, or this suite could not fail. And 0.46 is the smallest: one
+    /// hundredth less does not clear. (Round-2 review: 4.41–4.53:1 measured for `Theme.dim`.)
     @MainActor
-    @Test("the tomorrow line's colour clears 4.5:1 on every arrival panel, and Theme.dim does not")
-    func tomorrowLineColorClearsAA() throws {
+    @Test("the panel captions' colour clears 4.5:1 on every arrival panel, and Theme.dim does not")
+    func panelCaptionColorClearsAA() throws {
         let panels = try Self.arrivalPanels()
         #expect(panels.count == 7 * 1331)
-        let now = Self.worstContrast(ResultsView.tomorrowLineColor, over: panels)
-        #expect(now >= 4.5, "the tomorrow line computes to \(now):1 at its worst")
+        let now = Self.worstContrast(ResultsView.panelCaptionColor, over: panels)
+        #expect(now >= 4.5, "the panel captions compute to \(now):1 at their worst")
         let dim = Self.worstContrast(Theme.dim, over: panels)
         #expect(dim < 4.5 && dim > 4.3, "control: Theme.dim computed \(dim):1 — measured 4.41:1")
-        let lower = V133SContrastTests.resolved(ResultsView.tomorrowLineColor).alpha - 0.01
+        let lower = V133SContrastTests.resolved(ResultsView.panelCaptionColor).alpha - 0.01
         #expect(Self.worstContrast(Color.white.opacity(lower), over: panels) < 4.5,
                 "white at \(lower) also clears — the constant is not the smallest opacity that does")
 
         // 8-bit: the worst panel and the text over it, each rounded to a byte, still clear.
         func q(_ c: RGB) -> RGB { ((c.r * 255).rounded() / 255, (c.g * 255).rounded() / 255, (c.b * 255).rounded() / 255) }
         let worst = try #require(panels.min {
-            V133SContrastTests.contrast(V133SContrastTests.over(ResultsView.tomorrowLineColor, $0), $0)
-                < V133SContrastTests.contrast(V133SContrastTests.over(ResultsView.tomorrowLineColor, $1), $1)
+            V133SContrastTests.contrast(V133SContrastTests.over(ResultsView.panelCaptionColor, $0), $0)
+                < V133SContrastTests.contrast(V133SContrastTests.over(ResultsView.panelCaptionColor, $1), $1)
         })
-        let quantised = V133SContrastTests.contrast(q(V133SContrastTests.over(ResultsView.tomorrowLineColor, worst)), q(worst))
+        let quantised = V133SContrastTests.contrast(q(V133SContrastTests.over(ResultsView.panelCaptionColor, worst)), q(worst))
         #expect(quantised >= 4.5, "after 8-bit quantisation: \(quantised):1 over \(worst)")
+    }
+
+    /// The stage line, computed the same way from the colour the shipped source draws it in. 1.34
+    /// deferred it by name at 4.41:1 (PLAN-V1.34 §B1 addendum) and 1.35 fixed it (§F, item 4). The
+    /// colour is read off `stageLine`'s comment-stripped block and looked up by its expression, so
+    /// `Theme.dim` computes red here, and an expression this table does not know fails rather than
+    /// passing unmeasured. The block is pinned line for line too: the fix was colour only, so the
+    /// text and the font are the ones 1.34 drew.
+    @MainActor
+    @Test("the stage line clears 4.5:1 on every arrival panel, in the tomorrow line's colour, nothing else changed")
+    func stageLineClearsAA() throws {
+        let code = Self.codeLines(try Self.source("ResultsView.swift"))
+        let start = try #require(code.firstIndex(of: "private var stageLine: some View {"), "the stage line moved")
+        let end = try #require(code[start...].firstIndex(of: "}"))
+        let block = code[start...end].filter { !$0.isEmpty }
+        #expect(Array(block) == [
+            "private var stageLine: some View {",
+            "Text(zh ? \"本程路段:\\(model.rideStage.name)\"",
+            ": \"This ride: the \\(model.rideStage.romaji) stretch\")",
+            ".font(.caption)",
+            ".foregroundStyle(Self.panelCaptionColor)",
+            "}",
+        ])
+        let styles = block.filter { $0.hasPrefix(".foregroundStyle(") }
+        #expect(styles.count == 1, "the stage line sets its colour \(styles.count) times: \(styles)")
+        let style = try #require(styles.first)
+        let known: [String: Color] = [
+            ".foregroundStyle(Theme.dim)": Theme.dim,
+            ".foregroundStyle(Self.panelCaptionColor)": ResultsView.panelCaptionColor,
+            ".foregroundStyle(ResultsView.panelCaptionColor)": ResultsView.panelCaptionColor,
+        ]
+        let color = try #require(known[style], "the stage line draws in \(style), which this test cannot compute; add it")
+        let worst = Self.worstContrast(color, over: try Self.arrivalPanels())
+        #expect(worst >= 4.5, "the stage line computes to \(worst):1 at its worst")
     }
 
     /// `jumpToDebugScreen` writes — its `finishGame` persists SRS and a ride — and is gated to the
