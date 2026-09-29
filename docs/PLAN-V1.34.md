@@ -725,6 +725,35 @@ downloads 1.58x in the second control).
 up; magnitude unmeasurable"* in §K's template, before `--submit`; v1.36 is registered when its contents
 are known. Each release's `PLAN-V1.3x` record states it.
 
+*Owner's decision, 2026-09-29 (JST), on v1.35 — after v1.34 went on sale, with Codex and Gemini 3.8 Flash
+consulted separately on the same brief (`STATE-2026-09-29.md` has where the brief and answers are).*
+The owner took the recommended option on all four questions. **v1.35 is corrective first, and B6 goes last
+under its cut rule.** The order:
+1. Review the apostrophe branch (`claude/dazzling-elion-131e9a`, `0205e50`) independently: an
+   adversarial review, plus running its tests and the gates, not reading them. Then merge it. The gate
+   floor moves 14 → 15.
+2. **The paste notice at AX5 with the keyboard up.** It must say what was kept and what was dropped
+   above the keyboard, in both languages. Verify both the sentence cap and the character cap on the
+   simulator; 1.34's captures proved only the sentence case.
+3. **The Verbs (conjugation) HUD's hidden score for VoiceOver.** It hides the score at the accessibility
+   sizes, as the ride HUD does, and §B3 covered only the ride HUD.
+4. Three small layout checks and fixes:
+   * the results stage line's contrast (4.41:1);
+   * the iPad accuracy pill's default-size wrap ("100 / %");
+   * B1's tomorrow line at four-digit counts and on narrower supported phones.
+5. The 112-sentence headword residue and the counter population, corrected by ear. Time-boxed to the
+   planned day; `n5-kazoku` is not forced to a resolution (`PLAN-ITERATION` §D).
+6. B6, search from Word Lists, with its 2-day cut rule. If it misses, it moves whole to v1.36.
+
+**Records run alongside** and do not wait for a release: the N = 35 entry once the owner answers, and the
+N = 100 entry when it is reached.
+**Cut:** B2's two improvements (no evidence anyone pastes) and the About licence badges (the day-91
+brand-colour list, §B4). The deep-link item stays a 0.1-day device check (§I).
+**Process change, from Codex:** the final gates and the placement run finish *before* `--submit`, because
+`AFTER_APPROVAL` releases without a further step. For 1.34 they ran after it (§F's submission record).
+The simulator clone `NihongoRide-VisualPass` was deleted on 2026-09-29. The harness recreates it as an
+iPhone 17 Pro clone when it is missing.
+
 **Order inside v1.34:** C3 first (the proof instrument, on the unchanged tree), then B1–B5 in worktrees
 by file, then C2/C5/C6/D1/D2 as docs and tools, then the verification of §G, then the copy, then
 build → upload → dry-run → metadata → submit, with `ListAgents` before any ASC write.
