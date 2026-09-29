@@ -157,6 +157,23 @@ def check(path, base, allow_dedupe=False, manifest=None, corpus_ids=None):
                 problems.append(f"{eid}: manifest promised surface -> {intended!r} but the "
                                 f"entry still reads {by_id_new[eid].get('surface')!r}")
 
+    # `finalEN` / `finalZH` state the gloss list a declared correction must END at. They were
+    # written into every gloss manifest since v1.17 and read by nothing, so a manifest could
+    # promise one list while the data shipped another and the guard printed "clean" — a comment
+    # asserting a property that nothing kept. Now the promise is checked. (v1.35 round 2.)
+    if manifest:
+        for eid, declared in manifest.items():
+            if eid not in by_id_new:
+                continue
+            for lang in ("en", "zh"):
+                final = declared.get("final" + lang.upper())
+                if final is None:
+                    continue
+                actual = (by_id_new[eid].get("meanings") or {}).get(lang) or []
+                if actual != final:
+                    problems.append(f"{eid}: manifest declared final meanings.{lang} {final!r} "
+                                    f"but the entry has {actual!r}")
+
     for eid in sorted(set(by_id_old) & set(by_id_new)):
         a, b = by_id_old[eid], by_id_new[eid]
 
@@ -247,6 +264,14 @@ def main():
     ap.add_argument("--allow-dedupe", action="store_true",
                     help="permit removing an EXACT duplicate gloss and nothing else")
     args = ap.parse_args()
+
+    # What this process was actually handed, on one line, before anything else. The gate runner
+    # labels its row and writes a .cmd file; both are the runner's description of the call. This
+    # line is the guard's, so a flag the runner dropped cannot show here (v1.35 round 4), and
+    # scripts/test_check_vocab_diff.py's runner probes read it.
+    print(f"check_vocab_diff.py received: --base {args.base} "
+          f"--manifest {args.manifest if args.manifest else '(none)'}"
+          f"{' --allow-dedupe' if args.allow_dedupe else ''}")
 
     manifest, reason = (load_manifest(args.manifest) if args.manifest else (None, ""))
     if manifest:

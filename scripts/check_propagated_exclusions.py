@@ -60,7 +60,23 @@ EXTRA = {
     "数分": ["すうふん", "すうぶん"],
     "何だ": ["なんだ", "なにだ"],
     "四ページ": ["よんぺーじ", "よぺーじ", "しぺーじ"],
+    # Sudachi's lookup offers only いつ / なんどき for 何時, never なんじ, and no headword 何時
+    # puts なんじ into the corpus readings either. So none of the instruments could test the
+    # standard reading: n5-g022 (今、何時ですか。) shipped exKana なんどき in the dictation
+    # pool, instrument 1 silent and instrument 2 comparing なんどき only with いつ. (v1.35 round 3.)
+    "何時": ["なんじ", "なんどき", "いつ"],
 }
+
+
+def complaint_parts(heard):
+    """`heardInstead` split into words, WITHOUT a trailing parenthetical annotation.
+
+    A resolved complaint keeps its words and gains a note — "三 さん -> み  (v1.29 instrument
+    2; the corpus has since been corrected to みっか)" (v1.31) — and the note's last word
+    ("みっか)") must not be read as the heard reading. Everything from the first " (" on is
+    the annotation; a complaint itself never contains one.
+    """
+    return (heard or "").split(" (", 1)[0].split()
 
 
 def has_kanji(s):
@@ -196,14 +212,14 @@ def main():
     for r in mism["excluded"]:
         if not r["evidence"].startswith("proven"):
             continue
-        parts = r["heardInstead"].split()
+        parts = complaint_parts(r["heardInstead"])
         if len(parts) >= 3 and parts[1] != "->":
             global_proven.add(parts[0])
 
     def disputed_for(row_id):
         """Surfaces that must be CONFIRMED before this sentence may be released."""
         rec = by_id.get(row_id, {})
-        parts = (rec.get("heardInstead") or "").split()
+        parts = complaint_parts(rec.get("heardInstead"))
         if len(parts) >= 3 and parts[1] != "->" and "->" in parts:
             return {parts[0]}                    # this row's own complaint
         # No per-row complaint (the `propagated` class says only "same word proven misread in
@@ -299,7 +315,7 @@ def main():
 
     complaint = {}
     for r in rows:
-        parts = (by_id.get(r["id"], {}).get("heardInstead") or "").split()
+        parts = complaint_parts(by_id.get(r["id"], {}).get("heardInstead"))
         # `parts[1] != "->"` matters: on a three-part complaint ("かみ -> がみ") parts[1] IS the
         # arrow, and injecting it would put the literal string "->" into the candidate readings.
         # No row has that shape today; the guard is here so none ever silently does.

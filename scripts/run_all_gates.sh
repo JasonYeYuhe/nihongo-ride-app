@@ -55,15 +55,23 @@ set -uo pipefail
 #                   This is what CI runs, and it runs THIS script rather than a second copy of
 #                   the gate list — one rule written twice will drift, and this repo has three
 #                   recorded instances of exactly that.
-# --vocab-base REF  what check_vocab_diff.py compares against. Locally the default (HEAD, i.e.
-#                   the working tree) is right. On CI it is WRONG and silently so: a clean
-#                   checkout compares HEAD with itself and is green whatever the commit changed.
+# --vocab-base REF  what check_vocab_diff.py compares against. CI passes the push's "before" or
+#                   the PR's base. Without it the runner compares against the last shipped
+#                   release, release_numbers.BASELINE_REF — this release's whole corpus change
+#                   plus the working tree — never against HEAD alone, which on a clean tree is a
+#                   comparison with itself (see the vocabulary gate below).
+# --vocab-only      run ONLY the vocabulary gate and exit with its verdict: 0 pass, 1 fail,
+#                   3 vacuous. Not a release check — the floor below does not apply to it. It
+#                   exists so scripts/test_check_vocab_diff.py can drive THIS file's gate end to
+#                   end on a fixture, and prove the manifest actually reaches the guard.
 HEADLESS=""
 VOCAB_BASE=""
+VOCAB_ONLY=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --headless) HEADLESS=1; shift ;;
     --vocab-base) VOCAB_BASE="$2"; shift 2 ;;
+    --vocab-only) VOCAB_ONLY=1; shift ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
 done
@@ -164,6 +172,124 @@ run_swift_test() {
   PASSED+=("swift test")
 }
 
+# The vocabulary gate. A function so `--vocab-only` can run exactly this code and nothing else.
+#
+# `check_vocab_diff.py` is a DIFF guard: it compares the working tree against `--base`. Two ways
+# for it to say "ok" while inspecting nothing, both of which this runner used to have:
+#
+#   1. A base equal to the tree. Its own default is HEAD, so a clean tree compared with HEAD
+#      prints "ok  n5.json: 0 problem(s)" — the same words it prints after inspecting a real
+#      change. The runner's LOCAL mode asked whether HEAD~1 had a corpus change, found one, and
+#      then ran the guard with no --base at all: it tested the last commit's change for being
+#      empty and then compared the tree with HEAD. v1.35 round 2 made it pass --base HEAD~1, so
+#      the window tested for emptiness and the window inspected were one window — but HEAD~1 is
+#      still the wrong window. A release ends with a version-bump commit that touches no corpus
+#      file, and from then on HEAD~1..tree is empty: the gate reported VACUOUS for a release
+#      carrying 20+ reviewed corpus corrections, exactly when the release is checked last.
+#      (`git diff HEAD` goes empty the moment a corpus change is committed for the same reason.)
+#      So local mode compares against release_numbers.BASELINE_REF, the last shipped release —
+#      the window CORPUS_MANIFEST declares — read from release_numbers.py, never typed here. It
+#      is VACUOUS only when no Sources/VocabKit/Resources/n*.json differs from that release; a
+#      BASELINE_REF that cannot be read or does not resolve is a FAILURE, not a fallback.
+#      (v1.32 pre-submission review; v1.35 rounds 2 and 3.)
+#   2. No manifest. A release that DECLARES reviewed rewrites (release_numbers.CORPUS_MANIFEST)
+#      fails the guard without the declaration. CI does pass a real base, so it failed v1.35's
+#      seven declared corrections for exactly that reason (reproduced 2026-09-29 with
+#      `--headless --vocab-base 060ced9` on the v1.35 branch). The manifest path is read from
+#      release_numbers.py, the one place a release names it, never typed here: two copies of one
+#      fact drift, and this repo has three recorded instances. A set path that does not exist, or
+#      a release_numbers.py that cannot be read, is a FAILURE rather than a run without it —
+#      a guard quietly run without its manifest fails for the wrong reason or, worse, a later
+#      edit "fixes" that by dropping the base.
+#
+# (§D6's own text specifies `check_vocab_diff.py --manifest` with no path. That is not a valid
+#  invocation — `--manifest` takes a JSON declaring a reviewed structural change. The runner
+#  found it on the first run, by exit 2.)
+#
+# scripts/test_check_vocab_diff.py drives this function end to end (`--vocab-only`) on a fixture
+# worktree, in both modes, and pins that every guard call below carries the manifest arguments.
+# Its CI probes commit the change and pass the commit BEFORE it as the base, so the tree equals
+# HEAD: a runner that dropped `--base` would compare HEAD with itself and pass, and they fail.
+# Its local probes commit a change and then a corpus-free "version bump" on top, the case HEAD~1
+# could not see.
+#
+# With no corpus change in the window the gate is reported VACUOUS — a null result from an
+# instrument that had nothing to look at is not a pass, and this repo has a trap entry for that.
+run_vocab_gate() {
+  local manifest base
+  if ! manifest="$(cd "$REPO" && python3 -c 'import sys; sys.path.insert(0, "scripts"); import release_numbers as r; print(r.CORPUS_MANIFEST or "")')"; then
+    printf '  %-34s %s\n' "check_vocab_diff.py" "FAILED (cannot read CORPUS_MANIFEST from scripts/release_numbers.py)"
+    FAILED+=("check_vocab_diff.py — scripts/release_numbers.py did not import; the manifest is unknown"); return
+  fi
+  VOCAB_MANIFEST_ARGS=()
+  if [ -n "$manifest" ]; then
+    if [ ! -f "$REPO/$manifest" ]; then
+      printf '  %-34s %s\n' "check_vocab_diff.py" "FAILED (CORPUS_MANIFEST names $manifest, which does not exist)"
+      FAILED+=("check_vocab_diff.py — manifest $manifest is missing"); return
+    fi
+    VOCAB_MANIFEST_ARGS=(--manifest "$manifest")
+  fi
+
+  if [ -n "$VOCAB_BASE" ]; then
+    # An explicit base was given, so there IS something to compare. Refuse a base that is not a
+    # real commit rather than letting git's error read as "nothing changed".
+    if ! git rev-parse --verify --quiet "$VOCAB_BASE^{commit}" > /dev/null; then
+      printf '  %-34s %s\n' "check_vocab_diff.py" "FAILED (base '$VOCAB_BASE' is not a commit)"
+      FAILED+=("check_vocab_diff.py — base '$VOCAB_BASE' does not resolve; a shallow checkout does this")
+      return
+    fi
+    base="$VOCAB_BASE"
+  else
+    if ! base="$(cd "$REPO" && python3 -c 'import sys; sys.path.insert(0, "scripts"); import release_numbers as r; print(r.BASELINE_REF or "")')" \
+        || [ -z "$base" ]; then
+      printf '  %-34s %s\n' "check_vocab_diff.py" "FAILED (cannot read BASELINE_REF from scripts/release_numbers.py)"
+      FAILED+=("check_vocab_diff.py — local mode compares against release_numbers.BASELINE_REF, which did not read"); return
+    fi
+    if ! git rev-parse --verify --quiet "$base^{commit}" > /dev/null; then
+      printf '  %-34s %s\n' "check_vocab_diff.py" "FAILED (BASELINE_REF '$base' is not a commit)"
+      FAILED+=("check_vocab_diff.py — BASELINE_REF '$base' does not resolve; a shallow checkout does this")
+      return
+    fi
+    if [ -z "$(git diff --name-only "$base" -- 'Sources/VocabKit/Resources/n*.json')" ]; then
+      printf '  %-34s %s\n' "check_vocab_diff.py" "vacuous (no corpus change since BASELINE_REF $base)"
+      VACUOUS+=("check_vocab_diff.py"); return
+    fi
+  fi
+  # ONE array is the command. The .cmd file, the row label and the "(manifest: …)" line are all
+  # derived from it, and it is what runs. They used to be three separate strings beside the real
+  # argv, so a flag dropped from the call still showed in the log and in the row, and a probe
+  # that looked for "--base X" in the output was satisfied by the label (v1.35 round 4). The
+  # guard also prints what it RECEIVED on its own first line; the probes read that line.
+  # Bash 3.2 (macOS's /bin/bash) treats "${a[@]}" of an EMPTY array as unbound under `set -u`;
+  # the `+` form expands to nothing instead.
+  local -a cmd
+  cmd=(python3 scripts/check_vocab_diff.py --base "$base" ${VOCAB_MANIFEST_ARGS[@]+"${VOCAB_MANIFEST_ARGS[@]}"})
+  printf '%q ' "${cmd[@]}" > "$LOGS/check_vocab_diff.cmd"
+  echo >> "$LOGS/check_vocab_diff.cmd"
+  local i label cmd_base="" cmd_manifest=""
+  for ((i = 2; i < ${#cmd[@]}; i++)); do
+    case "${cmd[$i]}" in
+      --base) cmd_base="${cmd[$((i + 1))]:-}" ;;
+      --manifest) cmd_manifest="${cmd[$((i + 1))]:-}" ;;
+    esac
+  done
+  label="${cmd[1]##*/}"
+  if [ -n "$cmd_base" ]; then label="$label --base $cmd_base"; else label="$label (no --base)"; fi
+  run_gate "$label" "" "${cmd[@]}"
+  if [ -n "$cmd_manifest" ]; then
+    printf '  %-34s %s\n' "" "(manifest: $cmd_manifest — scripts/release_numbers.py CORPUS_MANIFEST)"
+  elif [ -n "$manifest" ]; then
+    printf '  %-34s %s\n' "" "(NO --manifest passed, although CORPUS_MANIFEST names $manifest)"
+  fi
+}
+
+if [ -n "$VOCAB_ONLY" ]; then
+  run_vocab_gate
+  if [ "${#FAILED[@]}" -gt 0 ]; then exit 1; fi
+  if [ "${#VACUOUS[@]}" -gt 0 ]; then exit 3; fi
+  exit 0
+fi
+
 echo
 echo "Gates that need no device, account or signature:"
 echo
@@ -190,42 +316,7 @@ run_gate "test_launch_gate.sh" "3" bash scripts/test_launch_gate.sh
 
 run_gate "check_versions.py" "" python3 scripts/check_versions.py
 
-# `check_vocab_diff.py` is a DIFF guard: it compares the working tree against `--base` (default
-# HEAD). With a clean tree there is nothing to compare, and it prints "ok  n5.json: 0 problem(s)"
-# — the same words it prints after inspecting a real change. A null result from an instrument that
-# had nothing to look at is not a pass, and this repo has a trap entry for exactly that.
-#
-# So the runner asks first whether there was anything to inspect, and says so.
-#
-# (§D6's own text specifies `check_vocab_diff.py --manifest`. That is not a valid invocation —
-#  `--manifest` takes a path to a JSON declaring a reviewed structural change. The runner found
-#  it on the first run, by exit 2.)
-# The local emptiness test compares against the PREVIOUS COMMIT, not against the working tree.
-# `git diff HEAD` goes empty the moment a corpus change is committed — which is to say, exactly
-# when the guard is most needed and no later than the commit before the release. So the window
-# that decides "there is nothing to inspect" has to include at least the last commit; CI passes
-# an explicit `--vocab-base` and takes the branch above. (v1.32 pre-submission review.)
-LOCAL_VOCAB_BASE="HEAD~1"
-if ! git rev-parse --verify --quiet "$LOCAL_VOCAB_BASE^{commit}" > /dev/null; then
-  LOCAL_VOCAB_BASE="HEAD"   # a repo with one commit; nothing earlier to compare to
-fi
-
-if [ -n "$VOCAB_BASE" ]; then
-  # An explicit base was given, so there IS something to compare. Refuse a base that is not a
-  # real commit rather than letting git's error read as "nothing changed".
-  if ! git rev-parse --verify --quiet "$VOCAB_BASE^{commit}" > /dev/null; then
-    printf '  %-34s %s\n' "check_vocab_diff.py" "FAILED (base '$VOCAB_BASE' is not a commit)"
-    FAILED+=("check_vocab_diff.py — base '$VOCAB_BASE' does not resolve; a shallow checkout does this")
-  else
-    run_gate "check_vocab_diff.py --base $VOCAB_BASE" "" \
-      python3 scripts/check_vocab_diff.py --base "$VOCAB_BASE"
-  fi
-elif [ -z "$(git diff --name-only "$LOCAL_VOCAB_BASE" -- Sources/VocabKit/Resources)" ]; then
-  printf '  %-34s %s\n' "check_vocab_diff.py" "vacuous (no corpus change since $LOCAL_VOCAB_BASE)"
-  VACUOUS+=("check_vocab_diff.py")
-else
-  run_gate "check_vocab_diff.py" "" python3 scripts/check_vocab_diff.py
-fi
+run_vocab_gate
 
 # 3 = "the StoreKit gates ran and SKIPPED" — its documented no-coverage state, and the state this
 # repo has been in since 2026-08-30. It is reported, never absorbed. 4 (harness error) and 65 (a

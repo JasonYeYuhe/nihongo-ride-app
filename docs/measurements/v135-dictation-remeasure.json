@@ -1,0 +1,137 @@
+{
+ "measurement": "scripts/check_propagated_exclusions.py --evidence <one-row class> --calibrate (run once per id)",
+ "date": "2026-09-29",
+ "voice": "com.apple.voice.compact.ja-JP.Kyoko",
+ "question": "Two withheld sentences had their exKana corrected in v1.35 (docs/measurements/v135-residue-manifest.json), so their recorded evidence described sentences that no longer exist. Each was re-labelled to a one-row evidence class and re-measured with instrument 1b on the corrected tokens, as v1.29 did for the 'nearest' class. Audio caches were outside the repo (DICTATION_WAV_CACHE).",
+ "calibration": {
+  "n4-g386": {
+   "rebuildIdentity": "1/1 — string handling only, no linguistic weight",
+   "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+   "negativeControl": "2 decoy substitutions, 0 spurious byte matches"
+  },
+  "n2-b103": {
+   "rebuildIdentity": "1/1 — string handling only, no linguistic weight",
+   "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+   "negativeControl": "2 decoy substitutions, 0 spurious byte matches"
+  }
+ },
+ "verdicts": {
+  "n4-g386": {
+   "verdict": "RELEASE",
+   "detail": "the disputed 何 is confirmed: 先生は週末になにをなさいますか。 renders byte-identical to the exJP audio (sha1 a37b031b019b); the なん substitution does not (da502d68d3a2). The corpus now says なに, so the record's own complaint '何 なん -> なに' is what the correction applied."
+  },
+  "n2-b103": {
+   "verdict": "KEEP",
+   "detail": "1b: 私 = わたし, not the corpus わたくし. Also 金 = きん, not the corrected かね: 彼は私をだましてきんを奪った。 and かれはわたしをだましてきんをうばった both render byte-identical to the exJP audio (fce72e22e1ab); the かね spellings do not (11f074e1b3a3). The correction to かね rests on the meaning, not on the voice."
+  }
+ },
+ "alsoChecked": {
+  "n3-k030": "exJP changed ジェットきに乗る。 -> ジェット機に乗る。 and the sentence is in the dictation pool. Both render byte-identical (sha1 1b8ed80de3c9), so its dictation audio does not change."
+ },
+ "dictationPool": {
+  "before": 5931,
+  "after": 5932
+ },
+ "round2": {
+  "measurement": "scripts/check_propagated_exclusions.py --evidence v135-r2-remeasure --calibrate --json <scratch> (the 13 rows re-labelled to one temporary evidence class, then restored and re-stamped; one run, as v1.29 ran its class)",
+  "date": "2026-09-29",
+  "voice": "com.apple.voice.compact.ja-JP.Kyoko",
+  "question": "Round 2 corrected 何 from なん to なに in thirteen withheld sentences (docs/measurements/v135-residue-manifest.json). Each was re-measured with instrument 1b on the corrected tokens. Audio caches were outside the repo (DICTATION_WAV_CACHE in the session scratchpad).",
+  "calibration": {
+   "rebuildIdentity": "13/13 — string handling only, no linguistic weight",
+   "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+   "negativeControl": "26 decoy substitutions, 0 spurious byte matches"
+  },
+  "verdicts": {
+   "n1-b101": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 工場では何よりも安全を第一に考えてください。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 9a8b2e2c0a02); the なん substitution does not (b807eb9115ea). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n1-b231": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 何か困ったことがあれば気軽に相談してください。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 48758f47445c); the なん substitution does not (cbf383c179b8). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n1-b1395": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 我が社は製品の品質を何より重んずる。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 9559bbb36579); the なん substitution does not (bb6ad36cc46f). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n1-b1581": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 彼は独り言のように何か呟いた。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 8c07930baafb); the なん substitution does not (b01a8d65c408). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n1-b2070": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 朝から何も食べていないので、お腹がぺこぺこだ。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 48855e9e4c24); the なん substitution does not (25166cda5ba5). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n2-b394": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 父は何かぶつぶつ文句を言っている。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 b978e521fe52); the なん substitution does not (0eeab7bd2996). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n2-b665": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: この文章で筆者が最も言いたいことは何か。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 9563079c3956); the なん substitution does not (e6123683ff03). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n3-b204": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 友達の結婚の祝いに何を贈るか考えている。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 4f31a7052ac6); the なん substitution does not (256919535cc7). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n2-b884": {
+    "verdict": "KEEP",
+    "detail": "何 = なに is confirmed (なに substitution byte-identical, sha1 1a54120d7abd; なん not, 85765a12769a), but 1b: 私 = わたし, not the corpus わたくし (わたし byte-identical, わたくし not, f6776489bd56). わたくし is the register class PLAN-V1.25 declines, so the sentence stays withheld."
+   },
+   "n1-g343": {
+    "verdict": "SILENT",
+    "detail": "1b never confirmed the disputed 何: neither the なに (4da233c8aa59) nor the なん (b3d80d943205) substitution renders byte-identical to the exJP audio (360545f94f7c). Stays withheld; the correction rests on the grammar and two refuters."
+   },
+   "n1-b065": {
+    "verdict": "SILENT",
+    "detail": "1b never confirmed the disputed 何: neither the なに (be5bbac5694f) nor the なん (504c49b2c46c) substitution renders byte-identical to the exJP audio (3b74712bc4cf). Stays withheld; the correction rests on the grammar and two refuters."
+   },
+   "n2-b1100": {
+    "verdict": "SILENT",
+    "detail": "1b never confirmed the disputed 何: neither the なに (9a72876affe1) nor the なん (d7f16df79a27) substitution renders byte-identical to the exJP audio (e72f7868a610). Stays withheld; the correction rests on the grammar and two refuters."
+   },
+   "n3-b234": {
+    "verdict": "SILENT",
+    "detail": "1b never confirmed the disputed 何: neither the なに (3bafcdecf9ef) nor the なん (7283ddc5c529) substitution renders byte-identical to the exJP audio (5f1d5499422a). Stays withheld; the correction rests on the grammar and two refuters."
+   }
+  },
+  "summary": {
+   "release": 8,
+   "keep": 1,
+   "silent": 4
+  },
+  "dictationPool": {
+   "before": 5932,
+   "after": 5940
+  }
+ },
+ "round3": {
+  "measurement": "scripts/check_propagated_exclusions.py --evidence v135-r3-remeasure --calibrate --json <scratch> (n5-g022 added as a one-row evidence class to a scratch copy of the scripts, corpus and mismatch record — the committed files were not edited to measure — with heardInstead '何時 なんどき -> なんじ' so both readings are candidates; 何時 is also now in EXTRA)",
+  "date": "2026-09-29",
+  "voice": "com.apple.voice.compact.ja-JP.Kyoko",
+  "question": "n5-g022 (今、何時ですか。) had exKana いまなんどきですか and was IN the dictation pool; round 3 corrects it to なんじ (docs/measurements/v135-residue-manifest.json). Why did no instrument catch なんどき, and may the corrected sentence stay in the pool? Audio caches were outside the repo (DICTATION_WAV_CACHE=~/Library/Caches/NihongoRide-v135-work/r3-wav).",
+  "whyTheInstrumentsMissedIt": {
+   "candidateSet": "Every instrument tests only readings it is offered. Sudachi's lookup of 何時 gives いつ and なんどき, never なんじ, and no headword 何時 adds it from the corpus, so なんじ — the standard reading — was never a candidate for this sentence (build_rows subs: 今 -> こん, 何時 -> いつ).",
+   "instrument1": "silent: the whole-kana rendering いまなんどきですか (3328b22946b5) is not byte-identical to the exJP audio (b0ef718b85a7), nor is いまいつですか, and いまなんじですか (096f13c54fa2) was never rendered by it.",
+   "instrument2": "not flagged: exKana なんどき 0.1303 against its only rival いつ 0.1314 (log-mel DTW), so なんどき was 'nearest'. Rendered here, the untested なんじ sits at 0.0772 and would have beaten both. Its calibration (100% recall, 0% false positives against instrument 1's labels) holds for readings it is offered; a reading outside the candidate set is the case its own docstring says it cannot order.",
+   "sudachi": "Sudachi SplitMode A and C both tokenise 何時 as ナンドキ here, which is where the corpus reading came from: 4ceba24 (v1.18 A) generated it with gen_sentence_kana from Sudachi's ナンドキ, and 7f71a3d (v1.18 B) carried it into the punctuation-free exKana (git log -S'\"なんどき\"' -- n5.json finds 4ceba24; -S'いまなんどき' lands on 7f71a3d only because it dropped the punctuation). The corpus agreeing with Sudachi is one blind spot, not a confirmation — the same shape as 何:なん and 金:きん in rounds 1 and 2."
+  },
+  "calibration": {
+   "rebuildIdentity": "1/1 — string handling only, no linguistic weight",
+   "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+   "negativeControl": "2 decoy substitutions, 0 spurious byte matches"
+  },
+  "verdicts": {
+   "n5-g022": {
+    "verdict": "SILENT",
+    "detail": "1b confirms 今 = いま (いま、何時ですか。 byte-identical, b0ef718b85a7) but never confirms the disputed 何時: neither 今、なんじですか。 (4f19f171322a) nor 今、なんどきですか。 (2aa5dfeba8ef) nor 今、いつですか。 (9429d39c5c00) renders byte-identical to the exJP audio. A release requires the disputed word to be confirmed, so the verdict is SILENT. Instrument 2 on the corrected tokens does not flag it (own なんじ 0.0772, nearest rival 0.1287), and the span comparative favours なんじ (0.0273 against なんどき 0.0771 and いつ 0.0652) — both leads, not verdicts. A further lead, from both round-2 refuters and reproduced in round 4: 何時 rendered ALONE is byte-identical to なんじ (e5d02abc4b49), not to なんどき (854997343a9e). That proves how Kyoko reads the word in isolation, not what she says in this sentence, where 1b stays SILENT, so it is a lead for the word and not proof for the sentence: the withhold stands."
+   }
+  },
+  "decision": "WITHHELD. The sentence was in the pool on instrument 2's not-flagged, and that verdict is void: it was reached without the standard reading among the candidates, and the exKana it described no longer exists. The only calibrated proof instrument is silent on 何時, and silence is not evidence in either direction, so the one-sided policy withholds it (a false withhold costs one N5 sentence of dictation; a miss marks a learner against audio nobody proved). Before this correction the pool graded against なんどき, which the voice almost certainly does not say. Recorded in dictation-reading-mismatches.json as undecided.",
+  "dictationPool": {
+   "before": 5940,
+   "after": 5939
+  }
+ }
+}
