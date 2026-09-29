@@ -72,35 +72,55 @@ struct ResultsView: View {
     /// Names the stretch this run was ridden on. Deliberately about the RUN, not the
     /// rider's current lifetime position: rideStage is frozen at run start, so at a stage
     /// boundary the two can differ, and "arrived at X" would be a lie exactly then.
+    ///
+    /// `panelCaptionColor`, not `Theme.dim`: 4.41:1 on this panel at its worst, under AA's 4.5:1.
+    /// Deferred by name in 1.34 (PLAN-V1.34 §B1 addendum) and fixed in 1.35 (§F, item 4). Colour
+    /// only; the text, the font and the layout are as they were.
     private var stageLine: some View {
         Text(zh ? "本程路段:\(model.rideStage.name)"
                 : "This ride: the \(model.rideStage.romaji) stretch")
             .font(.caption)
-            .foregroundStyle(Theme.dim)
+            .foregroundStyle(Self.panelCaptionColor)
     }
 
-    /// The tomorrow line's colour: white at the smallest opacity that clears WCAG AA's 4.5:1 for
-    /// small text on the arrival panel wherever the panel can sit.
+    /// The colour of every small text drawn straight on the arrival panel, not on a card or a
+    /// capsule: white at the smallest opacity that clears WCAG AA's 4.5:1 for small text on the panel
+    /// wherever the panel can sit. On this screen that is the grade's line under its title (13pt), the
+    /// review list's heading (`.caption`) and its "+N more" (`.caption2`), the stumbled-words heading
+    /// (13pt semibold, "The words that stopped you"), the stage line and the tomorrow line (both
+    /// `.caption`); on `ConjugationResultsView`, which sits on the same panel, its grade line (13pt).
+    /// Everything else drawn straight on the panel is white or a grade tint, which clear it by far.
     ///
     /// The panel is black at `RidePalette.cardAlpha` (0.85) over the backdrop, whose black scrim
     /// is `textScrim + 0.15` ≥ `baseScrim + 0.15` = 0.25. So every channel of the panel is
     /// 0.15 × (1 − scrim) × scene ∈ [0, 0.1125]. Source-over on the sRGB values, the model
     /// `V133SContrastTests.calibration` checks against the simulator's pixels:
     ///
-    /// * `Theme.dim`, white at 0.45 — the stage line's colour, which this line first copied —
-    ///   over a black scene: text 0.45, luminance 0.1706 → (0.1706 + 0.05) / 0.05 = **4.41:1**;
-    ///   over a white scene: panel 0.1125 (0.0121), text 0.512 (0.2252) → 4.43:1. Under 4.5:1.
+    /// * `Theme.dim`, white at 0.45, which every one of those texts used to have: over a black scene
+    ///   the text is 0.45, luminance 0.1706 → (0.1706 + 0.05) / 0.05 = **4.41:1**. Over a white
+    ///   scene the panel is 0.1125 (0.0121) and the text 0.512 (0.2252) → 4.43:1. Under 4.5:1.
     /// * white at **0.46**: black scene → text 0.46, luminance 0.1789 → **4.58:1** (4.56:1
     ///   after 8-bit quantisation); white scene → panel 0.1125, text 0.5208 (0.2338) → **4.57:1**,
     ///   its worst case over the whole sweep of scenes and scrims.
     ///
-    /// The stage line above keeps `Theme.dim` in this release (PLAN-V1.34 §B1 addendum
-    /// 2026-09-27, deferred by name at 4.41:1). `V134B1TomorrowLineTests` recomputes both from the
-    /// resolved colours over a sweep of scenes and scrims. (v1.34 §B1)
-    static let tomorrowLineColor = Color.white.opacity(0.46)
+    /// One constant for all of them, not a second 0.46: they are small text on the same panel. The
+    /// tomorrow line was given 0.46 in 1.34 while the stage line kept `Theme.dim` (PLAN-V1.34 §B1
+    /// addendum 2026-09-27, deferred by name at 4.41:1). Two constants would let them drift apart
+    /// again, and neither would be the other's control. In 1.35 (§F, item 4) the stage line joined
+    /// the tomorrow line, and after that fix's review the other five texts above joined them; nothing
+    /// but their colour changed. `V134B1TomorrowLineTests` lists every text in both results views,
+    /// reads the colour each one on the panel draws in from the source, and recomputes it over a
+    /// sweep of scenes and scrims. (v1.34 §B1, v1.35)
+    ///
+    /// Not this constant's business: the dim captions on the score tiles and the word chips sit on
+    /// `Theme.card` (white 0.06) over the panel, a lighter background (about 4.14:1 at worst in the
+    /// same model) — and a SAVED chip or review cell sits on `Theme.gold` at 0.14 instead, where
+    /// `Theme.dim` computes to about 3.81:1 at worst (review of b425ac3). Both are a separate
+    /// question, left as they were.
+    static let panelCaptionColor = Color.white.opacity(0.46)
 
     /// Two lines below the accessibility sizes — unchanged from the line's first build, so the
-    /// default size does not move — and three at them.
+    /// default size does not move — and four at them (three in 1.34; see the last paragraph).
     ///
     /// Measured with CoreText (`V134B1TomorrowLineTests`): `.caption` is 43pt at AX5 (Apple's
     /// Dynamic Type table; 40pt is `.caption2`), and the panel's text column on the 402pt phone
@@ -111,11 +131,34 @@ struct ResultsView: View {
     /// widest Chinese row fits three at full size. (v1.34 round-2 review)
     ///
     /// Since the simulator pass (2026-09-27) a count may not end a line (`TomorrowLine`'s no-break
-    /// spaces), and the English rows that name 999 words and 999 forms fit three lines at this
+    /// spaces), and in 1.34 the English rows that name 999 words and 999 forms fit three lines at this
     /// floor and not one hundredth above it — the third line, "999 forms due tomorrow", is the one
     /// that must fit. Rows of two-digit counts fit from 0.745. No room is left above the floor for
     /// the widest rows; `V134B1TomorrowLineTests` measures the whole grid of counts at the floor.
-    static func tomorrowLineLimit(accessibilitySize: Bool) -> Int { accessibilitySize ? 3 : 2 }
+    ///
+    /// **Four lines since v1.35.** Three were measured only for counts to 999 and only on the 402pt
+    /// phone. Beyond either, three truncate, and a truncated line drops the count it exists to
+    /// state. Measured with the same CoreText instrument on 2026-09-29, at AX5 (43pt):
+    /// * On the 402pt phone, English rows with four- and five-digit counts need 0.63 for three
+    ///   lines ("2-day streak · 16,219 words and 16,219 forms due tomorrow"; forms can reach 16,219,
+    ///   words 7,071). 228 of the grid's 1,690 English rows go under the floor, and 72 at 40pt.
+    /// * On a 375pt phone (the SE, XS, 11 Pro, 12 and 13 mini; the narrowest iPhones on iOS 17) the
+    ///   column is 375 − 48 − 32 = 295pt. There 1.34's own rows of 999 words and 999 forms need
+    ///   0.64 (0.685 at 40pt), so 1.34 already truncated them on that phone: 183 rows with counts
+    ///   under 1,000. With larger counts, 683 English rows go under the floor.
+    ///
+    /// Four lines fit every row at full size at every accessibility size on the 402pt phone. On the
+    /// 375pt phone the widest row needs 0.925 at AX5 (105 rows shrink at all) and 0.995 at 40pt. The
+    /// other ways out were worse. Lowering the floor shrinks an AX5 rider's text to 0.58 of the size
+    /// they chose. Rewording would change the copy matrix every other test holds. And `nil` would
+    /// give up the bound the tests measure. The cost is one more `.caption` line of height, inside
+    /// the screen's scroll view, and only on the rows that need it. Every row that three lines made
+    /// shrink at AX5 on the 402pt phone (1,144 of the grid's 1,690 English rows) now keeps its full
+    /// size on four. The demo row the simulator pass drew ("4-day streak · 7 words due tomorrow",
+    /// three lines at full size) is unchanged. Chinese never needs the fourth line: its widest row needs
+    /// 0.89 for three on the 375pt phone. `V134B1TomorrowLineTests.everyRowFits` holds the grid,
+    /// both phones, every `.caption` size; `accessibilityLimitControls` holds three lines failing.
+    static func tomorrowLineLimit(accessibilitySize: Bool) -> Int { accessibilitySize ? 4 : 2 }
 
     /// The shrink floor the limit above was measured against.
     static let tomorrowLineScaleFloor: CGFloat = 0.7
@@ -177,12 +220,13 @@ struct ResultsView: View {
                     // also end here but add no day to the streak the line would state.
                     // A limit and a floor because the line sits in a VStack, which
                     // HorizontalTextFitTests deliberately does not scan; both are measured, see
-                    // `tomorrowLineLimit`. Its own colour, not the stage line's `Theme.dim`, which
-                    // computes under 4.5:1 on this panel — see `tomorrowLineColor`. (v1.34 §B1)
+                    // `tomorrowLineLimit`. Its colour is `panelCaptionColor`, which every small text
+                    // straight on this panel shares since 1.35; in 1.34 the others were `Theme.dim`,
+                    // under 4.5:1 on this panel. (v1.34 §B1)
                     if let line = model.tomorrowLine(zh: zh) {
                         Text(line)
                             .font(.caption)
-                            .foregroundStyle(Self.tomorrowLineColor)
+                            .foregroundStyle(Self.panelCaptionColor)
                             .multilineTextAlignment(.center)
                             .lineLimit(Self.tomorrowLineLimit(accessibilitySize: typeSize.isAccessibilitySize))
                             .minimumScaleFactor(Self.tomorrowLineScaleFloor)
@@ -319,7 +363,8 @@ struct ResultsView: View {
                          ? (zh ? "这些词没听出来" : "The words you could not catch")
                          : (zh ? "这些词卡住了你" : "The words that stopped you"))
                         .scaledSystemFont(13, weight: .semibold, design: .rounded)
-                        .foregroundStyle(Theme.dim)
+                        // Straight on the arrival panel: `Theme.dim` was 4.41:1 here. (v1.35 §F item 4)
+                        .foregroundStyle(Self.panelCaptionColor)
                     MenuFlow(spacing: 8, rowSpacing: 8) {
                         ForEach(displayed, id: \.self) { stumble in
                             stumbleChip(stumble)
@@ -591,7 +636,8 @@ struct ResultsView: View {
                 .foregroundStyle(tint)
             Text(line)
                 .scaledSystemFont(13, weight: .regular)
-                .foregroundStyle(Theme.dim)
+                // Straight on the arrival panel: `Theme.dim` was 4.41:1 here. (v1.35 §F item 4)
+                .foregroundStyle(Self.panelCaptionColor)
         }
     }
 
@@ -603,7 +649,9 @@ struct ResultsView: View {
         return VStack(spacing: 8) {
             Text(persists ? (zh ? "复习这些词(点 ★ 收藏):" : "Review these (tap ★ to save):")
                           : (zh ? "这些让你吃力(点 ★ 收藏):" : "These gave you trouble (tap ★ to save):"))
-                .font(.caption).foregroundStyle(Theme.dim)
+                // This heading and the "+N more" below are straight on the arrival panel, where
+                // `Theme.dim` was 4.41:1; the cells between them are on cards. (v1.35 §F item 4)
+                .font(.caption).foregroundStyle(Self.panelCaptionColor)
             // One column at the accessibility sizes. The adaptive grid makes two 168pt columns on a
             // phone, and with the star and the speaker beside it the word keeps about 76pt — one
             // kanji is 45pt at AX5, so 図書館 stacked one character per line (ax-findings #29,
@@ -676,7 +724,7 @@ struct ResultsView: View {
             }
             if words.count > 12 {
                 Text(zh ? "还有 \(words.count - 12) 个…" : "+\(words.count - 12) more…")
-                    .font(.caption2).foregroundStyle(Theme.dim)
+                    .font(.caption2).foregroundStyle(Self.panelCaptionColor)
             }
         }
         .frame(maxWidth: 540)
