@@ -159,7 +159,10 @@ struct ConjugationGameView: View {
 
 // MARK: - HUD (form-label badge + score + combo + progress + accuracy; no distance)
 
-private struct ConjugationHUD: View {
+// Internal rather than private, with `stat`, only so `V135VerbsHUDSpokenTests` can render the
+// shipped pill: its "an accessibility value draws nothing" check drew a copy of this pill, so no
+// change to `stat` could fail it (v1.35 review). The app builds it only here, in `play`.
+struct ConjugationHUD: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     let session: ConjugationSession
     let language: String
@@ -247,7 +250,7 @@ private struct ConjugationHUD: View {
         .scaledSystemFont(narrow ? 15 : 17, weight: .semibold, design: .rounded)
     }
 
-    private func stat(icon: String, value: String, tint: Color, label: String, spoken: String? = nil) -> some View {
+    func stat(icon: String, value: String, tint: Color, label: String, spoken: String? = nil) -> some View {
         HStack(spacing: 6) {
             Image(systemName: icon).foregroundStyle(tint)
             // Same reason as the capsule above: "2/12" wrapping to two lines is not a smaller

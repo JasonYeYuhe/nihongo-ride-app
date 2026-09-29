@@ -108,14 +108,41 @@ struct V135VerbsHUDSpokenTests {
 
     // MARK: 2. What the row hides
 
+    /// Every `{ }` block inside `range`, braces included, in the order they open.
+    static func blocks(in file: CallSiteScanner.File, within range: Range<Int>) -> [Range<Int>] {
+        var stack: [Int] = []
+        var found: [Range<Int>] = []
+        for index in range {
+            if file.code[index] == UInt8(ascii: "{") { stack.append(index) }
+            else if file.code[index] == UInt8(ascii: "}"), let open = stack.popLast() { found.append(open..<(index + 1)) }
+        }
+        return found.sorted { $0.lowerBound < $1.lowerBound }
+    }
+
     /// The composer speaks the score and nothing else because that is the only pill this row hides
     /// relative to the default size (`ConjugationHUDSpoken`'s comment). That rests on the row's
-    /// gates, pinned here on comment-blanked code: the score pill behind `RideHUDLayout.showsScore`
-    /// (also `V133GRideAndDrillLayoutTests.bothHUDsConsultTheRule`); the accuracy pill behind exactly
-    /// `if !narrow` — the device, never the size; the combo and progress pills directly in the row's
-    /// `HStack`. A gate that starts hiding another pill at the accessibility sizes goes red here and
-    /// sends its author to the composer. Mutations, 2026-09-29, each red here: the accuracy gate as
-    /// `if !(narrow || typeSize.isAccessibilitySize) {`; the combo pill behind `if !accessibilitySize {`.
+    /// gates, pinned here on comment-blanked code, in three parts:
+    /// * each pill's WHOLE chain of enclosing blocks, innermost out to the type: the score pill
+    ///   behind `RideHUDLayout.showsScore` (also `V133GRideAndDrillLayoutTests.bothHUDsConsultTheRule`),
+    ///   the accuracy pill behind exactly `if !narrow`, the combo and progress pills directly in the
+    ///   row's `HStack`, and that `HStack` directly in `body`;
+    /// * every block in `ConjugationHUD`, by the line that opens it, in order — so a gate added
+    ///   beside the chain rather than around it (`if X { EmptyView() } else` on the line above an
+    ///   `if !narrow {`) is a block this list does not have;
+    /// * `narrow` declared once, exactly `private var narrow: Bool { isPhoneIdiom }`, and no other
+    ///   name bound in the type — so `narrow` cannot start meaning the size.
+    ///
+    /// What it does not hold: the global `isPhoneIdiom` (TouchSupport.swift) is read by name, not
+    /// pinned; a modifier that hides a drawn pill (`.opacity(0)`, `.hidden()`) is not a block and is
+    /// not read here. Before v1.35's review round 1 this test read each pill's innermost block only,
+    /// and a nested gate or a redefined `narrow` stayed green (measured below).
+    ///
+    /// Mutations, 2026-09-29, each red here: the accuracy gate as `if !(narrow || typeSize.isAccessibilitySize) {`;
+    /// the combo pill behind `if !accessibilitySize {`; (review round 1, each GREEN on the innermost-block
+    /// test) `if !typeSize.isAccessibilitySize {` wrapped around the whole `if !narrow { … }`;
+    /// `narrow` redefined as `{ isPhoneIdiom || typeSize.isAccessibilitySize }`; `narrow` shadowed in
+    /// `body` by `let narrow = self.narrow || accessibilitySize`; and, red on the block list alone,
+    /// `if typeSize.isAccessibilitySize { EmptyView() } else` on the line above `if !narrow {`.
     @Test("the drill row hides only its score at the accessibility sizes, on either idiom")
     func onlyTheScoreIsHidden() throws {
         let file = try Self.drillFile
@@ -123,14 +150,37 @@ struct V135VerbsHUDSpokenTests {
         let pills = try Self.drillPills(file)
         #expect(pills.map(\.icon) == ["star.fill", "flame.fill", "checkmark.circle.fill", "scope"],
                 "ConjugationHUD's pills are \(pills.map(\.icon)); decide whether the new one is hidden, and update the composer and this test")
-        let row = "HStack(spacing: narrow ? 8 : 14)"
-        let expected = ["star.fill": "if RideHUDLayout.showsScore(typeSize)",
-                        "flame.fill": row, "checkmark.circle.fill": row, "scope": "if !narrow"]
+        let blocks = Self.blocks(in: file, within: hud)
+        func head(_ block: Range<Int>) -> String { V133GRideAndDrillLayoutTests.blockHead(block, in: file) }
+
+        // 1. Each pill's chain, innermost first, out to the type's own braces.
+        let row = ["HStack(spacing: narrow ? 8 : 14)", "var body: some View", "struct ConjugationHUD: View"]
+        let expected = ["star.fill": ["if RideHUDLayout.showsScore(typeSize)"] + row,
+                        "flame.fill": row, "checkmark.circle.fill": row, "scope": ["if !narrow"] + row]
         for pill in pills {
-            let block = try #require(file.innermostBlock(containing: pill.call.nameOffset, within: hud))
-            let head = V133GRideAndDrillLayoutTests.blockHead(block, in: file)
-            #expect(head == expected[pill.icon], "\(file.location(pill.call.nameOffset)): the \(pill.icon) pill is behind `\(head)`")
+            let chain = blocks.filter { $0.contains(pill.call.nameOffset) }.sorted { $0.count < $1.count }.map(head)
+            #expect(chain == expected[pill.icon],
+                    "\(file.location(pill.call.nameOffset)): the \(pill.icon) pill is behind \(chain)")
         }
+
+        // 2. Every block in the type, in order.
+        #expect(blocks.map(head) == [
+            "struct ConjugationHUD: View",
+            "private var narrow: Bool", "private var zh: Bool",
+            "var body: some View", "HStack(spacing: narrow ? 8 : 14)",
+            "if RideHUDLayout.showsScore(typeSize)", "if !narrow", "if let onPause", "Button(action: onPause)",
+            "func stat(icon: String, value: String, tint: Color, label: String, spoken: String? = nil) -> some View",
+            "HStack(spacing: 6)",
+        ], "ConjugationHUD's blocks are \(blocks.map(head)); a new one may gate a pill — read it against the composer")
+
+        // 3. What `narrow` is, and that nothing else is bound to it.
+        let code = String(decoding: file.code[hud], as: UTF8.self)
+        let bound = code.matches(of: /\b(?:let|var)\s+(\w+)/).map { String($0.output.1) }
+        #expect(bound == ["typeSize", "session", "language", "onPause", "narrow", "zh", "body", "accessibilitySize", "onPause"],
+                "ConjugationHUD binds \(bound)")
+        let declaration = try #require(code.firstMatch(of: /private var narrow: Bool \{[^}]*\}/))
+        #expect(V133GRideAndDrillLayoutTests.collapsed(String(declaration.output)) == "private var narrow: Bool { isPhoneIdiom }",
+                "narrow is \(declaration.output)")
     }
 
     // MARK: 3. The call sites
@@ -184,7 +234,10 @@ struct V135VerbsHUDSpokenTests {
     /// separator helper. Mutations, 2026-09-29, each red here: the drill's score pill back to
     /// `value: "\(session.score)"`; the ride's score pill likewise; the drill composer appending
     /// `"score \(score)"`; the ride composer's `"score \(score)"` restored; the drill composer
-    /// building its own `", "` join.
+    /// building its own `", "` join. Review round 1, 2026-09-29: the drill composer appending
+    /// `"score \(score)"` is also red on the interpolation check itself, and a composer that keeps its
+    /// scoreWords line and adds `parts = parts.map { "\($0)" }` — green before, when that check read
+    /// the code view — is red on it alone.
     @Test("the score pills and both composers format the score through scoreWords")
     func oneScoreFormatter() throws {
         let drill = try Self.drillFile
@@ -206,8 +259,15 @@ struct V135VerbsHUDSpokenTests {
         #expect(withStrings.contains("hid(RideHUDLayout.showsScore)")
                 && withStrings.contains("!shows(typeSize) && shows(RideHUDSpoken.defaultSize)"),
                 "the drill composer no longer compares the score rule against the default size: \(withStrings)")
+        // Interpolation is read on the view WITH strings: the code view blanks `\(` together with the
+        // string around it, so the same check there could never fire (v1.35 review round 1 — the
+        // mutant below that keeps the scoreWords line was green). `\#(` counts too. Control: the
+        // ride composer, read the same way, has its level interpolation (`"level \(level)"`).
+        let interpolation = /\\#*\(/
+        #expect(withStrings.firstMatch(of: interpolation) == nil,
+                "the drill composer interpolates something itself: \(withStrings)")
         let code = V133GRideAndDrillLayoutTests.collapsed(drill.text(body))
-        #expect(!code.contains("\\(") && !code.contains("Int(") && !code.contains(".joined"),
+        #expect(!code.contains("Int(") && !code.contains(".joined"),
                 "the drill composer formats or joins something itself: \(code)")
 
         let ride = try Self.rideFile
@@ -224,37 +284,47 @@ struct V135VerbsHUDSpokenTests {
         #expect(rideText.contains(#"parts.append((zh ? "得分 " : "score ") + scoreWords(score))"#),
                 "the ride composer does not append the score through scoreWords")
         #expect(!rideText.contains(#"\(score)"#), "the ride composer formats the score itself")
+        #expect(rideText.firstMatch(of: interpolation) != nil,
+                "control: the interpolation check cannot see the ride composer's \"level \\(level)\": \(rideText)")
     }
 
     #if canImport(AppKit)
     /// "The default size cannot change" rests on the nil above and on this: an accessibility value is
-    /// not drawn. The drill's progress pill — its own modifiers, one line and fixed width — rendered
-    /// with 1.34's value and with the suffixed one is byte for byte alike. Control: one drawn digit
-    /// changed is seen.
+    /// not drawn. What is rendered is the SHIPPED pill — `ConjugationHUD.stat`, internal for this
+    /// test — as the progress pill, spoken 1.34's "6 of 12" and spoken the longest suffixed value:
+    /// byte for byte alike. Control: against a render the suffixed one matched, one drawn digit
+    /// changed ("7/12") is seen.
     ///
-    /// **The instrument is not deterministic under load, so a pair is rendered up to three times.**
-    /// On 2026-09-29, in 10 whole `swift test` runs on unchanged code, this test failed once and
-    /// `V134B3HUDSpokenTests`' test of the same name (which renders once) failed once, each in the
-    /// slowest run (the first after a rebuild, 107s against 26–54); both passed in every filtered
-    /// run. A real drawing difference is the same on every render, so it fails all three attempts;
-    /// the control's drawn digit still has to be seen. Mutation, 2026-09-29, red here: the pill also
-    /// drawing its value, `.overlay { Text(value).opacity(0.01) }`.
+    /// What that covers, and what it does not. A change to `stat` that draws its spoken value goes
+    /// red here; one that draws something other than `value` goes red on the control. The pill is
+    /// rendered alone, at the row's 17pt font set here (the row's `.scaledSystemFont` is outside
+    /// `stat`), with `narrow` false as on this Mac, and `ImageRenderer` does not drive Dynamic Type —
+    /// so this is not a render of the row at an accessibility size. It reads no accessibility tree:
+    /// that `stat` hands `spoken` to VoiceOver is the source pin in
+    /// `progressPillSpeaksTheSuffix`. Before v1.35's review round 1 this test drew a copy of the pill,
+    /// so no change to `stat` could fail it; the first mutation below was green then.
+    ///
+    /// **The instrument is not deterministic, so a pair is rendered up to three times.** Measured on
+    /// 2026-09-29, all on unchanged rendering code: in the 8 whole `swift test` runs the
+    /// implementation recorded, this test failed in one, a 63.9s run, and
+    /// `V134B3HUDSpokenTests`' test of the same name (which renders once) failed in another, a 107.3s
+    /// run; the other 6 passed. In review, B3's test failed once in 17 filtered runs of three suites
+    /// (`V135…|V134B3…|V133G…`, a 1.4s run), and both passed in 6 more whole runs and in one whole
+    /// run at load average ~600 that took 390s. After review, 15 more filtered runs of the same three
+    /// suites (this test rendering through `stat`, up to three times): B3's failed in one, a 0.64s
+    /// run; this one in none. So the failure is not confined to whole-suite or to slow runs; it is
+    /// rare, and nothing measured predicts it. A real drawing difference is the
+    /// same on every render, so it fails all three attempts, and the control still has to see its
+    /// digit. Mutations, 2026-09-29, each red here: `stat` also drawing its spoken value,
+    /// `.overlay { Text(spoken ?? value).opacity(0.01) }` before `.accessibilityElement()`;
+    /// `stat` drawing `Text(label)` for `Text(value)` (on the control).
     @MainActor
     @Test("an accessibility value draws nothing")
     func accessibilityValueDrawsNothing() {
-        func pixels(_ value: String, drawn: String = "6/12") -> Data? {
-            let pill = HStack(spacing: 6) {
-                Image(systemName: "checkmark.circle.fill").foregroundStyle(Theme.done)
-                Text(drawn).foregroundStyle(.white).monospacedDigit()
-                    .lineLimit(1)
-                    .fixedSize(horizontal: true, vertical: false)
-            }
-            .padding(.horizontal, 12).padding(.vertical, 7)
-            .background(.black.opacity(0.42), in: Capsule())
-            .accessibilityElement()
-            .accessibilityLabel("Done")
-            .accessibilityValue(value)
-            .font(.system(size: 17, weight: .semibold, design: .rounded))
+        let hud = ConjugationHUD(session: ConjugationSession(prompts: []), language: "en")
+        func pixels(_ spoken: String, drawn: String = "6/12") -> Data? {
+            let pill = hud.stat(icon: "checkmark.circle.fill", value: drawn, tint: Theme.done, label: "Done", spoken: spoken)
+                .font(.system(size: 17, weight: .semibold, design: .rounded))
             let renderer = ImageRenderer(content: ZStack { Color.white; pill }.frame(width: 200, height: 60))
             renderer.scale = 2
             return renderer.cgImage?.dataProvider?.data as Data?
@@ -263,13 +333,15 @@ struct V135VerbsHUDSpokenTests {
             queueLengthIsTheTarget: true, completed: 6, count: 12, zh: false,
             hidden: ConjugationHUDSpoken.hiddenValues(typeSize: .accessibility5, score: 23456, zh: false))
         #expect(spoken == "6 of 12, score 23456")
-        var alike = false
-        for _ in 0..<3 where !alike {
+        var matched: Data?
+        for _ in 0..<3 where matched == nil {
             let plain = pixels("6 of 12")
-            alike = plain != nil && plain == pixels(spoken)
+            if plain != nil, plain == pixels(spoken) { matched = plain }
         }
-        #expect(alike, "the suffix moved a pixel in three renders of three")
-        #expect(pixels("6 of 12") != pixels("6 of 12", drawn: "7/12"), "control: the instrument cannot see a change")
+        #expect(matched != nil, "the suffix moved a pixel in three renders of three")
+        // Against a render another render matched, so the instrument was steady for that pair.
+        #expect(matched != nil && matched != pixels("6 of 12", drawn: "7/12"),
+                "control: the instrument cannot see a change")
     }
     #endif
 }
