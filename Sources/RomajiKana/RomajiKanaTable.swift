@@ -29,6 +29,10 @@ public struct RomajiKanaTable: Sendable {
     let producerByRomaji: [String: Production]
     /// Longest romaji key, for the longest-match scan in `RomajiReading`.
     let maxRomajiLength: Int
+    /// Every proper prefix of a romaji key ("t" of "ta", "ch" of "chi", "ts" of "tsu"): what a
+    /// query can end in while the learner is still typing a kana. `RomajiReading.partialReadings`
+    /// reads the text before such a tail.
+    let incompleteKeys: Set<String>
 
     /// The shared default table, parsed once from the bundled Mozc resource.
     public static let shared = RomajiKanaTable.loadBundled()
@@ -38,16 +42,23 @@ public struct RomajiKanaTable: Sendable {
         var byRomaji: [String: Production] = [:]
         var maxLen = 1
         var maxRomaji = 1
+        var incomplete = Set<String>()
         for production in productions where !production.output.isEmpty {
             byOutput[production.output, default: []].append(production)
             maxLen = max(maxLen, production.output.count)
             if byRomaji[production.romaji] == nil { byRomaji[production.romaji] = production }
             maxRomaji = max(maxRomaji, production.romaji.count)
+            var prefix = production.romaji
+            while prefix.count > 1 {
+                prefix.removeLast()
+                incomplete.insert(prefix)
+            }
         }
         producersByOutput = byOutput
         maxOutputLength = maxLen
         producerByRomaji = byRomaji
         maxRomajiLength = maxRomaji
+        incompleteKeys = incomplete
     }
 
     /// Productions that output exactly `kana`.

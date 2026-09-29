@@ -465,6 +465,25 @@ but NOT yet run, and the simulator pass has not happened — both are the orches
   empty. A gone list no longer shows the copy that points at the search button. The timing test asserts
   the median of 100 `VocabStore.search` calls (debug 12.9 ms) under 100 ms. Release-build timings above
   were measured before the multi-reading change and not re-measured.
+* **Second review fixes** (same branch, third commit, after merging main at d476e8b): VoiceOver spoke on
+  about every other keystroke of romaji, because a keystroke that ended mid-kana ("tabem", "miz", "gak")
+  read as nothing and found nothing — measured before the fix, 32 announcements over the 61 keystrokes
+  of tabemono, tomodachi, jitensha, nomimono, shukudai, atarashii, water and school (64 over 136 for
+  twenty words), and sighted learners saw the no-results line flash. `RomajiReading.partialReadings`
+  reads the text before an unfinished tail (tabem → たべ, gakk → がっ, a final n also as the n-row's
+  start), matched as a prefix, never exact; and `ListDetailView.SearchAnnouncer` speaks only after the
+  outcome has held 0.8 s, and only when its kind differs from the last one spoken. After: one
+  announcement per word at 1.2 s a key and at 0.25 s a key, eight over 61 keystrokes; no keystroke of
+  the eight words finds nothing. Within a tier, rows the text or the IME's reading reaches come before
+  rows only another ん reading reaches (shinnyuu → 侵入 before 親友; tennin, kanyuu, shinyou likewise).
+  The worst-row test re-derived from the merged corpus (zh: n1-b1104, 17 characters; n2-b962's 25 was
+  corrected in step 5). Contrast: every view the detail screen's body reaches is now in the scan, its
+  list checked complete against the source; six texts moved to de57aad's constants, colour only — the
+  word row's gloss (3.91:1), a removed word's label (3.91:1) and note (2.67:1), the unplayable hint and
+  the notes under disabled Sentences / Dictation launchers (4.24:1). The launchers' own labels are left:
+  white on the coral and sky capsules is brand-colour contrast (§I's day-91 list), and disabled they are
+  inactive controls. Debug timing with the partial readings: median 16.4 ms (was 12.8), kinenonanani
+  (16 readings) 34 ms.
 
 ---
 

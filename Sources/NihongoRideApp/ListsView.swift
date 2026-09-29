@@ -333,6 +333,9 @@ struct ListDetailView: View {
     @State private var results: [VocabEntry] = []
     @FocusState private var searchFocused: Bool
     @State private var errorMessage: String?
+    /// What VoiceOver has been told about the results, and the pending wait before the next line.
+    @State private var announcer = SearchAnnouncer()
+    @State private var announceTask: Task<Void, Never>?
 
     /// Search is open AND on screen. The panel is drawn only for a live list, so a list deleted
     /// on another device while search is open takes the panel away — and with it the field that
@@ -399,15 +402,19 @@ struct ListDetailView: View {
                     suppressSoftwareKeyboard: true)
             }
         }
-        .onChange(of: query) { old, new in
-            let before = Self.searchOutcome(query: old, count: results.count)
+        .onChange(of: query) { _, new in
             results = model.vocab.search(new, limit: Self.searchLimit)
             // WCAG 4.1.3: the result list appearing or emptying is a status a VoiceOver user
-            // cannot see. Said when the set goes from none to some or some to none — not at
-            // every keystroke, which would interrupt the typing it reports on.
-            let after = Self.searchOutcome(query: new, count: results.count)
-            if let line = Self.searchAnnouncement(from: before, to: after, limit: Self.searchLimit, zh: zh) {
-                AccessibilityNotification.Announcement(line).post()
+            // cannot see. Said once the outcome has held for `SearchAnnouncer.settleDelay`, and
+            // only when its kind differs from the last one said — not at every keystroke, which
+            // would interrupt the typing it reports on (`SearchAnnouncer`).
+            announcer.changed(to: Self.searchOutcome(query: new, count: results.count), at: .now)
+            announceTask?.cancel()
+            announceTask = Task { @MainActor in
+                try? await Task.sleep(for: SearchAnnouncer.settleDelay)
+                if let line = announcer.due(at: .now, limit: Self.searchLimit, zh: zh) {
+                    AccessibilityNotification.Announcement(line).post()
+                }
             }
         }
         // Cap / validation errors from an add — the same alert ListsView shows.
@@ -542,6 +549,7 @@ struct ListDetailView: View {
     private func openSearch() {
         query = ""
         results = []
+        resetAnnouncer()
         searching = true
         // The index is built on the first search (`VocabStore.search`): ~31 ms on this Mac in a
         // release build, 2026-09-29, against ~0.6 ms for a query once built. Built here, off the
@@ -556,6 +564,13 @@ struct ListDetailView: View {
         query = ""
         results = []
         searching = false
+        resetAnnouncer()
+    }
+
+    private func resetAnnouncer() {
+        announceTask?.cancel()
+        announceTask = nil
+        announcer = SearchAnnouncer()
     }
 
     /// Through `AppModel.addWord` — the path the ★ and the add-to-lists sheet take — so the save,
@@ -591,12 +606,16 @@ struct ListDetailView: View {
 
     /// The small dim text the search panel draws straight on `Theme.background` — its hint, the
     /// no-results line, the first-50 note, the "In this list" caption — and the empty-list and
-    /// unavailable-list lines, which point to it. `Theme.dim` (white at 0.45) there computes 4.24:1 at the gradient's lighter bottom
-    /// stop and 4.47:1 at the top: under the line at both. This is About's `dimTextColor`, white at
+    /// unavailable-list lines, which point to it; since the second review, every other dim line
+    /// this screen draws on the background too (the unplayable hint, the sentence and dictation
+    /// launchers' notes). The list's own word rows sit on `Theme.card` and use
+    /// `WordSearchResultRow.glossColor` instead. `Theme.dim` (white at 0.45) on the background
+    /// computes 4.24:1 at the gradient's lighter bottom stop and 4.47:1 at the top: under the line
+    /// at both. This is About's `dimTextColor`, white at
     /// 0.48 → 4.62:1 at the bottom stop, the smallest opacity that clears (0.47 → 4.49:1), read
     /// from there rather than copied so the two screens' dim text is one number with one proof
-    /// (`V134B4AboutContrastTests`). `V135B6WordSearchTests.panelTextClears` recomputes it for
-    /// every colour the panel draws. (v1.35 §B6 review)
+    /// (`V134B4AboutContrastTests`). `V135B6WordSearchTests.screenTextClears` recomputes every
+    /// colour each view on this screen draws, over what it sits on. (v1.35 §B6 reviews)
     static let dimTextColor = AboutView.dimTextColor
 
     /// What the result list says to VoiceOver: nothing typed yet, nothing matched, or a count.
@@ -611,7 +630,8 @@ struct ListDetailView: View {
         return count == 0 ? .none : .some(count)
     }
 
-    /// The line VoiceOver hears when the result list changes, or nil. Said when results appear
+    /// The line VoiceOver hears when the settled result list is compared with the last one
+    /// announced (`SearchAnnouncer`: `old` is that one), or nil. Said when results appear
     /// where there were none (from an empty field or a query that matched nothing), and when
     /// they go to none from anything else; not when a count moves while there are results, nor
     /// when the field is cleared — the pattern of `CustomTextAddView.announcement` (v1.35 §F),
@@ -625,6 +645,43 @@ struct ListDetailView: View {
                 return zh ? "显示前 \(limit) 个词。" : "Showing the first \(limit) words."
             }
             return zh ? "找到 \(count) 个词。" : "\(countLabel(count, "word")) found."
+        }
+    }
+
+    /// When the results are worth a VoiceOver line: after the outcome has held still, and only if
+    /// its kind moved from the last one said (v1.35 §B6 review).
+    ///
+    /// Announcing each none ↔ some flip as it happened spoke on about every other keystroke of
+    /// romaji — "tabem" read as nothing and found nothing, "tabemo" found words again — and each
+    /// line cut into the typing. Two changes answer it: the search reads an unfinished kana as the
+    /// text before it (`RomajiReading.partialReadings`), so the outcome no longer flips while a
+    /// word is typed; and this waits `settleDelay` after the last change and compares the kind with
+    /// the last ANNOUNCED one, not the previous keystroke's, so a flip and its reversal inside the
+    /// wait say nothing. `V135B6WordSearchTests.typingAWordAnnouncesAtMostTwice` replays real
+    /// words' keystrokes through this and `searchOutcome`.
+    ///
+    /// Pure, with the time passed in, so the replay can run on a synthetic clock; the view calls
+    /// `changed` from the query's onChange and `due` from a task that sleeps `settleDelay`.
+    struct SearchAnnouncer {
+        static let settleDelay: Duration = .milliseconds(800)
+
+        private(set) var announced: SearchOutcome = .idle
+        private var pending: SearchOutcome?
+        private var changedAt: ContinuousClock.Instant?
+
+        mutating func changed(to outcome: SearchOutcome, at time: ContinuousClock.Instant) {
+            pending = outcome
+            changedAt = time
+        }
+
+        /// The line to post at `time`, or nil: nil until the last change is `settleDelay` old,
+        /// and nil when the settled kind is the one last said (`searchAnnouncement`'s table).
+        mutating func due(at time: ContinuousClock.Instant, limit: Int, zh: Bool) -> String? {
+            guard let outcome = pending, let changedAt, time - changedAt >= Self.settleDelay else { return nil }
+            pending = nil
+            let line = ListDetailView.searchAnnouncement(from: announced, to: outcome, limit: limit, zh: zh)
+            announced = outcome
+            return line
         }
     }
 
@@ -680,7 +737,7 @@ struct ListDetailView: View {
             if !enabled && !list.ids.isEmpty {
                 Text(zh ? "这个词单里的词还没有可打字的例句。"
                         : "None of this list's words has a typeable example sentence yet.")
-                    .font(.caption).foregroundStyle(Theme.dim)
+                    .font(.caption).foregroundStyle(Self.dimTextColor)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -720,7 +777,7 @@ struct ListDetailView: View {
                     // not ones the voice can be trusted with.
                     Text(zh ? "这个词单的例句都不适合听写(语音读法与标注不一致)。"
                             : "None of this list's sentences is one the built-in voice reads the way the app writes it.")
-                        .font(.caption).foregroundStyle(Theme.dim)
+                        .font(.caption).foregroundStyle(Self.dimTextColor)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -730,11 +787,15 @@ struct ListDetailView: View {
     private var unplayableHint: some View {
         Text(zh ? "这些词在本设备上暂不可用(可能来自更新版本的词库)。"
                 : "These words aren't available on this device (they may come from a newer vocabulary).")
-            .font(.callout).foregroundStyle(Theme.dim)
+            .font(.callout).foregroundStyle(Self.dimTextColor)
             .fixedSize(horizontal: false, vertical: true)
             .padding(.vertical, 4)
     }
 
+    /// One of the list's own words, on `Theme.card`. Its dim text — the gloss, and a removed word's
+    /// label and note — is `WordSearchResultRow.glossColor`, the search row's card colour (4.57:1):
+    /// it sits right under the results while search is open, and was `Theme.dim` (3.91:1), the
+    /// note at 0.7 of that (2.67:1). (v1.35 §B6, second review; colour only.)
     private func wordRow(id: String, listID: String) -> some View {
         let entry = model.vocab.entry(id: id)
         return HStack(spacing: 10) {
@@ -745,14 +806,14 @@ struct ListDetailView: View {
                 // a thing a learner can actually meet. An id is not a word; say so instead.
                 Text(entry?.surface ?? (zh ? "已移除的词" : "Removed word"))
                     .scaledSystemFont(16, weight: .semibold)
-                    .foregroundStyle(entry == nil ? Theme.dim : .white)
+                    .foregroundStyle(entry == nil ? WordSearchResultRow.glossColor : .white)
                 if let entry {
                     Text(entry.gloss(for: model.languageCode))
-                        .font(.caption).foregroundStyle(Theme.dim).lineLimit(1)
+                        .font(.caption).foregroundStyle(WordSearchResultRow.glossColor).lineLimit(1)
                 } else {
                     Text(zh ? "此词已从词库中移除,可以删掉这一行"
                             : "No longer in the dictionary — you can remove it")
-                        .font(.caption2).foregroundStyle(Theme.dim.opacity(0.7))
+                        .font(.caption2).foregroundStyle(WordSearchResultRow.glossColor)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }

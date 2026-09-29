@@ -118,8 +118,37 @@ struct WordSearchTests {
         }
         #expect(Self.ids("konnichiha") == ["f-konnichiha"])
         #expect(Self.ids("ko-hi-") == ["f-coffee"])
-        // Not romaji all the way through: no reading, and no gloss has it.
-        #expect(Self.ids("miz").isEmpty)
+        // Not romaji all the way through, nor up to a tail more typing could finish (q ends no
+        // key's start after z): no reading, and no gloss has it.
+        #expect(Self.ids("mizq").isEmpty)
+    }
+
+    /// A query typed a letter at a time stops mid-kana on most keystrokes. "miz" is み and an
+    /// unfinished z, so it finds what み begins — at the prefix tier, never exact, because the word
+    /// being typed goes on past み. The first version read "miz" as nothing and found nothing, so
+    /// the results emptied on every such keystroke (the review's finding; the replay is
+    /// `V135B6WordSearchTests.typingAWordAnnouncesAtMostTwice`). Mutations, 2026-09-29: the
+    /// partial readings left out of `matches` → red on every row; their exact tier not capped →
+    /// red on the corpus's み words (the first run held the cap on the fixture's "miz" alone, and
+    /// that mutation stayed green: no fixture word is read み, so nothing there was exact).
+    @Test("a query that stops mid-kana finds the words its complete part begins, as prefixes")
+    func partialRomaji() {
+        let tag = { (q: String) in Self.index.matches(q, limit: 10).map { "\($0.entry.id):\($0.tier)" } }
+        #expect(tag("miz") == ["f-mizu:prefix", "f-mizuumi:prefix", "f-mizugi:prefix", "f-mizu-n1:prefix"], "\(tag("miz"))")
+        #expect(tag("tabem") == ["f-taberu:prefix"], "\(tag("tabem"))")
+        #expect(tag("gakk") == ["f-gakkou:prefix"], "\(tag("gakk"))")
+        #expect(tag("konnich") == ["f-konnichiha:prefix"], "\(tag("konnich"))")
+        // The gloss match is still there beside it: "wat" is water's start and わ's.
+        #expect(Self.ids("wat").first == "f-mizu")
+        // The fixture has no word read み, so the cap is held on the corpus, which has several:
+        // "miz" finds them, and none as exact.
+        let exactMi = Self.store.entries.filter { KanaScript.katakanaToHiragana($0.kana) == "み" }.map(\.id)
+        #expect(!exactMi.isEmpty, "control: no corpus word is read み")
+        let miz = Self.store.wordSearchIndex.matches("miz", limit: 7_100)
+        for id in exactMi {
+            let hit = miz.first { $0.entry.id == id }
+            #expect(hit?.tier == .prefix, "miz found \(id) as \(String(describing: hit?.tier))")
+        }
     }
 
     @Test("an English query finds the gloss, whatever its case")
@@ -275,6 +304,11 @@ struct WordSearchTests {
     /// assumed: `KanaInputMatcher` must complete each spelling first, or the row is not a spelling
     /// the ride takes. Mutations, 2026-09-29: the `readings` loop in `matches` reduced to the
     /// first reading → red on tanni, tani, gennin, genin, kinnyou, kinyou.
+    ///
+    /// The konnichiha line at the end holds only because こんいちは is not a word: this test says
+    /// nothing about ranking. Where both readings are words, the IME's comes first by the rule
+    /// `imeReadingRanksFirst` pins (the first version of this comment claimed that rule before the
+    /// code had it: shinnyuu listed 親友 above 侵入).
     @Test("each ん spelling the ride accepts finds 単位, 原因 and 金曜", arguments: [
         ("n3-b594", "たんい", ["tan'i", "tanni", "taxni", "tani"]),
         ("n4-g127", "げんいん", ["gen'in", "gennin", "gexnin", "genin", "genninn"]),
@@ -290,9 +324,35 @@ struct WordSearchTests {
             let ids = Self.store.search(spelling, limit: 50).map(\.id)
             #expect(ids.contains(c.id), "\(spelling) did not find \(c.id): \(ids.prefix(8))")
         }
-        // The IME's reading still wins where it is a word: konnichiha is こんにちは, first.
+        // The IME's reading is the only word here: konnichiha is こんにちは, first.
         #expect(Self.store.search("konnichiha", limit: 5).first?.id == "n5-konnichiwa")
     }
+
+    /// Where the IME's reading of a spelling and another ん reading are both words, the IME's comes
+    /// first within the tier — the reading a learner who types these letters into any IME gets —
+    /// and the other is still found. Each pair is one tier (both exact) and the other word is the
+    /// easier level or the earlier entry, so without the rule it came first: measured 2026-09-29,
+    /// 親友 (N3) over 侵入 (N2), 店員 (N4) over 転任 (N1), 勧誘 over 加入 and 信用 (N3) over 屎尿 (N1).
+    /// Mutation, 2026-09-29: the `alternative` key removed from the sort → red on all four.
+    @Test("the IME's reading's word ranks before a word only another ん reading reaches", arguments: [
+        ("shinnyuu", "n2-b1139", "n3-b555"),   // 侵入 しんにゅう before 親友 しんゆう
+        ("tennin", "n1-b333", "n4-g279"),      // 転任 てんにん before 店員 てんいん
+        ("kanyuu", "n1-b1408", "n1-b758"),     // 加入 かにゅう before 勧誘 かんゆう
+        ("shinyou", "n1-b1124", "n3-g032"),    // 屎尿 しにょう before 信用 しんよう
+    ])
+    func imeReadingRanksFirst(_ c: (query: String, ime: String, alternative: String)) throws {
+        let found = Self.store.wordSearchIndex.matches(c.query, limit: 50)
+        let ime = try #require(found.firstIndex { $0.entry.id == c.ime }, "\(c.query) did not find \(c.ime)")
+        let other = try #require(found.firstIndex { $0.entry.id == c.alternative }, "\(c.query) did not find \(c.alternative)")
+        #expect(found[ime].tier == .exact && found[other].tier == .exact, "control: not one tier — \(found[ime].tier), \(found[other].tier)")
+        #expect(ime < other, "\(c.query): \(found.prefix(6).map { "\($0.entry.surface)" })")
+        // Control: the other word would win on the tie-breaks alone.
+        let a = found[ime].entry, b = found[other].entry
+        #expect(b.jlpt < a.jlpt || (b.jlpt == a.jlpt && Self.order(b.id) < Self.order(a.id)),
+                "control: \(b.surface) does not beat \(a.surface) on level or corpus order")
+    }
+
+    static func order(_ id: String) -> Int { store.entries.firstIndex { $0.id == id } ?? .max }
 
     /// The same property over the whole corpus: every entry whose hint writes ん with an
     /// apostrophe, re-spelled with nn, xn and a lone n in its place, still reads as its reading.
@@ -336,28 +396,39 @@ struct WordSearchTests {
     /// The cost of one keystroke on the path the screen calls — `VocabStore.search`, its lazy
     /// index built by the first call and reused — in whatever configuration `swift test` built.
     /// The figures are printed for the record; the assertion is on the MEDIAN of five rounds of
-    /// twenty queries, against a bound about eight times the debug median measured here (12.9 ms, 2026-09-29), so a
+    /// twenty-one queries, against a bound about eight times the debug median measured here (12.9 ms, 2026-09-29), so a
     /// loaded machine's outliers cannot trip it and an order-of-magnitude regression still does.
     /// The first version asserted the worst single query under 100 ms and failed 4 of 21 suite
     /// runs under load. The frame budget on a phone is 16.7 ms; the release-build figure is what
-    /// the plan records.
+    /// the plan records. The ambiguous-n query is also held on its own median, since one query in
+    /// twenty-one cannot move the overall one.
     @Test("a keystroke-sized query over the whole corpus costs well under a frame")
     func timing() {
+        // kinenonanani: five ambiguous n's, the query `RomajiReading.maxAmbiguousN` caps at
+        // sixteen readings (added in the review; the first list had no ん at all).
         let queries = ["m", "mi", "miz", "mizu", "み", "みず", "水", "w", "wa", "wat", "water",
-                       "t", "ta", "tab", "tabe", "吃", "e", "a", "ko-hi-", "の"]
+                       "t", "ta", "tab", "tabe", "吃", "e", "a", "ko-hi-", "の", "kinenonanani"]
         let store = VocabStore(entries: Self.store.entries)
         let clock = ContinuousClock()
         let firstStart = clock.now
         _ = store.search("m", limit: 50)
         let first = clock.now - firstStart
         var samples: [Duration] = []
+        var ambiguous: [Duration] = []
         for _ in 0..<5 {
             for query in queries {
                 let start = clock.now
                 _ = store.search(query, limit: 50)
-                samples.append(clock.now - start)
+                let spent = clock.now - start
+                samples.append(spent)
+                if query == "kinenonanani" { ambiguous.append(spent) }
             }
         }
+        #expect(RomajiReading.readings(fromRomaji: "kinenonanani").count == 1 << RomajiReading.maxAmbiguousN,
+                "control: kinenonanani no longer branches to the cap")
+        ambiguous.sort()
+        print("WORDSEARCH TIMING kinenonanani (\(RomajiReading.readings(fromRomaji: "kinenonanani").count) readings): median \(ambiguous[ambiguous.count / 2]), worst \(ambiguous.last!)")
+        #expect(ambiguous[ambiguous.count / 2] < .milliseconds(100), "kinenonanani median \(ambiguous[ambiguous.count / 2])")
         samples.sort()
         let median = samples[samples.count / 2]
         let p95 = samples[samples.count * 95 / 100]

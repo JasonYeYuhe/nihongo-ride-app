@@ -87,6 +87,51 @@ struct RomajiReadingTests {
         #expect(readings.first == String(repeating: "な", count: 10))
     }
 
+    /// A query typed a letter at a time stops mid-kana on most keystrokes; the partial reading is
+    /// what precedes the unfinished tail, so search keeps finding the word being typed (v1.35 §B6
+    /// review: "tabem" read as nothing, and the result list emptied on every such keystroke).
+    /// Mutations, 2026-09-29, each red here: the `incompleteKeys` record in `longestMatch` removed
+    /// (every row); that record moved after the key scan, where a dead end is — red on kiny (き
+    /// lost: "n" alone is a key) and tabemon; `partialReadings` returning `readings` (every row).
+    @Test("a query that stops mid-kana reads as its longest complete prefix", arguments: [
+        ("tabem", ["たべ"]),
+        ("miz", ["み"]),
+        ("gak", ["が"]),
+        ("gakk", ["がっ"]),              // the sokuon is typed; the k after it is pending
+        ("tomodach", ["ともだ"]),         // ch is a proper prefix of chi
+        ("jitens", ["じてん"]),           // n before a consonant is ん; the s is unfinished
+        ("tabemon", ["たべも"]),          // a lone final n also starts the n-row: たべもの
+        ("kiny", ["き", "きん"]),          // ny of nyo (the IME's), and ん + the y of yo
+        ("matc", ["ま"]),                // tc of tch
+        ("water", ["わて"]),              // English that reads as romaji up to a tail: a reading too
+    ])
+    func partial(_ c: (romaji: String, kana: [String])) {
+        #expect(RomajiReading.partialReadings(fromRomaji: c.romaji) == c.kana,
+                "\(c.romaji) → \(RomajiReading.partialReadings(fromRomaji: c.romaji))")
+    }
+
+    /// No partial reading where there is no unfinished tail, where the tail could not become a
+    /// key, or where nothing before it reads — and never one `readings` already gives.
+    @Test("no partial reading for a complete query, a dead tail, or a bare tail", arguments: [
+        "mizu", "tabemono", "sh", "s", "w", "school", "mizq", "miz1", "", "水", "kannji", "hon'",
+    ])
+    func noPartial(_ text: String) {
+        #expect(RomajiReading.partialReadings(fromRomaji: text).isEmpty,
+                "\(text) → \(RomajiReading.partialReadings(fromRomaji: text))")
+    }
+
+    /// The instrument's input: the table's proper key prefixes are what a query can end in.
+    @Test("control: the table's incomplete keys are the proper prefixes of its keys")
+    func incompleteKeys() {
+        let table = RomajiKanaTable.shared
+        for tail in ["m", "z", "k", "ch", "ts", "ny", "tc", "sh"] {
+            #expect(table.incompleteKeys.contains(tail), "\(tail)")
+        }
+        for notTail in ["sc", "mizu", "a", "wx"] {
+            #expect(!table.incompleteKeys.contains(notTail), "\(notTail)")
+        }
+    }
+
     @Test("case does not matter")
     func caseInsensitive() {
         #expect(RomajiReading.hiragana(fromRomaji: "MIZU") == "みず")

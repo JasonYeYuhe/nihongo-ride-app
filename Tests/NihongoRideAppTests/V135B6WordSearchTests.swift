@@ -20,9 +20,10 @@ import WordListsKit
 /// `WordListSearchFlowTests` (XCUITest, iPhone) drives for real (section 3). Whether the field
 /// takes the keyboard on a phone is that test's and the simulator pass's question, not this
 /// file's. Added in the review (sections 4–6): pins that the screen calls the copy and cap
-/// functions section 1 tests; the VoiceOver status announcement, table-tested; and the contrast of
-/// every colour the row and the panel draw, computed with `V133SContrastTests`' model over the
-/// backdrops read from the source, with the disabled rows' pixels measured.
+/// functions section 1 tests; the VoiceOver status announcement, table-tested and (second review)
+/// replayed keystroke by keystroke through the debounce; and the contrast of every colour the row
+/// and every view the screen's body reaches draw, computed with `V133SContrastTests`' model over
+/// the backdrops read from the source, with the disabled rows' pixels measured.
 @MainActor
 @Suite("v1.35 §B6: search from Word Lists")
 struct V135B6WordSearchTests {
@@ -123,29 +124,46 @@ struct V135B6WordSearchTests {
         let reading: String
         let glossEN: String
         let glossZH: String
+        /// The entry each field comes from, so the test can name it.
+        let ids: (surface: String, reading: String, glossEN: String, glossZH: String)
     }
 
     /// The corpus's longest written form, longest reading shown under a different written form,
     /// and longest gloss line in each language — combined into one row, which is harsher than any
-    /// real one. Read through `VocabStore`, so it is the population the screen shows.
+    /// real one. Read through `VocabStore`, so it is the population the screen shows. Ties go to
+    /// the entry first in corpus order.
     static let worst: Worst = {
         let entries = VocabStore.shared.entries
-        func longest(_ values: [String]) -> String {
-            values.max { $0.count != $1.count ? $0.count < $1.count : $0 > $1 } ?? ""
+        func longest(_ pool: [VocabEntry], _ field: (VocabEntry) -> String) -> (String, String) {
+            var best: (String, String) = ("", "")
+            for entry in pool where field(entry).count > best.0.count { best = (field(entry), entry.id) }
+            return best
         }
-        return Worst(surface: longest(entries.map(\.surface)),
-                     reading: longest(entries.filter { $0.surface != $0.kana }.map(\.kana)),
-                     glossEN: longest(entries.map { $0.gloss(for: "en") }),
-                     glossZH: longest(entries.map { $0.gloss(for: "zh") }))
+        let surface = longest(entries, \.surface)
+        let reading = longest(entries.filter { $0.surface != $0.kana }, \.kana)
+        let en = longest(entries) { $0.gloss(for: "en") }
+        let zh = longest(entries) { $0.gloss(for: "zh") }
+        return Worst(surface: surface.0, reading: reading.0, glossEN: en.0, glossZH: zh.0,
+                     ids: (surface.1, reading.1, en.1, zh.1))
     }()
 
+    /// Re-derived from the corpus merged at d476e8b (v1.35 step 5), 2026-09-29. The Chinese floor
+    /// was 20 and came from n2-b962's 25-character gloss, which step 5 corrected; the longest
+    /// Chinese gloss line is now n1-b1104's, 17. Each field is pinned to the entry it comes from
+    /// and its length, so a corpus change that moves the worst row is red here and the row laid
+    /// out below is re-read instead of silently getting easier.
     @Test("the worst row is what this file says it is")
     func worstRowIsTheCorpus() throws {
         let worst = Self.worst
-        #expect(worst.surface.count == 9 && worst.reading.count == 9,
-                "surface \(worst.surface) \(worst.surface.count), reading \(worst.reading) \(worst.reading.count)")
-        #expect(worst.glossEN.count >= 80, "the longest English gloss line is \(worst.glossEN.count): \(worst.glossEN)")
-        #expect(worst.glossZH.count >= 20, "the longest Chinese gloss line is \(worst.glossZH.count): \(worst.glossZH)")
+        let found = "\(worst.ids) — surface \(worst.surface) \(worst.surface.count), reading \(worst.reading) \(worst.reading.count), en \(worst.glossEN.count), zh \(worst.glossZH.count) \(worst.glossZH)"
+        #expect(worst.ids.surface == "n1-k008" && worst.surface == "インターナショナル" && worst.surface.count == 9, "\(found)")
+        #expect(worst.ids.reading == "n4-b006" && worst.reading == "いっしょうけんめい" && worst.reading.count == 9, "\(found)")
+        #expect(worst.ids.glossEN == "n1-b1750" && worst.glossEN.count == 83, "\(found)")
+        #expect(worst.ids.glossZH == "n1-b1104" && worst.glossZH == "讨人喜欢的, 令人满意的, 可取的" && worst.glossZH.count == 17,
+                "\(found)")
+        // n2-b962, the entry the old floor came from, no longer holds it.
+        let old = try #require(VocabStore.shared.entry(id: "n2-b962"))
+        #expect(old.gloss(for: "zh").count < worst.glossZH.count, "n2-b962's zh gloss is \(old.gloss(for: "zh").count) again")
         // The widths assume the detail screen's phone padding; re-measure if it moves.
         let body = try V133LAccessibilityLayoutTests.body("ListsView.swift", "var body: some View",
                                                           after: "struct ListDetailView")
@@ -389,10 +407,11 @@ struct V135B6WordSearchTests {
     // MARK: 4. The view uses what section 1 tests
 
     /// Section 1 tests `fullNotice`, `state(inList:wordCount:cap:)`, `noResults` and
-    /// `emptyStateText` as functions; these pins say the screen calls them, where it should, read
-    /// with comments blanked. Mutations, 2026-09-29, each red: `if full` → `if false`; the row's
-    /// `wordCount: list.ids.count` → `wordCount: 0`; the empty state's text replaced by the old
-    /// ★-only literal; `.disabled(state != .addable)` removed from the row.
+    /// `emptyStateText` (and `unavailableCopy` tests `unavailableText`) as functions; these pins say
+    /// the screen calls them, where it should, read with comments blanked. Mutations, 2026-09-29,
+    /// each red: `if full` → `if false`; the row's `wordCount: list.ids.count` → `wordCount: 0`;
+    /// the empty state's text replaced by the old ★-only literal; `.disabled(state != .addable)`
+    /// removed from the row; the gone-list line drawing `emptyStateText`.
     @Test("the panel shows the cap notice and disables rows at the cap; the empty state and no-results use their copy")
     func capAndCopyAreWired() throws {
         let panel = try Self.detail("private func searchPanel")
@@ -414,6 +433,12 @@ struct V135B6WordSearchTests {
         #expect(body.contains("if list.ids.isEmpty { if !searching { emptyState } }"),
                 "the empty state is drawn somewhere other than an empty live list with search closed")
         #expect(body.contains("} else { unavailableState }"), "a gone list shows something other than unavailableState")
+        // …and unavailableState draws the gone-list copy `unavailableCopy` tests, not the empty
+        // state's (which names a search button the gone branch does not draw). Mutation,
+        // 2026-09-29: `Text(Self.emptyStateText(zh: zh))` in unavailableState → red.
+        let gone = try Self.detail("private var unavailableState")
+        #expect(gone.contains("Text(Self.unavailableText(zh: zh))"), "\(gone)")
+        #expect(!gone.contains("emptyStateText"), "the gone-list line is the empty state's copy again")
         #expect(body.components(separatedBy: "emptyState").count == 2, "emptyState is drawn twice")
     }
 
@@ -465,16 +490,128 @@ struct V135B6WordSearchTests {
         #expect(ListDetailView.searchOutcome(query: "mizu", count: 4) == .some(4))
     }
 
-    /// The view posts it, from the query's change, with the outcome before and after the search.
-    /// Mutation, 2026-09-29: the `.post()` line removed → red.
-    @Test("the query's onChange posts the announcement from the outcomes around the search")
+    /// The view searches in the query's onChange, tells the announcer the outcome, and posts what
+    /// the announcer says after sleeping its delay — the functions the replay below drives.
+    /// Mutations, 2026-09-29, each red: the `.post()` line removed; `announcer.due(at:…)` called
+    /// without the sleep before it; the task not cancelled before a new one.
+    @Test("the query's onChange searches, records the outcome, and posts only what the settled announcer says")
     func announcementIsPosted() throws {
         let body = try Self.detail("var body: some View")
-        #expect(body.contains(".onChange(of: query) { old, new in let before = Self.searchOutcome(query: old, count: results.count) results = model.vocab.search(new, limit: Self.searchLimit)"))
-        #expect(body.contains("let after = Self.searchOutcome(query: new, count: results.count) if let line = Self.searchAnnouncement(from: before, to: after, limit: Self.searchLimit, zh: zh) { AccessibilityNotification.Announcement(line).post() }"))
+        let parts: [String] = [
+            ".onChange(of: query) { _, new in results = model.vocab.search(new, limit: Self.searchLimit)",
+            "announcer.changed(to: Self.searchOutcome(query: new, count: results.count), at: .now)",
+            "announceTask?.cancel() announceTask = Task { @MainActor in",
+            "try? await Task.sleep(for: SearchAnnouncer.settleDelay)",
+            "if let line = announcer.due(at: .now, limit: Self.searchLimit, zh: zh) {",
+            "AccessibilityNotification.Announcement(line).post() } } }",
+        ]
+        let expected = parts.joined(separator: " ")
+        #expect(body.contains(expected), "\(body)")
+        #expect(body.components(separatedBy: "AccessibilityNotification.Announcement(").count == 2,
+                "a second announcement is posted from the body")
+        // Opening and closing search start the announcer afresh and drop a pending line.
+        let reset = try Self.detail("private func resetAnnouncer")
+        #expect(reset.contains("announceTask?.cancel()") && reset.contains("announcer = SearchAnnouncer()"))
+        #expect(try Self.detail("private func openSearch").contains("resetAnnouncer()"))
+        #expect(try Self.detail("private func closeSearch").contains("resetAnnouncer()"))
     }
 
-    // MARK: 6. Contrast — every text in the row and the panel, on what it sits on
+    /// The announcer on a synthetic clock. It says nothing until the last change is
+    /// `settleDelay` old; then it compares the settled kind with the last ANNOUNCED one, so a flip
+    /// and its reversal inside the wait say nothing. Mutations, 2026-09-29, each red: the
+    /// `time - changedAt >= settleDelay` guard removed (every keystroke speaks); `announced =
+    /// outcome` removed (some → some repeats); `settleDelay` set to zero.
+    @Test("the announcer speaks once the outcome has settled, and only when its kind changed")
+    func announcerSettles() {
+        typealias A = ListDetailView.SearchAnnouncer
+        let limit = ListDetailView.searchLimit
+        let t0 = ContinuousClock.now
+        func at(_ ms: Int) -> ContinuousClock.Instant { t0.advanced(by: .milliseconds(ms)) }
+        #expect(A.settleDelay == .milliseconds(800))
+
+        var a = A()
+        #expect(a.due(at: at(0), limit: limit, zh: false) == nil, "nothing typed, nothing to say")
+        a.changed(to: .some(12), at: at(0))
+        #expect(a.due(at: at(799), limit: limit, zh: false) == nil, "said before it settled")
+        #expect(a.due(at: at(800), limit: limit, zh: false) == "12 words found.")
+        #expect(a.due(at: at(2000), limit: limit, zh: false) == nil, "said twice")
+        // A flip to none and back inside the wait: the settled kind is the one already said.
+        a.changed(to: .none, at: at(3000))
+        a.changed(to: .some(4), at: at(3300))
+        #expect(a.due(at: at(3800), limit: limit, zh: false) == nil, "the none it passed through was not settled")
+        #expect(a.due(at: at(4100), limit: limit, zh: false) == nil, "some → some is not news")
+        // A settled none is said, and so are results after it.
+        a.changed(to: .none, at: at(5000))
+        #expect(a.due(at: at(5800), limit: limit, zh: true) == "没有匹配的词。")
+        a.changed(to: .some(limit), at: at(6000))
+        #expect(a.due(at: at(6800), limit: limit, zh: false) == "Showing the first 50 words.")
+        // Clearing the field says nothing, and results after it are news again.
+        a.changed(to: .idle, at: at(7000))
+        #expect(a.due(at: at(7800), limit: limit, zh: false) == nil)
+        #expect(a.announced == .idle)
+        a.changed(to: .some(3), at: at(8000))
+        #expect(a.due(at: at(8800), limit: limit, zh: false) == "3 words found.")
+    }
+
+    /// The finding this answers: announcing each none ↔ some flip as it happened spoke on about
+    /// every other keystroke of romaji, because a keystroke that ended mid-kana ("tabem") read as
+    /// nothing and found nothing. Measured on the tree before this fix (7282c86, the same
+    /// replay, a line whenever `searchAnnouncement(previous → this keystroke)` spoke): the eight
+    /// words below, 32 announcements over 61 keystrokes (tabemono 5, tomodachi 5, jitensha 5,
+    /// nomimono 5, shukudai 5, atarashii 5, water 1, school 1); twenty learner words, 64 over 136.
+    ///
+    /// Replayed here through the functions the view's onChange calls — `VocabStore.search` with the
+    /// screen's limit, `searchOutcome`, `SearchAnnouncer` — at two typing speeds on a synthetic
+    /// clock: 1.2 s a key, slower than the delay, so every keystroke settles and the debounce
+    /// cannot help (what holds there is the partial reading's doing); and 0.25 s a key, where only
+    /// the pause after the last key does. At most two lines per word at either speed, and no
+    /// keystroke's results empty. Measured after the fix, 2026-09-29: one line per word at both
+    /// speeds, eight lines over the 61 keystrokes (each "Showing the first 50 words." at the first
+    /// key); no keystroke of the eight words found nothing. Mutation, 2026-09-29: the partial
+    /// readings left out of `WordSearchIndex.matches` → red (tabem, tomod, jit, … find nothing again). The debounce's own
+    /// mutations are `announcerSettles`'s: at these words' outcomes, with the partial readings in,
+    /// every keystroke settling says no more than the debounce does, so this replay cannot see it.
+    @Test("typing a word a letter at a time announces at most twice, and never finds nothing midway", arguments: [
+        "tabemono", "tomodachi", "jitensha", "nomimono", "shukudai", "atarashii", "water", "school",
+    ])
+    func typingAWordAnnouncesAtMostTwice(_ word: String) {
+        let slow = Self.replay(word, keyInterval: .milliseconds(1200))
+        let fast = Self.replay(word, keyInterval: .milliseconds(250))
+        print("B6 ANNOUNCEMENTS \(word): \(slow.lines.count) at 1.2 s/key \(slow.lines), \(fast.lines.count) at 0.25 s/key; counts \(slow.counts)")
+        #expect(slow.lines.count <= 2, "\(word) at 1.2 s a key: \(slow.lines)")
+        #expect(fast.lines.count <= 1, "\(word) at 0.25 s a key: \(fast.lines)")
+        #expect(!slow.counts.contains(0), "\(word): a keystroke found nothing — \(slow.counts)")
+        #expect(slow.lines.first?.hasSuffix("found.") == true || slow.lines.first == "Showing the first 50 words.",
+                "control: the replay's first line should report results — \(slow.lines)")
+    }
+
+    /// One word typed a key at a time: each keystroke searches, tells the announcer, and the
+    /// announcer is asked at every instant a view's sleeping task would wake (a keystroke's time +
+    /// `settleDelay`), in time order with the keystrokes. A task woken after a later keystroke
+    /// finds that keystroke's change too young — the announcer's own rule, not the replay's.
+    static func replay(_ word: String, keyInterval: Duration) -> (lines: [String], counts: [Int]) {
+        let t0 = ContinuousClock.now
+        var announcer = ListDetailView.SearchAnnouncer()
+        var lines: [String] = []
+        var counts: [Int] = []
+        let keys = (1...word.count).map { (t0.advanced(by: keyInterval * $0), String(word.prefix($0))) }
+        var wakes = keys.map { $0.0.advanced(by: ListDetailView.SearchAnnouncer.settleDelay) }
+        for (time, prefix) in keys {
+            while let wake = wakes.first, wake < time {
+                wakes.removeFirst()
+                if let line = announcer.due(at: wake, limit: ListDetailView.searchLimit, zh: false) { lines.append(line) }
+            }
+            let count = VocabStore.shared.search(prefix, limit: ListDetailView.searchLimit).count
+            counts.append(count)
+            announcer.changed(to: ListDetailView.searchOutcome(query: prefix, count: count), at: time)
+        }
+        for wake in wakes {
+            if let line = announcer.due(at: wake, limit: ListDetailView.searchLimit, zh: false) { lines.append(line) }
+        }
+        return (lines, counts)
+    }
+
+    // MARK: 6. Contrast — every text on the screen, on what it sits on
 
     typealias Model = V133SContrastTests
 
@@ -561,47 +698,174 @@ struct V135B6WordSearchTests {
         #expect(before < 4.5 && abs(before - 3.91) < 0.01, "control: Theme.dim on the card computed \(before):1, the review measured 3.91")
     }
 
-    /// The panel's texts sit straight on the gradient (the panel and the screen's content draw no
-    /// backdrop of their own — read below); every colour they draw clears 4.5:1 at both stops.
-    /// The hint, no-results line, first-50 note and "In this list" caption were `Theme.dim`:
-    /// 4.24:1 at the bottom stop, 4.47:1 at the top (the control). Mutation, 2026-09-29: the
-    /// hint back to `Theme.dim` → red.
-    ///
-    /// Not held: the open button while the lists file cannot be read is `.disabled` under
-    /// `.buttonStyle(.plain)`, which draws it dimmed — an inactive control, which WCAG 1.4.3
-    /// exempts, and the one state here that says "not now" by being dim. The field's own text and
-    /// placeholder are the system's `roundedBorder` field, drawn on its own bezel.
-    @Test("every colour the search panel draws clears 4.5:1 on the background at both stops")
-    func panelTextClears() throws {
-        let stops = try Model.gradientStops()
-        let known: [String: Color] = [
-            "Self.dimTextColor": ListDetailView.dimTextColor, "Theme.gold": Theme.gold,
-            "Theme.accent": Theme.accent, "Theme.accent2": Theme.accent2,
-        ]
-        var checked = 0
-        for declaration in ["private func searchPanel", "private var searchField", "private var searchCloseButton",
-                            "private var searchOpenButton", "private func inThisListCaption",
-                            "private var emptyState", "private var unavailableState"] {
-            let text = try Self.detail(declaration)
-            #expect(!text.isEmpty && text.count < 5000, "\(declaration): the brace walk returned \(text.count) characters")
-            #expect(!text.contains(".background(") && !text.contains(".panel(") && !text.contains(".opacity("),
-                    "\(declaration) draws a backdrop or an opacity this test does not compose")
-            checked += Self.checkEveryColour(in: text, where: declaration, known: known, over: stops)
-        }
-        #expect(checked == 9, "checked \(checked) colour uses: full notice, hint, no results, first 50, Done, open, caption, empty, gone")
-        // The screen's content draws nothing behind the panel: its only background is the
-        // key-capture view, which draws nothing and is absent while search is open.
-        let body = try Self.detail("var body: some View")
-        #expect(body.components(separatedBy: ".background").count == 2
-                && body.contains(".background { if !Screenshotter.isCapturing && !searchIsShowing { KeyCaptureView("))
+    enum Backdrop { case gradient, card }
 
-        let bottom = stops[1], top = stops[0]
+    /// Why the launchers' label colours are not held here. Enabled, each is a label on a
+    /// brand-colour capsule — white on the coral (Practice) and on the sky (Sentences), black on the
+    /// gold (Dictation): brand-colour contrast, on PLAN-V1.34 §I's day-91 list with About's licence
+    /// badges. Disabled, it is `Theme.dim` on `Theme.card` on an inactive control, which WCAG 1.4.3
+    /// exempts; the note under a disabled launcher, which says why, is held.
+    static let launcherExemption = "brand-colour capsule when enabled (PLAN-V1.34 §I); inactive control when disabled (WCAG 1.4.3)"
+
+    /// Every view `ListDetailView`'s body reaches, with what its text sits on, the backgrounds it
+    /// draws (exactly), and the one colour argument it may leave unchecked and why. `screenIsComplete`
+    /// derives the reachable set from the source and requires it to be this list's, so a new view on
+    /// the screen is red until it is placed here. The result rows are `WordSearchResultRow`, a
+    /// separate type, held by `rowTextClears`. The launchers' backgrounds are their capsules, behind
+    /// their labels only; the notes under the Sentences and Dictation launchers sit outside them, on
+    /// the gradient.
+    static let screen: [(declaration: String, backdrop: Backdrop, backgrounds: [String], exempt: String?)] = [
+        ("private var header", .gradient, [], nil),
+        ("private var backButton", .card, ["Theme.card, in: Capsule()"], nil),
+        ("private func searchPanel", .gradient, [], nil),
+        ("private var searchField", .gradient, [], nil),
+        ("private var searchCloseButton", .gradient, [], nil),
+        ("private var searchOpenButton", .gradient, [], nil),
+        ("private func inThisListCaption", .gradient, [], nil),
+        ("private func playButton", .gradient, ["playable ? Theme.accent : Theme.card, in: Capsule()"],
+         "playable ? .white : Theme.dim"),
+        ("private func sentenceButton", .gradient, ["enabled ? Theme.accent2 : Theme.card, in: Capsule()"],
+         "enabled ? .white : Theme.dim"),
+        ("private func dictationButton", .gradient, ["enabled ? Theme.gold.opacity(0.9) : Theme.card, in: Capsule()"],
+         "enabled ? .black : Theme.dim"),
+        ("private var unplayableHint", .gradient, [], nil),
+        ("private func wordRow", .card, ["Theme.card, in: RoundedRectangle(cornerRadius: 10)"], nil),
+        ("private var unavailableState", .gradient, [], nil),
+        ("private var emptyState", .gradient, [], nil),
+    ]
+
+    /// The arguments of every `.<modifier>(…)` in `text`, balanced on parentheses.
+    static func modifierArguments(_ modifier: String, in text: String) -> [String] {
+        var arguments: [String] = []
+        var from = text.startIndex
+        while let open = text.range(of: ".\(modifier)(", range: from..<text.endIndex) {
+            var depth = 1
+            var index = open.upperBound
+            while index < text.endIndex {
+                if text[index] == "(" { depth += 1 }
+                if text[index] == ")" { depth -= 1; if depth == 0 { break } }
+                index = text.index(after: index)
+            }
+            arguments.append(String(text[open.upperBound..<index]))
+            from = index
+        }
+        return arguments
+    }
+
+    /// The view members of `ListDetailView` reachable from its body — each `var`/`func` whose type
+    /// is `some View`, found by name in the body or in another reachable member — read from the
+    /// comment-blanked source.
+    static func reachableViews() throws -> (reachable: Set<String>, all: [String: String]) {
+        let file = try #require(try CallSiteScanner.shippedSources.get()
+            .first { $0.path == "Sources/NihongoRideApp/ListsView.swift" })
+        let type = try #require(file.typeBodies(named: "ListDetailView").first)
+        let code = String(decoding: file.codeWithStrings[type], as: UTF8.self)
+        var all: [String: String] = [:]   // name → declaration prefix
+        // One line from the name to the brace: a `var` with a value (`bodyPoints: CGFloat = 17`)
+        // has no brace on its line, and a match allowed to run on would take the next
+        // declaration's signature for its own (the first run found bodyPoints "reachable").
+        let declaration = try Regex(#"((?:private\s+)?(?:var|func)\s+(\w+))([^{}\n]*)\{"#)
+        for match in code.matches(of: declaration) {
+            guard let signature = match.output[3].substring, signature.contains("some View"),
+                  let prefix = match.output[1].substring, let name = match.output[2].substring else { continue }
+            all[String(name)] = collapsed(String(prefix))
+        }
+        var reachable = Set<String>()
+        var queue = [try detail("var body: some View")]
+        while let text = queue.popLast() {
+            for (name, prefix) in all where name != "body" && !reachable.contains(name) {
+                if text.firstMatch(of: try Regex("\\b" + name + "\\b")) != nil {
+                    reachable.insert(name)
+                    queue.append(try detail(prefix))
+                }
+            }
+        }
+        return (reachable, all)
+    }
+
+    /// Completeness of `screen`: every view the body reaches is placed there, and nothing else is.
+    /// Calibrated: the walk finds `backButton` through `header` only, and `searchField` through
+    /// `searchPanel` only. Mutation, 2026-09-29: the `unplayableHint` row removed from `screen` → red.
+    @Test("the contrast scan's list is every view ListDetailView's body reaches")
+    func screenIsComplete() throws {
+        let (reachable, all) = try Self.reachableViews()
+        let listed = Set(Self.screen.map { String($0.declaration.split(separator: " ").last!) })
+        #expect(reachable == listed, "reached but not listed: \(reachable.subtracting(listed).sorted()); listed but not reached: \(listed.subtracting(reachable).sorted())")
+        #expect(all.count >= 15 && all["body"] != nil, "control: the declaration scan found \(all.keys.sorted())")
+        let body = try Self.detail("var body: some View")
+        #expect(!body.contains("backButton") && !body.contains("searchField"),
+                "control: these are reached through header and searchPanel, not named in body")
+    }
+
+    /// Every colour every text on the screen draws clears 4.5:1 on what it sits on, at both
+    /// gradient stops — the search panel, the list's own word rows under it, the empty and gone
+    /// lines, the header and the launchers' notes; only the launchers' own labels are left, for the
+    /// reason `launcherExemption` gives. Each declaration's backgrounds are exactly those listed,
+    /// with no other `.opacity`, `.overlay` (but the Back capsule's stroke) or `ZStack` on it.
+    ///
+    /// The second review found three texts under the line that the first scan's hand-picked list
+    /// did not reach, all visible under the result rows while search is open: the word row's gloss
+    /// (`Theme.dim` on the card, 3.91:1), the removed-word note (`Theme.dim.opacity(0.7)`, 2.67:1)
+    /// and the unplayable hint (`Theme.dim` on the gradient, 4.24:1). Walking every reachable view
+    /// found three more: a removed word's label (`Theme.dim` on the card, 3.91:1) and the notes
+    /// under disabled Sentences and Dictation launchers (4.24:1). All six are now the constants
+    /// de57aad introduced — `glossColor` on the card, `dimTextColor` on the gradient — colour only.
+    /// Mutations, 2026-09-29, each red: the word row's gloss back to `Theme.dim`; the removed-word
+    /// note back to `Theme.dim.opacity(0.7)`; the unplayable hint back to `Theme.dim`; the hint in
+    /// the panel back to `Theme.dim` (the first scan's mutation, still red).
+    @Test("every text ListDetailView draws clears 4.5:1 on its backdrop at both stops")
+    func screenTextClears() throws {
+        let stops = try Model.gradientStops()
+        let cards = stops.map { Model.over(Theme.card, $0) }
+        let known: [String: Color] = [
+            ".white": .white, "Theme.accent": Theme.accent, "Theme.accent2": Theme.accent2, "Theme.gold": Theme.gold,
+            "Self.dimTextColor": ListDetailView.dimTextColor, "WordSearchResultRow.glossColor": WordSearchResultRow.glossColor,
+        ]
+        var checked: [String: Int] = [:]
+        for place in Self.screen {
+            var text = try Self.detail(place.declaration)
+            #expect(!text.isEmpty && text.count < 6000, "\(place.declaration): the brace walk returned \(text.count) characters")
+            #expect(Self.modifierArguments("background", in: text) == place.backgrounds,
+                    "\(place.declaration) draws backgrounds \(Self.modifierArguments("background", in: text))")
+            #expect(!text.contains(".background {") && !text.contains("ZStack") && !text.contains(".panel("),
+                    "\(place.declaration) draws a backdrop this test does not compose")
+            let overlays = Self.modifierArguments("overlay", in: text)
+            #expect(overlays.isEmpty || overlays == ["Capsule().strokeBorder(Theme.cardStroke)"], "\(place.declaration): \(overlays)")
+            for background in place.backgrounds { text = text.replacingOccurrences(of: background, with: "") }
+            if let exempt = place.exempt {
+                #expect(text.components(separatedBy: ".foregroundStyle(\(exempt))").count == 2,
+                        "\(place.declaration): the exempt label colour \(exempt) is not drawn exactly once")
+                text = text.replacingOccurrences(of: ".foregroundStyle(\(exempt))", with: "")
+            }
+            #expect(!text.contains(".opacity("), "\(place.declaration) draws an opacity this test does not compose")
+            checked[place.declaration] = Self.checkEveryColour(in: text, where: place.declaration, known: known,
+                                                               over: place.backdrop == .card ? cards : stops)
+        }
+        let total = checked.values.reduce(0, +)
+        print("B6 SCREEN CONTRAST: \(total) colour uses — \(checked.sorted { $0.key < $1.key }.map { "\($0.key.split(separator: " ").last!) \($0.value)" })")
+        // header 2, Back 1, panel 4, Done 1, open 1, caption 1, sentence note 1, dictation note 1,
+        // unplayable 1, word row 5 (a removed word's label, both branches; gloss; note; −), gone 1, empty 1.
+        #expect(total == 20, "checked \(total) colour uses")
+        #expect(checked["private func wordRow"] == 5 && checked["private func searchPanel"] == 4)
+
+        // Controls: what the recoloured texts computed before, and what the constants compute now.
+        let bottom = stops[1], top = stops[0], bottomCard = cards[1]
         let now = Model.contrast(Model.over(ListDetailView.dimTextColor, bottom), bottom)
         #expect(abs(now - 4.62) < 0.01, "dimTextColor computes \(now):1 at the bottom stop; its comment says 4.62")
         let beforeBottom = Model.contrast(Model.over(Theme.dim, bottom), bottom)
         let beforeTop = Model.contrast(Model.over(Theme.dim, top), top)
         #expect(abs(beforeBottom - 4.24) < 0.01 && abs(beforeTop - 4.47) < 0.01,
                 "control: Theme.dim computed \(beforeBottom) / \(beforeTop), the review measured 4.24 / 4.47")
+        let glossBefore = Model.contrast(Model.over(Theme.dim, bottomCard), bottomCard)
+        let noteBefore = Model.contrast(Model.over(Theme.dim.opacity(0.7), bottomCard), bottomCard)
+        #expect(abs(glossBefore - 3.91) < 0.01 && abs(noteBefore - 2.67) < 0.01,
+                "control: on the card Theme.dim computed \(glossBefore), at 0.7 \(noteBefore); the review measured 3.91 / 2.67")
+
+        // The screen's content draws nothing behind the panel: its only background is the
+        // key-capture view, which draws nothing and is absent while search is open.
+        let body = try Self.detail("var body: some View")
+        #expect(body.components(separatedBy: ".background").count == 2
+                && body.contains(".background { if !Screenshotter.isCapturing && !searchIsShowing { KeyCaptureView("))
     }
 
     #if canImport(AppKit)
