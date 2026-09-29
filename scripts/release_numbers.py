@@ -18,14 +18,20 @@ REPO = Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "Sources/VocabKit/Resources"
 
 # Set to this release's corpus-change manifest, or None when the release changes no corpus.
-CORPUS_MANIFEST = "docs/measurements/v135-residue-manifest.json"   # v1.35 corrects seven residue entries
+CORPUS_MANIFEST = "docs/measurements/v135-residue-manifest.json"   # v1.35: 7 residue + 13 何 corrections
 # Was None from v1.27 through v1.34 ("v1.30 ships the paid route and touches no vocabulary file").
 
 
 # Advanced with every release. v1.27 moved it from 60c9ed9 (the v1.25 baseline) to the v1.26
 # release commit, so "this release" means since 1.26 and not since 1.25. Leaving it behind is how
 # a delta silently becomes a two-release total — the stale-number failure this module exists for.
-BASELINE_REF = "0d98a20"      # release(v1.32): bump to 1.32 — advanced with v1.33
+BASELINE_REF = "281fc45"      # release(v1.34): the tree 1.34 (macOS 59 / iOS 60) was built from
+# Moved 2026-09-29 (v1.35 round 2), and late: it still named v1.32 while CORPUS_MANIFEST named
+# v1.35, so every "this release" delta spanned v1.33 + v1.34 + v1.35. The printed figures did not
+# move when it was corrected (793 excluded / 5,931 pool at both refs) only because v1.33 and v1.34
+# withheld or released no sentence: right by luck, which is not the same as right. "This release"
+# means against what is on sale, and 1.34 is what is on sale.
+# Was 0d98a20 (v1.32) through v1.34 — "advanced with v1.33" said the comment, and it was not.
 # Was f258801 (v1.31) through v1.32.
 # Was eb28e02 (v1.30) until v1.32 — two releases behind, so every "this release" delta computed
 # from it silently included v1.31. n2.json changed inside that window, which is exactly the

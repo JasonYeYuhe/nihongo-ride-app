@@ -31,5 +31,79 @@
  "dictationPool": {
   "before": 5931,
   "after": 5932
+ },
+ "round2": {
+  "measurement": "scripts/check_propagated_exclusions.py --evidence v135-r2-remeasure --calibrate --json <scratch> (the 13 rows re-labelled to one temporary evidence class, then restored and re-stamped; one run, as v1.29 ran its class)",
+  "date": "2026-09-29",
+  "voice": "com.apple.voice.compact.ja-JP.Kyoko",
+  "question": "Round 2 corrected 何 from なん to なに in thirteen withheld sentences (docs/measurements/v135-residue-manifest.json). Each was re-measured with instrument 1b on the corrected tokens. Audio caches were outside the repo (DICTATION_WAV_CACHE in the session scratchpad).",
+  "calibration": {
+   "rebuildIdentity": "13/13 — string handling only, no linguistic weight",
+   "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+   "negativeControl": "26 decoy substitutions, 0 spurious byte matches"
+  },
+  "verdicts": {
+   "n1-b101": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 工場では何よりも安全を第一に考えてください。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 9a8b2e2c0a02); the なん substitution does not (b807eb9115ea). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n1-b231": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 何か困ったことがあれば気軽に相談してください。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 48758f47445c); the なん substitution does not (cbf383c179b8). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n1-b1395": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 我が社は製品の品質を何より重んずる。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 9559bbb36579); the なん substitution does not (bb6ad36cc46f). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n1-b1581": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 彼は独り言のように何か呟いた。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 8c07930baafb); the なん substitution does not (b01a8d65c408). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n1-b2070": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 朝から何も食べていないので、お腹がぺこぺこだ。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 48855e9e4c24); the なん substitution does not (25166cda5ba5). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n2-b394": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 父は何かぶつぶつ文句を言っている。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 b978e521fe52); the なん substitution does not (0eeab7bd2996). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n2-b665": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: この文章で筆者が最も言いたいことは何か。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 9563079c3956); the なん substitution does not (e6123683ff03). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n3-b204": {
+    "verdict": "RELEASE",
+    "detail": "the disputed 何 is confirmed: 友達の結婚の祝いに何を贈るか考えている。 with 何 replaced by なに renders byte-identical to the exJP audio (sha1 4f31a7052ac6); the なん substitution does not (256919535cc7). The record's complaint '何 なん -> なに' is what the correction applied."
+   },
+   "n2-b884": {
+    "verdict": "KEEP",
+    "detail": "何 = なに is confirmed (なに substitution byte-identical, sha1 1a54120d7abd; なん not, 85765a12769a), but 1b: 私 = わたし, not the corpus わたくし (わたし byte-identical, わたくし not, f6776489bd56). わたくし is the register class PLAN-V1.25 declines, so the sentence stays withheld."
+   },
+   "n1-g343": {
+    "verdict": "SILENT",
+    "detail": "1b never confirmed the disputed 何: neither the なに (4da233c8aa59) nor the なん (b3d80d943205) substitution renders byte-identical to the exJP audio (360545f94f7c). Stays withheld; the correction rests on the grammar and two refuters."
+   },
+   "n1-b065": {
+    "verdict": "SILENT",
+    "detail": "1b never confirmed the disputed 何: neither the なに (be5bbac5694f) nor the なん (504c49b2c46c) substitution renders byte-identical to the exJP audio (3b74712bc4cf). Stays withheld; the correction rests on the grammar and two refuters."
+   },
+   "n2-b1100": {
+    "verdict": "SILENT",
+    "detail": "1b never confirmed the disputed 何: neither the なに (9a72876affe1) nor the なん (d7f16df79a27) substitution renders byte-identical to the exJP audio (e72f7868a610). Stays withheld; the correction rests on the grammar and two refuters."
+   },
+   "n3-b234": {
+    "verdict": "SILENT",
+    "detail": "1b never confirmed the disputed 何: neither the なに (3bafcdecf9ef) nor the なん (7283ddc5c529) substitution renders byte-identical to the exJP audio (5f1d5499422a). Stays withheld; the correction rests on the grammar and two refuters."
+   }
+  },
+  "summary": {
+   "release": 8,
+   "keep": 1,
+   "silent": 4
+  },
+  "dictationPool": {
+   "before": 5932,
+   "after": 5940
+  }
  }
 }

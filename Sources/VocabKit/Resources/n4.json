@@ -493,7 +493,7 @@
   "jlpt": 4,
   "meanings": {
    "en": [
-    "less than",
+    "not more than",
     "below"
    ],
    "zh": [
@@ -1350,11 +1350,13 @@
   "meanings": {
    "en": [
     "inside",
-    "within"
+    "within",
+    "among"
    ],
    "zh": [
     "内",
-    "里面"
+    "里面",
+    "当中"
    ]
   },
   "exJP": "三つのうち一つを選ぶ。",
