@@ -68,20 +68,52 @@ def load(name):
     return module
 
 
+def strip_line_comments(swift):
+    """`swift` with every `//` comment removed — outside string literals only, so a `//` inside
+    a case survives. Escapes inside a literal are skipped as pairs, as Swift reads them."""
+    out, i, in_string = [], 0, False
+    while i < len(swift):
+        c = swift[i]
+        if in_string:
+            out.append(c)
+            if c == "\\" and i + 1 < len(swift):
+                out.append(swift[i + 1])
+                i += 2
+                continue
+            if c == '"':
+                in_string = False
+        elif c == '"':
+            in_string = True
+            out.append(c)
+        elif swift.startswith("//", i):
+            while i < len(swift) and swift[i] != "\n":
+                i += 1
+            continue
+        else:
+            out.append(c)
+        i += 1
+    return "".join(out)
+
+
 def swift_cases(source):
     """→ (damaged, clean): the calibration cases of `func ruleIsCalibrated` in the Swift test.
 
     Swift and JSON agree on the only escapes these literals use (\\\\, \\", \\n), so each one
     decodes with json.loads; a literal using anything else (`\\u{…}`) fails loudly here rather
     than being read wrong. Every string literal in the function body must be a case in one of
-    the two lists or one of MESSAGES — a case written after `] + [`, in a third list, or in a
-    raw or multi-line literal changes the count and raises. (So would a `"` in a comment inside
-    the function: loud, and easy to fix.)
+    the two lists or one of MESSAGES — a case written after `] + [` or in a third list changes
+    the count and raises, and a raw (`#"…"#`) or multi-line (triple-quoted) literal raises before any
+    counting, because this reader cannot see inside either. `//` comments are dropped first, so a
+    quote in a comment is neither a case nor an error.
     """
     body = re.search(r"func ruleIsCalibrated\(\)\s*\{(.*?)\n    \}\n", source, re.S)
     if not body:
         raise Unreadable(f"no `func ruleIsCalibrated()` in {SWIFT_TEST.name} — the test moved")
     body = body.group(1)
+    if '#"' in body or '"""' in body:
+        raise Unreadable("ruleIsCalibrated holds a raw or multi-line string literal — this reader "
+                         "cannot account for one; write the case as a plain literal")
+    body = strip_line_comments(body)
     lists = {}
     for name in ("damaged", "clean"):
         block = re.search(rf"let {name} = \[(.*?)\n\s*\]", body, re.S)
@@ -109,7 +141,9 @@ def pilot_gate_pin(source):
 
     Requires: `from corpus_io import residue_reasons` at module level and no other binding of
     that name; and, as a statement directly in the body of `gates` (not under an `if`), exactly
-    `bad.extend(residue_reasons((("jp", jp), ("en", en), ("zh", zh))))`.
+    `bad.extend(residue_reasons((("jp", jp), ("en", en), ("zh", zh))))` — before the first
+    top-level `return`, so it runs, and with no later top-level assignment to `bad` that would
+    throw its reasons away.
     """
     try:
         tree = ast.parse(source)
@@ -128,7 +162,9 @@ def pilot_gate_pin(source):
     gates = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "gates"]
     if len(gates) != 1:
         return f"expected one top-level `def gates`, found {len(gates)}"
-    for stmt in gates[0].body:
+    body = gates[0].body
+    first_return = next((i for i, s in enumerate(body) if isinstance(s, ast.Return)), len(body))
+    for index, stmt in enumerate(body):
         call = stmt.value if isinstance(stmt, ast.Expr) else None
         if not (isinstance(call, ast.Call) and isinstance(call.func, ast.Attribute)
                 and isinstance(call.func.value, ast.Name) and call.func.value.id == "bad"
@@ -145,6 +181,13 @@ def pilot_gate_pin(source):
                     and isinstance(elt.elts[0], ast.Constant) and isinstance(elt.elts[1], ast.Name)):
                 pairs.append((elt.elts[0].value, elt.elts[1].id))
         if pairs == [("jp", "jp"), ("en", "en"), ("zh", "zh")]:
+            if index > first_return:
+                return "gates() calls residue_reasons only after its final return — it never runs"
+            for later in body[index + 1:]:
+                if isinstance(later, (ast.Assign, ast.AnnAssign)) and any(
+                        isinstance(t, ast.Name) and t.id == "bad"
+                        for t in (later.targets if isinstance(later, ast.Assign) else [later.target])):
+                    return "gates() reassigns `bad` after residue_reasons — its reasons are discarded"
             return None
     return "gates() has no top-level `bad.extend(residue_reasons(((\"jp\", jp), (\"en\", en), (\"zh\", zh))))`"
 
@@ -178,6 +221,15 @@ def main() -> int:
             swift_cases(moved)
             failures.append("the Swift-case reader accepted a case written after `] + [` — "
                             "it would skip it silently")
+        except Unreadable:
+            pass
+
+    for label, literal in (("a raw literal", '#"it\'\'s"#'), ("a multi-line literal", '"""\n  it\'s\n  """')):
+        mutant = swift_source.replace('        ]\n        for text in damaged',
+                                      f'            {literal},\n        ]\n        for text in damaged', 1)
+        try:
+            swift_cases(mutant)
+            failures.append(f"the Swift-case reader accepted {label} in the damaged list")
         except Unreadable:
             pass
 
@@ -233,7 +285,20 @@ def main() -> int:
                          if "residue_reasons((" not in line)
     commented = "\n".join(("# " + line) if "residue_reasons((" in line else line
                           for line in pilot_source.splitlines())
-    for label, mutant in (("removed", stripped), ("commented out", commented)):
+    lines = pilot_source.splitlines()
+    call_line = next((i for i, line in enumerate(lines) if "bad.extend(residue_reasons((" in line), None)
+    return_line = next((i for i, line in enumerate(lines) if line.strip() == "return bad"
+                        and call_line is not None and i > call_line), None)
+    if call_line is None or return_line is None:
+        failures.append("could not build the pilot_gate dead-code and discard mutants — update this check")
+        dead = discarded = pilot_source
+    else:
+        indent = lines[call_line][: len(lines[call_line]) - len(lines[call_line].lstrip())]
+        dead = "\n".join(lines[:call_line] + lines[call_line + 1:return_line + 1]
+                         + [lines[call_line]] + lines[return_line + 1:])
+        discarded = "\n".join(lines[:call_line + 1] + [indent + "bad = []"] + lines[call_line + 1:])
+    for label, mutant in (("removed", stripped), ("commented out", commented),
+                          ("moved after the final return", dead), ("followed by bad = []", discarded)):
         if mutant == pilot_source or pilot_gate_pin(mutant) is None:
             failures.append(f"the pilot_gate pin still passes with the call {label} — it pins nothing")
 
@@ -258,6 +323,8 @@ def main() -> int:
         (sheets.apply_passage_row, passage, "passages", "display: みずを\\のみます。", "display"),
         (sheets.apply_passage_row, passage, "passages", "zh: 我喝\"\"水\"\"。", "zh"),
         (sheets.apply_passage_row, passage, "passages", "kana: みず | en: it''s water", "en"),
+        (sheets.apply_vocab_row, vocab, "n5", "kana: みず\\", "kana"),
+        (sheets.apply_passage_row, passage, "passages", "topic: daily&amp;life", "topic"),
     ):
         changes = sheets.Changes()
         rid = next(iter(entries()))
@@ -285,8 +352,8 @@ def main() -> int:
         print("\n".join(f"FAIL  {f}" for f in failures))
         return 1
     print(f"ok — {len(damaged)} damaged and {len(clean)} clean cases agree with the Swift test "
-          "(every literal in it accounted for); gen_passages, gen_examples, pilot_gate and "
-          "import_review_sheets refuse residue in every field they write")
+          "(every literal in it accounted for); gen_passages, gen_examples, pilot_gate (jp/en/zh) "
+          "and import_review_sheets refuse residue in every field they check")
     return 0
 
 

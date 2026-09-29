@@ -22,9 +22,11 @@ import Foundation
 /// layer leaves behind when it is applied and never undone, and none has a legitimate use anywhere
 /// in this corpus (measured 2026-09-28: zero hits in 240,180 strings once the 18 were corrected).
 ///
-/// `scripts/corpus_io.py` `escape_residue` is the same rule for the generators, which refuse such
-/// text before it is merged; `scripts/test_escape_residue.py` proves they do. This test is the
-/// authority — it is the one check every path into the corpus passes through, scripted or not.
+/// `scripts/corpus_io.py` `escape_residue` is the same rule for the scripts that write the
+/// corpus — both generators, `pilot_gate.gates` (the path `apply_batch.py` merges through) and
+/// `import_review_sheets.py` — which refuse such text before it is merged;
+/// `scripts/test_escape_residue.py` proves they do. This test is the authority — it is the one
+/// check every path into the corpus passes through, scripted or not.
 @Suite("Corpus quoting residue")
 struct CorpusEscapeResidueTests {
 
@@ -37,18 +39,21 @@ struct CorpusEscapeResidueTests {
     /// What is wrong with `text`, or nil when nothing is.
     ///
     /// Legitimate English this rejects, known and accepted: feet and inches (`5'10''`), a quoted
-    /// phrase ending in a plural possessive (`'my parents'' house'`), an abbreviation followed by
-    /// a semicolon (`AT&T;`). None occurs in the corpus. If one is ever wanted, reword it or use
-    /// typographic quotes (`5′10″`, `‘my parents’ house’`) — do not weaken the rule for it, and
-    /// do not add these to the clean list: in text, they cannot be told apart from residue.
+    /// phrase that ends in a plural possessive (`it is 'my parents''`), an abbreviation followed
+    /// by a semicolon (`AT&T;`). None occurs in the corpus. If one is ever wanted, reword it or
+    /// use typographic marks (`5′10″`, `‘my parents’’`) — do not weaken the rule for it, and do
+    /// not add these to the clean list: in text, they cannot be told apart from residue.
     static func residue(in text: String) -> String? {
-        // The substring rules match CODE POINTS, as Python's `re` does in `corpus_io.py`, so the
-        // two copies of the rule agree on every input. `String.contains` did not: it compares
+        // Every rule matches CODE POINTS, as Python's `re` does in `corpus_io.py`, so the two
+        // copies of the rule agree on every input. `String.contains` did not: it compares
         // grapheme clusters, and its answer was measured to depend on how the string is stored —
         // "\u{600}''" as a Swift literal gave contains("''") == false while the same scalars
         // decoded by JSONSerialization gave true, and "''\u{200D}" did the same. The `it''́s`
         // case below (U+0301 on the second apostrophe) was missed outright. `.literal` compares
-        // code units with no Unicode folding — for these ASCII needles, a code-point match.
+        // code units with no Unicode folding — for these ASCII needles, a code-point match. The
+        // reference pattern goes through NSString for the same reason: `String.range(of:options:
+        // .regularExpression)` on a native string matched whole graphemes, so `&#39;` followed by
+        // U+FE0F was missed as a literal and found once decoded (review of f9af2b7, 2026-09-29).
         if text.range(of: "''", options: .literal) != nil {
             return "a run of ASCII apostrophes (shell `'\\''` read back as `'''`, or SQL `''`)"
         }
@@ -58,8 +63,8 @@ struct CorpusEscapeResidueTests {
         if text.range(of: "\"\"", options: .literal) != nil {
             return "a doubled double quote (CSV quoting)"
         }
-        if text.range(of: #"&(?:[A-Za-z][A-Za-z0-9]*|#[0-9]+|#[xX][0-9A-Fa-f]+);"#,
-                      options: .regularExpression) != nil {
+        if (text as NSString).range(of: #"&(?:[A-Za-z][A-Za-z0-9]*|#[0-9]+|#[xX][0-9A-Fa-f]+);"#,
+                                    options: .regularExpression).location != NSNotFound {
             return "an HTML character reference"
         }
         return nil
@@ -145,6 +150,7 @@ struct CorpusEscapeResidueTests {
             "salt &AMP; pepper", "it&#X27;s", "&Eacute;",    // upper case, which HTML allows
             "fine\nit''s",                                  // a REAL newline before the run
             "it''́s",                                         // U+0301 on the run, written raw
+            "x\\́y", "x\"\"́y", "it&#39;️s",                 // …and on the other three shapes
         ]
         for text in damaged {
             #expect(Self.residue(in: text) != nil, "missed: \(text)")
