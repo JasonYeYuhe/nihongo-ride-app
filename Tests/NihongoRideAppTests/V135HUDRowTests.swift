@@ -14,15 +14,16 @@ import GameCore
 /// `HUDBar.body`); and at the accessibility sizes an iPad's third row.
 ///
 /// **What these can and cannot prove, stated first.** Everything hosted here is an `NSHostingView` or
-/// `NSHostingController` on macOS, never `ImageRenderer`, which draws `ViewThatFits` wrongly
-/// (`imageRendererDrawsTheFirstChildItWasNotGiven` pins that). macOS does not scale `@ScaledMetric`,
+/// `NSHostingController` on macOS, never `ImageRenderer` (the v1.35 design round saw it draw a
+/// `ViewThatFits` child the live view did not; that did not reproduce on this HUD, and it is not
+/// used). A child of the body is hosted through `HUDChild`, which gives it the HUD's environment
+/// (see there: built any other way it reads the default size). macOS does not scale `@ScaledMetric`,
 /// so the larger sizes are laid out with `emulatedTextScale` set to the size's body-point ratio — an
 /// instrument's reading, not a device's: every `scaledSystemFont` scales by the same factor, where
 /// iOS scales a style at its own rate. There is no iPhone here; a phone's rows are held by the tables
-/// and pins (they are `row(fallback:)`, unchanged), not rendered. The byte-for-byte comparison with
-/// 1.34's HUD needs 1.34's HUD beside this one, which the repo does not keep: it was a probe
-/// (`V135HUDRowTests` reports it; the commit message has the figures). The simulator pass is the
-/// device's word on all of it.
+/// and pins (they are `row(fallback:)`, unchanged), not rendered. The pixel comparison with f37fab7's
+/// HUD draws f37fab7's body (`F37fab7HUD`) over this file's rows, which `todaysRowIsVerbatim` holds
+/// to f37fab7's bytes. The simulator pass is the device's word on all of it.
 @Suite("v1.35: the iPad and Mac ride row sheds pills in one order instead of wrapping")
 struct V135HUDRowTests {
 
@@ -94,6 +95,8 @@ struct V135HUDRowTests {
     /// `RideHUDRungs`. The pause button is not a pill; every child has it on a touch device.
     static func pills(_ row: RideHUDRungs.Row, narrow: Bool, _ size: DynamicTypeSize, scoreIsTheRide: Bool) -> [Pill] {
         switch row {
+        case .todayOneLine:
+            return pills(.today(fallback: false), narrow: narrow, size, scoreIsTheRide: scoreIsTheRide)
         case .today(let fallback):
             func shows(_ pill: RideHUDLayout.Pill) -> Bool {
                 RideHUDLayout.shows(pill, size, scoreIsTheRide: scoreIsTheRide, fallback: fallback)
@@ -150,7 +153,7 @@ struct V135HUDRowTests {
                             "\(size) iPad, Time Attack \(scoreIsTheRide)")
                 } else {
                     #expect(phone == [.today(fallback: false)], "\(size) phone: \(phone)")
-                    #expect(pad == [.today(fallback: false)] + (0...6).map { .compressed(rung: $0) }, "\(size) iPad: \(pad)")
+                    #expect(pad == [.todayOneLine] + (0...6).map { .compressed(rung: $0) }, "\(size) iPad: \(pad)")
                     #expect(phone.map { Self.pills($0, narrow: true, size, scoreIsTheRide: scoreIsTheRide) } == phoneBelow,
                             "\(size) phone, Time Attack \(scoreIsTheRide)")
                     #expect(pad.map { Self.pills($0, narrow: false, size, scoreIsTheRide: scoreIsTheRide) } == padBelow[scoreIsTheRide]!,
@@ -292,6 +295,7 @@ struct V135HUDRowTests {
             HUDRowLayout.positions(widths: widths, leading: leading, width: width, spacing: 14)
         }
         #expect(at(400) == [0, 44, 276, 340])          // room: 14 inside each side, the rest in the centre
+        #expect(at(220) == [0, 44, 96, 160])           // the centre at 12: every other gap still 14
         #expect(at(214) == [0, 44, 90, 154])           // the centre at exactly 6
         #expect(at(205) == [0, 39.5, 85.5, 145])       // the other gaps 9.5 each, the centre 6
         #expect(at(198) == [0, 36, 82, 138])           // every gap 6: the row's ideal width
@@ -647,18 +651,32 @@ struct V135HUDRowTests {
         return out
     }
 
-    /// The HUD in GameView's padding, in a window `window` wide, on a canvas `margin` wider each side,
-    /// and the pills' runs relative to the HUD's own frame.
+    static let margin: CGFloat = 20
+
+    /// The HUD in GameView's padding (`GameView.padding`, the screen's own constant), in a window
+    /// `window` wide, on a canvas `margin` wider each side: its pixels, and the padding.
     @MainActor
-    static func drawn<V: View>(_ hud: V, window: CGFloat, keyboardUp: Bool, margin: CGFloat = 20) -> [(left: CGFloat, right: CGFloat)] {
+    static func canvas<V: View>(_ hud: V, window: CGFloat, keyboardUp: Bool) -> (data: Data?, rep: NSBitmapImageRep?, pad: CGFloat) {
         let pad = GameView.padding(phone: false, keyboardUp: keyboardUp)
         let canvas = ZStack(alignment: .topLeading) {
             Color(white: 0.2)
             hud.padding(.horizontal, pad).frame(width: window).offset(x: margin, y: 8)
         }
         .frame(width: window + 2 * margin, height: 96, alignment: .topLeading)
-        guard let rep = render(canvas, CGSize(width: window + 2 * margin, height: 96)).rep else { return [] }
-        return segments(rep).map { ($0.left - margin - pad, $0.right - margin - pad) }
+        let drawn = render(canvas, CGSize(width: window + 2 * margin, height: 96))
+        return (drawn.data, drawn.rep, pad)
+    }
+
+    /// The pills' runs in a `canvas`, relative to the HUD's own frame.
+    static func runs(_ canvas: (data: Data?, rep: NSBitmapImageRep?, pad: CGFloat)) -> [(left: CGFloat, right: CGFloat)] {
+        guard let rep = canvas.rep else { return [] }
+        return segments(rep).map { (left: $0.left - margin - canvas.pad, right: $0.right - margin - canvas.pad) }
+    }
+
+    /// The pills' runs of `hud` drawn in a `canvas`.
+    @MainActor
+    static func drawn<V: View>(_ hud: V, window: CGFloat, keyboardUp: Bool) -> [(left: CGFloat, right: CGFloat)] {
+        runs(canvas(hud, window: window, keyboardUp: keyboardUp))
     }
 
     static func words(_ count: Int, levels: [JLPTLevel] = [.n5]) -> [VocabEntry] {
@@ -704,65 +722,93 @@ struct V135HUDRowTests {
     static let windows: [CGFloat] = [320, 375, 438, 507, 551, 600, 678, 694, 716, 744, 768, 810, 820, 834, 981, 1024, 1133, 1180, 1194, 1366]
 
     /// The row in every state and window, both keyboard positions, at the default size, xxxLarge and
-    /// AX1: one line, no wider than the width it is given, every pill inside that width (so nothing
-    /// reaches into the margin the JourneyBar keeps), and the pause button — the last run, 44pt — whole.
+    /// AX1 (1,920 cells, the iPad's padding taken from `GameView.padding`): one line, no wider than
+    /// the width it is given, every pill inside that width (so nothing reaches into the margin the
+    /// JourneyBar keeps), and the pause button — the last run, 44pt — whole.
     ///
-    /// **One exception, measured and not fixed: today's row where `ViewThatFits` keeps it and it wraps
-    /// anyway.** `ViewThatFits` takes a child whose ideal width fits, and 1.34's `HStack` + `Spacer`
-    /// row sometimes wraps a value with its ideal width inside the proposal — here a late 500-word list
-    /// at xxxLarge in a 1024pt window with the keyboard up (a 996pt row; the row's ideal is 990). The
-    /// v1.35 probe found 2 such cells of 8,384 at the default size and 8 at xxxLarge, every one a 150-
-    /// or 500-word list late in the ride, and each draws exactly what 1.34 drew. Rung (a) is today's
-    /// row verbatim, so the only fix would change it (or reserve on it, and blink as a ride flips); it
-    /// is left, and pinned narrowly: a row that wraps must be `row(fallback: false)` with its ideal
-    /// width inside the proposal, and there must be exactly that one cell here.
+    /// And **wherever f37fab7's HUD fitted, the same pixels.** `F37fab7HUD` is f37fab7's body over this
+    /// file's rows, which `todaysRowIsVerbatim` holds to f37fab7's bytes. Where it is one line inside
+    /// the width — and, at the accessibility sizes, where the row its `ViewThatFits` took fitted by
+    /// its ideal width — the HUD is drawn beside it and compared pixel for pixel, whichever child
+    /// `ViewThatFits` took (below the accessibility sizes it can be rung 0, inside `OneLineFit`'s few
+    /// points, drawing the same). Measured: L 285/285, xxxL 186/186, AX1 612/612. The cells left out
+    /// at AX1 are the 13 where neither of f37fab7's rows fitted and it drew its second row anyway,
+    /// the level capsule squeezed toward its 0.7 floor (320pt with the keyboard down in a journey,
+    /// 320–375pt late in a list ride); the HUD takes rung 6 there, the level spoken. Mutations, each
+    /// red here: `OneLineFit` removed from the body (today's row wraps where its ideal width fits);
+    /// `compressed(rung: 6)` removed from the iPad's accessibility-size branch (the pause button past
+    /// the edge at 320pt and 375pt); `HUDRowLayout`'s placement offset 1pt. (No cell here overflows a
+    /// compressed rung, so its overflow rule is held by `placementRule` alone.)
     @MainActor
-    @Test("in every window the row is one line, inside its width, with the pause button whole")
+    @Test("in every window the row is one line, inside its width, with the pause button whole, and f37fab7's wherever that fitted")
     func everyWindowOneLineWithPause() {
         var cells = 0
-        var quirks: [String] = []
+        var fitted: [DynamicTypeSize: Int] = [:], same: [DynamicTypeSize: Int] = [:]
+        var squeezed: [String] = []
         for size in [DynamicTypeSize.large, .xxxLarge, .accessibility1] {
             for state in Self.states {
                 let session = Self.session(state.mode, count: state.count, done: state.done, misses: state.misses, levels: state.levels)
-                let hud = Self.sized(HUDBar(session: session, language: "en", wpm: state.wpm, onPause: {}), size)
+                let bar = HUDBar(session: session, language: "en", wpm: state.wpm, onPause: {})
+                let hud = Self.sized(bar, size)
+                let before = Self.sized(F37fab7HUD(bar: bar), size)
                 let line = Self.ideal(hud).height
+                let lineBefore = Self.ideal(before).height
+                // At the accessibility sizes f37fab7's `ViewThatFits` took a row only where its ideal
+                // width fitted; where neither did it drew the second anyway, the level capsule
+                // squeezed toward its 0.7 floor or "…" (v1.33 round 3's "not fitted").
+                let idealRows = size.isAccessibilitySize
+                    ? [false, true].map { Self.ideal(Self.sized(Self.child(bar, .today(fallback: $0)), size)).width } : []
                 for window in Self.windows {
                     for keyboardUp in [false, true] {
                         let width = window - 2 * GameView.padding(phone: false, keyboardUp: keyboardUp)
                         let here = "\(size) \(state.name) \(Int(window))pt keyboard \(keyboardUp ? "up" : "down")"
                         let natural = Self.natural(hud, width)
                         #expect(natural.width <= width + 0.01, "\(here): the row is \(natural.width) wide in \(width)")
-                        if natural.height > line + 0.5 {
-                            // Only today's row, kept because its ideal fits, as 1.34 draws it.
-                            let today = Self.sized(HUDBar(session: session, language: "en", wpm: state.wpm, onPause: {})
-                                .row(fallback: false), size)
-                            #expect(!size.isAccessibilitySize && Self.ideal(today).width <= width
-                                    && Self.natural(today, width) == natural,
-                                    "\(here): the row is \(natural.height) tall, a line is \(line), and it is not today's row wrapping")
-                            quirks.append(here)
+                        #expect(natural.height <= line + 0.5, "\(here): the row is \(natural.height) tall, a line is \(line)")
+                        let canvas = Self.canvas(hud, window: window, keyboardUp: keyboardUp)
+                        let runs = Self.runs(canvas)
+                        let first = runs.first?.left ?? -1, last = runs.last?.right ?? .infinity
+                        let pause = runs.last.map { $0.right - $0.left } ?? 0
+                        #expect(first >= -0.01 && last <= width + 0.01, "\(here): ink from \(first) to \(last) in a row \(width) wide")
+                        #expect(abs(pause - 44) < 0.6, "\(here): the last run is \(pause)pt, not the 44pt pause button")
+                        let old = Self.natural(before, width)
+                        let oneLine = old.height <= lineBefore + 0.5 && old.width <= width + 0.01
+                        if oneLine && !idealRows.isEmpty && !idealRows.contains(where: { $0 <= width }) {
+                            squeezed.append(here)
+                        } else if oneLine {
+                            fitted[size, default: 0] += 1
+                            let pixels = Self.canvas(before, window: window, keyboardUp: keyboardUp).data
+                            #expect(canvas.data != nil && canvas.data == pixels, "\(here): f37fab7's row fitted, and the HUD draws something else")
+                            if canvas.data != nil && canvas.data == pixels { same[size, default: 0] += 1 }
                         }
-                        let runs = Self.drawn(hud, window: window, keyboardUp: keyboardUp)
-                        #expect((runs.first?.left ?? -1) >= -0.01 && (runs.last?.right ?? .infinity) <= width + 0.01,
-                                "\(here): ink from \(runs.first?.left ?? -1) to \(runs.last?.right ?? -1) in a row \(width) wide")
-                        #expect(runs.last.map { abs($0.right - $0.left - 44) < 0.6 } == true,
-                                "\(here): the last run is \(runs.last.map { $0.right - $0.left } ?? 0)pt, not the 44pt pause button")
                         cells += 1
                     }
                 }
             }
         }
         #expect(cells == 3 * 16 * 20 * 2)
-        #expect(quirks == ["xxxLarge list500-late 1024pt keyboard up"], "today's row wraps in \(quirks)")
+        // Controls: the comparison ran, at every size, on cells of both kinds.
+        for size in [DynamicTypeSize.large, .xxxLarge, .accessibility1] {
+            #expect((fitted[size] ?? 0) > 0 && (fitted[size] ?? 0) < 16 * 20 * 2, "\(size): f37fab7's row fitted in \(fitted[size] ?? 0) cells")
+        }
+        print("V135HUDRowTests sweep: \(cells) cells; f37fab7's row fitted and the HUD drew it at L \(same[.large] ?? 0)/\(fitted[.large] ?? 0), "
+              + "xxxL \(same[.xxxLarge] ?? 0)/\(fitted[.xxxLarge] ?? 0), AX1 \(same[.accessibility1] ?? 0)/\(fitted[.accessibility1] ?? 0); "
+              + "f37fab7 squeezed its second row into \(squeezed.count) AX1 cells: \(squeezed)")
     }
 
     /// A ride stepped key by key — a 150-word list with a wrong key every seventh word and two in a row
     /// every 23rd, and a 120-word Time Attack the same way, the speed swinging between about 30 and 115
-    /// wpm so it crosses 99/100 — in the windows where the ladder moves (680–834pt, keyboard up and
-    /// down) at the default size. The child `ViewThatFits` takes is the first whose ideal width fits
-    /// (below the accessibility sizes each child can be hosted alone; checked against the drawn row at
-    /// every change). It never moves back up once it has left today's row — except from rung 0 back to
-    /// today's row, the same pills, which is measured here: at every such step no pill moves more
-    /// than FILL. Mutations, each red here: the compressed rungs' reserves removed
+    /// wpm so it crosses 99/100 — in the windows where the ladder moves (680, 716, 810, 820 and 834pt,
+    /// keyboard up and down) at the default size. The child `ViewThatFits` takes is the first whose
+    /// ideal width fits (below the accessibility sizes each child can be hosted alone; checked against
+    /// the drawn row at every change). It never moves back up once it has left today's row, except
+    /// from rung 0 back to today's row, the same pills. **Every step between those two is measured**,
+    /// with the values held: rung 0 against today's row drawn alone where that row is one line, and
+    /// otherwise against today's placement with room. Bound: 0.5pt, the instrument's pixel at 2x;
+    /// measured 0.0 at all 55 such steps. The count of those steps per ride and window is printed
+    /// (the commit message has it). Mutations, each red here: `OneLineFit` removed from the body
+    /// with the table (20 of 82 steps then move a pill 14pt; with the body alone, the drawn row is no
+    /// longer the predicted child); the compressed rungs' reserves removed
     /// (`RideHUDRungs.accuracyReserve = []`); the speed reserve two digits.
     @MainActor
     @Test("stepped key by key, the ladder only moves down after today's row, and the one step back moves nothing")
@@ -770,6 +816,7 @@ struct V135HUDRowTests {
         let windows: [CGFloat] = [680, 716, 810, 820, 834]
         let rows = RideHUDRungs.offered(narrow: false, .large)
         var backToToday = 0, toRungZero = 0, changes = 0, largestShift: CGFloat = 0, largestStep: CGFloat = 0
+        var switches: [String: Int] = [:], moved = 0
         for (name, mode, count, words) in [("150-word list", GameMode.journey, 150, 150), ("Time Attack", .timeAttack, 300, 120)] {
             // `lag` takes every key one step after `session`, so at a change both states can be drawn.
             let session = GameSession(words: Self.words(count), config: .init(newWordCount: count, reviewWordCount: 0, mode: mode))
@@ -783,6 +830,7 @@ struct V135HUDRowTests {
                 let wpm: Double = word < 2 ? 0 : (45 + 15 * sin(Double(step) / 7)).rounded() + (step % 50 < 25 ? 0 : 55)
                 let hud = HUDBar(session: session, language: "en", wpm: wpm, onPause: {})
                 let ideals = rows.map { Self.ideal(Self.child(hud, $0)).width }
+                let line = Self.ideal(Self.child(hud, rows[0])).height
                 for window in windows {
                     for keyboardUp in [false, true] {
                         let width = window - 2 * GameView.padding(phone: false, keyboardUp: keyboardUp)
@@ -797,32 +845,41 @@ struct V135HUDRowTests {
                         #expect(now.map { [$0.left, $0.right] } == Self.drawn(Self.child(hud, rows[child]), window: window, keyboardUp: keyboardUp).map { [$0.left, $0.right] },
                                 "\(place), key \(step): the row drawn is not \(rows[child])")
                         guard (before, child) == (1, 0) || (before, child) == (0, 1) else { continue }
+                        switches[place, default: 0] += 1
                         if child == 0 { backToToday += 1 } else { toRungZero += 1 }
-                        // What the switch itself moves: rung 0 against where today's row puts the same
-                        // pills with the same values — the level, score and combo from the left, the
-                        // rest from the right, 14pt apart. Where today's row fits (a step back to it)
-                        // that is today's row as drawn; where it does not, it is today's placement
-                        // with room, which rung 0 keeps until its centre gap reaches 6pt.
+                        // What the switch itself moves, with the values held: rung 0 against today's
+                        // row drawn alone where that row is one line inside the width; where it is not
+                        // (it would wrap, as 1.34 did), against where today's row puts the same pills
+                        // with room — the level, score and combo from the left, the rest from the
+                        // right, 14pt apart — which rung 0 keeps until its centre gap reaches 6pt.
                         let rungZero = child == 1 ? now
                             : Self.drawn(Self.child(hud, .compressed(rung: 0)), window: window, keyboardUp: keyboardUp)
                         #expect(rungZero.count == 8, "\(place), key \(step): rung 0 drew \(rungZero.count) runs")
                         guard rungZero.count == 8 else { continue }
-                        var placed: [CGFloat] = []
-                        var x: CGFloat = 0
-                        for run in rungZero.prefix(3) { placed.append(x); x += run.right - run.left + 14 }
-                        var trailing: [CGFloat] = []
-                        x = width
-                        for run in rungZero.suffix(5).reversed() { x -= run.right - run.left; trailing.insert(x, at: 0); x -= 14 }
-                        placed += trailing
-                        for (run, left) in zip(rungZero, placed) { largestShift = max(largestShift, abs(run.left - left)) }
-                        let dev = zip(rungZero, placed).map { abs($0.0.left - $0.1) }.max() ?? 0
-                        if dev > 0.5 { print("ZZDEV \(place) key \(step) words \(session.wordsCompleted) \(before)->\(child) dev \(dev) runs \(rungZero.map { "\(Int($0.left))-\(Int($0.right))" }) placed \(placed.map { Int($0) }) ideals \(ideals.prefix(2)) width \(width)") }
-                        if child == 0 {
-                            for (a, b) in zip(rungZero, now) { largestShift = max(largestShift, abs(a.left - b.left), abs(a.right - b.right)) }
-                            let d2 = zip(rungZero, now).map { max(abs($0.0.left - $0.1.left), abs($0.0.right - $0.1.right)) }.max() ?? 0
-                            if d2 > 0.5 { print("ZZBACK \(place) key \(step) words \(session.wordsCompleted) dev \(d2) rung0 \(rungZero.map { "\(Int($0.left))-\(Int($0.right))" }) today \(now.map { "\(Int($0.left))-\(Int($0.right))" }) width \(width)") }
+                        let todayAlone = Self.child(hud, .today(fallback: false))
+                        let todayNatural = Self.natural(todayAlone, width)
+                        var shift: CGFloat = 0
+                        if todayNatural.height <= line + 0.5 && todayNatural.width <= width + 0.01 {
+                            let today = Self.drawn(todayAlone, window: window, keyboardUp: keyboardUp)
+                            #expect(today.count == 8, "\(place), key \(step): today's row drew \(today.count) runs")
+                            for (a, b) in zip(rungZero, today) { shift = max(shift, abs(a.left - b.left), abs(a.right - b.right)) }
+                        } else {
+                            #expect(child == 1, "\(place), key \(step): back to today's row where it is not one line")
+                            if child == 0 {
+                                for (a, b) in zip(rungZero, now) { shift = max(shift, abs(a.left - b.left), abs(a.right - b.right)) }
+                            }
+                            var placed: [CGFloat] = []
+                            var x: CGFloat = 0
+                            for run in rungZero.prefix(3) { placed.append(x); x += run.right - run.left + 14 }
+                            var trailing: [CGFloat] = []
+                            x = width
+                            for run in rungZero.suffix(5).reversed() { x -= run.right - run.left; trailing.insert(x, at: 0); x -= 14 }
+                            placed += trailing
+                            for (run, left) in zip(rungZero, placed) { shift = max(shift, abs(run.left - left)) }
                         }
-                        // For the record: how far the pills moved between the two keys, the value change included.
+                        largestShift = max(largestShift, shift)
+                        if shift > 0.5 { moved += 1 }
+                        // For the record: how far the pills moved between the two keys, the values' change included.
                         let then = Self.drawn(HUDBar(session: lag, language: "en", wpm: lagWPM, onPause: {}), window: window, keyboardUp: keyboardUp)
                         if then.count == now.count {
                             for (a, b) in zip(then, now) { largestStep = max(largestStep, min(abs(a.left - b.left), abs(a.right - b.right))) }
@@ -841,65 +898,58 @@ struct V135HUDRowTests {
         }
         #expect(changes > 0, "control: no ride changed rows in these windows, so nothing was checked")
         #expect(backToToday > 0, "control: no ride stepped back to today's row, so the shift was never measured")
-        #expect(largestShift <= 1000, "rung 0 put a pill \(largestShift)pt from where today's row puts it, at a step between the two")
+        #expect(largestShift <= 0.5, "rung 0 put a pill \(largestShift)pt from where today's row puts it, at a step between the two")
         print("V135HUDRowTests stepped: \(changes) row changes, \(toRungZero) to rung 0 and \(backToToday) back to today's row; "
-              + "rung 0 at most \(largestShift)pt from today's placement; pills moved at most \(largestStep)pt over those keys")
+              + "rung 0 at most \(largestShift)pt from today's placement, and more than 0.5pt at \(moved) of those steps; "
+              + "pills moved at most \(largestStep)pt over those keys, the values' change included")
+        for (place, count) in switches.sorted(by: { $0.key < $1.key }) { print("V135HUDRowTests switches: \(place): \(count)") }
     }
 
+    /// One child of `HUDBar.body`, hosted on its own (`HUDChild`).
     @MainActor
     static func child(_ hud: HUDBar, _ row: RideHUDRungs.Row) -> AnyView {
-        switch row {
-        case .today(let fallback): AnyView(hud.row(fallback: fallback))
-        case .compressed(let rung): AnyView(hud.compressed(rung: rung))
-        }
-    }
-    #endif
-
-    // MARK: 8. The instrument
-
-    #if canImport(AppKit)
-    /// **Why nothing here renders with `ImageRenderer`.** Measured in the v1.35 design round and
-    /// again here, on this HUD: a journey one word in, at xLarge, in a 756pt frame, where today's row
-    /// (ideal about 760pt) does not fit. A live `NSHostingView` draws the child `ViewThatFits` should
-    /// take; `ImageRenderer` draws today's row anyway, clipped. (Made-up rows of coloured frames did
-    /// not show it: `ImageRenderer` chose right there, so this is pinned on the HUD itself.) The
-    /// accessibility-size figures in `RideHUDLayout` were read with `ImageRenderer`; the rows they
-    /// chose agreed with a hosted view there, but a test of fit must host. If an SDK changes either
-    /// renderer this goes red, and the note is to be re-read. Control: at 900pt, where today's row
-    /// fits, both draw it.
-    @MainActor
-    @Test("ImageRenderer draws the ViewThatFits child a live view does not")
-    func imageRendererDrawsTheFirstChildItWasNotGiven() {
-        let session = Self.session(.journey, count: 12, done: 1, misses: 0)
-        let hud = HUDBar(session: session, language: "en", wpm: 9, onPause: {})
-        let rows = RideHUDRungs.offered(narrow: false, .xLarge)
-        func sized<V: View>(_ view: V) -> some View {
-            view.environment(\.dynamicTypeSize, .xLarge).environment(\.emulatedTextScale, 19.0 / 17)
-        }
-        func framed<V: View>(_ view: V, _ width: CGFloat) -> some View {
-            ZStack(alignment: .topLeading) { Color(white: 0.2); sized(view).frame(width: width) }
-                .frame(width: width, height: 120, alignment: .topLeading)
-        }
-        func imageRenderer<V: View>(_ view: V, _ width: CGFloat) -> Data? {
-            let renderer = ImageRenderer(content: framed(view, width))
-            renderer.scale = 2
-            return renderer.cgImage?.dataProvider?.data as Data?
-        }
-        func hosted<V: View>(_ view: V, _ width: CGFloat) -> Data? {
-            Self.render(framed(view, width), CGSize(width: width, height: 120)).data
-        }
-        let ideals = rows.map { Self.ideal(sized(Self.child(hud, $0))).width }
-        let taken = ideals.firstIndex { $0 <= 756 } ?? rows.count - 1
-        #expect(ideals[0] > 756 && taken >= 1, "today's row fits 756pt here (\(ideals)); the case no longer shows anything")
-        let today = Self.child(hud, rows[0]), child = Self.child(hud, rows[taken])
-        #expect(hosted(hud, 756) != nil && hosted(hud, 756) == hosted(child, 756), "the live view did not draw \(rows[taken])")
-        #expect(imageRenderer(hud, 756) != nil && imageRenderer(hud, 756) == imageRenderer(today, 756),
-                "ImageRenderer now draws the child that fits: re-read this test's note before trusting it for fit")
-        #expect(imageRenderer(hud, 756) != imageRenderer(child, 756))
-        // Control: where today's row fits, both draw it.
-        #expect(ideals[0] <= 900)
-        #expect(hosted(hud, 900) == hosted(today, 900))
-        #expect(imageRenderer(hud, 900) == imageRenderer(today, 900))
+        AnyView(HUDChild(bar: hud, row: row))
     }
     #endif
 }
+
+#if canImport(AppKit)
+/// **Test-only**, so a view that stores a `HUDBar` gets the HUD's own `@Environment` installed.
+/// `row(fallback:)` and `compressed(rung:)` read `typeSize`; called on a `HUDBar` that is not itself
+/// in a view hierarchy they read the default size (`.large`) whatever the environment says —
+/// measured: at AX1 a journey's `row(fallback: false)` built that way laid out 889pt with the
+/// distance, accuracy and speed pills, and 394pt without them once hosted like this. A stored
+/// property that is a `DynamicProperty` has its own dynamic properties installed with its owner's.
+extension HUDBar: DynamicProperty {}
+
+/// One child of `HUDBar.body`, built as the body builds it, in a hierarchy of its own.
+struct HUDChild: View {
+    let bar: HUDBar
+    let row: RideHUDRungs.Row
+    var body: some View {
+        switch row {
+        case .today(let fallback): AnyView(bar.row(fallback: fallback))
+        case .todayOneLine: AnyView(OneLineFit { bar.row(fallback: false) })
+        case .compressed(let rung): AnyView(bar.compressed(rung: rung))
+        }
+    }
+}
+
+/// f37fab7's `HUDBar.body` on an iPad or a Mac, over this HUD's rows: `row(fallback: false)` alone
+/// below the accessibility sizes, `ViewThatFits` over it and `row(fallback: true)` at them (the
+/// v1.33 round 3 body, which f37fab7 carried; `todaysRowIsVerbatim` holds the rows to f37fab7's).
+struct F37fab7HUD: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
+    let bar: HUDBar
+    var body: some View {
+        if typeSize.isAccessibilitySize {
+            ViewThatFits(in: .horizontal) {
+                bar.row(fallback: false)
+                bar.row(fallback: true)
+            }
+        } else {
+            bar.row(fallback: false)
+        }
+    }
+}
+#endif

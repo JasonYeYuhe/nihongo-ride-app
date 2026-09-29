@@ -321,8 +321,10 @@ struct HUDBar: View {
         // compressed rows reserve the widest value a ride can show where a value can shrink
         // (`RideHUDRungs`), so once today's row is left the ladder only moves down; today's row
         // reserves nothing (it is today's), so a ride can step between it and the compressed row
-        // of the same pills, which differ only in the gap at the row's centre (`V135HUDRowTests`
-        // measures how often, and how far anything moves). At the accessibility sizes an iPad keeps
+        // of the same pills. Today's row is offered where it is one line (`OneLineFit`: its HStack
+        // wrapped a value up to 9.5pt inside its own ideal width), and there the compressed
+        // row draws the same pixels, so those steps move nothing (`V135HUDRowTests` measures how
+        // often, and that nothing moves). At the accessibility sizes an iPad keeps
         // round 3's two rows and then sheds the last pill it can: in 149 of 8,384 AX1 cells, windows
         // of 320–424pt, their pause button was up to 107pt past the row's width. Phones are offered
         // exactly what they were. `RideHUDRungs.offered` is this body as a table. (v1.35)
@@ -343,7 +345,7 @@ struct HUDBar: View {
             row(fallback: false)
         } else {
             ViewThatFits(in: .horizontal) {
-                row(fallback: false)
+                OneLineFit { row(fallback: false) }
                 compressed(rung: 0)
                 compressed(rung: 1)
                 compressed(rung: 2)
@@ -856,8 +858,11 @@ enum RideHUDLayout {
 /// for the score, so it sheds the combo, then the level, and then — its last rung only — the count,
 /// whose progress the timer bar above already draws, and which its score pill then speaks. That last
 /// step breaks v1.33's "progress is never shed", in Time Attack only; keeping the count and shedding
-/// the score instead is the owner's call (`V135HUDRowTests` has the widths where it applies). Rungs 3,
-/// 4 and 5 are exactly the phone's row and the two accessibility-size rows, pill for pill.
+/// the score instead is the owner's call. Where it applies, hosted over 16 ride states in iPad
+/// windows 320–1366pt every 4pt, keyboard up and down (8,384 cells a size): never at the default
+/// size; at xxxLarge in 24 cells, Time Attack from 37 words in windows of 320–356pt; at AX1 in 117,
+/// windows of 320–424pt. Rungs 3, 4 and 5 are exactly the phone's row and the two
+/// accessibility-size rows, pill for pill.
 ///
 /// **Reserves.** `ViewThatFits` compares ideal widths, so a compressed rung reserves the widest value
 /// each pill it shows can take in this ride where the value can get narrower mid-ride: the level
@@ -865,7 +870,11 @@ enum RideHUDLayout {
 /// digits (a rider above 99 wpm is measured, in `V135HUDRowTests`; 1,000 is not a speed). The score,
 /// the count and the distance only grow. So once a ride has left today's row the ladder only moves
 /// down. Today's row reserves nothing — it is today's — so a ride can move between it and rung 0, the
-/// same pills; `V135HUDRowTests` measures how often and how far anything moves when it does.
+/// same pills. `OneLineFit` offers today's row only where it is one line, and there rung 0 places the
+/// pills where today's row does, so the step moves nothing: measured, 0.0pt at every one of 55 steps
+/// between the two in `V135HUDRowTests`' stepped rides (up to 18 in one 150-word list, at 834pt with
+/// the keyboard up). What a step does change is the view: `ViewThatFits` swaps its child, so VoiceOver
+/// gets new elements; where its focus goes then is not measured.
 enum RideHUDRungs {
     /// Every item a rung may shed, in the row's order. The pause button is not one.
     enum Pill: CaseIterable { case level, score, combo, distance, progress, accuracy, speed }
@@ -895,11 +904,14 @@ enum RideHUDRungs {
     /// ladder (`compressed(rung:)`).
     enum Row: Hashable, CustomStringConvertible {
         case today(fallback: Bool)
+        /// Today's row, `row(fallback: false)`, offered where it is one line (`OneLineFit`).
+        case todayOneLine
         case compressed(rung: Int)
         /// The child as `HUDBar.body` builds it.
         var description: String {
             switch self {
             case .today(let fallback): "row(fallback: \(fallback))"
+            case .todayOneLine: "OneLineFit { row(fallback: false) }"
             case .compressed(let rung): "compressed(rung: \(rung))"
             }
         }
@@ -907,14 +919,14 @@ enum RideHUDRungs {
 
     /// `HUDBar.body` as a table: the children it offers `ViewThatFits`, in order (one child: no
     /// `ViewThatFits`). A phone is offered exactly what it was; an iPad at the accessibility sizes
-    /// round 3's two rows and then the last rung; an iPad or a Mac below them today's row and then
-    /// the whole ladder.
+    /// round 3's two rows and then the last rung; an iPad or a Mac below them today's row where it
+    /// is one line (`OneLineFit`), and then the whole ladder.
     static func offered(narrow: Bool, _ typeSize: DynamicTypeSize) -> [Row] {
         switch (narrow, typeSize.isAccessibilitySize) {
         case (true, false): [.today(fallback: false)]
         case (true, true): [.today(fallback: false), .today(fallback: true)]
         case (false, true): [.today(fallback: false), .today(fallback: true), .compressed(rung: last)]
-        case (false, false): [.today(fallback: false)] + (0...last).map { .compressed(rung: $0) }
+        case (false, false): [.todayOneLine] + (0...last).map { .compressed(rung: $0) }
         }
     }
 
@@ -1234,6 +1246,48 @@ struct HUDRowLayout: Layout {
             if index < count - 1 { x += widths[index] + gaps[index] }
         }
         return xs
+    }
+}
+
+/// Today's row as the first child of the iPad and Mac ladder (`HUDBar.body`): drawn exactly as
+/// without it, offered to `ViewThatFits` at the width where it is one line. (v1.35)
+///
+/// **Why.** `ViewThatFits` takes a child whose ideal width fits, and 1.32's `HStack` + `Spacer` row
+/// can still wrap with its ideal width inside the proposal — in a band up to 4.75pt wide at the
+/// default size and 9.5pt at xxxLarge over the 16 ride states `V135HUDRowTests` sweeps (the widest a
+/// late 500-word list). A stepped ride crosses that band exactly where the ladder steps back from
+/// rung 0 to today's row, so without this the step drew today's row wrapped, its distance pill 14pt
+/// narrower: in `V135HUDRowTests`' stepped rides 20 of the 82 steps between the two moved a pill 14pt
+/// (with it, 55 steps and none moves a pill). Asked for its ideal width, this answers the first of
+/// the row's ideal width plus 0, 1, 2, 4 … 64pt at which the row lays out one line tall and no
+/// wider (past 64, a width no window has), so inside the band the ladder takes rung 0, which places
+/// the same pills where today's row places them wherever that row is one line: the steps then move
+/// nothing (0.0pt), and the hosted sweep finds today's row wrapping in no cell. Asked to lay out at a
+/// real width, it hands the row that proposal and places it at its own origin, so wherever it is
+/// taken it draws what the row alone draws (`V135HUDRowTests` compares the pixels cell by cell).
+/// Its cost: one more layout of the row per `ViewThatFits` pass where the row fits at its ideal
+/// width, a few more inside the band.
+struct OneLineFit: Layout {
+    /// The steps above the row's ideal width it tries, in order; past the last the row is not
+    /// offered at all (the ladder takes rung 0).
+    static let steps: [CGFloat] = [0, 1, 2, 4, 8, 16, 32, 64]
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        guard let row = subviews.first else { return .zero }
+        guard proposal.width == nil || proposal.width == .infinity else { return row.sizeThatFits(proposal) }
+        let ideal = row.sizeThatFits(ProposedViewSize(width: nil, height: proposal.height))
+        for step in Self.steps {
+            let width = ideal.width + step
+            let laid = row.sizeThatFits(ProposedViewSize(width: width, height: proposal.height))
+            if laid.height <= ideal.height + 0.5, laid.width <= width + 0.01 {
+                return CGSize(width: width, height: ideal.height)
+            }
+        }
+        return CGSize(width: ideal.width + 10_000, height: ideal.height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        subviews.first?.place(at: bounds.origin, anchor: .topLeading, proposal: proposal)
     }
 }
 
