@@ -10,7 +10,8 @@ import Foundation
 /// the first 20,000 characters. The notice is ONE line, in the unit of the cap that bounded what
 /// is stored, and its dropped count is taken over the whole paste: sentences when the stored text
 /// has 200 and the whole paste has more, else characters when the paste is over 20,000, else
-/// nothing.
+/// nothing. **v1.35:** "has 200" means the stored 200th is the paste's 200th, whole — a 200th the
+/// character cut shortened makes the paste a character-cap paste even when a 201st follows.
 ///
 /// Every expected value is counted by hand from the way the fixture was built, never read back
 /// from `truncation(of:)`. Where `make` is asked too, its answer is compared with the same hand
@@ -111,6 +112,40 @@ struct CustomTextTruncationTests {
         #expect(text.sentences.count == 200)
         #expect(text.sentences.last?.source == String(repeating: "お", count: 100))
         #expect(Self.storedCharacters(text) == 20_000)
+    }
+
+    /// v1.35: the same cut 200th, and the paste goes on to a 201st. 1.34 said ".sentences(200, 1)"
+    /// here — one sentence dropped — while the 200th had lost 4,900 of its 5,000 characters. The
+    /// sentence cap took nothing whole that the character cap had not already taken, so the unit is
+    /// characters and the dropped count is every character past 20,000.
+    @Test("the 200th sentence cut by the character cap, and a 201st: still counted in characters")
+    func theTwoHundredthCutAndAMoreSentences() {
+        // 199 sentences of 100 (19,900), 4,999 お and a 。 (5,000), then え。 (2): 24,902
+        // characters, 201 sentences. Stored: 199 sentences and the first 100 お.
+        let source = Self.sentences(199, length: 100) + String(repeating: "お", count: 4_999) + "。" + "え。"
+        #expect(source.count == 24_902)
+        #expect(CustomText.truncation(of: source) == .characters(kept: 20_000, dropped: 4_902))
+        let text = CustomText.make(title: "t", source: source, now: t0)
+        #expect(text.sentences.count == 200)
+        #expect(text.sentences.last?.source == String(repeating: "お", count: 100))
+        #expect(Self.storedCharacters(text) == 20_000)
+    }
+
+    /// The comparison is of text, not of whether the 200th ended in a terminator: here the 200th
+    /// ends with its 。 exactly at character 20,000, and the 」 the splitter carries along with a
+    /// terminator is character 20,001. Stored, the 200th is "あ…。"; in the paste it is "あ…。」".
+    /// It lost a character to the character cap, so this paste is counted in characters.
+    @Test("a closing bracket carried past character 20,000 makes the 200th a cut sentence")
+    func aCarriedCloserPastTheCap() {
+        // 200 sentences of 100 (20,000), 」 (1), え。 (2): 20,003 characters, 201 sentences.
+        let source = Self.sentences(200, length: 100) + "」" + "え。"
+        #expect(source.count == 20_003)
+        #expect(CustomTextSplitter.sentences(in: source)[199] == String(repeating: "あ", count: 99) + "。」",
+                "the fixture: the splitter carries the 」 into the 200th")
+        #expect(CustomText.truncation(of: source) == .characters(kept: 20_000, dropped: 3))
+        let text = CustomText.make(title: "t", source: source, now: t0)
+        #expect(text.sentences.count == 200)
+        #expect(text.sentences.last?.source == String(repeating: "あ", count: 99) + "。")
     }
 
     @Test("200,000 characters of 40-character sentences: 4,800 dropped")

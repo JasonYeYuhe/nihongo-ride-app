@@ -8,14 +8,18 @@ import CustomTextKit
 /// delete. What is held here: the notice's wording, that what Add stores through the model is the
 /// text the notice describes, that the sheet draws the notice whenever there is one and keeps Add
 /// enabled, that the notice is ABOVE the editor — in its section's header, since the simulator
-/// pass (2026-09-27) found the footer 3,800pt down the sheet after a long paste — that Add's
-/// action adds the editor's text under no condition on the truncation, and the shape of the Mac's
-/// delete. The cut's own numbers live in
-/// `CustomTextTruncationTests`, beside the cut.
+/// pass (2026-09-27) found the footer 3,800pt down the sheet after a long paste — and the shape of
+/// the Mac's delete. The cut's own numbers live in `CustomTextTruncationTests`, beside the cut.
+///
+/// **v1.35 moved three things out of here, to `V135NoticeTests`:** the wording's fit at AX5 with
+/// the keyboard up (CoreText), the announcement VoiceOver hears, and what Add does. 1.34 pinned
+/// "Add's action calls addCustomText with the editor's text, under no condition on the
+/// truncation"; v1.35 reversed that decision — a paste over a cap is confirmed before it is stored
+/// — and the pin that replaces it is there.
 ///
 /// What is NOT held here: the state plumbing between the editor and the notice view. The pins
 /// read the sheet's `.onChange(of: source)` action and the one `CustomTextTruncationNotice(...)`
-/// it builds; the render test holds the notice VIEW. Nothing reads the declaration of the
+/// it builds (and, since v1.35, the `.onChange(of: truncation)` that announces it); the render test holds the notice VIEW. Nothing reads the declaration of the
 /// `@State private var truncation`, and no test runs the sheet — so a property observer on that
 /// state (a `didSet` that sets it back to nil for one unit, say) could still hide the notice
 /// with every test here green.
@@ -53,25 +57,31 @@ struct V134B2CustomTextTests {
 
     // MARK: 1. The notice
 
+    /// v1.35 wording: both counts first and nothing in the past tense — `V135NoticeTests` holds
+    /// why (the two lines readable at AX5 with the keyboard up), measured.
     @Test("the notice is one line, both languages, written out by hand")
     func noticeStrings() {
         let sentences = CustomText.Truncation.sentences(kept: 200, dropped: 1_300)
         #expect(CustomTextAddView.truncationNotice(sentences, zh: false)
-                == "Only the first 200 sentences are kept — 1,300 dropped.")
+                == "200 fit, 1,300 don't — the limit is 200 sentences.")
         #expect(CustomTextAddView.truncationNotice(sentences, zh: true)
-                == "只保留前 200 句,已去掉 1,300 句。")
+                == "保留 200 句,1,300 句放不下。")
 
         let characters = CustomText.Truncation.characters(kept: 20_000, dropped: 5_000)
         #expect(CustomTextAddView.truncationNotice(characters, zh: false)
-                == "Only the first 20,000 characters are kept — 5,000 dropped.")
+                == "20,000 fit, 5,000 don't — the limit is 20,000 characters.")
         #expect(CustomTextAddView.truncationNotice(characters, zh: true)
-                == "只保留前 20,000 个字符,已去掉 5,000 个。")
+                == "保留 20,000 字,5,000 字放不下。")
 
-        // The plan's 201-sentence case.
+        // The plan's 201-sentence case, and the singular in both units.
         let one = CustomText.Truncation.sentences(kept: 200, dropped: 1)
         #expect(CustomTextAddView.truncationNotice(one, zh: false)
-                == "Only the first 200 sentences are kept — 1 dropped.")
-        #expect(CustomTextAddView.truncationNotice(one, zh: true) == "只保留前 200 句,已去掉 1 句。")
+                == "200 fit, 1 doesn't — the limit is 200 sentences.")
+        #expect(CustomTextAddView.truncationNotice(one, zh: true) == "保留 200 句,1 句放不下。")
+        let oneCharacter = CustomText.Truncation.characters(kept: 20_000, dropped: 1)
+        #expect(CustomTextAddView.truncationNotice(oneCharacter, zh: false)
+                == "20,000 fit, 1 doesn't — the limit is 20,000 characters.")
+        #expect(CustomTextAddView.truncationNotice(oneCharacter, zh: true) == "保留 20,000 字,1 字放不下。")
     }
 
     // MARK: 2. What Add stores is what the notice describes
@@ -137,25 +147,34 @@ struct V134B2CustomTextTests {
     /// The sheet reads the KIT's count — not a restated `count > 20_000` — into its state when the
     /// text changes, and hands that state unfiltered to the notice view. Not held: what happens to
     /// the state in between — a property observer on `truncation` is outside every range read here.
+    ///
+    /// v1.35: the kit's count is read twice in the sheet, both times of the editor's text — here,
+    /// on change, for the notice; and in Add's action, fresh, for the confirmation
+    /// (`V135NoticeTests` holds that one's shape). The sheet has two `.onChange`s: this one, and
+    /// the one of `truncation` that tells VoiceOver.
     @Test("the add sheet reads CustomText.truncation(of: source) on change and hands it to the notice")
     func addSheetUsesTheOneCut() throws {
         let file = try Self.shipped("CustomTextsView.swift")
         let sheet = try #require(file.typeBodies(named: "CustomTextAddView").first)
 
         let cuts = file.calls(named: "truncation").filter { $0.receiver == "CustomText" }
-        #expect(cuts.count == 1, Comment(rawValue: "CustomText.truncation(of:) is read \(cuts.count) times"))
-        let cut = try #require(cuts.first)
-        #expect(sheet.contains(cut.nameOffset), "the cut is read in the add sheet, not elsewhere")
-        #expect(Self.squeezed(cut.arguments, in: file) == "of:source", "the notice must be about the editor's text")
+        #expect(cuts.count == 2, Comment(rawValue: "CustomText.truncation(of:) is read \(cuts.count) times"))
+        for cut in cuts {
+            #expect(sheet.contains(cut.nameOffset), "the cut is read in the add sheet, not elsewhere")
+            #expect(Self.squeezed(cut.arguments, in: file) == "of:source", "the notice must be about the editor's text")
+        }
 
-        // Off the body's hot path: the one read is the whole of an `.onChange(of: source)` action,
-        // and it lands in the state unaltered.
+        // Off the body's hot path: the notice's read is the whole of an `.onChange(of: source)`
+        // action, and it lands in the state unaltered.
         let changes = file.calls(named: "onChange").filter { sheet.contains($0.nameOffset) }
-        #expect(changes.count == 1, Comment(rawValue: "\(changes.count) onChange in the add sheet"))
+        #expect(changes.count == 2, Comment(rawValue: "\(changes.count) onChange in the add sheet"))
+        #expect(changes.map { Self.squeezed($0.arguments, in: file) } == ["of:source", "of:truncation"],
+                Comment(rawValue: "the add sheet's onChange calls are \(changes.map(file.excerpt))"))
         let change = try #require(changes.first)
-        #expect(Self.squeezed(change.arguments, in: file) == "of:source")
         #expect(Self.squeezed(change.closures.first, in: file) == "{truncation=CustomText.truncation(of:source)}",
                 Comment(rawValue: "the onChange action is \(file.excerpt(change))"))
+        #expect(cuts.contains { change.closures.first?.contains($0.nameOffset) == true },
+                "one of the two reads is the notice's")
 
         // The notice view is built once, in the sheet, from the state — and not inside any
         // condition: its innermost block is the header's VStack, so nothing decides which
@@ -171,18 +190,27 @@ struct V134B2CustomTextTests {
         #expect(block != nil && stacks.contains { $0.closures.first == block },
                 "the notice is inside a condition, not directly in the header's VStack")
 
-        // The view renders the one function, with its own truncation and language.
+        // The view renders the one function, with its own truncation and language. Since v1.35
+        // the function is called once more, by `announcement(from:to:zh:)`, so VoiceOver hears
+        // the notice's own words; nowhere else.
         let body = try #require(file.typeBodies(named: "CustomTextTruncationNotice").first)
+        let announcement = try #require(file.functions(named: "announcement").first?.body)
         let renders = file.calls(named: "truncationNotice")
-        #expect(renders.count == 1, Comment(rawValue: "truncationNotice is rendered \(renders.count) times"))
-        let render = try #require(renders.first)
-        #expect(body.contains(render.nameOffset))
+        #expect(renders.count == 2, Comment(rawValue: "truncationNotice is called \(renders.count) times"))
+        let inView = renders.filter { body.contains($0.nameOffset) }
+        #expect(inView.count == 1, Comment(rawValue: "the notice view renders it \(inView.count) times"))
+        let render = try #require(inView.first)
         #expect(Self.squeezed(render.arguments, in: file) == "truncation,zh:zh")
+        #expect(renders.allSatisfy { body.contains($0.nameOffset) || announcement.contains($0.nameOffset) },
+                "truncationNotice is called outside the notice view and the announcement")
 
         // Both languages, twice each (one per unit), and every occurrence inside the one
         // function — a string that moved out of it would still render and no longer be pinned.
+        // (The scanner matches whole words, and it counts a Han byte as part of a word, so "保留"
+        // is found where it opens a string — both notice lines — and not inside "只保留前" or
+        // "都能保留" elsewhere in the file.)
         let wording = try #require(file.functions(named: "truncationNotice").first?.body)
-        for fragment in ["Only the first", "只保留前"] {
+        for fragment in ["the limit is", "保留"] {
             let hits = Self.literal(fragment, in: file)
             #expect(hits.count == 2, Comment(rawValue: "\(fragment) appears \(hits.count) times"))
             #expect(hits.allSatisfy { wording.contains($0) }, Comment(rawValue:
@@ -264,11 +292,11 @@ struct V134B2CustomTextTests {
             NSHostingController(rootView: view).sizeThatFits(in: proposal)
         }
         let cases: [(CustomText.Truncation, Bool, String)] = [
-            (.sentences(kept: 200, dropped: 1), false, "Only the first 200 sentences are kept — 1 dropped."),
-            (.sentences(kept: 200, dropped: 1), true, "只保留前 200 句,已去掉 1 句。"),
+            (.sentences(kept: 200, dropped: 1), false, "200 fit, 1 doesn't — the limit is 200 sentences."),
+            (.sentences(kept: 200, dropped: 1), true, "保留 200 句,1 句放不下。"),
             (.characters(kept: 20_000, dropped: 5_000), false,
-             "Only the first 20,000 characters are kept — 5,000 dropped."),
-            (.characters(kept: 20_000, dropped: 5_000), true, "只保留前 20,000 个字符,已去掉 5,000 个。"),
+             "20,000 fit, 5,000 don't — the limit is 20,000 characters."),
+            (.characters(kept: 20_000, dropped: 5_000), true, "保留 20,000 字,5,000 字放不下。"),
         ]
         for (truncation, zh, line) in cases {
             let expected = size(Text(line).foregroundStyle(.orange))
@@ -282,8 +310,9 @@ struct V134B2CustomTextTests {
     }
     #endif
 
-    /// A truncated paste is still added, cut as the notice says: Add's one `.disabled` reads the
-    /// empty-source check and nothing else, so no truncation can switch it off.
+    /// A truncated paste can still be added, cut as the notice says: Add's one `.disabled` reads
+    /// the empty-source check and nothing else, so no truncation can switch it off. (v1.35: Add on
+    /// a cut paste asks first — `V135NoticeTests` — but it is never disabled.)
     @Test("Add stays enabled on a truncated paste")
     func addStaysEnabledOnATruncatedPaste() throws {
         let file = try Self.shipped("CustomTextsView.swift")
@@ -293,37 +322,6 @@ struct V134B2CustomTextTests {
         #expect(Self.squeezed(disables.first?.arguments, in: file)
                 == "source.trimmingCharacters(in:.whitespacesAndNewlines).isEmpty",
                 Comment(rawValue: "Add is disabled by \(disables.first.map(file.excerpt) ?? "nothing")"))
-    }
-
-    /// Add adds what was pasted, whatever the notice says: its action is the one
-    /// `model.addCustomText(title: title, source: source)` under no condition but the model's own
-    /// answer. A truncated paste refused (`if truncation == nil, …`) would put the silent cut back
-    /// as a silent refusal.
-    @Test("Add's action calls addCustomText with the editor's text, under no condition on the truncation")
-    func addCallsTheModelWithoutACondition() throws {
-        let file = try Self.shipped("CustomTextsView.swift")
-        let sheet = try #require(file.typeBodies(named: "CustomTextAddView").first)
-
-        let adds = file.calls(named: "Button").filter { button in
-            sheet.contains(button.nameOffset)
-                && Self.squeezed(button.arguments, in: file, strings: true) == #"zh?"添加":"Add""#
-        }
-        #expect(adds.count == 1, Comment(rawValue: "\(adds.count) Add buttons in the add sheet"))
-        let add = try #require(adds.first)
-        #expect(add.closures.count == 1, Comment(rawValue: "Add has \(add.closures.count) closures"))
-        let action = try #require(add.closures.first)
-
-        let calls = file.calls(named: "addCustomText")
-        #expect(calls.count == 1, Comment(rawValue: "addCustomText is called \(calls.count) times"))
-        let call = try #require(calls.first)
-        #expect(action.contains(call.nameOffset), "addCustomText is called outside Add's action")
-        #expect(call.receiver == "model")
-        #expect(Self.squeezed(call.arguments, in: file) == "title:title,source:source")
-
-        #expect(file.mentions(of: "truncation").filter(action.contains).isEmpty,
-                "Add's action reads the truncation")
-        #expect(Self.squeezed(action, in: file) == "{ifmodel.addCustomText(title:title,source:source)!=nil{dismiss()}else{failed=true}}",
-                Comment(rawValue: "Add's action is \(file.excerpt(add))"))
     }
 
     // MARK: 4. The delete on the Mac

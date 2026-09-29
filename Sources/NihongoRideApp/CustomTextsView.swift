@@ -124,6 +124,9 @@ struct CustomTextAddView: View {
     /// body evaluation: it splits the paste, which measured (2026-09-27, optimised build, this
     /// Mac) ~5 ms for 20,000 characters and ~50 ms for 200,000 — `PLAN-V1.34` §B2, addendum.
     @State private var truncation: CustomText.Truncation?
+    /// The cut Add is asking about, while its confirmation is up. Set only by Add's action, from
+    /// a fresh `CustomText.truncation(of: source)`, never copied from `truncation` above.
+    @State private var confirming: CustomText.Truncation?
 
     private var zh: Bool { model.languageCode == "zh" }
 
@@ -140,12 +143,22 @@ struct CustomTextAddView: View {
                         .font(.system(size: 17))
                         .accessibilityIdentifier("customTextSource")
                         .onChange(of: source) { truncation = CustomText.truncation(of: source) }
+                        // A line that appears in a header is not spoken until VoiceOver's focus
+                        // reaches it, and after a paste the focus is in the editor; without
+                        // this a VoiceOver rider would meet the cut only on Add. Said once
+                        // when the notice appears or changes unit, and once when it goes — a
+                        // count that moves while they type is not re-read at every keystroke.
+                        .onChange(of: truncation) { old, new in
+                            if let line = Self.announcement(from: old, to: new, zh: zh) {
+                                AccessibilityNotification.Announcement(line).post()
+                            }
+                        }
                 } header: {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(zh ? "日语原文" : "Japanese text")
-                        // Said before Add, not after: the text is still added, cut exactly as
-                        // the notice says, and the learner decides whether that is the text
-                        // they wanted. Handed the state unfiltered; the notice view draws a line
+                        // Said before Add, not after: the text can still be added, cut exactly
+                        // as the notice says (Add asks first, below), and the learner decides
+                        // whether that is the text they wanted. Handed the state unfiltered; the notice view draws a line
                         // for every non-nil truncation.
                         //
                         // In the HEADER, above the editor — not the footer, below it (simulator
@@ -158,6 +171,14 @@ struct CustomTextAddView: View {
                         // depends on the title field above it and not on the paste. Under the
                         // label, which keeps its look: with no notice the header is the label
                         // alone, as the footer's text was alone in its VStack before this.
+                        //
+                        // No Dynamic Type cap (v1.35). The 1.34 re-run measured it at AX5 with
+                        // the keyboard up on the 402pt phone: the notice starts at y=406, ~53pt
+                        // semibold, ~62pt a line, and the keyboard's glass at ~539pt leaves two
+                        // readable lines — "Only the first / 200" and "只保留前 200 / 句,已去掉
+                        // 30". So the wording now puts both counts in its first two lines at
+                        // that size (`truncationNotice`), and Add confirms a cut paste before
+                        // storing it, for every layout two lines cannot cover.
                         CustomTextTruncationNotice(truncation: truncation, zh: zh)
                     }
                 } footer: {
@@ -176,29 +197,112 @@ struct CustomTextAddView: View {
                     Button(zh ? "取消" : "Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
+                    // A paste over a cap is confirmed before it is stored; any other paste is
+                    // added exactly as before. **This reverses a 1.34 decision.** 1.34 added
+                    // every paste on the first tap and pinned that no condition on the
+                    // truncation stood between Add and `addCustomText`: the notice above the
+                    // editor was to be the whole warning, and its AX5 cost — its later lines
+                    // under the keyboard — was accepted and written down (`PLAN-V1.34` §B2).
+                    // The simulator re-run then showed the cost at AX5 with the keyboard up:
+                    // two lines of the notice readable, and the English one's dropped count
+                    // under the keyboard.
+                    // The v1.35 decision (§F, 2026-09-29) is that the learner must meet the cut
+                    // before the cut text is stored at every size, keyboard up or down, on any
+                    // device — which no layout guarantees (a Form scrolled away, a smaller
+                    // phone, a larger size), and a confirmation does. Counted fresh here and not
+                    // read from `truncation`, so the question is about the text being added
+                    // even if the notice's state were stale. Add stays enabled: a cut paste is
+                    // still the learner's to add.
                     Button(zh ? "添加" : "Add") {
-                        if model.addCustomText(title: title, source: source) != nil { dismiss() }
-                        else { failed = true }
+                        if let cut = CustomText.truncation(of: source) { confirming = cut }
+                        else { commit() }
                     }
                     .disabled(source.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     .accessibilityIdentifier("customTextConfirm")
                 }
             }
+            .alert(Self.confirmationTitle(zh: zh), isPresented: Binding(
+                get: { confirming != nil },
+                set: { if !$0 { confirming = nil } })) {
+                Button(zh ? "添加" : "Add") { commit() }
+                // Stores nothing and changes nothing: the sheet, the text and the notice stay
+                // as they were, so the learner can trim the paste and try again.
+                Button(zh ? "取消" : "Cancel", role: .cancel) {}
+            } message: {
+                if let confirming { Text(Self.confirmationMessage(confirming, zh: zh)) }
+            }
         }
+    }
+
+    /// The one place a paste is stored, reached from Add directly when nothing is cut and from
+    /// the confirmation's Add when something is.
+    private func commit() {
+        if model.addCustomText(title: title, source: source) != nil { dismiss() }
+        else { failed = true }
     }
 
     /// The one line, in the unit of the cap that bounded what is stored (`CustomText.Truncation`).
     /// In one place, so the test that pins the wording in both languages pins what the sheet shows.
+    ///
+    /// **Both counts first, and nothing in the past tense** (v1.35): the notice is read before
+    /// Add, when nothing has been stored or cut. 1.34's "Only the first 200 sentences are kept —
+    /// 30 dropped." / "只保留前 200 句,已去掉 30 句。" put the counts late; at AX5 with the
+    /// keyboard up two lines are readable, and those were "Only the first / 200" and "只保留前 200
+    /// / 句,已去掉 30". Measured with CoreText at 53pt semibold (`V135NoticeTests`): the kept
+    /// count leads line one and the dropped count is in line two, in columns of 338pt (the
+    /// 402pt phone) and 311pt (a 375pt phone), for every dropped count up to 999,999. The
+    /// owner's first candidate, "Keeps 20,000, cuts 5,308 characters.", did not: "Keeps 20,000,"
+    /// is 349pt wide, so the dropped count fell to line three; "cuts 999,999" (330pt) did not fit
+    /// 311. The unit comes last in English — "20,000 characters" is wider than a line — and the
+    /// confirmation on Add says it in full. Chinese says 字 where the confirmation says 个字符:
+    /// with 个字符, line two was "个字" alone at 338pt and a dropped count of 99,999 went to line
+    /// three.
     static func truncationNotice(_ truncation: CustomText.Truncation, zh: Bool) -> String {
         switch truncation {
         case let .sentences(kept, dropped):
             return zh
-                ? "只保留前 \(grouped(kept)) 句,已去掉 \(grouped(dropped)) 句。"
-                : "Only the first \(grouped(kept)) sentences are kept — \(grouped(dropped)) dropped."
+                ? "保留 \(grouped(kept)) 句,\(grouped(dropped)) 句放不下。"
+                : "\(grouped(kept)) fit, \(grouped(dropped)) \(dropped == 1 ? "doesn't" : "don't") — the limit is \(grouped(kept)) sentences."
         case let .characters(kept, dropped):
             return zh
-                ? "只保留前 \(grouped(kept)) 个字符,已去掉 \(grouped(dropped)) 个。"
-                : "Only the first \(grouped(kept)) characters are kept — \(grouped(dropped)) dropped."
+                ? "保留 \(grouped(kept)) 字,\(grouped(dropped)) 字放不下。"
+                : "\(grouped(kept)) fit, \(grouped(dropped)) \(dropped == 1 ? "doesn't" : "don't") — the limit is \(grouped(kept)) characters."
+        }
+    }
+
+    /// The confirmation's title. No numbers and no long word: at AX5 an alert's title wraps in a
+    /// narrow column, and a word wider than it would break mid-word. The counts are the message's.
+    static func confirmationTitle(zh: Bool) -> String {
+        zh ? "只添加一部分?" : "Add part of this text?"
+    }
+
+    /// What Add is about to do, in full: both counts with their unit, and what the learner can do
+    /// about the rest.
+    static func confirmationMessage(_ truncation: CustomText.Truncation, zh: Bool) -> String {
+        switch truncation {
+        case let .sentences(kept, dropped):
+            return zh
+                ? "添加后只保留前 \(grouped(kept)) 句,最后 \(grouped(dropped)) 句不会保存。可以另外添加为一篇文本。"
+                : "Add keeps the first \(grouped(kept)) sentences and leaves out \(dropped == 1 ? "the last one" : "the last \(grouped(dropped))"). You can add \(dropped == 1 ? "it" : "those") as another text."
+        case let .characters(kept, dropped):
+            return zh
+                ? "添加后只保留前 \(grouped(kept)) 个字符,最后 \(grouped(dropped)) 个不会保存。可以另外添加为一篇文本。"
+                : "Add keeps the first \(grouped(kept)) characters and leaves out \(dropped == 1 ? "the last one" : "the last \(grouped(dropped))"). You can add \(dropped == 1 ? "it" : "those") as another text."
+        }
+    }
+
+    /// What VoiceOver is told when the truncation changes, or nil for nothing. A notice that
+    /// appears, or changes unit, is read in full; one that goes is answered with "the whole text
+    /// fits"; a count that moves within the same unit is not re-read — typing into a paste over
+    /// the cap changes the count at every keystroke, and each change would interrupt the rider.
+    static func announcement(from old: CustomText.Truncation?, to new: CustomText.Truncation?,
+                             zh: Bool) -> String? {
+        guard let new else {
+            return old == nil ? nil : (zh ? "现在整段文字都能保留。" : "The whole text fits now.")
+        }
+        switch (old, new) {
+        case (.sentences?, .sentences), (.characters?, .characters): return nil
+        default: return truncationNotice(new, zh: zh)
         }
     }
 
