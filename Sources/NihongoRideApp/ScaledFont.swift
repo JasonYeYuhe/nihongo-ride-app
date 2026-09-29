@@ -69,6 +69,13 @@ extension EnvironmentValues {
     /// was (a product by 1 is exact). It exists for hosted tests: macOS does not scale `@ScaledMetric`
     /// for any `dynamicTypeSize`, so a test that lays out an iOS screen at, say, AX1 on a Mac sets
     /// this to that size's body-point ratio (28/17) as well as the size itself.
-    /// `V135HUDRowTests` pins that no shipped source sets it. (v1.35)
+    ///
+    /// **Why a test seam is in shipped code.** It cannot live in the test module: the reading has to
+    /// happen inside `ScaledSystemFont`, the shipped modifier every screen's fonts go through, and a
+    /// test can neither add a stored `@Environment` to a shipped type nor reach the `Font` it builds.
+    /// The alternatives were a copy of the HUD's fonts in the tests (a copy is what the hosted tests
+    /// exist not to measure) or no hosted measurement above the default size at all.
+    /// `V135HUDRowTests.emulatedTextScaleIsNeverSet` pins that no shipped source sets it, that this
+    /// default is 1 and that the product above is the only use. (v1.35)
     @Entry var emulatedTextScale: CGFloat = 1
 }

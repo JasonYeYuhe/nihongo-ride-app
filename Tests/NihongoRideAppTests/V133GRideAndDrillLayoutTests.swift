@@ -170,7 +170,7 @@ struct V133GRideAndDrillLayoutTests {
     func hudValuesNeverWrap() throws {
         let lines = Self.codeLines(try Self.source("GameView.swift"))
         guard let valueLine = lines.firstIndex(of: "Text(value).foregroundStyle(.white).monospacedDigit()"),
-              let levelLine = lines.firstIndex(of: "Text(session.currentLevelLabel)") else {
+              lines.contains("Text(session.currentLevelLabel)") else {
             Issue.record("the HUD's value Text or level capsule moved; update this test")
             return
         }
@@ -180,7 +180,6 @@ struct V133GRideAndDrillLayoutTests {
                                ".reservingIdealWidth(for: reserving) { Text($0).monospacedDigit() }"],
                 "the HUD value's modifiers are \(valueChain)")
         // v1.35: every level capsule — today's row's and the compressed rows'.
-        _ = levelLine
         for capsule in lines.indices where lines[capsule] == "Text(session.currentLevelLabel)" {
             let levelChain = Array(lines[(capsule + 1)...].prefix { $0.hasPrefix(".") })
             #expect(levelChain.contains(".lineLimit(typeSize.isAccessibilitySize ? 1 : nil)"), "\(levelChain)")
@@ -276,9 +275,12 @@ struct V133GRideAndDrillLayoutTests {
     /// Mutation, 2026-09-18: either gate back to `if !narrow {` goes red here.
     /// (v1.33 pre-submission review, round 2)
     ///
-    /// **And the progress pill and the pause button are never conditional**, at any size, in either
-    /// row `ViewThatFits` is offered: the progress pill sits directly in the row's `HStack`, the pause
-    /// button directly in `if let onPause` (a touch device's) directly in that `HStack`. The pin above
+    /// **And the progress pill and the pause button are never conditional in `row(fallback:)`**, at
+    /// any size, in either of its rows (v1.35: the compressed rows, `ViewThatFits`' other children on
+    /// an iPad or a Mac, gate every pill on `RideHUDRungs` instead, and Time Attack's last rung sheds
+    /// the count; `V135HUDRowTests` pins those): the progress pill sits directly in the row's
+    /// `HStack`, the pause button directly in `if let onPause` (a touch device's) directly in that
+    /// `HStack`. The pin above
     /// once let the progress pill go behind `if !typeSize.isAccessibilitySize {` with every test green.
     /// Mutations, 2026-09-18: that wrap, and the pause button behind `if !fallback {`, each go red
     /// here. (v1.33 pre-submission review, round 3)
@@ -339,7 +341,8 @@ struct V133GRideAndDrillLayoutTests {
     /// AX1 — 20 of the pause button's 44pt on screen — and tighter rows that did fit showed the level
     /// capsule as "…". So at those sizes `HUDBar.body` offers `ViewThatFits(in: .horizontal)` the row
     /// as it was and then `row(fallback: true)`, which `RideHUDLayout.shows` gives one pill fewer; below
-    /// them `body` is the one row and has no `ViewThatFits`, so the default-size HUD is 1.32's. Pinned
+    /// them a phone's `body` is the one row and has no `ViewThatFits`, so its default-size HUD is 1.32's
+    /// (v1.35: an iPad's or a Mac's has the ladder, `V135HUDRowTests.bodyIsTheTable`). Pinned
     /// on comment-blanked code. Mutations, 2026-09-18, each red here: the second row removed; the second
     /// row commented out; the two rows swapped; `ViewThatFits` at every size (the `if` removed); the
     /// else branch offering `row(fallback: true)`. (v1.33 pre-submission review, round 3)
@@ -474,6 +477,11 @@ struct V133GRideAndDrillLayoutTests {
     /// `comboReserve` without the dash; `comboReserve` for the second row too; `levelReserve` below
     /// the accessibility sizes; `levelReserve` of every JLPT level rather than the ride's.
     /// (v1.33 pre-submission review, round 4)
+    ///
+    /// v1.35: an iPad's second row reserves the level labels too, a phone's still none — on an iPad
+    /// the last rung now follows that row (`RideHUDLayout.levelReserve`, `V135HUDRowTests.reserves`).
+    /// Both devices are written out here (`narrow:`).
+    @MainActor
     @Test("the first row reserves the ride's widest combo and level label, at the accessibility sizes only")
     func firstRowReservesTheRidesWidestValues() {
         for (combo, shown) in [(0, "—"), (1, "—"), (2, "×2"), (9, "×9"), (10, "×10"), (149, "×149"), (499, "×499")] {
@@ -491,7 +499,9 @@ struct V133GRideAndDrillLayoutTests {
                     #expect(RideHUDLayout.comboReserve(size, fallback: fallback, wordCount: wordCount) == [], "\(size)")
                 }
                 for (list, _) in levels {
-                    #expect(RideHUDLayout.levelReserve(size, fallback: fallback, words: Self.entries(list)) == [], "\(size)")
+                    for narrow in [true, false] {
+                        #expect(RideHUDLayout.levelReserve(size, fallback: fallback, words: Self.entries(list), narrow: narrow) == [], "\(size)")
+                    }
                 }
             }
         }
@@ -500,12 +510,17 @@ struct V133GRideAndDrillLayoutTests {
                 #expect(RideHUDLayout.comboReserve(size, fallback: false, wordCount: wordCount) == reserve,
                         "\(size), \(wordCount) words")
                 #expect(RideHUDLayout.comboReserve(size, fallback: true, wordCount: wordCount) == [],
-                        "\(size): the second row is ViewThatFits' last child and needs no reserve")
+                        "\(size): the second row never draws the combo and needs no reserve")
             }
             for (list, reserve) in levels {
-                #expect(RideHUDLayout.levelReserve(size, fallback: false, words: Self.entries(list)) == reserve,
-                        "\(size), levels \(list)")
-                #expect(RideHUDLayout.levelReserve(size, fallback: true, words: Self.entries(list)) == [], "\(size)")
+                for narrow in [true, false] {
+                    #expect(RideHUDLayout.levelReserve(size, fallback: false, words: Self.entries(list), narrow: narrow) == reserve,
+                            "\(size), levels \(list), narrow \(narrow)")
+                }
+                #expect(RideHUDLayout.levelReserve(size, fallback: true, words: Self.entries(list), narrow: true) == [],
+                        "\(size): a phone's second row is ViewThatFits' last child and needs no reserve")
+                #expect(RideHUDLayout.levelReserve(size, fallback: true, words: Self.entries(list), narrow: false) == reserve,
+                        "\(size), levels \(list): an iPad's second row has the last rung after it (v1.35)")
             }
         }
     }
@@ -518,6 +533,7 @@ struct V133GRideAndDrillLayoutTests {
     /// `levelReserve` of the first word's level only — those two with the literal table above moved to
     /// match, so this test is the only one that sees them. An off-by-one reserve ("×\(wordCount - 1)")
     /// is caught by the table, not here: it is the same width, which is all this asks about.
+    @MainActor
     @Test("no combo or level label a ride shows is wider than its first row reserves")
     func reserveCoversWhatARideShows() {
         let mixed: [JLPTLevel] = [.n5, .n1, .n4, .n2, .n3]

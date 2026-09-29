@@ -267,7 +267,9 @@ struct HUDBar: View {
     /// (they're informational, not actionable mid-run). **An iPad drops the same three at the
     /// accessibility sizes** — the gates below read `narrow || typeSize.isAccessibilitySize`, not
     /// this alone — because there the values may not wrap and the iPad's full row outgrew iPad
-    /// windows (`RideHUDLayout` has the measurement). Below those sizes an iPad keeps all seven.
+    /// windows (`RideHUDLayout` has the measurement). Below those sizes an iPad's and a Mac's
+    /// today's row keeps all seven, and where that row does not fit the ladder below it sheds them
+    /// in `RideHUDRungs.shedOrder` (v1.35, `body`).
     private var narrow: Bool { isPhoneIdiom }
 
     private var zh: Bool { language == "zh" }
@@ -286,8 +288,9 @@ struct HUDBar: View {
         // the level capsule, truncated to "…" or clipped to a sliver (375pt with the keyboard down late
         // in a journey, 375–402pt list rides, a 507pt iPad window). So at those sizes the row is
         // offered to `ViewThatFits` twice: as it was, then with one more pill removed
-        // (`RideHUDLayout.shows`). Below the accessibility sizes there is no second row and no
-        // `ViewThatFits`: the row is 1.32's. (v1.33 pre-submission review, round 3)
+        // (`RideHUDLayout.shows`). Below the accessibility sizes there was no second row and no
+        // `ViewThatFits`: the row was 1.32's — still so on a phone; an iPad or a Mac gets the v1.35
+        // ladder below. (v1.33 pre-submission review, round 3)
         //
         // **`ViewThatFits` compares each row's IDEAL width**, so the first row is kept only while it
         // fits with the level capsule unshrunk: the capsule is never shrunk or "…" in a first row.
@@ -315,19 +318,24 @@ struct HUDBar: View {
         // portrait — and of 8,384 iPad cells hosted at the default size (16 ride states, windows
         // 320–1366pt every 4pt, keyboard up and down) it wrapped in 1,526 and put the pause button
         // past its width in 2,250. So `ViewThatFits` is offered, in order: today's row, unchanged —
-        // the same function, so wherever it fits it is today's row and not a copy of it; the same
+        // the same function, so where it is taken it is today's row and not a copy of it; the same
         // seven pills and pause in `HUDRowLayout`, which closes the row's gaps down to 6pt before
         // anything goes; then rows that each shed one more pill, in `RideHUDRungs.shedOrder`. The
         // compressed rows reserve the widest value a ride can show where a value can shrink
         // (`RideHUDRungs`), so once today's row is left the ladder only moves down; today's row
         // reserves nothing (it is today's), so a ride can step between it and the compressed row
-        // of the same pills. Today's row is offered where it is one line (`OneLineFit`: its HStack
-        // wrapped a value up to 9.5pt inside its own ideal width), and there the compressed
-        // row draws the same pixels, so those steps move nothing (`V135HUDRowTests` measures how
-        // often, and that nothing moves). At the accessibility sizes an iPad keeps
+        // of the same pills. Today's row is offered from the first width at which it is one line
+        // (`OneLineFit`: its HStack wraps a value at proposals up to 9.5pt WIDER than its own ideal
+        // width), to within 0.25pt, whatever height the screen proposes; there the compressed row
+        // draws the same pixels, so those steps move nothing, in either axis (`V135HUDRowTests`
+        // measures how often, and that nothing moves). At the accessibility sizes an iPad keeps
         // round 3's two rows and then sheds the last pill it can: in 149 of 8,384 AX1 cells, windows
-        // of 320–424pt, their pause button was up to 107pt past the row's width. Phones are offered
-        // exactly what they were. `RideHUDRungs.offered` is this body as a table. (v1.35)
+        // of 320–424pt, their pause button was up to 107pt past the row's width. With that third
+        // child the second row is no longer the last, so on an iPad it reserves the ride's level
+        // labels as the first does (`RideHUDLayout.levelReserve`): without, a ride mixing JLPT levels
+        // stepped between it and the last rung word by word, the level capsule blinking (review of
+        // step 4b). Phones are offered exactly what they were, and reserve exactly what they did.
+        // `RideHUDRungs.offered` is this body as a table. (v1.35)
         if typeSize.isAccessibilitySize {
             if narrow {
                 ViewThatFits(in: .horizontal) {
@@ -399,7 +407,9 @@ struct HUDBar: View {
             // Round 4: what the first row reserves at the accessibility sizes — nothing below them and
             // nothing in the second row (`RideHUDLayout.comboReserve`). The level capsule's reserve
             // sits on its Text before the font, so the placeholders are set in that font; the combo's
-            // is inside `stat`. (v1.33 pre-submission review, round 4)
+            // is inside `stat`. (v1.33 pre-submission review, round 4) v1.35: an iPad's second row
+            // reserves its level labels too, since a third row now follows it
+            // (`RideHUDLayout.levelReserve`); a phone's still reserves nothing.
             let levels = RideHUDLayout.levelReserve(typeSize, fallback: fallback, words: session.wordList)
             let combos = RideHUDLayout.comboReserve(typeSize, fallback: fallback, wordCount: session.wordCount)
             if RideHUDLayout.shows(.level, typeSize, scoreIsTheRide: scoreIsTheRide, fallback: fallback) {
@@ -776,7 +786,8 @@ enum RideHUDLayout {
     /// The ride row's pills a rule may hide. The progress pill and the pause button are not cases, on
     /// purpose: the words-done count is the pill whose wrapping started §B G, and pause is a touch
     /// rider's only way to stop or end a ride. (`V133GRideAndDrillLayoutTests` pins both
-    /// unconditional in `HUDBar`.)
+    /// unconditional in `HUDBar.row(fallback:)`. The v1.35 compressed rows gate every pill on
+    /// `RideHUDRungs` instead, and Time Attack's last rung sheds the count — `RideHUDRungs`.)
     enum Pill: CaseIterable { case level, score, combo }
 
     /// Whether the ride row shows `pill`. Below the accessibility sizes, always, whatever `fallback`
@@ -824,8 +835,9 @@ enum RideHUDLayout {
     /// (`GameSession`), so it cannot pass `wordCount`; the value's digits are tabular
     /// (`monospacedDigit`), so "×\(wordCount)" is as wide as any value of as many digits and wider than
     /// any of fewer — both measured in `V133GRideAndDrillLayoutTests`. Nothing below the accessibility
-    /// sizes, where there is no `ViewThatFits`, and nothing for the second row, its last child, which
-    /// is never measured to be chosen. Time Attack never shows this pill at those sizes.
+    /// sizes, where today's row reserves nothing (it is 1.32's; the v1.35 compressed rows reserve their
+    /// own, `RideHUDRungs`), and nothing for the second row, which never draws the combo: a ride whose
+    /// queue is the target drops it there, and Time Attack never shows it at these sizes.
     static func comboReserve(_ typeSize: DynamicTypeSize, fallback: Bool, wordCount: Int) -> [String] {
         guard typeSize.isAccessibilitySize, !fallback else { return [] }
         return RideHUDRungs.comboReserve(wordCount: wordCount)
@@ -835,8 +847,21 @@ enum RideHUDLayout {
     /// per JLPT level in the ride's queue, because the capsule shows the current word's
     /// (`GameSession.currentLevelLabel`) and "N1" is narrower than "N5". A one-level ride reserves
     /// its own label, which changes nothing.
-    static func levelReserve(_ typeSize: DynamicTypeSize, fallback: Bool, words: [VocabEntry]) -> [String] {
-        guard typeSize.isAccessibilitySize, !fallback else { return [] }
+    ///
+    /// **v1.35: an iPad's second row reserves them too.** On a phone the second row is
+    /// `ViewThatFits`' last child, drawn whenever the first does not fit, so its ideal width decides
+    /// nothing and it reserves nothing, as in 1.33. On an iPad the last rung now follows it
+    /// (`HUDBar.body`), so its ideal width decides between a row that draws the level capsule and
+    /// one that sheds it; unreserved, that followed the current word's label, and a ride mixing
+    /// levels stepped between the two word by word — the capsule blinking, VoiceOver handed new
+    /// elements each time — in AX1 windows where the second row fitted on an N1 word and not on an
+    /// N5 (`V135HUDRowTests.axMixedLevelRidesOnlyMoveDown` has the counts). `narrow` is the device, as
+    /// `HUDBar.narrow` is, read here as a default argument so `row(fallback:)` — today's row, held
+    /// to f37fab7's bytes — calls this exactly as before.
+    @MainActor
+    static func levelReserve(_ typeSize: DynamicTypeSize, fallback: Bool, words: [VocabEntry],
+                             narrow: Bool = isPhoneIdiom) -> [String] {
+        guard typeSize.isAccessibilitySize, !(fallback && narrow) else { return [] }
         return RideHUDRungs.levelReserve(words: words)
     }
 }
@@ -871,10 +896,16 @@ enum RideHUDLayout {
 /// the count and the distance only grow. So once a ride has left today's row the ladder only moves
 /// down. Today's row reserves nothing — it is today's — so a ride can move between it and rung 0, the
 /// same pills. `OneLineFit` offers today's row only where it is one line, and there rung 0 places the
-/// pills where today's row does, so the step moves nothing: measured, 0.0pt at every one of 55 steps
-/// between the two in `V135HUDRowTests`' stepped rides (up to 18 in one 150-word list, at 834pt with
-/// the keyboard up). What a step does change is the view: `ViewThatFits` swaps its child, so VoiceOver
-/// gets new elements; where its focus goes then is not measured.
+/// pills where today's row does, so the step moves nothing: measured, 0.0pt across and 0.0pt up or
+/// down at every one of 61 steps between the two in `V135HUDRowTests`' stepped rides, 18 of them in
+/// its 150-word list at 834pt with the keyboard up. That count is the ride's, not a bound: it grows
+/// with the ride's length. Under the same key script a 500-word list steps 82 times at 834pt with
+/// the keyboard up, and 132 times in an 821pt window with it up (a 793pt row), the most at any row
+/// width from 250 to 1340pt. What a step does change is the view: `ViewThatFits` swaps its child, so
+/// VoiceOver gets new elements; where its focus goes then is not measured.
+///
+/// At the accessibility sizes an iPad's two rows reserve the ride's level labels, the second too
+/// (`RideHUDLayout.levelReserve`), so there the ladder only moves down as well.
 enum RideHUDRungs {
     /// Every item a rung may shed, in the row's order. The pause button is not one.
     enum Pill: CaseIterable { case level, score, combo, distance, progress, accuracy, speed }
@@ -956,14 +987,17 @@ enum RideHUDRungs {
 /// the second row, and on an iPad also distance, accuracy and speed (`RideHUDLayout`,
 /// `HUDBar.narrow`). That kept a touch rider's pause button on screen and took the numbers away
 /// from a VoiceOver rider at the same sizes, who had heard each as its pill's own
-/// `accessibilityValue` (v1.33 §G, deferred by name). So the one pill drawn in every row —
-/// progress — carries the hidden pills' values after its own: "6 of 12, score 891, combo 6". The
+/// `accessibilityValue` (v1.33 §G, deferred by name). So the one pill drawn in every row of
+/// `row(fallback:)` — progress — carries the hidden pills' values after its own: "6 of 12, score
+/// 891, combo 6". (The v1.35 compressed rows speak what they shed through `shedValues`, below; Time
+/// Attack's last rung sheds the count too, and its score pill carries the suffix there.) The
 /// spoken forms are the pills' — the same functions below that the pills call for their `value:` and
 /// `spoken:` (review round 2) — so a rider hears the same words whichever row `ViewThatFits` draws;
 /// `V134B3HUDSpokenTests` pins both call sites.
 ///
-/// **Nil below the accessibility sizes**, where nothing is hidden, so the progress pill's value is
-/// byte for byte what it was and the default-size renders and VoiceOver strings cannot change. A
+/// **`hiddenValues` is nil below the accessibility sizes**, where today's row hides nothing, so that
+/// row's progress pill speaks byte for byte what it did. (Below them an iPad's or a Mac's compressed
+/// rows, v1.35, do shed pills and speak them, through `shedValues`; today's row never does.) A
 /// value is spoken when this row hides it AND the default-size row shows it: a phone's distance,
 /// accuracy and speed have never been in its row at any size, so on a phone the suffix names only
 /// what the size took. The level capsule counts as a pill here although it has no
@@ -1173,9 +1207,21 @@ extension View {
 /// left, the rest at the right, `spacing` between neighbours. Short of room it closes the gap at the
 /// centre first, down to `minimumGap`, then every other gap evenly down to `minimumGap`. Its ideal
 /// width — what `ViewThatFits` compares — is every item's ideal width and `minimumGap` between each.
-/// The row never reaches past its own frame into `GameView`'s margin, so it stays as wide as the
-/// JourneyBar below it; a row that cannot fit even so (the last rung in a window narrower than any
-/// measured) keeps its right end, the pause button, in the frame and loses its left.
+/// The row stays in its own frame, as wide as the JourneyBar below it, and does not reach into
+/// `GameView`'s margin, with one measured exception: a row that cannot fit even at `minimumGap`
+/// keeps its right end, the pause button, in the frame and lets its left end go. That happens in one
+/// case. A grandfathered default word list over the 500-word cap (`WordListStore.seedDefaultIDs`)
+/// has a four-digit count, and at AX1 its last rung — "1199/1200" and the pause button — needs 268pt.
+/// In an iPad window narrower than 332pt with the keyboard down (a 256pt row at 320pt), the count
+/// starts up to 12pt left of the frame, inside the 32pt margin. Nothing in the design can narrow it:
+/// a ride whose queue is the target never sheds its count, no value is cut or wrapped, the pause
+/// button is 44pt and the gap is already at its minimum (`V135HUDRowTests.overCapListsAtAX1` writes
+/// the bleed out window by window).
+///
+/// **Every value is drawn whole.** Each item is proposed exactly the size it measured at its ideal
+/// width, never less, so a row that is short of room overflows as above rather than truncating a
+/// value ("318…") or wrapping one (`V135HUDRowTests.everyWindowOneLineWithPause` holds every cell's
+/// pills to their widths drawn with room).
 struct HUDRowLayout: Layout {
     /// How many items sit left of where today's row has its `Spacer`.
     var leading: Int
@@ -1253,35 +1299,54 @@ struct HUDRowLayout: Layout {
 /// without it, offered to `ViewThatFits` at the width where it is one line. (v1.35)
 ///
 /// **Why.** `ViewThatFits` takes a child whose ideal width fits, and 1.32's `HStack` + `Spacer` row
-/// can still wrap with its ideal width inside the proposal — in a band up to 4.75pt wide at the
-/// default size and 9.5pt at xxxLarge over the 16 ride states `V135HUDRowTests` sweeps (the widest a
-/// late 500-word list). A stepped ride crosses that band exactly where the ladder steps back from
-/// rung 0 to today's row, so without this the step drew today's row wrapped, its distance pill 14pt
-/// narrower: in `V135HUDRowTests`' stepped rides 20 of the 82 steps between the two moved a pill 14pt
-/// (with it, 55 steps and none moves a pill). Asked for its ideal width, this answers the first of
-/// the row's ideal width plus 0, 1, 2, 4 … 64pt at which the row lays out one line tall and no
-/// wider (past 64, a width no window has), so inside the band the ladder takes rung 0, which places
-/// the same pills where today's row places them wherever that row is one line: the steps then move
-/// nothing (0.0pt), and the hosted sweep finds today's row wrapping in no cell. Asked to lay out at a
-/// real width, it hands the row that proposal and places it at its own origin, so wherever it is
-/// taken it draws what the row alone draws (`V135HUDRowTests` compares the pixels cell by cell).
-/// Its cost: one more layout of the row per `ViewThatFits` pass where the row fits at its ideal
-/// width, a few more inside the band.
+/// can still wrap when proposed its ideal width or a little more — in a band from its ideal width up
+/// to 4.75pt wider at the default size and 9.5pt wider at xxxLarge, over the 16 ride states
+/// `V135HUDRowTests` sweeps (the widest a late 500-word list). A stepped ride crosses that band
+/// exactly where the ladder steps back from rung 0 to today's row, so without this the step drew
+/// today's row wrapped, its distance pill 14pt narrower: in `V135HUDRowTests`' stepped rides 20 of
+/// the 82 steps between the two moved a pill 14pt, and none moves one with it. Asked for its ideal
+/// width, this answers the first width at which the row lays out one line tall and no wider: it
+/// tries the row's ideal width plus 0, 1, 2, 4 … 64pt (past 64, a width no window has, the row is
+/// not offered), and between the last step that wrapped and the first that did not it halves the
+/// interval down to `resolution`. So today's row is offered from its first one-line width, to within
+/// 0.25pt — the child drawn wherever it is one line — and inside the band the ladder takes rung 0,
+/// which places the same pills where today's row places them wherever that row is one line: the
+/// steps move nothing, and the hosted sweep finds today's row wrapping in no cell.
+///
+/// **One line is the row's own, not the proposal's.** Both measurements propose no height. The
+/// screen's `VStack` proposes the HUD a share of its height ((content − gaps)/3 with the keyboard
+/// up), and read at a short proposed height today's row laid out one line tall INSIDE the band — a
+/// value truncated ("9980…") rather than wrapped — so the check passed and the truncated row was
+/// drawn (review of step 4b, measured below 54pt at the default size and 68pt at xxxLarge). Asked
+/// to lay out at a real width, it hands the row that proposal and places it at its own origin, so
+/// wherever it is taken it draws what the row alone draws (`V135HUDRowTests` compares the pixels
+/// cell by cell). Its cost: one more layout of the row per `ViewThatFits` pass where the row fits
+/// at its ideal width; inside the band a few steps and at most seven halvings.
 struct OneLineFit: Layout {
     /// The steps above the row's ideal width it tries, in order; past the last the row is not
     /// offered at all (the ladder takes rung 0).
     static let steps: [CGFloat] = [0, 1, 2, 4, 8, 16, 32, 64]
+    /// How far above the row's first one-line width its answer may land: the halving stops here.
+    static let resolution: CGFloat = 0.25
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         guard let row = subviews.first else { return .zero }
         guard proposal.width == nil || proposal.width == .infinity else { return row.sizeThatFits(proposal) }
-        let ideal = row.sizeThatFits(ProposedViewSize(width: nil, height: proposal.height))
-        for step in Self.steps {
+        let ideal = row.sizeThatFits(.unspecified)
+        func oneLine(_ step: CGFloat) -> Bool {
             let width = ideal.width + step
-            let laid = row.sizeThatFits(ProposedViewSize(width: width, height: proposal.height))
-            if laid.height <= ideal.height + 0.5, laid.width <= width + 0.01 {
-                return CGSize(width: width, height: ideal.height)
+            let laid = row.sizeThatFits(ProposedViewSize(width: width, height: nil))
+            return laid.height <= ideal.height + 0.5 && laid.width <= width + 0.01
+        }
+        var wrapped: CGFloat?
+        for step in Self.steps {
+            guard oneLine(step) else { wrapped = step; continue }
+            var low = wrapped ?? step, high = step
+            while high - low > Self.resolution {
+                let middle = (low + high) / 2
+                if oneLine(middle) { high = middle } else { low = middle }
             }
+            return CGSize(width: ideal.width + high, height: ideal.height)
         }
         return CGSize(width: ideal.width + 10_000, height: ideal.height)
     }
