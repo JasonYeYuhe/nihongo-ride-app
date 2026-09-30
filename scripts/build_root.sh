@@ -32,6 +32,12 @@
 #
 # The reason is printed on stderr so a build log says where its products went and why.
 # scripts/test_build_root.py plants the attribute on temp directories to prove each branch.
+#
+# WHO REMOVES A ROOT: nothing, automatically — a root outlives its checkout, and on 2026-09-27, 94 of
+# them (~70 GB) filled the disk. scripts/sweep_build_roots.py moves the roots that no live checkout
+# maps to into the Trash (opt-in; `--dry-run` first). It finds each live checkout's root by running
+# THIS script on every `git worktree list` entry, so a change to the naming rule here changes the
+# sweep's mapping with it. run_all_gates.sh prints a one-line hint when such roots exist.
 
 set -euo pipefail
 

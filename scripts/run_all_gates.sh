@@ -296,13 +296,13 @@ echo
 
 run_swift_test
 
-# The python self-tests — nine since 2026-09-29: the sales instrument (test_sales_report.py) and
+# The python self-tests — ten since 2026-09-30: the sales instrument (test_sales_report.py) and
 # the Stage 1 walk tool (test_stage1_walk.py) got theirs on 2026-09-16, the build-root helper
 # (test_build_root.py) on 2026-09-17, the review watch (test_review_watch.py, the §K guardrail
 # reader's fixture test — its LIVE read needs the ASC key and is not a gate) on 2026-09-25
-# (v1.34 §C2), and the corpus writers' quoting-residue refusal (test_escape_residue.py — 3e9407a's
-# `I'''m`) on 2026-09-29, when its merge reached main. Until v1.32 §D6 these were run by nothing
-# at all.
+# (v1.34 §C2), the corpus writers' quoting-residue refusal (test_escape_residue.py — 3e9407a's
+# `I'''m`) on 2026-09-29, when its merge reached main, and the orphaned-build-root sweep
+# (test_sweep_build_roots.py) on 2026-09-30. Until v1.32 §D6 these were run by nothing at all.
 for t in scripts/test_*.py; do
   run_gate "$(basename "$t")" "" python3 "$t"
 done
@@ -327,6 +327,19 @@ else
   run_gate "run_store_gates.sh" "3" bash scripts/run_store_gates.sh
 fi
 
+# NOT a gate, and built so it cannot act like one. Every checkout under ~/Documents gets its own
+# build root (scripts/build_root.sh) and nothing removes it with its checkout; on 2026-09-27, 94
+# orphaned roots (~70 GB) filled the disk and two gates failed with "No space left on device". This
+# prints at most one line when some root maps to no live checkout. `--hint` only maps (no walk, no
+# lsof, nothing moved), always exits 0, and neither its output nor its status is counted below —
+# moving anything stays an explicit `sweep_build_roots.py` run. scripts/test_sweep_build_roots.py
+# pins that every call here carries --hint.
+SWEEP_HINT="$(python3 "$REPO/scripts/sweep_build_roots.py" --hint 2>/dev/null || true)"
+if [ -n "$SWEEP_HINT" ]; then
+  echo
+  echo "  ℹ️  $SWEEP_HINT"
+fi
+
 echo
 echo "──────────────────────────────────────────────────────────────"
 printf '  passed:      %d\n' "${#PASSED[@]}"
@@ -349,8 +362,8 @@ printf '  gates run:   %d\n' "$TOTAL"
 # printed a clean summary. A threshold that the failure mode cannot cross is not a threshold.
 # Adding a gate raises the total and still passes; REMOVING one has to be done in a diff that also
 # moves this number, which is the whole point. (v1.32 pre-submission review.)
-FLOOR=15
-if [ -n "$HEADLESS" ]; then FLOOR=14; fi
+FLOOR=16
+if [ -n "$HEADLESS" ]; then FLOOR=15; fi
 if [ "$TOTAL" -lt "$FLOOR" ]; then
   echo
   echo "  ❌ only $TOTAL gate(s) ran. This script expects at least $FLOOR; a glob that matched nothing"
