@@ -16,6 +16,7 @@
 > 2026-09-17 由代理在 owner 授权下决定(§K "DECIDED 2026-09-17" 框),下文"原样交给 owner 决定"那一条已不再是待办。
 > 2026-09-25 起地板是 **14**(`--headless` **13**):v1.34 §C2 的 `scripts/test_review_watch.py`(§K 评论守卫读取器的夹具自测)入闸;实时读取本身不是闸门。
 > 2026-09-29 起(含 `scripts/test_escape_residue.py` 的提交合入后)地板是 **15**(`--headless` **14**):语料写入脚本(两个生成脚本、`pilot_gate`、`import_review_sheets`)拒收引号转义残留的自测入闸 —— 3e9407a 把 18 条练习译文的撇号写成了 `'''`,见 `Tests/VocabKitTests/CorpusEscapeResidueTests.swift`。
+> 2026-09-30 起(含 `scripts/test_sweep_build_roots.py` 的提交合入后)地板是 **16**(`--headless` **15**):孤儿构建根清扫 `scripts/sweep_build_roots.py` 的自测入闸 —— 2026-09-27 已删除 worktree 留下的 94 个构建根(~70 GB)占满磁盘,两个闸门报 "No space left on device"。清扫是手动的:先 `python3 scripts/sweep_build_roots.py --dry-run` 看,再去掉 `--dry-run` 移到废纸篓(`/usr/bin/trash`,从不删除;废纸篓在同一块盘上,清空后空间才回来)。`run_all_gates.sh` 只打印一行 `--hint` 提示,不计入闸门数、不影响退出码、不移动任何东西。
 
 仓库 `/Users/jason/Documents/typing_app`,macOS + iOS 的日语打字练习 app,两端都已上线。**用中文跟我交流,代码里的标识符和注释用英文。**
 
