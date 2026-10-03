@@ -98,15 +98,16 @@ SALES_REPORT = REPO / "scripts" / "sales_report.py"
 ASC_BASE = "https://api.appstoreconnect.apple.com"
 
 # --- Expected App Store state ---------------------------------------------------------------
-# These describe RELEASE 1.34 as read from App Store Connect on 2026-09-29 (macOS 1.34 build 59 and
-# iOS 1.34 build 60, both READY_FOR_SALE since 2026-09-28 Pacific; the purchase APPROVED and not
-# family-sharable). Before that, 1.33 (57/58) from 2026-09-24, and 1.32 (56/57) from 2026-09-16.
+# These describe RELEASE 1.35 as read from App Store Connect on 2026-10-03 (macOS 1.35 build 60, on sale
+# since 2026-09-29 Pacific, and iOS 1.35 build 61, since 2026-09-30 Pacific; the purchase APPROVED and
+# not family-sharable). Before that, 1.34 (59/60) from 2026-09-29, 1.33 (57/58) from 2026-09-24, and
+# 1.32 (56/57) from 2026-09-16.
 # If a newer version ships before the
 # walk, UPDATE THEM in the same change — a preflight that expects a superseded build fails for the
 # right reason, but only if somebody reads why.
-EXPECTED_VERSION = "1.34"
-EXPECTED_MAC_BUILD = "59"
-EXPECTED_IOS_BUILD = "60"
+EXPECTED_VERSION = "1.35"
+EXPECTED_MAC_BUILD = "60"
+EXPECTED_IOS_BUILD = "61"
 EXPECTED_VERSION_STATE = "READY_FOR_SALE"
 APP_ID = "6777469778"
 IAP_ID = "6806755720"

@@ -1275,7 +1275,7 @@ def test_second_control(check):
     # under it. So a red check here means one of two things — a release was registered (pin the new line, from
     # the store's timestamp as the tuple's comment says) or a fixture is reading the live tuple (fix the
     # fixture) — and never that the documented release step broke the suite.
-    check(sr.FIRM_RELEASE_DATES_PT == FIRM_BASE + ("2026-09-17", "2026-09-28"),
+    check(sr.FIRM_RELEASE_DATES_PT == FIRM_BASE + ("2026-09-17", "2026-09-28", "2026-09-29", "2026-09-30"),
           f"FIRM_RELEASE_DATES_PT changed: {sr.FIRM_RELEASE_DATES_PT} — if a release was registered, pin its line "
           f"here; no fixture-based check should have moved with it")
     # The patch is load-bearing, and shown to be. Unpatched, control_days() is grouped by the live tuple, which

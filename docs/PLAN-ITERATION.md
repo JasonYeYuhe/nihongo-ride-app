@@ -655,6 +655,7 @@ see the warning below before re-pulling this table.**
 | 1.32 | both submitted 2026-09-10 (mac 56 / iOS 57), both live **2026-09-11** PT (`FIRM_RELEASE_DATES_PT`) |
 | 1.33 | both submitted 2026-09-17 20:23Z (mac 57 / iOS 58), both live **2026-09-17** PT — macOS 21:38Z, iOS 22:53Z per the store's `currentVersionReleaseDate`; approved within two hours |
 | 1.34 | both submitted 2026-09-28 05:44Z (mac 59 / iOS 60), both live **2026-09-28** PT. The store's `currentVersionReleaseDate` read 19:46:37Z from one lookup and 2026-09-29 03:29:03Z from the others; which platform each timestamp belongs to is not known, and both fall on 09-28 PT. At 17:49Z iOS was `IN_REVIEW` and macOS `WAITING_FOR_REVIEW`; both were `READY_FOR_SALE` when read at 2026-09-29 05:00Z. Builds 58/59 were uploaded first and superseded |
+| 1.35 | both submitted 2026-09-29 19:59Z (mac 60 / iOS 61); **the platforms went live on different Pacific days**: macOS **2026-09-29** PT (00:21:34Z on 09-30, ~4.4 h after submission), iOS **2026-09-30** PT (15:15:18Z, ~19.3 h). Both dates are in `FIRM_RELEASE_DATES_PT`. The iTunes lookup with `entity=desktopSoftware` returns the Mac App Store record and the default lookup the iOS one, which also places 1.34: macOS 19:46:37Z, iOS 03:29:03Z the next UTC day |
 
 **Superseded on 2026-09-05: the platforms have separated, and this table's header no longer
 holds for every row.** Every release from 1.23 to 1.30 shipped both platforms together within

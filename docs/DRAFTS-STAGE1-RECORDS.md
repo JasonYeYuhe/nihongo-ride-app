@@ -32,7 +32,7 @@
 > |---|---|
 > | purchase, local time | `<YYYY-MM-DDTHH:MM:SS+09:00>` (JST) |
 > | Pacific report day | `<YYYY-MM-DD>` |
-> | platform · device · build | macOS · <Mac model>, macOS <version> · App Store 1.32 (56) |
+> | platform · device · build | macOS · <Mac model>, macOS <version> · App Store 1.35 (60) |
 > | storefront · country code | <storefront> · `<XX>` — price shown on the button: `<price string, verbatim>` |
 > | units | 1 |
 > | matched product type code | `<code exactly as printed by the confirm command>` |
@@ -136,9 +136,9 @@
 >
 > | gate | date (local, with offset) | device · build | outcome |
 > |---|---|---|---|
-> | No App Store account signed in | `<YYYY-MM-DDTHH:MM+09:00>` | <Mac model>, macOS <version>, App Store 1.32 (56); signed out via <path used> | <outcome>. Price area after ≥ 10 s, verbatim: `<…>`. <If it differs from Expect:> Expect reads “the price area says prices are unavailable and offers Retry”; observed `<…>`; owner's judgement: <…>. |
-> | Family Sharing | `<…>` | family member's own <device>, <OS version>, App Store 1.32 (<build>) | <offer shown / owned shown>, after launch and after one relaunch. Positive control added by the walk card (not by this table) — Purchase Sharing visible on that device: <yes / no / not checked>. <Any Expect mismatch, verbatim.> |
-> | Cross-platform restore (macOS ↔ iOS) | `<…>` | purchase on the Mac; iPhone <model>, iOS <version>, App Store 1.34 (60) | Direction walked: macOS → iOS only. Pre-purchase offer screenshot: `<file>`. Relaunch: <owned / not owned>; waited 2 min: <no / yes>; Restore tapped: <no / yes → result>. Cold install (delete + reinstall): <owned / not owned>; waited 2 min: <…>; Restore tapped: <…>. <Any Expect / Fail-if mismatch, verbatim.> |
+> | No App Store account signed in | `<YYYY-MM-DDTHH:MM+09:00>` | <Mac model>, macOS <version>, App Store 1.35 (60); signed out via <path used> | <outcome>. Price area after ≥ 10 s, verbatim: `<…>`. <If it differs from Expect:> Expect reads “the price area says prices are unavailable and offers Retry”; observed `<…>`; owner's judgement: <…>. |
+> | Family Sharing | `<…>` | family member's own <device>, <OS version>, App Store 1.35 (<build>) | <offer shown / owned shown>, after launch and after one relaunch. Positive control added by the walk card (not by this table) — Purchase Sharing visible on that device: <yes / no / not checked>. <Any Expect mismatch, verbatim.> |
+> | Cross-platform restore (macOS ↔ iOS) | `<…>` | purchase on the Mac; iPhone <model>, iOS <version>, App Store 1.35 (61) | Direction walked: macOS → iOS only. Pre-purchase offer screenshot: `<file>`. Relaunch: <owned / not owned>; waited 2 min: <no / yes>; Restore tapped: <no / yes → result>. Cold install (delete + reinstall): <owned / not owned>; waited 2 min: <…>; Restore tapped: <…>. <Any Expect / Fail-if mismatch, verbatim.> |
 >
 > Evidence is kept outside git: `<manifest file name>` (sha256 per file).
 ```
@@ -146,9 +146,9 @@
 **表格行怎么填**(本分支给 §L 表加了 `date | device | outcome` 三列;前三列不动,`walked` 列的标记由你选):
 
 ```markdown
-| **No App Store account signed in** | <unchanged> | <unchanged> | <your mark> | <YYYY-MM-DD> | <Mac model, macOS version, 1.32 (56)> | <one-line outcome> |
-| **Family Sharing** | <unchanged> | <unchanged> | <your mark> | <YYYY-MM-DD> | <family device, OS version, 1.32 (build)> | <one-line outcome> |
-| **Cross-platform restore (macOS ↔ iOS)** | <unchanged> | <unchanged> | <your mark> | <YYYY-MM-DD> | <Mac → iPhone model, iOS version, 1.34 (60)> | <one-line outcome> |
+| **No App Store account signed in** | <unchanged> | <unchanged> | <your mark> | <YYYY-MM-DD> | <Mac model, macOS version, 1.35 (60)> | <one-line outcome> |
+| **Family Sharing** | <unchanged> | <unchanged> | <your mark> | <YYYY-MM-DD> | <family device, OS version, 1.35 (build)> | <one-line outcome> |
+| **Cross-platform restore (macOS ↔ iOS)** | <unchanged> | <unchanged> | <your mark> | <YYYY-MM-DD> | <Mac → iPhone model, iOS version, 1.35 (61)> | <one-line outcome> |
 ```
 
 ---
@@ -170,8 +170,8 @@
 > The precondition this leaves violated, as the sentence above states it: “Each needs a date, a
 > device and an outcome written beside it **before v1.30 is submitted**.”
 >
-> The asymmetry this box describes has resolved to its second row. macOS 1.32 (build 56) and iOS
-> 1.32 (build 57) are `READY_FOR_SALE` (ASC, 2026-09-16), so if one of these paths is broken the cost
+> The asymmetry this box describes has resolved to its second row. macOS 1.35 (build 60) and iOS
+> 1.35 (build 61) are `READY_FOR_SALE` (ASC, 2026-10-03), so if one of these paths is broken the cost
 > is the row “after `READY_FOR_SALE`”: “a whole new version, and until it clears, live customers
 > meet a broken purchase.”
 ```

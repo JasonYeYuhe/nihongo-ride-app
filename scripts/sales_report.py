@@ -262,6 +262,13 @@ FIRM_RELEASE_DATES_PT = (
     "2026-09-17",   # v1.33, both platforms: iTunes lookup currentVersionReleaseDate macOS 21:38Z / iOS 22:53Z
     "2026-09-28",   # v1.34, both platforms (submitted 05:44Z, READY_FOR_SALE by 2026-09-29 05:00Z); iTunes lookup
                     # currentVersionReleaseDate read 2026-09-28T19:46:37Z and 2026-09-29T03:29:03Z — both 09-28 PT
+    # v1.35 shipped the two platforms on DIFFERENT Pacific days, so it has two lines: each is a firm
+    # release date, and the box's exposure set is "every firm Pacific release date and the day after
+    # each" — one line would count the other platform's release day or its day after as an other day.
+    # The lookup's desktopSoftware record (Mac devices only) is the Mac App Store's; the default record
+    # is iOS's (this also settles 1.34: macOS 19:46:37Z, iOS 03:29:03Z, both 09-28 PT).
+    "2026-09-29",   # v1.35 macOS (build 60): currentVersionReleaseDate 2026-09-30T00:21:34Z = 09-29 17:21 PDT
+    "2026-09-30",   # v1.35 iOS (build 61): currentVersionReleaseDate 2026-09-30T15:15:18Z = 09-30 08:15 PDT
 )
 UNCERTAIN_RELEASE_DATES_PT = (
     "2026-08-12", "2026-08-19", "2026-08-20", "2026-08-21", "2026-08-23", "2026-08-24", "2026-08-25",
