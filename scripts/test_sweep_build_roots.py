@@ -330,6 +330,13 @@ def main():
         age(outside_root, OLD)
         v = verdict(outside_root)
         check(v.verdict == "held", f"live checkout outside the cache: expected its name's roots 'held', got {v.verdict}")
+        # Run FROM that worktree, the sweep is not a foreign checkout: its worktree list is the main
+        # checkout's, so the main checkout's root stays live and its own name stays held. (Testing the
+        # checkout it runs from, rather than the main checkout, refused here.)
+        v_main, v_own = verdict(live_main, repo_arg=outside), verdict(outside_root, repo_arg=outside)
+        check(v_main.verdict == "live" and v_own.verdict == "held",
+              f"from a linked worktree outside the cache: expected the main root 'live' and its own 'held', "
+              f"got {v_main.verdict} / {v_own.verdict}")
         git(env, "worktree", "remove", str(outside), cwd=repo)
         v = verdict(outside_root)
         check(v.verdict == "orphan", f"that checkout removed, its root should be an orphan: {v.verdict}")

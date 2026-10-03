@@ -34,12 +34,14 @@ WHAT IT MOVES — a directory has to be all of these, or it stays
 
 It REFUSES — exit 1, nothing moved — when git cannot list the worktrees, when build_root.sh fails for a
 checkout that exists, when lsof or ps cannot be read, when NihongoRide-build is a symlink, or when the
---repo checkout itself does not build into this cache. The first three would leave the live set or the
-in-use set incomplete, and an incomplete live set calls a live root an orphan. The last is the same
-failure from the other side: a checkout that does not build into the cache (a clone under
-~/Library/Caches, CI) has a worktree list that names none of the cache's owners, so every root there
-would look orphaned. Run the sweep from the main checkout or one of its worktrees; from such a
-checkout --hint prints nothing at all, because its gates do not use the cache.
+main checkout of the --repo repository (the first `git worktree list` entry) does not build into this
+cache. The first three would leave the live set or the in-use set incomplete, and an incomplete live
+set calls a live root an orphan. The last is the same failure from the other side: a clone whose
+checkout does not build into the cache (one under ~/Library/Caches, CI) has a worktree list that
+names none of the cache's owners, so every root there would look orphaned. Run the sweep from the
+main checkout or one of its worktrees (a linked worktree outside ~/Documents is fine: its list is the
+main checkout's); from such a clone --hint prints nothing at all, because its gates do not use the
+cache.
 
 A listed worktree whose directory is gone is not live (it is what `git worktree prune` would remove)
 unless git has it locked; a locked one keeps every root with its name, since its path cannot be
@@ -114,8 +116,9 @@ class SweepError(Exception):
 
 
 class ForeignCheckout(SweepError):
-    """The --repo checkout does not build into this cache, so its worktree list cannot say who owns the
-    roots there. The sweep refuses; --hint says nothing (that checkout's gates do not use the cache)."""
+    """The main checkout of the --repo repository does not build into this cache, so its worktree list
+    cannot say who owns the roots there. The sweep refuses; --hint says nothing (that clone's gates do
+    not use the cache)."""
 
 
 def cache_for(env):
@@ -194,21 +197,26 @@ def live_checkouts(repo, build_dir, env):
     if r.returncode != 0 or not top:
         raise SweepError(f"`git -C {repo} rev-parse --show-toplevel` failed (exit {r.returncode}): "
                          f"{r.stderr.strip()}")
-    # The checkout the sweep runs from must itself build into this cache. If it does not (a clone
-    # under ~/Library/Caches, CI), its worktree list is the wrong repository's: it names none of the
-    # checkouts whose roots are here, and every one of them would look orphaned (review 2026-10-03:
-    # from a review clone, the main checkout's root and every idle worktree's were "would move").
-    top_root = root_of(top, build_dir, env)
-    if top_root is None:
-        raise ForeignCheckout(f"{top} does not build into {build_dir}, and the worktree list of a checkout "
-                              f"that does not build into the cache cannot say who owns the roots there — "
-                              f"run it from the main checkout or one of its worktrees")
+    # The repository whose worktree list this reads must be the one whose checkouts build into this
+    # cache, and its main checkout (the list's first entry) is the test. From a clone under
+    # ~/Library/Caches, or CI, that is the clone itself, which builds elsewhere: its list names none
+    # of the checkouts whose roots are here, and every one of them would look orphaned (review
+    # 2026-10-03: from a review clone, the main checkout's root and every idle worktree's were "would
+    # move"). A linked worktree of the main checkout passes even when it sits outside ~/Documents: its
+    # list IS the main checkout's, and its own root-outside-the-cache is held by name below.
+    anchor = paths[0] if os.path.isdir(paths[0]) else top
+    anchor_root = root_of(anchor, build_dir, env)
+    if anchor_root is None:
+        raise ForeignCheckout(f"{anchor} does not build into {build_dir}, and the worktree list of a "
+                              f"repository whose main checkout does not build into the cache cannot say "
+                              f"who owns the roots there — run it from the main checkout or one of its "
+                              f"worktrees")
     if top not in paths:
         trees.append((top, False, False))
     for path, locked, prunable in trees:
         count += os.path.isdir(path) or locked
         if os.path.isdir(path):
-            root = top_root if path == top else root_of(path, build_dir, env)
+            root = anchor_root if path == anchor else root_of(path, build_dir, env)
             if root is None:
                 # ANOTHER checkout of this repository that builds outside the cache: a worktree added
                 # outside ~/Documents, or one whose File Provider attribute the helper could not see.
@@ -415,8 +423,9 @@ def human(n):
 
 
 def hint(repo, env):
-    """At most one line. Mapping only: no walk, no lsof, no move. Nothing at all from a checkout that does
-    not build into the cache: its gates do not use it, and it must not invite a sweep from there."""
+    """At most one line. Mapping only: no walk, no lsof, no move. Nothing at all from a clone whose main
+    checkout does not build into the cache: its gates do not use it, and it must not invite a sweep
+    from there."""
     build_dir = build_dir_for(env)
     try:
         refuse_linked_build_dir(env)

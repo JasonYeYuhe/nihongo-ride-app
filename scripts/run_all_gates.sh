@@ -356,9 +356,9 @@ fi
 # orphaned roots (~70 GB) filled the disk and two gates failed with "No space left on device". This
 # prints at most one line when some root maps to no live checkout. `--hint` only maps (no walk, no
 # lsof, nothing moved), always exits 0, and neither its output nor its status is counted below —
-# moving anything stays an explicit `sweep_build_roots.py` run. From a checkout that does not build
-# into the cache (a clone outside ~/Documents, CI) it prints nothing: that checkout's worktree list
-# cannot say who owns the roots there, so it must not invite a sweep from there either.
+# moving anything stays an explicit `sweep_build_roots.py` run. From a clone whose main checkout does
+# not build into the cache (a clone outside ~/Documents, CI) it prints nothing: that clone's worktree
+# list cannot say who owns the roots there, so it must not invite a sweep from there either.
 # scripts/test_sweep_build_roots.py pins that every call here carries --hint.
 SWEEP_HINT="$(python3 "$REPO/scripts/sweep_build_roots.py" --hint 2>/dev/null || true)"
 if [ -n "$SWEEP_HINT" ]; then
