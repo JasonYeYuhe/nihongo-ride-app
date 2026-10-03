@@ -25,8 +25,9 @@ TWO THINGS, and the second is the durable one:
   * `load` remembers the indent the file actually uses, and whether it ends in a newline, and
     `write` uses both again. Hardcoding `indent=1` would fix today's five files and break the next
     file written some other way — and `passages.json` IS written another way: indent=2 with no
-    final newline, as `gen_passages.py` writes it. Until 2026-09-29 this module always appended
-    the newline, so it refused that file outright.
+    final newline, as `gen_passages.py` writes it. Until this reached main on 2026-10-03 (the
+    merge of fc406f1, authored 2026-09-29), the module always appended the newline, so it refused
+    that file outright.
   * `write` REFUSES to write when re-serialising the data it was given, unchanged, would not
     reproduce the original bytes. That is the assertion STATE asks for, and it is what makes
     this a guard rather than a convention: a future edit that changes the shape of the data in

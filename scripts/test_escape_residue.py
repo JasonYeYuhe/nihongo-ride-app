@@ -330,8 +330,12 @@ def main() -> int:
         rid = next(iter(entries()))
         apply_row({"id": rid, "status": "fix", "correction": correction}, entries(), fname, changes)
         out = io.StringIO()
-        with contextlib.redirect_stdout(out):
-            sheets.write_back(changes, {}, apply=False)
+        # write_back looks up every file a recorded fix lands in, and is given no files here: with
+        # the refusal broken it would stop on a KeyError naming neither the correction nor the
+        # field. A recorded fix already IS the failure, so say it in the words below instead.
+        if not changes.fixes:
+            with contextlib.redirect_stdout(out):
+                sheets.write_back(changes, {}, apply=False)
         if changes.fixes or f"SKIP {fname} {rid}: correction refused: {field} carries " not in out.getvalue():
             failures.append(f"import_review_sheets did not refuse {correction!r}: fixes={changes.fixes!r}, "
                             f"printed {out.getvalue()!r}")
