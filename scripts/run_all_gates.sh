@@ -296,13 +296,15 @@ echo
 
 run_swift_test
 
-# The python self-tests — ten since 2026-09-30: the sales instrument (test_sales_report.py) and
+# The python self-tests — eleven since 2026-10-03: the sales instrument (test_sales_report.py) and
 # the Stage 1 walk tool (test_stage1_walk.py) got theirs on 2026-09-16, the build-root helper
 # (test_build_root.py) on 2026-09-17, the review watch (test_review_watch.py, the §K guardrail
 # reader's fixture test — its LIVE read needs the ASC key and is not a gate) on 2026-09-25
 # (v1.34 §C2), the corpus writers' quoting-residue refusal (test_escape_residue.py — 3e9407a's
-# `I'''m`) on 2026-09-29, when its merge reached main, and the orphaned-build-root sweep
-# (test_sweep_build_roots.py) on 2026-09-30. Until v1.32 §D6 these were run by nothing at all.
+# `I'''m`) on 2026-09-29, when its merge reached main, and two that reached main together on
+# 2026-10-03: the orphaned-build-root sweep (test_sweep_build_roots.py) and the review-sheet
+# importer's byte-for-byte write (test_import_review_sheets.py — its --apply reformatted all five
+# n*.json at indent=2). Until v1.32 §D6 these were run by nothing at all.
 for t in scripts/test_*.py; do
   run_gate "$(basename "$t")" "" python3 "$t"
 done
@@ -362,8 +364,8 @@ printf '  gates run:   %d\n' "$TOTAL"
 # printed a clean summary. A threshold that the failure mode cannot cross is not a threshold.
 # Adding a gate raises the total and still passes; REMOVING one has to be done in a diff that also
 # moves this number, which is the whole point. (v1.32 pre-submission review.)
-FLOOR=16
-if [ -n "$HEADLESS" ]; then FLOOR=15; fi
+FLOOR=17
+if [ -n "$HEADLESS" ]; then FLOOR=16; fi
 if [ "$TOTAL" -lt "$FLOOR" ]; then
   echo
   echo "  ❌ only $TOTAL gate(s) ran. This script expects at least $FLOOR; a glob that matched nothing"
