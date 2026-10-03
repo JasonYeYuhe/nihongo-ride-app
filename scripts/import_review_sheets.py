@@ -21,7 +21,8 @@ or bare text, which is auto-routed: pure hiragana → kana, CJK → zh, latin �
 Dry-run by default — prints every planned change. Add --apply to write.
 
 --apply writes only the files a change touched, through corpus_io.CorpusFile, so a correction
-changes that entry's bytes and nothing else. Until 2026-09-29 it wrote all six files back with
+changes that entry's bytes and nothing else. That change reached main on 2026-10-03 (the merge of
+fc406f1, authored 2026-09-29). Before that the importer wrote all six files back with
 json.dumps(indent=2): one correction reformatted n1..n5.json (indent=1) whole — the v1.26 incident
 corpus_io exists to prevent, found by the v1.35 step-1 review.
 
