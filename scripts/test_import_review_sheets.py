@@ -27,10 +27,15 @@ data: that is what the code under test does, and it would grade itself. The writ
 also parse back to exactly what the reviewer typed, which holds the hand-written forms to account.
 Every other file must come back byte for byte. A file no change touched must not be written at
 all — same inode, same mtime — because writing it is what stops on n2 half way through a run.
+"Byte for byte" is meant literally: every corpus file and the blocklist is read as raw bytes,
+never in text mode, which reads `\\r\\n` as `\\n`. This test's first version compared through
+`read_text`, and a CorpusFile.write that ended every line `\\r\\n` — every line of every touched
+file changed on disk — still printed ok (the 1003 review's mutation R2).
 
 Then two runs in which a TOUCHED file cannot round-trip: one through a fix (n2), one through a drop
-alone (n4). Each must say so in the dry run, in the REFUSED line a reviewer reads. On --apply each
-must stop with "nothing written" and write nothing at all, not even the files listed before it.
+alone (n4). Each must say so in the dry run, in the REFUSED line a reviewer reads, and the dry run
+must write nothing. On --apply each must stop with "nothing written" and write nothing at all, not
+even the files listed before it.
 
 The importer is loaded and run from a scratch MIRROR of the repo. The mirror holds its scripts, the
 Resources and the blocklist at their usual relative places, so the importer's module-level ROOT,
@@ -133,6 +138,19 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def read_raw(path):
+    """The file's text exactly as its bytes hold it. Every corpus and blocklist comparison here
+    reads through this, never `read_text`: text mode turns `\\r\\n` into `\\n` on the way in, so a
+    writer that ended every line `\\r\\n` — all 178,871 lines of n1.json changed on disk for one
+    correction, the v1.26 diff this test exists to stop — compared equal and printed ok."""
+    return path.read_bytes().decode("utf-8")
+
+
+def write_raw(path, text):
+    """`text` to `path` with no newline translation, so what the test lays down is what it reads."""
+    path.write_bytes(text.encode("utf-8"))
+
+
 def written_stamp(path):
     """What a write changes even when it writes the same bytes: CorpusFile.write's tmp + replace
     gives the path a new inode, and any write a new mtime."""
@@ -201,11 +219,13 @@ def describe(name, original, written, expected):
     o, w, e = original.split("\n"), written.split("\n"), expected.split("\n")
     moved = sum(1 for a, b in zip(o, w) if a != b) + abs(len(o) - len(w))
     off = next((i for i, (a, b) in enumerate(zip(w, e)) if a != b), min(len(w), len(e)))
+    crlf_w, crlf_e = written.count("\r\n"), expected.count("\r\n")
     return (f"{name}.json is not the original with only the corrected lines changed: {len(w):,} lines "
             f"written, {len(e):,} expected, {moved:,} differ from the original by position; first "
             f"line off the expected text is {off + 1}: {w[off] if off < len(w) else '<end>'!r} "
             f"vs {e[off] if off < len(e) else '<end>'!r}"
-            + ("; final newline differs" if written.endswith("\n") != expected.endswith("\n") else ""))
+            + ("; final newline differs" if written.endswith("\n") != expected.endswith("\n") else "")
+            + (f"; {crlf_w:,} lines end CRLF, {crlf_e:,} expected" if crlf_w != crlf_e else ""))
 
 
 def write_sheet(path, rows):
@@ -231,24 +251,34 @@ def run(importer, argv, res, blocklist):
     return out.getvalue(), raised
 
 
+def changed(res, blocklist, texts, blocklist_text):
+    """The corpus files, and the blocklist, whose bytes are no longer `texts` / `blocklist_text`."""
+    names = [f"{n}.json" for n in NAMES if read_raw(res / f"{n}.json") != texts[n]]
+    return names + (["the blocklist"] if read_raw(blocklist) != blocklist_text else [])
+
+
 def refused_run(importer, what, sheets, res, blocklist, line, texts, blocklist_text):
     """Failures of one run that must be refused: the dry run prints `line` — the REFUSED line, which
-    is where a reviewer reads what --apply will do — and --apply prints it and stops with "nothing
-    written", having written no corpus file and not the blocklist."""
+    is where a reviewer reads what --apply will do — and writes nothing; --apply prints it and stops
+    with "nothing written", having written no corpus file and not the blocklist. The files are
+    checked after each of the two, and put back after the dry run, so each failure names the run
+    that wrote."""
     failures = []
     out, raised = run(importer, [str(sheets)], res, blocklist)
     if raised or line not in out.splitlines():
         failures.append(f"with {what}, the dry run did not print {line!r} (it raised {raised!r}); "
                         f"it printed {out[-500:]!r}")
+    for f in changed(res, blocklist, texts, blocklist_text):
+        failures.append(f"with {what}, the dry run changed {f}")
+    for n in NAMES:
+        write_raw(res / f"{n}.json", texts[n])
+    write_raw(blocklist, blocklist_text)
     out, raised = run(importer, [str(sheets), "--apply"], res, blocklist)
     if str(raised) != "nothing written" or line not in out.splitlines():
         failures.append(f"with {what}, --apply did not refuse before writing: raised {raised!r}, "
                         f"printed {out[-500:]!r}")
-    for n in NAMES:
-        if (res / f"{n}.json").read_text(encoding="utf-8") != texts[n]:
-            failures.append(f"with {what}, a refused --apply still wrote {n}.json")
-    if blocklist.read_text(encoding="utf-8") != blocklist_text:
-        failures.append(f"with {what}, a refused --apply still appended to the blocklist")
+    for f in changed(res, blocklist, texts, blocklist_text):
+        failures.append(f"with {what}, a refused --apply still wrote {f}")
     return failures
 
 
@@ -278,15 +308,15 @@ def main() -> int:
         blocklist = tmp / "work" / "known-bad-readings.txt"
         shutil.copyfile(BLOCKLIST, blocklist)
         # n2 in a layout CorpusFile cannot reproduce. No change touches it until step 3.
-        n2 = json.loads((res / "n2.json").read_text(encoding="utf-8"))
-        (res / "n2.json").write_text(json.dumps(n2, ensure_ascii=False, indent=3) + "\n", encoding="utf-8")
-        original = {n: (res / f"{n}.json").read_text(encoding="utf-8") for n in NAMES}
-        original_blocklist = blocklist.read_text(encoding="utf-8")
+        n2 = json.loads(read_raw(res / "n2.json"))
+        write_raw(res / "n2.json", json.dumps(n2, ensure_ascii=False, indent=3) + "\n")
+        original = {n: read_raw(res / f"{n}.json") for n in NAMES}
+        original_blocklist = read_raw(blocklist)
 
         def restore(texts):
             for n in NAMES:
-                (res / f"{n}.json").write_text(texts[n], encoding="utf-8")
-            blocklist.write_text(original_blocklist, encoding="utf-8")
+                write_raw(res / f"{n}.json", texts[n])
+            write_raw(blocklist, original_blocklist)
 
         # The entries, chosen from the data so a later corpus change cannot strand a fixed id.
         n5, n4, n3, n1, passages = (json.loads(original[n]) for n in ("n5", "n4", "n3", "n1", "passages"))
@@ -341,11 +371,8 @@ def main() -> int:
         if "REFUSED" in out:
             failures.append("the dry run printed REFUSED, though every touched file here round-trips and "
                             f"the one that does not (n2) is untouched: {out[out.index('REFUSED'):][:300]!r}")
-        for n in NAMES:
-            if (res / f"{n}.json").read_text(encoding="utf-8") != original[n]:
-                failures.append(f"the dry run changed {n}.json")
-        if blocklist.read_text(encoding="utf-8") != original_blocklist:
-            failures.append("the dry run changed the blocklist")
+        for f in changed(res, blocklist, original, original_blocklist):
+            failures.append(f"the dry run changed {f}")
 
         # 2. --apply: the corrected files differ from the original by exactly the corrected lines,
         #    in the hand-written JSON; every other file — the OK-only n3 and the unreproducible n2
@@ -355,7 +382,7 @@ def main() -> int:
         if raised:
             failures.append(f"--apply raised {raised!r}; it printed:\n{out[-600:]}")
         for n in NAMES:
-            written = (res / f"{n}.json").read_text(encoding="utf-8")
+            written = read_raw(res / f"{n}.json")
             if written != expected[n]:
                 failures.append(describe(n, original[n], written, expected[n]))
             rewritten = written_stamp(res / f"{n}.json") != stamps[n]
@@ -370,7 +397,7 @@ def main() -> int:
         for n, rid, want in (("n5", vocab["id"], [N5_NEW]), ("n1", escaped["id"], [N1_NEW]),
                              ("passages", passage["id"], P_NEW)):
             try:
-                got = next(e for e in json.loads((res / f"{n}.json").read_text(encoding="utf-8"))
+                got = next(e for e in json.loads(read_raw(res / f"{n}.json"))
                            if e["id"] == rid)["meanings"]["en"]
             except (ValueError, StopIteration) as exc:
                 failures.append(f"{n}.json does not read back after --apply ({exc!r})")
@@ -378,8 +405,9 @@ def main() -> int:
             if got != want:
                 failures.append(f"{n}.json {rid} meanings.en reads back as {got!r}; the reviewer wrote {want!r}")
         want_blocklist = original_blocklist + "# native review import\n" + dropped["kana"] + "\n"
-        if blocklist.read_text(encoding="utf-8") != want_blocklist:
-            failures.append(f"the blocklist did not gain exactly the dropped kana {dropped['kana']!r}")
+        if read_raw(blocklist) != want_blocklist:
+            failures.append(f"the blocklist did not gain exactly the dropped kana {dropped['kana']!r}, "
+                            "byte for byte")
 
         # 3. A TOUCHED file --apply would have to reformat stops the whole run before ANY file is
         #    written. n2 (indent=3) now gets a fix; the n5 fix lists first and must not land either.
