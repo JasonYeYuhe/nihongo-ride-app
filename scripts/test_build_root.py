@@ -3,17 +3,20 @@
 
 A helper that picks the right directory and that nothing calls would pass a unit test forever while
 every signed build still died under ~/Documents. So besides the three branches (plain directory,
-File Provider domain on the root, File Provider domain on an ANCESTOR) and the override, this reads
-the gate runner and fails unless its `swift test` takes its scratch path from the helper.
+File Provider domain on the root, File Provider domain on an ANCESTOR), a symlinked or differently
+spelled path to the same checkout (case, NFD), and the override, this reads the gate runner and fails
+unless its `swift test` takes its scratch path from the helper.
 
 The attribute is planted with `xattr -w` on temp directories: the helper only reads it, so a
 planted value is indistinguishable from iCloud's for the question being asked.
 """
 
+import hashlib
 import os
 import subprocess
 import sys
 import tempfile
+import unicodedata
 from pathlib import Path
 
 SCRIPTS = Path(__file__).resolve().parent
@@ -87,6 +90,39 @@ def main():
         check(rc3 == 0 and out3 == out,
               f"symlinked checkout: expected the real checkout's root {out!r}, got {out3!r} ({err3})")
         print(f"  symlink to that checkout   → {out3}")
+
+        # A differently SPELLED path to the same checkout gets the same root. git records the on-disk
+        # spelling and the sweep maps that; the gate runner hashes whatever spelling its caller's cwd
+        # had. bash's builtin `pwd -P` echoed the caller's case and Unicode form back, so the two
+        # hashes differed and the sweep called a live root an orphan (review 2026-10-03). Only
+        # testable where the filesystem itself treats the spellings as one directory.
+        # The expected root is derived here from the on-disk name, not taken from a helper run.
+        def documented_root(on_disk):
+            tag = hashlib.sha1(str(on_disk).encode("utf-8")).hexdigest()[:8]
+            return f"{cache}/NihongoRide-build/{on_disk.name}-{tag}"
+
+        spelled = ancestor / "CaseRepo"
+        spelled.mkdir()
+        if os.path.isdir(ancestor / "caserepo"):
+            rc4, out4, err4 = run_helper(ancestor / "caserepo", {"NIHONGO_BUILD_CACHE": str(cache)})
+            check(rc4 == 0 and out4 == documented_root(spelled),
+                  f"case-respelled checkout: expected the on-disk spelling's root {documented_root(spelled)!r}, "
+                  f"got {out4!r} ({err4})")
+            print(f"  same checkout, other case  → {out4}")
+        else:
+            print("  (skipped: this temp filesystem is case-sensitive, so a case-respelled path is "
+                  "another directory)")
+        nfc = unicodedata.normalize("NFC", "café")
+        nfd = unicodedata.normalize("NFD", nfc)
+        (ancestor / nfc).mkdir()
+        if os.path.isdir(ancestor / nfd):
+            rc5, out5, err5 = run_helper(ancestor / nfd, {"NIHONGO_BUILD_CACHE": str(cache)})
+            check(rc5 == 0 and out5 == documented_root(ancestor / nfc),
+                  f"NFD-spelled checkout: expected the NFC directory's root {documented_root(ancestor / nfc)!r}, "
+                  f"got {out5!r} ({err5})")
+            print(f"  same checkout, NFD spelled → {out5}")
+        else:
+            print("  (skipped: this temp filesystem keeps NFC and NFD names apart)")
 
         rc, out, err = run_helper(repo, {"NIHONGO_BUILD_CACHE": str(cache),
                                          "NIHONGO_BUILD_ROOT": str(tmp / "chosen")})

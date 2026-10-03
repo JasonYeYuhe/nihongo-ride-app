@@ -22,8 +22,12 @@ of at a comment.
 
 TWO THINGS, and the second is the durable one:
 
-  * `load` remembers the indent the file actually uses, and `write` uses it again. Hardcoding
-    `indent=1` would fix today's five files and break the next file written some other way.
+  * `load` remembers the indent the file actually uses, and whether it ends in a newline, and
+    `write` uses both again. Hardcoding `indent=1` would fix today's five files and break the next
+    file written some other way — and `passages.json` IS written another way: indent=2 with no
+    final newline, as `gen_passages.py` writes it. Until this reached main on 2026-10-03 (the
+    merge of fc406f1, authored 2026-09-29), the module always appended the newline, so it refused
+    that file outright.
   * `write` REFUSES to write when re-serialising the data it was given, unchanged, would not
     reproduce the original bytes. That is the assertion STATE asks for, and it is what makes
     this a guard rather than a convention: a future edit that changes the shape of the data in
@@ -80,22 +84,23 @@ class CorpusFile:
         self.path = Path(path)
         self.raw = self.path.read_text(encoding="utf-8")
         self.data = json.loads(self.raw)
-        self.indent = self._detect_indent()
+        self.layout = self._detect_layout()
 
-    def _detect_indent(self):
-        """The indent that reproduces this file. None when nothing obvious does."""
+    def _detect_layout(self):
+        """`(indent, final newline)` that reproduce this file. None when nothing obvious does."""
+        newline = "\n" if self.raw.endswith("\n") else ""
         for indent in (1, 2, 4, None):
-            if self._render(self.data, indent) == self.raw:
-                return indent
+            if self._render(self.data, indent, newline) == self.raw:
+                return indent, newline
         return None
 
     @staticmethod
-    def _render(data, indent):
-        return json.dumps(data, ensure_ascii=False, indent=indent) + "\n"
+    def _render(data, indent, newline):
+        return json.dumps(data, ensure_ascii=False, indent=indent) + newline
 
     def round_trips(self):
         """True when this file can be written back byte for byte."""
-        return self.indent is not None or self._render(self.data, None) == self.raw
+        return self.layout is not None
 
     def write(self, data=None):
         """Write `data` (default: this file's own, possibly mutated, object).
@@ -103,12 +108,12 @@ class CorpusFile:
         Refuses when the file did not round-trip on load — writing then would reformat
         everything, and a diff nobody can read is the same as no guard at all.
         """
-        if self.indent is None and not self.round_trips():
+        if not self.round_trips():
             raise SystemExit(
                 f"{self.path}: this file does not round-trip through json.dumps at any indent "
                 "this module knows, so writing it would reformat the whole file. Fix the "
                 "serialisation here rather than landing an unreviewable diff.")
-        payload = self._render(self.data if data is None else data, self.indent)
+        payload = self._render(self.data if data is None else data, *self.layout)
         tmp = self.path.with_suffix(self.path.suffix + ".tmp")
         tmp.write_text(payload, encoding="utf-8")
         tmp.replace(self.path)   # open(path,"w") truncates before it writes — v1.25's empty project.yml
