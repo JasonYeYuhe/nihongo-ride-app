@@ -126,8 +126,10 @@ run_gate() {
 # in that list: without this record, a sweep run from one clone calls every root of the other an
 # orphan. With it, the sweep keeps a root whose record names a directory that still exists and that
 # build_root.sh still maps to that same root. Best effort: a record that cannot be written is noted
-# in the gate's log and the gate runs anyway. It never writes through a symlink.
-# scripts/test_sweep_build_roots.py runs this function as written here.
+# in the gate's log and the gate runs anyway. It never writes through a symlink, dangling or not (so
+# the test is -L, "is a link", not -e, which calls a dangling link absent and creates its target).
+# A record already there is replaced, so one left empty by a write that hit a full disk is repaired
+# by the next run. scripts/test_sweep_build_roots.py runs this function as written here.
 record_checkout() {
   local checkout_dir="$1" root="$2" log="$3" resolved
   if resolved="$(cd "$checkout_dir" && /bin/pwd -P)" && mkdir -p "$root" \

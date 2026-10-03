@@ -17,6 +17,11 @@ name, or outside the scope at move time is moved; a symlinked NihongoRide-build 
 naming a root through an unresolved cache path keeps it; a separate clone that does not build into
 the cache is refused (and --hint is silent there); and a clone that does is kept apart from the main
 repository's roots by the .checkout record that run_all_gates.sh writes, run here as written there.
+From the second round of that review: the record is checked in a root of its own each time (a write
+that was skipped must not compare equal to an earlier one), a dangling .checkout link is not written
+through, an empty or stale record is replaced, and a .checkout that is a directory, a FIFO (under a
+timeout, through --hint as the runner calls it) or that names a file rather than a directory is no
+record at all.
 
 Everything happens in a temporary directory: a git repository with worktrees under a planted File
 Provider attribute (so build_root.sh names their roots exactly as it does under ~/Documents), a cache
@@ -191,10 +196,10 @@ def main():
         fake_trash.chmod(0o755)
         log = trash / "log"
 
-        def sweep(*args, repo_arg=repo, cmd=fake_trash, extra_env=None):
+        def sweep(*args, repo_arg=repo, cmd=fake_trash, extra_env=None, timeout=300):
             r = subprocess.run([sys.executable, str(SWEEP), "--repo", str(repo_arg), "--trash-cmd", str(cmd),
                                 *args], env={**env, **(extra_env or {})}, capture_output=True, text=True,
-                               timeout=300)
+                               timeout=timeout)
             return r.returncode, r.stdout, r.stderr
 
         def line_for(out, root):
@@ -576,9 +581,13 @@ def main():
               f"record through a symlink: expected {repo}, got rc={rc} {recorded_text(probe)!r}")
         respelled = docs.parent / docs.name.lower() / repo.name
         if os.path.isdir(respelled):
-            rc, _ = record(respelled, probe, tmp / "record-2.log")
-            check(rc == 0 and recorded_text(probe) == f"{repo}\n",
-                  f"record from a case-respelled cwd: expected the on-disk {repo}, got {recorded_text(probe)!r}")
+            # A root of its own. Written into `probe`, which already holds the right path, a write that
+            # was skipped altogether compared equal too (review 2026-10-03, round 2: the shell builtin
+            # `pwd -P` together with "do not overwrite a record" passed).
+            probe_case = tmp / "record-probe-case"
+            rc, _ = record(respelled, probe_case, tmp / "record-2.log")
+            check(rc == 0 and recorded_text(probe_case) == f"{repo}\n",
+                  f"record from a case-respelled cwd: expected the on-disk {repo}, got {recorded_text(probe_case)!r}")
         else:
             print("  (skipped: case-respelled record — this temp filesystem is case-sensitive)")
         blocker = tmp / "a-file"
@@ -594,6 +603,29 @@ def main():
         rc, logged = record(repo, probe2, tmp / "record-4.log")
         check(rc == 0 and victim.read_text() == "the owner's\n" and "could not record" in logged,
               f"a symlinked .checkout must not be written through: rc={rc} victim={victim.read_text()!r} log={logged!r}")
+        # The same for a DANGLING link. The link above points at a file that exists, so a test for
+        # "exists" in place of "is a link" refused it just the same; this one it would call absent,
+        # and the write would create the link's target wherever it points.
+        planted = tmp / "planted-target"
+        probe3 = tmp / "record-probe-3"
+        probe3.mkdir()
+        (probe3 / ".checkout").symlink_to(planted)
+        rc, logged = record(repo, probe3, tmp / "record-5.log")
+        check(rc == 0 and not os.path.lexists(planted) and (probe3 / ".checkout").is_symlink()
+              and "could not record" in logged,
+              f"a dangling .checkout link must not be written through: rc={rc} target created="
+              f"{os.path.lexists(planted)} log={logged!r}")
+        # A record already there is replaced, not kept: one left empty by a write that hit a full disk
+        # (`>` truncates first), or one naming a checkout that has since moved, is repaired by the next
+        # gate run. Kept, the empty one would vouch for nothing until someone removed it by hand.
+        for label, old in (("empty", ""), ("stale", f"{docs / 'moved-away'}\n")):
+            probe_old = tmp / f"record-probe-{label}"
+            probe_old.mkdir()
+            (probe_old / ".checkout").write_text(old)
+            rc, logged = record(repo, probe_old, tmp / f"record-{label}.log")
+            check(rc == 0 and recorded_text(probe_old) == f"{repo}\n" and "could not record" not in logged,
+                  f"an existing {label} record must be replaced by {repo}: rc={rc} "
+                  f"record={recorded_text(probe_old)!r} log={logged!r}")
         body = [line.strip() for line in runner_function("run_swift_test").splitlines()
                 if line.strip() and not line.lstrip().startswith("#")]
 
@@ -605,7 +637,8 @@ def main():
               and body[at_record] == 'record_checkout "$REPO" "$root" "$log"',
               f"run_swift_test must call `record_checkout \"$REPO\" \"$root\" \"$log\"` after naming the root and "
               f"before building into it: {body[at_record] if at_record is not None else 'no call'}")
-        print("  record_checkout            → the on-disk path; a failure is logged, never a failed gate")
+        print("  record_checkout            → the on-disk path, replacing an old record, never through a link;"
+              " a failure is logged, never a failed gate")
 
         # ── 16. separate clones ──────────────────────────────────────────────────────────────────────
         # Outside the File Provider attribute a clone builds into <clone>/build, so its worktree list
@@ -682,13 +715,21 @@ def main():
             rec.write_text(f"{sealed_checkout}\n")
             sealed_checkout.chmod(0)
 
-        for label, make, expected, why in (
+        # Only a regular file is a record, and only a directory is a checkout. Read as a record, a
+        # directory named .checkout fails with EISDIR and would keep the root ("could not be read");
+        # a record naming a file would send build_root.sh into `cd FILE`, fail, and keep it too.
+        not_a_checkout = docs / "a-file.txt"
+        not_a_checkout.write_text("a file where a checkout might have been\n")
+
+        for n, (label, make, expected, why) in enumerate((
                 ("names a directory that no longer exists", writes(f"{docs / 'removed-checkout'}\n"), "orphan", ""),
                 ("names a live checkout whose root is another", writes(f"{live_wt}\n"), "orphan", ""),
                 ("is a symlink to a good record", make_link, "orphan", ""),
                 ("is over the size cap", writes(good + "\n" * 5000), "orphan", ""),
+                ("is a directory", rec.mkdir, "orphan", ""),
+                ("names a regular file, not a directory", writes(f"{not_a_checkout}\n"), "orphan", ""),
                 ("cannot be read", make_unreadable, "held", "could not be read"),
-                ("names a directory build_root.sh cannot enter", seal, "held", "could not be computed")):
+                ("names a directory build_root.sh cannot enter", seal, "held", "could not be computed"))):
             os.rename(rec, tmp / "set-aside")
             try:
                 make()
@@ -700,12 +741,42 @@ def main():
                 sealed_checkout.chmod(0o755)
                 if os.path.lexists(rec):
                     if not rec.is_symlink():
-                        rec.chmod(0o644)
-                    os.rename(rec, tmp / "discarded-record")
+                        rec.chmod(0o755 if rec.is_dir() else 0o644)
+                    os.rename(rec, tmp / f"discarded-record-{n}")
                 os.rename(tmp / "set-aside", rec)
                 age(clone_in_root, OLD)
+
+        # A FIFO named .checkout. Opened without O_NONBLOCK it blocks until something writes to it, and
+        # run_all_gates.sh runs --hint with no timeout, so the whole gate run would hang (review
+        # 2026-10-03, round 2). Run as the runner runs it, under a timeout. It is not a record, so the
+        # root is counted with the two that nobody claims (the fresh orphan and gone-held's root).
+        os.rename(rec, tmp / "set-aside")
+        os.mkfifo(rec)
+        age(clone_in_root, OLD)
+        try:
+            try:
+                rc, out, err = sweep("--hint", timeout=30)
+                said = f"rc={rc} {out!r} {err[-300:]!r}"
+            except subprocess.TimeoutExpired:
+                rc, out, said = None, "", "HUNG (killed after 30 s)"
+            check(rc == 0 and out.startswith("build cache: 3 build roots "),
+                  f"--hint with a FIFO as a root's {mod.RECORD}: expected it to finish and count that root "
+                  f"among 3, got {said}")
+            if rc is not None:                   # hung once, a dry run would hang the same way
+                try:
+                    rc, out, err = sweep("--dry-run", timeout=120)
+                    said = line_for(out, clone_in_root)
+                except subprocess.TimeoutExpired:
+                    said = "HUNG (killed after 120 s)"
+                check("would move" in said,
+                      f"--dry-run with a FIFO as a root's {mod.RECORD}: expected 'would move', got {said!r}")
+        finally:
+            os.rename(rec, tmp / "discarded-fifo")
+            os.rename(tmp / "set-aside", rec)
+            age(clone_in_root, OLD)
         check(verdict(clone_in_root).verdict == "recorded", "fixture: the clone's good record was not restored")
-        print("  records                    → a missing, foreign, linked, oversized one ignored; unreadable ones keep")
+        print("  records                    → a missing, foreign, linked, oversized, directory, file-naming or"
+              " FIFO one ignored; unreadable ones keep")
 
         # ── 18. the real run over all of it: the old orphan alone goes ───────────────────────────────
         before = calls_now()
