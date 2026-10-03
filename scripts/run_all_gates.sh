@@ -120,6 +120,25 @@ run_gate() {
   FAILED+=("$name (exit $status) — $log")
 }
 
+# Leave "<root>/.checkout" naming the checkout that builds into <root>, resolved exactly as
+# build_root.sh resolves it (`cd` + /bin/pwd -P). scripts/sweep_build_roots.py knows the live
+# checkouts only through `git worktree list` of the checkout it runs from, and a separate clone is not
+# in that list: without this record, a sweep run from one clone calls every root of the other an
+# orphan. With it, the sweep keeps a root whose record names a directory that still exists and that
+# build_root.sh still maps to that same root. Best effort: a record that cannot be written is noted
+# in the gate's log and the gate runs anyway. It never writes through a symlink.
+# scripts/test_sweep_build_roots.py runs this function as written here.
+record_checkout() {
+  local checkout_dir="$1" root="$2" log="$3" resolved
+  if resolved="$(cd "$checkout_dir" && /bin/pwd -P)" && mkdir -p "$root" \
+     && [ ! -L "$root/.checkout" ] && printf '%s\n' "$resolved" > "$root/.checkout"; then
+    return 0
+  fi 2>>"$log"
+  echo "note: could not record this checkout in $root/.checkout — a sweep run from another clone" \
+       "will not see this root as live" >> "$log"
+  return 0
+}
+
 # `swift test`, with the "did it actually run" assertion the console cannot be trusted for.
 run_swift_test() {
   local log="$LOGS/swift-test.log" status
@@ -132,6 +151,7 @@ run_swift_test() {
     printf 'FAILED (scripts/build_root.sh could not name a build root — see %s)\n' "$log"
     FAILED+=("swift test (build_root.sh failed) — $log"); return
   fi
+  record_checkout "$REPO" "$root" "$log"
   scratch="$root/swiftpm"
   echo "swift test --scratch-path $scratch" >> "$log"
   swift test --scratch-path "$scratch" >> "$log" 2>&1
@@ -334,8 +354,10 @@ fi
 # orphaned roots (~70 GB) filled the disk and two gates failed with "No space left on device". This
 # prints at most one line when some root maps to no live checkout. `--hint` only maps (no walk, no
 # lsof, nothing moved), always exits 0, and neither its output nor its status is counted below —
-# moving anything stays an explicit `sweep_build_roots.py` run. scripts/test_sweep_build_roots.py
-# pins that every call here carries --hint.
+# moving anything stays an explicit `sweep_build_roots.py` run. From a checkout that does not build
+# into the cache (a clone outside ~/Documents, CI) it prints nothing: that checkout's worktree list
+# cannot say who owns the roots there, so it must not invite a sweep from there either.
+# scripts/test_sweep_build_roots.py pins that every call here carries --hint.
 SWEEP_HINT="$(python3 "$REPO/scripts/sweep_build_roots.py" --hint 2>/dev/null || true)"
 if [ -n "$SWEEP_HINT" ]; then
   echo

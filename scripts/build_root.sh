@@ -35,15 +35,25 @@
 #
 # WHO REMOVES A ROOT: nothing, automatically — a root outlives its checkout, and on 2026-09-27, 94 of
 # them (~70 GB) filled the disk. scripts/sweep_build_roots.py moves the roots that no live checkout
-# maps to into the Trash (opt-in; `--dry-run` first). It finds each live checkout's root by running
-# THIS script on every `git worktree list` entry, so a change to the naming rule here changes the
-# sweep's mapping with it. run_all_gates.sh prints a one-line hint when such roots exist.
+# maps to into the Trash (opt-in; `--dry-run` first). It MAPS each live checkout to its root by
+# running this script on it, so the hash and the directory follow any change made here. But its
+# candidate filter (which directories count as per-checkout roots at all) is its own regex,
+# ROOT_NAME in sweep_build_roots.py, repeating the "<name>-<8 hex>" shape below: change one and you
+# must change the other; scripts/test_sweep_build_roots.py fails when they drift. The gate runner,
+# not this script, leaves "<root>/.checkout" naming the checkout that built there: this script
+# prints a path and changes nothing. run_all_gates.sh prints a one-line hint when roots that no
+# live checkout maps to exist.
 
 set -euo pipefail
 
 ROOT="${1:-$(cd "$(dirname "$0")/.." && pwd)}"
 # -P: a symlink to a checkout inside ~/Documents must resolve to the synced path it really is.
-ROOT="$(cd "$ROOT" && pwd -P)"
+# /bin/pwd, not the shell builtin: bash's `pwd -P` resolves symlinks but echoes the caller's own
+# spelling of every other component, so `cd ~/documents/typing_app` (APFS is case-insensitive) or
+# an NFD-spelled path hashed to a different root than the spelling git records, and the sweep,
+# which maps git's spelling, then called that live root an orphan (review 2026-10-03). /bin/pwd
+# asks the filesystem (getcwd), which answers in the on-disk case and Unicode form.
+ROOT="$(cd "$ROOT" && /bin/pwd -P)"
 
 if [[ -n "${NIHONGO_BUILD_ROOT:-}" ]]; then
   echo "build root: $NIHONGO_BUILD_ROOT (NIHONGO_BUILD_ROOT)" >&2
