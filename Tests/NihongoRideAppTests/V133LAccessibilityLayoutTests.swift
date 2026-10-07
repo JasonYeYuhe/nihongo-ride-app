@@ -44,6 +44,8 @@ struct V133LAccessibilityLayoutTests {
         let sites: [(file: String, declaration: String, anchor: String?)] = [
             ("ListsView.swift", "private func listRow", nil),
             ("ListsView.swift", "private var header", "struct ListDetailView"),
+            // v1.36: a list's own word, Remove under the text (V136ListRowsTests.columnIsWired).
+            ("ListsView.swift", "private func wordRow", "struct ListDetailView"),
             ("JournalView.swift", "private func trendHeader", nil),
             ("StatsView.swift", "private var conjugationCard", nil),
             ("PracticeView.swift", "private func topBar", nil),

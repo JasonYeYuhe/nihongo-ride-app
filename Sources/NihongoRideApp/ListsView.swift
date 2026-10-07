@@ -847,24 +847,46 @@ struct ListDetailView: View {
     /// that (2.67:1). (v1.35 §B6, second review; colour only.) Since v1.36 the column shows the
     /// reading by the search results' rule (`reading(for:)`) and the gloss wraps instead of being
     /// cut to one line; it is handed the text size as `scale`, as the result rows are.
+    ///
+    /// ⚠️ **At the accessibility text sizes the Remove button goes under the text**, the
+    /// arrangement `WordSearchResultRow` (directly above, while search is open) and
+    /// `ListsView.listRow` use, so the column keeps the row's whole width. Beside it, the button
+    /// grows with the text and left the column 168pt on a 320pt phone at AX5 (248pt stacked),
+    /// where the gloss is 37pt and one English word can be wider than the line: 便利's
+    /// "convenient" took two lines for its one word — the "★ / Save / d" shape v1.33 fixed on the
+    /// lists screen by stacking — and so did a word in 1,476 of the 7,071 English glosses. How
+    /// many glosses break a word, beside and stacked, and the residue stacking leaves, are measured
+    /// in `V136ListRowsTests.glossWordsAreWhole`. Below the accessibility sizes the row is what it
+    /// was. (v1.36 §C item 1, review.)
     private func wordRow(id: String, listID: String) -> some View {
         let entry = model.vocab.entry(id: id)
         let content: ListWordRowText.Content = entry.map {
             .word(surface: $0.surface, reading: Self.reading(for: $0), gloss: $0.gloss(for: model.languageCode))
         } ?? .removed
-        return HStack(spacing: 10) {
-            ListWordRowText(content: content, zh: zh, scale: bodyPoints / 17)
-            Button { model.removeWord(id, from: listID) } label: {
-                Image(systemName: "minus.circle")
-                    .scaledSystemFont(16)
-                    .foregroundStyle(Theme.accent)
-                    .padding(6)
-                    .contentShape(Rectangle())
+        let text = ListWordRowText(content: content, zh: zh, scale: bodyPoints / 17)
+        let remove = Button { model.removeWord(id, from: listID) } label: {
+            Image(systemName: "minus.circle")
+                .scaledSystemFont(16)
+                .foregroundStyle(Theme.accent)
+                .padding(6)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("removeWord-\(id)")
+        .accessibilityLabel(zh ? "从词单移除 \(entry?.surface ?? id)"
+                               : "Remove \(entry?.surface ?? id) from list")
+        return Group {
+            if typeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 8) {
+                    text
+                    remove
+                }
+            } else {
+                HStack(spacing: 10) {
+                    text
+                    remove
+                }
             }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("removeWord-\(id)")
-            .accessibilityLabel(zh ? "从词单移除 \(entry?.surface ?? id)"
-                                   : "Remove \(entry?.surface ?? id) from list")
         }
         .padding(.horizontal, 14).padding(.vertical, 10)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: 10))
@@ -1102,7 +1124,8 @@ struct WordSearchResultRow: View {
 /// The text of one of a list's own words on its detail screen (v1.36 §C item 1): the word, its
 /// reading under it when the word is not written in kana (`ListDetailView.reading(for:)`, the rule
 /// the search results above it use), and its gloss in the UI language. `ListDetailView.wordRow`
-/// puts it beside the word's Remove button, on the row's card.
+/// puts it beside the word's Remove button, on the row's card — above the button at the
+/// accessibility sizes, so it keeps the row's whole width there.
 ///
 /// Until v1.36 this column drew the word and a gloss cut to one line (`.lineLimit(1)`): a list's
 /// own words had no reading while the search results right above them did (PLAN-V1.33 §C,
@@ -1112,11 +1135,16 @@ struct WordSearchResultRow: View {
 /// (`fixedSize(horizontal: false, vertical: true)`, no `lineLimit`). `V136ListRowsTests` lays the
 /// column out at the default size and the five accessibility sizes, with the corpus's longest
 /// word, reading and glosses, in the width `wordRow` leaves it, and checks from the pixels that the
-/// last character of each line is drawn and that a gloss wider than the column wraps.
+/// last character of each line is drawn and that a gloss wider than the column wraps; and lays
+/// every gloss in the corpus out at those sizes to count the ones that break inside a word. The
+/// residue is a single English word wider than the whole line — 46 glosses at AX4 and AX5 on a
+/// 320pt phone, "otorhinolaryngology" and "misunderstanding" among them, none N5
+/// (`V136ListRowsTests.glossWordsAreWhole`).
 ///
 /// **One element for VoiceOver**, read the way the search row is — "水, みず, water", through
 /// `WordSearchResultRow.accessibilityLabel` — instead of a stop per line. A removed word is one
-/// element too: its label, then its note. The Remove button beside it is not inside it.
+/// element too: its label, then its note. The Remove button beside it (or under it) is not inside
+/// it.
 ///
 /// **Sizes arrive as `scale`**, the body text's Dynamic Type multiplier, as the result row's do, so
 /// a hosted test can lay the column out at the accessibility sizes (a hosted view on macOS ignores
