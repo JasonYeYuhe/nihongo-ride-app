@@ -145,9 +145,11 @@ struct ListsView: View {
     /// The residue, measured rather than hoped away: a single unbroken word wider than 244pt
     /// at AX5 — "Vocabulary" is 255 — still breaks before its last letter. Names with spaces
     /// wrap at the spaces. (v1.33 §B L.)
+    ///
+    /// The name is `rowName`'s: the default list's without its "★ ", which `listIcon` draws.
     @ViewBuilder
     private func listRow(_ list: WordList) -> some View {
-        let name = displayName(list)
+        let name = Self.rowName(displayName(list), isDefault: list.isDefault)
         let count = list.ids.count
         let playable = model.playableCount(in: list)
         Group {
@@ -266,6 +268,19 @@ struct ListsView: View {
 
     private func displayName(_ list: WordList) -> String {
         list.isDefault ? AppModel.defaultListName(model.languageCode) : list.name
+    }
+
+    /// The name a list's row on this screen shows, and the name its three controls are read out
+    /// with: the default list's without its leading "★ ", because the row's own `listIcon` already
+    /// draws that star, in gold. "★ Saved" beside it showed two (PLAN-V1.33 §C, "the saved list's
+    /// double star"; v1.36 §C item 2).
+    ///
+    /// Display only, and only here. The stored name (`AppModel.defaultListName`), the detail
+    /// screen's header and the add-to-lists sheet draw no star icon, and keep "★ Saved" / "★ 收藏".
+    /// A list the learner named is shown as typed, a ★ of their own included.
+    static func rowName(_ name: String, isDefault: Bool) -> String {
+        guard isDefault, name.hasPrefix("★ ") else { return name }
+        return String(name.dropFirst(2))
     }
 
     private func createList() {
@@ -489,7 +504,7 @@ struct ListDetailView: View {
                     let inList = members.contains(entry.id)
                     WordSearchResultRow(
                         surface: entry.surface,
-                        reading: entry.surface == entry.kana ? nil : entry.kana,
+                        reading: Self.reading(for: entry),
                         gloss: entry.gloss(for: model.languageCode),
                         state: WordSearchResultRow.state(inList: inList, wordCount: list.ids.count,
                                                          cap: WordListStore.maxWordsPerList),
@@ -586,6 +601,15 @@ struct ListDetailView: View {
         if let error = model.addWord(vocabID, to: listID) {
             errorMessage = ListsView.message(for: error, zh: zh)
         }
+    }
+
+    /// The reading a word's row shows under it: the word's kana, or nil when the word is written in
+    /// kana and the reading would only repeat it (おいしい, アパート). One rule for the two kinds of
+    /// row on this screen — the search results (`WordSearchResultRow`, since v1.35) and, since v1.36,
+    /// the list's own words (`ListWordRowText`) — so the same word cannot show a reading in one and
+    /// not the other.
+    static func reading(for entry: VocabEntry) -> String? {
+        entry.surface == entry.kana ? nil : entry.kana
     }
 
     /// What a query that matches nothing says. Names the query, so a typo is visible, and the four
@@ -815,43 +839,54 @@ struct ListDetailView: View {
             .padding(.vertical, 4)
     }
 
-    /// One of the list's own words, on `Theme.card`. Its dim text — the gloss, and a removed word's
-    /// label and note — is `WordSearchResultRow.glossColor`, the search row's card colour (4.57:1):
-    /// it sits right under the results while search is open, and was `Theme.dim` (3.91:1), the
-    /// note at 0.7 of that (2.67:1). (v1.35 §B6, second review; colour only.)
+    /// One of the list's own words, on `Theme.card`: its text column (`ListWordRowText` — the word,
+    /// its reading, its gloss; or a removed word's label and note) and its Remove button, which is
+    /// its own element for VoiceOver and for the UI test (`removeWord-<id>`). The column's dim text
+    /// is `WordSearchResultRow.glossColor`, the search row's card colour (4.57:1): it sits right
+    /// under the results while search is open, and was `Theme.dim` (3.91:1), the note at 0.7 of
+    /// that (2.67:1). (v1.35 §B6, second review; colour only.) Since v1.36 the column shows the
+    /// reading by the search results' rule (`reading(for:)`) and the gloss wraps instead of being
+    /// cut to one line; it is handed the text size as `scale`, as the result rows are.
+    ///
+    /// ⚠️ **At the accessibility text sizes the Remove button goes under the text**, the
+    /// arrangement `WordSearchResultRow` (directly above, while search is open) and
+    /// `ListsView.listRow` use, so the column keeps the row's whole width. Beside it, the button
+    /// grows with the text and left the column 168pt on a 320pt phone at AX5 (248pt stacked),
+    /// where the gloss is 37pt and one English word can be wider than the line: 便利's
+    /// "convenient" took two lines for its one word — the "★ / Save / d" shape v1.33 fixed on the
+    /// lists screen by stacking — and so did a word in 1,476 of the 7,071 English glosses. How
+    /// many glosses break a word, beside and stacked, and the residue stacking leaves, are measured
+    /// in `V136ListRowsTests.glossWordsAreWhole`. Below the accessibility sizes the row is what it
+    /// was. (v1.36 §C item 1, review.)
     private func wordRow(id: String, listID: String) -> some View {
         let entry = model.vocab.entry(id: id)
-        return HStack(spacing: 10) {
-            VStack(alignment: .leading, spacing: 2) {
-                // A word whose entry is gone showed its raw internal id — "n2-b984" where a
-                // learner expects 「ペン」. That was only reachable via a list synced from a
-                // newer device until v1.22, which withdraws an entry outright, so it is now
-                // a thing a learner can actually meet. An id is not a word; say so instead.
-                Text(entry?.surface ?? (zh ? "已移除的词" : "Removed word"))
-                    .scaledSystemFont(16, weight: .semibold)
-                    .foregroundStyle(entry == nil ? WordSearchResultRow.glossColor : .white)
-                if let entry {
-                    Text(entry.gloss(for: model.languageCode))
-                        .font(.caption).foregroundStyle(WordSearchResultRow.glossColor).lineLimit(1)
-                } else {
-                    Text(zh ? "此词已从词库中移除,可以删掉这一行"
-                            : "No longer in the dictionary — you can remove it")
-                        .font(.caption2).foregroundStyle(WordSearchResultRow.glossColor)
-                        .fixedSize(horizontal: false, vertical: true)
+        let content: ListWordRowText.Content = entry.map {
+            .word(surface: $0.surface, reading: Self.reading(for: $0), gloss: $0.gloss(for: model.languageCode))
+        } ?? .removed
+        let text = ListWordRowText(content: content, zh: zh, scale: bodyPoints / 17)
+        let remove = Button { model.removeWord(id, from: listID) } label: {
+            Image(systemName: "minus.circle")
+                .scaledSystemFont(16)
+                .foregroundStyle(Theme.accent)
+                .padding(6)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("removeWord-\(id)")
+        .accessibilityLabel(zh ? "从词单移除 \(entry?.surface ?? id)"
+                               : "Remove \(entry?.surface ?? id) from list")
+        return Group {
+            if typeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 8) {
+                    text
+                    remove
+                }
+            } else {
+                HStack(spacing: 10) {
+                    text
+                    remove
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            Button { model.removeWord(id, from: listID) } label: {
-                Image(systemName: "minus.circle")
-                    .scaledSystemFont(16)
-                    .foregroundStyle(Theme.accent)
-                    .padding(6)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("removeWord-\(id)")
-            .accessibilityLabel(zh ? "从词单移除 \(entry?.surface ?? id)"
-                                   : "Remove \(entry?.surface ?? id) from list")
         }
         .padding(.horizontal, 14).padding(.vertical, 10)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: 10))
@@ -1084,6 +1119,114 @@ struct WordSearchResultRow: View {
     }
 
     static func addActionName(zh: Bool) -> String { zh ? "加入词单" : "Add to list" }
+}
+
+/// The text of one of a list's own words on its detail screen (v1.36 §C item 1): the word, its
+/// reading under it when the word is not written in kana (`ListDetailView.reading(for:)`, the rule
+/// the search results above it use), and its gloss in the UI language. `ListDetailView.wordRow`
+/// puts it beside the word's Remove button, on the row's card — above the button at the
+/// accessibility sizes, so it keeps the row's whole width there.
+///
+/// Until v1.36 this column drew the word and a gloss cut to one line (`.lineLimit(1)`): a list's
+/// own words had no reading while the search results right above them did (PLAN-V1.33 §C,
+/// "list-detail rows without a reading").
+///
+/// **Nothing is truncated, at any size** — `WordSearchResultRow`'s rule: every line wraps
+/// (`fixedSize(horizontal: false, vertical: true)`, no `lineLimit`). `V136ListRowsTests` lays the
+/// column out at the default size and the five accessibility sizes, with the corpus's longest
+/// word, reading and glosses, in the width `wordRow` leaves it, and checks from the pixels that the
+/// last character of each line is drawn and that a gloss wider than the column wraps; and lays
+/// every gloss in the corpus out at those sizes to count the ones that break inside a word. The
+/// residue is a single English word wider than the whole line — 46 glosses at AX4 and AX5 on a
+/// 320pt phone, "otorhinolaryngology" and "misunderstanding" among them, none N5
+/// (`V136ListRowsTests.glossWordsAreWhole`).
+///
+/// **One element for VoiceOver**, read the way the search row is — "水, みず, water", through
+/// `WordSearchResultRow.accessibilityLabel` — instead of a stop per line. A removed word is one
+/// element too: its label, then its note. The Remove button beside it (or under it) is not inside
+/// it.
+///
+/// **Sizes arrive as `scale`**, the body text's Dynamic Type multiplier, as the result row's do, so
+/// a hosted test can lay the column out at the accessibility sizes (a hosted view on macOS ignores
+/// `dynamicTypeSize`). At `scale` 1 the word is exactly what `scaledSystemFont(16, weight:
+/// .semibold)` drew here before, and the gloss and the removed-word note are the iOS default
+/// `.caption` and `.caption2` sizes they were drawn at (12 and 11pt, regular). On macOS those two
+/// styles are 10pt — `.caption2` in medium — so a Mac now shows the gloss two points and the note
+/// one point larger, the note in regular (measured in the renderer, 2026-10-07). Every line scales
+/// at the body's rate, as the result row's do.
+///
+/// **A word whose entry is gone** (`.removed`) shows "Removed word" and a note, not its raw internal
+/// id — "n2-b984" where a learner expects 「ペン」. That was only reachable via a list synced from a
+/// newer device until v1.22, which withdraws an entry outright, so it is a thing a learner can
+/// actually meet. An id is not a word; this says so instead. Unchanged by v1.36 but for the sizes
+/// above and the one VoiceOver element.
+struct ListWordRowText: View {
+    enum Content: Equatable {
+        /// A word in the dictionary. `reading` is nil when it would repeat `surface`.
+        case word(surface: String, reading: String?, gloss: String)
+        /// A word whose entry is no longer in the dictionary.
+        case removed
+    }
+
+    let content: Content
+    let zh: Bool
+    /// Body text size ÷ 17 at the learner's setting (1 at the default size).
+    let scale: CGFloat
+
+    static let wordPoints: CGFloat = 16
+    static let readingPoints: CGFloat = 13
+    static let glossPoints: CGFloat = 12
+    static let notePoints: CGFloat = 11
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            switch content {
+            case .word(let surface, let reading, let gloss):
+                Text(surface)
+                    .font(.system(size: Self.wordPoints * scale, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                if let reading {
+                    Text(reading)
+                        .font(.system(size: Self.readingPoints * scale))
+                        .foregroundStyle(WordSearchResultRow.glossColor)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Text(gloss)
+                    .font(.system(size: Self.glossPoints * scale))
+                    .foregroundStyle(WordSearchResultRow.glossColor)
+                    .fixedSize(horizontal: false, vertical: true)
+            case .removed:
+                Text(Self.removedLabel(zh: zh))
+                    .font(.system(size: Self.wordPoints * scale, weight: .semibold))
+                    .foregroundStyle(WordSearchResultRow.glossColor)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(Self.removedNote(zh: zh))
+                    .font(.system(size: Self.notePoints * scale))
+                    .foregroundStyle(WordSearchResultRow.glossColor)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Self.accessibilityLabel(content, zh: zh))
+    }
+
+    static func removedLabel(zh: Bool) -> String { zh ? "已移除的词" : "Removed word" }
+
+    static func removedNote(zh: Bool) -> String {
+        zh ? "此词已从词库中移除,可以删掉这一行" : "No longer in the dictionary — you can remove it"
+    }
+
+    /// The column's one VoiceOver label: the search row's for a word, so the two rows read alike.
+    static func accessibilityLabel(_ content: Content, zh: Bool) -> String {
+        switch content {
+        case .word(let surface, let reading, let gloss):
+            return WordSearchResultRow.accessibilityLabel(surface: surface, reading: reading, gloss: gloss)
+        case .removed:
+            return removedLabel(zh: zh) + (zh ? "," : ", ") + removedNote(zh: zh)
+        }
+    }
 }
 
 /// A multi-select sheet for adding/removing one word across lists, with an inline
