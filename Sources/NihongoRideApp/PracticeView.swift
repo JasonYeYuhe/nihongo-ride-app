@@ -1,3 +1,4 @@
+import Combine   // `Timer.publish(...).autoconnect()` is a Combine type; without the import Swift 6.4 warns
 import SwiftUI
 import GameCore
 import VocabKit

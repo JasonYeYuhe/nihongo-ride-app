@@ -643,7 +643,10 @@ struct ListDetailView: View {
     /// they go to none from anything else; not when a count moves while there are results, nor
     /// when the field is cleared — the pattern of `CustomTextAddView.announcement` (v1.35 §F),
     /// which re-reads its notice only when it appears, goes or changes kind.
-    static func searchAnnouncement(from old: SearchOutcome, to new: SearchOutcome, limit: Int, zh: Bool) -> String? {
+    ///
+    /// `nonisolated`: it reads nothing but its arguments, and `SearchAnnouncer.due`, which is not
+    /// main-actor isolated, calls it (the Swift 6 warning recorded at v1.35 §G, fixed in v1.36).
+    nonisolated static func searchAnnouncement(from old: SearchOutcome, to new: SearchOutcome, limit: Int, zh: Bool) -> String? {
         switch (old, new) {
         case (.some, .some), (.none, .none), (_, .idle): return nil
         case (_, .none): return zh ? "没有匹配的词。" : "No words match."
