@@ -38,6 +38,14 @@ universal-newline mode hands `\\r\\n` (and a lone `\\r`) over as `\\n` before an
 it. A CRLF corpus file therefore "round-tripped", and `write` put it back with every line ending
 changed — the whole-file diff this module exists to stop, passed as a clean write. It is read as
 bytes now, so a CR anywhere in the file fails the round trip and `write` refuses, saying why.
+
+WHO WRITES THROUGH IT, as of v1.36: every script that edits entries in n1..n5.json or
+passages.json — import_review_sheets, gen_examples, gen_passages, enrich_verb_classes,
+normalize_pos_tags, apply_batch, gen_sentence_kana. Two scripts still write a resource file
+with their own `json.dumps(indent=1) + "\\n"`: check_dictation_readings (dictation-exclusions.json)
+and gen_reading_notes (reading-notes.json). Each regenerates its whole file from a measurement
+rather than editing entries in it, which is why they were left out; a CRLF copy of either would
+still come back LF.
 """
 import json
 import re

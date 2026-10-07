@@ -12,6 +12,13 @@ Usage:
   python3 scripts/gen_passages.py gen --count 50
   python3 scripts/gen_passages.py gen --count 50 --dry
   python3 scripts/gen_passages.py audit
+
+`gen` merges through corpus_io.CorpusFile, in the layout passages.json was read in (indent=2,
+no final newline, today), so a batch adds its entries' lines and changes no other byte. A file
+that cannot be written back byte for byte (CRLF line endings, another layout) is refused before
+any Gemini call. Until v1.36 the merge wrote json.dumps(indent=2) with no newline whatever the
+file held. That matches today's file only because this script wrote it that way; a CRLF
+passages.json came back with every line ending changed for a one-entry append.
 """
 import argparse
 import json
@@ -22,7 +29,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from corpus_io import escape_residue   # noqa: E402
+from corpus_io import CorpusFile, escape_residue   # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 PASSAGES = ROOT / "Sources/VocabKit/Resources/passages.json"
@@ -111,7 +118,12 @@ def next_para_number(data) -> int:
 
 
 def cmd_gen(args):
-    data = json.loads(PASSAGES.read_text(encoding="utf-8"))
+    # Read through corpus_io, and refused HERE, before any Gemini call, while refusing still
+    # costs nothing — as gen_examples.py does.
+    corpus = CorpusFile(PASSAGES)
+    if not args.dry and not corpus.round_trips():
+        sys.exit(f"{corpus.refusal()}\nNothing generated, nothing written.")
+    data = corpus.data
     seen_kana = {p["kana"] for p in data}
     accepted = []
     rounds = 0
@@ -167,9 +179,7 @@ def cmd_gen(args):
             "meanings": {"en": item["en"], "zh": item["zh"]},
             "display": item["display"],
         })
-    PASSAGES.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    corpus.write()   # in the layout it was read in; refuses rather than reformat
     manifest = ROOT / f"review-sheets/passages-batch-{time.strftime('%Y%m%d-%H%M')}.json"
     manifest.parent.mkdir(exist_ok=True)
     manifest.write_text(json.dumps(new_ids, indent=1), encoding="utf-8")
