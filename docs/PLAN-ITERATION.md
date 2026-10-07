@@ -517,6 +517,19 @@ an HStack cannot wrap. Reusing the thing that already solved this beat deciding 
     reading (0.04290) over よにん (0.04354), and **both are far** — consistent with that row's
     recorded *"人 にん -> ひと"*: the voice is saying a third thing. The line above assumed a
     straightforward correction; it is not one, and it stays flagged.
+    *Addendum 2026-10-07 (JST), PLAN-V1.36 §C item 3: **corrected for v1.36.***
+    The paragraph above still describes the audio correctly: the arbiter cannot decide this item.
+    v1.35 later set the standard for corrections the audio does not decide, which is grammar
+    plus two independent refuters, and "a tolerated casual pronunciation is not a reading to
+    teach" (`docs/measurements/v135-residue-inspection.json`). Under it, 四人 → よにん was upheld 2
+    of 2, and upheld 2 of 2 again when the item-4 sweep's hit went to its own refuters. Every
+    vote is in `docs/measurements/v136-reading-manifest.json`.
+    The change went through `corpus_io.CorpusFile`. It moves exKana かぞくはよんにんです →
+    かぞくはよにんです and the 四 token よん → よ. 人 stays にん, and the token boundaries, id and
+    headword are unchanged.
+    The sentence stays withheld from dictation. The voice still says 人 = ひと, and that proof
+    does not depend on 四's reading.
+    `release_numbers.CORPUS_MANIFEST` now names that manifest, and `BASELINE_REF` is `fdb2b5f`.
 
   **Neither tokenizer can arbitrate this family and that is the point.** Sudachi gives
   四[ヨン]+人[ニン]; `CFStringTokenizer` gives 四[よん]+人[にん]; the corpus agrees with both. Two

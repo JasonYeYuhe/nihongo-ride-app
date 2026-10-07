@@ -1,0 +1,335 @@
+{
+ "population": 6724,
+ "enumerated": 23,
+ "absorbers": [
+  "真っ二つ",
+  "三日月",
+  "四つ角",
+  "一日中",
+  "二十日",
+  "十日町",
+  "二人三脚",
+  "一人前"
+ ],
+ "hits": [
+  {
+   "id": "n5-kazoku",
+   "compound": "四人",
+   "standard": "よにん",
+   "exJP": "家族は四人です。",
+   "exKana": "かぞくはよんにんです",
+   "file": "Sources/VocabKit/Resources/n5.json",
+   "field": "exJP",
+   "sentence": "家族は四人です。",
+   "taught": "よんにん",
+   "expected": [
+    "よにん"
+   ]
+  }
+ ],
+ "interrogative": {
+  "population": {
+   "exJP": 6724,
+   "surface": 7071,
+   "display": 233
+  },
+  "enumerated": {
+   "何時": [
+    "なんじ"
+   ],
+   "何分": [
+    "なんぷん"
+   ],
+   "何人": [
+    "なんにん"
+   ],
+   "何日": [
+    "なんにち"
+   ],
+   "何回": [
+    "なんかい"
+   ],
+   "何歳": [
+    "なんさい"
+   ],
+   "何年": [
+    "なんねん"
+   ],
+   "何月": [
+    "なんがつ"
+   ],
+   "何度": [
+    "なんど"
+   ],
+   "何本": [
+    "なんぼん"
+   ],
+   "何枚": [
+    "なんまい"
+   ],
+   "何冊": [
+    "なんさつ"
+   ],
+   "何個": [
+    "なんこ"
+   ],
+   "何杯": [
+    "なんばい"
+   ],
+   "何匹": [
+    "なんびき"
+   ],
+   "何台": [
+    "なんだい"
+   ],
+   "何番": [
+    "なんばん"
+   ],
+   "何階": [
+    "なんがい",
+    "なんかい"
+   ],
+   "何曜日": [
+    "なんようび"
+   ]
+  },
+  "otherSense": {
+   "何分": {
+    "なにぶん": "adverb 'anyway; please' (何分よろしく)"
+   },
+   "何人": {
+    "なにじん": "'what nationality'",
+    "なんぴと": "literary 'whoever' (何人も…ない)",
+    "なにびと": "literary 'whoever'"
+   },
+   "何時": {
+    "いつ": "the kanji spelling of いつ (何時も, 何時か)"
+   }
+  },
+  "absorbers": [
+   "いつ何時"
+  ],
+  "inspected": [
+   {
+    "id": "n1-b294",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "expected": [
+     "なんど"
+    ],
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b746",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "expected": [
+     "なんど"
+    ],
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b1023",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "expected": [
+     "なんど"
+    ],
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b1887",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "expected": [
+     "なんど"
+    ],
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b141",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何度",
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "expected": [
+     "なんど"
+    ],
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b245",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何度",
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "expected": [
+     "なんど"
+    ],
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "surface",
+    "compound": "何分",
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "expected": [
+     "なんぷん"
+    ],
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   },
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何分",
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "expected": [
+     "なんぷん"
+    ],
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   },
+   {
+    "id": "n2-b1118",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何度",
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "expected": [
+     "なんど"
+    ],
+    "verdict": "ok"
+   },
+   {
+    "id": "n3-b037",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "何度",
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "expected": [
+     "なんど"
+    ],
+    "verdict": "ok"
+   },
+   {
+    "id": "n3-b901",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "何日",
+    "taught": "なんにち",
+    "taughtSpan": "何日",
+    "alignment": "exact",
+    "expected": [
+     "なんにち"
+    ],
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-g022",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "何時",
+    "taught": "なんじ",
+    "taughtSpan": "何時",
+    "alignment": "exact",
+    "expected": [
+     "なんじ"
+    ],
+    "verdict": "ok"
+   }
+  ],
+  "hits": [
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "surface",
+    "sentence": "何分",
+    "reading": "なにぶん",
+    "compound": "何分",
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "expected": [
+     "なんぷん"
+    ],
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   },
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "sentence": "何分古い車なので、時々故障します。",
+    "reading": "なにぶんふるいくるまなのでときどきこしょうします",
+    "compound": "何分",
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "expected": [
+     "なんぷん"
+    ],
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   }
+  ]
+ },
+ "calibration": [
+  "[PASS] (a) 281fc45 flags n5-g022 — hits for n5-g022: [('mismatch', '何時', 'なんどき')]",
+  "[PASS] (b) the working tree inspects n5-g022 and does not flag it — inspected: [('ok', '何時', 'なんじ')]; hits: 0",
+  "[PASS] (c) population ≥ 6000, and a one-level tree exits 2 — working tree 6724 sentences, exit 0; n5-only 616 sentences, exit 2",
+  "[PASS] (d) 281fc45: n2-b937 何分 なにぶん is flag-only in both fields — hits for n2-b937: [('exJP', 'flag-only', 'なにぶん'), ('surface', 'flag-only', 'なにぶん')]",
+  "[PASS] (e) 281fc45: the lexicalised table flags n5-kazoku — hits for n5-kazoku: [('四人', 'よんにん')]",
+  "[PASS] logic: an absorber is recorded, not judged — いつ何時でも いつなんどきでも: ['absorbed']",
+  "[PASS] logic: 何階 accepts both なんがい and なんかい — 何階何階 なんがいなんかい: ['ok', 'ok']",
+  "[PASS] logic: a prefix span is judged on its start — 何時間 なんじかん: ['ok']",
+  "[PASS] logic: a counter split over two tokens is read whole — 何回 なんかい: ['ok']",
+  "[PASS] logic: 何人 なにじん is flag-only, never a mismatch — 何人ですか なにじんですか: ['flag-only']"
+ ],
+ "corpus": {
+  "lastCommit": "6f591cd337b3b22a60a20f5878242992c20082eb",
+  "uncommittedChanges": false
+ }
+}

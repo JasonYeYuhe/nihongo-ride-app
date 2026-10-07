@@ -5490,9 +5490,9 @@
   {
    "id": "n5-kazoku",
    "exJP": "家族は四人です。",
-   "exKana": "かぞくはよんにんです",
+   "exKana": "かぞくはよにんです",
    "heardInstead": "人 にん -> ひと",
-   "evidence": "proven (v1.28, instrument 1b)"
+   "evidence": "proven (v1.28, instrument 1b). v1.36 corrected 四 よん -> よ in exKana and the 四 token, so 四人 now reads よにん (docs/measurements/v136-reading-manifest.json; grammar and 2-of-2 refuters, PLAN-V1.36 §C item 3). The proof is untouched by that: instrument 1b keeps the sentence in kanji and substitutes the 人 span alone (家族は四ひとです。, built from the token surfaces), and neither exJP nor the 人 token (にん) moved, so the voice still says 人 = ひと against the corpus にん. v1.28 also rendered the whole 四人 span as よにん and as よんにん and neither was byte-identical to the exJP audio (v128-propagated-exclusions.json, geminiPredictionTested): the voice says neither reading. Not re-measured on the corrected tokens, because the two texts the proof compares did not change. Stays withheld."
   },
   {
    "id": "n5-namae",
