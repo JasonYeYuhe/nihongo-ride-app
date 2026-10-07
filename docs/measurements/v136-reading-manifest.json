@@ -1,0 +1,113 @@
+{
+ "reason": "One correction, PLAN-V1.36 §C item 3. n5-kazoku: 家族は四人です。 taught 四人 as よんにん; the standard, lexicalised reading is よにん, so exKana かぞくはよんにんです -> かぞくはよにんです and the 四 token よん -> よ, with 人 still にん. The audio cannot arbitrate (the voice says 人 = ひと, and the よにん and よんにん renders both differ from the exJP audio), so, as for v1.35's four 何か rows that 1b left silent, the correction rests on the grammar and two independent refuters: upheld 2 of 2, and 2 of 2 again on the item-4 sweep's hit. Withheld from dictation before and after. Every vote is in the entry's 'votes'. The item-4 sweep (何 + counter, docs/measurements/v136-counter-sweep.json) found 0 mismatches and 2 flag-only occurrences (n2-b937 何分 なにぶん, correct for its sense), so it adds no correction here.",
+ "measurement": "v1.36 corpus corrections (PLAN-V1.36 §C items 3 and 4)",
+ "population": "n5-kazoku, the LEXICALISED table's only hit on fae6b8e (scripts/check_counter_readings.py; v136-counter-sweep.json 'hits')",
+ "method": "Grammar and lexicon, put to two independent refuters per question; a correction ships only when both uphold it (PLAN-V1.36 §C item 3, 'Upheld only 2 of 2'). Applied through scripts/corpus_io.CorpusFile, which refuses a file it cannot write back byte for byte. Rows follow v135-residue-inspection.json; 'rewrite' is what check_vocab_diff.py permits.",
+ "counts": {
+  "defect": 1,
+  "corrected": 1,
+  "declined": 0,
+  "withheldFromDictation": 0,
+  "releasedToDictation": 0
+ },
+ "note": "The votes are verbatim, except that the absolute checkout path in 'sources' is made repo-relative. Line numbers in them refer to the tree before this change (da462c4 / fae6b8e). The correction moves no line of n5.json; the dated addendum in docs/PLAN-ITERATION.md §D moves that file's lines after :519 down by 13.",
+ "entries": [
+  {
+   "id": "n5-kazoku",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "四人 is a lexicalised counter, read よにん (dictionaries, the NHK accent dictionary and N5 counter tables; scripts/check_counter_readings.py LEXICALISED \"四人\": \"よにん\"). exKana and the 四 token said よん: the split reading every tokenizer here produces (Sudachi 四[ヨン]+人[ニン], CFStringTokenizer 四[よん]+人[にん]), copied into the corpus, one blind spot rather than two confirmations. よんにん is heard in casual speech, and v1.35's standard is that a tolerated casual pronunciation is not a reading to teach (v135-residue-inspection.json, n1-b065). The audio cannot decide it: the arbiter's comparative was taught 0.04290 against よにん 0.04354, both far (PLAN-ITERATION §D), because the voice says 人 = ひと (proven, v1.28 instrument 1b), and v1.28 measured the よにん and よんにん span renders as not byte-identical. So the correction rests on the grammar and the refuters, not on audio: upheld 2 of 2 by PLAN-V1.36 §C item 3's refuters, and 2 of 2 again when the item-4 sweep's hit was put to its own. Stays withheld from dictation.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 家族は四人です。 / exKana かぞくはよんにんです / exTokens [四, よん] [人, にん]",
+   "corrected": "exJP 家族は四人です。 (unchanged) / exKana かぞくはよにんです / exTokens [四, よ] [人, にん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §C item 3), and 2 of 2 upheld on the item-4 sweep's hit",
+   "resolution": "exKana and the 四 token corrected よん -> よ; 人 stays にん; token boundaries, exJP, exEN, exZH, the id and the headword (家族 かぞく) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n5.json move (exKana :1808, the 四 token's reading :1820). Joined token readings, punctuation dropped, equal exKana: よ + にん = よにん. The sentence is one kana shorter, so it rides 90 m instead of 100 m (GameSession.swift:588 takes exampleKana as the kana, :825 adds 10 m per kana).",
+   "dictation": "withheld, unchanged: the voice says 人 = ひと (dictation-reading-mismatches.json, '人 にん -> ひと', proven v1.28 instrument 1b). That proof substitutes the 人 span alone and keeps 四 in kanji, so neither text it compares moved; not re-measured. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "item3": [
+     {
+      "uphold": true,
+      "confidence": "high",
+      "reasoning": "Verdict: uphold. 四人 should be taught as よにん, with exKana かぞくはよにんです and the token 四 → よ while 人 stays にん. Teaching よんにん in an N5 model sentence is non-standard. I changed nothing.\n\n1. What the corpus has now. Sources/VocabKit/Resources/n5.json:1806-1809 gives exJP 家族は四人です。 and exKana かぞくはよんにんです. The tokens are [四, よん] and [人, にん]. No other sentence in the n*.json corpus contains 四人, so the change cannot make the corpus inconsistent with itself.\n\n2. Lexicon and grammar. 四人 is one of the lexicalised counters, like ひとり, ふたり, よっつ and よっか. Its standard reading is よにん:\n   - General dictionaries such as 大辞林, 明鏡 and 新明解 give よにん.\n   - The NHK accent dictionary and NHK broadcasting practice use ヨニン. NHK treats ヨンニン as a casual variant, not the broadcast reading.\n   - N5 textbooks teach よにん in their counter tables (みんなの日本語 第11課, Genki's 〜人 table), as do JLPT N5 vocabulary lists.\n   Native speakers do say よんにん in casual speech, but that is exactly the class v1.35 ruled out: \"a tolerated casual pronunciation is not a reading to teach\" (docs/measurements/v135-residue-inspection.json, n1-b065 resolution). The 何か なにか/なんか corrections set the precedent. The repo's own table agrees: scripts/check_counter_readings.py:39 lists \"四人\": \"よにん\". Its docstring (:5-15) explains why the tokenizers cannot be trusted on this point. Sudachi gives 四[ヨン]+人[ニン], CFStringTokenizer gives 四[よん]+人[にん], and the corpus copies them. That is one blind spot seen three times, not three confirmations. So the よん in the corpus is a tokenizer artifact, not an editorial choice.\n\n3. The arbiter result (docs/PLAN-ITERATION.md:516-519). The taught reading scored 0.04290 and よにん scored 0.04354. That gap is about 1.5% relative, and both distances are described as \"far\". For comparison, the n2-b304 correction that the same instrument did decide showed a 12x gap (0.00556 vs 0.06562).\n   - The dictation record (docs/measurements/dictation-reading-mismatches.json, entry n5-kazoku) marks \"人 にん -> ひと\" as \"proven (v1.28, instrument 1b)\". So the voice says neither candidate.\n   - When a voice matches neither option, which option is \"less far\" says nothing about the standard reading. It mostly reflects a TTS front end with the same split-counter blind spot.\n   - The arbiter therefore does not decide this item. It never favoured よんにん in any meaningful sense, and v1.35 itself recorded it as \"not forced\", not as confirming the taught reading.\n   - v1.35's standard for items the audio cannot decide is grammar plus 2-of-2 refuters. That is the standard this vote serves, and grammar here is clear.\n\n4. The \"by ear\" wording (docs/PLAN-V1.34.md:794). That line is v1.35's planning row: each correction \"by ear with its evidence\". It sets the method to try first. It is not a rule that a reading stays wrong unless a TTS voice confirms it.\n   - The ear was tried, and it was silent between the two candidates because the voice says a third thing.\n   - v1.35 then wrote the fallback standard (grammar plus two refuters) for exactly this case, and applied it to four 何か rows that also had silent audio.\n   - Applying that standard here follows the \"by ear\" wording; it does not get around it.\n   - The consequence that does follow from the ear: this sentence should stay withheld from dictation. The voice is proven not to say にん for 人, so no audio can model either reading. Implementers should record that in the manifest, as was done for the 何か rows.\n\n5. Scope check. The proposed change matches PLAN-V1.36 §A item 3 (docs/PLAN-V1.36.md:88-100): よん → よ in the 四 token and in exKana only. 人 stays にん; token boundaries, the id and the headword are unchanged. Hiragana よ + にん concatenates to よにん, so the tokens and exKana stay in agreement.\n\nResidual caveat: I did not fetch dictionary pages live; the readings above are from established lexicographic and textbook knowledge. よにん as the standard is not seriously disputed, so confidence stays high.",
+      "sources": [
+       "Sources/VocabKit/Resources/n5.json:1806-1835 (n5-kazoku exJP/exKana/exTokens)",
+       "scripts/check_counter_readings.py:5-15,39 (tokenizer blind spot; LEXICALISED 四人 よにん)",
+       "docs/PLAN-ITERATION.md:509-524 (arbiter 0.04290 vs 0.04354, both far, voice says a third thing)",
+       "docs/measurements/dictation-reading-mismatches.json (n5-kazoku: 人 にん -> ひと, proven v1.28 instrument 1b)",
+       "docs/measurements/v135-residue-inspection.json ~:1190-1225 (何か corrections on grammar + 2-of-2 when 1b silent; 'a tolerated casual pronunciation is not a reading to teach')",
+       "docs/PLAN-V1.34.md:794 ('each correction by ear with its evidence')",
+       "docs/PLAN-V1.36.md:88-100 (item 3 scope)",
+       "Lexicographic/textbook knowledge (not fetched live): 大辞林/明鏡/新明解 よにん; NHK日本語発音アクセント辞典 and NHK broadcast practice ヨニン; みんなの日本語 第11課 and Genki counter tables よにん; JLPT N5 vocabulary lists 四人 よにん"
+      ]
+     },
+     {
+      "uphold": true,
+      "confidence": "high",
+      "reasoning": "I recommend changing this sentence to よにん. I first tried to make the best case for keeping よんにん, and it does not hold up.\n\nWhat the entry says now: Sources/VocabKit/Resources/n5.json:1805-1825 teaches 家族は四人です。 as かぞくはよんにんです, with the tokens [四, よん][人, にん].\n\nThe best case for keeping よんにん:\n(a) Native speakers do say よんにん, especially in casual speech, when stressing the number, or when reading digits aloud (\"4人\"). It is not a mistake nobody makes.\n(b) The audio arbiter scored the current reading slightly better (0.04290 against 0.04354 for よにん; docs/PLAN-ITERATION.md:516-519).\n(c) PLAN-V1.34.md:794 says v1.35 corrections should be made \"by ear with its evidence\", and v1.35 left this item alone (PLAN-V1.34.md:827, \"not forced\").\n(d) Both tokenizers agree with the corpus: Sudachi gives 四[ヨン]+人[ニン] and CFStringTokenizer gives 四[よん]+人[にん] (PLAN-ITERATION.md:521-524).\n\nWhy each point fails:\n(a) Being heard is not the same as being the reading to teach. This is exactly the standard v1.35 recorded in docs/measurements/v135-residue-inspection.json:1205 and applied to なんか/なにか: \"a tolerated casual pronunciation is not a reading to teach\". The 4-person counter is a fixed exception:\n- NHK's broadcast style guides and its accent dictionary (NHK日本語発音アクセント新辞典) give 4人 as ヨニン.\n- The counter tables in standard dictionaries give 四人 as よにん.\n- Every mainstream N5 teaching source teaches よにん: Minna no Nihongo's counter table (ひとり・ふたり・さんにん・よにん), Genki's counter appendix, and the usual JLPT N5 vocabulary lists.\nThis is the only sentence in the app that teaches 四人, and it is the N5 sentence where a learner meets the exception. Teaching よんにん there teaches the rule the exception exists to override.\n\n(b) The arbiter result does not count as evidence either way.\n- The gap is about 1.5% (0.04290 against 0.04354), and both scores are far from a match. For comparison, the n2-b304 correction the same instrument did decide was 0.00556 against 0.06562, about a twelve-fold separation.\n- The reason is recorded: the voice reads 人 as ひと. See docs/measurements/v128-propagated-exclusions.json, where kyoko is [\"ひと\"] and the note says \"四人 -> よにん differs, as do よんにん and よったり. Only 人 -> ひと matches\". Docs/PLAN-V1.27.md:338-340 adds \"Kyoko says ひと either way\".\n- So the voice says a third thing, よ(ん)ひと, which matches neither candidate. A slightly smaller distance to a reading the voice also doesn't say is noise, not a preference. In any case a text-to-speech mistake is not an authority on the lexicon.\n\n(c) \"By ear\" (PLAN-V1.34.md:794) sets how v1.35 corrections were to be made: with audio evidence where audio can give it. It is not a finding that the ear prefers よんにん. The ear was tried, and it cannot decide this case, because the voice gets 人 wrong whatever 四 is. For that situation v1.35 set a later standard (v135-residue-inspection.json:4 and :1205): grammar or lexicon plus two independent refuters, with the correction resting \"on the grammar and the two refuters, not on audio\". Leaving it alone in v1.35 (\"not forced\") was a decision about scheduling, not about which reading is right.\n\n(d) The repo has already noted that the two tokenizers agreeing is \"one architectural blind spot seen twice\" (PLAN-ITERATION.md:521-524; scripts/check_counter_readings.py:1-15). The same tools also produce よんつ, ふたか and よんにち, all wrong. The repo's own enumerated table has \"四人\": \"よにん\" (scripts/check_counter_readings.py:39), and the earlier plans all describe よにん as the lexicalised standard (PLAN-V1.27.md:338, PLAN-V1.29.md:68, PLAN-WINDOW.md:161).\n\nThe change costs nothing in dictation. n5-kazoku is already withheld (Sources/VocabKit/Resources/dictation-exclusions.json:2359) because of the ひと problem, and it stays withheld either way. Changing the token from よん to よ, keeping 人 as にん and leaving exKana as かぞくはよにんです gives よ+にん = よにん, which is consistent.\n\nOn whether よんにん is non-standard: I'd call it a heard, informal variant rather than an outright error. It is not the reading NHK or the dictionaries list, and it is not the reading to teach in a model N5 sentence. My dictionary and textbook readings come from my own knowledge of the language, not from a source I could open in this session; nothing in the repo contradicts them.\n\nI made no changes.",
+      "sources": [
+       "Sources/VocabKit/Resources/n5.json:1789-1830",
+       "scripts/check_counter_readings.py:1-15,39",
+       "docs/PLAN-ITERATION.md:507-524",
+       "docs/measurements/v135-residue-inspection.json:4,1205,1216",
+       "docs/measurements/v128-propagated-exclusions.json:30-60",
+       "docs/PLAN-V1.27.md:338-340",
+       "docs/PLAN-V1.29.md:68-70",
+       "docs/PLAN-V1.34.md:794,827",
+       "docs/PLAN-V1.36.md:88-98",
+       "Sources/VocabKit/Resources/dictation-exclusions.json:2359",
+       "NHK broadcast usage / NHK日本語発音アクセント新辞典: 4人 = ヨニン (from general knowledge)",
+       "Counter tables in standard Japanese dictionaries (大辞泉/大辞林): 四人 = よにん (from general knowledge)",
+       "Minna no Nihongo counter table and Genki counter appendix: 四人 = よにん (from general knowledge)"
+      ]
+     }
+    ],
+    "item4SweepHit": {
+     "hit": {
+      "id": "n5-kazoku",
+      "file": "Sources/VocabKit/Resources/n5.json",
+      "field": "exJP",
+      "sentence": "家族は四人です。",
+      "taught": "よんにん",
+      "expected": "よにん",
+      "note": "From the existing LEXICALISED table, its only hit on HEAD as expected. This is PLAN-V1.36 §C item 3's correction, which is not applied here. No corpus file was changed."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "The sentence is at Sources/VocabKit/Resources/n5.json:1805, with exKana at :1808 and the tokens [四, よん] [人, にん] just below. It teaches 家族は四人です as かぞくはよんにんです. The counting word 四人 (four people) is read よにん. Every mainstream dictionary and accent reference gives よにん, and so do the N5 textbooks (Genki, Minna no Nihongo): they teach the 〜人 counter as ひとり, ふたり, さんにん, よにん, ごにん. よんにん is what you get by reading 四 (よん) and 人 (にん) separately. Some native speakers say it casually, but no standard reference gives it as the dictionary reading. PLAN-V1.36's standard (docs/PLAN-V1.36.md:93-94) says \"a tolerated casual pronunciation is not a reading to teach\", so it fails here. The repo's own lexicalised-counter table agrees: scripts/check_counter_readings.py:39 has \"四人\": \"よにん\". I checked whether any other reading would be valid in this sentence. し is avoided for 四 because it sounds like 死 (death), and しにん does not exist as a reading of 四人 as a counter. よったり is archaic. The 何-style options the task names (なにぶん, なにじん, なんどき) do not apply, because the sentence is a plain number plus counter in an N5 example. Nothing here, set phrase or grammar, supports keeping よんにん. Grammar decides this on its own; no audio evidence is needed. The planned fix is correct: in both the 四 token and exKana, change よん to よ; 人 stays にん; token boundaries are unchanged (docs/PLAN-V1.36.md:95-96). I changed nothing; this review was read-only on main at da462c4.",
+       "sources": [
+        "Sources/VocabKit/Resources/n5.json:1805-1825 (exJP, exKana かぞくはよんにんです, token [四, よん])",
+        "scripts/check_counter_readings.py:38-39 (LEXICALISED: 四人 -> よにん)",
+        "docs/PLAN-V1.36.md:88-98 (§C item 3, the standard that a tolerated casual pronunciation is not a reading to teach, and the planned change)",
+        "Standard Japanese dictionaries and the NHK accent dictionary list 四人 as よにん; N5 textbooks (Genki, Minna no Nihongo) teach the 〜人 counter as ひとり, ふたり, さんにん, よにん"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "Uphold. In 家族は四人です。 the 四人 is a plain head-count (\"my family is four people\"). The standard reading, and the one taught at N5, is よにん. よんにん is a casual pronunciation that people tolerate, and PLAN-V1.36's own standard says that is not a reading to teach (docs/PLAN-V1.36.md:91-93).\n\nWhat is on HEAD (da462c4, read-only, tree clean):\n- Sources/VocabKit/Resources/n5.json:1805 has exJP 家族は四人です。\n- n5.json:1808 has exKana かぞくはよんにんです.\n- The 四 token is よん (n5.json:1820) and the 人 token is にん (n5.json:1824).\n- A sweep of every exKana in n1-n5 finds よんにん only in this one row and よにん in none, so no other sentence conflicts with the fix.\n\nExternal check, not from the repo or my memory: I looked up 四人 in the macOS Dictionary Services Japanese dictionary. It returns the entry よたり【四人】 and glosses it as \"よにん。よったり。\". So the modern standard is よにん, and よたり/よったり are older forms. よんにん has no entry at all.\n\nInside the repo:\n- scripts/check_counter_readings.py:38-46 lists 四人 → よにん as a lexicalised counter.\n- The file's own docstring (lines 6-10) explains why the tokenizers' よん+にん carries no weight: Sudachi and CFStringTokenizer both split the compound and read each half on its own, which is one blind spot seen twice.\n\nOther readings I considered:\n- しにん: not used for 四人, because it sounds like 死人 (\"dead person\").\n- よたり / よったり: archaic or classical; wrong to teach N5 learners.\n- よんにん: heard in speech, but not the dictionary or textbook form.\n- The task's examples なにぶん, なにじん and なんどき are all 何-compounds and do not apply here. 四人 here is not inside any longer word with its own reading: 四人家族 would still be よにん, and there is no such word in this sentence.\n\nThe planned change is only よん→よ in the 四 token and in exKana (PLAN-V1.36.md:94-95). It keeps the token boundaries, and よ is an established reading of 四.\n\nOne caveat, outside this verdict: the audio check was inconclusive. It rated both readings far from the recording and the taught one marginally closer (0.04290 vs 0.04354). The row's recorded flag \"人 にん -> ひと\" suggests the voice says something else again (docs/PLAN-ITERATION.md:516-518). That is an audio problem. It does not argue for teaching よんにん, and the new standard says that when the audio cannot decide, grammar and two refuters decide.\n\nThis was a read-only review: no corpus file was changed and no tests were run, so there are no mutation pairs to report. The one temporary lookup script in my scratchpad went to the Trash.",
+       "sources": [
+        "Sources/VocabKit/Resources/n5.json:1805",
+        "Sources/VocabKit/Resources/n5.json:1808",
+        "Sources/VocabKit/Resources/n5.json:1820",
+        "Sources/VocabKit/Resources/n5.json:1824",
+        "scripts/check_counter_readings.py:6",
+        "scripts/check_counter_readings.py:38",
+        "docs/PLAN-V1.36.md:88",
+        "docs/PLAN-ITERATION.md:507",
+        "macOS Dictionary Services (DCSCopyTextDefinition) lookup of 四人: よたり【四人】よにん。よったり。; no entry for よんにん"
+       ]
+      }
+     ],
+     "upheld": true
+    }
+   }
+  }
+ ]
+}

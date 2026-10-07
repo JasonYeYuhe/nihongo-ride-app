@@ -18,16 +18,20 @@ REPO = Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "Sources/VocabKit/Resources"
 
 # Set to this release's corpus-change manifest, or None when the release changes no corpus.
-CORPUS_MANIFEST = "docs/measurements/v135-residue-manifest.json"   # v1.35: 7 residue + 13 何 + 2 round-3 corrections
+CORPUS_MANIFEST = "docs/measurements/v136-reading-manifest.json"   # v1.36: n5-kazoku 四人 よにん (PLAN-V1.36 §C item 3)
+# Was "docs/measurements/v135-residue-manifest.json" for v1.35 (7 residue + 13 何 + 2 round-3 corrections).
 # Was None from v1.27 through v1.34 ("v1.30 ships the paid route and touches no vocabulary file").
 
 
 # Advanced with every release. v1.27 moved it from 60c9ed9 (the v1.25 baseline) to the v1.26
 # release commit, so "this release" means since 1.26 and not since 1.25. Leaving it behind is how
 # a delta silently becomes a two-release total — the stale-number failure this module exists for.
-BASELINE_REF = "281fc45"      # release(v1.34): the tree 1.34 (macOS 59 / iOS 60) was built from
+BASELINE_REF = "fdb2b5f"      # release(v1.35): the tree 1.35 (macOS 60 / iOS 61) was built from
 # Also the window run_all_gates.sh's LOCAL vocabulary gate inspects (v1.35 round 3): it used
 # HEAD~1, which a release's closing version-bump commit empties. One ref, read by both.
+# Moved 2026-10-07 in the same commit as v1.36's first corpus change and CORPUS_MANIFEST's move to
+# v1.36 (PLAN-V1.36 §C items 3 and 5), so the two name one window from the start. 1.35 is on sale.
+# Was 281fc45 (release(v1.34): the tree 1.34, macOS 59 / iOS 60, was built from) through v1.35.
 # Moved 2026-09-29 (v1.35 round 2), and late: it still named v1.32 while CORPUS_MANIFEST named
 # v1.35, so every "this release" delta spanned v1.33 + v1.34 + v1.35. The printed figures did not
 # move when it was corrected (793 excluded / 5,931 pool at both refs) only because v1.33 and v1.34
