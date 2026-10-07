@@ -32,6 +32,12 @@ TWO THINGS, and the second is the durable one:
     reproduce the original bytes. That is the assertion STATE asks for, and it is what makes
     this a guard rather than a convention: a future edit that changes the shape of the data in
     some way this module does not anticipate stops here instead of landing an unreviewable diff.
+
+"The original bytes" means the BYTES. Until v1.36 the file was read with `read_text`, whose
+universal-newline mode hands `\\r\\n` (and a lone `\\r`) over as `\\n` before anything here sees
+it. A CRLF corpus file therefore "round-tripped", and `write` put it back with every line ending
+changed — the whole-file diff this module exists to stop, passed as a clean write. It is read as
+bytes now, so a CR anywhere in the file fails the round trip and `write` refuses, saying why.
 """
 import json
 import re
@@ -82,7 +88,9 @@ class CorpusFile:
 
     def __init__(self, path):
         self.path = Path(path)
-        self.raw = self.path.read_text(encoding="utf-8")
+        # Bytes, decoded: never `read_text`, whose universal newlines turn `\r\n` into `\n` and
+        # would let a CRLF file "round-trip" into an LF rewrite of every line.
+        self.raw = self.path.read_bytes().decode("utf-8")
         self.data = json.loads(self.raw)
         self.layout = self._detect_layout()
 
@@ -102,6 +110,19 @@ class CorpusFile:
         """True when this file can be written back byte for byte."""
         return self.layout is not None
 
+    def refusal(self):
+        """Why `write` would refuse this file, in words a person can act on; None when it would not."""
+        if self.round_trips():
+            return None
+        if "\r" in self.raw:
+            return (f"{self.path}: this file has CRLF (or CR) line endings, and json.dumps writes "
+                    "LF, so writing it would change every line ending — a whole-file diff. "
+                    "Convert it to LF in a commit of its own, after finding out what wrote CR, "
+                    "then make the edit.")
+        return (f"{self.path}: this file does not round-trip through json.dumps at any indent "
+                "this module knows, so writing it would reformat the whole file. Fix the "
+                "serialisation here rather than landing an unreviewable diff.")
+
     def write(self, data=None):
         """Write `data` (default: this file's own, possibly mutated, object).
 
@@ -109,10 +130,7 @@ class CorpusFile:
         everything, and a diff nobody can read is the same as no guard at all.
         """
         if not self.round_trips():
-            raise SystemExit(
-                f"{self.path}: this file does not round-trip through json.dumps at any indent "
-                "this module knows, so writing it would reformat the whole file. Fix the "
-                "serialisation here rather than landing an unreviewable diff.")
+            raise SystemExit(self.refusal())
         payload = self._render(self.data if data is None else data, *self.layout)
         tmp = self.path.with_suffix(self.path.suffix + ".tmp")
         tmp.write_text(payload, encoding="utf-8")
