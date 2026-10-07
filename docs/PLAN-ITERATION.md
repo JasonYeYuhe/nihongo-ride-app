@@ -517,6 +517,7 @@ an HStack cannot wrap. Reusing the thing that already solved this beat deciding 
     reading (0.04290) over よにん (0.04354), and **both are far** — consistent with that row's
     recorded *"人 にん -> ひと"*: the voice is saying a third thing. The line above assumed a
     straightforward correction; it is not one, and it stays flagged.
+
     *Addendum 2026-10-07 (JST), PLAN-V1.36 §C item 3: **corrected for v1.36.***
     The paragraph above still describes the audio correctly: the arbiter cannot decide this item.
     v1.35 later set the standard for corrections the audio does not decide, which is grammar

@@ -201,3 +201,35 @@ cadence row, STATE, memory, and `review_watch` the same day.
 * **The privacy page's local-storage list.** It is prepared in `site/` only. Pushing it to the live site
   is the owner's call, and the release does not wait on it.
 * **Anything on the frozen list, TestFlight, telemetry, a second SKU, acquisition work.**
+
+## §H Record
+
+**Items 0–4 merged on 2026-10-07 (JST).**
+* **Item 0, code health.**
+  * The Swift warnings are fixed in `da462c4`. `swift build` and `swift build --build-tests` print none.
+  * The corpus writers, the CRLF refusal and the CI timeout are merged in `a6f2bfe`. That merge
+    includes `gen_passages.py`, which a review found also wrote whole files.
+  * On `a6f2bfe`, `run_all_gates.sh` ran 17 gates with 0 failures.
+* **Items 1–2, Word Lists**, merged in `022f94a`. Three review lenses ran, and the fix round landed
+  in `a2b5836`. It changed three things beyond the plan's text:
+  * at the accessibility sizes, Remove now stacks under the word, as the search row's button does.
+    The review counted 1,476 English glosses that broke mid-word beside the button at AX5 on a
+    320pt phone. 46 single words wider than the whole line remain, all at AX4–AX5 on the 320pt
+    phone.
+  * the gloss and the removed-word note now scale with body text. On iOS they are slightly smaller
+    than the old `.caption` / `.caption2` above the default size. On the Mac the gloss is 2pt larger.
+  * `HorizontalTextFitTests.accepted` went from 26 to 25.
+* **Items 3–4, corpus**, merged in `de1e3b9`.
+  * 四人 → よにん was upheld 2 of 2, both votes at high confidence.
+  * The sweep is calibrated on `n5-g022` against a population of 6,724. Its only other hit is
+    `n2-b937` 何分, which is the adverb なにぶん; both refuters rejected it, so nothing changed.
+  * `BASELINE_REF` moved to `fdb2b5f` in this merge rather than in item 5.
+  * `v136-counter-sweep.json` records the tree before the correction (`fae6b8e`), so it still lists
+    `n5-kazoku`.
+  * Known and accepted: in this one sentence, the 四 token (now よ) no longer links to the 四 (よん)
+    card in the stumble chip, because that card's reading is not the one taught here.
+* **Source diff against `fdb2b5f`:** `ListsView.swift`, `GameView.swift` and `PracticeView.swift`
+  (one import each), and `n5.json` (two lines). Every frozen source is byte-identical.
+* **Still owed:** item 5 (bump, submit script, registration), item 6 (`run_ios_placement_tests.sh`,
+  the simulator pass, the headless renders, two whole-release review rounds) and item 7.
+
