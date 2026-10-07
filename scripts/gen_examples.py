@@ -30,7 +30,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from corpus_io import escape_residue   # noqa: E402
+from corpus_io import CorpusFile, escape_residue   # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "Sources/VocabKit/Resources"
@@ -174,7 +174,15 @@ Words ({count}):
 
 def cmd_gen(args):
     level = args.level
-    data, path = load_level(level)
+    # Read through corpus_io, so the merge below changes the merged entries' bytes and nothing
+    # else. The merge used to write the file back with json.dumps(indent=2) and no final newline,
+    # against the shipped indent=1 plus a newline: every line of the level, for one batch — the
+    # v1.26 whole-file rewrite STATE-2026-08-18 records. A file that cannot be written back byte
+    # for byte is refused HERE, before any Gemini call, while refusing still costs nothing.
+    corpus = CorpusFile(RES / f"{level}.json")
+    if not args.dry and not corpus.round_trips():
+        sys.exit(f"{corpus.refusal()}\nNothing generated, nothing written.")
+    data, path = corpus.data, corpus.path
     pending = [e for e in data if not e.get("exJP")]
     targets = pending[: args.count]
     if not targets:
@@ -241,10 +249,7 @@ def cmd_gen(args):
             entry["exEN"] = item["exEN"]
             entry["exZH"] = item["exZH"]
             merged += 1
-    # No trailing newline — matches how these files were originally written.
-    path.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    corpus.write()   # in the layout it was read in; refuses rather than reformat
     # Batch manifest so `audit` knows what's new.
     manifest = ROOT / f"review-sheets/examples-batch-{level}-{time.strftime('%Y%m%d-%H%M')}.json"
     manifest.parent.mkdir(exist_ok=True)

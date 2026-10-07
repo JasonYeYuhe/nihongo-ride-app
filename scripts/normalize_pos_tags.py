@@ -28,8 +28,11 @@ enforces it going forward is a data test over the canonical vocabulary
 """
 import argparse
 import collections
-import json
 import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from corpus_io import CorpusFile   # noqa: E402
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "Sources/VocabKit/Resources"
@@ -73,17 +76,19 @@ def normalise(tags):
     return out
 
 
-def main():
+def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true", help="apply the change")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
     changed_entries = 0
     moves = collections.Counter()
     leftovers = collections.Counter()
+    to_write = []
 
     for path in sorted(RESOURCES.glob("n[1-5].json")):
-        entries = json.loads(path.read_text(encoding="utf-8"))
+        corpus = CorpusFile(path)
+        entries = corpus.data
         touched = 0
         for e in entries:
             before = e.get("pos") or []
@@ -99,11 +104,24 @@ def main():
                     leftovers[tag] += 1
         changed_entries += touched
         print(f"{path.name}: {touched} entries normalised")
-        if args.write and touched:
-            # indent=2 + trailing newline: byte-for-byte the shipped layout, so the diff
-            # is the tags that moved and nothing else.
-            path.write_text(json.dumps(entries, ensure_ascii=False, indent=2) + "\n",
-                            encoding="utf-8")
+        if touched:
+            to_write.append(corpus)
+
+    # This said "indent=2 + trailing newline: byte-for-byte the shipped layout". It was, when it
+    # was written (d2bec44, 2026-08-10); since abac89d (2026-08-21) the files are indent=1, and a
+    # --write would have re-indented every line of each file it touched. Now each file goes back
+    # through corpus_io in the layout it was read in, so the diff is the tags that moved and
+    # nothing else — and a touched file that cannot be written back byte for byte (another
+    # layout, CRLF line endings) stops the run before ANY file is written. The report says so too.
+    refused = [corpus for corpus in to_write if not corpus.round_trips()]
+    for corpus in refused:
+        print(f"REFUSED: {corpus.refusal()}")
+    if args.write:
+        if refused:
+            raise SystemExit("nothing written")
+        for corpus in to_write:
+            corpus.write()
+            print(f"wrote {corpus.path.name}")
 
     print(f"\n{changed_entries} entries touched")
     for move, n in moves.most_common():

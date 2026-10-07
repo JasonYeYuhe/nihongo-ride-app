@@ -241,11 +241,15 @@ def write_back(changes, datasets, apply: bool, blocklist=BLOCKLIST):
 
     # Every file a change lands in must round-trip before ANY is written: a refusal half way
     # through would leave some corrections on disk and the rest not. The dry run says so too,
-    # since it is where a reviewer reads what --apply will do.
-    refused = [datasets[f][0].path for f in sorted(touched) if not datasets[f][0].round_trips()]
+    # since it is where a reviewer reads what --apply will do. One line per refused file, in
+    # corpus_io's own words, because the cause differs: this printed one fixed "would reformat
+    # the whole file" for every file, so a CRLF file sent its reviewer to check an indent that
+    # was fine, with nothing naming the line endings.
+    refused = [datasets[f][0] for f in sorted(touched) if not datasets[f][0].round_trips()]
     if refused:
-        print("\nREFUSED: " + ", ".join(str(shown(p)) for p in refused) + " cannot be written "
-              "back byte for byte (corpus_io.CorpusFile), so writing would reformat the whole file.")
+        print()
+        for corpus in refused:
+            print(f"REFUSED: {corpus.refusal()}")
         if apply:
             raise SystemExit("nothing written")
 

@@ -45,7 +45,8 @@ jobs:
     # ARM64. `swift test` here builds for arm64-apple-macosx26.0 and the repo's goldens are
     # calibrated on that toolchain.
     runs-on: macos-26
-    timeout-minutes: 30
+    # 45, not 30: this job has measured 13.5–21.8 min (PLAN-V1.36 §C item 0); a timeout is not a gate.
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4

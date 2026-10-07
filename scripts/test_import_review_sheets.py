@@ -44,6 +44,37 @@ RES and BLOCKLIST name scratch files, and the test points it at a second copy. I
 test says so, and the real checkout is never opened for writing. Before this, only a hash taken
 afterwards guarded it. That hash is kept as a backstop.
 
+A fifth run, added in v1.36: a touched n3.json in CRLF is REFUSED the same way. Until then
+CorpusFile read through `read_text`, whose universal newlines hand `\\r\\n` over as `\\n`, so a CRLF
+file "round-tripped" and --apply would have rewritten every line of it LF. Each REFUSED line is
+the file's own, in corpus_io's words, and must say why: "CRLF" for this one, "round-trip" (and
+not CRLF) for the indent=3 ones. Until v1.36's review the importer printed one fixed "would
+reformat the whole file" for any refusal, so a CRLF file sent its reviewer to check an indent
+that was fine.
+
+THE OTHER CORPUS WRITERS (v1.36). `enrich_verb_classes.py --write` (every n*.json) and
+`normalize_pos_tags.py --write` (each one it touched) wrote whole files with `json.dumps(indent=2)`
+plus a newline — the shipped layout until abac89d (2026-08-21) made them indent=1, and a
+re-indentation of every line of every file written ever since. Both now
+write through CorpusFile; their checks live here, beside the importer's, so the gate count stays
+17. Each runs from its own scratch mirror, on fixture files typed out below in the shipped
+layout, and its expected output is typed out in full, never made by a serialiser:
+
+  * only the entries the script changes change, byte for byte, and a file with no change is not
+    written at all, even when CorpusFile could not have reproduced it;
+  * each changed file is written in the layout it was read in: n5 is in the shipped layout and
+    n4 in passages.json's (indent=2, no final newline), so a write hardcoded to either layout
+    fails one of them;
+  * a changed file in CRLF, or in a layout json.dumps cannot reproduce, stops the run with
+    "nothing written" before ANY file is written — the one sorted before it included — and says
+    why;
+  * normalize_pos_tags without --write writes nothing, both when a touched file would be refused
+    and when none would.
+
+And CorpusFile itself, directly, because every caller checks round_trips() before it writes, so
+no caller ever reaches `write`'s own refusal: `write` on a CRLF file and on an unreproducible one
+raises and leaves the bytes alone, and the CRLF refusal names the line endings.
+
 Run: python3 scripts/test_import_review_sheets.py
 """
 import ast
@@ -51,6 +82,7 @@ import contextlib
 import csv
 import hashlib
 import importlib.util
+import inspect
 import io
 import json
 import pathlib
@@ -257,29 +289,609 @@ def changed(res, blocklist, texts, blocklist_text):
     return names + (["the blocklist"] if read_raw(blocklist) != blocklist_text else [])
 
 
-def refused_run(importer, what, sheets, res, blocklist, line, texts, blocklist_text):
-    """Failures of one run that must be refused: the dry run prints `line` — the REFUSED line, which
-    is where a reviewer reads what --apply will do — and writes nothing; --apply prints it and stops
-    with "nothing written", having written no corpus file and not the blocklist. The files are
-    checked after each of the two, and put back after the dry run, so each failure names the run
-    that wrote."""
+def refusal_problem(out, path, word):
+    """Why `out` does not hold exactly one REFUSED line, naming `path` and giving corpus_io's reason
+    for it — `word` is "CRLF" or "round-trip" — or None when it does. A file without CR must not be
+    blamed on its line endings, so a message that always said CRLF would not pass either."""
+    lines = [line for line in out.splitlines() if line.startswith("REFUSED: ")]
+    if len(lines) != 1 or not lines[0].startswith(f"REFUSED: {path}: ") or word not in lines[0]:
+        return f"expected one REFUSED line naming {path} and saying {word!r}; got {lines!r}"
+    if word != "CRLF" and "CRLF" in lines[0]:
+        return f"the REFUSED line blames line endings the file does not have: {lines[0]!r}"
+    return None
+
+
+def refused_run(importer, what, sheets, res, blocklist, path, word, texts, blocklist_text):
+    """Failures of one run that must be refused: the dry run prints the REFUSED line — where a
+    reviewer reads what --apply will do, and why: one line for `path`, saying `word` — and writes
+    nothing; --apply prints it and stops with "nothing written", having written no corpus file and
+    not the blocklist. The files are checked after each of the two, and put back after the dry run,
+    so each failure names the run that wrote."""
     failures = []
     out, raised = run(importer, [str(sheets)], res, blocklist)
-    if raised or line not in out.splitlines():
-        failures.append(f"with {what}, the dry run did not print {line!r} (it raised {raised!r}); "
-                        f"it printed {out[-500:]!r}")
+    problem = refusal_problem(out, path, word)
+    if raised or problem:
+        failures.append(f"with {what}, the dry run did not refuse as it should (it raised {raised!r}): "
+                        f"{problem}; it printed {out[-500:]!r}")
     for f in changed(res, blocklist, texts, blocklist_text):
         failures.append(f"with {what}, the dry run changed {f}")
     for n in NAMES:
         write_raw(res / f"{n}.json", texts[n])
     write_raw(blocklist, blocklist_text)
     out, raised = run(importer, [str(sheets), "--apply"], res, blocklist)
-    if str(raised) != "nothing written" or line not in out.splitlines():
-        failures.append(f"with {what}, --apply did not refuse before writing: raised {raised!r}, "
-                        f"printed {out[-500:]!r}")
+    problem = refusal_problem(out, path, word)
+    if str(raised) != "nothing written" or problem:
+        failures.append(f"with {what}, --apply did not refuse before writing: raised {raised!r}; "
+                        f"{problem}; printed {out[-500:]!r}")
     for f in changed(res, blocklist, texts, blocklist_text):
         failures.append(f"with {what}, a refused --apply still wrote {f}")
     return failures
+
+
+# ---------------------------------------------------------------------------------------------
+# The other corpus writers. Fixture files in the shipped layout (indent=1, non-ASCII raw, a final
+# newline), raw strings so `\"` is the two characters JSON holds — except n4, which is in
+# passages.json's layout (indent=2, no final newline), a layout CorpusFile reproduces and no
+# shipped n*.json uses. In each set n4 and n5 change, so a writer that hardcodes today's layout (indent=1
+# plus a newline) fails n4 and one that hardcodes the old indent=2 fails n5, while a write in the
+# layout each file was read in passes both. n2 does not change, and n3 does not and is in a
+# layout CorpusFile cannot reproduce (a `\u` escape: the same data, other bytes) — so writing it
+# at all would stop the run.
+WRITER_LAYOUT = {"n4": (2, "")}   # (indent, final newline); n2 and n5 are (1, "\n")
+
+ENRICH = {
+    "n2": r"""[
+ {
+  "id": "n2-nomu",
+  "surface": "飲む",
+  "kana": "のむ",
+  "pos": [
+   "v"
+  ],
+  "vc": "godan_m",
+  "meanings": {
+   "en": [
+    "to drink"
+   ]
+  }
+ }
+]
+""",
+    "n3": r"""[
+ {
+  "id": "n3-mizu",
+  "surface": "水",
+  "kana": "みず",
+  "pos": [
+   "n"
+  ],
+  "meanings": {
+   "en": [
+    "water"
+   ]
+  }
+ }
+]
+""",
+    "n4": r"""[
+  {
+    "id": "n4-kaku",
+    "surface": "書く",
+    "kana": "かく",
+    "pos": [
+      "v"
+    ],
+    "meanings": {
+      "en": [
+        "to write"
+      ]
+    }
+  },
+  {
+    "id": "n4-yomu",
+    "surface": "読む",
+    "kana": "よむ",
+    "pos": [
+      "v"
+    ],
+    "vc": "godan_m",
+    "meanings": {
+      "en": [
+        "to read"
+      ]
+    }
+  },
+  {
+    "id": "n4-taberu",
+    "surface": "食べる",
+    "kana": "たべる",
+    "pos": [
+      "v1"
+    ],
+    "vc": "godan_r",
+    "meanings": {
+      "en": [
+        "to eat"
+      ]
+    }
+  },
+  {
+    "id": "n4-kaeru",
+    "surface": "帰る",
+    "kana": "かえる",
+    "pos": [
+      "v"
+    ],
+    "vc": "godan_r",
+    "meanings": {
+      "en": [
+        "to go home"
+      ]
+    }
+  },
+  {
+    "id": "n4-yu",
+    "surface": "湯",
+    "kana": "ゆ",
+    "pos": [
+      "n"
+    ],
+    "meanings": {
+      "en": [
+        "\"hot\" water"
+      ]
+    }
+  }
+]""",
+    "n5": r"""[
+ {
+  "id": "n5-oyogu",
+  "surface": "泳ぐ",
+  "kana": "およぐ",
+  "pos": [
+   "v"
+  ],
+  "meanings": {
+   "en": [
+    "to swim"
+   ]
+  },
+  "vc": "godan_g"
+ }
+]
+""",
+}
+
+# `write_mode(None)` — no JMdict — on the fixture: 書く gains godan_k after `pos`; 読む already
+# carries its class there and does not move; 食べる's stale godan_r becomes the ichidan its `v1`
+# label says, in place; 帰る's godan_r is dropped, because without JMdict a る verb is ambiguous
+# and the script withholds it (its behaviour, pinned here, not endorsed); 湯 is no verb, and its
+# escaped quotes stay. n5's ONLY change is that 泳ぐ's godan_g, right already, moves up behind
+# `pos`: the data compares equal as dicts, the bytes do not, and the file must still be written
+# (and, in CRLF, refused) — which pins the key-order comparison in write_mode.
+ENRICH_AFTER = {
+    "n4": r"""[
+  {
+    "id": "n4-kaku",
+    "surface": "書く",
+    "kana": "かく",
+    "pos": [
+      "v"
+    ],
+    "vc": "godan_k",
+    "meanings": {
+      "en": [
+        "to write"
+      ]
+    }
+  },
+  {
+    "id": "n4-yomu",
+    "surface": "読む",
+    "kana": "よむ",
+    "pos": [
+      "v"
+    ],
+    "vc": "godan_m",
+    "meanings": {
+      "en": [
+        "to read"
+      ]
+    }
+  },
+  {
+    "id": "n4-taberu",
+    "surface": "食べる",
+    "kana": "たべる",
+    "pos": [
+      "v1"
+    ],
+    "vc": "ichidan",
+    "meanings": {
+      "en": [
+        "to eat"
+      ]
+    }
+  },
+  {
+    "id": "n4-kaeru",
+    "surface": "帰る",
+    "kana": "かえる",
+    "pos": [
+      "v"
+    ],
+    "meanings": {
+      "en": [
+        "to go home"
+      ]
+    }
+  },
+  {
+    "id": "n4-yu",
+    "surface": "湯",
+    "kana": "ゆ",
+    "pos": [
+      "n"
+    ],
+    "meanings": {
+      "en": [
+        "\"hot\" water"
+      ]
+    }
+  }
+]""",
+    "n5": r"""[
+ {
+  "id": "n5-oyogu",
+  "surface": "泳ぐ",
+  "kana": "およぐ",
+  "pos": [
+   "v"
+  ],
+  "vc": "godan_g",
+  "meanings": {
+   "en": [
+    "to swim"
+   ]
+  }
+ }
+]
+""",
+}
+
+NORMALIZE = {
+    "n2": r"""[
+ {
+  "id": "n2-michi",
+  "surface": "道",
+  "kana": "みち",
+  "pos": [
+   "n"
+  ]
+ }
+]
+""",
+    "n3": r"""[
+ {
+  "id": "n3-hashiru",
+  "surface": "走る",
+  "kana": "はしる",
+  "pos": [
+   "v"
+  ]
+ }
+]
+""",
+    "n4": r"""[
+  {
+    "id": "n4-eki",
+    "surface": "駅",
+    "kana": "えき",
+    "pos": [
+      "Noun"
+    ],
+    "meanings": {
+      "en": [
+        "\"main\" station"
+      ]
+    }
+  },
+  {
+    "id": "n4-hon",
+    "surface": "本",
+    "kana": "ほん",
+    "pos": [
+      "n",
+      "noun"
+    ]
+  },
+  {
+    "id": "n4-takai",
+    "surface": "高い",
+    "kana": "たかい",
+    "pos": [
+      "adj-i"
+    ]
+  }
+]""",
+    "n5": r"""[
+ {
+  "id": "n5-iku",
+  "surface": "行く",
+  "kana": "いく",
+  "pos": [
+   "verb"
+  ]
+ }
+]
+""",
+}
+
+# `--write` on the fixture: Noun becomes n; ['n', 'noun'] becomes ['n'] — a line goes and the
+# comma before it with it; adj-i is already canonical; n5's verb becomes v.
+NORMALIZE_AFTER = {
+    "n4": r"""[
+  {
+    "id": "n4-eki",
+    "surface": "駅",
+    "kana": "えき",
+    "pos": [
+      "n"
+    ],
+    "meanings": {
+      "en": [
+        "\"main\" station"
+      ]
+    }
+  },
+  {
+    "id": "n4-hon",
+    "surface": "本",
+    "kana": "ほん",
+    "pos": [
+      "n"
+    ]
+  },
+  {
+    "id": "n4-takai",
+    "surface": "高い",
+    "kana": "たかい",
+    "pos": [
+      "adj-i"
+    ]
+  }
+]""",
+    "n5": r"""[
+ {
+  "id": "n5-iku",
+  "surface": "行く",
+  "kana": "いく",
+  "pos": [
+   "v"
+  ]
+ }
+]
+""",
+}
+
+# n3 in a layout CorpusFile cannot reproduce: the same data, one character written as a JSON
+# `\u` escape, which json.dumps(ensure_ascii=False) never writes. Made here rather than typed
+# into the raw strings above, where an editor or a tool may turn the escape into the character.
+ENRICH["n3"] = ENRICH["n3"].replace('"水"', '"\\u6c34"')
+NORMALIZE["n3"] = NORMALIZE["n3"].replace('"走る"', '"\\u8d70る"')
+
+WRITER_LEVELS = ["n2", "n3", "n4", "n5"]
+
+
+def build_writer_mirror(root, scripts, fixture):
+    """root laid out as the repo is: `scripts` and every script beside them they import in
+    root/scripts, `fixture` as root/Sources/VocabKit/Resources/<name>.json. → module names copied."""
+    (root / "scripts").mkdir(parents=True)
+    copied, todo = set(), list(scripts)
+    while todo:
+        name = todo.pop()
+        if name not in copied:
+            copied.add(name)
+            shutil.copyfile(HERE / f"{name}.py", root / "scripts" / f"{name}.py")
+            todo.extend(sibling_imports(HERE / f"{name}.py"))
+    (root / RES_IN_REPO).mkdir(parents=True)
+    for n, text in fixture.items():
+        write_raw(root / RES_IN_REPO / f"{n}.json", text)
+    return copied
+
+
+def load_writer(root, name, copied, path_attrs):
+    """→ (`name` as root/scripts holds it, what of it reaches outside root). Its sibling imports
+    are dropped from sys.modules first, so they load from root/scripts too. What is checked: the
+    paths it would write, any module now loaded from the REAL scripts/, and where the CorpusFile
+    it holds (if it holds one) was loaded from."""
+    for module_name in copied:
+        sys.modules.pop(module_name, None)
+    spec = importlib.util.spec_from_file_location(name, root / "scripts" / f"{name}.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    outside = [f"its {attr} is {getattr(module, attr, '<missing>')}" for attr in path_attrs
+               if not inside(getattr(module, attr, "<missing>"), root)]
+    outside += [f"{module_name} loaded from {loaded.__file__}" for module_name, loaded in sorted(sys.modules.items())
+                if module_name != "__main__" and getattr(loaded, "__file__", None) and inside(loaded.__file__, HERE)]
+    corpus_file = getattr(module, "CorpusFile", None)
+    if corpus_file is not None and not inside(inspect.getfile(corpus_file), root):
+        outside.append(f"its CorpusFile comes from {inspect.getfile(corpus_file)}")
+    return module, outside
+
+
+def load_corpus_io(tmp):
+    """corpus_io from a scratch copy, under a name of its own, so what is tested is the module
+    itself whatever any writer imports."""
+    copy = tmp / "corpus-io-copy" / "corpus_io.py"
+    copy.parent.mkdir(parents=True)
+    shutil.copyfile(HERE / "corpus_io.py", copy)
+    spec = importlib.util.spec_from_file_location("corpus_io_under_test", copy)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def writer_failures(label, run, res, fixture, after):
+    """Failures of the three runs every writer gets. `run()` → (output, what it raised or None)."""
+    failures = []
+    for n in WRITER_LEVELS:
+        indent, newline = WRITER_LAYOUT.get(n, (1, "\n"))
+        for what, text in (("fixture", fixture[n]), ("expected", after.get(n))):
+            if n != "n3" and text is not None and \
+                    json.dumps(json.loads(text), ensure_ascii=False, indent=indent) + newline != text:
+                failures.append(f"{label}: {what} {n} is not in its layout (indent={indent}, final "
+                                f"newline {bool(newline)}) — fix it first")
+    if json.dumps(json.loads(fixture["n3"]), ensure_ascii=False, indent=1) + "\n" == fixture["n3"]:
+        failures.append(f"{label}: fixture n3 is meant NOT to be reproducible, and is")
+    for n, text in after.items():
+        if text == fixture[n]:
+            failures.append(f"{label}: expected {n}.json equals its fixture — the test would pass on a no-op")
+    if failures:
+        return failures
+
+    def put(texts):
+        for n, text in texts.items():
+            write_raw(res / f"{n}.json", text)
+
+    # 1. Only the changed entries' bytes change; a file with no change is not written at all.
+    put(fixture)
+    stamps = {n: written_stamp(res / f"{n}.json") for n in WRITER_LEVELS}
+    out, raised = run()
+    if raised:
+        failures.append(f"{label}: the write run raised {raised!r}; it printed {out[-500:]!r}")
+    for n in WRITER_LEVELS:
+        written = read_raw(res / f"{n}.json")
+        want = after.get(n, fixture[n])
+        if written != want:
+            failures.append(f"{label}: " + describe(n, fixture[n], written, want))
+        if n not in after and written_stamp(res / f"{n}.json") != stamps[n]:
+            failures.append(f"{label}: {n}.json was written, and nothing in it changed")
+
+    # 2. n5 — changed, and sorted after n4, which also changed — cannot be written back byte for
+    #    byte. The run stops with "nothing written" and writes NOTHING, n4 included.
+    for why, n5, word in (("in CRLF", fixture["n5"].replace("\n", "\r\n"), "CRLF"),
+                          ("with a \\u escape", fixture["n5"].replace('"v', '"\\u0076', 1), "round-trip")):
+        texts = dict(fixture, n5=n5)
+        put(texts)
+        stamps = {n: written_stamp(res / f"{n}.json") for n in WRITER_LEVELS}
+        out, raised = run()
+        if str(raised) != "nothing written":
+            failures.append(f"{label}: with n5.json {why}, the run did not stop with 'nothing written': "
+                            f"raised {raised!r}; printed {out[-500:]!r}")
+        refused = [line for line in out.splitlines() if line.startswith("REFUSED: ")]
+        if len(refused) != 1 or "n5.json" not in refused[0] or word not in refused[0]:
+            failures.append(f"{label}: with n5.json {why}, expected one REFUSED line naming n5.json and "
+                            f"saying {word!r}; got {refused!r}")
+        for n in WRITER_LEVELS:
+            if read_raw(res / f"{n}.json") != texts[n] or written_stamp(res / f"{n}.json") != stamps[n]:
+                failures.append(f"{label}: with n5.json {why}, the refused run still wrote {n}.json")
+    return failures
+
+
+def corpus_file_failures(corpus_io, tmp):
+    """CorpusFile.write's own refusal, which no caller reaches: they all ask round_trips() first."""
+    failures = []
+    lf = '[\n {\n  "id": "n5-a",\n  "en": "\\"a\\""\n }\n]\n'   # indent=1 + newline, a `\"` inside
+    cases = (("an LF file", lf, None),
+             ("a CRLF file", lf.replace("\n", "\r\n"), "CRLF"),
+             ("a file ending in a lone CR", lf[:-1] + "\r", "CRLF"),
+             ("an indent=3 file", lf.replace("\n ", "\n   ").replace("\n    ", "\n      "), "round-trip"))
+    for i, (what, text, word) in enumerate(cases):
+        path = tmp / f"corpus-file-{i}.json"
+        write_raw(path, text)
+        corpus = corpus_io.CorpusFile(path)
+        try:
+            corpus.write()
+            raised = None
+        except SystemExit as exc:
+            raised = str(exc)
+        if read_raw(path) != text:
+            failures.append(f"CorpusFile.write on {what} changed its bytes")
+        if word is None:
+            if raised is not None or not corpus.round_trips():
+                failures.append(f"CorpusFile refused {what}, which it can reproduce: {raised}")
+        elif raised is None:
+            failures.append(f"CorpusFile.write on {what} did not refuse")
+        elif word not in raised:
+            failures.append(f"CorpusFile.write on {what} refused without saying why ({word!r}): {raised}")
+    return failures
+
+
+def other_writers(tmp):
+    failures = []
+    for label, script, fixture, after in (("enrich_verb_classes", "enrich_verb_classes", ENRICH, ENRICH_AFTER),
+                                          ("normalize_pos_tags", "normalize_pos_tags", NORMALIZE, NORMALIZE_AFTER)):
+        root = tmp / f"{script}-mirror"
+        copied = build_writer_mirror(root, [script], fixture)
+        attrs = ("REPO", "VOCAB_GLOB") if script == "enrich_verb_classes" else ("REPO", "RESOURCES")
+        module, outside = load_writer(root, script, copied, attrs)
+        if outside:
+            failures.append(f"{script} loaded from {root} reaches outside it — {'; '.join(outside)} — "
+                            "so it was not run")
+            continue
+        res = root / RES_IN_REPO
+
+        if script == "enrich_verb_classes":
+            def run(module=module):
+                out = io.StringIO()
+                with contextlib.redirect_stderr(out):
+                    try:
+                        module.write_mode(None)
+                    except SystemExit as exc:
+                        return out.getvalue(), exc
+                    except Exception as exc:   # report it, do not crash
+                        return out.getvalue(), exc
+                return out.getvalue(), None
+        else:
+            def run(module=module):
+                out = io.StringIO()
+                with contextlib.redirect_stdout(out):
+                    try:
+                        code = module.main(["--write"])
+                    except SystemExit as exc:
+                        return out.getvalue(), exc
+                    except Exception as exc:   # a main() without `argv`, say: report it, do not crash
+                        return out.getvalue(), exc
+                return out.getvalue(), (f"exit code {code}" if code else None)
+        failures += writer_failures(label, run, res, fixture, after)
+
+        if script == "normalize_pos_tags":
+            # The report alone — no --write, the documented default — writes nothing. Twice: with
+            # nothing refused (n4 and n5 touched, both reproducible), where a write branch reached
+            # by mistake WOULD write; and with n5 in CRLF, where the report must also name the
+            # refusal a --write would meet. The refused run alone could not tell: its refusal
+            # keeps any write branch from being reached.
+            for case, texts in (("nothing refused", dict(fixture)),
+                                ("n5.json in CRLF", dict(fixture, n5=fixture["n5"].replace("\n", "\r\n")))):
+                for n, text in texts.items():
+                    write_raw(res / f"{n}.json", text)
+                stamps = {n: written_stamp(res / f"{n}.json") for n in WRITER_LEVELS}
+                out = io.StringIO()
+                with contextlib.redirect_stdout(out):
+                    try:
+                        module.main([])
+                    except (SystemExit, Exception) as exc:
+                        failures.append(f"normalize_pos_tags ({case}): the report alone raised {exc!r}")
+                lines = out.getvalue().splitlines()
+                for want in ("n4.json: 2 entries normalised", "n5.json: 1 entries normalised",
+                             "(report only — pass --write to apply)"):
+                    if want not in lines:
+                        failures.append(f"normalize_pos_tags ({case}): the report did not print {want!r}, "
+                                        "so the fixture may not be touching what this check needs")
+                refused = [line for line in lines if line.startswith("REFUSED: ")]
+                if case == "nothing refused" and refused:
+                    failures.append(f"normalize_pos_tags ({case}): the report printed {refused!r}")
+                if case != "nothing refused" and not any("n5.json" in line and "CRLF" in line for line in refused):
+                    failures.append(f"normalize_pos_tags ({case}): the report did not say a --write would "
+                                    f"be refused for n5.json's CRLF; it printed {refused!r}")
+                wrote = [line for line in lines if line.startswith("wrote ")]
+                if wrote:
+                    failures.append(f"normalize_pos_tags ({case}): the report printed {wrote!r}")
+                for n in WRITER_LEVELS:
+                    if written_stamp(res / f"{n}.json") != stamps[n] or read_raw(res / f"{n}.json") != texts[n]:
+                        failures.append(f"normalize_pos_tags ({case}): the report wrote {n}.json")
+    return failures + corpus_file_failures(load_corpus_io(tmp), tmp)
 
 
 def main() -> int:
@@ -415,8 +1027,7 @@ def main() -> int:
         write_sheet(sheets / "vocab-n2.csv", [(n2[0]["id"], "fix", "en: reviewed", "")])
         failures += refused_run(
             importer, "a fix in n2.json", sheets, res, blocklist,
-            f"REFUSED: {res / 'n2.json'} cannot be written back byte for byte (corpus_io.CorpusFile), "
-            "so writing would reformat the whole file.", original, original_blocklist)
+            res / "n2.json", "round-trip", original, original_blocklist)
 
         # 4. The same when the file's ONLY change is a drop: n4 at indent=3, holding nothing but a 删
         #    row, beside an n5 fix that must not land. The check covers every file a change lands
@@ -429,14 +1040,31 @@ def main() -> int:
         write_sheet(drop_sheets / "vocab-n4.csv", [(dropped["id"], "删", "", "")])
         failures += refused_run(
             importer, "only a drop in n4.json", drop_sheets, res, blocklist,
-            f"REFUSED: {res / 'n4.json'} cannot be written back byte for byte (corpus_io.CorpusFile), "
-            "so writing would reformat the whole file.", drop_only, original_blocklist)
+            res / "n4.json", "round-trip", drop_only, original_blocklist)
+
+        # 5. A touched file in CRLF, beside an n5 fix that must not land. CorpusFile read through
+        #    universal newlines until v1.36, saw LF, called it reproducible, and --apply rewrote
+        #    every line of n3.json with LF endings. The REFUSED line must name the line endings:
+        #    until v1.36's review it said "would reformat the whole file" for every refusal, and a
+        #    reviewer of this file would have gone looking at an indent that was fine.
+        crlf = dict(original)
+        crlf["n3"] = original["n3"].replace("\n", "\r\n")
+        restore(crlf)
+        crlf_sheets = tmp / "work" / "crlf"
+        write_sheet(crlf_sheets / "vocab-n5.csv", [(vocab["id"], "fix", "en: reviewed", "")])
+        write_sheet(crlf_sheets / "vocab-n3.csv", [(n3[0]["id"], "fix", "en: reviewed", "")])
+        failures += refused_run(
+            importer, "a fix in a CRLF n3.json", crlf_sheets, res, blocklist,
+            res / "n3.json", "CRLF", crlf, original_blocklist)
 
         lost = [str(p.relative_to(mirror)) for p in defaults if digest(p) != defaults_before[p]]
         if lost:
             failures.append(f"the importer wrote its own default paths {lost} in the scratch mirror — a "
                             "`resources=` or `blocklist=` argument is lost on the way down, and only the "
                             "mirror kept that write off the real checkout")
+
+        # The other corpus writers, and CorpusFile's own refusal, each from its own mirror.
+        failures += other_writers(tmp)
 
     moved = [str(p) for p in real if digest(p) != real_before[p]]
     if moved:
@@ -451,8 +1079,13 @@ def main() -> int:
           f"passages.json ({passage['id']}, a raw U+2028, no final newline kept), and only "
           f"{dropped['id']}'s lines of n4.json; a backslash correction was refused; n3 and the "
           "unreproducible n2 untouched and unwritten; the dry run wrote nothing; a touched file that "
-          "cannot round-trip — through a fix or a drop alone — is REFUSED in the dry run and stops "
-          "--apply before any write; run from a scratch mirror, the real corpus untouched")
+          "cannot round-trip — through a fix or a drop alone, or in CRLF — is REFUSED in the dry run "
+          "and stops --apply before any write, its REFUSED line giving that file's own reason (CRLF "
+          "named); enrich_verb_classes and normalize_pos_tags change only the changed entries' bytes, "
+          "in each file's own layout (indent=1 + newline, and indent=2 without), write no unchanged "
+          "file, and refuse a CRLF or unreproducible file with nothing written; normalize's report "
+          "writes nothing, refusal or not; CorpusFile.write refuses CRLF, a lone CR and indent=3 by "
+          "itself; run from scratch mirrors, the real corpus untouched")
     return 0
 
 

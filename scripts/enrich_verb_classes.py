@@ -34,6 +34,9 @@ import os
 import sys
 from collections import defaultdict, Counter
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from corpus_io import CorpusFile   # noqa: E402
+
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VOCAB_GLOB = os.path.join(REPO, "Sources/VocabKit/Resources/n[1-5].json")
 
@@ -231,11 +234,20 @@ def write_mode(jmdict):
     """Stamp the derived `vc` (VerbClass.rawValue) into each vocab JSON, in place.
     Inserts `vc` right after `pos`; never touches other fields; idempotent (re-derives,
     dropping any stale `vc`). Only a definite class is written — withheld/ambiguous/
-    unresolved/non-verb entries get no `vc`. Output matches the files' exact 2-space,
-    non-ASCII, no-trailing-newline format so diffs show only the added `vc` lines."""
+    unresolved/non-verb entries get no `vc`.
+
+    Written through corpus_io.CorpusFile, in the layout each file was read in, so the diff is
+    the `vc` lines that moved and nothing else. This used to say the output matched "the files'
+    exact 2-space, non-ASCII, no-trailing-newline format" while writing indent=2 WITH a newline;
+    both stopped mattering on 2026-08-21 (abac89d), when n1..n5.json became indent=1, after
+    which a --write would have re-indented every line of all five. A file a change lands in that
+    cannot be written back byte for byte (another layout, CRLF line endings) stops the run
+    before ANY file is written, and a file no entry of which changed is not written at all."""
     total = Counter()
+    plans = []
     for f in sorted(glob.glob(VOCAB_GLOB)):
-        rows = json.load(open(f, encoding="utf-8"))
+        corpus = CorpusFile(f)
+        rows = corpus.data
         n = 0
         new_rows = []
         for e in rows:
@@ -253,12 +265,19 @@ def write_mode(jmdict):
                 n += 1
                 total[cls] += 1
             new_rows.append(new_e)
-        # Trailing newline: without it every regeneration re-dirties whichever files a
-        # human last touched, and the diff for a one-word data fix carries a
-        # "\ No newline at end of file" marker that hides the real change.
-        open(f, "w", encoding="utf-8").write(
-            json.dumps(new_rows, ensure_ascii=False, indent=2) + "\n")
-        print(f"  {os.path.basename(f)}: vc on {n}/{len(rows)} entries", file=sys.stderr)
+        # Key ORDER counts: a vc that only moves is a change on disk, and dict == ignores order.
+        changed = [list(e.items()) for e in rows] != [list(e.items()) for e in new_rows]
+        plans.append((corpus, new_rows, changed))
+        print(f"  {os.path.basename(f)}: vc on {n}/{len(rows)} entries"
+              + ("" if changed else " (no change, not written)"), file=sys.stderr)
+    refused = [corpus for corpus, _, changed in plans if changed and not corpus.round_trips()]
+    if refused:
+        for corpus in refused:
+            print(f"REFUSED: {corpus.refusal()}", file=sys.stderr)
+        raise SystemExit("nothing written")
+    for corpus, new_rows, changed in plans:
+        if changed:
+            corpus.write(new_rows)
     print("=== vc written by class ===", file=sys.stderr)
     for c, k in total.most_common():
         print(f"  {k:>5}  {c}", file=sys.stderr)
