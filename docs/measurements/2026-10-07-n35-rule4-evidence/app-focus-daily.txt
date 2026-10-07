@@ -1,5 +1,0 @@
-# App-focus records (Biome App.InFocus) read from THIS Mac's local store at 2026-10-06T17:11:29Z. No device was touched.
-# Only what the rule-4 answer uses is kept here; the full per-day counts stay outside the repo.
-iPhone "js" (stream synced to this Mac): 0 Nihongo Ride records. Every Pacific day 2026-09-09..10-05 has records (fewest: 467, on 09-09).
-iPad "YYH's iPad" (stream synced to this Mac): 0 Nihongo Ride records. Days in 09-09..09-23 with no records at all: 09-09, 09-10, 09-11, 09-16, 09-17, 09-18, 09-19, 09-21, 09-22.
-This Mac (its own stream): 4 Nihongo Ride records, 2 on Pacific 09-27 and 2 on 09-29, each inside an agent's gate run of a Debug build.

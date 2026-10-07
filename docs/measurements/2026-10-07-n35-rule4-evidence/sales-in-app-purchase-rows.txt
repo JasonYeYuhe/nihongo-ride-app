@@ -1,9 +1,0 @@
-# Every in-app purchase row (Product Type IA*/FI*) in the cached Apple daily sales reports, read 2026-10-07 JST.
-# Cache: 118 Pacific report days, 2026-06-06 .. 2026-10-01. Nihongo Ride rows (Parent Identifier nihongoride-mac-2026, the app SKU; product SKU com.jasonye.nihongoride.scenery.lifetime): 0.
-# The other apps' rows are the control: the cache does carry purchase rows. All five are Device = iPhone; no Mac purchase row has ever been observed.
-# day | type | parent | sku | units | device | country
-2026-06-24 | IAY | yyh.CLI-Pulse | com.clipulse.pro.monthly | 1 | iPhone | CN
-2026-09-06 | IA1 | stride-habit-tracker | yyh.stride.habittracker.pro.lifetime | 1 | iPhone | US
-2026-09-16 | IAY | colorarchive-ios | me.colorarchive.pro.monthly | 1 | iPhone | AU
-2026-09-20 | IAY | roastmate-1 | yyh.roastmate.app.pro.monthly | 1 | iPhone | TW
-2026-09-25 | IA1 | roastmate-1 | yyh.roastmate.app.credits.10 | 1 | iPhone | CN
