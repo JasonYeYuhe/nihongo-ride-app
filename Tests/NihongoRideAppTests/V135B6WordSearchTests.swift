@@ -190,7 +190,7 @@ struct V135B6WordSearchTests {
     }
 
     /// The instrument, calibrated: the worst English gloss on one line (`lineLimit(1)`, what the
-    /// list's own word rows use) loses its tail at the default size in the phone column, and the
+    /// list's own word rows used until v1.36) loses its tail at the default size in the phone column, and the
     /// same Text allowed to wrap draws it. So a `true` below is a real "drawn", not a blind one.
     @MainActor
     @Test("control: the instrument sees a gloss cut by a line limit")
@@ -762,7 +762,8 @@ struct V135B6WordSearchTests {
     /// draws (exactly), and the one colour argument it may leave unchecked and why. `screenIsComplete`
     /// derives the reachable set from the source and requires it to be this list's, so a new view on
     /// the screen is red until it is placed here. The result rows are `WordSearchResultRow`, a
-    /// separate type, held by `rowTextClears`. The launchers' backgrounds are their capsules, behind
+    /// separate type, held by `rowTextClears`; the list's own words' text is `ListWordRowText`
+    /// (v1.36), another, held at the end of `screenTextClears`. The launchers' backgrounds are their capsules, behind
     /// their labels only; the notes under the Sentences and Dictation launchers sit outside them, on
     /// the gradient.
     static let screen: [(declaration: String, backdrop: Backdrop, backgrounds: [String], exempt: String?)] = [
@@ -887,6 +888,13 @@ struct V135B6WordSearchTests {
     /// Mutations, 2026-09-29, each red: the word row's gloss back to `Theme.dim`; the removed-word
     /// note back to `Theme.dim.opacity(0.7)`; the unplayable hint back to `Theme.dim`; the hint in
     /// the panel back to `Theme.dim` (the first scan's mutation, still red).
+    ///
+    /// **v1.36:** the word row's text moved into a type of its own, `ListWordRowText`, which this
+    /// declaration walk does not reach (it walks `ListDetailView`'s members). It is read whole, as
+    /// `rowTextClears` reads the result row, over the card `wordRow` draws, after `wordRow` is held
+    /// to drawing it; `wordRow` itself now draws only the Remove icon. Mutations, 2026-10-07, each
+    /// red: the new reading line coloured `Theme.dim`; the removed-word note back to
+    /// `Theme.dim.opacity(0.7)` inside the new type.
     @Test("every text ListDetailView draws clears 4.5:1 on its backdrop at both stops")
     func screenTextClears() throws {
         let stops = try Model.gradientStops()
@@ -923,12 +931,33 @@ struct V135B6WordSearchTests {
             checked[place.declaration] = Self.checkEveryColour(in: text, where: place.declaration, known: known,
                                                                over: place.backdrop == .card ? cards : stops)
         }
+
+        // The list's own words' text column (v1.36), on the card `wordRow` draws it on. Held first
+        // to being what `wordRow` draws, then read whole: no backdrop of its own, and every colour
+        // it names clears on the card.
+        let wordRow = try Self.detail("private func wordRow")
+        #expect(wordRow.contains("ListWordRowText(content: content, zh: zh, scale: bodyPoints / 17)"),
+                "wordRow no longer draws ListWordRowText, so scanning it says nothing about this screen")
+        let file = try #require(try CallSiteScanner.shippedSources.get()
+            .first { $0.path == "Sources/NihongoRideApp/ListsView.swift" })
+        let column = try #require(file.typeBodies(named: "ListWordRowText").first)
+        let columnCode = Self.collapsed(String(decoding: file.codeWithStrings[column], as: UTF8.self))
+        #expect(!columnCode.isEmpty && columnCode.count < 6000, "the type walk returned \(columnCode.count) characters")
+        #expect(Self.modifierArguments("background", in: columnCode).isEmpty && !columnCode.contains(".overlay")
+                && !columnCode.contains("ZStack") && !columnCode.contains(".opacity("),
+                "ListWordRowText draws a backdrop or an opacity this test does not compose")
+        checked["struct ListWordRowText"] = Self.checkEveryColour(in: columnCode, where: "ListWordRowText",
+                                                                  known: known, over: cards)
+
         let total = checked.values.reduce(0, +)
         print("B6 SCREEN CONTRAST: \(total) colour uses — \(checked.sorted { $0.key < $1.key }.map { "\($0.key.hasPrefix("var body") ? "body" : String($0.key.split(separator: " ").last!)) \($0.value)" })")
         // header 2, Back 1, panel 4, Done 1, open 1, caption 1, sentence note 1, dictation note 1,
-        // unplayable 1, word row 5 (a removed word's label, both branches; gloss; note; −), gone 1, empty 1.
-        #expect(total == 20, "checked \(total) colour uses")
-        #expect(checked["private func wordRow"] == 5 && checked["private func searchPanel"] == 4)
+        // unplayable 1, word row 1 (the Remove icon), its text column 5 (word, reading, gloss, a
+        // removed word's label and note), gone 1, empty 1. Until v1.36 the word row held its text
+        // and counted 5 (a removed word's label, both branches; gloss; note; −), and the total was 20.
+        #expect(total == 21, "checked \(total) colour uses")
+        #expect(checked["private func wordRow"] == 1 && checked["struct ListWordRowText"] == 5
+                && checked["private func searchPanel"] == 4)
 
         // Controls: what the recoloured texts computed before, and what the constants compute now.
         let bottom = stops[1], top = stops[0], bottomCard = cards[1]

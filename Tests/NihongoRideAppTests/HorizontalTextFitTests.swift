@@ -265,7 +265,18 @@ struct HorizontalTextFitTests {
     /// About's credit name and licence, Stats' conjugation card stats. And still counted because
     /// NOT fixed, deliberately: the six `RoadView` findings — the offer screen is frozen for the
     /// §K observation window (`docs/PLAN-V1.33.md` §C).
-    static let accepted = 26
+    ///
+    /// **26 → 25 in v1.36, and the one that left did not gain a limit:** the list detail's word
+    /// (`ListDetailView.wordRow`, `Text(entry?.surface ?? …)`, the `ListsView:422` of the list
+    /// above) moved into `ListWordRowText`, a column whose sizes arrive as `scale` (`.font(.system(
+    /// size:))`, not `scaledSystemFont`) and which opens no row of its own — so this scan no longer
+    /// sees it. It wraps rather than clips at every size, and that is held by `V136ListRowsTests`'
+    /// hosted sweep in the width the row leaves it, which is the only thing now watching it.
+    /// Measured, not reasoned: the scan printed 26 findings with `ListsView.swift:830` among them on
+    /// `da462c4` and 25 without it after the move. Mutations, 2026-10-07, each red: `accepted = 24`
+    /// (the scan reports 25); the old `Text(entry?.surface ?? …).scaledSystemFont(16, …)` put back
+    /// in `wordRow`'s row (26).
+    static let accepted = 25
 
     @Test("no NEW Text in a horizontal row without a line limit or a shrink allowance")
     func theShapeDoesNotGrow() throws {
