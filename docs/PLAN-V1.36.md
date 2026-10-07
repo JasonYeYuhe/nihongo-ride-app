@@ -213,7 +213,7 @@ cadence row, STATE, memory, and `review_watch` the same day.
 * **Items 1–2, Word Lists**, merged in `022f94a`. Three review lenses ran, and the fix round landed
   in `a2b5836`. It changed three things beyond the plan's text:
   * at the accessibility sizes, Remove now stacks under the word, as the search row's button does.
-    The review counted 1,476 English glosses that broke mid-word beside the button at AX5 on a
+    The fixer counted 1,476 English glosses (the review: 1,469) that broke mid-word beside the button at AX5 on a
     320pt phone. 46 single words wider than the whole line remain, all at AX4–AX5 on the 320pt
     phone.
   * the gloss and the removed-word note now scale with body text. On iOS they are slightly smaller
