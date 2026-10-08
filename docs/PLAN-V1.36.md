@@ -574,7 +574,8 @@ The apply step's rule that the pool must not shrink is set aside for these four.
   (m0) holds 13 rows to the manifest's 13. The working-tree half of (l) now reads the two hits still
   there, `n4-g171` (in the pool) and `n5-b334` (withheld): one of each, so the lookup is still proven
   both ways. The docstrings follow.
-  * `--calibrate` passes 83/83 (`v136-counter-sweep-6.json`, corpus `24f90eb`).
+  * `--calibrate` passes 83/83 (`v136-counter-sweep-6.json`, corpus `24f90eb`; 85/85 since the fix
+    round below added (m1) and (m2), and sweep-6 is regenerated with them).
   * The counter table finds 0 mismatches and the 5 tolerated flag-only readings.
   * `v136-counter-sweep-5.json` is kept as it is. It records `766c092`, where `n3-b020` was the one
     remaining mismatch.
@@ -611,6 +612,65 @@ The apply step's rule that the pool must not shrink is set aside for these four.
     5,935 and dictationProvenMisread at 240. §F's drafts still name nine.
   * `submit_1_36.py` is frozen for this branch and was not touched. Its NAMED_IDS guard keeps refusing
     until it is rewritten for this set.
+
+**2026-10-09 (JST), fix round of the dictation decisions** (branch `feat/v136-dictation-decisions-fix`,
+on `8324943`). The review found two MINOR defects. Both were reproduced, and both are fixed.
+1. **The pool history was wrong.** The new evidence rows of `n1-b439` and `n3-b781` said each sentence
+   "had been in the dictation pool since 1.35 shipped". It had been there since v1.21, when dictation
+   shipped (`60c73a3`):
+   * both sentences were already in the corpus with さんせん by then (`n1-b439` from `8823a3a`, `n3-b781`
+     from `76408cc`; each is in the corpus at `60c73a3`);
+   * neither id was in `dictation-exclusions.json` before `24f90eb`.
+   Both rows now say "since v1.21, when dictation shipped", as `n5-g022`'s row dates its own. The fix
+   is 2 lines, written through `CorpusFile`, which round-trips the file at indent=1. A Python replica
+   of `exclusionEvidenceIsCurrent` and `exclusionsAndEvidenceAgree` then reads 789 of 789 rows with 0
+   stale. The two files name the same 789 ids, 240 rows are proven, and the floor holds at 789 ≥ 240.
+2. **Nothing pinned the four withholdings.** (l) reads only hits, and a corrected sentence is no longer
+   a hit. So after `n3-b020` was corrected, nothing held its new withheld state; the decisions rested
+   only on the two exclusion files agreeing with each other.
+   * Reproduced with `8324943`'s script on a scratch copy: `n3-b020` deleted from both files, with
+     their counts fixed. `--calibrate` passed 83/83 and exited 0. Only `release_numbers` moved, to a
+     pool of 5,936 and withheldThisRelease 3, and it is not a gate.
+   * Fixed with two `--calibrate` checks next to (m).
+     * (m1): every row the manifest declares 'corrected' is withheld in the working tree's
+       `dictation-exclusions.json`. That is all 22 rows, not only (m)'s 13. The one exception is a row
+       that `v136-dictation-remeasure.json` gives a 1b 'RELEASE' verdict, which is the method's rule.
+       The 'dictation' prose is not parsed: at `7cc56d2` three rows began "IN the dictation pool" and
+       named 1b (silent there), so a text test would have passed them.
+     * (m2): the manifest's counts are held to the files. withheldFromDictation must equal the number
+       of corrected rows withheld now and not in 1.35's list (`fdb2b5f`), and releasedToDictation the
+       reverse. Their difference must equal `release_numbers`' withheldThisRelease, which is imported,
+       not re-derived. That last comparison is made only while `release_numbers` measures this manifest
+       from `fdb2b5f`; once either moves on, the check's detail says it was not made.
+   * `--calibrate` now passes 85/85. `v136-counter-sweep-6.json` is regenerated: the two lines are
+     added, the hits are unchanged, and the corpus is still `24f90eb`.
+   * **Mutants**, run on scratch copies of Sources, scripts and docs, with git read from this
+     worktree's gitdir and no index written. All 7 behave as expected:
+     * the control passes 85/85;
+     * `n3-b020` back in the pool (both files, counts fixed) fails (m1) and (m2). The `8324943` script
+       passes the same copy 83/83;
+     * `n3-b678` back in the pool fails (m1) and (m2);
+     * `n3-b020` back in the pool, with withheldFromDictation lowered to 3 to match, fails (m1) alone;
+     * withheldFromDictation lowered from 4 to 3, with nothing else changed, fails (m2) alone;
+     * an unrelated pool sentence (`n4-g001`) withheld in `dictation-exclusions.json` alone fails (m2)
+       alone, with withheldThisRelease at 5;
+     * `n3-b678` back in the pool with a 1b 'RELEASE' verdict and withheldFromDictation 3 passes 85/85.
+       So the exception is live, and the check is not one that can only answer "withheld".
+   * (m1) and (m2) check v1.36's working tree, as (l) and (m) do.
+* **`release_numbers`**, read from its output: correctedThisRelease 22, dictationExcluded 789,
+  dictationPool 5,939 → 5,935, withheldThisRelease 4, releasedThisRelease 0, dictationProvenMisread 240.
+* **Proof on this tree:**
+  * `run_all_gates.sh --vocab-only` is green.
+  * It is red with `n3-b020`'s exTokens declaration dropped, naming only that id ("exTokens
+    OVERWRITTEN", 1 problem). The manifest was restored afterwards.
+  * All 11 `scripts/test_*.py` pass.
+  * `swift test --filter 'VocabKit|CorpusEscapeResidue|ExampleSentence|Dictation'` passes 81 + 26
+    tests, with 0 failures and no warnings. It was run because the edited evidence record is read by
+    `exclusionEvidenceIsCurrent` and `exclusionsAndEvidenceAgree`, and both pass. It was this round's
+    one SwiftPM build, in this worktree's own build root (708 MB), which went to the Trash afterwards.
+    Free disk was 15 GiB.
+* **Diff since `8324943`:** `dictation-reading-mismatches.json` (2 lines), `check_counter_readings.py`,
+  `v136-counter-sweep-6.json` (2 lines) and this file. No corpus file and no frozen file changed.
 
 ## §I Scope addendum, 2026-10-09 (JST) — before the N = 100 reading
 

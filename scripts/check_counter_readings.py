@@ -231,6 +231,19 @@ subprocess, never its functions, on four trees:
       that are also (i)'s known hits must equal KNOWN_CORRECTED's ids. The corrected VALUES stay
       written out by hand; only the set is tied, so a correction declared without a check, or a
       check row lost in an edit, fails rather than passing as "the N sentences corrected";
+      (m1) then holds what dictation does with them. Every row the manifest declares 'corrected' (all
+      of them, not only (m)'s) is withheld in the working tree's dictation-exclusions.json, unless
+      v136-dictation-remeasure.json records a 1b 'RELEASE' verdict for it: the method's rule, a
+      corrected pool sentence stays in dictation only if 1b proves the voice says the corrected
+      reading. No other text exempts a row; the 'dictation' prose is not parsed. Added by the fix
+      review of 8324943: (l) reads only hits, so once n3-b020 was corrected nothing pinned its new
+      withheld state, and putting it back in the pool (deleted from both exclusion files, counts
+      fixed) passed every check above;
+      (m2) and the manifest's counts against the exclusion list: withheldFromDictation is the number
+      of corrected rows withheld now and not in 1.35's (SHIPPED_REF) list, releasedToDictation the
+      reverse, and their difference is release_numbers' withheldThisRelease while release_numbers
+      measures this manifest's release (its CORPUS_MANIFEST is this manifest and its BASELINE_REF is
+      SHIPPED_REF; once either moves on, the detail says the tie was not made, and why);
   (h) a PLANTED tree: the working tree's corpus copied, with one known-wrong occurrence per table
       planted in the example sentences of every n-file, and one headword and one passage for each
       table that reads them, all under ids no entry uses (`plant-…`). Every plant must be flagged
@@ -464,7 +477,8 @@ SHIPPED_REF = "fdb2b5f"
 # 三千円 n1-b439 and n3-b781 "both in the dictation pool", n3-b020 "in the dictation pool", n4-g171
 # "in the pool"; n5-b334 among the 8 "already withheld from dictation". Read on 3d891b9, the tree §I
 # described. The working tree has two of them as hits, one in the pool and one withheld: n1-b439, n3-b781
-# and (since 2026-10-09) n3-b020 are corrected there, and are no longer hits.
+# and (since 2026-10-09) n3-b020 are corrected there, and are no longer hits; (m1) holds that all three
+# are withheld there, as the decision of 2026-10-09 (PLAN-V1.36 §H) left them.
 KNOWN_POOL = (("n1-b439", True), ("n3-b781", True), ("n3-b020", True), ("n4-g171", True),
               ("n5-b334", False))
 KNOWN_POOL_HEAD = (("n4-g171", True), ("n5-b334", False))
@@ -476,6 +490,9 @@ KNOWN_POOL_HEAD = (("n4-g171", True), ("n5-b334", False))
 # manifest's 'corrected' rows that are also KNOWN_SOUND_CHANGE_HITS must be exactly these ids, so a
 # correction declared there and missing here (or the reverse) fails.
 MANIFEST = os.path.join(REPO, "docs", "measurements", "v136-reading-manifest.json")
+# (m1): the 1b re-measurement of the corrected pool sentences. A 'RELEASE' verdict there (v1.35's word
+# for "1b confirms the corrected reading") is the only thing that lets a corrected row stay in dictation.
+REMEASURE = os.path.join(REPO, "docs", "measurements", "v136-dictation-remeasure.json")
 KNOWN_CORRECTED = (
     ("n1-b439", "三千", "さんぜん"), ("n3-b781", "三千", "さんぜん"), ("n3-b678", "八十点", "はちじゅってん"),
     ("n1-b1630", "三分", "さんぷん"), ("n2-b449", "三十分", "さんじゅっぷん"), ("n1-b327", "五分", "ごふん"),
@@ -823,6 +840,41 @@ def dictation_excluded(resources):
         return None
     with open(path, encoding="utf-8") as f:
         return {e["id"] for e in json.load(f)["excluded"]}
+
+
+def corrected_and_dictation(manifest):
+    """What (m1) and (m2) read: the ids `manifest` declares 'corrected', the ids the working tree
+    withholds from dictation, the ids 1.35 withheld (SHIPPED_REF), the ids REMEASURE releases on a 1b
+    'RELEASE' verdict, and the manifest's counts. Raises when any of them cannot be read: a check that
+    cannot see its inputs fails, it does not skip."""
+    corrected = {r["id"] for r in manifest["entries"] if r.get("disposition") == "corrected"}
+    now = dictation_excluded(RESOURCES)
+    if now is None:
+        raise ValueError(f"{display_path(RESOURCES)} has no dictation-exclusions.json")
+    blob = subprocess.run(["git", "-C", REPO, "show",
+                           f"{SHIPPED_REF}:Sources/VocabKit/Resources/dictation-exclusions.json"],
+                          capture_output=True)
+    if blob.returncode != 0:
+        raise ValueError(f"git show {SHIPPED_REF}:…/dictation-exclusions.json failed: "
+                         f"{blob.stderr.decode().strip()}")
+    shipped = {e["id"] for e in json.loads(blob.stdout)["excluded"]}
+    with open(REMEASURE, encoding="utf-8") as f:
+        released = {i for i, v in json.load(f)["verdicts"].items() if v["verdict"] == "RELEASE"}
+    return corrected, now, shipped, released, manifest["counts"]
+
+
+def release_numbers_withheld():
+    """release_numbers' withheldThisRelease when it measures this manifest's release (its CORPUS_MANIFEST
+    is MANIFEST and its BASELINE_REF is SHIPPED_REF), else None and why not. Imported, not re-derived:
+    it is the figure release copy quotes."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import release_numbers
+    named = release_numbers.CORPUS_MANIFEST
+    if (named is None or release_numbers.BASELINE_REF != SHIPPED_REF
+            or os.path.realpath(os.path.join(str(release_numbers.REPO), named)) != os.path.realpath(MANIFEST)):
+        return None, (f"release_numbers measures {named} from {release_numbers.BASELINE_REF}, not "
+                      f"{display_path(MANIFEST)} from {SHIPPED_REF}, so it was not compared")
+    return release_numbers.numbers()["withheldThisRelease"], None
 
 
 def sweep(resources, judge):
@@ -1341,10 +1393,11 @@ def calibrate():
     ids = {i for i, _, _ in KNOWN_CORRECTED}
     try:
         with open(MANIFEST, encoding="utf-8") as f:
-            declared = {r["id"] for r in json.load(f)["entries"] if r.get("disposition") == "corrected"}
+            manifest = json.load(f)
+        declared = {r["id"] for r in manifest["entries"] if r.get("disposition") == "corrected"}
         problem = None
     except (OSError, ValueError, KeyError, TypeError) as e:
-        declared, problem = set(), f"cannot read {display_path(MANIFEST)}: {e}"
+        manifest, declared, problem = None, set(), f"cannot read {display_path(MANIFEST)}: {e}"
     from_manifest = declared & {i for i, _, _, _ in KNOWN_SOUND_CHANGE_HITS}
     check(f"(m0) KNOWN_CORRECTED names exactly the {len(from_manifest)} sentences "
           f"{display_path(MANIFEST)} declares corrected among (i)'s known hits",
@@ -1366,6 +1419,42 @@ def calibrate():
           seen == want and not flagged,
           f"not as corrected: {[s for s in seen if s not in want] or 'none'}; "
           f"not inspected: {[w[0] for w in want if w not in seen] or 'none'}; hits: {flagged or 'none'}")
+
+    # (m1) and (m2): what dictation does with every sentence the manifest corrected. (l) reads hits, and
+    # a corrected sentence is no longer one, so nothing held n3-b020's new withheld state: deleted from
+    # both exclusion files with their counts fixed, it passed every check above, and only
+    # release_numbers moved (the fix review of 8324943). Read from the working tree's files.
+    try:
+        if manifest is None:
+            raise ValueError(problem)
+        corrected, now, shipped, released_on_1b, counts = corrected_and_dictation(manifest)
+        rn_withheld, rn_skipped = release_numbers_withheld()
+        problem = None
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, ImportError, SystemExit) as e:
+        corrected, now, shipped, released_on_1b, counts = set(), set(), set(), set(), {}
+        rn_withheld, rn_skipped, problem = None, None, f"cannot read what (m1) and (m2) compare: {e}"
+    in_pool = sorted(corrected - now)
+    unreleased = [i for i in in_pool if i not in released_on_1b]
+    check(f"(m1) the working tree withholds from dictation every one of the {len(corrected)} sentences "
+          f"{display_path(MANIFEST)} declares corrected, except any {display_path(REMEASURE)} "
+          f"releases on a 1b 'RELEASE' verdict",
+          problem is None and bool(corrected) and not unreleased,
+          problem or f"withheld {len(corrected & now)}; in the pool on a 1b RELEASE: "
+                     f"{[i for i in in_pool if i in released_on_1b] or 'none'}; in the pool without one: "
+                     f"{unreleased or 'none'}")
+
+    withheld = sorted(corrected & (now - shipped))
+    released = sorted(corrected & (shipped - now))
+    w, r = counts.get("withheldFromDictation"), counts.get("releasedToDictation")
+    net = (w - r) if isinstance(w, int) and isinstance(r, int) else None
+    check(f"(m2) the manifest's counts are its corrected rows withheld and released since "
+          f"{SHIPPED_REF}, and their difference is release_numbers' withheldThisRelease",
+          problem is None and w == len(withheld) and r == len(released)
+          and (rn_skipped is not None or rn_withheld == net),
+          problem or f"counts withheldFromDictation {w}, releasedToDictation {r}; corrected rows withheld "
+                     f"since {SHIPPED_REF}: {len(withheld)} {withheld}, released since: {len(released)}"
+                     f"{f' {released}' if released else ''}; "
+                     + (rn_skipped or f"release_numbers withheldThisRelease {rn_withheld}"))
 
     # (h) every plant flagged by its own table — a mismatch, on both fields where it has tokens —
     # and none by another table. A table that judges fewer files, ids or kinds of field than it
