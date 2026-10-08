@@ -223,7 +223,11 @@ subprocess, never its functions, on four trees:
       and passes it in both fields, exKana lined up with the tokens, taught the corrected reading —
       not flagged because each was looked at and passed. n3-b020 is not among them: its correction
       was upheld but held back, because the voice is proven to say 十分 = じゅうぶん in that pool
-      sentence (v136-dictation-remeasure.json), so it is still this table's one mismatch;
+      sentence (v136-dictation-remeasure.json), so it is still this table's one mismatch.
+      (m0) first holds that list to the manifest: the ids of its rows with disposition 'corrected'
+      that are also (i)'s known hits must equal KNOWN_CORRECTED's ids. The corrected VALUES stay
+      written out by hand; only the set is tied, so a correction declared without a check, or a
+      check row lost in an edit, fails rather than passing as "the N sentences corrected";
   (h) a PLANTED tree: the working tree's corpus copied, with one known-wrong occurrence per table
       planted in the example sentences of every n-file, and one headword and one passage for each
       table that reads them, all under ids no entry uses (`plant-…`). Every plant must be flagged
@@ -463,7 +467,10 @@ KNOWN_POOL_HEAD = (("n3-b020", True), ("n4-g171", True), ("n5-b334", False))
 # (m): every sentence §I addendum 2 corrected, with the reading it was corrected to — (id, compound,
 # corrected). Written out from v136-reading-manifest.json's 'corrected', never derived from COUNTER_FINAL.
 # Where two forms are standard the corpus took the more common one (じゅっぷん, はちじゅってん). n3-b020 is
-# absent on purpose: upheld, but held back (see (m) in the docstring).
+# absent on purpose: upheld, but held back (see (m) in the docstring). The VALUES stay hand-written; the
+# ID SET is held to the manifest by (m0): the manifest's 'corrected' rows that are also KNOWN_SOUND_CHANGE_HITS
+# must be exactly these ids, so a correction declared there and missing here (or the reverse) fails.
+MANIFEST = os.path.join(REPO, "docs", "measurements", "v136-reading-manifest.json")
 KNOWN_CORRECTED = (
     ("n1-b439", "三千", "さんぜん"), ("n3-b781", "三千", "さんぜん"), ("n3-b678", "八十点", "はちじゅってん"),
     ("n1-b1630", "三分", "さんぷん"), ("n2-b449", "三十分", "さんじゅっぷん"), ("n1-b327", "五分", "ごふん"),
@@ -1321,9 +1328,26 @@ def calibrate():
                       for h in run["counters"]["hits"] if h["id"] in dict(known))
         check(label, pool == sorted((i, p, True) for i, p in known), f"hits: {pool}")
 
+    # (m0) KNOWN_CORRECTED is hand-copied, so nothing tied it to the manifest it follows: with a row
+    # dropped, (m) inspected 11, called them "the sentences §I addendum 2 corrected" and passed (the
+    # review of a849909, its mutant X26). The manifest's 'corrected' rows among (i)'s known hits must be
+    # exactly its ids.
+    ids = {i for i, _, _ in KNOWN_CORRECTED}
+    try:
+        with open(MANIFEST, encoding="utf-8") as f:
+            declared = {r["id"] for r in json.load(f)["entries"] if r.get("disposition") == "corrected"}
+        problem = None
+    except (OSError, ValueError, KeyError, TypeError) as e:
+        declared, problem = set(), f"cannot read {display_path(MANIFEST)}: {e}"
+    from_manifest = declared & {i for i, _, _, _ in KNOWN_SOUND_CHANGE_HITS}
+    check(f"(m0) KNOWN_CORRECTED names exactly the {len(from_manifest)} sentences "
+          f"{display_path(MANIFEST)} declares corrected among (i)'s known hits",
+          problem is None and bool(ids) and from_manifest == ids,
+          problem or f"declared, not in KNOWN_CORRECTED: {sorted(from_manifest - ids) or 'none'}; "
+                     f"in KNOWN_CORRECTED, not declared corrected: {sorted(ids - from_manifest) or 'none'}")
+
     # (m) every correction §I addendum 2 made, inspected on the working tree and passed in both fields
     # with exKana lined up — and none of those ids flagged by the counter table.
-    ids = {i for i, _, _ in KNOWN_CORRECTED}
     seen = sorted((r["id"], r["field"], r["compound"], r["verdict"], r.get("verdictTokens"),
                    r.get("verdictKana"), r.get("taught"), r.get("taughtKana"),
                    r.get("kanaAlignment") == r.get("alignment"))
