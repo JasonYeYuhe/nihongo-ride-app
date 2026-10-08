@@ -1,0 +1,1919 @@
+{
+ "population": 6724,
+ "enumerated": 23,
+ "absorbers": [
+  "真っ二つ",
+  "三日月",
+  "四つ角",
+  "一日中",
+  "二十日",
+  "十日町",
+  "二人三脚",
+  "一人前"
+ ],
+ "hits": [],
+ "interrogative": {
+  "population": {
+   "exJP": 6724,
+   "surface": 7071,
+   "display": 233
+  },
+  "enumerated": {
+   "何時": [
+    "なんじ"
+   ],
+   "何分": [
+    "なんぷん"
+   ],
+   "何人": [
+    "なんにん"
+   ],
+   "何日": [
+    "なんにち"
+   ],
+   "何回": [
+    "なんかい"
+   ],
+   "何歳": [
+    "なんさい"
+   ],
+   "何年": [
+    "なんねん"
+   ],
+   "何月": [
+    "なんがつ"
+   ],
+   "何度": [
+    "なんど"
+   ],
+   "何本": [
+    "なんぼん"
+   ],
+   "何枚": [
+    "なんまい"
+   ],
+   "何冊": [
+    "なんさつ"
+   ],
+   "何個": [
+    "なんこ"
+   ],
+   "何杯": [
+    "なんばい"
+   ],
+   "何匹": [
+    "なんびき"
+   ],
+   "何台": [
+    "なんだい"
+   ],
+   "何番": [
+    "なんばん"
+   ],
+   "何階": [
+    "なんがい",
+    "なんかい"
+   ],
+   "何曜日": [
+    "なんようび"
+   ]
+  },
+  "otherSense": {
+   "何分": {
+    "なにぶん": "adverb 'anyway; please' (何分よろしく)"
+   },
+   "何人": {
+    "なにじん": "'what nationality'",
+    "なんぴと": "literary 'whoever' (何人も…ない)",
+    "なにびと": "literary 'whoever'"
+   },
+   "何時": {
+    "いつ": "the kanji spelling of いつ (何時も, 何時か)"
+   }
+  },
+  "absorbers": [
+   "いつ何時"
+  ],
+  "inspected": [
+   {
+    "id": "n1-b294",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b746",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b1023",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b1887",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b141",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b245",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "surface",
+    "compound": "何分",
+    "expected": [
+     "なんぷん"
+    ],
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "verdictTokens": null,
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   },
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何分",
+    "expected": [
+     "なんぷん"
+    ],
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "taughtKana": "なにぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   },
+   {
+    "id": "n2-b1118",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n3-b037",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n3-b901",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "何日",
+    "expected": [
+     "なんにち"
+    ],
+    "taught": "なんにち",
+    "taughtSpan": "何日",
+    "alignment": "exact",
+    "taughtKana": "なんにち",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-g022",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "何時",
+    "expected": [
+     "なんじ"
+    ],
+    "taught": "なんじ",
+    "taughtSpan": "何時",
+    "alignment": "exact",
+    "taughtKana": "なんじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   }
+  ],
+  "hits": [
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "surface",
+    "sentence": "何分",
+    "reading": "なにぶん",
+    "english": "somehow; anyway; please",
+    "inDictationPool": false,
+    "compound": "何分",
+    "expected": [
+     "なんぷん"
+    ],
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "verdictTokens": null,
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   },
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "sentence": "何分古い車なので、時々故障します。",
+    "reading": "なにぶんふるいくるまなのでときどきこしょうします",
+    "english": "Since it is an old car after all, it breaks down sometimes.",
+    "inDictationPool": true,
+    "compound": "何分",
+    "expected": [
+     "なんぷん"
+    ],
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "taughtKana": "なにぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   }
+  ]
+ },
+ "counters": {
+  "population": {
+   "exJP": 6724,
+   "surface": 7071,
+   "display": 233
+  },
+  "enumerated": {
+   "月": {
+    "4": [
+     "しがつ"
+    ],
+    "7": [
+     "しちがつ"
+    ],
+    "9": [
+     "くがつ"
+    ]
+   },
+   "時": {
+    "4": [
+     "よじ"
+    ],
+    "7": [
+     "しちじ"
+    ],
+    "9": [
+     "くじ"
+    ]
+   },
+   "時間": {
+    "4": [
+     "よじかん"
+    ],
+    "7": [
+     "しちじかん",
+     "ななじかん"
+    ],
+    "9": [
+     "くじかん"
+    ]
+   },
+   "字": {
+    "4": [
+     "よじ"
+    ]
+   },
+   "分": {
+    "1": [
+     "いっぷん"
+    ],
+    "2": [
+     "にふん"
+    ],
+    "3": [
+     "さんぷん"
+    ],
+    "4": [
+     "よんぷん"
+    ],
+    "5": [
+     "ごふん"
+    ],
+    "6": [
+     "ろっぷん"
+    ],
+    "7": [
+     "ななふん"
+    ],
+    "8": [
+     "はっぷん",
+     "はちふん"
+    ],
+    "9": [
+     "きゅうふん"
+    ],
+    "10": [
+     "じゅっぷん",
+     "じっぷん"
+    ]
+   },
+   "軒": {
+    "1": [
+     "いっけん"
+    ],
+    "3": [
+     "さんげん"
+    ],
+    "6": [
+     "ろっけん"
+    ],
+    "8": [
+     "はっけん"
+    ],
+    "10": [
+     "じゅっけん",
+     "じっけん"
+    ]
+   },
+   "階": {
+    "1": [
+     "いっかい"
+    ],
+    "3": [
+     "さんがい"
+    ],
+    "6": [
+     "ろっかい"
+    ],
+    "8": [
+     "はっかい",
+     "はちかい"
+    ],
+    "10": [
+     "じゅっかい",
+     "じっかい"
+    ]
+   },
+   "回": {
+    "1": [
+     "いっかい"
+    ],
+    "6": [
+     "ろっかい"
+    ],
+    "8": [
+     "はっかい",
+     "はちかい"
+    ],
+    "10": [
+     "じゅっかい",
+     "じっかい"
+    ]
+   },
+   "歳": {
+    "1": [
+     "いっさい"
+    ],
+    "8": [
+     "はっさい"
+    ],
+    "10": [
+     "じゅっさい",
+     "じっさい"
+    ]
+   },
+   "本": {
+    "1": [
+     "いっぽん"
+    ],
+    "3": [
+     "さんぼん"
+    ],
+    "6": [
+     "ろっぽん"
+    ],
+    "8": [
+     "はっぽん"
+    ],
+    "10": [
+     "じゅっぽん",
+     "じっぽん"
+    ]
+   },
+   "杯": {
+    "1": [
+     "いっぱい"
+    ],
+    "3": [
+     "さんばい"
+    ],
+    "6": [
+     "ろっぱい"
+    ],
+    "8": [
+     "はっぱい"
+    ],
+    "10": [
+     "じゅっぱい",
+     "じっぱい"
+    ]
+   },
+   "匹": {
+    "1": [
+     "いっぴき"
+    ],
+    "3": [
+     "さんびき"
+    ],
+    "6": [
+     "ろっぴき"
+    ],
+    "8": [
+     "はっぴき"
+    ],
+    "10": [
+     "じゅっぴき",
+     "じっぴき"
+    ]
+   },
+   "個": {
+    "1": [
+     "いっこ"
+    ],
+    "6": [
+     "ろっこ"
+    ],
+    "8": [
+     "はっこ"
+    ],
+    "10": [
+     "じゅっこ",
+     "じっこ"
+    ]
+   },
+   "冊": {
+    "1": [
+     "いっさつ"
+    ],
+    "8": [
+     "はっさつ"
+    ],
+    "10": [
+     "じゅっさつ",
+     "じっさつ"
+    ]
+   },
+   "点": {
+    "1": [
+     "いってん"
+    ],
+    "6": [
+     "ろってん"
+    ],
+    "8": [
+     "はってん"
+    ],
+    "10": [
+     "じゅってん",
+     "じってん"
+    ]
+   },
+   "泊": {
+    "1": [
+     "いっぱく"
+    ],
+    "3": [
+     "さんぱく"
+    ],
+    "6": [
+     "ろっぱく"
+    ],
+    "8": [
+     "はっぱく"
+    ],
+    "10": [
+     "じゅっぱく",
+     "じっぱく"
+    ]
+   },
+   "千": {
+    "3": [
+     "さんぜん"
+    ],
+    "8": [
+     "はっせん"
+    ]
+   },
+   "百": {
+    "3": [
+     "さんびゃく"
+    ],
+    "6": [
+     "ろっぴゃく"
+    ],
+    "8": [
+     "はっぴゃく"
+    ]
+   }
+  },
+  "places": {
+   "千": 1000,
+   "百": 100
+  },
+  "tolerated": {
+   "時": {
+    "7": {
+     "ななじ": "tolerated: ななじ is common speech; しちじ is the textbook form"
+    }
+   },
+   "階": {
+    "3": {
+     "さんかい": "tolerated: さんかい is common speech; さんがい is the traditional form"
+    }
+   },
+   "歳": {
+    "10": {
+     "じゅうさい": "tolerated: …じゅうさい is heard; …じゅっさい / …じっさい is the standard"
+    }
+   }
+  },
+  "otherSense": {
+   "四時": {
+    "しじ": "literary 'the four seasons' (四時)"
+   },
+   "四月": {
+    "わたぬき": "the surname 四月一日 / 四月朔日"
+   }
+  },
+  "whole": {
+   "二十歳": [
+    "はたち"
+   ]
+  },
+  "absorbers": [
+   "八百屋",
+   "八百長",
+   "八千代",
+   "一回り",
+   "五分五分",
+   "九分九厘",
+   "七分袖",
+   "八分目",
+   "一個人"
+  ],
+  "notTheCounter": {
+   "時": [
+    "代",
+    "期",
+    "点"
+   ],
+   "月": [
+    "曜"
+   ]
+  },
+  "minuteSense": {
+   "minutes": "\\bmin(?:ute)?s?\\b|\\b\\d{1,2}:\\d{2}\\b",
+   "enough": "\\b(?:enough|sufficient(?:ly)?|suffices?|plenty|ample|amply|fully|thorough(?:ly)?|adequate(?:ly)?)\\b"
+  },
+  "inspected": [
+   {
+    "id": "n1-g323",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じゅうぶん"
+    ],
+    "sense": "other",
+    "senseFrom": "the English names no minutes",
+    "taught": "じゅうぶん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅうぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b311",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "八十歳",
+    "counter": "歳",
+    "number": 80,
+    "expected": [
+     "はちじっさい",
+     "はちじゅっさい"
+    ],
+    "taught": "はちじゅうさい",
+    "taughtSpan": "八十歳",
+    "alignment": "exact",
+    "taughtKana": "はちじゅうさい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "はちじゅうさい",
+     "sense": "tolerated: …じゅうさい is heard; …じゅっさい / …じっさい is the standard"
+    }
+   },
+   {
+    "id": "n1-b327",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "五分",
+    "counter": "分",
+    "number": 5,
+    "expected": [
+     "ごふん"
+    ],
+    "sense": "minutes",
+    "senseFrom": "the English names minutes",
+    "taught": "ごふん",
+    "taughtSpan": "五分",
+    "alignment": "exact",
+    "taughtKana": "ごふん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b439",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "三千",
+    "counter": "千",
+    "number": 3000,
+    "expected": [
+     "さんぜん"
+    ],
+    "taught": "さんぜん",
+    "taughtSpan": "三千",
+    "alignment": "exact",
+    "taughtKana": "さんぜん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b524",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じゅうぶん"
+    ],
+    "sense": "other",
+    "senseFrom": "the English names no minutes",
+    "taught": "じゅうぶん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅうぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b553",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じゅうぶん"
+    ],
+    "sense": "other",
+    "senseFrom": "the English names no minutes",
+    "taught": "じゅうぶん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅうぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b615",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "四時間",
+    "counter": "時間",
+    "number": 4,
+    "expected": [
+     "よじかん"
+    ],
+    "taught": "よじかん",
+    "taughtSpan": "四時間",
+    "alignment": "exact",
+    "taughtKana": "よじかん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b957",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "一階",
+    "counter": "階",
+    "number": 1,
+    "expected": [
+     "いっかい"
+    ],
+    "taught": "いっかい",
+    "taughtSpan": "一階",
+    "alignment": "exact",
+    "taughtKana": "いっかい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b1147",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じっぷん",
+     "じゅっぷん"
+    ],
+    "sense": "minutes",
+    "senseFrom": "the English names minutes",
+    "taught": "じゅっぷん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅっぷん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b1450",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "八十歳",
+    "counter": "歳",
+    "number": 80,
+    "expected": [
+     "はちじっさい",
+     "はちじゅっさい"
+    ],
+    "taught": "はちじゅうさい",
+    "taughtSpan": "八十歳",
+    "alignment": "exact",
+    "taughtKana": "はちじゅうさい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "はちじゅうさい",
+     "sense": "tolerated: …じゅうさい is heard; …じゅっさい / …じっさい is the standard"
+    }
+   },
+   {
+    "id": "n1-b1516",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "surface",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じっぷん",
+     "じゅっぷん"
+    ],
+    "sense": "minutes",
+    "senseFrom": "the English names minutes",
+    "taught": "じっぷん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "verdictTokens": null,
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b1516",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じっぷん",
+     "じゅっぷん"
+    ],
+    "sense": "minutes",
+    "senseFrom": "the English names minutes",
+    "taught": "じっぷん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じっぷん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b1630",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "三分",
+    "counter": "分",
+    "number": 3,
+    "expected": [
+     "さんぷん"
+    ],
+    "sense": "minutes",
+    "senseFrom": "the English names minutes",
+    "taught": "さんぷん",
+    "taughtSpan": "三分",
+    "alignment": "exact",
+    "taughtKana": "さんぷん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b1841",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じっぷん",
+     "じゅっぷん"
+    ],
+    "sense": "minutes",
+    "senseFrom": "the English names minutes",
+    "taught": "じゅっぷん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅっぷん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b2056",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "一回",
+    "verdict": "absorbed",
+    "by": "一回り: a lexeme with its own reading"
+   },
+   {
+    "id": "n2-g248",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じゅうぶん"
+    ],
+    "sense": "other",
+    "senseFrom": "the English names no minutes",
+    "taught": "じゅうぶん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅうぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-g259",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じゅうぶん"
+    ],
+    "sense": "other",
+    "senseFrom": "the English names no minutes",
+    "taught": "じゅうぶん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅうぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b072",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "四字",
+    "counter": "字",
+    "number": 4,
+    "expected": [
+     "よじ"
+    ],
+    "taught": "よじ",
+    "taughtSpan": "四字",
+    "alignment": "exact",
+    "taughtKana": "よじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b311",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じっぷん",
+     "じゅっぷん"
+    ],
+    "sense": "minutes",
+    "senseFrom": "the English names minutes",
+    "taught": "じゅっぷん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅっぷん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b449",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "三十分",
+    "counter": "分",
+    "number": 30,
+    "expected": [
+     "さんじっぷん",
+     "さんじゅっぷん"
+    ],
+    "sense": "minutes",
+    "senseFrom": "the English names minutes",
+    "taught": "さんじゅっぷん",
+    "taughtSpan": "三十分",
+    "alignment": "exact",
+    "taughtKana": "さんじゅっぷん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b479",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "一軒",
+    "counter": "軒",
+    "number": 1,
+    "expected": [
+     "いっけん"
+    ],
+    "taught": "いっけん",
+    "taughtSpan": "一軒",
+    "alignment": "exact",
+    "taughtKana": "いっけん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b672",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じゅうぶん"
+    ],
+    "sense": "other",
+    "senseFrom": "the English names no minutes",
+    "taught": "じゅうぶん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅうぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b942",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "四月",
+    "counter": "月",
+    "number": 4,
+    "expected": [
+     "しがつ"
+    ],
+    "taught": "しがつ",
+    "taughtSpan": "四月",
+    "alignment": "exact",
+    "taughtKana": "しがつ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b953",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じゅうぶん"
+    ],
+    "sense": "other",
+    "senseFrom": "the English names no minutes",
+    "taught": "じゅうぶん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅうぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b1176",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "五分",
+    "counter": "分",
+    "number": 5,
+    "expected": [
+     "ごふん"
+    ],
+    "sense": "minutes",
+    "senseFrom": "the English names minutes",
+    "taught": "ごふん",
+    "taughtSpan": "五分",
+    "alignment": "exact",
+    "taughtKana": "ごふん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b1181",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "一杯",
+    "counter": "杯",
+    "number": 1,
+    "expected": [
+     "いっぱい"
+    ],
+    "taught": "いっぱい",
+    "taughtSpan": "一杯",
+    "alignment": "exact",
+    "taughtKana": "いっぱい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n3-b020",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じっぷん",
+     "じゅっぷん"
+    ],
+    "sense": "minutes",
+    "senseFrom": "the English names minutes",
+    "taught": "じゅっぷん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅっぷん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n3-b123",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "三十歳",
+    "counter": "歳",
+    "number": 30,
+    "expected": [
+     "さんじっさい",
+     "さんじゅっさい"
+    ],
+    "taught": "さんじゅうさい",
+    "taughtSpan": "三十歳",
+    "alignment": "exact",
+    "taughtKana": "さんじゅうさい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "さんじゅうさい",
+     "sense": "tolerated: …じゅうさい is heard; …じゅっさい / …じっさい is the standard"
+    }
+   },
+   {
+    "id": "n3-b678",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "八十点",
+    "counter": "点",
+    "number": 80,
+    "expected": [
+     "はちじってん",
+     "はちじゅってん"
+    ],
+    "taught": "はちじゅってん",
+    "taughtSpan": "八十点",
+    "alignment": "exact",
+    "taughtKana": "はちじゅってん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n3-b750",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "九時",
+    "counter": "時",
+    "number": 9,
+    "expected": [
+     "くじ"
+    ],
+    "taught": "くじ",
+    "taughtSpan": "九時",
+    "alignment": "exact",
+    "taughtKana": "くじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n3-b781",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "三千",
+    "counter": "千",
+    "number": 3000,
+    "expected": [
+     "さんぜん"
+    ],
+    "taught": "さんぜん",
+    "taughtSpan": "三千",
+    "alignment": "exact",
+    "taughtKana": "さんぜん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n4-g171",
+    "file": "Sources/VocabKit/Resources/n4.json",
+    "field": "exJP",
+    "compound": "三階",
+    "counter": "階",
+    "number": 3,
+    "expected": [
+     "さんがい"
+    ],
+    "taught": "さんかい",
+    "taughtSpan": "三階",
+    "alignment": "exact",
+    "taughtKana": "さんかい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "さんかい",
+     "sense": "tolerated: さんかい is common speech; さんがい is the traditional form"
+    }
+   },
+   {
+    "id": "n4-g178",
+    "file": "Sources/VocabKit/Resources/n4.json",
+    "field": "surface",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じゅうぶん"
+    ],
+    "sense": "other",
+    "senseFrom": "the English names no minutes",
+    "taught": "じゅうぶん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "verdictTokens": null,
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n4-g178",
+    "file": "Sources/VocabKit/Resources/n4.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じゅうぶん"
+    ],
+    "sense": "other",
+    "senseFrom": "the English names no minutes",
+    "taught": "じゅうぶん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅうぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n4-g180",
+    "file": "Sources/VocabKit/Resources/n4.json",
+    "field": "exJP",
+    "compound": "九時",
+    "counter": "時",
+    "number": 9,
+    "expected": [
+     "くじ"
+    ],
+    "taught": "くじ",
+    "taughtSpan": "九時",
+    "alignment": "exact",
+    "taughtKana": "くじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n4-g186",
+    "file": "Sources/VocabKit/Resources/n4.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じゅうぶん"
+    ],
+    "sense": "other",
+    "senseFrom": "the English names no minutes",
+    "taught": "じゅうぶん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅうぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n4-b127",
+    "file": "Sources/VocabKit/Resources/n4.json",
+    "field": "exJP",
+    "compound": "十分",
+    "counter": "分",
+    "number": 10,
+    "expected": [
+     "じっぷん",
+     "じゅっぷん"
+    ],
+    "sense": "minutes",
+    "senseFrom": "the English names minutes",
+    "taught": "じゅっぷん",
+    "taughtSpan": "十分",
+    "alignment": "exact",
+    "taughtKana": "じゅっぷん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-g079",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "七時",
+    "counter": "時",
+    "number": 7,
+    "expected": [
+     "しちじ"
+    ],
+    "taught": "しちじ",
+    "taughtSpan": "七時",
+    "alignment": "exact",
+    "taughtKana": "しちじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-b018",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "二十四時間",
+    "counter": "時間",
+    "number": 24,
+    "expected": [
+     "にじゅうよじかん"
+    ],
+    "taught": "にじゅうよじかん",
+    "taughtSpan": "二十四時間",
+    "alignment": "exact",
+    "taughtKana": "にじゅうよじかん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-b060",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "一杯",
+    "counter": "杯",
+    "number": 1,
+    "expected": [
+     "いっぱい"
+    ],
+    "taught": "いっぱい",
+    "taughtSpan": "一杯",
+    "alignment": "exact",
+    "taughtKana": "いっぱい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-b071",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "九時",
+    "counter": "時",
+    "number": 9,
+    "expected": [
+     "くじ"
+    ],
+    "taught": "くじ",
+    "taughtSpan": "九時",
+    "alignment": "exact",
+    "taughtKana": "くじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-b202",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "七時",
+    "counter": "時",
+    "number": 7,
+    "expected": [
+     "しちじ"
+    ],
+    "taught": "しちじ",
+    "taughtSpan": "七時",
+    "alignment": "exact",
+    "taughtKana": "しちじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-b212",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "一杯",
+    "counter": "杯",
+    "number": 1,
+    "expected": [
+     "いっぱい"
+    ],
+    "taught": "いっぱい",
+    "taughtSpan": "一杯",
+    "alignment": "exact",
+    "taughtKana": "いっぱい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-b303",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "四月",
+    "counter": "月",
+    "number": 4,
+    "expected": [
+     "しがつ"
+    ],
+    "taught": "しがつ",
+    "taughtSpan": "四月",
+    "alignment": "exact",
+    "taughtKana": "しがつ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-b331",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "surface",
+    "compound": "二十歳",
+    "counter": "歳",
+    "number": 20,
+    "expected": [
+     "にじっさい",
+     "にじゅっさい",
+     "はたち"
+    ],
+    "taught": "はたち",
+    "taughtSpan": "二十歳",
+    "alignment": "exact",
+    "verdictTokens": null,
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-b331",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "二十歳",
+    "counter": "歳",
+    "number": 20,
+    "expected": [
+     "にじっさい",
+     "にじゅっさい",
+     "はたち"
+    ],
+    "taught": "はたち",
+    "taughtSpan": "二十歳",
+    "alignment": "exact",
+    "taughtKana": "はたち",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-b334",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "七時",
+    "counter": "時",
+    "number": 7,
+    "expected": [
+     "しちじ"
+    ],
+    "taught": "ななじはん",
+    "taughtSpan": "七時半",
+    "alignment": "prefix",
+    "taughtKana": "ななじはん",
+    "kanaAlignment": "prefix",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "ななじ",
+     "sense": "tolerated: ななじ is common speech; しちじ is the textbook form"
+    }
+   },
+   {
+    "id": "n5-b364",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "surface",
+    "compound": "八百",
+    "verdict": "absorbed",
+    "by": "八百屋: a lexeme with its own reading"
+   },
+   {
+    "id": "n5-b364",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "八百",
+    "verdict": "absorbed",
+    "by": "八百屋: a lexeme with its own reading"
+   },
+   {
+    "id": "n5-k014",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "一杯",
+    "counter": "杯",
+    "number": 1,
+    "expected": [
+     "いっぱい"
+    ],
+    "taught": "いっぱい",
+    "taughtSpan": "一杯",
+    "alignment": "exact",
+    "taughtKana": "いっぱい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   }
+  ],
+  "hits": [
+   {
+    "id": "n1-b311",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "sentence": "祖父は八十歳を超えても達者で暮らしている。",
+    "reading": "そふははちじゅうさいをこえてもたっしゃでくらしている",
+    "english": "My grandfather is over eighty years old and still living in good health.",
+    "inDictationPool": false,
+    "compound": "八十歳",
+    "counter": "歳",
+    "number": 80,
+    "expected": [
+     "はちじっさい",
+     "はちじゅっさい"
+    ],
+    "taught": "はちじゅうさい",
+    "taughtSpan": "八十歳",
+    "alignment": "exact",
+    "taughtKana": "はちじゅうさい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "はちじゅうさい",
+     "sense": "tolerated: …じゅうさい is heard; …じゅっさい / …じっさい is the standard"
+    }
+   },
+   {
+    "id": "n1-b1450",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "sentence": "八十歳を超えた祖父は今も健在だ。",
+    "reading": "はちじゅうさいをこえたそふはいまもけんざいだ",
+    "english": "My grandfather, who is over eighty, is still alive and well.",
+    "inDictationPool": true,
+    "compound": "八十歳",
+    "counter": "歳",
+    "number": 80,
+    "expected": [
+     "はちじっさい",
+     "はちじゅっさい"
+    ],
+    "taught": "はちじゅうさい",
+    "taughtSpan": "八十歳",
+    "alignment": "exact",
+    "taughtKana": "はちじゅうさい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "はちじゅうさい",
+     "sense": "tolerated: …じゅうさい is heard; …じゅっさい / …じっさい is the standard"
+    }
+   },
+   {
+    "id": "n3-b123",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "sentence": "兄は三十歳でまだ独身です。",
+    "reading": "あにはさんじゅうさいでまだどくしんです",
+    "english": "My older brother is thirty and still single.",
+    "inDictationPool": false,
+    "compound": "三十歳",
+    "counter": "歳",
+    "number": 30,
+    "expected": [
+     "さんじっさい",
+     "さんじゅっさい"
+    ],
+    "taught": "さんじゅうさい",
+    "taughtSpan": "三十歳",
+    "alignment": "exact",
+    "taughtKana": "さんじゅうさい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "さんじゅうさい",
+     "sense": "tolerated: …じゅうさい is heard; …じゅっさい / …じっさい is the standard"
+    }
+   },
+   {
+    "id": "n4-g171",
+    "file": "Sources/VocabKit/Resources/n4.json",
+    "field": "exJP",
+    "sentence": "彼の事務所はビルの三階にあります。",
+    "reading": "かれのじむしょはびるのさんかいにあります",
+    "english": "His office is on the third floor of the building.",
+    "inDictationPool": true,
+    "compound": "三階",
+    "counter": "階",
+    "number": 3,
+    "expected": [
+     "さんがい"
+    ],
+    "taught": "さんかい",
+    "taughtSpan": "三階",
+    "alignment": "exact",
+    "taughtKana": "さんかい",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "さんかい",
+     "sense": "tolerated: さんかい is common speech; さんがい is the traditional form"
+    }
+   },
+   {
+    "id": "n5-b334",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "sentence": "今日の授業は七時半に終わります。",
+    "reading": "きょうのじゅぎょうはななじはんにおわります",
+    "english": "Today's class ends at half past seven.",
+    "inDictationPool": false,
+    "compound": "七時",
+    "counter": "時",
+    "number": 7,
+    "expected": [
+     "しちじ"
+    ],
+    "taught": "ななじはん",
+    "taughtSpan": "七時半",
+    "alignment": "prefix",
+    "taughtKana": "ななじはん",
+    "kanaAlignment": "prefix",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "ななじ",
+     "sense": "tolerated: ななじ is common speech; しちじ is the textbook form"
+    }
+   }
+  ]
+ },
+ "calibration": [
+  "[PASS] (a) 281fc45 flags n5-g022 — hits for n5-g022: [('mismatch', '何時', 'なんどき')]",
+  "[PASS] (b) the working tree inspects n5-g022 and does not flag it — inspected: [('ok', '何時', 'なんじ')]; hits: 0",
+  "[PASS] (c0) the working tree exits 0 and the n5-only tree exits 2 — exit 0; n5-only exit 2",
+  "[PASS] (c1) lexicalised table: its own scan reads ≥ 6000 sentences; n5-only below — working tree 6724, n5-only 616",
+  "[PASS] (c2) 何 table: its own scan reads ≥ 6000 sentences and headwords and all 233 passages; n5-only below — working tree {'exJP': 6724, 'surface': 7071, 'display': 233}, n5-only {'exJP': 616, 'surface': 646, 'display': 0}",
+  "[PASS] (c3) counter table: its own scan reads ≥ 6000 sentences and headwords and all 233 passages; n5-only below — working tree {'exJP': 6724, 'surface': 7071, 'display': 233}, n5-only {'exJP': 616, 'surface': 646, 'display': 0}",
+  "[PASS] (d) 281fc45: n2-b937 何分 なにぶん is flag-only in both fields — hits for n2-b937: [('exJP', 'flag-only', 'なにぶん'), ('surface', 'flag-only', 'なにぶん')]",
+  "[PASS] (e) 281fc45: the lexicalised table flags n5-kazoku — hits for n5-kazoku: [('四人', 'よんにん')]",
+  "[PASS] (f) 29e4778: the counter table flags the 9 known occurrences in both exTokens and exKana — missing: none; also flagged (or flagged differently): ['n1-b1147 十分 mismatch じゅうふん', 'n1-b1450 八十歳 flag-only はちじゅうさい', 'n1-b1630 三分 mismatch さんふん', 'n1-b1841 十分 mismatch じゅうふん', 'n1-b311 八十歳 flag-only はちじゅうさい', 'n1-b327 五分 mismatch ごぶん', 'n1-b439 三千 mismatch さんせん', 'n1-b957 一階 mismatch いちかい', 'n2-b311 十分 mismatch じゅうふん', 'n2-b449 三十分 mismatch さんじゅうぶん', 'n2-b479 一軒 mismatch いちけん', 'n3-b020 十分 mismatch じゅうぶん', 'n3-b123 三十歳 flag-only さんじゅうさい', 'n3-b678 八十点 mismatch はちじゅうてん', 'n3-b781 三千 mismatch さんせん', 'n4-b127 十分 mismatch じゅうふん', 'n4-g171 三階 flag-only さんかい']",
+  "[PASS] (g) the working tree inspects n5-g079 七時 しちじ and passes it in both fields — inspected: [('七時', 'ok', 'ok', 'ok', 'しちじ')]; hits: 0",
+  "[PASS] (i) 3d891b9 (as its review read it): the counter table flags the 17 known sound-change occurrences in both exTokens and exKana (13 mismatch, 4 flag-only) — missing: none; also flagged (or flagged differently): ['n5-b334 七時 flag-only ななじはん']",
+  "[PASS] (i) fdb2b5f (the corpus 1.35 shipped): the counter table flags the 17 known sound-change occurrences in both exTokens and exKana (13 mismatch, 4 flag-only) — missing: none; also flagged (or flagged differently): ['n1-b615 四時間 mismatch しじかん', 'n2-b072 四字 mismatch よんじ', 'n2-b942 四月 mismatch よんがつ', 'n3-b750 九時 mismatch きゅうじ', 'n4-g180 九時 mismatch きゅうじ', 'n5-b018 二十四時間 mismatch にじゅうよんじかん', 'n5-b071 九時 mismatch きゅうじ', 'n5-b303 四月 mismatch よんがつ', 'n5-b334 七時 flag-only ななじはん']",
+  "[PASS] (j) the working tree passes 十分 read for its sense: n1-b1516 じっぷん 'ten minutes' and n4-g178 じゅうぶん 'enough', each in its sentence and its headword — inspected: [('n1-b1516', 'exJP', '十分', 'ok', 'じっぷん'), ('n1-b1516', 'surface', '十分', 'ok', 'じっぷん'), ('n4-g178', 'exJP', '十分', 'ok', 'じゅうぶん'), ('n4-g178', 'surface', '十分', 'ok', 'じゅうぶん')]; hits: none",
+  "[PASS] (k) the working tree records its lexemes and passes 二十歳 はたち: n5-b364 八百屋, n1-b2056 一回り, n5-b331 — inspected: [('n1-b2056', 'exJP', '一回', 'absorbed', None), ('n5-b331', 'exJP', '二十歳', 'ok', 'はたち'), ('n5-b331', 'surface', '二十歳', 'ok', 'はたち'), ('n5-b364', 'exJP', '八百', 'absorbed', None), ('n5-b364', 'surface', '八百', 'absorbed', None)]; hits: none",
+  "[PASS] (l) 3d891b9, with its own dictation-exclusions.json: the hits carry their English and say which are in the dictation pool (n1-b439, n3-b781, n3-b020, n4-g171 in; n5-b334 withheld), as PLAN-V1.36 §I states — hits: [('n1-b439', True, True), ('n3-b020', True, True), ('n3-b781', True, True), ('n4-g171', True, True), ('n5-b334', False, True)]",
+  "[PASS] (l) the working tree: the two of those still hits there carry their English and their pool membership (n4-g171 in; n5-b334 withheld) — hits: [('n4-g171', True, True), ('n5-b334', False, True)]",
+  "[PASS] (m0) KNOWN_CORRECTED names exactly the 13 sentences docs/measurements/v136-reading-manifest.json declares corrected among (i)'s known hits — declared, not in KNOWN_CORRECTED: none; in KNOWN_CORRECTED, not declared corrected: none",
+  "[PASS] (m) the working tree passes the 13 sentences §I addendum 2 corrected, each inspected and taught its corrected reading in exTokens and exKana — not as corrected: none; not inspected: none; hits: none",
+  "[PASS] (h) planted tree: the lexicalised table flags its 5 plants (every n-file) and no other — exit 0; missed none; another table's none; not a mismatch in both fields: none",
+  "[PASS] (h) planted tree: the interrogative table flags its 7 plants (every n-file, headwords and passages) and no other — exit 0; missed none; another table's none; not a mismatch in both fields: none",
+  "[PASS] (h) planted tree: the counters table flags its 14 plants (every n-file, headwords and passages) and no other — exit 0; missed none; another table's none; not a mismatch in both fields: none",
+  "[PASS] logic: an absorber is recorded, not judged — いつ何時でも いつなんどきでも: ['absorbed']",
+  "[PASS] logic: 何階 accepts both なんがい and なんかい — 何階何階 なんがいなんかい: ['ok', 'ok']",
+  "[PASS] logic: a prefix span is judged on its start — 何時間 なんじかん: ['ok']",
+  "[PASS] logic: a counter split over two tokens is read whole — 何回 なんかい: ['ok']",
+  "[PASS] logic: 何人 なにじん is flag-only, never a mismatch — 何人ですか なにじんですか: ['flag-only']",
+  "[PASS] logic: 何人 taught なにん is a mismatch: the path is not proven on 何時 alone — 何人 なにん: ['mismatch']",
+  "[PASS] logic: a regression in exKana alone is a mismatch: tokens なんじ, exKana なんどき — 何時ですか なんどきですか: ['mismatch']",
+  "[PASS] logic: 九時 taught きゅうじ is a mismatch in both fields — 九時に: [('九時', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: 七時: しちじ is right, ななじ is tolerated (flag-only) — 七時七時: [('七時', 'ok', 'ok', 'ok'), ('七時', 'flag-only', 'flag-only', 'flag-only')]",
+  "[PASS] logic: 七時間 accepts both しちじかん and ななじかん; 九時間 wants くじかん — 七時間七時間九時間: [('七時間', 'ok', 'ok', 'ok'), ('七時間', 'ok', 'ok', 'ok'), ('九時間', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: a compound number is read whole: 二十四時間 にじゅうよじかん ok, にじゅうよんじかん not — 二十四時間、二十四時間: [('二十四時間', 'ok', 'ok', 'ok'), ('二十四時間', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: a regression in the tokens alone is a mismatch: tokens よんがつ, exKana しがつ — 四月: [('四月', 'mismatch', 'mismatch', 'ok')]",
+  "[PASS] logic: a regression in exKana alone is a mismatch: tokens しがつ, exKana よんがつ — 四月: [('四月', 'mismatch', 'ok', 'mismatch')]",
+  "[PASS] logic: exKana is read where the tokens put it, not anywhere in the sentence — 九時と九時: [('九時', 'mismatch', 'mismatch', 'mismatch'), ('九時', 'ok', 'ok', 'ok')]",
+  "[PASS] logic: an exact span must EQUAL an expected reading, not contain it — 四時: [('四時', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: 四時 しじ, 'the four seasons', is flag-only — 四時の移ろい: [('四時', 'flag-only', 'flag-only', 'flag-only')]",
+  "[PASS] logic: the surname 四月一日 わたぬき is flag-only; the date 四月一日 is still judged — 四月一日さん、四月一日: [('四月', 'flag-only', 'flag-only', 'flag-only'), ('四月', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: not the counter: 第四月曜日, 四時期, and 十四月 (no such month) are absorbed — 第四月曜日と四時期と十四月: [('四月', 'absorbed', None, None), ('四時', 'absorbed', None, None), ('十四月', 'absorbed', None, None)]",
+  "[PASS] logic: kanji digits with no 十/百/千 are a range, not one number: 三四時間, 六七時間 — 三四時間、六七時間: [('三四時間', 'absorbed', None, None), ('六七時間', 'absorbed', None, None)]",
+  "[PASS] logic: never inspected: 九州, 四季, 四ヶ月, 四か月, 十月, 一時, 一月, 十字路, 四六時中 — 九州の四季、四ヶ月、四か月、十月、一時、一月、十字路、四六時中: []",
+  "[PASS] logic: ASCII and full-width digits are read: ４時 よんじ is a mismatch, 24時間 にじゅうよじかん ok — ４時、24時間: [('４時', 'mismatch', 'mismatch', 'mismatch'), ('24時間', 'ok', 'ok', 'ok')]",
+  "[PASS] logic: a field with no tokens is judged on its reading: 九時 きゅうじ — 九時: [('九時', 'mismatch', None, 'mismatch')]",
+  "[PASS] logic: 七月: しちがつ is right, なながつ is a mismatch (月 tolerates no なな) — 七月七月: [('七月', 'ok', 'ok', 'ok'), ('七月', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: 九月: くがつ is right, きゅうがつ is a mismatch — 九月九月: [('九月', 'ok', 'ok', 'ok'), ('九月', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: 四時 よじ is right — 四時: [('四時', 'ok', 'ok', 'ok')]",
+  "[PASS] logic: 九時間 くじかん is right — 九時間: [('九時間', 'ok', 'ok', 'ok')]",
+  "[PASS] logic: 四字: よじ is right, よんじ is a mismatch — 四字四字: [('四字', 'ok', 'ok', 'ok'), ('四字', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: 十分 'ten minutes' by its English: じゅっぷん and じっぷん ok, the 'enough' reading じゅうぶん a mismatch — 十分十分十分: [('十分', 'ok', 'ok', 'ok'), ('十分', 'ok', 'ok', 'ok'), ('十分', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: 十分 'enough': English with no minutes, so じゅうぶん is ok and a minutes reading flag-only — 十分十分: [('十分', 'ok', 'ok', 'ok'), ('十分', 'flag-only', 'flag-only', 'flag-only')]",
+  "[PASS] logic: 十分 with English naming minutes and 'enough' both: じゅうぶん flag-only, じっぷん ok — 十分で十分だ: [('十分', 'ok', 'ok', 'ok'), ('十分', 'flag-only', 'flag-only', 'flag-only')]",
+  "[PASS] logic: 十分 with no English: じゅうぶん and じっぷん flag-only, じゅうふん (wrong in both senses) a mismatch — 十分十分十分: [('十分', 'flag-only', 'flag-only', 'flag-only'), ('十分', 'flag-only', 'flag-only', 'flag-only'), ('十分', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: 分 whose English names no minutes: ごふん ok, 五分 ごぶ 'even' flag-only, never a mismatch — 五分、五分: [('五分', 'ok', 'ok', 'ok'), ('五分', 'flag-only', 'flag-only', 'flag-only')]",
+  "[PASS] logic: 分's sense from the text: 九時十分 and 十分間 are minutes, whatever the English says — 九時十分、十分間: [('九時', 'ok', 'ok', 'ok'), ('十分', 'mismatch', 'mismatch', 'mismatch'), ('十分', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: a clock time in the English names minutes: 'at 9:10', 十分 じゅうぶん is a mismatch — 十分に出ます: [('十分', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: a fraction is absorbed (三分の一, 十分の一); 三分の休憩 is still judged — 三分の一と十分の一と三分の休憩: [('三分', 'absorbed', None, None), ('十分', 'absorbed', None, None), ('三分', 'ok', None, 'ok')]",
+  "[PASS] logic: lexemes are absorbed: 八百屋 八百長 八千代 一回り 五分五分 九分九厘 七分袖 八分目 一個人 — 八百屋、八百長、八千代、一回り、五分五分、九分九厘、七分袖、八分目、一個人: [('八百', 'absorbed', None, None), ('八百', 'absorbed', None, None), ('八千', 'absorbed', None, None), ('一回', 'absorbed', None, None), ('五分', 'absorbed', None, None), ('五分', 'absorbed', None, None), ('九分', 'absorbed', None, None), ('七分', 'absorbed', None, None), ('八分', 'absorbed', None, None), ('一個', 'absorbed', None, None)]",
+  "[PASS] logic: 二十歳: はたち, にじゅっさい, にじっさい ok; にじゅうさい tolerated (flag-only) — 二十歳二十歳二十歳二十歳: [('二十歳', 'ok', 'ok', 'ok'), ('二十歳', 'ok', 'ok', 'ok'), ('二十歳', 'ok', 'ok', 'ok'), ('二十歳', 'flag-only', 'flag-only', 'flag-only')]",
+  "[PASS] logic: a ten before 歳 read …じゅうさい is tolerated: 十歳 じゅうさい, 三十歳 さんじゅうさい flag-only — 十歳、三十歳、三十歳: [('十歳', 'flag-only', 'flag-only', 'flag-only'), ('三十歳', 'flag-only', 'flag-only', 'flag-only'), ('三十歳', 'ok', 'ok', 'ok')]",
+  "[PASS] logic: 三階: さんがい is right, さんかい is tolerated (flag-only) — 三階三階: [('三階', 'ok', 'ok', 'ok'), ('三階', 'flag-only', 'flag-only', 'flag-only')]",
+  "[PASS] logic: a compound number is judged at its final unit: 三十分, 四十八本, 百十分 — 三十分、三十分、四十八本、四十八本、百十分: [('三十分', 'ok', 'ok', 'ok'), ('三十分', 'mismatch', 'mismatch', 'mismatch'), ('四十八本', 'ok', 'ok', 'ok'), ('四十八本', 'mismatch', 'mismatch', 'mismatch'), ('百十分', 'ok', 'ok', 'ok')]",
+  "[PASS] logic: 千 and 百 inside a number: 一万三千 いちまんさんぜん ok, いちまんさんせん not; 二千三百 ok; 二三百 a range — 一万三千円、一万三千円、二千三百円、二三百円: [('一万三千', 'ok', 'ok', 'ok'), ('一万三千', 'mismatch', 'mismatch', 'mismatch'), ('二千三百', 'ok', 'ok', 'ok'), ('二三百', 'absorbed', None, None)]",
+  "[PASS] logic: digits: 30分 さんじゅっぷん and 8本 はっぽん ok; 100分 and 200本 end in 百, not enumerated — 30分、8本、100分、200本: [('30分', 'ok', 'ok', 'ok'), ('8本', 'ok', 'ok', 'ok')]",
+  "[PASS] logic: never inspected: unlisted digits (二本 三冊 二回 三回 四杯 七匹 九点 五泊 二千 五百), 百本 千回 万歳, 何分 何本 (the 何 table's), 一人 一番 一生 一緒 — 二本、三冊、二回、三回、四杯、七匹、九点、五泊、二千、五百、百本、千回、万歳、何分、何本、一人、一番、一生、一緒: []",
+  "[PASS] logic: judged on their start: 一本気 いっぽんぎ, 一点張り いってんばり; 一杯 'full' いっぱい is the counter's reading — 一本気、一点張り、一杯: [('一本', 'ok', 'ok', 'ok'), ('一点', 'ok', 'ok', 'ok'), ('一杯', 'ok', 'ok', 'ok')]",
+  "[PASS] logic: a regression in exKana alone is a mismatch for a sound-changing row: tokens いっけん, exKana いちけん — 一軒が: [('一軒', 'mismatch', 'ok', 'mismatch')]",
+  "[PASS] logic: a regression in the tokens alone is a mismatch for a sound-changing row: tokens いちけん, exKana いっけん — 一軒が: [('一軒', 'mismatch', 'mismatch', 'ok')]",
+  "[PASS] logic: 分 — every row's standard reading ok, the reading without its sound change a mismatch (10 rows) — 22 judged; wrong: none; missing: none",
+  "[PASS] logic: 軒 — every row's standard reading ok, the reading without its sound change a mismatch (5 rows) — 11 judged; wrong: none; missing: none",
+  "[PASS] logic: 階 — every row's standard reading ok, the reading without its sound change a mismatch (5 rows) — 11 judged; wrong: none; missing: none",
+  "[PASS] logic: 回 — every row's standard reading ok, the reading without its sound change a mismatch (4 rows) — 10 judged; wrong: none; missing: none",
+  "[PASS] logic: 歳 — every row's standard reading ok, the reading without its sound change a mismatch (3 rows) — 6 judged; wrong: none; missing: none",
+  "[PASS] logic: 本 — every row's standard reading ok, the reading without its sound change a mismatch (5 rows) — 11 judged; wrong: none; missing: none",
+  "[PASS] logic: 杯 — every row's standard reading ok, the reading without its sound change a mismatch (5 rows) — 11 judged; wrong: none; missing: none",
+  "[PASS] logic: 匹 — every row's standard reading ok, the reading without its sound change a mismatch (5 rows) — 11 judged; wrong: none; missing: none",
+  "[PASS] logic: 個 — every row's standard reading ok, the reading without its sound change a mismatch (4 rows) — 9 judged; wrong: none; missing: none",
+  "[PASS] logic: 冊 — every row's standard reading ok, the reading without its sound change a mismatch (3 rows) — 7 judged; wrong: none; missing: none",
+  "[PASS] logic: 点 — every row's standard reading ok, the reading without its sound change a mismatch (4 rows) — 9 judged; wrong: none; missing: none",
+  "[PASS] logic: 泊 — every row's standard reading ok, the reading without its sound change a mismatch (5 rows) — 11 judged; wrong: none; missing: none",
+  "[PASS] logic: 千 — every row's standard reading ok, the reading without its sound change a mismatch (2 rows) — 4 judged; wrong: none; missing: none",
+  "[PASS] logic: 百 — every row's standard reading ok, the reading without its sound change a mismatch (3 rows) — 6 judged; wrong: none; missing: none",
+  "[PASS] logic: the exit-2 floor names a short counter table — ['counters exJP 2']",
+  "[PASS] logic: the exit-2 floor names a short 何 table — ['interrogative surface 616']"
+ ],
+ "corpus": {
+  "lastCommit": "24f90eba96db766b4d62d0dcc4474d91dfafae5e",
+  "uncommittedChanges": false
+ }
+}
