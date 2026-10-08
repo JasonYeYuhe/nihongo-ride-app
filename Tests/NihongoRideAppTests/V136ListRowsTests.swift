@@ -32,8 +32,8 @@ import VocabKit
 ///
 /// Every test here was shown able to fail: the mutations that turned each one red, on 2026-10-07,
 /// are named on it (34 in all, each applied, run, seen red and reverted; the review's five findings
-/// added 16 more on the same day, named the same way, and the whole-release review's round 1
-/// 19 more on 2026-10-09). Not every `#expect` has
+/// added 16 more on the same day, named the same way, the whole-release review's round 1
+/// 19 more on 2026-10-09, and its round 2 9 more the same day). Not every `#expect` has
 /// a mutation of its own — the sweep's case count and width bound, for instance, ride on the ones
 /// named.
 @MainActor
@@ -296,6 +296,15 @@ struct V136ListRowsTests {
     /// branch — a Saved row with no star at AX1–AX5, where v1.35's "★ Saved" kept one. Mutations,
     /// 2026-10-09, each red: `listIcon(list)` deleted from the stacked branch; deleted from the
     /// inline one; moved after `openListButton(…)` in the inline one.
+    ///
+    /// **And the icon itself is held whole** (whole-release review, round 2). Round 1's pin was a
+    /// `.contains` on `listIcon`'s `Image(…)` line, so a modifier after it reached the same Saved row
+    /// with no star through the icon's body instead of its call site. Before the body was pinned by
+    /// equality, m21–m23 passed all 23 test bundles (the review's runs) and m24–m25 this suite; each
+    /// is red here since (2026-10-09): `.opacity(typeSize.isAccessibilitySize ? 0 : 1)` after
+    /// `.scaledSystemFont(16)` (m21, the star gone at AX1–AX5 only); `.hidden()` (m22);
+    /// `.overlay { if list.isDefault { Color.black } }` (m23); `Theme.gold` → `Theme.accent2` (m24,
+    /// a blue star); `.scaledSystemFont(0)` (m25).
     @Test("only the Word Lists row drops the star: the stored name, the detail header and the sheet keep it")
     func rowNameIsOnlyTheRow() throws {
         #expect(AppModel.defaultListName("en") == "★ Saved" && AppModel.defaultListName("zh") == "★ 收藏",
@@ -324,8 +333,12 @@ struct V136ListRowsTests {
         for control in [open, play, menu] {
             #expect(!control.contains("displayName("), "a control names its list by displayName, star and all")
         }
-        let icon = try V133LAccessibilityLayoutTests.body("ListsView.swift", "private func listIcon")
-        #expect(icon.contains(#"Image(systemName: list.isDefault ? "star.fill" : "rectangle.stack")"#))
+        // The icon's whole body, by equality. A change after its `Image(…)` line — a modifier that
+        // hides the icon, fades it out at the accessibility sizes or covers it, another colour, a
+        // size of nothing — leaves that line in the body, so a `.contains` on it stays true.
+        let icon = V135B6WordSearchTests.collapsed(try V133LAccessibilityLayoutTests.body("ListsView.swift", "private func listIcon"))
+        #expect(icon == #"{ Image(systemName: list.isDefault ? "star.fill" : "rectangle.stack") .foregroundStyle(list.isDefault ? Theme.gold : Theme.accent2) .scaledSystemFont(16) }"#,
+                "listIcon no longer draws just the gold star (the stack icon for other lists) at the name's size: \(icon)")
         // And the row draws it, in both arrangements, just before the name it no longer prefixes:
         // stacked, line 1 is the icon and the open button alone; inline, the row starts with them.
         #expect(listRow.components(separatedBy: "listIcon(list)").count - 1 == 2,
@@ -558,6 +571,20 @@ struct V136ListRowsTests {
     /// note is shorter than an 11pt note); the note's `.fixedSize(horizontal: false, vertical:
     /// true)` removed (squeezed, it gives way); the gloss's `.fixedSize(horizontal: true, vertical:
     /// true)` (the column wider than its width); `noteAlone` ignoring its width (the control).
+    ///
+    /// **The word's and the reading's last character see a line cut short, not a line limit**
+    /// (whole-release review, round 2). At these three sizes the worst word and the worst reading
+    /// each fit on one line in both columns — measured 2026-10-09 at 129 and 105pt at most against
+    /// a 209pt column at least, and printed on every run as `V136 SMALL` — so `.lineLimit(1)` on
+    /// either cuts nothing here and leaves both checks green, 0 of 12 (m10, m11). A line limit is
+    /// caught instead by `columnIsWired`'s no-`lineLimit` pin and by `worstWordIsWhole` at the
+    /// accessibility sizes, where these lines do wrap. Mutations, 2026-10-09, each red 12 of 12:
+    /// `.lineLimit(1).frame(maxWidth: 60, alignment: .leading)` on the word (m12) and on the
+    /// reading (m13), red in `worstWordIsWhole` too; and a cut below the default size only, with
+    /// no line limit for a pin to find, `.frame(width: scale < 1 ? 60 : nil, height: scale < 1 ?
+    /// 14 : nil, alignment: .topLeading).clipped()` on the word (m16, red here and nowhere else in
+    /// this suite) and the same 12pt high on the reading (m17, also red in
+    /// `smallSizesAreElevenPointsOrMore`, whose line heights it changes).
     @Test("below the default size every line of the worst word and of a removed word is drawn whole")
     func smallSizesDrawEveryLineWhole() throws {
         let worst = V135B6WordSearchTests.worst
@@ -592,6 +619,20 @@ struct V136ListRowsTests {
         let narrow = Self.columnWidth(row: V135B6WordSearchTests.widths[1], scale: Self.smallScales[0])
         #expect(Self.noteAlone(zh: false, points: 11, width: narrow) > 1.5 * Self.lineHeight(points: 11),
                 "control: the note fits one line in the \(narrow)pt column, so the sweep says little about wrapping")
+        // Measured, not held: the worst word and reading on one line at each size, against that
+        // size's two columns. While they fit, a line limit on either cuts nothing here (see above).
+        var oneLine: [String] = []
+        for scale in Self.smallScales {
+            let word = V134B5RomajiHintTests.laidOut(
+                Text(worst.surface).font(.system(size: ListWordRowText.wordPoints * scale, weight: .semibold)).fixedSize(),
+                width: 10_000, height: nil).width
+            let reading = V134B5RomajiHintTests.laidOut(
+                Text(worst.reading).font(.system(size: ListWordRowText.floored(ListWordRowText.readingPoints, scale: scale))).fixedSize(),
+                width: 10_000, height: nil).width
+            let columns = V135B6WordSearchTests.widths.map { String(format: "%.0f", Self.columnWidth(row: $0, scale: scale)) }
+            oneLine.append("×\(String(format: "%.2f", scale)): word \(String(format: "%.1f", word))pt, reading \(String(format: "%.1f", reading))pt, columns \(columns.joined(separator: " / "))pt")
+        }
+        print("V136 SMALL: on one line, \(oneLine.joined(separator: "; "))")
     }
 
     /// Offered only a sliver of height, as a squeezed stack would offer it, the column still takes
