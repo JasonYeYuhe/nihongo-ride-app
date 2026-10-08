@@ -233,3 +233,35 @@ cadence row, STATE, memory, and `review_watch` the same day.
 * **Still owed:** item 5 (bump, submit script, registration), item 6 (`run_ios_placement_tests.sh`,
   the simulator pass, the headless renders, two whole-release review rounds) and item 7.
 
+## §I Scope addendum, 2026-10-09 (JST) — before the N = 100 reading
+
+The whole-release review, round 1, found 8 shipped sentences whose taught number + counter readings
+item 4's tables cannot see. It ran over `fdb2b5f..ba77c13`: five lenses, with two refuters for every
+non-NIT finding; the record is in `~/Library/Caches/NihongoRide-v136-work/review-r1.json`.
+* 四月 taught よんがつ, in `n5-b303` and `n2-b942`;
+* 九時 taught きゅうじ, in `n5-b071`, `n4-g180` and `n3-b750`;
+* 二十四時間 taught にじゅうよんじかん (`n5-b018`), 四時間 taught しじかん (`n1-b615`), and 四字熟語 taught
+  よんじじゅくご (`n2-b072`);
+* 七時 taught ななじ (`n5-b334`), which is tolerated usage.
+
+All 8 are already withheld from dictation. **Item 4 is extended, not replaced,** to month, hour,
+duration and 字 counters, under the same rules:
+* a calibrated table first, which must flag these on the current tree;
+* each hit upheld 2 of 2 by independent refuters, or left unchanged;
+* every write through `CorpusFile`, declared in the v1.36 manifest.
+
+A tolerated reading such as ななじ is flagged for a person, not corrected. The release date and the
+cut rules do not change. This is recorded today, before the N = 100 reading (projected 10-19..29), so
+no checkpoint figure chose it.
+
+The same round's other findings are fixed in this release:
+* the scaled list-row text gets an 11 pt floor below the default size;
+* the Saved row's star icon is pinned by a test;
+* a removed word's Remove label no longer reads its internal id;
+* `submit_1_36.py` checks which entries it names, not how many;
+* the sweep's population floor is applied to the right table;
+* the zh What's New calls the screen 词单, as the app does;
+* the §E registration lists every rider-visible change.
+
+Recorded for v1.37, not done here: nothing yet beyond the round's NITs.
+
