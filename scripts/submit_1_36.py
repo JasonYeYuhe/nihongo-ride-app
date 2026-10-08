@@ -40,12 +40,13 @@ Three phases:
 
 NOTE: --metadata cannot run while a previous version is WAITING_FOR_REVIEW or IN_REVIEW.
 """
+import json
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from asc_release import Release, main          # noqa: E402
-from release_numbers import numbers            # noqa: E402
+from release_numbers import CORPUS_MANIFEST, REPO, RESOURCES, numbers   # noqa: E402
 
 VERSION = "1.36"
 TARGETS = [
@@ -56,11 +57,54 @@ TARGETS = [
 # Measured, never typed.
 N = numbers()
 FIXED = N["correctedThisRelease"]
-# The corpus sentence below names the one entry the v1.36 manifest declares. If the manifest grows,
-# this copy is wrong, so it refuses to run rather than send it.
-if FIXED != 1:
-    sys.exit(f"error: the v1.36 manifest declares {FIXED} corrections; What's New names exactly one "
-             "(n5-kazoku). Rewrite the corpus sentences before sending.")
+
+# The entries the corpus sentences below name — the one list this copy is written against. When a
+# correction joins or leaves the manifest, this list and the sentences change together.
+NAMED_IDS = ["n5-kazoku"]
+# What the sentences say n5-kazoku now teaches: 家族は四人です。 read with 四人 as よにん.
+KAZOKU_EXKANA = "かぞくはよにんです"
+
+
+def corpus_copy_problems(manifest_ids, exkana_by_id, fixed):
+    """Why the corpus sentences below would be false, or [] when they are true.
+
+    The guard checks which entries the manifest declares, not how many (whole-release review,
+    round 1): with the count alone, the manifest naming a different single entry, or the corpus
+    reverted while the manifest still declared n5-kazoku, both passed, and the copy would have told
+    riders and App Review that 四人 is now read よにん in a build without that change.
+    """
+    problems = []
+    if sorted(manifest_ids) != sorted(NAMED_IDS):
+        problems.append(f"the v1.36 manifest declares {sorted(manifest_ids)}; What's New names "
+                        f"{sorted(NAMED_IDS)}")
+    if fixed != len(NAMED_IDS):
+        problems.append(f"correctedThisRelease is {fixed}; What's New names {len(NAMED_IDS)} "
+                        "correction(s)")
+    if exkana_by_id.get("n5-kazoku") != KAZOKU_EXKANA:
+        problems.append(f"n5-kazoku's exKana is {exkana_by_id.get('n5-kazoku')!r}, not "
+                        f"{KAZOKU_EXKANA!r} — the build does not teach 四人 as よにん")
+    return problems
+
+
+def _manifest_ids():
+    if CORPUS_MANIFEST is None:
+        return []
+    manifest = json.loads((REPO / CORPUS_MANIFEST).read_text(encoding="utf-8"))
+    return [e["id"] for e in manifest["entries"]]
+
+
+def _exkana_by_id():
+    out = {}
+    for level in ("n1", "n2", "n3", "n4", "n5"):
+        for entry in json.loads((RESOURCES / f"{level}.json").read_text(encoding="utf-8")):
+            out[entry["id"]] = entry.get("exKana")
+    return out
+
+
+_problems = corpus_copy_problems(_manifest_ids(), _exkana_by_id(), FIXED)
+if _problems:
+    sys.exit("error: the corpus sentences in What's New and the review notes are not true of this "
+             "tree:\n  " + "\n  ".join(_problems) + "\nRewrite them (and NAMED_IDS) before sending.")
 
 # What's New — no star glyph (preflight enforces it). Same voice as every release since v1.27:
 # report what changed, never solicit. Each sentence is checked against the merged code before this
@@ -74,9 +118,9 @@ WHATS_NEW = {
         "reading, instead of よんにん."
     ),
     "zh-Hans": (
-        "• 单词表:在词单页面里,词单中的词下方现在会显示读音,与该页面词库搜索结果的显示方式相同;"
+        "• 词单:在词单页面里,词单中的词下方现在会显示读音,与该页面词库搜索结果的显示方式相同;"
         "较长的释义会换行显示,不再被截断。\n"
-        "• 单词表:「收藏」词单那一行的星标现在只显示一次。\n"
+        "• 词单:「收藏」词单那一行的星标现在只显示一次。\n"
         "• 更正了一条 N5 例句:「家族は四人です。」中的「四人」现在读作标准读音 よにん,不再是 よんにん。"
     ),
     # The app's interface is English or Chinese only, so a Japanese rider sees the English labels;
@@ -103,9 +147,12 @@ REVIEW_NOTES = (
     "Kyoto). Restore Purchases is on the same screen and is always present. There is no modal, no "
     "badge, and nothing about the purchase on the post-ride results screen.\n\n"
     "WHAT IS NEW.\n"
-    "1) Word Lists: on a list's screen, each word now shows its reading under it, and a long meaning "
-    "wraps instead of being cut off. VoiceOver reads a word, its reading and its meaning together.\n"
-    "2) Word Lists: the default \"Saved\" list's row shows its star icon once instead of twice.\n"
+    "1) Word Lists: on a list's screen, each word written with kanji now shows its kana reading under "
+    "it, and a long meaning wraps instead of being cut off. VoiceOver reads a word, its reading and "
+    "its meaning together.\n"
+    "2) Word Lists: the default \"Saved\" list's row now shows one star, its star icon. It showed "
+    "two: the second was a star character at the start of the list's name, which the row no longer "
+    "shows.\n"
     "3) Content: one example sentence's reading was corrected (四人 is read よにん).\n\n"
     "Data handling is unchanged. There is no analytics SDK, no advertising, and no "
     "developer-operated server in this app. Optional iCloud sync uses the user's own private "
