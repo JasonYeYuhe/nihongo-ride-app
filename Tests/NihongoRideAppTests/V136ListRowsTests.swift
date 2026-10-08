@@ -33,7 +33,7 @@ import VocabKit
 /// Every test here was shown able to fail: the mutations that turned each one red, on 2026-10-07,
 /// are named on it (34 in all, each applied, run, seen red and reverted; the review's five findings
 /// added 16 more on the same day, named the same way, and the whole-release review's round 1
-/// MUTATION_COUNT more on 2026-10-09). Not every `#expect` has
+/// 19 more on 2026-10-09). Not every `#expect` has
 /// a mutation of its own — the sweep's case count and width bound, for instance, ride on the ones
 /// named.
 @MainActor
@@ -128,7 +128,8 @@ struct V136ListRowsTests {
     /// and nothing that falls back to the id. Mutations, 2026-10-09, each red: `wordRow` passing
     /// `surface: entry?.surface ?? id` (the old fallback, through the new helper); `wordRow` back to
     /// the inline `"Remove \(entry?.surface ?? id) from list"` label (red here and in
-    /// `oneElementIsWired`); `removeLabel`'s nil case returning `removedLabel(zh:)`'s "Removed word".
+    /// `oneElementIsWired`); `removeLabel`'s nil case returning `removedLabel(zh:)`'s "Removed word";
+    /// the word's copy changed to "Remove 水 from the list" / "从词单中移除 水".
     @Test("a word's Remove button names the word; a removed word's names no id")
     func removeLabelNamesNoID() throws {
         #expect(ListDetailView.removeLabel(surface: "水", zh: false) == "Remove 水 from list")
@@ -214,9 +215,10 @@ struct V136ListRowsTests {
     /// swapped (R3); the reading's and the gloss's swapped.
     ///
     /// **The 11pt floor** (whole-release review, round 1): the reading, the gloss and the note are
-    /// sized through `floored`, and the floor is 11. Mutations, 2026-10-09, each red: the gloss
-    /// back to `Self.glossPoints * scale` (red here and in `smallSizesAreElevenPointsOrMore`);
-    /// `floorPoints` 12 (red here and there, at the default size).
+    /// sized through `floored`, and the floor is 11. Mutations, 2026-10-09, each red: the reading,
+    /// the gloss or the note back to `points * scale` (each red here and in
+    /// `smallSizesAreElevenPointsOrMore`); `floorPoints` 12 (red here and there, at the default
+    /// size); `glossPoints` 13.
     @Test("wordRow hands the column the text size and stacks Remove at the accessibility sizes; no line is limited; the colours and order are the plan's")
     func columnIsWired() throws {
         let row = try V135B6WordSearchTests.detail("private func wordRow")
@@ -506,9 +508,11 @@ struct V136ListRowsTests {
     /// the reading at xSmall, 10.7pt — and must tell it from 11pt; "at least 11" is then a
     /// measurement, not a rounding. Mutations, 2026-10-09, each red:
     /// `floored` returning `points * scale` (the floor removed — red at xSmall for the reading,
-    /// at xSmall and Small for the gloss, at all three for the note); the gloss back to
-    /// `Self.glossPoints * scale` in the body (also red in `columnIsWired`); `floorPoints` 12 (red at
-    /// the default size: the note grows, and `columnIsWired`).
+    /// at xSmall and Small for the gloss, at all three for the note); the reading, the gloss or the
+    /// note back to `points * scale` in the body, one at a time (each also red in `columnIsWired`);
+    /// `floorPoints` 12 (red at the default size: the note grows, and `columnIsWired`);
+    /// `glossPoints` 13 (the control and the list of where the floor binds); the instrument laying
+    /// every line out at 11pt whatever it is asked (the control).
     @Test("below the default size the reading, the gloss and a removed word's note are at least 11pt; at and above it, unchanged")
     func smallSizesAreElevenPointsOrMore() throws {
         let eleven = Self.lineHeight(points: 11)
@@ -550,7 +554,10 @@ struct V136ListRowsTests {
     /// gloss draw their last character, the column is no wider than its width, and a removed
     /// word's note takes every line it needs at 11pt — and still does when squeezed. Mutations,
     /// 2026-10-09, each red: `.lineLimit(1)` on the gloss; `.lineLimit(1)` on the note (also red
-    /// in `columnIsWired`); the floor removed (the note is shorter than an 11pt note).
+    /// in `columnIsWired`); the floor removed, and the note alone back to `points * scale` (the
+    /// note is shorter than an 11pt note); the note's `.fixedSize(horizontal: false, vertical:
+    /// true)` removed (squeezed, it gives way); the gloss's `.fixedSize(horizontal: true, vertical:
+    /// true)` (the column wider than its width); `noteAlone` ignoring its width (the control).
     @Test("below the default size every line of the worst word and of a removed word is drawn whole")
     func smallSizesDrawEveryLineWhole() throws {
         let worst = V135B6WordSearchTests.worst
