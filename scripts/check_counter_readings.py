@@ -203,16 +203,27 @@ subprocess, never its functions, on four trees:
   (g) the working tree inspects n5-g079 七時, taught しちじ, and passes it in both fields;
   (i) on `3d891b9` — main when the sound-changing counters were added, every sentence of §I addendum 2
       as its review read it, pinned so the check survives their correction — the counter table flags
-      the 16 known occurrences, each with the same verdict in exTokens and in exKana, exKana lined up
-      with the tokens: 12 mismatches (三千 ×2, 三分, 三十分, 十分 ×5, 五分, 一軒, 一階) and 4 flag-only
-      (三階 さんかい, and the three …じゅうさい). Anything else it finds is listed, not failed;
+      the 17 known occurrences, each with the same verdict in exTokens and in exKana, exKana lined up
+      with the tokens: 13 mismatches (三千 ×2, 三分, 三十分, 十分 ×5, 五分, 一軒, 一階, and 八十点, which
+      this table found itself) and 4 flag-only (三階 さんかい, and the three …じゅうさい). The same 17 on
+      `fdb2b5f`, the corpus 1.35 shipped, whose 17 sentences are byte-identical to 3d891b9's: the
+      defects were on sale, not introduced since. Anything else either tree yields is listed, not
+      failed (fdb2b5f also still holds §I's 8 month / hour corrections);
   (j) the working tree inspects 十分 and passes it for its sense: n1-b1516 じっぷん 'ten minutes'
       (v1.25's correction) and n4-g178 じゅうぶん 'enough', each in its sentence and its headword;
   (k) the working tree records its real lexemes, never judging them (n5-b364 八百屋, n1-b2056 一回り),
       and passes n5-b331 二十歳 はたち in both fields;
-  (l) the working tree's hits carry their English, and their dictation-pool membership agrees with
-      what PLAN-V1.36 §I states from the review (n1-b439, n3-b781, n3-b020 and n4-g171 in the pool;
-      n5-b334 withheld) — so an inverted or missing pool test cannot report quietly;
+  (l) hits carry their English, and their dictation-pool membership agrees with what PLAN-V1.36 §I
+      states from the review (n1-b439, n3-b781, n3-b020 and n4-g171 in the pool; n5-b334 withheld) —
+      so an inverted or missing pool test cannot report quietly. Read on `3d891b9` with that tree's
+      own dictation-exclusions.json, since §I described that tree and two of the five are corrected
+      since; and on the working tree for the three that are still hits there (n3-b020 and n4-g171 in,
+      n5-b334 withheld), so the pool lookup is also proven on the tree a sweep reports;
+  (m) the working tree inspects every sentence §I addendum 2 corrected (v136-reading-manifest.json)
+      and passes it in both fields, exKana lined up with the tokens, taught the corrected reading —
+      not flagged because each was looked at and passed. n3-b020 is not among them: its correction
+      was upheld but held back, because the voice is proven to say 十分 = じゅうぶん in that pool
+      sentence (v136-dictation-remeasure.json), so it is still this table's one mismatch;
   (h) a PLANTED tree: the working tree's corpus copied, with one known-wrong occurrence per table
       planted in the example sentences of every n-file, and one headword and one passage for each
       table that reads them, all under ids no entry uses (`plant-…`). Every plant must be flagged
@@ -254,7 +265,7 @@ tree's dictation-exclusions.json does not withhold (dictation draws from example
 false for a withheld sentence or a headword or passage, null in a tree that has no such file.
 
     python3 scripts/check_counter_readings.py [--json out.json] [--resources DIR] [--calibrate]
-    python3 scripts/check_counter_readings.py --calibrate --json docs/measurements/v136-counter-sweep-4.json
+    python3 scripts/check_counter_readings.py --calibrate --json docs/measurements/v136-counter-sweep-5.json
 """
 import argparse, glob, json, os, re, shutil, subprocess, sys, tempfile
 
@@ -419,6 +430,9 @@ KNOWN_SOUND_CHANGE_HITS = (   # (id, compound, verdict, taught) — PLAN-V1.36 �
     ("n1-b327", "五分", "mismatch", "ごぶん"),
     ("n2-b479", "一軒", "mismatch", "いちけん"),
     ("n1-b957", "一階", "mismatch", "いちかい"),
+    # Not from the review: this table found it on 3d891b9 (v136-counter-sweep-4.json), and it was then
+    # upheld 2 of 2 and corrected like the rest. Pinned so a 点 row that went soft cannot pass.
+    ("n3-b678", "八十点", "mismatch", "はちじゅうてん"),
     ("n4-g171", "三階", "flag-only", "さんかい"),
     ("n3-b123", "三十歳", "flag-only", "さんじゅうさい"),
     ("n1-b311", "八十歳", "flag-only", "はちじゅうさい"),
@@ -436,11 +450,26 @@ KNOWN_LEXEMES = (
     ("n1-b2056", "exJP", "一回", "absorbed", None),
     ("n5-b331", "exJP", "二十歳", "ok", "はたち"), ("n5-b331", "surface", "二十歳", "ok", "はたち"),
 )
+# (i) again on the corpus 1.35 shipped (the v1.35 build commit, release_numbers.BASELINE_REF while v1.36
+# is built). Pinned, not read from release_numbers: BASELINE_REF moves on with the next release.
+SHIPPED_REF = "fdb2b5f"
 # (l): dictation-pool membership as PLAN-V1.36 §I states it, measured by the review, not by this file:
 # 三千円 n1-b439 and n3-b781 "both in the dictation pool", n3-b020 "in the dictation pool", n4-g171
-# "in the pool"; n5-b334 among the 8 "already withheld from dictation".
+# "in the pool"; n5-b334 among the 8 "already withheld from dictation". Read on 3d891b9, the tree §I
+# described; the working tree still has three of them as hits.
 KNOWN_POOL = (("n1-b439", True), ("n3-b781", True), ("n3-b020", True), ("n4-g171", True),
               ("n5-b334", False))
+KNOWN_POOL_HEAD = (("n3-b020", True), ("n4-g171", True), ("n5-b334", False))
+# (m): every sentence §I addendum 2 corrected, with the reading it was corrected to — (id, compound,
+# corrected). Written out from v136-reading-manifest.json's 'corrected', never derived from COUNTER_FINAL.
+# Where two forms are standard the corpus took the more common one (じゅっぷん, はちじゅってん). n3-b020 is
+# absent on purpose: upheld, but held back (see (m) in the docstring).
+KNOWN_CORRECTED = (
+    ("n1-b439", "三千", "さんぜん"), ("n3-b781", "三千", "さんぜん"), ("n3-b678", "八十点", "はちじゅってん"),
+    ("n1-b1630", "三分", "さんぷん"), ("n2-b449", "三十分", "さんじゅっぷん"), ("n1-b327", "五分", "ごふん"),
+    ("n1-b1147", "十分", "じゅっぷん"), ("n1-b1841", "十分", "じゅっぷん"), ("n2-b311", "十分", "じゅっぷん"),
+    ("n4-b127", "十分", "じゅっぷん"), ("n2-b479", "一軒", "いっけん"), ("n1-b957", "一階", "いっかい"),
+)
 CORPUS_FILES = ("n1.json", "n2.json", "n3.json", "n4.json", "n5.json", "passages.json")
 
 
@@ -827,10 +856,11 @@ def below_floor(lexicalised, interrogative, counters):
 
 # ── calibration: the documented entry point, on trees whose answer is already known ──────────
 
-def tree_at(ref, dest):
-    """The corpus as it was at `ref`, written into `dest`. A ref that does not resolve (a shallow
-    clone) raises: a calibration that cannot see its tree must fail, not skip."""
-    for name in CORPUS_FILES:
+def tree_at(ref, dest, extra=()):
+    """The corpus as it was at `ref`, written into `dest`, with any `extra` resource files (the
+    dictation-exclusions.json that (l) reads). A ref that does not resolve (a shallow clone) raises:
+    a calibration that cannot see its tree must fail, not skip."""
+    for name in CORPUS_FILES + tuple(extra):
         blob = subprocess.run(["git", "-C", REPO, "show", f"{ref}:Sources/VocabKit/Resources/{name}"],
                               capture_output=True)
         if blob.returncode != 0:
@@ -1162,13 +1192,14 @@ def calibrate():
     with tempfile.TemporaryDirectory() as tmp:
         old, small = os.path.join(tmp, "pre-v135"), os.path.join(tmp, "n5-only")
         counted, planted = os.path.join(tmp, "counter-ref"), os.path.join(tmp, "planted")
-        sounded = os.path.join(tmp, "sound-change-ref")
-        for d in (old, small, counted, planted, sounded):
+        sounded, shipped = os.path.join(tmp, "sound-change-ref"), os.path.join(tmp, "shipped")
+        for d in (old, small, counted, planted, sounded, shipped):
             os.mkdir(d)
         try:
             tree_at(CALIBRATION_REF, old)
             tree_at(COUNTER_CALIBRATION_REF, counted)
-            tree_at(SOUND_CHANGE_CALIBRATION_REF, sounded)
+            tree_at(SOUND_CHANGE_CALIBRATION_REF, sounded, extra=("dictation-exclusions.json",))
+            tree_at(SHIPPED_REF, shipped)
             plants = plant_tree(planted)
         except RuntimeError as e:
             return False, [f"[FAIL] cannot read a calibration tree: {e}"]
@@ -1179,13 +1210,14 @@ def calibrate():
         counted_code, counted_run = run_cli(tmp, "counted", "--resources", counted)
         planted_code, planted_run = run_cli(tmp, "planted", "--resources", planted)
         sounded_code, sounded_run = run_cli(tmp, "sounded", "--resources", sounded)
+        shipped_code, shipped_run = run_cli(tmp, "shipped", "--resources", shipped)
 
     if (old_run is None or head_run is None or small_run is None or counted_run is None
-            or planted_run is None or sounded_run is None):
+            or planted_run is None or sounded_run is None or shipped_run is None):
         return False, [f"[FAIL] a calibration run wrote no output (exit codes: {CALIBRATION_REF} "
                        f"{old_code}, working tree {head_code}, n5-only {small_code}, "
                        f"{COUNTER_CALIBRATION_REF} {counted_code}, planted {planted_code}, "
-                       f"{SOUND_CHANGE_CALIBRATION_REF} {sounded_code})"]
+                       f"{SOUND_CHANGE_CALIBRATION_REF} {sounded_code}, {SHIPPED_REF} {shipped_code})"]
     old_q, head_q = old_run["interrogative"], head_run["interrogative"]
 
     g022 = [(h["verdict"], h["compound"], h["taught"]) for h in old_q["hits"] if h["id"] == "n5-g022"]
@@ -1246,19 +1278,22 @@ def calibrate():
           g079 == [("七時", "ok", "ok", "ok", "しちじ")] and not flagged,
           f"inspected: {g079}; hits: {len(flagged)}")
 
-    # (i) §I addendum 2's sentences, on the tree its review read: the same shape as (f).
-    got = {(h["id"], h["field"], h["compound"], h["verdict"], h["verdictTokens"], h["verdictKana"],
-            h["taught"], h.get("kanaAlignment") == h["alignment"])
-           for h in sounded_run["counters"]["hits"]}
-    want = {(i, "exJP", c, v, v, v, t, True) for i, c, v, t in KNOWN_SOUND_CHANGE_HITS}
-    others = sorted(f"{h[0]} {h[2]} {h[3]} {h[6]}" for h in got - want)
-    check(f"(i) {SOUND_CHANGE_CALIBRATION_REF}: the counter table flags the {len(want)} known "
-          f"sound-change occurrences in both exTokens and exKana "
-          f"({sum(v == 'mismatch' for _, _, v, _ in KNOWN_SOUND_CHANGE_HITS)} mismatch, "
-          f"{sum(v == 'flag-only' for _, _, v, _ in KNOWN_SOUND_CHANGE_HITS)} flag-only)",
-          want <= got,
-          f"missing: {sorted(f'{w[0]} {w[2]} {w[3]} {w[6]}' for w in want - got) or 'none'}; "
-          f"also flagged (or flagged differently): {others or 'none'}")
+    # (i) §I addendum 2's sentences, on the tree its review read and on the corpus 1.35 shipped: the
+    # same shape as (f).
+    for ref, run, what in ((SOUND_CHANGE_CALIBRATION_REF, sounded_run, "as its review read it"),
+                           (SHIPPED_REF, shipped_run, "the corpus 1.35 shipped")):
+        got = {(h["id"], h["field"], h["compound"], h["verdict"], h["verdictTokens"], h["verdictKana"],
+                h["taught"], h.get("kanaAlignment") == h["alignment"])
+               for h in run["counters"]["hits"]}
+        want = {(i, "exJP", c, v, v, v, t, True) for i, c, v, t in KNOWN_SOUND_CHANGE_HITS}
+        others = sorted(f"{h[0]} {h[2]} {h[3]} {h[6]}" for h in got - want)
+        check(f"(i) {ref} ({what}): the counter table flags the {len(want)} known "
+              f"sound-change occurrences in both exTokens and exKana "
+              f"({sum(v == 'mismatch' for _, _, v, _ in KNOWN_SOUND_CHANGE_HITS)} mismatch, "
+              f"{sum(v == 'flag-only' for _, _, v, _ in KNOWN_SOUND_CHANGE_HITS)} flag-only)",
+              want <= got,
+              f"missing: {sorted(f'{w[0]} {w[2]} {w[3]} {w[6]}' for w in want - got) or 'none'}; "
+              f"also flagged (or flagged differently): {others or 'none'}")
 
     # (j) and (k): inspected on the working tree and not flagged — "not flagged" because each was
     # looked at and passed (or recorded as a lexeme), not because nothing was looked at.
@@ -1275,11 +1310,32 @@ def calibrate():
         check(label, seen == sorted(known, key=str) and not flagged,
               f"inspected: {seen}; hits: {flagged or 'none'}")
 
-    pool = sorted((h["id"], h["inDictationPool"], bool(h.get("english")))
-                  for h in head_run["counters"]["hits"] if h["id"] in dict(KNOWN_POOL))
-    check("(l) the working tree's hits carry their English and say which are in the dictation pool "
-          "(n1-b439, n3-b781, n3-b020, n4-g171 in; n5-b334 withheld), as PLAN-V1.36 §I states",
-          pool == sorted((i, p, True) for i, p in KNOWN_POOL), f"hits: {pool}")
+    for label, run, known in ((f"(l) {SOUND_CHANGE_CALIBRATION_REF}, with its own dictation-exclusions."
+                               f"json: the hits carry their English and say which are in the dictation "
+                               f"pool (n1-b439, n3-b781, n3-b020, n4-g171 in; n5-b334 withheld), as "
+                               f"PLAN-V1.36 §I states", sounded_run, KNOWN_POOL),
+                              ("(l) the working tree: the three of those still hits there carry their "
+                               "English and their pool membership (n3-b020, n4-g171 in; n5-b334 withheld)",
+                               head_run, KNOWN_POOL_HEAD)):
+        pool = sorted((h["id"], h["inDictationPool"], bool(h.get("english")))
+                      for h in run["counters"]["hits"] if h["id"] in dict(known))
+        check(label, pool == sorted((i, p, True) for i, p in known), f"hits: {pool}")
+
+    # (m) every correction §I addendum 2 made, inspected on the working tree and passed in both fields
+    # with exKana lined up — and none of those ids flagged by the counter table.
+    ids = {i for i, _, _ in KNOWN_CORRECTED}
+    seen = sorted((r["id"], r["field"], r["compound"], r["verdict"], r.get("verdictTokens"),
+                   r.get("verdictKana"), r.get("taught"), r.get("taughtKana"),
+                   r.get("kanaAlignment") == r.get("alignment"))
+                  for r in head_run["counters"]["inspected"] if r["id"] in ids)
+    want = sorted((i, "exJP", c, "ok", "ok", "ok", t, t, True) for i, c, t in KNOWN_CORRECTED)
+    flagged = sorted(f"{h['id']} {h['field']} {h['compound']} {h['verdict']} {h['taught']}"
+                     for h in head_run["counters"]["hits"] if h["id"] in ids)
+    check(f"(m) the working tree passes the {len(want)} sentences §I addendum 2 corrected, each "
+          f"inspected and taught its corrected reading in exTokens and exKana",
+          seen == want and not flagged,
+          f"not as corrected: {[s for s in seen if s not in want] or 'none'}; "
+          f"not inspected: {[w[0] for w in want if w not in seen] or 'none'}; hits: {flagged or 'none'}")
 
     # (h) every plant flagged by its own table — a mismatch, on both fields where it has tokens —
     # and none by another table. A table that judges fewer files, ids or kinds of field than it
