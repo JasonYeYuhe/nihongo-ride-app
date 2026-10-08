@@ -5,8 +5,8 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 785,
- "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made. v1.35 released 1: n4-g386's exKana was corrected from なん to なに (何 before を), which is what instrument 1b had proven the voice says; re-measured on the corrected sentence, 1b (calibrated: 0 spurious decoy matches, 0 contradictions of instrument 1) confirms 何 = なに, and the なん render is not byte-identical. n2-b103 (金 corrected to かね) stays withheld: 1b proves the voice still says 私 = わたし, and it also says 金 = きん. v1.35 round 2 released 8 more: thirteen withheld sentences had 何 corrected from なん to なに (docs/measurements/v135-residue-manifest.json), eight of them the complaint '何 なん -> なに' instrument 1b had already proven (the ninth, n2-b884, was withheld for 私 alone). Re-measured on the corrected tokens (calibrated: 0 spurious byte matches in 26 decoys, 0 contradictions of instrument 1 in 39), 8 confirm 何 = なに and are released; n2-b884 confirms なに but still says 私 = わたし, so it stays withheld; the four whose v1.29 evidence was 'undecided' stay withheld because 1b is still silent on them. v1.35 round 3 withheld 1: n5-g022 (今、何時ですか。) had been in the pool with exKana なんどき, a reading no instrument could question — Sudachi offers only いつ / なんどき for 何時, so the standard なんじ was never a candidate, and instrument 2 compared なんどき with いつ alone. Its exKana is corrected to なんじ; re-measured on the corrected tokens, calibrated 1b (0 spurious matches in 2 decoys, 0 contradictions of instrument 1 in 39) confirms 今 = いま and is silent on 何時, so the voice is not proven to say the corrected reading and the sentence is withheld. The comparative favours なんじ (span DTW 0.0273 against なんどき 0.0771), which is a lead, not a verdict.",
+ "excludedCount": 789,
+ "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made. v1.35 released 1: n4-g386's exKana was corrected from なん to なに (何 before を), which is what instrument 1b had proven the voice says; re-measured on the corrected sentence, 1b (calibrated: 0 spurious decoy matches, 0 contradictions of instrument 1) confirms 何 = なに, and the なん render is not byte-identical. n2-b103 (金 corrected to かね) stays withheld: 1b proves the voice still says 私 = わたし, and it also says 金 = きん. v1.35 round 2 released 8 more: thirteen withheld sentences had 何 corrected from なん to なに (docs/measurements/v135-residue-manifest.json), eight of them the complaint '何 なん -> なに' instrument 1b had already proven (the ninth, n2-b884, was withheld for 私 alone). Re-measured on the corrected tokens (calibrated: 0 spurious byte matches in 26 decoys, 0 contradictions of instrument 1 in 39), 8 confirm 何 = なに and are released; n2-b884 confirms なに but still says 私 = わたし, so it stays withheld; the four whose v1.29 evidence was 'undecided' stay withheld because 1b is still silent on them. v1.35 round 3 withheld 1: n5-g022 (今、何時ですか。) had been in the pool with exKana なんどき, a reading no instrument could question — Sudachi offers only いつ / なんどき for 何時, so the standard なんじ was never a candidate, and instrument 2 compared なんどき with いつ alone. Its exKana is corrected to なんじ; re-measured on the corrected tokens, calibrated 1b (0 spurious matches in 2 decoys, 0 contradictions of instrument 1 in 39) confirms 今 = いま and is silent on 何時, so the voice is not proven to say the corrected reading and the sentence is withheld. The comparative favours なんじ (span DTW 0.0273 against なんどき 0.0771), which is a lead, not a verdict. v1.36 withheld 4 (PLAN-V1.36 §H, decided 2026-10-09 under the owner's delegation): four pool sentences whose number + counter reading v1.36 corrected (docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters) now teach the right reading in Sentence mode and are not graded in dictation, because the voice is not proven to say it. n3-b020 (駅からおよそ十分歩きました。, 'about ten minutes'): 十分 corrected じゅうぶん -> じゅっぷん, and calibrated 1b proves the voice says じゅうぶん, so the sentence is proven misread against its own corrected exKana. n1-b439 and n3-b781 (三千 さんせん -> さんぜん) and n3-b678 (八十点 はちじゅうてん -> はちじゅってん): re-measured on the corrected tokens, calibrated 1b (0 spurious matches in 8 decoys, 0 contradictions of instrument 1 in 39) is silent on the corrected span, so the voice is not proven to say the corrected reading and the sentence is withheld, v1.35's n5-g022 precedent. The leads (instrument 2 and uncalibrated span comparatives) favour さんぜん and are a tie for 八十点 (docs/measurements/v136-dictation-remeasure.json): leads, not verdicts.",
  "excluded": [
   {
    "id": "n1-b007",
@@ -278,9 +278,9 @@
   {
    "id": "n1-b1147",
    "exJP": "駅から会社まで徒歩十分弱だ。",
-   "exKana": "えきからかいしゃまでとほじゅうふんじゃくだ",
-   "heardInstead": "分 ふん -> ぶん",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "えきからかいしゃまでとほじゅっぷんじゃくだ",
+   "heardInstead": "分 ふん -> ぶん  (v1.29 instrument 2; the corpus has since been corrected to じゅっぷん, which is not instrument 2's ぶん)",
+   "evidence": "stale-after-correction (v1.36): the correction acted on the token this row's v1.29 flag names, but not to the reading the flag named. The corpus now reads 十分 as じゅっぷん (十 じゅう -> じゅっ and 分 ふん -> ぷん in exKana and the tokens; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2); instrument 2 had named ぶん, the 'enough' reading じゅうぶん, not ぷん. So the recorded mismatch (corpus ふん, voice nearer ぶん) no longer describes the sentence, and what the voice says for 十分 here is unmeasured. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says じゅっぷん."
   },
   {
    "id": "n1-b115",
@@ -671,9 +671,9 @@
   {
    "id": "n1-b1630",
    "exJP": "カップ麺に熱湯を注いで三分待った。",
-   "exKana": "かっぷめんにねっとうをそそいでさんふんまった",
-   "heardInstead": "分 ふん -> わけ",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "かっぷめんにねっとうをそそいでさんぷんまった",
+   "heardInstead": "分 ふん -> わけ  (v1.29 instrument 2; the corpus has since been corrected to さんぷん, which is not instrument 2's わけ)",
+   "evidence": "stale-after-correction (v1.36): the correction acted on the token this row's v1.29 flag names, but not to the reading the flag named. The corpus now reads 三分 as さんぷん (分 ふん -> ぷん in exKana and the token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2); instrument 2 had named わけ, not ぷん. So the recorded mismatch (corpus ふん, voice nearer わけ) no longer describes the sentence, and what the voice says for 分 here is unmeasured. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says さんぷん."
   },
   {
    "id": "n1-b1633",
@@ -804,9 +804,9 @@
   {
    "id": "n1-b1841",
    "exJP": "ここから駅まで歩いて十分ぐらいかかる。",
-   "exKana": "ここからえきまであるいてじゅうふんぐらいかかる",
-   "heardInstead": "分 ふん -> ぶん",
-   "evidence": "proven"
+   "exKana": "ここからえきまであるいてじゅっぷんぐらいかかる",
+   "heardInstead": "分 ふん -> ぶん  (v1.29 instrument 1; the corpus has since been corrected to じゅっぷん, which is still not what the voice was proven to say)",
+   "evidence": "proven (v1.29, instrument 1: the exJP audio is byte-identical to the kana reading with 分 read ぶん, so the voice says じゅうぶん, the 'enough' reading). v1.36 corrected 十分 to じゅっぷん (十 じゅう -> じゅっ and 分 ふん -> ぷん in exKana and the tokens; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2). The proof is about the audio of exJP, which did not change, so it still stands and still describes a mismatch: the voice says じゅうぶん against the corpus じゅっぷん, as it did against じゅうふん. Not re-measured. Stays withheld."
   },
   {
    "id": "n1-b1843",
@@ -1028,9 +1028,9 @@
   {
    "id": "n1-b327",
    "exJP": "彼女の勤め先は駅から歩いて五分のところにある。",
-   "exKana": "かのじょのつとめさきはえきからあるいてごぶんのところにある",
-   "heardInstead": "分 ぶん -> ふん",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "かのじょのつとめさきはえきからあるいてごふんのところにある",
+   "heardInstead": "分 ぶん -> ふん  (v1.29 instrument 2; the corpus has since been corrected to ごふん)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 五分 as ごふん (exKana and the 分 token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2), so the recorded mismatch — corpus ぶん, voice nearer ふん — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says ごふん. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n1-b329",
@@ -1116,6 +1116,13 @@
    "exKana": "きたいしていたしあいはあっけないけつまつをむかえた",
    "heardInstead": "試合 しあい -> じあい",
    "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+  },
+  {
+   "id": "n1-b439",
+   "exJP": "会費は全員一律で三千円です。",
+   "exKana": "かいひはぜんいんいちりつでさんぜんえんです",
+   "heardInstead": "三千 さんせん -> さんぜん  (no instrument heard this: the v1.36 §I data-lens review found it; the corpus has since been corrected to さんぜん)",
+   "evidence": "undecided (v1.36 §I addendum 2: exKana and the 三千 token corrected さんせん -> さんぜん; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters. It had been in the dictation pool since v1.21, when dictation shipped, because Sudachi's lookup of 三千 never offers さんぜん, so the shipped instruments never had the standard reading as a candidate. Instrument 1b re-measured on the corrected tokens is silent on 三千 — neither さんぜん (59cfcbf2ac5e) nor さんせん (0eb4a08ff51d) substituted renders byte-identical to the exJP audio (c51086e0ab12), nor do the katakana or 三千円 spans — so the voice is not proven to say the corrected reading, and the sentence is withheld (decided 2026-10-09, PLAN-V1.36 §H), as n5-g022 was in v1.35. Leads, not verdicts (docs/measurements/v136-dictation-remeasure.json): instrument 2 does not flag the corrected tokens (own 0.0754, nearest rival 円 まる 0.0952) and would have flagged the shipped さんせん (0.0970) had さんぜん been a candidate; the span comparatives mostly favour さんぜん (さんぜんえん / さんせんえん 0.0088 / 0.0161), all but the さんぜん円 render, which is 0.24 s longer than the exJP audio)"
   },
   {
    "id": "n1-b445",
@@ -1589,9 +1596,9 @@
   {
    "id": "n1-b957",
    "exJP": "受付は本館の一階にあります。",
-   "exKana": "うけつけはほんかんのいちかいにあります",
-   "heardInstead": "一 いち -> いっ",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "うけつけはほんかんのいっかいにあります",
+   "heardInstead": "一 いち -> いっ  (v1.29 instrument 2; the corpus has since been corrected to いっかい)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 一階 as いっかい (exKana and the 一 token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2), so the recorded mismatch — corpus いち, voice nearer いっ — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says いっかい. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n1-b981",
@@ -2360,9 +2367,9 @@
   {
    "id": "n2-b311",
    "exJP": "集合時間の前後十分は入口で待っています。",
-   "exKana": "しゅうごうじかんのぜんごじゅうふんはいりぐちでまっています",
-   "heardInstead": "十分 じゅうふん -> じゅうぶん",
-   "evidence": "proven (v1.29, instrument 1b)"
+   "exKana": "しゅうごうじかんのぜんごじゅっぷんはいりぐちでまっています",
+   "heardInstead": "十分 じゅうふん -> じゅうぶん  (v1.29 instrument 1b; the corpus has since been corrected to じゅっぷん, which is still not what the voice was proven to say)",
+   "evidence": "proven (v1.29, instrument 1b: 十分 replaced by じゅうぶん renders byte-identical to the exJP audio, so the voice says じゅうぶん, the 'enough' reading). v1.36 corrected 十分 to じゅっぷん (十 じゅう -> じゅっ and 分 ふん -> ぷん in exKana and the tokens; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2). The proof is about the audio of exJP, which did not change, so it still stands and still describes a mismatch: the voice says じゅうぶん against the corpus じゅっぷん, as it did against じゅうふん. Not re-measured. Stays withheld."
   },
   {
    "id": "n2-b312",
@@ -2430,9 +2437,9 @@
   {
    "id": "n2-b449",
    "exJP": "今日以後は毎日三十分の運動を続ける。",
-   "exKana": "きょういごはまいにちさんじゅうぶんのうんどうをつづける",
-   "heardInstead": "分 ぶん -> ぷん",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "きょういごはまいにちさんじゅっぷんのうんどうをつづける",
+   "heardInstead": "分 ぶん -> ぷん  (v1.29 instrument 2; the corpus has since been corrected to さんじゅっぷん, which also moves 三十 さんじゅう -> さんじゅっ, a token the flag did not name)",
+   "evidence": "stale-after-correction (v1.36): the correction acted on the token this row's v1.29 flag names, to the reading the flag named (分 ぶん -> ぷん), and also on 三十 (さんじゅう -> さんじゅっ), which instrument 2, substituting one token at a time, did not name. The corpus now reads 三十分 as さんじゅっぷん (exKana and the 三十 and 分 tokens; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2), so the recorded mismatch — corpus ぶん, voice nearer ぷん — no longer describes the sentence, and what the voice says for 三十 here is unmeasured. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says さんじゅっぷん."
   },
   {
    "id": "n2-b458",
@@ -2458,9 +2465,9 @@
   {
    "id": "n2-b479",
    "exJP": "この近くに古い貸家が一軒建っている。",
-   "exKana": "このちかくにふるいかしやがいちけんたっている",
-   "heardInstead": "一 いち -> いっ",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "このちかくにふるいかしやがいっけんたっている",
+   "heardInstead": "一 いち -> いっ  (v1.29 instrument 2; the corpus has since been corrected to いっけん)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 一軒 as いっけん (exKana and the 一 token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2), so the recorded mismatch — corpus いち, voice nearer いっ — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says いっけん. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n2-b481",
@@ -3084,6 +3091,13 @@
    "exKana": "わたくしはとうきょううまれのとうきょうそだちです",
    "heardInstead": "私 わたくし -> わたし",
    "evidence": "proven (v1.29, instrument 1b)"
+  },
+  {
+   "id": "n3-b020",
+   "exJP": "駅からおよそ十分歩きました。",
+   "exKana": "えきからおよそじゅっぷんあるきました",
+   "heardInstead": "十分 じゅっぷん -> じゅうぶん  (v1.36 instrument 1b; the voice says the 'enough' reading the corpus taught until v1.36 corrected it to じゅっぷん)",
+   "evidence": "proven (v1.36, instrument 1b, calibrated: 0 spurious matches in 8 decoys, 0 contradictions of instrument 1 in 39. 駅からおよそじゅうぶん歩きました。 renders byte-identical to the exJP audio (cf14d6d9a386), and the じゅっぷん (bcf49e9b8a92), じっぷん (3e90312ef691) and じゅうふん (5be07b5ffb06) substitutions do not; instrument 1 agrees, the whole kana えきからおよそじゅうぶんあるきました, the exKana 1.35 shipped, being byte-identical too. So the voice says じゅうぶん, the 'enough' reading.) v1.36 corrected 十分 'ten minutes' to じゅっぷん (exKana and the token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2) and withheld the sentence (decided 2026-10-09, PLAN-V1.36 §H): Sentence mode teaches the right reading, and dictation is not graded where the voice says something else, as for n2-b311, n4-b127 and n1-b1841, where the same voice is proven to say じゅうぶん for 十分 'ten minutes'. The proof is about the exJP audio, which did not change. Stays withheld."
   },
   {
    "id": "n3-b036",
@@ -3787,6 +3801,13 @@
    "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
   },
   {
+   "id": "n3-b678",
+   "exJP": "このクラスのテストの平均点は八十点だ。",
+   "exKana": "このくらすのてすとのへいきんてんははちじゅってんだ",
+   "heardInstead": "八十 はちじゅう -> はちじゅっ  (no instrument heard this: v1.36's counter table found it; the corpus has since been corrected to はちじゅっ, 八十点 はちじゅってん)",
+   "evidence": "undecided (v1.36 §I addendum 2: exKana corrected 八十点 はちじゅうてん -> はちじゅってん, the 八十 token はちじゅう -> はちじゅっ; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters. Instrument 1b re-measured on the corrected tokens is silent on 八十点 — none of はちじゅってん (d80ffb1ed97e), はちじってん (faa8e1cba16b) or はちじゅうてん (b9853a9737d7) substituted for the span renders byte-identical to the exJP audio (3f44f329c858), nor does any of 18 span texts in hiragana and katakana, and instrument 1 is silent on all six whole-kana spellings — so the voice is not proven to say the corrected reading, and the sentence is withheld (decided 2026-10-09, PLAN-V1.36 §H), as n5-g022 was in v1.35. The leads are a tie (docs/measurements/v136-dictation-remeasure.json): instrument 2 flags the corrected sentence once はちじっ is a candidate (はちじっ 0.06541, はちじゅっ 0.06590, はちじゅう 0.06594), and the uncalibrated span comparatives disagree with each other (hiragana はちじゅう first, katakana はちじゅっ first). はちじゅってん and はちじってん are both standard; which one the voice says is not known)"
+  },
+  {
    "id": "n3-b693",
    "exJP": "京都は歴史のある美しい都です。",
    "exKana": "きょうとはれきしのあるうつくしいみやこです",
@@ -3855,6 +3876,13 @@
    "exKana": "にゅうじょうけんをかってなかにはいった",
    "heardInstead": "入っ はいっ -> いっ",
    "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+  },
+  {
+   "id": "n3-b781",
+   "exJP": "食事代の合計は三千円でした。",
+   "exKana": "しょくじだいのごうけいはさんぜんえんでした",
+   "heardInstead": "三千 さんせん -> さんぜん  (no instrument heard this: the v1.36 §I data-lens review found it; the corpus has since been corrected to さんぜん)",
+   "evidence": "undecided (v1.36 §I addendum 2: exKana and the 三千 token corrected さんせん -> さんぜん; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters. It had been in the dictation pool since v1.21, when dictation shipped, because Sudachi's lookup of 三千 never offers さんぜん, so the shipped instruments never had the standard reading as a candidate. Instrument 1b re-measured on the corrected tokens is silent on 三千 — neither さんぜん (8b5ea2327edf) nor さんせん (4cc844d9790f) substituted renders byte-identical to the exJP audio (e23320330ac8) — so the voice is not proven to say the corrected reading, and the sentence is withheld (decided 2026-10-09, PLAN-V1.36 §H), as n5-g022 was in v1.35. Leads, not verdicts (docs/measurements/v136-dictation-remeasure.json): instrument 2 does not flag the corrected tokens (own 0.0421, nearest rival 円 まる 0.0572) and would have flagged the shipped さんせん (0.0454 against さんぜん 0.0421); the span comparative favours さんぜん (0.0066 against 0.0132))"
   },
   {
    "id": "n3-b782",
@@ -4419,9 +4447,9 @@
   {
    "id": "n4-b127",
    "exJP": "駅から家まで十分ほど歩きます。",
-   "exKana": "えきからいえまでじゅうふんほどあるきます",
-   "heardInstead": "十分 じゅうふん -> じゅうぶん",
-   "evidence": "proven (v1.29, instrument 1b)"
+   "exKana": "えきからいえまでじゅっぷんほどあるきます",
+   "heardInstead": "十分 じゅうふん -> じゅうぶん  (v1.29 instrument 1b; the corpus has since been corrected to じゅっぷん, which is still not what the voice was proven to say)",
+   "evidence": "proven (v1.29, instrument 1b: 十分 replaced by じゅうぶん renders byte-identical to the exJP audio, so the voice says じゅうぶん, the 'enough' reading). v1.36 corrected 十分 to じゅっぷん (十 じゅう -> じゅっ and 分 ふん -> ぷん in exKana and the tokens; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2). The proof is about the audio of exJP, which did not change, so it still stands and still describes a mismatch: the voice says じゅうぶん against the corpus じゅっぷん, as it did against じゅうふん. Not re-measured. Stays withheld."
   },
   {
    "id": "n4-b129",

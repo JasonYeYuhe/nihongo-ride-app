@@ -2,6 +2,8 @@
 """Does any shipped sentence read a LEXICALISED counter as if it were two morphemes?
 And does any read an INTERROGATIVE counter (何 + counter) with a reading that is not the question's?
 And does any read a MONTH, HOUR, DURATION or 字 counter without the sound change at its last digit?
+And does any read a SOUND-CHANGING counter (分 軒 階 回 歳 本 杯 匹 個 冊 点 泊), or 千 / 百 after
+a digit, without its sound change?
 
 WHY A SCAN CAN SEE THIS AND NO TOKENIZER CAN. A handful of Japanese counters are single lexical
 items — 二人 is ふたり, not に+にん — and **every tokenizer this project has tried splits them and
@@ -110,8 +112,71 @@ Not a hit, and why:
     does not claim to know.
   * never seen at all: 九州, 四季, 四ヶ月 / 四か月 (another counter, and regular), 十字路 (十 is
     regular), 四六時中 しろくじちゅう (its last digit, 六, is regular).
-What it cannot see: a number written in kana in exJP, a counter not in the table (分, 年, 回, 週 …),
-a wrong reading in the digits before the last, and a sense not listed above.
+What it cannot see: a number written in kana in exJP, a counter in neither this table nor the next
+(年, 週, 人, 枚, 台 …), a wrong reading in the digits before the last, and a sense not listed above.
+
+THE SOUND-CHANGING COUNTERS (v1.36, PLAN-V1.36 §I addendum 2)
+--------------------------------------------------------------
+Why: the data-lens review of the §I corrections scanned every numeral token followed by a counter and
+found the same defect outside 月 / 時 / 時間 / 字: 三千円 taught さんせんえん (n1-b439, n3-b781, both in
+the dictation pool), 三分 さんふん (n1-b1630), 三十分 さんじゅうぶん (n2-b449), 五分 ごぶん (n1-b327),
+十分 'ten minutes' じゅうふん (n1-b1147, n1-b1841, n2-b311, n4-b127), 一軒 いちけん (n2-b479), 一階
+いちかい (n1-b957); tolerated, 三階 さんかい (n4-g171) and 三十歳 / 八十歳 …じゅうさい (n3-b123, n1-b311,
+n1-b1450). The fix review's own scan (§I) added 十分 'ten minutes' taught じゅうぶん (n3-b020, in the
+pool).
+
+It is the counter table above, extended: the same judge, population, output key and calibration. From
+分 on the counter's own sound changes too (ふん / ぷん, ほん / ぼん / ぽん), so every row is the whole
+reading of the final unit with its counter:
+    分   1 いっぷん  2 にふん  3 さんぷん  4 よんぷん  5 ごふん  6 ろっぷん  7 ななふん  8 はっぷん | はちふん
+         9 きゅうふん  10 じゅっぷん | じっぷん
+    軒   1 いっけん  3 さんげん  6 ろっけん  8 はっけん  10 じゅっけん | じっけん
+    階   1 いっかい  3 さんがい (さんかい tolerated)  6 ろっかい  8 はっかい | はちかい  10 じゅっかい | じっかい
+    回   1 いっかい  6 ろっかい  8 はっかい | はちかい  10 じゅっかい | じっかい
+    歳   1 いっさい  8 はっさい  10 じゅっさい | じっさい (…じゅうさい tolerated); 二十歳 also はたち
+    本   1 いっぽん  3 さんぼん  6 ろっぽん  8 はっぽん  10 じゅっぽん | じっぽん
+    杯   1 いっぱい  3 さんばい  6 ろっぱい  8 はっぱい  10 じゅっぱい | じっぱい
+    匹   1 いっぴき  3 さんびき  6 ろっぴき  8 はっぴき  10 じゅっぴき | じっぴき
+    個   1 いっこ  6 ろっこ  8 はっこ  10 じゅっこ | じっこ
+    冊   1 いっさつ  8 はっさつ  10 じゅっさつ | じっさつ
+    点   1 いってん  6 ろってん  8 はってん  10 じゅってん | じってん
+    泊   1 いっぱく  3 さんぱく  6 ろっぱく  8 はっぱく  10 じゅっぱく | じっぱく
+    千   after 3 さんぜん, 8 はっせん            百   after 3 さんびゃく, 6 ろっぴゃく, 8 はっぴゃく
+The final unit "10" is a number ending in 十 (or, in digits, in 0 over a non-zero tens digit). The
+tens digit is read plainly in front of the row, so 三十分 is さん + じゅっぷん and 八十歳 はち + じゅっさい.
+A number ending in 百, 千 or 万 before a counter (百本, 千回, 100分) is not enumerated. 千 and 百 are
+places, not counters: every 千 or 百 just after a listed digit, inside any kanji number, is judged from
+the start of the number through the place, whatever follows (三千円 → 三千 さんぜん; 一万三千 いちまん
+さんぜん). Unlisted digits are absent, as before (二本 にほん, 三冊 さんさつ read as they do alone).
+
+分's sense. 分 is also ぶん (三分の一; 十分 'enough') and ぶ (五分 'even'; 一分 'a tenth'), and only
+the English can tell them apart: exEN for a sentence, the meanings for a headword or a passage.
+  * minutes: the text says so (時 or 時間 just before the number: 九時十分; 間 just after: 十分間), or
+    the English names minutes (minute, min, or a clock time like 9:10). Judged as the table says, so
+    n3-b020 「およそ十分歩きました」, 'about ten minutes', taught じゅうぶん is a mismatch (on 3d891b9,
+    (i); corrected to じゅっぷん on 2026-10-09, and passed since, (m)).
+  * 十分 'enough': the English names no minutes. じゅうぶん, the adjective, is accepted; a minutes
+    reading is flag-only. n4-g178 「時間は十分にある」 ('plenty of time') is inspected and passes.
+  * ambiguous, flag-only, never a mismatch: 十分 taught じゅうぶん with English that names minutes
+    and 'enough' / 'sufficient' / 'plenty' / 'fully' … both; 十分 with no English at all (only a
+    reading wrong in both senses, じゅうふん, is a mismatch); any other 分 whose English names no
+    minutes and whose reading is not a minutes reading (五分 ごぶ).
+  * absorbed: a fraction, 分 then の then a numeral (三分の一, 十分の一). 三分の休憩 is still judged.
+
+Not a hit, and why:
+  * absorbed, lexemes with their own reading, never judged: 八百屋 やおや, 八百長, 八千代, 一回り
+    ひとまわり, 五分五分, 九分九厘, 七分袖, 八分目, 一個人 いちこじん.
+  * flag-only, tolerated: 三階 さんかい; a ten before 歳 read …じゅうさい (十歳, 三十歳, 八十歳).
+  * accepted: 二十歳 はたち, beside にじゅっさい | にじっさい.
+  * judged and fine: 一杯 'full' is いっぱい, the counter's own reading; 一回 and 一階 are both
+    いっかい; 一本気 and 一点張り are judged on their start (いっぽん…, いってん…).
+  * never seen: 何分, 何本 … (何 is not a numeral; the 何 table reads them); 一人, 一番, 一生, 一緒;
+    万歳; 百本, 千回.
+What it cannot see, in addition: a wrong reading at a digit a row does not list (四本, 三冊 are never
+judged), 才 for 歳, a counter in kana in exJP (いっぽん), the 千 / 百 of a number in digits (3000円),
+and a sense of 分 the English does not reveal. It errs toward flagging, never toward a correction:
+a legitimate form a row does not list (七分 しちふん) or a lexeme not in COUNTER_ABSORBERS (八百万
+やおよろず) is a mismatch, for the 2-of-2 refuters to reject.
 
 CALIBRATION BEFORE TRUST (`--calibrate`). It drives this file's documented entry point as a
 subprocess, never its functions, on four trees:
@@ -137,6 +202,48 @@ subprocess, never its functions, on four trees:
       the tokens rather than found by the substring fallback: 8 mismatches, and n5-b334 七時
       flag-only. Anything else it finds is listed, not failed;
   (g) the working tree inspects n5-g079 七時, taught しちじ, and passes it in both fields;
+  (i) on `3d891b9` — main when the sound-changing counters were added, every sentence of §I addendum 2
+      as its review read it, pinned so the check survives their correction — the counter table flags
+      the 17 known occurrences, each with the same verdict in exTokens and in exKana, exKana lined up
+      with the tokens: 13 mismatches (三千 ×2, 三分, 三十分, 十分 ×5, 五分, 一軒, 一階, and 八十点, which
+      this table found itself) and 4 flag-only (三階 さんかい, and the three …じゅうさい). The same 17 on
+      `fdb2b5f`, the corpus 1.35 shipped, whose 17 sentences are byte-identical to 3d891b9's: the
+      defects were on sale, not introduced since. Anything else either tree yields is listed, not
+      failed (fdb2b5f also still holds §I's 8 month / hour corrections);
+  (j) the working tree inspects 十分 and passes it for its sense: n1-b1516 じっぷん 'ten minutes'
+      (v1.25's correction) and n4-g178 じゅうぶん 'enough', each in its sentence and its headword;
+  (k) the working tree records its real lexemes, never judging them (n5-b364 八百屋, n1-b2056 一回り),
+      and passes n5-b331 二十歳 はたち in both fields;
+  (l) hits carry their English, and their dictation-pool membership agrees with what PLAN-V1.36 §I
+      states from the review (n1-b439, n3-b781, n3-b020 and n4-g171 in the pool; n5-b334 withheld) —
+      so an inverted or missing pool test cannot report quietly. Read on `3d891b9` with that tree's
+      own dictation-exclusions.json, since §I described that tree and three of the five are corrected
+      since (n1-b439 and n3-b781, and n3-b020 on 2026-10-09, all three now withheld); and on the
+      working tree for the two that are still hits there (n4-g171 in, n5-b334 withheld), one of each
+      membership, so the pool lookup is also proven both ways on the tree a sweep reports;
+  (m) the working tree inspects every sentence §I addendum 2 corrected (v136-reading-manifest.json)
+      and passes it in both fields, exKana lined up with the tokens, taught the corrected reading —
+      not flagged because each was looked at and passed. Since 2026-10-09 that includes n3-b020: its
+      correction was upheld and first held back, because the voice is proven to say 十分 = じゅうぶん
+      in that pool sentence (v136-dictation-remeasure.json); it is now corrected AND withheld from
+      dictation (PLAN-V1.36 §H), so the table has no mismatch left on the working tree.
+      (m0) first holds that list to the manifest: the ids of its rows with disposition 'corrected'
+      that are also (i)'s known hits must equal KNOWN_CORRECTED's ids. The corrected VALUES stay
+      written out by hand; only the set is tied, so a correction declared without a check, or a
+      check row lost in an edit, fails rather than passing as "the N sentences corrected";
+      (m1) then holds what dictation does with them. Every row the manifest declares 'corrected' (all
+      of them, not only (m)'s) is withheld in the working tree's dictation-exclusions.json, unless
+      v136-dictation-remeasure.json records a 1b 'RELEASE' verdict for it: the method's rule, a
+      corrected pool sentence stays in dictation only if 1b proves the voice says the corrected
+      reading. No other text exempts a row; the 'dictation' prose is not parsed. Added by the fix
+      review of 8324943: (l) reads only hits, so once n3-b020 was corrected nothing pinned its new
+      withheld state, and putting it back in the pool (deleted from both exclusion files, counts
+      fixed) passed every check above;
+      (m2) and the manifest's counts against the exclusion list: withheldFromDictation is the number
+      of corrected rows withheld now and not in 1.35's (SHIPPED_REF) list, releasedToDictation the
+      reverse, and their difference is release_numbers' withheldThisRelease while release_numbers
+      measures this manifest's release (its CORPUS_MANIFEST is this manifest and its BASELINE_REF is
+      SHIPPED_REF; once either moves on, the detail says the tie was not made, and why);
   (h) a PLANTED tree: the working tree's corpus copied, with one known-wrong occurrence per table
       planted in the example sentences of every n-file, and one headword and one passage for each
       table that reads them, all under ids no entry uses (`plant-…`). Every plant must be flagged
@@ -147,12 +254,20 @@ subprocess, never its functions, on four trees:
       and passed every check above. A plant in each file and each kind of field is what such a
       narrowing cannot pass. The counter plants include 七月 なながつ and 九月 きゅうがつ, which the
       corpus does not contain, so a 月 row dropped or inverted, or MONTHS narrowed, fails here too.
+      Since §I addendum 2 every n-file has a second counter plant on a sound-changing row (三分, 一軒,
+      八本, 三千, 六百), and a headword 三分 and a passage 十分 carry English that names minutes: if a
+      headword's or a passage's meanings did not reach 分's sense, that plant would be flag-only, not
+      a mismatch, and (h) fails.
 Then synthetic logic checks for paths the real corpus does not exercise: for the 何 table an absorber,
 何階's two readings, a prefix span, a counter split across two tokens, 何人 なにじん, 何人 なにん (a
 mismatch on a second compound), and a regression in exKana alone; for the counter table both an
 accepted and a rejected form of every row of the table above (月 4/7/9, 時 4/7/9, 時間 4/7/9, 字 4),
-the tolerated and other-sense flags, and the absorbers; and the exit-2 floor naming each short
-table. They prove the code paths, not accuracy: accuracy is (a)–(h). A failed check exits 1 and
+the tolerated and other-sense flags, and the absorbers; for the sound-changing rows, every row's
+standard reading(s) and the reading without its sound change, written out by hand in
+SOUND_CHANGE_ROWS (never derived from COUNTER_FINAL), 分's four senses and its fraction, the lexemes,
+二十歳, the tolerated 三階 and …じゅうさい, compound numbers, 千 / 百 inside a number, digits, the
+never-inspected forms and a regression in each field alone; and the exit-2 floor naming each short
+table. They prove the code paths, not accuracy: accuracy is (a)–(l). A failed check exits 1 and
 writes nothing.
 
 What the population line does and does not say. A field is counted once its table's judge has run
@@ -165,8 +280,12 @@ IT IS A SWEEP, NOT A GATE. `run_all_gates.sh` and CI do not run it (checked 2026
 names it, and it is not a `scripts/test_*.py`, the glob the runner turns into gates). Keep it that
 way: a test_*.py for it would add a gate and move FLOOR.
 
+A hit also carries its English and `inDictationPool`: true for an example sentence whose id the
+tree's dictation-exclusions.json does not withhold (dictation draws from example sentences alone),
+false for a withheld sentence or a headword or passage, null in a tree that has no such file.
+
     python3 scripts/check_counter_readings.py [--json out.json] [--resources DIR] [--calibrate]
-    python3 scripts/check_counter_readings.py --calibrate --json docs/measurements/v136-counter-sweep-2.json
+    python3 scripts/check_counter_readings.py --calibrate --json docs/measurements/v136-counter-sweep-6.json
 """
 import argparse, glob, json, os, re, shutil, subprocess, sys, tempfile
 
@@ -212,32 +331,79 @@ INTERROGATIVE_OTHER_SENSE = {
 # Longer items containing an interrogative compound, with their own reading (いつ何時 いつなんどき).
 INTERROGATIVE_ABSORBERS = ("いつ何時",)
 
-# ── the counter table (PLAN-V1.36 §I) ──────────────────────────────────────────────────────────
-# counter -> its reading, and {last digit: that digit's form before it}. Only the digits whose sound
-# changes are listed; the rest read as they do alone and are deliberately absent (see the docstring).
-COUNTER_READING = {"時間": "じかん", "時": "じ", "月": "がつ", "字": "じ"}
+# ── the counter table (PLAN-V1.36 §I, and §I addendum 2) ──────────────────────────────────────
+# counter -> {final unit: the standard readings of that unit WITH its counter}. The final unit is the
+# last digit (1–9), or 10 for a number ending in 十 (三十分 is さん + じゅっぷん). Only the units whose
+# sound changes are listed; the rest read as they do alone and are deliberately absent (see the
+# docstring). A row is the whole reading of digit + counter because, from 分 on, the counter's own
+# sound changes too (ふん / ぷん, ほん / ぼん / ぽん).
 COUNTER_FINAL = {
-    "月": {4: ("し",), 7: ("しち",), 9: ("く",)},
-    "時": {4: ("よ",), 7: ("しち",), 9: ("く",)},
-    "時間": {4: ("よ",), 7: ("しち", "なな"), 9: ("く",)},
-    "字": {4: ("よ",)},
+    "月": {4: ("しがつ",), 7: ("しちがつ",), 9: ("くがつ",)},
+    "時": {4: ("よじ",), 7: ("しちじ",), 9: ("くじ",)},
+    "時間": {4: ("よじかん",), 7: ("しちじかん", "ななじかん"), 9: ("くじかん",)},
+    "字": {4: ("よじ",)},
+    # §I addendum 2: the sound-changing counters.
+    "分": {1: ("いっぷん",), 2: ("にふん",), 3: ("さんぷん",), 4: ("よんぷん",), 5: ("ごふん",),
+          6: ("ろっぷん",), 7: ("ななふん",), 8: ("はっぷん", "はちふん"), 9: ("きゅうふん",),
+          10: ("じゅっぷん", "じっぷん")},
+    "軒": {1: ("いっけん",), 3: ("さんげん",), 6: ("ろっけん",), 8: ("はっけん",),
+          10: ("じゅっけん", "じっけん")},
+    "階": {1: ("いっかい",), 3: ("さんがい",), 6: ("ろっかい",), 8: ("はっかい", "はちかい"),
+          10: ("じゅっかい", "じっかい")},
+    "回": {1: ("いっかい",), 6: ("ろっかい",), 8: ("はっかい", "はちかい"), 10: ("じゅっかい", "じっかい")},
+    "歳": {1: ("いっさい",), 8: ("はっさい",), 10: ("じゅっさい", "じっさい")},
+    "本": {1: ("いっぽん",), 3: ("さんぼん",), 6: ("ろっぽん",), 8: ("はっぽん",),
+          10: ("じゅっぽん", "じっぽん")},
+    "杯": {1: ("いっぱい",), 3: ("さんばい",), 6: ("ろっぱい",), 8: ("はっぱい",),
+          10: ("じゅっぱい", "じっぱい")},
+    "匹": {1: ("いっぴき",), 3: ("さんびき",), 6: ("ろっぴき",), 8: ("はっぴき",),
+          10: ("じゅっぴき", "じっぴき")},
+    "個": {1: ("いっこ",), 6: ("ろっこ",), 8: ("はっこ",), 10: ("じゅっこ", "じっこ")},
+    "冊": {1: ("いっさつ",), 8: ("はっさつ",), 10: ("じゅっさつ", "じっさつ")},
+    "点": {1: ("いってん",), 6: ("ろってん",), 8: ("はってん",), 10: ("じゅってん", "じってん")},
+    "泊": {1: ("いっぱく",), 3: ("さんぱく",), 6: ("ろっぱく",), 8: ("はっぱく",),
+          10: ("じゅっぱく", "じっぱく")},
+    # 千 and 百 are places, not counters: the digit just before one changes its sound (the key is
+    # that digit), inside any kanji number and whatever follows it (三千円, 一万三千).
+    "千": {3: ("さんぜん",), 8: ("はっせん",)},
+    "百": {3: ("さんびゃく",), 6: ("ろっぴゃく",), 8: ("はっぴゃく",)},
 }
-# A last digit's form that is heard but not the standard: flag-only, for a person, never corrected.
-COUNTER_TOLERATED = {"時": {7: {"なな": "tolerated: ななじ is common speech; しちじ is the textbook form"}}}
+PLACES = {"千": 1000, "百": 100}
+# A final unit's reading that is heard but not the standard: flag-only, for a person, never corrected.
+COUNTER_TOLERATED = {
+    "時": {7: {"ななじ": "tolerated: ななじ is common speech; しちじ is the textbook form"}},
+    "階": {3: {"さんかい": "tolerated: さんかい is common speech; さんがい is the traditional form"}},
+    "歳": {10: {"じゅうさい": "tolerated: …じゅうさい is heard; …じゅっさい / …じっさい is the standard"}},
+}
 # The same spelling read in another sense: flag-only. Keyed by the whole compound.
 COUNTER_OTHER_SENSE = {
     "四時": {"しじ": "literary 'the four seasons' (四時)"},
     "四月": {"わたぬき": "the surname 四月一日 / 四月朔日"},
 }
+# A whole compound with a lexicalised reading accepted beside the table's (二十歳 はたち).
+COUNTER_WHOLE = {"二十歳": ("はたち",)}
+# Lexemes that contain a number + counter and have their own reading: recorded, never judged. Each
+# holds an enumerated row (二回り ふたまわり does not: 二回 is never judged, so it is not listed).
+COUNTER_ABSORBERS = ("八百屋", "八百長", "八千代", "一回り", "五分五分", "九分九厘", "七分袖", "八分目",
+                     "一個人")
 # The counter character is the first of another word: 時代, 時期, 時点; 月曜 (第四月曜日).
 NOT_THE_COUNTER = {"時": ("代", "期", "点"), "月": ("曜",)}
 MONTHS = range(1, 13)
+# 分's sense, read from the English (PLAN-V1.36 §I addendum 2: "use exEN (minutes/min) and context").
+MINUTES_EN = re.compile(r"\bmin(?:ute)?s?\b|\b\d{1,2}:\d{2}\b", re.IGNORECASE)
+ENOUGH_EN = re.compile(r"\b(?:enough|sufficient(?:ly)?|suffices?|plenty|ample|amply|fully|thorough(?:ly)?|"
+                       r"adequate(?:ly)?)\b", re.IGNORECASE)
+ENOUGH = "じゅうぶん"   # 十分 the adjective, 'enough'
 
 KANJI_DIGIT = {"〇": 0, "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9}
 KANJI_UNIT = {"十": 10, "百": 100, "千": 1000}
 FULLWIDTH = str.maketrans("０１２３４５６７８９", "0123456789")
+NUMERALS = "〇一二三四五六七八九十百千万0123456789０１２３４５６７８９"
 # The whole numeral run before a counter; 時間 is tried before 時.
-COUNTER_RE = re.compile("([〇一二三四五六七八九十百千万0-9０-９]+)(時間|時|月|字)")
+COUNTER_RE = re.compile("([〇一二三四五六七八九十百千万0-9０-９]+)"
+                        "(時間|時|月|字|分|軒|階|回|歳|本|杯|匹|個|冊|点|泊)")
+# A kanji number, searched for a 千 or 百 after a digit.
+KANJI_NUMBER_RE = re.compile("[〇一二三四五六七八九十百千万]+")
 
 # A digit read inside a larger number, leniently (the table judges only the last digit).
 DIGIT_READINGS = {1: ("いち",), 2: ("に",), 3: ("さん",), 4: ("よん", "し"), 5: ("ご",), 6: ("ろく",),
@@ -267,6 +433,72 @@ KNOWN_COUNTER_HITS = (   # (id, compound, verdict, taught) — each the same ver
     ("n1-b615", "四時間", "mismatch", "しじかん"),
     ("n2-b072", "四字", "mismatch", "よんじ"),
     ("n5-b334", "七時", "flag-only", "ななじはん"),   # the token is 時半, so the span runs on
+)
+# §I addendum 2's corpus: main when the sound-changing counters were added, every sentence below
+# still as the review read it. Pinned so (i) survives their correction.
+SOUND_CHANGE_CALIBRATION_REF = "3d891b9"
+KNOWN_SOUND_CHANGE_HITS = (   # (id, compound, verdict, taught) — PLAN-V1.36 §I and §I addendum 2
+    ("n1-b439", "三千", "mismatch", "さんせん"),
+    ("n3-b781", "三千", "mismatch", "さんせん"),
+    ("n1-b1630", "三分", "mismatch", "さんふん"),
+    ("n2-b449", "三十分", "mismatch", "さんじゅうぶん"),
+    ("n1-b1147", "十分", "mismatch", "じゅうふん"),
+    ("n1-b1841", "十分", "mismatch", "じゅうふん"),
+    ("n2-b311", "十分", "mismatch", "じゅうふん"),
+    ("n4-b127", "十分", "mismatch", "じゅうふん"),
+    ("n3-b020", "十分", "mismatch", "じゅうぶん"),   # 'ten minutes' by exEN, taught the 'enough' reading
+    ("n1-b327", "五分", "mismatch", "ごぶん"),
+    ("n2-b479", "一軒", "mismatch", "いちけん"),
+    ("n1-b957", "一階", "mismatch", "いちかい"),
+    # Not from the review: this table found it on 3d891b9 (v136-counter-sweep-4.json), and it was then
+    # upheld 2 of 2 and corrected like the rest. Pinned so a 点 row that went soft cannot pass.
+    ("n3-b678", "八十点", "mismatch", "はちじゅうてん"),
+    ("n4-g171", "三階", "flag-only", "さんかい"),
+    ("n3-b123", "三十歳", "flag-only", "さんじゅうさい"),
+    ("n1-b311", "八十歳", "flag-only", "はちじゅうさい"),
+    ("n1-b1450", "八十歳", "flag-only", "はちじゅうさい"),
+)
+# (j) and (k): on the working tree, inspected and NOT flagged — (id, field, compound, verdict, taught).
+# n1-b1516 is v1.25's correction to じっぷん; n4-g178 is the headword 十分 'enough', whose sentence's
+# English ("plenty of time") names time but no minutes.
+KNOWN_SOUND_CHANGE_PASSES = (
+    ("n1-b1516", "exJP", "十分", "ok", "じっぷん"), ("n1-b1516", "surface", "十分", "ok", "じっぷん"),
+    ("n4-g178", "exJP", "十分", "ok", "じゅうぶん"), ("n4-g178", "surface", "十分", "ok", "じゅうぶん"),
+)
+KNOWN_LEXEMES = (
+    ("n5-b364", "exJP", "八百", "absorbed", None), ("n5-b364", "surface", "八百", "absorbed", None),
+    ("n1-b2056", "exJP", "一回", "absorbed", None),
+    ("n5-b331", "exJP", "二十歳", "ok", "はたち"), ("n5-b331", "surface", "二十歳", "ok", "はたち"),
+)
+# (i) again on the corpus 1.35 shipped (the v1.35 build commit, release_numbers.BASELINE_REF while v1.36
+# is built). Pinned, not read from release_numbers: BASELINE_REF moves on with the next release.
+SHIPPED_REF = "fdb2b5f"
+# (l): dictation-pool membership as PLAN-V1.36 §I states it, measured by the review, not by this file:
+# 三千円 n1-b439 and n3-b781 "both in the dictation pool", n3-b020 "in the dictation pool", n4-g171
+# "in the pool"; n5-b334 among the 8 "already withheld from dictation". Read on 3d891b9, the tree §I
+# described. The working tree has two of them as hits, one in the pool and one withheld: n1-b439, n3-b781
+# and (since 2026-10-09) n3-b020 are corrected there, and are no longer hits; (m1) holds that all three
+# are withheld there, as the decision of 2026-10-09 (PLAN-V1.36 §H) left them.
+KNOWN_POOL = (("n1-b439", True), ("n3-b781", True), ("n3-b020", True), ("n4-g171", True),
+              ("n5-b334", False))
+KNOWN_POOL_HEAD = (("n4-g171", True), ("n5-b334", False))
+# (m): every sentence §I addendum 2 corrected, with the reading it was corrected to — (id, compound,
+# corrected). Written out from v136-reading-manifest.json's 'corrected', never derived from COUNTER_FINAL.
+# Where two forms are standard the corpus took the more common one (じゅっぷん, はちじゅってん). n3-b020 was
+# upheld and first held back; it was corrected on 2026-10-09 and withheld from dictation (PLAN-V1.36 §H),
+# so it is here too. The VALUES stay hand-written; the ID SET is held to the manifest by (m0): the
+# manifest's 'corrected' rows that are also KNOWN_SOUND_CHANGE_HITS must be exactly these ids, so a
+# correction declared there and missing here (or the reverse) fails.
+MANIFEST = os.path.join(REPO, "docs", "measurements", "v136-reading-manifest.json")
+# (m1): the 1b re-measurement of the corrected pool sentences. A 'RELEASE' verdict there (v1.35's word
+# for "1b confirms the corrected reading") is the only thing that lets a corrected row stay in dictation.
+REMEASURE = os.path.join(REPO, "docs", "measurements", "v136-dictation-remeasure.json")
+KNOWN_CORRECTED = (
+    ("n1-b439", "三千", "さんぜん"), ("n3-b781", "三千", "さんぜん"), ("n3-b678", "八十点", "はちじゅってん"),
+    ("n1-b1630", "三分", "さんぷん"), ("n2-b449", "三十分", "さんじゅっぷん"), ("n1-b327", "五分", "ごふん"),
+    ("n1-b1147", "十分", "じゅっぷん"), ("n1-b1841", "十分", "じゅっぷん"), ("n2-b311", "十分", "じゅっぷん"),
+    ("n4-b127", "十分", "じゅっぷん"), ("n2-b479", "一軒", "いっけん"), ("n1-b957", "一階", "いっかい"),
+    ("n3-b020", "十分", "じゅっぷん"),
 )
 CORPUS_FILES = ("n1.json", "n2.json", "n3.json", "n4.json", "n5.json", "passages.json")
 
@@ -366,17 +598,21 @@ def kana_segment(reading, tokens, start, end):
     return None
 
 
-def verdict_of(taught, alignment, accept, flag):
-    """ok, flag-only (with the other sense) or mismatch, for one reading of one occurrence."""
+def verdict_of(taught, alignment, accept, flag, fallback=None):
+    """ok, flag-only (with the other sense) or mismatch, for one reading of one occurrence. With a
+    `fallback` sense, a reading that is neither accepted nor flagged is flag-only, not a mismatch:
+    the occurrence's sense is undecided, so nothing about it is a correction candidate."""
     if any(fits(taught, r, alignment) for r in accept):
         return "ok", None
     for r, sense in flag.items():
         if fits(taught, r, alignment):
             return "flag-only", {"reading": r, "sense": sense}
+    if fallback:
+        return "flag-only", {"reading": None, "sense": fallback}
     return "mismatch", None
 
 
-def judge_occurrence(text, reading, tokens, start, end, accept, flag):
+def judge_occurrence(text, reading, tokens, start, end, accept, flag, fallback=None):
     """text[start:end] judged on the tokens AND on the reading. `accept` holds the right readings and
     `flag` {reading: sense} the ones legitimate in another sense or tolerated. `taught` is the
     tokens' reading when there are tokens, else the field's reading; `verdict` is the worse of
@@ -384,15 +620,15 @@ def judge_occurrence(text, reading, tokens, start, end, accept, flag):
     span = cover(text, tokens, start, end)
     if span is None:      # a headword, a passage, or tokens that do not spell the text
         taught_span, taught, alignment = whole(text, reading, start, end)
-        verdict, other = verdict_of(taught, alignment, accept, flag)
+        verdict, other = verdict_of(taught, alignment, accept, flag, fallback)
         record = {"taught": taught, "taughtSpan": taught_span, "alignment": alignment,
                   "verdictTokens": None, "verdictKana": verdict, "verdict": verdict}
     else:
         taught_span, taught, alignment = span
-        v_tokens, o_tokens = verdict_of(taught, alignment, accept, flag)
+        v_tokens, o_tokens = verdict_of(taught, alignment, accept, flag, fallback)
         segment = kana_segment(reading, tokens, start, end)
         kana, kana_alignment = (reading, "kana-only") if segment is None else (segment, alignment)
-        v_kana, o_kana = verdict_of(kana, kana_alignment, accept, flag)
+        v_kana, o_kana = verdict_of(kana, kana_alignment, accept, flag, fallback)
         verdict = max(v_tokens, v_kana, key=VERDICT_RANK.get)
         other = o_tokens if v_tokens == "flag-only" else o_kana
         record = {"taught": taught, "taughtSpan": taught_span, "alignment": alignment,
@@ -403,8 +639,10 @@ def judge_occurrence(text, reading, tokens, start, end, accept, flag):
     return record
 
 
-def judge_field(text, reading, tokens):
-    """One record per 何+counter in `text`: what the corpus teaches for it, and the verdict."""
+def judge_field(text, reading, tokens, english=None):
+    """One record per 何+counter in `text`: what the corpus teaches for it, and the verdict.
+    `english` is accepted so every judge takes the same fields, and is not read: 何分's other
+    sense (なにぶん) is flag-only whatever the English says."""
     masked = text
     for absorber in INTERROGATIVE_ABSORBERS:
         masked = masked.replace(absorber, "　" * len(absorber))
@@ -469,20 +707,68 @@ def last_digit(run):
     return int(last) if last.isascii() and last.isdigit() else KANJI_DIGIT.get(last)
 
 
-def judge_counter_field(text, reading, tokens):
-    """One record per number + month/hour/duration/字 counter in `text` whose last digit's sound
-    changes: what the corpus teaches for it, and the verdict."""
+def final_key(run):
+    """The final unit a counter's sound change hangs on: the last digit 1–9, or 10 for a number
+    ending in 十 — or in 0, in digits, which is confirmed against the value's tens digit later.
+    None (or 0) for a number ending in 百, 千, 万 or 〇: not enumerated."""
+    if run[-1] == "十":
+        return 10
+    digit = last_digit(run)
+    return 10 if digit == 0 and run[-1].translate(FULLWIDTH).isascii() else digit
+
+
+def counter_occurrences(text):
+    """(compound, counter, number, start, end) for every number + counter in `text`, and for every
+    千 or 百 after a digit inside a kanji number — that one from the start of the number through
+    the place (一万三千円 gives 一万三千), whatever follows. In text order."""
+    found = [(m.group(0), m.group(2), m.group(1), m.start(), m.end()) for m in COUNTER_RE.finditer(text)]
+    for m in KANJI_NUMBER_RE.finditer(text):
+        run = m.group(0)
+        for i in range(1, len(run)):
+            if run[i] in PLACES and run[i - 1] in KANJI_DIGIT:
+                found.append((run[:i + 1], run[i], run[:i + 1], m.start(), m.start() + i + 1))
+    return sorted(found, key=lambda o: (o[3], o[4]))
+
+
+def minute_sense(text, number_start, end, english):
+    """Which 分 this is, and why: 'minutes' (the text or the English says so), 'ambiguous' (the
+    English names minutes and 'enough' both), 'other' (the English names no minutes) or 'unknown'
+    (there is no English). PLAN-V1.36 §I addendum 2."""
+    if text[:number_start].endswith(("時", "時間")) or text[end:end + 1] == "間":
+        return "minutes", "the text says minutes (時 before the number, or 分間)"
+    if not english:
+        return "unknown", "no English to read the sense from"
+    if MINUTES_EN.search(english):
+        if ENOUGH_EN.search(english):
+            return "ambiguous", "the English names minutes and 'enough' both"
+        return "minutes", "the English names minutes"
+    return "other", "the English names no minutes"
+
+
+def judge_counter_field(text, reading, tokens, english=None):
+    """One record per number + counter in `text` whose final unit's sound changes, and per 千 / 百
+    whose digit changes it: what the corpus teaches for it, and the verdict. `english` (exEN, or
+    a headword's or passage's meanings) decides 分's sense and nothing else."""
     records = []
-    for m in COUNTER_RE.finditer(text):
-        run, counter = m.groups()
-        compound, (start, end) = m.group(0), m.span()
-        digit = last_digit(run)
-        finals = COUNTER_FINAL[counter].get(digit)
+    lexemes = [(m.start(), m.end(), a) for a in COUNTER_ABSORBERS for m in re.finditer(re.escape(a), text)]
+    for compound, counter, number, start, end in counter_occurrences(text):
+        place = PLACES.get(counter)
+        run = number[:-1] if place else number     # the numerals before the counter or place
+        key = KANJI_DIGIT[run[-1]] if place else final_key(run)
+        finals = COUNTER_FINAL[counter].get(key)
         if not finals:
-            continue     # a last digit that reads as it does alone (or 十/百/千/万): not enumerated
-        value, follower = numeral_value(run), text[end:end + 1]
-        if follower in NOT_THE_COUNTER.get(counter, ()):
+            continue     # a final unit that reads as it does alone (or 百/千/万): not enumerated
+        value, follower = numeral_value(number), text[end:end + 1]
+        tens = None if place or key != 10 or value is None else value % 100 // 10
+        lexeme = next((a for lo, hi, a in lexemes if lo <= start and end <= hi), None)
+        if tens == 0:
+            continue     # 100分, 2000本 in digits: ends in 百 or 千, not in a ten
+        if lexeme:
+            absorbed_by = f"{lexeme}: a lexeme with its own reading"
+        elif follower in NOT_THE_COUNTER.get(counter, ()):
             absorbed_by = f"{counter}{follower}"
+        elif counter == "分" and follower == "の" and text[end + 1:end + 2] and text[end + 1] in NUMERALS:
+            absorbed_by = f"{compound}の…: a fraction, read ぶん"
         elif value is None:
             absorbed_by = f"{run}: not read as one number (a range such as 三四, or kanji mixed with digits)"
         elif counter == "月" and value not in MONTHS:
@@ -492,44 +778,124 @@ def judge_counter_field(text, reading, tokens):
         if absorbed_by:
             records.append({"compound": compound, "verdict": "absorbed", "by": absorbed_by})
             continue
-        prefixes, tail = number_readings(value - digit), COUNTER_READING[counter]
-        expected = sorted({p + f + tail for p in prefixes for f in finals})
-        flag = {p + r + tail: sense for p in prefixes
-                for r, sense in COUNTER_TOLERATED.get(counter, {}).get(digit, {}).items()}
+        if place:
+            prefixes = number_readings(value - key * place)
+        elif key == 10:     # the tens digit read plainly in front of the row: さん + じゅっぷん
+            prefixes = {p + t for p in number_readings(value - 10 * tens)
+                        for t in (("",) if tens == 1 else DIGIT_READINGS[tens])}
+        else:
+            prefixes = number_readings(value - key)
+        expected = sorted({p + f for p in prefixes for f in finals} | set(COUNTER_WHOLE.get(compound, ())))
+        flag = {p + r: sense for p in prefixes
+                for r, sense in COUNTER_TOLERATED.get(counter, {}).get(key, {}).items()}
         flag.update(COUNTER_OTHER_SENSE.get(compound, {}))
+        fallback, sense = None, {}
+        if counter == "分":
+            what, why = minute_sense(text, start, end, english)
+            sense = {"sense": what, "senseFrom": why}
+            if compound == "十分" and what == "other":         # 十分 the adjective, 'enough'
+                flag = {r: f"a minutes reading, but {why}" for r in expected}
+                expected = [ENOUGH]
+            elif compound == "十分" and what == "unknown":
+                flag = {ENOUGH: f"'enough' (十分 じゅうぶん); {why}",
+                        **{r: f"'ten minutes'; {why}" for r in expected}}
+                expected = []
+            elif compound == "十分" and what == "ambiguous":
+                flag[ENOUGH] = f"'enough' (十分 じゅうぶん): {why}"
+            elif what in ("other", "unknown"):
+                fallback = f"{why}: 分 may be ぶ (a tenth, 五分 ごぶ) or ぶん (a share), not minutes"
         records.append({"compound": compound, "counter": counter, "number": value,
-                        "expected": expected,
-                        **judge_occurrence(text, reading, tokens, start, end, expected, flag)})
+                        "expected": expected, **sense,
+                        **judge_occurrence(text, reading, tokens, start, end, expected, flag, fallback)})
     return records
 
 
+def english_of(meanings):
+    """A headword's or passage's English meanings as one string, or None."""
+    en = (meanings or {}).get("en")
+    return "; ".join(en) if isinstance(en, list) else en or None
+
+
 def fields_of(resources):
-    """Every field the 何 and counter tables read: (path, id, field, text, reading, tokens)."""
+    """Every field the 何 and counter tables read: (path, id, field, text, reading, tokens, english).
+    english is exEN for a sentence, and the meanings for a headword or a passage."""
     for path in sorted(glob.glob(f"{resources}/n[1-5].json")):
         for entry in json.load(open(path, encoding="utf-8")):
-            yield path, entry["id"], "surface", entry["surface"], entry["kana"], None
+            yield (path, entry["id"], "surface", entry["surface"], entry["kana"], None,
+                   english_of(entry.get("meanings")))
             if entry.get("exJP") and entry.get("exKana"):
-                yield path, entry["id"], "exJP", entry["exJP"], entry["exKana"], entry.get("exTokens")
+                yield (path, entry["id"], "exJP", entry["exJP"], entry["exKana"], entry.get("exTokens"),
+                       entry.get("exEN") or None)
     passages = os.path.join(resources, "passages.json")
     if os.path.exists(passages):
         for p in json.load(open(passages, encoding="utf-8")):
-            yield passages, p["id"], "display", p["display"], p["kana"], None
+            yield passages, p["id"], "display", p["display"], p["kana"], None, english_of(p.get("meanings"))
+
+
+def dictation_excluded(resources):
+    """The ids withheld from dictation, from the tree's own dictation-exclusions.json — or None when
+    the tree has none (a calibration tree written from git), so no hit there claims to know."""
+    path = os.path.join(resources, "dictation-exclusions.json")
+    if not os.path.exists(path):
+        return None
+    with open(path, encoding="utf-8") as f:
+        return {e["id"] for e in json.load(f)["excluded"]}
+
+
+def corrected_and_dictation(manifest):
+    """What (m1) and (m2) read: the ids `manifest` declares 'corrected', the ids the working tree
+    withholds from dictation, the ids 1.35 withheld (SHIPPED_REF), the ids REMEASURE releases on a 1b
+    'RELEASE' verdict, and the manifest's counts. Raises when any of them cannot be read: a check that
+    cannot see its inputs fails, it does not skip."""
+    corrected = {r["id"] for r in manifest["entries"] if r.get("disposition") == "corrected"}
+    now = dictation_excluded(RESOURCES)
+    if now is None:
+        raise ValueError(f"{display_path(RESOURCES)} has no dictation-exclusions.json")
+    blob = subprocess.run(["git", "-C", REPO, "show",
+                           f"{SHIPPED_REF}:Sources/VocabKit/Resources/dictation-exclusions.json"],
+                          capture_output=True)
+    if blob.returncode != 0:
+        raise ValueError(f"git show {SHIPPED_REF}:…/dictation-exclusions.json failed: "
+                         f"{blob.stderr.decode().strip()}")
+    shipped = {e["id"] for e in json.loads(blob.stdout)["excluded"]}
+    with open(REMEASURE, encoding="utf-8") as f:
+        released = {i for i, v in json.load(f)["verdicts"].items() if v["verdict"] == "RELEASE"}
+    return corrected, now, shipped, released, manifest["counts"]
+
+
+def release_numbers_withheld():
+    """release_numbers' withheldThisRelease when it measures this manifest's release (its CORPUS_MANIFEST
+    is MANIFEST and its BASELINE_REF is SHIPPED_REF), else None and why not. Imported, not re-derived:
+    it is the figure release copy quotes."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import release_numbers
+    named = release_numbers.CORPUS_MANIFEST
+    if (named is None or release_numbers.BASELINE_REF != SHIPPED_REF
+            or os.path.realpath(os.path.join(str(release_numbers.REPO), named)) != os.path.realpath(MANIFEST)):
+        return None, (f"release_numbers measures {named} from {release_numbers.BASELINE_REF}, not "
+                      f"{display_path(MANIFEST)} from {SHIPPED_REF}, so it was not compared")
+    return release_numbers.numbers()["withheldThisRelease"], None
 
 
 def sweep(resources, judge):
     """Every field handed to `judge`. A field is counted after its judge has run on it, so a field
     skipped before the judge is not counted; a judge that skips a field from inside is, and only
-    calibration (h), the planted tree, can see that."""
+    calibration (h), the planted tree, can see that. A hit carries its English and whether it is in
+    the dictation pool: an example sentence (the pool is drawn from those alone) whose id
+    dictation-exclusions.json does not withhold."""
     population = {"exJP": 0, "surface": 0, "display": 0}
     inspected, hits = [], []
-    for path, entry_id, field, text, reading, tokens in fields_of(resources):
-        records = judge(text, reading, tokens)
+    excluded = dictation_excluded(resources)
+    for path, entry_id, field, text, reading, tokens, english in fields_of(resources):
+        records = judge(text, reading, tokens, english)
         population[field] += 1
         for record in records:
             where = {"id": entry_id, "file": display_path(path), "field": field}
             inspected.append({**where, **record})
             if record["verdict"] in ("mismatch", "flag-only"):
-                hits.append({**where, "sentence": text, "reading": reading, **record})
+                pool = None if excluded is None else field == "exJP" and entry_id not in excluded
+                hits.append({**where, "sentence": text, "reading": reading, "english": english,
+                             "inDictationPool": pool, **record})
     return population, inspected, hits
 
 
@@ -555,10 +921,11 @@ def below_floor(lexicalised, interrogative, counters):
 
 # ── calibration: the documented entry point, on trees whose answer is already known ──────────
 
-def tree_at(ref, dest):
-    """The corpus as it was at `ref`, written into `dest`. A ref that does not resolve (a shallow
-    clone) raises: a calibration that cannot see its tree must fail, not skip."""
-    for name in CORPUS_FILES:
+def tree_at(ref, dest, extra=()):
+    """The corpus as it was at `ref`, written into `dest`, with any `extra` resource files (the
+    dictation-exclusions.json that (l) reads). A ref that does not resolve (a shallow clone) raises:
+    a calibration that cannot see its tree must fail, not skip."""
+    for name in CORPUS_FILES + tuple(extra):
         blob = subprocess.run(["git", "-C", REPO, "show", f"{ref}:Sources/VocabKit/Resources/{name}"],
                               capture_output=True)
         if blob.returncode != 0:
@@ -660,7 +1027,133 @@ COUNTER_LOGIC_CHECKS = (
     ("四字: よじ is right, よんじ is a mismatch", "四字四字", "よじよんじ",
      [["四", "よ"], ["字", "じ"], ["四", "よん"], ["字", "じ"]],
      [("四字", "ok", "ok", "ok"), ("四字", "mismatch", "mismatch", "mismatch")]),
+    # §I addendum 2. An optional sixth element is the English (exEN) the field is judged with.
+    ("十分 'ten minutes' by its English: じゅっぷん and じっぷん ok, the 'enough' reading じゅうぶん a mismatch",
+     "十分十分十分", "じゅっぷんじっぷんじゅうぶん",
+     [["十分", "じゅっぷん"], ["十分", "じっぷん"], ["十分", "じゅうぶん"]],
+     [("十分", "ok", "ok", "ok"), ("十分", "ok", "ok", "ok"), ("十分", "mismatch", "mismatch", "mismatch")],
+     "It takes ten minutes."),
+    ("十分 'enough': English with no minutes, so じゅうぶん is ok and a minutes reading flag-only",
+     "十分十分", "じゅうぶんじっぷん", [["十分", "じゅうぶん"], ["十分", "じっぷん"]],
+     [("十分", "ok", "ok", "ok"), ("十分", "flag-only", "flag-only", "flag-only")],
+     "There is plenty of time."),
+    ("十分 with English naming minutes and 'enough' both: じゅうぶん flag-only, じっぷん ok",
+     "十分で十分だ", "じっぷんでじゅうぶんだ",
+     [["十分", "じっぷん"], ["で", "で"], ["十分", "じゅうぶん"], ["だ", "だ"]],
+     [("十分", "ok", "ok", "ok"), ("十分", "flag-only", "flag-only", "flag-only")],
+     "Ten minutes is enough."),
+    ("十分 with no English: じゅうぶん and じっぷん flag-only, じゅうふん (wrong in both senses) a mismatch",
+     "十分十分十分", "じゅうぶんじっぷんじゅうふん",
+     [["十分", "じゅうぶん"], ["十分", "じっぷん"], ["十分", "じゅうふん"]],
+     [("十分", "flag-only", "flag-only", "flag-only"), ("十分", "flag-only", "flag-only", "flag-only"),
+      ("十分", "mismatch", "mismatch", "mismatch")]),
+    ("分 whose English names no minutes: ごふん ok, 五分 ごぶ 'even' flag-only, never a mismatch",
+     "五分、五分", "ごふんごぶ", [["五分", "ごふん"], ["、", "、"], ["五分", "ごぶ"]],
+     [("五分", "ok", "ok", "ok"), ("五分", "flag-only", "flag-only", "flag-only")],
+     "The odds are even."),
+    ("分's sense from the text: 九時十分 and 十分間 are minutes, whatever the English says",
+     "九時十分、十分間", "くじじゅうぶんじゅうぶんかん",
+     [["九時", "くじ"], ["十分", "じゅうぶん"], ["、", "、"], ["十分間", "じゅうぶんかん"]],
+     [("九時", "ok", "ok", "ok"), ("十分", "mismatch", "mismatch", "mismatch"),
+      ("十分", "mismatch", "mismatch", "mismatch")],
+     "It is quite enough."),
+    ("a clock time in the English names minutes: 'at 9:10', 十分 じゅうぶん is a mismatch",
+     "十分に出ます", "じゅうぶんにでます", [["十分", "じゅうぶん"], ["に", "に"], ["出", "で"], ["ます", "ます"]],
+     [("十分", "mismatch", "mismatch", "mismatch")], "It leaves at 9:10."),
+    ("a fraction is absorbed (三分の一, 十分の一); 三分の休憩 is still judged",
+     "三分の一と十分の一と三分の休憩", "さんぶんのいちとじゅうぶんのいちとさんぷんのきゅうけい", None,
+     [("三分", "absorbed", None, None), ("十分", "absorbed", None, None), ("三分", "ok", None, "ok")],
+     "a three-minute break"),
+    ("lexemes are absorbed: 八百屋 八百長 八千代 一回り 五分五分 九分九厘 七分袖 八分目 一個人",
+     "八百屋、八百長、八千代、一回り、五分五分、九分九厘、七分袖、八分目、一個人", "", None,
+     [("八百", "absorbed", None, None), ("八百", "absorbed", None, None), ("八千", "absorbed", None, None),
+      ("一回", "absorbed", None, None), ("五分", "absorbed", None, None), ("五分", "absorbed", None, None),
+      ("九分", "absorbed", None, None), ("七分", "absorbed", None, None), ("八分", "absorbed", None, None),
+      ("一個", "absorbed", None, None)]),
+    ("二十歳: はたち, にじゅっさい, にじっさい ok; にじゅうさい tolerated (flag-only)",
+     "二十歳二十歳二十歳二十歳", "はたちにじゅっさいにじっさいにじゅうさい",
+     [["二十歳", "はたち"], ["二十歳", "にじゅっさい"], ["二十歳", "にじっさい"], ["二十歳", "にじゅうさい"]],
+     [("二十歳", "ok", "ok", "ok"), ("二十歳", "ok", "ok", "ok"), ("二十歳", "ok", "ok", "ok"),
+      ("二十歳", "flag-only", "flag-only", "flag-only")]),
+    ("a ten before 歳 read …じゅうさい is tolerated: 十歳 じゅうさい, 三十歳 さんじゅうさい flag-only",
+     "十歳、三十歳、三十歳", "じゅうさいさんじゅうさいさんじゅっさい",
+     [["十歳", "じゅうさい"], ["、", "、"], ["三十歳", "さんじゅうさい"], ["、", "、"], ["三十歳", "さんじゅっさい"]],
+     [("十歳", "flag-only", "flag-only", "flag-only"), ("三十歳", "flag-only", "flag-only", "flag-only"),
+      ("三十歳", "ok", "ok", "ok")]),
+    ("三階: さんがい is right, さんかい is tolerated (flag-only)", "三階三階", "さんがいさんかい",
+     [["三階", "さんがい"], ["三階", "さんかい"]],
+     [("三階", "ok", "ok", "ok"), ("三階", "flag-only", "flag-only", "flag-only")]),
+    ("a compound number is judged at its final unit: 三十分, 四十八本, 百十分",
+     "三十分、三十分、四十八本、四十八本、百十分",
+     "さんじゅっぷんさんじゅうぶんよんじゅうはっぽんよんじゅうはちほんひゃくじゅっぷん",
+     [["三十分", "さんじゅっぷん"], ["、", "、"], ["三十分", "さんじゅうぶん"], ["、", "、"],
+      ["四十八本", "よんじゅうはっぽん"], ["、", "、"], ["四十八本", "よんじゅうはちほん"], ["、", "、"],
+      ["百十分", "ひゃくじゅっぷん"]],
+     [("三十分", "ok", "ok", "ok"), ("三十分", "mismatch", "mismatch", "mismatch"),
+      ("四十八本", "ok", "ok", "ok"), ("四十八本", "mismatch", "mismatch", "mismatch"),
+      ("百十分", "ok", "ok", "ok")],
+     "minutes"),
+    ("千 and 百 inside a number: 一万三千 いちまんさんぜん ok, いちまんさんせん not; 二千三百 ok; 二三百 a range",
+     "一万三千円、一万三千円、二千三百円、二三百円",
+     "いちまんさんぜんえんいちまんさんせんえんにせんさんびゃくえんにさんびゃくえん",
+     [["一万三千", "いちまんさんぜん"], ["円", "えん"], ["、", "、"], ["一万三千", "いちまんさんせん"],
+      ["円", "えん"], ["、", "、"], ["二千三百", "にせんさんびゃく"], ["円", "えん"], ["、", "、"],
+      ["二三百", "にさんびゃく"], ["円", "えん"]],
+     [("一万三千", "ok", "ok", "ok"), ("一万三千", "mismatch", "mismatch", "mismatch"),
+      ("二千三百", "ok", "ok", "ok"), ("二三百", "absorbed", None, None)]),
+    ("digits: 30分 さんじゅっぷん and 8本 はっぽん ok; 100分 and 200本 end in 百, not enumerated",
+     "30分、8本、100分、200本", "さんじゅっぷんはっぽんひゃっぷんにひゃっぽん",
+     [["30分", "さんじゅっぷん"], ["、", "、"], ["8本", "はっぽん"], ["、", "、"], ["100分", "ひゃっぷん"],
+      ["、", "、"], ["200本", "にひゃっぽん"]],
+     [("30分", "ok", "ok", "ok"), ("8本", "ok", "ok", "ok")], "minutes"),
+    ("never inspected: unlisted digits (二本 三冊 二回 三回 四杯 七匹 九点 五泊 二千 五百), 百本 千回 万歳, "
+     "何分 何本 (the 何 table's), 一人 一番 一生 一緒",
+     "二本、三冊、二回、三回、四杯、七匹、九点、五泊、二千、五百、百本、千回、万歳、何分、何本、一人、一番、一生、一緒",
+     "", None, []),
+    ("judged on their start: 一本気 いっぽんぎ, 一点張り いってんばり; 一杯 'full' いっぱい is the counter's reading",
+     "一本気、一点張り、一杯", "いっぽんぎいってんばりいっぱい",
+     [["一本気", "いっぽんぎ"], ["、", "、"], ["一点張り", "いってんばり"], ["、", "、"], ["一杯", "いっぱい"]],
+     [("一本", "ok", "ok", "ok"), ("一点", "ok", "ok", "ok"), ("一杯", "ok", "ok", "ok")]),
+    ("a regression in exKana alone is a mismatch for a sound-changing row: tokens いっけん, exKana いちけん",
+     "一軒が", "いちけんが", [["一", "いっ"], ["軒", "けん"], ["が", "が"]],
+     [("一軒", "mismatch", "ok", "mismatch")]),
+    ("a regression in the tokens alone is a mismatch for a sound-changing row: tokens いちけん, exKana いっけん",
+     "一軒が", "いっけんが", [["一", "いち"], ["軒", "けん"], ["が", "が"]],
+     [("一軒", "mismatch", "mismatch", "ok")]),
 )
+
+# Every row of the sound-changing table, written out by hand: (compound, its standard reading(s),
+# the reading without the sound change — "" where that reading is tolerated and checked above).
+# Never derived from COUNTER_FINAL: a check computed from the table it checks passes any table.
+# Each is judged alone, one token, with English that names minutes.
+SOUND_CHANGE_ROWS = {
+    "分": (("一分", "いっぷん", "いちふん"), ("二分", "にふん", "にぷん"), ("三分", "さんぷん", "さんふん"),
+          ("四分", "よんぷん", "よんふん"), ("五分", "ごふん", "ごぶん"), ("六分", "ろっぷん", "ろくふん"),
+          ("七分", "ななふん", "ななぷん"), ("八分", "はっぷん|はちふん", "はちぷん"),
+          ("九分", "きゅうふん", "きゅうぷん"), ("十分", "じゅっぷん|じっぷん", "じゅうふん")),
+    "軒": (("一軒", "いっけん", "いちけん"), ("三軒", "さんげん", "さんけん"), ("六軒", "ろっけん", "ろくけん"),
+          ("八軒", "はっけん", "はちけん"), ("十軒", "じゅっけん|じっけん", "じゅうけん")),
+    "階": (("一階", "いっかい", "いちかい"), ("三階", "さんがい", ""), ("六階", "ろっかい", "ろくかい"),
+          ("八階", "はっかい|はちかい", "はちがい"), ("十階", "じゅっかい|じっかい", "じゅうかい")),
+    "回": (("一回", "いっかい", "いちかい"), ("六回", "ろっかい", "ろくかい"),
+          ("八回", "はっかい|はちかい", "はちがい"), ("十回", "じゅっかい|じっかい", "じゅうかい")),
+    "歳": (("一歳", "いっさい", "いちさい"), ("八歳", "はっさい", "はちさい"), ("十歳", "じゅっさい|じっさい", "")),
+    "本": (("一本", "いっぽん", "いちほん"), ("三本", "さんぼん", "さんほん"), ("六本", "ろっぽん", "ろくほん"),
+          ("八本", "はっぽん", "はちほん"), ("十本", "じゅっぽん|じっぽん", "じゅうほん")),
+    "杯": (("一杯", "いっぱい", "いちはい"), ("三杯", "さんばい", "さんはい"), ("六杯", "ろっぱい", "ろくはい"),
+          ("八杯", "はっぱい", "はちはい"), ("十杯", "じゅっぱい|じっぱい", "じゅうはい")),
+    "匹": (("一匹", "いっぴき", "いちひき"), ("三匹", "さんびき", "さんひき"), ("六匹", "ろっぴき", "ろくひき"),
+          ("八匹", "はっぴき", "はちひき"), ("十匹", "じゅっぴき|じっぴき", "じゅうひき")),
+    "個": (("一個", "いっこ", "いちこ"), ("六個", "ろっこ", "ろくこ"), ("八個", "はっこ", "はちこ"),
+          ("十個", "じゅっこ|じっこ", "じゅうこ")),
+    "冊": (("一冊", "いっさつ", "いちさつ"), ("八冊", "はっさつ", "はちさつ"), ("十冊", "じゅっさつ|じっさつ", "じゅうさつ")),
+    "点": (("一点", "いってん", "いちてん"), ("六点", "ろってん", "ろくてん"), ("八点", "はってん", "はちてん"),
+          ("十点", "じゅってん|じってん", "じゅうてん")),
+    "泊": (("一泊", "いっぱく", "いちはく"), ("三泊", "さんぱく", "さんはく"), ("六泊", "ろっぱく", "ろくはく"),
+          ("八泊", "はっぱく", "はちはく"), ("十泊", "じゅっぱく|じっぱく", "じゅうはく")),
+    "千": (("三千", "さんぜん", "さんせん"), ("八千", "はっせん", "はちせん")),
+    "百": (("三百", "さんびゃく", "さんひゃく"), ("六百", "ろっぴゃく", "ろくひゃく"), ("八百", "はっぴゃく", "はちひゃく")),
+}
 
 # (h) the planted tree. Each plant is a reading every table here must call a mismatch, under an id
 # no entry uses. A sentence plant is (table, level, tokens): exJP is the token surfaces joined, and
@@ -685,10 +1178,23 @@ PLANTED_SENTENCES = (
     ("counters", "n3", [["九", "きゅう"], ["時間", "じかん"], ["働き", "はたらき"], ["ます", "ます"], ["。", "。"]]),
     ("counters", "n4", [["四", "よん"], ["字", "じ"], ["で", "で"], ["書き", "かき"], ["ます", "ます"], ["。", "。"]]),
     ("counters", "n5", [["四", "よん"], ["月", "がつ"], ["に", "に"], ["始まり", "はじまり"], ["ます", "ます"], ["。", "。"]]),
+    # §I addendum 2: a second counter plant in every n-file, each a sound-changing row. A 分 plant
+    # carries English that names minutes; without it its sense is undecided and it is no mismatch.
+    ("counters", "n1", [["三", "さん"], ["分", "ふん"], ["待ち", "まち"], ["まし", "まし"], ["た", "た"], ["。", "。"]],
+     "I waited three minutes."),
+    ("counters", "n2", [["一", "いち"], ["軒", "けん"], ["あり", "あり"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n3", [["八", "はち"], ["本", "ほん"], ["買い", "かい"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n4", [["三千", "さんせん"], ["円", "えん"], ["です", "です"], ["。", "。"]]),
+    ("counters", "n5", [["六", "ろく"], ["百", "ひゃく"], ["円", "えん"], ["です", "です"], ["。", "。"]]),
 )
-PLANTED_HEADWORDS = (("interrogative", "n1", "何回", "なにかい"), ("counters", "n1", "九時", "きゅうじ"))
+# (table, level, surface, kana[, English meaning]); (table, display, kana[, English]). The 分 plants'
+# English is what proves a headword's meanings and a passage's meanings reach 分's sense.
+PLANTED_HEADWORDS = (("interrogative", "n1", "何回", "なにかい"), ("counters", "n1", "九時", "きゅうじ"),
+                     ("counters", "n2", "三分", "さんふん", "three minutes"))
 PLANTED_PASSAGES = (("interrogative", "何歳ですか。", "なにさいですか"),
-                    ("counters", "七月に行きます。", "なながつにいきます"))
+                    ("counters", "七月に行きます。", "なながつにいきます"),
+                    ("counters", "駅から十分歩きました。", "えきからじゅうぶんあるきました",
+                     "I walked ten minutes from the station."))
 PLANT_FILLER = {"surface": "テスト", "kana": "てすと"}   # a sentence plant's own headword: no counter
 
 
@@ -704,26 +1210,28 @@ def plant_tree(dest):
             entries = json.load(f)
         if any(e["id"].startswith(PLANT_PREFIX) for e in entries):
             raise RuntimeError(f"{level}.json already has an id beginning {PLANT_PREFIX!r}")
-        for table, lvl, tokens in PLANTED_SENTENCES:
+        for k, (table, lvl, tokens, *english) in enumerate(PLANTED_SENTENCES):
             if lvl == level:
-                eid = f"{PLANT_PREFIX}{table}-{level}"
+                eid = f"{PLANT_PREFIX}{table}-{level}-{k}"
                 entries.append({"id": eid, **PLANT_FILLER, "exJP": "".join(s for s, _ in tokens),
                                 "exKana": "".join(r for _, r in tokens).translate(KANA_DROPPED),
-                                "exTokens": tokens})
+                                "exTokens": tokens, **({"exEN": english[0]} if english else {})})
                 want[table].add((eid, "exJP"))
-        for table, lvl, surface, kana in PLANTED_HEADWORDS:
+        for k, (table, lvl, surface, kana, *english) in enumerate(PLANTED_HEADWORDS):
             if lvl == level:
-                eid = f"{PLANT_PREFIX}{table}-headword"
-                entries.append({"id": eid, "surface": surface, "kana": kana})
+                eid = f"{PLANT_PREFIX}{table}-headword-{k}"
+                entries.append({"id": eid, "surface": surface, "kana": kana,
+                                **({"meanings": {"en": english}} if english else {})})
                 want[table].add((eid, "surface"))
         with open(path, "w", encoding="utf-8") as f:
             json.dump(entries, f, ensure_ascii=False)
     path = os.path.join(dest, "passages.json")
     with open(path, encoding="utf-8") as f:
         passages = json.load(f)
-    for table, display, kana in PLANTED_PASSAGES:
-        eid = f"{PLANT_PREFIX}{table}-passage"
-        passages.append({"id": eid, "display": display, "kana": kana})
+    for k, (table, display, kana, *english) in enumerate(PLANTED_PASSAGES):
+        eid = f"{PLANT_PREFIX}{table}-passage-{k}"
+        passages.append({"id": eid, "display": display, "kana": kana,
+                         **({"meanings": {"en": english[0]}} if english else {})})
         want[table].add((eid, "display"))
     with open(path, "w", encoding="utf-8") as f:
         json.dump(passages, f, ensure_ascii=False)
@@ -749,11 +1257,14 @@ def calibrate():
     with tempfile.TemporaryDirectory() as tmp:
         old, small = os.path.join(tmp, "pre-v135"), os.path.join(tmp, "n5-only")
         counted, planted = os.path.join(tmp, "counter-ref"), os.path.join(tmp, "planted")
-        for d in (old, small, counted, planted):
+        sounded, shipped = os.path.join(tmp, "sound-change-ref"), os.path.join(tmp, "shipped")
+        for d in (old, small, counted, planted, sounded, shipped):
             os.mkdir(d)
         try:
             tree_at(CALIBRATION_REF, old)
             tree_at(COUNTER_CALIBRATION_REF, counted)
+            tree_at(SOUND_CHANGE_CALIBRATION_REF, sounded, extra=("dictation-exclusions.json",))
+            tree_at(SHIPPED_REF, shipped)
             plants = plant_tree(planted)
         except RuntimeError as e:
             return False, [f"[FAIL] cannot read a calibration tree: {e}"]
@@ -763,12 +1274,15 @@ def calibrate():
         small_code, small_run = run_cli(tmp, "small", "--resources", small)
         counted_code, counted_run = run_cli(tmp, "counted", "--resources", counted)
         planted_code, planted_run = run_cli(tmp, "planted", "--resources", planted)
+        sounded_code, sounded_run = run_cli(tmp, "sounded", "--resources", sounded)
+        shipped_code, shipped_run = run_cli(tmp, "shipped", "--resources", shipped)
 
     if (old_run is None or head_run is None or small_run is None or counted_run is None
-            or planted_run is None):
+            or planted_run is None or sounded_run is None or shipped_run is None):
         return False, [f"[FAIL] a calibration run wrote no output (exit codes: {CALIBRATION_REF} "
                        f"{old_code}, working tree {head_code}, n5-only {small_code}, "
-                       f"{COUNTER_CALIBRATION_REF} {counted_code}, planted {planted_code})"]
+                       f"{COUNTER_CALIBRATION_REF} {counted_code}, planted {planted_code}, "
+                       f"{SOUND_CHANGE_CALIBRATION_REF} {sounded_code}, {SHIPPED_REF} {shipped_code})"]
     old_q, head_q = old_run["interrogative"], head_run["interrogative"]
 
     g022 = [(h["verdict"], h["compound"], h["taught"]) for h in old_q["hits"] if h["id"] == "n5-g022"]
@@ -829,6 +1343,119 @@ def calibrate():
           g079 == [("七時", "ok", "ok", "ok", "しちじ")] and not flagged,
           f"inspected: {g079}; hits: {len(flagged)}")
 
+    # (i) §I addendum 2's sentences, on the tree its review read and on the corpus 1.35 shipped: the
+    # same shape as (f).
+    for ref, run, what in ((SOUND_CHANGE_CALIBRATION_REF, sounded_run, "as its review read it"),
+                           (SHIPPED_REF, shipped_run, "the corpus 1.35 shipped")):
+        got = {(h["id"], h["field"], h["compound"], h["verdict"], h["verdictTokens"], h["verdictKana"],
+                h["taught"], h.get("kanaAlignment") == h["alignment"])
+               for h in run["counters"]["hits"]}
+        want = {(i, "exJP", c, v, v, v, t, True) for i, c, v, t in KNOWN_SOUND_CHANGE_HITS}
+        others = sorted(f"{h[0]} {h[2]} {h[3]} {h[6]}" for h in got - want)
+        check(f"(i) {ref} ({what}): the counter table flags the {len(want)} known "
+              f"sound-change occurrences in both exTokens and exKana "
+              f"({sum(v == 'mismatch' for _, _, v, _ in KNOWN_SOUND_CHANGE_HITS)} mismatch, "
+              f"{sum(v == 'flag-only' for _, _, v, _ in KNOWN_SOUND_CHANGE_HITS)} flag-only)",
+              want <= got,
+              f"missing: {sorted(f'{w[0]} {w[2]} {w[3]} {w[6]}' for w in want - got) or 'none'}; "
+              f"also flagged (or flagged differently): {others or 'none'}")
+
+    # (j) and (k): inspected on the working tree and not flagged — "not flagged" because each was
+    # looked at and passed (or recorded as a lexeme), not because nothing was looked at.
+    for label, known in (("(j) the working tree passes 十分 read for its sense: n1-b1516 じっぷん "
+                          "'ten minutes' and n4-g178 じゅうぶん 'enough', each in its sentence and "
+                          "its headword", KNOWN_SOUND_CHANGE_PASSES),
+                         ("(k) the working tree records its lexemes and passes 二十歳 はたち: "
+                          "n5-b364 八百屋, n1-b2056 一回り, n5-b331", KNOWN_LEXEMES)):
+        ids = {k[0] for k in known}
+        seen = sorted(((r["id"], r["field"], r["compound"], r["verdict"], r.get("taught"))
+                       for r in head_run["counters"]["inspected"] if r["id"] in ids), key=str)
+        flagged = sorted(f"{h['id']} {h['field']} {h['compound']}" for h in head_run["counters"]["hits"]
+                         if h["id"] in ids)
+        check(label, seen == sorted(known, key=str) and not flagged,
+              f"inspected: {seen}; hits: {flagged or 'none'}")
+
+    for label, run, known in ((f"(l) {SOUND_CHANGE_CALIBRATION_REF}, with its own dictation-exclusions."
+                               f"json: the hits carry their English and say which are in the dictation "
+                               f"pool (n1-b439, n3-b781, n3-b020, n4-g171 in; n5-b334 withheld), as "
+                               f"PLAN-V1.36 §I states", sounded_run, KNOWN_POOL),
+                              ("(l) the working tree: the two of those still hits there carry their "
+                               "English and their pool membership (n4-g171 in; n5-b334 withheld)",
+                               head_run, KNOWN_POOL_HEAD)):
+        pool = sorted((h["id"], h["inDictationPool"], bool(h.get("english")))
+                      for h in run["counters"]["hits"] if h["id"] in dict(known))
+        check(label, pool == sorted((i, p, True) for i, p in known), f"hits: {pool}")
+
+    # (m0) KNOWN_CORRECTED is hand-copied, so nothing tied it to the manifest it follows: with a row
+    # dropped, (m) inspected 11, called them "the sentences §I addendum 2 corrected" and passed (the
+    # review of a849909, its mutant X26). The manifest's 'corrected' rows among (i)'s known hits must be
+    # exactly its ids.
+    ids = {i for i, _, _ in KNOWN_CORRECTED}
+    try:
+        with open(MANIFEST, encoding="utf-8") as f:
+            manifest = json.load(f)
+        declared = {r["id"] for r in manifest["entries"] if r.get("disposition") == "corrected"}
+        problem = None
+    except (OSError, ValueError, KeyError, TypeError) as e:
+        manifest, declared, problem = None, set(), f"cannot read {display_path(MANIFEST)}: {e}"
+    from_manifest = declared & {i for i, _, _, _ in KNOWN_SOUND_CHANGE_HITS}
+    check(f"(m0) KNOWN_CORRECTED names exactly the {len(from_manifest)} sentences "
+          f"{display_path(MANIFEST)} declares corrected among (i)'s known hits",
+          problem is None and bool(ids) and from_manifest == ids,
+          problem or f"declared, not in KNOWN_CORRECTED: {sorted(from_manifest - ids) or 'none'}; "
+                     f"in KNOWN_CORRECTED, not declared corrected: {sorted(ids - from_manifest) or 'none'}")
+
+    # (m) every correction §I addendum 2 made, inspected on the working tree and passed in both fields
+    # with exKana lined up — and none of those ids flagged by the counter table.
+    seen = sorted((r["id"], r["field"], r["compound"], r["verdict"], r.get("verdictTokens"),
+                   r.get("verdictKana"), r.get("taught"), r.get("taughtKana"),
+                   r.get("kanaAlignment") == r.get("alignment"))
+                  for r in head_run["counters"]["inspected"] if r["id"] in ids)
+    want = sorted((i, "exJP", c, "ok", "ok", "ok", t, t, True) for i, c, t in KNOWN_CORRECTED)
+    flagged = sorted(f"{h['id']} {h['field']} {h['compound']} {h['verdict']} {h['taught']}"
+                     for h in head_run["counters"]["hits"] if h["id"] in ids)
+    check(f"(m) the working tree passes the {len(want)} sentences §I addendum 2 corrected, each "
+          f"inspected and taught its corrected reading in exTokens and exKana",
+          seen == want and not flagged,
+          f"not as corrected: {[s for s in seen if s not in want] or 'none'}; "
+          f"not inspected: {[w[0] for w in want if w not in seen] or 'none'}; hits: {flagged or 'none'}")
+
+    # (m1) and (m2): what dictation does with every sentence the manifest corrected. (l) reads hits, and
+    # a corrected sentence is no longer one, so nothing held n3-b020's new withheld state: deleted from
+    # both exclusion files with their counts fixed, it passed every check above, and only
+    # release_numbers moved (the fix review of 8324943). Read from the working tree's files.
+    try:
+        if manifest is None:
+            raise ValueError(problem)
+        corrected, now, shipped, released_on_1b, counts = corrected_and_dictation(manifest)
+        rn_withheld, rn_skipped = release_numbers_withheld()
+        problem = None
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, ImportError, SystemExit) as e:
+        corrected, now, shipped, released_on_1b, counts = set(), set(), set(), set(), {}
+        rn_withheld, rn_skipped, problem = None, None, f"cannot read what (m1) and (m2) compare: {e}"
+    in_pool = sorted(corrected - now)
+    unreleased = [i for i in in_pool if i not in released_on_1b]
+    check(f"(m1) the working tree withholds from dictation every one of the {len(corrected)} sentences "
+          f"{display_path(MANIFEST)} declares corrected, except any {display_path(REMEASURE)} "
+          f"releases on a 1b 'RELEASE' verdict",
+          problem is None and bool(corrected) and not unreleased,
+          problem or f"withheld {len(corrected & now)}; in the pool on a 1b RELEASE: "
+                     f"{[i for i in in_pool if i in released_on_1b] or 'none'}; in the pool without one: "
+                     f"{unreleased or 'none'}")
+
+    withheld = sorted(corrected & (now - shipped))
+    released = sorted(corrected & (shipped - now))
+    w, r = counts.get("withheldFromDictation"), counts.get("releasedToDictation")
+    net = (w - r) if isinstance(w, int) and isinstance(r, int) else None
+    check(f"(m2) the manifest's counts are its corrected rows withheld and released since "
+          f"{SHIPPED_REF}, and their difference is release_numbers' withheldThisRelease",
+          problem is None and w == len(withheld) and r == len(released)
+          and (rn_skipped is not None or rn_withheld == net),
+          problem or f"counts withheldFromDictation {w}, releasedToDictation {r}; corrected rows withheld "
+                     f"since {SHIPPED_REF}: {len(withheld)} {withheld}, released since: {len(released)}"
+                     f"{f' {released}' if released else ''}; "
+                     + (rn_skipped or f"release_numbers withheldThisRelease {rn_withheld}"))
+
     # (h) every plant flagged by its own table — a mismatch, on both fields where it has tokens —
     # and none by another table. A table that judges fewer files, ids or kinds of field than it
     # counts misses a plant here, whatever its population says.
@@ -844,7 +1471,7 @@ def calibrate():
                      != ("mismatch", "mismatch", "mismatch"))
         missed, extra = sorted(plants[table] - mine), sorted(mine - plants[table])
         check(f"(h) planted tree: the {table} table flags its {len(plants[table])} plants (every "
-              f"n-file{', a headword and a passage' if table != 'lexicalised' else ''}) and no other",
+              f"n-file{', headwords and passages' if table != 'lexicalised' else ''}) and no other",
               planted_code == 0 and not missed and not extra and not bad,
               f"exit {planted_code}; missed {missed or 'none'}; another table's {extra or 'none'}; "
               f"not a mismatch in both fields: {bad or 'none'}")
@@ -852,10 +1479,23 @@ def calibrate():
     for what, text, reading, tokens, want in LOGIC_CHECKS:
         got = [r["verdict"] for r in judge_field(text, reading, tokens)]
         check(f"logic: {what}", got == want, f"{text} {reading}: {got}")
-    for what, text, reading, tokens, want in COUNTER_LOGIC_CHECKS:
+    for what, text, reading, tokens, want, *english in COUNTER_LOGIC_CHECKS:
         got = [(r["compound"], r["verdict"], r.get("verdictTokens"), r.get("verdictKana"))
-               for r in judge_counter_field(text, reading, tokens)]
+               for r in judge_counter_field(text, reading, tokens, *english)]
         check(f"logic: {what}", got == want, f"{text}: {got}")
+    for counter, rows in SOUND_CHANGE_ROWS.items():
+        want, got = [], []
+        for compound, accepted, unchanged in rows:
+            for reading, verdict in ([(r, "ok") for r in accepted.split("|")]
+                                     + ([(unchanged, "mismatch")] if unchanged else [])):
+                want.append((compound, reading, verdict, verdict, verdict))
+                got += [(r["compound"], reading, r["verdict"], r.get("verdictTokens"), r.get("verdictKana"))
+                        for r in judge_counter_field(compound, reading, [[compound, reading]], "minutes")]
+        check(f"logic: {counter} — every row's standard reading ok, the reading without its sound "
+              f"change a mismatch ({len(rows)} rows)", got == want,
+              f"{len(got)} judged; wrong: "
+              f"{'; '.join(f'{g[0]} {g[1]} {g[2]}' for g in got if g not in want) or 'none'}; missing: "
+              f"{'; '.join(f'{w[0]} {w[1]}' for w in want if w not in got) or 'none'}")
     for what, lexicalised, interrogative, counters, want in FLOOR_CHECKS:
         got = below_floor(lexicalised, interrogative, counters)
         check(f"logic: {what}", got == want, f"{got}")
@@ -894,6 +1534,11 @@ def print_table(title, population, enumerated, inspected, hits):
               f"{h['taught']}, expected {' | '.join(h['expected'])}{fields}{note}")
         print(f"      {h['sentence']}")
         print(f"      {h['reading']}")
+        if h.get("english") or h.get("inDictationPool") is not None:
+            pool = {True: "IN the dictation pool", False: "not in the dictation pool",
+                    None: "dictation pool unknown (no dictation-exclusions.json in this tree)"}
+            print(f"      {h.get('english') or '(no English)'} — {pool[h.get('inDictationPool')]}"
+                  + (f"; 分 read as {h['sense']} ({h['senseFrom']})" if h.get("sense") else ""))
 
 
 def main():
@@ -930,7 +1575,8 @@ def main():
                            f"{len(INTERROGATIVE_OTHER_SENSE)} with another legitimate sense (flag-only)")
 
     c_population, c_inspected, c_hits = scan_counters(args.resources)
-    print_table("counters: month 月, hour 時, duration 時間, 字", c_population,
+    print_table("counters: month 月, hour 時, duration 時間, 字; the sound-changing 分 軒 階 回 歳 本 杯 匹 "
+                "個 冊 点 泊, and 千 百", c_population,
                 inspected=c_inspected, hits=c_hits,
                 enumerated="; ".join(f"{c} " + ", ".join(f"{d} {'|'.join(r)}" for d, r in finals.items())
                                      for c, finals in COUNTER_FINAL.items())
@@ -948,11 +1594,14 @@ def main():
                "counters": {"population": c_population,
                             "enumerated": {c: {str(d): list(r) for d, r in finals.items()}
                                            for c, finals in COUNTER_FINAL.items()},
-                            "counterReading": COUNTER_READING,
+                            "places": PLACES,
                             "tolerated": {c: {str(d): v for d, v in t.items()}
                                           for c, t in COUNTER_TOLERATED.items()},
                             "otherSense": COUNTER_OTHER_SENSE,
+                            "whole": {c: list(r) for c, r in COUNTER_WHOLE.items()},
+                            "absorbers": list(COUNTER_ABSORBERS),
                             "notTheCounter": {c: list(f) for c, f in NOT_THE_COUNTER.items()},
+                            "minuteSense": {"minutes": MINUTES_EN.pattern, "enough": ENOUGH_EN.pattern},
                             "inspected": c_inspected, "hits": c_hits}}
         if calibration is not None:
             out["calibration"] = calibration
