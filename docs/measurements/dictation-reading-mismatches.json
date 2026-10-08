@@ -1239,9 +1239,9 @@
   {
    "id": "n1-b615",
    "exJP": "会議は三時間乃至四時間ほどかかる予定です。",
-   "exKana": "かいぎはさんじかんないししじかんほどかかるよていです",
-   "heardInstead": "四 し -> よ",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "かいぎはさんじかんないしよじかんほどかかるよていです",
+   "heardInstead": "四 し -> よ  (v1.29 instrument 2; the corpus has since been corrected to よじかん)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 四時間 as よじかん (exKana and the token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I), so the recorded mismatch — corpus し, voice nearer よ — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says よじかん. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n1-b631",
@@ -1835,9 +1835,9 @@
   {
    "id": "n2-b072",
    "exJP": "漢字のテストに向けて、四字熟語をたくさん暗記した。",
-   "exKana": "かんじのてすとにむけてよんじじゅくごをたくさんあんきした",
-   "heardInstead": "四 よん -> よう",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "かんじのてすとにむけてよじじゅくごをたくさんあんきした",
+   "heardInstead": "四 よん -> よう  (v1.29 instrument 2; the corpus has since been corrected to よ, 四字熟語 よじじゅくご, which is not instrument 2's よう)",
+   "evidence": "stale-after-correction (v1.36): the correction acted on the token this row's v1.29 flag names, but not to the reading the flag named. The corpus now reads 四字熟語 as よじじゅくご (四 よん -> よ in exKana and the token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I); instrument 2 had named よう, not よ, and the v1.29 record names only that nearest hypothesis. So the recorded mismatch (corpus よん, voice nearer よう) no longer describes the sentence, and what the voice says for 四 here is unmeasured: よう, よ or something else. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says よじじゅくご."
   },
   {
    "id": "n2-b074",
@@ -2815,9 +2815,9 @@
   {
    "id": "n2-b942",
    "exJP": "兄は今年の四月に貿易会社に入社した。",
-   "exKana": "あにはことしのよんがつにぼうえきかいしゃににゅうしゃした",
-   "heardInstead": "四 よん -> し",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "あにはことしのしがつにぼうえきかいしゃににゅうしゃした",
+   "heardInstead": "四 よん -> し  (v1.29 instrument 2; the corpus has since been corrected to しがつ)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 四月 as しがつ (exKana and the token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I), so the recorded mismatch — corpus よん, voice nearer し — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says しがつ. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n2-b948",
@@ -3831,9 +3831,9 @@
   {
    "id": "n3-b750",
    "exJP": "午前九時に試合を開始する。",
-   "exKana": "ごぜんきゅうじにしあいをかいしする",
-   "heardInstead": "九 きゅう -> く",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "ごぜんくじにしあいをかいしする",
+   "heardInstead": "九 きゅう -> く  (v1.29 instrument 2; the corpus has since been corrected to くじ)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 九時 as くじ (exKana and the token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I), so the recorded mismatch — corpus きゅう, voice nearer く — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says くじ. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n3-b756",
@@ -4566,9 +4566,9 @@
   {
    "id": "n4-g180",
    "exJP": "電車は九時に出発します。",
-   "exKana": "でんしゃはきゅうじにしゅっぱつします",
-   "heardInstead": "九 きゅう -> く",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "でんしゃはくじにしゅっぱつします",
+   "heardInstead": "九 きゅう -> く  (v1.29 instrument 2; the corpus has since been corrected to くじ)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 九時 as くじ (exKana and the token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I), so the recorded mismatch — corpus きゅう, voice nearer く — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says くじ. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n4-g181",
@@ -4853,9 +4853,9 @@
   {
    "id": "n5-b018",
    "exJP": "一日は二十四時間あります。",
-   "exKana": "いちにちはにじゅうよんじかんあります",
+   "exKana": "いちにちはにじゅうよじかんあります",
    "heardInstead": "一日 いちにち -> ついたち",
-   "evidence": "proven (v1.29, instrument 1b)"
+   "evidence": "proven (v1.29, instrument 1b). v1.36 corrected 二十四 にじゅうよん -> にじゅうよ in exKana and the 二十四 token, so 二十四時間 now reads にじゅうよじかん (docs/measurements/v136-reading-manifest.json; grammar and 2-of-2 refuters, PLAN-V1.36 §I). The proof is untouched by that: it is about the 一日 span (the voice says ついたち against the corpus いちにち), and neither exJP nor the 一 / 日 tokens moved. Not re-measured, because the span the proof compares did not change. Stays withheld."
   },
   {
    "id": "n5-b022",
@@ -4937,9 +4937,9 @@
   {
    "id": "n5-b071",
    "exJP": "明日の午前九時に病院へ行きます。",
-   "exKana": "あすのごぜんきゅうじにびょういんへいきます",
-   "heardInstead": "九 きゅう -> く",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "あすのごぜんくじにびょういんへいきます",
+   "heardInstead": "九 きゅう -> く  (v1.29 instrument 2; the corpus has since been corrected to くじ)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 九時 as くじ (exKana and the token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I), so the recorded mismatch — corpus きゅう, voice nearer く — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says くじ. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n5-b084",
@@ -5203,9 +5203,9 @@
   {
    "id": "n5-b303",
    "exJP": "四月一日から新しい学校に行きます。",
-   "exKana": "よんがつついたちからあたらしいがっこうにいきます",
-   "heardInstead": "四 よん -> し",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "しがつついたちからあたらしいがっこうにいきます",
+   "heardInstead": "四 よん -> し  (v1.29 instrument 2; the corpus has since been corrected to しがつ)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 四月 as しがつ (exKana and the token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I), so the recorded mismatch — corpus よん, voice nearer し — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says しがつ. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n5-b323",

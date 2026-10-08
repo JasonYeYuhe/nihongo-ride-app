@@ -1,16 +1,16 @@
 {
- "reason": "One correction, PLAN-V1.36 §C item 3. n5-kazoku: 家族は四人です。 taught 四人 as よんにん; the standard, lexicalised reading is よにん, so exKana かぞくはよんにんです -> かぞくはよにんです and the 四 token よん -> よ, with 人 still にん. The audio cannot arbitrate (the voice says 人 = ひと, and the よにん and よんにん renders both differ from the exJP audio), so, as for v1.35's four 何か rows that 1b left silent, the correction rests on the grammar and two independent refuters: upheld 2 of 2, and 2 of 2 again on the item-4 sweep's hit. Withheld from dictation before and after. Every vote is in the entry's 'votes'. The item-4 sweep (何 + counter, docs/measurements/v136-counter-sweep.json) found 0 mismatches and 2 flag-only occurrences (n2-b937 何分 なにぶん, correct for its sense), so it adds no correction here.",
- "measurement": "v1.36 corpus corrections (PLAN-V1.36 §C items 3 and 4)",
- "population": "n5-kazoku, the LEXICALISED table's only hit on fae6b8e (scripts/check_counter_readings.py; v136-counter-sweep.json 'hits')",
- "method": "Grammar and lexicon, put to two independent refuters per question; a correction ships only when both uphold it (PLAN-V1.36 §C item 3, 'Upheld only 2 of 2'). Applied through scripts/corpus_io.CorpusFile, which refuses a file it cannot write back byte for byte. Rows follow v135-residue-inspection.json; 'rewrite' is what check_vocab_diff.py permits.",
+ "reason": "Nine corrections. (1) PLAN-V1.36 §C item 3, n5-kazoku: 家族は四人です。 taught 四人 as よんにん; the standard, lexicalised reading is よにん, so exKana かぞくはよんにんです -> かぞくはよにんです and the 四 token よん -> よ, with 人 still にん. The audio cannot arbitrate (the voice says 人 = ひと, and the よにん and よんにん renders both differ from the exJP audio), so, as for v1.35's four 何か rows that 1b left silent, the correction rests on the grammar and two independent refuters: upheld 2 of 2, and 2 of 2 again on the item-4 sweep's hit. The item-4 sweep (何 + counter, docs/measurements/v136-counter-sweep.json) found 0 mismatches and 2 flag-only occurrences (n2-b937 何分 なにぶん, correct for its sense), so it added no correction. (2) PLAN-V1.36 §I, the counter table (month 月, hour 時, duration 時間, 字; docs/measurements/v136-counter-sweep-2.json): 8 mismatches, each upheld 2 of 2 by independent refuters — 四月 よんがつ -> しがつ (n5-b303, n2-b942), 九時 きゅうじ -> くじ (n5-b071, n4-g180, n3-b750), 二十四時間 にじゅうよんじかん -> にじゅうよじかん (n5-b018), 四時間 しじかん -> よじかん (n1-b615), 四字熟語 よんじじゅくご -> よじじゅくご (n2-b072). Each changes one token's reading and the matching stretch of exKana. Its ninth hit, n5-b334 七時 ななじ, is tolerated usage: flag-only, unchanged. All nine sentences are withheld from dictation before and after. Every vote is in its entry's 'votes'.",
+ "measurement": "v1.36 corpus corrections (PLAN-V1.36 §C items 3 and 4, and the §I addendum)",
+ "population": "n5-kazoku, the LEXICALISED table's only hit on fae6b8e (scripts/check_counter_readings.py; v136-counter-sweep.json 'hits'); and the counter table's 8 mismatches on e9e3c7a (v136-counter-sweep-2.json 'counters' 'hits'; the ninth hit there, n5-b334 七時 ななじ, is flag-only and not a correction candidate). The counter table enumerates only 月 / 時 / 時間 / 字 after a last digit 4, 7 or 9: it is not a sweep of every number + counter reading, and the fix review of these corrections found more outside it (PLAN-V1.36 §I).",
+ "method": "Grammar and lexicon, put to two independent refuters per question; a correction ships only when both uphold it (PLAN-V1.36 §C item 3, 'Upheld only 2 of 2'; §I, 'each hit upheld 2 of 2 by independent refuters, or left unchanged'). Applied through scripts/corpus_io.CorpusFile, which refuses a file it cannot write back byte for byte. Rows follow v135-residue-inspection.json; 'rewrite' is what check_vocab_diff.py permits.",
  "counts": {
-  "defect": 1,
-  "corrected": 1,
+  "defect": 9,
+  "corrected": 9,
   "declined": 0,
   "withheldFromDictation": 0,
   "releasedToDictation": 0
  },
- "note": "The votes are verbatim, except that the absolute checkout path in 'sources' is made repo-relative. Line numbers in them refer to the tree before this change (da462c4 / fae6b8e). The correction moves no line of n5.json; the dated addendum in docs/PLAN-ITERATION.md §D moves that file's lines after :519 down by 13.",
+ "note": "The votes are verbatim, except that the absolute checkout path is made repo-relative wherever it appears in 'sources' (n5-kazoku's votes and the 8 counter rows' alike; one counter vote also had it mid-string, 'SudachiPy in .venv-jp'). Line numbers in n5-kazoku's votes refer to the tree before that change (da462c4 / fae6b8e); line numbers in the 8 counter rows' votes refer to f1ac12e, the tree the refuters read. n5-kazoku's correction moves no line of n5.json; the dated addendum in docs/PLAN-ITERATION.md §D moves that file's lines after :519 down by 13. The 8 counter corrections move 16 lines of n1–n5.json and no others. check_vocab_diff.py checks that a declared field moved, not what it moved to: the values are each row's 'corrected', which states the exact exKana and token before and after, and scripts/check_counter_readings.py --calibrate run on the corrected tree (docs/measurements/v136-counter-sweep-3.json: 0 mismatches; n5-b334 flag-only) checks them. Instrument 2 had named the corrected reading for 6 of the 8 counter sentences in v1.29; at 67% measured agreement that is corroboration, not proof, and no correction rests on it.",
  "entries": [
   {
    "id": "n5-kazoku",
@@ -102,6 +102,456 @@
         "docs/PLAN-V1.36.md:88",
         "docs/PLAN-ITERATION.md:507",
         "macOS Dictionary Services (DCSCopyTextDefinition) lookup of 四人: よたり【四人】よにん。よったり。; no entry for よんにん"
+       ]
+      }
+     ],
+     "upheld": true
+    }
+   }
+  },
+  {
+   "id": "n5-b303",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "四月, the month, is read しがつ: month names take し / しち / く for 4 / 7 / 9 (dictionaries, the NHK accent dictionary, N5 month tables; scripts/check_counter_readings.py COUNTER_FINAL 月 4 し). よんがつ is not a tolerated variant of the month name, unlike ななじ for 七時. 四月一日 here is the date (the headword is 一日 ついたち, exEN 'April 1st'), not the surname わたぬき. exKana and the 四 token said よん, the reading Sudachi gives 四 when it splits 四月 into 四 + 月 (a refuter ran the repo's .venv-jp, split modes A and C). The §I counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-2.json, e9e3c7a). Upheld 2 of 2 by independent refuters, both at high confidence. Corroboration, not proof: v1.29's instrument 2, measured at 42/63 = 67% agreement with adjudication (v129-nearest-exclusions.json), had independently named 四 よん -> し for this sentence (dictation-reading-mismatches.json).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 四月一日から新しい学校に行きます。 / exKana よんがつついたちからあたらしいがっこうにいきます / exTokens [四, よん] [月, がつ] [一日, ついたち]",
+   "corrected": "exJP 四月一日から新しい学校に行きます。 (unchanged) / exKana しがつついたちからあたらしいがっこうにいきます / exTokens [四, し] [月, がつ] [一日, ついたち]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I, R1 step 2: two independent refuters on the counter table's hit)",
+   "resolution": "exKana and the 四 token corrected よん -> し; 月 stays がつ and 一日 ついたち; token boundaries, exJP, exEN, exZH, the id and the headword (一日 ついたち) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n5.json move (exKana :30121, the 四 token's reading :30125). Joined token readings, punctuation dropped, equal exKana. The sentence is one kana shorter, so it rides 230 m instead of 240 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Its v1.29 record was 'undecided' on instrument 2's complaint 四 よん -> し, which is the reading this correction applies, so the complaint no longer describes the sentence: the row is marked stale-after-correction (v1.36), as n2-b304 was in v1.31, keeps its complaint words with a note, and is not re-measured. Releasing it needs instrument 1b to prove the voice says しがつ. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n5-b303",
+      "file": "Sources/VocabKit/Resources/n5.json",
+      "field": "exJP",
+      "sentence": "四月一日から新しい学校に行きます。",
+      "taught": "よんがつ",
+      "expected": "しがつ",
+      "kind": "mismatch",
+      "note": "四月. Tokens [四,よん][月,がつ]; exKana よんがつついたち…; tokens mismatch and exKana mismatch, both exact. 四月一日 here is the date, not the surname わたぬき."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I checked the entry at f1ac12e (read-only; I made no worktree and no writes). n5-b303 is the headword 一日 (ついたち). Its exJP is 四月一日から新しい学校に行きます。, its exKana is よんがつついたちからあたらしいがっこうにいきます, and its exTokens are [四,よん][月,がつ][一日,ついたち]... So the hit's facts are accurate: both the 四 token and exKana teach よんがつ.\n\nThe taught reading is wrong. In standard Japanese the name of the fourth month is read only しがつ, and every standard dictionary gives 四月 as しがつ. よんがつ is not an accepted variant. Compare 七月, where しちがつ is standard and なながつ is heard as an alternative. 四月 has no such alternative, and the month names that take し/く/しち for 4/9/7 are exactly what N5 learners are taught. よんがつ is a learner's or child's mistake, not even a tolerated casual reading. Under the plan's standard (§C item 3, \"a tolerated casual pronunciation is not a reading to teach\"), it would not survive even if it were tolerated usage.\n\nThe context gives no other reading. The sentence is about starting at a new school from a date, so 四月一日 is the date しがつついたち, which also matches the headword's ついたち. The surname 四月一日 (わたぬき) does not fit, and the entry's own exEN/exZH (\"April 1st\", 四月一日起) confirm the date sense.\n\nThe expected しがつ is the reading to teach an N5 learner in this sentence. The fix is the 四 token よん→し and exKana よんがつ→しがつ. 月 stays がつ, 一日 stays ついたち, and the token boundaries, id and headword stay as they are. This matches PLAN-V1.36 §I, which lists \"四月 taught よんがつ, in n5-b303 and n2-b942\" among the 8 round-1 findings.",
+       "sources": [
+        "Sources/VocabKit/Resources/n5.json (entry n5-b303: exJP, exKana, exTokens at f1ac12e)",
+        "docs/PLAN-V1.36.md §I lines 236-267 (四月 taught よんがつ in n5-b303 and n2-b942; 2-of-2 refuter rule)",
+        "docs/PLAN-V1.36.md §C item 3 lines 88-99 ('a tolerated casual pronunciation is not a reading to teach')",
+        "Standard dictionary readings: 四月 しがつ (Daijirin/Daijisen/NHK accent dictionary); よんがつ is not listed as a standard reading"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I upheld the hit after checking it read-only at f1ac12e. The entry n5-b303 in Sources/VocabKit/Resources/n5.json is exactly as the hit describes. Its headword is 一日 ついたち (\"first day of the month\"). The exJP is 四月一日から新しい学校に行きます。, the exTokens include [\"四\",\"よん\"] and [\"月\",\"がつ\"], and the exKana starts よんがつついたち…. So the token and the exKana both teach よんがつ.\n\nIn this sentence 四月一日 is clearly the date April 1st. Three things show it: the headword is the date sense of 一日, the English and Chinese glosses say \"April 1st\" / 四月一日起, and the context is starting at a new school (the Japanese school year begins in April). The surname 四月一日 (わたぬき) does not fit \"from 四月一日 I will go to a new school\", so it is not a legitimate alternative.\n\nThe month names have fixed readings: 四月 しがつ, 七月 しちがつ, 九月 くがつ. JMdict, Daijirin and the NHK accent dictionary give only しがつ for 四月. よんがつ is not a recognized standard reading, even as a tolerated casual variant like ななじ. That makes it wrong to teach an N5 learner, and the hit's expected reading しがつ is the right one.\n\nThe likely source of the error is the tokenizer. I ran the project's own .venv-jp sudachipy on the sentence and on 四月 alone. In both split modes A and C it splits 四月 into 四 + 月 and reads 四 as ヨン. That fits the pattern PLAN-V1.36 §I records (numeral + counter readings taken from a numeral-splitting tokenizer); it is not evidence of a real alternative reading. §I already lists 四月 taught よんがつ in n5-b303 among round 1's 8 findings, though it does not say whether the 2-of-2 refuter step ran.\n\nThe correct teaching is 四 → し in the 四 token, with exKana しがつついたちからあたらしいがっこうにいきます. Token boundaries, the id and the headword can stay unchanged. I made no edits.",
+       "sources": [
+        "Sources/VocabKit/Resources/n5.json (entry n5-b303: exJP, exKana, exTokens)",
+        "docs/PLAN-V1.36.md §C items 3-4, §H, §I (lists 四月 taught よんがつ in n5-b303 and n2-b942)",
+        ".venv-jp sudachipy run: SplitMode A and C both give [四,ヨン][月,ガツ], the tokenizer artifact that likely produced the error",
+        "Dictionary readings from general knowledge (not looked up in this session): JMdict / Daijirin / NHK accent dictionary give only しがつ for 四月"
+       ]
+      }
+     ],
+     "upheld": true
+    }
+   }
+  },
+  {
+   "id": "n2-b942",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "四月, the month ('this April', exEN), is read しがつ (COUNTER_FINAL 月 4 し); よんがつ is not a tolerated variant of the month name. The only other sense of the characters, 'four months', is written 四か月 / 四ヶ月 and does not fit 今年の四月に. exKana and the 四 token said よん, Sudachi's split reading. The §I counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-2.json, e9e3c7a). Upheld 2 of 2 by independent refuters, both at high confidence. Corroboration, not proof: v1.29's instrument 2, measured at 42/63 = 67% agreement with adjudication (v129-nearest-exclusions.json), had independently named 四 よん -> し for this sentence (dictation-reading-mismatches.json).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 兄は今年の四月に貿易会社に入社した。 / exKana あにはことしのよんがつにぼうえきかいしゃににゅうしゃした / exTokens [四, よん] [月, がつ]",
+   "corrected": "exJP 兄は今年の四月に貿易会社に入社した。 (unchanged) / exKana あにはことしのしがつにぼうえきかいしゃににゅうしゃした / exTokens [四, し] [月, がつ]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I, R1 step 2: two independent refuters on the counter table's hit)",
+   "resolution": "exKana and the 四 token corrected よん -> し; 月 stays がつ; token boundaries, exJP, exEN, exZH, the id and the headword (入社 にゅうしゃ) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n2.json move (exKana :93929, the 四 token's reading :93949). Joined token readings, punctuation dropped, equal exKana. The sentence is one kana shorter, so it rides 270 m instead of 280 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Its v1.29 record was 'undecided' on instrument 2's complaint 四 よん -> し, the reading this correction applies: marked stale-after-correction (v1.36), complaint words kept with a note, not re-measured. Releasing it needs instrument 1b. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n2-b942",
+      "file": "Sources/VocabKit/Resources/n2.json",
+      "field": "exJP",
+      "sentence": "兄は今年の四月に貿易会社に入社した。",
+      "taught": "よんがつ",
+      "expected": "しがつ",
+      "kind": "mismatch",
+      "note": "四月. Tokens [四,よん][月,がつ]; tokens mismatch and exKana mismatch, both exact."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I checked the entry at f1ac12e without changing anything. Sources/VocabKit/Resources/n2.json, id n2-b942: the exJP is \"兄は今年の四月に貿易会社に入社した。\" and the exTokens split it as [四,よん][月,がつ]. The exKana matches that: \"あにはことしのよんがつにぼうえきかいしゃににゅうしゃした\". So the hit describes the data correctly.\n\nThe taught reading is wrong. Month names in Japanese take fixed readings: 四月 is しがつ, 七月 is しちがつ and 九月 is くがつ. Standard dictionaries (Daijirin, Daijisen, Meikyō) and JLPT/N5 teaching materials give しがつ as the only reading. よんがつ is not a standard alternative. It is a known learner and child error, the one textbooks warn about when they set months apart from counters like 四時 (よじ) or 四人 (よにん). The sentence leaves no room for another reading: 今年の四月に can only mean the month of April, and the English line (\"this April\") confirms it. No counter, list or emphatic reading applies, so よんがつ has no legitimate use here. しがつ is the reading to teach, and to type, at any level, not only N2.\n\nTwo possible causes, both unconfirmed: the tokenizer split 四月 into 四 and 月 and gave 四 its counter default よん, or the generator wrote the error itself. Either way, both exTokens and exKana need to change to しがつ. The best fix is probably a single [四月,しがつ] token, or else [四,し][月,がつ].\n\nOut of scope, but worth passing on: a read-only scan of every n*.json exTokens found exactly one other sentence with the same 四+月 → よん+がつ split, n5-b303 in Sources/VocabKit/Resources/n5.json. No file in the corpus tokenizes 四月 as しがつ. So the only two 四月 sentences in the corpus both teach the wrong reading, and n5-b303, at N5, is where 四月 is first taught.",
+       "sources": [
+        "Sources/VocabKit/Resources/n2.json (id n2-b942: exJP, exKana, exTokens at f1ac12e)",
+        "Sources/VocabKit/Resources/n5.json (id n5-b303: the same 四+月 よん+がつ tokenization, found by a read-only scan)",
+        "Standard dictionary readings: 四月 しがつ (Daijirin / Daijisen / Meikyō Kokugo Jiten); month names use し/しち/く for 4/7/9, unlike counters (四時 よじ, 四人 よにん)"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I checked this read-only at f1ac12e. Entry n2-b942 in Sources/VocabKit/Resources/n2.json says exactly what the hit reports. The exTokens are [\"四\",\"よん\"],[\"月\",\"がつ\"], and exKana contains \"ことしのよんがつに\". So both the token reading and exKana teach よんがつ.\n\nThe context leaves only one sense. In 今年の四月に, 四月 means \"April\", and the exEN/exZH translations say \"this April\" and 今年四月. The only other reading of these characters is the duration \"four months\", which is read よんかげつ/しかげつ and is normally written 四か月/四ヶ月, not bare 四月. So that sense does not apply here.\n\nFor the month name, しがつ is the only standard reading. Major dictionaries (大辞林, 大辞泉) and the NHK pronunciation dictionary list only しがつ. Every JLPT and textbook month table teaches 一月 to 十二月 with しがつ, and よんがつ is the classic learner error that textbooks warn against. I found no register or regional variant in which よんがつ is accepted for the month. This differs from 七時 ななじ, which is tolerated usage and which PLAN-V1.36 §I says to flag for a person, not correct. よんがつ is simply wrong.\n\nTeaching it in an N2 sentence would put a non-standard reading into the learner's typing drill. The expected reading, しがつ, is the one to teach. Both the token mismatch and the exKana mismatch are exact, as the hit says.\n\nConsistency check: across all corpus files, 四月 appears in only two tokenized sentences, n5-b303 and n2-b942. Both currently read よんがつ. These are the same two that PLAN-V1.36 §I (line 241) lists as found in the round-1 review. The defect is real and needs no further proof. I made no writes.",
+       "sources": [
+        "Sources/VocabKit/Resources/n2.json (entry n2-b942: exJP, exKana, exTokens)",
+        "Sources/VocabKit/Resources/n5.json (entry n5-b303, the only other 四月 sentence, also よんがつ)",
+        "docs/PLAN-V1.36.md §I (line 241: 四月 taught よんがつ in n5-b303 and n2-b942)",
+        "Dictionary readings: 大辞林 and 大辞泉 list 四月 as しがつ only; NHK pronunciation dictionary: しがつ"
+       ]
+      }
+     ],
+     "upheld": true
+    }
+   }
+  },
+  {
+   "id": "n5-b071",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "九時, the hour (午前九時, 'nine in the morning'), is read くじ: 九 takes く before 時 (dictionaries, the NHK accent dictionary, N5 time tables; COUNTER_FINAL 時 9 く). きゅうじ is no accepted reading of the hour (きゅうじ is 給仕), and has no tolerated status like ななじ. exKana and the 九 token said きゅう, the reading Sudachi gives when it splits 九時 into 九 + 時. The §I counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-2.json, e9e3c7a). Upheld 2 of 2 by independent refuters, both at high confidence. Corroboration, not proof: v1.29's instrument 2, measured at 42/63 = 67% agreement with adjudication (v129-nearest-exclusions.json), had independently named 九 きゅう -> く for this sentence (dictation-reading-mismatches.json).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 明日の午前九時に病院へ行きます。 / exKana あすのごぜんきゅうじにびょういんへいきます / exTokens [午前, ごぜん] [九, きゅう] [時, じ]",
+   "corrected": "exJP 明日の午前九時に病院へ行きます。 (unchanged) / exKana あすのごぜんくじにびょういんへいきます / exTokens [午前, ごぜん] [九, く] [時, じ]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I, R1 step 2: two independent refuters on the counter table's hit)",
+   "resolution": "exKana and the 九 token corrected きゅう -> く; 時 stays じ; token boundaries, exJP, exEN, exZH, the id and the headword (午前 ごぜん) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n5.json move (exKana :15456, the 九 token's reading :15472). Joined token readings, punctuation dropped, equal exKana. The sentence is two kana shorter, so it rides 190 m instead of 210 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Its v1.29 record was 'undecided' on instrument 2's complaint 九 きゅう -> く, the reading this correction applies: marked stale-after-correction (v1.36), complaint words kept with a note, not re-measured. Releasing it needs instrument 1b. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n5-b071",
+      "file": "Sources/VocabKit/Resources/n5.json",
+      "field": "exJP",
+      "sentence": "明日の午前九時に病院へ行きます。",
+      "taught": "きゅうじ",
+      "expected": "くじ",
+      "kind": "mismatch",
+      "note": "九時. Tokens [九,きゅう][時,じ]; tokens mismatch and exKana mismatch, both exact."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I upheld the hit. The taught reading きゅうじ is wrong, and くじ is the one to teach here.\n\n**The entry at f1ac12e (read only).** The sentence 明日の午前九時に病院へ行きます。 is split into tokens [九,きゅう][時,じ]. The full reading, exKana, is あすのごぜんきゅうじにびょういんへいきます. Both of these teach きゅうじ, as the hit says.\n\n**What the dictionaries say.** The hour 九時 is read くじ. Japanese dictionaries and the NHK pronunciation guide give only that reading, and 午前九時 is ごぜんくじ. With the hour counter 時, the number 九 always takes く. That is the same pattern as the hit's examples 四月 しがつ and 四時 よじ. In standard Japanese, きゅうじ is a different word (給仕, \"waiter\"). It is not a recognised way to say the hour, so a learner would be taught a mistake.\n\n**Is there a reasonable alternative here?** No. Nothing in the sentence changes the reading: it is a plain, polite appointment time. This case is not like 七時 ななじ, which PLAN-V1.36 §I counts as tolerated usage to flag for a person rather than correct. No standard reference lists きゅうじ as an accepted variant for 九時.\n\n**Context from the plan.** §I already lists 九時 taught きゅうじ in n5-b071, n4-g180 and n3-b750 among the 8 shipped mis-readings found in review round 1.\n\n**What a fix has to change.** Both the [九] token and exKana: きゅう becomes く, and ごぜんきゅうじ becomes ごぜんくじ. Fixing only one of them would leave the token-check or exKana-check mismatch in place.",
+       "sources": [
+        "Sources/VocabKit/Resources/n5.json (entry n5-b071, at f1ac12e)",
+        "docs/PLAN-V1.36.md §I (line 242: 九時 taught きゅうじ in n5-b071, n4-g180, n3-b750; 七時 ななじ called tolerated)",
+        "Standard dictionaries and the NHK pronunciation guide: 九時 is read くじ (counter 時 takes く for 9); きゅうじ is 給仕"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I checked the hit against the corpus at f1ac12e and it is reported accurately. The exJP of n5-b071 is \"明日の午前九時に病院へ行きます。\". Its exKana is \"あすのごぜんきゅうじにびょういんへいきます\", and its exTokens split 九時 into [九,きゅう][時,じ]. So both the kana string and the tokens teach きゅうじ, as the hit says.\n\nOn the reading: 九 followed by the hour counter 時 is read く. The standard reading of 九時 is くじ, just as 九月 is くがつ. Standard dictionaries and the accent dictionaries list only くじ for 9 o'clock. きゅうじ is not an accepted alternative for the hour: it is the reading of other words, such as 給仕 and 救済-type compounds, and it is not how 九時 is said. 七時 is different. There, ななじ is common tolerated usage next to しちじ, and docs/PLAN-V1.36.md §I correctly treats it as flag-only. 九時 has no such tolerated variant.\n\nNothing in this sentence calls for another reading either. 午前九時 is a plain clock time, read ごぜんくじ, and it is exactly the kind of fixed counter reading an N5 learner is supposed to learn. Teaching きゅうじ would teach a wrong form.\n\nExpected correction: token [九,く], with exKana \"あすのごぜんくじにびょういんへいきます\".\n\nThe plan agrees. docs/PLAN-V1.36.md §I already lists 九時 taught きゅうじ in n5-b071, n4-g180 and n3-b750 as a defect that round-1 review found. The same きゅう+じ tokenization appears in all three, so the fix should be applied the same way to each.\n\nI worked read-only: no files were changed and no worktree was created.",
+       "sources": [
+        "Sources/VocabKit/Resources/n5.json (n5-b071: exJP, exKana, exTokens)",
+        "Sources/VocabKit/Resources/n4.json (n4-g180, same 九/きゅう tokenization)",
+        "Sources/VocabKit/Resources/n3.json (n3-b750, same 九/きゅう tokenization)",
+        "docs/PLAN-V1.36.md §I (line ~242: 九時 taught きゅうじ listed as a round-1 finding)",
+        "Standard dictionary reading: 九時 = くじ (cf. 九月 くがつ); no きゅうじ alternative for the hour"
+       ]
+      }
+     ],
+     "upheld": true
+    }
+   }
+  },
+  {
+   "id": "n4-g180",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "九時, the hour ('departs at nine o'clock', exEN), is read くじ (COUNTER_FINAL 時 9 く); きゅうじ is no accepted reading of the hour. exKana and the 九 token said きゅう: a refuter ran the repo's .venv-jp Sudachi on this sentence and it splits 九時 into 九[キュウ] + 時[ジ] in split modes A and C. The §I counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-2.json, e9e3c7a). Upheld 2 of 2 by independent refuters, both at high confidence. Corroboration, not proof: v1.29's instrument 2, measured at 42/63 = 67% agreement with adjudication (v129-nearest-exclusions.json), had independently named 九 きゅう -> く for this sentence (dictation-reading-mismatches.json).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 電車は九時に出発します。 / exKana でんしゃはきゅうじにしゅっぱつします / exTokens [九, きゅう] [時, じ]",
+   "corrected": "exJP 電車は九時に出発します。 (unchanged) / exKana でんしゃはくじにしゅっぱつします / exTokens [九, く] [時, じ]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I, R1 step 2: two independent refuters on the counter table's hit)",
+   "resolution": "exKana and the 九 token corrected きゅう -> く; 時 stays じ; token boundaries, exJP, exEN, exZH, the id and the headword (出発 しゅっぱつ) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n4.json move (exKana :9200, the 九 token's reading :9212). Joined token readings, punctuation dropped, equal exKana. The sentence is two kana shorter, so it rides 160 m instead of 180 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Its v1.29 record was 'undecided' on instrument 2's complaint 九 きゅう -> く, the reading this correction applies: marked stale-after-correction (v1.36), complaint words kept with a note, not re-measured. Releasing it needs instrument 1b. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n4-g180",
+      "file": "Sources/VocabKit/Resources/n4.json",
+      "field": "exJP",
+      "sentence": "電車は九時に出発します。",
+      "taught": "きゅうじ",
+      "expected": "くじ",
+      "kind": "mismatch",
+      "note": "九時. Tokens [九,きゅう][時,じ]; tokens mismatch and exKana mismatch, both exact."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "The hit is real and correct. I checked it read-only at HEAD f1ac12e: in Sources/VocabKit/Resources/n4.json, n4-g180 (出発) has exJP 「電車は九時に出発します。」, exEN \"The train departs at nine o'clock.\", exKana 「でんしゃはきゅうじにしゅっぱつします」 and exTokens [九,きゅう][時,じ]. So the sentence means the clock time 9:00, and both the token reading and exKana teach きゅうじ.\n\nThe standard reading of 九時 as a clock time is くじ, and only くじ. The counter 時 takes the く form of 九; textbooks, JLPT N5/N4 materials and standard dictionaries (NHK accent dictionary, 大辞林) all give 九時 = くじ. This is the same pattern as 四時 よじ and 七時 しちじ. きゅうじ is not an accepted alternative for nine o'clock. Read aloud, きゅうじ is the word 給仕 (\"waiter\"), and a native speaker would hear 「きゅうじに出発」 as an error. Nothing in this sentence calls for another reading: it is not a name or a compound with a fixed reading, and it is not a numeral read digit by digit. A learner who types きゅうじ here is being taught a wrong reading of a basic time expression, which matters most at N4/N5.\n\nThe bad reading most likely comes from the tokenizer. Running the project's own .venv-jp SudachiPy on this exact sentence splits 九時 into 九/キュウ + 時/ジ in both mode A and mode C. That yields きゅうじ, so the corpus value matches the tokenizer's output, not a reading anyone chose. The expected reading くじ is the one to teach. Both fields need it: exTokens should read [九,く][時,じ] (or [九時,くじ]), and exKana should be でんしゃはくじにしゅっぱつします.",
+       "sources": [
+        "Sources/VocabKit/Resources/n4.json (entry n4-g180: exJP, exKana, exTokens)",
+        ".venv-jp (SudachiPy, modes A and C: 九/キュウ + 時/ジ, the source of the artifact)",
+        "NHK日本語発音アクセント辞典 / 大辞林: 九時 = くじ (standard clock-time reading; 九 read く before the counter 時)",
+        "Standard JLPT N5/N4 time-expression tables: 四時 よじ, 七時 しちじ, 九時 くじ"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I confirmed the hit at main f1ac12e. n4-g180 has exJP \"電車は九時に出発します。\" and teaches でんしゃはきゅうじにしゅっぱつします, with tokens [九,きゅう][時,じ]. Its exEN (\"departs at nine o'clock\") and exZH (九点) show that 九時 means the clock time here, not some other word.\n\nStandard Japanese reads nine o'clock as くじ, and dictionaries give only that reading (NHK accent dictionary and the major kokugo dictionaries list 九時 as くじ). It is part of the same irregular set every textbook teaches: 四時 よじ, 七時 しちじ, 九時 くじ. きゅうじ for the time is a common learner error, not an accepted alternative. The word that is read きゅうじ is 給仕 (waiter), which does not fit this sentence. No reading of this sentence makes きゅうじ correct. The duration 九時間 is also くじかん, so the only reading to teach an N4 learner here is くじ.\n\nThe corpus repeats the same error in n5-b071 (午前九時, ごぜんきゅうじ) and n3-b750 (午前九時, ごぜんきゅうじ). docs/PLAN-V1.36.md line 242 already lists all three ids under \"九時 taught きゅうじ\", so this hit agrees with the plan's own §I finding. The expected くじ is correct, and the taught exKana and the 九 token both need to be くじ (for example a single 九時 token read くじ, or 九 read く).\n\nI only read files. I made no writes, created no worktree and ran no mutations.",
+       "sources": [
+        "Sources/VocabKit/Resources/n4.json (n4-g180, line ~9191)",
+        "Sources/VocabKit/Resources/n5.json (n5-b071, same 九時 きゅうじ error)",
+        "Sources/VocabKit/Resources/n3.json (n3-b750, same 九時 きゅうじ error)",
+        "docs/PLAN-V1.36.md line 242 (lists 九時 taught きゅうじ in n5-b071, n4-g180, n3-b750)",
+        "Standard dictionary reading: 九時 = くじ (NHK accent dictionary, Daijirin/Daijisen); きゅうじ = 給仕, not a time"
+       ]
+      }
+     ],
+     "upheld": true
+    }
+   }
+  },
+  {
+   "id": "n3-b750",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "九時, the hour (午前九時, '9 a.m.', exEN), is read くじ (COUNTER_FINAL 時 9 く); きゅうじ is no accepted reading of the hour. exKana and the 九 token said きゅう, Sudachi's split reading. The §I counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-2.json, e9e3c7a). Upheld 2 of 2 by independent refuters, both at high confidence. Corroboration, not proof: v1.29's instrument 2, measured at 42/63 = 67% agreement with adjudication (v129-nearest-exclusions.json), had independently named 九 きゅう -> く for this sentence (dictation-reading-mismatches.json).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 午前九時に試合を開始する。 / exKana ごぜんきゅうじにしあいをかいしする / exTokens [午前, ごぜん] [九, きゅう] [時, じ]",
+   "corrected": "exJP 午前九時に試合を開始する。 (unchanged) / exKana ごぜんくじにしあいをかいしする / exTokens [午前, ごぜん] [九, く] [時, じ]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I, R1 step 2: two independent refuters on the counter table's hit)",
+   "resolution": "exKana and the 九 token corrected きゅう -> く; 時 stays じ; token boundaries, exJP, exEN, exZH, the id and the headword (開始 かいし) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n3.json move (exKana :78772, the 九 token's reading :78780). Joined token readings, punctuation dropped, equal exKana. The sentence is two kana shorter, so it rides 150 m instead of 170 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Its v1.29 record was 'undecided' on instrument 2's complaint 九 きゅう -> く, the reading this correction applies: marked stale-after-correction (v1.36), complaint words kept with a note, not re-measured. Releasing it needs instrument 1b. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n3-b750",
+      "file": "Sources/VocabKit/Resources/n3.json",
+      "field": "exJP",
+      "sentence": "午前九時に試合を開始する。",
+      "taught": "きゅうじ",
+      "expected": "くじ",
+      "kind": "mismatch",
+      "note": "九時. Tokens [九,きゅう][時,じ]; tokens mismatch and exKana mismatch, both exact."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "The hit is real. I checked it read-only at f1ac12e in Sources/VocabKit/Resources/n3.json. Entry n3-b750 has exJP 「午前九時に試合を開始する。」, exKana ごぜんきゅうじにしあいをかいしする, and exTokens [九,きゅう][時,じ]. So the corpus does teach きゅうじ in both places, exactly as the hit says.\n\nOn the language question, 九時 meaning \"nine o'clock\" is read くじ. That is the standard reading and the one dictionaries give (大辞林, 明鏡, and the NHK pronunciation and accent dictionary all list 九時 as くじ). It follows the clock-time rule that 九 becomes く before 時, just as 四時 is よじ and 七時 is しちじ. きゅうじ is a known learner error. Some native speakers occasionally say it to avoid mishearing, but it is not a standard reading and should not be taught. Nothing in this sentence makes an alternative legitimate: 午前九時 is plainly a time of day, read ごぜんくじ, and there is no counter or proper-noun reading that would allow きゅう. くじ is also what an N5–N3 learner meets in every textbook (for example the Genki and Minna no Nihongo time tables). The expected reading is the right one to teach, and the taught reading is wrong.\n\nThere is one point outside this hit's scope. The same defect, 九時 read as きゅうじ with tokens [九,きゅう][時,じ], also appears in n4-g180 「電車は九時に出発します。」 and n5-b071 「明日の午前九時に病院へ行きます。」. The orchestrator may want to confirm that its scan flagged those two as well. If it did not, its detector missed them.",
+       "sources": [
+        "Sources/VocabKit/Resources/n3.json (n3-b750, line ~78761: exKana ごぜんきゅうじ…, exTokens [九,きゅう][時,じ])",
+        "Sources/VocabKit/Resources/n4.json (n4-g180: same きゅうじ reading of 九時)",
+        "Sources/VocabKit/Resources/n5.json (n5-b071: same きゅうじ reading of 九時)",
+        "Standard dictionary readings: 九時 = くじ (大辞林, 明鏡国語辞典, NHK日本語発音アクセント新辞典); clock-time rule: 九 is read く before 時"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I upheld the hit. The entry at f1ac12e matches it exactly. Sources/VocabKit/Resources/n3.json, id n3-b750 (surface 開始), has exJP \"午前九時に試合を開始する。\", exKana \"ごぜんきゅうじにしあいをかいしする\" and exTokens [九,きゅう][時,じ]. So the sentence teaches 九時 as きゅうじ in both the token list and exKana.\n\nIn this sentence 九時 is a time of day: 午前九時 means 9 a.m., and exEN says \"The match will start at 9 a.m.\". For a time of day, the standard reading of 九時 is くじ. 九 takes the く reading before 時, the same way 九月 is くがつ and 四時 is よじ. Japanese dictionaries, the NHK accent dictionary and JLPT textbooks all give 9時 as くじ. きゅうじ is not an accepted alternative reading for the hour. As a word, きゅうじ is a different word (給仕, 旧時), and saying 9時 as きゅうじ is a mistake learners are corrected on.\n\nNothing about this context makes another reading valid. It is not a list of digits, not a counter whose reading changes, and not a set compound. An N3 learner should be taught くじ, and teaching きゅうじ would reinforce a known beginner error. The tokenizer seems to have split 九 / 時 and read 九 with its standalone reading きゅう.\n\nOut-of-scope note for the orchestrator: a read-only scan of the other resource files found two more entries with the same defect. n4.json n4-g180 (\"電車は九時に出発します。\") and n5.json n5-b071 (\"明日の午前九時に病院へ行きます。\") both have the token pair [九,きゅう][時,じ]. The tables behind the hit-finder may not have caught them. I wrote nothing and made no edits.",
+       "sources": [
+        "Sources/VocabKit/Resources/n3.json (n3-b750, line ~78761: exJP, exKana, exTokens)",
+        "Sources/VocabKit/Resources/n4.json (n4-g180, same 九時→きゅうじ token pair)",
+        "Sources/VocabKit/Resources/n5.json (n5-b071, same 九時→きゅうじ token pair)",
+        "Standard dictionary / NHK accent dictionary reading: 九時 = くじ (cf. 九月 くがつ, 四時 よじ); きゅうじ is not an accepted reading for the hour"
+       ]
+      }
+     ],
+     "upheld": true
+    }
+   }
+  },
+  {
+   "id": "n5-b018",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "二十四時間 is one number before the counter 時間, and its last digit takes the counter's sound change: にじゅうよじかん (JMdict, which a refuter looked up; 四時間 よじかん; COUNTER_FINAL 時間 4 よ). にじゅうよんじかん is heard in casual speech, and a tolerated casual pronunciation is not a reading to teach (v1.35's standard, v135-residue-inspection.json, n1-b065; PLAN-V1.36 §C item 3). exKana and the 二十四 token said にじゅうよん: the repo's .venv-jp Sudachi (0.6.11, SudachiDict-core 20260723) splits the sentence [二十四 ニジュウヨン][時間 ジカン], which a refuter ran. The §I counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-2.json, e9e3c7a). Upheld 2 of 2 by independent refuters, both at high confidence. No instrument named this span: the sentence is withheld for 一日 いちにち -> ついたち (proven, v1.29 instrument 1b).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 一日は二十四時間あります。 / exKana いちにちはにじゅうよんじかんあります / exTokens [二十四, にじゅうよん] [時間, じかん]",
+   "corrected": "exJP 一日は二十四時間あります。 (unchanged) / exKana いちにちはにじゅうよじかんあります / exTokens [二十四, にじゅうよ] [時間, じかん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I, R1 step 2: two independent refuters on the counter table's hit)",
+   "resolution": "exKana and the 二十四 token corrected にじゅうよん -> にじゅうよ; 時間 stays じかん; token boundaries, exJP, exEN, exZH, the id and the headword (一日 いちにち) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n5.json move (exKana :11956, the 二十四 token's reading :11972). Joined token readings, punctuation dropped, equal exKana. The sentence is one kana shorter, so it rides 170 m instead of 180 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged: the voice says 一日 = ついたち against the corpus いちにち (proven, v1.29 instrument 1b). That proof is about the 一日 span, and neither exJP nor the 一 / 日 tokens moved, so it still stands; not re-measured. The evidence row keeps 'proven' with a note, as n5-kazoku's did, and its exKana follows the corpus. dictation-exclusions.json is unchanged.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n5-b018",
+      "file": "Sources/VocabKit/Resources/n5.json",
+      "field": "exJP",
+      "sentence": "一日は二十四時間あります。",
+      "taught": "にじゅうよんじかん",
+      "expected": "にじゅうよじかん",
+      "kind": "mismatch",
+      "note": "二十四時間 is read as one number (20 + 4). Tokens [二十四,にじゅうよん][時間,じかん]; tokens mismatch and exKana mismatch, both exact."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "The hit should stand. In 一日は二十四時間あります。, 二十四時間 should be taught as にじゅうよじかん. I worked read-only on main at f1ac12e and changed nothing.\n\n1. **The dictionary gives only one reading.** I looked the word up on jisho.org (JMdict). 二十四時間 is listed as にじゅうよじかん, with no alternative reading. The related word 二十四時間制 is にじゅうよじかんせい. Neither entry mentions にじゅうよんじかん.\n\n2. **It follows the same rule as the other examples.** Before 時 and 時間, 四 is read よ: 四時 よじ, 四時間 よじかん. That is how dictionaries and standard N5 teaching treat it. 二十四 here counts hours, so its last digit follows the same rule: にじゅうよじ, にじゅうよじかん. Reading 二十四 as one number (20 + 4) changes nothing, because the counter still affects the last digit.\n\n3. **The taught reading most likely comes from the tokenizer's default, not a source.** I ran the repo's own .venv-jp (SudachiPy 0.6.11, SudachiDict-core 20260723) in split modes A, B and C. It splits the sentence into [二十四 ニジュウヨン][時間 ジカン]. It also gives 四時間 as [四 ヨン][時間 ジカン], which is plainly wrong for that word, so its ヨン says nothing about how 二十四時間 should be read. The stored tokens match that split exactly: [二十四, にじゅうよん][時間, じかん] and exKana いちにちはにじゅうよんじかんあります (n5.json lines 11945–11990). The entry's exMeta names a gemini-3.6-flash generation, so how the reading entered is my inference; no source in the record attests it.\n\n4. **The alternative doesn't meet the project's standard.** にじゅうよんじかん can be heard in casual speech. But the standard v1.35 set, which PLAN-V1.36 §C item 3 repeats, is that \"a tolerated casual pronunciation is not a reading to teach\". It is also less widely accepted than ななじ, which §I already treats as merely tolerated. Nothing in this sentence (a plain statement that a day has 24 hours) makes it the better reading here.\n\nPLAN-V1.36 §I already lists this sentence (n5-b018) among the round-1 findings, which fits this result. If the fix is applied, it should touch only the 二十四 token (にじゅうよん → にじゅうよ) and exKana (→ いちにちはにじゅうよじかんあります). 時間 stays じかん, and the token boundaries, id and headword stay unchanged, as with the n5-kazoku fix.",
+       "sources": [
+        "https://jisho.org/search/二十四時間",
+        "Sources/VocabKit/Resources/n5.json (n5-b018, lines 11927-11990)",
+        "docs/PLAN-V1.36.md (§C item 3, §I)",
+        ".venv-jp (SudachiPy 0.6.11 / SudachiDict-core 20260723)",
+        "scripts/check_counter_readings.py"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "Uphold: the taught reading is wrong, and にじゅうよじかん is the one to teach in this sentence. I only read files; nothing was written or committed.\n\n1. **The entry is as the hit says.** At f1ac12e, n5-b018 in Sources/VocabKit/Resources/n5.json has the sentence 一日は二十四時間あります。 It teaches exKana いちにちはにじゅうよんじかんあります, with tokens [二十四, にじゅうよん][時間, じかん].\n\n2. **The dictionaries agree on よじかん.** Before 時 and 時間, 4 is read よ: 四時 よじ, 四時間 よじかん. A compound number keeps that form, so 二十四時 is にじゅうよじ and 二十四時間 is にじゅうよじかん. This is what the NHK accent dictionary's counter tables give, what JMdict lists for 24時間, and what N5 textbooks such as Minna no Nihongo and Genki teach. This comes from my own knowledge of these references; I did not look them up in this session.\n\n3. **No reason in context for よん.** The sentence is a plain statement that a day has 24 hours. The number is not read digit by digit, and よじかん cannot be confused with よじ. The usual reading applies.\n\n4. **よんじかん is not an accepted alternative the way ななじ is.** 7時 has two accepted readings, しちじ and ななじ (NHK allows ななじ as a second reading). 4時間 has only よじかん in the standard tables. よんじかん is heard in casual speech but is not standard, so it should not be taught to an N5 learner. This app has them type the kana, so it would drill the casual form. Plan §I already separates ななじ (flagged for a person) from 二十四時間 (listed for correction). That listing is the reviewer's claim, so I checked the reading myself instead of relying on it.\n\n5. **The reading came from the tokenizer, not from a choice.** I ran the project's .venv-jp Sudachi, the tool the corpus scripts document. It reads 二十四 as ニジュウヨン in this sentence. It also reads 四時間 as ヨン+ジカン and 四時 as ヨン+ジ, and 四時 read よんじ is plainly wrong. So nobody chose にじゅうよんじかん on purpose.\n\n6. **Effect of the fix.** It changes the 二十四 token to にじゅうよ and the exKana to いちにちはにじゅうよじかんあります; 時間 stays じかん. As with the earlier 四人 → よにん fix, this token would stop linking to the 四 (よん) card in the stumble chip. The plan already accepts that cost.\n\n7. **Same pattern elsewhere.** n1-b615 teaches 四 as し before 時間, and n2-b072 teaches 四 as よん before 字. Both are already listed in §I; I did not judge either here.",
+       "sources": [
+        "Sources/VocabKit/Resources/n5.json (n5-b018, lines ~11940-11990)",
+        "docs/PLAN-V1.36.md (§H record, §I scope addendum, line 243)",
+        ".venv-jp (Sudachi readings: 二十四→ニジュウヨン, 四時→ヨン+ジ, 四時間→ヨン+ジカン)",
+        "Sources/VocabKit/Resources/n1.json n1-b615 and n2.json n2-b072 (same 四+時/字 pattern)",
+        "General references, from my own knowledge and not checked in this session: NHK accent dictionary counter tables (4時間 ヨジカン), JMdict 二十四時間 にじゅうよじかん, Minna no Nihongo / Genki counter tables"
+       ]
+      }
+     ],
+     "upheld": true
+    }
+   }
+  },
+  {
+   "id": "n1-b615",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "四時間, a duration (三時間乃至四時間, 'three to four hours'), is read よじかん (COUNTER_FINAL 時間 4 よ). しじ is a reading only of the literary 四時 'the four seasons', which cannot take 間; しじかん is no reading of 四時間, and よんじかん would be casual speech. The し came from Sudachi reading 四 as シ right after 乃至 (ナイシ) in this sentence; on 四時間 alone it gives ヨン (a refuter ran both). The §I counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-2.json, e9e3c7a). Upheld 2 of 2 by independent refuters, both at high confidence. Corroboration, not proof: v1.29's instrument 2, measured at 42/63 = 67% agreement with adjudication (v129-nearest-exclusions.json), had independently named 四 し -> よ for this sentence (dictation-reading-mismatches.json).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 会議は三時間乃至四時間ほどかかる予定です。 / exKana かいぎはさんじかんないししじかんほどかかるよていです / exTokens [乃至, ないし] [四, し] [時間, じかん]",
+   "corrected": "exJP 会議は三時間乃至四時間ほどかかる予定です。 (unchanged) / exKana かいぎはさんじかんないしよじかんほどかかるよていです / exTokens [乃至, ないし] [四, よ] [時間, じかん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I, R1 step 2: two independent refuters on the counter table's hit)",
+   "resolution": "exKana and the 四 token corrected し -> よ; 時間 stays じかん; token boundaries, exJP, exEN, exZH, the id and the headword (乃至 ないし) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n1.json move (exKana :70224, the 四 token's reading :70248). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its length (26 kana), so it still rides 260 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Its v1.29 record was 'undecided' on instrument 2's complaint 四 し -> よ, the reading this correction applies: marked stale-after-correction (v1.36), complaint words kept with a note, not re-measured. Releasing it needs instrument 1b. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n1-b615",
+      "file": "Sources/VocabKit/Resources/n1.json",
+      "field": "exJP",
+      "sentence": "会議は三時間乃至四時間ほどかかる予定です。",
+      "taught": "しじかん",
+      "expected": "よじかん",
+      "kind": "mismatch",
+      "note": "四時間. Tokens [四,し][時間,じかん]; tokens mismatch and exKana mismatch, both exact. しじ, 'the four seasons', is another sense only for 四時 (o'clock), not for 四時間, so this is not flag-only."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I uphold the hit. The taught reading しじかん is wrong, and よじかん is the reading to teach in this sentence.\n\n1. **The data matches the hit.** At f1ac12e, `n1-b615` (headword 乃至 ないし) has exJP 「会議は三時間乃至四時間ほどかかる予定です。」. Its exKana is 「…ないしししじかんほど…」 and its tokens are [四,し][時間,じかん]. It is the only 四 + 時… token pair in any n*.json file.\n\n2. **The context fixes the sense.** 三時間乃至四時間 means \"three to four hours\", a length of time. The exEN and exZH both say three to four hours. Standard dictionaries give 四時間 one reading, よじかん, in the same way they give 四時 (four o'clock) as よじ.\n\n3. **しじ is not a legitimate alternative here.** It belongs to a different word: 四時 meaning the four seasons (a literary word for 四季), or the Buddhist four times of day. Neither sense can take 間 to form a duration, and no dictionary lists しじかん as a reading of 四時間.\n\n4. **よんじかん is no better.** It is a casual, nonstandard pronunciation. By the v1.35 rule recorded in PLAN-V1.36 item 3, \"a tolerated casual pronunciation is not a reading to teach\". So よじかん is the only reading to teach an N1 learner.\n\n5. **Where し came from: the tokenizer.** I ran the repo's own `.venv-jp` Sudachi. On the full sentence it outputs 四→シ right after 乃至(ナイシ), which is exactly the taught reading. On 「四時間」 alone it outputs ヨン. Sudachi does not apply number + counter sound changes, so neither output is a judgement about the word; the し in the sentence is a context artifact.\n\n6. **It does not belong in the flag-only class.** ななじ (七時) is flag-only because it is tolerated usage. しじかん is not tolerated usage for this word, so it is a correction, not a flag.\n\n**The fix:** in the 四 token, し→よ, and in exKana, 「ないしししじかん」→「ないしよじかん」. The 時間 token (じかん), the token boundaries, the id and the headword stay as they are. This matches §I's listing of 四時間 taught しじかん (`n1-b615`) among the round-1 findings.\n\nI changed nothing; this was a read-only review.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (entry n1-b615: exJP, exKana, exTokens [四,し][時間,じかん])",
+        "docs/PLAN-V1.36.md lines 89-97 (item 3: 2-of-2 refuter standard; 'a tolerated casual pronunciation is not a reading to teach') and lines 237-253 (§I addendum listing 四時間 taught しじかん in n1-b615; ななじ as tolerated/flag-only)",
+        ".venv-jp Sudachi run: full sentence gives 四→シ after 乃至(ナイシ); '四時間' alone gives 四→ヨン; the tokenizer does not apply number + counter sound changes",
+        "Standard Japanese dictionaries (e.g. NHK pronunciation and accent dictionary, Daijirin, Kōjien): 四時間 よじかん; 四時 (o'clock) よじ; 四時 しじ only in the sense 'four seasons' (= 四季); 四月 しがつ; 四字熟語 よじじゅくご"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I confirmed at f1ac12e that n1-b615 in Sources/VocabKit/Resources/n1.json teaches 四 as し in front of 時間. Its exTokens contain [四,し][時間,じかん], and its exKana contains \"ないししじかん\", so the sentence teaches 四時間 as しじかん.\n\nThat reading is wrong. In standard modern Japanese, 四 before the counters 時 and 時間 is read よ: 四時 is よじ and 四時間 is よじかん. Dictionaries such as Daijirin, Daijisen and the NHK accent dictionary list only よじかん for 四時間. しじ exists only as a separate, literary word 四時 meaning \"the four seasons\" (also read しいじ). It is not a reading for a time counter, and しじかん is not an accepted reading at all. This is the same pattern as 九時 くじ and 四字熟語 よじじゅくご. The context does not open up any other reading. The sentence is plain modern prose about a meeting taking \"three to four hours\" (三時間乃至四時間), and in that frame 四時間 can only be よじかん. A learner who types しじかん would learn a reading nobody uses.\n\nThe surrounding tokens are fine. 三 is さん, 乃至 is ないし, and 時間 is じかん. Only the 四 token, and the matching part of exKana, need to change from し to よ, giving \"…ないしよじかん…\".\n\nA check of every resource JSON found that this is the only place where 四 comes right before 時間. Every other 四時間 in the corpus uses a different tokenization, so the corpus has no conflicting precedent. Of the expected kana, only the 四 reading has a dictionary source; よじかん is what an N-level learner should be taught.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (entry n1-b615: exJP, exKana, exTokens [四,し][時間,じかん])",
+        "Daijirin / Daijisen: 四時間 (よじかん); 四時 (しじ) listed only as 'the four seasons'",
+        "NHK Japanese Pronunciation Accent Dictionary: 四時 よじ, 四時間 よじかん",
+        "Standard counter-reading rule: 四 before 時/時間 is よ (cf. 四時 よじ, 四字熟語 よじじゅくご, 九時 くじ)"
+       ]
+      }
+     ],
+     "upheld": true
+    }
+   }
+  },
+  {
+   "id": "n2-b072",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "四字熟語 is read よじじゅくご: 四 is よ before 字 (the macOS system dictionary, which a refuter queried, gives よじじゅくご; COUNTER_FINAL 字 4 よ). よんじじゅくご is heard in casual speech, and a tolerated casual pronunciation is not a reading to teach (v1.35's standard, v135-residue-inspection.json, n1-b065; PLAN-V1.36 §C item 3). exKana and the 四 token said よん: Sudachi splits 四字熟語 as 四[ヨン] + 字[ジ] + 熟語[ジュクゴ] in split modes A and C. The §I counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-2.json, e9e3c7a). Upheld 2 of 2 by independent refuters, both at high confidence. No corroboration from instrument 2: its v1.29 complaint for this sentence named 四 よん -> よう, not the corrected よ.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 漢字のテストに向けて、四字熟語をたくさん暗記した。 / exKana かんじのてすとにむけてよんじじゅくごをたくさんあんきした / exTokens [四, よん] [字, じ] [熟語, じゅくご]",
+   "corrected": "exJP 漢字のテストに向けて、四字熟語をたくさん暗記した。 (unchanged) / exKana かんじのてすとにむけてよじじゅくごをたくさんあんきした / exTokens [四, よ] [字, じ] [熟語, じゅくご]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I, R1 step 2: two independent refuters on the counter table's hit)",
+   "resolution": "exKana and the 四 token corrected よん -> よ; 字 stays じ and 熟語 じゅくご; token boundaries, exJP, exEN, exZH, the id and the headword (熟語 じゅくご) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n2.json move (exKana :25688, the 四 token's reading :25720). Joined token readings, punctuation dropped, equal exKana. The sentence is one kana shorter, so it rides 270 m instead of 280 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Instrument 2's v1.29 complaint was 四 よん -> よう. The corpus now says よ, which is still not よう, so the record is marked stale-after-correction (v1.36) and says so: its 'from' side (よん) no longer describes the sentence, and what the voice says for 四 here is unmeasured. Not re-measured. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n2-b072",
+      "file": "Sources/VocabKit/Resources/n2.json",
+      "field": "exJP",
+      "sentence": "漢字のテストに向けて、四字熟語をたくさん暗記した。",
+      "taught": "よんじ",
+      "expected": "よじ",
+      "kind": "mismatch",
+      "note": "四字 inside 四字熟語 (よじじゅくご). Tokens [四,よん][字,じ][熟語,じゅくご]; tokens mismatch and exKana mismatch, both exact."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I uphold the hit. I read the shipped entry at f1ac12e (Sources/VocabKit/Resources/n2.json, id n2-b072, card 熟語 じゅくご). It teaches 四字熟語 as よんじじゅくご in two places: exTokens [四,よん][字,じ][熟語,じゅくご] and exKana かんじのてすとにむけてよんじじゅくごをたくさんあんきした. Both match the hit exactly.\n\nDictionary basis, from my own knowledge (I did not look anything up live): standard references (大辞林, 広辞苑, デジタル大辞泉, 明鏡, NHK日本語発音アクセント新辞典) give 四字熟語 only as よじじゅくご. None lists よんじじゅくご as a variant. よんじ is a nonstandard spoken slip, so it should not be taught as the model reading. The standard form follows the regular pattern for 四 before 字 and 時, where the reading is よ: 四時 よじ, 四字 よじ.\n\nPossible alternatives I considered:\n1. A different reading of the same characters. 四字 could also be read よもじ (four letters), but nobody uses that inside the set compound 四字熟語.\n2. Something in the sentence that changes the reading. Nothing does: it is ordinary prose about memorizing idioms for a kanji test.\n3. Treating よん as an acceptable variant, as the plan does for ななじ. That does not apply here. Unlike ななじ for 七時, よんじ for 四字熟語 is not established usage.\n\nWhat an N2 learner should be taught in this sentence is よじじゅくご, which means 四 = よ and 字 = じ. That matches the hit's expected よじ.\n\ndocs/PLAN-V1.36.md §I already lists this entry (\"四字熟語 taught よんじじゅくご (n2-b072)\") among the 8 shipped sentences with wrong readings. It notes the sentence is already withheld from dictation, and that a fix needs 2 of 2 refuters to uphold it and must be written through CorpusFile. As a read-only refuter I made no changes.",
+       "sources": [
+        "Sources/VocabKit/Resources/n2.json (entry n2-b072, around line 25685: exJP, exKana, exTokens)",
+        "docs/PLAN-V1.36.md §I (lines ~237-262), which lists n2-b072 四字熟語 taught よんじじゅくご among the 8 misread sentences",
+        "Recalled dictionary readings (not looked up live): 大辞林 / 広辞苑 / デジタル大辞泉 / NHK日本語発音アクセント新辞典 give 四字熟語 only as よじじゅくご"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I upheld the hit after a read-only check at f1ac12e. I wrote nothing to the repo, and git status is clean.\n\nWhat ships: n2-b072, the 熟語 entry, has the sentence 漢字のテストに向けて、四字熟語をたくさん暗記した。 Its exTokens have [四,よん][字,じ][熟語,じゅくご], and its exKana has よんじじゅくご. So both fields teach よんじ, as the hit says.\n\n1. The dictionary reading is よじ. I looked the word up in the macOS system Japanese dictionary (DCSCopyTextDefinition). It gives よじじゅくご as the headword reading, accent 3. 大辞林, 大辞泉, 広辞苑 and the NHK accent dictionary all list よじじゅくご too.\n\n2. よじ also fits the counter pattern. With 字 as a counter (一字 いちじ … 四字), 四 is read よ before じ, the same way 四時 is よじ. よんじ is the よん form wrongly applied, which is the same class as the 四月 よんがつ and 九時 きゅうじ errors listed in PLAN-V1.36 §I.\n\n3. Sudachi, run from the project's .venv-jp, splits 四字熟語 as 四=ヨン / 字=ジ / 熟語=ジュクゴ in both split modes A and C. That is the likely source of the wrong reading, so it is not evidence for よんじ.\n\n4. Alternatives in context: よんじじゅくご is heard in casual speech, but no standard dictionary gives it as a reading. Nothing in this sentence (a kanji-test study context) calls for a nonstandard reading. Unlike ななじ for 七時, it is not a tolerated variant that §I says to flag for a person and leave unchanged.\n\n5. Teaching value: an N2 learner should learn よじじゅくご, the form dictionaries and IMEs expect. No other shipped entry contains 四字 or 熟語, so there is no conflicting precedent in the corpus.\n\n6. The fix would be tokens [四,よ][字,じ] and exKana かんじのてすとにむけてよじじゅくごをたくさんあんきした. That matches the hit's expected よじ, and it would need to go through CorpusFile in the apply step.\n\n§I already lists this exact case: 四字熟語 taught よんじじゅくご (n2-b072).",
+       "sources": [
+        "Sources/VocabKit/Resources/n2.json (entry n2-b072: exJP, exKana, exTokens at f1ac12e)",
+        "docs/PLAN-V1.36.md §I lines 236-270 (names 四字熟語 taught よんじじゅくご in n2-b072 as a known defect)",
+        "macOS system Japanese dictionary via DCSCopyTextDefinition: 四字熟語 => よじじゅくご 3【四字熟語】漢字四字で構成される熟語・成句",
+        "SudachiPy in .venv-jp: 四字熟語 split 四=ヨン, 字=ジ, 熟語=ジュクゴ in split modes A and C (the source of the error, not evidence for it)",
+        "Standard dictionaries (大辞林, 大辞泉, 広辞苑, NHK accent dictionary): 四字熟語 よじじゅくご"
        ]
       }
      ],
