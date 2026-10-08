@@ -153,7 +153,8 @@ the start of the number through the place, whatever follows (三千円 → 三�
 the English can tell them apart: exEN for a sentence, the meanings for a headword or a passage.
   * minutes: the text says so (時 or 時間 just before the number: 九時十分; 間 just after: 十分間), or
     the English names minutes (minute, min, or a clock time like 9:10). Judged as the table says, so
-    n3-b020 「およそ十分歩きました」, 'about ten minutes', taught じゅうぶん is a mismatch.
+    n3-b020 「およそ十分歩きました」, 'about ten minutes', taught じゅうぶん is a mismatch (on 3d891b9,
+    (i); corrected to じゅっぷん on 2026-10-09, and passed since, (m)).
   * 十分 'enough': the English names no minutes. じゅうぶん, the adjective, is accepted; a minutes
     reading is flag-only. n4-g178 「時間は十分にある」 ('plenty of time') is inspected and passes.
   * ambiguous, flag-only, never a mismatch: 十分 taught じゅうぶん with English that names minutes
@@ -216,14 +217,16 @@ subprocess, never its functions, on four trees:
   (l) hits carry their English, and their dictation-pool membership agrees with what PLAN-V1.36 §I
       states from the review (n1-b439, n3-b781, n3-b020 and n4-g171 in the pool; n5-b334 withheld) —
       so an inverted or missing pool test cannot report quietly. Read on `3d891b9` with that tree's
-      own dictation-exclusions.json, since §I described that tree and two of the five are corrected
-      since; and on the working tree for the three that are still hits there (n3-b020 and n4-g171 in,
-      n5-b334 withheld), so the pool lookup is also proven on the tree a sweep reports;
+      own dictation-exclusions.json, since §I described that tree and three of the five are corrected
+      since (n1-b439 and n3-b781, and n3-b020 on 2026-10-09, all three now withheld); and on the
+      working tree for the two that are still hits there (n4-g171 in, n5-b334 withheld), one of each
+      membership, so the pool lookup is also proven both ways on the tree a sweep reports;
   (m) the working tree inspects every sentence §I addendum 2 corrected (v136-reading-manifest.json)
       and passes it in both fields, exKana lined up with the tokens, taught the corrected reading —
-      not flagged because each was looked at and passed. n3-b020 is not among them: its correction
-      was upheld but held back, because the voice is proven to say 十分 = じゅうぶん in that pool
-      sentence (v136-dictation-remeasure.json), so it is still this table's one mismatch.
+      not flagged because each was looked at and passed. Since 2026-10-09 that includes n3-b020: its
+      correction was upheld and first held back, because the voice is proven to say 十分 = じゅうぶん
+      in that pool sentence (v136-dictation-remeasure.json); it is now corrected AND withheld from
+      dictation (PLAN-V1.36 §H), so the table has no mismatch left on the working tree.
       (m0) first holds that list to the manifest: the ids of its rows with disposition 'corrected'
       that are also (i)'s known hits must equal KNOWN_CORRECTED's ids. The corrected VALUES stay
       written out by hand; only the set is tied, so a correction declared without a check, or a
@@ -269,7 +272,7 @@ tree's dictation-exclusions.json does not withhold (dictation draws from example
 false for a withheld sentence or a headword or passage, null in a tree that has no such file.
 
     python3 scripts/check_counter_readings.py [--json out.json] [--resources DIR] [--calibrate]
-    python3 scripts/check_counter_readings.py --calibrate --json docs/measurements/v136-counter-sweep-5.json
+    python3 scripts/check_counter_readings.py --calibrate --json docs/measurements/v136-counter-sweep-6.json
 """
 import argparse, glob, json, os, re, shutil, subprocess, sys, tempfile
 
@@ -460,22 +463,25 @@ SHIPPED_REF = "fdb2b5f"
 # (l): dictation-pool membership as PLAN-V1.36 §I states it, measured by the review, not by this file:
 # 三千円 n1-b439 and n3-b781 "both in the dictation pool", n3-b020 "in the dictation pool", n4-g171
 # "in the pool"; n5-b334 among the 8 "already withheld from dictation". Read on 3d891b9, the tree §I
-# described; the working tree still has three of them as hits.
+# described. The working tree has two of them as hits, one in the pool and one withheld: n1-b439, n3-b781
+# and (since 2026-10-09) n3-b020 are corrected there, and are no longer hits.
 KNOWN_POOL = (("n1-b439", True), ("n3-b781", True), ("n3-b020", True), ("n4-g171", True),
               ("n5-b334", False))
-KNOWN_POOL_HEAD = (("n3-b020", True), ("n4-g171", True), ("n5-b334", False))
+KNOWN_POOL_HEAD = (("n4-g171", True), ("n5-b334", False))
 # (m): every sentence §I addendum 2 corrected, with the reading it was corrected to — (id, compound,
 # corrected). Written out from v136-reading-manifest.json's 'corrected', never derived from COUNTER_FINAL.
-# Where two forms are standard the corpus took the more common one (じゅっぷん, はちじゅってん). n3-b020 is
-# absent on purpose: upheld, but held back (see (m) in the docstring). The VALUES stay hand-written; the
-# ID SET is held to the manifest by (m0): the manifest's 'corrected' rows that are also KNOWN_SOUND_CHANGE_HITS
-# must be exactly these ids, so a correction declared there and missing here (or the reverse) fails.
+# Where two forms are standard the corpus took the more common one (じゅっぷん, はちじゅってん). n3-b020 was
+# upheld and first held back; it was corrected on 2026-10-09 and withheld from dictation (PLAN-V1.36 §H),
+# so it is here too. The VALUES stay hand-written; the ID SET is held to the manifest by (m0): the
+# manifest's 'corrected' rows that are also KNOWN_SOUND_CHANGE_HITS must be exactly these ids, so a
+# correction declared there and missing here (or the reverse) fails.
 MANIFEST = os.path.join(REPO, "docs", "measurements", "v136-reading-manifest.json")
 KNOWN_CORRECTED = (
     ("n1-b439", "三千", "さんぜん"), ("n3-b781", "三千", "さんぜん"), ("n3-b678", "八十点", "はちじゅってん"),
     ("n1-b1630", "三分", "さんぷん"), ("n2-b449", "三十分", "さんじゅっぷん"), ("n1-b327", "五分", "ごふん"),
     ("n1-b1147", "十分", "じゅっぷん"), ("n1-b1841", "十分", "じゅっぷん"), ("n2-b311", "十分", "じゅっぷん"),
     ("n4-b127", "十分", "じゅっぷん"), ("n2-b479", "一軒", "いっけん"), ("n1-b957", "一階", "いっかい"),
+    ("n3-b020", "十分", "じゅっぷん"),
 )
 CORPUS_FILES = ("n1.json", "n2.json", "n3.json", "n4.json", "n5.json", "passages.json")
 
@@ -1321,8 +1327,8 @@ def calibrate():
                                f"json: the hits carry their English and say which are in the dictation "
                                f"pool (n1-b439, n3-b781, n3-b020, n4-g171 in; n5-b334 withheld), as "
                                f"PLAN-V1.36 §I states", sounded_run, KNOWN_POOL),
-                              ("(l) the working tree: the three of those still hits there carry their "
-                               "English and their pool membership (n3-b020, n4-g171 in; n5-b334 withheld)",
+                              ("(l) the working tree: the two of those still hits there carry their "
+                               "English and their pool membership (n4-g171 in; n5-b334 withheld)",
                                head_run, KNOWN_POOL_HEAD)):
         pool = sorted((h["id"], h["inDictationPool"], bool(h.get("english")))
                       for h in run["counters"]["hits"] if h["id"] in dict(known))
