@@ -9197,7 +9197,7 @@
    "batch": "batch-08",
    "reviewer": "2-lens agent review + adjudication (v1.15 §I)"
   },
-  "exKana": "でんしゃはきゅうじにしゅっぱつします",
+  "exKana": "でんしゃはくじにしゅっぱつします",
   "exTokens": [
    [
     "電車",
@@ -9209,7 +9209,7 @@
    ],
    [
     "九",
-    "きゅう"
+    "く"
    ],
    [
     "時",

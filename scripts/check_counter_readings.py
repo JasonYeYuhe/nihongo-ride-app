@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Does any shipped sentence read a LEXICALISED counter as if it were two morphemes?
 And does any read an INTERROGATIVE counter (何 + counter) with a reading that is not the question's?
+And does any read a MONTH, HOUR, DURATION or 字 counter without the sound change at its last digit?
 
 WHY A SCAN CAN SEE THIS AND NO TOKENIZER CAN. A handful of Japanese counters are single lexical
 items — 二人 is ふたり, not に+にん — and **every tokenizer this project has tried splits them and
@@ -62,26 +63,110 @@ What it cannot see, in addition to the above: 何 written in kana (なんにん)
 table (何か月, 何週間, 何秒 …), and a sentence whose sense wants なにぶん but is taught なんぷん —
 taught == expected is accepted without asking what the sentence means.
 
+THE COUNTER TABLE (v1.36, PLAN-V1.36 §I: month, hour, duration and 字)
+------------------------------------------------------------------------
+Why: round 1 of v1.36's whole-release review (`fdb2b5f..ba77c13`) found 8 shipped sentences whose
+number + counter reading neither table above can see — 四月 taught よんがつ (n5-b303, n2-b942), 九時
+きゅうじ (n5-b071, n4-g180, n3-b750), 二十四時間 にじゅうよんじかん (n5-b018), 四時間 しじかん (n1-b615),
+四字熟語 よんじじゅくご (n2-b072) — and 七時 ななじ (n5-b334), which is tolerated.
+
+What it enumerates: only a LAST DIGIT whose sound changes before one of these counters.
+    月    4 し   7 しち        9 く      四月 しがつ   七月 しちがつ             九月 くがつ
+    時    4 よ   7 しち        9 く      四時 よじ     七時 しちじ               九時 くじ
+    時間  4 よ   7 しち | なな  9 く      四時間 よじかん  七時間 しちじかん | ななじかん  九時間 くじかん
+    字    4 よ                           四字 よじ (四字熟語 よじじゅくご)
+Every other digit reads as it does alone (三時 さんじ, 十月 じゅうがつ) and is deliberately absent, as
+三人 is from the lexicalised table. 一 is absent for a second reason too: 一時 is いちじ, いっとき or
+ひととき and 一月 is いちがつ or ひとつき, which the surface cannot decide (the 一日 lesson above).
+
+A number is read whole. An occurrence is the whole run of numerals before the counter (二十四時間,
+十九時, ２４時間 — kanji, ASCII or full-width digits). The digits before the last are read as a plain
+number (二十 にじゅう), so the expected reading is that + the last digit's form + the counter:
+二十四時間 にじゅうよじかん. Those leading digits are read leniently (四 よん|し, 七 なな|しち, 九 きゅう|く):
+this table judges the sound change at the counter and nothing before it.
+
+Judged twice: on exTokens AND on exKana. Round 1's tests lens noted that a check on exKana alone (the
+lexicalised table's `standard in exKana`) cannot see a regression in the tokens; a check on the tokens
+alone (the 何 table as first written) cannot see one in exKana, which is what Sentence mode makes a
+rider type. So every occurrence in an example sentence gets
+  * verdictTokens  the covering tokens' reading, aligned as for the 何 table;
+  * verdictKana    the stretch of exKana those tokens stand for. It is found by anchoring on the
+                   readings of the tokens before and after them, because exKana is the token readings
+                   with their punctuation dropped (on all 6,724 sentences, measured 2026-10-09, the
+                   dropped characters were 。、「」！？). When the anchors do not hold, the kana is
+                   judged by the weak substring rule and says so (kanaAlignment "kana-only");
+and its verdict is the worse of the two. A field with no tokens (a headword, a passage) has only its
+reading to judge, and verdictTokens is null. Since this change the 何 table is judged the same way.
+
+Not a hit, and why:
+  * flag-only, another sense: 四時 しじ (literary 'the four seasons'); 四月 inside the surname
+    四月一日 / 四月朔日 わたぬき. The surname is NOT an absorber: 四月一日 is also the date — n5-b303 is
+    exactly that — and an absorber would hide it.
+  * flag-only, tolerated: 七時 ななじ (and so 十七時 じゅうななじ). しちじ is the textbook form and
+    ななじ common speech; a person decides and nothing corrects it (PLAN-V1.36 §I).
+  * absorbed (recorded, not judged): the 時 of 時代, 時期 and 時点, and the 月 of 月曜 (第四月曜日); a
+    month above 12 (十四月); and a run of kanji digits with no 十/百/千/万 (三四時間, 六七時間 'three
+    or four / six or seven hours'), which is a range, not one number, and whose sandhi this table
+    does not claim to know.
+  * never seen at all: 九州, 四季, 四ヶ月 / 四か月 (another counter, and regular), 十字路 (十 is
+    regular), 四六時中 しろくじちゅう (its last digit, 六, is regular).
+What it cannot see: a number written in kana in exJP, a counter not in the table (分, 年, 回, 週 …),
+a wrong reading in the digits before the last, and a sense not listed above.
+
 CALIBRATION BEFORE TRUST (`--calibrate`). It drives this file's documented entry point as a
-subprocess, never its functions, on two trees:
+subprocess, never its functions, on four trees:
   (a) the pre-v1.35 tree `281fc45` (git show into a temp dir): n5-g022 is flagged, a mismatch,
       何時 taught なんどき;
   (b) the working tree: n5-g022 is INSPECTED, taught なんじ, and not flagged — "not flagged" because
       it was looked at and passed, not because nothing was looked at;
-  (c) the population is at least 6,000 example sentences, and a one-level tree (n5 only) exits 2;
+  (c) the population floor, held on EACH table's own scan — round 1 found (c) reading the
+      lexicalised table's count for the 何 table, so a 何 scan narrowed to n2 + n5, or to two
+      entries, still printed PASS:
+      (c0) the working tree exits 0, and a one-level tree (n5 only) exits 2 — the exit-2 floor now
+           names every short table;
+      (c1) the lexicalised table reads at least 6,000 example sentences;
+      (c2) the 何 table reads at least 6,000 example sentences and 6,000 headwords, and every passage;
+      (c3) the counter table, the same;
+      and on the n5-only tree each of (c1)–(c3) falls below the floor;
   (d) on `281fc45`, n2-b937 (headword 何分 なにぶん, the adverb) is flag-only in both its fields,
       never a mismatch — the one real case of the flag-only path;
-  (e) on `281fc45`, the lexicalised table flags n5-kazoku, 四人 taught よんにん.
-Then five synthetic logic checks for paths the real corpus does not exercise (an absorber, 何階's
-two readings, a prefix span, a counter split across two tokens, 何人 なにじん). They prove the code
-paths, not accuracy: accuracy is (a)–(e). A failed check exits 1 and writes nothing.
+  (e) on `281fc45`, the lexicalised table flags n5-kazoku, 四人 taught よんにん;
+  (f) on `29e4778` — the corpus of v1.36 item 3, which IS the working tree when this table was
+      written, pinned so the check survives a correction — the counter table flags the 9 known
+      occurrences, each with the same verdict in exTokens and in exKana, and exKana lined up with
+      the tokens rather than found by the substring fallback: 8 mismatches, and n5-b334 七時
+      flag-only. Anything else it finds is listed, not failed;
+  (g) the working tree inspects n5-g079 七時, taught しちじ, and passes it in both fields;
+  (h) a PLANTED tree: the working tree's corpus copied, with one known-wrong occurrence per table
+      planted in the example sentences of every n-file, and one headword and one passage for each
+      table that reads them, all under ids no entry uses (`plant-…`). Every plant must be flagged
+      by its own table, a mismatch (on exTokens and exKana for a sentence), and no plant by
+      another table. Added after round 1 of the fix review: (c) counts what is HANDED to a table,
+      so a narrowing placed after the count — a 何 table that judged only two ids, or only n2 and
+      n5, a counter table that judged only the 9 known ids or no headwords — kept the full count
+      and passed every check above. A plant in each file and each kind of field is what such a
+      narrowing cannot pass. The counter plants include 七月 なながつ and 九月 きゅうがつ, which the
+      corpus does not contain, so a 月 row dropped or inverted, or MONTHS narrowed, fails here too.
+Then synthetic logic checks for paths the real corpus does not exercise: for the 何 table an absorber,
+何階's two readings, a prefix span, a counter split across two tokens, 何人 なにじん, 何人 なにん (a
+mismatch on a second compound), and a regression in exKana alone; for the counter table both an
+accepted and a rejected form of every row of the table above (月 4/7/9, 時 4/7/9, 時間 4/7/9, 字 4),
+the tolerated and other-sense flags, and the absorbers; and the exit-2 floor naming each short
+table. They prove the code paths, not accuracy: accuracy is (a)–(h). A failed check exits 1 and
+writes nothing.
+
+What the population line does and does not say. A field is counted once its table's judge has run
+on it, so a field skipped before the judge is not counted. A judge that returns early is still
+counted — the count cannot see inside it, which is why (h) exists. The counter and 何 tables read
+the same fields, so their two populations are always equal: which one a caller reads cannot be
+told apart, and is not checked.
 
 IT IS A SWEEP, NOT A GATE. `run_all_gates.sh` and CI do not run it (checked 2026-10-07: neither
 names it, and it is not a `scripts/test_*.py`, the glob the runner turns into gates). Keep it that
 way: a test_*.py for it would add a gate and move FLOOR.
 
     python3 scripts/check_counter_readings.py [--json out.json] [--resources DIR] [--calibrate]
-    python3 scripts/check_counter_readings.py --calibrate --json docs/measurements/v136-counter-sweep.json
+    python3 scripts/check_counter_readings.py --calibrate --json docs/measurements/v136-counter-sweep-2.json
 """
 import argparse, glob, json, os, re, shutil, subprocess, sys, tempfile
 
@@ -127,7 +212,62 @@ INTERROGATIVE_OTHER_SENSE = {
 # Longer items containing an interrogative compound, with their own reading (いつ何時 いつなんどき).
 INTERROGATIVE_ABSORBERS = ("いつ何時",)
 
+# ── the counter table (PLAN-V1.36 §I) ──────────────────────────────────────────────────────────
+# counter -> its reading, and {last digit: that digit's form before it}. Only the digits whose sound
+# changes are listed; the rest read as they do alone and are deliberately absent (see the docstring).
+COUNTER_READING = {"時間": "じかん", "時": "じ", "月": "がつ", "字": "じ"}
+COUNTER_FINAL = {
+    "月": {4: ("し",), 7: ("しち",), 9: ("く",)},
+    "時": {4: ("よ",), 7: ("しち",), 9: ("く",)},
+    "時間": {4: ("よ",), 7: ("しち", "なな"), 9: ("く",)},
+    "字": {4: ("よ",)},
+}
+# A last digit's form that is heard but not the standard: flag-only, for a person, never corrected.
+COUNTER_TOLERATED = {"時": {7: {"なな": "tolerated: ななじ is common speech; しちじ is the textbook form"}}}
+# The same spelling read in another sense: flag-only. Keyed by the whole compound.
+COUNTER_OTHER_SENSE = {
+    "四時": {"しじ": "literary 'the four seasons' (四時)"},
+    "四月": {"わたぬき": "the surname 四月一日 / 四月朔日"},
+}
+# The counter character is the first of another word: 時代, 時期, 時点; 月曜 (第四月曜日).
+NOT_THE_COUNTER = {"時": ("代", "期", "点"), "月": ("曜",)}
+MONTHS = range(1, 13)
+
+KANJI_DIGIT = {"〇": 0, "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9}
+KANJI_UNIT = {"十": 10, "百": 100, "千": 1000}
+FULLWIDTH = str.maketrans("０１２３４５６７８９", "0123456789")
+# The whole numeral run before a counter; 時間 is tried before 時.
+COUNTER_RE = re.compile("([〇一二三四五六七八九十百千万0-9０-９]+)(時間|時|月|字)")
+
+# A digit read inside a larger number, leniently (the table judges only the last digit).
+DIGIT_READINGS = {1: ("いち",), 2: ("に",), 3: ("さん",), 4: ("よん", "し"), 5: ("ご",), 6: ("ろく",),
+                  7: ("なな", "しち"), 8: ("はち",), 9: ("きゅう", "く")}
+PLACE_READING = {1000: "せん", 100: "ひゃく", 10: "じゅう"}
+PLACE_SOUND_CHANGE = {(1000, 1): ("せん",), (1000, 3): ("さんぜん",), (1000, 8): ("はっせん",),
+                      (100, 1): ("ひゃく",), (100, 3): ("さんびゃく",), (100, 6): ("ろっぴゃく",),
+                      (100, 8): ("はっぴゃく",), (10, 1): ("じゅう",)}
+
+# exKana is the exTokens readings with their punctuation dropped: on all 6,724 sentences (measured
+# 2026-10-09) that was 。、「」！？; 『』!? are the same kind. A miss only sends the kana to the
+# substring fallback, which the output counts.
+KANA_DROPPED = str.maketrans("", "", "。、「」『』！？!?")
+VERDICT_RANK = {"ok": 0, "flag-only": 1, "mismatch": 2}
+
 CALIBRATION_REF = "281fc45"   # the v1.34 build commit: the last tree that taught 何時 as なんどき
+# v1.36 item 3's corpus commit: the working tree when the counter table was written (round 1 found
+# its 8 sentences there, all unchanged since fdb2b5f). Pinned so (f) survives their correction.
+COUNTER_CALIBRATION_REF = "29e4778"
+KNOWN_COUNTER_HITS = (   # (id, compound, verdict, taught) — each the same verdict in both fields
+    ("n5-b303", "四月", "mismatch", "よんがつ"),
+    ("n2-b942", "四月", "mismatch", "よんがつ"),
+    ("n5-b071", "九時", "mismatch", "きゅうじ"),
+    ("n4-g180", "九時", "mismatch", "きゅうじ"),
+    ("n3-b750", "九時", "mismatch", "きゅうじ"),
+    ("n5-b018", "二十四時間", "mismatch", "にじゅうよんじかん"),
+    ("n1-b615", "四時間", "mismatch", "しじかん"),
+    ("n2-b072", "四字", "mismatch", "よんじ"),
+    ("n5-b334", "七時", "flag-only", "ななじはん"),   # the token is 時半, so the span runs on
+)
 CORPUS_FILES = ("n1.json", "n2.json", "n3.json", "n4.json", "n5.json", "passages.json")
 
 
@@ -207,6 +347,62 @@ def scan(resources=RESOURCES):
     return checked, hits
 
 
+def kana_segment(reading, tokens, start, end):
+    """The stretch of `reading` (exKana) that stands for the tokens covering text[start:end], found by
+    anchoring on the readings of the tokens before and after them — or None when those anchors do
+    not hold, since then exKana cannot be lined up with the tokens."""
+    pos, before, after = 0, "", ""
+    for tok_surface, tok_reading in tokens:
+        lo, hi = pos, pos + len(tok_surface)
+        pos = hi
+        if hi <= start:
+            before += tok_reading
+        elif lo >= end:
+            after += tok_reading
+    before, after = before.translate(KANA_DROPPED), after.translate(KANA_DROPPED)
+    if (len(before) + len(after) <= len(reading)
+            and reading.startswith(before) and reading.endswith(after)):
+        return reading[len(before):len(reading) - len(after)]
+    return None
+
+
+def verdict_of(taught, alignment, accept, flag):
+    """ok, flag-only (with the other sense) or mismatch, for one reading of one occurrence."""
+    if any(fits(taught, r, alignment) for r in accept):
+        return "ok", None
+    for r, sense in flag.items():
+        if fits(taught, r, alignment):
+            return "flag-only", {"reading": r, "sense": sense}
+    return "mismatch", None
+
+
+def judge_occurrence(text, reading, tokens, start, end, accept, flag):
+    """text[start:end] judged on the tokens AND on the reading. `accept` holds the right readings and
+    `flag` {reading: sense} the ones legitimate in another sense or tolerated. `taught` is the
+    tokens' reading when there are tokens, else the field's reading; `verdict` is the worse of
+    verdictTokens and verdictKana."""
+    span = cover(text, tokens, start, end)
+    if span is None:      # a headword, a passage, or tokens that do not spell the text
+        taught_span, taught, alignment = whole(text, reading, start, end)
+        verdict, other = verdict_of(taught, alignment, accept, flag)
+        record = {"taught": taught, "taughtSpan": taught_span, "alignment": alignment,
+                  "verdictTokens": None, "verdictKana": verdict, "verdict": verdict}
+    else:
+        taught_span, taught, alignment = span
+        v_tokens, o_tokens = verdict_of(taught, alignment, accept, flag)
+        segment = kana_segment(reading, tokens, start, end)
+        kana, kana_alignment = (reading, "kana-only") if segment is None else (segment, alignment)
+        v_kana, o_kana = verdict_of(kana, kana_alignment, accept, flag)
+        verdict = max(v_tokens, v_kana, key=VERDICT_RANK.get)
+        other = o_tokens if v_tokens == "flag-only" else o_kana
+        record = {"taught": taught, "taughtSpan": taught_span, "alignment": alignment,
+                  "taughtKana": kana, "kanaAlignment": kana_alignment,
+                  "verdictTokens": v_tokens, "verdictKana": v_kana, "verdict": verdict}
+    if record["verdict"] == "flag-only":
+        record["otherSense"] = other
+    return record
+
+
 def judge_field(text, reading, tokens):
     """One record per 何+counter in `text`: what the corpus teaches for it, and the verdict."""
     masked = text
@@ -219,47 +415,142 @@ def judge_field(text, reading, tokens):
             if masked[start:end] != compound:
                 records.append({"compound": compound, "verdict": "absorbed"})
                 continue
-            taught_span, taught, alignment = (cover(text, tokens, start, end)
-                                              or whole(text, reading, start, end))
-            record = {"compound": compound, "taught": taught, "taughtSpan": taught_span,
-                      "alignment": alignment, "expected": list(expected)}
-            if any(fits(taught, r, alignment) for r in expected):
-                record["verdict"] = "ok"
-            else:
-                other = [(r, sense) for r, sense in INTERROGATIVE_OTHER_SENSE.get(compound, {}).items()
-                         if fits(taught, r, alignment)]
-                record["verdict"] = "flag-only" if other else "mismatch"
-                if other:
-                    record["otherSense"] = {"reading": other[0][0], "sense": other[0][1]}
-            records.append(record)
+            records.append({"compound": compound, "expected": list(expected),
+                            **judge_occurrence(text, reading, tokens, start, end, expected,
+                                               INTERROGATIVE_OTHER_SENSE.get(compound, {}))})
     return records
 
 
-def scan_interrogative(resources=RESOURCES):
-    """Every example sentence (judged on exTokens), every headword, every passage."""
-    population = {"exJP": 0, "surface": 0, "display": 0}
-    fields = []
+def numeral_value(run):
+    """The number a numeral run spells, or None when this table does not read it as one number: a
+    mix of kanji and digits, or kanji digits with no 十/百/千/万 (三四 'three or four')."""
+    arabic = run.translate(FULLWIDTH)
+    if arabic.isascii() and arabic.isdigit():
+        return int(arabic)
+    if any(c.isascii() for c in arabic):
+        return None
+    if not any(c in KANJI_UNIT or c == "万" for c in run):
+        return KANJI_DIGIT[run] if len(run) == 1 else None
+    total, section, digit = 0, 0, None
+    for c in run:
+        if c in KANJI_DIGIT:
+            if digit is not None:
+                return None
+            digit = KANJI_DIGIT[c]
+        elif c in KANJI_UNIT:
+            section += (1 if digit is None else digit) * KANJI_UNIT[c]
+            digit = None
+        else:   # 万
+            total += ((section + (digit or 0)) or 1) * 10000
+            section, digit = 0, None
+    return total + section + (digit or 0)
+
+
+def number_readings(n):
+    """Every reading this table accepts for n (a multiple of 10, or 0, which reads as '')."""
+    if n >= 10000:
+        return {m + "まん" + r for m in number_readings(n // 10000) for r in number_readings(n % 10000)}
+    out = {""}
+    for place in (1000, 100, 10, 1):
+        d = n // place % 10
+        if not d:
+            continue
+        if place == 1:
+            parts = DIGIT_READINGS[d]
+        else:
+            parts = (PLACE_SOUND_CHANGE.get((place, d))
+                     or tuple(r + PLACE_READING[place] for r in DIGIT_READINGS[d]))
+        out = {o + p for o in out for p in parts}
+    return out
+
+
+def last_digit(run):
+    last = run[-1].translate(FULLWIDTH)
+    return int(last) if last.isascii() and last.isdigit() else KANJI_DIGIT.get(last)
+
+
+def judge_counter_field(text, reading, tokens):
+    """One record per number + month/hour/duration/字 counter in `text` whose last digit's sound
+    changes: what the corpus teaches for it, and the verdict."""
+    records = []
+    for m in COUNTER_RE.finditer(text):
+        run, counter = m.groups()
+        compound, (start, end) = m.group(0), m.span()
+        digit = last_digit(run)
+        finals = COUNTER_FINAL[counter].get(digit)
+        if not finals:
+            continue     # a last digit that reads as it does alone (or 十/百/千/万): not enumerated
+        value, follower = numeral_value(run), text[end:end + 1]
+        if follower in NOT_THE_COUNTER.get(counter, ()):
+            absorbed_by = f"{counter}{follower}"
+        elif value is None:
+            absorbed_by = f"{run}: not read as one number (a range such as 三四, or kanji mixed with digits)"
+        elif counter == "月" and value not in MONTHS:
+            absorbed_by = f"{compound}: no such month"
+        else:
+            absorbed_by = None
+        if absorbed_by:
+            records.append({"compound": compound, "verdict": "absorbed", "by": absorbed_by})
+            continue
+        prefixes, tail = number_readings(value - digit), COUNTER_READING[counter]
+        expected = sorted({p + f + tail for p in prefixes for f in finals})
+        flag = {p + r + tail: sense for p in prefixes
+                for r, sense in COUNTER_TOLERATED.get(counter, {}).get(digit, {}).items()}
+        flag.update(COUNTER_OTHER_SENSE.get(compound, {}))
+        records.append({"compound": compound, "counter": counter, "number": value,
+                        "expected": expected,
+                        **judge_occurrence(text, reading, tokens, start, end, expected, flag)})
+    return records
+
+
+def fields_of(resources):
+    """Every field the 何 and counter tables read: (path, id, field, text, reading, tokens)."""
     for path in sorted(glob.glob(f"{resources}/n[1-5].json")):
         for entry in json.load(open(path, encoding="utf-8")):
-            population["surface"] += 1
-            fields.append((path, entry["id"], "surface", entry["surface"], entry["kana"], None))
+            yield path, entry["id"], "surface", entry["surface"], entry["kana"], None
             if entry.get("exJP") and entry.get("exKana"):
-                population["exJP"] += 1
-                fields.append((path, entry["id"], "exJP", entry["exJP"], entry["exKana"],
-                               entry.get("exTokens")))
+                yield path, entry["id"], "exJP", entry["exJP"], entry["exKana"], entry.get("exTokens")
     passages = os.path.join(resources, "passages.json")
     if os.path.exists(passages):
         for p in json.load(open(passages, encoding="utf-8")):
-            population["display"] += 1
-            fields.append((passages, p["id"], "display", p["display"], p["kana"], None))
+            yield passages, p["id"], "display", p["display"], p["kana"], None
+
+
+def sweep(resources, judge):
+    """Every field handed to `judge`. A field is counted after its judge has run on it, so a field
+    skipped before the judge is not counted; a judge that skips a field from inside is, and only
+    calibration (h), the planted tree, can see that."""
+    population = {"exJP": 0, "surface": 0, "display": 0}
     inspected, hits = [], []
-    for path, entry_id, field, text, reading, tokens in fields:
-        for record in judge_field(text, reading, tokens):
+    for path, entry_id, field, text, reading, tokens in fields_of(resources):
+        records = judge(text, reading, tokens)
+        population[field] += 1
+        for record in records:
             where = {"id": entry_id, "file": display_path(path), "field": field}
             inspected.append({**where, **record})
             if record["verdict"] in ("mismatch", "flag-only"):
                 hits.append({**where, "sentence": text, "reading": reading, **record})
     return population, inspected, hits
+
+
+def scan_interrogative(resources=RESOURCES):
+    """Every example sentence (judged on exTokens and exKana), every headword, every passage."""
+    return sweep(resources, judge_field)
+
+
+def scan_counters(resources=RESOURCES):
+    """The same fields, judged by the counter table."""
+    return sweep(resources, judge_counter_field)
+
+
+def below_floor(lexicalised, interrogative, counters):
+    """Each table population under MIN_POPULATION, named. Every table is held to the floor on its
+    own scan: one table having read the corpus says nothing about another (PLAN-V1.36 §I)."""
+    short = [f"lexicalised {lexicalised}"] if lexicalised < MIN_POPULATION else []
+    for name, population in (("interrogative", interrogative), ("counters", counters)):
+        short += [f"{name} {field} {population[field]}" for field in ("exJP", "surface")
+                  if population[field] < MIN_POPULATION]
+    return short
 
 
 # ── calibration: the documented entry point, on trees whose answer is already known ──────────
@@ -297,6 +588,153 @@ LOGIC_CHECKS = (
      [["何", "なん"], ["回", "かい"]], ["ok"]),
     ("何人 なにじん is flag-only, never a mismatch", "何人ですか", "なにじんですか",
      [["何", "なに"], ["人", "じん"], ["です", "です"], ["か", "か"]], ["flag-only"]),
+    ("何人 taught なにん is a mismatch: the path is not proven on 何時 alone", "何人", "なにん",
+     [["何人", "なにん"]], ["mismatch"]),
+    ("a regression in exKana alone is a mismatch: tokens なんじ, exKana なんどき", "何時ですか",
+     "なんどきですか", [["何時", "なんじ"], ["です", "です"], ["か", "か"]], ["mismatch"]),
+)
+
+COUNTER_LOGIC_CHECKS = (
+    # (what it proves, text, reading, tokens, expected (compound, verdict, verdictTokens,
+    #  verdictKana) in order)
+    ("九時 taught きゅうじ is a mismatch in both fields", "九時に", "きゅうじに",
+     [["九", "きゅう"], ["時", "じ"], ["に", "に"]],
+     [("九時", "mismatch", "mismatch", "mismatch")]),
+    ("七時: しちじ is right, ななじ is tolerated (flag-only)", "七時七時", "しちじななじ",
+     [["七", "しち"], ["時", "じ"], ["七", "なな"], ["時", "じ"]],
+     [("七時", "ok", "ok", "ok"), ("七時", "flag-only", "flag-only", "flag-only")]),
+    ("七時間 accepts both しちじかん and ななじかん; 九時間 wants くじかん", "七時間七時間九時間",
+     "しちじかんななじかんきゅうじかん",
+     [["七", "しち"], ["時間", "じかん"], ["七", "なな"], ["時間", "じかん"], ["九", "きゅう"],
+      ["時間", "じかん"]],
+     [("七時間", "ok", "ok", "ok"), ("七時間", "ok", "ok", "ok"),
+      ("九時間", "mismatch", "mismatch", "mismatch")]),
+    ("a compound number is read whole: 二十四時間 にじゅうよじかん ok, にじゅうよんじかん not",
+     "二十四時間、二十四時間", "にじゅうよじかんにじゅうよんじかん",
+     [["二十四", "にじゅうよ"], ["時間", "じかん"], ["、", "、"], ["二十四", "にじゅうよん"],
+      ["時間", "じかん"]],
+     [("二十四時間", "ok", "ok", "ok"), ("二十四時間", "mismatch", "mismatch", "mismatch")]),
+    ("a regression in the tokens alone is a mismatch: tokens よんがつ, exKana しがつ", "四月",
+     "しがつ", [["四", "よん"], ["月", "がつ"]], [("四月", "mismatch", "mismatch", "ok")]),
+    ("a regression in exKana alone is a mismatch: tokens しがつ, exKana よんがつ", "四月",
+     "よんがつ", [["四", "し"], ["月", "がつ"]], [("四月", "mismatch", "ok", "mismatch")]),
+    ("exKana is read where the tokens put it, not anywhere in the sentence", "九時と九時",
+     "きゅうじとくじ", [["九", "きゅう"], ["時", "じ"], ["と", "と"], ["九", "く"], ["時", "じ"]],
+     [("九時", "mismatch", "mismatch", "mismatch"), ("九時", "ok", "ok", "ok")]),
+    ("an exact span must EQUAL an expected reading, not contain it", "四時", "ごごよじ",
+     [["四時", "ごごよじ"]], [("四時", "mismatch", "mismatch", "mismatch")]),
+    ("四時 しじ, 'the four seasons', is flag-only", "四時の移ろい", "しじのうつろい",
+     [["四時", "しじ"], ["の", "の"], ["移ろい", "うつろい"]],
+     [("四時", "flag-only", "flag-only", "flag-only")]),
+    ("the surname 四月一日 わたぬき is flag-only; the date 四月一日 is still judged",
+     "四月一日さん、四月一日", "わたぬきさんよんがつついたち",
+     [["四月一日", "わたぬき"], ["さん", "さん"], ["、", "、"], ["四", "よん"], ["月", "がつ"],
+      ["一日", "ついたち"]],
+     [("四月", "flag-only", "flag-only", "flag-only"), ("四月", "mismatch", "mismatch", "mismatch")]),
+    ("not the counter: 第四月曜日, 四時期, and 十四月 (no such month) are absorbed",
+     "第四月曜日と四時期と十四月", "だいよんげつようびとよんじきとじゅうよんがつ", None,
+     [("四月", "absorbed", None, None), ("四時", "absorbed", None, None),
+      ("十四月", "absorbed", None, None)]),
+    ("kanji digits with no 十/百/千 are a range, not one number: 三四時間, 六七時間",
+     "三四時間、六七時間", "さんよじかんろくしちじかん", None,
+     [("三四時間", "absorbed", None, None), ("六七時間", "absorbed", None, None)]),
+    ("never inspected: 九州, 四季, 四ヶ月, 四か月, 十月, 一時, 一月, 十字路, 四六時中",
+     "九州の四季、四ヶ月、四か月、十月、一時、一月、十字路、四六時中", "", None, []),
+    ("ASCII and full-width digits are read: ４時 よんじ is a mismatch, 24時間 にじゅうよじかん ok",
+     "４時、24時間", "よんじにじゅうよじかん",
+     [["４", "よん"], ["時", "じ"], ["、", "、"], ["24", "にじゅうよ"], ["時間", "じかん"]],
+     [("４時", "mismatch", "mismatch", "mismatch"), ("24時間", "ok", "ok", "ok")]),
+    ("a field with no tokens is judged on its reading: 九時 きゅうじ", "九時", "きゅうじ", None,
+     [("九時", "mismatch", None, "mismatch")]),
+    # Added in the fix round: until then no check reached the 月 7 and 9 rows, MONTHS beyond 4, or
+    # the accepted side of 時 4, 時間 9 and 字 4, so dropping or inverting any of them passed.
+    ("七月: しちがつ is right, なながつ is a mismatch (月 tolerates no なな)", "七月七月",
+     "しちがつなながつ", [["七", "しち"], ["月", "がつ"], ["七", "なな"], ["月", "がつ"]],
+     [("七月", "ok", "ok", "ok"), ("七月", "mismatch", "mismatch", "mismatch")]),
+    ("九月: くがつ is right, きゅうがつ is a mismatch", "九月九月", "くがつきゅうがつ",
+     [["九", "く"], ["月", "がつ"], ["九", "きゅう"], ["月", "がつ"]],
+     [("九月", "ok", "ok", "ok"), ("九月", "mismatch", "mismatch", "mismatch")]),
+    ("四時 よじ is right", "四時", "よじ", [["四", "よ"], ["時", "じ"]], [("四時", "ok", "ok", "ok")]),
+    ("九時間 くじかん is right", "九時間", "くじかん", [["九", "く"], ["時間", "じかん"]],
+     [("九時間", "ok", "ok", "ok")]),
+    ("四字: よじ is right, よんじ is a mismatch", "四字四字", "よじよんじ",
+     [["四", "よ"], ["字", "じ"], ["四", "よん"], ["字", "じ"]],
+     [("四字", "ok", "ok", "ok"), ("四字", "mismatch", "mismatch", "mismatch")]),
+)
+
+# (h) the planted tree. Each plant is a reading every table here must call a mismatch, under an id
+# no entry uses. A sentence plant is (table, level, tokens): exJP is the token surfaces joined, and
+# exKana the readings joined with punctuation dropped, so exKana lines up with the tokens. Every
+# n-file gets one sentence plant per table; the 何 and counter tables, which also read headwords and
+# passages, get one of each. A plant holds nothing another table reads — no plant may be flagged by
+# a table other than its own. The counter plants carry 七月 and 九月, which the corpus does not.
+PLANT_PREFIX = "plant-"
+PLANTED_SENTENCES = (
+    ("lexicalised", "n1", [["二", "に"], ["人", "にん"], ["で", "で"], ["行き", "いき"], ["ます", "ます"], ["。", "。"]]),
+    ("lexicalised", "n2", [["三", "さん"], ["日", "にち"], ["かかり", "かかり"], ["ます", "ます"], ["。", "。"]]),
+    ("lexicalised", "n3", [["四", "よん"], ["つ", "つ"], ["あり", "あり"], ["ます", "ます"], ["。", "。"]]),
+    ("lexicalised", "n4", [["八", "はち"], ["日", "にち"], ["に", "に"], ["来", "き"], ["ます", "ます"], ["。", "。"]]),
+    ("lexicalised", "n5", [["一", "いち"], ["人", "にん"], ["で", "で"], ["食べ", "たべ"], ["ます", "ます"], ["。", "。"]]),
+    ("interrogative", "n1", [["何時", "なんどき"], ["です", "です"], ["か", "か"], ["。", "。"]]),
+    ("interrogative", "n2", [["何", "なに"], ["人", "にん"], ["い", "い"], ["ます", "ます"], ["か", "か"], ["。", "。"]]),
+    ("interrogative", "n3", [["何", "なん"], ["本", "ほん"], ["あり", "あり"], ["ます", "ます"], ["か", "か"], ["。", "。"]]),
+    ("interrogative", "n4", [["何", "なん"], ["杯", "はい"], ["飲み", "のみ"], ["ます", "ます"], ["か", "か"], ["。", "。"]]),
+    ("interrogative", "n5", [["何", "なん"], ["匹", "ひき"], ["い", "い"], ["ます", "ます"], ["か", "か"], ["。", "。"]]),
+    ("counters", "n1", [["九", "きゅう"], ["月", "がつ"], ["に", "に"], ["入学", "にゅうがく"], ["し", "し"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n2", [["七", "なな"], ["月", "がつ"], ["に", "に"], ["旅行", "りょこう"], ["し", "し"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n3", [["九", "きゅう"], ["時間", "じかん"], ["働き", "はたらき"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n4", [["四", "よん"], ["字", "じ"], ["で", "で"], ["書き", "かき"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n5", [["四", "よん"], ["月", "がつ"], ["に", "に"], ["始まり", "はじまり"], ["ます", "ます"], ["。", "。"]]),
+)
+PLANTED_HEADWORDS = (("interrogative", "n1", "何回", "なにかい"), ("counters", "n1", "九時", "きゅうじ"))
+PLANTED_PASSAGES = (("interrogative", "何歳ですか。", "なにさいですか"),
+                    ("counters", "七月に行きます。", "なながつにいきます"))
+PLANT_FILLER = {"surface": "テスト", "kana": "てすと"}   # a sentence plant's own headword: no counter
+
+
+def plant_tree(dest):
+    """The working tree's corpus copied into `dest` with the plants added. Returns
+    {table: {(id, field)}}, the plants each table must flag, or raises when an id is taken."""
+    for name in CORPUS_FILES:
+        shutil.copy(os.path.join(RESOURCES, name), dest)
+    want = {"lexicalised": set(), "interrogative": set(), "counters": set()}
+    for level in ("n1", "n2", "n3", "n4", "n5"):
+        path = os.path.join(dest, f"{level}.json")
+        with open(path, encoding="utf-8") as f:
+            entries = json.load(f)
+        if any(e["id"].startswith(PLANT_PREFIX) for e in entries):
+            raise RuntimeError(f"{level}.json already has an id beginning {PLANT_PREFIX!r}")
+        for table, lvl, tokens in PLANTED_SENTENCES:
+            if lvl == level:
+                eid = f"{PLANT_PREFIX}{table}-{level}"
+                entries.append({"id": eid, **PLANT_FILLER, "exJP": "".join(s for s, _ in tokens),
+                                "exKana": "".join(r for _, r in tokens).translate(KANA_DROPPED),
+                                "exTokens": tokens})
+                want[table].add((eid, "exJP"))
+        for table, lvl, surface, kana in PLANTED_HEADWORDS:
+            if lvl == level:
+                eid = f"{PLANT_PREFIX}{table}-headword"
+                entries.append({"id": eid, "surface": surface, "kana": kana})
+                want[table].add((eid, "surface"))
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(entries, f, ensure_ascii=False)
+    path = os.path.join(dest, "passages.json")
+    with open(path, encoding="utf-8") as f:
+        passages = json.load(f)
+    for table, display, kana in PLANTED_PASSAGES:
+        eid = f"{PLANT_PREFIX}{table}-passage"
+        passages.append({"id": eid, "display": display, "kana": kana})
+        want[table].add((eid, "display"))
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(passages, f, ensure_ascii=False)
+    return want
+
+FLOOR_CHECKS = (
+    # (what it proves, lexicalised, interrogative, counters, expected below_floor)
+    ("the exit-2 floor names a short counter table", 6724,
+     {"exJP": 6724, "surface": 7071}, {"exJP": 2, "surface": 7071}, ["counters exJP 2"]),
+    ("the exit-2 floor names a short 何 table", 6724,
+     {"exJP": 6724, "surface": 616}, {"exJP": 6724, "surface": 7071}, ["interrogative surface 616"]),
 )
 
 
@@ -310,20 +748,27 @@ def calibrate():
 
     with tempfile.TemporaryDirectory() as tmp:
         old, small = os.path.join(tmp, "pre-v135"), os.path.join(tmp, "n5-only")
-        os.mkdir(old)
-        os.mkdir(small)
+        counted, planted = os.path.join(tmp, "counter-ref"), os.path.join(tmp, "planted")
+        for d in (old, small, counted, planted):
+            os.mkdir(d)
         try:
             tree_at(CALIBRATION_REF, old)
+            tree_at(COUNTER_CALIBRATION_REF, counted)
+            plants = plant_tree(planted)
         except RuntimeError as e:
-            return False, [f"[FAIL] cannot read the calibration tree: {e}"]
+            return False, [f"[FAIL] cannot read a calibration tree: {e}"]
         shutil.copy(os.path.join(RESOURCES, "n5.json"), small)
         old_code, old_run = run_cli(tmp, "old", "--resources", old)
         head_code, head_run = run_cli(tmp, "head")
         small_code, small_run = run_cli(tmp, "small", "--resources", small)
+        counted_code, counted_run = run_cli(tmp, "counted", "--resources", counted)
+        planted_code, planted_run = run_cli(tmp, "planted", "--resources", planted)
 
-    if old_run is None or head_run is None or small_run is None:
+    if (old_run is None or head_run is None or small_run is None or counted_run is None
+            or planted_run is None):
         return False, [f"[FAIL] a calibration run wrote no output (exit codes: {CALIBRATION_REF} "
-                       f"{old_code}, working tree {head_code}, n5-only {small_code})"]
+                       f"{old_code}, working tree {head_code}, n5-only {small_code}, "
+                       f"{COUNTER_CALIBRATION_REF} {counted_code}, planted {planted_code})"]
     old_q, head_q = old_run["interrogative"], head_run["interrogative"]
 
     g022 = [(h["verdict"], h["compound"], h["taught"]) for h in old_q["hits"] if h["id"] == "n5-g022"]
@@ -337,12 +782,23 @@ def calibrate():
           seen == [("ok", "何時", "なんじ")] and not flagged,
           f"inspected: {seen}; hits: {len(flagged)}")
 
-    pop = head_run["population"]
-    check(f"(c) population ≥ {MIN_POPULATION}, and a one-level tree exits 2",
-          head_code == 0 and pop >= MIN_POPULATION and small_code == 2
-          and small_run["population"] < MIN_POPULATION,
-          f"working tree {pop} sentences, exit {head_code}; n5-only "
-          f"{small_run['population']} sentences, exit {small_code}")
+    # (c) the floor on each table's own scan; n5-only must fall below it in each, and exit 2.
+    check("(c0) the working tree exits 0 and the n5-only tree exits 2",
+          head_code == 0 and small_code == 2, f"exit {head_code}; n5-only exit {small_code}")
+    pop, small_pop = head_run["population"], small_run["population"]
+    check(f"(c1) lexicalised table: its own scan reads ≥ {MIN_POPULATION} sentences; n5-only below",
+          pop >= MIN_POPULATION and small_pop < MIN_POPULATION,
+          f"working tree {pop}, n5-only {small_pop}")
+    with open(os.path.join(RESOURCES, "passages.json"), encoding="utf-8") as f:
+        passages = len(json.load(f))
+    for label, key in (("(c2) 何 table", "interrogative"), ("(c3) counter table", "counters")):
+        head_p, small_p = head_run[key]["population"], small_run[key]["population"]
+        check(f"{label}: its own scan reads ≥ {MIN_POPULATION} sentences and headwords and all "
+              f"{passages} passages; n5-only below",
+              head_p["exJP"] >= MIN_POPULATION and head_p["surface"] >= MIN_POPULATION
+              and head_p["display"] == passages
+              and small_p["exJP"] < MIN_POPULATION and small_p["surface"] < MIN_POPULATION,
+              f"working tree {head_p}, n5-only {small_p}")
 
     b937 = sorted((h["field"], h["verdict"], h["taught"]) for h in old_q["hits"] if h["id"] == "n2-b937")
     check(f"(d) {CALIBRATION_REF}: n2-b937 何分 なにぶん is flag-only in both fields",
@@ -353,10 +809,91 @@ def calibrate():
     check(f"(e) {CALIBRATION_REF}: the lexicalised table flags n5-kazoku", kazoku == [("四人", "よんにん")],
           f"hits for n5-kazoku: {kazoku}")
 
+    # Each known hit: the same verdict on the tokens and on exKana, and exKana lined up with the
+    # tokens (anchored), not found by the substring fallback.
+    got = {(h["id"], h["field"], h["compound"], h["verdict"], h["verdictTokens"], h["verdictKana"],
+            h["taught"], h.get("kanaAlignment") == h["alignment"])
+           for h in counted_run["counters"]["hits"]}
+    want = {(i, "exJP", c, v, v, v, t, True) for i, c, v, t in KNOWN_COUNTER_HITS}
+    others = sorted(f"{h[0]} {h[2]} {h[3]} {h[6]}" for h in got - want)
+    check(f"(f) {COUNTER_CALIBRATION_REF}: the counter table flags the {len(want)} known occurrences "
+          f"in both exTokens and exKana",
+          want <= got,
+          f"missing: {sorted(f'{w[0]} {w[2]} {w[3]} {w[6]}' for w in want - got) or 'none'}; "
+          f"also flagged (or flagged differently): {others or 'none'}")
+
+    g079 = [(r["compound"], r["verdict"], r.get("verdictTokens"), r.get("verdictKana"), r.get("taught"))
+            for r in head_run["counters"]["inspected"] if r["id"] == "n5-g079"]
+    flagged = [h for h in head_run["counters"]["hits"] if h["id"] == "n5-g079"]
+    check("(g) the working tree inspects n5-g079 七時 しちじ and passes it in both fields",
+          g079 == [("七時", "ok", "ok", "ok", "しちじ")] and not flagged,
+          f"inspected: {g079}; hits: {len(flagged)}")
+
+    # (h) every plant flagged by its own table — a mismatch, on both fields where it has tokens —
+    # and none by another table. A table that judges fewer files, ids or kinds of field than it
+    # counts misses a plant here, whatever its population says.
+    for table, hits in (("lexicalised", planted_run["hits"]),
+                        ("interrogative", planted_run["interrogative"]["hits"]),
+                        ("counters", planted_run["counters"]["hits"])):
+        mine = {(h["id"], h["field"]) for h in hits if h["id"].startswith(PLANT_PREFIX)}
+        bad = sorted(f"{h['id']} {h['field']} {h.get('verdict')} tokens {h.get('verdictTokens')} "
+                     f"exKana {h.get('verdictKana')}" for h in hits
+                     if h["id"].startswith(PLANT_PREFIX) and table != "lexicalised"
+                     and (h["verdict"], h["verdictKana"],
+                          h["verdictTokens"] if h["field"] == "exJP" else "mismatch")
+                     != ("mismatch", "mismatch", "mismatch"))
+        missed, extra = sorted(plants[table] - mine), sorted(mine - plants[table])
+        check(f"(h) planted tree: the {table} table flags its {len(plants[table])} plants (every "
+              f"n-file{', a headword and a passage' if table != 'lexicalised' else ''}) and no other",
+              planted_code == 0 and not missed and not extra and not bad,
+              f"exit {planted_code}; missed {missed or 'none'}; another table's {extra or 'none'}; "
+              f"not a mismatch in both fields: {bad or 'none'}")
+
     for what, text, reading, tokens, want in LOGIC_CHECKS:
         got = [r["verdict"] for r in judge_field(text, reading, tokens)]
         check(f"logic: {what}", got == want, f"{text} {reading}: {got}")
+    for what, text, reading, tokens, want in COUNTER_LOGIC_CHECKS:
+        got = [(r["compound"], r["verdict"], r.get("verdictTokens"), r.get("verdictKana"))
+               for r in judge_counter_field(text, reading, tokens)]
+        check(f"logic: {what}", got == want, f"{text}: {got}")
+    for what, lexicalised, interrogative, counters, want in FLOOR_CHECKS:
+        got = below_floor(lexicalised, interrogative, counters)
+        check(f"logic: {what}", got == want, f"{got}")
     return ok, lines
+
+
+def print_table(title, population, enumerated, inspected, hits):
+    by_compound, by_alignment = {}, {}
+    for r in inspected:
+        by_compound[r["compound"]] = by_compound.get(r["compound"], 0) + 1
+        key = r.get("alignment", "absorbed")
+        by_alignment[key] = by_alignment.get(key, 0) + 1
+    kana_alignment = {}
+    for r in inspected:
+        if r.get("kanaAlignment"):
+            kana_alignment[r["kanaAlignment"]] = kana_alignment.get(r["kanaAlignment"], 0) + 1
+    kinds = [h["verdict"] for h in hits]
+    print(f"\n── {title} ──")
+    # "read", not "judged": the count is taken after the judge has run on a field, and cannot see
+    # a judge that skips one from inside. --calibrate's planted tree (h) is what shows each kind is
+    # judged.
+    print(f"population   : {population['exJP']} example sentences (exTokens and exKana), "
+          f"{population['surface']} headwords, {population['display']} passages read by this table")
+    print(f"enumerated   : {enumerated}")
+    print(f"inspected    : {len(inspected)} occurrences — "
+          + (", ".join(f"{c} {n}" for c, n in sorted(by_compound.items(), key=lambda kv: -kv[1])) or "none")
+          + "; alignment: " + (", ".join(f"{a} {n}" for a, n in sorted(by_alignment.items())) or "none")
+          + "; exKana: " + (", ".join(f"{a} {n}" for a, n in sorted(kana_alignment.items())) or "none"))
+    print(f"flagged      : {len(hits)} ({kinds.count('mismatch')} mismatch, "
+          f"{kinds.count('flag-only')} flag-only)")
+    for h in hits:
+        note = f" — other sense: {h['otherSense']['sense']}" if h.get("otherSense") else ""
+        fields = (f" [tokens {h['verdictTokens']}, exKana {h['verdictKana']} "
+                  f"'{h.get('taughtKana')}']" if h.get("verdictTokens") else "")
+        print(f"\n  {h['id']}  [{h['verdict']}]  {h['file']} {h['field']}  {h['compound']} taught "
+              f"{h['taught']}, expected {' | '.join(h['expected'])}{fields}{note}")
+        print(f"      {h['sentence']}")
+        print(f"      {h['reading']}")
 
 
 def main():
@@ -388,28 +925,17 @@ def main():
         print(f"      {h['exKana']}")
 
     population, inspected, q_hits = scan_interrogative(args.resources)
-    by_compound, by_alignment = {}, {}
-    for r in inspected:
-        by_compound[r["compound"]] = by_compound.get(r["compound"], 0) + 1
-        key = r.get("alignment", "absorbed")
-        by_alignment[key] = by_alignment.get(key, 0) + 1
-    kinds = [h["verdict"] for h in q_hits]
-    print("\n── interrogative: 何 + counter ──")
-    print(f"population   : {population['exJP']} example sentences (judged on exTokens), "
-          f"{population['surface']} headwords, {population['display']} passages")
-    print(f"enumerated   : {len(INTERROGATIVE)} compounds, {len(INTERROGATIVE_ABSORBERS)} absorber, "
-          f"{len(INTERROGATIVE_OTHER_SENSE)} with another legitimate sense (flag-only)")
-    print(f"inspected    : {len(inspected)} occurrences — "
-          + (", ".join(f"{c} {n}" for c, n in sorted(by_compound.items(), key=lambda kv: -kv[1])) or "none")
-          + f"; alignment: " + (", ".join(f"{a} {n}" for a, n in sorted(by_alignment.items())) or "none"))
-    print(f"flagged      : {len(q_hits)} ({kinds.count('mismatch')} mismatch, "
-          f"{kinds.count('flag-only')} flag-only)")
-    for h in q_hits:
-        note = f" — other sense: {h['otherSense']['sense']}" if h.get("otherSense") else ""
-        print(f"\n  {h['id']}  [{h['verdict']}]  {h['file']} {h['field']}  {h['compound']} taught "
-              f"{h['taught']}, expected {' | '.join(h['expected'])}{note}")
-        print(f"      {h['sentence']}")
-        print(f"      {h['reading']}")
+    print_table("interrogative: 何 + counter", population, inspected=inspected, hits=q_hits,
+                enumerated=f"{len(INTERROGATIVE)} compounds, {len(INTERROGATIVE_ABSORBERS)} absorber, "
+                           f"{len(INTERROGATIVE_OTHER_SENSE)} with another legitimate sense (flag-only)")
+
+    c_population, c_inspected, c_hits = scan_counters(args.resources)
+    print_table("counters: month 月, hour 時, duration 時間, 字", c_population,
+                inspected=c_inspected, hits=c_hits,
+                enumerated="; ".join(f"{c} " + ", ".join(f"{d} {'|'.join(r)}" for d, r in finals.items())
+                                     for c, finals in COUNTER_FINAL.items())
+                           + f"; tolerated {sum(len(v) for v in COUNTER_TOLERATED.values())}, "
+                             f"other senses {sum(len(v) for v in COUNTER_OTHER_SENSE.values())}")
 
     if args.json:
         out = {"population": checked, "enumerated": len(LEXICALISED),
@@ -418,7 +944,16 @@ def main():
                                  "enumerated": {c: list(r) for c, r in INTERROGATIVE.items()},
                                  "otherSense": INTERROGATIVE_OTHER_SENSE,
                                  "absorbers": list(INTERROGATIVE_ABSORBERS),
-                                 "inspected": inspected, "hits": q_hits}}
+                                 "inspected": inspected, "hits": q_hits},
+               "counters": {"population": c_population,
+                            "enumerated": {c: {str(d): list(r) for d, r in finals.items()}
+                                           for c, finals in COUNTER_FINAL.items()},
+                            "counterReading": COUNTER_READING,
+                            "tolerated": {c: {str(d): v for d, v in t.items()}
+                                          for c, t in COUNTER_TOLERATED.items()},
+                            "otherSense": COUNTER_OTHER_SENSE,
+                            "notTheCounter": {c: list(f) for c, f in NOT_THE_COUNTER.items()},
+                            "inspected": c_inspected, "hits": c_hits}}
         if calibration is not None:
             out["calibration"] = calibration
         if os.path.abspath(args.resources) == RESOURCES:
@@ -432,9 +967,11 @@ def main():
             json.dump(out, f, ensure_ascii=False, indent=1)
             f.write("\n")
         print(f"\nwrote {args.json}")
-    # A scan that inspected nothing must not report clean.
-    if checked < MIN_POPULATION:
-        print(f"\n!! only {checked} sentences inspected — this scan is reading almost nothing")
+    # A scan that inspected nothing must not report clean — and each table answers for itself.
+    short = below_floor(checked, population, c_population)
+    if short:
+        print(f"\n!! below the {MIN_POPULATION} floor: {', '.join(short)} — "
+              f"this scan is reading almost nothing")
         return 2
     return 0
 

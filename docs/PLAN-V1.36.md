@@ -148,14 +148,20 @@ cadence row, STATE, memory, and `review_watch` the same day.
 
 ## §E The §K registration (draft, appended to PLAN-STAGE1 §K before `--submit`; bracketed lines follow what shipped)
 
-> ### 📌 REGISTERED <YYYY-MM-DD> (JST) under constraint 3, before v1.36 is submitted — readings on a word list's own rows, one star on the Saved row, and 四人 taught as よにん
+> ### 📌 REGISTERED <YYYY-MM-DD> (JST) under constraint 3, before v1.36 is submitted — readings on a word list's own rows, one star on the Saved row, and nine example sentences' number + counter readings corrected
 >
 > **What changed.**
 > 1. On a list's screen, each word now shows its reading by the rule the search results on that screen
 >    have used since v1.35, and a long gloss wraps. Display only: no word is added, removed or reordered.
 > 2. The Saved list's row shows its star once. The stored name is unchanged.
-> 3. [`n5-kazoku`'s 四人 now reads よにん, per `docs/measurements/v136-reading-manifest.json` (grammar and
->    2-of-2 refuters). It stays withheld from dictation. Sweep: <n corrections / none found>.]
+> 3. [Nine example sentences now teach the standard number + counter reading, per
+>    `docs/measurements/v136-reading-manifest.json` (grammar and 2-of-2 refuters; exKana and one token
+>    each): `n5-kazoku` 四人 よにん; 四月 しがつ (`n5-b303`, `n2-b942`); 九時 くじ (`n5-b071`, `n4-g180`,
+>    `n3-b750`); 二十四時間 にじゅうよじかん (`n5-b018`); 四時間 よじかん (`n1-b615`); 四字熟語 よじじゅくご
+>    (`n2-b072`). All nine stay withheld from dictation. Sweep: the calibrated tables cover the
+>    lexicalised counters, 何 + counter, and 月 / 時 / 時間 / 字 after a last digit 4, 7 or 9; inside that
+>    scope 0 mismatches remain and one tolerated reading is left as it is (`n5-b334` 七時 ななじ). Outside
+>    it, sentences with the same kind of defect are recorded by id in PLAN-V1.36 §I and not corrected.]
 > 4. Nothing a rider sees: compiler warnings, the corpus writers' write path, CI's timeout.
 >
 > The offer screen, the Settings road card, the menu route strip, prices, About's counter text and the
@@ -165,8 +171,12 @@ cadence row, STATE, memory, and `review_watch` the same day.
 > **Expected effect.**
 > * The list rows: neutral to up on days-ridden; magnitude unmeasurable.
 > * The star: neutral.
-> * The corrected sentence is one kana shorter: 90 m instead of 100 m when ridden
->   (`GameSession.swift:825`), against 25,000 m to Kyōto. Negligible.
+> * Eight of the nine corrected sentences are one or two kana shorter, so each rides 10–20 m less
+>   (`GameSession.swift:825`, 10 m per kana of the sentence's exKana): `n5-kazoku` 100 → 90 m,
+>   `n5-b303` 240 → 230, `n2-b942` 280 → 270, `n5-b071` 210 → 190, `n4-g180` 180 → 160, `n3-b750`
+>   170 → 150, `n5-b018` 180 → 170, `n2-b072` 280 → 270; `n1-b615` keeps its length (260 m). The
+>   sentence's score base and time baseline (`GameSession.swift:842`, `:847`) move with the same kana
+>   count. Against 25,000 m to Kyōto: negligible.
 > * Cadence: the first release in about five weeks. Its release days raise first-time downloads; the
 >   longer gap lowers the weekly rate. A fraction of one day's installs either way.
 >
@@ -177,11 +187,25 @@ cadence row, STATE, memory, and `review_watch` the same day.
 
 * en: "Word Lists: on a list's page, the list's words now show their reading underneath, as the
   dictionary search results there already do, and a long meaning wraps instead of being cut off." /
-  "Word Lists: the Saved list's row shows its star once instead of twice." / [the 四人 sentence]
+  "Word Lists: the Saved list's row shows its star once instead of twice." / [the corrections sentence]
 * zh-Hans: "单词表:在词单页面里,词单中的词下方现在会显示读音,与该页面词库搜索结果的显示方式相同;较长的释义会换行显示,不再被截断。"
-  / "单词表:「收藏」词单那一行的星标现在只显示一次。" / [四人]
+  / "单词表:「收藏」词单那一行的星标现在只显示一次。" / [corrections]
 * ja: "単語リスト:リストのページで、単語の下に読みが表示されるようになりました(辞書検索の結果と同じ表示です)。長い意味は省略されず、折り返して表示されます。"
-  / "単語リスト:「Saved」リストの行の星が1つだけになりました。" / [四人]
+  / "単語リスト:「Saved」リストの行の星が1つだけになりました。" / [corrections]
+* The corrections sentence, drafted 2026-10-09 for the nine entries the manifest declares (one sentence
+  for all nine; the copy must name exactly what the manifest declares):
+  * en: "Corrected the reading of a number with its counter in nine example sentences: for example,
+    四月 is now read しがつ, 九時 くじ and 四人 よにん, the standard readings, instead of よんがつ, きゅうじ
+    and よんにん."
+  * zh-Hans: "更正了九条例句中数字与量词的读音:例如「四月」现在读作标准读音 しがつ,「九時」读作 くじ,「四人」读作
+    よにん,不再是 よんがつ、きゅうじ、よんにん。"
+  * ja: "9 つの例文で、数字と助数詞の読みを訂正しました(例:「四月」は よんがつ ではなく しがつ、「九時」は きゅうじ
+    ではなく くじ、「四人」は よんにん ではなく よにん)。"
+  * `scripts/submit_1_36.py` still carries the one-correction copy. It refuses to run on this tree
+    (`correctedThisRelease` 9 ≠ 1), which is its guard working. Its copy, review note 3 ("one example
+    sentence's reading was corrected") and guard are rewritten for the nine after `fix/v136-r1-ui`
+    (`7adb59e`), which replaces that same guard with a named-entry check, is merged — not here, where the
+    two edits would conflict.
 
 ## §G Not in v1.36, with the reason
 
@@ -233,6 +257,58 @@ cadence row, STATE, memory, and `review_watch` the same day.
 * **Still owed:** item 5 (bump, submit script, registration), item 6 (`run_ios_placement_tests.sh`,
   the simulator pass, the headless renders, two whole-release review rounds) and item 7.
 
+**2026-10-09 (JST), §I's 8 counter corrections applied and declared** (R1 step 3 and its fix round,
+branch `feat/v136-corpus-2-fix`; `db467aa`, `069d34d` and the record commit after them).
+* **The corrections**, each upheld 2 of 2 by independent refuters at high confidence, written through
+  `CorpusFile`: one token's reading and the matching stretch of exKana per sentence, 16 lines of
+  n1–n5.json and no others.
+  * `n5-b303` 四月一日から新しい学校に行きます。 四月 よんがつ → しがつ (四 よん → し);
+  * `n2-b942` 兄は今年の四月に貿易会社に入社した。 四月 よんがつ → しがつ (四 よん → し);
+  * `n5-b071` 明日の午前九時に病院へ行きます。, `n4-g180` 電車は九時に出発します。 and `n3-b750`
+    午前九時に試合を開始する。: 九時 きゅうじ → くじ (九 きゅう → く);
+  * `n5-b018` 一日は二十四時間あります。 二十四時間 にじゅうよんじかん → にじゅうよじかん (二十四 にじゅうよん →
+    にじゅうよ);
+  * `n1-b615` 会議は三時間乃至四時間ほどかかる予定です。 四時間 しじかん → よじかん (四 し → よ);
+  * `n2-b072` 漢字のテストに向けて、四字熟語をたくさん暗記した。 四字熟語 よんじじゅくご → よじじゅくご
+    (四 よん → よ).
+  * Not changed: `n5-b334` 七時 ななじ, tolerated usage, flag-only.
+* **Declared** in `v136-reading-manifest.json`: 9 entries, each with its exact before and after;
+  `correctedThisRelease` 1 → 9. `run_all_gates.sh --vocab-only` (local, `BASELINE_REF` fdb2b5f) is
+  green; removing any one of the 27 declarations (an entry, or its exKana or exTokens) turns
+  `check_vocab_diff.py` red naming only that id. `check_vocab_diff` checks that a declared field moved,
+  not what it moved to. The value-level proof is `check_counter_readings.py --calibrate` on `069d34d`
+  (`v136-counter-sweep-3.json`): 42/42 calibration checks, 0 mismatches, `n5-b334` flag-only. The same
+  table flags all 8 on fdb2b5f.
+* **Calibration strengthened first** (`db467aa`): 七月 / 九月 / 四時 / 九時間 / 四字 logic checks, and (h),
+  a planted tree with a wrong reading in every file and kind of field for each table. All 18 mutants
+  are killed. 16 of them were also run on the previous version, and 12 of those passed its 34 checks.
+* **Dictation:** all nine stay withheld. `dictation-exclusions.json` is byte-identical to fdb2b5f; 785
+  excluded, pool 5,939. The 8 evidence rows' exKana follow the corpus, each according to what its
+  complaint now says. Six were instrument 2's own complaint (四 よん → し, 九 きゅう → く, 四 し → よ),
+  so they take n2-b304's v1.31 shape: complaint kept with "the corpus has since been corrected to …",
+  evidence `stale-after-correction (v1.36)`. Instrument 2 having named the corrected reading is
+  corroboration (67% measured agreement), not proof. For `n2-b072`, instrument 2 named よう, not the
+  corrected よ, and the row says so. `n5-b018` keeps `proven`: its complaint is the 一日 span, which did
+  not move.
+* **Known and accepted (stumble chip)**, simulated on `VocabStore`'s pair index (surface + reading,
+  ambiguous keys dropped); no test pins these ids:
+  * the three 九 tokens (`n5-b071`, `n4-g180`, `n3-b750`) now link to `n5-b057` 九 く "nine", a card with
+    no example sentence, instead of `n5-g009` 九 きゅう;
+  * the 四 tokens of `n5-b303`, `n2-b942` (now し) and `n2-b072` (now よ) no longer link to `n5-g004`
+    四 よん, the same trade-off as `n5-kazoku`;
+  * `n1-b615` (四 し → よ) and `n5-b018` (二十四) link to no card before or after.
+* **Rider-visible:** eight of the nine sentences ride 10–20 m less (§E lists each).
+* **Source diff against `fdb2b5f`, now:** `ListsView.swift`, `GameView.swift`, `PracticeView.swift`,
+  and n1–n5.json, 18 lines (n5.json 8, n2.json 4, n1, n3 and n4.json 2 each). Every frozen source is
+  still byte-identical.
+* **Not run:** `swift test --filter 'VocabKit|CorpusEscapeResidue|ExampleSentence'`. Free disk was
+  23.4 GiB at the start of this round and 20.7 GiB at its end, under §B's 25 GiB floor for any build.
+  Owner-gated: only the owner empties the Trash. A Python replica of
+  `ExampleSentenceTests.exclusionEvidenceIsCurrent` reads 785/785 rows with 0 stale; on the previous
+  evidence file it reports the 8.
+* **Owed before submission:** `submit_1_36.py`'s copy and guard for the nine (§F), after
+  `fix/v136-r1-ui` merges.
+
 ## §I Scope addendum, 2026-10-09 (JST) — before the N = 100 reading
 
 The whole-release review, round 1, found 8 shipped sentences whose taught number + counter readings
@@ -264,4 +340,25 @@ The same round's other findings are fixed in this release:
 * the §E registration lists every rider-visible change.
 
 Recorded for v1.37, not done here: nothing yet beyond the round's NITs.
+
+**Found 2026-10-09 by the fix review of the 8 corrections, and recorded by id, not corrected.** These
+have the same kind of defect: a number + counter reading without its sound change. They sit outside
+the table above, which enumerates only 月 / 時 / 時間 / 字. Nothing here changes them. The 2-of-2 rule
+applies, and no calibrated table sees them yet. Each was re-read in the corpus on 2026-10-09 (exJP,
+the covering tokens and exEN):
+* 三千円 taught さんせんえん (standard さんぜん): `n1-b439` and `n3-b781`, **both in the dictation pool**.
+  If the voice says さんぜん (plausible, not measured), a rider typing what they hear is refused at ぜ.
+* 十分 meaning "ten minutes" (by exEN) taught じゅうぶん: `n3-b020` 駅からおよそ十分歩きました。, **in the
+  dictation pool**. This round's own scan found it; the review did not list it.
+* 分 without its sound change: `n1-b1630` 三分 さんふん (さんぷん); `n2-b449` 三十分 さんじゅうぶん; 十分
+  "ten minutes" taught じゅうふん in `n1-b1147`, `n1-b1841`, `n2-b311` and `n4-b127` (v1.25 corrected
+  `n1-b1516` to じっぷん); `n1-b327` 五分 (a five-minute walk) ごぶん.
+* っ missing: `n2-b479` 一軒 いちけん (いっけん); `n1-b957` 一階 いちかい (いっかい).
+* For a person to judge, as tolerated-class candidates: `n4-g171` 三階 さんかい (in the pool; さんがい is
+  the traditional form), and 三十歳 / 八十歳 taught …じゅうさい (`n3-b123`, `n1-b311`, `n1-b1450`).
+
+Either an addendum made before the N = 100 reading extends the counter table under the same
+calibrate-then-2-of-2 rules (分 ぷん / ふん, 軒 and 階 with っ, 三千 ぜん), or these go to v1.37 as listed.
+The three pool sentences (`n1-b439`, `n3-b781`, `n3-b020`) come first either way. Until then, §E's
+sweep line states the table's scope, not "none found".
 

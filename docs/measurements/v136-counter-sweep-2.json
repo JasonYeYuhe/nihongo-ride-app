@@ -1,0 +1,885 @@
+{
+ "population": 6724,
+ "enumerated": 23,
+ "absorbers": [
+  "真っ二つ",
+  "三日月",
+  "四つ角",
+  "一日中",
+  "二十日",
+  "十日町",
+  "二人三脚",
+  "一人前"
+ ],
+ "hits": [],
+ "interrogative": {
+  "population": {
+   "exJP": 6724,
+   "surface": 7071,
+   "display": 233
+  },
+  "enumerated": {
+   "何時": [
+    "なんじ"
+   ],
+   "何分": [
+    "なんぷん"
+   ],
+   "何人": [
+    "なんにん"
+   ],
+   "何日": [
+    "なんにち"
+   ],
+   "何回": [
+    "なんかい"
+   ],
+   "何歳": [
+    "なんさい"
+   ],
+   "何年": [
+    "なんねん"
+   ],
+   "何月": [
+    "なんがつ"
+   ],
+   "何度": [
+    "なんど"
+   ],
+   "何本": [
+    "なんぼん"
+   ],
+   "何枚": [
+    "なんまい"
+   ],
+   "何冊": [
+    "なんさつ"
+   ],
+   "何個": [
+    "なんこ"
+   ],
+   "何杯": [
+    "なんばい"
+   ],
+   "何匹": [
+    "なんびき"
+   ],
+   "何台": [
+    "なんだい"
+   ],
+   "何番": [
+    "なんばん"
+   ],
+   "何階": [
+    "なんがい",
+    "なんかい"
+   ],
+   "何曜日": [
+    "なんようび"
+   ]
+  },
+  "otherSense": {
+   "何分": {
+    "なにぶん": "adverb 'anyway; please' (何分よろしく)"
+   },
+   "何人": {
+    "なにじん": "'what nationality'",
+    "なんぴと": "literary 'whoever' (何人も…ない)",
+    "なにびと": "literary 'whoever'"
+   },
+   "何時": {
+    "いつ": "the kanji spelling of いつ (何時も, 何時か)"
+   }
+  },
+  "absorbers": [
+   "いつ何時"
+  ],
+  "inspected": [
+   {
+    "id": "n1-b294",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b746",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b1023",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n1-b1887",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b141",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b245",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "surface",
+    "compound": "何分",
+    "expected": [
+     "なんぷん"
+    ],
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "verdictTokens": null,
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   },
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何分",
+    "expected": [
+     "なんぷん"
+    ],
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "taughtKana": "なにぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   },
+   {
+    "id": "n2-b1118",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n3-b037",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "何度",
+    "expected": [
+     "なんど"
+    ],
+    "taught": "なんど",
+    "taughtSpan": "何度",
+    "alignment": "exact",
+    "taughtKana": "なんど",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n3-b901",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "何日",
+    "expected": [
+     "なんにち"
+    ],
+    "taught": "なんにち",
+    "taughtSpan": "何日",
+    "alignment": "exact",
+    "taughtKana": "なんにち",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-g022",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "何時",
+    "expected": [
+     "なんじ"
+    ],
+    "taught": "なんじ",
+    "taughtSpan": "何時",
+    "alignment": "exact",
+    "taughtKana": "なんじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   }
+  ],
+  "hits": [
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "surface",
+    "sentence": "何分",
+    "reading": "なにぶん",
+    "compound": "何分",
+    "expected": [
+     "なんぷん"
+    ],
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "verdictTokens": null,
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   },
+   {
+    "id": "n2-b937",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "sentence": "何分古い車なので、時々故障します。",
+    "reading": "なにぶんふるいくるまなのでときどきこしょうします",
+    "compound": "何分",
+    "expected": [
+     "なんぷん"
+    ],
+    "taught": "なにぶん",
+    "taughtSpan": "何分",
+    "alignment": "exact",
+    "taughtKana": "なにぶん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "なにぶん",
+     "sense": "adverb 'anyway; please' (何分よろしく)"
+    }
+   }
+  ]
+ },
+ "counters": {
+  "population": {
+   "exJP": 6724,
+   "surface": 7071,
+   "display": 233
+  },
+  "enumerated": {
+   "月": {
+    "4": [
+     "し"
+    ],
+    "7": [
+     "しち"
+    ],
+    "9": [
+     "く"
+    ]
+   },
+   "時": {
+    "4": [
+     "よ"
+    ],
+    "7": [
+     "しち"
+    ],
+    "9": [
+     "く"
+    ]
+   },
+   "時間": {
+    "4": [
+     "よ"
+    ],
+    "7": [
+     "しち",
+     "なな"
+    ],
+    "9": [
+     "く"
+    ]
+   },
+   "字": {
+    "4": [
+     "よ"
+    ]
+   }
+  },
+  "counterReading": {
+   "時間": "じかん",
+   "時": "じ",
+   "月": "がつ",
+   "字": "じ"
+  },
+  "tolerated": {
+   "時": {
+    "7": {
+     "なな": "tolerated: ななじ is common speech; しちじ is the textbook form"
+    }
+   }
+  },
+  "otherSense": {
+   "四時": {
+    "しじ": "literary 'the four seasons' (四時)"
+   },
+   "四月": {
+    "わたぬき": "the surname 四月一日 / 四月朔日"
+   }
+  },
+  "notTheCounter": {
+   "時": [
+    "代",
+    "期",
+    "点"
+   ],
+   "月": [
+    "曜"
+   ]
+  },
+  "inspected": [
+   {
+    "id": "n1-b615",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "compound": "四時間",
+    "counter": "時間",
+    "number": 4,
+    "expected": [
+     "よじかん"
+    ],
+    "taught": "しじかん",
+    "taughtSpan": "四時間",
+    "alignment": "exact",
+    "taughtKana": "しじかん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n2-b072",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "四字",
+    "counter": "字",
+    "number": 4,
+    "expected": [
+     "よじ"
+    ],
+    "taught": "よんじ",
+    "taughtSpan": "四字",
+    "alignment": "exact",
+    "taughtKana": "よんじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n2-b942",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "compound": "四月",
+    "counter": "月",
+    "number": 4,
+    "expected": [
+     "しがつ"
+    ],
+    "taught": "よんがつ",
+    "taughtSpan": "四月",
+    "alignment": "exact",
+    "taughtKana": "よんがつ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n3-b750",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "compound": "九時",
+    "counter": "時",
+    "number": 9,
+    "expected": [
+     "くじ"
+    ],
+    "taught": "きゅうじ",
+    "taughtSpan": "九時",
+    "alignment": "exact",
+    "taughtKana": "きゅうじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n4-g180",
+    "file": "Sources/VocabKit/Resources/n4.json",
+    "field": "exJP",
+    "compound": "九時",
+    "counter": "時",
+    "number": 9,
+    "expected": [
+     "くじ"
+    ],
+    "taught": "きゅうじ",
+    "taughtSpan": "九時",
+    "alignment": "exact",
+    "taughtKana": "きゅうじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n5-g079",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "七時",
+    "counter": "時",
+    "number": 7,
+    "expected": [
+     "しちじ"
+    ],
+    "taught": "しちじ",
+    "taughtSpan": "七時",
+    "alignment": "exact",
+    "taughtKana": "しちじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-b018",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "二十四時間",
+    "counter": "時間",
+    "number": 24,
+    "expected": [
+     "にじゅうよじかん"
+    ],
+    "taught": "にじゅうよんじかん",
+    "taughtSpan": "二十四時間",
+    "alignment": "exact",
+    "taughtKana": "にじゅうよんじかん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n5-b071",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "九時",
+    "counter": "時",
+    "number": 9,
+    "expected": [
+     "くじ"
+    ],
+    "taught": "きゅうじ",
+    "taughtSpan": "九時",
+    "alignment": "exact",
+    "taughtKana": "きゅうじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n5-b202",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "七時",
+    "counter": "時",
+    "number": 7,
+    "expected": [
+     "しちじ"
+    ],
+    "taught": "しちじ",
+    "taughtSpan": "七時",
+    "alignment": "exact",
+    "taughtKana": "しちじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "ok",
+    "verdictKana": "ok",
+    "verdict": "ok"
+   },
+   {
+    "id": "n5-b303",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "四月",
+    "counter": "月",
+    "number": 4,
+    "expected": [
+     "しがつ"
+    ],
+    "taught": "よんがつ",
+    "taughtSpan": "四月",
+    "alignment": "exact",
+    "taughtKana": "よんがつ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n5-b334",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "compound": "七時",
+    "counter": "時",
+    "number": 7,
+    "expected": [
+     "しちじ"
+    ],
+    "taught": "ななじはん",
+    "taughtSpan": "七時半",
+    "alignment": "prefix",
+    "taughtKana": "ななじはん",
+    "kanaAlignment": "prefix",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "ななじ",
+     "sense": "tolerated: ななじ is common speech; しちじ is the textbook form"
+    }
+   }
+  ],
+  "hits": [
+   {
+    "id": "n1-b615",
+    "file": "Sources/VocabKit/Resources/n1.json",
+    "field": "exJP",
+    "sentence": "会議は三時間乃至四時間ほどかかる予定です。",
+    "reading": "かいぎはさんじかんないししじかんほどかかるよていです",
+    "compound": "四時間",
+    "counter": "時間",
+    "number": 4,
+    "expected": [
+     "よじかん"
+    ],
+    "taught": "しじかん",
+    "taughtSpan": "四時間",
+    "alignment": "exact",
+    "taughtKana": "しじかん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n2-b072",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "sentence": "漢字のテストに向けて、四字熟語をたくさん暗記した。",
+    "reading": "かんじのてすとにむけてよんじじゅくごをたくさんあんきした",
+    "compound": "四字",
+    "counter": "字",
+    "number": 4,
+    "expected": [
+     "よじ"
+    ],
+    "taught": "よんじ",
+    "taughtSpan": "四字",
+    "alignment": "exact",
+    "taughtKana": "よんじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n2-b942",
+    "file": "Sources/VocabKit/Resources/n2.json",
+    "field": "exJP",
+    "sentence": "兄は今年の四月に貿易会社に入社した。",
+    "reading": "あにはことしのよんがつにぼうえきかいしゃににゅうしゃした",
+    "compound": "四月",
+    "counter": "月",
+    "number": 4,
+    "expected": [
+     "しがつ"
+    ],
+    "taught": "よんがつ",
+    "taughtSpan": "四月",
+    "alignment": "exact",
+    "taughtKana": "よんがつ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n3-b750",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "sentence": "午前九時に試合を開始する。",
+    "reading": "ごぜんきゅうじにしあいをかいしする",
+    "compound": "九時",
+    "counter": "時",
+    "number": 9,
+    "expected": [
+     "くじ"
+    ],
+    "taught": "きゅうじ",
+    "taughtSpan": "九時",
+    "alignment": "exact",
+    "taughtKana": "きゅうじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n4-g180",
+    "file": "Sources/VocabKit/Resources/n4.json",
+    "field": "exJP",
+    "sentence": "電車は九時に出発します。",
+    "reading": "でんしゃはきゅうじにしゅっぱつします",
+    "compound": "九時",
+    "counter": "時",
+    "number": 9,
+    "expected": [
+     "くじ"
+    ],
+    "taught": "きゅうじ",
+    "taughtSpan": "九時",
+    "alignment": "exact",
+    "taughtKana": "きゅうじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n5-b018",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "sentence": "一日は二十四時間あります。",
+    "reading": "いちにちはにじゅうよんじかんあります",
+    "compound": "二十四時間",
+    "counter": "時間",
+    "number": 24,
+    "expected": [
+     "にじゅうよじかん"
+    ],
+    "taught": "にじゅうよんじかん",
+    "taughtSpan": "二十四時間",
+    "alignment": "exact",
+    "taughtKana": "にじゅうよんじかん",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n5-b071",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "sentence": "明日の午前九時に病院へ行きます。",
+    "reading": "あすのごぜんきゅうじにびょういんへいきます",
+    "compound": "九時",
+    "counter": "時",
+    "number": 9,
+    "expected": [
+     "くじ"
+    ],
+    "taught": "きゅうじ",
+    "taughtSpan": "九時",
+    "alignment": "exact",
+    "taughtKana": "きゅうじ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n5-b303",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "sentence": "四月一日から新しい学校に行きます。",
+    "reading": "よんがつついたちからあたらしいがっこうにいきます",
+    "compound": "四月",
+    "counter": "月",
+    "number": 4,
+    "expected": [
+     "しがつ"
+    ],
+    "taught": "よんがつ",
+    "taughtSpan": "四月",
+    "alignment": "exact",
+    "taughtKana": "よんがつ",
+    "kanaAlignment": "exact",
+    "verdictTokens": "mismatch",
+    "verdictKana": "mismatch",
+    "verdict": "mismatch"
+   },
+   {
+    "id": "n5-b334",
+    "file": "Sources/VocabKit/Resources/n5.json",
+    "field": "exJP",
+    "sentence": "今日の授業は七時半に終わります。",
+    "reading": "きょうのじゅぎょうはななじはんにおわります",
+    "compound": "七時",
+    "counter": "時",
+    "number": 7,
+    "expected": [
+     "しちじ"
+    ],
+    "taught": "ななじはん",
+    "taughtSpan": "七時半",
+    "alignment": "prefix",
+    "taughtKana": "ななじはん",
+    "kanaAlignment": "prefix",
+    "verdictTokens": "flag-only",
+    "verdictKana": "flag-only",
+    "verdict": "flag-only",
+    "otherSense": {
+     "reading": "ななじ",
+     "sense": "tolerated: ななじ is common speech; しちじ is the textbook form"
+    }
+   }
+  ]
+ },
+ "calibration": [
+  "[PASS] (a) 281fc45 flags n5-g022 — hits for n5-g022: [('mismatch', '何時', 'なんどき')]",
+  "[PASS] (b) the working tree inspects n5-g022 and does not flag it — inspected: [('ok', '何時', 'なんじ')]; hits: 0",
+  "[PASS] (c0) the working tree exits 0 and the n5-only tree exits 2 — exit 0; n5-only exit 2",
+  "[PASS] (c1) lexicalised table: its own scan reads ≥ 6000 sentences; n5-only below — working tree 6724, n5-only 616",
+  "[PASS] (c2) 何 table: its own scan reads ≥ 6000 sentences and headwords and all 233 passages; n5-only below — working tree {'exJP': 6724, 'surface': 7071, 'display': 233}, n5-only {'exJP': 616, 'surface': 646, 'display': 0}",
+  "[PASS] (c3) counter table: its own scan reads ≥ 6000 sentences and headwords and all 233 passages; n5-only below — working tree {'exJP': 6724, 'surface': 7071, 'display': 233}, n5-only {'exJP': 616, 'surface': 646, 'display': 0}",
+  "[PASS] (d) 281fc45: n2-b937 何分 なにぶん is flag-only in both fields — hits for n2-b937: [('exJP', 'flag-only', 'なにぶん'), ('surface', 'flag-only', 'なにぶん')]",
+  "[PASS] (e) 281fc45: the lexicalised table flags n5-kazoku — hits for n5-kazoku: [('四人', 'よんにん')]",
+  "[PASS] (f) 29e4778: the counter table flags the 9 known occurrences in both exTokens and exKana — missing: none; also flagged (or flagged differently): none",
+  "[PASS] (g) the working tree inspects n5-g079 七時 しちじ and passes it in both fields — inspected: [('七時', 'ok', 'ok', 'ok', 'しちじ')]; hits: 0",
+  "[PASS] logic: an absorber is recorded, not judged — いつ何時でも いつなんどきでも: ['absorbed']",
+  "[PASS] logic: 何階 accepts both なんがい and なんかい — 何階何階 なんがいなんかい: ['ok', 'ok']",
+  "[PASS] logic: a prefix span is judged on its start — 何時間 なんじかん: ['ok']",
+  "[PASS] logic: a counter split over two tokens is read whole — 何回 なんかい: ['ok']",
+  "[PASS] logic: 何人 なにじん is flag-only, never a mismatch — 何人ですか なにじんですか: ['flag-only']",
+  "[PASS] logic: 何人 taught なにん is a mismatch: the path is not proven on 何時 alone — 何人 なにん: ['mismatch']",
+  "[PASS] logic: a regression in exKana alone is a mismatch: tokens なんじ, exKana なんどき — 何時ですか なんどきですか: ['mismatch']",
+  "[PASS] logic: 九時 taught きゅうじ is a mismatch in both fields — 九時に: [('九時', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: 七時: しちじ is right, ななじ is tolerated (flag-only) — 七時七時: [('七時', 'ok', 'ok', 'ok'), ('七時', 'flag-only', 'flag-only', 'flag-only')]",
+  "[PASS] logic: 七時間 accepts both しちじかん and ななじかん; 九時間 wants くじかん — 七時間七時間九時間: [('七時間', 'ok', 'ok', 'ok'), ('七時間', 'ok', 'ok', 'ok'), ('九時間', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: a compound number is read whole: 二十四時間 にじゅうよじかん ok, にじゅうよんじかん not — 二十四時間、二十四時間: [('二十四時間', 'ok', 'ok', 'ok'), ('二十四時間', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: a regression in the tokens alone is a mismatch: tokens よんがつ, exKana しがつ — 四月: [('四月', 'mismatch', 'mismatch', 'ok')]",
+  "[PASS] logic: a regression in exKana alone is a mismatch: tokens しがつ, exKana よんがつ — 四月: [('四月', 'mismatch', 'ok', 'mismatch')]",
+  "[PASS] logic: exKana is read where the tokens put it, not anywhere in the sentence — 九時と九時: [('九時', 'mismatch', 'mismatch', 'mismatch'), ('九時', 'ok', 'ok', 'ok')]",
+  "[PASS] logic: an exact span must EQUAL an expected reading, not contain it — 四時: [('四時', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: 四時 しじ, 'the four seasons', is flag-only — 四時の移ろい: [('四時', 'flag-only', 'flag-only', 'flag-only')]",
+  "[PASS] logic: the surname 四月一日 わたぬき is flag-only; the date 四月一日 is still judged — 四月一日さん、四月一日: [('四月', 'flag-only', 'flag-only', 'flag-only'), ('四月', 'mismatch', 'mismatch', 'mismatch')]",
+  "[PASS] logic: not the counter: 第四月曜日, 四時期, and 十四月 (no such month) are absorbed — 第四月曜日と四時期と十四月: [('四月', 'absorbed', None, None), ('四時', 'absorbed', None, None), ('十四月', 'absorbed', None, None)]",
+  "[PASS] logic: kanji digits with no 十/百/千 are a range, not one number: 三四時間, 六七時間 — 三四時間、六七時間: [('三四時間', 'absorbed', None, None), ('六七時間', 'absorbed', None, None)]",
+  "[PASS] logic: never inspected: 九州, 四季, 四ヶ月, 四か月, 十月, 一時, 一月, 十字路, 四六時中 — 九州の四季、四ヶ月、四か月、十月、一時、一月、十字路、四六時中: []",
+  "[PASS] logic: ASCII and full-width digits are read: ４時 よんじ is a mismatch, 24時間 にじゅうよじかん ok — ４時、24時間: [('４時', 'mismatch', 'mismatch', 'mismatch'), ('24時間', 'ok', 'ok', 'ok')]",
+  "[PASS] logic: a field with no tokens is judged on its reading: 九時 きゅうじ — 九時: [('九時', 'mismatch', None, 'mismatch')]",
+  "[PASS] logic: the exit-2 floor names a short counter table — ['counters exJP 2']",
+  "[PASS] logic: the exit-2 floor names a short 何 table — ['interrogative surface 616']"
+ ],
+ "corpus": {
+  "lastCommit": "29e477887db42789f503605a12f7629f5360d05e",
+  "uncommittedChanges": false
+ }
+}
