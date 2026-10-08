@@ -18,7 +18,7 @@ REPO = Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "Sources/VocabKit/Resources"
 
 # Set to this release's corpus-change manifest, or None when the release changes no corpus.
-CORPUS_MANIFEST = "docs/measurements/v136-reading-manifest.json"   # v1.36: n5-kazoku 四人 よにん (PLAN-V1.36 §C item 3) + 8 counter readings (§I)
+CORPUS_MANIFEST = "docs/measurements/v136-reading-manifest.json"   # v1.36: n5-kazoku 四人 よにん (PLAN-V1.36 §C item 3) + 8 counter readings (§I) + 12 sound-change readings (§I addendum 2)
 # Was "docs/measurements/v135-residue-manifest.json" for v1.35 (7 residue + 13 何 + 2 round-3 corrections).
 # Was None from v1.27 through v1.34 ("v1.30 ships the paid route and touches no vocabulary file").
 

@@ -1,16 +1,16 @@
 {
- "reason": "Nine corrections. (1) PLAN-V1.36 §C item 3, n5-kazoku: 家族は四人です。 taught 四人 as よんにん; the standard, lexicalised reading is よにん, so exKana かぞくはよんにんです -> かぞくはよにんです and the 四 token よん -> よ, with 人 still にん. The audio cannot arbitrate (the voice says 人 = ひと, and the よにん and よんにん renders both differ from the exJP audio), so, as for v1.35's four 何か rows that 1b left silent, the correction rests on the grammar and two independent refuters: upheld 2 of 2, and 2 of 2 again on the item-4 sweep's hit. The item-4 sweep (何 + counter, docs/measurements/v136-counter-sweep.json) found 0 mismatches and 2 flag-only occurrences (n2-b937 何分 なにぶん, correct for its sense), so it added no correction. (2) PLAN-V1.36 §I, the counter table (month 月, hour 時, duration 時間, 字; docs/measurements/v136-counter-sweep-2.json): 8 mismatches, each upheld 2 of 2 by independent refuters — 四月 よんがつ -> しがつ (n5-b303, n2-b942), 九時 きゅうじ -> くじ (n5-b071, n4-g180, n3-b750), 二十四時間 にじゅうよんじかん -> にじゅうよじかん (n5-b018), 四時間 しじかん -> よじかん (n1-b615), 四字熟語 よんじじゅくご -> よじじゅくご (n2-b072). Each changes one token's reading and the matching stretch of exKana. Its ninth hit, n5-b334 七時 ななじ, is tolerated usage: flag-only, unchanged. All nine sentences are withheld from dictation before and after. Every vote is in its entry's 'votes'.",
- "measurement": "v1.36 corpus corrections (PLAN-V1.36 §C items 3 and 4, and the §I addendum)",
- "population": "n5-kazoku, the LEXICALISED table's only hit on fae6b8e (scripts/check_counter_readings.py; v136-counter-sweep.json 'hits'); and the counter table's 8 mismatches on e9e3c7a (v136-counter-sweep-2.json 'counters' 'hits'; the ninth hit there, n5-b334 七時 ななじ, is flag-only and not a correction candidate). The counter table enumerates only 月 / 時 / 時間 / 字 after a last digit 4, 7 or 9: it is not a sweep of every number + counter reading, and the fix review of these corrections found more outside it (PLAN-V1.36 §I).",
- "method": "Grammar and lexicon, put to two independent refuters per question; a correction ships only when both uphold it (PLAN-V1.36 §C item 3, 'Upheld only 2 of 2'; §I, 'each hit upheld 2 of 2 by independent refuters, or left unchanged'). Applied through scripts/corpus_io.CorpusFile, which refuses a file it cannot write back byte for byte. Rows follow v135-residue-inspection.json; 'rewrite' is what check_vocab_diff.py permits.",
+ "reason": "Twenty-one corrections. (1) PLAN-V1.36 §C item 3, n5-kazoku: 家族は四人です。 taught 四人 as よんにん; the standard, lexicalised reading is よにん, so exKana かぞくはよんにんです -> かぞくはよにんです and the 四 token よん -> よ, with 人 still にん. The audio cannot arbitrate (the voice says 人 = ひと, and the よにん and よんにん renders both differ from the exJP audio), so, as for v1.35's four 何か rows that 1b left silent, the correction rests on the grammar and two independent refuters: upheld 2 of 2, and 2 of 2 again on the item-4 sweep's hit. The item-4 sweep (何 + counter, docs/measurements/v136-counter-sweep.json) found 0 mismatches and 2 flag-only occurrences (n2-b937 何分 なにぶん, correct for its sense), so it added no correction. (2) PLAN-V1.36 §I, the counter table (month 月, hour 時, duration 時間, 字; docs/measurements/v136-counter-sweep-2.json): 8 mismatches, each upheld 2 of 2 by independent refuters — 四月 よんがつ -> しがつ (n5-b303, n2-b942), 九時 きゅうじ -> くじ (n5-b071, n4-g180, n3-b750), 二十四時間 にじゅうよんじかん -> にじゅうよじかん (n5-b018), 四時間 しじかん -> よじかん (n1-b615), 四字熟語 よんじじゅくご -> よじじゅくご (n2-b072). Each changes one token's reading and the matching stretch of exKana. Its ninth hit, n5-b334 七時 ななじ, is tolerated usage: flag-only, unchanged. All nine sentences of (1) and (2) are withheld from dictation before and after. (3) PLAN-V1.36 §I addendum 2, the counter table extended to the sound-changing counters (docs/measurements/v136-counter-sweep-4.json, 0a4e354): 13 mismatches, each upheld 2 of 2 by independent refuters, and 12 of them corrected — 三千 さんせん -> さんぜん (n1-b439, n3-b781), 八十点 はちじゅうてん -> はちじゅってん (n3-b678), 三分 さんふん -> さんぷん (n1-b1630), 三十分 さんじゅうぶん -> さんじゅっぷん (n2-b449), 五分 ごぶん -> ごふん (n1-b327), 十分 'ten minutes' じゅうふん -> じゅっぷん (n1-b1147, n1-b1841, n2-b311, n4-b127), 一軒 いちけん -> いっけん (n2-b479), 一階 いちかい -> いっかい (n1-b957). Where two forms are standard the corpus takes the more common one (じゅっぷん over じっぷん, はちじゅってん over はちじってん). Each changes one or two tokens' readings and the matching stretch of exKana, and no sentence's kana count. The thirteenth, n3-b020 十分 'ten minutes' taught じゅうぶん, was upheld 2 of 2 but is NOT corrected and has no row here: it is in the dictation pool, and the voice is proven (instrument 1 and calibrated 1b) to say じゅうぶん in it, so じゅっぷん would mark a rider wrong for typing what they hear; its votes and the measurement are in docs/measurements/v136-dictation-remeasure.json. The table's 5 flag-only hits (三階 さんかい n4-g171; …じゅうさい n3-b123, n1-b311, n1-b1450; 七時 ななじ n5-b334) are tolerated usage, unchanged. Three of the 12 are in the dictation pool (n1-b439, n3-b781, n3-b678) and stay there, 1b silent on each; nine are withheld before and after. Every vote is in its entry's 'votes'.",
+ "measurement": "v1.36 corpus corrections (PLAN-V1.36 §C items 3 and 4, the §I addendum and §I addendum 2)",
+ "population": "n5-kazoku, the LEXICALISED table's only hit on fae6b8e (scripts/check_counter_readings.py; v136-counter-sweep.json 'hits'); and the counter table's 8 mismatches on e9e3c7a (v136-counter-sweep-2.json 'counters' 'hits'; the ninth hit there, n5-b334 七時 ななじ, is flag-only and not a correction candidate). The counter table enumerates only 月 / 時 / 時間 / 字 after a last digit 4, 7 or 9: it is not a sweep of every number + counter reading, and the fix review of these corrections found more outside it (PLAN-V1.36 §I). §I addendum 2: the counter table's 13 mismatches on 3d891b9 once it was extended to 分 軒 階 回 歳 本 杯 匹 個 冊 点 泊 and to 千 / 百 after a digit (v136-counter-sweep-4.json 'counters' 'hits', 0a4e354; its 5 flag-only hits are not correction candidates). It enumerates only the digits whose sound changes before those counters, so it is still not a sweep of every number + counter reading.",
+ "method": "Grammar and lexicon, put to two independent refuters per question; a correction ships only when both uphold it (PLAN-V1.36 §C item 3, 'Upheld only 2 of 2'; §I, 'each hit upheld 2 of 2 by independent refuters, or left unchanged'). Applied through scripts/corpus_io.CorpusFile, which refuses a file it cannot write back byte for byte. Rows follow v135-residue-inspection.json; 'rewrite' is what check_vocab_diff.py permits. §I addendum 2 used the same rules. A correction to a sentence IN the dictation pool also had to leave its exKana matching what the voice says, so each pool correction was re-measured with instrument 1b first (docs/measurements/v136-dictation-remeasure.json).",
  "counts": {
-  "defect": 9,
-  "corrected": 9,
+  "defect": 21,
+  "corrected": 21,
   "declined": 0,
   "withheldFromDictation": 0,
   "releasedToDictation": 0
  },
- "note": "The votes are verbatim, except that the absolute checkout path is made repo-relative wherever it appears in 'sources' (n5-kazoku's votes and the 8 counter rows' alike; one counter vote also had it mid-string, 'SudachiPy in .venv-jp'). Line numbers in n5-kazoku's votes refer to the tree before that change (da462c4 / fae6b8e); line numbers in the 8 counter rows' votes refer to f1ac12e, the tree the refuters read. n5-kazoku's correction moves no line of n5.json; the dated addendum in docs/PLAN-ITERATION.md §D moves that file's lines after :519 down by 13. The 8 counter corrections move 16 lines of n1–n5.json and no others. check_vocab_diff.py checks that a declared field moved, not what it moved to: the values are each row's 'corrected', which states the exact exKana and token before and after, and scripts/check_counter_readings.py --calibrate run on the corrected tree (docs/measurements/v136-counter-sweep-3.json: 0 mismatches; n5-b334 flag-only) checks them. Instrument 2 had named the corrected reading for 6 of the 8 counter sentences in v1.29; at 67% measured agreement that is corroboration, not proof, and no correction rests on it.",
+ "note": "The votes are verbatim, except that the absolute checkout path is made repo-relative wherever it appears in 'sources' (n5-kazoku's votes and the 8 counter rows' alike; one counter vote also had it mid-string, 'SudachiPy in .venv-jp'). Line numbers in n5-kazoku's votes refer to the tree before that change (da462c4 / fae6b8e); line numbers in the 8 counter rows' votes refer to f1ac12e, the tree the refuters read. n5-kazoku's correction moves no line of n5.json; the dated addendum in docs/PLAN-ITERATION.md §D moves that file's lines after :519 down by 13. The 8 counter corrections move 16 lines of n1–n5.json and no others. check_vocab_diff.py checks that a declared field moved, not what it moved to: the values are each row's 'corrected', which states the exact exKana and token before and after, and scripts/check_counter_readings.py --calibrate run on the corrected tree (docs/measurements/v136-counter-sweep-3.json: 0 mismatches; n5-b334 flag-only) checks them. Instrument 2 had named the corrected reading for 6 of the 8 counter sentences in v1.29; at 67% measured agreement that is corroboration, not proof, and no correction rests on it. The 12 §I addendum 2 rows' votes are verbatim except for the same path rule: the absolute checkout path is made repo-relative in 'sources', and two of n3-b678's sources named another worktree's copy of a file on branch feat/v136-counter-sweep-4, which now name the file itself, the branch still in their text. Line numbers in those votes refer to 3d891b9, the tree the refuters read. The 12 corrections move 29 lines of n1–n4.json (n1 14, n2 8, n3 4, n4 3) and no others, and change no sentence's kana count, so no sentence rides a different distance. Their values are checked by scripts/check_counter_readings.py --calibrate on the corrected tree (docs/measurements/v136-counter-sweep-5.json): check (m) inspects each of the 12 and passes it in exTokens and in exKana, and check (i) flags all 13 of §I addendum 2's mismatches on 3d891b9 and on fdb2b5f, the corpus 1.35 shipped. That sweep's one remaining mismatch is n3-b020, held back as the reason explains.",
  "entries": [
   {
    "id": "n5-kazoku",
@@ -556,6 +556,697 @@
       }
      ],
      "upheld": true
+    }
+   }
+  },
+  {
+   "id": "n1-b439",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "三千 here is the number 3,000 before 円 (exEN '3,000 yen'), read さんぜん: 千 voices after 三, as 三百 is さんびゃく (dictionaries and the NHK accent dictionary give サンゼン; scripts/check_counter_readings.py PLACE_SOUND_CHANGE (1000, 3) さんぜん). さんせん is not a second standard form. exKana and the 三千 token said さんせん, the reading the repo's .venv-jp Sudachi gives 三千 in split modes A and C, for the sentence, for 三千 alone and for 三千円 (a refuter ran it). n1-b439 and n3-b781 are the corpus's only 三千 tokens. The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 会費は全員一律で三千円です。 / exKana かいひはぜんいんいちりつでさんせんえんです / exTokens [三千, さんせん]",
+   "corrected": "exJP 会費は全員一律で三千円です。 (unchanged) / exKana かいひはぜんいんいちりつでさんぜんえんです / exTokens [三千, さんぜん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana さんせん -> さんぜん, the 三千 token さんせん -> さんぜん; token boundaries, exJP, exEN, exZH, the id and the headword (一律 いちりつ) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n1.json move (exKana :57647, the 三千 token's reading :57671). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 21 kana, so it still rides 210 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "IN the dictation pool before and after: dictation-exclusions.json is unchanged and the pool stays 5,939. Re-measured on the corrected tokens (docs/measurements/v136-dictation-remeasure.json): calibrated instrument 1b is SILENT on 三千 — neither 会費は全員一律でさんぜん円です。 (59cfcbf2ac5e) nor …さんせん… (0eb4a08ff51d) renders byte-identical to the exJP audio (c51086e0ab12) — so the voice is NOT proven to say さんぜん. The leads disagree. Instrument 2 on the corrected tokens does not flag it (own 0.0754, nearest rival 円 まる 0.0952), and on the tokens 1.35 shipped it would have flagged it (own さんせん 0.0970 against さんぜん 0.0754) had さんぜん been a candidate, which Sudachi's lookup of 三千 never offers. The span comparative favours さんせん (0.0120 against さんぜん 0.0539). Kept in the pool because the v1.36 apply step requires that the pool not shrink; v1.35's precedent (n5-g022) withheld a corrected pool sentence on 1b's silence. Recorded for a person to decide.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n1-b439",
+      "file": "Sources/VocabKit/Resources/n1.json",
+      "field": "exJP",
+      "sentence": "会費は全員一律で三千円です。",
+      "exEN": "The membership fee is uniformly 3,000 yen for everyone.",
+      "taught": "三千 さんせん (tokens and exKana)",
+      "expected": "さんぜん",
+      "kind": "mismatch",
+      "inDictationPool": true,
+      "note": "Found by the review (§I addendum 2). In the pool: a rider who types さんぜん is marked wrong at ぜ."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I uphold the hit: the taught reading is wrong, and さんぜん is the reading to teach.\n\n1. What the corpus teaches. At base 3d891b9, n1-b439 has exJP 会費は全員一律で三千円です。 It teaches 三千 as さんせん in exTokens (['三千','さんせん']), and exKana says かいひはぜんいんいちりつでさんせんえんです. This matches the hit.\n\n2. The sense. exEN says \"3,000 yen\", so 三千 here is just the number 3,000 before the counter 円. No other sense applies.\n\n3. The standard reading. 3,000 is read さんぜん: 千 voices to ぜん after 三, the same pattern as 三百 さんびゃく. Standard dictionaries and the NHK accent dictionary give サンゼン. さんせん is not an accepted second form, so the \"two standard forms\" exception does not apply. A learner at any N level should be taught さんぜん, which is also what the voice will say.\n\n4. The project's own checker agrees. scripts/check_counter_readings.py, in its PLACE_SOUND_CHANGE table, already maps (1000, 3) to (\"さんぜん\",), so the expected value matches the repo's own rule.\n\n5. Where the error came from. I ran the project's documented tokenizer, ./.venv-jp/bin/python with SudachiPy. It reads 三千 as サンセン in both split modes A and C, for the full sentence, for 三千 alone and for 三千円. So the corpus copied the tokenizer's reading, which skips the voicing. The same mistake appears in the plan for 三分 さんふん and 一軒 いちけん.\n\n6. Scope. A scan of every n*.json exTokens list finds 三千 in exactly two sentences, both taught さんせん: n1-b439 and n3-b781. That matches §I addendum 2. No sentence teaches it as さんぜん, so there is nothing that would make the corrected form inconsistent with the rest of the corpus.\n\n7. Pool claim. I did not check whether n1-b439 is in the dictation pool; §I addendum 2 says it is. That affects how much the error matters to a rider, not whether the reading is correct.\n\nI worked read-only: no worktree, no build, no writes. I made no new assertions, so there are no mutation pairs to list.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (n1-b439: exTokens ['三千','さんせん'], exKana ...さんせんえんです, exEN '3,000 yen')",
+        "Sources/VocabKit/Resources/n3.json (n3-b781: the only other 三千 token, also さんせん)",
+        "scripts/check_counter_readings.py (line 246, PLACE_SOUND_CHANGE: (1000, 3) -> ('さんぜん',))",
+        "docs/PLAN-V1.36.md (§I addendum 2, lines 365-384: 三千円 taught さんせんえん in n1-b439 and n3-b781, both in the dictation pool)",
+        ".venv-jp/bin/python + SudachiPy: reads 三千 as サンセン in modes A and C, the likely origin of the error",
+        "General Japanese numeral reading: 三千 = さんぜん (voicing of 千 after 三), the only standard form"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I checked this read-only at 3d891b9. The entry n1-b439 in Sources/VocabKit/Resources/n1.json has exJP 会費は全員一律で三千円です。 and exEN \"The membership fee is uniformly 3,000 yen for everyone.\" Both the exTokens pair [\"三千\",\"さんせん\"] and the exKana string ...でさんせんえんです teach さんせん.\n\nIn this sentence 三千 just means the number 3,000 in a price (3,000 yen). There is no second sense, like 十分 'enough' vs 'ten minutes', that could call for a different reading. The standard reading of 三千 is さんぜん: after ん, the せ of 千 voices to ぜ. This is the same regular sound change that gives 三百 さんびゃく. Dictionaries and JLPT number teaching give only さんぜん. 三千円 is さんぜんえん, and さんせん is not an accepted alternative. This is not a case with two standard forms (like じゅっぷん/じっぷん), so the \"uphold only if the taught form is neither\" rule is met: さんせん is neither standard form, and the only standard form is さんぜん.\n\nThe repo agrees. scripts/check_counter_readings.py line 246 has PLACE_SOUND_CHANGE (1000, 3): (\"さんぜん\",). docs/PLAN-V1.36.md lines 349 and 369 record 三千円 taught as さんせんえん against the standard さんぜん, in the dictation pool.\n\nさんぜん is also the right form to teach an N1 learner here. It is the only standard reading, and it is what a learner will hear. Because the sentence is in the dictation pool, a rider who types the correct さんぜん is currently marked wrong at ぜ.\n\nNot checked: whether the dictation voice actually says さんぜん. That does not change the verdict.\n\nWhoever applies the fix needs to change both places: the 三千 token kana (さんせん to さんぜん) and the matching exKana substring (さんせんえん to さんぜんえん). I made no edits, worktree or build.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (entry n1-b439: exTokens [\"三千\",\"さんせん\"], exKana かいひはぜんいんいちりつでさんせんえんです)",
+        "scripts/check_counter_readings.py:246 (PLACE_SOUND_CHANGE (1000, 3): (\"さんぜん\",))",
+        "docs/PLAN-V1.36.md:349-369 (§I addendum 2: 三千円 taught さんせんえん, standard さんぜん, n1-b439 and n3-b781 in dictation pool)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "n3-b781",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "三千 here is the number 3,000 before 円 (exEN '3,000 yen'), read さんぜん: 千 voices after 三, as 三百 is さんびゃく (dictionaries and textbook number tables; scripts/check_counter_readings.py PLACE_SOUND_CHANGE (1000, 3) さんぜん). さんせん is not a second standard form. n1-b439 and n3-b781 are the corpus's only 三千 tokens. The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 食事代の合計は三千円でした。 / exKana しょくじだいのごうけいはさんせんえんでした / exTokens [三千, さんせん]",
+   "corrected": "exJP 食事代の合計は三千円でした。 (unchanged) / exKana しょくじだいのごうけいはさんぜんえんでした / exTokens [三千, さんぜん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana さんせん -> さんぜん, the 三千 token さんせん -> さんぜん; token boundaries, exJP, exEN, exZH, the id and the headword (合計 ごうけい) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n3.json move (exKana :80979, the 三千 token's reading :80999). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 21 kana, so it still rides 210 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "IN the dictation pool before and after: dictation-exclusions.json is unchanged and the pool stays 5,939. Re-measured on the corrected tokens (docs/measurements/v136-dictation-remeasure.json): calibrated instrument 1b is SILENT on 三千 — neither 食事代の合計はさんぜん円でした。 (8b5ea2327edf) nor …さんせん… (4cc844d9790f) renders byte-identical to the exJP audio (e23320330ac8) — so the voice is not proven to say さんぜん. Both leads favour the correction: instrument 2 on the corrected tokens does not flag it (own 0.0421, nearest rival 円 まる 0.0572), and on the tokens 1.35 shipped it would have flagged it (own さんせん 0.0454 against さんぜん 0.0421) had さんぜん been a candidate; the span comparative favours さんぜん (0.0066 against さんせん 0.0132). Kept in the pool because the v1.36 apply step requires that the pool not shrink; v1.35's precedent (n5-g022) withheld a corrected pool sentence on 1b's silence. Recorded for a person to decide.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n3-b781",
+      "file": "Sources/VocabKit/Resources/n3.json",
+      "field": "exJP",
+      "sentence": "食事代の合計は三千円でした。",
+      "exEN": "The total cost of the meal was 3,000 yen.",
+      "taught": "三千 さんせん",
+      "expected": "さんぜん",
+      "kind": "mismatch",
+      "inDictationPool": true,
+      "note": "Found by the review. In the pool."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I upheld the hit. n3-b781 at 3d891b9 (Sources/VocabKit/Resources/n3.json) has exJP 食事代の合計は三千円でした。 and exEN \"The total cost of the meal was 3,000 yen.\" Its exTokens give [\"三千\",\"さんせん\"], so exKana reads ...さんせんえんでした.\n\nThe exEN shows 三千 here is the plain number 3,000 used to count yen. It is not a compound word or a proper noun that could have its own reading. In standard Japanese, 3,000 is read さんぜん: 千 voices to ぜん after the ん of さん, the same way 三百 becomes さんびゃく. That gives さんぜんえん, and every dictionary and textbook number table, N5 onward, teaches 三千 this way. さんせん is not a second standard form, unlike the じゅっぷん/じっぷん case. Standard Japanese simply has no さんせん reading for 3,000, so it is a tokenizer slip, not a choice between valid forms.\n\nThe repo's own checker agrees. scripts/check_counter_readings.py has PLACE_SOUND_CHANGE[(1000, 3)] = (\"さんぜん\",), a single allowed form. docs/PLAN-V1.36.md lines 349 and 369 already list n1-b439 and n3-b781 as 三千円 taught さんせんえん (standard さんぜん), both in the dictation pool.\n\nA scan of all n*.json exTokens found only two 三千 tokens, both read さんせん: n1-b439 and n3-b781. No sentence in the corpus teaches the correct reading, so this fix cannot conflict with an existing one. Because the sentence is in the dictation pool, a learner hearing or typing さんせん is drilling the wrong reading. The expected reading さんぜん is both correct and the right one to teach an N3 learner in this sentence.\n\nI did not modify any files.",
+       "sources": [
+        "Sources/VocabKit/Resources/n3.json (entry n3-b781: exTokens [\"三千\",\"さんせん\"], exKana しょくじだいのごうけいはさんせんえんでした)",
+        "scripts/check_counter_readings.py lines 243-248 (PLACE_SOUND_CHANGE (1000, 3) -> (\"さんぜん\",))",
+        "docs/PLAN-V1.36.md lines 349, 361, 369 (三千円 taught さんせんえん, standard さんぜん; n1-b439 and n3-b781 in the dictation pool)",
+        "Corpus scan of Sources/VocabKit/Resources/n*.json exTokens: the only 三千 tokens are n1-b439 and n3-b781, both read さんせん",
+        "Standard Japanese number reading: 三千 = さんぜん (voiced after ん, like 三百 さんびゃく); さんせん is not a standard variant"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I checked this read-only at 3d891b9. In n3-b781 (n3.json), exJP is 食事代の合計は三千円でした。 and exEN is 'The total cost of the meal was 3,000 yen.' The sense is the plain number 3,000 used as a price, so there is no second meaning to weigh, unlike 十分 'enough' versus 'ten minutes'. The entry teaches the token [三千, さんせん] and exKana さんしょくじだい…さんせんえんでした (exKana reads しょくじだいのごうけいはさんせんえんでした).\n\nThe standard reading of 三千 is さんぜん: after 三, 千 voices to ぜん, in the same pattern as 三百 さんびゃく. This applies whether 三千 stands alone or comes before 円 (さんぜんえん). さんせん is not a recognised alternative. It is a reading-generation error, not a second standard form like じゅっぷん/じっぷん, so the 'two standard forms' exception does not apply.\n\nThe repo's own counter checker agrees. In scripts/check_counter_readings.py, PLACE_SOUND_CHANGE maps (1000, 3) to (\"さんぜん\",) only. It also maps (1000, 8) to はっせん and the default to せん, so it treats さんぜん as the only accepted form for 3 × 千. Both §I addenda of PLAN-V1.36 already record n3-b781 as '三千円 taught さんせんえん (standard さんぜん)'.\n\nさんぜんえん is what an N3 learner should be taught in this sentence. The entry is also in the dictation pool, so a voice saying さんぜん would mark a rider who types what they hear wrong at ぜ. That makes the error more serious, not less.\n\nVerdict: uphold. The taught さんせん is wrong, and the expected さんぜん is the reading to teach.",
+       "sources": [
+        "Sources/VocabKit/Resources/n3.json (entry n3-b781: exJP, exEN, exKana, exTokens [三千, さんせん])",
+        "scripts/check_counter_readings.py (line 246: PLACE_SOUND_CHANGE (1000, 3) -> (\"さんぜん\",))",
+        "docs/PLAN-V1.36.md (§I review findings and §I addendum 2, lines ~349 and ~369: 三千円 taught さんせんえん (standard さんぜん), n1-b439 and n3-b781, both in the dictation pool)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "n3-b678",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "八十点 is 80 points (exEN 'The average test score of this class is 80 points'). A number ending in 十 takes っ before a counter in t: 十点 is じゅってん or じってん (a refuter: the NHK accent dictionary lists ジッテン / ジュッテン, and neither it nor the counting dictionaries list じゅうてん), so 八十点 is はちじゅってん or はちじってん, and the taught はちじゅうてん is neither. The 八十 token moves (はちじゅう -> はちじゅっ); 点 stays てん. The corpus now teaches はちじゅってん, the more common form. On neither review list: the counter table found it itself. Its 点 row tolerates no …じゅう form, unlike 歳, and one refuter weighed extending that tolerance to 点 and rejected it (for points はちじゅってん is clearly dominant). The only 十点 sentence in n1–n5. The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP このクラスのテストの平均点は八十点だ。 / exKana このくらすのてすとのへいきんてんははちじゅうてんだ / exTokens [八十, はちじゅう] [点, てん]",
+   "corrected": "exJP このクラスのテストの平均点は八十点だ。 (unchanged) / exKana このくらすのてすとのへいきんてんははちじゅってんだ / exTokens [八十, はちじゅっ] [点, てん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana はちじゅうてん -> はちじゅってん, the 八十 token はちじゅう -> はちじゅっ; token boundaries, exJP, exEN, exZH, the id and the headword (平均 へいきん) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n3.json move (exKana :73977, the 八十 token's reading :74009). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 25 kana, so it still rides 250 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "IN the dictation pool before and after: dictation-exclusions.json is unchanged and the pool stays 5,939. Re-measured on the corrected tokens (docs/measurements/v136-dictation-remeasure.json): calibrated instrument 1b is SILENT on 八十点 — none of はちじゅってん (d80ffb1ed97e), はちじってん (faa8e1cba16b) or はちじゅうてん (b9853a9737d7) substituted for the span renders byte-identical to the exJP audio (3f44f329c858) — so the voice is not proven to say はちじゅってん. Instrument 2 on the corrected tokens does not flag it (own 0.0659, nearest rival 八十 やそ 0.0961), and on the tokens 1.35 shipped it would have flagged it (own はちじゅう 0.0703 against はちじゅっ 0.0659) had はちじゅっ been a candidate; the span comparative is a near tie (はちじゅうてん 0.0116, はちじゅってん 0.0122, はちじってん 0.0124). Kept in the pool because the v1.36 apply step requires that the pool not shrink; v1.35's precedent (n5-g022) withheld a corrected pool sentence on 1b's silence. Recorded for a person to decide.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n3-b678",
+      "file": "Sources/VocabKit/Resources/n3.json",
+      "field": "exJP",
+      "sentence": "このクラスのテストの平均点は八十点だ。",
+      "exEN": "The average test score of this class is 80 points.",
+      "taught": "八十点 はちじゅうてん",
+      "expected": "はちじゅってん | はちじってん",
+      "kind": "mismatch",
+      "inDictationPool": true,
+      "note": "NEW: on neither review list. 点 tens are strict per the spec (no じゅう tolerance, unlike 歳). It needs 2-of-2 refuters like any other hit. In the pool."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I uphold this hit: the taught reading is wrong, and はちじゅってん is the reading to teach in this sentence.\n\n**Sense.** n3-b678 is このクラスのテストの平均点は八十点だ。 The English is \"The average test score of this class is 80 points.\" So 点 here is plainly the counter for test points. No other reading of the compound applies: やそ belongs only to words like 八十路, and nothing else is spelled 八十点.\n\n**What is taught.** The tokens are [八十, はちじゅう] + [点, てん], and exKana gives …はちじゅうてんだ. I re-read the entry on main at 3d891b9.\n\n**Why it is wrong.** 十 is followed here by a counter starting with t. In that position the standard, dictionary-listed reading of a number ending in 十 is the sokuon form, じゅっ (or the older じっ).\n- The NHK pronunciation and accent dictionary lists 十点 as ジッテン / ジュッテン. The counting dictionaries (数え方の辞典) list じゅってん / じってん. Neither lists じゅうてん.\n- So the standard forms are はちじゅってん and はちじってん. The taught はちじゅうてん is neither. It is a careful, letter-by-letter reading of the digits, not a standard variant.\n- In ordinary talk about scores (八十点, 十点満点), people say はちじゅってん / じゅってん.\n\n**What to teach.** はちじゅってん is the form to teach a learner at this level. じってん is the older, NHK-traditional alternative and is also acceptable.\n\n**Pool risk.** The hit says the sentence is in the dictation pool; I did not check that. If it is, and the voice says はちじゅってん (likely, but not measured), a rider who types what they hear is refused at っ.\n\n**Caveat on the table's consistency.** The sweep table on feat/v136-counter-sweep-4 tolerates …じゅうさい for 歳 but has no matching tolerance for じゅうてん. Someone could argue that 点 deserves the same flag-only treatment. I don't think it does:\n- The unassimilated じゅう form is noticeably common in everyday speech for ages (…じゅうさい).\n- For points, はちじゅってん is clearly dominant.\n- The dictionaries list only じっ / じゅっ for both 歳 and 点, so the 歳 tolerance is a judgement about how common it is in speech. It does not show that じゅうてん is standard.\n\nThat is the only open point I see. It does not change my verdict.\n\n**Separate issue, not part of this hit.** The same table lists 六点 as only ろってん and 八点 as only はってん. ろくてん and はちてん are both common, accepted readings, so any hit at those digits would be a false positive for refuters to reject.\n\n**The fix, if made.** The only change is the 八十 token's kana, はちじゅう → はちじゅっ, plus the same change in exKana. The 点 token stays てん.\n\nThe web search I ran found no page that discusses 八十点 directly, so the dictionary listings above come from my own knowledge, not from that search. I made no changes and no builds.",
+       "sources": [
+        "Sources/VocabKit/Resources/n3.json (entry n3-b678: exJP, exEN, exKana, exTokens)",
+        "docs/PLAN-V1.36.md (§C item 4, §I, §I addendum 2)",
+        "scripts/check_counter_readings.py (main, 3d891b9)",
+        "scripts/check_counter_readings.py (feat/v136-counter-sweep-4: COUNTER_FINAL 点 row, COUNTER_TOLERATED)",
+        "docs/measurements/v136-counter-sweep-4.json (n3-b678 record: mismatch in exTokens and exKana)",
+        "NHK日本語発音アクセント新辞典 numeral+counter appendix (十点 ジッテン/ジュッテン), from model knowledge",
+        "https://langoal.com/en/vocabulary/word/ten.html",
+        "https://nihongoclassroom.com/how-to-say-it-in-japanese/point-17545"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I uphold the hit: the taught reading はちじゅうてん is not standard, and はちじゅってん is the reading to teach in this sentence.\n\nI read the entry at 3d891b9 (Sources/VocabKit/Resources/n3.json, id n3-b678). The sentence is このクラスのテストの平均点は八十点だ。 and exEN is \"The average test score of this class is 80 points.\" 点 is therefore plainly the counter for test points. It is not part of another word such as 重点 or 得点, and 八十 is not やそ. exTokens are [八十 はちじゅう][点 てん], and exKana is …はちじゅうてんだ, so the sentence teaches はちじゅうてん.\n\nWhy the expected form is right: 十 at the end of a number geminates before a counter that starts with a voiceless consonant (k, s, t, p). 十本 is じゅっぽん, 十回 is じっかい/じゅっかい, and 十点 is じってん/じゅってん. So a number ending in 十 followed by 点 is read 〜じゅってん or 〜じってん, which gives はちじゅってん (はちじってん also exists). That is the standard reading of 80点 as a score. A number with a ones digit does not geminate (九十八点 is きゅうじゅうはちてん), but 八十点 ends in 十.\n\nThe task says to uphold only if the taught form is neither of the two standard forms. はちじゅうてん is neither. It is a non-assimilated, spelled-out form that you might hear in slow or deliberate speech, but no standard counter table I know gives it for 十点.\n\nThe project tolerates …じゅうさい for 歳, and 点 gets no such tolerance. That is a project choice (on branch feat/v136-counter-sweep-4, COUNTER_TOLERATED covers only 歳 10 and the 点 row is じゅってん | じってん). It does not make じゅうてん standard. And even if someone argued じゅうてん is heard, the reading to teach an N3 learner in this sentence is still はちじゅってん.\n\nHarm, given the task's claim that the sentence is in the dictation pool: a Japanese voice very likely says はちじゅってん (plausible; I did not measure the TTS). A rider who types what they hear would be refused at っ.\n\nCorroboration: the extended counter table on feat/v136-counter-sweep-4 (0a4e354) flags this sentence as \"n3-b678 八十点 mismatch はちじゅうてん\" in both exTokens and exKana (docs/measurements/v136-counter-sweep-4.json). It is the only 十点 sentence in n1–n5, so no other sentence in the corpus teaches 十点 differently.\n\nLimits: my web searches found no dictionary page that spells out 80点. A web search summary gave はちじゅってん as the usual reading but said it was based on general knowledge, not a source. One page said はちじゅうてん, but it seems to show furigana only on 点, so it proves nothing about how 八十 is read. My verdict rests on the regular gemination rule and the standard counter tables (NHK lists ジッ/ジュッ before 点), not on a source fetched here.\n\nI only read; I wrote nothing, built nothing and made no worktree.",
+       "sources": [
+        "Sources/VocabKit/Resources/n3.json (n3-b678 at 3d891b9: exJP, exEN, exKana, exTokens)",
+        "docs/PLAN-V1.36.md (§I addendum and §I addendum 2, lines 312-384)",
+        "scripts/check_counter_readings.py (main; 点 not yet covered)",
+        "git show feat/v136-counter-sweep-4:scripts/check_counter_readings.py (点 row 10: じゅってん|じってん; COUNTER_TOLERATED only 歳 10 じゅうさい)",
+        "git show feat/v136-counter-sweep-4:docs/measurements/v136-counter-sweep-4.json (lines 2161, 2163: n3-b678 八十点 mismatch はちじゅうてん)",
+        "https://jisho.org/search/十点 (十 on-readings ジュウ/ジッ/ジュッ; no compound entry)",
+        "https://langoal.com/en/vocabulary/word/ten.html (８０点 example; furigana only on 点, not decisive)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "n1-b1630",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "三分 is 'three minutes' (exEN 'waited three minutes', exZH 三分钟), not 三分 さんぶ 'three parts'. After 三 the minutes counter 分 is ぷん: さんぷん, the only standard form (dictionaries, NHK, textbook counter tables; COUNTER_FINAL 分 3). さんふん, with no sound change, is not a reading to teach. The 分 token moves (ふん -> ぷん). The only 三分 token in the corpus. The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP カップ麺に熱湯を注いで三分待った。 / exKana かっぷめんにねっとうをそそいでさんふんまった / exTokens [三, さん] [分, ふん]",
+   "corrected": "exJP カップ麺に熱湯を注いで三分待った。 (unchanged) / exKana かっぷめんにねっとうをそそいでさんぷんまった / exTokens [三, さん] [分, ぷん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana さんふん -> さんぷん, the 分 token ふん -> ぷん; token boundaries, exJP, exEN, exZH, the id and the headword (熱湯 ねっとう) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n1.json move (exKana :142185, the 分 token's reading :142221). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 22 kana, so it still rides 220 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Instrument 2's v1.29 complaint was 分 ふん -> わけ. The corpus now says さんぷん, which is not わけ, so the record is marked stale-after-correction (v1.36) and says so, as n2-b072's was in §I: what the voice says for 分 here is unmeasured. Not re-measured. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n1-b1630",
+      "file": "Sources/VocabKit/Resources/n1.json",
+      "field": "exJP",
+      "sentence": "カップ麺に熱湯を注いで三分待った。",
+      "exEN": "I poured boiling water into the cup noodles and waited three minutes.",
+      "taught": "三分 さんふん",
+      "expected": "さんぷん",
+      "kind": "mismatch",
+      "inDictationPool": false,
+      "note": "Found by the review. Withheld from dictation."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I read the entry at base commit 3d891b9 in Sources/VocabKit/Resources/n1.json. n1-b1630 (headword 熱湯 ねっとう) has exJP カップ麺に熱湯を注いで三分待った。 and exEN \"...and waited three minutes.\" Its exKana is かっぷめんにねっとうをそそいでさんふんまった, and exTokens split 三分 into [三, さん] and [分, ふん], so the claim that it teaches さんふん is correct.\n\nThe meaning is fixed by exEN: 三分 here is \"three minutes\". It cannot be 三分 さんぶ (\"three parts\", as in 三分咲き or 七分袖), and it is not the word 十分 じゅうぶん (\"enough\"). When 分 counts minutes after 三, the sound changes to ぷん. The standard reading, and the one taught to learners and given by standard pronunciation dictionaries, is さんぷん, in the same group as いっぷん, ろっぷん, はっぷん, じゅっぷん/じっぷん and なんぷん. Unlike 十分 (じゅっぷん/じっぷん), 三分 has no second standard form. さんふん, with no sound change, is a non-standard form that a learner should not be taught. The repo's own checker agrees: a comment in scripts/check_counter_readings.py lists \"分 ぷん\" among the sound changes, and its table gives 何分 as なんぷん.\n\nThe plan agrees too. docs/PLAN-V1.36.md lists this id twice, both times expecting さんぷん: in the §I fix-review list (\"`n1-b1630` 三分 さんふん (さんぷん)\") and in §I addendum 2. I did not depend on that, and checked the reading from the sentence's meaning on its own. The sentence is not in the dictation pool, so the error shows in typing and reading practice only, not as a dictation refusal.\n\nVerdict: the taught reading さんふん is wrong, and さんぷん is the right reading to teach an N1 learner in this sentence. I only read files with git show at 3d891b9. I wrote nothing, built nothing and touched no corpus file.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (id n1-b1630 at 3d891b9: exJP, exEN, exKana, exTokens [分, ふん])",
+        "docs/PLAN-V1.36.md (§I fix-review findings list and §I addendum 2, lines ~353 and ~371 at 3d891b9)",
+        "scripts/check_counter_readings.py (comment listing 分 ぷん as a sound change; 何分 なんぷん table entry)"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "Upheld. The taught reading さんふん is wrong, and さんぷん is the right reading to teach in this sentence. I only read files and changed nothing.\n\n1. **What the corpus teaches (main at 3d891b9).** I read entry n1-b1630 in Sources/VocabKit/Resources/n1.json. Its exTokens split 三分 into [三, さん] and [分, ふん], and its exKana is \"かっぷめんにねっとうをそそいでさんふんまった\". So the sentence teaches 三分 as さんふん.\n\n2. **Which meaning applies.** The exEN says \"waited three minutes\", and the exZH says 三分钟. So 三分 here is the minutes counter. It is not 三分 さんぶ (\"three parts\" or 30%), and it is not a 十分-style adverb.\n\n3. **Why さんぷん is the answer.** After 3, the minutes counter 分 changes sound to ぷん: さんぷん is the dictionary and NHK pronunciation, and the one JLPT and textbook counter tables teach (いっぷん, にふん, さんぷん, よんぷん, ごふん, ろっぷん …). This case is not like じゅっぷん/じっぷん, where two standard forms exist. さんふん is only an occasional colloquial pronunciation, not a standard form. Under the rule \"uphold only if the taught form is neither standard form\", it qualifies.\n\n4. **No conflict with dictation.** The hit says inDictationPool is false, so no audio in the pool contradicts the change.\n\n5. **Consistent with the plan.** docs/PLAN-V1.36.md lists this exact case in the 2026-10-09 notes and in §I addendum 2: \"三分 さんふん (n1-b1630)\", with さんぷん as the standard form. Addendum 2 extends item 4 to 分. A scan of every n*.json resource found this as the only 三分 token in the corpus, so the correction affects one sentence.\n\n6. **What the fix should touch.** It should change the 分 token's reading from ふん to ぷん and, in exKana, さんふん to さんぷん. The headword 熱湯 ねっとう is unaffected.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (entry n1-b1630: exJP, exEN, exZH, exKana, exTokens)",
+        "docs/PLAN-V1.36.md (lines ~344-375: the 2026-10-09 findings and §I addendum 2 listing n1-b1630 三分 さんふん, standard さんぷん)",
+        "scripts/check_counter_readings.py (line ~193: comment on 分 ぷん sound change; table scope)",
+        "docs/measurements/dictation-reading-mismatches.json (n1-b1630 exKana さんふん)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "n2-b449",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "三十分 is '30 minutes' (exEN 'exercising for 30 minutes every day', exZH 30分钟). 分の is followed by the noun 運動, not a numeral, so it is not the fraction 三十分の一, whose reading さんじゅうぶん the corpus taught. 30 minutes is さんじゅっぷん or さんじっぷん, both standard. Both tokens move, 三十 さんじゅう -> さんじゅっ and 分 ぶん -> ぷん; one alone would leave さんじゅうぷん or さんじゅっぶん. The corpus now teaches さんじゅっぷん, the more common form. The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 今日以後は毎日三十分の運動を続ける。 / exKana きょういごはまいにちさんじゅうぶんのうんどうをつづける / exTokens [三十, さんじゅう] [分, ぶん]",
+   "corrected": "exJP 今日以後は毎日三十分の運動を続ける。 (unchanged) / exKana きょういごはまいにちさんじゅっぷんのうんどうをつづける / exTokens [三十, さんじゅっ] [分, ぷん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana さんじゅうぶん -> さんじゅっぷん, the 三十 token さんじゅう -> さんじゅっ and the 分 token ぶん -> ぷん; token boundaries, exJP, exEN, exZH, the id and the headword (以後 いご) unchanged. Written through scripts/corpus_io.CorpusFile: three lines of n2.json move (exKana :57816, the 三十 token's reading :57836, the 分 token's reading :57840). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 27 kana, so it still rides 270 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Its v1.29 record was 'undecided' on instrument 2's complaint 分 ぶん -> ぷん, the reading this correction applies to 分; the correction also moves 三十 (さんじゅう -> さんじゅっ), which the complaint did not name. The row is marked stale-after-correction (v1.36) and says so; not re-measured. Releasing it needs instrument 1b to prove the voice says さんじゅっぷん. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n2-b449",
+      "file": "Sources/VocabKit/Resources/n2.json",
+      "field": "exJP",
+      "sentence": "今日以後は毎日三十分の運動を続ける。",
+      "exEN": "From today onward, I will continue exercising for 30 minutes every day.",
+      "taught": "三十分 さんじゅうぶん",
+      "expected": "さんじゅっぷん | さんじっぷん",
+      "kind": "mismatch",
+      "inDictationPool": false,
+      "note": "Found by the review. 分の here is followed by a noun, not a numeral, so it is not a fraction. Withheld."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I checked the entry in Sources/VocabKit/Resources/n2.json at 3d891b9. The sentence is 今日以後は毎日三十分の運動を続ける。. exEN says \"exercising for 30 minutes every day\" and exZH says 运动30分钟, so both translations read 三十分 as a length of time: 30 minutes. In standard Japanese, the minute counter 分 changes sound after 十: 十分 is read じゅっぷん or じっぷん, so 三十分 is さんじゅっぷん or さんじっぷん. Both are standard. さんじゅっぷん is the more common spoken form, and さんじっぷん is the traditional form that broadcasters prescribe.\n\nThe taught reading, さんじゅうぶん, is the fraction reading of 分, as in 三十分の一 (\"one thirtieth\"). It does not fit this sentence. The 分の here is followed by the noun 運動, not by a numeral, so there is no fraction, as the hit's note says. This is not the 十分 じゅうぶん \"enough\" case either, because 三十分 has no \"enough\" meaning, and the translations confirm minutes.\n\nexTokens show where the error came from: the sentence was split into 三十/さんじゅう + 分/ぶん, so the tokenizer picked 分 read ぶん (\"portion\"). The stored exKana carries the same mistake: …まいにちさんじゅうぶんのうんどう…. The taught form is neither of the two standard forms, so the rule for counters with two standard forms does not save it.\n\nThe expected reading (さんじゅっぷん | さんじっぷん) is the right one to teach an N2 learner in this sentence. If only one form is stored, さんじゅっぷん is the natural default. Either one would match what a native speaker says.\n\nPLAN-V1.36.md §I addendum 2 (line 371) already lists n2-b449 among the 分 sentences taught without the sound change. It is not in the dictation pool (inDictationPool: false), so no rider is currently marked wrong on dictation for it. The fix only corrects the reading this sentence teaches.\n\nI made no files, commits or changes; this was a read-only check.",
+       "sources": [
+        "Sources/VocabKit/Resources/n2.json (entry n2-b449: exJP, exEN, exZH, exKana, exTokens)",
+        "docs/PLAN-V1.36.md lines 353 and 365-383 (§I addendum 2)"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I checked the entry at main 3d891b9 without changing anything. n2-b449 is \"今日以後は毎日三十分の運動を続ける。\". Its exKana is \"きょういごはまいにちさんじゅうぶんのうんどうをつづける\", and the exTokens split the number as [三十 さんじゅう][分 ぶん]. So the taught reading is さんじゅうぶん, as the hit says.\n\nThe sense is \"minutes\". The English line says \"exercising for 30 minutes every day\" and the Chinese line says 每天运动30分钟. Here 分の comes before a noun (運動), not a numeral, so this is \"30 minutes' worth of exercise\", not a fraction. A fraction would be 三十分の一, read さんじゅうぶんのいち.\n\nWith 分 meaning minutes, the 十 + 分 sound change is required. The two standard forms are さんじゅっぷん (the more common spoken form) and さんじっぷん (the traditional form that broadcast style prefers). さんじゅうぶん is neither. Outside the fraction reading it is not a recognised way to say \"30 minutes\" at all. Being next to じゅうぶん 十分 (\"enough\") makes it actively misleading for an N2 learner.\n\nBoth expected forms are the right thing to teach in this sentence. Either one is fine, since both are standard.\n\nSupporting evidence:\n- docs/measurements/dictation-reading-mismatches.json already lists this entry as \"分 ぶん -> ぷん\" (v1.29 instrument 2 flagged it; instrument 1b was silent). The text-to-speech voice probably says ぷん, which disagrees with the taught kana.\n- docs/PLAN-V1.36.md lists n2-b449 under \"分 without its sound change\" and in §I addendum 2.\n\nNotes for whoever applies the fix (not part of the verdict):\n- The entry is not in the dictation pool, so learners never type this sentence from audio.\n- A correction has to change both tokens, 三十 to さんじゅっ or さんじっ and 分 to ぷん, and keep exKana consistent with them. Changing only the 分 token to ぷん would produce さんじゅうぷん, which is still wrong.",
+       "sources": [
+        "Sources/VocabKit/Resources/n2.json (entry n2-b449: exJP, exEN, exZH, exKana, exTokens)",
+        "docs/PLAN-V1.36.md (lines ~343-388: 'Found 2026-10-09' list and §I addendum 2)",
+        "docs/measurements/dictation-reading-mismatches.json (n2-b449: heardInstead '分 ぶん -> ぷん', v1.29 instrument 2)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "n1-b327",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "五分 is 'five minutes' (exEN 'a five-minute walk', exZH 五分钟). After 五 the minutes counter 分 keeps ふん: ごふん, the only standard form (COUNTER_FINAL 分 5). The taught ごぶん is not a reading of 五分 in any sense this sentence could carry: 五分 'even, half' is ごぶ, and the English rules it out. The 分 token moves (ぶん -> ふん). The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 彼女の勤め先は駅から歩いて五分のところにある。 / exKana かのじょのつとめさきはえきからあるいてごぶんのところにある / exTokens [五, ご] [分, ぶん]",
+   "corrected": "exJP 彼女の勤め先は駅から歩いて五分のところにある。 (unchanged) / exKana かのじょのつとめさきはえきからあるいてごふんのところにある / exTokens [五, ご] [分, ふん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana ごぶん -> ごふん, the 分 token ぶん -> ふん; token boundaries, exJP, exEN, exZH, the id and the headword (勤め先 つとめさき) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n1.json move (exKana :44148, the 分 token's reading :44188). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 29 kana, so it still rides 290 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Its v1.29 record was 'undecided' on instrument 2's complaint 分 ぶん -> ふん, which is the reading this correction applies, so the complaint no longer describes the sentence: the row is marked stale-after-correction (v1.36), as n2-b304 was in v1.31 and six of §I's eight were, keeps its complaint words with a note, and is not re-measured. Releasing it needs instrument 1b to prove the voice says ごふん. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n1-b327",
+      "file": "Sources/VocabKit/Resources/n1.json",
+      "field": "exJP",
+      "sentence": "彼女の勤め先は駅から歩いて五分のところにある。",
+      "exEN": "Her workplace is a five-minute walk from the station.",
+      "taught": "五分 ごぶん",
+      "expected": "ごふん",
+      "kind": "mismatch",
+      "inDictationPool": false,
+      "note": "Found by the review. exEN 'five-minute' gives the minutes sense. Withheld."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I upheld this hit. The taught reading ごぶん is wrong for this sentence, and ごふん is the reading to teach.\n\nI checked the entry in Sources/VocabKit/Resources/n1.json at 3d891b9. The sentence is 彼女の勤め先は駅から歩いて五分のところにある。 The kana line has ...あるいてごぶんのところに..., and the tokens are [五, ご][分, ぶん].\n\nThe sense is clearly minutes. The English says \"a five-minute walk\" and the Chinese says 步行只要五分钟. The minute counter 分 changes its sound by number: いっぷん, にふん, さんぷん, よんぷん, ごふん, ろっぷん, and so on. For 5 the only standard form is ごふん. It has no second accepted form, unlike じっぷん/じゅっぷん for 10 minutes. So the \"uphold only if the taught form is neither\" rule is met, because ごぶん is not a standard reading of five minutes.\n\nごぶん is not a valid reading of 五分 in any sense this sentence could carry. The non-minute sense of 五分 (\"5 percent\", \"even\", as in 五分五分) is read ごぶ, not ごぶん. Either way that sense is ruled out here by both the English and the Chinese.\n\nごふん is basic N5 vocabulary. It is the reading every textbook and dictionary gives for 五分 meaning five minutes, so it is right for an N1-level learner too.\n\nThe sentence is not in the dictation pool, so fixing it carries no audio-mismatch risk. The fix only needs the 分 token changed from ぶん to ふん, plus the matching change in the kana line. The headword 勤め先 つとめさき is not affected.\n\nThis agrees with docs/PLAN-V1.36.md, which lists n1-b327 五分 ごぶん as a known defect in its found-by-review list and in §I addendum 2, where it says 五分 (a five-minute walk). It also agrees with the comment in scripts/check_counter_readings.py that 分 is a sound-changing counter (分 ぷん).\n\nI wrote nothing. This was read-only, in the main checkout at 3d891b9, so I made no worktree, build or new assertions.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (entry n1-b327: exJP, exEN, exZH, exKana, exTokens)",
+        "docs/PLAN-V1.36.md lines 345-390 (found-by-review list and §I addendum 2)",
+        "scripts/check_counter_readings.py lines 113, 193-206 (分 is a sound-changing counter)"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I read the corpus at 3d891b9, not the live tree. The taught reading is wrong, and ごふん is the one to teach. In n1-b327, exJP 「彼女の勤め先は駅から歩いて五分のところにある。」 is taught as tokens [五 ご][分 ぶん] and exKana 「…あるいてごぶんのところにある」. The sense is plainly minutes. exEN says \"a five-minute walk\" and exZH says 步行只要五分钟. For minutes, 分 after 五 takes no sound change: 一/六/八/十 become ぷん, 三/四/何 become ぷん, and 二/五/七/九 stay ふん. So 五分 meaning five minutes has a single standard reading, ごふん, and no second accepted form like the じゅっぷん/じっぷん pair. The other sense of 五分 (\"half / 5% / even\", as in 五分五分) is read ごぶ, not ごぶん, and exEN rules that sense out anyway. ごぶん is therefore neither the minutes reading nor the other sense's reading, so the \"uphold only if the taught form is neither\" condition is met. ごふん is also what an N-level learner should be taught here. PLAN-V1.36 §I's 2026-10-09 finding and §I addendum 2 list the same entry as 五分 ごぶん (n1-b327), \"a five-minute walk\". The entry is not in the dictation pool. For the apply step: the fix needs both the 分 token reading (ぶん→ふん) and exKana (ごぶん→ごふん) changed, through CorpusFile.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (entry n1-b327 at 3d891b9: exJP, exEN, exZH, exKana, exTokens [五 ご][分 ぶん])",
+        "docs/PLAN-V1.36.md lines ~345-372 (§I 2026-10-09 finding and §I addendum 2 listing n1-b327 五分 ごぶん)",
+        "scripts/check_counter_readings.py (counter table scope; 分 noted as a sound-changing counter outside the calibrated 月/時/時間/字 table)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "n1-b1147",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "十分 is 'ten minutes': exEN 'slightly less than a ten-minute walk', exZH 步行不足十分钟, and 弱 after it is the suffix 'a little under' a quantity. 'Ten minutes' is じゅっぷん or じっぷん, both standard: 十 takes っ and 分 becomes ぷん. The taught じゅうふん has neither sound change, and it is not the adjective じゅうぶん 'enough' either. Both tokens move, 十 じゅう -> じゅっ and 分 ふん -> ぷん; one alone would leave じゅっふん or じゅうぷん. The corpus now teaches じゅっぷん, the more common of the two standard forms; n1-b1516 keeps the じっぷん v1.25 gave it, and the counter table accepts both (COUNTER_FINAL 分 10). These four are the corpus's only [十 じゅう][分 ふん] splits (a refuter's scan of 十 followed by 分 found them and n2-b449). The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 駅から会社まで徒歩十分弱だ。 / exKana えきからかいしゃまでとほじゅうふんじゃくだ / exTokens [十, じゅう] [分, ふん]",
+   "corrected": "exJP 駅から会社まで徒歩十分弱だ。 (unchanged) / exKana えきからかいしゃまでとほじゅっぷんじゃくだ / exTokens [十, じゅっ] [分, ぷん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana じゅうふん -> じゅっぷん, the 十 token じゅう -> じゅっ and the 分 token ふん -> ぷん; token boundaries, exJP, exEN, exZH, the id and the headword (弱 じゃく) unchanged. Written through scripts/corpus_io.CorpusFile: three lines of n1.json move (exKana :107668, the 十 token's reading :107692, the 分 token's reading :107696). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 21 kana, so it still rides 210 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Instrument 2's v1.29 complaint was 分 ふん -> ぶん (the 'enough' reading じゅうぶん). The corpus now says じゅっぷん, which is not ぶん, so the record is marked stale-after-correction (v1.36) and says so, as n2-b072's was in §I: what the voice says for 十分 here is unmeasured. Not re-measured. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n1-b1147",
+      "file": "Sources/VocabKit/Resources/n1.json",
+      "field": "exJP",
+      "sentence": "駅から会社まで徒歩十分弱だ。",
+      "exEN": "It is slightly less than a ten-minute walk from the station to the company.",
+      "taught": "十分 じゅうふん",
+      "expected": "じゅっぷん | じっぷん",
+      "kind": "mismatch",
+      "inDictationPool": false,
+      "note": "Found by the review. Withheld."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I read the files at base 3d891b9 using git show and made no writes. The entry n1-b1147 in Sources/VocabKit/Resources/n1.json has exJP 駅から会社まで徒歩十分弱だ。 with exTokens [十 じゅう][分 ふん][弱 じゃく] and exKana とほじゅうふんじゃくだ, so the taught reading is じゅうふん, as the hit says.\n\nThe sense is \"ten minutes\", not \"enough\":\n- exEN says \"slightly less than a ten-minute walk\".\n- exZH says 步行不足十分钟.\n- 弱 here is the suffix meaning \"a little less than\" a quantity, and exMeta.sense says \"slightly less than an amount\".\n- じゅうぶん (\"enough\") followed by 弱 makes no sense with 徒歩.\n\nFor ten minutes, the standard readings are じゅっぷん and じっぷん. 分 takes its p-sound change after 十, and NHK's accent dictionary lists both forms. じゅうふん has no sound change. Some speakers say it casually, but it is not a standard form and should not be taught to an N1 learner. Because the taught form is neither of the two standard forms, the uphold rule is met.\n\nThe repo already did this once. In v1.25, n1-b1516 (あと十分で授業が始まる, \"Class starts in ten minutes\") was corrected to じっぷん, and that is what the base tree has. PLAN-V1.36 §I and addendum 2 both list n1-b1147 among the 十分 \"ten minutes\" sentences taught じゅうふん, alongside n1-b1841, n2-b311 and n4-b127.\n\nThe correct reading is じゅっぷん or じっぷん, so the full sentence reads えきからかいしゃまでとほじゅっぷんじゃくだ (or …じっぷんじゃくだ). Choosing じっぷん would match the n1-b1516 precedent. The sentence is not in the dictation pool, so it does not affect grading against the voice, but the taught reading is still wrong.",
+       "sources": [
+        "git show 3d891b9:Sources/VocabKit/Resources/n1.json (entry n1-b1147: exJP, exEN, exZH, exKana, exTokens)",
+        "git show 3d891b9:Sources/VocabKit/Resources/n1.json (entry n1-b1516: あと十分で授業が始まる taught じっぷん, the v1.25 precedent)",
+        "git show 3d891b9:docs/PLAN-V1.36.md lines 312-390 (§I scope addendum and §I addendum 2, which list n1-b1147 under 十分 'ten minutes' taught じゅうふん)",
+        "git show 3d891b9:scripts/check_counter_readings.py (counter table comment: 分 ぷん sound change)",
+        "Standard Japanese: 十分 (ten minutes) is read じゅっぷん or じっぷん (both listed in NHK 日本語発音アクセント新辞典); じゅうぶん means 'enough'; じゅうふん is not a standard form"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I upheld the hit after checking the entry at 3d891b9 without changing anything. In Sources/VocabKit/Resources/n1.json, n1-b1147 has the sentence 駅から会社まで徒歩十分弱だ。 with exKana えきからかいしゃまでとほじゅうふんじゃくだ. Its exTokens split the number as [十, じゅう][分, ふん]. Both translations give the sense as a length of time, not \"enough\": exEN is \"slightly less than a ten-minute walk\" and exZH is 步行不足十分钟. The construction 徒歩＋[time]＋弱 means \"just under N minutes on foot\". So 十分 here is 10 minutes. The standard readings of 10 minutes are じゅっぷん (the common modern spoken form) and じっぷん (the traditional and broadcast form). The taught form じゅうふん is neither: when 分 follows 十 it changes to ぷん and 十 becomes じゅっ or じっ. It is also not じゅうぶん (\"enough\"), which this sentence does not mean. The expected reading じゅっぷん / じっぷん is right to teach an N1 learner in this sentence, and the rest of the line (弱 じゃく, 徒歩 とほ) is correct. This matches PLAN-V1.36 §I and §I addendum 2, which list n1-b1147 with n1-b1841, n2-b311 and n4-b127 as 十分 meaning ten minutes taught じゅうふん. The plan also notes that v1.25 corrected n1-b1516 to じっぷん. Two notes for the apply step, not about the verdict: (1) the fix has to change the tokens, either 十→じゅっ/じっ with 分→ぷん or one merged 十分 token, not only exKana; (2) the plan records じっぷん for n1-b1516 (v1.25), so choosing じっぷん here would keep the corpus consistent. Both forms are standard. The sentence is not in the dictation pool.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (id n1-b1147, line ~107639: exJP, exEN, exZH, exKana, exTokens)",
+        "docs/PLAN-V1.36.md lines 351-355 (§I data review listing n1-b1147, and the v1.25 precedent n1-b1516 corrected to じっぷん)",
+        "docs/PLAN-V1.36.md lines 365-384 (§I addendum 2: 十分 'ten minutes' taught じゅうふん in n1-b1147, n1-b1841, n2-b311, n4-b127)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "n1-b1841",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "十分 is 'ten minutes': exEN 'It takes about ten minutes to walk', exZH 十分钟, and 歩いて…ぐらいかかる wants a length of time. 'Ten minutes' is じゅっぷん or じっぷん, both standard: 十 takes っ and 分 becomes ぷん. The taught じゅうふん has neither sound change, and it is not the adjective じゅうぶん 'enough' either. Both tokens move, 十 じゅう -> じゅっ and 分 ふん -> ぷん; one alone would leave じゅっふん or じゅうぷん. The corpus now teaches じゅっぷん, the more common of the two standard forms; n1-b1516 keeps the じっぷん v1.25 gave it, and the counter table accepts both (COUNTER_FINAL 分 10). passages.json already teaches the near-identical えきからあるいてじゅっぷんぐらいかかります. These four are the corpus's only [十 じゅう][分 ふん] splits (a refuter's scan of 十 followed by 分 found them and n2-b449). The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP ここから駅まで歩いて十分ぐらいかかる。 / exKana ここからえきまであるいてじゅうふんぐらいかかる / exTokens [十, じゅう] [分, ふん]",
+   "corrected": "exJP ここから駅まで歩いて十分ぐらいかかる。 (unchanged) / exKana ここからえきまであるいてじゅっぷんぐらいかかる / exTokens [十, じゅっ] [分, ぷん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana じゅうふん -> じゅっぷん, the 十 token じゅう -> じゅっ and the 分 token ふん -> ぷん; token boundaries, exJP, exEN, exZH, the id and the headword (ぐらい) unchanged. Written through scripts/corpus_io.CorpusFile: three lines of n1.json move (exKana :157187, the 十 token's reading :157215, the 分 token's reading :157219). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 23 kana, so it still rides 230 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged: the voice is proven to say 十分 = じゅうぶん, the 'enough' reading (v1.29, instrument 1, 分 ふん -> ぶん). That proof is about the exJP audio, which did not move, and the corrected じゅっぷん is still not what it says, so the sentence stays withheld for the same reason and the row keeps 'proven' with a note, as n5-b018's did. Not re-measured. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n1-b1841",
+      "file": "Sources/VocabKit/Resources/n1.json",
+      "field": "exJP",
+      "sentence": "ここから駅まで歩いて十分ぐらいかかる。",
+      "exEN": "It takes about ten minutes to walk from here to the station.",
+      "taught": "十分 じゅうふん",
+      "expected": "じゅっぷん | じっぷん",
+      "kind": "mismatch",
+      "inDictationPool": false,
+      "note": "Found by the review. Withheld."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "Verified read-only at main 3d891b9. I made no worktree, no writes and no builds.\n\nWhat the corpus teaches. In Sources/VocabKit/Resources/n1.json, n1-b1841 (headword ぐらい) has:\n- exJP: ここから駅まで歩いて十分ぐらいかかる。\n- exKana: ここからえきまであるいてじゅうふんぐらいかかる\n- the covering tokens: [\"十\",\"じゅう\"], [\"分\",\"ふん\"]\n\nSo the taught reading is じゅうふん, as the hit says.\n\nThe sense. exEN is \"It takes about ten minutes to walk from here to the station\", and exZH says 十分钟. Both mean the duration \"ten minutes\", not 十分 \"enough\" (じゅうぶん). Reading it as \"enough\" would not parse with 歩いて…ぐらいかかる. So the じゅうぶん trap the task warns about does not apply.\n\nIs じゅうふん wrong? Yes. 十 + 分 meaning minutes takes the sound change. The standard forms are じっぷん (traditional, the dictionary form) and じゅっぷん (now accepted, and the form beginner textbooks teach). じゅうふん is neither standard form, so the \"uphold only if the taught form is neither\" rule is met. It is the same class as the 三分 さんふん and 五分 ごぶん defects in §I addendum 2.\n\nThe repo already uses both standard forms, which supports the expected reading:\n- a 十分 headword in n1.json has kana じっぷん, with exKana あとじっぷんでじゅぎょうがはじまる. PLAN-V1.36.md says v1.25 corrected n1-b1516 to じっぷん.\n- passages.json:1236 teaches the nearly identical sentence えきからあるいてじゅっぷんぐらいかかります.\n\nThe plan already records this sentence. PLAN-V1.36.md §I addendum 2, and the \"Found 2026-10-09\" list before it, name n1-b1841 among the 十分 \"ten minutes\" sentences taught じゅうふん.\n\nIs the expected reading the one to teach here? Yes. In this sentence, じゅっぷん or じっぷん is what a learner at any N-level should type, and either is fine.\n\nTwo notes for the apply step, outside the verdict:\n- The fix has to change both tokens (十 to じゅっ or じっ, 分 to ぷん) and exKana together, not exKana alone.\n- docs/measurements/dictation-reading-mismatches.json says the voice reads this sentence's 分 as ぶん, i.e. じゅうぶん \"enough\". That is wrong for this sense too. The entry is not in the dictation pool (inDictationPool false), so it is not a rider-facing dictation blocker, but the sentence should stay withheld from dictation after the correction unless the voice is re-measured.\n\nNo new assertions were made, so there are no mutation pairs to list.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (n1-b1841 at line 157159: exJP, exEN, exZH, exKana, exTokens)",
+        "Sources/VocabKit/Resources/n1.json (a 十分 headword with kana じっぷん, lines 134193-134225; precedent per PLAN: n1-b1516)",
+        "Sources/VocabKit/Resources/passages.json:1236 (えきからあるいてじゅっぷんぐらいかかります)",
+        "docs/PLAN-V1.36.md (§I 'Found 2026-10-09' list and §I addendum 2, lines ~343-395)",
+        "docs/measurements/dictation-reading-mismatches.json (n1-b1841 entry, heardInstead 分 ふん -> ぶん)",
+        "scripts/check_counter_readings.py (分 is outside the current table, line 113)"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I checked this read-only at 3d891b9. In Sources/VocabKit/Resources/n1.json, n1-b1841 has exJP 「ここから駅まで歩いて十分ぐらいかかる。」 and exKana 「…あるいてじゅうふんぐらいかかる」. The tokens covering 十分 are [十, じゅう] and [分, ふん], so the taught reading is じゅうふん.\n\nThe sense here is \"ten minutes\", not \"enough\". exEN says \"about ten minutes\", exZH says 大约需要十分钟, and the context 歩いて…ぐらいかかる (a walk that takes about X) only fits a length of time. Read as じゅうぶん (\"enough\"), the sentence would make no sense. So じゅうぶん is not a competing reading in this sentence.\n\nFor 十 + 分 meaning ten minutes, the standard readings are じっぷん (the traditional form found in dictionaries and textbooks) and じゅっぷん (now the most common, and also widely accepted). Both use the p-sound change: after 十, 分 becomes ぷん. じゅうふん keeps the plain ふん without that change, so it is neither standard form. It is the exact defect PLAN-V1.36 §I addendum 2 lists, and it names n1-b1841. Reading level does not matter here: a learner at any JLPT level should be taught じっぷん or じゅっぷん for \"ten minutes\".\n\nThere is a precedent for the fix. v1.25 corrected the same pattern in n1-b1516 to じっぷん (PLAN-V1.36 line 355). Either じっぷん or じゅっぷん is a correct replacement. Using じっぷん would match the earlier fix, so the corpus stays consistent.\n\nThe taught form is neither standard form, so the rule \"uphold only if the taught form is neither\" is met. I uphold the hit. The entry is not in the dictation pool, which affects priority but not whether the reading is wrong.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (entry n1-b1841, ~line 157159: exJP, exEN, exZH, exKana, exTokens [十 じゅう][分 ふん])",
+        "docs/PLAN-V1.36.md lines 340-390 (§I found-by-review list and §I addendum 2; v1.25 precedent n1-b1516 corrected to じっぷん)",
+        "General Japanese phonology: 十分 (ten minutes) is read じっぷん/じゅっぷん; じゅうぶん is the 'enough' sense; じゅうふん is not a standard reading"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "n2-b311",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "十分 is 'ten minutes': exEN 'ten minutes before and after the meeting time', exZH 前后十分钟. 'Ten minutes' is じゅっぷん or じっぷん, both standard: 十 takes っ and 分 becomes ぷん. The taught じゅうふん has neither sound change, and it is not the adjective じゅうぶん 'enough' either. Both tokens move, 十 じゅう -> じゅっ and 分 ふん -> ぷん; one alone would leave じゅっふん or じゅうぷん. The corpus now teaches じゅっぷん, the more common of the two standard forms; n1-b1516 keeps the じっぷん v1.25 gave it, and the counter table accepts both (COUNTER_FINAL 分 10). These four are the corpus's only [十 じゅう][分 ふん] splits (a refuter's scan of 十 followed by 分 found them and n2-b449). The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 集合時間の前後十分は入口で待っています。 / exKana しゅうごうじかんのぜんごじゅうふんはいりぐちでまっています / exTokens [十, じゅう] [分, ふん]",
+   "corrected": "exJP 集合時間の前後十分は入口で待っています。 (unchanged) / exKana しゅうごうじかんのぜんごじゅっぷんはいりぐちでまっています / exTokens [十, じゅっ] [分, ぷん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana じゅうふん -> じゅっぷん, the 十 token じゅう -> じゅっ and the 分 token ふん -> ぷん; token boundaries, exJP, exEN, exZH, the id and the headword (前後 ぜんご) unchanged. Written through scripts/corpus_io.CorpusFile: three lines of n2.json move (exKana :43105, the 十 token's reading :43125, the 分 token's reading :43129). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 29 kana, so it still rides 290 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged: the voice is proven to say 十分 = じゅうぶん, the 'enough' reading (v1.29, instrument 1b, 十分 じゅうふん -> じゅうぶん). That proof is about the exJP audio, which did not move, and the corrected じゅっぷん is still not what it says, so the sentence stays withheld for the same reason and the row keeps 'proven' with a note, as n5-b018's did. Not re-measured. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n2-b311",
+      "file": "Sources/VocabKit/Resources/n2.json",
+      "field": "exJP",
+      "sentence": "集合時間の前後十分は入口で待っています。",
+      "exEN": "I will be waiting at the entrance ten minutes before and after the meeting time.",
+      "taught": "十分 じゅうふん",
+      "expected": "じゅっぷん | じっぷん",
+      "kind": "mismatch",
+      "inDictationPool": false,
+      "note": "Found by the review. Withheld."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I checked the entry in Sources/VocabKit/Resources/n2.json at 3d891b9 (read only; no worktree, no writes). n2-b311 (headword 前後) has exJP 集合時間の前後十分は入口で待っています。 and exTokens [十, じゅう] + [分, ふん], so exKana teaches ...ぜんごじゅうふんは... The taught reading is じゅうふん, as the hit says.\n\nSense. exEN says \"ten minutes before and after the meeting time\", and exZH says 十分钟. Both give the time sense, not じゅうぶん \"enough\". Read as \"enough\", 前後十分は would not parse. The corpus already reads 十分 as じゅうぶん wherever it means \"enough\", for example n2-g248, n2-b672 and n4-g178.\n\nReading. For the time sense, the standard readings of 十分 are じっぷん (traditional, dictionary-preferred) and じゅっぷん (now widely accepted, and the one most learner textbooks teach). じゅうふん is neither: it applies no sound change at all, the same defect class as 三分 さんふん. The hit's rule is to uphold only when the taught form is neither standard form, and that holds here.\n\nPrecedent. v1.25 corrected the same sentence class in n1-b1516 to a single token, 十分 じっぷん. PLAN-V1.36 §I and §I addendum 2 list n2-b311 next to n1-b1147, n1-b1841 and n4-b127 as 十分 \"ten minutes\" taught じゅうふん. A corpus scan finds exactly those four with the [十 じゅう][分 ふん] split.\n\nRecommendation. Teach じゅっぷん, the form N-level learners are taught; じっぷん is equally correct and matches the n1-b1516 precedent. The entry is not in the dictation pool, so no typed answer is marked wrong today, but the furigana and kana are wrong. Uphold.",
+       "sources": [
+        "Sources/VocabKit/Resources/n2.json (n2-b311: exJP, exEN, exZH, exKana, exTokens [十 じゅう][分 ふん])",
+        "docs/PLAN-V1.36.md lines 351-355 (§I: 十分 'ten minutes' taught じゅうふん in n1-b1147, n1-b1841, n2-b311, n4-b127; v1.25 corrected n1-b1516 to じっぷん)",
+        "docs/PLAN-V1.36.md lines 365-384 (§I addendum 2: item 4 extended to 分 and the other sound-changing counters)",
+        "Corpus scan of Sources/VocabKit/Resources/n*.json: n1-b1516 has 十分 じっぷん for 'ten minutes'; every 'enough' sense has 十分 じゅうぶん; exactly four entries have the [十 じゅう][分 ふん] split",
+        "Standard reading: 十分 'ten minutes' is じっぷん / じゅっぷん (NHK accent dictionary, 大辞林); じゅうふん is non-standard"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "Upheld. I only read files and changed nothing. The sentence uses the \"ten minutes\" sense, so it should read じゅっぷん or じっぷん. The taught form, じゅうふん, is not a standard reading for that sense or any other, so the \"neither standard form\" condition is met.\n\nWhat I checked:\n\n1. **The taught reading.** In Sources/VocabKit/Resources/n2.json at 3d891b9, the n2-b311 sentence is split into two words: 十 read じゅう and 分 read ふん. The full kana line confirms it: しゅうごうじかんのぜんごじゅうふんは… So the taught reading is じゅうふん, as the hit says.\n\n2. **The sense.** The English translation says \"ten minutes before and after the meeting time\". The Chinese translation says 前后十分钟, which also means ten minutes. The meaning 十分 じゅうぶん (\"enough\") does not fit the sentence. The pattern of a time word plus 前後 plus a length of time means \"within ten minutes either side\".\n\n3. **Is じゅうふん standard?** No. 10 minutes is read じゅっぷん (the usual modern form) or じっぷん (the traditional form). 分 changes to ぷん after 十, as it does after 一, 三, 六 and 八. じゅうふん is a mistake that comes from reading each character on its own. The only other standard reading of 十分 is じゅうぶん, and that is the other word. So the taught form matches neither standard form, and upholding it fits the rule I was given.\n\n4. **The corpus agrees.** n1-b1516 (あと十分で授業が始まる, \"Class starts in ten minutes\") already teaches 十分 as じっぷん. PLAN-V1.36 §I addendum 2, line 372, lists n2-b311 with the other \"ten minutes\" sentences taught じゅうふん: n1-b1147, n1-b1841 and n4-b127. A corpus-wide search for 十 followed by 分 found exactly those four plus n2-b449 (三十分 さんじゅうぶん, already listed in the addendum). The search found no other じゅうふん.\n\n5. **The learner.** 十分 for \"ten minutes\" is basic N5 time vocabulary. Teaching じゅうふん would teach a form learners should not use.\n\nNotes for whoever writes the fix:\n- The expected value gives two forms. Whoever writes the fix has to choose one and change the kana line to match. The corpus already uses じっぷん in n1-b1516. Most learner textbooks teach じゅっぷん. Either is correct; using the same form in all four sentences matters more than which one is chosen.\n- The two words would become 十 じゅっ and 分 ぷん (or じっ and ぷん), or one merged word 十分.\n- A related sentence, n3-b020 (駅からおよそ十分歩きました, \"about ten minutes\", taught じゅうぶん, in the dictation pool), is already recorded at PLAN-V1.36 line 351. I did not judge it here.",
+       "sources": [
+        "Sources/VocabKit/Resources/n2.json (n2-b311: exJP, exEN, exZH, exKana, exTokens)",
+        "Sources/VocabKit/Resources/n1.json (n1-b1516 teaches 十分 じっぷん for 'ten minutes')",
+        "docs/PLAN-V1.36.md lines 351, 365-384 (§I addendum 2 lists n2-b311)",
+        "Corpus-wide scan of 十 followed by 分 in Sources/VocabKit/Resources/n*.json at 3d891b9"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "n4-b127",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "十分 is 'ten minutes': exEN 'I walk about ten minutes', exZH 十分钟, and ほど after a quantity means 'about'. 'Ten minutes' is じゅっぷん or じっぷん, both standard: 十 takes っ and 分 becomes ぷん. The taught じゅうふん has neither sound change, and it is not the adjective じゅうぶん 'enough' either. Both tokens move, 十 じゅう -> じゅっ and 分 ふん -> ぷん; one alone would leave じゅっふん or じゅうぷん. The corpus now teaches じゅっぷん, the more common of the two standard forms; n1-b1516 keeps the じっぷん v1.25 gave it, and the counter table accepts both (COUNTER_FINAL 分 10). These four are the corpus's only [十 じゅう][分 ふん] splits (a refuter's scan of 十 followed by 分 found them and n2-b449). The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 駅から家まで十分ほど歩きます。 / exKana えきからいえまでじゅうふんほどあるきます / exTokens [十, じゅう] [分, ふん]",
+   "corrected": "exJP 駅から家まで十分ほど歩きます。 (unchanged) / exKana えきからいえまでじゅっぷんほどあるきます / exTokens [十, じゅっ] [分, ぷん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana じゅうふん -> じゅっぷん, the 十 token じゅう -> じゅっ and the 分 token ふん -> ぷん; token boundaries, exJP, exEN, exZH, the id and the headword (ほど) unchanged. Written through scripts/corpus_io.CorpusFile: three lines of n4.json move (exKana :33421, the 十 token's reading :33441, the 分 token's reading :33445). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 20 kana, so it still rides 200 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged: the voice is proven to say 十分 = じゅうぶん, the 'enough' reading (v1.29, instrument 1b, 十分 じゅうふん -> じゅうぶん). That proof is about the exJP audio, which did not move, and the corrected じゅっぷん is still not what it says, so the sentence stays withheld for the same reason and the row keeps 'proven' with a note, as n5-b018's did. Not re-measured. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n4-b127",
+      "file": "Sources/VocabKit/Resources/n4.json",
+      "field": "exJP",
+      "sentence": "駅から家まで十分ほど歩きます。",
+      "exEN": "I walk about ten minutes from the station to home.",
+      "taught": "十分 じゅうふん",
+      "expected": "じゅっぷん | じっぷん",
+      "kind": "mismatch",
+      "inDictationPool": false,
+      "note": "Found by the review. Withheld."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I uphold this hit. The taught じゅうふん is wrong, and じゅっぷん / じっぷん is the right thing to teach here. I only read files; nothing was edited.\n\n1. The sense is \"ten minutes\", not \"enough\". exEN says \"I walk about ten minutes\", exZH says 大概要走十分钟, and ほど comes right after 十分. ほど after a quantity means \"about\", and 十分ほど cannot sensibly mean \"about enough\". So the じゅうぶん reading for \"enough\" does not apply.\n\n2. The taught form is neither standard form. In the corpus (n4.json around lines 33393-33460) the exKana is えきからいえまでじゅうふんほどあるきます, and exTokens splits the number as 十 じゅう plus 分 ふん. For ten minutes, the standard readings are じっぷん (the dictionary and broadcast form) and じゅっぷん (the most common one; the 2010 常用漢字表 notes that ジッ may also be read ジュッ). Japanese dictionaries list じゅうふん only as a variant of 十分 \"enough\", never as the reading for ten minutes. Teaching じゅうふん also teaches an N4 learner the wrong rule for 分: 10 takes the っ+ぷん sound change, like 1, 3, 4, 6 and 8, and every N5/N4 counter table teaches it that way. This point is from my own knowledge of Japanese; I did not check a dictionary in this session.\n\n3. The project already made this exact correction. v1.25 changed n1-b1516 (あと十分で授業が始まる。) from じゅうふん to じっぷん, with the recorded reason \"十分 for ten minutes is じっぷん; じゅうふん is not the word\" (docs/measurements/v125-headword-reading-manifest.json, around lines 489-497). PLAN-V1.36 §I and addendum 2 name n4-b127 in this same class, together with n1-b1147, n1-b1841 and n2-b311. A scan of every 十分 token in n1-n5 confirms all four are じゅう+ふん with a ten-minute sense in exEN.\n\n4. The hit's other fields check out:\n- inDictationPool:false is correct: the id is in Sources/VocabKit/Resources/dictation-exclusions.json at line 1900.\n- The v1.29 row in docs/measurements/dictation-reading-mismatches.json (line 4420) recorded that the voice said じゅうぶん. That is also wrong, and it has no bearing on what to teach.\n- The card's headword is ほど, so a fix touches only the sentence fields (exKana and exTokens), not the headword.\n- n4-b127 is not yet in v136-reading-manifest.json or v136-counter-sweep-3.json.\n\nFor whoever writes the fix: both じっぷん and じゅっぷん are acceptable. The n1-b1516 precedent used じっぷん, so writing じっぷん keeps the corpus consistent, though じゅっぷん is what N4 textbooks most often show.",
+       "sources": [
+        "Sources/VocabKit/Resources/n4.json (n4-b127, lines ~33393-33460: exJP, exEN, exZH, exKana, exTokens 十 じゅう + 分 ふん)",
+        "docs/PLAN-V1.36.md (§I addendum lines ~340-363 and addendum 2 lines ~365-384, listing n4-b127)",
+        "docs/measurements/v125-headword-reading-manifest.json (n1-b1516 じゅうふん -> じっぷん precedent, lines ~489-497)",
+        "docs/measurements/dictation-reading-mismatches.json (n4-b127 row, line 4420; n1-b1516 row, line 595)",
+        "Sources/VocabKit/Resources/dictation-exclusions.json (n4-b127 withheld, line 1900)",
+        "docs/measurements/v129-nearest-exclusions.json (n4-b127 corpus じゅうふん vs voice じゅうぶん, line 1675)",
+        "scripts/check_counter_readings.py (line 113: 分 not in the current table)"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I upheld this hit after reading main at 3d891b9, without making any changes. In n4-b127 the exJP is 駅から家まで十分ほど歩きます。, and both the exEN (\"I walk about ten minutes from the station to home.\") and the exZH (从车站走到家大概要走十分钟) give the sense \"ten minutes\". They do not give 十分 じゅうぶん \"enough\". The corpus teaches じゅうふん in two places: exKana えきからいえまでじゅうふんほどあるきます, and the covering tokens [十, じゅう] and [分, ふん]. The standard readings of 十分 meaning ten minutes are じゅっぷん and じっぷん, which have the sound changes 十→じゅっ/じっ and 分→ぷん. じゅうふん is neither standard form. It also does not match the other sense, じゅうぶん. For an N4 learner じゅっぷん, or じっぷん, is what textbooks teach, so the taught form is wrong and the expected form is right. This is consistent with what the project did before: v1.25 corrected the same pattern in n1-b1516 あと十分で授業が始まる to じっぷん, and that sentence currently reads あとじっぷんで…. PLAN-V1.36 §I's 2026-10-09 finding list and addendum 2 both name n4-b127 with this exact defect. The entry is not in the dictation pool, so only the typed reading and its furigana are affected, not the audio. Any fix must change exKana and both tokens together: 十 to じゅっ or じっ, and 分 to ぷん. The plan allows either standard form, and the n1-b1516 precedent used じっぷん.",
+       "sources": [
+        "Sources/VocabKit/Resources/n4.json (n4-b127, about line 33393: exJP, exEN, exZH, exKana, exTokens)",
+        "docs/PLAN-V1.36.md (lines about 348-400: §I findings recorded 2026-10-09, and §I addendum 2)",
+        "Sources/VocabKit/Resources/n1.json (n1-b1516 precedent: あと十分で授業が始まる → あとじっぷんで…)",
+        "scripts/check_counter_readings.py (counter table scope; 分 not in the calibrated table at base)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "n2-b479",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "一軒 is one house (exEN 'an old house for rent', exZH 一栋). Before the k-row counter 軒, 一 is いっ: いっけん, the only standard form, as 一個 is いっこ and 一回 いっかい (COUNTER_FINAL 軒 1). The 一 token moves (いち -> いっ); 軒 stays けん. The only 一 + 軒 in the corpus. The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP この近くに古い貸家が一軒建っている。 / exKana このちかくにふるいかしやがいちけんたっている / exTokens [一, いち] [軒, けん]",
+   "corrected": "exJP この近くに古い貸家が一軒建っている。 (unchanged) / exKana このちかくにふるいかしやがいっけんたっている / exTokens [一, いっ] [軒, けん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana いちけん -> いっけん, the 一 token いち -> いっ; token boundaries, exJP, exEN, exZH, the id and the headword (貸家 かしや) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n2.json move (exKana :60020, the 一 token's reading :60048). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 22 kana, so it still rides 220 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Its v1.29 record was 'undecided' on instrument 2's complaint 一 いち -> いっ, which is the reading this correction applies: the row is marked stale-after-correction (v1.36), keeps its complaint words with a note, and is not re-measured. Releasing it needs instrument 1b to prove the voice says いっけん. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n2-b479",
+      "file": "Sources/VocabKit/Resources/n2.json",
+      "field": "exJP",
+      "sentence": "この近くに古い貸家が一軒建っている。",
+      "exEN": "There is an old house for rent standing near here.",
+      "taught": "一軒 いちけん",
+      "expected": "いっけん",
+      "kind": "mismatch",
+      "inDictationPool": false,
+      "note": "Found by the review. Withheld."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "Upheld: the taught reading いちけん is wrong, and いっけん is the one to teach in this sentence. I read this from main at 3d891b9 and changed nothing.\n\nWhat the corpus teaches now: the n2-b479 entry in Sources/VocabKit/Resources/n2.json has exKana \"このちかくにふるいかしやがいちけんたっている\". Its exTokens give 一 as いち and 軒 as けん, so いちけん is what learners are taught to type.\n\nThe sense: exEN reads \"There is an old house for rent standing near here.\" The exZH has the same counting sense (一栋出租的旧房子). So 一軒 here is the counter for houses, meaning \"one house\". It is not 一見 or any other homograph.\n\nThe correct reading: 軒 (けん) is a k-row counter, and 一 becomes いっ before it. So 一軒 is いっけん, the same pattern as 一個 いっこ and 一回 いっかい. Unlike 十分 (じゅっぷん/じっぷん), there is no second accepted form, and no dictionary gives いちけん for the counter. The taught form is neither standard reading, so the rule about two standard forms does not apply.\n\nTeaching いっけん is right for an N2 learner. It is the only reading of this everyday counter, and the sentence is plain spoken Japanese with no literary reading in play.\n\nThis agrees with docs/PLAN-V1.36.md, which already lists the case at lines 356 and 373 under \"っ missing\". The fix needs the 一 token changed to いっ and the exKana changed to …かしやがいっけんたっている. The entry is also not in the dictation pool.",
+       "sources": [
+        "Sources/VocabKit/Resources/n2.json (n2-b479: exJP, exEN, exZH, exKana, exTokens)",
+        "docs/PLAN-V1.36.md lines 356, 373, 378 (§I addendum 2: 軒 among the sound-changing counters; n2-b479 listed as っ missing)",
+        "docs/measurements/dictation-reading-mismatches.json line 2459 (n2-b479 entry)",
+        "Standard Japanese counter phonology: 一 + k-row counter becomes いっ (一軒 いっけん, as in 一個 いっこ and 一回 いっかい)"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I confirm the defect, with high confidence. I checked this read-only at 3d891b9.\n\n**What the corpus has.** Entry n2-b479 (headword 貸家 かしや) has the sentence この近くに古い貸家が一軒建っている。 It is taught with the tokens 一 \"いち\" + 軒 \"けん\". Its exKana reads ...かしやがいちけんたっている. exEN says \"There is an old house for rent standing near here\", and exZH says 一栋出租的旧房子. So 軒 here is the ordinary counter for houses and buildings, meaning \"one house\". No other sense applies: no 一見-style word \"at a glance\", and no idiom.\n\n**Why いちけん is wrong.** 軒 is counted いっけん, にけん, さんげん/さんけん, and so on. With 1, the reading always takes a small っ. いちけん is not a standard or tolerated form. Unlike じゅっぷん/じっぷん, this count has only one standard reading, so the 'taught form is neither' test does not come up: いっけん is the only form.\n\n**Why いっけん is right to teach here.** This is the counter sense the sentence uses. It is basic counter knowledge at any N level, and an N2 learner would be expected to know it. A learner who types いちけん is being taught a wrong reading.\n\n**Other facts.**\n- This is the only 一+軒 occurrence anywhere in the corpus.\n- The sentence is not in the dictation pool, so no rider is being refused at the voice today. The wrong reading still shows in the taught kana.\n- The fix touches only the 一 token, which becomes いっ, and the matching っ in exKana.\n- The hit agrees with §I addendum 2 in docs/PLAN-V1.36.md, which records it under \"っ missing\".",
+       "sources": [
+        "Sources/VocabKit/Resources/n2.json (entry n2-b479: exJP, exEN, exZH, exKana, exTokens)",
+        "docs/PLAN-V1.36.md (§I 'Found 2026-10-09' list and §I addendum 2)",
+        "Standard Japanese counter phonology: 一軒 = いっけん (sokuon before k-initial counters); いちけん not a standard form"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "n1-b957",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "一階 is the first floor (exEN 'on the first floor of the main building', exZH 一楼). Before 階, 一 is いっ: いっかい, the dictionary headword and the only standard form (COUNTER_FINAL 階 1). The tolerated さんかい is about 三階, another digit. The 一 token moves (いち -> いっ); 階 stays かい. The §I addendum 2 counter table flagged it on exTokens and on exKana, both exact (v136-counter-sweep-4.json, 0a4e354). Upheld 2 of 2 by independent refuters, both at high confidence.",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 受付は本館の一階にあります。 / exKana うけつけはほんかんのいちかいにあります / exTokens [一, いち] [階, かい]",
+   "corrected": "exJP 受付は本館の一階にあります。 (unchanged) / exKana うけつけはほんかんのいっかいにあります / exTokens [一, いっ] [階, かい]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.36 §I addendum 2: two independent refuters on the counter table's hit, v136-counter-sweep-4.json)",
+   "resolution": "exKana いちかい -> いっかい, the 一 token いち -> いっ; token boundaries, exJP, exEN, exZH, the id and the headword (本館 ほんかん) unchanged. Written through scripts/corpus_io.CorpusFile: two lines of n1.json move (exKana :94707, the 一 token's reading :94727). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 19 kana, so it still rides 190 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana).",
+   "dictation": "withheld, unchanged. Its v1.29 record was 'undecided' on instrument 2's complaint 一 いち -> いっ, which is the reading this correction applies: the row is marked stale-after-correction (v1.36), keeps its complaint words with a note, and is not re-measured. Releasing it needs instrument 1b to prove the voice says いっかい. dictation-exclusions.json is unchanged; the evidence row's exKana follows the corpus.",
+   "votes": {
+    "counterSweepHit": {
+     "hit": {
+      "id": "n1-b957",
+      "file": "Sources/VocabKit/Resources/n1.json",
+      "field": "exJP",
+      "sentence": "受付は本館の一階にあります。",
+      "exEN": "The reception is located on the first floor of the main building.",
+      "taught": "一階 いちかい",
+      "expected": "いっかい",
+      "kind": "mismatch",
+      "inDictationPool": false,
+      "note": "Found by the review. Withheld."
+     },
+     "votes": [
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "Upheld. I checked this read-only against main at 3d891b9 and wrote no files or worktree. In Sources/VocabKit/Resources/n1.json, entry n1-b957 has exJP 受付は本館の一階にあります。, exKana うけつけはほんかんのいちかいにあります, and exTokens [[\"一\",\"いち\"],[\"階\",\"かい\"]]. So the taught reading is いちかい, as the hit says. exEN (\"on the first floor of the main building\") and exZH (一楼) both use the floor-number sense, so no other sense applies here. The standard reading of 一階 as \"first floor\" is いっかい: いち contracts to いっ before the k-row counter 階, and いっかい is the dictionary headword and the one textbook form. いちかい is not a second standard form. It is a reading-by-parts error, the same kind as the other cases listed in §I addendum 2 (いちけん, さんふん, じゅうふん). It is not one of the tolerated variants that addendum keeps out of correction (三階 さんかい, じゅうさい); for 一階 no standard dictionary gives a second form. The rest of the corpus agrees: n4 teaches にかい for 二階 and さんかい for 三階, so いちかい is the outlier. §I addendum 2 itself already lists \"一階 いちかい (n1-b957)\" as one of the defects found. The sentence is not in the dictation pool, so only the displayed reading is affected. The fix should make the 一 token いっ, or merge it into 一階 いっかい, and should go through CorpusFile in the apply step. That step is not part of this refutation.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (n1-b957, lines 94680-94720: exJP, exEN, exZH, exKana, exTokens)",
+        "docs/PLAN-V1.36.md (§I addendum 2, line 365 onward: lists 一階 いちかい n1-b957 as a defect; tolerated forms limited to 三階 さんかい and じゅうさい)",
+        "Sources/VocabKit/Resources/n4.json (line 8559 さんかい for 三階; line 16961 にかい for 二階)",
+        "scripts/check_counter_readings.py (lines 193-200: 階 sound-change handling)"
+       ]
+      },
+      {
+       "uphold": true,
+       "confidence": "high",
+       "reasoning": "I checked this read-only at 3d891b9. The corpus entry n1-b957 (Sources/VocabKit/Resources/n1.json, about line 94680) has the example sentence 受付は本館の一階にあります。. It is tokenized as ['一','いち'], ['階','かい'], and its kana line is うけつけはほんかんのいちかいにあります, so the taught reading really is いちかい.\n\nThe English line says \"The reception is located on the first floor of the main building.\" That makes 一階 the floor counter (\"first floor / ground floor\"), not some other compound. The standard reading of 一階 is いっかい: 一 + 階 takes the small っ, the same way 一回, 一個 and 一軒 do. No standard dictionary lists いちかい for 一階 in this sense. So the taught form is not one of two accepted forms. It is simply not standard, and the narrow \"uphold only if the taught form is neither\" condition is met.\n\nThe other counter questions for 階 (さんかい versus さんがい for 三階, n4-g171) concern a different numeral. They do not affect 一階, where the only standard form is いっかい. The other 階 counter sentences in the corpus (二階 in n4-g287, n4-b068, n4-k008) read にかい, which is correct and has no sound change. So いっかい is the reading to teach here.\n\nThis agrees with docs/PLAN-V1.36.md §I addendum 2, which lists `n1-b957` 一階 いちかい (いっかい). It also agrees with docs/measurements/dictation-reading-mismatches.json, where instrument 2 flagged the 一 as いち -> いっ (\"heard instead\"). The entry is not in the dictation pool, so the fix changes only the taught reading, not dictation scoring.",
+       "sources": [
+        "Sources/VocabKit/Resources/n1.json (n1-b957: exJP, exEN, exKana, exTokens)",
+        "docs/PLAN-V1.36.md (§I found-by-review list ~line 356; §I addendum 2 ~lines 365-381)",
+        "docs/measurements/dictation-reading-mismatches.json (n1-b957 record, heardInstead 一 いち -> いっ)",
+        "Corpus-wide comparison of numeral+階 tokens: n4-g171 三階 さんかい, n4-g287/n4-b068/n4-k008 二階 にかい",
+        "Standard Japanese reading: 一階 = いっかい (っ before the k-row counter 階)"
+       ]
+      }
+     ]
     }
    }
   }

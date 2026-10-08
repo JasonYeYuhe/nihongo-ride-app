@@ -278,9 +278,9 @@
   {
    "id": "n1-b1147",
    "exJP": "駅から会社まで徒歩十分弱だ。",
-   "exKana": "えきからかいしゃまでとほじゅうふんじゃくだ",
-   "heardInstead": "分 ふん -> ぶん",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "えきからかいしゃまでとほじゅっぷんじゃくだ",
+   "heardInstead": "分 ふん -> ぶん  (v1.29 instrument 2; the corpus has since been corrected to じゅっぷん, which is not instrument 2's ぶん)",
+   "evidence": "stale-after-correction (v1.36): the correction acted on the token this row's v1.29 flag names, but not to the reading the flag named. The corpus now reads 十分 as じゅっぷん (十 じゅう -> じゅっ and 分 ふん -> ぷん in exKana and the tokens; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2); instrument 2 had named ぶん, the 'enough' reading じゅうぶん, not ぷん. So the recorded mismatch (corpus ふん, voice nearer ぶん) no longer describes the sentence, and what the voice says for 十分 here is unmeasured. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says じゅっぷん."
   },
   {
    "id": "n1-b115",
@@ -671,9 +671,9 @@
   {
    "id": "n1-b1630",
    "exJP": "カップ麺に熱湯を注いで三分待った。",
-   "exKana": "かっぷめんにねっとうをそそいでさんふんまった",
-   "heardInstead": "分 ふん -> わけ",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "かっぷめんにねっとうをそそいでさんぷんまった",
+   "heardInstead": "分 ふん -> わけ  (v1.29 instrument 2; the corpus has since been corrected to さんぷん, which is not instrument 2's わけ)",
+   "evidence": "stale-after-correction (v1.36): the correction acted on the token this row's v1.29 flag names, but not to the reading the flag named. The corpus now reads 三分 as さんぷん (分 ふん -> ぷん in exKana and the token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2); instrument 2 had named わけ, not ぷん. So the recorded mismatch (corpus ふん, voice nearer わけ) no longer describes the sentence, and what the voice says for 分 here is unmeasured. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says さんぷん."
   },
   {
    "id": "n1-b1633",
@@ -804,9 +804,9 @@
   {
    "id": "n1-b1841",
    "exJP": "ここから駅まで歩いて十分ぐらいかかる。",
-   "exKana": "ここからえきまであるいてじゅうふんぐらいかかる",
-   "heardInstead": "分 ふん -> ぶん",
-   "evidence": "proven"
+   "exKana": "ここからえきまであるいてじゅっぷんぐらいかかる",
+   "heardInstead": "分 ふん -> ぶん  (v1.29 instrument 1; the corpus has since been corrected to じゅっぷん, which is still not what the voice was proven to say)",
+   "evidence": "proven (v1.29, instrument 1: the exJP audio is byte-identical to the kana reading with 分 read ぶん, so the voice says じゅうぶん, the 'enough' reading). v1.36 corrected 十分 to じゅっぷん (十 じゅう -> じゅっ and 分 ふん -> ぷん in exKana and the tokens; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2). The proof is about the audio of exJP, which did not change, so it still stands and still describes a mismatch: the voice says じゅうぶん against the corpus じゅっぷん, as it did against じゅうふん. Not re-measured. Stays withheld."
   },
   {
    "id": "n1-b1843",
@@ -1028,9 +1028,9 @@
   {
    "id": "n1-b327",
    "exJP": "彼女の勤め先は駅から歩いて五分のところにある。",
-   "exKana": "かのじょのつとめさきはえきからあるいてごぶんのところにある",
-   "heardInstead": "分 ぶん -> ふん",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "かのじょのつとめさきはえきからあるいてごふんのところにある",
+   "heardInstead": "分 ぶん -> ふん  (v1.29 instrument 2; the corpus has since been corrected to ごふん)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 五分 as ごふん (exKana and the 分 token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2), so the recorded mismatch — corpus ぶん, voice nearer ふん — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says ごふん. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n1-b329",
@@ -1589,9 +1589,9 @@
   {
    "id": "n1-b957",
    "exJP": "受付は本館の一階にあります。",
-   "exKana": "うけつけはほんかんのいちかいにあります",
-   "heardInstead": "一 いち -> いっ",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "うけつけはほんかんのいっかいにあります",
+   "heardInstead": "一 いち -> いっ  (v1.29 instrument 2; the corpus has since been corrected to いっかい)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 一階 as いっかい (exKana and the 一 token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2), so the recorded mismatch — corpus いち, voice nearer いっ — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says いっかい. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n1-b981",
@@ -2360,9 +2360,9 @@
   {
    "id": "n2-b311",
    "exJP": "集合時間の前後十分は入口で待っています。",
-   "exKana": "しゅうごうじかんのぜんごじゅうふんはいりぐちでまっています",
-   "heardInstead": "十分 じゅうふん -> じゅうぶん",
-   "evidence": "proven (v1.29, instrument 1b)"
+   "exKana": "しゅうごうじかんのぜんごじゅっぷんはいりぐちでまっています",
+   "heardInstead": "十分 じゅうふん -> じゅうぶん  (v1.29 instrument 1b; the corpus has since been corrected to じゅっぷん, which is still not what the voice was proven to say)",
+   "evidence": "proven (v1.29, instrument 1b: 十分 replaced by じゅうぶん renders byte-identical to the exJP audio, so the voice says じゅうぶん, the 'enough' reading). v1.36 corrected 十分 to じゅっぷん (十 じゅう -> じゅっ and 分 ふん -> ぷん in exKana and the tokens; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2). The proof is about the audio of exJP, which did not change, so it still stands and still describes a mismatch: the voice says じゅうぶん against the corpus じゅっぷん, as it did against じゅうふん. Not re-measured. Stays withheld."
   },
   {
    "id": "n2-b312",
@@ -2430,9 +2430,9 @@
   {
    "id": "n2-b449",
    "exJP": "今日以後は毎日三十分の運動を続ける。",
-   "exKana": "きょういごはまいにちさんじゅうぶんのうんどうをつづける",
-   "heardInstead": "分 ぶん -> ぷん",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "きょういごはまいにちさんじゅっぷんのうんどうをつづける",
+   "heardInstead": "分 ぶん -> ぷん  (v1.29 instrument 2; the corpus has since been corrected to さんじゅっぷん, which also moves 三十 さんじゅう -> さんじゅっ, a token the flag did not name)",
+   "evidence": "stale-after-correction (v1.36): the correction acted on the token this row's v1.29 flag names, to the reading the flag named (分 ぶん -> ぷん), and also on 三十 (さんじゅう -> さんじゅっ), which instrument 2, substituting one token at a time, did not name. The corpus now reads 三十分 as さんじゅっぷん (exKana and the 三十 and 分 tokens; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2), so the recorded mismatch — corpus ぶん, voice nearer ぷん — no longer describes the sentence, and what the voice says for 三十 here is unmeasured. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says さんじゅっぷん."
   },
   {
    "id": "n2-b458",
@@ -2458,9 +2458,9 @@
   {
    "id": "n2-b479",
    "exJP": "この近くに古い貸家が一軒建っている。",
-   "exKana": "このちかくにふるいかしやがいちけんたっている",
-   "heardInstead": "一 いち -> いっ",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "このちかくにふるいかしやがいっけんたっている",
+   "heardInstead": "一 いち -> いっ  (v1.29 instrument 2; the corpus has since been corrected to いっけん)",
+   "evidence": "stale-after-correction (v1.36): this row's v1.29 flag is what the correction acted on. The corpus now reads 一軒 as いっけん (exKana and the 一 token; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2), so the recorded mismatch — corpus いち, voice nearer いっ — no longer describes the sentence. Not re-measured. STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says いっけん. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n2-b481",
@@ -4419,9 +4419,9 @@
   {
    "id": "n4-b127",
    "exJP": "駅から家まで十分ほど歩きます。",
-   "exKana": "えきからいえまでじゅうふんほどあるきます",
-   "heardInstead": "十分 じゅうふん -> じゅうぶん",
-   "evidence": "proven (v1.29, instrument 1b)"
+   "exKana": "えきからいえまでじゅっぷんほどあるきます",
+   "heardInstead": "十分 じゅうふん -> じゅうぶん  (v1.29 instrument 1b; the corpus has since been corrected to じゅっぷん, which is still not what the voice was proven to say)",
+   "evidence": "proven (v1.29, instrument 1b: 十分 replaced by じゅうぶん renders byte-identical to the exJP audio, so the voice says じゅうぶん, the 'enough' reading). v1.36 corrected 十分 to じゅっぷん (十 じゅう -> じゅっ and 分 ふん -> ぷん in exKana and the tokens; docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters, PLAN-V1.36 §I addendum 2). The proof is about the audio of exJP, which did not change, so it still stands and still describes a mismatch: the voice says じゅうぶん against the corpus じゅっぷん, as it did against じゅうふん. Not re-measured. Stays withheld."
   },
   {
    "id": "n4-b129",

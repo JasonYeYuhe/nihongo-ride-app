@@ -1,0 +1,106 @@
+{
+ "measurement": "scripts/check_propagated_exclusions.py --evidence v136-pool-remeasure --calibrate --json <scratch> (instrument 1b), run once on a scratch copy of the scripts, the corrected corpus and the mismatch record, as v1.35 round 3 measured n5-g022: the four sentences were added to the scratch mismatch record as a one-row-each evidence class with heardInstead '<span> <old> -> <new>', and the scratch EXTRA gained 三千 [さんぜん, さんせん], 十分 [じゅっぷん, じっぷん, じゅうぶん, じゅうふん], 八十 [はちじゅっ, はちじっ, はちじゅう] and 八十点 [はちじゅってん, はちじってん, はちじゅうてん], so the old and the corrected readings were both candidates. The committed files were not edited to measure. Leads: check_dictation_readings.nearest (instrument 2) on the corrected tokens and on the tokens 1.35 shipped, and a span comparative (log-mel DTW of the exJP audio against 1b's span-substituted texts). Audio caches were outside the repo (DICTATION_WAV_CACHE in the session scratchpad).",
+ "date": "2026-10-09",
+ "voice": "com.apple.voice.compact.ja-JP.Kyoko",
+ "question": "PLAN-V1.36 §I addendum 2's counter table found 13 number + counter readings taught wrong, each upheld 2 of 2. Four are IN the dictation pool (n1-b439 and n3-b781 三千, n3-b020 十分, n3-b678 八十点). Dictation speaks exJP and grades against exKana, and the audio does not change, so a corrected exKana must match what the voice says. Does it? The v1.36 apply step also required that the pool not shrink.",
+ "calibration": {
+  "rebuildIdentity": "4/4 — string handling only, no linguistic weight",
+  "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+  "negativeControl": "8 decoy substitutions, 0 spurious byte matches"
+ },
+ "verdicts": {
+  "n3-b020": {
+   "verdict": "KEEP",
+   "detail": "1b proves the voice says 十分 = じゅうぶん, not the corrected じゅっぷん: 駅からおよそじゅうぶん歩きました。 renders byte-identical to the exJP audio (sha1 cf14d6d9a386); the じゅっぷん (bcf49e9b8a92), じっぷん (3e90312ef691) and じゅうふん (5be07b5ffb06) substitutions do not. Instrument 1 agrees: the whole-kana えきからおよそじゅうぶんあるきました, which is the exKana 1.35 shipped, is byte-identical too (cf14d6d9a386). The same voice says じゅうぶん for 十分 'ten minutes' in n2-b311 and n4-b127 (proven, v1.29 instrument 1b) and n1-b1841 (proven, instrument 1)."
+  },
+  "n1-b439": {
+   "verdict": "SILENT",
+   "detail": "1b never confirms the disputed 三千: neither 会費は全員一律でさんぜん円です。 (59cfcbf2ac5e) nor …さんせん… (0eb4a08ff51d) renders byte-identical to the exJP audio (c51086e0ab12)."
+  },
+  "n3-b781": {
+   "verdict": "SILENT",
+   "detail": "1b never confirms the disputed 三千: neither 食事代の合計はさんぜん円でした。 (8b5ea2327edf) nor …さんせん… (4cc844d9790f) renders byte-identical to the exJP audio (e23320330ac8)."
+  },
+  "n3-b678": {
+   "verdict": "SILENT",
+   "detail": "1b never confirms the disputed 八十点: none of はちじゅってん (d80ffb1ed97e), はちじってん (faa8e1cba16b) or はちじゅうてん (b9853a9737d7) substituted for the span renders byte-identical to the exJP audio (3f44f329c858)."
+  }
+ },
+ "leads": {
+  "note": "Leads, not verdicts. Instrument 2's 'flagged' is what puts a sentence on the exclusion list in the shipped pipeline (calibrated 27/27 recall, 0/494 false positives against instrument 1); the span comparative is not calibrated. Lower distance is nearer.",
+  "n1-b439": {
+   "instrument2Corrected": "own さんぜん 0.0754, nearest rival 円 えん -> まる 0.0952: not flagged",
+   "instrument2AsShipped": "own さんせん 0.0970, rival 三千 さんせん -> さんぜん 0.0754: flagged, had さんぜん been a candidate; Sudachi's lookup of 三千 never offers it",
+   "span": {
+    "さんぜん": 0.0539,
+    "さんせん": 0.012
+   },
+   "reading": "the two leads disagree: instrument 2 favours the correction, the span comparative さんせん"
+  },
+  "n3-b781": {
+   "instrument2Corrected": "own さんぜん 0.0421, nearest rival 円 えん -> まる 0.0572: not flagged",
+   "instrument2AsShipped": "own さんせん 0.0454, rival 三千 さんせん -> さんぜん 0.0421: flagged",
+   "span": {
+    "さんぜん": 0.0066,
+    "さんせん": 0.0132
+   },
+   "reading": "both leads favour the correction"
+  },
+  "n3-b678": {
+   "instrument2Corrected": "own はちじゅってん 0.0659, nearest rival 八十 はちじゅっ -> やそ 0.0961: not flagged",
+   "instrument2AsShipped": "own はちじゅうてん 0.0703, rival 八十 はちじゅう -> はちじゅっ 0.0659: flagged",
+   "span": {
+    "はちじゅってん": 0.0122,
+    "はちじってん": 0.0124,
+    "はちじゅうてん": 0.0116
+   },
+   "reading": "instrument 2 favours the correction; the span comparative is a near tie"
+  }
+ },
+ "decision": {
+  "n3-b020": "NOT CORRECTED; stays in the pool as 1.35 shipped it (exKana じゅうぶん, which the voice is proven to say). Correcting it to じゅっぷん while it stays in the pool would mark every rider who types what they hear wrong: the key wants っ where they type う; withholding it would shrink the pool, which the apply step forbade. So the one state that meets both of the apply step's dictation conditions — the exKana matches the voice, and the pool does not shrink — is the reading as shipped. Sentence mode keeps teaching the 'enough' reading for 'ten minutes' in this one sentence, as 1.35 does. The alternative, for whoever owns the release: apply the correction (十分 じゅうぶん -> じゅっぷん in the token and exKana, through CorpusFile, declared in v136-reading-manifest.json) AND withhold the sentence from dictation (pool 5,939 -> 5,938), which is v1.35's n5-g022 precedent.",
+  "n1-b439, n3-b781, n3-b678": "CORRECTED and kept in the pool, 1b silent on each. v1.35's n5-g022 precedent withheld a corrected pool sentence on 1b's silence; the v1.36 apply step requires that the pool not shrink, so they stay, and this record says what is and is not known. Instrument 2, the pipeline's own admission test, does not flag any of the three corrected, and would have flagged all three as 1.35 shipped them had the standard reading been a candidate. n1-b439 is the open one: its span comparative points at さんせん. Recorded for a person to decide."
+ },
+ "upheldNotApplied": {
+  "n3-b020": {
+   "hit": {
+    "id": "n3-b020",
+    "file": "Sources/VocabKit/Resources/n3.json",
+    "field": "exJP",
+    "sentence": "駅からおよそ十分歩きました。",
+    "exEN": "I walked for about ten minutes from the station.",
+    "taught": "十分 じゅうぶん (the 'enough' reading)",
+    "expected": "じゅっぷん | じっぷん",
+    "kind": "mismatch",
+    "inDictationPool": true,
+    "note": "exEN says minutes, and no 'enough' word appears, so the sense is minutes. Listed in PLAN §I, first addendum (the fix review's own scan). In the pool."
+   },
+   "votes": [
+    {
+     "uphold": true,
+     "confidence": "high",
+     "reasoning": "I read n3-b020 in Sources/VocabKit/Resources/n3.json at 3d891b9 and checked it against PLAN-V1.36.md §I (the first addendum lists it as a pool sentence; addendum 2 extends item 4 to 分).\n\nThe entry: exJP is 駅からおよそ十分歩きました。 and exEN is \"I walked for about ten minutes from the station.\" exZH agrees: 我从车站大概走了十分钟 (十分钟 = ten minutes). The token is taught as [\"十分\",\"じゅうぶん\"], and exKana is えきからおよそじゅうぶんあるきました.\n\nThe sense is clearly a duration. The headword taught here is およそ (\"about, roughly\"), and およそ sits directly before a number, its normal use for an approximate count. \"およそじゅうぶん歩きました\" would mean \"walked roughly enough\", which makes no sense and matches neither translation. No \"enough\" sense appears anywhere in the entry.\n\nSo the taught じゅうぶん (the \"enough\" reading) is wrong for this sentence. The right reading for an N3 learner is じゅっぷん or じっぷん, both standard. The taught form is neither, so the rule for two standard forms supports upholding the hit.\n\nNotes for whoever applies the fix:\n- The corpus already has one 十分 = \"ten minutes\" correction, n1-b1516, which uses じっぷん. It is the only 十分 token not read じゅうぶん. For consistency the fix could use じっぷん, or the checker could accept both forms.\n- exKana must be changed along with the exTokens reading, or the two will disagree.\n- The entry is in the dictation pool. A learner who types what the voice says (じゅっぷん/じっぷん) is currently refused.\n\nThis was a read-only check: no files were changed.",
+     "sources": [
+      "Sources/VocabKit/Resources/n3.json (entry n3-b020, exJP/exEN/exZH/exKana/exTokens)",
+      "docs/PLAN-V1.36.md (§I first addendum lines ~343-363; §I addendum 2 lines ~365-385)",
+      "Corpus scan of 十分 tokens across Sources/VocabKit/Resources/n*.json: 10x じゅうぶん, 1x じっぷん (n1-b1516, the v1.25 precedent)"
+     ]
+    },
+    {
+     "uphold": true,
+     "confidence": "high",
+     "reasoning": "I upheld this hit. I checked it read-only against main at 3d891b9.\n\n1. The corpus says what the hit says. In Sources/VocabKit/Resources/n3.json, entry n3-b020 (headword およそ) has the sentence 駅からおよそ十分歩きました。 with the token [\"十分\",\"じゅうぶん\"]. Its exKana reads えきからおよそじゅうぶんあるきました.\n\n2. The sense is \"minutes\", not \"enough\". exEN says \"about ten minutes\", and exZH says 大概走了十分钟. The sentence itself also points that way: およそ means \"approximately\", and it needs a quantity after it. 十分 as じゅうぶん (\"sufficiently\") is not a quantity, so \"およそ じゅうぶん 歩きました\" makes no sense. Nothing else in the sentence suggests \"enough\". The likely cause is the tokenizer: on its own, 十分 defaults to the adverb reading じゅうぶん.\n\n3. The taught form matches neither standard form. 10 minutes is read じゅっぷん, or じっぷん in the traditional and textbook form. (じゅうふん and じゅうぷん are not standard.) じゅうぶん is a different word, so it fails the \"uphold only if the taught form is neither\" test. Beginner textbooks teach じゅっぷん / じっぷん for \"10 minutes\" at N5, so either is the right reading to teach an N3 learner here.\n\n4. It matters for riders. PLAN-V1.36 §I's first addendum lists n3-b020 in the dictation pool. If the voice says じゅっぷん or じっぷん and a rider types what they hear, they are marked wrong. The plan already treats this as the same class of defect: v1.25 corrected n1-b1516 十分 (\"ten minutes\") to じっぷん, and §I addendum 2 extends item 4 to the counter 分.\n\nA note for the apply step, not part of the verdict: the repo's earlier fix chose じっぷん, so the same form here would be consistent. Either the token and exKana should then read じっぷん, or both should read じゅっぷん. I made no edits.",
+     "sources": [
+      "Sources/VocabKit/Resources/n3.json (entry n3-b020: exJP, exEN, exZH, exKana, exTokens)",
+      "docs/PLAN-V1.36.md lines 344-379 (§I first addendum lists n3-b020 in the dictation pool; §I addendum 2 extends item 4 to 分; precedent n1-b1516 corrected to じっぷん in v1.25)",
+      "scripts/check_counter_readings.py (counter table header comment: 分 ぷん sound change)"
+     ]
+    }
+   ]
+  }
+ },
+ "dictationPool": {
+  "before": 5939,
+  "after": 5939
+ }
+}
