@@ -58,31 +58,45 @@ TARGETS = [
 N = numbers()
 FIXED = N["correctedThisRelease"]
 
-# The entries the corpus sentences below name — the one list this copy is written against. When a
-# correction joins or leaves the manifest, this list and the sentences change together.
-NAMED_IDS = ["n5-kazoku"]
-# What the sentences say n5-kazoku now teaches: 家族は四人です。 read with 四人 as よにん.
-KAZOKU_EXKANA = "かぞくはよにんです"
+# The entries the corpus sentences below are written against: all 22 corrections the v1.36 manifest
+# declares (PLAN-V1.36 §C items 3–4 and §I's two addenda). When a correction joins or leaves the
+# manifest, this list and the sentences change together.
+NAMED_IDS = [
+    "n1-b1147", "n1-b1630", "n1-b1841", "n1-b327", "n1-b439", "n1-b615", "n1-b957",
+    "n2-b072", "n2-b311", "n2-b449", "n2-b479", "n2-b942",
+    "n3-b020", "n3-b678", "n3-b750", "n3-b781",
+    "n4-b127", "n4-g180",
+    "n5-b018", "n5-b071", "n5-b303", "n5-kazoku",
+]
+# The examples the sentences quote, and the kana each entry must now teach for the quote to be true.
+EXAMPLES = {
+    "n5-b303": ("四月", "しがつ"),
+    "n5-b071": ("九時", "くじ"),
+    "n1-b439": ("三千円", "さんぜんえん"),
+    "n4-b127": ("十分", "じゅっぷん"),
+    "n5-kazoku": ("四人", "よにん"),
+}
 
 
 def corpus_copy_problems(manifest_ids, exkana_by_id, fixed):
     """Why the corpus sentences below would be false, or [] when they are true.
 
     The guard checks which entries the manifest declares, not how many (whole-release review,
-    round 1): with the count alone, the manifest naming a different single entry, or the corpus
-    reverted while the manifest still declared n5-kazoku, both passed, and the copy would have told
-    riders and App Review that 四人 is now read よにん in a build without that change.
+    round 1): with the count alone, the manifest naming different entries, or the corpus reverted
+    while the manifest still declared them, both passed, and the copy would have told riders and App
+    Review about readings the build does not teach.
     """
     problems = []
     if sorted(manifest_ids) != sorted(NAMED_IDS):
-        problems.append(f"the v1.36 manifest declares {sorted(manifest_ids)}; What's New names "
-                        f"{sorted(NAMED_IDS)}")
+        problems.append(f"the v1.36 manifest declares {sorted(manifest_ids)}; What's New is written "
+                        f"against {sorted(NAMED_IDS)}")
     if fixed != len(NAMED_IDS):
-        problems.append(f"correctedThisRelease is {fixed}; What's New names {len(NAMED_IDS)} "
-                        "correction(s)")
-    if exkana_by_id.get("n5-kazoku") != KAZOKU_EXKANA:
-        problems.append(f"n5-kazoku's exKana is {exkana_by_id.get('n5-kazoku')!r}, not "
-                        f"{KAZOKU_EXKANA!r} — the build does not teach 四人 as よにん")
+        problems.append(f"correctedThisRelease is {fixed}; What's New is written against "
+                        f"{len(NAMED_IDS)} correction(s)")
+    for entry_id, (word, kana) in EXAMPLES.items():
+        if kana not in (exkana_by_id.get(entry_id) or ""):
+            problems.append(f"{entry_id}'s exKana is {exkana_by_id.get(entry_id)!r}, which does not "
+                            f"teach {word} as {kana}")
     return problems
 
 
@@ -111,26 +125,29 @@ if _problems:
 # is sent (PLAN-V1.36 §C item 6).
 WHATS_NEW = {
     "en-US": (
-        "• Word Lists: on a list's page, the list's words now show their reading underneath, as the "
-        "dictionary search results there already do, and a long meaning wraps instead of being cut off.\n"
+        "• Word Lists: on a list's page, words written with kanji now show their reading underneath, "
+        "as the dictionary search results there already do, and a long meaning wraps instead of being "
+        "cut off.\n"
         "• Word Lists: the Saved list's row shows its star once instead of twice.\n"
-        "• Corrected an N5 example sentence: in 家族は四人です。, 四人 is now read よにん, the standard "
-        "reading, instead of よんにん."
+        f"• Corrected {FIXED} example sentences where a number and its counter were read wrong: for "
+        "example, 四月 is now read しがつ, 九時 くじ, 三千円 さんぜんえん, 十分 (ten minutes) じゅっぷん, "
+        "and 四人 よにん."
     ),
     "zh-Hans": (
-        "• 词单:在词单页面里,词单中的词下方现在会显示读音,与该页面词库搜索结果的显示方式相同;"
+        "• 词单:在词单页面里,用汉字书写的词下方现在会显示读音,与该页面词库搜索结果的显示方式相同;"
         "较长的释义会换行显示,不再被截断。\n"
         "• 词单:「收藏」词单那一行的星标现在只显示一次。\n"
-        "• 更正了一条 N5 例句:「家族は四人です。」中的「四人」现在读作标准读音 よにん,不再是 よんにん。"
+        f"• 更正了 {FIXED} 条例句中数字与量词的读法,例如「四月」现在读作 しがつ,「九時」读作 くじ,"
+        "「三千円」读作 さんぜんえん,「十分」(十分钟)读作 じゅっぷん,「四人」读作 よにん。"
     ),
     # The app's interface is English or Chinese only, so a Japanese rider sees the English labels;
     # the Japanese copy quotes them in 「」 where it names a screen.
     "ja": (
-        "• 「Word Lists」:リストのページで、単語の下に読みが表示されるようになりました"
+        "• 「Word Lists」:リストのページで、漢字で書く単語の下に読みが表示されるようになりました"
         "(辞書検索の結果と同じ表示です)。長い意味は省略されず、折り返して表示されます。\n"
         "• 「Word Lists」:「Saved」リストの行の星が 1 つだけになりました。\n"
-        "• N5 の例文を訂正しました:「家族は四人です。」の「四人」を、よんにん ではなく標準的な読みの "
-        "よにん にしました。"
+        f"• 数字と助数詞の読みを誤っていた例文 {FIXED} 件を訂正しました(例:「四月」しがつ、「九時」くじ、"
+        "「三千円」さんぜんえん、「十分」(10 分間)じゅっぷん、「四人」よにん)。"
     ),
 }
 
@@ -153,7 +170,8 @@ REVIEW_NOTES = (
     "2) Word Lists: the default \"Saved\" list's row now shows one star, its star icon. It showed "
     "two: the second was a star character at the start of the list's name, which the row no longer "
     "shows.\n"
-    "3) Content: one example sentence's reading was corrected (四人 is read よにん).\n\n"
+    f"3) Content: {FIXED} example sentences were corrected where a number and its counter were read "
+    "wrong (for example 四月 is now read しがつ, 九時 くじ, 三千円 さんぜんえん).\n\n"
     "Data handling is unchanged. There is no analytics SDK, no advertising, and no "
     "developer-operated server in this app. Optional iCloud sync uses the user's own private "
     "CloudKit database, which the developer cannot read, and the app is fully usable with it "
