@@ -136,12 +136,30 @@ subprocess, never its functions, on four trees:
       occurrences, each with the same verdict in exTokens and in exKana, and exKana lined up with
       the tokens rather than found by the substring fallback: 8 mismatches, and n5-b334 七時
       flag-only. Anything else it finds is listed, not failed;
-  (g) the working tree inspects n5-g079 七時, taught しちじ, and passes it in both fields.
+  (g) the working tree inspects n5-g079 七時, taught しちじ, and passes it in both fields;
+  (h) a PLANTED tree: the working tree's corpus copied, with one known-wrong occurrence per table
+      planted in the example sentences of every n-file, and one headword and one passage for each
+      table that reads them, all under ids no entry uses (`plant-…`). Every plant must be flagged
+      by its own table, a mismatch (on exTokens and exKana for a sentence), and no plant by
+      another table. Added after round 1 of the fix review: (c) counts what is HANDED to a table,
+      so a narrowing placed after the count — a 何 table that judged only two ids, or only n2 and
+      n5, a counter table that judged only the 9 known ids or no headwords — kept the full count
+      and passed every check above. A plant in each file and each kind of field is what such a
+      narrowing cannot pass. The counter plants include 七月 なながつ and 九月 きゅうがつ, which the
+      corpus does not contain, so a 月 row dropped or inverted, or MONTHS narrowed, fails here too.
 Then synthetic logic checks for paths the real corpus does not exercise: for the 何 table an absorber,
 何階's two readings, a prefix span, a counter split across two tokens, 何人 なにじん, 何人 なにん (a
-mismatch on a second compound), and a regression in exKana alone; for the counter table every rule
-above; and the exit-2 floor naming each short table. They prove the code paths, not accuracy:
-accuracy is (a)–(g). A failed check exits 1 and writes nothing.
+mismatch on a second compound), and a regression in exKana alone; for the counter table both an
+accepted and a rejected form of every row of the table above (月 4/7/9, 時 4/7/9, 時間 4/7/9, 字 4),
+the tolerated and other-sense flags, and the absorbers; and the exit-2 floor naming each short
+table. They prove the code paths, not accuracy: accuracy is (a)–(h). A failed check exits 1 and
+writes nothing.
+
+What the population line does and does not say. A field is counted once its table's judge has run
+on it, so a field skipped before the judge is not counted. A judge that returns early is still
+counted — the count cannot see inside it, which is why (h) exists. The counter and 何 tables read
+the same fields, so their two populations are always equal: which one a caller reads cannot be
+told apart, and is not checked.
 
 IT IS A SWEEP, NOT A GATE. `run_all_gates.sh` and CI do not run it (checked 2026-10-07: neither
 names it, and it is not a `scripts/test_*.py`, the glob the runner turns into gates). Keep it that
@@ -499,13 +517,15 @@ def fields_of(resources):
 
 
 def sweep(resources, judge):
-    """Every field judged by `judge`. The population is counted where each field is judged, so it
-    is this table's own count of what it read, not another table's."""
+    """Every field handed to `judge`. A field is counted after its judge has run on it, so a field
+    skipped before the judge is not counted; a judge that skips a field from inside is, and only
+    calibration (h), the planted tree, can see that."""
     population = {"exJP": 0, "surface": 0, "display": 0}
     inspected, hits = [], []
     for path, entry_id, field, text, reading, tokens in fields_of(resources):
+        records = judge(text, reading, tokens)
         population[field] += 1
-        for record in judge(text, reading, tokens):
+        for record in records:
             where = {"id": entry_id, "file": display_path(path), "field": field}
             inspected.append({**where, **record})
             if record["verdict"] in ("mismatch", "flag-only"):
@@ -626,7 +646,88 @@ COUNTER_LOGIC_CHECKS = (
      [("４時", "mismatch", "mismatch", "mismatch"), ("24時間", "ok", "ok", "ok")]),
     ("a field with no tokens is judged on its reading: 九時 きゅうじ", "九時", "きゅうじ", None,
      [("九時", "mismatch", None, "mismatch")]),
+    # Added in the fix round: until then no check reached the 月 7 and 9 rows, MONTHS beyond 4, or
+    # the accepted side of 時 4, 時間 9 and 字 4, so dropping or inverting any of them passed.
+    ("七月: しちがつ is right, なながつ is a mismatch (月 tolerates no なな)", "七月七月",
+     "しちがつなながつ", [["七", "しち"], ["月", "がつ"], ["七", "なな"], ["月", "がつ"]],
+     [("七月", "ok", "ok", "ok"), ("七月", "mismatch", "mismatch", "mismatch")]),
+    ("九月: くがつ is right, きゅうがつ is a mismatch", "九月九月", "くがつきゅうがつ",
+     [["九", "く"], ["月", "がつ"], ["九", "きゅう"], ["月", "がつ"]],
+     [("九月", "ok", "ok", "ok"), ("九月", "mismatch", "mismatch", "mismatch")]),
+    ("四時 よじ is right", "四時", "よじ", [["四", "よ"], ["時", "じ"]], [("四時", "ok", "ok", "ok")]),
+    ("九時間 くじかん is right", "九時間", "くじかん", [["九", "く"], ["時間", "じかん"]],
+     [("九時間", "ok", "ok", "ok")]),
+    ("四字: よじ is right, よんじ is a mismatch", "四字四字", "よじよんじ",
+     [["四", "よ"], ["字", "じ"], ["四", "よん"], ["字", "じ"]],
+     [("四字", "ok", "ok", "ok"), ("四字", "mismatch", "mismatch", "mismatch")]),
 )
+
+# (h) the planted tree. Each plant is a reading every table here must call a mismatch, under an id
+# no entry uses. A sentence plant is (table, level, tokens): exJP is the token surfaces joined, and
+# exKana the readings joined with punctuation dropped, so exKana lines up with the tokens. Every
+# n-file gets one sentence plant per table; the 何 and counter tables, which also read headwords and
+# passages, get one of each. A plant holds nothing another table reads — no plant may be flagged by
+# a table other than its own. The counter plants carry 七月 and 九月, which the corpus does not.
+PLANT_PREFIX = "plant-"
+PLANTED_SENTENCES = (
+    ("lexicalised", "n1", [["二", "に"], ["人", "にん"], ["で", "で"], ["行き", "いき"], ["ます", "ます"], ["。", "。"]]),
+    ("lexicalised", "n2", [["三", "さん"], ["日", "にち"], ["かかり", "かかり"], ["ます", "ます"], ["。", "。"]]),
+    ("lexicalised", "n3", [["四", "よん"], ["つ", "つ"], ["あり", "あり"], ["ます", "ます"], ["。", "。"]]),
+    ("lexicalised", "n4", [["八", "はち"], ["日", "にち"], ["に", "に"], ["来", "き"], ["ます", "ます"], ["。", "。"]]),
+    ("lexicalised", "n5", [["一", "いち"], ["人", "にん"], ["で", "で"], ["食べ", "たべ"], ["ます", "ます"], ["。", "。"]]),
+    ("interrogative", "n1", [["何時", "なんどき"], ["です", "です"], ["か", "か"], ["。", "。"]]),
+    ("interrogative", "n2", [["何", "なに"], ["人", "にん"], ["い", "い"], ["ます", "ます"], ["か", "か"], ["。", "。"]]),
+    ("interrogative", "n3", [["何", "なん"], ["本", "ほん"], ["あり", "あり"], ["ます", "ます"], ["か", "か"], ["。", "。"]]),
+    ("interrogative", "n4", [["何", "なん"], ["杯", "はい"], ["飲み", "のみ"], ["ます", "ます"], ["か", "か"], ["。", "。"]]),
+    ("interrogative", "n5", [["何", "なん"], ["匹", "ひき"], ["い", "い"], ["ます", "ます"], ["か", "か"], ["。", "。"]]),
+    ("counters", "n1", [["九", "きゅう"], ["月", "がつ"], ["に", "に"], ["入学", "にゅうがく"], ["し", "し"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n2", [["七", "なな"], ["月", "がつ"], ["に", "に"], ["旅行", "りょこう"], ["し", "し"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n3", [["九", "きゅう"], ["時間", "じかん"], ["働き", "はたらき"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n4", [["四", "よん"], ["字", "じ"], ["で", "で"], ["書き", "かき"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n5", [["四", "よん"], ["月", "がつ"], ["に", "に"], ["始まり", "はじまり"], ["ます", "ます"], ["。", "。"]]),
+)
+PLANTED_HEADWORDS = (("interrogative", "n1", "何回", "なにかい"), ("counters", "n1", "九時", "きゅうじ"))
+PLANTED_PASSAGES = (("interrogative", "何歳ですか。", "なにさいですか"),
+                    ("counters", "七月に行きます。", "なながつにいきます"))
+PLANT_FILLER = {"surface": "テスト", "kana": "てすと"}   # a sentence plant's own headword: no counter
+
+
+def plant_tree(dest):
+    """The working tree's corpus copied into `dest` with the plants added. Returns
+    {table: {(id, field)}}, the plants each table must flag, or raises when an id is taken."""
+    for name in CORPUS_FILES:
+        shutil.copy(os.path.join(RESOURCES, name), dest)
+    want = {"lexicalised": set(), "interrogative": set(), "counters": set()}
+    for level in ("n1", "n2", "n3", "n4", "n5"):
+        path = os.path.join(dest, f"{level}.json")
+        with open(path, encoding="utf-8") as f:
+            entries = json.load(f)
+        if any(e["id"].startswith(PLANT_PREFIX) for e in entries):
+            raise RuntimeError(f"{level}.json already has an id beginning {PLANT_PREFIX!r}")
+        for table, lvl, tokens in PLANTED_SENTENCES:
+            if lvl == level:
+                eid = f"{PLANT_PREFIX}{table}-{level}"
+                entries.append({"id": eid, **PLANT_FILLER, "exJP": "".join(s for s, _ in tokens),
+                                "exKana": "".join(r for _, r in tokens).translate(KANA_DROPPED),
+                                "exTokens": tokens})
+                want[table].add((eid, "exJP"))
+        for table, lvl, surface, kana in PLANTED_HEADWORDS:
+            if lvl == level:
+                eid = f"{PLANT_PREFIX}{table}-headword"
+                entries.append({"id": eid, "surface": surface, "kana": kana})
+                want[table].add((eid, "surface"))
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(entries, f, ensure_ascii=False)
+    path = os.path.join(dest, "passages.json")
+    with open(path, encoding="utf-8") as f:
+        passages = json.load(f)
+    for table, display, kana in PLANTED_PASSAGES:
+        eid = f"{PLANT_PREFIX}{table}-passage"
+        passages.append({"id": eid, "display": display, "kana": kana})
+        want[table].add((eid, "display"))
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(passages, f, ensure_ascii=False)
+    return want
 
 FLOOR_CHECKS = (
     # (what it proves, lexicalised, interrogative, counters, expected below_floor)
@@ -647,12 +748,13 @@ def calibrate():
 
     with tempfile.TemporaryDirectory() as tmp:
         old, small = os.path.join(tmp, "pre-v135"), os.path.join(tmp, "n5-only")
-        counted = os.path.join(tmp, "counter-ref")
-        for d in (old, small, counted):
+        counted, planted = os.path.join(tmp, "counter-ref"), os.path.join(tmp, "planted")
+        for d in (old, small, counted, planted):
             os.mkdir(d)
         try:
             tree_at(CALIBRATION_REF, old)
             tree_at(COUNTER_CALIBRATION_REF, counted)
+            plants = plant_tree(planted)
         except RuntimeError as e:
             return False, [f"[FAIL] cannot read a calibration tree: {e}"]
         shutil.copy(os.path.join(RESOURCES, "n5.json"), small)
@@ -660,11 +762,13 @@ def calibrate():
         head_code, head_run = run_cli(tmp, "head")
         small_code, small_run = run_cli(tmp, "small", "--resources", small)
         counted_code, counted_run = run_cli(tmp, "counted", "--resources", counted)
+        planted_code, planted_run = run_cli(tmp, "planted", "--resources", planted)
 
-    if old_run is None or head_run is None or small_run is None or counted_run is None:
+    if (old_run is None or head_run is None or small_run is None or counted_run is None
+            or planted_run is None):
         return False, [f"[FAIL] a calibration run wrote no output (exit codes: {CALIBRATION_REF} "
                        f"{old_code}, working tree {head_code}, n5-only {small_code}, "
-                       f"{COUNTER_CALIBRATION_REF} {counted_code})"]
+                       f"{COUNTER_CALIBRATION_REF} {counted_code}, planted {planted_code})"]
     old_q, head_q = old_run["interrogative"], head_run["interrogative"]
 
     g022 = [(h["verdict"], h["compound"], h["taught"]) for h in old_q["hits"] if h["id"] == "n5-g022"]
@@ -725,6 +829,26 @@ def calibrate():
           g079 == [("七時", "ok", "ok", "ok", "しちじ")] and not flagged,
           f"inspected: {g079}; hits: {len(flagged)}")
 
+    # (h) every plant flagged by its own table — a mismatch, on both fields where it has tokens —
+    # and none by another table. A table that judges fewer files, ids or kinds of field than it
+    # counts misses a plant here, whatever its population says.
+    for table, hits in (("lexicalised", planted_run["hits"]),
+                        ("interrogative", planted_run["interrogative"]["hits"]),
+                        ("counters", planted_run["counters"]["hits"])):
+        mine = {(h["id"], h["field"]) for h in hits if h["id"].startswith(PLANT_PREFIX)}
+        bad = sorted(f"{h['id']} {h['field']} {h.get('verdict')} tokens {h.get('verdictTokens')} "
+                     f"exKana {h.get('verdictKana')}" for h in hits
+                     if h["id"].startswith(PLANT_PREFIX) and table != "lexicalised"
+                     and (h["verdict"], h["verdictKana"],
+                          h["verdictTokens"] if h["field"] == "exJP" else "mismatch")
+                     != ("mismatch", "mismatch", "mismatch"))
+        missed, extra = sorted(plants[table] - mine), sorted(mine - plants[table])
+        check(f"(h) planted tree: the {table} table flags its {len(plants[table])} plants (every "
+              f"n-file{', a headword and a passage' if table != 'lexicalised' else ''}) and no other",
+              planted_code == 0 and not missed and not extra and not bad,
+              f"exit {planted_code}; missed {missed or 'none'}; another table's {extra or 'none'}; "
+              f"not a mismatch in both fields: {bad or 'none'}")
+
     for what, text, reading, tokens, want in LOGIC_CHECKS:
         got = [r["verdict"] for r in judge_field(text, reading, tokens)]
         check(f"logic: {what}", got == want, f"{text} {reading}: {got}")
@@ -750,8 +874,11 @@ def print_table(title, population, enumerated, inspected, hits):
             kana_alignment[r["kanaAlignment"]] = kana_alignment.get(r["kanaAlignment"], 0) + 1
     kinds = [h["verdict"] for h in hits]
     print(f"\n── {title} ──")
-    print(f"population   : {population['exJP']} example sentences (judged on exTokens and exKana), "
-          f"{population['surface']} headwords, {population['display']} passages")
+    # "read", not "judged": the count is taken after the judge has run on a field, and cannot see
+    # a judge that skips one from inside. --calibrate's planted tree (h) is what shows each kind is
+    # judged.
+    print(f"population   : {population['exJP']} example sentences (exTokens and exKana), "
+          f"{population['surface']} headwords, {population['display']} passages read by this table")
     print(f"enumerated   : {enumerated}")
     print(f"inspected    : {len(inspected)} occurrences — "
           + (", ".join(f"{c} {n}" for c, n in sorted(by_compound.items(), key=lambda kv: -kv[1])) or "none")
