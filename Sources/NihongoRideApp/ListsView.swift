@@ -612,6 +612,16 @@ struct ListDetailView: View {
         entry.surface == entry.kana ? nil : entry.kana
     }
 
+    /// What VoiceOver calls a word's Remove button: the word, or — when its entry is gone
+    /// (`ListWordRowText.Content.removed`) — "this word". Never the internal id: until the v1.36
+    /// review (round 1) a removed word's button read "Remove n2-b984 from list", right after the
+    /// column had read "Removed word", which exists so that a learner is not shown an id. The
+    /// identifier the UI test taps (`removeWord-<id>`) still carries the id; it is not read out.
+    static func removeLabel(surface: String?, zh: Bool) -> String {
+        guard let surface else { return zh ? "从词单移除此词" : "Remove this word from list" }
+        return zh ? "从词单移除 \(surface)" : "Remove \(surface) from list"
+    }
+
     /// What a query that matches nothing says. Names the query, so a typo is visible, and the four
     /// kinds of thing that can be searched for.
     static func noResults(_ query: String, zh: Bool) -> String {
@@ -873,8 +883,7 @@ struct ListDetailView: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("removeWord-\(id)")
-        .accessibilityLabel(zh ? "从词单移除 \(entry?.surface ?? id)"
-                               : "Remove \(entry?.surface ?? id) from list")
+        .accessibilityLabel(Self.removeLabel(surface: entry?.surface, zh: zh))
         return Group {
             if typeSize.isAccessibilitySize {
                 VStack(alignment: .leading, spacing: 8) {
@@ -1153,13 +1162,15 @@ struct WordSearchResultRow: View {
 /// `.caption` and `.caption2` sizes they were drawn at (12 and 11pt, regular). On macOS those two
 /// styles are 10pt — `.caption2` in medium — so a Mac now shows the gloss two points and the note
 /// one point larger, the note in regular (measured in the renderer, 2026-10-07). Every line scales
-/// at the body's rate, as the result row's do.
+/// at the body's rate, as the result row's do — but below the default size the reading, the gloss
+/// and the note stop at 11pt (`floored`), where `.caption` / `.caption2` stopped.
 ///
 /// **A word whose entry is gone** (`.removed`) shows "Removed word" and a note, not its raw internal
 /// id — "n2-b984" where a learner expects 「ペン」. That was only reachable via a list synced from a
 /// newer device until v1.22, which withdraws an entry outright, so it is a thing a learner can
-/// actually meet. An id is not a word; this says so instead. Unchanged by v1.36 but for the sizes
-/// above and the one VoiceOver element.
+/// actually meet. An id is not a word; this says so instead, and so does the row's Remove button
+/// (`ListDetailView.removeLabel`). Unchanged by v1.36 but for the sizes above and the one
+/// VoiceOver element.
 struct ListWordRowText: View {
     enum Content: Equatable {
         /// A word in the dictionary. `reading` is nil when it would repeat `surface`.
@@ -1177,6 +1188,21 @@ struct ListWordRowText: View {
     static let readingPoints: CGFloat = 13
     static let glossPoints: CGFloat = 12
     static let notePoints: CGFloat = 11
+    /// The smallest the reading, the gloss and the removed-word note are drawn.
+    static let floorPoints: CGFloat = 11
+
+    /// A dim line's size at the learner's text size: `points` × `scale`, never under
+    /// `floorPoints`. `@ScaledMetric` scales down as well as up — body text is 14, 15 and 16pt at
+    /// xSmall, Small and Medium — so without the floor the note was 9.1, 9.7 and 10.4pt at those
+    /// three, the gloss 9.9 and 10.6pt at the first two and the reading 10.7pt at xSmall: under the
+    /// 11pt that the `.caption` / `.caption2` the gloss and note replaced keep at every size below
+    /// the default, and under this screen's own captions. At the default size and above each of the
+    /// three is already 11pt or more (13, 12 and 11 at `scale` 1), so the floor never binds there
+    /// and those sizes are drawn exactly as before. The word, 13.2pt at xSmall, needs none.
+    /// (v1.36 review, round 1.)
+    static func floored(_ points: CGFloat, scale: CGFloat) -> CGFloat {
+        max(points * scale, floorPoints)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
@@ -1188,12 +1214,12 @@ struct ListWordRowText: View {
                     .fixedSize(horizontal: false, vertical: true)
                 if let reading {
                     Text(reading)
-                        .font(.system(size: Self.readingPoints * scale))
+                        .font(.system(size: Self.floored(Self.readingPoints, scale: scale)))
                         .foregroundStyle(WordSearchResultRow.glossColor)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Text(gloss)
-                    .font(.system(size: Self.glossPoints * scale))
+                    .font(.system(size: Self.floored(Self.glossPoints, scale: scale)))
                     .foregroundStyle(WordSearchResultRow.glossColor)
                     .fixedSize(horizontal: false, vertical: true)
             case .removed:
@@ -1202,7 +1228,7 @@ struct ListWordRowText: View {
                     .foregroundStyle(WordSearchResultRow.glossColor)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(Self.removedNote(zh: zh))
-                    .font(.system(size: Self.notePoints * scale))
+                    .font(.system(size: Self.floored(Self.notePoints, scale: scale)))
                     .foregroundStyle(WordSearchResultRow.glossColor)
                     .fixedSize(horizontal: false, vertical: true)
             }

@@ -13,10 +13,11 @@ import VocabKit
 ///
 /// **What these can and cannot prove, stated first.** The reading rule and the row's name are pure
 /// functions and are tested as values (sections 1 and 3). The text column is laid out hosted on
-/// macOS at the default size and the five accessibility sizes, with the corpus's longest word,
-/// reading and glosses (`V135B6WordSearchTests.worst`, pinned there to the entries they come from),
-/// in the width `wordRow` leaves it on a 402pt and a 320pt phone — beside the Remove button below
-/// the accessibility sizes, over it at them — and read back from the pixels (section 4) — possible
+/// macOS at the default size and the five accessibility sizes — and, since the whole-release
+/// review's round 1, at the three sizes below the default (section 4b) — with the corpus's longest
+/// word, reading and glosses (`V135B6WordSearchTests.worst`, pinned there to the entries they come
+/// from), in the width `wordRow` leaves it on a 402pt and a 320pt phone — beside the Remove button
+/// below the accessibility sizes, over it at them — and read back from the pixels (section 4) — possible
 /// because the column takes its text size as `scale`, as `WordSearchResultRow` does; a hosted view
 /// on macOS ignores `dynamicTypeSize`. Which arrangement the row picks is `typeSize`'s, so it is a
 /// source pin (`columnIsWired`); every gloss in the corpus is then laid out by CoreText in the
@@ -31,7 +32,8 @@ import VocabKit
 ///
 /// Every test here was shown able to fail: the mutations that turned each one red, on 2026-10-07,
 /// are named on it (34 in all, each applied, run, seen red and reverted; the review's five findings
-/// added 16 more on the same day, named the same way). Not every `#expect` has
+/// added 16 more on the same day, named the same way, the whole-release review's round 1
+/// 19 more on 2026-10-09, and its round 2 9 more the same day). Not every `#expect` has
 /// a mutation of its own — the sweep's case count and width bound, for instance, ride on the ones
 /// named.
 @MainActor
@@ -119,8 +121,31 @@ struct V136ListRowsTests {
         #expect(ListWordRowText.removedNote(zh: true) == "此词已从词库中移除,可以删掉这一行")
     }
 
+    /// A word's Remove button names the word; a removed word's says "this word", never the internal
+    /// id (v1.36 review, round 1). It read "Remove n2-b984 from list" right after the column read
+    /// "Removed word", whose whole point is that a learner is not shown an id. The label is a value
+    /// here, and `wordRow` is held to handing it the entry's surface — nil when the entry is gone —
+    /// and nothing that falls back to the id. Mutations, 2026-10-09, each red: `wordRow` passing
+    /// `surface: entry?.surface ?? id` (the old fallback, through the new helper); `wordRow` back to
+    /// the inline `"Remove \(entry?.surface ?? id) from list"` label (red here and in
+    /// `oneElementIsWired`); `removeLabel`'s nil case returning `removedLabel(zh:)`'s "Removed word";
+    /// the word's copy changed to "Remove 水 from the list" / "从词单中移除 水".
+    @Test("a word's Remove button names the word; a removed word's names no id")
+    func removeLabelNamesNoID() throws {
+        #expect(ListDetailView.removeLabel(surface: "水", zh: false) == "Remove 水 from list")
+        #expect(ListDetailView.removeLabel(surface: "水", zh: true) == "从词单移除 水")
+        #expect(ListDetailView.removeLabel(surface: nil, zh: false) == "Remove this word from list")
+        #expect(ListDetailView.removeLabel(surface: nil, zh: true) == "从词单移除此词")
+        let row = try V135B6WordSearchTests.detail("private func wordRow")
+        #expect(row.contains(".accessibilityLabel(Self.removeLabel(surface: entry?.surface, zh: zh))"),
+                "the Remove button is not labelled by removeLabel with the entry's surface")
+        #expect(!row.contains("?? id"), "wordRow falls back to the id for something — a label?")
+    }
+
     /// The column is one element carrying that label, and the Remove button is beside it (or under
-    /// it), not in it: its own button, with the identifier the UI test taps and the label it had.
+    /// it), not in it: its own button, with the identifier the UI test taps and `removeLabel`'s
+    /// label (`removeLabelNamesNoID`; until the round-1 review the label was written inline here
+    /// and read a removed word's id).
     /// Mutations, 2026-10-07, each red: `.accessibilityElement(children: .combine)` removed from the
     /// column; `.accessibilityElement(children: .combine)` added to `wordRow`'s row (which would
     /// fold the Remove button into the text); the identifier renamed `removeWordButton-\(id)` (also
@@ -156,7 +181,8 @@ struct V136ListRowsTests {
         let row = try V135B6WordSearchTests.detail("private func wordRow")
         #expect(!row.contains("accessibilityElement"), "wordRow merges its children — the Remove button with them")
         #expect(row.contains(#".accessibilityIdentifier("removeWord-\(id)")"#))
-        #expect(row.contains(#".accessibilityLabel(zh ? "从词单移除 \(entry?.surface ?? id)" : "Remove \(entry?.surface ?? id) from list")"#))
+        #expect(row.contains(".accessibilityLabel(Self.removeLabel(surface: entry?.surface, zh: zh))"),
+                "the Remove button's label is not removeLabel's (removeLabelNamesNoID)")
 
         // One level up: the screen calls `wordRow` bare, and nothing in `ListDetailView` merges or
         // hides an element (it has no `accessibilityElement` or `accessibilityHidden` at all).
@@ -187,6 +213,12 @@ struct V136ListRowsTests {
     /// reading line under the surface", which each line's own pin above did not order. Mutations,
     /// 2026-10-07, each red here and in `linesAreInOrder`: the word's and the reading's blocks
     /// swapped (R3); the reading's and the gloss's swapped.
+    ///
+    /// **The 11pt floor** (whole-release review, round 1): the reading, the gloss and the note are
+    /// sized through `floored`, and the floor is 11. Mutations, 2026-10-09, each red: the reading,
+    /// the gloss or the note back to `points * scale` (each red here and in
+    /// `smallSizesAreElevenPointsOrMore`); `floorPoints` 12 (red here and there, at the default
+    /// size); `glossPoints` 13.
     @Test("wordRow hands the column the text size and stacks Remove at the accessibility sizes; no line is limited; the colours and order are the plan's")
     func columnIsWired() throws {
         let row = try V135B6WordSearchTests.detail("private func wordRow")
@@ -206,10 +238,10 @@ struct V136ListRowsTests {
         #expect(!column.contains("scaledSystemFont"), "a scaledSystemFont inside the column ignores `scale`")
         let gloss = "WordSearchResultRow.glossColor"
         #expect(column.contains("Text(surface) .font(.system(size: Self.wordPoints * scale, weight: .semibold)) .foregroundStyle(.white)"))
-        #expect(column.contains("Text(reading) .font(.system(size: Self.readingPoints * scale)) .foregroundStyle(\(gloss))"))
-        #expect(column.contains("Text(gloss) .font(.system(size: Self.glossPoints * scale)) .foregroundStyle(\(gloss))"))
+        #expect(column.contains("Text(reading) .font(.system(size: Self.floored(Self.readingPoints, scale: scale))) .foregroundStyle(\(gloss))"))
+        #expect(column.contains("Text(gloss) .font(.system(size: Self.floored(Self.glossPoints, scale: scale))) .foregroundStyle(\(gloss))"))
         #expect(column.contains("Text(Self.removedLabel(zh: zh)) .font(.system(size: Self.wordPoints * scale, weight: .semibold)) .foregroundStyle(\(gloss))"))
-        #expect(column.contains("Text(Self.removedNote(zh: zh)) .font(.system(size: Self.notePoints * scale)) .foregroundStyle(\(gloss))"))
+        #expect(column.contains("Text(Self.removedNote(zh: zh)) .font(.system(size: Self.floored(Self.notePoints, scale: scale))) .foregroundStyle(\(gloss))"))
         // In that order, each once: word, reading (only when there is one), gloss.
         let lines = try ["Text(surface)", "if let reading { Text(reading)", "Text(gloss)"].map { line in
             #expect(column.components(separatedBy: line).count - 1 == 1, "\(line) is not drawn exactly once")
@@ -217,8 +249,10 @@ struct V136ListRowsTests {
         }
         #expect(lines[0] < lines[1] && lines[1] < lines[2], "the column's lines are no longer word, reading, gloss")
         // At the default size the word is what `scaledSystemFont(16, weight: .semibold)` drew, and
-        // the gloss and note the iOS `.caption` / `.caption2` sizes.
+        // the gloss and note the iOS `.caption` / `.caption2` sizes; below it, the three dim lines
+        // stop at `.caption2`'s 11pt (`smallSizesAreElevenPointsOrMore`).
         #expect(ListWordRowText.wordPoints == 16 && ListWordRowText.glossPoints == 12 && ListWordRowText.notePoints == 11)
+        #expect(ListWordRowText.floorPoints == 11)
     }
 
     // MARK: 3. The Saved row's star
@@ -255,6 +289,22 @@ struct V136ListRowsTests {
     /// (S2); `listActionsMenu(list, name: displayName(list))` in both (S3); either in the stacked
     /// branch only; "Practice \(displayName(list))" inside `playListButton`; "More actions for
     /// \(displayName(list))" inside `listActionsMenu`.
+    ///
+    /// **The icon is the row's only star now, so the row is held to drawing it** (v1.36 review,
+    /// round 1). The test pinned `listIcon`'s body and never that `listRow` calls it: deleting the
+    /// call from the stacked branch passed every suite, and the headless renders never take that
+    /// branch — a Saved row with no star at AX1–AX5, where v1.35's "★ Saved" kept one. Mutations,
+    /// 2026-10-09, each red: `listIcon(list)` deleted from the stacked branch; deleted from the
+    /// inline one; moved after `openListButton(…)` in the inline one.
+    ///
+    /// **And the icon itself is held whole** (whole-release review, round 2). Round 1's pin was a
+    /// `.contains` on `listIcon`'s `Image(…)` line, so a modifier after it reached the same Saved row
+    /// with no star through the icon's body instead of its call site. Before the body was pinned by
+    /// equality, m21–m23 passed all 23 test bundles (the review's runs) and m24–m25 this suite; each
+    /// is red here since (2026-10-09): `.opacity(typeSize.isAccessibilitySize ? 0 : 1)` after
+    /// `.scaledSystemFont(16)` (m21, the star gone at AX1–AX5 only); `.hidden()` (m22);
+    /// `.overlay { if list.isDefault { Color.black } }` (m23); `Theme.gold` → `Theme.accent2` (m24,
+    /// a blue star); `.scaledSystemFont(0)` (m25).
     @Test("only the Word Lists row drops the star: the stored name, the detail header and the sheet keep it")
     func rowNameIsOnlyTheRow() throws {
         #expect(AppModel.defaultListName("en") == "★ Saved" && AppModel.defaultListName("zh") == "★ 收藏",
@@ -283,8 +333,20 @@ struct V136ListRowsTests {
         for control in [open, play, menu] {
             #expect(!control.contains("displayName("), "a control names its list by displayName, star and all")
         }
-        let icon = try V133LAccessibilityLayoutTests.body("ListsView.swift", "private func listIcon")
-        #expect(icon.contains(#"Image(systemName: list.isDefault ? "star.fill" : "rectangle.stack")"#))
+        // The icon's whole body, by equality. A change after its `Image(…)` line — a modifier that
+        // hides the icon, fades it out at the accessibility sizes or covers it, another colour, a
+        // size of nothing — leaves that line in the body, so a `.contains` on it stays true.
+        let icon = V135B6WordSearchTests.collapsed(try V133LAccessibilityLayoutTests.body("ListsView.swift", "private func listIcon"))
+        #expect(icon == #"{ Image(systemName: list.isDefault ? "star.fill" : "rectangle.stack") .foregroundStyle(list.isDefault ? Theme.gold : Theme.accent2) .scaledSystemFont(16) }"#,
+                "listIcon no longer draws just the gold star (the stack icon for other lists) at the name's size: \(icon)")
+        // And the row draws it, in both arrangements, just before the name it no longer prefixes:
+        // stacked, line 1 is the icon and the open button alone; inline, the row starts with them.
+        #expect(listRow.components(separatedBy: "listIcon(list)").count - 1 == 2,
+                "listIcon(list) is not in both of listRow's arrangements — the Saved row can lose its only star")
+        #expect(listRow.contains("if typeSize.isAccessibilitySize { VStack(alignment: .leading, spacing: 10) { HStack(spacing: 12) { listIcon(list) openListButton(list, name: name, count: count) } HStack(spacing: 12) {"),
+                "stacked, line 1 of the row is no longer the star icon, then the list's name")
+        #expect(listRow.contains("} else { HStack(spacing: 12) { listIcon(list) openListButton(list, name: name, count: count) playListButton("),
+                "inline, the row no longer starts with the star icon, then the list's name")
         // The detail header and the sheet name the default list by `AppModel.defaultListName`, star and all.
         let header = try V135B6WordSearchTests.detail("private var header")
         #expect(header.contains("$0.isDefault ? AppModel.defaultListName(model.languageCode) : $0.name"))
@@ -397,6 +459,180 @@ struct V136ListRowsTests {
         #expect(wrapped["en"] == 12, "the English gloss was wider than its column in \(wrapped["en"] ?? 0) of 12 cases")
         #expect((wrapped["zh"] ?? 0) >= 8, "the Chinese gloss was wider than its column in only \(wrapped["zh"] ?? 0) cases")
         print("V136 SWEEP: \(cases) cases, gloss wider than its column in en \(wrapped["en"] ?? 0) / zh \(wrapped["zh"] ?? 0); on one line: \(fits); \(ContinuousClock.now - started)")
+    }
+
+    // MARK: 4b. Below the default size
+
+    /// Body text's Dynamic Type multiplier at xSmall, Small and Medium, the three sizes below the
+    /// default (Apple's table: body 14, 15 and 16pt, against 17 at the default). `@ScaledMetric`
+    /// scales down to them too, and the rider who picks them gets every line of the row smaller.
+    static let smallScales: [CGFloat] = [14, 15, 16].map { $0 / 17 }
+
+    /// The height one more line adds to `text` drawn alone at `points` in the system font: two
+    /// lines less one, so the leading between lines is in it, as it is in the column.
+    static func lineHeight(points: CGFloat) -> CGFloat {
+        func height(_ text: String) -> CGFloat {
+            V134B5RomajiHintTests.laidOut(Text(text).font(.system(size: points)).fixedSize(horizontal: false, vertical: true),
+                                          width: 2_000, height: nil).height
+        }
+        return height("x\nx") - height("x")
+    }
+
+    /// The height of the column's own reading and gloss lines at `scale`, read from the column as it
+    /// lays itself out — not from the constants: the column with that line two lines long less the
+    /// column with it one line long.
+    static func columnLines(scale: CGFloat) -> (reading: CGFloat, gloss: CGFloat) {
+        func height(_ reading: String, _ gloss: String) -> CGFloat {
+            V134B5RomajiHintTests.laidOut(Self.word("水", reading, gloss, scale: scale), width: 2_000, height: nil).height
+        }
+        let one = height("x", "x")
+        return (height("x\nx", "x") - one, height("x", "x\nx") - one)
+    }
+
+    /// The height a removed word's note takes in the column at `scale`, `width` wide: the column
+    /// less its label (laid out alone at the size `columnIsWired` pins) and the stack's 2pt.
+    static func noteInColumn(zh: Bool, scale: CGFloat, width: CGFloat, offered: CGFloat? = nil) -> CGFloat {
+        let column = V134B5RomajiHintTests.laidOut(ListWordRowText(content: .removed, zh: zh, scale: scale),
+                                                   width: width, height: offered).height
+        let label = V134B5RomajiHintTests.laidOut(Text(ListWordRowText.removedLabel(zh: zh))
+            .font(.system(size: ListWordRowText.wordPoints * scale, weight: .semibold))
+            .fixedSize(horizontal: false, vertical: true), width: width, height: nil).height
+        return column - label - 2
+    }
+
+    /// The note laid out alone at `points`, `width` wide, wrapping as it needs.
+    static func noteAlone(zh: Bool, points: CGFloat, width: CGFloat) -> CGFloat {
+        V134B5RomajiHintTests.laidOut(Text(ListWordRowText.removedNote(zh: zh)).font(.system(size: points))
+            .fixedSize(horizontal: false, vertical: true), width: width, height: nil).height
+    }
+
+    /// **Below the default size the reading, the gloss and a removed word's note are never under
+    /// 11pt; at and above it they are what they were** (whole-release review, round 1). The column
+    /// took its sizes as `points × scale` at every size, and `@ScaledMetric` scales down: at xSmall
+    /// the gloss was 9.9pt and the note 9.1pt, under the 11pt the `.caption` / `.caption2` they
+    /// replaced never go below, and the note was under it at Medium too (10.35pt). Each line's
+    /// height is read from the column's own layout (`columnLines`, `noteInColumn`) and held to an
+    /// 11pt line where the scaled size is smaller, and to the scaled size itself everywhere else —
+    /// so the default-size renders, and the accessibility sweeps above, which lay the lines out at
+    /// `points × scale`, are unchanged.
+    ///
+    /// Calibrated: heights come back in whole points (an 11pt line is 14pt high, measured
+    /// 2026-10-09), so the instrument is checked on the size nearest 11 that the floor replaces —
+    /// the reading at xSmall, 10.7pt — and must tell it from 11pt; "at least 11" is then a
+    /// measurement, not a rounding. Mutations, 2026-10-09, each red:
+    /// `floored` returning `points * scale` (the floor removed — red at xSmall for the reading,
+    /// at xSmall and Small for the gloss, at all three for the note); the reading, the gloss or the
+    /// note back to `points * scale` in the body, one at a time (each also red in `columnIsWired`);
+    /// `floorPoints` 12 (red at the default size: the note grows, and `columnIsWired`);
+    /// `glossPoints` 13 (the control and the list of where the floor binds); the instrument laying
+    /// every line out at 11pt whatever it is asked (the control).
+    @Test("below the default size the reading, the gloss and a removed word's note are at least 11pt; at and above it, unchanged")
+    func smallSizesAreElevenPointsOrMore() throws {
+        let eleven = Self.lineHeight(points: 11)
+        // Every size the floor replaces, and the one nearest 11 of them.
+        let replaced = [ListWordRowText.readingPoints, ListWordRowText.glossPoints, ListWordRowText.notePoints]
+            .flatMap { points in Self.smallScales.map { points * $0 } }.filter { $0 < 11 }
+        let nearestPoints = try #require(replaced.max())
+        let nearest = Self.lineHeight(points: nearestPoints)
+        print("V136 FLOOR: an 11pt line is \(eleven)pt high; the nearest size the floor replaces, \(String(format: "%.2f", nearestPoints))pt, \(nearest)pt")
+        #expect(replaced.count == 6 && nearestPoints > 10.7 && eleven - nearest > 0.5,
+                "control: the instrument cannot tell \(nearestPoints)pt from 11pt (\(nearest) / \(eleven)), or the sizes moved: \(replaced)")
+        var floored: [String] = []
+        for scale in Self.smallScales + V135B6WordSearchTests.scales {
+            let size = "×\(String(format: "%.2f", scale))"
+            let lines = Self.columnLines(scale: scale)
+            for (name, points, height) in [("reading", ListWordRowText.readingPoints, lines.reading),
+                                           ("gloss", ListWordRowText.glossPoints, lines.gloss)] {
+                let expected = max(points * scale, 11)
+                if points * scale < 11 { floored.append("\(name) \(size)") }
+                #expect(height >= eleven - 0.01, "\(size): the \(name) line is \(height)pt high, an 11pt line \(eleven)pt")
+                #expect(abs(height - Self.lineHeight(points: expected)) < 0.01,
+                        "\(size): the \(name) line is \(height)pt high, a \(expected)pt line \(Self.lineHeight(points: expected))pt")
+            }
+            for zh in [false, true] {
+                let expected = max(ListWordRowText.notePoints * scale, 11)
+                if !zh && ListWordRowText.notePoints * scale < 11 { floored.append("note \(size)") }
+                let note = Self.noteInColumn(zh: zh, scale: scale, width: 2_000)
+                #expect(note >= eleven - 0.01, "\(size) zh \(zh): the note is \(note)pt high, an 11pt line \(eleven)pt")
+                #expect(abs(note - Self.noteAlone(zh: zh, points: expected, width: 2_000)) < 0.01,
+                        "\(size) zh \(zh): the note is \(note)pt high, alone at \(expected)pt \(Self.noteAlone(zh: zh, points: expected, width: 2_000))pt")
+            }
+        }
+        // The floor binds where the source's comment says it does, and only below the default.
+        #expect(floored == ["reading ×0.82", "gloss ×0.82", "note ×0.82", "gloss ×0.88", "note ×0.88", "note ×0.94"], "\(floored)")
+    }
+
+    /// **Below the default size every line is drawn whole**, in the column the row leaves beside
+    /// the Remove button on both phones, in both languages: the worst word's word, reading and
+    /// gloss draw their last character, the column is no wider than its width, and a removed
+    /// word's note takes every line it needs at 11pt — and still does when squeezed. Mutations,
+    /// 2026-10-09, each red: `.lineLimit(1)` on the gloss; `.lineLimit(1)` on the note (also red
+    /// in `columnIsWired`); the floor removed, and the note alone back to `points * scale` (the
+    /// note is shorter than an 11pt note); the note's `.fixedSize(horizontal: false, vertical:
+    /// true)` removed (squeezed, it gives way); the gloss's `.fixedSize(horizontal: true, vertical:
+    /// true)` (the column wider than its width); `noteAlone` ignoring its width (the control).
+    ///
+    /// **The word's and the reading's last character see a line cut short, not a line limit**
+    /// (whole-release review, round 2). At these three sizes the worst word and the worst reading
+    /// each fit on one line in both columns — measured 2026-10-09 at 129 and 105pt at most against
+    /// a 209pt column at least, and printed on every run as `V136 SMALL` — so `.lineLimit(1)` on
+    /// either cuts nothing here and leaves both checks green, 0 of 12 (m10, m11). A line limit is
+    /// caught instead by `columnIsWired`'s no-`lineLimit` pin and by `worstWordIsWhole` at the
+    /// accessibility sizes, where these lines do wrap. Mutations, 2026-10-09, each red 12 of 12:
+    /// `.lineLimit(1).frame(maxWidth: 60, alignment: .leading)` on the word (m12) and on the
+    /// reading (m13), red in `worstWordIsWhole` too; and a cut below the default size only, with
+    /// no line limit for a pin to find, `.frame(width: scale < 1 ? 60 : nil, height: scale < 1 ?
+    /// 14 : nil, alignment: .topLeading).clipped()` on the word (m16, red here and nowhere else in
+    /// this suite) and the same 12pt high on the reading (m17, also red in
+    /// `smallSizesAreElevenPointsOrMore`, whose line heights it changes).
+    @Test("below the default size every line of the worst word and of a removed word is drawn whole")
+    func smallSizesDrawEveryLineWhole() throws {
+        let worst = V135B6WordSearchTests.worst
+        var cases = 0
+        for rowWidth in V135B6WordSearchTests.widths {
+            for scale in Self.smallScales {
+                let width = Self.columnWidth(row: rowWidth, scale: scale)
+                for (language, gloss) in [("en", worst.glossEN), ("zh", worst.glossZH)] {
+                    let label = "\(rowWidth)pt row, \(String(format: "%.0f", width))pt column, ×\(String(format: "%.2f", scale)), \(language)"
+                    #expect(V135B6WordSearchTests.lastIsDrawn(worst.surface, width: width) { Self.word($0, worst.reading, gloss, scale: scale) },
+                            "\(label): the word's last character is not drawn")
+                    #expect(V135B6WordSearchTests.lastIsDrawn(worst.reading, width: width) { Self.word(worst.surface, $0, gloss, scale: scale) },
+                            "\(label): the reading's last character is not drawn")
+                    #expect(V135B6WordSearchTests.lastIsDrawn(gloss, width: width) { Self.word(worst.surface, worst.reading, $0, scale: scale) },
+                            "\(label): the gloss's last character is not drawn")
+                    let whole = V134B5RomajiHintTests.laidOut(Self.word(worst.surface, worst.reading, gloss, scale: scale),
+                                                              width: width, height: nil)
+                    #expect(whole.width <= width + 0.5, "\(label): the column is \(whole.width)pt, wider than its \(width)pt")
+                    let zh = language == "zh"
+                    let note = Self.noteInColumn(zh: zh, scale: scale, width: width)
+                    let alone = Self.noteAlone(zh: zh, points: 11, width: width)
+                    #expect(abs(note - alone) < 0.01, "\(label): the note takes \(note)pt, alone at 11pt \(alone)pt")
+                    #expect(Self.noteInColumn(zh: zh, scale: scale, width: width, offered: 20) == note,
+                            "\(label): squeezed to 20pt, the removed word gave way")
+                    cases += 1
+                }
+            }
+        }
+        #expect(cases == 12)
+        // Calibrated: on the 320pt phone the English note is more than one 11pt line, so "every
+        // line it needs" is more than one.
+        let narrow = Self.columnWidth(row: V135B6WordSearchTests.widths[1], scale: Self.smallScales[0])
+        #expect(Self.noteAlone(zh: false, points: 11, width: narrow) > 1.5 * Self.lineHeight(points: 11),
+                "control: the note fits one line in the \(narrow)pt column, so the sweep says little about wrapping")
+        // Measured, not held: the worst word and reading on one line at each size, against that
+        // size's two columns. While they fit, a line limit on either cuts nothing here (see above).
+        var oneLine: [String] = []
+        for scale in Self.smallScales {
+            let word = V134B5RomajiHintTests.laidOut(
+                Text(worst.surface).font(.system(size: ListWordRowText.wordPoints * scale, weight: .semibold)).fixedSize(),
+                width: 10_000, height: nil).width
+            let reading = V134B5RomajiHintTests.laidOut(
+                Text(worst.reading).font(.system(size: ListWordRowText.floored(ListWordRowText.readingPoints, scale: scale))).fixedSize(),
+                width: 10_000, height: nil).width
+            let columns = V135B6WordSearchTests.widths.map { String(format: "%.0f", Self.columnWidth(row: $0, scale: scale)) }
+            oneLine.append("×\(String(format: "%.2f", scale)): word \(String(format: "%.1f", word))pt, reading \(String(format: "%.1f", reading))pt, columns \(columns.joined(separator: " / "))pt")
+        }
+        print("V136 SMALL: on one line, \(oneLine.joined(separator: "; "))")
     }
 
     /// Offered only a sliver of height, as a squeezed stack would offer it, the column still takes
