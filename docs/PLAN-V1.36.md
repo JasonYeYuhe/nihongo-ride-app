@@ -352,12 +352,19 @@ back** (branch `feat/v136-corpus-3`, on the sweep commit `0a4e354`; `766c092` an
   the corrected tokens, the way v1.35 round 3 measured `n5-g022`: on a scratch copy, with 0 spurious
   matches in 8 decoys and 0 contradictions of instrument 1 in 39. 1b is silent on all three, so the voice
   is not proven to say the corrected reading.
-  * Instrument 2 flags none of them as corrected. It would have flagged all three as 1.35 shipped them,
-    had the standard reading been one of its candidates.
-  * The span comparative favours the correction for `n3-b781`, is a near tie for `n3-b678`, and favours
-    さんせん for `n1-b439` (0.0120 against 0.0539).
+  * Instrument 2 flags neither `n1-b439` nor `n3-b781` as corrected, and would have flagged each as
+    1.35 shipped it, had さんぜん been one of its candidates. For `n3-b678` it is a tie, and it goes
+    against the correction: with はちじっ a candidate, as it was when the shipped state was judged, it
+    flags the corrected sentence (はちじっ 0.06541, はちじゅっ 0.06590, はちじゅう 0.06594). *(Corrected
+    by the fix round below: this bullet first said instrument 2 flags none of the three, and gave the
+    shipped state's distance as 0.0703, the は spelling alone, where `nearest()` takes the わ
+    spelling's 0.06594.)*
+  * The span comparatives, which are uncalibrated, favour the correction for `n3-b781` and are a
+    three-way tie for `n3-b678`. For `n1-b439` they mostly favour it: only the さんぜん円 render points
+    at さんせん (0.0120 against 0.0539), and that render is 0.24 s longer than the exJP audio.
   * They stay in the pool because the apply step requires it, against `n5-g022`'s precedent of
-    withholding on silence. `n1-b439` is the one for a person to look at.
+    withholding on silence. **`n3-b678` is the one for a person to look at** (DECISION NEEDED in the fix
+    round below). This bullet first named `n1-b439`.
 * **Dictation:** the pool stays 5,939 and `dictation-exclusions.json` is untouched. The nine withheld
   rows' exKana follow the corpus, each according to what its complaint now says:
   * `n1-b327`, `n2-b479`, `n1-b957`: instrument 2 had named the corrected reading, so they take the
@@ -375,7 +382,7 @@ back** (branch `feat/v136-corpus-3`, on the sweep commit `0a4e354`; `766c092` an
     `n3-b678`'s exTokens alone, or `n1-b439`'s exKana alone.
   * Joined exTokens equal exKana on all 6,724 sentences.
 * **Values:** `check_counter_readings.py --calibrate` on the corrected tree passes 82/82
-  (`v136-counter-sweep-5.json`).
+  (`v136-counter-sweep-5.json`; 83/83 since the fix round below added (m0)).
   * The counter table finds 1 mismatch, `n3-b020`, which was held back, and 5 tolerated flag-only
     readings.
   * (i) flags all 13 of addendum 2's mismatches on `3d891b9` and on `fdb2b5f`, the corpus 1.35 shipped;
@@ -389,10 +396,15 @@ back** (branch `feat/v136-corpus-3`, on the sweep commit `0a4e354`; `766c092` an
   worktree's own build root. Free disk was 17 GiB, under §B's 25 GiB floor; the apply step allowed this
   one SwiftPM build. `exclusionEvidenceIsCurrent` and "token readings reconstruct exKana" are among the
   passes.
-* **Known and accepted (stumble chip)**, simulated on `VocabStore`'s pair index:
-  * `n1-b327`'s 分 now links to `n1-b655` 分 ふん 'minute' instead of `n3-b389` 分 ぶん 'part';
-  * the 分 tokens now read ぷん (`n1-b1630`, `n2-b449`, and the four 十分) link to no card, where before
-    they linked to `n1-b655` ('minute') or, for `n2-b449`, `n3-b389` ('part');
+* **Known and accepted (stumble chip)**, simulated on `StumbledWords.entryID` itself (ported to Python
+  and run on both trees). *(Corrected by the fix round below: this was first simulated on `VocabStore`'s
+  pair index alone, which skips entryID's bound-morpheme filter, and said `n1-b327`'s 分 now links to
+  `n1-b655`.)*
+  * `n1-b327`'s 分 (now ふん) and `n2-b449`'s 分 (now ぷん) lose their link to `n3-b389` 分 ぶん, whose
+    glosses include "minute of time", and link to no card;
+  * the other five 分 tokens (`n1-b1630` and the four 十分: ふん before, ぷん now) link to no card before
+    or after. `n1-b655` 分 ふん 'minute' is a suffix (`n`, `suf`), and the chip never names one
+    (`JapaneseParticles.boundPartsOfSpeech`);
   * the four 十 tokens (now じゅっ) no longer link to `n5-g010` 十 じゅう, and the two 一 tokens (now いっ)
     no longer link to `n5-g001` 一 いち;
   * 三千, 三十 and 八十 link to no card before or after.
@@ -403,6 +415,100 @@ back** (branch `feat/v136-corpus-3`, on the sweep commit `0a4e354`; `766c092` an
   is still byte-identical.
 * **Owed:** What's New, the review notes and `submit_1_36.py` must name this set: 21 corrected,
   `n3-b020` not among them.
+
+**2026-10-09 (JST), fix round on addendum 2's record** (branch `feat/v136-corpus-3-fix`, on `a849909`).
+The review of the apply step raised 7 findings, 2 SERIOUS and 5 MINOR. Each was re-measured here with
+the repo's own instruments: the Kyoko compact voice, audio cached outside the repo, read-only on the
+corpus. All 7 reproduce. **No corpus file changes:** the pool stays 5,939 and `correctedThisRelease`
+stays 21. The entry above is corrected in place where it was wrong, each place marked.
+* **`n3-b678` is the open pool sentence, not `n1-b439`** (SERIOUS). The re-measure misreported
+  instrument 2, `check_dictation_readings.nearest()`, which takes the minimum over particle spellings:
+  * as 1.35 shipped it, own はちじゅう is 0.06594 (the わ spelling). The 0.0703 recorded was the は
+    spelling alone. はちじゅっ is nearer by 0.00004, not 0.0044, and はちじっ is nearer by 0.0005;
+  * on the corrected tokens, with はちじっ and はちじゅう as candidates (the ones the re-measure declared
+    for 1b and used to judge the shipped state), it FLAGS the sentence: はちじっ 0.06541 < はちじゅっ
+    0.06590. It reported "not flagged" only because its own candidates for 八十 are やそ alone;
+  * 1b is silent on 18 distinct span texts (八十, 八十点, 八十点だ, は八十点, 平均点は八十; hiragana and
+    katakana), and instrument 1 on all six whole-kana spellings;
+  * the uncalibrated leads disagree. Hiragana span: はちじゅう 0.0116, じゅっ 0.0122, じっ 0.0124.
+    Katakana span: ハチジュッ 0.0057, with the exJP audio's own sample count but not its bytes.
+    Isolated 八十点: じっ first; 八十点です。: う first;
+  * on sentences 1b proves, each span lead misses once: the hiragana one in `n2-b277` (ろくじゅう 0.0140
+    against the proven ろくじゅっ 0.0176), the katakana one in `n3-b020` (ジュップン against the proven
+    じゅうぶん). Neither can settle a silent sentence.
+  Corrected in `v136-dictation-remeasure.json` (the leads, the decision, a dated 'corrected' line, the
+  new 'leadCheck'), in the manifest's `n3-b678` 'dictation' text, and in the entry above. The record's
+  note no longer cites 0/494 false positives, which v1.25 §A withdrew as arithmetic. It cites the
+  27/27 recall only.
+* **`n1-b439`: the leads mostly favour the correction** (MINOR). Its one さんせん-leaning lead, the 1b
+  span render さんぜん円, is 77,207 samples against the exJP audio's 71,831, 0.24 s longer, while every
+  other substitution is within 0.035 s. The other variants all lean さんぜん: さんぜんえん / さんせんえん
+  0.0088 / 0.0161, サンゼン / サンセン 0.0077 / 0.0131, サンゼンエン / サンセンエン 0.0048 / 0.0103. In
+  isolation, 三千 and 三千円です。 render the same sample count as さんぜん and さんぜんえんです。. There is
+  no byte identity anywhere. Recorded in the same two places.
+* **DECISION NEEDED — `n3-b678`, the release owner's.** Both はちじゅってん and はちじってん are standard
+  and were upheld 2 of 2 (NHK lists ジッ first). For a pool sentence, the condition that exKana match
+  the voice outranks the more-common-form preference, and the voice is undetermined.
+  * (a) Keep it as it is now: はちじゅってん, in the pool. Instrument 2 flags it.
+  * (b) Teach はちじってん, in the pool. Instrument 2 does not flag it: own 0.06541, rivals at 0.06590 or
+    more, a margin of 0.0005. The corpus then teaches the less common form. The 八十 token
+    (はちじゅっ → はちじっ) and exKana change through `CorpusFile`, and `KNOWN_CORRECTED`, the manifest
+    row and §E's "八十点 はちじゅってん" change with it.
+  * (c) Correct it and withhold it, v1.35's `n5-g022` precedent. The pool goes from 5,939 to 5,938, and
+    §E's "three stay in the pool" becomes two.
+  * If the voice says はちじってん or はちじゅうてん, (a) refuses every rider who types what they hear,
+    at ゅ or at っ.
+  * Nothing is chosen here. (b) would rest on a margin of 0.0005 in the same instrument whose flag is
+    the admission rule, which is a reason to put it to the owner, not a reason to apply it.
+* **Stumble chip** (MINOR). The bullet above is rewritten on a port of `StumbledWords.entryID` run on
+  both trees. `n1-b655` 分 ふん is a suffix, so the chip never names it, and the pair-index simulation
+  missed that. Future chip trade-offs are simulated on `entryID`, not on the pair index alone.
+* **(m0), `check_counter_readings.py`** (MINOR). `KNOWN_CORRECTED`'s ids are now held to the manifest:
+  the manifest rows with disposition 'corrected' that are also (i)'s known hits must be exactly those
+  ids. The values stay hand-written. Calibration is 83/83, and `v136-counter-sweep-5.json` was
+  regenerated: the same corpus (`766c092`) and the same hits, plus the (m0) line. Mutants were run on
+  scratch copies of the script, corpus and manifest, with git read from this worktree. The unmutated
+  copy passes 83/83, and 5 of 5 mutants are killed by (m0):
+  * X1: `KNOWN_CORRECTED` loses `n2-b311` (the review's X26, which (m) alone passed);
+  * X2: the manifest drops `n2-b311`'s row;
+  * X3: `n1-b957`'s disposition is no longer 'corrected';
+  * X4: the manifest declares `n3-b020` corrected, with no check row;
+  * X5: the manifest is absent.
+  * A control, X6, makes the comparison vacuous (the set compared with itself) on X2's manifest. It
+    passes 83/83, so the comparison is what catches X2.
+* **Recorded for v1.37, not corrected.** Each is a new hit with no 2-of-2 votes, outside the calibrated
+  table, and already wrong in 1.35. Each was re-read in the corpus here (exJP, the covering tokens,
+  exEN and pool membership):
+  * **`n2-b277`** この車は時速六十キロで安全に走っている。, 六十 taught ろくじゅう, **in the dictation pool**.
+    1b proves the voice says ろくじゅっきろ: the span 六十キロ → ろくじゅっきろ renders byte-identical to the
+    exJP audio (`5792f71c3229`), while ろくじっきろ, ろくじゅうきろ and 2 decoys do not. Controls in the same
+    run: `n2-b1180` じゅっ, `n4-b186` and `n2-b034` ひと, and `n3-b020` じゅうぶん reproduced, and 4
+    decoys gave 0 matches. Today a rider who types what they hear is refused at っ, as in 1.35.
+    `COUNTER_RE` does not enumerate キロ. If two refuters uphold ろくじゅっ before submission, the
+    correction agrees with the proven voice and the sentence stays in the pool. Otherwise it waits for
+    v1.37. Recorded in `v136-dictation-remeasure.json` 'recordedNotCorrected'.
+  * 一週間 taught いちしゅうかん (いっしゅうかん): `n2-b511` (in the pool), `n3-b310`, `n4-g189`.
+  * 第一章 だいいちしょう (だいいっしょう): `n1-b1418` (in the pool).
+  * 一等 いちとう (いっとう): `n2-g285`.
+  * 一晩 いちばん (ひとばん): `n4-b186`. 一晩中 いちばんちゅう (ひとばんじゅう): `n2-b034`. v1.29 proved the
+    voice says ひと in both.
+  * …じゅう before a loanword counter (standard じゅっ / じっ): `n5-b105` 二十センチ and `n4-b104` 五十ページ,
+    both in the pool; `n2-b1180` 十センチ (voice proven じゅっ), `n3-k061` 十パーセント and `n5-g010`
+    十ページ.
+  * Each needs a calibrated table row first (週 / 週間, 章, 等, a loanword counter after 十, and 一晩 in
+    the lexicalised table), then 2-of-2 refuters.
+  * For the pool sentences, the voice is measured before any correction. For `n2-b511` and `n1-b1418`,
+    the review's leads favour the taught いち: correct Japanese the voice may not say, as in `n3-b020`.
+  * §E's "Outside that scope the sweep claims nothing" stays accurate.
+* **Proof on this tree:** `run_all_gates.sh --vocab-only` is green, and red with `n3-b678`'s exTokens
+  declaration dropped ("exTokens OVERWRITTEN", naming only that id). `test_check_vocab_diff.py` passes.
+  Joined exTokens equal exKana on all 6,724 sentences. `release_numbers`: correctedThisRelease 21,
+  pool 5,939 → 5,939.
+* **Not run:** `swift test`. No Swift source, corpus file or test-read resource changed (the diff is
+  this file, the two records' text, `check_counter_readings.py` and the regenerated sweep), so the
+  apply step's pass stands.
+* **Noted, not fixed:** the docstring of `scripts/check_dictation_readings.py` still states the
+  withdrawn 0/494.
 
 ## §I Scope addendum, 2026-10-09 (JST) — before the N = 100 reading
 
