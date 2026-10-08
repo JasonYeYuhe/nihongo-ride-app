@@ -362,3 +362,23 @@ calibrate-then-2-of-2 rules (分 ぷん / ふん, 軒 and 階 with っ, 三千 �
 The three pool sentences (`n1-b439`, `n3-b781`, `n3-b020`) come first either way. Until then, §E's
 sweep line states the table's scope, not "none found".
 
+### §I addendum 2, 2026-10-09 (JST), later the same day — still before the N = 100 reading
+
+The data-lens review of the §I corrections scanned every numeral token followed by a counter, and found
+more sentences with the same defect, a number + counter sound change taught wrong:
+* 三千円 taught さんせんえん, in `n1-b439` and `n3-b781`. **Both are in the dictation pool**, so a rider
+  who types what the voice says is marked wrong;
+* 三分 さんふん (`n1-b1630`), 三十分 さんじゅうぶん (`n2-b449`), and 五分 ごぶん (`n1-b327`);
+* 十分 meaning "ten minutes", taught じゅうふん, in `n1-b1147`, `n1-b1841`, `n2-b311` and `n4-b127`;
+* 一軒 いちけん (`n2-b479`) and 一階 いちかい (`n1-b957`).
+
+Some are tolerated readings and are flagged, never corrected: 三階 さんかい, and 三十歳 / 八十歳 read with
+じゅうさい.
+
+**Item 4 is extended a second time** to the sound-changing counters: 分, 千, 百, 軒, 階, 回, 歳, 本, 杯,
+匹, 個, 冊, 点 and 泊. The rules are the same: a calibrated table that must flag the sentences above; each hit
+upheld 2 of 2, or left unchanged; writes through `CorpusFile`; everything declared in the v1.36 manifest.
+
+The release date and the cut rules do not change. What's New and the review notes are rewritten once the
+set is final, and `submit_1_36.py` refuses to run until they name it.
+
