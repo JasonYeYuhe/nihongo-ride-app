@@ -148,28 +148,34 @@ cadence row, STATE, memory, and `review_watch` the same day.
 
 ## §E The §K registration (draft, appended to PLAN-STAGE1 §K before `--submit`; bracketed lines follow what shipped)
 
-> ### 📌 REGISTERED <YYYY-MM-DD> (JST) under constraint 3, before v1.36 is submitted — readings on a word list's own rows, one star on the Saved row, and twenty-one example sentences' number + counter readings corrected
+> ### 📌 REGISTERED <YYYY-MM-DD> (JST) under constraint 3, before v1.36 is submitted — readings on a word list's own rows, one star on the Saved row, and twenty-two example sentences' number + counter readings corrected (four of them leave the dictation pool)
 >
 > **What changed.**
 > 1. On a list's screen, each word now shows its reading by the rule the search results on that screen
 >    have used since v1.35, and a long gloss wraps. Display only: no word is added, removed or reordered.
 > 2. The Saved list's row shows its star once. The stored name is unchanged.
-> 3. [Twenty-one example sentences now teach the standard number + counter reading, per
+> 3. [Twenty-two example sentences now teach the standard number + counter reading, per
 >    `docs/measurements/v136-reading-manifest.json` (grammar and 2-of-2 refuters; exKana and one or two
 >    tokens each): `n5-kazoku` 四人 よにん; 四月 しがつ (`n5-b303`, `n2-b942`); 九時 くじ (`n5-b071`,
 >    `n4-g180`, `n3-b750`); 二十四時間 にじゅうよじかん (`n5-b018`); 四時間 よじかん (`n1-b615`); 四字熟語
 >    よじじゅくご (`n2-b072`); 三千 さんぜん (`n1-b439`, `n3-b781`); 八十点 はちじゅってん (`n3-b678`); 三分
 >    さんぷん (`n1-b1630`); 三十分 さんじゅっぷん (`n2-b449`); 五分 ごふん (`n1-b327`); 十分 'ten minutes'
->    じゅっぷん (`n1-b1147`, `n1-b1841`, `n2-b311`, `n4-b127`); 一軒 いっけん (`n2-b479`); 一階 いっかい
->    (`n1-b957`). Three of them stay in the dictation pool (`n1-b439`, `n3-b781`, `n3-b678`; instrument 1b
->    silent on each, `docs/measurements/v136-dictation-remeasure.json`) and eighteen stay withheld; the
->    pool is unchanged. Sweep: the calibrated tables cover the lexicalised counters, 何 + counter, 月 / 時 /
+>    じゅっぷん (`n1-b1147`, `n1-b1841`, `n2-b311`, `n3-b020`, `n4-b127`); 一軒 いっけん (`n2-b479`); 一階
+>    いっかい (`n1-b957`).
+>    **The dictation pool shrinks by 4, from 5,939 to 5,935** (`release_numbers`: withheldThisRelease 4).
+>    Four of the corrected sentences were in it: `n1-b439`, `n3-b781`, `n3-b678` and `n3-b020`. Dictation
+>    speaks the unchanged Japanese and grades what a rider types against the sentence's kana, so a
+>    corrected sentence may stay only where the voice is proven to say the corrected reading. In
+>    `n3-b020` the voice is proven to say the old じゅうぶん (instrument 1b), so grading it against
+>    じゅっぷん would refuse a rider who types what they hear; in the other three it is not proven either
+>    way (1b silent; `docs/measurements/v136-dictation-remeasure.json`). All four are withheld from
+>    dictation, as v1.35 withheld `n5-g022`: they teach the right reading in Sentence mode, and dictation
+>    is not graded where the voice may say something else. The other eighteen were withheld before and
+>    stay withheld. Sweep: the calibrated tables cover the lexicalised counters, 何 + counter, 月 / 時 /
 >    時間 / 字 after a last digit 4, 7 or 9, and the sound-changing counters 分 軒 階 回 歳 本 杯 匹 個 冊 点
->    泊 and 千 / 百 after a digit. Inside that scope one mismatch remains, `n3-b020` 十分 'ten minutes'
->    taught じゅうぶん: upheld, but not corrected, because the voice is proven to say じゅうぶん in that
->    dictation sentence. Five tolerated readings are left as they are (`n5-b334` 七時 ななじ, `n4-g171` 三階
->    さんかい, …じゅうさい in `n3-b123`, `n1-b311` and `n1-b1450`). Outside that scope the sweep claims
->    nothing.]
+>    泊 and 千 / 百 after a digit. Inside that scope no mismatch remains. Five tolerated readings are
+>    left as they are (`n5-b334` 七時 ななじ, `n4-g171` 三階 さんかい, …じゅうさい in `n3-b123`, `n1-b311`
+>    and `n1-b1450`). Outside that scope the sweep claims nothing.]
 > 4. Nothing a rider sees: compiler warnings, the corpus writers' write path, CI's timeout.
 >
 > The offer screen, the Settings road card, the menu route strip, prices, About's counter text and the
@@ -179,16 +185,17 @@ cadence row, STATE, memory, and `review_watch` the same day.
 > **Expected effect.**
 > * The list rows: neutral to up on days-ridden; magnitude unmeasurable.
 > * The star: neutral.
-> * Eight of the twenty-one corrected sentences are one or two kana shorter, so each rides 10–20 m
+> * Eight of the twenty-two corrected sentences are one or two kana shorter, so each rides 10–20 m
 >   less (`GameSession.swift:825`, 10 m per kana of the sentence's exKana): `n5-kazoku` 100 → 90 m,
 >   `n5-b303` 240 → 230, `n2-b942` 280 → 270, `n5-b071` 210 → 190, `n4-g180` 180 → 160, `n3-b750`
 >   170 → 150, `n5-b018` 180 → 170, `n2-b072` 280 → 270; `n1-b615` keeps its length (260 m). The
->   twelve sound-change corrections swap kana one for one (さんせん → さんぜん, じゅうふん → じゅっぷん,
->   いち → いっ), so each keeps its length too: `n1-b439` 210 m, `n3-b781` 210, `n3-b678` 250,
->   `n1-b1630` 220, `n2-b449` 270, `n1-b327` 290, `n1-b1147` 210, `n1-b1841` 230, `n2-b311` 290,
->   `n4-b127` 200, `n2-b479` 220, `n1-b957` 190. The sentence's score base and time baseline
->   (`GameSession.swift:842`, `:847`) move with the same kana count, so only the eight shorter ones
->   change. Against 25,000 m to Kyōto: negligible.
+>   thirteen sound-change corrections swap kana one for one (さんせん → さんぜん, じゅうふん and
+>   じゅうぶん → じゅっぷん, いち → いっ), so each keeps its length too: `n1-b439` 210 m, `n3-b781` 210,
+>   `n3-b678` 250, `n1-b1630` 220, `n2-b449` 270, `n1-b327` 290, `n1-b1147` 210, `n1-b1841` 230,
+>   `n2-b311` 290, `n4-b127` 200, `n2-b479` 220, `n1-b957` 190, `n3-b020` 180. The sentence's score
+>   base and time baseline (`GameSession.swift:842`, `:847`) move with the same kana count, so only the
+>   eight shorter ones change. Against 25,000 m to Kyōto: negligible.
+> * Dictation: 4 of 5,939 pool sentences withheld (5,935 remain), all from N1 and N3. Neutral.
 > * Cadence: the first release in about five weeks. Its release days raise first-time downloads; the
 >   longer gap lowers the weekly rate. A fraction of one day's installs either way.
 >
@@ -347,7 +354,8 @@ back** (branch `feat/v136-corpus-3`, on the sweep commit `0a4e354`; `766c092` an
     shrink the pool, which the apply step forbids. It therefore stays as 1.35 shipped it.
   * Its votes and the evidence are in `v136-dictation-remeasure.json`. So is the alternative: correct it
     AND withhold it, taking the pool from 5,939 to 5,938, which was v1.35's precedent for `n5-g022`. That
-    choice is the release owner's.
+    choice is the release owner's. *(Decided 2026-10-09: corrected and withheld; see "the dictation
+    decisions" below.)*
 * **The other three pool corrections** (`n1-b439`, `n3-b781`, `n3-b678`) were re-measured with 1b on
   the corrected tokens, the way v1.35 round 3 measured `n5-g022`: on a scratch copy, with 0 spurious
   matches in 8 decoys and 0 contradictions of instrument 1 in 39. 1b is silent on all three, so the voice
@@ -364,7 +372,8 @@ back** (branch `feat/v136-corpus-3`, on the sweep commit `0a4e354`; `766c092` an
     at さんせん (0.0120 against 0.0539), and that render is 0.24 s longer than the exJP audio.
   * They stay in the pool because the apply step requires it, against `n5-g022`'s precedent of
     withholding on silence. **`n3-b678` is the one for a person to look at** (DECISION NEEDED in the fix
-    round below). This bullet first named `n1-b439`.
+    round below). This bullet first named `n1-b439`. *(Decided 2026-10-09: all three withheld; see "the
+    dictation decisions" below.)*
 * **Dictation:** the pool stays 5,939 and `dictation-exclusions.json` is untouched. The nine withheld
   rows' exKana follow the corpus, each according to what its complaint now says:
   * `n1-b327`, `n2-b479`, `n1-b957`: instrument 2 had named the corrected reading, so they take the
@@ -459,7 +468,9 @@ stays 21. The entry above is corrected in place where it was wrong, each place m
   * If the voice says はちじってん or はちじゅうてん, (a) refuses every rider who types what they hear,
     at ゅ or at っ.
   * Nothing is chosen here. (b) would rest on a margin of 0.0005 in the same instrument whose flag is
-    the admission rule, which is a reason to put it to the owner, not a reason to apply it.
+    the admission rule, which is a reason to put it to the owner, not a reason to apply it. *(Decided
+    2026-10-09: (c), with `n1-b439`, `n3-b781` and `n3-b020` withheld too, so the pool goes to 5,935;
+    see "the dictation decisions" below.)*
 * **Stumble chip** (MINOR). The bullet above is rewritten on a port of `StumbledWords.entryID` run on
   both trees. `n1-b655` 分 ふん is a suffix, so the chip never names it, and the pair-index simulation
   missed that. Future chip trade-offs are simulated on `entryID`, not on the pair index alone.
@@ -509,6 +520,97 @@ stays 21. The entry above is corrected in place where it was wrong, each place m
   apply step's pass stands.
 * **Noted, not fixed:** the docstring of `scripts/check_dictation_readings.py` still states the
   withdrawn 0/494.
+
+**2026-10-09 (JST), the dictation decisions** (branch `feat/v136-dictation-decisions`, on `7cc56d2`;
+`24f90eb`, `20658f1` and this record). The orchestrator made these decisions under the owner's
+delegation; they are recorded here as made, not re-argued.
+1. **`n3-b020`** 駅からおよそ十分歩きました。 ('about ten minutes'): upheld 2 of 2, and instrument 1b
+   proves the pool voice says じゅうぶん. **Correct it** (十分 → じゅっぷん in exKana and the token reading)
+   **and withhold it from dictation**, as v1.35 withheld corrected sentences whose voice disagrees:
+   teach the right reading, and do not test dictation where the voice says something else.
+2. **`n1-b439`, `n3-b781`** (三千円 さんぜん) and **`n3-b678`** (八十点 はちじゅってん): corrected, in the
+   pool, 1b silent. Follow the v1.35 precedent (`n5-g022`): **withhold them from dictation**, with the
+   evidence recorded: 1b silent, instrument 2's leads as re-measured, and `n3-b678`'s tie stated as a
+   tie. For `n3-b678` this is option (c) of the DECISION NEEDED above.
+3. **`n2-b277`** (六十キロ) and the 12 out-of-table sentences stay unchanged, recorded for v1.37 as
+   listed above.
+
+The apply step's rule that the pool must not shrink is set aside for these four.
+* **The correction.** `n3-b020`: exKana えきからおよそじゅうぶんあるきました → えきからおよそじゅっぷんあるきました,
+  and its one 十分 token じゅうぶん → じゅっぷん, written through `CorpusFile`. 2 lines of n3.json (:22111,
+  :22127) and no others. The corpus teaches じゅっぷん, as in the other four 十分 'ten minutes'
+  corrections; the table accepts じっぷん too. The sentence keeps its 18 kana, so it still rides 180 m.
+  Joined exTokens equal exKana on all 6,724 sentences.
+* **Declared** in `v136-reading-manifest.json` as a 22nd row. The hit and both votes are copied
+  verbatim from `v136-dictation-remeasure.json` 'upheldNotApplied', and the 1b evidence is in its
+  'dictation'. Also updated in the manifest:
+  * the reason gains (4), and the method states the rule;
+  * `counts`: 22 corrected, 4 withheldFromDictation;
+  * the note;
+  * the rows of `n1-b439`, `n3-b781` and `n3-b678` say withheld, and keep their measurements.
+  The re-measure record gains 'decided' and the applied 'decision'. Its first decision is kept as
+  'decisionBefore', and its pool reads 5,939 → 5,935.
+* **Dictation.** The 4 ids are in `dictation-exclusions.json`, sorted, so excludedCount goes from 785
+  to 789. Each also has an evidence row in `dictation-reading-mismatches.json`, and each file's note
+  gains one sentence. Both files were written through `CorpusFile`, and each round-trips at indent=1.
+  * `n3-b020`'s row is 'proven' (v1.36, 1b), with the complaint 十分 じゅっぷん -> じゅうぶん. It takes the
+    shape of `n2-b311` and `n4-b127`, where the same voice is proven to say じゅうぶん for 十分 'ten
+    minutes'. **So `dictationProvenMisread` goes from 239 to 240.** The review notes must quote the
+    new figure.
+  * The other three are 'undecided', in `n5-g022`'s shape: the complaint names the old reading and the
+    corrected one, annotated "no instrument heard this". The evidence is 1b's silence with its hashes,
+    and the leads labelled as leads. For `n3-b678` that means instrument 2 flags the corrected sentence
+    once はちじっ is a candidate, and the span comparatives disagree, which is a tie.
+  * A Python replica of `exclusionEvidenceIsCurrent` reads 789 of 789 rows, 0 stale; the two files
+    name the same 789 ids.
+* **`release_numbers`**, read from its output:
+  * correctedThisRelease: 22;
+  * dictationExcluded: 785 → 789;
+  * dictationPool: 5,939 → 5,935;
+  * withheldThisRelease: 4;
+  * releasedThisRelease: 0;
+  * dictationProvenMisread: 240.
+* **The sweep.** `check_counter_readings.py`: `KNOWN_CORRECTED` gains `n3-b020` 十分 じゅっぷん, so
+  (m0) holds 13 rows to the manifest's 13. The working-tree half of (l) now reads the two hits still
+  there, `n4-g171` (in the pool) and `n5-b334` (withheld): one of each, so the lookup is still proven
+  both ways. The docstrings follow.
+  * `--calibrate` passes 83/83 (`v136-counter-sweep-6.json`, corpus `24f90eb`).
+  * The counter table finds 0 mismatches and the 5 tolerated flag-only readings.
+  * `v136-counter-sweep-5.json` is kept as it is. It records `766c092`, where `n3-b020` was the one
+    remaining mismatch.
+* **Mutants**, run on scratch copies of the script, corpus and manifest, with git read from this
+  worktree. The control passes 83/83, and 5 of 5 mutants fail exactly the check named:
+  * `n3-b020`'s exKana alone reverted: (m);
+  * its token alone reverted: (m);
+  * the manifest row dropped: (m0);
+  * the `KNOWN_CORRECTED` row dropped: (m0);
+  * `n4-g171` withheld on the working tree: (l).
+* **Stumble chip**, simulated on a port of `StumbledWords.entryID` on both trees. Before the
+  correction, `n3-b020`'s 十分 token linked to `n4-g178` 十分 じゅうぶん 'enough, sufficient', the wrong
+  sense. Now it links to no card, because no entry is 十分 / じゅっぷん (`n1-b1516` is じっぷん).
+* **Proof on this tree:**
+  * `run_all_gates.sh --vocab-only` (local, `fdb2b5f` + the manifest) is green.
+  * It is red, naming only `n3-b020`, with that row's exTokens declaration dropped (1 problem) and with
+    the whole row dropped (exKana and exTokens).
+  * All 11 `scripts/test_*.py` pass. `test_check_vocab_diff.py`'s release-manifest probes include
+    `n3-b020`'s three.
+  * `swift test --filter 'VocabKit|CorpusEscapeResidue|ExampleSentence|Dictation'` passes 81 + 26
+    tests, with 0 failures and no warnings, in this worktree's own build root. Free disk was 16 GiB,
+    under §B's 25 GiB floor; the task allowed this one SwiftPM build, and its root went to the Trash
+    afterwards. `exclusionEvidenceIsCurrent`, `exclusionsAndEvidenceAgree`,
+    `dictationExclusionsResolve` and "token readings reconstruct exKana" are among the passes.
+* **Rider-visible:**
+  * Sentence mode teaches `n3-b020` as じゅっぷん.
+  * Dictation draws from 5,935 sentences, 4 fewer. One N1 and three N3 sentences leave the pool.
+  * No sentence rides a different distance.
+* **Source diff against `fdb2b5f`, now:** `ListsView.swift`, `GameView.swift` and `PracticeView.swift`;
+  n1–n5.json, 49 lines (n3.json now 8); and, for the first time this release,
+  `dictation-exclusions.json`. Since `7cc56d2`, no frozen file has changed.
+* **Owed before submission:**
+  * What's New and the review notes must name 22 corrections (`n3-b020` among them), the pool at
+    5,935 and dictationProvenMisread at 240. §F's drafts still name nine.
+  * `submit_1_36.py` is frozen for this branch and was not touched. Its NAMED_IDS guard keeps refusing
+    until it is rewritten for this set.
 
 ## §I Scope addendum, 2026-10-09 (JST) — before the N = 100 reading
 
