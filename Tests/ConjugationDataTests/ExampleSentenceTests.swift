@@ -1042,6 +1042,61 @@ struct ExampleSentenceTests {
         #expect(emitted.count > 50, "only \(emitted.count) notes — the generator produced almost nothing")
     }
 
+    /// v1.36's 22 reading corrections and its four dictation withholdings, held by a gate that runs
+    /// (whole-release review, round 2: they were pinned only by `check_counter_readings.py
+    /// --calibrate`, which no gate runs, and six of them could move to another wrong reading with
+    /// every gate green). The expected values come from the manifest's hand-written `corrected`
+    /// text, not from anything that produced the corpus; the four withheld ids are listed here by
+    /// hand. A later release that changes one of these sentences changes this test with it.
+    @Test("v1.36's 22 corrections still hold, and its four withholdings stay withheld")
+    func v136CorrectionsHold() throws {
+        let repo = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        struct Row: Decodable { let id: String; let current: String; let corrected: String }
+        struct Manifest: Decodable { let entries: [Row] }
+        let manifest = try JSONDecoder().decode(Manifest.self, from: try Data(contentsOf:
+            repo.appendingPathComponent("docs/measurements/v136-reading-manifest.json")))
+        #expect(manifest.entries.count == 22, "the v1.36 manifest declares \(manifest.entries.count) corrections, not 22")
+        let byID = Dictionary(VocabStore.shared.entries.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+
+        func kana(_ text: String) -> String? {
+            guard let range = text.range(of: #"exKana (\S+)"#, options: .regularExpression) else { return nil }
+            return String(text[range].dropFirst("exKana ".count))
+        }
+        func tokens(_ text: String) -> [[String]] {
+            guard let start = text.range(of: "exTokens ") else { return [] }
+            let tail = String(text[start.upperBound...])
+            let pattern = try! NSRegularExpression(pattern: #"\[([^,\]]+), ([^\]]+)\]"#)
+            return pattern.matches(in: tail, range: NSRange(tail.startIndex..., in: tail)).map { m in
+                [String(tail[Range(m.range(at: 1), in: tail)!]), String(tail[Range(m.range(at: 2), in: tail)!])]
+            }
+        }
+        var problems: [String] = []
+        for row in manifest.entries {
+            guard let entry = byID[row.id] else { problems.append("\(row.id): not in the corpus"); continue }
+            guard let want = kana(row.corrected), let was = kana(row.current) else {
+                problems.append("\(row.id): the manifest's text names no exKana"); continue
+            }
+            if want == was { problems.append("\(row.id): 'corrected' and 'current' teach the same kana") }
+            if entry.exampleKana != want {
+                problems.append("\(row.id): teaches \(entry.exampleKana ?? "nil"), the correction is \(want)")
+            }
+            let pairs = tokens(row.corrected)
+            if pairs.isEmpty { problems.append("\(row.id): the manifest's text names no token") }
+            for pair in pairs where !(entry.exampleTokens ?? []).contains(pair) {
+                problems.append("\(row.id): no token \(pair) in \(entry.exampleTokens ?? [])")
+            }
+        }
+        #expect(problems.isEmpty, Comment(rawValue: problems.joined(separator: "\n")))
+
+        let resJSON = try #require(try JSONSerialization.jsonObject(with: try Data(contentsOf:
+            repo.appendingPathComponent("Sources/VocabKit/Resources/dictation-exclusions.json"))) as? [String: Any])
+        let withheld = Set((try #require(resJSON["excluded"] as? [[String: Any]])).compactMap { $0["id"] as? String })
+        for id in ["n1-b439", "n3-b020", "n3-b678", "n3-b781"] {
+            #expect(withheld.contains(id), "\(id) was corrected without proof of what the voice says, and must stay withheld from dictation")
+        }
+    }
+
     @Test("every dictation exclusion's evidence still matches the sentence it describes")
     func exclusionEvidenceIsCurrent() throws {
         struct Record: Decodable { let id: String; let exKana: String? }

@@ -17,8 +17,12 @@ WHAT 1.36 IS
     (item 1).
   * Word Lists: the Saved list's row shows its star once — its gold icon — instead of the icon plus a
     ★ in the name. The stored name is unchanged (item 2).
-  * Corpus: `correctedThisRelease` entries, declared in `docs/measurements/v136-reading-manifest.json`
-    — n5-kazoku's 四人 is taught as よにん (item 3).
+  * Corpus: `correctedThisRelease` example sentences whose number + counter reading was wrong (四月
+    しがつ, 九時 くじ, 三千円 さんぜんえん, 十分 'ten minutes' じゅっぷん, 四人 よにん, …), each upheld
+    2-of-2 by independent refuters and declared in `docs/measurements/v136-reading-manifest.json`
+    (items 3–4 and PLAN-V1.36 §I's two addenda). Four of them were in the dictation pool and are
+    withheld from it, because what the on-device voice says could not be proven to match (pool
+    5,939 → 5,935, `release_numbers`).
 
 WHAT IS DELIBERATELY NOT IN IT
 ------------------------------
@@ -151,6 +155,13 @@ WHATS_NEW = {
     ),
 }
 
+# The quotes in the copy are the EXAMPLES the guard holds to the corpus: each example's word and kana
+# must appear in every locale's What's New, and the review notes quote the first three (round 2).
+_unquoted = [f"{loc}: {word} {kana}" for loc, text in WHATS_NEW.items()
+             for word, kana in EXAMPLES.values() if word not in text or kana not in text]
+if _unquoted:
+    sys.exit("error: What's New does not quote what EXAMPLES holds to the corpus:\n  " + "\n  ".join(_unquoted))
+
 # No description edit — see the module docstring.
 DESCRIPTION_EDITS = {}
 
@@ -171,7 +182,11 @@ REVIEW_NOTES = (
     "two: the second was a star character at the start of the list's name, which the row no longer "
     "shows.\n"
     f"3) Content: {FIXED} example sentences were corrected where a number and its counter were read "
-    "wrong (for example 四月 is now read しがつ, 九時 くじ, 三千円 さんぜんえん).\n\n"
+    "wrong (for example 四月 is now read しがつ, 九時 くじ, 三千円 さんぜんえん). "
+    f"{N['withheldThisRelease']} of them are no longer offered in dictation practice, because the "
+    "on-device voice could not be confirmed to say the corrected reading (for one it was found to say "
+    "the old one) "
+    f"({N['dictationPoolBefore']:,} dictation sentences before, {N['dictationPool']:,} now).\n\n"
     "Data handling is unchanged. There is no analytics SDK, no advertising, and no "
     "developer-operated server in this app. Optional iCloud sync uses the user's own private "
     "CloudKit database, which the developer cannot read, and the app is fully usable with it "
@@ -180,6 +195,12 @@ REVIEW_NOTES = (
     "Japanese voice is installed.\n\n"
     "No keywords, URLs, description text or screenshots changed in this version."
 )
+
+_unquoted_notes = [f"{word} {kana}" for word, kana in list(EXAMPLES.values())[:3]
+                   if word not in REVIEW_NOTES or kana not in REVIEW_NOTES]
+if _unquoted_notes:
+    sys.exit("error: the review notes do not quote what EXAMPLES holds to the corpus: "
+             + ", ".join(_unquoted_notes))
 
 # --- Both platforms move together, as 1.35 did ------------------------------------------------
 #

@@ -150,10 +150,26 @@ cadence row, STATE, memory, and `review_watch` the same day.
 
 > ### 📌 REGISTERED <YYYY-MM-DD> (JST) under constraint 3, before v1.36 is submitted — readings on a word list's own rows, one star on the Saved row, and twenty-two example sentences' number + counter readings corrected (four of them leave the dictation pool)
 >
+> `PLAN-WINDOW` constraint 3: *"A feature that substantially changes how far people ride changes
+> exposure-per-install… Second-order and tolerable — **register it, do not avoid it.**"* This is that
+> registration for v1.36 (`PLAN-V1.36`), written before `--submit`. It registers product changes; it adds
+> no §K rule. v1.36's scope was fixed on 2026-10-07 and extended on 2026-10-09 (§I), both before the
+> N = 100 reading; no checkpoint figure chose it.
+>
 > **What changed.**
-> 1. On a list's screen, each word now shows its reading by the rule the search results on that screen
->    have used since v1.35, and a long gloss wraps. Display only: no word is added, removed or reordered.
-> 2. The Saved list's row shows its star once. The stored name is unchanged.
+> 1. **A list's word rows** (`ListsView.swift`; Word Lists is not on the walk):
+>    * each word written with kanji shows its kana reading under it, by the rule the search results on
+>      that screen have used since v1.35;
+>    * the meaning wraps instead of being cut to one line;
+>    * at the accessibility text sizes, Remove sits under the word, as the search results' button does;
+>    * the meaning and the removed-word note are sized from the body text, with an 11 pt floor. On the Mac
+>      the meaning is 2 pt larger than before (12 pt), and on iOS above the default size it is slightly
+>      smaller than the old caption style;
+>    * VoiceOver reads a word, its reading and its meaning as one item;
+>    * a removed word's Remove button says "this word", not the entry's internal id.
+>    Display only: no word is added, removed or reordered, and no list rule or stored data changes.
+> 2. **The Saved list's row** shows its star once (its gold icon), and its three controls are read out
+>    without the ★. The stored name, the list's header and the add-to-list sheet keep "★ Saved".
 > 3. [Twenty-two example sentences now teach the standard number + counter reading, per
 >    `docs/measurements/v136-reading-manifest.json` (grammar and 2-of-2 refuters; exKana and one or two
 >    tokens each): `n5-kazoku` 四人 よにん; 四月 しがつ (`n5-b303`, `n2-b942`); 九時 くじ (`n5-b071`,
@@ -176,7 +192,12 @@ cadence row, STATE, memory, and `review_watch` the same day.
 >    泊 and 千 / 百 after a digit. Inside that scope no mismatch remains. Five tolerated readings are
 >    left as they are (`n5-b334` 七時 ななじ, `n4-g171` 三階 さんかい, …じゅうさい in `n3-b123`, `n1-b311`
 >    and `n1-b1450`). Outside that scope the sweep claims nothing.]
-> 4. Nothing a rider sees: compiler warnings, the corpus writers' write path, CI's timeout.
+>    The stumble chip after a stumbled sentence links a token to its card by reading, so a few links move
+>    with the corrected readings: the 九 of 九時 now links to the 九 く card, the 四 of 四月 / 四時間 /
+>    四字熟語 no longer links to 四 よん, and several 十 / 一 / 十分 tokens link to no card (`n3-b020`'s 十分
+>    no longer links to 十分 じゅうぶん 'enough'). §H has each one.
+> 4. Nothing a rider sees: compiler warnings, the corpus writers' write path, CI's timeout, a test
+>    pinning the corrections.
 >
 > The offer screen, the Settings road card, the menu route strip, prices, About's counter text and the
 > store metadata are unchanged. `SettingsView`, `MenuView`, `AboutView`, `OnboardingView`, `RoadView`,
@@ -196,35 +217,24 @@ cadence row, STATE, memory, and `review_watch` the same day.
 >   base and time baseline (`GameSession.swift:842`, `:847`) move with the same kana count, so only the
 >   eight shorter ones change. Against 25,000 m to Kyōto: negligible.
 > * Dictation: 4 of 5,939 pool sentences withheld (5,935 remain), all from N1 and N3. Neutral.
-> * Cadence: the first release in about five weeks. Its release days raise first-time downloads; the
->   longer gap lowers the weekly rate. A fraction of one day's installs either way.
+> * Cadence: [written on the submit day from the actual dates — §C's slot is 2026-11-02 .. 11-05, about
+>   five weeks after 1.35]. Its release days raise first-time downloads; the longer gap lowers the weekly
+>   rate. A fraction of one day's installs either way.
 >
 > **How to read a checkpoint against it.** `3/N` does not move. Near a threshold, split the cohort at
 > v1.36's `FIRM_RELEASE_DATES_PT` entries.
 
-## §F What's New (drafts; each sentence is re-checked against the merged code; no ★)
+## §F What's New
 
-* en: "Word Lists: on a list's page, the list's words now show their reading underneath, as the
-  dictionary search results there already do, and a long meaning wraps instead of being cut off." /
-  "Word Lists: the Saved list's row shows its star once instead of twice." / [the corrections sentence]
-* zh-Hans: "单词表:在词单页面里,词单中的词下方现在会显示读音,与该页面词库搜索结果的显示方式相同;较长的释义会换行显示,不再被截断。"
-  / "单词表:「收藏」词单那一行的星标现在只显示一次。" / [corrections]
-* ja: "単語リスト:リストのページで、単語の下に読みが表示されるようになりました(辞書検索の結果と同じ表示です)。長い意味は省略されず、折り返して表示されます。"
-  / "単語リスト:「Saved」リストの行の星が1つだけになりました。" / [corrections]
-* The corrections sentence, drafted 2026-10-09 for the nine entries the manifest declares (one sentence
-  for all nine; the copy must name exactly what the manifest declares):
-  * en: "Corrected the reading of a number with its counter in nine example sentences: for example,
-    四月 is now read しがつ, 九時 くじ and 四人 よにん, the standard readings, instead of よんがつ, きゅうじ
-    and よんにん."
-  * zh-Hans: "更正了九条例句中数字与量词的读音:例如「四月」现在读作标准读音 しがつ,「九時」读作 くじ,「四人」读作
-    よにん,不再是 よんがつ、きゅうじ、よんにん。"
-  * ja: "9 つの例文で、数字と助数詞の読みを訂正しました(例:「四月」は よんがつ ではなく しがつ、「九時」は きゅうじ
-    ではなく くじ、「四人」は よんにん ではなく よにん)。"
-  * `scripts/submit_1_36.py` still carries the one-correction copy. It refuses to run on this tree
-    (`correctedThisRelease` 9 ≠ 1), which is its guard working. Its copy, review note 3 ("one example
-    sentence's reading was corrected") and guard are rewritten for the nine after `fix/v136-r1-ui`
-    (`7adb59e`), which replaces that same guard with a named-entry check, is merged — not here, where the
-    two edits would conflict.
+The copy that will be sent is the one in `scripts/submit_1_36.py`, and it is the only copy: the drafts
+that stood here described earlier sets of corrections and are superseded. The script refuses to run
+unless:
+* the manifest declares exactly the 22 entries its copy is written against;
+* each quoted example (四月 しがつ, 九時 くじ, 三千円 さんぜんえん, 十分 じゅっぷん, 四人 よにん) is what
+  its entry teaches;
+* every locale quotes all five, and the review notes quote the first three.
+
+The review notes also state the dictation change (5,939 → 5,935), read from `release_numbers`.
 
 ## §G Not in v1.36, with the reason
 
@@ -744,4 +754,44 @@ upheld 2 of 2, or left unchanged; writes through `CorpusFile`; everything declar
 
 The release date and the cut rules do not change. What's New and the review notes are rewritten once the
 set is final, and `submit_1_36.py` refuses to run until they name it.
+
+### Whole-release review, round 2 — 2026-10-09 (JST)
+
+Five lenses ran over `fdb2b5f..0046997`, with two refuters for every non-NIT finding. The record is in
+`~/Library/Caches/NihongoRide-v136-work/review-r2.json`.
+* **No BLOCKER.** The one SERIOUS was refuted 2 of 2 down to a NIT, so §G's third round is not needed.
+* **Frozen surfaces: clean.** Only `ListsView.swift`, two `import Combine` lines, the corpus, the
+  exclusions and the version lines differ from `fdb2b5f`. The walk card's strings are all in unchanged
+  files.
+* **The MINORs and how they were fixed:**
+  * the registration now lists every rider-visible change, with the constraint-3 preamble;
+  * the review notes state the dictation change;
+  * a test inside the `swift test` gate pins all 22 corrected readings (exKana and tokens) against the
+    manifest's hand-written values, plus the four withholdings, so the gate count is unchanged
+    (`ExampleSentenceTests.v136CorrectionsHold`). Four mutations each turned it red: exKana reverted,
+    exKana moved to another wrong reading, a token changed alone, and a withheld id dropped;
+  * the submit script holds its quotes to `EXAMPLES` in every locale. A swapped zh reading made it
+    refuse to run;
+  * §F's stale drafts are replaced by a pointer to the script.
+* **The final tree before these fixes** (`0046997`):
+  * `run_all_gates.sh` ran 17 gates with 0 failures;
+  * the headless renders against `fdb2b5f`, three runs each in en and zh, differ only in `lists.png`.
+    No seeded screen draws a corrected sentence;
+  * `run_ios_placement_tests.sh` passed 13 of 13;
+  * the simulator pass on the list rows and Word Lists, at the default size and AX5, en and zh, on the
+    402pt iPhone and the iPad mini: all 16 cells OK. The accessibility tree reads each word as one
+    element, with Remove as its own button.
+* **Ready on 2026-10-09; held for §C's slot.** Submit no earlier than 2026-11-02, and write the §E box's
+  cadence line from the real dates on that day. Before then:
+  * the signing probe;
+  * a fresh `run_all_gates.sh`;
+  * the N = 100 reading if it lands, with rule 4 applied first.
+* **Recorded for v1.37, not done here:**
+  * `n2-b277` 六十キロ, which the voice is proven to say as ろくじゅっきろ;
+  * the 12 number + counter sentences outside the calibrated table;
+  * the 点 row's ろくてん / はちてん tolerance;
+  * CI's corpus check, which reads only the latest push, so a cancelled push's corpus change goes
+    unchecked;
+  * a removed word's Remove button could still carry its id in `accessibilityValue`; no test pins that
+    it doesn't.
 
