@@ -155,8 +155,11 @@ run_swift_test() {
   fi
   record_checkout "$REPO" "$root" "$log"
   scratch="$root/swiftpm"
-  echo "swift test --scratch-path $scratch" >> "$log"
-  swift test --scratch-path "$scratch" >> "$log" 2>&1
+  # No index store outside CI (scripts/lib/build_env.sh). Same tests, smaller root.
+  # shellcheck source=lib/build_env.sh
+  . "$REPO/scripts/lib/build_env.sh"
+  echo "swift test --scratch-path $scratch${SWIFTPM_ARGS[*]+ ${SWIFTPM_ARGS[*]}}" >> "$log"
+  swift test --scratch-path "$scratch" ${SWIFTPM_ARGS[@]+"${SWIFTPM_ARGS[@]}"} >> "$log" 2>&1
   status=$?
   # The run must have REACHED a summary. A signal death mid-suite can leave status 0-ish output
   # and truncated text; "no summary line" is a failure, not silence.

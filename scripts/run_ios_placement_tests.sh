@@ -44,6 +44,9 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# XCODEBUILD_ARGS: no index store outside CI (scripts/lib/build_env.sh).
+# shellcheck source=lib/build_env.sh
+. "$REPO/scripts/lib/build_env.sh"
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/nihongo-ios-placement.XXXXXX")"
 trap 'rm -rf "$WORK" 2>/dev/null || true' EXIT
 
@@ -236,6 +239,7 @@ caffeinate -d -i xcodebuild test \
   $SHOT_TESTING \
   -derivedDataPath "$WORK/DerivedData" \
   -clonedSourcePackagesDirPath "$WORK/SourcePackages" \
+  ${XCODEBUILD_ARGS[@]+"${XCODEBUILD_ARGS[@]}"} \
   CODE_SIGNING_ALLOWED=NO
 IPHONE_STATUS=$?
 
@@ -248,6 +252,7 @@ caffeinate -d -i xcodebuild test \
   -only-testing:NihongoRideiOSUITests/TouchFlowTests \
   -derivedDataPath "$WORK/DerivedData" \
   -clonedSourcePackagesDirPath "$WORK/SourcePackages" \
+  ${XCODEBUILD_ARGS[@]+"${XCODEBUILD_ARGS[@]}"} \
   CODE_SIGNING_ALLOWED=NO
 IPAD_STATUS=$?
 set -e

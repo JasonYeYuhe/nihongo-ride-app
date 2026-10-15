@@ -84,6 +84,9 @@ if [ -n "${RUN_STORE_GATES_SOURCE_ONLY:-}" ]; then return 0; fi
 
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# XCODEBUILD_ARGS: no index store outside CI (scripts/lib/build_env.sh).
+# shellcheck source=lib/build_env.sh
+. "$REPO/scripts/lib/build_env.sh"
 # A fresh directory per run, rather than one fixed path cleared at the top.
 #
 # The fixed path was the first version and it failed twice in a row with
@@ -140,6 +143,7 @@ caffeinate -d -i xcodebuild test \
   -only-testing:NihongoRideMacTests \
   -derivedDataPath "$WORK/DerivedData" \
   -clonedSourcePackagesDirPath "$WORK/SourcePackages" \
+  ${XCODEBUILD_ARGS[@]+"${XCODEBUILD_ARGS[@]}"} \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGN_ENTITLEMENTS= 2>&1 | tee "$LOG"
 STATUS=${PIPESTATUS[0]}
