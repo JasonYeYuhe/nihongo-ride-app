@@ -9,6 +9,7 @@ decision.
 | `PLAN-draft.md` | the draft the reviewers read; their line numbers point here |
 | `review-gemini-4-argon-high.md` | Gemini 4 (`gemini-4-argon-high`): 16 findings, 4 additions |
 | `review-gemini-3.8-flash-high.md` | Gemini 3.8 Flash (`gemini-3.8-flash-high`): 9 findings, 3 additions |
+| `review-prompt.txt` | the prompt both models were given, run as `agy --print "$(cat review-prompt.txt)" --model <model> --sandbox --mode plan --print-timeout 0` inside the clone (Flash also needed `--dangerously-skip-permissions` to run headless) |
 
 Links inside the reviews were rewritten from the clone's absolute paths to repo-relative ones; the
 text is otherwise as the models wrote it.

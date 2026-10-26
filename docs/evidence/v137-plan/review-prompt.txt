@@ -1,0 +1,14 @@
+You are an independent, adversarial reviewer. The repository in your working directory is a READ-ONLY throwaway copy of "Nihongo Ride", a macOS+iOS Japanese typing-practice app. Do NOT modify any file, do NOT run builds, do NOT make network purchases or account actions.
+
+The owner said: "我想把我们目前付费的功能都做得更好一点 想要开始盈利了" (make our current paid features better; we want to start making money). An AI agent wrote the development plan at docs/PLAN-V1.37.md in response. Review it.
+
+Read docs/PLAN-V1.37.md fully, then check its claims against the repository (docs/PLAN-STAGE1.md §K, docs/PLAN-WINDOW.md, docs/PLAN-V2-PRODUCT.md, docs/STATE-2026-10-27.md, docs/measurements/stage1-checkpoints.md, Sources/SceneryKit/RideRoute.swift, Sources/NihongoRideApp/RoadView.swift, RouteStore.swift, Sources/EntitlementKit/*, scripts/sales_report.py, and anything else the plan cites). Spot-check at least 10 citations.
+
+Answer, concretely and with file:line evidence:
+1. Is the plan's core reasoning right? (a) the conflict with the pre-registered observation window and the recommendation to keep it to N = 200 (option A) vs end it now (B); (b) the claim that ¥10 scenery cannot reach the ¥50/month floor at ~2.6 installs/day; (c) the ordering: owner's purchase walk first, then Offer v2, then Phase 2.
+2. Monetization strategy: is the plan likely to actually make money? What is it missing? Is anything in Phase 1 low-value or Phase 2 mis-ranked (E1 second road, E2 supporter pack, E3 free sampler + paid depth with grandfathering, E4 content packs, E5 Japanese UI, E6 F1 paid workflow)? Would you change the default? Be specific about pricing-model reasoning (one-time vs subscription vs packs) given the evidence, but do not invent a specific price — that is the owner's.
+3. Factual errors, contradictions, or claims the repo does not support. Wrong numbers, wrong file:line.
+4. Risks the plan underrates (App Review, StoreKit/entitlement correctness, grandfathering, the untested purchase path, the measurement design of "Window 2", the N₂ = ⌈3/c*⌉ decision row).
+5. Anything that would violate the project's own red lines (frozen surfaces during the window, no agent purchases, no Apple-account actions, public repo / no personal data, owner-only decisions).
+
+Output format: a short verdict paragraph, then numbered findings, each with: severity (BLOCKER / SERIOUS / MINOR / NIT), the plan section, the claim, the evidence (file:line or reasoning), and the concrete change you recommend. Then a short list "what I would add". Be blunt; do not pad.
