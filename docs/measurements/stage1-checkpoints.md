@@ -179,3 +179,113 @@ live exit=0
 
 **Rules 2 and 3.** No bound is computed, because the tool withholds for the one reason quoted above.
 No branch is evaluated.
+
+### N = 100 — the reading of 2026-10-26 (JST)
+
+**Rule 4: confirmed before the reading.** The agent made this finding before running, under the
+owner's delegation. The delegation was given on 2026-10-07 (*"你想办法自己做掉 你全权负责 没办法再找我"*)
+and renewed on 2026-10-26 (*"你继续做到收尾吧"*). It is the agent's finding, not the owner's confirmation.
+The window is Pacific 2026-09-09 .. 2026-10-25. Finding: **no walk install and no registered-session
+install.**
+* `stage1-known-positives.json` has 0 entries, and no session was ever registered (`docs/sessions/`
+  holds only its README).
+* The walk has not started: the owner has never said "开始走查", and no walk snapshot was written
+  after 2026-10-03.
+* On this Mac:
+  * `stage1_walk.py preflight` on 2026-10-26 again finds no `/Applications/Nihongo Ride.app`, and
+    `NihongoRide.entitlement.v1` absent;
+  * LaunchServices (which keeps records of deleted bundles) has 0 records of the bundle under
+    `/Applications`.
+* The reading below shows 0 purchases, so the walk never reached its purchase step.
+* **Limits, as in the N = 35 record:** a download never opened, devices on other accounts, a family
+  member's devices, and the owner's iPhone after 2026-09-15 cannot be seen. No device was queried. The
+  margin is 22 units (N = 122 against 100).
+
+**The reading, verbatim.** `python3 scripts/sales_report.py --checkpoint`, run 2026-10-26 (JST), newest
+report day Pacific 2026-10-25. Kept outside the repo at
+`~/Library/Caches/NihongoRide-v136-work/checkpoint-2026-10-26.txt`, md5 `deda94d5ce6bf546abe1b41469e1b7f9`.
+The last line is the shell's capture of the exit code. There were no adjusted purchases, so there is no
+territory line.
+
+```
+checkpoint — PLAN-STAGE1 §K, day 0 = 2026-09-09
+  registry docs/measurements/stage1-known-positives.json · schema 1 · 0 entries
+  decisions: exclude_walk_first_downloads_from_N=true · exclude_owner_refund_from_refund_ceiling=true
+    (exclude_owner_refund_from_refund_ceiling is echoed, never applied: nothing here evaluates the day-180 refund ceiling)
+window 2026-06-06 .. 2026-10-25  (142 days)
+  report states: data=142
+calibration (the full default window — every check --calibrate runs):
+  positive control · updates  release-day 15.2/d vs other 7.0/d = 2.16x
+  positive control · downloads release-day 2.8/d vs other 2.4/d = 1.17x
+  OK — the instrument responds to known-positive events.
+second release-day control (PLAN-STAGE1 §K "DECIDED 2026-09-17" item 11 — gates the bound only; --calibrate does not run it):
+  exposure days (16): 2026-08-11, 2026-08-12, 2026-08-15, 2026-08-16, 2026-08-17, 2026-08-18, 2026-08-31, 2026-09-01, 2026-09-11, 2026-09-12, 2026-09-17, 2026-09-18, 2026-09-28, 2026-09-29, 2026-09-30, 2026-10-01
+  other days (42): 2026-08-14, 2026-09-02, 2026-09-03, 2026-09-04, 2026-09-10, 2026-09-13, 2026-09-14, 2026-09-15, 2026-09-16, 2026-09-19, 2026-09-20, 2026-09-21, 2026-09-22, 2026-09-23, 2026-09-24, 2026-09-25, 2026-09-26, 2026-09-27, 2026-10-02, 2026-10-03, 2026-10-04, 2026-10-05, 2026-10-06, 2026-10-07, 2026-10-08, 2026-10-09, 2026-10-10, 2026-10-11, 2026-10-12, 2026-10-13, 2026-10-14, 2026-10-15, 2026-10-16, 2026-10-17, 2026-10-18, 2026-10-19, 2026-10-20, 2026-10-21, 2026-10-22, 2026-10-23, 2026-10-24, 2026-10-25
+  updates (F7)                  exposure 17.38/d vs other 3.17/d = 5.49x
+  first-time downloads (F1/1F)  exposure 2.94/d vs other 2.50/d = 1.18x
+    other-day first-time downloads 2.00/d before 2026-09-09 over 4 day(s), 2.55/d from 2026-09-09 over 38 day(s)
+  OK — check A: updates elevated on exposure days · check B: update ratio 5.49x > first-time download ratio 1.18x
+cohort since day 0: 2026-09-09 .. 2026-10-25  (47 days · report states: data=47)
+  2026-09-08 first-time downloads (F1/1F): 0 — N is the same whether day 0 is 09-08 or 09-09
+  FIRST-TIME DOWNLOADS  raw 122 (macOS 82 · iOS 40)
+    registered walk first_download: none in the cohort window
+  N = 122 (macOS 82 · iOS 40)  first-time downloads F1+1F since 2026-09-09
+  PURCHASES  raw gross 0 (macOS 0 · iOS 0) · refunded 0 · net 0
+    registered, always subtracted (§K: "exclude it from the cohort"): purchase 0 · refund 0
+  ADJUSTED PURCHASES  gross 0 (macOS 0 · iOS 0) · refunded 0 · net 0
+  registry entries: none
+pre-registered checkpoints (§K, quoted):
+  REACHED      N = 35   record, falsifies nothing
+  REACHED      N = 100  first checkpoint that can falsify §D's 8.2%
+  not reached  2026-12-08 (day 90)  interim record, no decision attached — a dated waypoint regardless of N
+  not reached  N = 200, or 2027-03-08 (day 180), whichever comes first  the go / iterate / stop decision
+  not reached  2027-03-08 (day 180)  refunds
+  (read at N = 122, with 2026-10-25 the newest report day read)
+BOUND WITHHELD:
+  - no matched day-0 known-positive purchase: the registry holds no kind=purchase entry with status=matched in the cohort window — §K: "this project does not trust an instrument that has not fired"
+exit=5
+```
+
+**Rule 5: what this reading shares data with.** Its cache contains every report day of:
+* the N = 35 record above (2026-09-25 JST) and its re-runs;
+* the agent readings of 2026-09-29 (N = 50), 2026-10-03 (N = 59) and 2026-10-07 (N = 68);
+* the cache-only re-runs and row scans of the 2026-10-07 investigation (through 10-01);
+* the calibration and release-day controls computed on those days.
+None of them was blind to it. v1.36's scope was fixed on 2026-10-07 and extended on 2026-10-09, before
+this reading, and nothing in it depends on this reading.
+
+**Rule 7: `review_watch.py`, the same JST day, verbatim.** The one review since day 0 is rated 5/5 and
+names no purchase, so it was not flagged. A person read it: it does not mention the purchase,
+negatively or otherwise.
+
+```
+review_watch — App Store customer reviews for app 6777469778 (read-only GET via scripts/asc_api.sh)
+read at 2026-10-26T14:36:36Z · /v1/apps/6777469778/customerReviews?limit=200&sort=createdDate · 1 page(s)
+NOTE: this endpoint shows the reviews visible to the App Store Connect API. It may lag the storefronts; a review a storefront shows may not be here yet.
+"since day 0" = the review's createdDate converted to its America/Los_Angeles calendar day (the Pacific report day sales_report.py uses) is on or after 2026-09-09.
+
+total reviews (lifetime, as the API shows them): 2
+API meta.paging.total: 2   (equals the 2 collected; a mismatch is exit 2)
+before day 0 (2026-09-09): 1   (counted; not the guardrail's subject)
+since day 0 (2026-09-09):  1   (0 with purchase vocabulary)
+
+REVIEWS SINCE DAY 0 (2026-09-09) — every one, on every run; no high-water mark
+
+[1] 2026-10-09 PT (createdDate 2026-10-09T03:51:45-07:00) · rating 5/5 · territory USA · id 00000193-f7fb-5203-68ee-857700000000
+  nickname: San Joseph Apocalypse
+  title: 好用不火
+  body:
+    | 金山打字通一样的打字体验，但是没啥人用，没有广告而且反馈真实，非常人性化
+
+BEFORE DAY 0 — counted above, not listed as since day 0; one line each
+  2026-07-10 PT · rating 5/5 · CHN · id 00000193-f7fb-5203-538a-6cdb00000000 · purchase vocabulary: 付费, 收费
+
+SUMMARY: since day 0: 1 review(s), 0 flagged · before day 0: 1 · total 2
+exit 0 (the read succeeded)
+exit=0
+```
+
+**Rules 2 and 3.** No bound is computed, because the tool withholds for the one reason quoted above. No
+branch is evaluated. The N = 100 row is "the first checkpoint that can falsify §D's 8.2%". It cannot do
+so while the instrument has not fired: there is no matched day-0 known-positive purchase.
+
