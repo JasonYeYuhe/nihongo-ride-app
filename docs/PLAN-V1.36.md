@@ -812,3 +812,35 @@ Before the submit, the repository's `Sources/` held three untracked iCloud sync 
 compiled them, so they were moved out of the repo to `~/Library/Caches/NihongoRide-v136-work/icloud-duplicates-2026-10-26/`
 before any build.
 
+### Submission record — 2026-10-27 (JST)
+
+v1.36 went to App Review on both platforms: macOS build 61 and iOS build 62, built from `24684c2`.
+* **Review submissions:** macOS `bf800bba-2f99-44d6-82b0-3e13f7d0f2fa`, iOS
+  `e6c47043-018d-4e9c-8f6e-e8758a2cf57d`.
+* **Versions:** macOS `1c50ac06-918d-4a75-828d-ed479c173ff4`, iOS `de630bb8-fc18-4173-a773-f3d7245b83b7`.
+* **Release type:** `AFTER_APPROVAL`, as for 1.33–1.35. Release day is the day Apple approves, and the
+  two platforms may go live on different Pacific days.
+
+**Before `--submit`:**
+* the signing probe passed: console unlocked, the login keychain unlocked (`no-timeout`), the codesign
+  probe signed;
+* `run_all_gates.sh` on `24684c2`: 17 run, 0 failed;
+* `check_versions.py --archive`: 1.36 / 61 (macOS) and 1.36 / 62 (iOS), app and widget;
+* the sources and `project.yml` both archives were built from equal the repository's;
+* the live privacy and support pages return 200 and equal `site/` byte for byte;
+* builds 61 and 62 were VALID, each checked by platform.
+  A first wait loop matched build numbers without the platform. It reported "both VALID" from macOS 61
+  and 1.35's iOS 61, and was caught before `--submit`.
+
+**The macOS launch gate passed, but on a Mac not signed into iCloud.** The app was still running after
+16 s. In that state the gate cannot exercise the account-change path that crashed 1.4, and its own
+output says so. Signing into an Apple account is owner-only. This release leaves that path untouched:
+`AppModel.swift` and `Sources/SyncKit` are byte-identical to 1.35, which is live.
+
+**Read back independently after the submit:**
+* both platforms are `WAITING_FOR_REVIEW`, `AFTER_APPROVAL`, with builds 61 / 62 attached and VALID;
+* What's New in en-US, zh-Hans and ja equals the script's;
+* description, keywords, promotional text, URLs and screenshot checksums equal 1.35's in every locale,
+  with 0 differences;
+* the IAP is `APPROVED`, `familySharable` false.
+
