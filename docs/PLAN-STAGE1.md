@@ -980,6 +980,85 @@ fired. *An agent cannot do this step and must not try.*
 > a reading lands close to a threshold, the covariate to look at is the cohort split at v1.35's Pacific
 > release date, which is appended to `FIRM_RELEASE_DATES_PT` on release day.
 
+> ### 📌 REGISTERED 2026-10-26 (JST) under constraint 3, before v1.36 is submitted — readings on a word list's own rows, one star on the Saved row, and twenty-two example sentences' number + counter readings corrected (four of them leave the dictation pool)
+>
+> `PLAN-WINDOW` constraint 3: *"A feature that substantially changes how far people ride changes
+> exposure-per-install… Second-order and tolerable — **register it, do not avoid it.**"* This is that
+> registration for v1.36 (`PLAN-V1.36`), written before `--submit`. It registers product changes; it adds
+> no §K rule. v1.36's scope was fixed on 2026-10-07 and extended on 2026-10-09 (§I), both before the
+> N = 100 reading; no checkpoint figure chose it.
+>
+> **What changed.**
+> 1. **A list's word rows** (`ListsView.swift`; Word Lists is not on the walk):
+>    * each word written with kanji shows its kana reading under it, by the rule the search results on
+>      that screen have used since v1.35;
+>    * the meaning wraps instead of being cut to one line;
+>    * at the accessibility text sizes, Remove sits under the word, as the search results' button does;
+>    * the meaning and the removed-word note are sized from the body text, with an 11 pt floor. On the Mac
+>      the meaning is 2 pt larger than before (12 pt), and on iOS above the default size it is slightly
+>      smaller than the old caption style;
+>    * VoiceOver reads a word, its reading and its meaning as one item;
+>    * a removed word's Remove button says "this word", not the entry's internal id.
+>    Display only: no word is added, removed or reordered, and no list rule or stored data changes.
+> 2. **The Saved list's row** shows its star once (its gold icon), and its three controls are read out
+>    without the ★. The stored name, the list's header and the add-to-list sheet keep "★ Saved".
+> 3. Twenty-two example sentences now teach the standard number + counter reading, per
+>    `docs/measurements/v136-reading-manifest.json` (grammar and 2-of-2 refuters; exKana and one or two
+>    tokens each): `n5-kazoku` 四人 よにん; 四月 しがつ (`n5-b303`, `n2-b942`); 九時 くじ (`n5-b071`,
+>    `n4-g180`, `n3-b750`); 二十四時間 にじゅうよじかん (`n5-b018`); 四時間 よじかん (`n1-b615`); 四字熟語
+>    よじじゅくご (`n2-b072`); 三千 さんぜん (`n1-b439`, `n3-b781`); 八十点 はちじゅってん (`n3-b678`); 三分
+>    さんぷん (`n1-b1630`); 三十分 さんじゅっぷん (`n2-b449`); 五分 ごふん (`n1-b327`); 十分 'ten minutes'
+>    じゅっぷん (`n1-b1147`, `n1-b1841`, `n2-b311`, `n3-b020`, `n4-b127`); 一軒 いっけん (`n2-b479`); 一階
+>    いっかい (`n1-b957`).
+>    **The dictation pool shrinks by 4, from 5,939 to 5,935** (`release_numbers`: withheldThisRelease 4).
+>    Four of the corrected sentences were in it: `n1-b439`, `n3-b781`, `n3-b678` and `n3-b020`. Dictation
+>    speaks the unchanged Japanese and grades what a rider types against the sentence's kana, so a
+>    corrected sentence may stay only where the voice is proven to say the corrected reading. In
+>    `n3-b020` the voice is proven to say the old じゅうぶん (instrument 1b), so grading it against
+>    じゅっぷん would refuse a rider who types what they hear; in the other three it is not proven either
+>    way (1b silent; `docs/measurements/v136-dictation-remeasure.json`). All four are withheld from
+>    dictation, as v1.35 withheld `n5-g022`: they teach the right reading in Sentence mode, and dictation
+>    is not graded where the voice may say something else. The other eighteen were withheld before and
+>    stay withheld. Sweep: the calibrated tables cover the lexicalised counters, 何 + counter, 月 / 時 /
+>    時間 / 字 after a last digit 4, 7 or 9, and the sound-changing counters 分 軒 階 回 歳 本 杯 匹 個 冊 点
+>    泊 and 千 / 百 after a digit. Inside that scope no mismatch remains. Five tolerated readings are
+>    left as they are (`n5-b334` 七時 ななじ, `n4-g171` 三階 さんかい, …じゅうさい in `n3-b123`, `n1-b311`
+>    and `n1-b1450`). Outside that scope the sweep claims nothing.
+>    The stumble chip after a stumbled sentence links a token to its card by reading, so a few links move
+>    with the corrected readings: the 九 of 九時 now links to the 九 く card, the 四 of 四月 / 四時間 /
+>    四字熟語 no longer links to 四 よん, and several 十 / 一 / 十分 tokens link to no card (`n3-b020`'s 十分
+>    no longer links to 十分 じゅうぶん 'enough'). §H has each one.
+> 4. Nothing a rider sees: compiler warnings, the corpus writers' write path, CI's timeout, a test
+>    pinning the corrections.
+>
+> The offer screen, the Settings road card, the menu route strip, prices, About's counter text and the
+> store metadata are unchanged. `SettingsView`, `MenuView`, `AboutView`, `OnboardingView`, `RoadView`,
+> `RouteStore` and `EntitlementKit` are byte-identical to `fdb2b5f`.
+>
+> **Expected effect.**
+> * The list rows: neutral to up on days-ridden; magnitude unmeasurable.
+> * The star: neutral.
+> * Eight of the twenty-two corrected sentences are one or two kana shorter, so each rides 10–20 m
+>   less (`GameSession.swift:825`, 10 m per kana of the sentence's exKana): `n5-kazoku` 100 → 90 m,
+>   `n5-b303` 240 → 230, `n2-b942` 280 → 270, `n5-b071` 210 → 190, `n4-g180` 180 → 160, `n3-b750`
+>   170 → 150, `n5-b018` 180 → 170, `n2-b072` 280 → 270; `n1-b615` keeps its length (260 m). The
+>   thirteen sound-change corrections swap kana one for one (さんせん → さんぜん, じゅうふん and
+>   じゅうぶん → じゅっぷん, いち → いっ), so each keeps its length too: `n1-b439` 210 m, `n3-b781` 210,
+>   `n3-b678` 250, `n1-b1630` 220, `n2-b449` 270, `n1-b327` 290, `n1-b1147` 210, `n1-b1841` 230,
+>   `n2-b311` 290, `n4-b127` 200, `n2-b479` 220, `n1-b957` 190, `n3-b020` 180. The sentence's score
+>   base and time baseline (`GameSession.swift:842`, `:847`) move with the same kana count, so only the
+>   eight shorter ones change. Against 25,000 m to Kyōto: negligible.
+> * Dictation: 4 of 5,939 pool sentences withheld (5,935 remain), all from N1 and N3. Neutral.
+> * Cadence: v1.36 is submitted on 2026-10-26 (JST), 27 days after 1.35 (submitted 2026-09-30 JST; live
+>   2026-09-29 PT on macOS and 2026-09-30 PT on iOS). The window's first 47 days held five firm release
+>   dates. Its release days raise first-time downloads (1.18x in the 2026-10-26 control), and the longer gap
+>   lowers the weekly rate. A fraction of one day's installs either way. It is submitted after the N = 100
+>   reading (2026-10-26, N = 122, newest report day 10-25), so no release day of v1.36 falls inside that
+>   reading.
+>
+> **How to read a checkpoint against it.** `3/N` does not move. Near a threshold, split the cohort at
+> v1.36's `FIRM_RELEASE_DATES_PT` entries.
+
 ## §L The three manual gates
 
 These cannot be automated on this machine and are therefore **not tested until somebody walks

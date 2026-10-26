@@ -795,3 +795,20 @@ Five lenses ran over `fdb2b5f..0046997`, with two refuters for every non-NIT fin
   * a removed word's Remove button could still carry its id in `accessibilityValue`; no test pins that
     it doesn't.
 
+### The hold lifted — 2026-10-26 (JST)
+
+§H held v1.36 for §C's slot, with submission no earlier than 2026-11-02. The hold existed for one reason:
+to keep v1.36's release days out of the N = 100 reading. That reading was recorded today. It shows
+N = 122, with 2026-10-25 the newest report day, and it is in `docs/measurements/stage1-checkpoints.md`.
+The same day the owner said *"你继续做到收尾吧"*, so the hold is lifted and v1.36 is submitted today.
+
+The choice depends only on the reading having been taken. No outcome figure in it changes anything.
+Today's §K box is the §E draft, with two things filled in:
+* the date;
+* a cadence line written from the real dates.
+
+Before the submit, the repository's `Sources/` held three untracked iCloud sync duplicates (`AboutView 2.swift`,
+`AppModel 2.swift`, `MenuView 2.swift`), byte-identical to August versions in history. SwiftPM would have
+compiled them, so they were moved out of the repo to `~/Library/Caches/NihongoRide-v136-work/icloud-duplicates-2026-10-26/`
+before any build.
+
