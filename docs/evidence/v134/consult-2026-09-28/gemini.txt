@@ -1,0 +1,41 @@
+<class 'dict'> ['conversation_id', 'status', 'response', 'duration_seconds', 'num_turns', 'usage']
+D1: A — confidence high
+  why: v1.34 improves substantially over v1.33's silent cut; the notice is completely visible at the default size on phones and at AX5 on iPad (`_consult/screens/iphone-paste-en-default.png`, `ipad-paste-zh-AX5.png`). At AX5 on phone with the keyboard up, the cap itself remains readable, and dismissing the keyboard or scrolling reveals the rest (`PLAN-V1.34.md` §B2). Withdrawing (B) discards over seven hours in the review queue and burns ~1 agent-day, while an extra 1.34.1 (C) adds an unneeded release-day covariate spike into the pre-registered observation window (`_consult/checkpoint-2026-09-25.txt`, `PLAN-ITERATION` §G).
+  would change my mind: App Review rejecting v1.34 specifically for the AX5 keyboard-up layout.
+
+D2: A — confidence high
+  why: The 18 tripled apostrophes have shipped quietly in Practice passages since June without causing crashes or functional defects (`origin/claude/dazzling-elion-131e9a`, `passages.json`). Shipping a content-only 1.34.1 (C) burns an extra release day inside the window for a non-urgent cosmetic fix (`PLAN-V1.34.md` §F), while folding into 1.34 (B) requires an unnecessary withdrawal. Merging to main for v1.35 allows the branch's new gate (`test_escape_residue.py`) and floor raise (14 → 15) to receive proper independent adversarial review alongside other v1.35 changes.
+  would change my mind: A user review or App Review complaint flagging the corrupted English passage text before v1.35.
+
+D3: A — confidence high
+  why: `AFTER_APPROVAL` preserves the autonomous release workflow delegated to the agent and avoids leaving builds stalled in `PENDING_DEVELOPER_RELEASE` (`docs/STATE-2026-09-27.md`). Because release day is registered upon approval in `FIRM_RELEASE_DATES_PT` as a known covariate (`docs/PLAN-V1.34.md` §C4), arbitrary manual holding (B) provides no measurement advantage.
+  would change my mind: The owner scheduling an exact date for the §K/§L walk that requires synchronizing the release.
+
+D4:
+  1. AX5 paste notice compact layout (0.25d): Shorten copy or place counts in the header label in `CustomTextsView.swift`, resolving the phone AX5 keyboard-up cutoff surfaced in 1.34.
+  2. Apostrophe content fix & gate floor raise (0.25d): Independently review and merge `origin/claude/dazzling-elion-131e9a`, raising `run_all_gates.sh` FLOOR to 15.
+  3. Small visual/contrast deferred fixes (0.2d): Results screen stage line contrast (4.41:1 → 4.5:1, recolor only; `PLAN-V1.34.md` §B1 addendum 2) and iPad default-size accuracy pill wrap ("100 / %"; `GameView.swift:472-473`).
+  4. Content corrections by ear (0.25d): The 112-sentence headword residue and `n5-kazoku` counter item (`docs/measurements/v126-uninspected-residue.json`).
+  5. "Two populations, not one gate" calibration (1.0d): Tooling gate hygiene (`PLAN-WINDOW` §D item 3).
+  6. B6 search corpus from Word Lists (2.0d): Build `VocabStore.search` and UI (`PLAN-V1.34.md` §B6), subject to the strict 2-day cut rule (defer to v1.36 if incomplete).
+  7. N = 100 checkpoint reading (0.25d): Execute when cumulative downloads reach 100 (`stage1-checkpoints.md`).
+  8. §E store gates automation (0.5–1.0d): Execute ONLY if the owner completes the §K/§L walk; otherwise keep inert.
+
+  What to cut and why:
+  - Cut B2 improvements (edit-after-paste, "Practise this text" button): No evidence yet that riders paste custom text; keep conditional on session data or owner reports (`PLAN-V1.34.md` §B2, §F).
+  - Cut About licence badges (4.28:1): Brand-colour contrast is explicitly allocated to the day-91 list (`PLAN-V1.34.md` §B4, §I).
+  - Cut notification/widget deep-linking work: Explicitly excluded by §I unless a 0.1-day device check proves warm launches fail to reach menu.
+
+D5: B — confidence high
+  why: Available disk space on the primary APFS data volume is at 96% capacity (36 GiB remaining). Orphaned build roots previously triggered "No space left on device" gate failures (`docs/STATE-2026-09-27.md`), and keeping a multi-gigabyte simulator clone idle for two weeks wastes scarce disk when recreating it takes under two minutes via `xcrun simctl clone`.
+  would change my mind: If disk space is cleared (>100 GiB free) or recreating the clone requires untracked manual setup steps.
+
+REVERSALS (from §2): none
+
+MISSED:
+  1. Disk space exhaustion: The volume is at 96% capacity (36 GiB free). Concurrent worktrees and SwiftPM build roots (~700 MB each) previously caused gate failures ("No space left on device", `docs/STATE-2026-09-27.md`). Build caches under `~/Library/Caches/NihongoRide-build/` should be pruned immediately.
+  2. Stalled N = 35 checkpoint commit: N = 36 was reached on 2026-09-25, but its formal entry into `docs/measurements/stage1-checkpoints.md` is blocked awaiting owner confirmation that no unregistered walk install occurred in 09-09..09-23. Delaying this risks N approaching 100 before N = 35 is formally recorded.
+  3. The day-0 known-positive purchase (§K) has remained unwalked for 19 days, leaving the bound withheld (`BOUND WITHHELD`) at every checkpoint.
+
+CORRECTIONS: none
+

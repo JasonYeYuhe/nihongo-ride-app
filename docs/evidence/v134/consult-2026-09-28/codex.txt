@@ -1,0 +1,35 @@
+D1: A — confidence medium
+  why: First, the timing needs correcting: docs/PLAN-V1.34.md §F targets submission on October 22, 24 days after September 28, plus review time. CustomText.swift retains the existing storage limits; CustomTextsView.swift and the screenshots show improved warning visibility, with a real remaining failure to communicate the loss immediately in English at AX5. That warrants first priority in v1.35, but does not justify withdrawing the verified improvements or adding an emergency release on the available evidence.
+  would change my mind: Demonstrated new data loss, an unreachable complete warning, or substantial slippage beyond the v1.35 target would justify reconsidering B or C.
+
+D2: A — confidence high
+  why: Static review of 0205e50 confirms 18 English translation corrections, leaving Japanese targets, IDs and application behavior unchanged. CorpusEscapeResidueTests.swift, both generators’ rejection checks and the gate-floor increase address recurrence. Complete executable verification before merging, then ship with v1.35; this review inspected tests but did not run them.
+  would change my mind: If D1 becomes B, include this bounded fix in the same rebuild after its independent checks.
+
+D3: A — confidence high
+  why: PLAN-STAGE1.md §K already registers release exposure, and PLAN-V1.34.md §C4 requires recording actual Pacific release dates. Manual release adds a handoff without removing the release association. The previous two-hour approval supplies no reliable deadline for this submission.
+  would change my mind: A concrete need for owner availability or coordinated release monitoring would favor MANUAL.
+
+D4: Make v1.35 a bounded corrective release with one conditional feature, in this order:
+
+  1. Finish the apostrophe branch’s review and verification. Make the paste notice the first UI change: communicate retained and omitted content above the keyboard at AX5, in both languages. Verify sentence-cap and character-cap cases; the supplied captures establish only the sentence case. Shorter wording is a candidate, not proof of fit (PLAN-V1.34.md §B2/§G.3).
+
+  2. Fix the results stage line’s contrast and the iPad accuracy-pill wrap, using local changes and the existing frozen-surface checks. While revisiting results, verify four-digit due counts and narrower supported phone widths before calling the tomorrow line’s fit complete.
+
+  3. Time-box the corpus work to the planned day: inspect the 112 headword-residue sentences and the separate counter population, correcting only evidenced errors. PLAN-ITERATION.md §D explicitly leaves n5-kazoku unresolved; it is not a mechanical substitution to よにん. Preserve unresolved cases rather than forcing closure.
+
+  4. Build B6 search, retaining its two-day cutoff and dedicated search-to-list UI proof. Move it whole to v1.36 if it misses that cutoff; protect review time rather than extending the corrective release indefinitely (PLAN-V1.34.md §B6/§F).
+
+  5. Run measurement work alongside implementation: finalize N = 35 after owner confirmation; record N = 100 when reached, including withheld reasons; analyze sessions if available. These records should not wait for a release. Keep the deep-link check to its stated 0.1-day diagnostic scope.
+
+  Cut B2’s editing/direct-practice improvements without usage evidence. Exclude licence-badge contrast: §B4 explicitly assigns it to the day-91 brand-colour list. Keep every §I exclusion. §E remains blocked under the present no-purchase red line; “the owner walked” alone also falls short of §E’s documented known-positive/refund prerequisites.
+
+D5: B — confidence medium
+  why: Remove the disposable clone while retaining the harness, captures and device/runtime specifications outside session scratch space. docs/STATE-2026-09-27.md records disk exhaustion from accumulated build artifacts, and the memory note documents lost temporary evidence. Recreate an isolated 402pt clone for the next pass.
+  would change my mind: An imminent rerun or valuable device state that cannot be reproduced cheaply would favor A.
+
+REVERSALS (from §2): none. Prioritize the deferred open-surface defects next release; retain the submitted release’s other tradeoffs.
+
+MISSED: The final all-gates and placement runs occurred after submission (PLAN-V1.34.md §F). Future final-source checks should finish before submission, especially with automatic release; “14 run, 0 failed” comprised 12 passes, one no-coverage result and one vacuous gate. Separately, B1’s tested counts stop at 999 although DueForecast.swift imposes no such limit: larger-count fit is unproven, not a reproduced defect. The known-positive’s original day-0 prerequisite was already missed; a later owner action cannot erase that historical deviation (§K’s September 16 addendum).
+
+CORRECTIONS: October 22 is a submission target over three weeks after September 28, not approximately two weeks. Licence badges are deferred to day 91 in §B4, conflicting with their inclusion among v1.35 candidates. B3’s coverage is the ride HUD; ConjugationGameView.swift still hides its score at accessibility sizes without adding it to the progress accessibility value.

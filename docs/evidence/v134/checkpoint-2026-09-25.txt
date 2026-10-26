@@ -1,0 +1,36 @@
+checkpoint — PLAN-STAGE1 §K, day 0 = 2026-09-09
+  registry docs/measurements/stage1-known-positives.json · schema 1 · 0 entries
+  decisions: exclude_walk_first_downloads_from_N=true · exclude_owner_refund_from_refund_ceiling=true
+    (exclude_owner_refund_from_refund_ceiling is echoed, never applied: nothing here evaluates the day-180 refund ceiling)
+window 2026-06-06 .. 2026-09-23  (110 days)
+  report states: data=110
+calibration (the full default window — every check --calibrate runs):
+  positive control · updates  release-day 15.2/d vs other 8.8/d = 1.73x
+  positive control · downloads release-day 2.8/d vs other 2.2/d = 1.27x
+  OK — the instrument responds to known-positive events.
+second release-day control (PLAN-STAGE1 §K "DECIDED 2026-09-17" item 11 — gates the bound only; --calibrate does not run it):
+  exposure days (12): 2026-08-11, 2026-08-12, 2026-08-15, 2026-08-16, 2026-08-17, 2026-08-18, 2026-08-31, 2026-09-01, 2026-09-11, 2026-09-12, 2026-09-17, 2026-09-18
+  other days (14): 2026-08-14, 2026-09-02, 2026-09-03, 2026-09-04, 2026-09-10, 2026-09-13, 2026-09-14, 2026-09-15, 2026-09-16, 2026-09-19, 2026-09-20, 2026-09-21, 2026-09-22, 2026-09-23
+  updates (F7)                  exposure 15.67/d vs other 6.00/d = 2.61x
+  first-time downloads (F1/1F)  exposure 3.17/d vs other 2.00/d = 1.58x
+    other-day first-time downloads 2.00/d before 2026-09-09 over 4 day(s), 2.00/d from 2026-09-09 over 10 day(s)
+  OK — check A: updates elevated on exposure days · check B: update ratio 2.61x > first-time download ratio 1.58x
+cohort since day 0: 2026-09-09 .. 2026-09-23  (15 days · report states: data=15)
+  2026-09-08 first-time downloads (F1/1F): 0 — N is the same whether day 0 is 09-08 or 09-09
+  FIRST-TIME DOWNLOADS  raw 36 (macOS 23 · iOS 13)
+    registered walk first_download: none in the cohort window
+  N = 36 (macOS 23 · iOS 13)  first-time downloads F1+1F since 2026-09-09
+  PURCHASES  raw gross 0 (macOS 0 · iOS 0) · refunded 0 · net 0
+    registered, always subtracted (§K: "exclude it from the cohort"): purchase 0 · refund 0
+  ADJUSTED PURCHASES  gross 0 (macOS 0 · iOS 0) · refunded 0 · net 0
+  registry entries: none
+pre-registered checkpoints (§K, quoted):
+  REACHED      N = 35   record, falsifies nothing
+  not reached  N = 100  first checkpoint that can falsify §D's 8.2%
+  not reached  2026-12-08 (day 90)  interim record, no decision attached — a dated waypoint regardless of N
+  not reached  N = 200, or 2027-03-08 (day 180), whichever comes first  the go / iterate / stop decision
+  not reached  2027-03-08 (day 180)  refunds
+  (read at N = 36, with 2026-09-23 the newest report day read)
+BOUND WITHHELD:
+  - no matched day-0 known-positive purchase: the registry holds no kind=purchase entry with status=matched in the cohort window — §K: "this project does not trust an instrument that has not fired"
+exit=5
