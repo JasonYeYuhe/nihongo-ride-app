@@ -62,8 +62,27 @@ REPO = Path(__file__).resolve().parent.parent
 # Constant across every release of this app. Overridable so a test never has to reach for the
 # real identifiers, and so a second app could reuse the module without editing it.
 APP = "6777469778"
-CONTACT = {"contactFirstName": "Yuhe", "contactLastName": "Ye",
-           "contactPhone": "+81 80-3526-7088", "contactEmail": "yyyyy.yeyuhe@gmail.com"}
+# App Review contact. NOT kept in this repository: it is public, and until 2026-10-27 this line (and
+# every submit_1_5 … submit_1_30) carried the owner's phone number. Read at import from a local file on
+# the build Mac, or from NIHONGO_ASC_CONTACT (the same JSON as a string); see `review_contact()`.
+CONTACT_FILE = Path.home() / "Library/Application Support/NihongoRide-Stats/asc-contact.json"
+CONTACT_FIELDS = ("contactFirstName", "contactLastName", "contactPhone", "contactEmail")
+
+
+def review_contact():
+    """The App Review contact, or {} when it is not configured on this machine."""
+    raw = os.environ.get("NIHONGO_ASC_CONTACT")
+    try:
+        if raw:
+            return dict(json.loads(raw))
+        if CONTACT_FILE.exists():
+            return dict(json.loads(CONTACT_FILE.read_text(encoding="utf-8")))
+    except (ValueError, OSError) as err:
+        sys.exit(f"error: the App Review contact could not be read ({err})")
+    return {}
+
+
+CONTACT = review_contact()
 
 # ASC's limits on the fields this module writes.
 MAX_WHATS_NEW = 4000
@@ -463,6 +482,11 @@ class Release:
                   "(see DESCRIPTION_EDITS)")
 
     def set_review_detail(self, vid):
+        missing = [k for k in CONTACT_FIELDS if not self.contact.get(k)]
+        if missing:
+            # Refuse rather than send a review detail with no way to reach the developer.
+            sys.exit(f"error: the App Review contact is not configured ({', '.join(missing)} missing) — "
+                     f"put it in {CONTACT_FILE} or NIHONGO_ASC_CONTACT")
         cur = self.asc("GET", f"/v1/appStoreVersions/{vid}/appStoreReviewDetail")
         attrs = dict(self.contact)
         attrs["notes"] = self.review_notes

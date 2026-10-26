@@ -50,7 +50,7 @@ REVIEW_NOTES = (
     "writes nothing to review history, and does not use iCloud. The app is fully usable without iCloud."
 )
 CONTACT = {"contactFirstName": "Yuhe", "contactLastName": "Ye",
-           "contactPhone": "+81 80-3526-7088", "contactEmail": "yyyyy.yeyuhe@gmail.com"}
+           "contactPhone": "REDACTED-2026-10-27 (moved out of the public repo; see asc_release.review_contact)", "contactEmail": "yyyyy.yeyuhe@gmail.com"}
 
 
 def asc(method, ep, body=None):
