@@ -1,0 +1,495 @@
+{
+ "reason": "Twelve corrections (PLAN-V1.37 §C P0-2; PLAN-V1.36 §H 'Recorded for v1.37, not corrected'). The v1.37 counter table's new rows (週 / 週間, 章, 等, a loanword counter after a number ending in 十, and 一晩 / 一晩中 in the lexicalised table; scripts/check_counter_readings.py, docs/measurements/v137-counter-sweep-1.json) flag exactly the thirteen sentences v1.36's review recorded, on 9c09ab7 and on fdb2b5f, the corpus 1.35 shipped: n2-b277 六十キロ, n5-b105 二十センチ, n4-b104 五十ページ, n2-b1180 十センチ, n3-k061 十パーセント, n5-g010 十ページ, n2-b511 / n3-b310 / n4-g189 一週間, n1-b1418 第一章, n2-g285 一等, n4-b186 一晩, n2-b034 一晩中. Each was put to two independent refuters (corpus-proposals.json, read at 40eed1b). Twelve were upheld 2 of 2 and are corrected here. n5-g010 was upheld by one refuter and refuted by the other, and is NOT corrected ('recordedNotCorrected').",
+ "measurement": "v1.37 corpus corrections (PLAN-V1.37 §C P0-2)",
+ "population": "The v1.37 rows' 11 counter-table mismatches and 2 lexicalised-table hits on 9c09ab7 (= the 1.36 build 24684c2's corpus; calibration (n) of check_counter_readings.py --calibrate). The rows enumerate 週 / 週間 / 章 at 1, 8 and 10, 等 at 1, 8 and 10, キロ / センチ / ページ / パーセント after a ten only, and 一晩 / 一晩中: not every number + counter reading. What they do not inspect is printed by every run ('complement'). The 点 row's 6 and 8 were widened in the same change (ろくてん / はちてん accepted), which moved no judgement on the shipped corpus.",
+ "method": "Grammar and lexicon, put to two independent refuters per question; a correction ships only when both uphold it, as in v1.36. Applied through scripts/corpus_io.CorpusFile, which refuses a file it cannot write back byte for byte, token kana plus exKana exactly as corpus-proposals.json proposed them. A correction to a sentence IN the dictation pool stays in the pool only if calibrated instrument 1b, re-measured on the corrected tokens, proves the voice says the corrected reading (docs/measurements/v137-dictation-remeasure.json); otherwise it is withheld, v1.35's n5-g022 precedent and v1.36's rule (PLAN-V1.36 §H). Rows follow v136-reading-manifest.json; 'rewrite' is what check_vocab_diff.py permits.",
+ "decisions": {
+  "by": "decided 2026-10-27 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2)",
+  "1": "APPLY the 12 corrections upheld 2 of 2, token kana plus exKana exactly as proposed; nothing else in any corpus file changes.",
+  "2": "n5-g010 is NOT applied: refuter B refuted it, refuter A upheld it. Recorded in 'recordedNotCorrected' with both votes; it stays withheld.",
+  "3": "Dictation: n2-b277, n5-b105 and n4-b104 stay IN the pool (1b proves the voice says the corrected reading). n2-b511 and n1-b1418 are corrected AND withheld (the n5-g022 precedent): the pool goes 5,935 -> 5,933. Every already-withheld row stays withheld. n4-b186 and n2-b1180 are NOT released in v1.37 (release needs a 1b re-run on the corrected corpus, and n2-b1180's 描いて has never been measured): release candidates for later. n2-b034 must never be released on a re-run that only re-tests 一.",
+  "4": "n4-g189 keeps its old complaint ('一 いち -> ひ') in its evidence row, with a note that the fix does not answer it, rather than being marked resolved (refuter B).",
+  "poolMustNotShrinkSetAside": "The apply rule that the dictation pool must not shrink is set aside by decision 3 for n2-b511 and n1-b1418 only (5,935 -> 5,933). v1.36 set it aside for its own four rows (n3-b020, n1-b439, n3-b781, n3-b678; PLAN-V1.36 §H, 2026-10-09); that record does not extend to these, so this is its own."
+ },
+ "counts": {
+  "defect": 13,
+  "corrected": 12,
+  "declined": 1,
+  "withheldFromDictation": 2,
+  "releasedToDictation": 0
+ },
+ "releaseCandidates": {
+  "n4-b186": "1b on the corrected tokens gives RELEASE (一晩 ひとばん byte-identical). Not released in v1.37 (decision 3).",
+  "n2-b1180": "1b on the corrected tokens gives RELEASE (十センチ じゅっせんち byte-identical); 描いて never measured. Not released in v1.37 (decision 3).",
+  "notACandidate": {
+   "n2-b034": "1b confirms 一 ひと only; the 一晩中 span (中 じゅう) is silent in all eight spellings. Never release it on a re-run that re-tests only 一 (decision 3)."
+  }
+ },
+ "recordedNotCorrected": {
+  "n5-g010": {
+   "sentence": "十ページです。",
+   "exEN": "It is page ten.",
+   "headword": "十 じゅう (the card's own example sentence)",
+   "taught": "十 じゅう, ページ ぺーじ (exKana じゅうぺーじです)",
+   "proposed": "十 じゅう -> じゅっ (exKana じゅっぺーじです)",
+   "inDictationPool": false,
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "medium",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 十ページです 'it is page ten'. Shipped じゅうぺーじ is not standard; benricho's ページ row lists only じっぺーじ・じゅっぺーじ for 10, while 1/6/8 ページ keep いち/ろく/はち (so the sibling cards n5-g001/g006/g008 are fine and correctly not flagged). Proposed じゅっぺーじ standard. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). Already withheld; 1b silent (d483452c97de; the じゅうぺーじ span render equals instrument 1's whole-kana file 7ac297563b4c, both non-matching, as stated). Stays withheld: correct. Refutation attempt: this IS the headword card for 十 じゅう, so after the change its own example sentence no longer shows the headword's citation reading. I do not think that refutes the correction (teaching じゅうぺーじ is teaching a wrong reading, and showing the counter sandhi on the numeral's card is pedagogically useful; check_example_readings.py reads Sudachi on exJP, not exTokens, so it is not affected), but the apply phase should confirm the card still highlights/links 十 in its own sentence and the stumble chip, and someone may prefer a sentence where 十 stays じゅう. Medium for that reason. Sources: JMdict via nihongomaster (第一章 だいいっしょう) https://www.nihongomaster.com/japanese/dictionary/word/39849/ ; benricho 助数詞の読み方と発音一覧 https://www.benricho.org/kazu/kids/hatsuon.html (点 6 ろくてん, 8 はってん・はちてん, 10 じってん・じゅってん; ページ 10 じっぺーじ・じゅっぺーじ only; 1 いちぺーじ・いっぺーじ, 6 ろくぺーじ)."
+    },
+    "B": {
+     "uphold": false,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "The linguistic half survives; the proposal as a token-level correction does not. Sense: 十ページです is 'it is page ten' (exEN), a ten before ページ. Shipped じゅうぺーじ is non-standard, and じゅっぺーじ / じっぺーじ are standard, so the defect is real. 1b is silent; the row is already withheld, and staying withheld would follow the precedent. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Why I refute: this sentence is the example of the headword card n5-g010 十, kana じゅう. The proposal changes only the 十 token to じゅっ and leaves the headword alone ('the card teaches the numeral alone, which is じゅう'). It names only the stumble chip as a consequence. It misses an existing gate. Tests/ConjugationDataTests/ExampleSentenceTests.swift:352, 'a sentence reads its headword the way its own card teaches it', collects the readings of the token run whose surfaces equal the headword (headwordReadings, :147) and fails unless one of them equals the card's kana. I simulated that helper in Python on the proposed tokens for all 13 rows. Twelve are unaffected, but n5-g010 goes from ['じゅう'] to ['じゅっ'] and becomes an offender. It is not in knownHeadwordReadingMismatch, a named ratchet whose doc comment reserves exemptions for adjudicated REGISTER keeps and says a line comes off only when the sentence is corrected or withdrawn. So the change as stated turns `swift test --filter ExampleSentence` red. Making it pass would mean a new ratchet exemption, for a numeral card whose only example then never shows the card's reading. On 'the best form to teach in this sentence': for the 十 じゅう card, the problem is the sentence, not only its kana. It puts the headword where the card's reading cannot occur, which is the ratchet's 'sentence withdrawn' case. The better remedy is to replace the example with one where 十 is read じゅう (e.g. 十時 じゅうじ, 十円 じゅうえん, 十人 じゅうにん), going through the project's sentence-authoring and review path, or to have the owner decide explicitly to add an exemption. The bare token edit is neither. Severity MINOR: the row is withheld from dictation, and the cost is Sentence mode teaching じゅうぺーじ on an N5 card until it is fixed properly. Sources: ja.wiktionary 十 (https://ja.wiktionary.org/wiki/十) gives the sokuon form before voiceless counters as ジッ, now widely ジュッ, with the 改定常用漢字表 備考 「『ジュッ』とも。」, citing NHKことばのハンドブック; Bunpro's センチ entry reads 30センチ さんじゅっセンチ (https://bunpro.jp/vocabs/センチ); the NHK pronunciation-accent dictionary's numeral tables list ジッ/ジュッ, not ジュウ, before k/s/t/p counters (from my own knowledge, not fetched here; the v1.36 n3-b678 refuters cite the same)."
+    }
+   },
+   "status": "NOT corrected (decided 2026-10-27 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2), decision 2): upheld by refuter A, refuted by refuter B. B's reason: this is the 十 じゅう card's own example, so the token edit makes Tests/ConjugationDataTests/ExampleSentenceTests.swift:352 ('a sentence reads its headword the way its own card teaches it') red, and the ratchet's exemptions are reserved for adjudicated register keeps. Stays withheld from dictation, as it is now. Options for later: (a) a replacement sentence in which 十 is read じゅう (十時 じゅうじ, 十円 じゅうえん, 十人 じゅうにん …), through the project's sentence-authoring and review path; or (b) an owner-decided exemption in knownHeadwordReadingMismatch, after which the token correction applies. Until then Sentence mode teaches じゅうぺーじ on an N5 card, and check_counter_readings.py reports it as the counter table's one mismatch."
+  }
+ },
+ "scriptChanges": {
+  "item14-点": {
+   "what": "the 点 row's 6 and 8 accept ろくてん and はちてん (scripts/check_counter_readings.py, 40eed1b)",
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "medium",
+     "severity_if_real": "NIT",
+     "reasoning": "Uphold 'accepted' (not 'tolerated, flag-only'). The table defines tolerated as heard but not listed by dictionaries (三階 さんかい, …じゅうさい). ろくてん and はちてん are listed forms: benricho's 助数詞 reading table gives 6点 ろくてん (and only ろくてん) and 8点 はってん・はちてん, the same shape as the 階 row's はちかい・はっかい that the table already accepts; for a t-initial counter the 6/8 gemination is optional, and score reading ろくてん is everyday standard. NHK-style accent dictionaries list both for 6 and 8 with t-initial counters to my knowledge, but I could not fetch an NHK page to confirm, hence medium. Calling them tolerated would send correct sentences to refuters, against the table's own purpose. Checked in the clone: the change is the 点 row only (COUNTER_FINAL 6: ろってん|ろくてん, 8: はってん|はちてん), the 10 entry still requires じゅっ/じっ (calibration case '十点、八十点 … mismatches' kept), each new reading has its own logic check, and the docstring states the shipped corpus has no 六点/八点 in a read field, so 0 judgements move — NIT severity. Side note, not a refutation: benricho lists 6点 as ろくてん only, so if anything ろってん is the less-listed form; it is still widely heard and fine to keep accepted. Sources: JMdict via nihongomaster (第一章 だいいっしょう) https://www.nihongomaster.com/japanese/dictionary/word/39849/ ; benricho 助数詞の読み方と発音一覧 https://www.benricho.org/kazu/kids/hatsuon.html (点 6 ろくてん, 8 はってん・はちてん, 10 じってん・じゅってん; ページ 10 じっぺーじ・じゅっぺーじ only; 1 いちぺーじ・いっぺーじ, 6 ろくぺーじ)."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "medium",
+     "severity_if_real": "NIT",
+     "reasoning": "The change: COUNTER_FINAL 点 6 becomes ('ろってん','ろくてん') and 8 becomes ('はってん','はちてん'), so both are 'ok' rather than flag-only. The question is whether ろくてん / はちてん are listed standard forms (the table's 'accepted', like はっぷん|はちふん and はっかい|はちかい, already in COUNTER_FINAL) or heard-but-unlisted (the 'tolerated, flag-only' class: 三階 さんかい, …じゅうさい in COUNTER_TOLERATED). My judgement is that they are listed. 6 and 8 geminate OPTIONALLY before t-initial 点, as 8 does before 回 / 階 / 分. The counting references and the NHK pronunciation-accent dictionary's numeral tables give ロクテン beside ロッテン and ハチテン beside ハッテン, and in sports scores and test points ろくてん / はちてん are everyday standard speech, not a careless form. That contrasts with 十点 じゅうてん, which the same references do not list and which the new calibration case correctly keeps a mismatch, and with さんかい, which the table treats as a common speech form that dictionaries give after さんがい. Caveat: I could not fetch an NHK page or dictionary entry that prints 六点 / 八点 here. My searches returned nothing specific (one search model even guessed ろってん unlikely, which is wrong). So this rests on my own knowledge, consistent with the v1.36 n3-b678 refuter, who called ろくてん / はちてん 'common, accepted readings' (docs/measurements/v136-reading-manifest.json). That is why the confidence is medium. Consistency checks on the diff (40eed1b): the docstring, COUNTER_FINAL, the 'without the sound change' calibration row (六点 / 八点 now expected 'ろってん|ろくてん' / 'はってん|はちてん' with an empty non-change reading, as for other accepted pairs) and two new logic cases (ろくてん and はちてん each 'ok', one case each) agree. The commit states 0 shipped judgements move, because all six 六点 / 八点 are in exZH. Note that PLAN-V1.36 :792 and PLAN-V1.37 P0-2 call this the 点 row's 'tolerance'. That is loose wording, and the commit's 'accepted, not tolerated' is the more accurate category. Severity NIT: nothing in the shipped corpus changes."
+    }
+   }
+  }
+ },
+ "note": "The votes are verbatim (refute-A.json and refute-B.json, 2026-10-27), copied whole; neither holds an absolute checkout path. Line numbers in them refer to 40eed1b, the tree the refuters read, whose corpus is 24f90eb's. The 12 corrections move 25 lines of n1–n5.json (n1.json 2, n2.json 11, n3.json 4, n4.json 6, n5.json 2): each one exKana line and one token-reading line, n2-b034 two token lines; no others. They change no sentence's kana count (every swap is one kana for one: いち -> いっ, いち -> ひと, じゅう -> じゅっ, ちゅう -> じゅう), so no sentence rides a different distance. check_vocab_diff.py checks that a declared field moved, not what it moved to: the values are each row's 'corrected', checked by check (m) of scripts/check_counter_readings.py --calibrate for this manifest (docs/measurements/v137-counter-sweep-2.json) and by ExampleSentenceTests.v137CorrectionsHold, whose expected values are written out by hand in the test.",
+ "entries": [
+  {
+   "id": "n2-b277",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "時速六十キロ is 60 km/h (exEN 'sixty kilometers per hour'). 十 at the end of a number geminates before a voiceless-initial counter, loanword counters included: 六十キロ is ろくじゅっきろ or ろくじっきろ, and the taught ろくじゅうきろ is neither. The v1.37 counter table (キロ after a ten, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP この車は時速六十キロで安全に走っている。 / exKana このくるまはじそくろくじゅうきろであんぜんにはしっている / exTokens [六十, ろくじゅう] [キロ, きろ]",
+   "corrected": "exJP この車は時速六十キロで安全に走っている。 (unchanged) / exKana このくるまはじそくろくじゅっきろであんぜんにはしっている / exTokens [六十, ろくじゅっ] [キロ, きろ]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana このくるまはじそくろくじゅうきろであんぜんにはしっている -> このくるまはじそくろくじゅっきろであんぜんにはしっている; the 六十 token ろくじゅう -> ろくじゅっ; token boundaries, exJP, exEN, exZH, the id and the headword (時速 じそく) unchanged. Written through scripts/corpus_io.CorpusFile: 2 lines of n2.json move (:40450, :40470). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 28 kana, so it still rides 280 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "STAYS IN THE POOL (decided 2026-10-27 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2), decision 3): calibrated 1b re-measured on the corrected tokens gives RELEASE, the voice proven to say ろくじゅっきろ (the hiragana span render is the exJP audio, 5792f71c3229, as v1.36's fix review measured), so the corrected exKana agrees with the voice; v137-dictation-remeasure.json 'verdicts'. Until this release a rider typing what they heard was refused at っ.",
+   "instrument1b": {
+    "onCorrectedTokens": "RELEASE",
+    "detail": "exJP audio 5792f71c3229. 六十キロ: ろくじっきろ d6093fdbcc52, ろくじゅうきろ 9d655808a640, ろくじゅっきろ 5792f71c3229 = exJP, ロクジッキロ a713b70af1aa, ロクジュウキロ 01bb5784f91e, ロクジュッキロ 0ec76673d660. Other spans byte-identical: 車 くるま; 走っ はしっ"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "SERIOUS",
+     "reasoning": "Sense: 時速六十キロ = 60 km/h, exEN agrees; キロ is the loanword counter after a number ending in 十. Shipped ろくじゅうきろ: the unassimilated form is a careful/spelling pronunciation; standard speech and dictionaries geminate 十 before a voiceless-initial counter (ろくじゅっキロ / ろくじっキロ), cf. benricho's ページ row which lists only じっ/じゅっ after 十. Proposed ろくじゅっ: standard, and the better form to teach because it is what the pool voice says. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). (one token 六十 ろくじゅう→ろくじゅっ, exKana う→っ at one place). 1b claim verified in corpus-audio/runs/1b-v137-detail.json: span text この車は時速ろくじゅっきろで… sha1 5792f71c3229 = exJP audio; ろくじっきろ, ろくじゅうきろ and all katakana spellings differ; 2 decoys 0 matches; reproduces v1.36's hash. Disposition KEEP IN POOL follows the 2026-10-09 record exactly: PLAN-V1.36 §H 'Recorded for v1.37' says if two refuters uphold ろくじゅっ the correction agrees with the proven voice and the sentence stays in the pool. Apply-phase caveat (proposer already states it): (m1) needs a recorded 1b RELEASE on the corrected tokens. I could not refute. Sources: JMdict via nihongomaster (第一章 だいいっしょう) https://www.nihongomaster.com/japanese/dictionary/word/39849/ ; benricho 助数詞の読み方と発音一覧 https://www.benricho.org/kazu/kids/hatsuon.html (点 6 ろくてん, 8 はってん・はちてん, 10 じってん・じゅってん; ページ 10 じっぺーじ・じゅっぺーじ only; 1 いちぺーじ・いっぺーじ, 6 ろくぺーじ)."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "SERIOUS",
+     "reasoning": "Sense: 時速六十キロ is 60 km/h (exEN 'sixty kilometers per hour'); キロ is the unit counter after a number ending in 十, the case the table assumes. Shipped ろくじゅうきろ: not a listed standard form. 十 at the end of a number geminates before a voiceless-initial counter, loanword counters included (じゅっキロ, じゅっセンチ, じゅっパーセント); ろくじゅうキロ is a careful digit-by-digit reading, not one a learner should be taught. I tried the line that loanword counters escape gemination and it fails: for p/k/s/t loanwords the geminate is the norm. Proposed ろくじゅっ: standard, and the more common of the two forms (じっ also standard and also accepted by the table). It is the right form to teach here because the voice says it. Token change: one token, 六十 ろくじゅう→ろくじゅっ; exKana changes one kana う→っ, nothing else. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: 1b proves the voice says ろくじゅっきろ. The hiragana span render 5792f71c3229 equals the exJP audio, ろくじっきろ / ろくじゅうきろ and all katakana spellings differ, and 2 decoys do not match. This reproduces v1.36's recordedNotCorrected measurement. So correcting it brings exKana into line with the proven voice, and keeping it in the pool follows the precedent: (m1)'s one exception is a row with a 1b RELEASE verdict. That RELEASE still has to be recorded in a v1.37 remeasure on the corrected tokens; the proposal's forTheApplyPhase says so. Severity SERIOUS: today a pool rider who types what they hear is refused at っ. Sources: ja.wiktionary 十 (https://ja.wiktionary.org/wiki/十) gives the sokuon form before voiceless counters as ジッ, now widely ジュッ, with the 改定常用漢字表 備考 「『ジュッ』とも。」, citing NHKことばのハンドブック; Bunpro's センチ entry reads 30センチ さんじゅっセンチ (https://bunpro.jp/vocabs/センチ); the NHK pronunciation-accent dictionary's numeral tables list ジッ/ジュッ, not ジュウ, before k/s/t/p counters (from my own knowledge, not fetched here; the v1.36 n3-b678 refuters cite the same)."
+    }
+   }
+  },
+  {
+   "id": "n5-b105",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "二十センチ is 20 cm (exEN 'twenty centimeters'). A number ending in 十 takes っ before センチ: にじゅっせんち or にじっせんち; the taught にじゅうせんち is neither. The v1.37 counter table (センチ after a ten, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP この箱はたてが二十センチあります。 / exKana このはこはたてがにじゅうせんちあります / exTokens [二十, にじゅう] [センチ, せんち]",
+   "corrected": "exJP この箱はたてが二十センチあります。 (unchanged) / exKana このはこはたてがにじゅっせんちあります / exTokens [二十, にじゅっ] [センチ, せんち]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana このはこはたてがにじゅうせんちあります -> このはこはたてがにじゅっせんちあります; the 二十 token にじゅう -> にじゅっ; token boundaries, exJP, exEN, exZH, the id and the headword (たて たて) unchanged. Written through scripts/corpus_io.CorpusFile: 2 lines of n5.json move (:17784, :17808). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 19 kana, so it still rides 190 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "STAYS IN THE POOL (decided 2026-10-27 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2), decision 3): calibrated 1b re-measured on the corrected tokens proves the voice says にじゅっせんち — the katakana span ニジュッセンチ renders byte-identical to the exJP audio (af059c1cf51b); ニジュウセンチ, にじゅうせんち and the じっ spellings do not. The hiragana spelling of the same reading (c503e58a173e) is not byte-identical: the proof rests on the katakana render, and the remeasure record compares a match after katakana -> hiragana, which it states. v137-dictation-remeasure.json 'verdicts'.",
+   "instrument1b": {
+    "onCorrectedTokens": "RELEASE (the matched span is the katakana spelling ニジュッセンチ; see v137-dictation-remeasure.json)",
+    "detail": "exJP audio af059c1cf51b. 二十センチ: にじっせんち 6e55571a50ad, にじゅうせんち 12e3f5004fd8, にじゅっせんち c503e58a173e, ニジッセンチ 6e55571a50ad, ニジュウセンチ 8afbf07d57a0, ニジュッセンチ af059c1cf51b = exJP. Other spans byte-identical: 箱 はこ"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "SERIOUS",
+     "reasoning": "Sense: 二十センチ = 20 cm of vertical length; matches exEN. Shipped にじゅうせんち: non-assimilated, not the standard form after a ten before s-initial counter; proposed にじゅっせんち (じっ also standard) is right and is the voice's form. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). 1b: I tried to refute the katakana-only proof. In 1b-v137-detail.json ニジュッセンチ (この箱はたてがニジュッセンチあります。) = af059c1cf51b = exJP audio; hiragana にじゅっせんち = c503e58a173e does not match. But byte identity of a full-sentence render cannot arise from a different phoneme sequence; the hiragana/katakana split only shows the two scripts get different prosody for the same phonemes. Both にじゅう spellings (12e3f5004fd8, 8afbf07d57a0) and both じっ spellings (6e55571a50ad, identical to each other) are excluded, so the proof does single out じゅっ. Decoys 0/2. So the voice is proven to say にじゅっせんち, and keep-in-pool follows the precedent (corrected reading proven = what the voice says). Apply-phase note: the RELEASE record must rest on the katakana span, as the proposer warns. Sources: JMdict via nihongomaster (第一章 だいいっしょう) https://www.nihongomaster.com/japanese/dictionary/word/39849/ ; benricho 助数詞の読み方と発音一覧 https://www.benricho.org/kazu/kids/hatsuon.html (点 6 ろくてん, 8 はってん・はちてん, 10 じってん・じゅってん; ページ 10 じっぺーじ・じゅっぺーじ only; 1 いちぺーじ・いっぺーじ, 6 ろくぺーじ)."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "SERIOUS",
+     "reasoning": "Sense: たてが二十センチ is 20 cm in vertical length (exEN agrees); a number ending in 十 before センチ. Shipped にじゅうせんち is not standard (same rule as n2-b277); にじゅっせんち / にじっせんち are. The proposed にじゅっ is the standard, more common form and is what the voice says. Token change 二十 にじゅう→にじゅっ, exKana う→っ only. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: the 1b proof rests on the katakana span. この箱はたてがニジュッセンチあります。 renders af059c1cf51b, byte-identical to the exJP audio. The hiragana にじゅっせんち render (c503e58a173e) does not match, and neither does にじゅう (12e3f5004fd8, which is also instrument 1's whole-kana render, so the shipped reading is not what the voice says). I tried to refute on the script split and could not. The synthesizer's front end reads the katakana span to a phoneme string, and full-file byte identity shows the kanji sentence was rendered with exactly that string, ni-ju-Q-se-n-chi. A hiragana render can differ through tokenization or accent without that undoing the identity, and 28 decoys gave 0 false matches. ニジッセンチ and にじっせんち render the same file, 6e55571a50ad, which is not the exJP audio, so じっ is excluded. Staying in the pool follows the precedent, given a recorded v1.37 RELEASE on the corrected tokens. The apply phase must point that release at the katakana spelling, as the proposal warns. Sources: ja.wiktionary 十 (https://ja.wiktionary.org/wiki/十) gives the sokuon form before voiceless counters as ジッ, now widely ジュッ, with the 改定常用漢字表 備考 「『ジュッ』とも。」, citing NHKことばのハンドブック; Bunpro's センチ entry reads 30センチ さんじゅっセンチ (https://bunpro.jp/vocabs/センチ); the NHK pronunciation-accent dictionary's numeral tables list ジッ/ジュッ, not ジュウ, before k/s/t/p counters (from my own knowledge, not fetched here; the v1.36 n3-b678 refuters cite the same)."
+    }
+   }
+  },
+  {
+   "id": "n4-b104",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "五十ページ is page 50 (exEN 'page 50'). A number ending in 十 takes っ before ページ: ごじゅっぺーじ or ごじっぺーじ; the taught ごじゅうぺーじ is neither. 1 / 6 / 8 before ページ keep いち / ろく / はち, so the sibling cards n5-g001 / g006 / g008 are right and are not judged. The v1.37 counter table (ページ after a ten, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 本の五十ページを開いてください。 / exKana ほんのごじゅうぺーじをひらいてください / exTokens [五十, ごじゅう] [ページ, ぺーじ]",
+   "corrected": "exJP 本の五十ページを開いてください。 (unchanged) / exKana ほんのごじゅっぺーじをひらいてください / exTokens [五十, ごじゅっ] [ページ, ぺーじ]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana ほんのごじゅうぺーじをひらいてください -> ほんのごじゅっぺーじをひらいてください; the 五十 token ごじゅう -> ごじゅっ; token boundaries, exJP, exEN, exZH, the id and the headword (開く ひらく) unchanged. Written through scripts/corpus_io.CorpusFile: 2 lines of n4.json move (:31812, :31824). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 19 kana, so it still rides 190 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "STAYS IN THE POOL (decided 2026-10-27 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2), decision 3): calibrated 1b re-measured on the corrected tokens proves the voice says ごじゅっぺーじ — the katakana span ゴジュッページ renders byte-identical to the exJP audio (5756f0e6b1f0); the hiragana ごじゅっぺーじ (328ebe6e10b7), ごじゅうぺーじ and the じっ spellings do not. As for n5-b105, the proof rests on the katakana render. v137-dictation-remeasure.json 'verdicts'.",
+   "instrument1b": {
+    "onCorrectedTokens": "RELEASE (the matched span is the katakana spelling ゴジュッページ; see v137-dictation-remeasure.json)",
+    "detail": "exJP audio 5756f0e6b1f0. 五十ページ: ごじっぺーじ ae1c4f403054, ごじゅうぺーじ 859edf91361b, ごじゅっぺーじ 328ebe6e10b7, ゴジッページ 998f94c6e3a8, ゴジュウページ 5d0a4acbd8c6, ゴジュッページ 5756f0e6b1f0 = exJP. Other spans byte-identical: 開い ひらい"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "SERIOUS",
+     "reasoning": "Sense: 五十ページ 'page 50' (exEN 'page 50 of the book'); ページ after a number ending in 十. Shipped ごじゅうぺーじ is not the standard sandhi; benricho lists only じっぺーじ・じゅっぺーじ for 10 ページ, and the same applies to the final ten of 50. Proposed ごじゅっぺーじ standard. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). 1b verified: ゴジュッページ (本のゴジュッページを開いてください。) = 5756f0e6b1f0 = exJP audio; ごじゅうぺーじ 859edf91361b, ゴジュウページ, ごじっ/ゴジッ do not; hiragana ごじゅっぺーじ 328ebe6e10b7 does not (same script/prosody caveat as n5-b105, same answer: byte identity is phoneme identity). Keep in pool follows the precedent. Sources: JMdict via nihongomaster (第一章 だいいっしょう) https://www.nihongomaster.com/japanese/dictionary/word/39849/ ; benricho 助数詞の読み方と発音一覧 https://www.benricho.org/kazu/kids/hatsuon.html (点 6 ろくてん, 8 はってん・はちてん, 10 じってん・じゅってん; ページ 10 じっぺーじ・じゅっぺーじ only; 1 いちぺーじ・いっぺーじ, 6 ろくぺーじ)."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "SERIOUS",
+     "reasoning": "Sense: 本の五十ページ is page 50 (exEN 'page 50 of the book'), a ten before ページ. Shipped ごじゅうぺーじ is non-standard; ごじゅっぺーじ / ごじっぺーじ are standard. Proposed ごじゅっ is standard and is the voice's form. Token change 五十 ごじゅう→ごじゅっ, exKana う→っ only. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: katakana span ゴジュッページ = 5756f0e6b1f0 = exJP audio; ゴジュウ / ごじゅう / both じっ spellings and the hiragana ごじゅっ (328ebe6e10b7) do not match. The span 開い ひらい also matched, so the rest of the sentence agrees with the corpus. The weighing is the same as n5-b105: the proof is real but rests on katakana. Keep in pool once a 1b RELEASE is recorded on the corrected tokens. Not refutable on sense or form. Sources: ja.wiktionary 十 (https://ja.wiktionary.org/wiki/十) gives the sokuon form before voiceless counters as ジッ, now widely ジュッ, with the 改定常用漢字表 備考 「『ジュッ』とも。」, citing NHKことばのハンドブック; Bunpro's センチ entry reads 30センチ さんじゅっセンチ (https://bunpro.jp/vocabs/センチ); the NHK pronunciation-accent dictionary's numeral tables list ジッ/ジュッ, not ジュウ, before k/s/t/p counters (from my own knowledge, not fetched here; the v1.36 n3-b678 refuters cite the same)."
+    }
+   }
+  },
+  {
+   "id": "n2-b511",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "一週間 is one week (exEN 'a one-week training session'). Before 週, 一 is いっ: いっしゅうかん, the only standard form; いちしゅうかん is a spelling pronunciation. The v1.37 counter table (週間 1, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 新入社員たちが一週間の研修を受けた。 / exKana しんにゅうしゃいんたちがいちしゅうかんのけんしゅうをうけた / exTokens [一, いち] [週間, しゅうかん]",
+   "corrected": "exJP 新入社員たちが一週間の研修を受けた。 (unchanged) / exKana しんにゅうしゃいんたちがいっしゅうかんのけんしゅうをうけた / exTokens [一, いっ] [週間, しゅうかん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana しんにゅうしゃいんたちがいちしゅうかんのけんしゅうをうけた -> しんにゅうしゃいんたちがいっしゅうかんのけんしゅうをうけた; the 一 token いち -> いっ; token boundaries, exJP, exEN, exZH, the id and the headword (研修 けんしゅう) unchanged. Written through scripts/corpus_io.CorpusFile: 2 lines of n2.json move (:62311, :62327). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 29 kana, so it still rides 290 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "WITHHELD from dictation, newly (decided 2026-10-27 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2), decision 3): it was in the pool since v1.21 (60c73a3). Calibrated 1b re-measured on the corrected tokens is SILENT on 一週間 in hiragana and katakana, so the voice is not proven to say いっしゅうかん: corrected and withheld, v1.35's n5-g022 precedent. Added to dictation-exclusions.json with an 'undecided' evidence row; with n1-b1418 the pool goes 5,935 -> 5,933.",
+   "instrument1b": {
+    "onCorrectedTokens": "SILENT",
+    "detail": "exJP audio 952e701a78aa. 一週間: いちしゅうかん 42a6b5a4ef7b, いっしゅうかん fa8b3d27e6f9, イチシュウカン 81c21b13e97e, イッシュウカン da63e044bf3d"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 一週間の研修 'a one-week training'; 週間 is the counter. Shipped いちしゅうかん: a spelling-pronunciation, not a dictionary reading (JMdict and every counter chart give いっしゅうかん only); the table's 週間 row agrees. Not an accepted variant a learner should be taught. Proposed いっしゅうかん: the only standard form. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). 1b verified SILENT: none of いち/いっ in hiragana or katakana matches 952e701a78aa (42a6b5a4ef7b, fa8b3d27e6f9, 81c21b13e97e, da63e044bf3d); instrument 1 silent too (3b2f97411544). Disposition: corrected + 1b silent → withhold is exactly decision 2 of '2026-10-09, the dictation decisions' (n1-b439/n3-b781/n3-b678, n5-g022 precedent). The leads are mixed (katakana イッ nearest, hiragana いち nearer than いっ) and are correctly not used as a verdict. Pool −1 is a cost the precedent explicitly accepts. Could not refute."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 一週間の研修 is a one-week training (exEN). Shipped いちしゅうかん is a spelling-pronunciation; dictionaries list 一週間 only as いっしゅうかん (一 geminates before s-initial 週). It is not an accepted variant to teach. Proposed いっ: the only standard form. Token change 一 いち→いっ, exKana ち→っ only. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: 1b is SILENT, confirmed in the detail file. None of いち / いっ / イチ / イッ + しゅうかん matches 952e701a78aa, no other span matched, and instrument 1's whole kana does not match either. The leads are uncalibrated and split, so they cannot decide; v1.36 measured a lead missing a known answer (n2-b034 in this file, n2-b277 / n3-b020 in v1.36). Withholding follows the 2026-10-09 rule exactly: corrected, in the pool, 1b silent → withhold (n1-b439 / n3-b781 / n3-b678, after n5-g022). One procedural note, not a refutation: §H records that the apply step's 'pool must not shrink' rule was set aside for those four by name. This withholding (pool −1) needs the same explicit decision recorded for v1.37 rather than inherited silently. Severity MINOR: the voice is unknown, and Sentence mode teaches a non-standard reading."
+    }
+   }
+  },
+  {
+   "id": "n1-b1418",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "第一章 is chapter one (exEN 'the first chapter'). Before 章, 一 is いっ: だいいっしょう (JMdict); だいいちしょう is a careful spelling pronunciation, not the dictionary form. The v1.37 counter table (章 1, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A medium, B medium).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "medium",
+   "current": "exJP 第一章では、この研究の全体像を概説している。 / exKana だいいちしょうではこのけんきゅうのぜんたいぞうをがいせつしている / exTokens [一, いち] [章, しょう]",
+   "corrected": "exJP 第一章では、この研究の全体像を概説している。 (unchanged) / exKana だいいっしょうではこのけんきゅうのぜんたいぞうをがいせつしている / exTokens [一, いっ] [章, しょう]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana だいいちしょうではこのけんきゅうのぜんたいぞうをがいせつしている -> だいいっしょうではこのけんきゅうのぜんたいぞうをがいせつしている; the 一 token いち -> いっ; token boundaries, exJP, exEN, exZH, the id and the headword (概説 がいせつ) unchanged. Written through scripts/corpus_io.CorpusFile: 2 lines of n1.json move (:126906, :126914). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 32 kana, so it still rides 320 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "WITHHELD from dictation, newly (decided 2026-10-27 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2), decision 3): it was in the pool since v1.21 (60c73a3). Calibrated 1b re-measured on the corrected tokens is SILENT on 第一章 and 一章 in hiragana and katakana (only 章 しょう matches), so the voice is not proven to say だいいっしょう: corrected and withheld, v1.35's n5-g022 precedent. The uncalibrated leads favour the old いち (0.0160 against 0.0327). Added to dictation-exclusions.json with an 'undecided' evidence row.",
+   "instrument1b": {
+    "onCorrectedTokens": "SILENT",
+    "detail": "exJP audio 942ea4f5d646. 第一章: だいいちしょう 4eced8735a9f, だいいっしょう a92bead22829, ダイイチショウ 26b478f5bb26, ダイイッショウ fe55fbe4cad3 | 一章: いちしょう a3aa8dcc51e0, いっしょう b2b663b6a746, かずあき fe8d14e11b3b, かずふみ 0a5e43555e5f. Other spans byte-identical: 章 しょう"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "medium",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 第一章 'chapter one' (exEN 'the first chapter'). Shipped だいいちしょう: this is the strongest refutation attempt. Unassimilated ordinals (だいいち + counter) are heard in deliberate reading of headings, and the leads suggest the voice says いち. But the dictionary form is だいいっしょう (JMdict 第一章 だいいっしょう; 一章 いっしょう, and the same gemination as 第一課 だいいっか, 第一項 だいいっこう in legal reading). I found no dictionary listing だいいちしょう, so under the brief's test it is not an accepted standard variant; it is at best tolerated speech, which this project does not teach as the reading (it would at most be flag-only). Proposed だいいっしょう is standard and the right form to teach. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). (token 一, index 1, not 第). 1b verified SILENT on both 第一章 and 一章 spans in all spellings (942ea4f5d646 not matched); only 章 しょう matched, which says nothing about 一; instrument 1 silent. Disposition corrected + withhold follows decision 2 (n5-g022) and is doubly prudent since the uncalibrated leads favour いち (n3-b020-type risk). Medium, not high, only because a careful-reading だいいちしょう is real usage; it still is not the form to teach. Sources: JMdict via nihongomaster (第一章 だいいっしょう) https://www.nihongomaster.com/japanese/dictionary/word/39849/ ; benricho 助数詞の読み方と発音一覧 https://www.benricho.org/kazu/kids/hatsuon.html (点 6 ろくてん, 8 はってん・はちてん, 10 じってん・じゅってん; ページ 10 じっぺーじ・じゅっぺーじ only; 1 いちぺーじ・いっぺーじ, 6 ろくぺーじ)."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "medium",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 第一章では is 'in the first chapter' (exEN); 章 is the chapter counter after the ordinal 第一. Refutation attempt: is だいいちしょう an accepted variant, and so 'tolerated, flag-only' like 三階 さんかい rather than a correction? It is heard in deliberate reading, and the leads (uncalibrated) favour it for the voice. But I found no dictionary or learner reference listing it. The references give だいいっしょう, and Bunpro explicitly warns that 第一 becomes だいいっ before 章. 第一 + counter geminates like the bare counter: 一章 いっしょう, 第一回 だいいっかい, 第一歩 だいいっぽ (contrast 第一位 だいいちい, where no voiceless obstruent follows). That puts だいいちしょう on the 'not listed' side of the table's own line. The question is what to TEACH an N1 learner, and that is だいいっしょう. Token change 一 いち→いっ (the 第 and 章 tokens unchanged), exKana ち→っ only. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: 1b SILENT on 第一章 and 一章 in both scripts. The only matching span, 章 しょう, says nothing about 一, and instrument 1 is silent too. That is the 'correct reading the voice may not say' case §H anticipated, and the n5-g022 / n3-b678 precedent withholds it, so the disposition follows. Confidence is medium rather than high only because 'unlisted but common in careful speech' is a judgement; a refuter who thinks だいいちしょう deserves flag-only status would vote the other way, and the proposal names that alternative honestly. The same pool-shrink set-aside note as n2-b511 applies. Sources: Bunpro grammar 第一 (https://bunpro.jp/grammar_points/第一) notes 第一 becomes だいいっ before a chapter noun; nihongomaster lists 第一章 as だいいっしょう (https://www.nihongomaster.com/japanese/dictionary/word/39849/); 第一回 だいいっかい likewise; a web search for だいいちしょう as an accepted reading found no dictionary support."
+    }
+   }
+  },
+  {
+   "id": "n3-b310",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "一週間 is one week (exEN 'for a week'). いっしゅうかん, as n2-b511. The v1.37 counter table (週間 1, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 来月、仕事で東京に一週間滞在する。 / exKana らいげつしごとでとうきょうにいちしゅうかんたいざいする / exTokens [一, いち] [週間, しゅうかん]",
+   "corrected": "exJP 来月、仕事で東京に一週間滞在する。 (unchanged) / exKana らいげつしごとでとうきょうにいっしゅうかんたいざいする / exTokens [一, いっ] [週間, しゅうかん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana らいげつしごとでとうきょうにいちしゅうかんたいざいする -> らいげつしごとでとうきょうにいっしゅうかんたいざいする; the 一 token いち -> いっ; token boundaries, exJP, exEN, exZH, the id and the headword (滞在 たいざい) unchanged. Written through scripts/corpus_io.CorpusFile: 2 lines of n3.json move (:42910, :42938). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 27 kana, so it still rides 270 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "withheld, unchanged (since v1.29, instrument 2's 一 いち -> いっ). Its evidence row is marked stale-after-correction (v1.37), keeps its complaint with a note, and its exKana follows the corpus. Re-measured on the corrected tokens, 1b is silent; it stays withheld.",
+   "instrument1b": {
+    "onCorrectedTokens": "SILENT",
+    "detail": "exJP audio 295931f7d95a. 一週間: いちしゅうかん 2ebb0fcc5d3f, いっしゅうかん 9d7097c3c556, イチシュウカン 28ac90bb7db6, イッシュウカン 309af9068dd4"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 一週間滞在する 'stay for a week'. Shipped いちしゅうかん non-standard; proposed いっしゅうかん the only standard reading. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). Already in dictation-exclusions.json (verified), complaint '一 いち -> いっ' (v1.29, instrument 2, 1b silent). 1b silent now on all four spellings (295931f7d95a not matched). Stays withheld: no RELEASE verdict exists, so nothing in the precedent lets it back in; correct."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 東京に一週間滞在する is to stay for a week (exEN). Shipped いちしゅうかん is non-standard; いっしゅうかん is the only standard form. Token change 一 いち→いっ, exKana ち→っ only. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: already withheld since v1.29; its evidence row's complaint is '一 いち -> いっ' (undecided), which is exactly the corrected reading. 1b is silent on all four spellings, so there is no RELEASE and it stays withheld, which follows the precedent (n2-b479 in v1.36: stale-after-correction, withheld until 1b proves the corrected reading). The apply phase should mark the evidence row stale-after-correction in n2-b479's shape. The leads lean いっ but are not evidence."
+    }
+   }
+  },
+  {
+   "id": "n4-g189",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "一週間分 is a week's worth (exEN 'a week's worth of food'). いっしゅうかんぶん; 分 ぶん 'portion' is right and unchanged. The v1.37 counter table (週間 1, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP スーパーで一週間分の食料を買いました。 / exKana すーぱーでいちしゅうかんぶんのしょくりょうをかいました / exTokens [一, いち] [週間, しゅうかん]",
+   "corrected": "exJP スーパーで一週間分の食料を買いました。 (unchanged) / exKana すーぱーでいっしゅうかんぶんのしょくりょうをかいました / exTokens [一, いっ] [週間, しゅうかん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana すーぱーでいちしゅうかんぶんのしょくりょうをかいました -> すーぱーでいっしゅうかんぶんのしょくりょうをかいました; the 一 token いち -> いっ; token boundaries, exJP, exEN, exZH, the id and the headword (食料 しょくりょう) unchanged. Written through scripts/corpus_io.CorpusFile: 2 lines of n4.json move (:9839, :9851). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 27 kana, so it still rides 270 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "withheld, unchanged (since v1.29, instrument 2's 一 いち -> ひ). Its evidence row keeps that complaint with a note that this correction does not answer it (decision 4, on refuter B's vote), and is marked stale-after-correction (v1.37); its exKana follows the corpus. 1b is silent on the corrected tokens.",
+   "instrument1b": {
+    "onCorrectedTokens": "SILENT",
+    "detail": "exJP audio 161f983de2f2. 一週間: いちしゅうかん 5c98c3bc973c, いっしゅうかん 23043722a637, イチシュウカン 00864fffe0fd, イッシュウカン cd28ce867fd0 | 一週間分: いちしゅうかんぶん 5c98c3bc973c, いっしゅうかんぶん 23043722a637. Other spans byte-identical: 買い かい"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 一週間分の食料 'a week's worth of food'; 一週間分 judged at 一週間, 分 here is ぶん 'portion', not minutes, and stays ぶん (unchanged, correct). Shipped いちしゅうかん non-standard; proposed いっしゅうかん(ぶん) standard. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). Already withheld (verified; its evidence row's complaint is '一 いち -> ひ', an instrument-2 artefact, which the correction does not need to match). 1b silent on 一週間 and 一週間分 (hiragana renders 5c98c3bc973c / 23043722a637 are the same files for both spans, as stated). Stays withheld: correct."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 一週間分の食料 is a week's worth of food (exEN). The correct reading is いっしゅうかんぶん; 分 ぶん 'portion' is right and unchanged. Token change 一 いち→いっ only, exKana ち→っ only. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: already withheld. Its v1.29 complaint is instrument 2's odd '一 いち -> ひ', which the correction does not answer. 1b is silent on both 一週間 and 一週間分 (as stated, the hiragana renders of the two spans are the same files). It stays withheld, and the precedent supports that. The evidence row should keep its complaint with a note, in the n2-b072 shape (instrument 2 named another reading), not be marked resolved."
+    }
+   }
+  },
+  {
+   "id": "n2-g285",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "一等 is first prize (exEN 'first prize'). いっとう, the dictionary form (Sudachi's own lexicon lists 一等 イットウ); いちとう is not a reading of it. The v1.37 counter table (等 1, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 商店街のくじ引きで一等が当たりました。 / exKana しょうてんがいのくじびきでいちとうがあたりました / exTokens [一, いち] [等, とう]",
+   "corrected": "exJP 商店街のくじ引きで一等が当たりました。 (unchanged) / exKana しょうてんがいのくじびきでいっとうがあたりました / exTokens [一, いっ] [等, とう]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana しょうてんがいのくじびきでいちとうがあたりました -> しょうてんがいのくじびきでいっとうがあたりました; the 一 token いち -> いっ; token boundaries, exJP, exEN, exZH, the id and the headword (くじ引き くじびき) unchanged. Written through scripts/corpus_io.CorpusFile: 2 lines of n2.json move (:15640, :15660). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 24 kana, so it still rides 240 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "withheld, unchanged (since v1.29, instrument 2's 一 いち -> ひと, not the reading applied). Its evidence row is marked stale-after-correction (v1.37), keeps its complaint with a note, and its exKana follows the corpus. 1b is silent on the corrected tokens.",
+   "instrument1b": {
+    "onCorrectedTokens": "SILENT",
+    "detail": "exJP audio 26d1c173c82a. 一等: いちとう b471d1ff134a, いっとう f5fc12e9c6f2, イチトウ d930462289ad, イットウ 1066416b8ce1"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: くじ引きで一等が当たる 'win first prize' — 一等 the rank, not 一等 'by far' (also いっとう anyway). Shipped いちとう is not a standard reading of 一等 (JMdict/Sudachi: いっとう); proposed いっとう standard. Not 等 'etc.' (など/とう after a list) — here it follows a numeral as a rank counter. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). Already withheld (row complaint '一 いち -> ひと', instrument 2). 1b silent on all four spellings (26d1c173c82a). Stays withheld: correct."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: くじ引きで一等が当たりました is winning first prize (exEN; exZH 一等奖). 一等 'first class / first prize' is いっとう in every dictionary; いちとう is not a listed reading, and the proposal's note that Sudachi's lexicon has 一等 イットウ is consistent with that. Token change 一 いち→いっ, exKana ち→っ only. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: already withheld. The v1.29 complaint ('一 いち -> ひと', instrument 2) is unrelated to the correction, and 1b is silent, so it stays withheld. The precedent supports that."
+    }
+   }
+  },
+  {
+   "id": "n4-b186",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "一晩 is one night (exEN 'stayed overnight'). It is lexicalised: ひとばん. いちばん is 一番 'number one', another word. The v1.37 counter table (the lexicalised table's 一晩, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 京都の古い旅館に一晩泊まりました。 / exKana きょうとのふるいりょかんにいちばんとまりました / exTokens [一, いち] [晩, ばん]",
+   "corrected": "exJP 京都の古い旅館に一晩泊まりました。 (unchanged) / exKana きょうとのふるいりょかんにひとばんとまりました / exTokens [一, ひと] [晩, ばん]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana きょうとのふるいりょかんにいちばんとまりました -> きょうとのふるいりょかんにひとばんとまりました; the 一 token いち -> ひと; token boundaries, exJP, exEN, exZH, the id and the headword (旅館 りょかん) unchanged. Written through scripts/corpus_io.CorpusFile: 2 lines of n4.json move (:37416, :37440). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 23 kana, so it still rides 230 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "withheld, unchanged (decided 2026-10-27 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2), decision 3). Its evidence row was 'proven (v1.29, instrument 1b)': the voice says 一 = ひと. The correction applies exactly that, so the row is marked stale-after-correction (v1.37) and is no longer a proven misread (dictationProvenMisread 240 -> 237 with n2-b034 and n2-b1180). Re-measured on the corrected tokens, calibrated 1b gives RELEASE. NOT released in v1.37: a RELEASE CANDIDATE for a later release.",
+   "instrument1b": {
+    "onCorrectedTokens": "RELEASE",
+    "detail": "exJP audio 99166a2ef017. 一晩: いちばん fe7b3d7f101b, ひとばん 99166a2ef017 = exJP, イチバン fe7b3d7f101b, ヒトバン 99166a2ef017 = exJP. Other spans byte-identical: 古い ふるい; 一 ひと; 泊まり とまり"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "SERIOUS",
+     "reasoning": "Sense: 一晩泊まる 'stay one night'. Shipped いちばん is a different word (一番 'number one / most'); unambiguously wrong for 一晩. Proposed ひとばん is the only standard reading. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). (one token 一 いち→ひと, 晩 ばん unchanged; two kana change, count unchanged). 1b verified: ひとばん and ヒトバン spans = 99166a2ef017 = exJP audio; いちばん and イチバン (same file fe7b3d7f101b) do not; the single-token span 一→ひと also matches; reproduces v1.29. Disposition 'release candidate, withheld now' is consistent with precedent: release only on a 1b RELEASE verdict recorded on the corrected tree; the proposer predicts it but does not release. The complaint's disputed set {一} is exactly the change, so a RELEASE there would be sound (unlike n2-b034)."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "SERIOUS",
+     "reasoning": "Sense: 旅館に一晩泊まりました is staying one night (exEN 'stayed overnight'). Shipped いちばん is a different word (一番 'number one / most'); 一晩 is ひとばん, the only standard reading. Severity SERIOUS for that reason: Sentence mode teaches another word, as with n3-b020. Token change 一 いち→ひと, exKana いち→ひと only. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: 1b proves ひと. The 一晩 span in hiragana and katakana = 99166a2ef017 = exJP audio, while いちばん / イチバン = fe7b3d7f101b, and 一 → ひと also matches. This reproduces the v1.29 proof that is this row's withholding reason ('一 いち -> ひと', proven). Every other matched span (古い, 泊まり) agrees with the corpus. So after the correction the row's own complaint is resolved, and a 1b RELEASE on the corrected tokens is the expected outcome. Under (m1) a RELEASE verdict is the one route back into the pool. 'Release candidate' is the right disposition, provided it stays a prediction until measured on the corrected tree, which the proposal says."
+    }
+   }
+  },
+  {
+   "id": "n2-b034",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "一晩中 is all night long (exEN 'all night long'). ひとばんじゅう: 一晩 ひとばん, and 中 じゅう 'throughout', as in 一日中 いちにちじゅう. Two tokens move. The v1.37 counter table (the lexicalised table's 一晩中, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 母親は一晩中、熱を出した妹の看病をした。 / exKana ははおやはいちばんちゅうねつをだしたいもうとのかんびょうをした / exTokens [一, いち] [晩, ばん] [中, ちゅう]",
+   "corrected": "exJP 母親は一晩中、熱を出した妹の看病をした。 (unchanged) / exKana ははおやはひとばんじゅうねつをだしたいもうとのかんびょうをした / exTokens [一, ひと] [晩, ばん] [中, じゅう]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana ははおやはいちばんちゅうねつをだしたいもうとのかんびょうをした -> ははおやはひとばんじゅうねつをだしたいもうとのかんびょうをした; the 一 token いち -> ひと; the 中 token ちゅう -> じゅう; token boundaries, exJP, exEN, exZH, the id and the headword (看病 かんびょう) unchanged. Written through scripts/corpus_io.CorpusFile: 3 lines of n2.json move (:22805, :22817, :22825). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 31 kana, so it still rides 310 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "withheld, unchanged (decided 2026-10-27 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2), decision 3). Its evidence row was 'proven (v1.29, instrument 1b)': the voice says 一 = ひと, which the correction applies; it is marked stale-after-correction (v1.37). The correction also moves 中 ちゅう -> じゅう, and 1b is SILENT on every spelling of the 一晩中 span, so what the voice says for 中 is unmeasured. 1b's verdict on the corrected tokens reads RELEASE only because the row's complaint names 一 alone. It must NEVER be released on a re-run that re-tests only 一; releasing it needs 1b to confirm 中 じゅう.",
+   "instrument1b": {
+    "onCorrectedTokens": "SILENT on 一晩中 (中 じゅう unmeasured); the instrument printed RELEASE only because this row's complaint names 一 alone — see v137-dictation-remeasure.json",
+    "detail": "exJP audio 62bacad6d44d. 一晩中: いちばんじゅう aeb4d5a7861b, いちばんちゅう d095faa6c903, ひとばんじゅう edf44b655024, ひとばんちゅう a9028f6e455f, イチバンジュウ 45bb8a5cd213, イチバンチュウ e257275dd749, ヒトバンジュウ 507a153dc85d, ヒトバンチュウ 4e11050ef312. Other spans byte-identical: 一 ひと; 一晩 ヒトバン; 出し だし"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "SERIOUS",
+     "reasoning": "Sense: 一晩中看病をした 'nursed all night long' (exEN). 一晩中 is ひとばんじゅう: 中 じゅう 'throughout' as in 一日中, 一年中; ちゅう ('during/in the course of', 会議中) is wrong here, and いちばん is the wrong word. ひとばんちゅう / いちばんじゅう are not standard. Both token changes are needed and exactly those two: 一 いち→ひと, 中 ちゅう→じゅう. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). (three kana change: い→ひ, ち→と, ち→じ; 、 token untouched). 1b verified: 一→ひと and 一晩→ヒトバン match 62bacad6d44d; all eight 一晩中 spellings are silent, so 中 is unproven. Stays withheld: correct, and the proposer's warning is right and important — the evidence row's disputed set is {一} only, so a re-run would RELEASE without ever confirming じゅう; the apply phase must not release on that verdict (would need the complaint extended to 中 or the 一晩中 span to match). I uphold the correction and the disposition."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "SERIOUS",
+     "reasoning": "Sense: 一晩中 is 'all night long' (exEN). The shipped reading いちばんちゅう is wrong twice: 一晩 is ひとばん, and 中 'throughout' after a time span is じゅう (一日中 いちにちじゅう, 一年中 いちねんじゅう), while ちゅう is 'in the middle of an activity'. ひとばんじゅう is the only standard form, so both token changes are needed. Changes: 一 いち→ひと and 中 ちゅう→じゅう; exKana いち→ひと and ち→じ, nothing else, and the 晩 and 、 tokens are unchanged. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: 1b proves 一 = ひと (and 一晩 = ヒトバン) but is silent on all 8 spellings of 一晩中, so 中 is unconfirmed. 'Stays withheld' is correct. The proposal's warning is right and important: the evidence row's disputed set is {一}, so a naive re-run would RELEASE without ever testing じゅう. I checked the evidence row in docs/measurements/dictation-reading-mismatches.json and it is '一 いち -> ひと' only. The lead check (the leads rank いちばんちゅう nearest although ひと is proven) is a useful measured miss of the leads. Severity SERIOUS: it teaches a non-word."
+    }
+   }
+  },
+  {
+   "id": "n2-b1180",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "十センチ is ten centimeters (exEN 'a diameter of ten centimeters'). じゅっせんち or じっせんち; the taught じゅうせんち is neither. The v1.37 counter table (センチ after a ten, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 直径十センチの円を描いてください。 / exKana ちょっけいじゅうせんちのえんをえがいてください / exTokens [十, じゅう] [センチ, せんち]",
+   "corrected": "exJP 直径十センチの円を描いてください。 (unchanged) / exKana ちょっけいじゅっせんちのえんをえがいてください / exTokens [十, じゅっ] [センチ, せんち]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana ちょっけいじゅうせんちのえんをえがいてください -> ちょっけいじゅっせんちのえんをえがいてください; the 十 token じゅう -> じゅっ; token boundaries, exJP, exEN, exZH, the id and the headword (直径 ちょっけい) unchanged. Written through scripts/corpus_io.CorpusFile: 2 lines of n2.json move (:111652, :111660). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 23 kana, so it still rides 230 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "withheld, unchanged (decided 2026-10-27 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2), decision 3). Its evidence row was 'proven (v1.29, instrument 1b)': the voice says 十 = じゅっ, which the correction applies; it is marked stale-after-correction (v1.37). Re-measured on the corrected tokens, calibrated 1b gives RELEASE. NOT released in v1.37: a RELEASE CANDIDATE for a later release; 描いて in it has never been measured.",
+   "instrument1b": {
+    "onCorrectedTokens": "RELEASE",
+    "detail": "exJP audio ea0d473ee1eb. 十センチ: じっせんち 92ee45e601a5, じゅうせんち 61d5685343f7, じゅっせんち ea0d473ee1eb = exJP, ジッセンチ 5d8da1699340, ジュウセンチ b232e5267949, ジュッセンチ ea0d473ee1eb = exJP. Other spans byte-identical: 十 じゅっ"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 直径十センチ 'diameter of ten centimetres'. Shipped じゅうせんち non-standard sandhi; proposed じゅっせんち (じっ also standard) right. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). 1b verified: じゅっせんち and ジュッセンチ both = ea0d473ee1eb = exJP audio; 十→じゅっ single-token span matches too; じゅう/じっ spellings do not; reproduces v1.29. Disposition 'release candidate (withheld now)' is consistent: a prediction only, the release needs a 1b RELEASE on the corrected tree. Caveat for whoever releases it: 1b matched no span for 描い (えがい vs かい are both used for 円を描く), so the rest of the sentence is no more measured than any other pool sentence; the complaint {十} is exactly the change, so a RELEASE verdict would be valid by the method's rule. Severity MINOR since the sentence is out of the pool today."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 直径十センチ is a 10 cm diameter (exEN). Shipped じゅうせんち is non-standard; じゅっ / じっ are standard. Token change 十 じゅう→じゅっ, exKana う→っ only. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: 1b proves じゅっせんち. The hiragana and katakana spans both = ea0d473ee1eb = exJP audio, じっ / じゅう do not, and the 十 span matches じゅっ. This reproduces v1.29's proof that is the row's own withholding reason ('十 じゅう -> じゅっ'). So 'release candidate' follows the (m1) RELEASE route. One caveat I would add for whoever decides the release, not a refutation: 円を描いてください is often read かいて as well as えがいて (the corpus teaches えがい). 1b confirmed only 十, and no instrument has heard 描い in this sentence, so a release on the disputed set {十} would not test it. That is the same class of gap as the proposal's n2-b034 warning. I would measure 描い (えがい / かい) before releasing. Severity MINOR: withheld, so only Sentence mode is affected. Sources: ja.wiktionary 十 (https://ja.wiktionary.org/wiki/十) gives the sokuon form before voiceless counters as ジッ, now widely ジュッ, with the 改定常用漢字表 備考 「『ジュッ』とも。」, citing NHKことばのハンドブック; Bunpro's センチ entry reads 30センチ さんじゅっセンチ (https://bunpro.jp/vocabs/センチ); the NHK pronunciation-accent dictionary's numeral tables list ジッ/ジュッ, not ジュウ, before k/s/t/p counters (from my own knowledge, not fetched here; the v1.36 n3-b678 refuters cite the same)."
+    }
+   }
+  },
+  {
+   "id": "n3-k061",
+   "rewrite": [
+    "exKana",
+    "exTokens"
+   ],
+   "evidence": "十パーセント is ten percent (exEN 'a 10 percent discount'). じゅっぱーせんと or じっぱーせんと; the taught じゅうぱーせんと is neither. The v1.37 counter table (パーセント after a ten, scripts/check_counter_readings.py) flagged it on exTokens and on exKana, both exact (docs/measurements/v137-counter-sweep-1.json; calibration (n) on 9c09ab7 and fdb2b5f). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "verdict": "defect",
+   "kind": "A-reading",
+   "confidence": "high",
+   "current": "exJP 十パーセント割引だ。 / exKana じゅうぱーせんとわりびきだ / exTokens [十, じゅう] [パーセント, ぱーせんと]",
+   "corrected": "exJP 十パーセント割引だ。 (unchanged) / exKana じゅっぱーせんとわりびきだ / exTokens [十, じゅっ] [パーセント, ぱーせんと]",
+   "disposition": "corrected",
+   "refuterVotes": "2 of 2 upheld (PLAN-V1.37 §C P0-2: two independent refuters, refute-A and refute-B, on corpus-proposals.json read at 40eed1b)",
+   "resolution": "exKana じゅうぱーせんとわりびきだ -> じゅっぱーせんとわりびきだ; the 十 token じゅう -> じゅっ; token boundaries, exJP, exEN, exZH, the id and the headword (パーセント パーセント) unchanged. Written through scripts/corpus_io.CorpusFile: 2 lines of n3.json move (:54419, :54423). Joined token readings, punctuation dropped, equal exKana. The sentence keeps its 13 kana, so it still rides 130 m (GameSession.swift:825 adds 10 m per kana of the sentence's exampleKana, which GameSession.swift:588 makes the card's kana); the score base and time baseline (:847, :842) use the same count.",
+   "dictation": "withheld, unchanged (since v1.29, instrument 2's 十 じゅう -> じゅっ, the reading applied). Its evidence row is marked stale-after-correction (v1.37), keeps its complaint with a note, and its exKana follows the corpus. 1b is silent on the corrected tokens.",
+   "instrument1b": {
+    "onCorrectedTokens": "SILENT",
+    "detail": "exJP audio 73502547d72d. 十パーセント: じっぱーせんと d6af2e8c1697, じゅうぱーせんと 0c624b024c58, じゅっぱーせんと eb1033fcc8ab, ジッパーセント f2e24e44c3af, ジュウパーセント 58c6df78b346, ジュッパーセント 7a3adcbe7a7a"
+   },
+   "votes": {
+    "A": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 十パーセント割引 '10% discount' (exZH 打九折 agrees). Shipped じゅうぱーせんと non-standard sandhi; proposed じゅっぱーせんと (じっ also) standard. Mechanics checked against the clone (40eed1b, n*.json): exJP/exEN match, the shipped tokens join to the shipped exKana, the stated token index/surface/from are exact, the proposed tokens join to exKanaProposed, and exKana differs only in the stated kana (same length, kana count unchanged). Already withheld (complaint 十 じゅう -> じゅっ). 1b silent on all six spellings (73502547d72d) — note the span here is the sentence start, so prosody differences are plausible; leads lean じゅっ. Stays withheld: correct under the precedent."
+    },
+    "B": {
+     "uphold": true,
+     "confidence": "high",
+     "severity_if_real": "MINOR",
+     "reasoning": "Sense: 十パーセント割引 is a 10% discount (exEN; exZH 打九折 is the Chinese way of saying the same). Shipped じゅうぱーせんと is non-standard; じゅっぱーせんと / じっぱーせんと are standard, and じゅっ is the common form. The headword is パーセント (kana パーセント), whose reading is unchanged, so the headword-reading test is unaffected. I simulated ExampleSentenceTests.headwordReadings: before and after are ぱーせんと. Token change 十 じゅう→じゅっ, exKana う→っ only. Checked against the clone at 40eed1b: exJP, exEN, exKana and exTokens equal the proposal's 'shipped' fields; applying tokenChanges to the shipped exTokens and joining (punctuation dropped) reproduces exKanaProposed exactly; the exKana diff is one same-length substitution at the stated place, kana count unchanged; pool membership matches Sources/VocabKit/Resources/dictation-exclusions.json (789 ids). 1b hashes cross-checked against corpus-audio/runs/1b-v137-detail.json and 1b-v137.json (keep/silent lists agree with the entry). Dictation: already withheld (v1.29 complaint '十 じゅう -> じゅっ', undecided). 1b is silent on all six spellings, so it stays withheld, which follows the precedent; the leads lean じゅっ but are not evidence. Sources: ja.wiktionary 十 (https://ja.wiktionary.org/wiki/十) gives the sokuon form before voiceless counters as ジッ, now widely ジュッ, with the 改定常用漢字表 備考 「『ジュッ』とも。」, citing NHKことばのハンドブック; Bunpro's センチ entry reads 30センチ さんじゅっセンチ (https://bunpro.jp/vocabs/センチ); the NHK pronunciation-accent dictionary's numeral tables list ジッ/ジュッ, not ジュウ, before k/s/t/p counters (from my own knowledge, not fetched here; the v1.36 n3-b678 refuters cite the same)."
+    }
+   }
+  }
+ ]
+}
