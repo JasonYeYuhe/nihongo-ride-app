@@ -12,10 +12,11 @@ WHY IT DOES NOT READ THE LIVE TREE. `submit_1_37.py` checks the tree it runs fro
 the next release moves `release_numbers` to its own manifest — so importing it against the live
 tree would turn this gate red forever the day 1.37 ships. Instead `release_numbers` is stubbed and
 pointed at a throwaway git repository built from pinned commits that never move: the corpus at
-`24684c2` (1.36's build commit, the baseline) committed, and the corpus and manifest at `0df75f2`
-(the tree the copy was written against) in its working tree. The figures `numbers()` would measure
-are typed here by hand (12 corrected, 2 withheld, pool 5,935 → 5,933, from the v1.37 manifest and
-the release commit's message), so no expected value comes from the code under test.
+`24684c2` (1.36's build commit, the baseline) committed, and the corpus, manifest and instrument-1b
+records at `3c091ae` (release/v1.37 with both correction batches, the tree the copy was written
+against) in its working tree. The figures `numbers()` would measure are typed here by hand (18
+corrected, 7 withheld, pool 5,935 → 5,928, from the v1.37 manifest's counts and 3c091ae's message),
+so no expected value comes from the code under test.
 
     python3 scripts/test_submit_1_37.py
 """
@@ -37,14 +38,18 @@ REPO = SCRIPTS.parent
 sys.path.insert(0, str(SCRIPTS))
 
 BASELINE = "24684c2"          # 1.36's build commit
-WRITTEN_AGAINST = "0df75f2"   # the release/v1.37 commit submit_1_37.py's copy was written against
+WRITTEN_AGAINST = "3c091ae"   # the release/v1.37 commit submit_1_37.py's copy was written against
 FROZEN_AT = "fdb2b5f"
 RES = "Sources/VocabKit/Resources"
 CORPUS_FILES = ("n1.json", "n2.json", "n3.json", "n4.json", "n5.json", "dictation-exclusions.json")
 MANIFEST = "docs/measurements/v137-reading-manifest.json"
-# Typed, not measured: the v1.37 manifest's counts and 0df75f2's message.
-NUMBERS = {"correctedThisRelease": 12, "withheldThisRelease": 2,
-           "dictationPoolBefore": 5935, "dictationPool": 5933}
+# Typed, not measured: the v1.37 manifest's counts and 3c091ae's message.
+NUMBERS = {"correctedThisRelease": 18, "withheldThisRelease": 7,
+           "dictationPoolBefore": 5935, "dictationPool": 5928}
+# The seven ids 3c091ae withholds (its manifest's decisions), typed.
+SEVEN = {"n1-b1418", "n2-b511", "n1-b678", "n2-g300", "n2-b029", "n2-b1064", "n4-b151"}
+RECORDS = ("docs/measurements/v137-dictation-remeasure.json",
+           "docs/measurements/v137-dictation-remeasure-ichinichi.json")
 # Never the owner's real contact: asc_release reads it at import unless this is set.
 FAKE_CONTACT = json.dumps({"contactFirstName": "Test", "contactLastName": "Fixture",
                            "contactPhone": "+00 0000", "contactEmail": "fixture@example.invalid"})
@@ -73,7 +78,8 @@ def build_fixture_repo(root):
     for name in CORPUS_FILES:
         (root / RES / name).write_text(show(WRITTEN_AGAINST, f"{RES}/{name}"), encoding="utf-8")
     (root / MANIFEST).parent.mkdir(parents=True, exist_ok=True)
-    (root / MANIFEST).write_text(show(WRITTEN_AGAINST, MANIFEST), encoding="utf-8")
+    for path in (MANIFEST, *RECORDS):
+        (root / path).write_text(show(WRITTEN_AGAINST, path), encoding="utf-8")
     return sha
 
 
@@ -140,7 +146,8 @@ def test_corpus_guard(mod, root, baseline_sha, problems):
     withheld, released = mod._pool_moves()
     counts = manifest["counts"]
 
-    def run(m_entries=None, ents=None, base=None, fixed=12, w=None, r=None, c=None):
+    def run(m_entries=None, ents=None, base=None, fixed=NUMBERS["correctedThisRelease"], w=None,
+            r=None, c=None):
         return mod.corpus_copy_problems(
             m_entries if m_entries is not None else manifest["entries"],
             ents if ents is not None else entries, base if base is not None else baseline,
@@ -151,9 +158,9 @@ def test_corpus_guard(mod, root, baseline_sha, problems):
     print(f"  control: the tree the copy was written against -> {control or 'clean'}")
     if control:
         problems.append(f"corpus guard rejects the tree the copy was written against: {control}")
-    if sorted(withheld) != ["n1-b1418", "n2-b511"] or released:
+    if set(withheld) != SEVEN or released:
         problems.append(f"the fixture's pool moves are {sorted(withheld)} / {sorted(released)}, "
-                        "not the two withholdings 0df75f2 made — the fixture is wrong")
+                        f"not the seven withholdings {WRITTEN_AGAINST} made — the fixture is wrong")
 
     def with_entry(entry_id, change):
         out = copy.deepcopy(entries)
@@ -168,11 +175,12 @@ def test_corpus_guard(mod, root, baseline_sha, problems):
 
     # P3: the count of withheld ids kept at 2, the ids swapped (mutation P3/P4).
     expect(problems, "P3 the withheld ids swapped, the count kept",
-           run(w={"n1-b1418", "n2-b277"}, r={"n2-b511"}), "n2-b277", "returned to the dictation pool")
+           run(w=(SEVEN - {"n2-b511"}) | {"n2-b277"}, r={"n2-b511"}), "n2-b277",
+           "returned to the dictation pool")
 
     # P2: one returned to the pool.
     expect(problems, "P2 a withheld sentence returned to the pool",
-           run(w={"n1-b1418"}, r={"n2-b511"}), "n2-b511")
+           run(w=SEVEN - {"n2-b511"}, r={"n2-b511"}), "n2-b511")
 
     # submit-2: an UNQUOTED correction reverted to 1.36's text, whole and token-only.
     expect(problems, "submit-2 an unquoted correction reverted whole (n3-k061)",
@@ -195,7 +203,51 @@ def test_corpus_guard(mod, root, baseline_sha, problems):
     other[0] = dict(other[0], id="n5-g010")
     expect(problems, "the manifest declares a different entry", run(m_entries=other), "n5-g010")
 
-    expect(problems, "correctedThisRelease is not 12", run(fixed=11), "correctedThisRelease is 11")
+    expect(problems, "correctedThisRelease is not 18", run(fixed=17), "correctedThisRelease is 17")
+
+    # A second-batch correction reverted (n4-b151 一日 back to ついたち).
+    expect(problems, "submit-2 a second-batch correction reverted (n4-b151)",
+           run(ents=with_entry("n4-b151", lambda e: e.update(
+               exKana=baseline["n4-b151"]["exKana"], exTokens=baseline["n4-b151"]["exTokens"]))),
+           "n4-b151's exKana is the same as at")
+
+
+def test_withheld_reasons(mod, root, problems):
+    """`withheld_reason_problems`: the reason sentence's two halves held to the 1b records."""
+    verdicts = json.loads((root / RECORDS[0]).read_text(encoding="utf-8"))["verdicts"]
+    keep = json.loads((root / RECORDS[1]).read_text(encoding="utf-8"))["keep"]
+    entries, baseline = mod._entries_by_id(), mod._baseline_entries_by_id()
+    # Typed: the four the voice is proven to say ついたち for, the three 1b is silent on.
+    if sorted(mod.WITHHELD_REASONS["says the old reading"]) != \
+            ["n2-b029", "n2-b1064", "n2-g300", "n4-b151"] or \
+            sorted(mod.WITHHELD_REASONS["not confirmed"]) != ["n1-b1418", "n1-b678", "n2-b511"]:
+        problems.append(f"WITHHELD_REASONS is {mod.WITHHELD_REASONS}, not the 4 + 3 the manifest "
+                        "decided")
+    control = mod.withheld_reason_problems(verdicts, keep, entries, baseline)
+    print(f"  control: the records at {WRITTEN_AGAINST} -> {control or 'clean'}")
+    if control:
+        problems.append(f"the reason guard rejects the records the copy was written against: {control}")
+
+    def with_verdict(entry_id, verdict):
+        return dict(verdicts, **{entry_id: dict(verdicts[entry_id], verdict=verdict)})
+    expect(problems, "a 'not confirmed' sentence that 1b actually released",
+           mod.withheld_reason_problems(with_verdict("n1-b678", "RELEASE"), keep, entries, baseline),
+           "n1-b678", "not SILENT")
+    expect(problems, "a 'says the old reading' sentence that 1b was silent on",
+           mod.withheld_reason_problems(with_verdict("n2-g300", "SILENT"), keep, entries, baseline),
+           "n2-g300")
+    said_new = [dict(r, kyoko=["いちにち"]) if r["id"] == "n4-b151" else r for r in keep]
+    expect(problems, "a KEEP row where the voice says the corrected reading, not the old one",
+           mod.withheld_reason_problems(verdicts, said_new, entries, baseline), "n4-b151",
+           "is not what 1b measured")
+    saved = copy.deepcopy(mod.WITHHELD_REASONS)
+    try:
+        mod.WITHHELD_REASONS["not confirmed"].remove("n1-b678")
+        expect(problems, "a withheld id with no reason",
+               mod.withheld_reason_problems(verdicts, keep, entries, baseline), "WITHHELD_REASONS covers")
+    finally:
+        mod.WITHHELD_REASONS.clear()
+        mod.WITHHELD_REASONS.update(saved)
 
 
 def test_import_wiring(root, baseline_sha, problems):
@@ -220,6 +272,25 @@ def test_import_wiring(root, baseline_sha, problems):
         if not named:
             problems.append(f"importing submit_1_37 with {entry_id}'s {field} reverted to "
                             f"{BASELINE} did not refuse by name: {exited!r}")
+
+
+def test_reason_wiring(root, baseline_sha, problems):
+    """The import-time call reads the 1b records: n1-b678 planted as RELEASE stops the import."""
+    path = root / RECORDS[0]
+    original = path.read_text(encoding="utf-8")
+    record = json.loads(original)
+    record["verdicts"]["n1-b678"]["verdict"] = "RELEASE"
+    path.write_text(json.dumps(record, ensure_ascii=False), encoding="utf-8")
+    try:
+        _, exited = load_submit(root, baseline_sha)
+    finally:
+        path.write_text(original, encoding="utf-8")
+    named = exited is not None and "n1-b678" in str(exited) and "not SILENT" in str(exited)
+    print(f"  import with n1-b678's 1b verdict planted as RELEASE -> "
+          f"{'REFUSED by name' if named else 'NOT REFUSED'}")
+    if not named:
+        problems.append(f"importing submit_1_37 with n1-b678 RELEASE in {RECORDS[0]} did not refuse "
+                        f"by name: {exited!r}")
 
 
 def test_token_reading(mod, problems):
@@ -439,7 +510,9 @@ def main():
         print(f"loaded submit_1_37.py against {WRITTEN_AGAINST}'s corpus, baseline {BASELINE}\n")
         print("THE CORPUS GUARD — every planted defect named, the fixture clean")
         test_corpus_guard(mod, root, baseline_sha, problems)
+        test_withheld_reasons(mod, root, problems)
         test_import_wiring(root, baseline_sha, problems)
+        test_reason_wiring(root, baseline_sha, problems)
         test_token_reading(mod, problems)
         print("\nTHE QUOTES — each word next to its own kana")
         test_quotes(mod, problems)

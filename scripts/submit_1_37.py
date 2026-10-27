@@ -16,13 +16,17 @@ on both platforms, PLAN-V1.37 §I). That precondition is met, and this script do
 `currentVersionReleaseDate`; recorded in acf8ae5). A later release reusing this file as a template
 must check it again, because `--platform=ios|macos` lets one platform move alone.
 
-  * Corpus: `correctedThisRelease` example sentences whose number + counter reading was wrong (六十キロ
-    ろくじゅっきろ, 一週間 いっしゅうかん, 第一章 だいいっしょう, 一晩 ひとばん, …), each upheld 2-of-2
-    by independent refuters and declared in `docs/measurements/v137-reading-manifest.json`. `n5-g010`
-    十ページ is NOT among them (1 of 2; recorded, not corrected). Every swap is one kana for one, so no
-    sentence rides a different distance. Two of the corrected sentences were in the dictation pool and
-    are withheld from it, because calibrated instrument 1b is silent on the corrected span (pool 5,935 →
-    5,933, `release_numbers`); three stay in it, 1b proving the voice says the corrected reading.
+  * Corpus: `correctedThisRelease` (18) example sentences whose number + counter reading, or the word
+    built on it, was wrong, in two batches of one manifest, `docs/measurements/v137-reading-manifest.json`,
+    each upheld 2-of-2 by independent refuters. Batch 1 (12): 六十キロ ろくじゅっきろ, 一週間
+    いっしゅうかん, 第一章 だいいっしょう, 一晩 ひとばん, …; `n5-g010` 十ページ is NOT among them (1 of 2;
+    recorded, not corrected). Batch 2 (6, the manifest's `secondBatch`): 一日 ついたち -> いちにち in five
+    sentences where it means a day, not the 1st, and n3-g327's 一日中 中 ちゅう -> じゅう. Every swap keeps
+    the kana count (ついたち and いちにち are both four), so no sentence rides a different distance.
+  * Dictation: seven corrected sentences leave the pool (5,935 -> 5,928, `release_numbers`), for one of
+    two measured reasons (`WITHHELD_REASONS`, held to the instrument-1b records): four because the
+    voice is proven to say the old reading ついたち, three because 1b is silent on the corrected span.
+    Three corrected sentences stay in it, 1b proving the voice says the corrected reading.
   * The install-cohort marker (P0-12): `NihongoRide.installCohort.v1`, written once at launch if
     absent, in local `UserDefaults` only. Nothing uses it in 1.37 (each launch reads it only to keep
     it write-once) and a rider sees nothing, so What's New does not mention it; the review notes
@@ -48,7 +52,8 @@ for the pre-registered observation window (`PLAN-WINDOW` constraint 1).
 marker is local and never synced or sent, so `Data Not Collected` is unchanged; the privacy page's
 local-storage sentence for it is the owner's push (PLAN-V1.37 P0-6), not this script's.
 
-Three phases:
+Three phases, and an offline check:
+  python3 scripts/submit_1_37.py                              # guards + preflight; no ASC call
   python3 scripts/submit_1_37.py --dry-run  --platform=both   # print the copy; GETs only
   python3 scripts/submit_1_37.py --metadata --platform=both   # versions + What's New + notes
   python3 scripts/submit_1_37.py --submit   --platform=both   # attach builds
@@ -133,24 +138,39 @@ MANIFEST = "docs/measurements/v137-reading-manifest.json"
 # entries, and must stay out of this list. When a correction joins or leaves the manifest, this list
 # and the sentences change together.
 NAMED_IDS = [
+    # batch 1
     "n1-b1418",
     "n2-b034", "n2-b1180", "n2-b277", "n2-b511", "n2-g285",
     "n3-b310", "n3-k061",
     "n4-b104", "n4-b186", "n4-g189",
     "n5-b105",
+    # batch 2 (the manifest's secondBatch)
+    "n1-b678", "n2-b029", "n2-b1064", "n2-g300", "n3-g327", "n4-b151",
 ]
 # The examples the sentences quote, and the kana each entry must now teach for the quote to be true.
+# The review notes quote the first NOTES_EXAMPLES of them, so 一日 is second.
 EXAMPLES = {
     "n2-b277": ("六十キロ", "ろくじゅっきろ"),
+    "n2-b1064": ("一日", "いちにち"),          # セメントが完全に固まるまで一日かかる (a day, not the 1st)
     "n2-b511": ("一週間", "いっしゅうかん"),
     "n1-b1418": ("第一章", "だいいっしょう"),
     "n4-b186": ("一晩", "ひとばん"),
 }
-# The two corrected sentences that leave the dictation pool in 1.37, and the only change to the pool
-# against what is on sale (`release_numbers.BASELINE_REF`, 1.36's build commit). "2 of these
+# The seven corrected sentences that leave the dictation pool in 1.37, and the only change to the pool
+# against what is on sale (`release_numbers.BASELINE_REF`, 1.36's build commit). "7 of these
 # sentences" in the copy is true only while every newly withheld id is one of NAMED_IDS and nothing
 # returned to the pool.
-WITHHELD_IDS = ["n1-b1418", "n2-b511"]
+WITHHELD_IDS = ["n1-b1418", "n1-b678", "n2-b029", "n2-b1064", "n2-b511", "n2-g300", "n4-b151"]
+# Why each one left, which is what the copy's reason sentence says: either the voice is proven to say
+# the OLD reading (1b KEEP, the voice byte-identical to the pre-correction span), or 1b is silent on the
+# corrected span (SILENT). `withheld_reason_problems` holds both lists to the 1b records.
+WITHHELD_REASONS = {
+    "says the old reading": ["n2-b029", "n2-b1064", "n2-g300", "n4-b151"],
+    "not confirmed": ["n1-b1418", "n1-b678", "n2-b511"],
+}
+# The instrument-1b records: every v1.37 verdict, and the second batch's KEEP rows with what the voice said.
+VERDICTS_RECORD = "docs/measurements/v137-dictation-remeasure.json"
+KEEP_RECORD = "docs/measurements/v137-dictation-remeasure-ichinichi.json"
 
 
 def _token_reading(tokens, word):
@@ -235,6 +255,38 @@ def corpus_copy_problems(manifest_entries, entries_by_id, baseline_by_id, fixed,
     return problems
 
 
+def withheld_reason_problems(verdicts, keep_rows, entries_by_id, baseline_by_id):
+    """Why the reason sentence would be false for a withheld id, or [].
+
+    `verdicts` is {id: {"verdict": ...}} (VERDICTS_RECORD); `keep_rows` the KEEP_RECORD's `keep` list.
+    """
+    problems = []
+    listed = [i for ids in WITHHELD_REASONS.values() for i in ids]
+    if sorted(listed) != sorted(WITHHELD_IDS) or len(set(listed)) != len(listed):
+        problems.append(f"WITHHELD_REASONS covers {sorted(listed)}, not each of WITHHELD_IDS "
+                        f"{sorted(WITHHELD_IDS)} exactly once")
+    keep_by_id = {row["id"]: row for row in keep_rows}
+    for entry_id in WITHHELD_REASONS["not confirmed"]:
+        got = (verdicts.get(entry_id) or {}).get("verdict")
+        if got != "SILENT":
+            problems.append(f"{entry_id} is withheld as 'not confirmed', but 1b's verdict is {got!r}, "
+                            "not SILENT")
+    for entry_id in WITHHELD_REASONS["says the old reading"]:
+        got = (verdicts.get(entry_id) or {}).get("verdict")
+        row = keep_by_id.get(entry_id)
+        if got != "KEEP" or row is None:
+            problems.append(f"{entry_id} is withheld as 'says the old reading', but 1b's verdict is "
+                            f"{got!r} and {KEEP_RECORD} has {'no' if row is None else 'a'} KEEP row")
+            continue
+        old = _token_reading((baseline_by_id.get(entry_id) or {}).get("exTokens"), row["surface"])
+        new = _token_reading((entries_by_id.get(entry_id) or {}).get("exTokens"), row["surface"])
+        if old is None or old not in row["kyoko"] or new in row["kyoko"] or new != row["corpus"]:
+            problems.append(f"{entry_id}: the voice says {row['kyoko']} for {row['surface']}; the old "
+                            f"reading was {old!r} and the corrected one is {new!r} — 'says the old "
+                            "reading' is not what 1b measured")
+    return problems
+
+
 def _manifest():
     if CORPUS_MANIFEST != MANIFEST:
         sys.exit(f"error: release_numbers.CORPUS_MANIFEST is {CORPUS_MANIFEST!r}; this copy is written "
@@ -277,9 +329,13 @@ def _pool_moves():
 
 _manifest_data = _manifest()
 _withheld_ids, _released_ids = _pool_moves()
-_problems = corpus_copy_problems(_manifest_data["entries"], _entries_by_id(), _baseline_entries_by_id(),
+_entries, _baseline = _entries_by_id(), _baseline_entries_by_id()
+_problems = corpus_copy_problems(_manifest_data["entries"], _entries, _baseline,
                                  FIXED, _withheld_ids, _released_ids,
                                  _manifest_data.get("counts") or {})
+_problems += withheld_reason_problems(
+    json.loads((REPO / VERDICTS_RECORD).read_text(encoding="utf-8"))["verdicts"],
+    json.loads((REPO / KEEP_RECORD).read_text(encoding="utf-8"))["keep"], _entries, _baseline)
 if WITHHELD != len(WITHHELD_IDS):
     _problems.append(f"withheldThisRelease is {WITHHELD}; the copy is written against "
                      f"{len(WITHHELD_IDS)} sentence(s) leaving dictation")
@@ -296,25 +352,29 @@ if _problems:
 # and the Ride Log, but no capsule says it; test_submit_1_37 holds the copy to shortLabel.)
 WHATS_NEW = {
     "en-US": (
-        f"• Corrected {FIXED} example sentences where a number and its counter were read wrong: for "
-        "example, 六十キロ is now read ろくじゅっきろ, 一週間 いっしゅうかん, 第一章 だいいっしょう, "
-        "and 一晩 ひとばん.\n"
-        f"• Of these, {WITHHELD} sentences are no longer used in Listen mode, because the voice could "
-        "not be confirmed to say the corrected reading. You can still type them in Sentence mode."
+        f"• Corrected {FIXED} example sentences where a number, its counter or the word they form was "
+        "read wrong: for example, 六十キロ is now read ろくじゅっきろ, 一日 いちにち where it means a day "
+        "rather than the 1st, 一週間 いっしゅうかん, 第一章 だいいっしょう, and 一晩 ひとばん.\n"
+        f"• Of these, {WITHHELD} sentences are no longer used in Listen mode, because the voice says "
+        "the old reading or could not be confirmed to say the corrected one. You can still type them "
+        "in Sentence mode."
     ),
     "zh-Hans": (
-        f"• 更正了 {FIXED} 条例句中数字与量词的读法,例如「六十キロ」现在读作 ろくじゅっきろ,"
-        "「一週間」读作 いっしゅうかん,「第一章」读作 だいいっしょう,「一晩」读作 ひとばん。\n"
-        f"• 其中 {WITHHELD} 条例句不再用于听写,因为无法确认语音读出的是更正后的读法;"
+        f"• 更正了 {FIXED} 条例句中数字、量词或由它们构成的词的读法,例如「六十キロ」现在读作 ろくじゅっきろ,"
+        "「一日」读作 いちにち(指一天,而非一号),「一週間」读作 いっしゅうかん,"
+        "「第一章」读作 だいいっしょう,「一晩」读作 ひとばん。\n"
+        f"• 其中 {WITHHELD} 条例句不再用于听写,因为语音读的是旧读法,或无法确认它读出的是更正后的读法;"
         "它们仍可在「例句」模式中练习。"
     ),
     # The app's interface is English or Chinese only, so a Japanese rider sees the English labels;
     # the Japanese copy quotes them in 「」 where it names a mode.
     "ja": (
-        f"• 数字と助数詞の読みを誤っていた例文 {FIXED} 件を訂正しました(例:「六十キロ」ろくじゅっきろ、"
-        "「一週間」いっしゅうかん、「第一章」だいいっしょう、「一晩」ひとばん)。\n"
-        f"• そのうち {WITHHELD} 件は、音声が訂正後の読みで読み上げることを確認できなかったため、"
-        "「Listen」モード(聞き取り)では出題されなくなりました。「Sentence」モードでは引き続き入力できます。"
+        f"• 数字・助数詞やそれを含む語の読みを誤っていた例文 {FIXED} 件を訂正しました(例:"
+        "「六十キロ」ろくじゅっきろ、日付ではない「一日」いちにち、「一週間」いっしゅうかん、"
+        "「第一章」だいいっしょう、「一晩」ひとばん)。\n"
+        f"• そのうち {WITHHELD} 件は、音声が訂正前の読みで読み上げるか、訂正後の読みで読み上げることを"
+        "確認できなかったため、「Listen」モード(聞き取り)では出題されなくなりました。"
+        "「Sentence」モードでは引き続き入力できます。"
     ),
 }
 
@@ -365,11 +425,12 @@ REVIEW_NOTES = (
     "Kyoto). Restore Purchases is on the same screen and is always present. There is no modal, no "
     "badge, and nothing about the purchase on the post-ride results screen.\n\n"
     "WHAT IS NEW.\n"
-    f"1) Content: {FIXED} example sentences were corrected where a number and its counter were read "
-    "wrong (for example 六十キロ is now read ろくじゅっきろ, 一週間 いっしゅうかん, 第一章 "
-    "だいいっしょう). "
+    f"1) Content: {FIXED} example sentences were corrected where a number, its counter or the word "
+    "they form was read wrong (for example 六十キロ is now read ろくじゅっきろ, 一日 いちにち where it "
+    "means a day rather than the 1st, 一週間 いっしゅうかん). "
     f"{WITHHELD} of them are no longer offered in dictation practice, because the on-device voice "
-    "could not be confirmed to say the corrected reading "
+    f"says the old reading ({len(WITHHELD_REASONS['says the old reading'])}) or could not be "
+    f"confirmed to say the corrected reading ({len(WITHHELD_REASONS['not confirmed'])}) "
     f"({N['dictationPoolBefore']:,} dictation sentences before, {N['dictationPool']:,} now). They "
     "remain in sentence practice.\n"
     "2) No visible change: the first time this version launches, the app stores on the device the "
@@ -417,6 +478,16 @@ if __name__ == "__main__":
         sys.exit(f"error: the frozen list is not byte-identical to {FROZEN_REF} (PLAN-WINDOW "
                  "constraint 1; the review notes tell Apple the purchase code is unchanged):\n  "
                  + "\n  ".join(_frozen))
+    if not any(a in ("--metadata", "--submit", "--dry-run") for a in sys.argv[1:]):
+        # No mode: the offline check. Every guard above has run; preflight runs over both targets;
+        # nothing reaches App Store Connect.
+        Release(version=VERSION, targets=TARGETS, whats_new=WHATS_NEW,
+                description_edits=DESCRIPTION_EDITS, review_notes=REVIEW_NOTES, iap=None,
+                numbers=N).preflight()
+        print("offline check only: the corpus, quote and frozen-list guards and preflight passed; "
+              "nothing was sent.\nModes: --dry-run | --metadata | --submit, with "
+              "--platform=ios|macos|both.")
+        sys.exit(2)
     _targets = _targets_for(sys.argv)
     print("==> review notes: one set — 1.37 changes the purchase a customer sees on neither platform")
     main(Release(version=VERSION, targets=_targets, whats_new=WHATS_NEW,
