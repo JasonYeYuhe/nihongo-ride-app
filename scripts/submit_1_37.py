@@ -3,13 +3,18 @@
 and submit both platforms for review.
 
 Configuration only. The machinery is `scripts/asc_release.py`, held to `submit_1_30.py` by
-`scripts/test_asc_release.py`. Every previous `submit_<version>.py` is left exactly as it was — they
-are the record of what was actually sent.
+`scripts/test_asc_release.py`; this file's own guards are held by `scripts/test_submit_1_37.py`.
+Every previous `submit_<version>.py` is left as it was, except that 54470d0 redacted the App Review
+phone number in all 27 of them (`submit_1_5` … `submit_1_30`) — they are the record of what was
+actually sent, less that one field.
 
 WHAT 1.37 IS
 ------------
 `docs/PLAN-V1.37.md` §C P0-2 and P0-12 (the open-surface release; submitted only after 1.36 is live
-on both platforms, PLAN-V1.37 §I).
+on both platforms, PLAN-V1.37 §I). That precondition is met, and this script does not check it:
+1.36 went on sale on both platforms on 2026-10-26 PT (iOS 22:40:52Z, macOS 23:00:45Z, the store's
+`currentVersionReleaseDate`; recorded in acf8ae5). A later release reusing this file as a template
+must check it again, because `--platform=ios|macos` lets one platform move alone.
 
   * Corpus: `correctedThisRelease` example sentences whose number + counter reading was wrong (六十キロ
     ろくじゅっきろ, 一週間 いっしゅうかん, 第一章 だいいっしょう, 一晩 ひとばん, …), each upheld 2-of-2
@@ -19,8 +24,9 @@ on both platforms, PLAN-V1.37 §I).
     are withheld from it, because calibrated instrument 1b is silent on the corrected span (pool 5,935 →
     5,933, `release_numbers`); three stay in it, 1b proving the voice says the corrected reading.
   * The install-cohort marker (P0-12): `NihongoRide.installCohort.v1`, written once at launch if
-    absent, in local `UserDefaults` only. Nothing reads it in 1.37 and a rider sees nothing, so What's
-    New does not mention it; the review notes state it, because it is a new on-device record.
+    absent, in local `UserDefaults` only. Nothing uses it in 1.37 (each launch reads it only to keep
+    it write-once) and a rider sees nothing, so What's New does not mention it; the review notes
+    state it, because it is a new on-device record.
   * Tests only, nothing a rider sees: a removed word's Remove button is pinned to never speak its id
     (it already did not, since 1.36), and CI's corpus check diffs against the newest successful run.
     Neither is claimed in What's New.
@@ -28,12 +34,15 @@ on both platforms, PLAN-V1.37 §I).
 WHAT IS DELIBERATELY NOT IN IT
 ------------------------------
 **No change to the purchase, its code, its screen or its placements**: `RouteStore`, `RoadView`,
-`SettingsView`, `MenuView`, `AboutView`, `OnboardingView`, `Theme`, `ScaledFont`, `EntitlementKit` and
-`xcode/NihongoRide.storekit` are byte-identical to 1.35's build commit `fdb2b5f` (`git diff fdb2b5f`
-over that list is empty on this branch; the headless renders of the Road, the in-app-purchase review
-screen and the menu are compared before submission, PLAN-V1.37 §J V2). The offer, its price, its
-placement and its presentation are frozen for the pre-registered observation window (`PLAN-WINDOW`
-constraint 1).
+`SettingsView`, `MenuView`, `AboutView`, `OnboardingView`, `Theme` (in `NihongoRideApp.swift`, so the
+whole file is frozen, the App struct with it), `ScaledFont`, `EntitlementKit` and
+`xcode/NihongoRide.storekit` are byte-identical to 1.35's build commit `fdb2b5f`. `FROZEN_PATHS` below
+names them as paths, and this script refuses to run while any of them is missing at `fdb2b5f` or at
+HEAD, differs from `fdb2b5f` in the working tree, or has an untracked file under it. The tree checked
+is the one this script runs from, a proxy for the commit the archive was built from. The headless
+renders of the Road, the in-app-purchase review screen and the menu are compared before
+submission, PLAN-V1.37 §J V2. The offer, its price, its placement and its presentation are frozen
+for the pre-registered observation window (`PLAN-WINDOW` constraint 1).
 
 **No description, keyword, title, subtitle or screenshot change** (`PLAN-WINDOW` constraint 4). The
 marker is local and never synced or sent, so `Data Not Collected` is unchanged; the privacy page's
@@ -54,6 +63,55 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from asc_release import Release, main          # noqa: E402
 from release_numbers import BASELINE_REF, CORPUS_MANIFEST, REPO, RESOURCES, numbers   # noqa: E402
+
+LEVELS = ("n1", "n2", "n3", "n4", "n5")
+
+# The frozen list as paths (PLAN-V1.37 §J; PLAN-WINDOW constraint 1). `Theme` is not a file: it is
+# `enum Theme` in NihongoRideApp.swift, so that file is named, and the freeze covers all of it.
+FROZEN_REF = "fdb2b5f"      # 1.35's build commit
+FROZEN_PATHS = [
+    "Sources/NihongoRideApp/RouteStore.swift",
+    "Sources/NihongoRideApp/RoadView.swift",
+    "Sources/NihongoRideApp/SettingsView.swift",
+    "Sources/NihongoRideApp/MenuView.swift",
+    "Sources/NihongoRideApp/AboutView.swift",
+    "Sources/NihongoRideApp/OnboardingView.swift",
+    "Sources/NihongoRideApp/NihongoRideApp.swift",
+    "Sources/NihongoRideApp/ScaledFont.swift",
+    "Sources/EntitlementKit",
+    "xcode/NihongoRide.storekit",
+]
+
+
+def _git(repo, *args):
+    return subprocess.run(["git", *args], cwd=repo, capture_output=True, text=True)
+
+
+def frozen_problems(repo, ref=FROZEN_REF, paths=FROZEN_PATHS):
+    """Why the frozen list is not byte-identical to `ref` in this working tree, or [].
+
+    Each path must exist at `ref` and at HEAD first: `git diff` over a path that exists nowhere
+    prints nothing, which is how the review's own check of `Theme.swift` came out empty.
+    """
+    problems = []
+    for path in paths:
+        for at in (ref, "HEAD"):
+            if _git(repo, "cat-file", "-e", f"{at}:{path}").returncode != 0:
+                problems.append(f"{path} does not exist at {at}, so a diff over it proves nothing")
+    if problems:
+        return problems
+    diff = _git(repo, "diff", "--quiet", ref, "--", *paths)
+    if diff.returncode == 1:
+        changed = _git(repo, "diff", "--name-only", ref, "--", *paths).stdout.splitlines()
+        problems.append(f"differs from {ref}: {', '.join(changed)}")
+    elif diff.returncode != 0:
+        problems.append(f"git diff {ref} failed ({diff.returncode}): {diff.stderr.strip()}")
+    untracked = _git(repo, "ls-files", "--others", "--exclude-standard", "--", *paths
+                     ).stdout.splitlines()
+    if untracked:
+        problems.append(f"untracked under the frozen list (built into the app all the same): "
+                        f"{', '.join(untracked)}")
+    return problems
 
 VERSION = "1.37"
 TARGETS = [
@@ -110,8 +168,8 @@ def _token_reading(tokens, word):
     return None
 
 
-def corpus_copy_problems(manifest_ids, entries_by_id, fixed, withheld_ids, released_ids,
-                         manifest_counts):
+def corpus_copy_problems(manifest_entries, entries_by_id, baseline_by_id, fixed, withheld_ids,
+                         released_ids, manifest_counts):
     """Why the corpus sentences below would be false, or [] when they are true.
 
     The guard checks which entries the manifest declares, not how many (1.36's whole-release review,
@@ -120,8 +178,30 @@ def corpus_copy_problems(manifest_ids, entries_by_id, fixed, withheld_ids, relea
     quoted word must be spelled by the sentence's own tokens with the quoted kana (a substring of
     exKana alone can be met by the wrong span), and the dictation sentence's count is held to which
     ids left the pool, not only how many.
+
+    And, from 1.37's round-1 review: "Corrected 12" is about all twelve, not the four the copy
+    quotes. Every manifest entry must be `disposition: corrected`, and every field its `rewrite`
+    names (exKana at least) must differ from `baseline_by_id`, the corpus at BASELINE_REF. Without
+    that, any of the eight unquoted corrections could be reverted and this guard still passed.
     """
     problems = []
+    manifest_ids = [e["id"] for e in manifest_entries]
+    for e in manifest_entries:
+        if e.get("disposition") != "corrected":
+            problems.append(f"{e['id']}'s manifest disposition is {e.get('disposition')!r}, not "
+                            "'corrected', so it is not one of the corrections the copy counts")
+    for e in manifest_entries:
+        if e["id"] not in NAMED_IDS:
+            continue
+        now, before = entries_by_id.get(e["id"]), baseline_by_id.get(e["id"])
+        if now is None or before is None:
+            problems.append(f"{e['id']} is missing from the corpus "
+                            f"{'on this tree' if now is None else 'at ' + BASELINE_REF}")
+            continue
+        for field in sorted(set(e.get("rewrite") or []) | {"exKana"}):
+            if now.get(field) == before.get(field):
+                problems.append(f"{e['id']}'s {field} is the same as at {BASELINE_REF}, so it is "
+                                "not corrected on this tree")
     if sorted(manifest_ids) != sorted(NAMED_IDS):
         problems.append(f"the v1.37 manifest declares {sorted(manifest_ids)}; What's New is written "
                         f"against {sorted(NAMED_IDS)}")
@@ -164,8 +244,20 @@ def _manifest():
 
 def _entries_by_id():
     out = {}
-    for level in ("n1", "n2", "n3", "n4", "n5"):
+    for level in LEVELS:
         for entry in json.loads((RESOURCES / f"{level}.json").read_text(encoding="utf-8")):
+            out[entry["id"]] = entry
+    return out
+
+
+def _baseline_entries_by_id():
+    """The corpus as it was at BASELINE_REF, 1.36's build commit."""
+    out = {}
+    for level in LEVELS:
+        text = subprocess.run(
+            ["git", "show", f"{BASELINE_REF}:Sources/VocabKit/Resources/{level}.json"],
+            cwd=REPO, capture_output=True, text=True, check=True).stdout
+        for entry in json.loads(text):
             out[entry["id"]] = entry
     return out
 
@@ -185,8 +277,9 @@ def _pool_moves():
 
 _manifest_data = _manifest()
 _withheld_ids, _released_ids = _pool_moves()
-_problems = corpus_copy_problems([e["id"] for e in _manifest_data["entries"]], _entries_by_id(), FIXED,
-                                 _withheld_ids, _released_ids, _manifest_data.get("counts") or {})
+_problems = corpus_copy_problems(_manifest_data["entries"], _entries_by_id(), _baseline_entries_by_id(),
+                                 FIXED, _withheld_ids, _released_ids,
+                                 _manifest_data.get("counts") or {})
 if WITHHELD != len(WITHHELD_IDS):
     _problems.append(f"withheldThisRelease is {WITHHELD}; the copy is written against "
                      f"{len(WITHHELD_IDS)} sentence(s) leaving dictation")
@@ -198,15 +291,16 @@ if _problems:
 # What's New — no star glyph (preflight enforces it). Same voice as every release since v1.27:
 # report what changed, never solicit. Each sentence is checked against the code and the manifest
 # before this is sent (PLAN-V1.37 §J V7); the check table is kept with the release work, outside the
-# repository. Mode names are the menu's (`GameMode.shortLabel`): "Sentence" / 例句, and the app's own
-# word for the listening mode, "Dictation" / 听写 (its start button and the Ride Log).
+# repository. Mode names are the menu capsule's (`GameMode.shortLabel`, "the one place a learner
+# reads it"): "Sentence" / 例句 and "Listen" / 听写. ("Dictation" is on the start button, Word Lists
+# and the Ride Log, but no capsule says it; test_submit_1_37 holds the copy to shortLabel.)
 WHATS_NEW = {
     "en-US": (
         f"• Corrected {FIXED} example sentences where a number and its counter were read wrong: for "
         "example, 六十キロ is now read ろくじゅっきろ, 一週間 いっしゅうかん, 第一章 だいいっしょう, "
         "and 一晩 ひとばん.\n"
-        f"• Of these, {WITHHELD} sentences are no longer used in Dictation, because the voice could not "
-        "be confirmed to say the corrected reading. You can still type them in Sentence mode."
+        f"• Of these, {WITHHELD} sentences are no longer used in Listen mode, because the voice could "
+        "not be confirmed to say the corrected reading. You can still type them in Sentence mode."
     ),
     "zh-Hans": (
         f"• 更正了 {FIXED} 条例句中数字与量词的读法,例如「六十キロ」现在读作 ろくじゅっきろ,"
@@ -220,16 +314,43 @@ WHATS_NEW = {
         f"• 数字と助数詞の読みを誤っていた例文 {FIXED} 件を訂正しました(例:「六十キロ」ろくじゅっきろ、"
         "「一週間」いっしゅうかん、「第一章」だいいっしょう、「一晩」ひとばん)。\n"
         f"• そのうち {WITHHELD} 件は、音声が訂正後の読みで読み上げることを確認できなかったため、"
-        "聞き取り(「Dictation」)では出題されなくなりました。「Sentence」モードでは引き続き入力できます。"
+        "「Listen」モード(聞き取り)では出題されなくなりました。「Sentence」モードでは引き続き入力できます。"
     ),
 }
 
-# The quotes in the copy are the EXAMPLES the guard holds to the corpus: each example's word and kana
-# must appear in every locale's What's New, and the review notes quote the first three.
-_unquoted = [f"{loc}: {word} {kana}" for loc, text in WHATS_NEW.items()
-             for word, kana in EXAMPLES.values() if word not in text or kana not in text]
-if _unquoted:
-    sys.exit("error: What's New does not quote what EXAMPLES holds to the corpus:\n  " + "\n  ".join(_unquoted))
+# The quotes in the copy are the EXAMPLES the guard holds to the corpus, each word next to its own
+# kana in the form that locale's sentence uses: every example in every locale's What's New, and the
+# first three in the review notes. Checking only that the word and the kana each appear somewhere
+# passed a copy edit that swapped two readings.
+QUOTE_FORMS = {
+    "en-US": ("{word} is now read {kana}", "{word} {kana}"),
+    "zh-Hans": ("「{word}」现在读作 {kana}", "「{word}」读作 {kana}"),
+    "ja": ("「{word}」{kana}",),
+}
+NOTES_QUOTE_FORMS = ("{word} is now read {kana}", "{word} {kana}")
+NOTES_EXAMPLES = 3
+
+
+def _paired(text, word, kana, forms):
+    return any(form.format(word=word, kana=kana) in text for form in forms)
+
+
+def quote_problems(whats_new, review_notes):
+    """Each quoted word next to its own kana, per locale and in the notes, or []."""
+    problems = []
+    for loc, text in whats_new.items():
+        forms = QUOTE_FORMS.get(loc)
+        if not forms:
+            problems.append(f"{loc}: no QUOTE_FORMS for this locale, so its quotes are unchecked")
+            continue
+        for word, kana in EXAMPLES.values():
+            if not _paired(text, word, kana, forms):
+                problems.append(f"What's New {loc}: {word} is not quoted next to {kana}")
+    for word, kana in list(EXAMPLES.values())[:NOTES_EXAMPLES]:
+        if not _paired(review_notes, word, kana, NOTES_QUOTE_FORMS):
+            problems.append(f"review notes: {word} is not quoted next to {kana}")
+    return problems
+
 
 # No description edit — see the module docstring.
 DESCRIPTION_EDITS = {}
@@ -253,8 +374,8 @@ REVIEW_NOTES = (
     "remain in sentence practice.\n"
     "2) No visible change: the first time this version launches, the app stores on the device the "
     "version and build that launched, the platform, and whether the app's own saved data already "
-    "existed. It is written once and never changed, and nothing in this version reads it. It is not "
-    "part of iCloud sync and is never sent anywhere.\n\n"
+    "existed. It is written once and never changed, and nothing in this version uses it. It is not "
+    "part of iCloud sync, and the app never sends it anywhere.\n\n"
     "Data handling: the developer still collects no data. There is no analytics SDK, no advertising, "
     "and no developer-operated server in this app. Optional iCloud sync uses the user's own private "
     "CloudKit database, which the developer cannot read, and the app is fully usable with it "
@@ -264,11 +385,10 @@ REVIEW_NOTES = (
     "No keywords, URLs, description text or screenshots changed in this version."
 )
 
-_unquoted_notes = [f"{word} {kana}" for word, kana in list(EXAMPLES.values())[:3]
-                   if word not in REVIEW_NOTES or kana not in REVIEW_NOTES]
-if _unquoted_notes:
-    sys.exit("error: the review notes do not quote what EXAMPLES holds to the corpus: "
-             + ", ".join(_unquoted_notes))
+_unquoted = quote_problems(WHATS_NEW, REVIEW_NOTES)
+if _unquoted:
+    sys.exit("error: the copy does not quote what EXAMPLES holds to the corpus:\n  "
+             + "\n  ".join(_unquoted))
 
 # --- Both platforms move together, as 1.36 did ------------------------------------------------
 #
@@ -292,6 +412,11 @@ def _targets_for(argv):
 
 
 if __name__ == "__main__":
+    _frozen = frozen_problems(REPO)
+    if _frozen:
+        sys.exit(f"error: the frozen list is not byte-identical to {FROZEN_REF} (PLAN-WINDOW "
+                 "constraint 1; the review notes tell Apple the purchase code is unchanged):\n  "
+                 + "\n  ".join(_frozen))
     _targets = _targets_for(sys.argv)
     print("==> review notes: one set — 1.37 changes the purchase a customer sees on neither platform")
     main(Release(version=VERSION, targets=_targets, whats_new=WHATS_NEW,

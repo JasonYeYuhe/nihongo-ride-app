@@ -11,8 +11,10 @@ flow, both platforms went to Apple without the purchase, and both submissions ha
 and rebuilt.
 
 WHAT DID **NOT** CHANGE, AND WHY THAT IS THE POINT. The old scripts are the record of what was
-actually sent for each release, so **none of them is edited and none is deleted**, including
-`submit_1_30.py`. This module was ported from it and is held to it by
+actually sent for each release, so **none of them is deleted, and none is edited except that
+54470d0 redacted the App Review phone number in all 27 of them** (`submit_1_5` … `submit_1_30`;
+`CONTACT` now carries a placeholder where the number was, which is not what was sent). That
+includes `submit_1_30.py`. This module was ported from it and is held to it by
 `scripts/test_asc_release.py`, which drives BOTH against the same stateful fake App Store Connect
 and requires the same API calls, with the same bodies, in the same order. A rewrite that is
 merely plausible is what this repo calls an uncalibrated instrument, and "I read it carefully"
@@ -36,6 +38,10 @@ before any mode, touches nothing outside this process, and exits non-zero on its
     this; nothing stopped the next one from doing so.
   * **Lengths.** ASC's 4000-character limit was checked for the description only. What's New and
     the review notes have the same limit and were checked by nobody.
+  * **The App Review contact is complete.** The contact no longer lives in this repository (see
+    `review_contact`), so a machine without it is a real possibility. Refused in preflight, not
+    at the review-detail step: `--metadata` writes the versions and What's New before it reaches
+    that step, so a refusal there left one platform written and the other not.
   * **`iap=` is a required argument with no default.** The submit gate cannot tell "this release
     sells nothing" from "somebody forgot to wire the purchase up", and those must not be the same
     keystroke. This is v1.24 §C's move — making `resolves:` required rather than defaulted —
@@ -70,14 +76,19 @@ CONTACT_FIELDS = ("contactFirstName", "contactLastName", "contactPhone", "contac
 
 
 def review_contact():
-    """The App Review contact, or {} when it is not configured on this machine."""
+    """The App Review contact, or {} when it is not configured on this machine.
+
+    Whether it is complete is `Release.preflight`'s question, not this function's: a missing or
+    partial contact must refuse before any mode reaches App Store Connect.
+    """
     raw = os.environ.get("NIHONGO_ASC_CONTACT")
     try:
         if raw:
             return dict(json.loads(raw))
         if CONTACT_FILE.exists():
             return dict(json.loads(CONTACT_FILE.read_text(encoding="utf-8")))
-    except (ValueError, OSError) as err:
+    # TypeError: valid JSON that is not an object (`5`, `[1]`) fails in dict(), not in json.loads.
+    except (ValueError, TypeError, OSError) as err:
         sys.exit(f"error: the App Review contact could not be read ({err})")
     return {}
 
@@ -91,6 +102,10 @@ MAX_REVIEW_NOTES = 4000
 
 # The one glyph this repo has measured App Store Connect rejecting in What's New.
 FORBIDDEN_WHATS_NEW_GLYPHS = ("★",)   # BLACK STAR
+
+# How every release of this app is published: on approval, the same Pacific day (PLAN-V1.37 §I's
+# cadence and the release-date bookkeeping depend on it). --submit refuses any other.
+REQUIRED_RELEASE_TYPE = "AFTER_APPROVAL"
 
 # A version that can still accept a build and a submission.
 SUBMITTABLE = {"PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED",
@@ -218,6 +233,14 @@ class Release:
             if locale not in self.whats_new:
                 problems.append(f"description edit [{locale}] has no What's New for that locale "
                                 "— set_whats_new would fail the run anyway")
+
+        missing_contact = [k for k in CONTACT_FIELDS if not self.contact.get(k)]
+        if missing_contact:
+            # Here and not in set_review_detail: by the time --metadata reaches the review detail
+            # it has created the first platform's version and written its What's New, so a refusal
+            # there leaves one platform half-written and the other untouched.
+            problems.append(f"the App Review contact is not configured ({', '.join(missing_contact)} "
+                            f"missing) — put it in {CONTACT_FILE} or NIHONGO_ASC_CONTACT")
 
         if self.iap is not None:
             for key in ("id", "product_id"):
@@ -482,13 +505,11 @@ class Release:
                   "(see DESCRIPTION_EDITS)")
 
     def set_review_detail(self, vid):
-        missing = [k for k in CONTACT_FIELDS if not self.contact.get(k)]
-        if missing:
-            # Refuse rather than send a review detail with no way to reach the developer.
-            sys.exit(f"error: the App Review contact is not configured ({', '.join(missing)} missing) — "
-                     f"put it in {CONTACT_FILE} or NIHONGO_ASC_CONTACT")
+        # The contact's completeness is checked in preflight, before any write. Only the four
+        # contact fields are sent: any other key in the local file would reach App Review's API as
+        # an attribute nobody chose to send.
         cur = self.asc("GET", f"/v1/appStoreVersions/{vid}/appStoreReviewDetail")
-        attrs = dict(self.contact)
+        attrs = {k: self.contact[k] for k in CONTACT_FIELDS}
         attrs["notes"] = self.review_notes
         attrs["demoAccountRequired"] = False
         existing = cur.get("data")
@@ -518,8 +539,15 @@ class Release:
     # --- builds ------------------------------------------------------------------------------
 
     def find_build(self, platform, num):
-        """Match by build number AND platform — build numbers are per-platform, so mac 54 and
-        iOS 54 can coexist; resolve each candidate's platform via its preReleaseVersion."""
+        """Match by build number AND platform AND marketing version — build numbers are
+        per-platform, so mac 54 and iOS 54 can coexist; resolve each candidate's platform and
+        version via its preReleaseVersion.
+
+        The marketing version is matched because a build number is unique only within one: a
+        previous release rebuilt as the number this release's TARGETS name (a rejected 1.36
+        resubmitted as macOS 62) is VALID and on the right platform, and would be attached here
+        and refused by Apple only at the end of the run.
+        """
         d = self.asc("GET", f"/v1/builds?filter[app]={self.app}&limit=50&sort=-uploadedDate"
                             f"&fields[builds]=version,processingState,usesNonExemptEncryption")
         for b in d.get("data", []):
@@ -527,11 +555,50 @@ class Release:
                 continue
             bid = b["id"]
             pv = self.asc("GET", f"/v1/builds/{bid}/preReleaseVersion"
-                                 f"?fields[preReleaseVersions]=platform")
-            plat = (pv.get("data") or {}).get("attributes", {}).get("platform")
-            if plat == platform:
-                return bid, b["attributes"]
+                                 f"?fields[preReleaseVersions]=platform,version")
+            pattrs = (pv.get("data") or {}).get("attributes", {})
+            if pattrs.get("platform") != platform:
+                continue
+            if pattrs.get("version") != self.version:
+                print(f"  build {num} on {platform} {bid} belongs to version "
+                      f"{pattrs.get('version')!r}, not {self.version} — not this release's build")
+                continue
+            return bid, b["attributes"]
         return None, None
+
+    # --- the release type ----------------------------------------------------------------------
+
+    def release_types(self):
+        """{platform: (appStoreState, releaseType)} for this release's versions. One GET.
+
+        Read-only on purpose. The release type is set on the version record (by App Store
+        Connect's default or by hand in its web UI); this module never writes it, it only refuses
+        to submit a version that would not release itself on approval.
+        """
+        d = self.asc("GET", f"/v1/apps/{self.app}/appStoreVersions"
+                            f"?filter[versionString]={self.version}"
+                            f"&fields[appStoreVersions]=platform,appStoreState,releaseType&limit=10")
+        out = {}
+        for v in (d.get("data") or []):
+            a = v.get("attributes") or {}
+            out[a.get("platform")] = (a.get("appStoreState"), a.get("releaseType"))
+        return out
+
+    def release_type_problems(self, types):
+        """Why a target's version would not release on approval, or []."""
+        problems = []
+        for t in self.targets:
+            if t["platform"] not in types:
+                problems.append(f"{t['name']}: no {self.version} version — run --metadata first")
+                continue
+            state, release_type = types[t["platform"]]
+            if release_type != REQUIRED_RELEASE_TYPE:
+                problems.append(f"{t['name']}: version {self.version} ({state}) has releaseType "
+                                f"{release_type!r}, not {REQUIRED_RELEASE_TYPE} — on approval it "
+                                "would not release, and the release date the cadence needs would "
+                                "never be set. Choose \"Automatically release this version\" in App "
+                                "Store Connect, then run this again.")
+        return problems
 
     # --- review submissions ------------------------------------------------------------------
 
@@ -677,6 +744,15 @@ class Release:
         control flow, and both platforms went to Apple carrying release notes for a purchase
         nobody could make. Both submissions had to be cancelled and rebuilt.
         """
+        # PHASE 0 — the release type, read for every target before anything is written. A version
+        # that is not AFTER_APPROVAL reads back as submitted (PENDING_DEVELOPER_RELEASE is in
+        # SUBMITTED_STATES) and then never releases.
+        print("\n===== release type =====")
+        refused = self.release_type_problems(self.release_types())
+        if refused:
+            sys.exit("error: refusing to attach or submit anything:\n  " + "\n  ".join(refused))
+        print(f"  every target is {REQUIRED_RELEASE_TYPE}")
+
         # PHASE 1 — attach every build. The attach is the real gate; a submission container
         # created after a failed attach is exactly how the v1.15 orphan came to exist.
         attached = {}
@@ -817,6 +893,17 @@ class Release:
         for locale, text in self.whats_new.items():
             print(f"\n--- What's New [{locale}] ({len(text)} chars) ---\n{text}")
         print(f"\n--- Review notes ({len(self.review_notes)} chars) ---\n{self.review_notes}")
+
+        # The precondition --submit enforces, printed here so the owner sees it before --metadata.
+        print(f"\n--- precondition for --submit: releaseType {REQUIRED_RELEASE_TYPE} ---")
+        types = self.release_types()
+        for t in self.targets:
+            if t["platform"] not in types:
+                print(f"  {t['name']}: {self.version} does not exist yet — checked at --submit")
+                continue
+            state, release_type = types[t["platform"]]
+            verdict = "ok" if release_type == REQUIRED_RELEASE_TYPE else "--submit WOULD REFUSE"
+            print(f"  {t['name']}: {state}, releaseType {release_type!r} [{verdict}]")
 
         print("\n--- description edits, against the LIVE text ---")
         if not self.description_edits:
