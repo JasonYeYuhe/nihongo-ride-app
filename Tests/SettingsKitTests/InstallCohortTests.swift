@@ -13,9 +13,15 @@ struct InstallCohortTests {
         Cohort.Running(version: Cohort.Version(version)!, build: build, platform: platform)
     }
 
-    /// A marker as 1.37 (mac 63) writes it, spelled out byte for byte.
+    /// A marker exactly as 1.37 writes it on macOS — version 1.37, build 62 (`project.yml`'s
+    /// `NihongoRide` target, `CURRENT_PROJECT_VERSION: "62"`) — spelled out byte for byte. These
+    /// bytes outlive 1.37 (E3 reads them), so they are the real build, not a hypothetical one.
     static let markerJSON137 =
-        #"{"firstSeenBuild":63,"firstSeenVersion":[1,37],"platform":"macOS","priorDataPresent":false,"schema":1}"#
+        #"{"firstSeenBuild":62,"firstSeenVersion":[1,37],"platform":"macOS","priorDataPresent":false,"schema":1}"#
+
+    /// The same on iOS — version 1.37, build 63 (`NihongoRideiOS`, `CURRENT_PROJECT_VERSION: "63"`).
+    static let markerJSON137iOS =
+        #"{"firstSeenBuild":63,"firstSeenVersion":[1,37],"platform":"iOS","priorDataPresent":false,"schema":1}"#
 
     static func suite() -> (UserDefaults, String) {
         let name = "InstallCohortTests-\(UUID().uuidString)"
@@ -26,7 +32,7 @@ struct InstallCohortTests {
 
     @Test("an absent marker is written once, with exactly the running build and the prior-data flag")
     func absentIsWritten() throws {
-        let decision = Cohort.decide(stored: .nothing, running: Self.running("1.37", 63),
+        let decision = Cohort.decide(stored: .nothing, running: Self.running("1.37", 62),
                                      priorDataPresent: false)
         #expect(decision.observation == .absent)
         let bytes = try #require(decision.write)
@@ -36,7 +42,7 @@ struct InstallCohortTests {
     @Test("a present marker is not written again by the same build")
     func presentIsNotRewritten() {
         let stored = Data(Self.markerJSON137.utf8)
-        let decision = Cohort.decide(stored: .bytes(stored), running: Self.running("1.37", 63),
+        let decision = Cohort.decide(stored: .bytes(stored), running: Self.running("1.37", 62),
                                      priorDataPresent: false)
         #expect(decision.write == nil)
     }
@@ -54,7 +60,7 @@ struct InstallCohortTests {
     @Test("an older build after a downgrade never lowers it either")
     func neverLoweredByOlderBuild() {
         let stored = Data(#"{"firstSeenBuild":65,"firstSeenVersion":[1,39],"platform":"macOS","priorDataPresent":true,"schema":1}"#.utf8)
-        for (version, build) in [("1.38", 64), ("1.37", 63), ("1.36", 61)] {
+        for (version, build) in [("1.38", 63), ("1.37", 62), ("1.36", 61)] {
             let decision = Cohort.decide(stored: .bytes(stored), running: Self.running(version, build),
                                          priorDataPresent: false)
             #expect(decision.write == nil, "\(version) (\(build)) rewrote the marker")
@@ -64,7 +70,7 @@ struct InstallCohortTests {
     @Test("a launch that sees different prior data does not rewrite it")
     func priorDataDoesNotRewrite() {
         let stored = Data(Self.markerJSON137.utf8)   // priorDataPresent: false
-        let decision = Cohort.decide(stored: .bytes(stored), running: Self.running("1.37", 63),
+        let decision = Cohort.decide(stored: .bytes(stored), running: Self.running("1.37", 62),
                                      priorDataPresent: true)
         #expect(decision.write == nil)
     }
@@ -74,15 +80,15 @@ struct InstallCohortTests {
         let (defaults, name) = Self.suite()
         defer { defaults.removePersistentDomain(forName: name) }
 
-        let first = Cohort.recordLaunch(in: defaults, running: Self.running("1.37", 63),
+        let first = Cohort.recordLaunch(in: defaults, running: Self.running("1.37", 62),
                                         priorDataPresent: false)
         #expect(first == .absent)
         let written = try #require(defaults.data(forKey: Cohort.defaultsKey))
         #expect(String(decoding: written, as: UTF8.self) == Self.markerJSON137)
 
-        let expected = Cohort.Marker(firstSeen: Self.running("1.37", 63), priorDataPresent: false)
-        for (version, build, prior) in [("1.38", 64, true), ("1.36", 61, true), ("1.40", 70, false),
-                                        ("1.37", 63, true)] {
+        let expected = Cohort.Marker(firstSeen: Self.running("1.37", 62), priorDataPresent: false)
+        for (version, build, prior) in [("1.38", 63, true), ("1.36", 61, true), ("1.40", 70, false),
+                                        ("1.37", 62, true)] {
             let observed = Cohort.recordLaunch(in: defaults, running: Self.running(version, build),
                                                priorDataPresent: prior)
             #expect(observed == .present(expected), "\(version): observed \(observed)")
@@ -106,7 +112,7 @@ struct InstallCohortTests {
         defer { defaults.removePersistentDomain(forName: name) }
 
         // Fresh: the key holds a marker afterwards, but the observation says there was none.
-        let fresh = Cohort.recordLaunch(in: defaults, running: Self.running("1.38", 64),
+        let fresh = Cohort.recordLaunch(in: defaults, running: Self.running("1.38", 63),
                                         priorDataPresent: false)
         #expect(fresh == .absent)
         #expect(defaults.data(forKey: Cohort.defaultsKey) != nil)
@@ -116,7 +122,7 @@ struct InstallCohortTests {
         defer { other.removePersistentDomain(forName: otherName) }
         other.set(Data(#"{"firstSeenBuild":62,"firstSeenVersion":[1,36],"platform":"iOS","priorDataPresent":true,"schema":1}"#.utf8),
                   forKey: Cohort.defaultsKey)
-        let observed = Cohort.recordLaunch(in: other, running: Self.running("1.37", 64, .iOS),
+        let observed = Cohort.recordLaunch(in: other, running: Self.running("1.37", 63, .iOS),
                                            priorDataPresent: false)
         let marker = try #require(observed.marker)
         #expect(marker.schema == 1)
@@ -132,19 +138,19 @@ struct InstallCohortTests {
         ("garbage", Data([0xFF, 0x00, 0x7B])),
         ("empty", Data()),
         ("not an object", Data("[1,37]".utf8)),
-        ("future schema", Data(#"{"firstSeenBuild":63,"firstSeenVersion":[1,37],"platform":"macOS","priorDataPresent":false,"schema":2}"#.utf8)),
+        ("future schema", Data(#"{"firstSeenBuild":62,"firstSeenVersion":[1,37],"platform":"macOS","priorDataPresent":false,"schema":2}"#.utf8)),
         ("missing field", Data(#"{"firstSeenVersion":[1,37],"platform":"macOS","priorDataPresent":false,"schema":1}"#.utf8)),
-        ("unknown platform", Data(#"{"firstSeenBuild":63,"firstSeenVersion":[1,37],"platform":"visionOS","priorDataPresent":false,"schema":1}"#.utf8)),
-        ("empty version", Data(#"{"firstSeenBuild":63,"firstSeenVersion":[],"platform":"macOS","priorDataPresent":false,"schema":1}"#.utf8)),
+        ("unknown platform", Data(#"{"firstSeenBuild":62,"firstSeenVersion":[1,37],"platform":"visionOS","priorDataPresent":false,"schema":1}"#.utf8)),
+        ("empty version", Data(#"{"firstSeenBuild":62,"firstSeenVersion":[],"platform":"macOS","priorDataPresent":false,"schema":1}"#.utf8)),
         ("negative build", Data(#"{"firstSeenBuild":-1,"firstSeenVersion":[1,37],"platform":"macOS","priorDataPresent":false,"schema":1}"#.utf8)),
-        ("version as a string", Data(#"{"firstSeenBuild":63,"firstSeenVersion":"1.37","platform":"macOS","priorDataPresent":false,"schema":1}"#.utf8)),
+        ("version as a string", Data(#"{"firstSeenBuild":62,"firstSeenVersion":"1.37","platform":"macOS","priorDataPresent":false,"schema":1}"#.utf8)),
     ]
 
     @Test("unreadable bytes are reported as unreadable and never replaced by a fresh marker",
           arguments: unreadable.map(\.0))
     func unreadableIsLeftAlone(label: String) throws {
         let bytes = try #require(Self.unreadable.first { $0.0 == label }?.1)
-        let decision = Cohort.decide(stored: .bytes(bytes), running: Self.running("1.37", 63),
+        let decision = Cohort.decide(stored: .bytes(bytes), running: Self.running("1.37", 62),
                                      priorDataPresent: true)
         #expect(decision.observation == .unreadable)
         #expect(decision.write == nil)
@@ -152,7 +158,7 @@ struct InstallCohortTests {
         let (defaults, name) = Self.suite()
         defer { defaults.removePersistentDomain(forName: name) }
         defaults.set(bytes, forKey: Cohort.defaultsKey)
-        let observed = Cohort.recordLaunch(in: defaults, running: Self.running("1.37", 63),
+        let observed = Cohort.recordLaunch(in: defaults, running: Self.running("1.37", 62),
                                            priorDataPresent: true)
         #expect(observed == .unreadable)
         #expect(defaults.data(forKey: Cohort.defaultsKey) == bytes, "\(label): the bytes were replaced")
@@ -167,7 +173,7 @@ struct InstallCohortTests {
         defer { defaults.removePersistentDomain(forName: name) }
         defaults.set("1.37", forKey: Cohort.defaultsKey)
         #expect(Cohort.Stored.read(from: defaults) == .notData)
-        let observed = Cohort.recordLaunch(in: defaults, running: Self.running("1.37", 63),
+        let observed = Cohort.recordLaunch(in: defaults, running: Self.running("1.37", 62),
                                            priorDataPresent: false)
         #expect(observed == .unreadable)
         #expect(defaults.string(forKey: Cohort.defaultsKey) == "1.37")
@@ -202,6 +208,22 @@ struct InstallCohortTests {
         #expect(try #require(Cohort.Version("1.36.0.1")) > short)
     }
 
+    /// Leading zeros are accepted and read as the integer they spell — the choice `Version
+    /// .components` documents (a refused version would write no marker at all). Trailing zero
+    /// COMPONENTS are the part kept as written (`trailingZerosAreEqual`).
+    @Test("a leading zero inside a component is that component's integer: \"01.37\" is [1, 37]")
+    func leadingZerosAreTheirInteger() throws {
+        let plain = try #require(Cohort.Version("1.37"))
+        for raw in ["01.37", "1.037", "001.0037"] {
+            let padded = try #require(Cohort.Version(raw), "\"\(raw)\" was refused")
+            #expect(padded.components == [1, 37], "\"\(raw)\" parsed as \(padded.components)")
+            #expect(padded == plain)
+            #expect(padded.description == "1.37")
+        }
+        #expect(try #require(Cohort.Version("1.037.0")).components == [1, 37, 0])
+        #expect(try #require(Cohort.Version("0.0")).components == [0, 0])
+    }
+
     @Test("only dot-separated ASCII digits parse",
           arguments: ["", ".", "1.", ".1", "1..2", "1.x", "-1", "+1", " 1.2", "1.2 ", "1.37b", "１.２", "1,2"])
     func malformedVersionsDoNotParse(_ raw: String) {
@@ -210,14 +232,44 @@ struct InstallCohortTests {
 
     @Test("the running build: integer version and integer build, or nothing")
     func runningParse() {
-        #expect(Cohort.Running(marketingVersion: "1.37", build: "63", platform: .macOS)
-                == Cohort.Running(version: Cohort.Version(components: [1, 37])!, build: 63, platform: .macOS))
+        #expect(Cohort.Running(marketingVersion: "1.37", build: "62", platform: .macOS)
+                == Cohort.Running(version: Cohort.Version(components: [1, 37])!, build: 62, platform: .macOS))
+        #expect(Cohort.Running(marketingVersion: "1.37", build: "63", platform: .iOS)
+                == Cohort.Running(version: Cohort.Version(components: [1, 37])!, build: 63, platform: .iOS))
         #expect(Cohort.Running(marketingVersion: "1.37", build: "61.1", platform: .macOS) == nil)
         #expect(Cohort.Running(marketingVersion: "1.37", build: "", platform: .macOS) == nil)
         #expect(Cohort.Running(marketingVersion: "1.37", build: "-3", platform: .macOS) == nil)
         #expect(Cohort.Running(marketingVersion: "1.37", build: nil, platform: .iOS) == nil)
         #expect(Cohort.Running(marketingVersion: nil, build: "63", platform: .iOS) == nil)
         #expect(Cohort.Running(marketingVersion: "1.37b", build: "63", platform: .iOS) == nil)
+    }
+
+    /// Every app and widget target's `MARKETING_VERSION` / `CURRENT_PROJECT_VERSION` in
+    /// `project.yml` must parse as a `Running`. A build the parser refuses ("64.1" is legal for
+    /// Apple) writes no marker, and the install's first marker then comes from a LATER build —
+    /// the shape the marker exists to refuse. `AppModel` logs that case at launch; this keeps it
+    /// from shipping. The expected count is written by hand: two apps and two widgets.
+    @Test("every version and build project.yml ships parses as the marker's running build")
+    func projectVersionsParse() throws {
+        let root = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let project = try String(contentsOf: root.appendingPathComponent("project.yml"), encoding: .utf8)
+        func values(_ key: String) -> [String] {
+            project.split(separator: "\n").compactMap { line -> String? in
+                let live = line.split(separator: "#", maxSplits: 1, omittingEmptySubsequences: false).first ?? ""
+                let trimmed = live.trimmingCharacters(in: .whitespaces)
+                guard trimmed.hasPrefix(key + ":") else { return nil }
+                return trimmed.dropFirst(key.count + 1).trimmingCharacters(in: .whitespaces)
+                    .trimmingCharacters(in: CharacterSet(charactersIn: "\"'"))
+            }
+        }
+        let versions = values("MARKETING_VERSION"), builds = values("CURRENT_PROJECT_VERSION")
+        #expect(versions.count == 4 && builds.count == 4,
+                "project.yml sets \(versions.count) versions and \(builds.count) builds — the scan is misdirected")
+        for (version, build) in zip(versions, builds) {
+            #expect(Cohort.Running(marketingVersion: version, build: build, platform: .macOS) != nil,
+                    "project.yml ships version \"\(version)\" build \"\(build)\", which writes no install-cohort marker")
+        }
     }
 
     // MARK: - Per platform
@@ -236,10 +288,9 @@ struct InstallCohortTests {
         #expect(iOS.firstSeenBuild(isBefore: 99, on: .macOS) == nil)
 
         // And the platform the running build reports is the one stored.
-        let written = try #require(Cohort.decide(stored: .nothing, running: Self.running("1.37", 64, .iOS),
+        let written = try #require(Cohort.decide(stored: .nothing, running: Self.running("1.37", 63, .iOS),
                                                  priorDataPresent: false).write)
-        #expect(String(decoding: written, as: UTF8.self)
-                == #"{"firstSeenBuild":64,"firstSeenVersion":[1,37],"platform":"iOS","priorDataPresent":false,"schema":1}"#)
+        #expect(String(decoding: written, as: UTF8.self) == Self.markerJSON137iOS)
     }
 
     // MARK: - priorDataPresent
@@ -254,25 +305,18 @@ struct InstallCohortTests {
 
     @Test("priorDataPresent true and false are each written as given", arguments: [true, false])
     func priorDataIsRecorded(_ prior: Bool) throws {
-        let written = try #require(Cohort.decide(stored: .nothing, running: Self.running("1.37", 63),
+        let written = try #require(Cohort.decide(stored: .nothing, running: Self.running("1.37", 62),
                                                  priorDataPresent: prior).write)
         #expect(String(decoding: written, as: UTF8.self)
-                == #"{"firstSeenBuild":63,"firstSeenVersion":[1,37],"platform":"macOS","priorDataPresent":\#(prior),"schema":1}"#)
+                == #"{"firstSeenBuild":62,"firstSeenVersion":[1,37],"platform":"macOS","priorDataPresent":\#(prior),"schema":1}"#)
     }
 
     // MARK: - Never synced, never sent
 
-    /// The marker is local. Nothing in `Sources/` may name its key except this module, nothing may
-    /// name the type except this module and the one launch call in `AppModel`, and nothing may sweep
-    /// UserDefaults wholesale into iCloud key-value storage or an export. (SyncKit cannot reach it at
-    /// compile time either: it does not depend on SettingsKit — see Package.swift.)
-    ///
-    /// Comments are stripped before the API scan so prose can name what is forbidden; the key and
-    /// type scans read comments too, which is stricter.
     @Test("whatever decide writes reads back as present, with the running build — never as unreadable")
     func writtenBytesReadBack() throws {
-        for (version, build, platform, prior) in [("1.37", 63, Cohort.Platform.macOS, false),
-                                                  ("1.37", 64, .iOS, true), ("2.0", 1, .iOS, false)] {
+        for (version, build, platform, prior) in [("1.37", 62, Cohort.Platform.macOS, false),
+                                                  ("1.37", 63, .iOS, true), ("2.0", 1, .iOS, false)] {
             let decision = Cohort.decide(stored: .nothing, running: Self.running(version, build, platform),
                                          priorDataPresent: prior)
             let bytes = try #require(decision.write)
@@ -303,6 +347,28 @@ struct InstallCohortTests {
         }
     }
 
+    /// The marker is local. Nothing in `Sources/` may name its key except this module; nothing may
+    /// name the type, or the model's `installCohortAtLaunch` that holds it, except this module and
+    /// the one launch call in `AppModel`; and nothing may sweep the defaults domain wholesale —
+    /// into iCloud key-value storage, an export, or anywhere else. (SyncKit cannot reach it at
+    /// compile time either: it does not depend on SettingsKit — see Package.swift.)
+    ///
+    /// The name scans are CASE-INSENSITIVE ("installcohort" in any spelling), because the type is
+    /// `InstallCohort` and the property is `installCohortAtLaunch`: a reader elsewhere that writes
+    /// `model.installCohortAtLaunch?.marker?.firstSeenBuild` names no type, and a case-sensitive
+    /// scan for the type passed it. The API scan covers the sweeps: iCloud key-value storage,
+    /// `dictionaryRepresentation`, `persistentDomain(forName:)`, the whole `CFPreferences` family
+    /// (`CFPreferencesCopyKeyList`, `CFPreferencesCopyMultiple`, …), and any path into
+    /// `Library/Preferences`, where the defaults plist can be read as a file.
+    ///
+    /// Comments are stripped before the API scan so prose can name what is forbidden; the name
+    /// scans read comments too, which is stricter.
+    ///
+    /// **What it cannot see**, stated so it is not read as more: a key or selector built at run
+    /// time (`"NihongoRide." + "install…"`, `NSSelectorFromString`), Objective-C or C anywhere,
+    /// non-Swift files (plists, entitlements, scripts), and code outside `Sources/` (every shipping
+    /// target's Swift is under it today, per `project.yml`; a target added elsewhere would not be
+    /// read). It proves the names are not reached; it does not prove the bytes cannot be.
     @Test("the key is reached from nowhere else — not SyncKit, not CloudKit, not an export")
     func theKeyIsReachedFromNowhereElse() throws {
         let root = URL(fileURLWithPath: #filePath)
@@ -321,11 +387,14 @@ struct InstallCohortTests {
             #expect(files[required] != nil, "the scan did not read \(required)")
         }
 
-        let keyHolders = files.filter { $0.value.contains("NihongoRide.installCohort") }.keys.sorted()
-        #expect(keyHolders == ["SettingsKit/InstallCohort.swift"])
-
-        let typeHolders = files.filter { $0.value.contains("InstallCohort") }.keys.sorted()
-        #expect(typeHolders == ["NihongoRideApp/AppModel.swift", "SettingsKit/InstallCohort.swift"])
+        func holders(_ name: String) -> [String] {
+            files.filter { $0.value.range(of: name, options: .caseInsensitive) != nil }.keys.sorted()
+        }
+        #expect(holders("NihongoRide.installCohort") == ["SettingsKit/InstallCohort.swift"])
+        // The type and every property named after it, in any case: only the module and the launch.
+        #expect(holders("installcohort") == ["NihongoRideApp/AppModel.swift", "SettingsKit/InstallCohort.swift"])
+        // The pre-launch observation has no reader until E3: E3 adds its file here, deliberately.
+        #expect(holders("installCohortAtLaunch") == ["NihongoRideApp/AppModel.swift"])
 
         func code(_ source: String) -> String {
             source.split(separator: "\n", omittingEmptySubsequences: false)
@@ -337,8 +406,10 @@ struct InstallCohortTests {
         }
         for (path, source) in files {
             let body = code(source)
-            for sweep in ["NSUbiquitousKeyValueStore", "dictionaryRepresentation", ".persistentDomain(forName"] {
-                #expect(!body.contains(sweep), "\(path) uses \(sweep), which could carry the marker off the device")
+            for sweep in ["NSUbiquitousKeyValueStore", "dictionaryRepresentation", ".persistentDomain(forName",
+                          "CFPreferences", "Library/Preferences"] {
+                #expect(body.range(of: sweep, options: .caseInsensitive) == nil,
+                        "\(path) uses \(sweep), which could carry the marker off the device")
             }
         }
     }
