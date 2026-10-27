@@ -22,6 +22,8 @@ are the ones `gh api .../actions/workflows/gates.yml/runs` returned on 2026-10-2
  11. the clamp: a success that does not contain BASELINE_REF (older, or on a line that never merged
      it) → BASELINE_REF, loudly; a success at or after it → the success, quietly.
  12. an unusable BASELINE_REF (not a commit, not an ancestor, HEAD itself) → named in the warning.
+ 14. the CLI's default boundary, with no --baseline-ref as gates.yml runs it, is
+     release_numbers.BASELINE_REF (stubbed to a fixture commit); every other CLI fixture passes one.
  13. two runs in sequence on A ← B ← C ← D ← E: the cancelled push C plus an API failure in D's
      run (D's window must still hold C, and E's run then chains from D), and a main red across a
      release (the only success predates BASELINE_REF, so the window starts at BASELINE_REF).
@@ -310,6 +312,51 @@ def main():
                   f"9b. force push, BASELINE_REF intact: expected base={A[:9]}, loudly, rc={rc} {gho!r}\n{out}")
         finally:
             srv.close()
+
+        # 14. The DEFAULT boundary, which is what CI runs on: gates.yml passes no --baseline-ref,
+        #     and every fixture above passes its own. release_numbers is stubbed so its BASELINE_REF
+        #     is B, the script is loaded fresh so it reads that, and main() runs without the flag
+        #     while the API fails. The base must be the boundary, B. A default that is not
+        #     release_numbers' own ("" or any other ref) takes another base: C, the last resort.
+        import contextlib
+        import importlib.util
+        import io
+        import types
+        stub = types.ModuleType("release_numbers")
+        stub.BASELINE_REF = B
+        saved_rn = sys.modules.get("release_numbers")
+        saved_env = dict(os.environ)
+        srv = Server(500, {"message": "boom"})
+        with tempfile.NamedTemporaryFile("r", suffix=".out", delete=False) as out_file:
+            out_path = out_file.name
+        buf = io.StringIO()
+        try:
+            sys.modules["release_numbers"] = stub
+            for k in [k for k in os.environ if k.startswith("GITHUB_")]:
+                del os.environ[k]
+            os.environ.update({"GITHUB_API_URL": srv.url, "GITHUB_REPOSITORY": "owner/repo",
+                               "GITHUB_TOKEN": TOKEN, "GITHUB_OUTPUT": out_path})
+            spec = importlib.util.spec_from_file_location("ci_vocab_base_default_under_test",
+                                                          SCRIPTS / "ci_vocab_base.py")
+            fresh = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(fresh)
+            with contextlib.redirect_stdout(buf):
+                rc = fresh.main(["--repo-dir", str(repo), "--branch", "main", "--workflow", "gates.yml",
+                                 "--event", "push", "--before", C])
+            gho = Path(out_path).read_text()
+        finally:
+            srv.close()
+            os.unlink(out_path)
+            os.environ.clear()
+            os.environ.update(saved_env)
+            if saved_rn is None:
+                sys.modules.pop("release_numbers", None)
+            else:
+                sys.modules["release_numbers"] = saved_rn
+        check(rc == 0 and gho == f"base={B}\n",
+              f"14. no --baseline-ref: expected the default boundary release_numbers.BASELINE_REF "
+              f"(stubbed to B) base={B[:9]}, rc={rc} {gho!r}\n{buf.getvalue()}")
+        print(f"  14. CLI, no --baseline-ref (the default) → {gho.strip()[:17]}…")
 
     # 13. Two runs in sequence, on a repo of its own: A ← B ← C ← D ← E.
     with tempfile.TemporaryDirectory() as tmp:
