@@ -62,7 +62,14 @@ public enum InstallCohort {
     /// `CFBundleShortVersionString`. Pinned by `InstallCohortTests.trailingZerosAreEqual`.
     public struct Version: Sendable, Comparable, Codable, CustomStringConvertible {
 
-        /// As parsed, never normalised: a marker keeps the bytes the build that wrote it saw.
+        /// One integer per dot-separated component, as many as the string had. Trailing zero
+        /// components are kept ("1.36.0" stays `[1, 36, 0]`); leading zeros inside a component are
+        /// not, because a component IS its integer ("01.37" and "1.037" are `[1, 37]`, the same
+        /// value as "1.37"). So a marker keeps the integers the build that wrote it saw, not its
+        /// bytes. Accepted rather than refused: a refused version writes no marker at all, and the
+        /// install's first marker then comes from a LATER build — the one shape this type exists
+        /// to prevent — while the integers are all the comparison ever reads. Pinned by
+        /// `InstallCohortTests.leadingZerosAreTheirInteger`.
         public let components: [Int]
 
         /// Nil unless the string is one or more runs of ASCII digits separated by single dots:
@@ -149,9 +156,11 @@ public enum InstallCohort {
         public let firstSeenBuild: Int
         public let platform: Platform
         /// Whether this install already had an odometer or saved settings when the marker was
-        /// first written — so an install that predates the marker is known as one, rather than
-        /// looking like a fresh install that happened to arrive on 1.37. See
-        /// `InstallCohort.priorDataPresent(settingsStored:odometerStored:)`.
+        /// first written — so an install that predates the marker, AND was last opened on v1.2 or
+        /// later, is known as one rather than looking like a fresh install that happened to arrive
+        /// on 1.37. An install last opened on 1.0 or 1.1 reads `false` here even though it has
+        /// data: see `InstallCohort.priorDataPresent(settingsStored:odometerStored:)` for exactly
+        /// what is counted, and why that costs nothing for a marker 1.37 writes.
         public let priorDataPresent: Bool
 
         public init(firstSeen running: Running, priorDataPresent: Bool) {
@@ -246,8 +255,17 @@ public enum InstallCohort {
         /// a downgrade and an upgrade again, the bytes are intact for it.
         ///
         /// The cost, stated: this install has no readable marker on this build, so E3 falls back to
-        /// its rule 3 (`AppTransaction`) or the session grace — exactly where every install that
-        /// predates 1.37 already stands. It is never worse off than having no marker.
+        /// its rule 3 (`AppTransaction`) or the session grace. That is WORSE than having no marker
+        /// at all, under E3's table as drafted (DESIGN-E3-SAMPLER §5.5): a marker that is absent,
+        /// with this launch's prior data present, is granted offline (row 4), while an unreadable
+        /// one goes to rows 10–14, which do not read prior data and need an online production
+        /// `AppTransaction` before they grant. So a pre-1.37 rider whose marker became unreadable
+        /// waits for the network where one with no marker would not. It is kept anyway, because
+        /// the alternative (writing over it) breaks write-once for every install whose bytes a
+        /// LATER build can still read. Reaching it takes corrupt bytes or a non-`Data` value under
+        /// a key only this type writes. Closing the gap is E3's: let `.unreadable` carry the prior
+        /// data the gated build computes, or give "unreadable and this launch's prior data true"
+        /// its own row. 1.37 reads nothing, so nothing here changes for it.
         case unreadable
 
         public var marker: Marker? {
@@ -291,15 +309,31 @@ public enum InstallCohort {
         }
     }
 
-    /// Whether this install had data before the marker's first write.
-    ///
-    /// The two stores that every build since v1.2 has kept, named so a reader can check them:
+    /// Whether this install had data before the marker's first write — as 1.37 counts it, which is
+    /// exactly two stores and nothing else:
     /// * `settingsStored` — anything under `AppSettings.defaultsKey` ("NihongoRide.settings.v1"),
-    ///   which every launch saves (it carries the minted `deviceID`), so any install that has
-    ///   launched once before has it;
+    ///   which every launch of v1.2 or later saves (it carries the minted `deviceID`), so an
+    ///   install that has launched v1.2 or later once before has it;
     /// * `odometerStored` — `Application Support/NihongoRide/odometer.json`
-    ///   (`SyncKit.OdometerLog`), in any state other than missing: a corrupt or unreadable odometer
-    ///   is still an odometer this install had.
+    ///   (`SyncKit.OdometerLog`, also new in v1.2), in any state other than missing: a corrupt or
+    ///   unreadable odometer is still an odometer this install had.
+    ///
+    /// **Not counted:** every other store — `review.json`, `history.json`, the conjugation review,
+    /// custom texts, the stumble ledger, `word-lists.json`, `saved-words.json`. So an install whose
+    /// last launch was 1.0 or 1.1, which kept only `review.json` and `history.json` (both builds
+    /// predate the settings key and the odometer), is recorded with `priorDataPresent: false` —
+    /// pinned by `InstallCohortWiringTests.lastOpenedOn11`. That costs nothing for any marker
+    /// 1.37 writes: its first-seen build is below every E3 threshold, so E3 grants it on the build
+    /// alone and never reads this flag (DESIGN-E3-SAMPLER §5.5 row 2). It is deliberately NOT
+    /// widened in 1.37, which would change the launch path for no effect on what 1.37 stores.
+    ///
+    /// **E3 must not reuse this expression as it stands.** Where the gated build computes prior
+    /// data itself (its §5.9 step 1, for a marker absent before that launch), it needs the broader
+    /// definition — the settings key, OR any support store whose load outcome is not `.missing`,
+    /// OR the word-list files existing — a superset of what `AppModel`'s onboarding fresh-install
+    /// test already counts (the review store and the journal), so the two no longer disagree.
+    /// With this one, a 1.1 rider who skips straight to E3 offline lands on row 8 (session grace)
+    /// instead of row 4 (granted).
     public static func priorDataPresent(settingsStored: Bool, odometerStored: Bool) -> Bool {
         settingsStored || odometerStored
     }
