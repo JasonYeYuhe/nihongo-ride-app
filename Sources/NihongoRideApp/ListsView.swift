@@ -617,6 +617,8 @@ struct ListDetailView: View {
     /// review (round 1) a removed word's button read "Remove n2-b984 from list", right after the
     /// column had read "Removed word", which exists so that a learner is not shown an id. The
     /// identifier the UI test taps (`removeWord-<id>`) still carries the id; it is not read out.
+    /// Nothing else on the button is spoken — no value, hint or help — and the id reaches nothing
+    /// in `wordRow` but the lookup, the removal and that identifier (`V137RemovedWordSpeechTests`).
     static func removeLabel(surface: String?, zh: Bool) -> String {
         guard let surface else { return zh ? "从词单移除此词" : "Remove this word from list" }
         return zh ? "从词单移除 \(surface)" : "Remove \(surface) from list"
