@@ -269,6 +269,40 @@ struct InstallCohortTests {
     ///
     /// Comments are stripped before the API scan so prose can name what is forbidden; the key and
     /// type scans read comments too, which is stricter.
+    @Test("whatever decide writes reads back as present, with the running build — never as unreadable")
+    func writtenBytesReadBack() throws {
+        for (version, build, platform, prior) in [("1.37", 63, Cohort.Platform.macOS, false),
+                                                  ("1.37", 64, .iOS, true), ("2.0", 1, .iOS, false)] {
+            let decision = Cohort.decide(stored: .nothing, running: Self.running(version, build, platform),
+                                         priorDataPresent: prior)
+            let bytes = try #require(decision.write)
+            #expect(!bytes.isEmpty)
+            guard case .present(let marker) = Cohort.observe(.bytes(bytes)) else {
+                Issue.record("\(version) (\(build)) wrote bytes that do not read back as present"); continue
+            }
+            #expect(marker.firstSeenBuild == build)
+            #expect(marker.platform == platform)
+            #expect(marker.priorDataPresent == prior)
+        }
+    }
+
+    /// The marker is written in `AppModel.init`, and its reads assume the defaults store is readable
+    /// then. On iOS that holds only because nothing launches the app before the first unlock: there are
+    /// no background modes and no push entitlement. Adding either (CloudKitSyncController's note on
+    /// moving to push-driven sync names `aps-environment`) must reopen that question, so this goes red.
+    @Test("no background launch path exists, so the marker is never decided before the first unlock")
+    func noLaunchBeforeFirstUnlock() throws {
+        let root = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let project = try String(contentsOf: root.appendingPathComponent("project.yml"), encoding: .utf8)
+        let live = project.split(separator: "\n")
+            .map { $0.split(separator: "#", maxSplits: 1, omittingEmptySubsequences: false).first ?? "" }
+            .joined(separator: "\n")
+        for key in ["UIBackgroundModes", "aps-environment", "BGTaskSchedulerPermittedIdentifiers"] {
+            #expect(!live.contains(key), "project.yml sets \(key): the install-cohort marker may then be decided before the first unlock")
+        }
+    }
+
     @Test("the key is reached from nowhere else — not SyncKit, not CloudKit, not an export")
     func theKeyIsReachedFromNowhereElse() throws {
         let root = URL(fileURLWithPath: #filePath)

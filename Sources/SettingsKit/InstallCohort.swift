@@ -195,10 +195,13 @@ public enum InstallCohort {
             return firstSeenBuild < build
         }
 
-        public func encoded() -> Data {
+        /// Nil if encoding fails, so `decide` writes nothing and the next launch tries again. Empty
+        /// bytes would be written once and then read as `.unreadable` forever, and write-once would
+        /// keep them there.
+        public func encoded() -> Data? {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .sortedKeys
-            return (try? encoder.encode(self)) ?? Data()
+            return try? encoder.encode(self)
         }
     }
 
