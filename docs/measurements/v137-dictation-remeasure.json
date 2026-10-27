@@ -181,5 +181,11 @@
  "dictationPool": {
   "before": 5935,
   "after": 5933
+ },
+ "reproduction": {
+  "by": "v1.37 round 1 (corpus-2, corpus-3): the committed instrument, no scratch copy",
+  "command": "DICTATION_WAV_CACHE=<the 2026-10-27 audio cache> ./.venv-jp/bin/python scripts/check_propagated_exclusions.py --spec docs/measurements/v137-dictation-remeasure-spec.json --calibrate --json docs/measurements/v137-dictation-remeasure-reproduced.json",
+  "record": "docs/measurements/v137-dictation-remeasure-reproduced.json",
+  "result": "Every verdict above is reproduced, with the same hashes: n5-b105 and n4-b104 RELEASE on the katakana spelling of the corrected reading (af059c1cf51b, 5756f0e6b1f0), now that verdict() compares a candidate with the corpus reading after katakana -> hiragana; n2-b277, n4-b186 and n2-b1180 RELEASE; n3-b020 KEEP; the other seven SILENT. n2-b034 is SILENT from the instrument itself now, not only in this record: a disputed token inside a lexicalised compound disputes the compound, so 一晩中 must be confirmed and is silent in all eight spellings. Calibration: 14/14 rebuild identity, 0 contradictions of instrument 1 in 39, 0 spurious byte matches in 56 decoys (hiragana and katakana)."
  }
 }
