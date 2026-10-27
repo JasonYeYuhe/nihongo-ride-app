@@ -269,6 +269,9 @@ FIRM_RELEASE_DATES_PT = (
     # is iOS's (this also settles 1.34: macOS 19:46:37Z, iOS 03:29:03Z, both 09-28 PT).
     "2026-09-29",   # v1.35 macOS (build 60): currentVersionReleaseDate 2026-09-30T00:21:34Z = 09-29 17:21 PDT
     "2026-09-30",   # v1.35 iOS (build 61): currentVersionReleaseDate 2026-09-30T15:15:18Z = 09-30 08:15 PDT
+    "2026-10-26",   # v1.36, both platforms (submitted 2026-10-26 PT): iTunes lookup currentVersionReleaseDate read
+                    # 2026-10-27, macOS (desktopSoftware, build 61) 23:00:45Z = 16:00 PDT, iOS (build 62)
+                    # 22:40:52Z = 15:40 PDT — both 10-26 PT, so one line
 )
 UNCERTAIN_RELEASE_DATES_PT = (
     "2026-08-12", "2026-08-19", "2026-08-20", "2026-08-21", "2026-08-23", "2026-08-24", "2026-08-25",

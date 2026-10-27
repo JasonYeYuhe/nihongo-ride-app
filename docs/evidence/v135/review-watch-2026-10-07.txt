@@ -1,0 +1,18 @@
+review_watch — App Store customer reviews for app 6777469778 (read-only GET via scripts/asc_api.sh)
+read at 2026-10-06T17:59:04Z · /v1/apps/6777469778/customerReviews?limit=200&sort=createdDate · 1 page(s)
+NOTE: this endpoint shows the reviews visible to the App Store Connect API. It may lag the storefronts; a review a storefront shows may not be here yet.
+"since day 0" = the review's createdDate converted to its America/Los_Angeles calendar day (the Pacific report day sales_report.py uses) is on or after 2026-09-09.
+
+total reviews (lifetime, as the API shows them): 1
+API meta.paging.total: 1   (equals the 1 collected; a mismatch is exit 2)
+before day 0 (2026-09-09): 1   (counted; not the guardrail's subject)
+since day 0 (2026-09-09):  0   (0 with purchase vocabulary)
+
+REVIEWS SINCE DAY 0 (2026-09-09) — every one, on every run; no high-water mark
+  (none visible to the API)
+
+BEFORE DAY 0 — counted above, not listed as since day 0; one line each
+  2026-07-10 PT · rating 5/5 · CHN · id 00000193-f7fb-5203-538a-6cdb00000000 · purchase vocabulary: 付费, 收费
+
+SUMMARY: since day 0: 0 review(s), 0 flagged · before day 0: 1 · total 1
+exit 0 (the read succeeded)

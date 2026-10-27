@@ -48,7 +48,7 @@
 | 步 | 做什么 | 设备 | 你亲手的时间(估计,不是测量) | 自动化的部分 |
 |---|---|---|---|---|
 | 0 | 预检 + 销售基线快照 | Mac 终端 | ~5 分钟 | `stage1_walk.py preflight` / `baseline`,只读 |
-| 1 | 安装 App Store 1.35(Mac + iPhone),iPhone 上拍购买前的 OFFER | Mac、iPhone | ~15 分钟 | `preflight` 复查、`mac-state`、`ios-state` |
+| 1 | 安装 App Store 1.36(Mac + iPhone),iPhone 上拍购买前的 OFFER | Mac、iPhone | ~15 分钟 | `preflight` 复查、`mac-state`、`ios-state` |
 | 2 | §L 检查 1:未登录 App Store | Mac | ~12 分钟 | 无 |
 | 3 | §K 已知阳性购买(生产环境,你自己的账号) | Mac | ~5 分钟 | 无 —— 这一步永远不能自动化 |
 | 4 | §L 检查 3:跨平台恢复 + 冷安装 | iPhone | ~15 分钟(需要等 2 分钟时再加 ~3 分钟) | `ios-state` |
@@ -62,10 +62,10 @@
 
 ---
 
-## 1. 先确认:每一步都在 App Store 上的 1.35 上走
+## 1. 先确认:每一步都在 App Store 上的 1.36 上走
 
-**唯一有效的二进制:App Store 发布的 1.35 —— macOS 1.35 (build 60) / iOS 1.35 (build 61)。**
-2026-10-03 用 ASC GET 实测,两个平台都是 `READY_FOR_SALE`,没有进行中的审核提交。
+**唯一有效的二进制:App Store 发布的 1.36 —— macOS 1.36 (build 61) / iOS 1.36 (build 62)。**
+2026-10-27 用 ASC GET 实测,两个平台都是 `READY_FOR_SALE`,没有进行中的审核提交。
 
 **不是**本地构建,**不是** TestFlight,**不是** Xcode 里点 Run。理由:
 
@@ -86,17 +86,18 @@ python3 scripts/stage1_walk.py preflight; echo "exit=$?"
 python3 scripts/stage1_walk.py mac-state; echo "exit=$?"
 ```
 
-* **(2026-10-03 起本卡以 1.35 为准。)** v1.35 两个平台不是同一天上线:macOS 1.35 (build 60) 是 2026-09-29,
-  iOS 1.35 (build 61) 是 2026-09-30(都是太平洋时间)。`scripts/stage1_walk.py` 的 `EXPECTED_*` 常量和本卡里所有
-  版本号已同步改成 1.35 / 60 / 61(2026-09-29 到 10-02 这里写的是 1.34 / 59 / 60,更早是 1.33 / 57 / 58)。
-  1.35 没有改动走查经过的任何界面:购买页、设置里的路线卡、菜单路线条、关于页的源文件(`SettingsView`、
-  `MenuView`、`AboutView`、`RouteStore`、`EntitlementKit`)和 1.34 相同。1.35 改的是单词表里的搜索、
-  「My text」的粘贴提示、骑行和动词练习的顶部显示、结果页的颜色,走查都不经过。
+* **(2026-10-27 起本卡以 1.36 为准。)** v1.36 两个平台在同一天上线:macOS 1.36 (build 61) 和 iOS 1.36 (build 62)
+  都是 2026-10-26(太平洋时间)。`scripts/stage1_walk.py` 的 `EXPECTED_*` 常量和本卡里所有版本号已同步改成
+  1.36 / 61 / 62(2026-10-03 到 10-26 这里写的是 1.35 / 60 / 61,更早是 1.34 / 59 / 60、1.33 / 57 / 58)。
+  1.36 没有改动走查经过的任何界面:购买页、设置里的路线卡、菜单路线条、关于页的源文件(`SettingsView`、
+  `MenuView`、`AboutView`、`OnboardingView`、`RoadView`、`RouteStore`、`EntitlementKit`、`Theme`、`ScaledFont`、
+  `.storekit`)和 1.35(`fdb2b5f`)逐字节相同(`git diff fdb2b5f 24684c2` 对这些文件为空)。1.36 改的是单词表里的
+  读音行、「Saved」行的星标、22 句数字 + 量词的读音,走查都不经过。
   **`preflight` 比对的是「在售」版本,不是最新记录**(2026-09-18 改):将来若有更新的版本
   在审,它只会 WARN,并提醒你走查期间线上版本可能变化——每台设备装完后把实际装到的版本号和构建号记下来
   (Mac 看「关于」页,iPhone 用 `ios-state --device`);两台设备装的不是同一个版本时,§L 记录要注明。
 * `preflight` 退出码:**0** 没有 FAIL · **1** 至少一个 FAIL · **3** ASC/API 失败。它检查
-  `"/Applications/Nihongo Ride.app"` 存在、`CFBundleShortVersionString` 1.35、`CFBundleVersion` 60、
+  `"/Applications/Nihongo Ride.app"` 存在、`CFBundleShortVersionString` 1.36、`CFBundleVersion` 61、
   `Contents/_MASReceipt/receipt` 存在;以及(2026-09-17 加入)**这台 Mac 上没有为 `com.jasonye.nihongoride`
   保存本地 StoreKit 测试商店配置**(`~/Library/Group Containers/group.com.apple.storekit/Documents/Persistence/Octane/com.jasonye.nihongoride`)。
   理由:探针实测,这份配置一旦存在,这个 bundle id 的非 App Store 构建就会从**本地测试商店**取商品;它会不会连 App Store
@@ -121,7 +122,7 @@ python3 scripts/stage1_walk.py ios-state --device "<你的 iPhone 名称>"; echo
 ```
 
 第一条只列出和这台 Mac 配对的设备(名称、型号、系统、配对状态),**不查询任何设备上装了什么** —— 从里面抄下你那台 iPhone 的名称。
-第二条只查你点名的那一台,显示已安装的 `com.jasonye.nihongoride` 版本和 build,应为 1.35 / 61。
+第二条只查你点名的那一台,显示已安装的 `com.jasonye.nihongoride` 版本和 build,应为 1.36 / 62。
 
 * 退出码:**0** 读到了 · **2** 设备列表读取失败,或点名的那台读不到(锁着时就是这样 —— 解锁后重跑)。
 * **为什么必须点名:** 配对到这台 Mac 的设备里有不属于你的手机;而读一台设备的 app 列表会在那台设备上挂载开发者磁盘镜像、打开一条
@@ -264,7 +265,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 ```
 
 * **现在还没装 App Store 版本,所以 Mac 二进制那几行不会是 PASS;`preflight` 此时如果退出 1,只要 FAIL 都在 Mac 二进制那几行,就是预期。** 需要看的是:
-  * ASC 那几行必须 PASS(两个平台 1.35 `READY_FOR_SALE`、build mac 60 / iOS 61、0 个进行中的审核提交、购买项目 `APPROVED` 且 `familySharable` false)。
+  * ASC 那几行必须 PASS(两个平台 1.36 `READY_FOR_SALE`、build mac 61 / iOS 62、0 个进行中的审核提交、购买项目 `APPROVED` 且 `familySharable` false)。
     退出码 **3** = ASC/API 失败 → 先查原因,不要继续。
   * 容器那一行:`NihongoRide.entitlement.v1` absent = PASS,这就是检查 1 的前提。**如果显示 present**,这台 Mac 不能做检查 1
     (见文末"一次做不完怎么办"),停下来自己决定。
@@ -275,7 +276,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 
 ---
 
-## 步 1 · 安装 App Store 1.35,并在 iPhone 上拍购买前的 OFFER
+## 步 1 · 安装 App Store 1.36,并在 iPhone 上拍购买前的 OFFER
 
 ### Mac
 
@@ -291,7 +292,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
    python3 scripts/stage1_walk.py mac-state > "$EV/s1-02-mac-state.txt" 2>&1; echo "exit=$?"
    ```
 
-   `preflight` 现在必须是 **exit 0**。`mac-state` 里进程路径在 `/Applications` 下、有 receipt、1.35 / 60、entitlement 记录不存在。
+   `preflight` 现在必须是 **exit 0**。`mac-state` 里进程路径在 `/Applications` 下、有 receipt、1.36 / 61、entitlement 记录不存在。
 5. (可选,和 §K 的计数器问题有关)菜单〔About & Credits〕/〔关于与致谢〕→〔ON-DEVICE COUNTERS〕/〔本机计数〕,截图 `s1-06-mac-about-counters.png`。
 6. ⌘Q 退出。
 
@@ -308,7 +309,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
    python3 scripts/stage1_walk.py ios-state --device "<你的 iPhone 名称>" > "$EV/s1-03-ios-state.txt" 2>&1; echo "exit=$?"
    ```
 
-   应为 1.35 / 61。
+   应为 1.36 / 62。
 5. 〔Settings〕→ 滚到〔THE ROAD〕→ 截图 `s1-04-iphone-settings-row-offer.png`(应为〔The road past Kyōto〕)。
 6. 点这一行 → The Road → **等至少 10 秒**让价格出来 → 截图 `s1-05-iphone-road-offer.png`(报价卡 + 价格按钮)。
 
@@ -324,7 +325,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 
 * **这台 Mac 从未验证过这项购买**:`preflight` 显示 `NihongoRide.entitlement.v1` absent。理由:`Entitlement.swift` 在商店沉默时
   **从不撤销**,所以一台曾经验证过的设备,不管谁登录,都会永远显示〔OPENED〕—— 那会是一次假的 FAIL。这就是检查 1 排在购买之前的原因。
-* 二进制是 `/Applications` 里的 App Store 1.35 (60)。
+* 二进制是 `/Applications` 里的 App Store 1.36 (61)。
 * app 没在运行。
 
 **操作**
@@ -374,7 +375,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 **截图清单:** `g1-00-appstore-signed-out.png` ·(如有)`g1-00b-launch-prompt.png` · `g1-01-settings-row.png` · `g1-02-road-after-10s.png` ·
 `g1-03-restore-card.png` ·(可选)`g1-04-after-retry.png` · `g1-05-mac-state.txt`
 
-**结果(你来填):** 日期时间(含时区)`____` · 设备 `Mac ____ / macOS ____` · app `1.35 (60)` · 退出登录的路径 `____` ·
+**结果(你来填):** 日期时间(含时区)`____` · 设备 `Mac ____ / macOS ____` · app `1.36 (61)` · 退出登录的路径 `____` ·
 设置行 `____` · 价格区域(10 秒后,逐字)`____` · Retry `有 / 无` · Restore `有 / 无` · 崩溃或卡死 `有 / 无` · 你的判断 `____`
 
 ---
@@ -444,7 +445,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 
 * 购买前的 OFFER 截图 `s1-05-iphone-road-offer.png` 已有。理由:没有它,"已拥有"证明不了什么。
 * 步 3 的购买已在 Mac 上完成;iPhone 的 App Store 登录的是**同一个** Apple 账号。
-* iPhone 上是 App Store 1.35 (61)(`s1-03-ios-state.txt`)。
+* iPhone 上是 App Store 1.36 (62)(`s1-03-ios-state.txt`)。
 * **还没有退款。** 理由:退款后看到"未拥有",分不清是恢复失败还是被撤销。
 * 这台 iPhone 不是从一台已验证过的设备的备份恢复出来的。
 
@@ -500,7 +501,7 @@ python3 scripts/stage1_walk.py baseline; echo "exit=$?"
 B:(可选)`g3-11-about-counters-before-delete.png` · `g3-12-ios-state.txt` · `g3-13-settings-row-cold.png` · `g3-14-settings-row-cold-10s.png` · `g3-15-road-cold.png` ·
 (如有)`g3-16-road-cold-after-2min-relaunch.png` ·(如有)`g3-17-road-cold-after-restore.png`
 
-**结果(你来填):** 日期时间(含时区)`____` · 设备 `iPhone ____ / iOS ____` · app `1.35 (61)` ·
+**结果(你来填):** 日期时间(含时区)`____` · 设备 `iPhone ____ / iOS ____` · app `1.36 (62)` ·
 A 启动后 `已拥有 / 未拥有`,是否等了 2 分钟 `____`,是否点了 Restore 及之后 `____` ·
 B 冷安装后 `已拥有 / 未拥有`,是否等了 2 分钟 `____`,是否点了 Restore 及之后 `____` · 你的判断 `____`
 
@@ -513,7 +514,7 @@ B 冷安装后 `已拥有 / 未拥有`,是否等了 2 分钟 `____`,是否点了
 * **在购买之后、退款之前。** 理由:买之前或退款之后,本来就没有东西可继承,"没继承到"是空的。
 * **家人自己的设备,登录的是家庭群组里的第二个 Apple 账号。** 不能用你的 Mac 或 iPhone 换账号来做:它们已经验证过,不管谁登录都显示〔OPENED〕(理由同检查 1)。
 * 这台设备从未验证过这项购买,也不是从你设备的备份恢复的。
-* 装的是 App Store 1.35,而且只从 App Store 装。这台设备如果没和你的 Mac 配对,`ios-state` 读不到它,build 号就没有工具能确认 —— 如实记下这一点。
+* 装的是 App Store 1.36,而且只从 App Store 装。这台设备如果没和你的 Mac 配对,`ios-state` 读不到它,build 号就没有工具能确认 —— 如实记下这一点。
   即使它和你的 Mac 配对了,`ios-state --device` 也会在**家人的**设备上挂载开发者磁盘镜像:要不要对家人的设备跑,先征得家人同意,由你决定。
 * 购买项目 `familySharable` = false(2026-09-16 ASC 实测)。这道检查要验证的是:家人**不会**继承。
 
@@ -544,7 +545,7 @@ B 冷安装后 `已拥有 / 未拥有`,是否等了 2 分钟 `____`,是否点了
 
 **截图清单:** `g2-01-purchase-sharing-control.png` · `g2-02-settings-row.png` · `g2-03-settings-row-10s.png` · `g2-04-road.png` · `g2-05-road-after-relaunch.png`
 
-**结果(你来填):** 日期时间(含时区)`____` · 设备 `____ / 系统 ____` · app `1.35 (____)` · 阳性对照(购买项目共享可见)`是 / 否 / 未查` ·
+**结果(你来填):** 日期时间(含时区)`____` · 设备 `____ / 系统 ____` · app `1.36 (____)` · 阳性对照(购买项目共享可见)`是 / 否 / 未查` ·
 The Road 显示 `报价 / 已拥有` · 重启后 `____` · 你的判断 `____`
 
 ---
@@ -678,3 +679,36 @@ python3 scripts/sales_report.py --since <报表日 YYYY-MM-DD> --until <报表�
 5. **在拍 iPhone 购买前 OFFER 截图之前就购买。** 检查 3 就没有阴性对照,之后补不回来。
 6. **检查 3 里没等 2 分钟、没重启就点了 Restore。** 那一次安装的"不点 Restore 就已拥有"这个观察就丢了,而且 `AppStore.sync()` 已经跑过,无法干净地重来。
 7. **用"卸载 App"代替"删除 App"。** 数据留下,冷安装不冷。
+
+---
+
+## 附注(2026-10-27)· 最小走查 = PLAN-V1.37 §1 的选项 (b):偏离本卡顺序,只有你能选
+
+**它不是上面任何一个有效子集。** 上面列的是步 0–1、步 0–2、步 0–3 + 检查 3 的 A;"步 1 之后跳过步 2、直接步 3"不在里面,
+而偏离事先定好的顺序 = 停下,由你决定。所以 (b) 只在你在 C-1 走查卡上选了它时才走;agent 不替你选,也不在你没选时按它走。
+
+**做什么**(约 15–20 分钟亲手时间,估计,不是测量):
+
+1. **步 0**(agent,终端):`preflight`、`baseline`,和平时一样。
+2. **步 1**(你):Mac 和 iPhone 都从 App Store 装 1.36,**在 iPhone 上拍购买前的 OFFER**(`s1-05-iphone-road-offer.png`),
+   以及 Mac 和 iPhone 各一张 TestFlight 里没有 Nihongo Ride 的图。约 10–12 分钟。**iPhone 必须在手边**:这张截图是检查 3 的
+   阴性对照,买完就补不回来(顺序第 5 条)。
+3. **跳过步 2。**
+4. **步 3**(你):在 Mac 上买一次,和本卡步 3 写的一样(生产环境,你自己的账号,核对弹窗上的价格)。约 5 分钟。
+5. **步 6**(agent):报表日 D 发布后跑 D+1 / D+2 的匹配(`--confirm-known-positive`,不带 `--no-cache`)。
+
+**选它的代价,明说:**
+
+* 步 3 的前提"检查 1 已在这台 Mac 上做完"不成立。买完之后这台 Mac 永远显示〔OPENED〕,所以**选 (b) 就放弃了这台 Mac 上的
+  检查 1**(顺序第 2 条)。以后想补检查 1,只能换一台从未验证过的设备,那又是一次偏离,也由你决定。
+* 放弃检查 1 是**你的记录**:用你自己的话写在 `DRAFTS-STAGE1-RECORDS.md` §4 那一条下面(或者在会话里说,agent 逐字引用)。
+  agent 不写它,也不把它写成"跳过"。
+
+**它留下没做的:**
+
+* **检查 2 和检查 3 以后还能走,但只能在退款之前**(顺序第 1 条)。所以**步 7 的退款要等**:等你把它们走完,或者你用 §4 记下
+  不走。
+* §L 的三道检查一道都没有因为 (b) 而完成。
+
+**它换来的:** 只要步 6 匹配上,checkpoint 就不再因为 "no matched day-0 known-positive purchase" 扣住上界
+(`docs/measurements/stage1-checkpoints.md` 的 N = 100 记录,上界只差这一条)。当天的走查安装照常由 agent 写进登记表。
