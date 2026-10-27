@@ -21,12 +21,19 @@ file pins the PREDICATE that reads the hashes, which no calibration reaches:
 
 The instrument imports check_dictation_readings, which needs numpy and scipy, and this gate runs
 on a python3 that may have neither (CI). The predicate needs only `sha`, `clip` and `to_hira` from
-it, so a stand-in replaces the module: audio is a dict from text to hash, and `to_hira` is written
-here (ァ..ヶ minus 0x60), not taken from the code under test. Every expected verdict is written out
-by hand; none is computed by the function under test.
+it, so a stand-in replaces the module: audio is a dict from text to hash. `to_hira` is the REAL one
+(v1.37 round 2): its definition and KATA_TO_HIRA's are read out of check_dictation_readings.py with
+`ast` and run alone, so no numpy is imported, and the test holds it to a table written out here by
+hand over every character of U+3000..U+30FF. Until round 2 the stand-in had its own copy, so a lossy
+refactor of the real one — the one step in verdict() that turns a byte match into agreement — passed
+this file. Every expected verdict is written out by hand; none is computed by the function under test.
+
+  4. The lexeme set includes ABSORBERS (一日中 widens 一日 and 中; n3-g327, v1.37's second batch), and
+     main()'s disputed_for (make_disputed_for) passes the sentence in (v1.37 round 2).
 
 Run: python3 scripts/test_check_propagated_exclusions.py
 """
+import ast
 import json
 import sys
 import types
@@ -40,12 +47,21 @@ AUDIO = {}          # text -> the "sha1" of its render; a text absent here has n
 SENTENCE = "T"      # the hash every sentence's own render gets
 
 
-def _to_hira(s):
-    return "".join(chr(ord(c) - 0x60) if "ァ" <= c <= "ヶ" else c for c in s)
+def _real_to_hira():
+    """check_dictation_readings.to_hira, built from its own source: KATA_TO_HIRA's assignment and the
+    function's definition, executed alone (they use only chr and range)."""
+    tree = ast.parse((HERE / "check_dictation_readings.py").read_text(encoding="utf-8"))
+    wanted = [n for n in tree.body
+              if (isinstance(n, ast.Assign) and any(getattr(t, "id", None) == "KATA_TO_HIRA" for t in n.targets))
+              or (isinstance(n, ast.FunctionDef) and n.name == "to_hira")]
+    assert len(wanted) == 2, f"found {len(wanted)} of KATA_TO_HIRA and to_hira in check_dictation_readings.py"
+    space = {}
+    exec(compile(ast.Module(body=wanted, type_ignores=[]), "check_dictation_readings.py", "exec"), space)
+    return space["to_hira"]
 
 
 _stub = types.ModuleType("check_dictation_readings")
-_stub.to_hira = _to_hira
+_stub.to_hira = _real_to_hira()
 _stub.clip = lambda text: text
 _stub.sha = lambda text: AUDIO.get(text)
 sys.modules["check_dictation_readings"] = _stub
@@ -113,6 +129,37 @@ class KatakanaCandidates(unittest.TestCase):
         self.assertLessEqual({"ぷりんてぃん", "ぬめりこ", "プリンティン", "ヌメリコ"}, set(P.DECOYS))
 
 
+class RealToHira(unittest.TestCase):
+    """The normaliser verdict() relies on, held to a hand-written table (v1.37 round 2, r2-corpus-1)."""
+
+    def test_katakana_maps_to_hiragana_and_nothing_else_moves(self):
+        wrong = []
+        for code in range(0x3000, 0x3100):
+            c = chr(code)
+            want = chr(code - 0x60) if 0x30A1 <= code <= 0x30F6 else c   # ァ..ヶ -> ぁ..ゖ; all else as is
+            if _stub.to_hira(c) != want:
+                wrong.append(f"U+{code:04X} {c} -> {_stub.to_hira(c)!r}, want {want!r}")
+        self.assertEqual(wrong, [])
+
+    def test_the_spellings_the_records_rest_on(self):
+        self.assertEqual(_stub.to_hira("ニジュッセンチ"), "にじゅっせんち")
+        self.assertEqual(_stub.to_hira("ゴジュッページ"), "ごじゅっぺーじ")
+        self.assertEqual(_stub.to_hira("ツイタチ"), "ついたち")
+
+    def test_proven_misreadings_stay_keep(self):
+        # n3-b020 (十分 = じゅうぶん against じゅっぷん) and n2-g300 (一日 = ついたち against いちにち), the shapes
+        # --calibrate's known-KEEP control re-measures: a lossy normaliser would print RELEASE here.
+        row = corpus_row("n3-b020")
+        self.assertEqual(row["tokens"][3], ["十分", "じゅっぷん"])
+        plan = plan_for(row, [(3, 1, {"じゅっぷん": False, "じゅうぶん": True, "ジュウブン": True})])
+        self.assertEqual(P.verdict(row, plan, {"十分"}),
+                         ("KEEP", [("十分", "じゅっぷん", ["じゅうぶん", "ジュウブン"])]))
+        row = corpus_row("n2-g300")
+        self.assertEqual(row["tokens"][3], ["一日", "いちにち"])
+        plan = plan_for(row, [(3, 1, {"いちにち": False, "イチニチ": False, "ついたち": True})])
+        self.assertEqual(P.verdict(row, plan, {"一日"})[0], "KEEP")
+
+
 class LexemeSpans(unittest.TestCase):
     """corpus-3: a disputed token inside a lexicalised compound disputes the compound."""
 
@@ -157,6 +204,39 @@ class LexemeSpans(unittest.TestCase):
         self.assertEqual(P.disputed_surfaces("紙 かみ -> がみ", "一晩中、紙を折った。"), {"紙"})
         self.assertEqual(P.disputed_surfaces("same word proven misread in another sentence",
                                              "一晩泊まった。", fallback={"一"}), {"一", "一晩"})
+
+    def test_an_absorber_only_lexeme_widens_too(self):
+        # 一日中 is in ABSORBERS and not in LEXICALISED: n3-g327's lexeme (v1.37's second batch).
+        sentence = corpus_row("n3-g327")["exJP"]
+        self.assertEqual(sentence, "今日は一日中外出していました。")
+        self.assertEqual(P.disputed_surfaces("一日 ついたち -> いちにち", sentence), {"一日", "一日中"})
+        self.assertEqual(P.disputed_surfaces("中 ちゅう -> じゅう", sentence), {"中", "一日中"})
+
+    def test_mains_disputed_for_passes_the_sentence(self):
+        # The function main() uses, on the committed record and corpus: n3-g327's recorded complaint names
+        # 中 alone, n2-b034's 一 alone, and each must be widened to its lexeme.
+        record = json.loads((REPO / "docs/measurements/dictation-reading-mismatches.json")
+                            .read_text(encoding="utf-8"))["excluded"]
+        corpus = [corpus_row(i) for i in ("n3-g327", "n2-b034", "n4-b186")]
+        disputed_for = P.make_disputed_for(record, corpus)
+        self.assertEqual(disputed_for("n3-g327"), {"中", "一日中"})
+        self.assertEqual(disputed_for("n2-b034"), {"一", "一晩", "一晩中"})
+        self.assertEqual(disputed_for("n4-b186"), {"一", "一晩"})
+        spec_record, _ = P.apply_spec({"excluded": record}, {"evidence": "x", "rows": {
+            "n3-g327": "一日 ついたち -> いちにち"}}, corpus)
+        self.assertEqual(P.make_disputed_for(spec_record["excluded"], corpus)("n3-g327"), {"一日", "一日中"})
+
+    def test_main_takes_its_disputed_for_from_make_disputed_for(self):
+        # main() needs audio, so it is not run here; its source is read instead (ast, never executed):
+        # the record-writing path must call make_disputed_for and must not build a disputed set itself.
+        tree = ast.parse((HERE / "check_propagated_exclusions.py").read_text(encoding="utf-8"))
+        main = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "main")
+        calls = {n.func.id for n in ast.walk(main) if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
+        self.assertNotIn("disputed_surfaces", calls)
+        bound = [n.value for n in ast.walk(main) if isinstance(n, ast.Assign)
+                 and any(getattr(t, "id", None) == "disputed_for" for t in n.targets)]
+        self.assertEqual([ast.unparse(v) for v in bound], ["make_disputed_for(mism['excluded'], every)"])
+        self.assertFalse([n for n in ast.walk(main) if isinstance(n, ast.FunctionDef) and n.name == "disputed_for"])
 
     def test_a_disputed_word_never_confirmed_is_silent(self):
         # n2-g210's shape (v1.28): another span agreeing does not release the sentence.
