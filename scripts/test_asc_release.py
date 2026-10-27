@@ -37,6 +37,11 @@ WHAT ELSE IS HERE, each a mutation with a paired control that must fire:
     arriving in the release path.
   * **Preflight**, rule by rule: every contract that has lived in a comment since v1.5 gets a
     config that violates it and must be rejected, against the real v1.30 config which must pass.
+  * **Three refusals added for v1.37's round-1 review**, each with a control that proceeds: a
+    missing or partial App Review contact refuses before any call in every mode (it used to
+    refuse after macOS's version and What's New were written); `--submit` refuses before any
+    write unless every target's version is AFTER_APPROVAL; and `find_build` refuses a build with
+    this release's number and platform but another marketing version.
 
     python3 scripts/test_asc_release.py
 """
@@ -110,7 +115,9 @@ def fresh_state(module, sc):
             versions[t["platform"]] = {
                 "id": f"ver-{t['platform']}",
                 "state": sc.get("version_states", {}).get(t["platform"],
-                                                          "PREPARE_FOR_SUBMISSION")}
+                                                          "PREPARE_FOR_SUBMISSION"),
+                "release_type": sc.get("release_types", {}).get(t["platform"],
+                                                                "AFTER_APPROVAL")}
     submissions = {}
     if sc.get("open_submissions"):
         for t in module.TARGETS:
@@ -150,6 +157,12 @@ def make_fake(state, module, sc, log):
         log.append((method, ep, copy.deepcopy(body)))
 
         # --- versions -----------------------------------------------------------------------
+        if method == "GET" and "/appStoreVersions?filter[versionString]=" in ep \
+                and "releaseType" in ep:
+            # the module's release-type read: every platform's record of this version at once
+            return {"data": [{"id": v["id"], "attributes": {
+                "platform": platform, "appStoreState": v["state"],
+                "releaseType": v["release_type"]}} for platform, v in state["versions"].items()]}
         if method == "GET" and "/appStoreVersions?filter[platform]=" in ep:
             platform = ep.split("filter[platform]=")[1].split("&")[0]
             v = state["versions"].get(platform)
@@ -161,7 +174,8 @@ def make_fake(state, module, sc, log):
         if method == "POST" and ep == "/v1/appStoreVersions":
             platform = body["data"]["attributes"]["platform"]
             state["versions"][platform] = {"id": f"ver-{platform}",
-                                           "state": "PREPARE_FOR_SUBMISSION"}
+                                           "state": "PREPARE_FOR_SUBMISSION",
+                                           "release_type": "AFTER_APPROVAL"}
             return {"data": {"id": f"ver-{platform}"}}
         if method == "GET" and ep.startswith("/v1/appStoreVersions/ver-") and "?" not in ep \
                 and ep.count("/") == 3:
@@ -209,7 +223,8 @@ def make_fake(state, module, sc, log):
             bid = ep.split("/v1/builds/")[1].split("/")[0]
             platform = next(t["platform"] for t in module.TARGETS
                             if f"b{t['build_num']}" == bid)
-            return {"data": {"attributes": {"platform": platform}}}
+            version = sc.get("build_versions", {}).get(platform, module.VERSION)
+            return {"data": {"attributes": {"platform": platform, "version": version}}}
         if method == "PATCH" and ep.endswith("/relationships/build"):
             return {}
 
@@ -329,6 +344,36 @@ def is_iap_location_read(call):
     return False
 
 
+# The two other enumerated divergences, both added for v1.37's round-1 review and both reads:
+#
+#   * The release-type read (`Release.release_types`): one GET of every platform's record of this
+#     version with `releaseType` in its fields. v1.30 never read the release type, so a version
+#     created MANUAL would read back as submitted (PENDING_DEVELOPER_RELEASE) and never release.
+#     Lifted out of the strict diff on the module's side only (v1.30 has no such call), and asserted
+#     instead by `test_release_type`.
+#   * The build's preReleaseVersion read asks for `platform,version` where v1.30 asked for
+#     `platform`, so `find_build` can refuse a same-numbered build of another marketing version.
+#     The v1.30 call is rewritten to the module's form before comparing, and ONLY that exact
+#     endpoint shape; `test_find_build_version` asserts the behaviour.
+def is_release_type_read(call):
+    """The module's release-type GET, and nothing else."""
+    method, endpoint = call[0], call[1]
+    return (method == "GET" and "/appStoreVersions?filter[versionString]=" in endpoint
+            and "fields[appStoreVersions]=platform,appStoreState,releaseType" in endpoint)
+
+
+V130_PRERELEASE_FIELDS = "/preReleaseVersion?fields[preReleaseVersions]=platform"
+
+
+def as_ported(call):
+    """v1.30's call as the module now makes it: only the preReleaseVersion fields differ."""
+    method, endpoint, body = call
+    if method == "GET" and endpoint.startswith("/v1/builds/") \
+            and endpoint.endswith(V130_PRERELEASE_FIELDS):
+        return (method, endpoint + ",version", body)
+    return call
+
+
 def diff_logs(old, new):
     """The first place two call logs disagree, rendered so it can be read."""
     if old == new:
@@ -397,11 +442,21 @@ def test_differential(module, problems):
     for name, sc, expect_failures in SCENARIOS:
         old_log, old_fail, old_state, _ = drive_old(module, sc)
         new_log, new_fail, new_state, _ = drive_new(module, sc)
-        trimmed_old = [c for c in old_log if not is_iap_location_read(c)]
-        trimmed_new = [c for c in new_log if not is_iap_location_read(c)]
+        trimmed_old = [as_ported(c) for c in old_log if not is_iap_location_read(c)]
+        trimmed_new = [c for c in new_log
+                       if not is_iap_location_read(c) and not is_release_type_read(c)]
         if [c for c in new_log if is_iap_location_read(c) and c[0] != "GET"]:
             problems.append(f"{name}: an IAP-location call is not a read — the exemption above "
                             "only covers reads, and a write hid inside it")
+        if [c for c in old_log if is_release_type_read(c)]:
+            problems.append(f"{name}: v1.30 made a call shaped like the module's release-type "
+                            "read, so the exemption above is swallowing one of v1.30's calls")
+        reads = len([c for c in new_log if is_release_type_read(c)])
+        expected_reads = 1 if sc["phase"] in ("do_submit", "do_dry_run") else 0
+        if reads != expected_reads:
+            problems.append(f"{name}: the module read the release type {reads} time(s), not "
+                            f"{expected_reads}, so the exemption above hides a change in the call "
+                            "sequence")
         difference = diff_logs(trimmed_old, trimmed_new)
         verdict = "IDENTICAL" if difference is None else "DIFFERENT"
         print(f"  {name:60s} {len(old_log):3d} calls  {len(old_fail)} fail  {verdict}")
@@ -565,6 +620,12 @@ def test_preflight(module, problems):
          "not a plain integer"),
         ("a purchase declared without a product id",
          dict(iap={"id": "6806755720", "product_id": ""}), "product_id"),
+        ("no App Review contact at all", dict(contact={}), "contact is not configured"),
+        ("an App Review contact without its phone",
+         dict(contact={k: v for k, v in module.CONTACT.items() if k != "contactPhone"}),
+         "contactPhone missing"),
+        ("an App Review contact with an empty email",
+         dict(contact={**module.CONTACT, "contactEmail": ""}), "contactEmail missing"),
     ]
     for name, override, expected in cases:
         release = release_from(module, **override)
@@ -630,6 +691,160 @@ def test_containment_probe(module, problems):
                         "containment, only pessimism")
 
 
+def is_write(call):
+    return call[0] != "GET"
+
+
+def test_contact(module, problems):
+    """A missing or partial App Review contact refuses before ANY call, on both platforms.
+
+    The defect this pins: the refusal used to sit in `set_review_detail`, so `--metadata
+    --platform=both` created macOS's version and wrote its What's New, then exited before the
+    review detail and before iOS was visited. The scenario is the one that bit: versions created
+    fresh, so the first write is a POST.
+    """
+    partial = {k: v for k, v in module.CONTACT.items() if k != "contactPhone"}
+    for mode in ("--metadata", "--submit", "--dry-run"):
+        sc = dict(phase="do_metadata")
+        state, log = fresh_state(module, sc), []
+        release = release_from(module, contact=partial)
+        release.asc = make_fake(state, module, sc, log)
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                asc_release.main(release, argv=["submit_x.py", mode])
+            exited = None
+        except (SystemExit, Exception) as exc:                     # noqa: BLE001
+            exited = exc
+        refused = exited is not None and "contactPhone missing" in str(exited)
+        print(f"  {mode:10s} with the contact's phone missing -> "
+              f"{len(log)} ASC call(s), {'REFUSED' if refused else 'NOT REFUSED'}")
+        if not refused:
+            problems.append(f"{mode} with a partial App Review contact was not refused by name "
+                            f"(exit: {exited!r})")
+        if log:
+            problems.append(f"{mode} with a partial App Review contact made {len(log)} ASC call(s) "
+                            f"before refusing, the first {log[0][0]} {log[0][1]} — "
+                            f"{len([c for c in log if is_write(c)])} of them writes")
+        if state["versions"]:
+            problems.append(f"{mode}: a version was created before the contact refusal: "
+                            f"{state['versions']}")
+
+    # Control: the same run with the complete contact writes both platforms' review details, so
+    # the zero above is the refusal and not a harness that never reaches the API.
+    sc = dict(phase="do_metadata")
+    state, log = fresh_state(module, sc), []
+    release = release_from(module, contact={**module.CONTACT, "contactNote": "not for Apple"})
+    release.asc = make_fake(state, module, sc, log)
+    with contextlib.redirect_stdout(io.StringIO()):
+        release.do_metadata()
+    details = [c for c in log if c[1] in ("/v1/appStoreReviewDetails",)
+               or c[1].startswith("/v1/appStoreReviewDetails/")]
+    print(f"  control: complete contact -> {len(details)} review-detail write(s)")
+    if len(details) != 2:
+        problems.append(f"contact control wrote {len(details)} review details, not 2 — the "
+                        "refusal above may be a harness that never reaches the API")
+    sent = [set(c[2]["data"]["attributes"]) for c in details]
+    expected = set(asc_release.CONTACT_FIELDS) | {"notes", "demoAccountRequired"}
+    if any(keys != expected for keys in sent):
+        problems.append(f"the review detail sent {sent}, not exactly the four contact fields plus "
+                        "notes and demoAccountRequired — a key in the local file reached Apple")
+
+    # review_contact on JSON that is not an object: a named refusal, not a traceback.
+    import os
+    saved = os.environ.get("NIHONGO_ASC_CONTACT")
+    for raw in ("5", "[1, 2]", "{not json"):
+        os.environ["NIHONGO_ASC_CONTACT"] = raw
+        try:
+            asc_release.review_contact()
+            outcome = "returned"
+        except SystemExit as exc:
+            outcome = "refused" if "could not be read" in str(exc) else f"exit {exc}"
+        except Exception as exc:                                    # noqa: BLE001
+            outcome = f"crashed with {type(exc).__name__}"
+        print(f"  NIHONGO_ASC_CONTACT={raw!r:12s} -> {outcome}")
+        if outcome != "refused":
+            problems.append(f"review_contact on {raw!r} {outcome}, not a named refusal")
+    if saved is None:
+        os.environ.pop("NIHONGO_ASC_CONTACT", None)
+    else:
+        os.environ["NIHONGO_ASC_CONTACT"] = saved
+
+
+def test_release_type(module, problems):
+    """--submit refuses, before ANY write on EITHER platform, unless every version is
+    AFTER_APPROVAL; the dry run prints the same verdict; and the control proceeds."""
+    for bad_platform in ("MAC_OS", "IOS"):
+        for bad in ("MANUAL", "SCHEDULED", None):
+            sc = dict(phase="do_submit", versions_exist=True, release_types={bad_platform: bad})
+            state, log = fresh_state(module, sc), []
+            release = release_from(module)
+            release.asc = make_fake(state, module, sc, log)
+            try:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    release.do_submit()
+                exited = None
+            except SystemExit as exc:
+                exited = exc
+            refused = exited is not None and "releaseType" in str(exited)
+            writes = [c for c in log if is_write(c)]
+            if not refused or writes:
+                problems.append(f"--submit with {bad_platform} releaseType {bad!r}: "
+                                f"{'refused' if refused else 'NOT refused'}, {len(writes)} write(s)"
+                                f"{' starting ' + writes[0][0] + ' ' + writes[0][1] if writes else ''}")
+    print("  --submit with MANUAL / SCHEDULED / unset on either platform -> refused, 0 writes"
+          if not any("releaseType" in p for p in problems) else "  --submit release type: RED")
+
+    # The dry run says it out loud.
+    sc = dict(phase="do_dry_run", versions_exist=True, release_types={"IOS": "MANUAL"})
+    log = []
+    release = release_from(module)
+    release.asc = make_fake(fresh_state(module, sc), module, sc, log)
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        release.do_dry_run()
+    out = buf.getvalue()
+    said = "releaseType 'MANUAL' [--submit WOULD REFUSE]" in out \
+        and "releaseType 'AFTER_APPROVAL' [ok]" in out
+    print(f"  dry run with iOS MANUAL -> {'prints the refusal' if said else 'SILENT'}")
+    if not said:
+        problems.append("the dry run does not print each target's release type and the "
+                        "refusal --submit would make")
+
+    # Control: AFTER_APPROVAL on both submits both.
+    log, failures, _, out = drive_new(module, dict(phase="do_submit", versions_exist=True))
+    if len(submits_in(log)) != 2 or failures:
+        problems.append(f"release-type control: AFTER_APPROVAL on both submitted "
+                        f"{len(submits_in(log))}, failures {failures}\n{out}")
+
+
+def test_find_build_version(module, problems):
+    """A build with this release's number and platform but another marketing version is not
+    this release's build: nothing is attached, and the control attaches both."""
+    for platform in ("MAC_OS", "IOS"):
+        sc = dict(phase="do_submit", versions_exist=True, build_versions={platform: "1.29"})
+        state, log = fresh_state(module, sc), []
+        release = release_from(module)
+        release.asc = make_fake(state, module, sc, log)
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                release.do_submit()
+            exited = False
+        except SystemExit:
+            exited = True
+        wrong = [c for c in log if c[0] == "PATCH"
+                 and c[1] == f"/v1/appStoreVersions/ver-{platform}/relationships/build"]
+        print(f"  {platform} build of version 1.29 under 1.30's number -> "
+              f"{'stopped' if exited else 'ran on'}, {len(wrong)} attach(es) to {platform}, "
+              f"{len(submits_in(log))} submission(s)")
+        if not exited or wrong or submits_in(log):
+            problems.append(f"find_build accepted a {platform} build of another marketing "
+                            f"version: {len(wrong)} attach(es), exited={exited}")
+    log, failures, _, _ = drive_new(module, dict(phase="do_submit", versions_exist=True))
+    attaches = [c for c in log if c[0] == "PATCH" and c[1].endswith("/relationships/build")]
+    if len(attaches) != 2:
+        problems.append(f"find_build control attached {len(attaches)} builds, not 2")
+
+
 def main():
     problems = []
     module = load_v130()
@@ -647,6 +862,12 @@ def main():
     test_no_iap_release(module, problems)
     print("\nPREFLIGHT — contracts that used to be comments")
     test_preflight(module, problems)
+    print("\nTHE APP REVIEW CONTACT — refused before any call")
+    test_contact(module, problems)
+    print("\nTHE RELEASE TYPE — AFTER_APPROVAL, read before any write")
+    test_release_type(module, problems)
+    print("\nTHE BUILD — its marketing version")
+    test_find_build_version(module, problems)
 
     if problems:
         print(f"\n{len(problems)} FAILURE(S):")
