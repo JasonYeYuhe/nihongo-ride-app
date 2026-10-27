@@ -41,7 +41,16 @@ Three ways, and `--calibrate` runs all of them:
     exactly. This one proves only that the string handling is faithful — it carries no
     linguistic weight, and is not counted as calibration on its own.
 
-The decoys come in hiragana AND katakana (v1.37 round 1), because a candidate may be either:
+The decoys come in hiragana AND katakana (v1.37 round 1), because a candidate may be either. They
+calibrate RENDERING only: a katakana decoy text never renders byte-identical to the sentence by
+accident. They are compared with the sentence's audio directly, never through verdict(), so they say
+nothing about the comparison below; the known-KEEP control does (v1.37 round 2):
+
+  * **Known KEEP through verdict().** Sentences 1b has proven misread (KNOWN_KEEP: n3-b020 十分 =
+    じゅうぶん, n5-b018 and four v1.37 sentences 一日 = ついたち) must come out KEEP when their plans
+    are put through verdict() with this file's own disputed set. A normaliser that turned a wrong
+    spelling into the corpus reading (a range typo in to_hira, a fold of じ/ぢ) would make one
+    RELEASE, and the positive control cannot see that: it fails only on a KEEP.
 
 KATAKANA CANDIDATES (v1.37). A span spelled in katakana can render differently from the same
 reading in hiragana, and for n5-b105 (二十センチ) and n4-b104 (五十ページ) only the katakana
@@ -49,7 +58,8 @@ spelling of the corpus reading is byte-identical to the sentence. A candidate is
 corpus reading is a reading, so verdict() compares them after katakana -> hiragana. Until v1.37
 round 1 it compared strings, which reported ニジュッセンチ as a DISAGREEMENT with にじゅっせんち —
 the corpus reading in the other script — and the v1.37 re-measure needed a scratch-only patch to
-say RELEASE. The patch is this file now, with katakana decoys to calibrate it.
+say RELEASE. The patch is this file now. Katakana decoys show a katakana render never matches by
+accident; the known-KEEP control shows the comparison never turns a proven misreading into agreement.
 
 A DISPUTED TOKEN INSIDE A LEXEME IS DISPUTED AS THE LEXEME (v1.37 round 1). n2-b034's complaint
 names 一 alone ("一 いち -> ひと"), and its correction changed 一晩中 as a whole (いちばんちゅう ->
@@ -79,9 +89,16 @@ from check_counter_readings import ABSORBERS, LEXICALISED
 
 REPO = Path(__file__).resolve().parent.parent
 MAX_SPAN = 3
-# Not readings of anything, in both scripts: a katakana candidate is compared after katakana ->
-# hiragana (verdict()), so the katakana path needs its own negative control (v1.37 round 1).
+# Not readings of anything, in both scripts. A katakana candidate is rendered as katakana, so the
+# katakana decoys show that a katakana render never matches the sentence by accident (v1.37 round 1).
+# They are compared with the audio directly and do not exercise verdict()'s katakana -> hiragana
+# comparison; KNOWN_KEEP does (v1.37 round 2).
 DECOYS = ["ぷりんてぃん", "ぬめりこ", "プリンティン", "ヌメリコ"]
+# Sentences instrument 1b has PROVEN misread against their corpus reading, each re-measured since: n3-b020
+# (十分 = じゅうぶん, v1.36 and v1.37), n5-b018 (一日 = ついたち, v1.29 and v1.37) and the four v1.37
+# second-batch sentences (一日 = ついたち against the corrected いちにち). --calibrate puts each through
+# verdict() with its recorded complaint and requires KEEP.
+KNOWN_KEEP = ("n3-b020", "n5-b018", "n2-g300", "n2-b029", "n2-b1064", "n4-b151")
 
 # Readings a lexeme takes that SudachiPy's per-token lookup does not offer for the span.
 EXTRA = {
@@ -132,6 +149,43 @@ def disputed_surfaces(heard, sentence, fallback=()):
         disputed = set(fallback)
     return disputed | {lex for lex in LEXEMES if lex in sentence
                        and any(w in lex and w != lex for w in disputed)}
+
+
+def proven_surfaces(mism_rows):
+    """Every surface a 'proven' row names: the fallback for a row with no complaint of its own."""
+    out = set()
+    for r in mism_rows:
+        if not r["evidence"].startswith("proven"):
+            continue
+        parts = complaint_parts(r["heardInstead"])
+        if len(parts) >= 3 and parts[1] != "->":
+            out.add(parts[0])
+    return out
+
+
+def make_disputed_for(mism_rows, corpus_rows):
+    """The disputed_for main() uses: row id -> the surfaces that must be CONFIRMED before that sentence
+    may be released, from its record row and its sentence (so the lexeme widening reaches every real
+    run; v1.37 round 2 found a disputed_for that dropped the sentence would have passed every test)."""
+    by_id = {r["id"]: r for r in mism_rows}
+    exjp = {r["id"]: r["exJP"] for r in corpus_rows}
+    fallback = proven_surfaces(mism_rows)
+
+    def disputed_for(row_id):
+        return disputed_surfaces(by_id.get(row_id, {}).get("heardInstead"), exjp.get(row_id, ""), fallback)
+    return disputed_for
+
+
+def complaint_candidates(heard):
+    """{surface: {the two readings}} a complaint names, added to that span's candidates; {} for none.
+
+    `parts[1] != "->"` matters: on a three-part complaint ("かみ -> がみ") parts[1] IS the arrow, and
+    injecting it would put the literal string "->" into the candidate readings. No row has that shape
+    today; the guard is here so none ever silently does."""
+    parts = complaint_parts(heard)
+    if len(parts) >= 4 and "->" in parts and parts[1] != "->":
+        return {parts[0]: {parts[1], parts[-1]}}
+    return {}
 
 
 def apply_spec(mism, spec, corpus_rows):
@@ -300,6 +354,7 @@ def main():
     mism = json.loads((REPO / "docs/measurements/dictation-reading-mismatches.json")
                       .read_text(encoding="utf-8"))
     every = C.build_rows()
+    record_rows = mism["excluded"]           # the record as committed, before any --spec overlay
     spec = None
     if args.spec:
         spec = json.loads(Path(args.spec).read_text(encoding="utf-8"))
@@ -320,21 +375,7 @@ def main():
     # aiming a correct predicate at a different population. A predicate that is right for one
     # population and silently vacuous on another is this project's oldest shape wearing a
     # population instead of a call site.
-    global_proven = set()
-    for r in mism["excluded"]:
-        if not r["evidence"].startswith("proven"):
-            continue
-        parts = complaint_parts(r["heardInstead"])
-        if len(parts) >= 3 and parts[1] != "->":
-            global_proven.add(parts[0])
-
-    exjp = {r["id"]: r["exJP"] for r in every}
-
-    def disputed_for(row_id):
-        """Surfaces that must be CONFIRMED before this sentence may be released."""
-        return disputed_surfaces(by_id.get(row_id, {}).get("heardInstead"), exjp.get(row_id, ""),
-                                 global_proven)
-
+    disputed_for = make_disputed_for(mism["excluded"], every)
     by_id = {r["id"]: r for r in mism["excluded"]}
     rows = [r for r in every if r["id"] in want]
     # A withheld id with no buildable row is a REAL condition, not a glitch: build_rows only
@@ -409,26 +450,40 @@ def main():
         if spurious:
             print(f"    CALIBRATION-FAIL: byte identity is not proof — {spurious[:4]}")
             rc = 4
+
+        # 4. known KEEP through verdict() — the comparison's own negative control (v1.37 round 2).
+        # Read with the record as committed, not a --spec overlay, so a spec cannot re-point a control.
+        keep_rows = [r for r in every if r["id"] in KNOWN_KEEP]
+        record_by_id = {r["id"]: r for r in record_rows}
+        keep_disputed = make_disputed_for(record_rows, every)
+        keep_plans, _ = analyse(keep_rows, readings_of, decoys=False, complaint={
+            r["id"]: c for r in keep_rows
+            if (c := complaint_candidates(record_by_id.get(r["id"], {}).get("heardInstead")))})
+        not_keep = [(r["id"], v) for r in keep_rows
+                    if (v := verdict(r, keep_plans[r["id"]], keep_disputed(r["id"]))[0]) != "KEEP"]
+        not_keep += [(i, "not buildable") for i in KNOWN_KEEP if i not in {r["id"] for r in keep_rows}]
+        print(f"  known KEEP: {len(keep_rows) - sum(1 for _, v in not_keep if v != 'not buildable')} of "
+              f"{len(KNOWN_KEEP)} sentences proven misread stay KEEP through verdict()")
+        if not_keep:
+            print(f"    CALIBRATION-FAIL: the comparison releases a proven misreading — {not_keep}")
+            rc = 4
         if rc:
             print("\nInstrument not trustworthy. No verdict below may be used.")
             return rc
-        print("  OK — decoys never match, and 1b agrees with instrument 1 at scale.\n")
+        print("  OK — decoys never match, 1b agrees with instrument 1 at scale, and no known KEEP is "
+              "released.\n")
         calibration = {
             "rebuildIdentity": f"{rebuild_ok}/{len(rows)} — string handling only, no linguistic weight",
             "positiveControl": (f"instrument 1 proved {len(sample)} sentences say their corpus "
                                 f"reading; 1b contradicts {len(disagreed)}"),
             "negativeControl": (f"{decoy_count} decoy substitutions, {len(spurious)} spurious "
                                 f"byte matches"),
+            "knownKeep": (f"{len(KNOWN_KEEP)} sentences proven misread ({', '.join(KNOWN_KEEP)}) stay "
+                          f"KEEP through verdict()"),
         }
 
-    complaint = {}
-    for r in rows:
-        parts = complaint_parts(by_id.get(r["id"], {}).get("heardInstead"))
-        # `parts[1] != "->"` matters: on a three-part complaint ("かみ -> がみ") parts[1] IS the
-        # arrow, and injecting it would put the literal string "->" into the candidate readings.
-        # No row has that shape today; the guard is here so none ever silently does.
-        if len(parts) >= 4 and "->" in parts and parts[1] != "->":
-            complaint[r["id"]] = {parts[0]: {parts[1], parts[-1]}}
+    complaint = {r["id"]: c for r in rows
+                 if (c := complaint_candidates(by_id.get(r["id"], {}).get("heardInstead")))}
     plans, _ = analyse(rows, readings_of, decoys=False, complaint=complaint)
     out = {"release": [], "keep": [], "silent": []}
     details = {}
