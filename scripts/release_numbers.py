@@ -18,7 +18,8 @@ REPO = Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "Sources/VocabKit/Resources"
 
 # Set to this release's corpus-change manifest, or None when the release changes no corpus.
-CORPUS_MANIFEST = "docs/measurements/v136-reading-manifest.json"   # v1.36: n5-kazoku 四人 よにん (PLAN-V1.36 §C item 3) + 8 counter readings (§I) + 12 sound-change readings (§I addendum 2)
+CORPUS_MANIFEST = "docs/measurements/v137-reading-manifest.json"   # v1.37: 12 number + counter readings (PLAN-V1.37 §C P0-2)
+# Was "docs/measurements/v136-reading-manifest.json" for v1.36 (n5-kazoku 四人 よにん + 8 counter readings + 13 sound-change readings).
 # Was "docs/measurements/v135-residue-manifest.json" for v1.35 (7 residue + 13 何 + 2 round-3 corrections).
 # Was None from v1.27 through v1.34 ("v1.30 ships the paid route and touches no vocabulary file").
 
@@ -26,7 +27,12 @@ CORPUS_MANIFEST = "docs/measurements/v136-reading-manifest.json"   # v1.36: n5-k
 # Advanced with every release. v1.27 moved it from 60c9ed9 (the v1.25 baseline) to the v1.26
 # release commit, so "this release" means since 1.26 and not since 1.25. Leaving it behind is how
 # a delta silently becomes a two-release total — the stale-number failure this module exists for.
-BASELINE_REF = "fdb2b5f"      # release(v1.35): the tree 1.35 (macOS 60 / iOS 61) was built from
+BASELINE_REF = "24684c2"      # the tree 1.36 (macOS 61 / iOS 62) was built from and submitted (2026-10-27)
+# Moved 2026-10-27 in the same commit as v1.37's first corpus change and CORPUS_MANIFEST's move to v1.37,
+# so the two name one window from the start. 1.36 is in App Review, not yet on sale, and v1.37 is
+# submitted only after 1.36 is live on both platforms (PLAN-V1.37 §I): left at fdb2b5f, every "this
+# release" delta would span v1.36 + v1.37 and the vocabulary gate would see v1.36's corrections as
+# undeclared. Was fdb2b5f (release(v1.35): the tree 1.35, macOS 60 / iOS 61, was built from) through v1.36.
 # Also the window run_all_gates.sh's LOCAL vocabulary gate inspects (v1.35 round 3): it used
 # HEAD~1, which a release's closing version-bump commit empties. One ref, read by both.
 # Moved 2026-10-07 in the same commit as v1.36's first corpus change and CORPUS_MANIFEST's move to

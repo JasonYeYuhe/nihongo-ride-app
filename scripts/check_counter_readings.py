@@ -139,7 +139,7 @@ reading of the final unit with its counter:
     匹   1 いっぴき  3 さんびき  6 ろっぴき  8 はっぴき  10 じゅっぴき | じっぴき
     個   1 いっこ  6 ろっこ  8 はっこ  10 じゅっこ | じっこ
     冊   1 いっさつ  8 はっさつ  10 じゅっさつ | じっさつ
-    点   1 いってん  6 ろってん  8 はってん  10 じゅってん | じってん
+    点   1 いってん  6 ろってん | ろくてん  8 はってん | はちてん  10 じゅってん | じってん   (v1.37, below)
     泊   1 いっぱく  3 さんぱく  6 ろっぱく  8 はっぱく  10 じゅっぱく | じっぱく
     千   after 3 さんぜん, 8 はっせん            百   after 3 さんびゃく, 6 ろっぴゃく, 8 はっぴゃく
 The final unit "10" is a number ending in 十 (or, in digits, in 0 over a non-zero tens digit). The
@@ -177,6 +177,45 @@ judged), 才 for 歳, a counter in kana in exJP (いっぽん), the 千 / 百 of
 and a sense of 分 the English does not reveal. It errs toward flagging, never toward a correction:
 a legitimate form a row does not list (七分 しちふん) or a lexeme not in COUNTER_ABSORBERS (八百万
 やおよろず) is a mismatch, for the 2-of-2 refuters to reject.
+
+THE v1.37 ROWS (PLAN-V1.36 §H "Recorded for v1.37, not corrected"; PLAN-V1.37 §C P0-2)
+---------------------------------------------------------------------------------------
+Why: v1.36's review found 13 shipped sentences whose number + counter reading no table above enumerates:
+一週間 taught いちしゅうかん (n2-b511, in the dictation pool; n3-b310, n4-g189), 第一章 だいいちしょう
+(n1-b1418, pool), 一等 いちとう (n2-g285), 一晩 いちばん (n4-b186) and 一晩中 いちばんちゅう (n2-b034), and
+…じゅう before a loanword counter: 二十センチ (n5-b105, pool), 五十ページ (n4-b104, pool), 十センチ (n2-b1180),
+十パーセント (n3-k061), 十ページ (n5-g010) and 六十キロ (n2-b277, pool), which v1.36's 1b proved the voice
+says ろくじゅっきろ. The same judge, population, output key and calibration as the sound-changing rows:
+    週    1 いっしゅう    8 はっしゅう    10 じゅっしゅう | じっしゅう
+    週間  1 いっしゅうかん  8 はっしゅうかん  10 じゅっしゅうかん | じっしゅうかん
+    章    1 いっしょう    8 はっしょう    10 じゅっしょう | じっしょう
+    等    1 いっとう     8 はっとう | はちとう   10 じゅっとう | じっとう
+    キロ センチ ページ パーセント   10 only: じゅっきろ | じっきろ, じゅっせんち …, じゅっぺーじ …, じゅっぱーせんと …
+The 8 of 週, 週間 and 章 follows the s-initial rows above (冊 はっさつ, 歳 はっさい): はっ only, so a はち
+form is a mismatch for the refuters, as the table errs toward flagging. The 8 of 等 follows 点; its 6 is absent (六等 ろくとう, 六等星
+ろくとうせい: it reads as alone).
+A loanword counter is judged after a number ending in 十 and after nothing else: 一キロ いちきろ, 一ページ
+いちぺーじ and 六ページ ろくぺーじ are standard, and the shipped n5-g001 / g006 / g008 page series reads them
+so — the 1 / 6 / 8 rows of the native counters do not transfer to loanwords, and a row that applied them
+would flag correct sentences. キロ is matched as a prefix, so 十キロメートル is judged at 十キロ.
+The 等 of 等分 (三等分 'three equal parts') is another word and is not judged (NOT_THE_COUNTER).
+In the lexicalised table: 一晩 ひとばん and 一晩中 ひとばんじゅう. 一晩中 is also an absorber, so its 一晩 is
+judged once, as 一晩中.
+
+The 点 row's 6 and 8 (step 1 of the v1.37 corpus item). Until v1.37 the row listed 六点 as ろってん only and
+八点 as はってん only. A v1.36 refuter of n3-b678 noted that ろくてん and はちてん are common, accepted readings,
+so a hit there would be a false positive. They are ACCEPTED, not tolerated: 'tolerated, flag-only' is this
+table's word for a form that is heard but that the dictionaries do not list (三階 さんかい, …じゅうさい), and
+ろくてん / はちてん are listed standard forms, like the はちふん, はちかい this table already accepts beside
+はっぷん, はっかい. For a counter beginning with t the 6 and the 8 geminate optionally. The shipped corpus has no
+六点 or 八点 in any field this table reads (the six 六点 / 八点 in n1, n2, n5 and passages.json are all in
+exZH), so the change moves no judgement on it; it only keeps a future one from going to the refuters.
+
+What the v1.37 rows do not inspect is printed by every run (the 'complement' block, and 'complement' in the
+--json output): each new counter written after a numeral at a digit its row does not list (二週間, 三等分's
+三等, 一ページ …), every katakana word after a number ending in 十 that is not enumerated, and the example
+sentences that carry exJP but no exKana (n5-k008 「荷物は10キロあります。」), which no table reads. Also not
+seen: 週 and 章 in kana, 二晩 ふたばん and every other 晩, and a number in kana in exJP.
 
 CALIBRATION BEFORE TRUST (`--calibrate`). It drives this file's documented entry point as a
 subprocess, never its functions, on four trees:
@@ -244,6 +283,14 @@ subprocess, never its functions, on four trees:
       reverse, and their difference is release_numbers' withheldThisRelease while release_numbers
       measures this manifest's release (its CORPUS_MANIFEST is this manifest and its BASELINE_REF is
       SHIPPED_REF; once either moves on, the detail says the tie was not made, and why);
+      Since v1.37, (m0)–(m2) run once per release in RELEASES: v1.36's rows above against
+      v136-reading-manifest.json, v136-dictation-remeasure.json and fdb2b5f, kept as they were, and v1.37's
+      against v137-reading-manifest.json, v137-dictation-remeasure.json and 24684c2 (the 1.36 build). For
+      v1.37, (m0) also refuses a correction outside the known hits, and (m) reads its two lexicalised rows
+      (一晩, 一晩中) off the corpus: their covering tokens and exKana must equal the hand-written reading.
+      Only the release release_numbers measures gets (m2)'s tie to withheldThisRelease; the other says why not;
+  (n) the v1.37 rows (above);
+  (n1) their pool membership (above);
   (h) a PLANTED tree: the working tree's corpus copied, with one known-wrong occurrence per table
       planted in the example sentences of every n-file, and one headword and one passage for each
       table that reads them, all under ids no entry uses (`plant-…`). Every plant must be flagged
@@ -285,7 +332,7 @@ tree's dictation-exclusions.json does not withhold (dictation draws from example
 false for a withheld sentence or a headword or passage, null in a tree that has no such file.
 
     python3 scripts/check_counter_readings.py [--json out.json] [--resources DIR] [--calibrate]
-    python3 scripts/check_counter_readings.py --calibrate --json docs/measurements/v136-counter-sweep-6.json
+    python3 scripts/check_counter_readings.py --calibrate --json docs/measurements/v137-counter-sweep-2.json
 """
 import argparse, glob, json, os, re, shutil, subprocess, sys, tempfile
 
@@ -302,11 +349,14 @@ LEXICALISED = {
     "二日": "ふつか", "三日": "みっか", "四日": "よっか", "五日": "いつか",
     "六日": "むいか", "七日": "なのか", "八日": "ようか", "九日": "ここのか", "十日": "とおか",
     "二十日": "はつか", "二十歳": "はたち",
+    # v1.37: 一晩 is ひとばん (いちばん is 一番); 一晩中 'all night' ひとばんじゅう.
+    "一晩": "ひとばん", "一晩中": "ひとばんじゅう",
 }
 
 # Longer lexical items that CONTAIN a counter and have their own reading. A sentence is not
 # flagged for a counter whose every occurrence is inside one of these.
-ABSORBERS = ("真っ二つ", "三日月", "四つ角", "一日中", "二十日", "十日町", "二人三脚", "一人前")
+ABSORBERS = ("真っ二つ", "三日月", "四つ角", "一日中", "二十日", "十日町", "二人三脚", "一人前",
+             "一晩中")   # 一晩中 holds 一晩 and is judged as itself (v1.37)
 
 # 何 + counter asked as a question -> the readings standard for it: なん + the counter with its
 # sound change (本 ぼん, 杯 ばい, 匹 びき, 分 ぷん, 階 がい). 何階 is both なんがい and なんかい, and
@@ -360,11 +410,23 @@ COUNTER_FINAL = {
           10: ("じゅっぴき", "じっぴき")},
     "個": {1: ("いっこ",), 6: ("ろっこ",), 8: ("はっこ",), 10: ("じゅっこ", "じっこ")},
     "冊": {1: ("いっさつ",), 8: ("はっさつ",), 10: ("じゅっさつ", "じっさつ")},
-    "点": {1: ("いってん",), 6: ("ろってん",), 8: ("はってん",), 10: ("じゅってん", "じってん")},
+    # 6 and 8 geminate optionally before 点 (v1.37): ろくてん and はちてん are standard, not tolerated.
+    "点": {1: ("いってん",), 6: ("ろってん", "ろくてん"), 8: ("はってん", "はちてん"),
+          10: ("じゅってん", "じってん")},
     "泊": {1: ("いっぱく",), 3: ("さんぱく",), 6: ("ろっぱく",), 8: ("はっぱく",),
           10: ("じゅっぱく", "じっぱく")},
     # 千 and 百 are places, not counters: the digit just before one changes its sound (the key is
     # that digit), inside any kanji number and whatever follows it (三千円, 一万三千).
+    # v1.37 (PLAN-V1.36 §H): 週 / 週間, 章 and 等 after a digit, and a loanword counter after a number
+    # ending in 十 — and only there (一キロ いちきろ, 六ページ ろくぺーじ are standard; see the docstring).
+    "週": {1: ("いっしゅう",), 8: ("はっしゅう",), 10: ("じゅっしゅう", "じっしゅう")},
+    "週間": {1: ("いっしゅうかん",), 8: ("はっしゅうかん",), 10: ("じゅっしゅうかん", "じっしゅうかん")},
+    "章": {1: ("いっしょう",), 8: ("はっしょう",), 10: ("じゅっしょう", "じっしょう")},
+    "等": {1: ("いっとう",), 8: ("はっとう", "はちとう"), 10: ("じゅっとう", "じっとう")},
+    "キロ": {10: ("じゅっきろ", "じっきろ")},
+    "センチ": {10: ("じゅっせんち", "じっせんち")},
+    "ページ": {10: ("じゅっぺーじ", "じっぺーじ")},
+    "パーセント": {10: ("じゅっぱーせんと", "じっぱーせんと")},
     "千": {3: ("さんぜん",), 8: ("はっせん",)},
     "百": {3: ("さんびゃく",), 6: ("ろっぴゃく",), 8: ("はっぴゃく",)},
 }
@@ -386,8 +448,8 @@ COUNTER_WHOLE = {"二十歳": ("はたち",)}
 # holds an enumerated row (二回り ふたまわり does not: 二回 is never judged, so it is not listed).
 COUNTER_ABSORBERS = ("八百屋", "八百長", "八千代", "一回り", "五分五分", "九分九厘", "七分袖", "八分目",
                      "一個人")
-# The counter character is the first of another word: 時代, 時期, 時点; 月曜 (第四月曜日).
-NOT_THE_COUNTER = {"時": ("代", "期", "点"), "月": ("曜",)}
+# The counter character is the first of another word: 時代, 時期, 時点; 月曜 (第四月曜日); 等分 (三等分).
+NOT_THE_COUNTER = {"時": ("代", "期", "点"), "月": ("曜",), "等": ("分",)}   # 等分 'equal parts' (v1.37)
 MONTHS = range(1, 13)
 # 分's sense, read from the English (PLAN-V1.36 §I addendum 2: "use exEN (minutes/min) and context").
 MINUTES_EN = re.compile(r"\bmin(?:ute)?s?\b|\b\d{1,2}:\d{2}\b", re.IGNORECASE)
@@ -401,7 +463,8 @@ FULLWIDTH = str.maketrans("０１２３４５６７８９", "0123456789")
 NUMERALS = "〇一二三四五六七八九十百千万0123456789０１２３４５６７８９"
 # The whole numeral run before a counter; 時間 is tried before 時.
 COUNTER_RE = re.compile("([〇一二三四五六七八九十百千万0-9０-９]+)"
-                        "(時間|時|月|字|分|軒|階|回|歳|本|杯|匹|個|冊|点|泊)")
+                        "(時間|時|月|字|分|軒|階|回|歳|本|杯|匹|個|冊|点|泊|週間|週|章|等|キロ|センチ|ページ|"
+                        "パーセント)")
 # A kanji number, searched for a 千 or 百 after a digit.
 KANJI_NUMBER_RE = re.compile("[〇一二三四五六七八九十百千万]+")
 
@@ -489,10 +552,10 @@ KNOWN_POOL_HEAD = (("n4-g171", True), ("n5-b334", False))
 # so it is here too. The VALUES stay hand-written; the ID SET is held to the manifest by (m0): the
 # manifest's 'corrected' rows that are also KNOWN_SOUND_CHANGE_HITS must be exactly these ids, so a
 # correction declared there and missing here (or the reverse) fails.
-MANIFEST = os.path.join(REPO, "docs", "measurements", "v136-reading-manifest.json")
+MANIFEST_V136 = os.path.join(REPO, "docs", "measurements", "v136-reading-manifest.json")
 # (m1): the 1b re-measurement of the corrected pool sentences. A 'RELEASE' verdict there (v1.35's word
 # for "1b confirms the corrected reading") is the only thing that lets a corrected row stay in dictation.
-REMEASURE = os.path.join(REPO, "docs", "measurements", "v136-dictation-remeasure.json")
+REMEASURE_V136 = os.path.join(REPO, "docs", "measurements", "v136-dictation-remeasure.json")
 KNOWN_CORRECTED = (
     ("n1-b439", "三千", "さんぜん"), ("n3-b781", "三千", "さんぜん"), ("n3-b678", "八十点", "はちじゅってん"),
     ("n1-b1630", "三分", "さんぷん"), ("n2-b449", "三十分", "さんじゅっぷん"), ("n1-b327", "五分", "ごふん"),
@@ -500,7 +563,55 @@ KNOWN_CORRECTED = (
     ("n4-b127", "十分", "じゅっぷん"), ("n2-b479", "一軒", "いっけん"), ("n1-b957", "一階", "いっかい"),
     ("n3-b020", "十分", "じゅっぷん"),
 )
+# (n) the v1.37 rows: main when they were added, every sentence below still as v1.36's review read it
+# (PLAN-V1.36 §H "Recorded for v1.37, not corrected"). Pinned so (n) survives their correction.
+V137_CALIBRATION_REF = "9c09ab7"
+KNOWN_V137_HITS = (   # (id, compound, verdict, taught) — the counter table, each the same in both fields
+    ("n2-b511", "一週間", "mismatch", "いちしゅうかん"),
+    ("n3-b310", "一週間", "mismatch", "いちしゅうかん"),
+    ("n4-g189", "一週間", "mismatch", "いちしゅうかん"),
+    ("n1-b1418", "一章", "mismatch", "いちしょう"),       # 第一章: the number is 一
+    ("n2-g285", "一等", "mismatch", "いちとう"),
+    ("n5-b105", "二十センチ", "mismatch", "にじゅうせんち"),
+    ("n4-b104", "五十ページ", "mismatch", "ごじゅうぺーじ"),
+    ("n2-b1180", "十センチ", "mismatch", "じゅうせんち"),
+    ("n3-k061", "十パーセント", "mismatch", "じゅうぱーせんと"),
+    ("n5-g010", "十ページ", "mismatch", "じゅうぺーじ"),
+    ("n2-b277", "六十キロ", "mismatch", "ろくじゅうきろ"),
+)
+KNOWN_V137_LEXICALISED = (("n4-b186", "一晩", "いちばん"), ("n2-b034", "一晩中", "いちばんちゅう"))
+# Pool membership as PLAN-V1.36 §H states it ("in the pool" for these five), read on V137_CALIBRATION_REF
+# with that tree's own dictation-exclusions.json; every other v1.37 sentence is withheld there.
+KNOWN_V137_POOL = {"n2-b277", "n2-b511", "n1-b1418", "n5-b105", "n4-b104"}
+# v1.37's corrections (PLAN-V1.37 §C P0-2), each upheld 2 of 2 and applied, with the reading it was
+# corrected to — (id, compound, corrected). Written out from v137-reading-manifest.json's 'corrected',
+# never derived from COUNTER_FINAL; the ID SET is held to that manifest by (m0 v1.37), which also
+# refuses a v1.37 correction outside the known hits. n5-g010 is a known hit and NOT corrected
+# (refuted by one of its two refuters; the manifest's 'recordedNotCorrected').
+MANIFEST = os.path.join(REPO, "docs", "measurements", "v137-reading-manifest.json")
+REMEASURE = os.path.join(REPO, "docs", "measurements", "v137-dictation-remeasure.json")
+V137_SHIPPED_REF = "24684c2"   # the tree 1.36 (macOS 61 / iOS 62) was built from; release_numbers.BASELINE_REF
+KNOWN_V137_CORRECTED = (
+    ("n2-b277", "六十キロ", "ろくじゅっきろ"), ("n5-b105", "二十センチ", "にじゅっせんち"),
+    ("n4-b104", "五十ページ", "ごじゅっぺーじ"), ("n2-b511", "一週間", "いっしゅうかん"),
+    ("n1-b1418", "一章", "いっしょう"), ("n3-b310", "一週間", "いっしゅうかん"),
+    ("n4-g189", "一週間", "いっしゅうかん"), ("n2-g285", "一等", "いっとう"),
+    ("n2-b1180", "十センチ", "じゅっせんち"), ("n3-k061", "十パーセント", "じゅっぱーせんと"),
+    ("n4-b186", "一晩", "ひとばん"), ("n2-b034", "一晩中", "ひとばんじゅう"),
+)
+KNOWN_V137_CORRECTED_LEXICALISED = (("n4-b186", "一晩", "ひとばん"), ("n2-b034", "一晩中", "ひとばんじゅう"))
 CORPUS_FILES = ("n1.json", "n2.json", "n3.json", "n4.json", "n5.json", "passages.json")
+# Each release whose corrections (m0)–(m2) pin, oldest first. A release's row stays when the next
+# release moves MANIFEST / REMEASURE and release_numbers on.
+RELEASES = (
+    {"label": "v1.36", "manifest_path": MANIFEST_V136, "remeasure_path": REMEASURE_V136,
+     "shipped_ref": SHIPPED_REF, "corrected_rows": KNOWN_CORRECTED,
+     "known_ids": tuple(i for i, *_ in KNOWN_SOUND_CHANGE_HITS)},
+    {"label": "v1.37", "manifest_path": MANIFEST, "remeasure_path": REMEASURE,
+     "shipped_ref": V137_SHIPPED_REF, "corrected_rows": KNOWN_V137_CORRECTED,
+     "known_ids": tuple(i for i, *_ in KNOWN_V137_HITS) + tuple(i for i, *_ in KNOWN_V137_LEXICALISED),
+     "lexicalised_rows": KNOWN_V137_CORRECTED_LEXICALISED, "exact_set": True},
+)
 
 
 def outside_absorbers(sentence, compound):
@@ -557,25 +668,39 @@ def fits(taught, reading, alignment):
     return reading in taught
 
 
+def judge_lexicalised(jp, kana, tokens):
+    """One record per lexicalised compound in `jp` whose standard reading is not in `kana`: the
+    table's weak substring rule. `taught` is the covering tokens' reading, when there are tokens."""
+    records = []
+    for compound, standard in LEXICALISED.items():
+        if not occurrences_outside_absorbers(jp, compound):
+            continue
+        if standard in kana:
+            continue
+        start = outside_absorbers(jp, compound).index(compound)
+        span = cover(jp, tokens, start, start + len(compound))
+        records.append({"compound": compound, "standard": standard, "taught": span[1] if span else None,
+                        "expected": [standard]})
+    return records
+
+
 def scan(resources=RESOURCES):
+    """The lexicalised table on every example sentence. Since v1.37 a hit carries `inDictationPool`,
+    as the counter table's do, so (n1) can read pool membership off it."""
     hits, checked = [], 0
+    excluded = dictation_excluded(resources)
     for path in sorted(glob.glob(f"{resources}/n[1-5].json")):
         for entry in json.load(open(path, encoding="utf-8")):
             jp, kana = entry.get("exJP"), entry.get("exKana")
             if not jp or not kana:
                 continue
             checked += 1
-            for compound, standard in LEXICALISED.items():
-                if not occurrences_outside_absorbers(jp, compound):
-                    continue
-                if standard in kana:
-                    continue
-                start = outside_absorbers(jp, compound).index(compound)
-                span = cover(jp, entry.get("exTokens"), start, start + len(compound))
-                hits.append({"id": entry["id"], "compound": compound, "standard": standard,
-                             "exJP": jp, "exKana": kana,
+            for record in judge_lexicalised(jp, kana, entry.get("exTokens")):
+                hits.append({"id": entry["id"], "compound": record["compound"],
+                             "standard": record["standard"], "exJP": jp, "exKana": kana,
                              "file": display_path(path), "field": "exJP", "sentence": jp,
-                             "taught": span[1] if span else None, "expected": [standard]})
+                             "taught": record["taught"], "expected": record["expected"],
+                             "inDictationPool": None if excluded is None else entry["id"] not in excluded})
     return checked, hits
 
 
@@ -842,38 +967,38 @@ def dictation_excluded(resources):
         return {e["id"] for e in json.load(f)["excluded"]}
 
 
-def corrected_and_dictation(manifest):
-    """What (m1) and (m2) read: the ids `manifest` declares 'corrected', the ids the working tree
-    withholds from dictation, the ids 1.35 withheld (SHIPPED_REF), the ids REMEASURE releases on a 1b
-    'RELEASE' verdict, and the manifest's counts. Raises when any of them cannot be read: a check that
-    cannot see its inputs fails, it does not skip."""
+def corrected_and_dictation(manifest, remeasure, shipped_ref):
+    """What (m1) and (m2) read for one release: the ids `manifest` declares 'corrected', the ids the
+    working tree withholds from dictation, the ids the release before it withheld (`shipped_ref`), the
+    ids `remeasure` releases on a 1b 'RELEASE' verdict, and the manifest's counts. Raises when any of
+    them cannot be read: a check that cannot see its inputs fails, it does not skip."""
     corrected = {r["id"] for r in manifest["entries"] if r.get("disposition") == "corrected"}
     now = dictation_excluded(RESOURCES)
     if now is None:
         raise ValueError(f"{display_path(RESOURCES)} has no dictation-exclusions.json")
     blob = subprocess.run(["git", "-C", REPO, "show",
-                           f"{SHIPPED_REF}:Sources/VocabKit/Resources/dictation-exclusions.json"],
+                           f"{shipped_ref}:Sources/VocabKit/Resources/dictation-exclusions.json"],
                           capture_output=True)
     if blob.returncode != 0:
-        raise ValueError(f"git show {SHIPPED_REF}:…/dictation-exclusions.json failed: "
+        raise ValueError(f"git show {shipped_ref}:…/dictation-exclusions.json failed: "
                          f"{blob.stderr.decode().strip()}")
     shipped = {e["id"] for e in json.loads(blob.stdout)["excluded"]}
-    with open(REMEASURE, encoding="utf-8") as f:
+    with open(remeasure, encoding="utf-8") as f:
         released = {i for i, v in json.load(f)["verdicts"].items() if v["verdict"] == "RELEASE"}
     return corrected, now, shipped, released, manifest["counts"]
 
 
-def release_numbers_withheld():
+def release_numbers_withheld(manifest, shipped_ref):
     """release_numbers' withheldThisRelease when it measures this manifest's release (its CORPUS_MANIFEST
-    is MANIFEST and its BASELINE_REF is SHIPPED_REF), else None and why not. Imported, not re-derived:
-    it is the figure release copy quotes."""
+    is `manifest` and its BASELINE_REF is `shipped_ref`), else None and why not. Imported, not
+    re-derived: it is the figure release copy quotes."""
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import release_numbers
     named = release_numbers.CORPUS_MANIFEST
-    if (named is None or release_numbers.BASELINE_REF != SHIPPED_REF
-            or os.path.realpath(os.path.join(str(release_numbers.REPO), named)) != os.path.realpath(MANIFEST)):
+    if (named is None or release_numbers.BASELINE_REF != shipped_ref
+            or os.path.realpath(os.path.join(str(release_numbers.REPO), named)) != os.path.realpath(manifest)):
         return None, (f"release_numbers measures {named} from {release_numbers.BASELINE_REF}, not "
-                      f"{display_path(MANIFEST)} from {SHIPPED_REF}, so it was not compared")
+                      f"{display_path(manifest)} from {shipped_ref}, so it was not compared")
     return release_numbers.numbers()["withheldThisRelease"], None
 
 
@@ -907,6 +1032,106 @@ def scan_interrogative(resources=RESOURCES):
 def scan_counters(resources=RESOURCES):
     """The same fields, judged by the counter table."""
     return sweep(resources, judge_counter_field)
+
+
+# ── the complement: what the v1.37 rows do not inspect (feedback "what a scan cannot see") ──────
+V137_COUNTERS = ("週間", "週", "章", "等", "キロ", "センチ", "ページ", "パーセント")
+LOANWORDS = ("キロ", "センチ", "ページ", "パーセント")
+KATAKANA_AFTER_NUMBER_RE = re.compile("([〇一二三四五六七八九十百千万0-9０-９]+)([ァ-ヴー]+)")
+COMPLEMENT_SAMPLE = 8
+
+
+def complement(resources):
+    """For each v1.37 counter (and 一晩 in the lexicalised table): how often it occurs in the fields the
+    tables read and is NOT judged, and why — after a numeral at a final unit its row does not list
+    (二週間, 一ページ), after no numeral at all (毎週, 文章, 平等: not the counter), or in a field no table
+    reads (exJP with no exKana). Plus every katakana word after a number ending in a ten that no row
+    enumerates. Counts with a sample; it judges nothing."""
+    out = {c: {"judgedOrAbsorbed": 0, "unlistedDigit": {}, "noNumeral": {}, "unreadField": []}
+           for c in V137_COUNTERS + ("晩",)}
+    loanword_unlisted = {}
+
+    def bump(table, key, where):
+        row = table.setdefault(key, {"count": 0, "sample": []})
+        row["count"] += 1
+        if len(row["sample"]) < 3:
+            row["sample"].append(where)
+
+    def final(run):
+        """final_key, except that a number in digits ending in 00 (100キロ) ends in 百, not a ten."""
+        key, value = final_key(run), numeral_value(run)
+        return None if key == 10 and value is not None and value % 100 // 10 == 0 else key
+
+    def listed(counter, run):
+        return bool(COUNTER_FINAL[counter].get(final(run)))
+
+    def read(entry_id, text, unread):
+        where = f"{entry_id}{' (exJP without exKana)' if unread else ''}"
+        after = set()
+        for m in COUNTER_RE.finditer(text):
+            counter = m.group(2)
+            if counter not in V137_COUNTERS:
+                continue
+            after.add((m.start(2), counter))
+            if unread:
+                out[counter]["unreadField"].append(f"{entry_id} {m.group(0)}")
+            elif listed(counter, m.group(1)):
+                out[counter]["judgedOrAbsorbed"] += 1
+            else:
+                bump(out[counter]["unlistedDigit"], m.group(0), entry_id)
+        for m in KATAKANA_AFTER_NUMBER_RE.finditer(text):
+            if final(m.group(1)) == 10 and not m.group(2).startswith(LOANWORDS):
+                bump(loanword_unlisted, m.group(0), where)
+        for m in re.finditer("([〇一二三四五六七八九十百千万0-9０-９]*)晩", text):
+            if unread:
+                out["晩"]["unreadField"].append(f"{entry_id} {m.group(0)}")
+            elif m.group(1) == "一":
+                out["晩"]["judgedOrAbsorbed"] += 1
+            elif m.group(1):
+                bump(out["晩"]["unlistedDigit"], m.group(0), entry_id)
+            else:
+                bump(out["晩"]["noNumeral"], text[max(0, m.start() - 1):m.end() + 1], entry_id)
+        if unread:
+            return
+        for counter in V137_COUNTERS:
+            for m in re.finditer(re.escape(counter), text):
+                before = text[m.start() - 1] if m.start() else ""
+                if counter == "週" and text[m.end():m.end() + 1] == "間":
+                    continue      # counted as 週間
+                if (m.start(), counter) in after or (before and before in NUMERALS):
+                    continue      # after a numeral: counted above
+                if counter in LOANWORDS and before and "ァ" <= before <= "ヺ":
+                    continue      # inside a longer katakana word, not this counter
+                bump(out[counter]["noNumeral"], text[max(0, m.start() - 1):m.end() + 1], entry_id)
+
+    for path in sorted(glob.glob(f"{resources}/n[1-5].json")):
+        for entry in json.load(open(path, encoding="utf-8")):
+            read(entry["id"], entry["surface"], False)
+            if entry.get("exJP"):
+                read(entry["id"], entry["exJP"], not entry.get("exKana"))
+    passages = os.path.join(resources, "passages.json")
+    if os.path.exists(passages):
+        for p in json.load(open(passages, encoding="utf-8")):
+            read(p["id"], p["display"], False)
+    return {"counters": out, "katakanaAfterATenNotEnumerated": loanword_unlisted}
+
+
+def print_complement(comp):
+    print("\n── complement: what the v1.37 rows do not inspect (counted, not judged) ──")
+    for counter, row in comp["counters"].items():
+        def top(table):
+            items = sorted(table.items(), key=lambda kv: -kv[1]["count"])
+            return (", ".join(f"{k} ×{v['count']} ({' '.join(v['sample'])})" for k, v in items[:COMPLEMENT_SAMPLE])
+                    + (" …" if len(items) > COMPLEMENT_SAMPLE else "")) or "none"
+        unlisted = sum(v["count"] for v in row["unlistedDigit"].values())
+        bare = sum(v["count"] for v in row["noNumeral"].values())
+        print(f"  {counter:6} judged or absorbed {row['judgedOrAbsorbed']}; after a numeral at an unlisted "
+              f"final unit {unlisted}: {top(row['unlistedDigit'])}")
+        print(f"         not after a numeral {bare}: {top(row['noNumeral'])}")
+        print(f"         exJP with no exKana (no table reads it): {', '.join(row['unreadField']) or 'none'}")
+    rest = comp["katakanaAfterATenNotEnumerated"]
+    print(f"  katakana after a number ending in a ten, not enumerated: "
+          + (", ".join(f"{k} ×{v['count']} ({' '.join(v['sample'])})" for k, v in rest.items()) or "none"))
 
 
 def below_floor(lexicalised, interrogative, counters):
@@ -959,6 +1184,24 @@ LOGIC_CHECKS = (
      [["何人", "なにん"]], ["mismatch"]),
     ("a regression in exKana alone is a mismatch: tokens なんじ, exKana なんどき", "何時ですか",
      "なんどきですか", [["何時", "なんじ"], ["です", "です"], ["か", "か"]], ["mismatch"]),
+)
+
+LEXICALISED_LOGIC_CHECKS = (
+    # (what it proves, exJP, exKana, tokens, expected (compound, taught) hits in order). v1.37.
+    ("一晩 ひとばん passes", "一晩泊まりました",
+     "ひとばんとまりました", [["一晩", "ひとばん"], ["泊まり", "とまり"], ["まし", "まし"], ["た", "た"]], []),
+    ("一晩 taught いちばん is flagged", "一晩泊まりました", "いちばんとまりました",
+     [["一", "いち"], ["晩", "ばん"], ["泊まり", "とまり"], ["まし", "まし"], ["た", "た"]], [("一晩", "いちばん")]),
+    ("一晩中 ひとばんじゅう passes, and its 一晩 is absorbed rather than judged twice", "一晩中看病した",
+     "ひとばんじゅうかんびょうした", [["一晩中", "ひとばんじゅう"], ["看病", "かんびょう"], ["し", "し"], ["た", "た"]], []),
+    ("一晩中 taught いちばんちゅう (n2-b034's shape) is flagged once, as 一晩中", "一晩中看病した",
+     "いちばんちゅうかんびょうした",
+     [["一", "いち"], ["晩", "ばん"], ["中", "ちゅう"], ["看病", "かんびょう"], ["し", "し"], ["た", "た"]],
+     [("一晩中", "いちばんちゅう")]),
+    ("一晩中 taught ひとばんちゅう is flagged: the ひとばん of the absorbed 一晩 does not pass it", "一晩中看病した",
+     "ひとばんちゅうかんびょうした", [["一晩", "ひとばん"], ["中", "ちゅう"], ["看病", "かんびょう"], ["し", "し"], ["た", "た"]],
+     [("一晩中", "ひとばんちゅう")]),
+    ("今晩 and 毎晩 hold no 一晩, and 一番 is not 一晩", "今晩も毎晩も一番だ", "こんばんもまいばんもいちばんだ", None, []),
 )
 
 COUNTER_LOGIC_CHECKS = (
@@ -1120,10 +1363,61 @@ COUNTER_LOGIC_CHECKS = (
     ("a regression in the tokens alone is a mismatch for a sound-changing row: tokens いちけん, exKana いっけん",
      "一軒が", "いっけんが", [["一", "いち"], ["軒", "けん"], ["が", "が"]],
      [("一軒", "mismatch", "mismatch", "ok")]),
+    # v1.37, step 1: the 点 row's 6 and 8. One check each, so dropping either reading names its own case.
+    ("六点 ろくてん is accepted beside ろってん (v1.37: a listed standard form, not a tolerated one)",
+     "六点、六点", "ろくてんろってん", [["六", "ろく"], ["点", "てん"], ["、", "、"], ["六", "ろっ"], ["点", "てん"]],
+     [("六点", "ok", "ok", "ok"), ("六点", "ok", "ok", "ok")]),
+    ("八点 はちてん is accepted beside はってん (v1.37: a listed standard form, not a tolerated one)",
+     "八点、八点", "はちてんはってん", [["八", "はち"], ["点", "てん"], ["、", "、"], ["八", "はっ"], ["点", "てん"]],
+     [("八点", "ok", "ok", "ok"), ("八点", "ok", "ok", "ok")]),
+    ("the 点 row's tens still want じゅっ / じっ: 十点 and 八十点 taught じゅうてん are mismatches",
+     "十点、八十点", "じゅうてんはちじゅうてん", [["十", "じゅう"], ["点", "てん"], ["、", "、"], ["八十", "はちじゅう"],
+                                         ["点", "てん"]],
+     [("十点", "mismatch", "mismatch", "mismatch"), ("八十点", "mismatch", "mismatch", "mismatch")]),
+    # v1.37, step 2: the new rows on the shapes the corpus uses, both ways.
+    ("一週間 split 一 + 週間 (n2-b511's shape): いっしゅうかん ok, いちしゅうかん a mismatch",
+     "一週間の、一週間の", "いっしゅうかんのいちしゅうかんの",
+     [["一", "いっ"], ["週間", "しゅうかん"], ["の", "の"], ["、", "、"], ["一", "いち"], ["週間", "しゅうかん"], ["の", "の"]],
+     [("一週間", "ok", "ok", "ok"), ("一週間", "mismatch", "mismatch", "mismatch")]),
+    ("週間 is tried before 週, and 一週間分 (n4-g189) is judged at 一週間; 二週間 is never inspected",
+     "一週間分、二週間", "いっしゅうかんぶんにしゅうかん",
+     [["一", "いっ"], ["週間", "しゅうかん"], ["分", "ぶん"], ["、", "、"], ["二", "に"], ["週間", "しゅうかん"]],
+     [("一週間", "ok", "ok", "ok")]),
+    ("第一章 split 第 + 一 + 章 (n1-b1418's shape) is judged at 一章: いっしょう ok, いちしょう a mismatch",
+     "第一章、第一章", "だいいっしょうだいいちしょう",
+     [["第", "だい"], ["一", "いっ"], ["章", "しょう"], ["、", "、"], ["第", "だい"], ["一", "いち"], ["章", "しょう"]],
+     [("一章", "ok", "ok", "ok"), ("一章", "mismatch", "mismatch", "mismatch")]),
+    ("一等 いっとう ok, いちとう a mismatch; 一等賞 is judged on its start; 三等分 and 十等分 are 等分, absorbed",
+     "一等、一等、一等賞、三等分、十等分", "いっとういちとういっとうしょうさんとうぶんじゅうとうぶん",
+     [["一", "いっ"], ["等", "とう"], ["、", "、"], ["一", "いち"], ["等", "とう"], ["、", "、"], ["一等賞", "いっとうしょう"],
+      ["、", "、"], ["三", "さん"], ["等分", "とうぶん"], ["、", "、"], ["十", "じゅう"], ["等分", "とうぶん"]],
+     [("一等", "ok", "ok", "ok"), ("一等", "mismatch", "mismatch", "mismatch"), ("一等", "ok", "ok", "ok"),
+      ("十等", "absorbed", None, None)]),
+    ("a loanword counter after a number ending in 十: 六十キロ ろくじゅっきろ ok, ろくじゅうきろ a mismatch "
+     "(n2-b277's shape)",
+     "六十キロ、六十キロ", "ろくじゅっきろろくじゅうきろ",
+     [["六十", "ろくじゅっ"], ["キロ", "きろ"], ["、", "、"], ["六十", "ろくじゅう"], ["キロ", "きろ"]],
+     [("六十キロ", "ok", "ok", "ok"), ("六十キロ", "mismatch", "mismatch", "mismatch")]),
+    ("二十センチ にじっせんち ok, にじゅうせんち a mismatch; 五十ページ ごじゅっぺーじ ok, ごじゅうぺーじ a mismatch",
+     "二十センチ、二十センチ、五十ページ、五十ページ", "にじっせんちにじゅうせんちごじゅっぺーじごじゅうぺーじ",
+     [["二十", "にじっ"], ["センチ", "せんち"], ["、", "、"], ["二十", "にじゅう"], ["センチ", "せんち"], ["、", "、"],
+      ["五十", "ごじゅっ"], ["ページ", "ぺーじ"], ["、", "、"], ["五十", "ごじゅう"], ["ページ", "ぺーじ"]],
+     [("二十センチ", "ok", "ok", "ok"), ("二十センチ", "mismatch", "mismatch", "mismatch"),
+      ("五十ページ", "ok", "ok", "ok"), ("五十ページ", "mismatch", "mismatch", "mismatch")]),
+    ("キロ as a prefix: 十キロメートル じゅっきろめーとる ok, じゅうきろめーとる a mismatch; 10センチ in digits ok",
+     "十キロメートル、十キロメートル、10センチ", "じゅっきろめーとるじゅうきろめーとるじゅっせんち",
+     [["十", "じゅっ"], ["キロメートル", "きろめーとる"], ["、", "、"], ["十", "じゅう"], ["キロメートル", "きろめーとる"],
+      ["、", "、"], ["10", "じゅっ"], ["センチ", "せんち"]],
+     [("十キロ", "ok", "ok", "ok"), ("十キロ", "mismatch", "mismatch", "mismatch"), ("10センチ", "ok", "ok", "ok")]),
+    ("never inspected: a loanword counter after anything but a ten (一ページ いちぺーじ, 六ページ, 八ページ, "
+     "百ページ, 一キロ, 二十五センチ), an unlisted katakana word (十メートル, 十トン), and 二週間 三章 三等 六等",
+     "一ページ、六ページ、八ページ、百ページ、一キロ、二十五センチ、十メートル、十トン、二週間、三章、三等、六等",
+     "", None, []),
 )
 
 # Every row of the sound-changing table, written out by hand: (compound, its standard reading(s),
-# the reading without the sound change — "" where that reading is tolerated and checked above).
+# the reading without the sound change — "" where that reading is tolerated, or (点 6 and 8, 等 8, v1.37)
+# accepted, and checked above).
 # Never derived from COUNTER_FINAL: a check computed from the table it checks passes any table.
 # Each is judged alone, one token, with English that names minutes.
 SOUND_CHANGE_ROWS = {
@@ -1147,12 +1441,24 @@ SOUND_CHANGE_ROWS = {
     "個": (("一個", "いっこ", "いちこ"), ("六個", "ろっこ", "ろくこ"), ("八個", "はっこ", "はちこ"),
           ("十個", "じゅっこ|じっこ", "じゅうこ")),
     "冊": (("一冊", "いっさつ", "いちさつ"), ("八冊", "はっさつ", "はちさつ"), ("十冊", "じゅっさつ|じっさつ", "じゅうさつ")),
-    "点": (("一点", "いってん", "いちてん"), ("六点", "ろってん", "ろくてん"), ("八点", "はってん", "はちてん"),
+    "点": (("一点", "いってん", "いちてん"), ("六点", "ろってん|ろくてん", ""), ("八点", "はってん|はちてん", ""),
           ("十点", "じゅってん|じってん", "じゅうてん")),
     "泊": (("一泊", "いっぱく", "いちはく"), ("三泊", "さんぱく", "さんはく"), ("六泊", "ろっぱく", "ろくはく"),
           ("八泊", "はっぱく", "はちはく"), ("十泊", "じゅっぱく|じっぱく", "じゅうはく")),
     "千": (("三千", "さんぜん", "さんせん"), ("八千", "はっせん", "はちせん")),
     "百": (("三百", "さんびゃく", "さんひゃく"), ("六百", "ろっぴゃく", "ろくひゃく"), ("八百", "はっぴゃく", "はちひゃく")),
+    # v1.37 (PLAN-V1.36 §H).
+    "週": (("一週", "いっしゅう", "いちしゅう"), ("八週", "はっしゅう", "はちしゅう"),
+          ("十週", "じゅっしゅう|じっしゅう", "じゅうしゅう")),
+    "週間": (("一週間", "いっしゅうかん", "いちしゅうかん"), ("八週間", "はっしゅうかん", "はちしゅうかん"),
+            ("十週間", "じゅっしゅうかん|じっしゅうかん", "じゅうしゅうかん")),
+    "章": (("一章", "いっしょう", "いちしょう"), ("八章", "はっしょう", "はちしょう"),
+          ("十章", "じゅっしょう|じっしょう", "じゅうしょう")),
+    "等": (("一等", "いっとう", "いちとう"), ("八等", "はっとう|はちとう", ""), ("十等", "じゅっとう|じっとう", "じゅうとう")),
+    "キロ": (("十キロ", "じゅっきろ|じっきろ", "じゅうきろ"),),
+    "センチ": (("十センチ", "じゅっせんち|じっせんち", "じゅうせんち"),),
+    "ページ": (("十ページ", "じゅっぺーじ|じっぺーじ", "じゅうぺーじ"),),
+    "パーセント": (("十パーセント", "じゅっぱーせんと|じっぱーせんと", "じゅうぱーせんと"),),
 }
 
 # (h) the planted tree. Each plant is a reading every table here must call a mismatch, under an id
@@ -1186,15 +1492,24 @@ PLANTED_SENTENCES = (
     ("counters", "n3", [["八", "はち"], ["本", "ほん"], ["買い", "かい"], ["ます", "ます"], ["。", "。"]]),
     ("counters", "n4", [["三千", "さんせん"], ["円", "えん"], ["です", "です"], ["。", "。"]]),
     ("counters", "n5", [["六", "ろく"], ["百", "ひゃく"], ["円", "えん"], ["です", "です"], ["。", "。"]]),
+    # v1.37: a third counter plant in every n-file, each on a v1.37 row, and a second lexicalised plant.
+    ("counters", "n1", [["一", "いち"], ["週間", "しゅうかん"], ["休み", "やすみ"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n2", [["十", "じゅう"], ["キロ", "きろ"], ["走り", "はしり"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n3", [["第", "だい"], ["一", "いち"], ["章", "しょう"], ["を", "を"], ["読み", "よみ"], ["ます", "ます"], ["。", "。"]]),
+    ("counters", "n4", [["一", "いち"], ["等", "とう"], ["です", "です"], ["。", "。"]]),
+    ("counters", "n5", [["二十", "にじゅう"], ["センチ", "せんち"], ["です", "です"], ["。", "。"]]),
+    ("lexicalised", "n4", [["一", "いち"], ["晩", "ばん"], ["泊まり", "とまり"], ["ます", "ます"], ["。", "。"]]),
 )
 # (table, level, surface, kana[, English meaning]); (table, display, kana[, English]). The 分 plants'
 # English is what proves a headword's meanings and a passage's meanings reach 分's sense.
 PLANTED_HEADWORDS = (("interrogative", "n1", "何回", "なにかい"), ("counters", "n1", "九時", "きゅうじ"),
-                     ("counters", "n2", "三分", "さんふん", "three minutes"))
+                     ("counters", "n2", "三分", "さんふん", "three minutes"),
+                     ("counters", "n3", "十ページ", "じゅうぺーじ"))   # v1.37
 PLANTED_PASSAGES = (("interrogative", "何歳ですか。", "なにさいですか"),
                     ("counters", "七月に行きます。", "なながつにいきます"),
                     ("counters", "駅から十分歩きました。", "えきからじゅうぶんあるきました",
-                     "I walked ten minutes from the station."))
+                     "I walked ten minutes from the station."),
+                    ("counters", "一週間休みました。", "いちしゅうかんやすみました"))   # v1.37
 PLANT_FILLER = {"surface": "テスト", "kana": "てすと"}   # a sentence plant's own headword: no counter
 
 
@@ -1246,6 +1561,109 @@ FLOOR_CHECKS = (
 )
 
 
+def check_release(check, head_run, label, manifest_path, remeasure_path, shipped_ref, corrected_rows,
+                  known_ids, lexicalised_rows=(), exact_set=False):
+    """(m0), (m), (m1), (m2) for one release. `corrected_rows` are (id, compound, corrected reading),
+    written out by hand; `known_ids` the calibration's known hits for that release; `lexicalised_rows`
+    the subset judged by the lexicalised table rather than the counter table. With `exact_set`, (m0)
+    also requires that the manifest corrects nothing outside the known hits."""
+    # (m0) KNOWN_CORRECTED is hand-copied, so nothing tied it to the manifest it follows: with a row
+    # dropped, (m) inspected 11, called them "the sentences §I addendum 2 corrected" and passed (the
+    # review of a849909, its mutant X26). The manifest's 'corrected' rows among the known hits must be
+    # exactly its ids.
+    ids = {i for i, _, _ in corrected_rows}
+    try:
+        with open(manifest_path, encoding="utf-8") as f:
+            manifest = json.load(f)
+        declared = {r["id"] for r in manifest["entries"] if r.get("disposition") == "corrected"}
+        problem = None
+    except (OSError, ValueError, KeyError, TypeError) as e:
+        manifest, declared, problem = None, set(), f"cannot read {display_path(manifest_path)}: {e}"
+    from_manifest = declared & set(known_ids)
+    outside = sorted(declared - set(known_ids)) if exact_set else []
+    check(f"(m0 {label}) its KNOWN_CORRECTED names exactly the {len(from_manifest)} sentences "
+          f"{display_path(manifest_path)} declares corrected among its known hits"
+          + (", and the manifest corrects no other" if exact_set else ""),
+          problem is None and bool(ids) and from_manifest == ids and not outside,
+          problem or f"declared, not in KNOWN_CORRECTED: {sorted(from_manifest - ids) or 'none'}; "
+                     f"in KNOWN_CORRECTED, not declared corrected: {sorted(ids - from_manifest) or 'none'}"
+                     + (f"; declared outside the known hits: {outside or 'none'}" if exact_set else ""))
+
+    # (m) every correction, inspected on the working tree and passed in both fields with exKana lined
+    # up — and none of those ids flagged by the counter table. A lexicalised row (一晩) is read off the
+    # corpus here: the lexicalised table reports hits only, so 'not flagged' is checked together with
+    # the covering tokens' reading and exKana, each equal to the hand-written value.
+    lex = {i for i, _, _ in lexicalised_rows}
+    counter_ids = ids - lex
+    seen = sorted((r["id"], r["field"], r["compound"], r["verdict"], r.get("verdictTokens"),
+                   r.get("verdictKana"), r.get("taught"), r.get("taughtKana"),
+                   r.get("kanaAlignment") == r.get("alignment"))
+                  for r in head_run["counters"]["inspected"] if r["id"] in counter_ids)
+    want = sorted((i, "exJP", c, "ok", "ok", "ok", t, t, True) for i, c, t in corrected_rows if i in counter_ids)
+    flagged = sorted(f"{h['id']} {h['field']} {h['compound']} {h['verdict']} {h['taught']}"
+                     for h in head_run["counters"]["hits"] + head_run["hits"] if h["id"] in ids)
+    lex_wrong = []
+    if lex:
+        entries = {}
+        for path in glob.glob(f"{RESOURCES}/n[1-5].json"):
+            with open(path, encoding="utf-8") as f:
+                entries.update({e["id"]: e for e in json.load(f)})
+        for i, compound, reading in lexicalised_rows:
+            e = entries.get(i)
+            if e is None or compound not in (e.get("exJP") or ""):
+                lex_wrong.append(f"{i}: no {compound} in the corpus")
+                continue
+            start = outside_absorbers(e["exJP"], compound).index(compound)
+            span = cover(e["exJP"], e.get("exTokens"), start, start + len(compound))
+            segment = kana_segment(e["exKana"], e["exTokens"], start, start + len(compound)) if span else None
+            if span is None or span[1] != reading or span[2] != "exact" or segment != reading:
+                lex_wrong.append(f"{i} {compound}: tokens {span and span[1]} ({span and span[2]}), exKana {segment}")
+    check(f"(m {label}) the working tree passes the {len(ids)} sentences {display_path(manifest_path)} pins, "
+          f"each inspected and taught its corrected reading in exTokens and exKana"
+          + (f" ({len(lex)} of them read off the lexicalised table's compound)" if lex else ""),
+          seen == want and not flagged and not lex_wrong,
+          f"not as corrected: {[s for s in seen if s not in want] or 'none'}; "
+          f"not inspected: {[w[0] for w in want if w not in seen] or 'none'}; hits: {flagged or 'none'}"
+          + (f"; lexicalised: {lex_wrong or 'ok'}" if lex else ""))
+
+    # (m1) and (m2): what dictation does with every sentence the manifest corrected. (l) reads hits, and
+    # a corrected sentence is no longer one, so nothing held n3-b020's new withheld state: deleted from
+    # both exclusion files with their counts fixed, it passed every check above, and only
+    # release_numbers moved (the fix review of 8324943). Read from the working tree's files.
+    try:
+        if manifest is None:
+            raise ValueError(problem)
+        corrected, now, shipped, released_on_1b, counts = corrected_and_dictation(manifest, remeasure_path,
+                                                                                   shipped_ref)
+        rn_withheld, rn_skipped = release_numbers_withheld(manifest_path, shipped_ref)
+        problem = None
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, ImportError, SystemExit) as e:
+        corrected, now, shipped, released_on_1b, counts = set(), set(), set(), set(), {}
+        rn_withheld, rn_skipped, problem = None, None, f"cannot read what (m1) and (m2) compare: {e}"
+    in_pool = sorted(corrected - now)
+    unreleased = [i for i in in_pool if i not in released_on_1b]
+    check(f"(m1 {label}) the working tree withholds from dictation every one of the {len(corrected)} "
+          f"sentences {display_path(manifest_path)} declares corrected, except any "
+          f"{display_path(remeasure_path)} releases on a 1b 'RELEASE' verdict",
+          problem is None and bool(corrected) and not unreleased,
+          problem or f"withheld {len(corrected & now)}; in the pool on a 1b RELEASE: "
+                     f"{[i for i in in_pool if i in released_on_1b] or 'none'}; in the pool without one: "
+                     f"{unreleased or 'none'}")
+
+    withheld = sorted(corrected & (now - shipped))
+    released = sorted(corrected & (shipped - now))
+    w, r = counts.get("withheldFromDictation"), counts.get("releasedToDictation")
+    net = (w - r) if isinstance(w, int) and isinstance(r, int) else None
+    check(f"(m2 {label}) the manifest's counts are its corrected rows withheld and released since "
+          f"{shipped_ref}, and their difference is release_numbers' withheldThisRelease",
+          problem is None and w == len(withheld) and r == len(released)
+          and (rn_skipped is not None or rn_withheld == net),
+          problem or f"counts withheldFromDictation {w}, releasedToDictation {r}; corrected rows withheld "
+                     f"since {shipped_ref}: {len(withheld)} {withheld}, released since: {len(released)}"
+                     f"{f' {released}' if released else ''}; "
+                     + (rn_skipped or f"release_numbers withheldThisRelease {rn_withheld}"))
+
+
 def calibrate():
     lines, ok = [], True
 
@@ -1258,13 +1676,15 @@ def calibrate():
         old, small = os.path.join(tmp, "pre-v135"), os.path.join(tmp, "n5-only")
         counted, planted = os.path.join(tmp, "counter-ref"), os.path.join(tmp, "planted")
         sounded, shipped = os.path.join(tmp, "sound-change-ref"), os.path.join(tmp, "shipped")
-        for d in (old, small, counted, planted, sounded, shipped):
+        v137 = os.path.join(tmp, "v137-ref")
+        for d in (old, small, counted, planted, sounded, shipped, v137):
             os.mkdir(d)
         try:
             tree_at(CALIBRATION_REF, old)
             tree_at(COUNTER_CALIBRATION_REF, counted)
             tree_at(SOUND_CHANGE_CALIBRATION_REF, sounded, extra=("dictation-exclusions.json",))
             tree_at(SHIPPED_REF, shipped)
+            tree_at(V137_CALIBRATION_REF, v137, extra=("dictation-exclusions.json",))
             plants = plant_tree(planted)
         except RuntimeError as e:
             return False, [f"[FAIL] cannot read a calibration tree: {e}"]
@@ -1276,13 +1696,15 @@ def calibrate():
         planted_code, planted_run = run_cli(tmp, "planted", "--resources", planted)
         sounded_code, sounded_run = run_cli(tmp, "sounded", "--resources", sounded)
         shipped_code, shipped_run = run_cli(tmp, "shipped", "--resources", shipped)
+        v137_code, v137_run = run_cli(tmp, "v137", "--resources", v137)
 
     if (old_run is None or head_run is None or small_run is None or counted_run is None
-            or planted_run is None or sounded_run is None or shipped_run is None):
+            or planted_run is None or sounded_run is None or shipped_run is None or v137_run is None):
         return False, [f"[FAIL] a calibration run wrote no output (exit codes: {CALIBRATION_REF} "
                        f"{old_code}, working tree {head_code}, n5-only {small_code}, "
                        f"{COUNTER_CALIBRATION_REF} {counted_code}, planted {planted_code}, "
-                       f"{SOUND_CHANGE_CALIBRATION_REF} {sounded_code}, {SHIPPED_REF} {shipped_code})"]
+                       f"{SOUND_CHANGE_CALIBRATION_REF} {sounded_code}, {SHIPPED_REF} {shipped_code}, "
+                       f"{V137_CALIBRATION_REF} {v137_code})"]
     old_q, head_q = old_run["interrogative"], head_run["interrogative"]
 
     g022 = [(h["verdict"], h["compound"], h["taught"]) for h in old_q["hits"] if h["id"] == "n5-g022"]
@@ -1386,75 +1808,45 @@ def calibrate():
                       for h in run["counters"]["hits"] if h["id"] in dict(known))
         check(label, pool == sorted((i, p, True) for i, p in known), f"hits: {pool}")
 
-    # (m0) KNOWN_CORRECTED is hand-copied, so nothing tied it to the manifest it follows: with a row
-    # dropped, (m) inspected 11, called them "the sentences §I addendum 2 corrected" and passed (the
-    # review of a849909, its mutant X26). The manifest's 'corrected' rows among (i)'s known hits must be
-    # exactly its ids.
-    ids = {i for i, _, _ in KNOWN_CORRECTED}
-    try:
-        with open(MANIFEST, encoding="utf-8") as f:
-            manifest = json.load(f)
-        declared = {r["id"] for r in manifest["entries"] if r.get("disposition") == "corrected"}
-        problem = None
-    except (OSError, ValueError, KeyError, TypeError) as e:
-        manifest, declared, problem = None, set(), f"cannot read {display_path(MANIFEST)}: {e}"
-    from_manifest = declared & {i for i, _, _, _ in KNOWN_SOUND_CHANGE_HITS}
-    check(f"(m0) KNOWN_CORRECTED names exactly the {len(from_manifest)} sentences "
-          f"{display_path(MANIFEST)} declares corrected among (i)'s known hits",
-          problem is None and bool(ids) and from_manifest == ids,
-          problem or f"declared, not in KNOWN_CORRECTED: {sorted(from_manifest - ids) or 'none'}; "
-                     f"in KNOWN_CORRECTED, not declared corrected: {sorted(ids - from_manifest) or 'none'}")
+    # (n) the v1.37 rows, on the tree v1.36's review read and on the corpus 1.35 shipped: the counter
+    # table flags its 11 known occurrences (the same shape as (f) and (i)), and the lexicalised table
+    # its 2. Anything else either tree yields is listed, not failed.
+    for ref, run, what in ((V137_CALIBRATION_REF, v137_run, "main when the rows were added"),
+                           (SHIPPED_REF, shipped_run, "the corpus 1.35 shipped")):
+        got = {(h["id"], h["field"], h["compound"], h["verdict"], h["verdictTokens"], h["verdictKana"],
+                h["taught"], h.get("kanaAlignment") == h["alignment"])
+               for h in run["counters"]["hits"]}
+        want = {(i, "exJP", c, v, v, v, t, True) for i, c, v, t in KNOWN_V137_HITS}
+        others = sorted(f"{h[0]} {h[2]} {h[3]} {h[6]}" for h in got - want
+                        if h[2].endswith(("週", "週間", "章", "等", "キロ", "センチ", "ページ", "パーセント")))
+        check(f"(n) {ref} ({what}): the v1.37 rows flag the {len(want)} known occurrences, each a "
+              f"mismatch in both exTokens and exKana, exKana lined up with the tokens",
+              want <= got,
+              f"missing: {sorted(f'{w[0]} {w[2]} {w[6]}' for w in want - got) or 'none'}; "
+              f"also flagged by a v1.37 row: {others or 'none'}")
+        lex = {(h["id"], h["compound"], h["taught"]) for h in run["hits"]}
+        want_lex = set(KNOWN_V137_LEXICALISED)
+        check(f"(n) {ref} ({what}): the lexicalised table flags 一晩 and 一晩中 in their "
+              f"{len(want_lex)} known sentences",
+              want_lex <= lex,
+              f"missing: {sorted(want_lex - lex) or 'none'}; "
+              f"also flagged at 一晩: {sorted(x for x in lex - want_lex if '晩' in x[1]) or 'none'}")
+    ids = {i for i, *_ in KNOWN_V137_HITS} | {i for i, *_ in KNOWN_V137_LEXICALISED}
+    pool = {h["id"]: h.get("inDictationPool") for h in v137_run["counters"]["hits"] + v137_run["hits"]
+            if h["id"] in ids}
+    check(f"(n1) {V137_CALIBRATION_REF}, with its own dictation-exclusions.json: of the {len(ids)} v1.37 "
+          f"sentences exactly {sorted(KNOWN_V137_POOL)} are in the dictation pool, as PLAN-V1.36 §H states",
+          sorted(pool) == sorted(ids) and {i for i, p in pool.items() if p is True} == KNOWN_V137_POOL
+          and all(p is False for i, p in pool.items() if i not in KNOWN_V137_POOL),
+          f"in the pool: {sorted(i for i, p in pool.items() if p is True)}; withheld: "
+          f"{sorted(i for i, p in pool.items() if p is False)}; unread: {sorted(ids - set(pool)) or 'none'}")
 
-    # (m) every correction §I addendum 2 made, inspected on the working tree and passed in both fields
-    # with exKana lined up — and none of those ids flagged by the counter table.
-    seen = sorted((r["id"], r["field"], r["compound"], r["verdict"], r.get("verdictTokens"),
-                   r.get("verdictKana"), r.get("taught"), r.get("taughtKana"),
-                   r.get("kanaAlignment") == r.get("alignment"))
-                  for r in head_run["counters"]["inspected"] if r["id"] in ids)
-    want = sorted((i, "exJP", c, "ok", "ok", "ok", t, t, True) for i, c, t in KNOWN_CORRECTED)
-    flagged = sorted(f"{h['id']} {h['field']} {h['compound']} {h['verdict']} {h['taught']}"
-                     for h in head_run["counters"]["hits"] if h["id"] in ids)
-    check(f"(m) the working tree passes the {len(want)} sentences §I addendum 2 corrected, each "
-          f"inspected and taught its corrected reading in exTokens and exKana",
-          seen == want and not flagged,
-          f"not as corrected: {[s for s in seen if s not in want] or 'none'}; "
-          f"not inspected: {[w[0] for w in want if w not in seen] or 'none'}; hits: {flagged or 'none'}")
-
-    # (m1) and (m2): what dictation does with every sentence the manifest corrected. (l) reads hits, and
-    # a corrected sentence is no longer one, so nothing held n3-b020's new withheld state: deleted from
-    # both exclusion files with their counts fixed, it passed every check above, and only
-    # release_numbers moved (the fix review of 8324943). Read from the working tree's files.
-    try:
-        if manifest is None:
-            raise ValueError(problem)
-        corrected, now, shipped, released_on_1b, counts = corrected_and_dictation(manifest)
-        rn_withheld, rn_skipped = release_numbers_withheld()
-        problem = None
-    except (OSError, ValueError, KeyError, TypeError, AttributeError, ImportError, SystemExit) as e:
-        corrected, now, shipped, released_on_1b, counts = set(), set(), set(), set(), {}
-        rn_withheld, rn_skipped, problem = None, None, f"cannot read what (m1) and (m2) compare: {e}"
-    in_pool = sorted(corrected - now)
-    unreleased = [i for i in in_pool if i not in released_on_1b]
-    check(f"(m1) the working tree withholds from dictation every one of the {len(corrected)} sentences "
-          f"{display_path(MANIFEST)} declares corrected, except any {display_path(REMEASURE)} "
-          f"releases on a 1b 'RELEASE' verdict",
-          problem is None and bool(corrected) and not unreleased,
-          problem or f"withheld {len(corrected & now)}; in the pool on a 1b RELEASE: "
-                     f"{[i for i in in_pool if i in released_on_1b] or 'none'}; in the pool without one: "
-                     f"{unreleased or 'none'}")
-
-    withheld = sorted(corrected & (now - shipped))
-    released = sorted(corrected & (shipped - now))
-    w, r = counts.get("withheldFromDictation"), counts.get("releasedToDictation")
-    net = (w - r) if isinstance(w, int) and isinstance(r, int) else None
-    check(f"(m2) the manifest's counts are its corrected rows withheld and released since "
-          f"{SHIPPED_REF}, and their difference is release_numbers' withheldThisRelease",
-          problem is None and w == len(withheld) and r == len(released)
-          and (rn_skipped is not None or rn_withheld == net),
-          problem or f"counts withheldFromDictation {w}, releasedToDictation {r}; corrected rows withheld "
-                     f"since {SHIPPED_REF}: {len(withheld)} {withheld}, released since: {len(released)}"
-                     f"{f' {released}' if released else ''}; "
-                     + (rn_skipped or f"release_numbers withheldThisRelease {rn_withheld}"))
+    # (m0)–(m2), once per release whose corrections this file pins: v1.36's (§I addendum 2) and
+    # v1.37's. A release's checks are kept when the next one moves on, so v1.36's corrections stay
+    # held after v1.37 changes the corpus; only (m2)'s tie to release_numbers moves with the release
+    # (release_numbers measures one release at a time, and says so for the other).
+    for release in RELEASES:
+        check_release(check, head_run, **release)
 
     # (h) every plant flagged by its own table — a mismatch, on both fields where it has tokens —
     # and none by another table. A table that judges fewer files, ids or kinds of field than it
@@ -1479,6 +1871,9 @@ def calibrate():
     for what, text, reading, tokens, want in LOGIC_CHECKS:
         got = [r["verdict"] for r in judge_field(text, reading, tokens)]
         check(f"logic: {what}", got == want, f"{text} {reading}: {got}")
+    for what, text, reading, tokens, want in LEXICALISED_LOGIC_CHECKS:
+        got = [(r["compound"], r["taught"]) for r in judge_lexicalised(text, reading, tokens)]
+        check(f"logic (lexicalised): {what}", got == want, f"{text} {reading}: {got}")
     for what, text, reading, tokens, want, *english in COUNTER_LOGIC_CHECKS:
         got = [(r["compound"], r["verdict"], r.get("verdictTokens"), r.get("verdictKana"))
                for r in judge_counter_field(text, reading, tokens, *english)]
@@ -1576,12 +1971,14 @@ def main():
 
     c_population, c_inspected, c_hits = scan_counters(args.resources)
     print_table("counters: month 月, hour 時, duration 時間, 字; the sound-changing 分 軒 階 回 歳 本 杯 匹 "
-                "個 冊 点 泊, and 千 百", c_population,
+                "個 冊 点 泊, and 千 百; v1.37's 週 週間 章 等 and キロ センチ ページ パーセント after a ten", c_population,
                 inspected=c_inspected, hits=c_hits,
                 enumerated="; ".join(f"{c} " + ", ".join(f"{d} {'|'.join(r)}" for d, r in finals.items())
                                      for c, finals in COUNTER_FINAL.items())
                            + f"; tolerated {sum(len(v) for v in COUNTER_TOLERATED.values())}, "
                              f"other senses {sum(len(v) for v in COUNTER_OTHER_SENSE.values())}")
+    comp = complement(args.resources)
+    print_complement(comp)
 
     if args.json:
         out = {"population": checked, "enumerated": len(LEXICALISED),
@@ -1602,7 +1999,7 @@ def main():
                             "absorbers": list(COUNTER_ABSORBERS),
                             "notTheCounter": {c: list(f) for c, f in NOT_THE_COUNTER.items()},
                             "minuteSense": {"minutes": MINUTES_EN.pattern, "enough": ENOUGH_EN.pattern},
-                            "inspected": c_inspected, "hits": c_hits}}
+                            "inspected": c_inspected, "hits": c_hits, "complement": comp}}
         if calibration is not None:
             out["calibration"] = calibration
         if os.path.abspath(args.resources) == RESOURCES:
