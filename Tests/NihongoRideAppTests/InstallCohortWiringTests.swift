@@ -28,17 +28,49 @@ struct InstallCohortWiringTests {
 
     /// A fresh sandbox, the same three redirects `AppModelTests.sandboxed` sets, with `arrange` run
     /// on it BEFORE any model reads it. Returns the suite so a test can read what `init` wrote.
-    static func sandbox(arrange: (UserDefaults) -> Void = { _ in }) -> UserDefaults {
-        let dir = FileManager.default.temporaryDirectory
-            .appendingPathComponent("NihongoRideAppTests-\(UUID().uuidString)", isDirectory: true)
+    ///
+    /// The suite and the directory are named per checkout, test and argument, and emptied first —
+    /// never a UUID, which left one plist in ~/Library/Preferences and one directory in $TMPDIR
+    /// behind per test per run (review r2, marker-r2-3). Each test also calls `tearDown` in a
+    /// `defer`. The argument keeps parameterised cases apart; the checkout's digest keeps two
+    /// clones running at once apart.
+    static func sandbox(_ argument: String = "", function: String = #function,
+                        arrange: (UserDefaults) -> Void = { _ in }) -> UserDefaults {
+        let name = sandboxName(argument, function: function)
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(name, isDirectory: true)
+        try? FileManager.default.removeItem(at: dir)
         AppModel.supportDirectoryOverride = dir
         AppModel.widgetContainerOverride = dir.appendingPathComponent("group", isDirectory: true)
-        let suite = "NihongoRideTests-\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suite)!
+        let defaults = UserDefaults(suiteName: name)!
+        defaults.removePersistentDomain(forName: name)
         AppModel.settingsDefaults = defaults
-        AppModel.settingsSuiteOverride = suite
+        AppModel.settingsSuiteOverride = name
         arrange(defaults)
         return defaults
+    }
+
+    static func sandboxName(_ argument: String = "", function: String = #function) -> String {
+        let label = (function + (argument.isEmpty ? "" : "." + argument))
+            .unicodeScalars.filter { CharacterSet.alphanumerics.contains($0) || $0 == "." }
+        return "InstallCohortWiringTests.\(String(StableDigest.fnv1a64(#filePath), radix: 16))."
+            + String(String.UnicodeScalarView(label))
+    }
+
+    /// Empties the suite (its one plist is reused next run) and removes the directory.
+    static func tearDown(_ argument: String = "", function: String = #function) {
+        let name = sandboxName(argument, function: function)
+        UserDefaults(suiteName: name)?.removePersistentDomain(forName: name)
+        try? FileManager.default.removeItem(at: FileManager.default.temporaryDirectory
+            .appendingPathComponent(name, isDirectory: true))
+    }
+
+    @Test("sandbox names are fixed per test and argument, so a rerun reuses them instead of adding more")
+    func sandboxNamesAreFixed() {
+        let first = Self.sandboxName("x", function: "someTest()")
+        #expect(first == Self.sandboxName("x", function: "someTest()"), "two calls named two sandboxes")
+        #expect(first != Self.sandboxName("y", function: "someTest()"), "two arguments share one sandbox")
+        #expect(first != Self.sandboxName("x", function: "otherTest()"), "two tests share one sandbox")
+        #expect(first.hasPrefix("InstallCohortWiringTests.") && !first.contains("-"), "\(first) is not the fixed form")
     }
 
     static func launch(_ running: InstallCohort.Running) -> AppModel {
@@ -49,6 +81,7 @@ struct InstallCohortWiringTests {
 
     @Test("a fresh install: no marker before, one after, with priorDataPresent false")
     func freshInstall() throws {
+        defer { Self.tearDown() }
         let defaults = Self.sandbox()
         #expect(defaults.object(forKey: AppSettings.defaultsKey) == nil, "the sandbox is not fresh")
         let model = Self.launch(Self.running([1, 37], 62))
@@ -62,6 +95,7 @@ struct InstallCohortWiringTests {
 
     @Test("a second launch, even of a newer build, reads the first marker and writes nothing")
     func secondLaunch() throws {
+        defer { Self.tearDown() }
         let defaults = Self.sandbox()
         _ = Self.launch(Self.running([1, 37], 62))
         let first = try #require(defaults.data(forKey: "NihongoRide.installCohort.v1"))
@@ -74,6 +108,7 @@ struct InstallCohortWiringTests {
 
     @Test("an install upgrading with saved settings and no marker is recorded as having prior data")
     func upgraderWithSettings() throws {
+        defer { Self.tearDown() }
         let defaults = Self.sandbox { AppSettings.default.sanitized().save(to: $0) }
         let model = Self.launch(Self.running([1, 37], 62))
         #expect(model.installCohortAtLaunch == .absent)
@@ -83,6 +118,7 @@ struct InstallCohortWiringTests {
 
     @Test("an install with only an odometer on disk is recorded as having prior data")
     func upgraderWithOdometer() throws {
+        defer { Self.tearDown() }
         let defaults = Self.sandbox { _ in
             var log = OdometerLog()
             log.setSlot(.init(words: 12, distanceMeters: 300, runs: 2), for: "device-before")
@@ -97,15 +133,24 @@ struct InstallCohortWiringTests {
     /// The rule is "an odometer in ANY state but missing" (`InstallCohort.priorDataPresent`'s
     /// doc), and the only odometer test above writes a valid one, so `outcome == .loaded` in place
     /// of `outcome != .missing` passed every suite (review r1, mutation-1). Each state the loader
-    /// can report for a file that exists, with no settings blob beside it.
-    @Test("an odometer that is undecodable or unreadable still counts as prior data",
-          arguments: ["undecodable", "unreadable"])
+    /// can report for a file that exists, with no settings blob beside it: undecodable, unreadable,
+    /// and loaded with a slot skipped (review r2, mutation-7 — the third was missing, and an
+    /// expression that dropped `.loadedWithSkips` passed).
+    @Test("an odometer that is undecodable, unreadable or missing a slot still counts as prior data",
+          arguments: ["undecodable", "unreadable", "skippedSlot"])
     func upgraderWithDamagedOdometer(_ state: String) throws {
+        defer { Self.tearDown(state) }
         var odometerURL: URL?
-        let defaults = Self.sandbox { _ in
+        let defaults = Self.sandbox(state) { _ in
             let url = AppModel.supportFileURL("odometer.json")
             odometerURL = url
-            try? Data([0xFF, 0x00, 0x7B, 0x22]).write(to: url)   // not JSON at all
+            if state == "skippedSlot" {
+                // Valid JSON, one good slot and one that is not a slot at all.
+                try? Data(#"{"slots":{"device-before":{"words":12,"distanceMeters":300,"runs":2},"device-bad":"not a slot"}}"#.utf8)
+                    .write(to: url)
+            } else {
+                try? Data([0xFF, 0x00, 0x7B, 0x22]).write(to: url)   // not JSON at all
+            }
             if state == "unreadable" {
                 try? FileManager.default.setAttributes([.posixPermissions: 0o000], ofItemAtPath: url.path)
             }
@@ -116,7 +161,12 @@ struct InstallCohortWiringTests {
         // The arrangement is a claim: check the file is in the state named, before the launch.
         #expect(FileManager.default.fileExists(atPath: url.path))
         let readable = (try? Data(contentsOf: url)) != nil
-        #expect(readable == (state == "undecodable"), "\(state): the odometer is readable = \(readable)")
+        #expect(readable == (state != "unreadable"), "\(state): the odometer is readable = \(readable)")
+        if state == "skippedSlot" {
+            // The loader's own report on the arrangement — what the launch below will see.
+            #expect(OdometerLog.loadReporting(from: url).outcome == .loadedWithSkips(skipped: 1),
+                    "the arrangement is not an odometer loaded with one slot skipped")
+        }
 
         _ = Self.launch(Self.running([1, 37], 62))
         if state == "undecodable" {
@@ -139,6 +189,7 @@ struct InstallCohortWiringTests {
     /// update `InstallCohort.priorDataPresent`'s doc with it.
     @Test("an install last opened on 1.1 (review and history only) records priorDataPresent false")
     func lastOpenedOn11() throws {
+        defer { Self.tearDown() }
         let defaults = Self.sandbox { _ in
             var review = ReviewStore()
             _ = review.record(entryID: "a", outcome: TypingOutcome(completed: true))
@@ -167,7 +218,8 @@ struct InstallCohortWiringTests {
     @Test("a UI-test or capture launch neither reads nor writes the marker, and reports nil",
           arguments: ["uiTest", "capture"])
     func isolatedLaunchHasNoMarker(_ kind: String) throws {
-        let defaults = Self.sandbox()
+        defer { Self.tearDown(kind) }
+        let defaults = Self.sandbox(kind)
         let savedTarget = Screenshotter.captureTarget
         let savedCapturing = Screenshotter.isCapturing
         defer {
