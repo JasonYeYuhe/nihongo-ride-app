@@ -76,7 +76,9 @@ Practice passages are **not** JLPT-tagged. They carry `easy` / `med` / `hard` (`
 * `levelIsOpen(_ level: JLPTLevel) -> Bool`: `depthIsOpen || freeLevels.contains(level)`.
 * When `depthIsOpen` changes (a purchase, a restore, a grace that becomes a grant), `vocab` is swapped, then `refreshWidgetSnapshot()` and `refreshReminders()` run, as they do after any due-count change (`AppModel.swift:717-718`). A run already in progress is not touched; it was built from the store it started with.
 * **`DepthFreeSet.ids` is a list of word ids, not a level filter** (review finding S4, accepted). It is generated once, at the first gated release, from the chosen boundary: N5 + N4 for candidate 1 (1,288 ids), N5 for candidate 2 (646). It is committed as a golden file and pinned by a test.
-  * **It may grow and never shrink.** A later corpus edit that moves an id from N4 to N3 leaves the id free. A new N5 or N4 entry is added to the list in the same commit that adds the entry. A test compares the list with a frozen copy of the first gated release's list and fails if any id is missing.
+  * **It may grow and never shrink.** A later corpus edit that moves an id from N4 to N3 leaves the id free.
+  * **Every id whose `jlpt` is a free level is in it** (round-2 finding MINOR-6): a new N5 or N4 entry, **and an existing entry moved down into N5 or N4**, is added in the same commit. Otherwise "N4 stays free" would be false for that word. One test asserts both directions: every free-level id is in the set, and every id ever in the set still is.
+  * **The comparison copy cannot be edited in the same commit** (round-2 finding NIT-3). The test reads the first gated release's list with `git show <first-gated-tag>:<path>`, and the release record carries its hash, so one commit cannot change the list and its reference together.
   * **Why not `jlpt`.** The corpus is corrected most releases (v1.37's own P0-2 re-reads sentences). Defined by the `jlpt` field, the free tier would shrink every time a correction moved a word up a level, and every sampler would lose that word and its SRS card. Sampler installs are existing installs once E3 ships.
   * **What it does not override:** if the corpus withdraws an entry for every install (an existing practice for bad entries, `VocabStore.swift:172-180`), it is withdrawn for samplers too. That is the corpus's rule, applied to every install alike, and not the gate's.
   * **C-2(d) is one-time.** The owner's answer chooses which levels seed the list. After the first gated release, a boundary change may only add ids.
@@ -166,26 +168,33 @@ Why `AppTransaction` cannot be the first line: it "throws an error if the `AppTr
 
 This design keeps all of that and adds five protections found in review round 1 (§12): a threshold defined by what customers received (§5.2), a grant written by every build with the gate off (§5.2), rule 3 read by the value's shape (§5.3), a defined pending state with a timeout (§5.6), and a free set frozen by id (§2.2).
 
-### 5.2 The threshold: above everything customers ever got without the gate
+### 5.2 The threshold: above every build ever uploaded without the gate
 
 **Definition** *(agent's choice, 2026-10-07 delegation, replacing round 0's "first E3 build of any channel", which review finding B1 showed un-grandfathers people)*:
-* `T_build[p]`, per platform: **one more than the highest `CFBundleVersion` ever released to App Store customers on platform p by a build without the gate.**
+* `T_build[p]`, per platform: **one more than the highest `CFBundleVersion` of any build without the gate ever uploaded to App Store Connect on platform p**, released or not. Round 1 said "released to App Store customers"; round-2 finding MINOR-1 showed that an ungated TestFlight upload above every release would leave its testers' markers at or above `T`, and sandbox ignores rule 3, so they would get **N**. Counting uploads only grandfathers more TestFlight installs.
 * `T_version`: the marketing version of the gated release. It must be **strictly above every marketing version ever released without the gate, on either platform.**
 * Both are compiled into the gated binary before its first upload, from an ASC read made then. Both are re-checked before submit (below).
 * **They may rise and never fall.** Raising grants more; lowering would un-grandfather any install whose grant was not yet written.
 
 **Why "released to customers", not "first upload".** Builds come from one counter per target, bumped by one each release (`scripts/check_versions.py:78`; history 1…62, all single integers). Say a gated build 66 is uploaded, and then a 1.38.1 hotfix (67) or a v1.39 without E3 reaches customers. Under round 0's definition a fresh install of 67 would fail rule 1 (67 ≥ 66), rule 2 (no prior data) and, on iOS, rule 3 ("67" ≥ 66): permanent **N** for someone who installed when every level was free. Under this definition the gated build must be rebuilt with `T_build` above 67 before it can be submitted.
 
-**Today's values, for scale** (ASC GET 2026-10-27, `/v1/apps/6777469778/appStoreVersions?include=build&limit=200`): 76 released versions; macOS 37, highest build 61; iOS 39, highest build 62; every build one integer; every version two or three components. v1.37 and v1.38 ship ungated first, so the real thresholds are fixed only at the gated upload.
+**Today's values, for scale** (ASC GET 2026-10-27, `/v1/apps/6777469778/appStoreVersions?include=build&limit=200`): 76 released versions; macOS 37, highest build 61; iOS 39, highest build 62; every build one integer; every version two or three components. Uploaded builds (ASC GET 2026-10-27, `/v1/builds?filter[app]=6777469778&include=preReleaseVersion&limit=200`): 46 listed per platform, highest 61 (macOS) and 62 (iOS), all digits; so today no unreleased upload sits above a release. ASC lists fewer builds than were ever made (46 against 62), so the script also takes the highest build number in the repo's git history of `project.yml` and uses the larger of the two. v1.37 and v1.38 ship ungated first, so the real thresholds are fixed only at the gated upload.
 
-**TestFlight.** A gated build is uploaded after every ungated release before it, so its number is at or above `T_build`, and a fresh TestFlight install of it is a sampler, which is what testing needs. If an ungated release later overtakes it, its TestFlight installs become grandfathered: generous and harmless. No low threshold is needed for testing.
+**TestFlight.** A gated build is uploaded after every ungated upload before it, so its number is at or above `T_build`, and a fresh TestFlight install of it is a sampler, which is what testing needs. If an ungated upload later overtakes it, its TestFlight installs become grandfathered: generous and harmless. No low threshold is needed for testing.
 
 **The release-script check, before every `--submit`** (ASC GET only, the read `asc_release.py` already makes per build at `find_build`, `scripts/asc_release.py:520-536`, plus the endpoint above):
-1. Read every released version and its build, per platform.
-2. Read the repo's registry of which released builds carried the gate. A new file, appended by the release script at each submit, the shape of the `FIRM_RELEASE_DATES_PT` registry.
-3. **Gated submit:** stop unless `T_build[p]` > every ungated released build on p, `T_version` > every ungated released version, and both are ≥ the previous gated release's values.
+1. Read every uploaded build per platform (`/v1/builds` with `preReleaseVersion`), every released version with its build (`appStoreVersions?include=build`), and the highest `CURRENT_PROJECT_VERSION` in git history.
+2. **Which builds carried the gate is read from the binaries, not from a list the script keeps** (round-2 finding MINOR-7). The gated build's `Info.plist` carries one key emitted from the gate constant (for example `NRDepthGate = 1` with its thresholds). The script reads it out of the `.xcarchive` it uploads and records it with the build number. **A build with no record counts as ungated**, the direction that raises `T`, which covers every pre-E3 build. The registry is evidence of what was read, never an input that can lower anything.
+3. **Gated submit:** stop unless all of these hold.
+   * `T_build[p]` > every ungated build uploaded on p.
+   * `T_version` > every ungated released version.
+   * Both are ≥ the previous gated release's values.
+   * **Each platform's own gated build ≥ max(`T_build[macOS]`, `T_build[iOS]`)** (round-2 finding MINOR-5). §5.3 compares a one-component value with that maximum, so an iOS gated build numbered below the macOS threshold would read its own fresh installs as "below" and leave the gate dead on iOS. If a counter lags, bump it before upload.
 4. **Ungated submit at or above the current `T_build`** (an ungated release after E3 exists): stop unless the build carries the ungated grant writer (next paragraph). The next gated submit then fails step 3 until its thresholds are raised above this build.
-5. Print the thresholds and the ASC values in the release record.
+5. **Again at release** (round-2 finding NIT-1). Steps 1–3 run again at the manual or phased release of a gated version, because an ungated release on the other platform could land between submit and release. While a gated version is waiting on either platform, the script refuses to release an ungated version on the other.
+6. Print the thresholds and the ASC values in the release record.
+
+**A cost the threshold carries** (round-2 finding NIT-2, stated): **any ungated release after E3 has shipped forces the next gated release's threshold above it.** Every sampler installed before that point then sits below `T` and gets a rule-1 grant, whether or not it ever launched the ungated build. That is safe for the red line and costs revenue and Window 2's denominator. So the cheapest way to keep the gate meaningful is never to ship an ungated build once E3 is live; a rollback is better done as a gated build with a fix.
 
 **The ungated grant writer** (review finding S1, accepted). In any build where the gate is off (a rollback, a kill switch, E3 code present but disabled), `depthIsOpen` is true **and the grant is written** with `Reason.ungatedBuild`, on every launch. "Everything free" becomes a grant in its own right, so turning the gate back on later cannot close it.
 * **Which release must carry it, and why:** the **first gated release (v1.39)**. Every later build is cut from `main` after E3's merge, so every rollback or kill-switch build inherits it. That covers S1 fully.
@@ -210,7 +219,7 @@ Side effect: the mirror case also goes the right way. An E3-era Mac-first accoun
 
 ### 5.4 The pure function
 
-It lives beside `EntitlementRecord`, takes plain values (the house rule that keeps GameCore free of ConjugationReviewKit, `GameSession.swift:305-309`), and imports neither StoreKit nor SettingsKit. It can reuse the marker's integer `Version` type, or copy its rules exactly ("1.36" == "1.36.0", `InstallCohort.swift:86-96` on the marker branch).
+It lives beside `EntitlementRecord`, takes plain values (the house rule that keeps GameCore free of ConjugationReviewKit, `GameSession.swift:305-309`), and imports neither StoreKit nor SettingsKit. It **copies** the marker's integer-version rules rather than importing SettingsKit ("1.36" == "1.36.0", `InstallCohort.swift:86-96` on the marker branch), and one table test feeds the same strings to both types and asserts they agree (round-2 finding NIT-8: round 1 said both "imports neither SettingsKit" and "can reuse the marker's `Version`").
 
 ```swift
 public enum DepthGrandfather {
@@ -226,11 +235,11 @@ public enum DepthGrandfather {
     /// What E3 reads from P0-12 (§5.9).
     public enum Cohort: Sendable {
         case present(firstSeenBuild: Int, platform: Platform, priorDataPresent: Bool)
+        case absent(priorDataPresent: Bool)   // PD as the gated build computed it this launch (§5.9)
         case unreadable          // unreadable bytes, another platform's marker, or no marker step ran
     }
 
     public enum StoredGrant: Sendable { case absent, present }   // presence of either copy IS the grant
-    public enum Latch: Sendable { case absent, present(threshold: Threshold) }   // §5.6
 
     public enum AppTransactionReading: Sendable {
         case production(originalAppVersion: String)  // verified, environment == .production
@@ -245,14 +254,14 @@ public enum DepthGrandfather {
     public enum Decision: Equatable, Sendable {
         case alreadyGranted
         case grant(Reason)        // open; persist the grant now
-        case needsAppTransaction  // open while pending (§5.6)
+        case needsAppTransaction  // pending: open until the reading or the timeout (§5.6)
         case sessionGrace         // open for this process only; never persisted
-        case notGrandfathered(writeLatch: Bool)   // closed unless purchased
+        case notGrandfathered     // closed unless purchased; writes NOTHING (no negative state exists)
     }
 
     /// Everything except AppTransaction. Never touches the network.
-    public static func offlineDecision(gateEnabled: Bool, protectedDataAvailable: Bool,
-                                       stored: StoredGrant, cohort: Cohort, latch: Latch,
+    public static func offlineDecision(gateEnabled: Bool, storesReadable: Bool,
+                                       stored: StoredGrant, cohort: Cohort,
                                        platform: Platform, threshold: Threshold) -> Decision
 
     /// Called only after .needsAppTransaction, with the reading or .unavailable at the timeout.
@@ -268,103 +277,119 @@ public enum DepthGrandfather {
 | # | condition | AppTransaction | result | rule |
 |---|---|---|---|---|
 | 0 | the gate is off in this build | — | **G** `ungatedBuild` (open; the write waits if row 0a's condition holds) | §5.2, S1 |
-| 0a | iOS, protected data not yet available (a launch before first unlock) | — | **S**, nothing written | §5.7, M3 |
+| 0a | this launch's own stores are unreadable: a store file exists but loads `.unreadable`, or the settings key reads nil while support files exist (§5.10) | — | **S**; neither the marker nor a grant is written | §5.10, round-1 M3, round-2 MINOR-2 |
 | 1 | a stored grant, either copy | — | open (`alreadyGranted`) | stored; no re-evaluation, ever |
 | 2 | marker present, this platform, build < T | — | **G** `markerBeforeE3` | 1 |
 | 3 | marker present, this platform, build ≥ T, PD true | — | **G** `priorDataAtFirstMarker` | 2 |
-| 4 | marker absent before this launch; the marker this launch wrote has PD true | — | **G** `priorDataAtFirstMarker` | 2 (a legacy install that skipped 1.37 and 1.38; offline) |
-| L | marker present, build ≥ T, PD false, latch present and its threshold equals the current one | — | **N**, no AppTransaction read | §5.6 latch |
-| 5 | marker present, build ≥ T, PD false (or row 4's marker with PD false), no valid latch | production, below E3 by shape | **G** `originalAppVersionBeforeE3` | 3 (a legacy reinstall, online) |
-| 6 | as 5 | production, not below | **N**, write latch | a fresh E3-era install |
-| 7 | as 5 | nonProduction | **N**, no latch | sandbox rule |
+| 4 | marker absent before this launch, and the PD this gated build computed this launch is true | — | **G** `priorDataAtFirstMarker` | 2 (a legacy install that skipped 1.37 and 1.38; offline) |
+| 5 | marker present, build ≥ T, PD false; or marker absent and this launch's PD false | production, below E3 by shape | **G** `originalAppVersionBeforeE3` | 3 (a legacy reinstall, online) |
+| 6 | as 5 | production, not below | **N**, nothing written | a fresh E3-era install |
+| 7 | as 5 | nonProduction | **N**, nothing written | sandbox rule |
 | 8 | as 5 | unavailable, or no answer by the timeout | **S** | unreadable |
 | 9 | as 5 | still pending | **P** | §5.6 |
 | 10 | marker unreadable, or another platform's, or no marker step ran | production, below by shape | **G** `originalAppVersionBeforeE3` | 3 |
-| 11 | as 10 | production, not below | **N**, no latch | latch only over a readable marker |
+| 11 | as 10 | production, not below | **N**, nothing written | — |
 | 12 | as 10 | nonProduction | **N** | sandbox rule |
 | 13 | as 10 | unavailable, or timeout | **S** | unreadable |
 | 14 | as 10 | still pending | **P** | §5.6 |
 
-* **The offline-reinstall row is row 8** (pre-launch marker absent, this launch's marker PD false, AppTransaction throws → S, nothing persisted). Round 0 numbered it 12.
-* Rows 0–4 and L never read the network, so a legacy rider on a plane is decided by rows 1–4.
+* **The offline-reinstall row is row 8** (pre-launch marker absent, this launch's PD false, AppTransaction throws → S, nothing persisted). Round 0 numbered it 12.
+* Rows 0–4 never read the network, so a legacy rider on a plane is decided by rows 1–4.
+* **No row writes anything on N.** There is no stored negative state, so nothing local can stand between a later launch and rows 5 and 10 (round-2 finding S-new-1; round 1's latch is removed, §5.6).
 * Row 1 means a grant, once written, decides every later launch with no other input.
 
 **Readings this table makes, labelled:**
 * **`unavailable` includes `.unverified`, an unparseable value and the timeout**, not only a throw *(agent's reading, 2026-10-07 delegation)*. §E names only the throw. Each is "no information", and treating it as such keeps a legacy rider on the safe side of the red line.
-* **PD on a present marker counts** (row 3). A marker first written at an E3-era launch with PD true means the install had data before any marker existed, which only a pre-marker install can have.
+* **PD on a present marker counts** (row 3). A marker first written at an E3-era launch with PD true means the install had data before that marker existed. Round 1 said only a pre-marker install can have that; round-2 finding NIT-8 is right that it is false. A sampler whose defaults plist was lost while `odometer.json` survived also qualifies, and so does a macOS sampler who deletes the marker key by hand (then row 4). **Both errors are generous**, and the row is kept for the legacy rider it exists for.
 * **Another platform's marker is unreadable** (row 10) *(agent's choice, 2026-10-07 delegation)*; the marker's own `firstSeenBuild(isBefore:on:)` returns nil for it (`InstallCohort.swift:193-196`, marker branch).
 
 ### 5.6 While the check is pending, and the timeout
 
-Review finding S2, accepted: a captive-portal network can leave `AppTransaction.shared` neither returning nor throwing, and round 0 said nothing about that time.
+Review finding S2 (round 1), accepted: a captive-portal network can leave `AppTransaction.shared` neither returning nor throwing, and round 0 said nothing about that time.
 
 * **Pending is open.** From `needsAppTransaction` until a reading or the timeout, `depthIsOpen` is true, as for grace. This is §E's own condition: "the failure must be 'assume entitled' when the transaction cannot be read, never 'assume not entitled'" (`PLAN-V2-PRODUCT.md:393-397`).
 * **The timeout is 5 seconds** from the start of the read *(agent's choice, 2026-10-07 delegation; not measured, a parameter pinned by a test)*. No reading by then → **S** for the rest of the process.
-* **After the timeout a late reading may only upgrade.** A late "production, below" → **G**, persisted. A late "not below" or "nonProduction" does not close a session already in grace; it writes the latch for next launch (row 6 only).
+* **After the timeout a late reading may only upgrade.** A late "production, below" → **G**, persisted. A late "not below" or "nonProduction" does not close a session already in grace.
 * **Before the timeout, only rows 6, 7, 11 and 12 close**, and only at a moment no run is in progress. A run started while pending finishes on the store it was built with; the close takes effect when the rider is back on the menu.
 * **Widget and reminders** are refreshed again once the decision settles, after the launch's synchronous refresh (`AppModel.swift:717-718`). The widget may show open counts for up to five seconds, which is the safe direction.
 * **A fresh install's first launch shows onboarding** (`AppModel.swift:698-704`), so its pending window normally passes on a screen with no level content.
 
-**The latch** *(agent's choice, 2026-10-07 delegation; round 0 Q4's default changed from "no" to "yes")*. After a verified production reading "not below" (row 6), a local key records the threshold it was judged against, and later launches decide by row L without reading `AppTransaction`. Why it is safe:
-* `originalAppVersion` "remains constant" across upgrades (Apple, §5.1), so the reading cannot become "below" later for this account.
-* It is written only over a **present, readable** marker with build ≥ T and PD false, an install that rows 2–4 already showed is new. Never after rows 10–14.
-* It is ignored as soon as the threshold rises (row L requires equality), so a raised threshold re-runs rule 3.
-* It never blocks a grant: rows 0–4 come before it.
-
-Without the latch, every sampler launch would pass through pending, so the depth would be open for up to five seconds at every launch, and open for whole sessions whenever offline (round 0's §5.7 hole). With it, a sampler that was online once has no pending window and no offline grace. The owner can still choose §E's exact behaviour instead (Q4).
+**Round 1's latch is removed** (round-2 finding S-new-1, SERIOUS, accepted) *(agent's choice, 2026-10-07 delegation)*.
+* **What it was.** After a verified production "not below" reading, a local key let later launches decide **N** without reading `AppTransaction`.
+* **Why it breached §E.** `originalAppVersion` belongs to an Apple Account; the latch lived in the container. A container outlives its account in ordinary ways: a deleted sandboxed Mac app keeps `~/Library/Containers/<id>`; an offloaded iOS app keeps its data and re-downloads under whichever account is signed in; a restore from another device's backup carries everything. A legacy rider whose first reading on that container came from a second account would have been refused rule 3 for good after switching back. §E rule 3 grants that rider.
+* **Why not keep the review's repaired form** ("start closed, still read in the background, grant on any 'below'"). It closes the permanent breach, but under it a latched container that is offline starts **closed** where §E says unreadable means grace. Nothing persisted would be taken, but it is still a second rule that §E does not have, kept to save a few seconds of open depth.
+* **Why the latch is not worth that.** What it saved is small. `AppTransaction`'s cache is scoped per app version and the App Store server is asked "if one has not been cached yet" (the SDK doc comment quoted at `PLAN-STAGE1.md:281-283`). So once an install has read it for the running version, later launches normally answer from the cache: pending lasts as long as a local read, and offline grace falls mainly on the first offline launch after each update. *The speed and offline behaviour of a cached read are not measured here;* if a cached read turns out slow, the cost is a longer open window, which is the safe direction.
+* **So nothing is written on N.** The only persisted access state is the grant (§5.7), which can only open. A source scan pins that no other E3 key is written (§9).
 
 ### 5.7 What is persisted, where, and why a grant is never revoked
 
 | what | where | written by | content | synced? |
 |---|---|---|---|---|
 | install-cohort marker `NihongoRide.installCohort.v1` | settings `UserDefaults` | P0-12, once, if absent (`InstallCohort.swift:278-289`, marker branch) | first-seen version, build, platform, PD | never |
-| grant, copy 1: a new key, proposed `NihongoRide.depthGrant.v1` | settings `UserDefaults` | E3, on any `grant(_)`, if absent | the `Reason`, the version and build that wrote it, the thresholds | never |
-| grant, copy 2: a small file beside the other stores, proposed `depth-grant.json` | Application Support, through `supportFileURL` (`AppModel.swift:530-532`) | the same write, if absent | the same | never |
-| latch, proposed `NihongoRide.depthVerifiedNew.v1` | settings `UserDefaults` | row 6 only | the threshold it was judged against | never |
+| grant, copy 1: a new key, proposed `NihongoRide.depthGrant.v1` | settings `UserDefaults` | E3, on any `grant(_)`, and on `alreadyGranted` when this copy is missing; never over a present copy | the `Reason`, the version and build that wrote it, the thresholds | never |
+| grant, copy 2: a small file beside the other stores, proposed `depth-grant.json` | Application Support, through `supportFileURL` (`AppModel.swift:530-532`) | the same, under the same rule | the same | never |
 | the depth purchase's `EntitlementRecord`, its own key and quarantine key (P1-5) | settings `UserDefaults` | the depth store | as the road's record (`Entitlement.swift:79-127`) | never |
 | pending, session grace | memory | — | — | — |
 
 * **Presence of either grant copy is the grant** *(agent's choice, 2026-10-07 delegation)*. Only a grant writes either copy, so any bytes there, readable or not, mean a grant happened.
+  * **Stated as the product choice it is** (round-2 finding NIT-8): on macOS this puts the depth one `defaults write` away. That is not a red-line issue. Requiring readable bytes instead would turn a corrupt plist into lost depth for a grandfathered rider, which is the worse error for this app.
 * **The grant key is its own quarantine** (review finding M5, accepted). It is never overwritten, so unreadable bytes stay as they are and no copy is made. P0-12 uses the same rule for the marker. Round 0 pointed at `EntitlementLedger`'s quarantine helper, whose `quarantineKey` ignores its `key` parameter (`Entitlement.swift:222`) and would have written into the road's quarantine key.
-* **Two copies** (review finding M3, partial). If an OS event drops the defaults plist, the file still holds the grant, and the reverse. Both live in the app container, so deleting the app on iOS removes both, and rule 3 is then the only way back (§5.10).
+* **Two copies, repaired** (round-1 M3, partial; round-2 MINOR-3, accepted). If an OS event drops the defaults plist, the file still holds the grant, and the reverse. **On every `alreadyGranted` launch, a missing copy is recreated** from the surviving bytes, copied verbatim, and a present copy is never overwritten, readable or not. So the grant survives any sequence of single losses, not just one. Both live in the app container, so deleting the app on iOS removes both, and rule 3 is then the only way back (§5.10).
 * **Never revoked, in code, four ways.** (1) No type has a "revoked" or "false" value to write. (2) No code path removes either copy; a source scan pins that (§9). (3) Row 1 comes before every input that could change (rows 0 and 0a are above it, and both can only open). (4) The thresholds may only rise (§5.2).
 * **What a grant covers** (review finding N5, accepted): everything the N3–N1 pools contained when the grant was written, and every later addition to those pools. If a later pack (E4) is ever carved out of today's N1 words, those words stay open for every grant.
-* **Never synced, never sent.** None of these is a CloudKit record type (`CloudKitSyncController.swift:63`). `PrivacyClaimTests` stay green; Data Not Collected stays true. The privacy page's on-device storage list (`site/privacy.html:34-35`, which P0-6 extends for the marker) gains one sentence for the grant, the latch and the second purchase record, for the owner to push.
+* **Never synced, never sent.** None of these is a CloudKit record type (`CloudKitSyncController.swift:63`). `PrivacyClaimTests` stay green; Data Not Collected stays true. The privacy page's on-device storage list (`site/privacy.html:34-35`, which P0-6 extends for the marker) gains one sentence for the grant and the second purchase record, for the owner to push.
 
 ### 5.8 The order rule, and what it actually protects
 
-The check reads P0-12's **pre-launch observation**, never the defaults after this launch's write. The one exception is reading PD from this launch's own write, when the pre-launch observation is `.absent` (§5.9).
+The check reads P0-12's **pre-launch observation**, never the defaults after this launch's write. When that observation is `.absent`, PD comes from the gated build's own computation this launch (§5.9), not from the key.
 
 **PLAN-V1.37 §E's stated reason does not hold under its own definitions.** It says that reading the fresh marker would make an offline legacy reinstall "fail rules 1–3, and get neither a grant nor grace". But a fresh marker has build ≥ T and PD false, so rules 1–2 do not grant, and with `AppTransaction` throwing, §E's own unreadable rule gives grace. That is row 8 either way. **No row changes with the order**, given that the marker stores PD.
 
-The rule is still kept, because it protects against a likely bug: a decision that reads "present marker, build ≥ T" as a final verdict and skips `AppTransaction`. The latch makes that bug easier to write, because row L is exactly such a verdict; the mutation in §9 targets it.
+The rule is still kept, because it protects against a likely bug: a decision that reads "present marker, build ≥ T" as a final verdict and skips `AppTransaction`. The mutation in §9 targets it.
 
 **A fresh marker over unreadable bytes** would not hurt a legacy rider (review finding N1, accepted: round 0 overstated this). A legacy rider has a settings blob, so the fresh marker's PD would be true, and that is row 3, **G**. P0-12 still leaves unreadable bytes alone, which is right for its own reasons.
 
 ### 5.9 What E3 reads from the v1.37 marker, as built
 
-The marker is on `feat/v137-install-cohort` @ 56a2ebc in `v137-marker`. Read today:
+The marker is on `feat/v137-install-cohort` in `v137-marker`, at 56a2ebc and then 8b06f79. Read today:
 * `InstallCohort.Observation` is `.absent` / `.present(Marker)` / `.unreadable`, and **`.absent` carries no PD** (`Sources/SettingsKit/InstallCohort.swift:225-254`).
-* `recordLaunch` decides, writes the marker if the key was absent, and returns the **pre-launch** observation (`:308-316`). The marker it writes carries the PD computed this launch (`:278-289`).
-* `AppModel` calls it once in `init`, before the settings save, with PD = "settings blob present or odometer not missing", and keeps only the observation, as `installCohortAtLaunch` (`AppModel.swift:420-428, 625-636` on the marker branch). The PD value is not kept. It is `nil` on a launch that touches nothing of the user's.
+* `recordLaunch` decides, writes the marker if the key was absent, and returns the **pre-launch** observation (`:308-316` at 56a2ebc). The marker it writes carries the PD computed this launch (`:278-289`).
+* `AppModel` calls it once in `init`, before the settings save, with PD = "settings blob present or odometer not missing", passed inline, and keeps only the observation, as `installCohortAtLaunch` (`AppModel.swift:420-428, 625-636` on the marker branch). It is `nil` on a launch that touches nothing of the user's.
 
-**What E3 reads, exactly:**
-1. `installCohortAtLaunch`.
+**What E3 reads, exactly** (round 2 corrects round 1's step 3, review finding NIT-4):
+1. **The gated build computes PD itself**, with the same expression, into a local, **before** the marker call. It passes that local to `recordLaunch` and keeps it beside `installCohortAtLaunch`. This is a change to the call site in the gated build's `AppModel`, not to v1.37.
 2. `.present(m)` → `Cohort.present(firstSeenBuild: m.firstSeenBuild, platform: m.platform, priorDataPresent: m.priorDataPresent)`. Another platform's marker → `.unreadable`.
-3. **`.absent`** → E3 reads the key once more, through the marker's own `InstallCohort.observe(InstallCohort.Stored.read(from:))` (`:215-264`). It accepts the result only if it is `.present(m)` with `m.firstSeenBuild` equal to the running build and `m.platform` equal to the running platform, which proves it is the marker this launch just wrote. Its PD is the PD computed before this launch wrote anything, so row 4 works on the first E3 launch, offline. If the result is anything else (the write did not happen, for example `Running` failed to parse), PD is treated as false and the decision falls to rows 5–9. That costs nothing offline (S), and an online legacy rider still gets G from rule 3.
+3. **`.absent`** → `Cohort.absent(priorDataPresent: <the kept local>)`. Row 4 then works on the first E3 launch, offline, with nothing re-read. Round 1 re-read this launch's write instead and treated a failed write as "PD false". That workaround is gone, and with it its failure path.
 4. `.unreadable` → `Cohort.unreadable`.
-5. **`nil`** (the isolation case, review finding N4, accepted) → `Cohort.unreadable`. Nothing is persisted, because in that case the stores are handed no defaults (`AppModel.swift:605-606`).
-6. E3's decision runs in `init` after the marker step, so the order is fixed by one line of control flow. A source-scan test pins it.
+5. **`nil`** (the isolation case, round-1 N4) → `Cohort.unreadable`. Nothing is persisted, because in that case the stores are handed no defaults (`AppModel.swift:605-606`).
+6. E3's decision runs in `init` after the marker step. **The marker call and every grant write sit behind one predicate**: row 0a's "stores readable" (round-2 finding MINOR-2). A source scan pins both the order and the shared predicate.
 
-**No change to the v1.37 marker is needed.** Review finding M2 is accepted as an interface gap and closed on E3's side, by step 3. A one-line change that kept PD beside the observation would be cleaner, but it is not required, and it would have to land before v1.37 ships, in a release already reviewed. So it is not proposed.
+**What E3 needs from markers v1.37 and v1.38 wrote is only firstSeenBuild and platform.** Any such marker is below `T`, so rule 1 grants whatever its PD says, including a wrong PD.
+
+**No change to the v1.37 marker is needed.** Round 1 said a PD-keeping change "would have to land before v1.37 ships". It would not: row 4 is the case where no marker existed before the gated launch, so the PD it needs is computed by the gated build (step 1).
+
+**What must never change after v1.37 ships** (round-2 finding NIT-6):
+* The `InstallCohort.Marker` decoder, strict schema 1 with every field required (`InstallCohort.swift:172-187`).
+* The golden bytes its tests pin (`Tests/SettingsKitTests/InstallCohortTests.swift:18, 242` at 8b06f79).
+* If an E3-era edit made v1.37's bytes undecodable, every legacy install would drop from row 2 to rows 10–14: no offline protection, rule 3 only. A new field goes in a schema-2 marker under a new key, never in an edit of schema 1.
+
+**Hardening applied by the orchestrator at `v137-marker` 8b06f79** (round-2 finding NIT-5, which the review called optional). Recorded here as read, not done by this document:
+* `Marker.encoded()` now returns `nil` on failure, and `decide` then writes nothing, so the next launch tries again (`InstallCohort.swift:198-205` at 8b06f79). Before, an encoding failure would have stored empty bytes that read `.unreadable` forever. The test `writtenBytesReadBack` (`InstallCohortTests.swift:273`) holds that every write reads back as present with the running build.
+* The test `noLaunchBeforeFirstUnlock` (`InstallCohortTests.swift:294-305` at 8b06f79) pins that `project.yml`, comments stripped, sets no `UIBackgroundModes`, no `aps-environment` and no `BGTaskSchedulerPermittedIdentifiers`. At 9c09ab7 the only match is a comment (`project.yml:77`).
+* **What that pin is and is not.** "With no background mode, no push and no BGTask, nothing launches the app before the first unlock" is an **inference about OS behaviour, not a measurement**. In particular, it does not measure iOS prewarming. What makes it safe is the pinned precondition: adding any of those keys turns the test red and reopens the question. Row 0a stays in the gated build as the second line, defined by evidence `init` already has rather than by `UIApplication`, which may not exist yet when `@State private var model = AppModel()` runs (`NihongoRideApp.swift:16`).
 
 ### 5.10 Costs this rule accepts, said plainly
 
 * **A legacy account's first install on its second platform.** The app is one ASC record with macOS and iOS versions (ASC GET 2026-10-27, `/v1/apps/6777469778/appStoreVersions`: `MAC_OS` and `IOS`, both 1.36 `READY_FOR_SALE`) and one bundle id (`project.yml:133, 272`). Whether that first install reads a pre-E3 `originalAppVersion` is unmeasured and cannot be tested in the sandbox ("1.0"). If it does, §5.3's shape rule grants it. If it does not, the device is a sampler. That install never had anything, so this is not a loss; the synced content is kept and shown (§4.4). Round 0's sentence "either answer keeps the red line" was too broad: it did not cover a **reinstall** on the second platform, which §5.3 now handles.
 * **Reinstalling under a different Apple Account** (review finding M4, accepted). After a delete, the grant copies are gone (iOS) and rule 3 reads the new account's value. If that account first got the app after E3, the result is **N**. This is a new acquisition by a different account, and it is accepted as such.
-* **A fresh install that is never online** gets grace on every launch (rows 8, 13). It cannot buy anyway: a purchase needs the network. The latch (§5.6) closes this for any install that was online once.
+* **Switching Apple Accounts in either direction** (round-1 M4, round-2 S-new-1). Each launch reads the signed-in account's `originalAppVersion` (rows 5–14). Switching *to* an account that first got the app after E3 gives **N** on a container that was never granted; that is a new acquisition by a different account, accepted. Switching *back* to a legacy account gives **G** at the next online launch, because nothing local remembers the other account's answer.
+* **A fresh install that is never online, or whose reading stays unavailable,** gets grace on every launch where the read fails (rows 8, 13). It cannot buy anyway: a purchase needs the network. With `AppTransaction` cached per app version, this falls mainly on the first offline launch after each update (§5.6).
+* **Long grace that ends in N** (round-2 finding MINOR-4, option (a) chosen) *(agent's choice, 2026-10-07 delegation)*. An E3-era install that is offline, signed out of the App Store or on a wrong clock for weeks rides N3–N1 in grace, makes N3 SRS cards and lists, and then one launch reads "not below" and closes.
+  * **Accepted, because grace is by definition not a grant.** §E says it is temporary and never persisted, and a wall-clock cap would put a clock into a path that today reads none.
+  * **What the rider keeps:** every card, list and history entry made in grace, kept and synced, rideable again on purchase (§4.1).
+  * **Copy at the transition.** The first time the depth card shows after a session that was in grace, it says so: "N3–N1 were open while the App Store couldn't be reached. Everything you saved is kept." / "无法连接 App Store 时，N3–N1 曾暂时开放。你保存的内容都还在。" A test pins that the line shows exactly once.
 * **The 5-second timeout is a guess.** Too short gives grace to slow networks (safe); too long holds the depth open longer at launch (also safe).
-* **Launches before first unlock** (row 0a) are handled by not writing, which rests on `isProtectedDataAvailable` (iOS) reporting the state truthfully. This is not measured on this app.
+* **Launches before first unlock** (row 0a). Today no background mode, push entitlement or BGTask identifier exists, pinned by `noLaunchBeforeFirstUnlock` (§5.9), so the path is believed unreachable. That belief is an unmeasured inference about the OS. Row 0a is defined by what `init` can see: a store whose file exists but loads `.unreadable` (`PersistKit/LossyLoad.swift:64-70`), or the settings key reading nil while support files exist. On such a launch the depth is open for the session and neither the marker nor the grant is written. The settings save at `AppModel.swift:715` is outside E3 and unchanged.
 
 ---
 
@@ -410,7 +435,7 @@ Not entrances: search, list rows and About carry a level tag or a line of text, 
 
 ### 7.2 The depth card
 
-* What it opens, with counts **computed from the catalog** and pinned by a test, never typed: for candidate 1, N3, N2, N1: 5,783 words and 5,481 sentences, in every mode.
+* What it opens, with counts **computed as catalog minus `DepthFreeSet`**, never by `jlpt` and never typed (round-2 finding MINOR-6), pinned by a test: for candidate 1 at today's corpus, N3, N2, N1: 5,783 words and 5,481 sentences, in every mode.
 * What stays free: N5, N4, every mode, the passages, the road.
 * What it is not: the road west, which is its own purchase.
 * The buy button with `product.displayPrice`; a progress state; Restore with an outcome (P1-3's `restorePlan` shape, reused).
@@ -431,7 +456,7 @@ Not entrances: search, list rows and About carry a level tag or a line of text, 
 
 > The app is free. N5 and N4 vocabulary, every mode, all Practice passages and the Tōkaidō road are free. A one-time non-consumable, "N3–N1 Levels", opens the N3, N2 and N1 vocabulary in every mode, immediately after purchase. To see it: on the main menu choose N3, N2 or N1 in the level picker; the purchase card replaces the Start button. It is also in Settings, under the road card, with Restore Purchases.
 >
-> Users who installed the app before this version keep every level for free. This is decided on the device. **If this device had an earlier version of Nihongo Ride installed, every level is already open and the purchase is not shown; delete the app and install fresh to see it.** In the sandbox a fresh install always sees the purchase.
+> Users who installed the app before this version keep every level for free. This is decided on the device. **If this device had an earlier version of Nihongo Ride installed, every level is already open and the purchase is not shown.** On iPhone or iPad, delete the app and install fresh to see it. **On a Mac, deleting the app keeps its data, so use a new macOS user account** (round-2 finding NIT-8). In the sandbox a fresh install always sees the purchase.
 >
 > The road west ("The Road West") is a separate, existing purchase and is unchanged.
 
@@ -472,8 +497,10 @@ An existing install is one that the rule grants: rows 0, 2, 3, 4, 5 and 10 of §
 
 * **Every row of §5.5**, one test each, including row 8 by name ("offline reinstall, no prior data, no pre-launch marker, AppTransaction throws → session grace, nothing persisted").
 * **Rule 3 by shape** (§5.3): "40" on macOS is a build and below a threshold of 65 → G; "1.39" on iOS is a version and not below `T_version` 1.39 → N; "1.20" on iOS → G; "" and "1.x" → unavailable.
-* **Pending and timeout** (§5.6): pending is open; no answer at 5 s → S; a late "below" after the timeout → G; a late "not below" after the timeout leaves this session open and writes the latch; a close before the timeout waits for a run to end.
-* **The latch**: honoured only at an equal threshold; ignored after a rise; never written over an unreadable marker.
+* **Pending and timeout** (§5.6): pending is open; no answer at 5 s → S; a late "below" after the timeout → G; a late "not below" after the timeout leaves this session open and writes nothing; a close before the timeout waits for a run to end.
+* **Nothing on N** (§5.5): rows 6, 7, 11, 12 write no key and no file; the next launch with a legacy account's reading grants (the account-switch-back case, round-2 S-new-1).
+* **Grant copies** (§5.7): copy 1 absent and copy 2 present → copy 1 recreated from copy 2's bytes, and the reverse; neither present copy is ever overwritten, readable or not.
+* **The two `Version` types agree** on the same strings (§5.4).
 * **The marker read** (§5.9): pre-launch `.absent` plus this launch's marker with PD true → row 4 G; `.absent` with no readable write → rows 5–9; `nil` → unreadable, nothing persisted.
 * **Version parsing**: "1.4" < "1.36" < "1.40"; "1.9" < "1.10"; "1.36" == "1.36.0"; "1.4.1" between "1.4" and "1.5"; iOS "9" < "62"; "1.0" (sandbox-shaped) parses; "" and "abc" → unavailable.
 * **Per platform**: a macOS marker at build 61 against an iOS threshold is never compared (row 10).
@@ -498,7 +525,15 @@ An existing install is one that the rule grants: rows 0, 2, 3, 4, 5 and 10 of §
 | **Treat pending as closed** (S2) | "pending → open", and the hanging-reading fixture: no answer for 30 s → open throughout, S at 5 s |
 | Close mid-run | "a close before the timeout waits for the run to end" |
 | **Read rule 3 by the running platform** (S3) | "40" on macOS → must be G |
-| Honour a latch after the threshold rose | row L with a raised threshold must re-read |
+| **Persist any negative state** (a key or file written on N; round 1's latch) | the source scan of E3's writes, and "N on a second account, then a legacy account's reading → G" |
+| Skip the background read on any launch that reached rows 5–14 | the same account-switch-back test |
+| Never recreate a missing grant copy | "defaults lost, then file lost → still granted" |
+| Count an ungated **upload** as nothing because it was never released (round-2 MINOR-1) | the release-check fixture: an unreleased ungated TestFlight build above every release must raise `T` |
+| Let a platform's gated build sit below max(`T_build`) (MINOR-5) | the release-check fixture |
+| Read "gated" from the registry instead of the archive, or treat an unrecorded build as gated (MINOR-7) | the release-check fixture: a build missing from the registry raises `T` |
+| Count the depth card from `jlpt` (MINOR-6) | a fixture corpus with one id moved N3 → N4: the id joins the free set and the card's count drops by one |
+| Write the marker or the grant on a launch whose stores are unreadable (MINOR-2) | row 0a, and the shared-predicate scan |
+| Edit the schema-1 marker decoder or its golden bytes | `InstallCohortTests` golden strings (`:18, 242`) |
 | **Filter the free tier by `jlpt`** (S4) | a fixture corpus that moves one free id to N3 → the id must stay rideable |
 | Remove an id from `DepthFreeSet` | the frozen-copy comparison |
 | **Compute the unplayable hint or `.removed` from the rideable store** (S5) | a sampler list of N3 ids shows neither "aren't available" nor "you can remove it" |
@@ -515,7 +550,8 @@ An existing install is one that the rule grants: rows 0, 2, 3, 4, 5 and 10 of §
 * **Sampler sweep.** The same table with `depthIsOpen = false`: every id drawn is N5 or N4; every count equals the run it promises (the house "count and run from one predicate" rule).
 * **Store split, by source scan** (the `CallSiteScanner` in `Tests/NihongoRideAppTests/CallSiteScanner.swift`): every `GameSession.make*` and `ConjugationSession.make*` call in `NihongoRideApp` passes `vocab:` explicitly (the defaults are `.shared`, the full store, e.g. `GameSession.swift:419`); `catalog` never reaches a builder or a `resolves:` argument; the grant key appears in one write and no remove.
 * **Locked level**: start with a locked level selected builds nothing and sets no empty-pool notice (§4.5, `MenuView.swift:477-482`).
-* **Free set golden**: `DepthFreeSet.ids` equals the first gated release's frozen copy plus additions; every id in it resolves in the catalog.
+* **Free set golden**: `DepthFreeSet.ids` ⊇ the first gated release's list, read with `git show`; every free-level id is in it; every id in it resolves in the catalog.
+* **Release check against real responses**: the pure core of §5.2's check is fed recorded ASC responses (`/v1/builds`, `appStoreVersions?include=build`) and an archive `Info.plist` with and without the gate key.
 * **Order in `init`**: the E3 decision runs after the marker step (source scan, §5.9).
 * **Access swap**: a purchase while on the menu swaps `vocab`, refreshes the widget and reminders, and the next start rides N3.
 * **Sync safety**: a synced N3 SRS card and list id on a sampler survive a save and a re-sync unchanged.
@@ -541,7 +577,7 @@ An existing install is one that the rule grants: rows 0, 2, 3, 4, 5 and 10 of §
 | Q1 | **The boundary (C-2(d)):** candidate 1 (N5+N4 free) or candidate 2 (N5 free)? **One-time:** after the first gated release the free set may only grow (§2.2). | Candidate 1. |
 | Q2 | **The product's name** in en/zh (ja with E5), and its product id, which Apple never lets be edited (`RouteStore.swift:66-69`). Draft: "N3–N1 Levels" / "N3–N1 等级"; an id naming the boundary, like the road's names its capability set (`RouteStore.swift:52-57`). | The draft name; the id chosen at the E3 release to name the chosen boundary, recorded in the release record. |
 | Q3 | **A legacy account's second device.** Rule 3 may or may not grant it (§5.10). Should a pre-E3 ride record arriving by sync also grant? It needs no new record type (ride records carry a date, `JournalKit/RideRecord.swift`), but a device clock can be set back, and it is a fourth rule §E does not have. | No. §E's three rules only; the synced content is kept and shown. |
-| Q4 | **The latch** (§5.6). It records a verified production "not below" reading, so a sampler that was online once has no pending window and no offline grace. It never blocks a grant and is dropped when the threshold rises, but it is not in §E. | **Changed in round 1: latch on** *(agent's choice, 2026-10-07 delegation)*, because pending is now open (S2) and without the latch every sampler launch would open the depth for up to five seconds. The owner can say "§E exactly" to remove it. |
+| Q4 | **Any stored negative state** (round 1's latch, §5.6). It would shorten the open window at launch and remove offline grace for samplers, at the cost of a container-scoped fact standing in for an account-scoped one. | **Removed in round 2: no latch, §E exactly.** Nothing is written on N. The owner can ask for the review's repaired form ("start closed, still read, grant on any 'below'"), knowing it starts latched containers closed offline where §E gives grace. |
 | Q6 | **The ungated grant writer in v1.38** (§5.2). It would make every v1.38-or-later launch a grant before E3 exists, covering a hotfix built from a pre-E3 branch. It is E3 code shipping before the owner's box, so it needs the owner's word. | Not in v1.38. The writer ships with E3 (v1.39), and the release-script check covers pre-E3-branch hotfixes. |
 | Q5 | **Search for samplers**: keep all levels searchable and addable (as shipped since v1.35), or show only open levels? | All levels, tagged. |
 
@@ -564,6 +600,8 @@ An existing install is one that the rule grants: rows 0, 2, 3, 4, 5 and 10 of §
 **Not verified today:**
 * `originalAppVersion` on a universal purchase's second platform (§5.10). §5.3 makes either answer safe.
 * How long `AppTransaction.shared` can hang, and whether 5 s is the right timeout (§5.6).
+* How fast a **cached** `AppTransaction` read is, and whether it answers offline (§5.6). The latch's removal leans on the SDK comment that the cache is per app version, not on a measurement.
+* Whether iOS prewarming can run `AppModel.init` before the first unlock. `noLaunchBeforeFirstUnlock` pins the absence of background modes, push and BGTask, not prewarming (§5.9).
 * Whether an iOS launch before first unlock happens for this app, and what `UserDefaults` does then (§5.10).
 * Whether App Review runs in the sandbox environment (§7.4).
 * Whether a freshly downloaded build's `AppTransaction` is readable offline on its first launch. PLAN-STAGE1's measurement (`PLAN-STAGE1.md:281-284`) was of an update; the table gives grace either way.
@@ -581,7 +619,7 @@ An independent red-line review of round 0 (`31b9487`) is at `~/Library/Caches/Ni
 |---|---|---|---|---|---|
 | B1 | BLOCKER | A threshold at "the first E3 build of any channel" un-grandfathers fresh installs of any ungated build released after that upload. | Builds come from one counter bumped by one (`check_versions.py:78`); every released build is one integer, max 61 / 62 (ASC GET 2026-10-27). The scenario holds. | **ACCEPT** | §5.2: a threshold above every build released without the gate, rising only; the release-script check before every submit; §9.2 and §9.2.1. |
 | S1 | SERIOUS | A rollback or kill switch after E3 un-grandfathers installs made while the gate was off. | §E's "a constant flip" implies the gate can be flipped back; round 0's table could not see a gate-off build. Holds. | **ACCEPT** | §5.2: every gate-off build writes the grant (`ungatedBuild`, row 0). It ships with E3 (v1.39). Shipping it in v1.38 needs the owner (Q6, default no); the release-script check covers pre-E3-branch hotfixes. |
-| S2 | SERIOUS | A hanging `AppTransaction` has no timeout and no defined pending state. | Round 0 defined only throw → grace; the launch refreshes the widget and reminders before any async read (`AppModel.swift:717-718`). Holds. | **ACCEPT** | §5.6: pending is open; 5 s timeout → S; a late reading only upgrades; a close waits for a run to end; refresh after settling. The latch (Q4 default changed) keeps samplers out of pending. |
+| S2 | SERIOUS | A hanging `AppTransaction` has no timeout and no defined pending state. | Round 0 defined only throw → grace; the launch refreshes the widget and reminders before any async read (`AppModel.swift:717-718`). Holds. | **ACCEPT** | §5.6: pending is open; 5 s timeout → S; a late reading only upgrades; a close waits for a run to end; refresh after settling. Round 1 also added a latch; round 2 removed it (S-new-1). |
 | S3 | SERIOUS | Rule 3 read by the running platform can give N to a reinstall on the second platform. | Every released build is one component and every version two or three (ASC GET; git history of `project.yml`; marker refuses non-digit builds, `InstallCohort.swift:134-138`). Holds. | **ACCEPT** | §5.3: rule 3 by shape; two pins keep the shapes disjoint; §5.10 drops "either answer keeps the red line". |
 | S4 | SERIOUS | A free tier defined by `jlpt` loses words to corpus edits or a boundary change. | The corpus is corrected most releases (PLAN-V1.37 P0-2); round 0's `freeLevels` was "one line". Holds once samplers exist. | **ACCEPT** | §2.2: `DepthFreeSet.ids`, frozen by id at the first gated release, grow-only; §1 and Q1: C-2(d) is one-time. Corpus-wide withdrawals stay the corpus's rule. |
 | S5 | SERIOUS | On a sampler, existing copy ("aren't available on this device", "you can remove it") invites removals that sync to the grandfathered device. | `ListsView.swift:390-391, 844-849, 1243-1245`; tombstones `WordListStore.swift:183-191`; merge `AppModel.swift:1424-1430`. Holds. | **ACCEPT** | §3 row 14: the true line replaces the hint; §2.3: `.removed` and the hint are computed from the catalog; §9.2 mutation. |
@@ -596,7 +634,32 @@ An independent red-line review of round 0 (`31b9487`) is at `~/Library/Caches/Ni
 | N4 | NIT | `installCohortAtLaunch == nil` was unspecified. | `nil` on isolation launches (marker branch `AppModel.swift:420-424`). Holds. | **ACCEPT** | §5.9 item 5: unreadable, nothing persisted. |
 | N5 | NIT | Name the grant's scope so a later pack carved from N1 stays covered. | — | **ACCEPT** | §5.7. |
 
-**One point where this design goes further than the review, and one where it differs:**
-* **Further:** the latch (§5.6). The review's pending fix alone would open the depth for up to five seconds at every sampler launch. The latch is a persisted *negative* from a *readable* production value, which §E does not forbid; it is labelled and the owner can remove it (Q4).
+**One point where round 1 went further than the review, and one where it differs:**
+* **Further, and withdrawn in round 2:** the latch (§5.6). Round 1 argued that the review's pending fix alone would open the depth for up to five seconds at every sampler launch. Round 2's review showed the latch was a breach (S-new-1), and it is removed.
 * **Differs:** the review says TestFlight sampler testing must go through the DEBUG seam. TestFlight builds are Release builds, and the seam is `#if DEBUG` (`RouteStore.swift:122-142`), so it is not available there. It is also not needed: a gated build's number is above every earlier ungated release, so a fresh TestFlight install of it is a sampler under §5.2's threshold.
+
+### Review round 2
+
+The round-2 red-line review of `a6a6f26` is at `~/Library/Caches/NihongoRide-v137-work/review-e3-design-r2.md` (outside the repo): 0 BLOCKER, 1 SERIOUS, 7 MINOR, 8 NIT. Each finding was checked against the code, or against `v137-marker` @ 56a2ebc / 8b06f79 where marked, before a decision.
+
+| # | sev | finding | checked against | decision | where it changed |
+|---|---|---|---|---|---|
+| S-new-1 | SERIOUS | Round 1's latch stored an account-level fact (`originalAppVersion` "not below") in a container that can outlive the account, so a rider switching back to a legacy account was refused rule 3 for good. | Apple: the value is per purchase and "remains constant" (doc JSON read 2026-10-27); the latch was in `UserDefaults` (round-1 §5.7). Holds. | **ACCEPT, stronger than proposed: the latch is removed** | §5.6 (why removed, and why not the review's repaired form), §5.5 ("no row writes anything on N"), §5.10 (account switch in both directions), §9.2 (mutations), Q4. |
+| MINOR-1 | MINOR | `T_build` over released builds misses an ungated TestFlight upload above every release. | `/v1/builds` lists uploads separately (ASC GET 2026-10-27: 46 per platform, highest 61 / 62). Holds. | **ACCEPT** | §5.2: `T_build` over every ungated upload, plus git history because ASC lists fewer builds than were made. |
+| MINOR-2 | MINOR | Row 0a promised "nothing written", but the marker write in the same `init` is unguarded, and `UIApplication` may not exist there. | `AppModel.swift:625-636` [marker]; `NihongoRideApp.swift:16`. Holds. | **ACCEPT** | Row 0a is now defined by `init`'s own evidence; the marker call and grant writes share one predicate in the gated build (§5.5, §5.9 item 6, §5.10). The 8b06f79 pin is recorded as an inference made safe by a precondition (§5.9). |
+| MINOR-3 | MINOR | The two grant copies were never repaired. | Round-1 §5.7 wrote copies only on `grant(_)`. Holds. | **ACCEPT** | §5.7: a missing copy is recreated verbatim on `alreadyGranted`; a present copy is never overwritten; §9.1 test, §9.2 mutation. |
+| MINOR-4 | MINOR | Long grace that ends in N was not addressed. | Grace is unbounded in time by design. Holds. | **ACCEPT, option (a)** | §5.10: accepted; what the rider keeps; one-time transition copy, pinned. No wall-clock cap, to keep clocks out of the path. |
+| MINOR-5 | MINOR | An iOS gated build below max(`T_build`) would grant every fresh iOS install online. | Counters are per target (`check_versions.py:78`); §5.3 compares with the max. Holds (revenue, not red line). | **ACCEPT** | §5.2 step 3: each platform's gated build ≥ max(`T_build`), bumping a lagging counter. |
+| MINOR-6 | MINOR | The free set grew only by new entries, so an id moved down to N4 would not be free, and a `jlpt` count would drift. | Round-1 §2.2. Holds. | **ACCEPT** | §2.2: every free-level id is in the set; §7.2: counts = catalog minus the free set; one test both ways. |
+| MINOR-7 | MINOR | The registry of gated builds was written by the script that checks it. | Round-1 §5.2 step 2. Holds. | **ACCEPT** | §5.2 step 2: "gated" read from the archived `Info.plist`; an unrecorded build counts as ungated. |
+| NIT-1 | NIT | Thresholds checked at submit can go stale before release. | Versions are per platform in ASC. Holds. | **ACCEPT** | §5.2 step 5: re-run at release; no ungated release on the other platform while a gated one waits. |
+| NIT-2 | NIT | The cost of any ungated release after E3 was unstated. | — | **ACCEPT** | §5.2: stated. Any ungated release after E3 forces the next threshold up and grandfathers every sampler installed before it. |
+| NIT-3 | NIT | The free set's frozen copy could be edited in the same commit. | — | **ACCEPT** | §2.2: `git show <first-gated-tag>` and a hash in the release record. |
+| NIT-4 | NIT | §5.9 step 3's re-read was unnecessary; the gated build can compute PD itself. | `AppModel.swift:633-635` [marker] passes PD inline. Holds. | **ACCEPT** | §5.9 items 1 and 3; round 1's "would have to land before v1.37" corrected. |
+| NIT-5 | NIT | `encoded()` could store empty bytes forever. | Fixed by the orchestrator at 8b06f79 (`InstallCohort.swift:198-205`; `writtenBytesReadBack`). | **ACCEPT, already applied** | §5.9: recorded as read, not done by this document. |
+| NIT-6 | NIT | The marker's decoder and golden bytes must be declared frozen. | `InstallCohort.swift:172-187`; `InstallCohortTests.swift:18, 242`. | **ACCEPT** | §5.9: frozen after v1.37 ships; schema 2 under a new key if ever needed; §9.2 mutation. |
+| NIT-7 | NIT | Latch spec gaps (unreadable latch bytes; a contradiction with the re-read fallback). | — | **MOOT** | The latch and the re-read are both removed. |
+| NIT-8 | NIT | Row 3's justification is false; "presence is a grant" is one `defaults write` away on macOS; the Mac review note; the two `Version` types. | Holds on all four. | **ACCEPT** | §5.5 row 3 (both errors generous); §5.7 (stated as a product choice); §7.4 (a new macOS user account); §5.4 and §9.1 (copied rules, agreement test). |
+
+**After round 2,** no local state written by E3 can stand between an install and a grant. The only persisted access state is the grant, which only opens. Every N decision writes nothing. Every threshold only rises.
 
