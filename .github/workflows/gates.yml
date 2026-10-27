@@ -42,7 +42,10 @@ concurrency:
 
 # The job's token reads the repository (checkout) and this workflow's own run history (the
 # vocabulary base below) and can do nothing else. Nothing here writes; the log upload uses the
-# runtime's own credentials, not this token.
+# runtime's own credentials, not this token. Checkout does not persist it into .git/config
+# (persist-credentials: false): no later step runs authenticated git — the corpus checks and the
+# self-tests' worktrees are local, the package has no remote dependencies, and the base step hands
+# the token to its script through env — so the gates, which run PR-supplied scripts, never see it.
 permissions:
   contents: read
   actions: read
@@ -66,6 +69,7 @@ jobs:
           #  * `check_vocab_diff.py` compares against a BASE. With a shallow clone the base is not
           #    fetched, and a gate that cannot resolve its base must fail rather than pass.
           fetch-depth: 0
+          persist-credentials: false
 
       # The toolchain is asserted, not assumed. The road goldens, the ordering determinism note in
       # RoadDistanceTests and the corpus scans are all calibrated against a specific Swift; running

@@ -31,7 +31,8 @@ its path and query, the bearer token (which must never be printed), the GITHUB_O
 `::warning::` annotation, and the one-page bound (per_page=100, "listed N of total"). Fixture 9 is
 a force push that rewrote BASELINE_REF too: the step must fail closed. Last, the workflow's wiring is
 read: the step calls this script with its own file name and lets it read BASELINE_REF itself, the
-gates take the step's output, the token gets `actions: read` and `contents: read` only, the clone stays full-depth, and no third-party action was added.
+gates take the step's output, the token gets `actions: read` and `contents: read` only and is not
+persisted into the clone, the clone stays full-depth, and no third-party action was added.
 """
 
 import http.server
@@ -383,6 +384,9 @@ def main():
     check(re.search(r"^permissions:\n  contents: read\n  actions: read\n(?!  )", wf, re.M) is not None,
           "10. the workflow's token is not exactly contents: read + actions: read")
     check(wf.count("permissions:") == 1, "10. a job widens the token's permissions")
+    co = re.search(r"- uses: actions/checkout@v4\n        with:\n(.*?)(?=\n\n|\n      - )", wf, re.S)
+    check(co is not None and re.search(r"^          persist-credentials: false$", co.group(1), re.M) is not None,
+          "10. checkout persists the job's token into .git/config for every later step (ci-7)")
     check("--baseline-ref" not in wf, "10. gates.yml passes --baseline-ref; CI must read release_numbers' own")
     import release_numbers
     check(cvb.BASELINE_REF == release_numbers.BASELINE_REF and cvb.BASELINE_REF,
