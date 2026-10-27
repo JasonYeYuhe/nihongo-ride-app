@@ -43,7 +43,15 @@ whole file is frozen, the App struct with it), `ScaledFont`, `EntitlementKit` an
 `xcode/NihongoRide.storekit` are byte-identical to 1.35's build commit `fdb2b5f`. `FROZEN_PATHS` below
 names them as paths, and this script refuses to run while any of them is missing at `fdb2b5f` or at
 HEAD, differs from `fdb2b5f` in the working tree, or has an untracked file under it. The tree checked
-is the one this script runs from, a proxy for the commit the archive was built from. The headless
+is the one this script runs from, a proxy for the commit the archive was built from.
+
+`FROZEN_PATHS` covers those files and nothing else. The purchase call, Restore, the entitlement load
+and the `RouteStore` construction also live in `Sources/NihongoRideApp/AppModel.swift`, which is NOT
+frozen and does change in 1.37 (the install-cohort marker). Its purchase and entitlement code was
+checked by hand on `2cf6161`: `git diff fdb2b5f 2cf6161 -- AppModel.swift` is 39 added lines, all of
+them the marker (`installCohortAtLaunch` and the block that records it), and none of them touches a
+purchase, entitlement, StoreKit, restore or RouteStore line. An AppModel edit after `2cf6161` is NOT
+caught by this script; re-read that diff before sending. The headless
 renders of the Road, the in-app-purchase review screen and the menu are compared before
 submission, PLAN-V1.37 §J V2. The offer, its price, its placement and its presentation are frozen
 for the pre-registered observation window (`PLAN-WINDOW` constraint 1).
@@ -61,6 +69,7 @@ Three phases, and an offline check:
 NOTE: --metadata cannot run while a previous version is WAITING_FOR_REVIEW or IN_REVIEW.
 """
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -133,8 +142,8 @@ WITHHELD = N["withheldThisRelease"]
 # if it moves to another release's manifest, this copy is about a different set of corrections.
 MANIFEST = "docs/measurements/v137-reading-manifest.json"
 
-# The entries the corpus sentences below are written against: all 12 corrections the v1.37 manifest
-# declares (PLAN-V1.37 §C P0-2). `n5-g010` is in the manifest's `recordedNotCorrected`, not its
+# The entries the corpus sentences below are written against: all 18 corrections the v1.37 manifest
+# declares, in two batches (12 + 6, the second being the manifest's `secondBatch`; PLAN-V1.37 §C P0-2). `n5-g010` is in the manifest's `recordedNotCorrected`, not its
 # entries, and must stay out of this list. When a correction joins or leaves the manifest, this list
 # and the sentences change together.
 NAMED_IDS = [
@@ -188,6 +197,21 @@ def _token_reading(tokens, word):
     return None
 
 
+def corrected_of(manifest_entry):
+    """(exKana, [[surface, reading], ...]) parsed from a manifest entry's `corrected` string, which
+    reads 'exJP … / exKana <kana> / exTokens [s, r] [s, r]'. (None, []) when it names no exKana."""
+    text = manifest_entry.get("corrected") or ""
+    kana = re.search(r"exKana (\S+)", text)
+    tokens = text.split("exTokens", 1)[1] if "exTokens" in text else ""
+    run = [[s, r] for s, r in re.findall(r"\[([^\[\],]+), ([^\[\],]+)\]", tokens)]
+    return (kana.group(1) if kana else None), run
+
+
+def _has_run(tokens, run):
+    tokens = [list(t) for t in (tokens or [])]
+    return any(tokens[i:i + len(run)] == run for i in range(len(tokens) - len(run) + 1))
+
+
 def corpus_copy_problems(manifest_entries, entries_by_id, baseline_by_id, fixed, withheld_ids,
                          released_ids, manifest_counts):
     """Why the corpus sentences below would be false, or [] when they are true.
@@ -222,6 +246,19 @@ def corpus_copy_problems(manifest_entries, entries_by_id, baseline_by_id, fixed,
             if now.get(field) == before.get(field):
                 problems.append(f"{e['id']}'s {field} is the same as at {BASELINE_REF}, so it is "
                                 "not corrected on this tree")
+        # "Differs from 1.36" is not "is the correction": a partial revert (n2-b034 with only its 中
+        # back to ちゅう) or a third reading still differs. So the tree must also equal what the
+        # manifest says the correction IS: its `corrected` exKana, and its token run.
+        want_kana, want_run = corrected_of(e)
+        if want_kana is None:
+            problems.append(f"{e['id']}'s manifest `corrected` names no exKana, so the correction "
+                            "cannot be checked")
+        elif now.get("exKana") != want_kana:
+            problems.append(f"{e['id']}'s exKana is {now.get('exKana')!r}, not the manifest's corrected "
+                            f"{want_kana!r}")
+        if want_run and not _has_run(now.get("exTokens"), want_run):
+            problems.append(f"{e['id']}'s tokens do not contain the manifest's corrected run "
+                            f"{want_run}")
     if sorted(manifest_ids) != sorted(NAMED_IDS):
         problems.append(f"the v1.37 manifest declares {sorted(manifest_ids)}; What's New is written "
                         f"against {sorted(NAMED_IDS)}")
@@ -280,7 +317,7 @@ def withheld_reason_problems(verdicts, keep_rows, entries_by_id, baseline_by_id)
             continue
         old = _token_reading((baseline_by_id.get(entry_id) or {}).get("exTokens"), row["surface"])
         new = _token_reading((entries_by_id.get(entry_id) or {}).get("exTokens"), row["surface"])
-        if old is None or old not in row["kyoko"] or new in row["kyoko"] or new != row["corpus"]:
+        if old not in row["kyoko"] or new in row["kyoko"] or new != row["corpus"]:
             problems.append(f"{entry_id}: the voice says {row['kyoko']} for {row['surface']}; the old "
                             f"reading was {old!r} and the corrected one is {new!r} — 'says the old "
                             "reading' is not what 1b measured")
@@ -389,6 +426,17 @@ QUOTE_FORMS = {
 }
 NOTES_QUOTE_FORMS = ("{word} is now read {kana}", "{word} {kana}")
 NOTES_EXAMPLES = 3
+# The copy's only quoted words that are NOT corpus examples: mode labels (GameMode.shortLabel).
+OTHER_QUOTES = {"zh-Hans": {"例句"}, "ja": {"Listen", "Sentence"}}
+_JAPANESE = re.compile(r"[\u3040-\u30ff\u3400-\u9fff]")
+_KANA = re.compile(r"[\u3040-\u30ff]")
+
+
+def _unlisted(text, pattern):
+    """What `pattern` still finds in `text` once every EXAMPLES word and kana is taken out."""
+    for word, kana in sorted(EXAMPLES.values(), key=lambda p: -len(p[0])):
+        text = text.replace(word, " ").replace(kana, " ")
+    return sorted(set(m for m in re.findall(pattern.pattern + "+", text)))
 
 
 def _paired(text, word, kana, forms):
@@ -409,6 +457,25 @@ def quote_problems(whats_new, review_notes):
     for word, kana in list(EXAMPLES.values())[:NOTES_EXAMPLES]:
         if not _paired(review_notes, word, kana, NOTES_QUOTE_FORMS):
             problems.append(f"review notes: {word} is not quoted next to {kana}")
+    # The other direction: the copy quotes NOTHING that EXAMPLES does not hold to the corpus. An
+    # added 十ページ じゅっぺーじ (n5-g010, recorded and not corrected) would otherwise pass every check
+    # above. en and the notes may hold no other Japanese at all; zh no other kana; zh and ja no other
+    # 「」 quote than an EXAMPLES word or a mode label.
+    words = {w for w, _ in EXAMPLES.values()}
+    for loc, text in whats_new.items():
+        stray = []
+        if loc == "en-US":
+            stray = _unlisted(text, _JAPANESE)
+        elif loc == "zh-Hans":
+            stray = _unlisted(text, _KANA)
+        if loc in ("zh-Hans", "ja"):
+            stray += [q for q in re.findall(r"「([^」]*)」", text)
+                      if q not in words and q not in OTHER_QUOTES.get(loc, set())]
+        if stray:
+            problems.append(f"What's New {loc} quotes {stray}, which is not an EXAMPLES word or kana")
+    stray = _unlisted(review_notes, _JAPANESE)
+    if stray:
+        problems.append(f"review notes quote {stray}, which is not an EXAMPLES word or kana")
     return problems
 
 
