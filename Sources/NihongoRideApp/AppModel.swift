@@ -622,14 +622,26 @@ final class AppModel {
         // settings blob is saved at the end of `init` (a fresh install's too, for its deviceID),
         // so checking it after that save would record every fresh install as having prior data.
         // The odometer's outcome is the one loaded above, before the backfill below can write it.
+        // Prior data is the settings key or the odometer, and only those: an install last opened on
+        // 1.0/1.1 reads false (see `InstallCohort.priorDataPresent`, and what E3 must do instead).
         if !Self.currentIsolation.touchesNothingOfTheUsers {
             let info = Bundle.main.infoDictionary
+            let marketingVersion = info?["CFBundleShortVersionString"] as? String
+            let bundleBuild = info?["CFBundleVersion"] as? String
+            let running = Self.installCohortRunningOverride ?? InstallCohort.Running(
+                marketingVersion: marketingVersion, build: bundleBuild, platform: .current)
+            // A bundle that states a version or build the parser refuses ("64.1") writes no marker,
+            // and this install's first marker then comes from a LATER build, silently. Said once,
+            // here. A log line and not a DEBUG assertion: a unit-test launch without the override
+            // reads the test runner's bundle, whose strings are not this app's, and must not trap.
+            // A bundle with neither key (a `swift run` binary) is the documented quiet case.
+            if running == nil, marketingVersion != nil || bundleBuild != nil {
+                PersistLog.logger.error(
+                    "install cohort NOT recorded: version \(marketingVersion ?? "nil", privacy: .public) build \(bundleBuild ?? "nil", privacy: .public) do not parse")
+            }
             installCohortAtLaunch = InstallCohort.recordLaunch(
                 in: Self.settingsStore,
-                running: Self.installCohortRunningOverride ?? InstallCohort.Running(
-                    marketingVersion: info?["CFBundleShortVersionString"] as? String,
-                    build: info?["CFBundleVersion"] as? String,
-                    platform: .current),
+                running: running,
                 priorDataPresent: InstallCohort.priorDataPresent(
                     settingsStored: Self.settingsStore.object(forKey: AppSettings.defaultsKey) != nil,
                     odometerStored: odometerLoad.outcome != .missing))
