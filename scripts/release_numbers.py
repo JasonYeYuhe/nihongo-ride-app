@@ -29,10 +29,10 @@ CORPUS_MANIFEST = "docs/measurements/v137-reading-manifest.json"   # v1.37: 12 n
 # a delta silently becomes a two-release total — the stale-number failure this module exists for.
 BASELINE_REF = "24684c2"      # the tree 1.36 (macOS 61 / iOS 62) was built from and submitted (2026-10-27)
 # Moved 2026-10-27 in the same commit as v1.37's first corpus change and CORPUS_MANIFEST's move to v1.37,
-# so the two name one window from the start. 1.36 is in App Review, not yet on sale, and v1.37 is
-# submitted only after 1.36 is live on both platforms (PLAN-V1.37 §I): left at fdb2b5f, every "this
-# release" delta would span v1.36 + v1.37 and the vocabulary gate would see v1.36's corrections as
-# undeclared. Was fdb2b5f (release(v1.35): the tree 1.35, macOS 60 / iOS 61, was built from) through v1.36.
+# so the two name one window from the start. 1.36 was then in App Review; it has been on sale on
+# both platforms since 2026-10-26 PT, which is PLAN-V1.37 §I's precondition for submitting v1.37:
+# left at fdb2b5f, every "this release" delta would span v1.36 + v1.37 and the vocabulary gate
+# would see v1.36's corrections as undeclared. Was fdb2b5f (release(v1.35): the tree 1.35, macOS 60 / iOS 61, was built from) through v1.36.
 # Also the window run_all_gates.sh's LOCAL vocabulary gate inspects (v1.35 round 3): it used
 # HEAD~1, which a release's closing version-bump commit empties. One ref, read by both.
 # Moved 2026-10-07 in the same commit as v1.36's first corpus change and CORPUS_MANIFEST's move to

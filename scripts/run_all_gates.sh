@@ -55,11 +55,13 @@ set -uo pipefail
 #                   This is what CI runs, and it runs THIS script rather than a second copy of
 #                   the gate list — one rule written twice will drift, and this repo has three
 #                   recorded instances of exactly that.
-# --vocab-base REF  what check_vocab_diff.py compares against. CI passes the push's "before" or
-#                   the PR's base. Without it the runner compares against the last shipped
-#                   release, release_numbers.BASELINE_REF — this release's whole corpus change
-#                   plus the working tree — never against HEAD alone, which on a clean tree is a
-#                   comparison with itself (see the vocabulary gate below).
+# --vocab-base REF  what check_vocab_diff.py compares against. CI passes scripts/ci_vocab_base.py's
+#                   base: the newest successful run's head on a push (never older than
+#                   BASELINE_REF), the PR's base on a PR. Without it the runner compares
+#                   against the last shipped release, release_numbers.BASELINE_REF — this
+#                   release's whole corpus change plus the working tree — never against HEAD
+#                   alone, which on a clean tree is a comparison with itself (see the vocabulary
+#                   gate below).
 # --vocab-only      run ONLY the vocabulary gate and exit with its verdict: 0 pass, 1 fail,
 #                   3 vacuous. Not a release check — the floor below does not apply to it. It
 #                   exists so scripts/test_check_vocab_diff.py can drive THIS file's gate end to
