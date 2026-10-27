@@ -370,7 +370,7 @@ The marker is on `feat/v137-install-cohort` in `v137-marker`, at 56a2ebc and the
 
 **What must never change after v1.37 ships** (round-2 finding NIT-6):
 * The `InstallCohort.Marker` decoder, strict schema 1 with every field required (`InstallCohort.swift:172-187`).
-* The golden bytes its tests pin (`Tests/SettingsKitTests/InstallCohortTests.swift`; since the v1.37 review round 1 fix, finding marker-5, they are exactly what 1.37 writes: macOS build 62, iOS build 63).
+* The golden bytes its tests pin: `InstallCohortTests.markerJSON137` (macOS build 62) and `markerJSON137iOS` (iOS build 63), cited by name because line numbers move (v1.37 review round 2, marker-r2-5). Since round 1's marker-5 fix they are exactly what 1.37 writes.
 * If an E3-era edit made v1.37's bytes undecodable, every legacy install would drop from row 2 to rows 10–14: no offline protection, rule 3 only. A new field goes in a schema-2 marker under a new key, never in an edit of schema 1.
 
 **Hardening applied by the orchestrator at `v137-marker` 8b06f79** (round-2 finding NIT-5, which the review called optional). Recorded here as read, not done by this document:
