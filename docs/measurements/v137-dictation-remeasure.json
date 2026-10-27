@@ -72,6 +72,42 @@
    "verdict": "SILENT",
    "detail": "exJP audio d483452c97de. 十ページ: じっぺーじ 56930adc9973, じゅうぺーじ 7ac297563b4c, じゅっぺーじ eed5351fef77, ジッページ f284a2ac9715, ジュウページ 1a024489b6d3, ジュッページ 12da9c16fa0b",
    "note": "Not corrected (decision 2); measured on its shipped tokens for information."
+  },
+  "n1-b678": {
+   "verdict": "SILENT",
+   "batch": 2,
+   "detail": "exJP audio 430dd219f312. 一日 (いちにち): いちじつ 3ac3dba3907f, いちにち 387e8e994403, ついたち 0468ff9d719c, イチジツ 09c707c48c0e, イチニチ 0c104088ee04, ツイタチ 113a3f9aca85",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
+  },
+  "n2-g300": {
+   "verdict": "KEEP",
+   "batch": 2,
+   "detail": "exJP audio 7c8b657cd94e. 一日 (いちにち): いちじつ 1671e16fe39e, いちにち 0b8cfda6de8a, ついたち 7c8b657cd94e = exJP, イチジツ 2ec861ec77e3, イチニチ 578a80de80c2, ツイタチ ae7be3e23ecb",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
+  },
+  "n2-b029": {
+   "verdict": "KEEP",
+   "batch": 2,
+   "detail": "exJP audio 44735db0459c. 一日 (いちにち): いちじつ f00466d458e1, いちにち 31c04bb5fcb9, ついたち 44735db0459c = exJP, イチジツ d291ced3a91c, イチニチ c1c092a835a3, ツイタチ f75a13f013c1. Other spans byte-identical: 朝 (あさ) あさ",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
+  },
+  "n2-b1064": {
+   "verdict": "KEEP",
+   "batch": 2,
+   "detail": "exJP audio 2a07cdfdba98. 一日 (いちにち): いちじつ 8feb1426e324, いちにち 021a6147e1c9, ついたち 2a07cdfdba98 = exJP, イチジツ 987d74db5eaa, イチニチ dea261175a3f, ツイタチ c71b6e2c2581",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
+  },
+  "n4-b151": {
+   "verdict": "KEEP",
+   "batch": 2,
+   "detail": "exJP audio 1114e07b9ae8. 一日 (いちにち): いちじつ 67d3a2730d3d, いちにち 0097985992ea, ついたち 1114e07b9ae8 = exJP, イチジツ 96719b7a322e, イチニチ 350a1f1aca45, ツイタチ 516a22e2435e",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
+  },
+  "n3-g327": {
+   "verdict": "SILENT",
+   "batch": 2,
+   "detail": "exJP audio acaf0f5f5cba. 一日中 (いちにちじゅう): いちにちじゅう 0d6eaeac0628, いちにちちゅう 5268c48a5540, イチニチジュウ 0c97ac6c7ad9, イチニチチュウ 0ed18cbfe8ff",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
   }
  },
  "leads": {
@@ -180,12 +216,35 @@
  },
  "dictationPool": {
   "before": 5935,
-  "after": 5933
+  "afterFirstBatch": 5933,
+  "after": 5928
  },
  "reproduction": {
   "by": "v1.37 round 1 (corpus-2, corpus-3): the committed instrument, no scratch copy",
   "command": "DICTATION_WAV_CACHE=<the 2026-10-27 audio cache> ./.venv-jp/bin/python scripts/check_propagated_exclusions.py --spec docs/measurements/v137-dictation-remeasure-spec.json --calibrate --json docs/measurements/v137-dictation-remeasure-reproduced.json",
   "record": "docs/measurements/v137-dictation-remeasure-reproduced.json",
   "result": "Every verdict above is reproduced, with the same hashes: n5-b105 and n4-b104 RELEASE on the katakana spelling of the corrected reading (af059c1cf51b, 5756f0e6b1f0), now that verdict() compares a candidate with the corpus reading after katakana -> hiragana; n2-b277, n4-b186 and n2-b1180 RELEASE; n3-b020 KEEP; the other seven SILENT. n2-b034 is SILENT from the instrument itself now, not only in this record: a disputed token inside a lexicalised compound disputes the compound, so 一晩中 must be confirmed and is silent in all eight spellings. Calibration: 14/14 rebuild identity, 0 contradictions of instrument 1 in 39, 0 spurious byte matches in 56 decoys (hiragana and katakana)."
+ },
+ "secondBatch": {
+  "record": "docs/measurements/v137-dictation-remeasure-ichinichi.json",
+  "spec": "docs/measurements/v137-dictation-remeasure-ichinichi-spec.json",
+  "command": "DICTATION_WAV_CACHE=<the 2026-10-27 audio cache> ./.venv-jp/bin/python scripts/check_propagated_exclusions.py --spec docs/measurements/v137-dictation-remeasure-ichinichi-spec.json --calibrate --json docs/measurements/v137-dictation-remeasure-ichinichi.json",
+  "calibration": {
+   "rebuildIdentity": "12/12 — string handling only, no linguistic weight",
+   "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+   "negativeControl": "48 decoy substitutions, 0 spurious byte matches"
+  },
+  "controls": {
+   "n5-b018": "KEEP",
+   "n3-b020": "KEEP",
+   "n2-b1180": "RELEASE",
+   "n4-b186": "RELEASE",
+   "n2-b034": "SILENT",
+   "n5-b303": "SILENT"
+  },
+  "decision": {
+   "by": "decided 2026-10-28 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2)",
+   "pool": "5,933 -> 5,928: n2-g300, n2-b029, n2-b1064 and n4-b151 withheld (KEEP: the voice says ついたち against the corrected いちにち); n1-b678 withheld (SILENT); n3-g327 stays withheld (SILENT)."
+  }
  }
 }

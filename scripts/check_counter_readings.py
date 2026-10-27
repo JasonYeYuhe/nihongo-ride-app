@@ -315,11 +315,13 @@ subprocess, never its functions, on four trees:
       Only the release release_numbers measures gets (m2)'s tie to withheldThisRelease; the other says why not;
   (n) the v1.37 rows (above);
   (n1) their pool membership (above);
-  (o) the 一日 row: on the working tree it flags the five sentences of v1.37's round-1 review, each a
-      mismatch in both fields with exKana lined up, and in the dictation pool; it inspects and passes the
-      date n5-b303 四月一日 ついたち and the duration n5-b018 一日 いちにち, each in its sentence and its
-      headword; and the same five are flagged on fdb2b5f, the corpus 1.35 shipped (older than v1.37).
-      Anything else it flags is listed, not failed;
+  (o) the 一日 row: on 24684c2 (the 1.36 build, the corpus v1.37's round-1 review read) it flags the five
+      sentences of that review and n3-g327 一日中, each a mismatch in both fields with exKana lined up, the
+      five in the dictation pool and n3-g327 withheld (that tree's own exclusions); the same six on fdb2b5f,
+      the corpus 1.35 shipped (older than v1.37); and the working tree inspects and passes the date n5-b303
+      四月一日 ついたち and the duration n5-b018 一日 いちにち, each in its sentence and its headword. The six
+      are corrected since v1.37's second batch, and (m v1.37) holds them passed on the working tree, judged
+      by the 一日 row. Anything else it flags is listed, not failed;
   (c4) the 一日 row's own scan reads ≥ 6,000 sentences and headwords and every passage, n5-only below;
   (h) a PLANTED tree: the working tree's corpus copied, with one known-wrong occurrence per table
       planted in the example sentences of every n-file, and one headword and one passage for each
@@ -633,16 +635,28 @@ KNOWN_V137_CORRECTED = (
     ("n4-g189", "一週間", "いっしゅうかん"), ("n2-g285", "一等", "いっとう"),
     ("n2-b1180", "十センチ", "じゅっせんち"), ("n3-k061", "十パーセント", "じゅっぱーせんと"),
     ("n4-b186", "一晩", "ひとばん"), ("n2-b034", "一晩中", "ひとばんじゅう"),
+    # The second batch (v1.37 round 1, corpus-1; the manifest's 'secondBatch'), judged by the 一日 row.
+    ("n1-b678", "一日", "いちにち"), ("n2-g300", "一日", "いちにち"), ("n2-b029", "一日", "いちにち"),
+    ("n2-b1064", "一日", "いちにち"), ("n4-b151", "一日", "いちにち"), ("n3-g327", "一日中", "いちにちじゅう"),
 )
 KNOWN_V137_CORRECTED_LEXICALISED = (("n4-b186", "一晩", "ひとばん"), ("n2-b034", "一晩中", "ひとばんじゅう"))
-# (o) the 一日 row: the five pool sentences v1.37's round-1 review found (corpus-1), as the review read them —
-# (id, compound, verdict, taught), each the same verdict in both fields — and what the row must pass, (id,
-# field, compound, sense, verdict, taught): the date n5-b303 and the duration n5-b018, sentence and headword.
+KNOWN_V137_CORRECTED_ICHINICHI = (
+    ("n1-b678", "一日", "いちにち"), ("n2-g300", "一日", "いちにち"), ("n2-b029", "一日", "いちにち"),
+    ("n2-b1064", "一日", "いちにち"), ("n4-b151", "一日", "いちにち"), ("n3-g327", "一日中", "いちにちじゅう"),
+)
+# (o) the 一日 row: the five pool sentences v1.37's round-1 review found (corpus-1) and n3-g327 一日中, which
+# the row found itself, as the refuters read them — (id, compound, verdict, taught), each the same verdict in
+# both fields — and what the row must pass, (id, field, compound, sense, verdict, taught): the date n5-b303
+# and the duration n5-b018, sentence and headword. The six are corrected since v1.37's second batch, so the
+# hits are read on ICHINICHI_CALIBRATION_REF (the 1.36 build, whose corpus is the one the review read) and
+# on SHIPPED_REF; the working tree is held to their corrected readings by (m v1.37).
+ICHINICHI_CALIBRATION_REF = V137_SHIPPED_REF
 KNOWN_ICHINICHI_HITS = (
     ("n1-b678", "一日", "mismatch", "ついたち"), ("n2-g300", "一日", "mismatch", "ついたち"),
     ("n2-b029", "一日", "mismatch", "ついたち"), ("n2-b1064", "一日", "mismatch", "ついたち"),
-    ("n4-b151", "一日", "mismatch", "ついたち"),
+    ("n4-b151", "一日", "mismatch", "ついたち"), ("n3-g327", "一日中", "mismatch", "いちにちちゅう"),
 )
+KNOWN_ICHINICHI_POOL = {"n1-b678", "n2-g300", "n2-b029", "n2-b1064", "n4-b151"}   # n3-g327 withheld since v1.29
 KNOWN_ICHINICHI_PASSES = (
     ("n5-b303", "exJP", "一日", "date", "ok", "ついたち"), ("n5-b303", "surface", "一日", "date", "ok", "ついたち"),
     ("n5-b018", "exJP", "一日", "duration", "ok", "いちにち"),
@@ -657,8 +671,10 @@ RELEASES = (
      "known_ids": tuple(i for i, *_ in KNOWN_SOUND_CHANGE_HITS)},
     {"label": "v1.37", "manifest_path": MANIFEST, "remeasure_path": REMEASURE,
      "shipped_ref": V137_SHIPPED_REF, "corrected_rows": KNOWN_V137_CORRECTED,
-     "known_ids": tuple(i for i, *_ in KNOWN_V137_HITS) + tuple(i for i, *_ in KNOWN_V137_LEXICALISED),
-     "lexicalised_rows": KNOWN_V137_CORRECTED_LEXICALISED, "exact_set": True},
+     "known_ids": tuple(i for i, *_ in KNOWN_V137_HITS) + tuple(i for i, *_ in KNOWN_V137_LEXICALISED)
+                  + tuple(i for i, *_ in KNOWN_ICHINICHI_HITS),
+     "lexicalised_rows": KNOWN_V137_CORRECTED_LEXICALISED, "ichinichi_rows": KNOWN_V137_CORRECTED_ICHINICHI,
+     "exact_set": True},
 )
 
 
@@ -1790,10 +1806,11 @@ def m2_label(label, shipped_ref, rn_skipped):
 
 
 def check_release(check, head_run, label, manifest_path, remeasure_path, shipped_ref, corrected_rows,
-                  known_ids, lexicalised_rows=(), exact_set=False):
+                  known_ids, lexicalised_rows=(), ichinichi_rows=(), exact_set=False):
     """(m0), (m), (m1), (m2) for one release. `corrected_rows` are (id, compound, corrected reading),
     written out by hand; `known_ids` the calibration's known hits for that release; `lexicalised_rows`
-    the subset judged by the lexicalised table rather than the counter table. With `exact_set`, (m0)
+    the subset judged by the lexicalised table rather than the counter table, and `ichinichi_rows` the subset
+    judged by the 一日 row (read off its 'inspected', as the counter rows are). With `exact_set`, (m0)
     also requires that the manifest corrects nothing outside the known hits."""
     # (m0) KNOWN_CORRECTED is hand-copied, so nothing tied it to the manifest it follows: with a row
     # dropped, (m) inspected 11, called them "the sentences §I addendum 2 corrected" and passed (the
@@ -1822,14 +1839,20 @@ def check_release(check, head_run, label, manifest_path, remeasure_path, shipped
     # corpus here: the lexicalised table reports hits only, so 'not flagged' is checked together with
     # the covering tokens' reading and exKana, each equal to the hand-written value.
     lex = {i for i, _, _ in lexicalised_rows}
-    counter_ids = ids - lex
-    seen = sorted((r["id"], r["field"], r["compound"], r["verdict"], r.get("verdictTokens"),
-                   r.get("verdictKana"), r.get("taught"), r.get("taughtKana"),
-                   r.get("kanaAlignment") == r.get("alignment"))
-                  for r in head_run["counters"]["inspected"] if r["id"] in counter_ids)
-    want = sorted((i, "exJP", c, "ok", "ok", "ok", t, t, True) for i, c, t in corrected_rows if i in counter_ids)
+    day = {i for i, _, _ in ichinichi_rows}
+    counter_ids = ids - lex - day
+
+    def judged(table, which):
+        return [(r["id"], r["field"], r["compound"], r["verdict"], r.get("verdictTokens"),
+                 r.get("verdictKana"), r.get("taught"), r.get("taughtKana"),
+                 r.get("kanaAlignment") == r.get("alignment"))
+                for r in head_run[table]["inspected"] if r["id"] in which]
+    seen = sorted(judged("counters", counter_ids) + (judged("ichinichi", day) if day else []))
+    want = sorted((i, "exJP", c, "ok", "ok", "ok", t, t, True) for i, c, t in corrected_rows
+                  if i in counter_ids | day)
     flagged = sorted(f"{h['id']} {h['field']} {h['compound']} {h['verdict']} {h['taught']}"
-                     for h in head_run["counters"]["hits"] + head_run["hits"] if h["id"] in ids)
+                     for h in head_run["counters"]["hits"] + head_run["hits"]
+                     + head_run.get("ichinichi", {}).get("hits", []) if h["id"] in ids)
     lex_wrong = []
     if lex:
         entries = {}
@@ -1848,7 +1871,8 @@ def check_release(check, head_run, label, manifest_path, remeasure_path, shipped
                 lex_wrong.append(f"{i} {compound}: tokens {span and span[1]} ({span and span[2]}), exKana {segment}")
     check(f"(m {label}) the working tree passes the {len(ids)} sentences {display_path(manifest_path)} pins, "
           f"each inspected and taught its corrected reading in exTokens and exKana"
-          + (f" ({len(lex)} of them read off the lexicalised table's compound)" if lex else ""),
+          + (f" ({len(lex)} of them read off the lexicalised table's compound)" if lex else "")
+          + (f" ({len(day)} of them judged by the 一日 row)" if day else ""),
           seen == want and not flagged and not lex_wrong,
           f"not as corrected: {[s for s in seen if s not in want] or 'none'}; "
           f"not inspected: {[w[0] for w in want if w not in seen] or 'none'}; hits: {flagged or 'none'}"
@@ -1904,7 +1928,8 @@ def calibrate():
         counted, planted = os.path.join(tmp, "counter-ref"), os.path.join(tmp, "planted")
         sounded, shipped = os.path.join(tmp, "sound-change-ref"), os.path.join(tmp, "shipped")
         v137 = os.path.join(tmp, "v137-ref")
-        for d in (old, small, counted, planted, sounded, shipped, v137):
+        day_ref = os.path.join(tmp, "ichinichi-ref")
+        for d in (old, small, counted, planted, sounded, shipped, v137, day_ref):
             os.mkdir(d)
         try:
             tree_at(CALIBRATION_REF, old)
@@ -1912,6 +1937,7 @@ def calibrate():
             tree_at(SOUND_CHANGE_CALIBRATION_REF, sounded, extra=("dictation-exclusions.json",))
             tree_at(SHIPPED_REF, shipped)
             tree_at(V137_CALIBRATION_REF, v137, extra=("dictation-exclusions.json",))
+            tree_at(ICHINICHI_CALIBRATION_REF, day_ref, extra=("dictation-exclusions.json",))
             plants = plant_tree(planted)
         except RuntimeError as e:
             return False, [f"[FAIL] cannot read a calibration tree: {e}"]
@@ -1924,14 +1950,16 @@ def calibrate():
         sounded_code, sounded_run = run_cli(tmp, "sounded", "--resources", sounded)
         shipped_code, shipped_run = run_cli(tmp, "shipped", "--resources", shipped)
         v137_code, v137_run = run_cli(tmp, "v137", "--resources", v137)
+        day_code, day_run = run_cli(tmp, "ichinichi", "--resources", day_ref)
 
     if (old_run is None or head_run is None or small_run is None or counted_run is None
-            or planted_run is None or sounded_run is None or shipped_run is None or v137_run is None):
+            or planted_run is None or sounded_run is None or shipped_run is None or v137_run is None
+            or day_run is None):
         return False, [f"[FAIL] a calibration run wrote no output (exit codes: {CALIBRATION_REF} "
                        f"{old_code}, working tree {head_code}, n5-only {small_code}, "
                        f"{COUNTER_CALIBRATION_REF} {counted_code}, planted {planted_code}, "
                        f"{SOUND_CHANGE_CALIBRATION_REF} {sounded_code}, {SHIPPED_REF} {shipped_code}, "
-                       f"{V137_CALIBRATION_REF} {v137_code})"]
+                       f"{V137_CALIBRATION_REF} {v137_code}, {ICHINICHI_CALIBRATION_REF} {day_code})"]
     old_q, head_q = old_run["interrogative"], head_run["interrogative"]
 
     g022 = [(h["verdict"], h["compound"], h["taught"]) for h in old_q["hits"] if h["id"] == "n5-g022"]
@@ -2072,20 +2100,21 @@ def calibrate():
     # (o) the 一日 row (v1.37 round 1, corpus-1): the five on the working tree and on the corpus 1.35 shipped,
     # the same shape as (n); in the pool on the working tree, as the review states; and its passes.
     want = {(i, "exJP", c, v, v, v, t, True) for i, c, v, t in KNOWN_ICHINICHI_HITS}
-    for ref, run, what in (("the working tree", head_run, "as the round-1 review read it"),
+    for ref, run, what in ((ICHINICHI_CALIBRATION_REF, day_run, "the 1.36 build, as the round-1 review read it"),
                            (SHIPPED_REF, shipped_run, "the corpus 1.35 shipped")):
         got = {(h["id"], h["field"], h["compound"], h["verdict"], h["verdictTokens"], h["verdictKana"],
                 h["taught"], h.get("kanaAlignment") == h["alignment"])
                for h in run["ichinichi"]["hits"]}
         others = sorted(f"{h[0]} {h[1]} {h[2]} {h[3]} {h[6]}" for h in got - want)
-        check(f"(o) {ref} ({what}): the 一日 row flags the {len(want)} known duration sentences taught ついたち, "
-              f"each a mismatch in both exTokens and exKana, exKana lined up with the tokens",
+        check(f"(o) {ref} ({what}): the 一日 row flags its {len(want)} known sentences (five durations taught "
+              f"ついたち, 一日中 taught いちにちちゅう), each a mismatch in both exTokens and exKana, exKana lined up",
               want <= got,
               f"missing: {sorted(f'{w[0]} {w[6]}' for w in want - got) or 'none'}; also flagged: {others or 'none'}")
-    pool = sorted((h["id"], h["inDictationPool"], bool(h.get("english"))) for h in head_run["ichinichi"]["hits"]
+    pool = sorted((h["id"], h["inDictationPool"], bool(h.get("english"))) for h in day_run["ichinichi"]["hits"]
                   if h["id"] in {i for i, *_ in KNOWN_ICHINICHI_HITS})
-    check("(o) the working tree: the five carry their English and are in the dictation pool, as the review states",
-          pool == sorted((i, True, True) for i, *_ in KNOWN_ICHINICHI_HITS), f"hits: {pool}")
+    check(f"(o) {ICHINICHI_CALIBRATION_REF}, with its own dictation-exclusions.json: the hits carry their English, "
+          f"the five are in the dictation pool as the review states, and n3-g327 is withheld",
+          pool == sorted((i, i in KNOWN_ICHINICHI_POOL, True) for i, *_ in KNOWN_ICHINICHI_HITS), f"hits: {pool}")
     ids = {k[0] for k in KNOWN_ICHINICHI_PASSES}
     seen = sorted((r["id"], r["field"], r["compound"], r.get("sense"), r["verdict"], r.get("taught"))
                   for r in head_run["ichinichi"]["inspected"] if r["id"] in ids)
