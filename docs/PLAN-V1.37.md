@@ -603,3 +603,23 @@ Two agy reviews of the draft: Gemini 4 (`docs/evidence/v137-plan/review-gemini-4
 * §3 for §L's results.
 
 Under the minimum walk, check 1's forfeit on this Mac is recorded by the owner under §4 when (b) is chosen; checks 2 and 3 are either walked later, before the refund, or recorded by the owner under §4. The agent never records any of them.
+
+---
+
+## Dated corrections, 2026-10-28 (JST), from v1.37's review rounds
+
+Written by the agent. Each line corrects a fact in this plan; none adds or loosens a rule.
+* **§J V1, the gate floor:** `release/v1.37` raises it to **20** (19 headless) with three new self-tests
+  (`test_ci_vocab_base.py`, `test_submit_1_37.py`, `test_check_propagated_exclusions.py`). `main` stays at 18 / 17 until
+  the release merges.
+* **§B and §C, the frozen list:** `Theme` is not a file. It lives in `Sources/NihongoRideApp/NihongoRideApp.swift`, which
+  `scripts/submit_1_37.py` `FROZEN_PATHS` now names, so the whole file is held byte-identical to `fdb2b5f`. A diff over a
+  path that does not exist prints nothing, which is how the old list hid it (review round 1, frozen-1).
+* **§C rules and §K, "`sales_report.py` does not change on `main` before the N = 200 record":** this never covered the
+  approval-day `FIRM_RELEASE_DATES_PT` line. P0-2 requires 1.37's line before the N = 200 `--checkpoint`, and 1.36's
+  landed in `acf8ae5`. Those lines add a release date from the store's own timestamp, as the tuple's comment has
+  always required; they change no rule, threshold or classification (review round 1, frozen-4).
+* **P0-2's scope grew under review:** 18 corrections in two batches (the six 一日 ついたち → いちにち found by round 1's
+  corpus lens), and 7 dictation withholdings, pool 5,935 → 5,928. Every correction was upheld 2 of 2. The pool-must-not-
+  shrink rule was set aside for these seven by the orchestrator under the 2026-10-07 delegation, recorded in
+  `docs/measurements/v137-reading-manifest.json`.
