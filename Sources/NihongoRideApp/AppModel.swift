@@ -417,6 +417,16 @@ final class AppModel {
     /// universal from one sample.
     private(set) var unlockOfferLedger = UnlockOfferLedger()
 
+    /// The install-cohort marker **as it stood before this launch wrote it** (v1.37 P0-12). Nothing
+    /// reads it yet; E3's grandfather check will, and must read this rather than the key, because
+    /// the key already holds a marker minted by this launch (PLAN-V1.37 §E "Order"). Nil on a launch
+    /// that touches nothing of the user's, which neither reads nor writes the marker. Local only.
+    @ObservationIgnored private(set) var installCohortAtLaunch: InstallCohort.Observation?
+
+    /// The build `init` records as first seen. Nil in the shipping app, meaning `Bundle.main`. Set by
+    /// the unit-test target, whose host bundle's version is the test runner's, not this app's.
+    static var installCohortRunningOverride: InstallCohort.Running?
+
     /// The finished ride awaiting a review-prompt decision, or nil. Built in `finishGame` where
     /// the ride's own numbers are still to hand, and CONSUMED by `considerReviewPrompt` — so a
     /// results screen that appears twice for one ride cannot spend two of Apple's three slots.
@@ -607,6 +617,23 @@ final class AppModel {
         unlockOfferLedger = Self.currentIsolation.touchesNothingOfTheUsers
             ? UnlockOfferLedger()
             : UnlockOfferLedger.load(from: Self.settingsStore)
+        // The install-cohort marker, written once if absent (v1.37 P0-12), behind the same
+        // isolation predicate as the ledgers above. HERE, before anything this launch writes: the
+        // settings blob is saved at the end of `init` (a fresh install's too, for its deviceID),
+        // so checking it after that save would record every fresh install as having prior data.
+        // The odometer's outcome is the one loaded above, before the backfill below can write it.
+        if !Self.currentIsolation.touchesNothingOfTheUsers {
+            let info = Bundle.main.infoDictionary
+            installCohortAtLaunch = InstallCohort.recordLaunch(
+                in: Self.settingsStore,
+                running: Self.installCohortRunningOverride ?? InstallCohort.Running(
+                    marketingVersion: info?["CFBundleShortVersionString"] as? String,
+                    build: info?["CFBundleVersion"] as? String,
+                    platform: .current),
+                priorDataPresent: InstallCohort.priorDataPresent(
+                    settingsStored: Self.settingsStore.object(forKey: AppSettings.defaultsKey) != nil,
+                    odometerStored: odometerLoad.outcome != .missing))
+        }
         languageCode = loaded.languageCode
         assistance = AssistanceMode(rawValue: loaded.assistance)
             ?? (loaded.showRomajiHint ? .always : .off)
