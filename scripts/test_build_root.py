@@ -7,6 +7,10 @@ File Provider domain on the root, File Provider domain on an ANCESTOR), a symlin
 spelled path to the same checkout (case, NFD), and the override, this reads the gate runner and fails
 unless its `swift test` takes its scratch path from the helper.
 
+It also covers scripts/lib/build_env.sh, the flags local builds get (no index store; nothing on CI or
+with NIHONGO_BUILD_ENV=off), and fails unless every build the gate scripts start passes them and the
+App Store scripts do not source it.
+
 The attribute is planted with `xattr -w` on temp directories: the helper only reads it, so a
 planted value is indistinguishable from iCloud's for the question being asked.
 """
@@ -151,6 +155,52 @@ def main():
             check(invocations and all("--scratch-path" in line for line in invocations),
                   f"{name}: every `swift test` invocation must pass --scratch-path: {invocations}")
     print("  run_all_gates.sh takes its swift test scratch path from the helper")
+
+    # scripts/lib/build_env.sh: what local builds are given, sourced by macOS's /bin/bash 3.2 under
+    # `set -u` as the scripts source it (an empty array that bash 3.2 calls unbound fails here, not in a
+    # gate). CI and the opt-out must get NOTHING: their command lines stay as they were.
+    env_helper = SCRIPTS / "lib" / "build_env.sh"
+    probe = ('set -euo pipefail; . "$1"; printf "%s|%s\\n" "${SWIFTPM_ARGS[*]-}" "${XCODEBUILD_ARGS[*]-}"; '
+             ': ${SWIFTPM_ARGS[@]+"${SWIFTPM_ARGS[@]}"} ${XCODEBUILD_ARGS[@]+"${XCODEBUILD_ARGS[@]}"}')
+    for label, extra, want in (("local", {}, "--disable-index-store|COMPILER_INDEX_STORE_ENABLE=NO"),
+                               ("CI=true", {"CI": "true"}, "|"),
+                               ("NIHONGO_BUILD_ENV=off", {"NIHONGO_BUILD_ENV": "off"}, "|")):
+        env = {k: v for k, v in os.environ.items() if k not in ("CI", "NIHONGO_BUILD_ENV")}
+        env.update(extra)
+        r = subprocess.run(["/bin/bash", "-c", probe, "probe", str(env_helper)],
+                           capture_output=True, text=True, env=env, timeout=30)
+        check(r.returncode == 0 and r.stdout.strip() == want,
+              f"build_env.sh, {label}: expected {want!r}, got rc={r.returncode} {r.stdout.strip()!r} {r.stderr.strip()!r}")
+        print(f"  build_env.sh, {label:<21} → {r.stdout.strip()!r}")
+
+    # …and used: every build these scripts start passes the array (backslash continuations joined, so
+    # a flag on the eighth line of an xcodebuild call counts), and the release path does not source it.
+    def commands(text):
+        joined, current = [], ""
+        for line in text.splitlines():
+            line = line.strip()
+            if not current and line.startswith("#"):
+                continue
+            if line.endswith("\\"):
+                current += line[:-1] + " "
+                continue
+            joined.append(current + line)
+            current = ""
+        return joined
+
+    for name, starts, needle in (("run_all_gates.sh", "swift test ", "SWIFTPM_ARGS"),
+                                 ("run_store_gates.sh", "caffeinate -d -i xcodebuild ", "XCODEBUILD_ARGS"),
+                                 ("run_ios_placement_tests.sh", "caffeinate -d -i xcodebuild ", "XCODEBUILD_ARGS")):
+        code = commands((SCRIPTS / name).read_text(encoding="utf-8"))
+        builds = [c for c in code if c.startswith(starts)]
+        check(any(c.startswith(". ") and "scripts/lib/build_env.sh" in c for c in code),
+              f"{name} does not source scripts/lib/build_env.sh")
+        check(builds and all(needle in c for c in builds),
+              f"{name}: every `{starts.strip()}` must pass {needle}: {builds}")
+    for name in ("build-appstore.sh", "build-appstore-ios.sh"):
+        check(not any("build_env.sh" in c for c in commands((SCRIPTS / name).read_text(encoding="utf-8"))),
+              f"{name} sources scripts/lib/build_env.sh — release archives stay as they were")
+    print("  the gate scripts pass build_env.sh's flags to every build; the App Store scripts do not")
 
     if failures:
         print(f"{len(failures)} FAILURE(S)")
