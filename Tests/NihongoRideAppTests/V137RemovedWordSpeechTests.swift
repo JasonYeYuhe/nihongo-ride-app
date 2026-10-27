@@ -142,6 +142,20 @@ struct V137RemovedWordSpeechTests {
                 "wordRow uses the id somewhere else: …\(rest.firstMatch(of: #/.{0,60}\bid\b.{0,60}/#).map { String($0.output) } ?? "")…")
         #expect(rest.firstMatch(of: #/\blistID\b/#) == nil, "wordRow uses the list's id somewhere else")
 
+        // One level up, the ONE call site: the row is drawn by a bare `wordRow(id: id, listID:
+        // list.id)` with nothing chained on it, because a modifier there reaches the whole row as
+        // surely as one inside it. Mutation, review r1 (mutation-3): `.accessibilityValue(model
+        // .vocab.entry(id: id) == nil ? id : "")` after the call was green in this suite and red
+        // only in `V136ListRowsTests.columnIsWired`'s copy of the same string.
+        let body = try V135B6WordSearchTests.detail("var body: some View")
+        #expect(body.contains(#"ForEach(list.ids, id: \.self) { id in wordRow(id: id, listID: list.id) } } } else { unavailableState }"#),
+                "the ForEach that draws a list's words is no longer a bare call to wordRow")
+        let detailFile = try V136ListRowsTests.listsSource()
+        let detail = try #require(detailFile.typeBodies(named: "ListDetailView").first)
+        let detailCode = String(decoding: detailFile.code[detail], as: UTF8.self)
+        #expect(detailCode.components(separatedBy: "wordRow(").count - 1 == 2,
+                "ListDetailView names wordRow( other than at its declaration and the one ForEach")
+
         // A removed word is `.removed`, which has nothing to carry an id in.
         #expect(row.contains("} ?? .removed let text = ListWordRowText(content: content, zh: zh, scale: bodyPoints / 17)"))
         #expect(try V136ListRowsTests.columnSource().contains(
