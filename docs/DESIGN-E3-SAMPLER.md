@@ -357,10 +357,10 @@ The marker is on `feat/v137-install-cohort` in `v137-marker`, at 56a2ebc and the
 * `AppModel` calls it once in `init`, before the settings save, with PD = "settings blob present or odometer not missing", passed inline, and keeps only the observation, as `installCohortAtLaunch` (`AppModel.swift:420-428, 625-636` on the marker branch). It is `nil` on a launch that touches nothing of the user's.
 
 **What E3 reads, exactly** (round 2 corrects round 1's step 3, review finding NIT-4):
-1. **The gated build computes PD itself**, with the same expression, into a local, **before** the marker call. It passes that local to `recordLaunch` and keeps it beside `installCohortAtLaunch`. This is a change to the call site in the gated build's `AppModel`, not to v1.37.
+1. **The gated build computes PD itself**, into a local, **before** the marker call, with a **broader** expression than v1.37's (v1.37 review round 1, finding marker-1): any of the support stores not missing, not only the settings blob and `odometer.json`. Both of those first appeared in v1.2, so v1.37's expression reads false for an install last opened on 1.0 or 1.1 (pinned by `InstallCohortWiringTests.lastOpenedOn11`). That costs nothing for markers v1.37 and v1.38 write, which grant on their build alone; with v1.37's expression, the gated build would send a 1.1 rider who upgrades straight to E3 offline to row 8 instead of row 4. It passes that local to `recordLaunch` and keeps it beside `installCohortAtLaunch`. This is a change to the call site in the gated build's `AppModel`, not to v1.37.
 2. `.present(m)` → `Cohort.present(firstSeenBuild: m.firstSeenBuild, platform: m.platform, priorDataPresent: m.priorDataPresent)`. Another platform's marker → `.unreadable`.
 3. **`.absent`** → `Cohort.absent(priorDataPresent: <the kept local>)`. Row 4 then works on the first E3 launch, offline, with nothing re-read. Round 1 re-read this launch's write instead and treated a failed write as "PD false". That workaround is gone, and with it its failure path.
-4. `.unreadable` → `Cohort.unreadable`.
+4. `.unreadable` → `Cohort.unreadable`. Under §5.5 this is **worse off** than no marker: no marker with PD grants offline at row 4, while unreadable falls to rows 10–14 and needs `AppTransaction` (v1.37 review round 1, finding marker-2; the comment in `InstallCohort.swift` now says so). The gated build should carry this launch's PD into the unreadable case, or add a row for it, before E3 ships.
 5. **`nil`** (the isolation case, round-1 N4) → `Cohort.unreadable`. Nothing is persisted, because in that case the stores are handed no defaults (`AppModel.swift:605-606`).
 6. E3's decision runs in `init` after the marker step. **The marker call and every grant write sit behind one predicate**: row 0a's "stores readable" (round-2 finding MINOR-2). A source scan pins both the order and the shared predicate.
 
@@ -370,7 +370,7 @@ The marker is on `feat/v137-install-cohort` in `v137-marker`, at 56a2ebc and the
 
 **What must never change after v1.37 ships** (round-2 finding NIT-6):
 * The `InstallCohort.Marker` decoder, strict schema 1 with every field required (`InstallCohort.swift:172-187`).
-* The golden bytes its tests pin (`Tests/SettingsKitTests/InstallCohortTests.swift:18, 242` at 8b06f79).
+* The golden bytes its tests pin (`Tests/SettingsKitTests/InstallCohortTests.swift`; since the v1.37 review round 1 fix, finding marker-5, they are exactly what 1.37 writes: macOS build 62, iOS build 63).
 * If an E3-era edit made v1.37's bytes undecodable, every legacy install would drop from row 2 to rows 10–14: no offline protection, rule 3 only. A new field goes in a schema-2 marker under a new key, never in an edit of schema 1.
 
 **Hardening applied by the orchestrator at `v137-marker` 8b06f79** (round-2 finding NIT-5, which the review called optional). Recorded here as read, not done by this document:
