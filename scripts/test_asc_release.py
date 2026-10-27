@@ -794,6 +794,32 @@ def test_release_type(module, problems):
     print("  --submit with MANUAL / SCHEDULED / unset on either platform -> refused, 0 writes"
           if not any("releaseType" in p for p in problems) else "  --submit release type: RED")
 
+    # One platform's version missing (r2-mutation-6): phase 0 must refuse it by name before phase 1
+    # attaches the OTHER platform's build, which is the half-written state phase 0 exists to stop.
+    for missing in ("MAC_OS", "IOS"):
+        sc = dict(phase="do_submit", versions_exist=True)
+        state, log = fresh_state(module, sc), []
+        del state["versions"][missing]
+        name = next(t["name"] for t in module.TARGETS if t["platform"] == missing)
+        release = release_from(module)
+        release.asc = make_fake(state, module, sc, log)
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                release.do_submit()
+            exited = None
+        except SystemExit as exc:
+            exited = exc
+        named = exited is not None and f"{name}: no {module.VERSION} version" in str(exited) \
+            and "refusing to attach or submit anything" in str(exited)
+        writes = [c for c in log if is_write(c)]
+        print(f"  --submit with {name}'s {module.VERSION} version missing -> "
+              f"{'refused by name' if named else 'NOT refused'}, {len(writes)} write(s)")
+        if not named or writes:
+            problems.append(f"--submit with {name}'s version missing: "
+                            f"{'refused' if named else 'not refused by name'} ({exited!r}), "
+                            f"{len(writes)} write(s)"
+                            f"{' starting ' + writes[0][0] + ' ' + writes[0][1] if writes else ''}")
+
     # The dry run says it out loud.
     sc = dict(phase="do_dry_run", versions_exist=True, release_types={"IOS": "MANUAL"})
     log = []
