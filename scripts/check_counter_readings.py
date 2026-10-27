@@ -208,8 +208,9 @@ so a hit there would be a false positive. They are ACCEPTED, not tolerated: 'tol
 table's word for a form that is heard but that the dictionaries do not list (三階 さんかい, …じゅうさい), and
 ろくてん / はちてん are listed standard forms, like the はちふん, はちかい this table already accepts beside
 はっぷん, はっかい. For a counter beginning with t the 6 and the 8 geminate optionally. The shipped corpus has no
-六点 or 八点 in any field this table reads (the six 六点 / 八点 in n1, n2, n5 and passages.json are all in
-exZH), so the change moves no judgement on it; it only keeps a future one from going to the refuters.
+六点 or 八点 in any field this table reads (the eight 六点 / 八点 in the corpus are six in exZH, in n1, n2 and
+n5, and two in passages.json's meanings.zh), so the change moves no judgement on it; it only keeps a future one
+from going to the refuters.
 
 What the v1.37 rows do not inspect is printed by every run (the 'complement' block, and 'complement' in the
 --json output): each new counter written after a numeral at a digit its row does not list (二週間, 三等分's
@@ -282,7 +283,7 @@ subprocess, never its functions, on four trees:
       of corrected rows withheld now and not in 1.35's (SHIPPED_REF) list, releasedToDictation the
       reverse, and their difference is release_numbers' withheldThisRelease while release_numbers
       measures this manifest's release (its CORPUS_MANIFEST is this manifest and its BASELINE_REF is
-      SHIPPED_REF; once either moves on, the detail says the tie was not made, and why);
+      SHIPPED_REF; once either moves on, the label says the tie is not made and the detail says why);
       Since v1.37, (m0)–(m2) run once per release in RELEASES: v1.36's rows above against
       v136-reading-manifest.json, v136-dictation-remeasure.json and fdb2b5f, kept as they were, and v1.37's
       against v137-reading-manifest.json, v137-dictation-remeasure.json and 24684c2 (the 1.36 build). For
@@ -1561,6 +1562,17 @@ FLOOR_CHECKS = (
 )
 
 
+def m2_label(label, shipped_ref, rn_skipped):
+    """(m2)'s label. It names the tie to release_numbers' withheldThisRelease only when the tie is made:
+    once release_numbers measures another release (`rn_skipped` says which), the check still passes on
+    the counts, and a label that claimed the tie would count one that was not made (v1.37 round 1)."""
+    head = (f"(m2 {label}) the manifest's counts are its corrected rows withheld and released since "
+            f"{shipped_ref}")
+    if rn_skipped is None:
+        return f"{head}, and their difference is release_numbers' withheldThisRelease"
+    return f"{head}; the tie to release_numbers' withheldThisRelease is not made (another release is measured)"
+
+
 def check_release(check, head_run, label, manifest_path, remeasure_path, shipped_ref, corrected_rows,
                   known_ids, lexicalised_rows=(), exact_set=False):
     """(m0), (m), (m1), (m2) for one release. `corrected_rows` are (id, compound, corrected reading),
@@ -1654,8 +1666,7 @@ def check_release(check, head_run, label, manifest_path, remeasure_path, shipped
     released = sorted(corrected & (shipped - now))
     w, r = counts.get("withheldFromDictation"), counts.get("releasedToDictation")
     net = (w - r) if isinstance(w, int) and isinstance(r, int) else None
-    check(f"(m2 {label}) the manifest's counts are its corrected rows withheld and released since "
-          f"{shipped_ref}, and their difference is release_numbers' withheldThisRelease",
+    check(m2_label(label, shipped_ref, rn_skipped),
           problem is None and w == len(withheld) and r == len(released)
           and (rn_skipped is not None or rn_withheld == net),
           problem or f"counts withheldFromDictation {w}, releasedToDictation {r}; corrected rows withheld "
@@ -1894,6 +1905,12 @@ def calibrate():
     for what, lexicalised, interrogative, counters, want in FLOOR_CHECKS:
         got = below_floor(lexicalised, interrogative, counters)
         check(f"logic: {what}", got == want, f"{got}")
+    made, skipped = m2_label("vX", "abc1234", None), m2_label("vX", "abc1234", "release_numbers measures vY")
+    check("logic: (m2)'s label names the tie to withheldThisRelease when it is made, and says it is not "
+          "when release_numbers measures another release",
+          made.endswith("and their difference is release_numbers' withheldThisRelease")
+          and "their difference is" not in skipped and "is not made" in skipped,
+          f"made: {made!r}; skipped: {skipped!r}")
     return ok, lines
 
 
