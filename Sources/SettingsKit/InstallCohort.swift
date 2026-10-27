@@ -224,6 +224,12 @@ public enum InstallCohort {
         /// type is still a value, and `UserDefaults.data(forKey:)` would report it as nothing.
         case notData
 
+        /// `.nothing` means "nothing came back", which is not quite "nothing is stored": a defaults
+        /// domain that cannot be read yet (iOS protected data before the first unlock) also reads
+        /// as nothing, and `decide` would then mint a marker over a real one. No launch path here
+        /// is known to run before the first unlock, but iOS prewarming is UNMEASURED — see
+        /// `InstallCohortTests.noLaunchBeforeFirstUnlock` for what is closed, what is not, and why
+        /// E3's row 0a (not a change to 1.37's launch path) is the guard.
         public static func read(from defaults: UserDefaults, key: String = defaultsKey) -> Stored {
             guard let object = defaults.object(forKey: key) else { return .nothing }
             guard let data = object as? Data else { return .notData }
