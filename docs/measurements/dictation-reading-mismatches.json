@@ -5,7 +5,7 @@
  "sentences": 6724,
  "provenMatching": 494,
  "provenDiffering": 27,
- "excludedCount": 791,
+ "excludedCount": 796,
  "note": "Excluded from DICTATION only. Every one of these is still a perfectly good sentence to read and type in Sentence mode, where the reading is shown rather than spoken. v1.25 §A released 42 sentences whose recorded complaint was REPAIRED — the corpus now says what the checker measured the voice to say. Eight more were released on a weaker test and then put back: merging a token span deletes the very token a complaint names, so 'the complained-of token is gone' could not fail. Those eight are corrected in the corpus (Sentence mode and furigana are right) and stay withheld until the voice is re-measured, as do fifteen whose sentences this release rewrote — their records are marked stale-after-correction rather than re-stamped with a measurement nobody made. v1.35 released 1: n4-g386's exKana was corrected from なん to なに (何 before を), which is what instrument 1b had proven the voice says; re-measured on the corrected sentence, 1b (calibrated: 0 spurious decoy matches, 0 contradictions of instrument 1) confirms 何 = なに, and the なん render is not byte-identical. n2-b103 (金 corrected to かね) stays withheld: 1b proves the voice still says 私 = わたし, and it also says 金 = きん. v1.35 round 2 released 8 more: thirteen withheld sentences had 何 corrected from なん to なに (docs/measurements/v135-residue-manifest.json), eight of them the complaint '何 なん -> なに' instrument 1b had already proven (the ninth, n2-b884, was withheld for 私 alone). Re-measured on the corrected tokens (calibrated: 0 spurious byte matches in 26 decoys, 0 contradictions of instrument 1 in 39), 8 confirm 何 = なに and are released; n2-b884 confirms なに but still says 私 = わたし, so it stays withheld; the four whose v1.29 evidence was 'undecided' stay withheld because 1b is still silent on them. v1.35 round 3 withheld 1: n5-g022 (今、何時ですか。) had been in the pool with exKana なんどき, a reading no instrument could question — Sudachi offers only いつ / なんどき for 何時, so the standard なんじ was never a candidate, and instrument 2 compared なんどき with いつ alone. Its exKana is corrected to なんじ; re-measured on the corrected tokens, calibrated 1b (0 spurious matches in 2 decoys, 0 contradictions of instrument 1 in 39) confirms 今 = いま and is silent on 何時, so the voice is not proven to say the corrected reading and the sentence is withheld. The comparative favours なんじ (span DTW 0.0273 against なんどき 0.0771), which is a lead, not a verdict. v1.36 withheld 4 (PLAN-V1.36 §H, decided 2026-10-09 under the owner's delegation): four pool sentences whose number + counter reading v1.36 corrected (docs/measurements/v136-reading-manifest.json, grammar and 2-of-2 refuters) now teach the right reading in Sentence mode and are not graded in dictation, because the voice is not proven to say it. n3-b020 (駅からおよそ十分歩きました。, 'about ten minutes'): 十分 corrected じゅうぶん -> じゅっぷん, and calibrated 1b proves the voice says じゅうぶん, so the sentence is proven misread against its own corrected exKana. n1-b439 and n3-b781 (三千 さんせん -> さんぜん) and n3-b678 (八十点 はちじゅうてん -> はちじゅってん): re-measured on the corrected tokens, calibrated 1b (0 spurious matches in 8 decoys, 0 contradictions of instrument 1 in 39) is silent on the corrected span, so the voice is not proven to say the corrected reading and the sentence is withheld, v1.35's n5-g022 precedent. The leads (instrument 2 and uncalibrated span comparatives) favour さんぜん and are a tie for 八十点 (docs/measurements/v136-dictation-remeasure.json): leads, not verdicts. v1.37 withheld 2 (decided 2026-10-27 by the orchestrator under the owner's delegation, PLAN-V1.37 §C P0-2): two pool sentences whose number + counter reading v1.37 corrected (docs/measurements/v137-reading-manifest.json, grammar and 2-of-2 refuters) now teach the right reading in Sentence mode and are not graded in dictation, because calibrated 1b re-measured on the corrected tokens is silent on the corrected span: n2-b511 (一週間 いちしゅうかん -> いっしゅうかん) and n1-b1418 (第一章 だいいちしょう -> だいいっしょう), v1.35's n5-g022 precedent. Three corrected pool sentences stay in the pool because 1b proves the voice says the corrected reading (n2-b277 ろくじゅっきろ, n5-b105 にじゅっせんち, n4-b104 ごじゅっぺーじ; docs/measurements/v137-dictation-remeasure.json). Seven corrected sentences that were already withheld stay withheld, their evidence rows marked stale-after-correction (v1.37); n4-b186 and n2-b1180 are release candidates for a later release, and n2-b034 is not one until its 中 is measured.",
  "excluded": [
   {
@@ -1300,6 +1300,13 @@
    "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
   },
   {
+   "id": "n1-b678",
+   "exJP": "この本を読むのに丸々一日かかった。",
+   "exKana": "このほんをよむのにまるまるいちにちかかった",
+   "heardInstead": "一日 ついたち -> いちにち  (no instrument heard this: the v1.37 一日 row found it, round 1; the corpus has since been corrected to いちにち)",
+   "evidence": "undecided (v1.37 round 1: exKana and the 一日 token corrected ついたち -> いちにち; docs/measurements/v137-reading-manifest.json, second batch, grammar and 2-of-2 refuters. It was in the dictation pool until v1.37 with ついたち. Instrument 1b re-measured on the corrected tokens (calibrated: 0 spurious byte matches in 48 decoys, 0 contradictions of instrument 1 in 39) is silent on 一日 — none of いちじつ (3ac3dba3907f), いちにち (387e8e994403), ついたち (0468ff9d719c), イチジツ (09c707c48c0e), イチニチ (0c104088ee04), ツイタチ (113a3f9aca85) renders byte-identical to the exJP audio (430dd219f312) — so the voice is not proven to say the corrected reading, and the sentence is withheld (decided 2026-10-28 by the orchestrator under the owner's 2026-10-07 delegation, PLAN-V1.37 §C P0-2), as n5-g022 was in v1.35. The withholding rests on 1b's silence alone; docs/measurements/v137-dictation-remeasure-ichinichi.json)"
+  },
+  {
    "id": "n1-b689",
    "exJP": "新しいセミナーの申し込みは明日から始まります。",
    "exKana": "あたらしいせみなーのもうしこみはあすからはじまります",
@@ -1812,6 +1819,13 @@
    "evidence": "proven (v1.29, instrument 1b)"
   },
   {
+   "id": "n2-b029",
+   "exJP": "朝のジョギングは一日の活力を与えてくれる。",
+   "exKana": "あさのじょぎんぐはいちにちのかつりょくをあたえてくれる",
+   "heardInstead": "一日 いちにち -> ついたち  (v1.37 round 1 instrument 1b; the voice says the date reading the corpus taught until v1.37 corrected it to いちにち)",
+   "evidence": "proven (v1.37 round 1, instrument 1b on the corrected tokens, calibrated: 0 spurious byte matches in 48 decoys, 0 contradictions of instrument 1 in 39: the sentence with 一日 spelled ついたち renders byte-identical to the exJP audio (44735db0459c), and none of いちじつ (f00466d458e1), いちにち (31c04bb5fcb9), イチジツ (d291ced3a91c), イチニチ (c1c092a835a3), ツイタチ (f75a13f013c1) does. So the voice says ついたち, 'the first of the month', for a duration 一日 ('Morning jogging gives me vitality for the day.'); docs/measurements/v137-dictation-remeasure-ichinichi.json.) v1.37 corrected 一日 ついたち -> いちにち (exKana and the token; docs/measurements/v137-reading-manifest.json, second batch, grammar and 2-of-2 refuters) and withheld the sentence (decided 2026-10-28 by the orchestrator under the owner's 2026-10-07 delegation, PLAN-V1.37 §C P0-2): Sentence mode teaches the right reading, and dictation is not graded where the voice says something else, the n3-b020 precedent (v1.36), and as for n5-b018, where the same voice is proven to say ついたち for 一日 'one day'. It was in the dictation pool until v1.37, graded against the wrong ついたち that the voice also says."
+  },
+  {
    "id": "n2-b034",
    "exJP": "母親は一晩中、熱を出した妹の看病をした。",
    "exKana": "ははおやはひとばんじゅうねつをだしたいもうとのかんびょうをした",
@@ -1978,6 +1992,13 @@
    "exKana": "かれはふかぶかとおじぎをしてへやをでた",
    "heardInstead": "部屋 へや -> べや",
    "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+  },
+  {
+   "id": "n2-b1064",
+   "exJP": "セメントが完全に固まるまで一日かかる。",
+   "exKana": "せめんとがかんぜんにかたまるまでいちにちかかる",
+   "heardInstead": "一日 いちにち -> ついたち  (v1.37 round 1 instrument 1b; the voice says the date reading the corpus taught until v1.37 corrected it to いちにち)",
+   "evidence": "proven (v1.37 round 1, instrument 1b on the corrected tokens, calibrated: 0 spurious byte matches in 48 decoys, 0 contradictions of instrument 1 in 39: the sentence with 一日 spelled ついたち renders byte-identical to the exJP audio (2a07cdfdba98), and none of いちじつ (8feb1426e324), いちにち (021a6147e1c9), イチジツ (987d74db5eaa), イチニチ (dea261175a3f), ツイタチ (c71b6e2c2581) does. So the voice says ついたち, 'the first of the month', for a duration 一日 ('It takes a day for the cement to completely harden.'); docs/measurements/v137-dictation-remeasure-ichinichi.json.) v1.37 corrected 一日 ついたち -> いちにち (exKana and the token; docs/measurements/v137-reading-manifest.json, second batch, grammar and 2-of-2 refuters) and withheld the sentence (decided 2026-10-28 by the orchestrator under the owner's 2026-10-07 delegation, PLAN-V1.37 §C P0-2): Sentence mode teaches the right reading, and dictation is not graded where the voice says something else, the n3-b020 precedent (v1.36), and as for n5-b018, where the same voice is proven to say ついたち for 一日 'one day'. It was in the dictation pool until v1.37, graded against the wrong ついたち that the voice also says."
   },
   {
    "id": "n2-b1066",
@@ -3000,6 +3021,13 @@
    "exKana": "しょうてんがいのくじびきでいっとうがあたりました",
    "heardInstead": "一 いち -> ひと  (v1.29 instrument 2; the corpus has since been corrected to いっとう, which is not instrument 2's ひと)",
    "evidence": "stale-after-correction (v1.37): the correction acted on the token this row's v1.29 flag names, but not to the reading the flag named. The corpus now reads 一等 as いっとう (一 いち -> いっ in exKana and the token; docs/measurements/v137-reading-manifest.json, grammar and 2-of-2 refuters); instrument 2 had named ひと, not いっ. So the recorded mismatch (corpus いち, voice nearer ひと) no longer describes the sentence, and what the voice says for 一 here is unmeasured: re-measured on the corrected tokens, instrument 1b (calibrated: 0 spurious byte matches in 28 decoys, 0 contradictions of instrument 1 in 39) is silent on 一等 in hiragana and katakana (docs/measurements/v137-dictation-remeasure.json). STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says いっとう."
+  },
+  {
+   "id": "n2-g300",
+   "exJP": "この時計は一日に数秒の誤差が生じる。",
+   "exKana": "このとけいはいちにちにすうびょうのごさがしょうじる",
+   "heardInstead": "一日 いちにち -> ついたち  (v1.37 round 1 instrument 1b; the voice says the date reading the corpus taught until v1.37 corrected it to いちにち)",
+   "evidence": "proven (v1.37 round 1, instrument 1b on the corrected tokens, calibrated: 0 spurious byte matches in 48 decoys, 0 contradictions of instrument 1 in 39: the sentence with 一日 spelled ついたち renders byte-identical to the exJP audio (7c8b657cd94e), and none of いちじつ (1671e16fe39e), いちにち (0b8cfda6de8a), イチジツ (2ec861ec77e3), イチニチ (578a80de80c2), ツイタチ (ae7be3e23ecb) does. So the voice says ついたち, 'the first of the month', for a duration 一日 ('This clock has an error of a few seconds a day.'); docs/measurements/v137-dictation-remeasure-ichinichi.json.) v1.37 corrected 一日 ついたち -> いちにち (exKana and the token; docs/measurements/v137-reading-manifest.json, second batch, grammar and 2-of-2 refuters) and withheld the sentence (decided 2026-10-28 by the orchestrator under the owner's 2026-10-07 delegation, PLAN-V1.37 §C P0-2): Sentence mode teaches the right reading, and dictation is not graded where the voice says something else, the n3-b020 precedent (v1.36), and as for n5-b018, where the same voice is proven to say ついたち for 一日 'one day'. It was in the dictation pool until v1.37, graded against the wrong ついたち that the voice also says."
   },
   {
    "id": "n2-g309",
@@ -4293,9 +4321,9 @@
   {
    "id": "n3-g327",
    "exJP": "今日は一日中外出していました。",
-   "exKana": "きょうはいちにちちゅうがいしゅつしていました",
-   "heardInstead": "中 ちゅう -> じゅう",
-   "evidence": "undecided (v1.29: instrument 2 flagged it, instrument 1b silent)"
+   "exKana": "きょうはいちにちじゅうがいしゅつしていました",
+   "heardInstead": "中 ちゅう -> じゅう  (v1.29 instrument 2; the corpus has since been corrected to いちにちじゅう)",
+   "evidence": "stale-after-correction (v1.37 round 1): this row's v1.29 flag is what the correction acted on. The corpus now reads 一日中 as いちにちじゅう (中 ちゅう -> じゅう in exKana and the token; docs/measurements/v137-reading-manifest.json, second batch, grammar and 2-of-2 refuters), so the recorded mismatch — corpus ちゅう, voice nearer じゅう — no longer describes the sentence. Re-measured on the corrected tokens, instrument 1b (calibrated: 0 spurious byte matches in 48 decoys, 0 contradictions of instrument 1 in 39) is silent on 一日中 in all four spellings (いちにちじゅう (0d6eaeac0628), いちにちちゅう (5268c48a5540), イチニチジュウ (0c97ac6c7ad9), イチニチチュウ (0ed18cbfe8ff); exJP audio acaf0f5f5cba; docs/measurements/v137-dictation-remeasure-ichinichi.json). STILL EXCLUDED: releasing it needs instrument 1b to prove the voice says いちにちじゅう. Instrument 2 having named the corrected reading is corroboration, not proof: it measured 42/63 = 67% agreement with adjudication on this population (v129-nearest-exclusions.json)."
   },
   {
    "id": "n3-g329",
@@ -4499,6 +4527,13 @@
    "exKana": "わたくしのむすこはことしこうこうににゅうがくしました",
    "heardInstead": "私 わたくし -> わたし",
    "evidence": "proven (v1.29, instrument 1b)"
+  },
+  {
+   "id": "n4-b151",
+   "exJP": "一日でこの本を全部読むのは無理だ。",
+   "exKana": "いちにちでこのほんをぜんぶよむのはむりだ",
+   "heardInstead": "一日 いちにち -> ついたち  (v1.37 round 1 instrument 1b; the voice says the date reading the corpus taught until v1.37 corrected it to いちにち)",
+   "evidence": "proven (v1.37 round 1, instrument 1b on the corrected tokens, calibrated: 0 spurious byte matches in 48 decoys, 0 contradictions of instrument 1 in 39: the sentence with 一日 spelled ついたち renders byte-identical to the exJP audio (1114e07b9ae8), and none of いちじつ (67d3a2730d3d), いちにち (0097985992ea), イチジツ (96719b7a322e), イチニチ (350a1f1aca45), ツイタチ (516a22e2435e) does. So the voice says ついたち, 'the first of the month', for a duration 一日 ('Reading this entire book in one day is impossible.'); docs/measurements/v137-dictation-remeasure-ichinichi.json.) v1.37 corrected 一日 ついたち -> いちにち (exKana and the token; docs/measurements/v137-reading-manifest.json, second batch, grammar and 2-of-2 refuters) and withheld the sentence (decided 2026-10-28 by the orchestrator under the owner's 2026-10-07 delegation, PLAN-V1.37 §C P0-2): Sentence mode teaches the right reading, and dictation is not graded where the voice says something else, the n3-b020 precedent (v1.36), and as for n5-b018, where the same voice is proven to say ついたち for 一日 'one day'. It was in the dictation pool until v1.37, graded against the wrong ついたち that the voice also says."
   },
   {
    "id": "n4-b153",

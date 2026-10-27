@@ -1097,14 +1097,18 @@ struct ExampleSentenceTests {
         }
     }
 
-    /// v1.37's 12 reading corrections and its dictation decisions (PLAN-V1.37 §C P0-2), held by a gate
+    /// v1.37's 18 reading corrections and its dictation decisions (PLAN-V1.37 §C P0-2), held by a gate
     /// that runs. The expected exKana and token readings are written out here by hand, not read from
     /// the manifest or from anything that produced the corpus; the manifest is only held to the same
-    /// 12 ids. Three corrected pool sentences stay in dictation because instrument 1b proves the voice
-    /// says the corrected reading; the two whose voice is unproven are withheld, and every corrected
-    /// sentence that was already withheld stays withheld (n4-b186 and n2-b1180 are release candidates,
-    /// n2-b034 is not one). A later release that changes one of these changes this test with it.
-    @Test("v1.37's 12 corrections still hold, and its dictation decisions stay as made")
+    /// 18 ids. First batch (12): three corrected pool sentences stay in dictation because instrument 1b
+    /// proves the voice says the corrected reading; the two whose voice is unproven are withheld, and
+    /// every corrected sentence that was already withheld stays withheld (n4-b186 and n2-b1180 are
+    /// release candidates, n2-b034 is not one). Second batch (6, round 1): 一日 ついたち corrected to
+    /// いちにち in five pool sentences, all five withheld — four because 1b proves the voice says
+    /// ついたち (the n3-b020 precedent), n1-b678 because 1b is silent (n5-g022) — and n3-g327's 一日中
+    /// corrected to いちにちじゅう, still withheld. Seven withholdings in all. A later release that changes
+    /// one of these changes this test with it.
+    @Test("v1.37's 18 corrections still hold, and its dictation decisions stay as made")
     func v137CorrectionsHold() throws {
         let repo = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
@@ -1122,6 +1126,13 @@ struct ExampleSentenceTests {
              [["一", "ひと"], ["晩", "ばん"], ["中", "じゅう"]]),
             ("n2-b1180", "ちょっけいじゅっせんちのえんをえがいてください", [["十", "じゅっ"], ["センチ", "せんち"]]),
             ("n3-k061", "じゅっぱーせんとわりびきだ", [["十", "じゅっ"], ["パーセント", "ぱーせんと"]]),
+            // The second batch (v1.37 round 1).
+            ("n1-b678", "このほんをよむのにまるまるいちにちかかった", [["丸々", "まるまる"], ["一日", "いちにち"], ["かかっ", "かかっ"]]),
+            ("n2-g300", "このとけいはいちにちにすうびょうのごさがしょうじる", [["は", "は"], ["一日", "いちにち"], ["に", "に"]]),
+            ("n2-b029", "あさのじょぎんぐはいちにちのかつりょくをあたえてくれる", [["は", "は"], ["一日", "いちにち"], ["の", "の"]]),
+            ("n2-b1064", "せめんとがかんぜんにかたまるまでいちにちかかる", [["まで", "まで"], ["一日", "いちにち"], ["かかる", "かかる"]]),
+            ("n4-b151", "いちにちでこのほんをぜんぶよむのはむりだ", [["一日", "いちにち"], ["で", "で"]]),
+            ("n3-g327", "きょうはいちにちじゅうがいしゅつしていました", [["一", "いち"], ["日", "にち"], ["中", "じゅう"]]),
         ]
         struct Row: Decodable { let id: String; let disposition: String }
         struct Manifest: Decodable { let entries: [Row] }
@@ -1153,12 +1164,17 @@ struct ExampleSentenceTests {
             repo.appendingPathComponent("Sources/VocabKit/Resources/dictation-exclusions.json"))) as? [String: Any])
         let withheld = Set((try #require(resJSON["excluded"] as? [[String: Any]])).compactMap { $0["id"] as? String })
         // Corrected in v1.37 with the voice unproven (1b silent): withheld, the n5-g022 precedent.
-        for id in ["n1-b1418", "n2-b511"] {
+        for id in ["n1-b1418", "n2-b511", "n1-b678"] {
             #expect(withheld.contains(id), "\(id) was corrected without proof of what the voice says, and must be withheld from dictation")
+        }
+        // Corrected in v1.37's second batch with the voice proven to say ついたち against the corrected
+        // いちにち: withheld, the n3-b020 precedent.
+        for id in ["n2-g300", "n2-b029", "n2-b1064", "n4-b151"] {
+            #expect(withheld.contains(id), "\(id): the voice is proven to say ついたち against its corrected いちにち, so it must be withheld from dictation")
         }
         // Withheld before v1.37 and still withheld: n4-b186 and n2-b1180 wait for a release decision,
         // n2-b034's 中 じゅう is unmeasured, n5-g010 was not corrected.
-        for id in ["n2-b034", "n2-b1180", "n2-g285", "n3-b310", "n3-k061", "n4-b186", "n4-g189", "n5-g010"] {
+        for id in ["n2-b034", "n2-b1180", "n2-g285", "n3-b310", "n3-k061", "n4-b186", "n4-g189", "n5-g010", "n3-g327"] {
             #expect(withheld.contains(id), "\(id) stays withheld from dictation in v1.37")
         }
         // Corrected and kept in the pool: 1b proves the voice says the corrected reading.
