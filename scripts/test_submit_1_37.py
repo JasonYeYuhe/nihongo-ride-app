@@ -83,23 +83,25 @@ def build_fixture_repo(root):
     return sha
 
 
-def load_submit(root, baseline_sha):
-    """Import submit_1_37.py with `release_numbers` stubbed onto the fixture repo.
+def load_submit(root, baseline_sha, numbers=None, source=None):
+    """Import submit_1_37.py (or `source`, an edited copy of it) with `release_numbers` stubbed onto
+    the fixture repo, its numbers() returning `numbers` (default NUMBERS).
 
     Returns (module, None), or (None, the SystemExit its import-time guards raised).
     """
+    figures = dict(NUMBERS if numbers is None else numbers)
     stub = types.ModuleType("release_numbers")
     stub.BASELINE_REF = baseline_sha
     stub.CORPUS_MANIFEST = MANIFEST
     stub.REPO = root
     stub.RESOURCES = root / RES
-    stub.numbers = lambda: dict(NUMBERS)
+    stub.numbers = lambda: dict(figures)
     saved = sys.modules.get("release_numbers")
     sys.modules["release_numbers"] = stub
     os.environ["NIHONGO_ASC_CONTACT"] = FAKE_CONTACT
     try:
         spec = importlib.util.spec_from_file_location("submit_1_37_under_test",
-                                                      SCRIPTS / "submit_1_37.py")
+                                                      source or SCRIPTS / "submit_1_37.py")
         module = importlib.util.module_from_spec(spec)
         try:
             with contextlib.redirect_stdout(io.StringIO()):
@@ -205,6 +207,38 @@ def test_corpus_guard(mod, root, baseline_sha, problems):
 
     expect(problems, "correctedThisRelease is not 18", run(fixed=17), "correctedThisRelease is 17")
 
+    # r2-submit-1: a PARTIAL revert still differs from 1.36. n2-b034 corrects 一 いち -> ひと and
+    # 中 ちゅう -> じゅう; put only 中 back, in exKana and its token.
+    def only_chuu_back(e):
+        e["exKana"] = e["exKana"].replace("ひとばんじゅう", "ひとばんちゅう")
+        e["exTokens"] = [[t, "ちゅう" if t == "中" else r] for t, r in e["exTokens"]]
+    expect(problems, "r2-submit-1 a partial revert (n2-b034, only 中 back to ちゅう)",
+           run(ents=with_entry("n2-b034", only_chuu_back)),
+           "n2-b034's exKana is", "not the manifest's corrected")
+    # …and the same in the tokens only, exKana left corrected.
+    expect(problems, "r2-submit-1 a partial token-only revert (n2-b034 中 ちゅう)",
+           run(ents=with_entry("n2-b034", lambda e: e.update(exTokens=[
+               [t, "ちゅう" if t == "中" else r] for t, r in e["exTokens"]]))),
+           "n2-b034's tokens do not contain the manifest's corrected run")
+    # …and a third reading, neither 1.36's nor the correction (n3-k061 十 じっ).
+    def third_reading(e):
+        e["exKana"] = e["exKana"].replace("じゅっぱーせんと", "じっぱーせんと")
+        e["exTokens"] = [[t, "じっ" if t == "十" else r] for t, r in e["exTokens"]]
+    expect(problems, "r2-submit-1 a third reading (n3-k061 十 じっ)",
+           run(ents=with_entry("n3-k061", third_reading)), "n3-k061's exKana is",
+           "not the manifest's corrected")
+
+    # r2-mutation-4: the 7 against the manifest's count, and WITHHELD_IDS inside NAMED_IDS.
+    expect(problems, "r2-mutation-4 the manifest's withheldFromDictation drifted to 6",
+           run(c=dict(counts, withheldFromDictation=6)), "withheldFromDictation is 6")
+    saved_ids = list(mod.WITHHELD_IDS)
+    try:
+        mod.WITHHELD_IDS = saved_ids + ["n5-g010"]
+        expect(problems, "r2-mutation-4 a withheld id that is not a correction (n5-g010)",
+               run(w=set(withheld) | {"n5-g010"}), "are not all corrections")
+    finally:
+        mod.WITHHELD_IDS = saved_ids
+
     # A second-batch correction reverted (n4-b151 一日 back to ついたち).
     expect(problems, "submit-2 a second-batch correction reverted (n4-b151)",
            run(ents=with_entry("n4-b151", lambda e: e.update(
@@ -236,10 +270,16 @@ def test_withheld_reasons(mod, root, problems):
     expect(problems, "a 'says the old reading' sentence that 1b was silent on",
            mod.withheld_reason_problems(with_verdict("n2-g300", "SILENT"), keep, entries, baseline),
            "n2-g300")
-    said_new = [dict(r, kyoko=["いちにち"]) if r["id"] == "n4-b151" else r for r in keep]
-    expect(problems, "a KEEP row where the voice says the corrected reading, not the old one",
-           mod.withheld_reason_problems(verdicts, said_new, entries, baseline), "n4-b151",
-           "is not what 1b measured")
+    # One plant per clause of the KEEP-row check, each tripping that clause alone.
+    def row(**change):
+        return [dict(r, **change) if r["id"] == "n4-b151" else r for r in keep]
+    for name, planted in (
+            ("the voice said neither the old nor the new reading (いちじつ)", row(kyoko=["いちじつ"])),
+            ("the voice said both the old and the new reading", row(kyoko=["ついたち", "いちにち"])),
+            ("the KEEP record was taken on another corpus reading", row(corpus="ついたち"))):
+        expect(problems, f"a KEEP row where {name}",
+               mod.withheld_reason_problems(verdicts, planted, entries, baseline), "n4-b151",
+               "is not what 1b measured")
     saved = copy.deepcopy(mod.WITHHELD_REASONS)
     try:
         mod.WITHHELD_REASONS["not confirmed"].remove("n1-b678")
@@ -293,6 +333,51 @@ def test_reason_wiring(root, baseline_sha, problems):
                         f"by name: {exited!r}")
 
 
+def test_quote_and_count_wiring(root, baseline_sha, problems):
+    """The import-time exits for the quote guard and for the 7: an edited copy of the script with one
+    reading swapped (or a word added) must not import, nor the real script on a withheld count of 6
+    from release_numbers or from the manifest."""
+    src = (SCRIPTS / "submit_1_37.py").read_text(encoding="utf-8")
+    edits = (
+        ("one reading swapped in What's New en", "and 一晩 ひとばん.", "and 一晩 いちばん."),
+        ("a word that is not an example added", "and 一晩 ひとばん.", "and 一晩 ひとばん, 十ページ じゅっぺーじ."),
+    )
+    with tempfile.TemporaryDirectory(prefix="submit137_edited_") as tmp:
+        for name, old, new in edits:
+            if src.count(old) != 1:
+                problems.append(f"quote wiring: the anchor {old!r} is not in submit_1_37.py once")
+                continue
+            edited = Path(tmp) / "submit_1_37.py"
+            edited.write_text(src.replace(old, new), encoding="utf-8")
+            _, exited = load_submit(root, baseline_sha, source=edited)
+            named = exited is not None and "the copy does not quote what EXAMPLES holds" in str(exited)
+            print(f"  import with {name} -> {'REFUSED by name' if named else 'NOT REFUSED'}")
+            if not named:
+                problems.append(f"importing submit_1_37 with {name} did not refuse by name: {exited!r}")
+
+    _, exited = load_submit(root, baseline_sha, numbers=dict(NUMBERS, withheldThisRelease=6))
+    named = exited is not None and "withheldThisRelease is 6" in str(exited)
+    print(f"  import with withheldThisRelease 6 -> {'REFUSED by name' if named else 'NOT REFUSED'}")
+    if not named:
+        problems.append(f"importing submit_1_37 with withheldThisRelease 6 did not refuse: {exited!r}")
+
+    path = root / MANIFEST
+    original = path.read_text(encoding="utf-8")
+    manifest = json.loads(original)
+    manifest["counts"]["withheldFromDictation"] = 6
+    path.write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
+    try:
+        _, exited = load_submit(root, baseline_sha)
+    finally:
+        path.write_text(original, encoding="utf-8")
+    named = exited is not None and "withheldFromDictation is 6" in str(exited)
+    print(f"  import with the manifest's withheldFromDictation 6 -> "
+          f"{'REFUSED by name' if named else 'NOT REFUSED'}")
+    if not named:
+        problems.append(f"importing submit_1_37 with the manifest's withheldFromDictation 6 did not "
+                        f"refuse: {exited!r}")
+
+
 def test_token_reading(mod, problems):
     """`_token_reading`, on hand-written tokens."""
     toks = [["この", "この"], ["車", "くるま"], ["は", "は"], ["時速", "じそく"],
@@ -326,18 +411,47 @@ def test_quotes(mod, problems):
     if control:
         problems.append(f"the quote guard rejects the copy as written: {control}")
 
-    def swapped(text):
-        return (text.replace("ろくじゅっきろ", "\0").replace("いっしゅうかん", "ろくじゅっきろ")
-                .replace("\0", "いっしゅうかん"))
+    def swapped(text, a, b):
+        return text.replace(a, "\0").replace(b, a).replace("\0", b)
 
+    # Every adjacent pair of EXAMPLES swapped in turn, so a check that stopped early cannot pass.
+    pairs = list(mod.EXAMPLES.values())
     for loc in mod.WHATS_NEW:
-        bad = dict(mod.WHATS_NEW, **{loc: swapped(mod.WHATS_NEW[loc])})
-        # Both readings still appear in the text, so the old any-where check passed this.
-        assert "ろくじゅっきろ" in bad[loc] and "いっしゅうかん" in bad[loc]
-        expect(problems, f"What's New {loc} with 六十キロ and 一週間's readings swapped",
-               mod.quote_problems(bad, mod.REVIEW_NOTES), f"{loc}: 六十キロ is not quoted next to")
-    expect(problems, "the review notes with two readings swapped",
-           mod.quote_problems(mod.WHATS_NEW, swapped(mod.REVIEW_NOTES)), "review notes: 六十キロ")
+        for (w1, k1), (w2, k2) in zip(pairs, pairs[1:]):
+            bad = dict(mod.WHATS_NEW, **{loc: swapped(mod.WHATS_NEW[loc], k1, k2)})
+            # Both readings still appear in the text, so the old any-where check passed this.
+            assert k1 in bad[loc] and k2 in bad[loc] and bad[loc] != mod.WHATS_NEW[loc]
+            expect(problems, f"What's New {loc} with {w1} and {w2}'s readings swapped",
+                   mod.quote_problems(bad, mod.REVIEW_NOTES), f"{loc}: {w1} is not quoted next to",
+                   f"{loc}: {w2} is not quoted next to")
+    quoted = pairs[:mod.NOTES_EXAMPLES]
+    for (w1, k1), (w2, k2) in zip(quoted, quoted[1:]):
+        bad = swapped(mod.REVIEW_NOTES, k1, k2)
+        assert bad != mod.REVIEW_NOTES
+        expect(problems, f"the review notes with {w1} and {w2}'s readings swapped",
+               mod.quote_problems(mod.WHATS_NEW, bad), f"review notes: {w1}", f"review notes: {w2}")
+
+    # r2-submit-2: the copy quotes nothing EXAMPLES does not hold to the corpus. n5-g010's 十ページ
+    # was recorded and NOT corrected; 十分 is n3-b020's, which is not a v1.37 correction either.
+    added = {
+        "en-US": ("and 一晩 ひとばん.", "and 一晩 ひとばん, and 十ページ じゅっぺーじ."),
+        "zh-Hans": ("「一晩」读作 ひとばん。", "「一晩」读作 ひとばん,「十ページ」读作 じゅっぺーじ。"),
+        "ja": ("「一晩」ひとばん)", "「一晩」ひとばん、「十分」じゅっぷん)"),
+    }
+    for loc, (old, new) in added.items():
+        assert mod.WHATS_NEW[loc].count(old) == 1, (loc, old)
+        bad = dict(mod.WHATS_NEW, **{loc: mod.WHATS_NEW[loc].replace(old, new)})
+        expect(problems, f"r2-submit-2 What's New {loc} quoting a word that is not an example",
+               mod.quote_problems(bad, mod.REVIEW_NOTES), f"What's New {loc} quotes",
+               "十ページ" if loc != "ja" else "十分")
+    zh_unbracketed = mod.WHATS_NEW["zh-Hans"].replace("ひとばん。", "ひとばん,十ページ じゅっぺーじ。")
+    expect(problems, "r2-submit-2 zh quoting kana outside 「」",
+           mod.quote_problems(dict(mod.WHATS_NEW, **{"zh-Hans": zh_unbracketed}), mod.REVIEW_NOTES),
+           "What's New zh-Hans quotes", "じゅっぺーじ")
+    notes_added = mod.REVIEW_NOTES.replace("一週間 いっしゅうかん)", "一週間 いっしゅうかん, 十ページ じゅっぺーじ)")
+    assert notes_added != mod.REVIEW_NOTES
+    expect(problems, "r2-submit-2 the review notes quoting a word that is not an example",
+           mod.quote_problems(mod.WHATS_NEW, notes_added), "review notes quote", "十ページ")
     expect(problems, "a locale with no quote forms",
            mod.quote_problems(dict(mod.WHATS_NEW, **{"fr-FR": "x"}), mod.REVIEW_NOTES), "fr-FR")
 
@@ -404,6 +518,19 @@ def test_frozen(mod, problems):
           f"{len(mod.FROZEN_PATHS)} exist")
     if missing:
         problems.append(f"FROZEN_PATHS names paths that do not exist at {mod.FROZEN_REF}: {missing}")
+    # The list itself, typed by hand from the brief (common.md, with Theme as the file that holds it):
+    # a path dropped from FROZEN_PATHS is a file the guard stops watching.
+    typed = {
+        "Sources/NihongoRideApp/SettingsView.swift", "Sources/NihongoRideApp/MenuView.swift",
+        "Sources/NihongoRideApp/AboutView.swift", "Sources/NihongoRideApp/OnboardingView.swift",
+        "Sources/NihongoRideApp/RoadView.swift", "Sources/NihongoRideApp/RouteStore.swift",
+        "Sources/NihongoRideApp/NihongoRideApp.swift", "Sources/NihongoRideApp/ScaledFont.swift",
+        "Sources/EntitlementKit", "xcode/NihongoRide.storekit",
+    }
+    if set(mod.FROZEN_PATHS) != typed or len(mod.FROZEN_PATHS) != len(typed):
+        problems.append(f"FROZEN_PATHS is not the frozen list: missing "
+                        f"{sorted(typed - set(mod.FROZEN_PATHS))}, extra "
+                        f"{sorted(set(mod.FROZEN_PATHS) - typed)}")
     if mod.FROZEN_REF != FROZEN_AT:
         problems.append(f"FROZEN_REF is {mod.FROZEN_REF!r}, not 1.35's build commit {FROZEN_AT}")
     theme = show(FROZEN_AT, "Sources/NihongoRideApp/NihongoRideApp.swift")
@@ -473,8 +600,9 @@ def test_main_wiring(root, baseline_sha, problems):
     sys.modules["release_numbers"] = stub
     outcome = None
     try:
-        for mode in ("--metadata", "--submit", "--dry-run"):
-            sys.argv = ["submit_1_37.py", mode, "--platform=both"]
+        for mode in ("--metadata", "--submit", "--dry-run", "(no mode)"):
+            sys.argv = (["submit_1_37.py"] if mode == "(no mode)"
+                        else ["submit_1_37.py", mode, "--platform=both"])
             try:
                 with contextlib.redirect_stdout(io.StringIO()):
                     runpy.run_path(str(SCRIPTS / "submit_1_37.py"), run_name="__main__")
@@ -513,6 +641,7 @@ def main():
         test_withheld_reasons(mod, root, problems)
         test_import_wiring(root, baseline_sha, problems)
         test_reason_wiring(root, baseline_sha, problems)
+        test_quote_and_count_wiring(root, baseline_sha, problems)
         test_token_reading(mod, problems)
         print("\nTHE QUOTES — each word next to its own kana")
         test_quotes(mod, problems)
