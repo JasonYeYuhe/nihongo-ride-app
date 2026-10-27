@@ -526,7 +526,7 @@
     "exKana",
     "exTokens"
    ],
-   "evidence": "一日 here is a length of time (exEN 'It took a whole day to read this book.'). 一日 is いちにち as a duration and ついたち only as 'the first of the month' (デジタル大辞泉 and 精選版日本国語大辞典 give ついたち no duration sense, refuter A; jisho.org likewise, refuter B), so the taught ついたち is a different word, not a variant. The 一日 row of scripts/check_counter_readings.py (v1.37 round 1, judged by its sense from exEN) flagged it on exTokens and on exKana, both exact (corpus-proposals-ichinichi.json; calibration (o) on 24684c2 and fdb2b5f; docs/measurements/v137-counter-sweep-3.json passes it corrected). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "evidence": "一日 here is a length of time (exEN 'It took a whole day to read this book.'). 一日 is いちにち as a duration and ついたち only as 'the first of the month' (デジタル大辞泉 and 精選版日本国語大辞典 give ついたち no duration sense: refuter A, in its method, its n1-b678 vote and its overall; jisho.org's ついたち entry likewise: refuter B, in its method and its votes on n1-b678, n2-g300 and n2-b029), so the taught ついたち is a different word, not a variant. The 一日 row of scripts/check_counter_readings.py (v1.37 round 1, judged by its sense from exEN) flagged it on exTokens and on exKana, both exact (corpus-proposals-ichinichi.json; calibration (o) on 24684c2 and fdb2b5f; docs/measurements/v137-counter-sweep-3.json passes it corrected). Upheld 2 of 2 by independent refuters (A high, B high).",
    "verdict": "defect",
    "kind": "A-reading",
    "confidence": "high",
@@ -562,7 +562,7 @@
     "exKana",
     "exTokens"
    ],
-   "evidence": "一日 here is a length of time (exEN 'This clock has an error of a few seconds a day.'). 一日 is いちにち as a duration and ついたち only as 'the first of the month' (デジタル大辞泉 and 精選版日本国語大辞典 give ついたち no duration sense, refuter A; jisho.org likewise, refuter B), so the taught ついたち is a different word, not a variant. The 一日 row of scripts/check_counter_readings.py (v1.37 round 1, judged by its sense from exEN) flagged it on exTokens and on exKana, both exact (corpus-proposals-ichinichi.json; calibration (o) on 24684c2 and fdb2b5f; docs/measurements/v137-counter-sweep-3.json passes it corrected). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "evidence": "一日 here is a length of time (exEN 'This clock has an error of a few seconds a day.'). 一日 is いちにち as a duration and ついたち only as 'the first of the month' (デジタル大辞泉 and 精選版日本国語大辞典 give ついたち no duration sense: refuter A, in its method, its n1-b678 vote and its overall; jisho.org's ついたち entry likewise: refuter B, in its method and its votes on n1-b678, n2-g300 and n2-b029), so the taught ついたち is a different word, not a variant. The 一日 row of scripts/check_counter_readings.py (v1.37 round 1, judged by its sense from exEN) flagged it on exTokens and on exKana, both exact (corpus-proposals-ichinichi.json; calibration (o) on 24684c2 and fdb2b5f; docs/measurements/v137-counter-sweep-3.json passes it corrected). Upheld 2 of 2 by independent refuters (A high, B high).",
    "verdict": "defect",
    "kind": "A-reading",
    "confidence": "high",
@@ -598,7 +598,7 @@
     "exKana",
     "exTokens"
    ],
-   "evidence": "一日 here is a length of time (exEN 'Morning jogging gives me vitality for the day.'). 一日 is いちにち as a duration and ついたち only as 'the first of the month' (デジタル大辞泉 and 精選版日本国語大辞典 give ついたち no duration sense, refuter A; jisho.org likewise, refuter B), so the taught ついたち is a different word, not a variant. The 一日 row of scripts/check_counter_readings.py (v1.37 round 1, judged by its sense from exEN) flagged it on exTokens and on exKana, both exact (corpus-proposals-ichinichi.json; calibration (o) on 24684c2 and fdb2b5f; docs/measurements/v137-counter-sweep-3.json passes it corrected). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "evidence": "一日 here is a length of time (exEN 'Morning jogging gives me vitality for the day.'). 一日 is いちにち as a duration and ついたち only as 'the first of the month' (デジタル大辞泉 and 精選版日本国語大辞典 give ついたち no duration sense: refuter A, in its method, its n1-b678 vote and its overall; jisho.org's ついたち entry likewise: refuter B, in its method and its votes on n1-b678, n2-g300 and n2-b029), so the taught ついたち is a different word, not a variant. The 一日 row of scripts/check_counter_readings.py (v1.37 round 1, judged by its sense from exEN) flagged it on exTokens and on exKana, both exact (corpus-proposals-ichinichi.json; calibration (o) on 24684c2 and fdb2b5f; docs/measurements/v137-counter-sweep-3.json passes it corrected). Upheld 2 of 2 by independent refuters (A high, B high).",
    "verdict": "defect",
    "kind": "A-reading",
    "confidence": "high",
@@ -634,7 +634,7 @@
     "exKana",
     "exTokens"
    ],
-   "evidence": "一日 here is a length of time (exEN 'It takes a day for the cement to completely harden.'). 一日 is いちにち as a duration and ついたち only as 'the first of the month' (デジタル大辞泉 and 精選版日本国語大辞典 give ついたち no duration sense, refuter A; jisho.org likewise, refuter B), so the taught ついたち is a different word, not a variant. The 一日 row of scripts/check_counter_readings.py (v1.37 round 1, judged by its sense from exEN) flagged it on exTokens and on exKana, both exact (corpus-proposals-ichinichi.json; calibration (o) on 24684c2 and fdb2b5f; docs/measurements/v137-counter-sweep-3.json passes it corrected). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "evidence": "一日 here is a length of time (exEN 'It takes a day for the cement to completely harden.'). 一日 is いちにち as a duration and ついたち only as 'the first of the month' (デジタル大辞泉 and 精選版日本国語大辞典 give ついたち no duration sense: refuter A, in its method, its n1-b678 vote and its overall; jisho.org's ついたち entry likewise: refuter B, in its method and its votes on n1-b678, n2-g300 and n2-b029), so the taught ついたち is a different word, not a variant. The 一日 row of scripts/check_counter_readings.py (v1.37 round 1, judged by its sense from exEN) flagged it on exTokens and on exKana, both exact (corpus-proposals-ichinichi.json; calibration (o) on 24684c2 and fdb2b5f; docs/measurements/v137-counter-sweep-3.json passes it corrected). Upheld 2 of 2 by independent refuters (A high, B high).",
    "verdict": "defect",
    "kind": "A-reading",
    "confidence": "high",
@@ -670,7 +670,7 @@
     "exKana",
     "exTokens"
    ],
-   "evidence": "一日 here is a length of time (exEN 'Reading this entire book in one day is impossible.'). 一日 is いちにち as a duration and ついたち only as 'the first of the month' (デジタル大辞泉 and 精選版日本国語大辞典 give ついたち no duration sense, refuter A; jisho.org likewise, refuter B), so the taught ついたち is a different word, not a variant. The 一日 row of scripts/check_counter_readings.py (v1.37 round 1, judged by its sense from exEN) flagged it on exTokens and on exKana, both exact (corpus-proposals-ichinichi.json; calibration (o) on 24684c2 and fdb2b5f; docs/measurements/v137-counter-sweep-3.json passes it corrected). Upheld 2 of 2 by independent refuters (A high, B high).",
+   "evidence": "一日 here is a length of time (exEN 'Reading this entire book in one day is impossible.'). 一日 is いちにち as a duration and ついたち only as 'the first of the month' (デジタル大辞泉 and 精選版日本国語大辞典 give ついたち no duration sense: refuter A, in its method, its n1-b678 vote and its overall; jisho.org's ついたち entry likewise: refuter B, in its method and its votes on n1-b678, n2-g300 and n2-b029), so the taught ついたち is a different word, not a variant. The 一日 row of scripts/check_counter_readings.py (v1.37 round 1, judged by its sense from exEN) flagged it on exTokens and on exKana, both exact (corpus-proposals-ichinichi.json; calibration (o) on 24684c2 and fdb2b5f; docs/measurements/v137-counter-sweep-3.json passes it corrected). Upheld 2 of 2 by independent refuters (A high, B high).",
    "verdict": "defect",
    "kind": "A-reading",
    "confidence": "high",
@@ -804,7 +804,7 @@
   "refuterMethod": {
    "A": "Read-only. Corpus rows read from v137-fix-corpus (2086f3d) n1-n5.json; pool status from its dictation-exclusions.json (791 rows) and docs/measurements/dictation-reading-mismatches.json; precedent from docs/PLAN-V1.36.md §H 'the dictation decisions' (2026-10-09) and v136-reading-manifest.json 'method'. 1b re-checked independently: for each sentence I recomputed the WAV cache key (sha1(text)[:16], check_dictation_readings.key) for exJP and for exJP with 一日 replaced by each of いちにち/ついたち/いちじつ/イチニチ/ツイタチ/イチジツ in corpus-audio/wav, and compared whole-file bytes myself instead of trusting 1b.json. Dictionary evidence: kotobank 一日 (デジタル大辞泉, 精選版日本国語大辞典) https://kotobank.jp/word/%E4%B8%80%E6%97%A5 and 一日中 https://kotobank.jp/word/一日中-433286.",
    "overallA": "All 9 upheld. Each of the five pool sentences is unambiguously a duration by exJP, exEN and exZH; ついたち has no duration sense in デジタル大辞泉 or 日本国語大辞典, so it is a wrong word rather than a variant. I reproduced the 1b claim by direct byte comparison of the cached renders: for n2-g300, n2-b029, n2-b1064, n4-b151 and the control n5-b018, the exJP audio is byte-identical to the ついたち substitution and to no other candidate. n1-b678 is genuinely silent (same render run, ~89k differing bytes). Every disposition (withhold) follows §H: items 1 and 2 cover the proven and the silent rows. Caveats: the DTW and equal-length leads for n1-b678 are not evidence (イチニチ is the same length). n3-g327's mismatch-evidence row will need rewriting in the apply phase.",
-   "B": "refute-ichinichi-B.json states no method field"
+   "B": "stated inside its n5-b303 vote, 'METHOD (applies to all nine votes): …' (refute-ichinichi-B.json has no top-level method field): it read the proposal, the clone's n1–n5.json, dictation-exclusions.json and PLAN-V1.36 §H; diffed the harness-corrected corpus against the clone; recomputed every 1b hash from corpus-audio/wav with check_dictation_readings.py's cache-key scheme rather than reading 1b.json's verdicts (all agree); searched the corpus for 一日 and found exactly the nine entries; dictionary source jisho.org (JMdict), 一日 and 一日中. The vote is copied verbatim in recordedNoChange.n5-b303."
   },
   "note": "The votes are verbatim (refute-ichinichi-A.json and refute-ichinichi-B.json, dated 2026-10-27), copied whole. Line numbers in them refer to 2086f3d, the tree the refuters read. The 6 corrections move 12 lines of n1–n5.json: each one exKana line and one token-reading line; no others. They change no sentence's kana count (ついたち -> いちにち and ちゅう -> じゅう are one kana for one), so no sentence rides a different distance."
  }
