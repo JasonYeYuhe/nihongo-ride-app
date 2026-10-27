@@ -1581,6 +1581,17 @@ COUNTER_LOGIC_CHECKS = (
      "", None, []),
 )
 
+# Every alternative of DURATION_EN and DATE_EN, written out by hand (never derived from the patterns: a check
+# computed from what it checks passes any pattern), each judged alone by ICHINICHI_LOGIC_CHECKS.
+ICHINICHI_DURATION_PHRASES = ("a day", "one day", "per day", "each day", "every day", "the day", "that day",
+                              "this day", "a whole day", "the entire day", "a full day", "all day",
+                              "a single day", "a long day", "daily", "a day-long trip")
+ICHINICHI_DATE_PHRASES = ("on the 1st", "the first of the month", "the first day of the month",
+                          "the first of every month", "the first of each month", "the first of this month",
+                          "the first of next month", "the first of last month", "the first of a month",
+                          "January 1", "February 1", "March 1", "April 1", "May 1", "June 1", "July 1",
+                          "August 1", "September 1", "October 1", "November 1", "December first")
+
 ICHINICHI_LOGIC_CHECKS = (
     # (what it proves, text, reading, tokens, English or None, expected (compound, sense, verdict,
     #  verdictTokens, verdictKana) in order). v1.37 round 1.
@@ -1589,9 +1600,12 @@ ICHINICHI_LOGIC_CHECKS = (
      [["一日", "いちにち"], ["かかっ", "かかっ"], ["た", "た"], ["、", "、"], ["一日", "ついたち"], ["かかっ", "かかっ"], ["た", "た"]],
      "It took a whole day.",
      [("一日", "duration", "ok", "ok", "ok"), ("一日", "duration", "mismatch", "mismatch", "mismatch")]),
-    ("'a day', 'per day', 'all day', 'daily' and 'for the day' all name a duration",
-     "一日", "いちにち", [["一日", "いちにち"]], "Twice a day, per day, all day, daily, for the day.",
-     [("一日", "duration", "ok", "ok", "ok")]),
+    # One English phrase per check (v1.37 round 2): a check whose English held every alternative at once
+    # passed while any one of them still matched, so dropping `daily` from DURATION_EN stayed green.
+    *((f"'{phrase}' alone names a duration", "一日", "いちにち", [["一日", "いちにち"]], f"It was {phrase}.",
+       [("一日", "duration", "ok", "ok", "ok")]) for phrase in ICHINICHI_DURATION_PHRASES),
+    *((f"'{phrase}' alone names the first of a month", "一日", "ついたち", [["一日", "ついたち"]],
+       f"It was {phrase}.", [("一日", "date", "ok", "ok", "ok")]) for phrase in ICHINICHI_DATE_PHRASES),
     ("a date by the text (月 just before): 四月一日 ついたち ok, いちにち a mismatch, whatever the English says",
      "四月一日と四月一日", "しがつついたちとしがついちにち",
      [["四", "し"], ["月", "がつ"], ["一日", "ついたち"], ["と", "と"], ["四", "し"], ["月", "がつ"], ["一日", "いちにち"]],
@@ -2097,8 +2111,10 @@ def calibrate():
           f"in the pool: {sorted(i for i, p in pool.items() if p is True)}; withheld: "
           f"{sorted(i for i, p in pool.items() if p is False)}; unread: {sorted(ids - set(pool)) or 'none'}")
 
-    # (o) the 一日 row (v1.37 round 1, corpus-1): the five on the working tree and on the corpus 1.35 shipped,
-    # the same shape as (n); in the pool on the working tree, as the review states; and its passes.
+    # (o) the 一日 row (v1.37 round 1, corpus-1): its six hits on 24684c2 (the corpus the round-1 review read)
+    # and on fdb2b5f (the corpus 1.35 shipped), the same shape as (n); on 24684c2 the five in the pool and
+    # n3-g327 withheld, as the review states; and the working tree's passes. The six themselves are corrected
+    # on the working tree, where (m v1.37) holds them.
     want = {(i, "exJP", c, v, v, v, t, True) for i, c, v, t in KNOWN_ICHINICHI_HITS}
     for ref, run, what in ((ICHINICHI_CALIBRATION_REF, day_run, "the 1.36 build, as the round-1 review read it"),
                            (SHIPPED_REF, shipped_run, "the corpus 1.35 shipped")):
