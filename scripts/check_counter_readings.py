@@ -27,7 +27,8 @@ and matched them as plain substrings. It produced **9 hits of which 7 were false
   * **substring** (2): 二十日 contains 十日, and both readings were already correct.
   * **wrong expectation** (1): 一日 is ついたち as a DATE and いちにち as a DURATION. Surface
     alone cannot decide it, so 一日 is deliberately NOT enumerated — a rule that cannot be right
-    from the surface does not belong in a surface scan.
+    from the surface does not belong in a surface scan. (Since v1.37 round 1 the 一日 row below
+    judges it by its sense, read from the English.)
 
 WHAT IT STILL CANNOT SEE, stated because this repo pays for unstated scopes: a counter written
 in a form this list does not contain, a compound absorbed by a word not in ABSORBERS, and any
@@ -218,6 +219,28 @@ What the v1.37 rows do not inspect is printed by every run (the 'complement' blo
 sentences that carry exJP but no exKana (n5-k008 「荷物は10キロあります。」), which no table reads. Also not
 seen: 週 and 章 in kana, 二晩 ふたばん and every other 晩, and a number in kana in exJP.
 
+THE 一日 ROW (v1.37 round 1, corpus-1)
+----------------------------------------
+Why: v1.37's round-1 review found five dictation-pool sentences teaching 一日 as ついたち 'the first of the
+month' where the English is a duration, いちにち: n1-b678 丸々一日かかった ('a whole day'), n2-g300 一日に数秒
+('a day'), n2-b029 一日の活力 ('for the day'), n2-b1064 一日かかる ('a day'), n4-b151 一日で ('in one day').
+The docstring's first section leaves 一日 out of the lexicalised table because the surface cannot decide it.
+The English can, as it decides 分 (above), so this is its own table, judged like the counter table (exTokens
+and exKana, the same population, the same output shape under the key 'ichinichi'):
+  * date: the text says so (月 just before: 四月一日, 毎月一日), or the English names the first of a month
+    (DATE_EN: 1st, 'first (day) of the month', April 1). ついたち is accepted; いちにち is a mismatch.
+  * duration: the English names a day as a length (DURATION_EN: a day, one day, the day, a whole day, per
+    day, all day, daily …) and no first of a month. いちにち is accepted; ついたち is a mismatch.
+  * 一日中: 'all day', the text says so. いちにちじゅう is accepted, the whole compound judged (the 一晩中
+    lesson: いちにちちゅう is a mismatch).
+  * ambiguous, flag-only, never a mismatch: English naming both, English naming neither, or no English.
+    ついたち and いちにち are both flag-only; only a reading wrong in every sense is a mismatch.
+  * いちじつ (the literary 'one day' and the formal date reading) is flag-only in every sense; the surname
+    四月一日 わたぬき is flag-only too.
+Not judged: 一日 after a numeral (十一日, 二十一日, 31日: another number), the lexemes 一日千秋 and 一日の長
+(recorded as absorbed), and every field no table reads. What it does not inspect is printed by every run
+(the 一日 complement), with how each occurrence's sense was decided.
+
 CALIBRATION BEFORE TRUST (`--calibrate`). It drives this file's documented entry point as a
 subprocess, never its functions, on four trees:
   (a) the pre-v1.35 tree `281fc45` (git show into a temp dir): n5-g022 is flagged, a mismatch,
@@ -292,6 +315,12 @@ subprocess, never its functions, on four trees:
       Only the release release_numbers measures gets (m2)'s tie to withheldThisRelease; the other says why not;
   (n) the v1.37 rows (above);
   (n1) their pool membership (above);
+  (o) the 一日 row: on the working tree it flags the five sentences of v1.37's round-1 review, each a
+      mismatch in both fields with exKana lined up, and in the dictation pool; it inspects and passes the
+      date n5-b303 四月一日 ついたち and the duration n5-b018 一日 いちにち, each in its sentence and its
+      headword; and the same five are flagged on fdb2b5f, the corpus 1.35 shipped (older than v1.37).
+      Anything else it flags is listed, not failed;
+  (c4) the 一日 row's own scan reads ≥ 6,000 sentences and headwords and every passage, n5-only below;
   (h) a PLANTED tree: the working tree's corpus copied, with one known-wrong occurrence per table
       planted in the example sentences of every n-file, and one headword and one passage for each
       table that reads them, all under ids no entry uses (`plant-…`). Every plant must be flagged
@@ -323,6 +352,11 @@ on it, so a field skipped before the judge is not counted. A judge that returns 
 counted — the count cannot see inside it, which is why (h) exists. The counter and 何 tables read
 the same fields, so their two populations are always equal: which one a caller reads cannot be
 told apart, and is not checked.
+
+The 一日 row's logic checks (ICHINICHI_LOGIC_CHECKS) take each sense both ways, the text's two cues,
+the two flag-only readings, the ambiguous cases, split tokens, digits, the never-inspected forms and a
+regression in each field alone; and (h) plants a 一日 taught ついたち with English 'a day' in every n-file,
+a headword and a passage.
 
 IT IS A SWEEP, NOT A GATE. `run_all_gates.sh` and CI do not run it (checked 2026-10-07: neither
 names it, and it is not a `scripts/test_*.py`, the glob the runner turns into gates). Keep it that
@@ -601,6 +635,19 @@ KNOWN_V137_CORRECTED = (
     ("n4-b186", "一晩", "ひとばん"), ("n2-b034", "一晩中", "ひとばんじゅう"),
 )
 KNOWN_V137_CORRECTED_LEXICALISED = (("n4-b186", "一晩", "ひとばん"), ("n2-b034", "一晩中", "ひとばんじゅう"))
+# (o) the 一日 row: the five pool sentences v1.37's round-1 review found (corpus-1), as the review read them —
+# (id, compound, verdict, taught), each the same verdict in both fields — and what the row must pass, (id,
+# field, compound, sense, verdict, taught): the date n5-b303 and the duration n5-b018, sentence and headword.
+KNOWN_ICHINICHI_HITS = (
+    ("n1-b678", "一日", "mismatch", "ついたち"), ("n2-g300", "一日", "mismatch", "ついたち"),
+    ("n2-b029", "一日", "mismatch", "ついたち"), ("n2-b1064", "一日", "mismatch", "ついたち"),
+    ("n4-b151", "一日", "mismatch", "ついたち"),
+)
+KNOWN_ICHINICHI_PASSES = (
+    ("n5-b303", "exJP", "一日", "date", "ok", "ついたち"), ("n5-b303", "surface", "一日", "date", "ok", "ついたち"),
+    ("n5-b018", "exJP", "一日", "duration", "ok", "いちにち"),
+    ("n5-b018", "surface", "一日", "duration", "ok", "いちにち"),
+)
 CORPUS_FILES = ("n1.json", "n2.json", "n3.json", "n4.json", "n5.json", "passages.json")
 # Each release whose corrections (m0)–(m2) pin, oldest first. A release's row stays when the next
 # release moves MANIFEST / REMEASURE and release_numbers on.
@@ -1135,11 +1182,113 @@ def print_complement(comp):
           + (", ".join(f"{k} ×{v['count']} ({' '.join(v['sample'])})" for k, v in rest.items()) or "none"))
 
 
-def below_floor(lexicalised, interrogative, counters):
+# ── the 一日 row (v1.37 round 1, corpus-1): 一日 judged by its sense, read from exEN ──────────────
+ICHINICHI_RE = re.compile("[一1１]日")
+DATE_EN = re.compile(r"\b1st\b|\bfirst (?:day )?of (?:the |a |every |each |this |next |last )?month\b|"
+                     r"\b(?:January|February|March|April|May|June|July|August|September|October|November|"
+                     r"December) (?:1|first)\b", re.IGNORECASE)
+DURATION_EN = re.compile(r"\b(?:a|one|per|each|every|the|that|this|whole|entire|full|all|single)\s+"
+                         r"(?:(?:whole|entire|full|single|long)\s+)?day\b|\bdaily\b|\bday-long\b",
+                         re.IGNORECASE)
+ICHINICHI_READINGS = {"date": "ついたち", "duration": "いちにち"}
+ICHINICHI_OTHER_SENSE = {"いちじつ": "literary 'one day' (一日の長), or the formal date reading",
+                         "わたぬき": "the surname 四月一日 / 四月朔日"}
+ICHINICHI_ABSORBERS = ("一日千秋", "一日の長")
+ICHINICHI_ALL_DAY = "いちにちじゅう"   # 一日中 'all day'
+
+
+def day_sense(text, start, end, english):
+    """Which 一日 this is, and why: 'date', 'duration', 'all-day' (一日中), 'ambiguous' or 'unknown'."""
+    if text[end:end + 1] == "中":
+        return "all-day", "the text says all day (一日中)"
+    if text[:start].endswith("月"):
+        return "date", "the text says a date (月 just before)"
+    if not english:
+        return "unknown", "no English to read the sense from"
+    date, duration = bool(DATE_EN.search(english)), bool(DURATION_EN.search(english))
+    if date and duration:
+        return "ambiguous", "the English names a first of the month and a day as a length both"
+    if date:
+        return "date", "the English names the first of a month"
+    if duration:
+        return "duration", "the English names a day as a length"
+    return "ambiguous", "the English names neither a first of the month nor a day as a length"
+
+
+def judge_ichinichi_field(text, reading, tokens, english=None):
+    """One record per 一日 in `text` (not after a numeral): what the corpus teaches for it, and the
+    verdict for its sense. `english` (exEN, or the meanings) decides the sense."""
+    records = []
+    lexemes = [(m.start(), m.end(), a) for a in ICHINICHI_ABSORBERS for m in re.finditer(re.escape(a), text)]
+    for m in ICHINICHI_RE.finditer(text):
+        start, end = m.span()
+        if start and text[start - 1] in NUMERALS:
+            continue      # 十一日, 21日: another number (the complement counts them)
+        compound = m.group(0)
+        lexeme = next((a for lo, hi, a in lexemes if lo <= start and end <= hi), None)
+        if lexeme:
+            records.append({"compound": compound, "verdict": "absorbed",
+                            "by": f"{lexeme}: a lexeme with its own reading"})
+            continue
+        what, why = day_sense(text, start, end, english)
+        flag, fallback = dict(ICHINICHI_OTHER_SENSE), None
+        if what == "all-day":
+            compound, end, expected = text[start:end + 1], end + 1, [ICHINICHI_ALL_DAY]
+        elif what in ("date", "duration"):
+            expected = [ICHINICHI_READINGS[what]]
+        else:
+            expected = []
+            flag.update({r: f"'{sense}' ({why})" for sense, r in ICHINICHI_READINGS.items()})
+        records.append({"compound": compound, "expected": expected, "sense": what, "senseFrom": why,
+                        **judge_occurrence(text, reading, tokens, start, end, expected, flag, fallback)})
+    return records
+
+
+def scan_ichinichi(resources=RESOURCES):
+    """The same fields as the counter table, judged by the 一日 row."""
+    return sweep(resources, judge_ichinichi_field)
+
+
+def ichinichi_complement(resources):
+    """What the 一日 row does not inspect, and how it decided what it did: 一日 after a numeral, in a field
+    no table reads (exJP with no exKana), inside a lexeme; and each judged occurrence's sense, by cue.
+    Counts with ids; it judges nothing."""
+    out = {"afterANumeral": [], "unreadField": [], "absorbed": [], "senses": {}}
+    for path in sorted(glob.glob(f"{resources}/n[1-5].json")):
+        for entry in json.load(open(path, encoding="utf-8")):
+            jp = entry.get("exJP")
+            if jp and not entry.get("exKana"):
+                out["unreadField"] += [f"{entry['id']} {m.group(0)}" for m in ICHINICHI_RE.finditer(jp)]
+    for path, entry_id, field, text, reading, tokens, english in fields_of(resources):
+        for m in ICHINICHI_RE.finditer(text):
+            if m.start() and text[m.start() - 1] in NUMERALS:
+                out["afterANumeral"].append(f"{entry_id} {field} {text[max(0, m.start() - 2):m.end()]}")
+        for r in judge_ichinichi_field(text, reading, tokens, english):
+            if r["verdict"] == "absorbed":
+                out["absorbed"].append(f"{entry_id} {field} {r['by']}")
+            else:
+                key = f"{r['sense']}: {r['senseFrom']}"
+                out["senses"].setdefault(key, []).append(f"{entry_id} {field} {r['verdict']}")
+    return out
+
+
+def print_ichinichi_complement(comp):
+    print("\n── complement: what the 一日 row does not inspect, and how it read each sense ──")
+    print(f"  after a numeral (another number, not judged): {', '.join(comp['afterANumeral']) or 'none'}")
+    print(f"  exJP with no exKana (no table reads it): {', '.join(comp['unreadField']) or 'none'}")
+    print(f"  inside a lexeme (absorbed): {', '.join(comp['absorbed']) or 'none'}")
+    for key, where in sorted(comp["senses"].items()):
+        print(f"  {key} — {len(where)}: {', '.join(where)}")
+    print("  never seen: 朔日, a 一日 written in kana in exJP, and every other day count (二日 … are the "
+          "lexicalised table's)")
+
+
+def below_floor(lexicalised, interrogative, counters, ichinichi=None):
     """Each table population under MIN_POPULATION, named. Every table is held to the floor on its
     own scan: one table having read the corpus says nothing about another (PLAN-V1.36 §I)."""
     short = [f"lexicalised {lexicalised}"] if lexicalised < MIN_POPULATION else []
-    for name, population in (("interrogative", interrogative), ("counters", counters)):
+    tables = (("interrogative", interrogative), ("counters", counters))
+    for name, population in tables + ((("ichinichi", ichinichi),) if ichinichi is not None else ()):
         short += [f"{name} {field} {population[field]}" for field in ("exJP", "surface")
                   if population[field] < MIN_POPULATION]
     return short
@@ -1416,6 +1565,67 @@ COUNTER_LOGIC_CHECKS = (
      "", None, []),
 )
 
+ICHINICHI_LOGIC_CHECKS = (
+    # (what it proves, text, reading, tokens, English or None, expected (compound, sense, verdict,
+    #  verdictTokens, verdictKana) in order). v1.37 round 1.
+    ("a duration by its English: いちにち ok, ついたち a mismatch (n1-b678's shape)", "一日かかった、一日かかった",
+     "いちにちかかったついたちかかった",
+     [["一日", "いちにち"], ["かかっ", "かかっ"], ["た", "た"], ["、", "、"], ["一日", "ついたち"], ["かかっ", "かかっ"], ["た", "た"]],
+     "It took a whole day.",
+     [("一日", "duration", "ok", "ok", "ok"), ("一日", "duration", "mismatch", "mismatch", "mismatch")]),
+    ("'a day', 'per day', 'all day', 'daily' and 'for the day' all name a duration",
+     "一日", "いちにち", [["一日", "いちにち"]], "Twice a day, per day, all day, daily, for the day.",
+     [("一日", "duration", "ok", "ok", "ok")]),
+    ("a date by the text (月 just before): 四月一日 ついたち ok, いちにち a mismatch, whatever the English says",
+     "四月一日と四月一日", "しがつついたちとしがついちにち",
+     [["四", "し"], ["月", "がつ"], ["一日", "ついたち"], ["と", "と"], ["四", "し"], ["月", "がつ"], ["一日", "いちにち"]],
+     "It takes a day.",
+     [("一日", "date", "ok", "ok", "ok"), ("一日", "date", "mismatch", "mismatch", "mismatch")]),
+    ("a date by the English ('the 1st', 'the first of the month'): ついたち ok, いちにち a mismatch",
+     "一日に、一日に", "ついたちにいちにちに",
+     [["一日", "ついたち"], ["に", "に"], ["、", "、"], ["一日", "いちにち"], ["に", "に"]],
+     "Rent is due on the 1st, the first of the month.",
+     [("一日", "date", "ok", "ok", "ok"), ("一日", "date", "mismatch", "mismatch", "mismatch")]),
+    ("English naming both a first of the month and a day: ついたち and いちにち flag-only",
+     "一日と一日", "ついたちといちにち", [["一日", "ついたち"], ["と", "と"], ["一日", "いちにち"]],
+     "From the 1st, one day at a time.",
+     [("一日", "ambiguous", "flag-only", "flag-only", "flag-only"),
+      ("一日", "ambiguous", "flag-only", "flag-only", "flag-only")]),
+    ("English naming neither: ついたち and いちにち flag-only ('the first day' is neither)",
+     "一日と一日", "ついたちといちにち", [["一日", "ついたち"], ["と", "と"], ["一日", "いちにち"]],
+     "It was the first day of school.",
+     [("一日", "ambiguous", "flag-only", "flag-only", "flag-only"),
+      ("一日", "ambiguous", "flag-only", "flag-only", "flag-only")]),
+    ("no English: ついたち and いちにち flag-only, a reading wrong in every sense (いちび) a mismatch",
+     "一日と一日と一日", "ついたちといちにちといちび",
+     [["一日", "ついたち"], ["と", "と"], ["一日", "いちにち"], ["と", "と"], ["一日", "いちび"]], None,
+     [("一日", "unknown", "flag-only", "flag-only", "flag-only"), ("一日", "unknown", "flag-only", "flag-only", "flag-only"),
+      ("一日", "unknown", "mismatch", "mismatch", "mismatch")]),
+    ("いちじつ is flag-only in a duration and in a date", "一日の、四月一日", "いちじつのしがついちじつ",
+     [["一日", "いちじつ"], ["の", "の"], ["、", "、"], ["四", "し"], ["月", "がつ"], ["一日", "いちじつ"]], "a day's start",
+     [("一日", "duration", "flag-only", "flag-only", "flag-only"), ("一日", "date", "flag-only", "flag-only", "flag-only")]),
+    ("一日中 is judged whole: いちにちじゅう ok, いちにちちゅう a mismatch (n3-g327's shape, tokens 一日 + 中)",
+     "一日中、一日中", "いちにちじゅういちにちちゅう",
+     [["一日", "いちにち"], ["中", "じゅう"], ["、", "、"], ["一日", "いちにち"], ["中", "ちゅう"]], "all day",
+     [("一日中", "all-day", "ok", "ok", "ok"), ("一日中", "all-day", "mismatch", "mismatch", "mismatch")]),
+    ("split tokens 一 + 日 are read whole (n5-b018's shape)", "一日は", "いちにちは",
+     [["一", "いち"], ["日", "にち"], ["は", "は"]], "One day has 24 hours.", [("一日", "duration", "ok", "ok", "ok")]),
+    ("digits: 4月1日 ついたち is a date; １日 いちにち a duration", "4月1日、１日", "しがつついたちいちにち",
+     [["4", "し"], ["月", "がつ"], ["1日", "ついたち"], ["、", "、"], ["１日", "いちにち"]], "in one day",
+     [("1日", "date", "ok", "ok", "ok"), ("１日", "duration", "ok", "ok", "ok")]),
+    ("a regression in exKana alone is a mismatch: tokens いちにち, exKana ついたち", "一日かかる", "ついたちかかる",
+     [["一日", "いちにち"], ["かかる", "かかる"]], "It takes a day.", [("一日", "duration", "mismatch", "ok", "mismatch")]),
+    ("a regression in the tokens alone is a mismatch: tokens ついたち, exKana いちにち", "一日かかる", "いちにちかかる",
+     [["一日", "ついたち"], ["かかる", "かかる"]], "It takes a day.", [("一日", "duration", "mismatch", "mismatch", "ok")]),
+    ("the surname 四月一日 わたぬき is flag-only", "四月一日さん", "わたぬきさん", [["四月一日", "わたぬき"], ["さん", "さん"]],
+     None, [("一日", "date", "flag-only", "flag-only", "flag-only")]),
+    ("a field with no tokens is judged on its reading: 一日 ついたち with English 'a whole day' is a mismatch",
+     "一日", "ついたち", None, "a whole day", [("一日", "duration", "mismatch", None, "mismatch")]),
+    ("never inspected: 十一日, 二十一日, 三十一日, 21日, 毎日, 一昨日; 一日千秋 and 一日の長 are absorbed",
+     "十一日、二十一日、三十一日、21日、毎日、一昨日、一日千秋、一日の長", "", None, None,
+     [("一日", None, "absorbed", None, None), ("一日", None, "absorbed", None, None)]),
+)
+
 # Every row of the sound-changing table, written out by hand: (compound, its standard reading(s),
 # the reading without the sound change — "" where that reading is tolerated, or (点 6 and 8, 等 8, v1.37)
 # accepted, and checked above).
@@ -1500,17 +1710,23 @@ PLANTED_SENTENCES = (
     ("counters", "n4", [["一", "いち"], ["等", "とう"], ["です", "です"], ["。", "。"]]),
     ("counters", "n5", [["二十", "にじゅう"], ["センチ", "せんち"], ["です", "です"], ["。", "。"]]),
     ("lexicalised", "n4", [["一", "いち"], ["晩", "ばん"], ["泊まり", "とまり"], ["ます", "ます"], ["。", "。"]]),
+    # v1.37 round 1: a 一日 taught ついたち with English naming a day as a length, in every n-file. Without
+    # the English its sense is undecided and it is no mismatch, so the plant also proves exEN reaches it.
+    *(("ichinichi", lvl, [["一日", "ついたち"], ["かかり", "かかり"], ["ます", "ます"], ["。", "。"]], "It takes a day.")
+      for lvl in ("n1", "n2", "n3", "n4", "n5")),
 )
 # (table, level, surface, kana[, English meaning]); (table, display, kana[, English]). The 分 plants'
 # English is what proves a headword's meanings and a passage's meanings reach 分's sense.
 PLANTED_HEADWORDS = (("interrogative", "n1", "何回", "なにかい"), ("counters", "n1", "九時", "きゅうじ"),
                      ("counters", "n2", "三分", "さんふん", "three minutes"),
-                     ("counters", "n3", "十ページ", "じゅうぺーじ"))   # v1.37
+                     ("counters", "n3", "十ページ", "じゅうぺーじ"),   # v1.37
+                     ("ichinichi", "n4", "一日", "ついたち", "a whole day"))   # v1.37 round 1
 PLANTED_PASSAGES = (("interrogative", "何歳ですか。", "なにさいですか"),
                     ("counters", "七月に行きます。", "なながつにいきます"),
                     ("counters", "駅から十分歩きました。", "えきからじゅうぶんあるきました",
                      "I walked ten minutes from the station."),
-                    ("counters", "一週間休みました。", "いちしゅうかんやすみました"))   # v1.37
+                    ("counters", "一週間休みました。", "いちしゅうかんやすみました"),   # v1.37
+                    ("ichinichi", "一日かかりました。", "ついたちかかりました", "It took a day."))   # v1.37 round 1
 PLANT_FILLER = {"surface": "テスト", "kana": "てすと"}   # a sentence plant's own headword: no counter
 
 
@@ -1519,7 +1735,7 @@ def plant_tree(dest):
     {table: {(id, field)}}, the plants each table must flag, or raises when an id is taken."""
     for name in CORPUS_FILES:
         shutil.copy(os.path.join(RESOURCES, name), dest)
-    want = {"lexicalised": set(), "interrogative": set(), "counters": set()}
+    want = {"lexicalised": set(), "interrogative": set(), "counters": set(), "ichinichi": set()}
     for level in ("n1", "n2", "n3", "n4", "n5"):
         path = os.path.join(dest, f"{level}.json")
         with open(path, encoding="utf-8") as f:
@@ -1738,7 +1954,8 @@ def calibrate():
           f"working tree {pop}, n5-only {small_pop}")
     with open(os.path.join(RESOURCES, "passages.json"), encoding="utf-8") as f:
         passages = len(json.load(f))
-    for label, key in (("(c2) 何 table", "interrogative"), ("(c3) counter table", "counters")):
+    for label, key in (("(c2) 何 table", "interrogative"), ("(c3) counter table", "counters"),
+                       ("(c4) 一日 row", "ichinichi")):
         head_p, small_p = head_run[key]["population"], small_run[key]["population"]
         check(f"{label}: its own scan reads ≥ {MIN_POPULATION} sentences and headwords and all "
               f"{passages} passages; n5-only below",
@@ -1852,6 +2069,31 @@ def calibrate():
           f"in the pool: {sorted(i for i, p in pool.items() if p is True)}; withheld: "
           f"{sorted(i for i, p in pool.items() if p is False)}; unread: {sorted(ids - set(pool)) or 'none'}")
 
+    # (o) the 一日 row (v1.37 round 1, corpus-1): the five on the working tree and on the corpus 1.35 shipped,
+    # the same shape as (n); in the pool on the working tree, as the review states; and its passes.
+    want = {(i, "exJP", c, v, v, v, t, True) for i, c, v, t in KNOWN_ICHINICHI_HITS}
+    for ref, run, what in (("the working tree", head_run, "as the round-1 review read it"),
+                           (SHIPPED_REF, shipped_run, "the corpus 1.35 shipped")):
+        got = {(h["id"], h["field"], h["compound"], h["verdict"], h["verdictTokens"], h["verdictKana"],
+                h["taught"], h.get("kanaAlignment") == h["alignment"])
+               for h in run["ichinichi"]["hits"]}
+        others = sorted(f"{h[0]} {h[1]} {h[2]} {h[3]} {h[6]}" for h in got - want)
+        check(f"(o) {ref} ({what}): the 一日 row flags the {len(want)} known duration sentences taught ついたち, "
+              f"each a mismatch in both exTokens and exKana, exKana lined up with the tokens",
+              want <= got,
+              f"missing: {sorted(f'{w[0]} {w[6]}' for w in want - got) or 'none'}; also flagged: {others or 'none'}")
+    pool = sorted((h["id"], h["inDictationPool"], bool(h.get("english"))) for h in head_run["ichinichi"]["hits"]
+                  if h["id"] in {i for i, *_ in KNOWN_ICHINICHI_HITS})
+    check("(o) the working tree: the five carry their English and are in the dictation pool, as the review states",
+          pool == sorted((i, True, True) for i, *_ in KNOWN_ICHINICHI_HITS), f"hits: {pool}")
+    ids = {k[0] for k in KNOWN_ICHINICHI_PASSES}
+    seen = sorted((r["id"], r["field"], r["compound"], r.get("sense"), r["verdict"], r.get("taught"))
+                  for r in head_run["ichinichi"]["inspected"] if r["id"] in ids)
+    flagged = sorted(f"{h['id']} {h['field']}" for h in head_run["ichinichi"]["hits"] if h["id"] in ids)
+    check("(o) the working tree inspects and passes the date n5-b303 四月一日 ついたち and the duration n5-b018 "
+          "一日 いちにち, each in its sentence and its headword",
+          seen == sorted(KNOWN_ICHINICHI_PASSES) and not flagged, f"inspected: {seen}; hits: {flagged or 'none'}")
+
     # (m0)–(m2), once per release whose corrections this file pins: v1.36's (§I addendum 2) and
     # v1.37's. A release's checks are kept when the next one moves on, so v1.36's corrections stay
     # held after v1.37 changes the corpus; only (m2)'s tie to release_numbers moves with the release
@@ -1864,7 +2106,8 @@ def calibrate():
     # counts misses a plant here, whatever its population says.
     for table, hits in (("lexicalised", planted_run["hits"]),
                         ("interrogative", planted_run["interrogative"]["hits"]),
-                        ("counters", planted_run["counters"]["hits"])):
+                        ("counters", planted_run["counters"]["hits"]),
+                        ("ichinichi", planted_run["ichinichi"]["hits"])):
         mine = {(h["id"], h["field"]) for h in hits if h["id"].startswith(PLANT_PREFIX)}
         bad = sorted(f"{h['id']} {h['field']} {h.get('verdict')} tokens {h.get('verdictTokens')} "
                      f"exKana {h.get('verdictKana')}" for h in hits
@@ -1905,6 +2148,13 @@ def calibrate():
     for what, lexicalised, interrogative, counters, want in FLOOR_CHECKS:
         got = below_floor(lexicalised, interrogative, counters)
         check(f"logic: {what}", got == want, f"{got}")
+    got = below_floor(6724, {"exJP": 6724, "surface": 7071}, {"exJP": 6724, "surface": 7071},
+                      {"exJP": 6724, "surface": 9})
+    check("logic: the exit-2 floor names a short 一日 table", got == ["ichinichi surface 9"], f"{got}")
+    for what, text, reading, tokens, english, want in ICHINICHI_LOGIC_CHECKS:
+        got = [(r["compound"], r.get("sense"), r["verdict"], r.get("verdictTokens"), r.get("verdictKana"))
+               for r in judge_ichinichi_field(text, reading, tokens, english)]
+        check(f"logic (一日): {what}", got == want, f"{text}: {got}")
     made, skipped = m2_label("vX", "abc1234", None), m2_label("vX", "abc1234", "release_numbers measures vY")
     check("logic: (m2)'s label names the tie to withheldThisRelease when it is made, and says it is not "
           "when release_numbers measures another release",
@@ -1950,7 +2200,8 @@ def print_table(title, population, enumerated, inspected, hits):
             pool = {True: "IN the dictation pool", False: "not in the dictation pool",
                     None: "dictation pool unknown (no dictation-exclusions.json in this tree)"}
             print(f"      {h.get('english') or '(no English)'} — {pool[h.get('inDictationPool')]}"
-                  + (f"; 分 read as {h['sense']} ({h['senseFrom']})" if h.get("sense") else ""))
+                  + (f"; {'分' if h.get('counter') == '分' else h['compound']} read as {h['sense']} "
+                     f"({h['senseFrom']})" if h.get("sense") else ""))
 
 
 def main():
@@ -1997,6 +2248,14 @@ def main():
     comp = complement(args.resources)
     print_complement(comp)
 
+    d_population, d_inspected, d_hits = scan_ichinichi(args.resources)
+    print_table("一日 by its sense (v1.37 round 1): date ついたち, duration いちにち, 一日中 いちにちじゅう; "
+                "ambiguous flag-only", d_population, inspected=d_inspected, hits=d_hits,
+                enumerated=f"一日 (and 1日) not after a numeral; {len(ICHINICHI_ABSORBERS)} absorbers, "
+                           f"{len(ICHINICHI_OTHER_SENSE)} readings flag-only in every sense")
+    d_comp = ichinichi_complement(args.resources)
+    print_ichinichi_complement(d_comp)
+
     if args.json:
         out = {"population": checked, "enumerated": len(LEXICALISED),
                "absorbers": list(ABSORBERS), "hits": hits,
@@ -2016,7 +2275,12 @@ def main():
                             "absorbers": list(COUNTER_ABSORBERS),
                             "notTheCounter": {c: list(f) for c, f in NOT_THE_COUNTER.items()},
                             "minuteSense": {"minutes": MINUTES_EN.pattern, "enough": ENOUGH_EN.pattern},
-                            "inspected": c_inspected, "hits": c_hits, "complement": comp}}
+                            "inspected": c_inspected, "hits": c_hits, "complement": comp},
+               "ichinichi": {"population": d_population,
+                             "senses": {"date": DATE_EN.pattern, "duration": DURATION_EN.pattern},
+                             "readings": ICHINICHI_READINGS, "allDay": ICHINICHI_ALL_DAY,
+                             "otherSense": ICHINICHI_OTHER_SENSE, "absorbers": list(ICHINICHI_ABSORBERS),
+                             "inspected": d_inspected, "hits": d_hits, "complement": d_comp}}
         if calibration is not None:
             out["calibration"] = calibration
         if os.path.abspath(args.resources) == RESOURCES:
@@ -2031,7 +2295,7 @@ def main():
             f.write("\n")
         print(f"\nwrote {args.json}")
     # A scan that inspected nothing must not report clean — and each table answers for itself.
-    short = below_floor(checked, population, c_population)
+    short = below_floor(checked, population, c_population, d_population)
     if short:
         print(f"\n!! below the {MIN_POPULATION} floor: {', '.join(short)} — "
               f"this scan is reading almost nothing")
