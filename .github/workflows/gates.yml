@@ -92,8 +92,9 @@ jobs:
       # On a push it is the newest commit whose gates run SUCCEEDED, not the push's "before":
       # `cancel-in-progress` above cancels push 1's run when push 2 lands, and comparing push 2
       # against push 1's head left push 1's corpus change checked by nothing (v1.36 §H; it
-      # happened on 2026-10-26, harmlessly). When the API cannot say, the step falls back to the
-      # push's "before" with a warning annotation. The rules and their fixtures are in
+      # happened on 2026-10-26, harmlessly). A success older than release_numbers.BASELINE_REF is
+      # clamped to it, and when the API cannot say the step falls back to BASELINE_REF (the whole
+      # release window), each with a warning annotation. The rules and their fixtures are in
       # scripts/ci_vocab_base.py and scripts/test_ci_vocab_base.py; values reach the script
       # through env, never interpolated into the shell.
       - name: Resolve the vocabulary comparison base
