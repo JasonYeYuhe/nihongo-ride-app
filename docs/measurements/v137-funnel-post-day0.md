@@ -296,3 +296,26 @@ Kept outside the repo, in `~/Library/Caches/NihongoRide-v137-work/evidence-p0-4-
 (`funnel-as-briefed.txt` md5 `a59a560795348b0e9c6665c4c46ea821`; `funnel-until.txt` md5
 `a3162837ea51cf08d528a5e784bac2ad`), the deduplicated aggregate (`funnel-dedup-2026-09-20..10-25.txt`
 md5 `c1546f6098c8eed924038b7b51d49b4f`), and the census runs.
+
+---
+
+## 2026-10-28 (JST): the script is fixed, and re-calibrated on the ONGOING request
+
+* **Double counting.** `scripts/acquisition_funnel.py` now reads each date from one instance, the one Apple
+  processed last (`latest_per_date`). Restated rows were identical (§1.2), so the choice changes no count.
+* **`--until`.** No default end any more: the window runs to the last date both reports cover. `--since` after
+  `--until` is refused. A window outside both reports' files prints `EMPTY WINDOW` and exits 4. A window that runs
+  past either report's files prints `PARTIAL` with the covered span.
+* **The two reports need not start together.** On 2026-10-28 Apple served 35 download instances, the earliest
+  processed 2026-09-23 and carrying 09-21..09-22. The instance that held 09-20's 4 downloads, read on 10-27, is
+  gone. Engagement files still reach 09-20. So "since 09-20" is no longer obtainable for downloads either.
+* **Calibration, live GET 2026-10-28** (`--since 2026-09-21 --until 2026-10-25`): **90** first-time downloads,
+  against `sales_report.py`'s census of 94 for 09-20..10-25 minus 09-20's 4 (`census_daily.txt`,
+  `~/Library/Caches/NihongoRide-v137-work/evidence-p0-4-p0-7/`): 90 = 90. Impressions 7,189, page views 280.
+  Over 09-20..10-25 the script prints `PARTIAL` and the same 90 downloads, with 7,346 impressions against
+  §2's 7,345 read on 10-27: one impression restated.
+* **Test:** `scripts/test_acquisition_funnel.py` (run by `run_all_gates.sh`). Six reverts each turned it red:
+  summing every instance, the fixed `--until`, no `EMPTY WINDOW` guard, no tie-break, merged coverage across
+  the two reports, and no `PARTIAL` line.
+
+The figures in §3–§4 above were read with the corrected method and stand.

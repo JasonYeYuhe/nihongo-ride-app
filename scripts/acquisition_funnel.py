@@ -37,6 +37,16 @@ search results, never opening the product page. So page-view-to-download can and
 does exceed 100% (Australia: 4 downloads, 3 page views) and must never be quoted
 as a conversion rate. The honest denominator is impressions.
 
+AN ONGOING REQUEST REPEATS DATES ACROSS INSTANCES
+-------------------------------------------------
+The calibration above was measured on the ONE_TIME_SNAPSHOT request. On the
+ONGOING request (c57c770b-…) each DAILY instance carries more than one date: a
+download instance the last 2, an engagement instance the last 3. Summing every
+instance counted each download twice (184 against a census of 94 over
+2026-09-20..10-25; docs/measurements/v137-funnel-post-day0.md §1.2). So each date
+is now read from ONE instance, the one Apple processed last (`latest_per_date`).
+With that rule the same window gives 94 = 94 against `sales_report.py`.
+
 Usage:  python3 scripts/acquisition_funnel.py [--json PATH] [--since D] [--until D]
 """
 import argparse, csv, gzip, io, json, os, sys, time, urllib.request
@@ -70,8 +80,24 @@ def get(url, tok, auth=True):
         return r.read()
 
 
+def latest_per_date(instances):
+    """Each date's rows from exactly one instance: the one with the latest processingDate.
+
+    `instances` is a list of (processingDate, instance id, rows). A date that two instances
+    both carry is counted once, from the later one (Apple's restatement, if it ever differs);
+    the id only breaks a tie so the choice does not depend on the order Apple lists them in.
+    """
+    best = {}
+    for processed, iid, rows in instances:
+        for date in {r["Date"] for r in rows}:
+            if date not in best or (processed, iid) > best[date]:
+                best[date] = (processed, iid)
+    return [r for processed, iid, rows in instances
+            for r in rows if best[r["Date"]] == (processed, iid)]
+
+
 def report_rows(tok, name, granularity="DAILY"):
-    """Every row of one named report at one granularity, as dicts."""
+    """Every row of one named report at one granularity, as dicts, each date once."""
     reports = json.loads(get(
         f"/v1/analyticsReportRequests/{REPORT_REQUEST}/reports"
         f"?limit=200&fields[analyticsReports]=name", tok))["data"]
@@ -83,8 +109,9 @@ def report_rows(tok, name, granularity="DAILY"):
     chosen = [i for i in instances if i["attributes"]["granularity"] == granularity]
     if not chosen:
         return None      # "no instance" is a different fact from "no rows"
-    rows = []
+    per_instance = []
     for inst in chosen:
+        rows = []
         segs = json.loads(get(f"/v1/analyticsReportInstances/{inst['id']}/segments?limit=50", tok))["data"]
         for seg in segs:
             blob = get(seg["attributes"]["url"], tok, auth=False)
@@ -93,15 +120,19 @@ def report_rows(tok, name, granularity="DAILY"):
             except Exception:
                 text = blob.decode("utf-8", errors="replace")
             rows += list(csv.DictReader(io.StringIO(text), delimiter="\t"))
-    return rows
+        per_instance.append((inst["attributes"].get("processingDate") or "", inst["id"], rows))
+    return latest_per_date(per_instance)
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--since", default="2026-06-06")
-    ap.add_argument("--until", default="2026-08-24")
+    # No default end. A fixed one (it was 2026-08-24) silently emptied every later window.
+    ap.add_argument("--until", default=None)
     ap.add_argument("--json")
     args = ap.parse_args()
+    if args.until is not None and args.since > args.until:
+        ap.error(f"--since {args.since} is after --until {args.until}")
     tok = token()
 
     eng = report_rows(tok, "App Store Discovery and Engagement Standard")
@@ -111,8 +142,24 @@ def main():
               "the same as a report of zero — do not read it as zero traffic.")
         return 3
 
+    # Apple keeps a rolling set of instances, and the two reports do not start on the same date
+    # (on 2026-10-28 engagement still reached 09-20 while downloads began 09-21). A window is read
+    # only where BOTH reports have files; outside that, a zero is a missing file, not a reading.
+    span = lambda rows: (min(r["Date"] for r in rows), max(r["Date"] for r in rows)) if rows else None
+    cov_eng, cov_dl = span(eng), span(dl)
+    lo = max(cov_eng[0], cov_dl[0]) if cov_eng and cov_dl else None
+    hi = min(cov_eng[1], cov_dl[1]) if cov_eng and cov_dl else None
+    until = args.until or hi or args.since
+    covers = (f"engagement {' .. '.join(cov_eng) if cov_eng else 'none'} · "
+              f"downloads {' .. '.join(cov_dl) if cov_dl else 'none'}")
+    if lo is None or lo > hi or until < lo or args.since > hi:
+        print(f"EMPTY WINDOW: {args.since} .. {until} lies outside the dates both of Apple's reports "
+              f"cover ({covers}). That is NOT a reading of zero.")
+        return 4
+    partial = args.since < lo or until > hi
+
     def inwin(rows):
-        return [r for r in rows if args.since <= r["Date"] <= args.until]
+        return [r for r in rows if args.since <= r["Date"] <= until]
 
     eng, dl = inwin(eng), inwin(dl)
     first = [r for r in dl if r["Download Type"] == "First-time download"]
@@ -134,7 +181,10 @@ def main():
     impressions, pageviews, downloads = tot["Impression"], tot["Page view"], tot["Download"]
     nopage = tot["page:No page"]
 
-    print(f"window {args.since} .. {args.until}")
+    print(f"window {args.since} .. {until}   (Apple's files: {covers})")
+    if partial:
+        print(f"  PARTIAL: only {max(args.since, lo)} .. {min(until, hi)} is covered by both reports; "
+              f"the rest of the window is missing files, not zeros")
     print(f"  impressions {impressions} · page views {pageviews} · taps {tot['Tap']} · "
           f"first-time downloads {downloads}")
     # Guarded: a window with no impressions or no downloads is a legitimate query (a new app,
@@ -153,7 +203,7 @@ def main():
         print(f"  {t:5}{i:8}{p:7}{dd:5}{(dd / i if i else 0):10.2%}")
 
     if args.json:
-        out = {"window": {"start": args.since, "end": args.until},
+        out = {"window": {"start": args.since, "end": until},
                "totals": {"impressions": impressions, "pageViews": pageviews,
                           "taps": tot["Tap"], "firstTimeDownloads": downloads,
                           "downloadsWithNoPageView": nopage},
