@@ -1,0 +1,301 @@
+{
+  "_what": "PLAN-V1.37 P0-10 dated GET baseline. App Store Connect read with GETs only (scripts/asc_api.sh GET). Nothing was written to ASC. Resource ids are truncated; no contact fields appear in these resources (privacyPolicyUrl, supportUrl and marketingUrl are the public site and are omitted here).",
+  "readUTC": "2026-10-28T01:04:44Z .. 2026-10-28T01:14:06Z",
+  "readJST": "2026-10-28 10:04 .. 10:14",
+  "app": {
+    "appleId": "6777469778",
+    "liveVersions": [
+      {
+        "platform": "MAC_OS",
+        "versionString": "1.36",
+        "appStoreState": "READY_FOR_SALE",
+        "id": "1c50ac06-…"
+      },
+      {
+        "platform": "IOS",
+        "versionString": "1.36",
+        "appStoreState": "READY_FOR_SALE",
+        "id": "de630bb8-…"
+      }
+    ],
+    "note": "76 appStoreVersions returned (meta.paging.total 76); 1.36 is the newest on each platform; no 1.37 version record exists yet."
+  },
+  "endpoints": [
+    "GET /v1/apps/6777469778/appStoreVersions?fields[appStoreVersions]=versionString,platform,appStoreState,appVersionState,createdDate&limit=200",
+    "GET /v1/apps/6777469778/appInfos?fields[appInfos]=appStoreState,state&limit=20",
+    "GET /v1/appInfos/1c49ede0-…/appInfoLocalizations?limit=50",
+    "GET /v1/appStoreVersions/1c50ac06-…/appStoreVersionLocalizations?limit=50   (macOS 1.36)",
+    "GET /v1/appStoreVersions/de630bb8-…/appStoreVersionLocalizations?limit=50   (iOS 1.36)",
+    "GET /v1/appStoreVersionLocalizations/<each of the 6>/appScreenshotSets?include=appScreenshots&fields[appScreenshots]=fileName,sourceFileChecksum&limit=50",
+    "GET /v1/appStoreVersionLocalizations/<each of the 6>/appPreviewSets?limit=50",
+    "GET /v2/inAppPurchases/6806755720?fields[inAppPurchases]=name,productId,inAppPurchaseType,state,familySharable",
+    "GET /v2/inAppPurchases/6806755720/inAppPurchaseLocalizations?limit=10",
+    "GET /v2/inAppPurchases/6806755720/promotedPurchase",
+    "GET /v1/apps/6777469778/inAppPurchasesV2?fields[inAppPurchases]=productId,state&limit=50"
+  ],
+  "appInfoLocalizations": [
+    {
+      "locale": "en-US",
+      "name": "Nihongo Ride",
+      "nameMeasured": {
+        "chars": 12,
+        "utf8Bytes": 12,
+        "sha256": "e51e70f06e8775629a12a9537997a2544eefe6188c28d70fc4474564c3ceb052"
+      },
+      "subtitle": "Type your way across Japan",
+      "subtitleMeasured": {
+        "chars": 26,
+        "utf8Bytes": 26,
+        "sha256": "3205fa9c3907eac4e0fd8f494086685abcbde6603aee58790adf2f1a3b0ee68d"
+      }
+    },
+    {
+      "locale": "zh-Hans",
+      "name": "Nihongo Ride",
+      "nameMeasured": {
+        "chars": 12,
+        "utf8Bytes": 12,
+        "sha256": "e51e70f06e8775629a12a9537997a2544eefe6188c28d70fc4474564c3ceb052"
+      },
+      "subtitle": "打字环游日本 边骑边学",
+      "subtitleMeasured": {
+        "chars": 11,
+        "utf8Bytes": 31,
+        "sha256": "b4ad92c89ec5b8335858f304a80946a538474dfc69ba63ce7db85feb7e1e9058"
+      }
+    },
+    {
+      "locale": "ja",
+      "name": "Nihongo Ride",
+      "nameMeasured": {
+        "chars": 12,
+        "utf8Bytes": 12,
+        "sha256": "e51e70f06e8775629a12a9537997a2544eefe6188c28d70fc4474564c3ceb052"
+      },
+      "subtitle": "日本語学習者のためのローマ字タイピング",
+      "subtitleMeasured": {
+        "chars": 19,
+        "utf8Bytes": 57,
+        "sha256": "d36435b97c3d9d95a25f49b11c3531260d0a0d50627589f64b5134d842b1eb8e"
+      }
+    }
+  ],
+  "appStoreVersionLocalizations": {
+    "MAC_OS_1.36": [
+      {
+        "locale": "en-US",
+        "keywords": "japanese,typing,kana,hiragana,katakana,JLPT,vocabulary,romaji,learn,study,N5,furigana",
+        "keywordsMeasured": {
+          "chars": 85,
+          "utf8Bytes": 85,
+          "sha256": "e13c797e641ac47909e2b902fd976d5b8f9df53d5ec85a512c3100536d38e8ab"
+        },
+        "promotionalText": null,
+        "description": "Nihongo Ride is a calm, focused typing-practice app that actually teaches you Japanese.\n\nMost typing games test speed. Nihongo Ride teaches — kana, vocabulary, and real sentences — while you ride your way across Japan, from Tokyo to Kyoto. Type the correct reading and you move forward. Miss a word and it comes back later, exactly when you need it.\n\nWHY IT'S DIFFERENT\n• A built-in mini-IME. Type romaji on your normal keyboard — no system IME, no setup. It accepts every valid spelling (shi or si, tsu or tu, n or nn) and matches your keystrokes to kana in real time.\n• Learn, don't just race. Every word shows its kana, an optional romaji hint, and its meaning in English and Chinese.\n• Smart review. Words you mistype flow into a spaced-repetition queue (SM-2), so your practice targets your real weak spots.\n\nTHREE WAYS TO RIDE\n• Journey — an immersive ride across Japan; type to keep moving and unlock famous stops.\n• Time Attack — 60 seconds, as many words as you can.\n• Practice — a quiet, distraction-free mode for word drills or long passages, with an optional BLIND challenge that hides all romaji hints.\n\nCONTENT\n• 7,000+ words across JLPT N5 to N1, with English and Chinese meanings.\n• Example sentences and 233 reading passages — from everyday greetings to short literary paragraphs.\n• Katakana loanwords supported, with foreign-sound digraphs.\n\nPRIVATE BY DESIGN\n• Works fully offline. No sign-up and no account with the developer, no ads, no tracking, and no analytics of any kind. The one optional in-app purchase is handled by the App Store, through your own Apple Account.\n• Your progress stays on your device. Optional iCloud sync uses your own private iCloud database, which the developer cannot see inside, and the app is fully usable with it switched off.\n\nWhether you're starting N5 or polishing N1, Nihongo Ride turns daily typing into real Japanese progress. Hop on and ride.",
+        "descriptionMeasured": {
+          "chars": 1901,
+          "utf8Bytes": 1937,
+          "sha256": "d9e2f4469a0a3d00363dbab2786486b76028483cc5c104ebde206c300a328552"
+        }
+      },
+      {
+        "locale": "zh-Hans",
+        "keywords": "日语,打字,假名,平假名,片假名,JLPT,单词,学日语,罗马音,N5,练习,日语学习",
+        "keywordsMeasured": {
+          "chars": 43,
+          "utf8Bytes": 95,
+          "sha256": "76e874171558ce90ba78f9a18d5237bff1ff8e5a3ad4aac192248f037d124e24"
+        },
+        "promotionalText": null,
+        "description": "Nihongo Ride 是一款安静、专注的打字练习应用,真正帮你学会日语。\n\n大多数打字游戏只考速度。Nihongo Ride 教你——假名、单词、真实句子——边骑车环游日本,从东京一路骑到京都。打对读音就前进;打错的词稍后会在你最需要时再次出现。\n\n为什么不一样\n• 内置迷你 IME。在普通键盘上敲罗马音即可,无需系统输入法、无需设置。逐键、多路径匹配,接受所有合法拼写(shi / si、tsu / tu、n / nn),实时转成假名。\n• 不只是比速度,而是真学。每个词都显示假名、可关的罗马音提示,以及中英文词义。\n• 智能复习。打错的词进入间隔复习队列(SM-2),让练习精准命中你的薄弱点。\n\n三种骑行模式\n• 环游(Journey)——沉浸式骑行环游日本,打字前进、解锁经典景点。\n• 限时(Time Attack)——60 秒,尽可能多打。\n• 练习(Practice)——安静无干扰,词流或长文章皆可,并有隐藏全部罗马音提示的「盲打」挑战。\n\n内容\n• JLPT N5 到 N1 共 7000+ 词,含中英文词义。\n• 例句 + 233 篇阅读文章——从日常问候到短篇文学段落。\n• 支持片假名外来词与外来音 digraph。\n\n隐私至上\n• 完全离线可用。无需注册,开发者这边也没有你的账号,无广告、无追踪,也没有任何统计分析。唯一的一项可选内购由 App Store 通过你自己的 Apple 账户完成。\n• 学习进度留在你自己的设备上。iCloud 同步(可在设置里关闭)用的是你自己的私有 iCloud 数据库,开发者看不到里面的内容;关掉它,App 依然完整可用。\n\n无论你是刚开始 N5,还是在打磨 N1,Nihongo Ride 把每天的打字变成真实的日语进步。上车,出发。",
+        "descriptionMeasured": {
+          "chars": 755,
+          "utf8Bytes": 1777,
+          "sha256": "61ff4fbe5d36e080942f4a4efa00a957612380510dd87a97f05ac5c1de1e8446"
+        }
+      },
+      {
+        "locale": "ja",
+        "keywords": "日本語学習,JLPT,日本語能力試験,N5,N4,N3,N2,N1,単語,ひらがな,カタカナ,漢字,読み方,例文,読解,暗記,語彙力,かな入力",
+        "keywordsMeasured": {
+          "chars": 71,
+          "utf8Bytes": 151,
+          "sha256": "52b7d92d28d84ac5f286eb40cdf5e062df1bd7732e391d7c2ec356d7e1153d02"
+        },
+        "promotionalText": null,
+        "description": "Nihongo Ride は、タイピングを通じて日本語を身につける、集中できる学習アプリです。\n\n一般的なタイピングアプリの多くは入力スピードを競います。Nihongo Ride が目指すのは、かな・語彙・実践的な例文といった日本語そのものの習得です。東京から京都へ、日本各地を自転車で巡りながら、正しい読みを入力して前へ進みます。間違えた単語は、記憶の定着に最適なタイミングで自動的に再出題されます。\n\n■ 主な特長\n・アプリ内蔵のローマ字入力エンジン\n普段お使いのキーボードでローマ字を入力するだけ。OS の日本語入力設定やキーボードの切り替えは一切不要です（システムに追加されるキーボードではありません）。shi / si、tsu / tu、n / nn などの表記の揺れにも対応し、入力したローマ字がリアルタイムでかなに変換されます。\n\n・速さよりも定着を重視\nすべての単語に「かな表記」「オン/オフを切り替えられるローマ字ヒント」「英語・中国語の対訳」がついています。\n\n・間隔反復（SM-2 アルゴリズム）\n間違えた単語は自動で復習キューに入り、苦手な単語を集中的に練習できます。\n\n■ 3 つの走行モード\n・ジャーニー：日本各地を巡る旅。タイピングで前進し、名所をアンロックしていきます。\n・タイムアタック：60 秒間でどれだけ入力できるかに挑むスピードチャレンジ。\n・プラクティス：自分のペースで学べる練習モード。単語ドリルから長文まで対応し、ローマ字ヒントをすべて隠す「BLIND チャレンジ」も搭載しています。\n\n■ 収録内容\n・JLPT N5〜N1 に対応した 7,000 語以上（英語・中国語の対訳付き）。\n・例文と 233 本の読解パッセージ（日常のあいさつから文学作品の短文まで）。\n・カタカナ外来語にも対応（ファ、ティなど外来語特有の表記を含む）。\n\n■ プライバシーについて\n・学習はすべて端末内で完結します。アカウント登録は不要で、トラッキングも広告もありません。\n・iCloud 同期（設定でオン/オフを切り替えられます）は Apple の iCloud 上にあるあなた個人の領域を使います。開発者がその中身を見ることはできません。オフにすれば、学習の記録は端末内だけに残ります。\n\n■ 対応言語・UI について（ご注意）\n本アプリは日本語学習者向けに設計されているため、メニューや設定などの操作画面、および単語の意味の表示は「英語」または「中国語」のみの対応となります。\n※学習の対象となるかな・漢字・例文・読解パッセージは、すべて日本語で表示されます。\n\nN5 を始めたばかりの方から N1 を目指す方まで、Nihongo Ride は毎日のタイピング練習を確かな日本語力に変えていきます。さあ、走り出しましょう。",
+        "descriptionMeasured": {
+          "chars": 1177,
+          "utf8Bytes": 3183,
+          "sha256": "05b0edc3d1be19fcb39ab767c70bf63f2ca692db8bf1e4f5830aefcbaae86c1a"
+        }
+      }
+    ],
+    "IOS_1.36": [
+      {
+        "locale": "en-US",
+        "keywords": "japanese,typing,kana,hiragana,katakana,JLPT,vocabulary,romaji,learn,study,N5,furigana",
+        "keywordsMeasured": {
+          "chars": 85,
+          "utf8Bytes": 85,
+          "sha256": "e13c797e641ac47909e2b902fd976d5b8f9df53d5ec85a512c3100536d38e8ab"
+        },
+        "promotionalText": null,
+        "description": "Nihongo Ride is a calm, focused typing-practice app that actually teaches you Japanese.\n\nMost typing games test speed. Nihongo Ride teaches — kana, vocabulary, and real sentences — while you ride your way across Japan, from Tokyo to Kyoto. Type the correct reading and you move forward. Miss a word and it comes back later, exactly when you need it.\n\nWHY IT'S DIFFERENT\n• A built-in mini-IME. Type romaji on your normal keyboard — no system IME, no setup. It accepts every valid spelling (shi or si, tsu or tu, n or nn) and matches your keystrokes to kana in real time.\n• Learn, don't just race. Every word shows its kana, an optional romaji hint, and its meaning in English and Chinese.\n• Smart review. Words you mistype flow into a spaced-repetition queue (SM-2), so your practice targets your real weak spots.\n\nTHREE WAYS TO RIDE\n• Journey — an immersive ride across Japan; type to keep moving and unlock famous stops.\n• Time Attack — 60 seconds, as many words as you can.\n• Practice — a quiet, distraction-free mode for word drills or long passages, with an optional BLIND challenge that hides all romaji hints.\n\nCONTENT\n• 7,000+ words across JLPT N5 to N1, with English and Chinese meanings.\n• Example sentences and 233 reading passages — from everyday greetings to short literary paragraphs.\n• Katakana loanwords supported, with foreign-sound digraphs.\n\nPRIVATE BY DESIGN\n• Works fully offline. No sign-up and no account with the developer, no ads, no tracking, and no analytics of any kind. The one optional in-app purchase is handled by the App Store, through your own Apple Account.\n• Your progress stays on your device. Optional iCloud sync uses your own private iCloud database, which the developer cannot see inside, and the app is fully usable with it switched off.\n\nWhether you're starting N5 or polishing N1, Nihongo Ride turns daily typing into real Japanese progress. Hop on and ride.",
+        "descriptionMeasured": {
+          "chars": 1901,
+          "utf8Bytes": 1937,
+          "sha256": "d9e2f4469a0a3d00363dbab2786486b76028483cc5c104ebde206c300a328552"
+        }
+      },
+      {
+        "locale": "zh-Hans",
+        "keywords": "日语,打字,假名,平假名,片假名,JLPT,单词,学日语,罗马音,N5,练习,日语学习",
+        "keywordsMeasured": {
+          "chars": 43,
+          "utf8Bytes": 95,
+          "sha256": "76e874171558ce90ba78f9a18d5237bff1ff8e5a3ad4aac192248f037d124e24"
+        },
+        "promotionalText": null,
+        "description": "Nihongo Ride 是一款安静、专注的打字练习应用,真正帮你学会日语。\n\n大多数打字游戏只考速度。Nihongo Ride 教你——假名、单词、真实句子——边骑车环游日本,从东京一路骑到京都。打对读音就前进;打错的词稍后会在你最需要时再次出现。\n\n为什么不一样\n• 内置迷你 IME。在普通键盘上敲罗马音即可,无需系统输入法、无需设置。逐键、多路径匹配,接受所有合法拼写(shi / si、tsu / tu、n / nn),实时转成假名。\n• 不只是比速度,而是真学。每个词都显示假名、可关的罗马音提示,以及中英文词义。\n• 智能复习。打错的词进入间隔复习队列(SM-2),让练习精准命中你的薄弱点。\n\n三种骑行模式\n• 环游(Journey)——沉浸式骑行环游日本,打字前进、解锁经典景点。\n• 限时(Time Attack)——60 秒,尽可能多打。\n• 练习(Practice)——安静无干扰,词流或长文章皆可,并有隐藏全部罗马音提示的「盲打」挑战。\n\n内容\n• JLPT N5 到 N1 共 7000+ 词,含中英文词义。\n• 例句 + 233 篇阅读文章——从日常问候到短篇文学段落。\n• 支持片假名外来词与外来音 digraph。\n\n隐私至上\n• 完全离线可用。无需注册,开发者这边也没有你的账号,无广告、无追踪,也没有任何统计分析。唯一的一项可选内购由 App Store 通过你自己的 Apple 账户完成。\n• 学习进度留在你自己的设备上。iCloud 同步(可在设置里关闭)用的是你自己的私有 iCloud 数据库,开发者看不到里面的内容;关掉它,App 依然完整可用。\n\n无论你是刚开始 N5,还是在打磨 N1,Nihongo Ride 把每天的打字变成真实的日语进步。上车,出发。",
+        "descriptionMeasured": {
+          "chars": 755,
+          "utf8Bytes": 1777,
+          "sha256": "61ff4fbe5d36e080942f4a4efa00a957612380510dd87a97f05ac5c1de1e8446"
+        }
+      },
+      {
+        "locale": "ja",
+        "keywords": "日本語学習,JLPT,日本語能力試験,N5,N4,N3,N2,N1,単語,ひらがな,カタカナ,漢字,読み方,例文,読解,暗記,語彙力,かな入力",
+        "keywordsMeasured": {
+          "chars": 71,
+          "utf8Bytes": 151,
+          "sha256": "52b7d92d28d84ac5f286eb40cdf5e062df1bd7732e391d7c2ec356d7e1153d02"
+        },
+        "promotionalText": null,
+        "description": "Nihongo Ride は、タイピングを通じて日本語を身につける、集中できる学習アプリです。\n\n一般的なタイピングアプリの多くは入力スピードを競います。Nihongo Ride が目指すのは、かな・語彙・実践的な例文といった日本語そのものの習得です。東京から京都へ、日本各地を自転車で巡りながら、正しい読みを入力して前へ進みます。間違えた単語は、記憶の定着に最適なタイミングで自動的に再出題されます。\n\n■ 主な特長\n・アプリ内蔵のローマ字入力エンジン\n普段お使いのキーボードでローマ字を入力するだけ。OS の日本語入力設定やキーボードの切り替えは一切不要です（システムに追加されるキーボードではありません）。shi / si、tsu / tu、n / nn などの表記の揺れにも対応し、入力したローマ字がリアルタイムでかなに変換されます。\n\n・速さよりも定着を重視\nすべての単語に「かな表記」「オン/オフを切り替えられるローマ字ヒント」「英語・中国語の対訳」がついています。\n\n・間隔反復（SM-2 アルゴリズム）\n間違えた単語は自動で復習キューに入り、苦手な単語を集中的に練習できます。\n\n■ 3 つの走行モード\n・ジャーニー：日本各地を巡る旅。タイピングで前進し、名所をアンロックしていきます。\n・タイムアタック：60 秒間でどれだけ入力できるかに挑むスピードチャレンジ。\n・プラクティス：自分のペースで学べる練習モード。単語ドリルから長文まで対応し、ローマ字ヒントをすべて隠す「BLIND チャレンジ」も搭載しています。\n\n■ 収録内容\n・JLPT N5〜N1 に対応した 7,000 語以上（英語・中国語の対訳付き）。\n・例文と 233 本の読解パッセージ（日常のあいさつから文学作品の短文まで）。\n・カタカナ外来語にも対応（ファ、ティなど外来語特有の表記を含む）。\n\n■ プライバシーについて\n・学習はすべて端末内で完結します。アカウント登録は不要で、トラッキングも広告もありません。\n・iCloud 同期（設定でオン/オフを切り替えられます）は Apple の iCloud 上にあるあなた個人の領域を使います。開発者がその中身を見ることはできません。オフにすれば、学習の記録は端末内だけに残ります。\n\n■ 対応言語・UI について（ご注意）\n本アプリは日本語学習者向けに設計されているため、メニューや設定などの操作画面、および単語の意味の表示は「英語」または「中国語」のみの対応となります。\n※学習の対象となるかな・漢字・例文・読解パッセージは、すべて日本語で表示されます。\n\nN5 を始めたばかりの方から N1 を目指す方まで、Nihongo Ride は毎日のタイピング練習を確かな日本語力に変えていきます。さあ、走り出しましょう。",
+        "descriptionMeasured": {
+          "chars": 1177,
+          "utf8Bytes": 3183,
+          "sha256": "05b0edc3d1be19fcb39ab767c70bf63f2ca692db8bf1e4f5830aefcbaae86c1a"
+        }
+      }
+    ],
+    "macEqualsIos": true
+  },
+  "screenshotSets": {
+    "MAC_OS": {
+      "en-US": [
+        {
+          "displayType": "APP_DESKTOP",
+          "files": [
+            "game.png",
+            "journal.png",
+            "practice.png",
+            "results.png",
+            "practice-blind.png",
+            "game-mid.png"
+          ]
+        }
+      ],
+      "zh-Hans": [
+        {
+          "displayType": "APP_DESKTOP",
+          "files": [
+            "game.png",
+            "journal.png",
+            "practice.png",
+            "results.png",
+            "practice-blind.png",
+            "game-mid.png"
+          ]
+        }
+      ],
+      "ja": []
+    },
+    "IOS": {
+      "en-US": [
+        {
+          "displayType": "APP_IPAD_PRO_3GEN_129",
+          "files": [
+            "game.png",
+            "journal.png",
+            "practice.png",
+            "results.png",
+            "practice-blind.png",
+            "game-mid.png"
+          ]
+        },
+        {
+          "displayType": "APP_IPHONE_67",
+          "files": [
+            "en-1-menu.png",
+            "en-2-game.png",
+            "en-3-results.png",
+            "en-4-practice.png",
+            "en-5-journal.png"
+          ]
+        }
+      ],
+      "zh-Hans": [
+        {
+          "displayType": "APP_IPAD_PRO_3GEN_129",
+          "files": [
+            "game.png",
+            "journal.png",
+            "practice.png",
+            "results.png",
+            "practice-blind.png",
+            "game-mid.png"
+          ]
+        },
+        {
+          "displayType": "APP_IPHONE_67",
+          "files": [
+            "zh-1-menu.png",
+            "zh-2-game.png",
+            "zh-3-results.png",
+            "zh-4-practice.png",
+            "zh-5-journal.png"
+          ]
+        }
+      ],
+      "ja": []
+    }
+  },
+  "appPreviewSets": "none on any of the six localizations (every appPreviewSets GET returned an empty data array)",
+  "inAppPurchase": {
+    "productId": "com.jasonye.nihongoride.scenery.lifetime",
+    "type": "NON_CONSUMABLE",
+    "state": "APPROVED",
+    "familySharable": false,
+    "promotedPurchase": null,
+    "count": 1,
+    "localizations": [
+      {
+        "locale": "en-US",
+        "name": "The Road West",
+        "description": "One-time. The road west: Kyoto to Nagasaki.",
+        "state": "APPROVED"
+      },
+      {
+        "locale": "zh-Hans",
+        "name": "西行之路",
+        "description": "一次性购买。京都到长崎,完整的西行之路。",
+        "state": "APPROVED"
+      },
+      {
+        "locale": "ja",
+        "name": "西への道",
+        "description": "買い切り。京都から長崎まで、西への道すべて。",
+        "state": "APPROVED"
+      }
+    ]
+  },
+  "repoAgreement": {
+    "en-US description == docs/ASC_METADATA.md block": true,
+    "zh-Hans description == docs/ASC_METADATA.md block": true,
+    "ja description == docs/store/ja-listing.json": true,
+    "checkedAt": "2026-10-28, byte comparison in Python"
+  }
+}
