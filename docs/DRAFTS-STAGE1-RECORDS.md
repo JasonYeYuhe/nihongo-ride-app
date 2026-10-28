@@ -396,12 +396,12 @@
 **形状**完全照 N = 100 那一条(`docs/measurements/stage1-checkpoints.md:183-290`):标题 → 规则 4 → 读数原文 → 规则 5 → 规则 7 → 规则 2 和 3。多出来的只有最后一行"分支",留空给你。
 
 **跑之前(都做完才跑):**
-1. **v1.37 的上架日已经进了 `FIRM_RELEASE_DATES_PT`**(P0-2 的批准日杂事,`docs/PLAN-V1.37.md:202`)。少了它,`--checkpoint` 会以 "release registry incomplete" 扣住上界(`scripts/sales_report.py:1372-1378`)。v1.37 的 build 是 macOS 62 / iOS 63(`docs/STATE-2026-10-27.md:73`)。
+1. **如果 v1.37 到那时已经上架,它的上架日必须已经进了 `FIRM_RELEASE_DATES_PT`**(P0-2 的批准日杂事,`docs/PLAN-V1.37.md:202`)。v1.37 如果 11-14 前没提交,就压到 N = 200 记录之后(`docs/PLAN-V1.37.md:381`),那时这一条不适用。少了它,`--checkpoint` 会以 "release registry incomplete" 扣住上界(`scripts/sales_report.py:1372-1378`)。v1.37 的 build 是 macOS 62 / iOS 63(`docs/STATE-2026-10-27.md:73`)。
 2. **规则 4**:窗口里每一个走查安装、每一个参与者安装都已登记进 `docs/measurements/stage1-known-positives.json`。最小走查也有安装(Mac 和 iPhone,`docs/PLAN-V1.37.md:101`)。没登记的安装工具看不见(`docs/PLAN-STAGE1.md:778-781`)。
 3. 命令和 N = 100 一样:`python3 scripts/sales_report.py --checkpoint`。**不加** `--no-cache`、`--since`(它会拒绝,`scripts/sales_report.py:1666-1673`)。输出存在仓库外,记下 md5。
 4. 同一个 JST 日跑 `python3 scripts/review_watch.py`,原文贴进来(规则 7,`stage1-checkpoints.md:26-29`)。
 5. 不手算任何上界(规则 2),不评分支(规则 3)。
-6. 什么时候:工具第一次对 N = 200 打印 `REACHED` 的那次读数。按 2.596/天投影,太平洋报表日约 11-23..25,日本时间约 11-25..27 读到(`docs/PLAN-V1.37.md:171`);每多一个登记的走查安装约晚 0.4 天。
+6. 什么时候:工具第一次对 N = 200 打印 `REACHED` 的那次读数。**重新推导(2026-10-28,离线读缓存):** 最新的缓存日是太平洋 10-26,当天 0 个首次下载,所以截至 10-26 仍是 N = 122(48 天)。还差 78 个:按 2.596/天要 ⌈78/2.596⌉ = 31 天,落在太平洋 11-26;按交叉核对的 2.69 和 2.70/天都是 29 天,落在 11-24。所以是**太平洋报表日约 11-24..26,日本时间约 11-26..28 读到**(PST 下按 D+2,`docs/PLAN-WINDOW2.md` §1.2)。`docs/PLAN-V1.37.md:171` 写的 11-23..25 / 11-25..27 没算进 10-26 那一天的 0,早了约一天。每多一个登记的走查安装约晚 0.4 天。
 
 **要填的空,当天从工具输出里抄,不从这里抄:** 日期、窗口、所有计数、暴露日和其他日列表(会多出 2026-10-26、10-27 和 v1.37 的上架日及其后一天)、退出码、md5。
 
@@ -495,7 +495,10 @@ split the cohort at v1.36's `FIRM_RELEASE_DATES_PT` entries” (`docs/PLAN-STAGE
 * the calibration and release-day controls computed on those days;
 * the P0-7 census runs of 2026-10-27 (`sales_report.py --since 2026-09-20 --until 2026-10-25`,
   `docs/measurements/v137-funnel-post-day0.md:118-127`);
-* the offline cache tallies of 2026-10-28 made for `docs/PLAN-WINDOW2.md` §5 (through Pacific 10-26);
+* PLAN-V1.37 §A's read-only parse of the cached daily reports (the evidence lens, `docs/PLAN-V1.37.md:140`);
+* the offline cache tallies of 2026-10-28 made for `docs/PLAN-WINDOW2.md` §5 (read through Pacific 10-26), and the
+  adversarial review's own offline tally of the same day (also through 10-26);
+* the census run behind `e884cf6`'s funnel calibration (09-20..10-25, `docs/measurements/v137-funnel-post-day0.md:312-314`);
 * <every later reading, run or tally, by date>.
 None of them was blind to it. <What was decided before this reading, and that nothing in it depends on this reading.>
 
@@ -552,7 +555,7 @@ branch line for the owner"(`PLAN-V1.37.md:98`)。上面那一行两边都守:它
 > 2. *(only if the branch is STOP or STOP BUILDING)* The owner overrides, for exactly one good, a one-time depth
 >    unlock (PLAN-V1.37 §E, E3) with every existing install grandfathered: §K's “instrumentation and
 >    placement, not price and not Pro” (`PLAN-STAGE1.md:551-552`); “zero still means *do not build Pro*”
->    (`PLAN-STAGE1.md:176`); “near-zero over the window **kills H2 as well as H1** — do not build Pro”
+>    (`PLAN-STAGE1.md:175-176`); “near-zero over the window **kills H2 as well as H1** — do not build Pro”
 >    (`PLAN-V2-PRODUCT.md:547`); “**Nobody tips** → the constraint is distribution or desire, not checkout. Do not
 >    build Pro.” (`PLAN-V2-PRODUCT.md:236`); §J “Not in this plan”, item “**Building Pro before Stage 1 reports** — the
 >    whole point of the staging” (`PLAN-V2-PRODUCT.md:633, 639`); and PLAN-WINDOW §G “What must not be built”, row
@@ -567,26 +570,28 @@ branch line for the owner"(`PLAN-V1.37.md:98`)。上面那一行两边都守:它
 > 5. Window 2 is pre-registered in `docs/PLAN-WINDOW2.md` (variant E) before that release's `--submit`. Its branch
 >    consequences, in the owner's words: <GO-2 → … / BELOW-FLOOR → … / ZERO → … / ZERO, pipeline unproven → … /
 >    owner box mid-window → … / refunds at D₀′+180 → … / a purchase review or a lost-access report → …, or "as drafted
->    in PLAN-V1.37 §H" for the rows §H drafts>.
+>    in PLAN-V1.37 §H" for the rows §H drafts>. The floor sum GO-2 counts: <E3's SKU alone / E3 + the road>.
 ```
 
 **和底本不同的地方,以及为什么:**
 1. **引文改成逐字。** 底本第 2 条的几句是转述或拼接:
    * "not price and not Pro" (§K) —— 原文是 “instrumentation and placement, not price and not Pro”(`PLAN-STAGE1.md:551-552`),补全并标了行号。
-   * "zero still means do not build Pro" (`:174-176`) —— 原文 `:176` 带强调:“zero still means *do not build Pro*”。
+   * "zero still means do not build Pro" (`:174-176`) —— 原文在 `:175-176`,带强调:“zero still means *do not build Pro*”。
    * "Nobody tips → … Do not build Pro" —— 原文在 `PLAN-V2-PRODUCT.md:236` 一行里,照抄全句。
    * "Not in this plan: … Building Pro before Stage 1 reports" (`:639`) —— "Not in this plan" 是 `:633` 的小节标题,不是句子的一部分;改成标题 + 条目两段引文。
-2. **加了 2b(底本没有)。** §0 和 §I 都说 GO 之下 v1.38 的改价页部分不早于太平洋 12-09 上线,"unless the owner writes in the C-2 box that the repeat-rate run is cut short"(`PLAN-V1.37.md:56`、`:384`),C-2(b) 也列了它(`:98`),但底本 A-1 没有地方写这一句。不需要就删掉 2b。
+2. **加了 2b(底本没有)。** §0 和 §I 都说 GO 之下 v1.38 的改价页部分不早于太平洋 12-09 上线,"unless the owner writes in the C-2 box that the repeat-rate run is cut short"(`PLAN-V1.37.md:56`、`:384`),C-2(b) 也列了它(`:98`),但底本 A-1 没有地方写这一句。不需要就删掉 2b。**GO 但不选 E3 时,A-1 整个框都不适用,2b 就没有框可写**:这时你可以只用这个框的第 1、2b 条(要改路的价格再加第 3 条),标题改成你自己的;或者用一句话说给代理,代理原话引用。这是 C-2(b) 自己的一项(`PLAN-V1.37.md:56`、`:98`)。
 3. **第 5 条列全了 `PLAN-WINDOW2.md` 变体 E 的每一个空格。** 底本只列 ZERO / BELOW-FLOOR / GO-2 三个;`PLAN-WINDOW2.md` 还留了 "ZERO, pipeline unproven"、"owner box mid-window"、day-180 退款、被盯的评论和丢失权限报告。§H 只给其中一部分起草了后果(`PLAN-V1.37.md:365-372`),所以 "as drafted in PLAN-V1.37 §H" 只能用于 §H 写过的那几行。
 4. 第 5 条注明了"variant E"。
+5. **第 5 条加了 GO-2 算哪笔钱的空位**:只算 E3,还是 E3 加路一起算。底线是你给整个 app 定的(`PLAN-STAGE1.md:145-146`),§H 的 GO-2 没说哪个 SKU(`PLAN-V1.37.md:363`),所以 `PLAN-WINDOW2.md` §3 把它留给你,并且每次读数两笔都打印。
 
 ### A-2:N = 200 之前,你选 B
 
 ```markdown
 > ### 📌 ENDED EARLY <YYYY-MM-DD> (JST) by the owner's decision, after the N = 35 and N = 100 readings had been read
 >
-> This is a decision made after seeing data, recorded as such. §K says of deciding after a checkpoint: “What is NOT
-> available any more is deciding it after seeing a checkpoint” (`PLAN-STAGE1.md:390-391`).
+> This is a decision made after seeing data, recorded as such. §K's day-0 box drew this line for the checkpoint
+> denominator: “What is NOT available any more is deciding it [the denominator] after seeing a checkpoint”
+> (`PLAN-STAGE1.md:386-392`). Ending the window after two readings is a decision taken after seeing checkpoints too.
 > The final Stage 1 record is the N = 100 reading of 2026-10-26: N = 122, 0 purchases, BOUND WITHHELD, for the one
 > reason that no matched known-positive purchase exists (`docs/measurements/stage1-checkpoints.md:228-246`). No bound
 > is quoted, and the zero is UNINTERPRETABLE. If a known positive is matched later, 3/122 = 2.46% may be quoted as
@@ -596,7 +601,7 @@ branch line for the owner"(`PLAN-V1.37.md:98`)。上面那一行两边都守:它
 >
 > The owner also overrides, for exactly one good, a one-time depth unlock (PLAN-V1.37 §E, E3) with every existing
 > install grandfathered, the written rules that are not §K branches and still bind when the window ends at
-> N = 122 with 0 purchases: “zero still means *do not build Pro*” (`PLAN-STAGE1.md:176`); “near-zero over the
+> N = 122 with 0 purchases: “zero still means *do not build Pro*” (`PLAN-STAGE1.md:175-176`); “near-zero over the
 > window **kills H2 as well as H1** — do not build Pro” (`PLAN-V2-PRODUCT.md:547`); “**Nobody tips** → the
 > constraint is distribution or desire, not checkout. Do not build Pro.” (`PLAN-V2-PRODUCT.md:236`); §J “Not in this
 > plan”, item “**Building Pro before Stage 1 reports** — the whole point of the staging” (`PLAN-V2-PRODUCT.md:633,
@@ -604,8 +609,9 @@ branch line for the owner"(`PLAN-V1.37.md:98`)。上面那一行两边都守:它
 > a decision made after seeing data.
 ```
 
-**和底本不同的地方:** 只有引文改成逐字(同 A-1 第 1 点),并给 "§K forbids deciding 'after seeing a checkpoint'" 补上原句和行号
-(`PLAN-STAGE1.md:390-391`),给 N = 100 读数补上出处(`stage1-checkpoints.md:228-246`)。3/122 = 2.459…%,写作 2.46%,和底本一致。
+**和底本不同的地方:** 引文改成逐字(同 A-1 第 1 点)。底本说 "§K forbids deciding 'after seeing a checkpoint'",这是把一句话的范围说大了:
+`PLAN-STAGE1.md:386-392` 那个框里,"it" 指的是检查点的分母怎么定,不是 §K 关于"看完检查点再做决定"的一般规则。所以复制版把主语补在方括号里,
+并把"结束窗口也是看过检查点之后的决定"写成框自己的一句话,不再说成 §K 的规定。要不要这一句,由你定。另外给 N = 100 读数补上出处(`stage1-checkpoints.md:228-246`)。3/122 = 2.459…%,写作 2.46%,和底本一致。
 **它只在 N = 200 读数之前有效**:标题写的是"after the N = 35 and N = 100 readings";N = 200 之后就不是 B 了,而是 A-1。
 
 ### A-3:走查记录
