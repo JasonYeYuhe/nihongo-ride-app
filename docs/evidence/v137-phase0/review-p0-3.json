@@ -1,0 +1,106 @@
+[
+  {
+    "id": "R1",
+    "severity": "SERIOUS",
+    "location": "STAGE2-DECISION-PACK.md:74 (table row 1, STOP cell) and :272 (§9 'Unsure')",
+    "claim": "\"No document says whether a supporter pack is 'Pro'.\"",
+    "evidence": "docs/PLAN-V2-PRODUCT.md:403-405: \"if the free tier really keeps everything, then this is patronage economics and it must not be called \\\"Pro\\\" — because measuring tip-jar conversion and reporting it as premium-product conversion produces a confidently wrong conclusion.\" These lines sit inside the range the pack itself cites for the fork (401-419). PLAN-V2-PRODUCT.md:236-237 also separates the two: \"Nobody tips → … Do not build Pro.\" PLAN-V1.37.md:60 lists 236-237 among the rules an override must name.",
+    "fix": "Replace the absence claim with: 'PLAN-V2-PRODUCT.md:403-405 says patronage must not be called Pro. Whether STAGE1:552's \"not Pro\" or STAGE1:174-176's \"do not build Pro\" still bars a supporter pack is not written down. That is the owner's to read.' Make the same change in §9."
+  },
+  {
+    "id": "R2",
+    "severity": "SERIOUS",
+    "location": "STAGE2-DECISION-PACK.md:177 (§5 heading), :12 (摘要), :94 (§3.1 '§5's bias applies'), :189",
+    "claim": "The ledger's bias points toward STOP BUILDING. The defect can only move a counter from STOP to STOP BUILDING, never the reverse.",
+    "evidence": "The claim is right about the defect itself. offerAppeared(...) at UnlockOfferLedger.swift:223-226 only demotes offerAppeared to offerUnavailable, and STOP needs offerAppeared > 0 (PLAN-STAGE1.md:531-533). But the heading and summary describe the ledger's overall bias, and the code also has a path that pushes the other way. RoadView.swift:57 puts `.onAppear { model.recordOfferAppeared() }` on the whole ScrollView (RoadView.swift:51-57). The offer card comes after `header`, `tokaido` and `west` (RoadView.swift:40-43), which together hold all 16 stretch rows (RoadView.swift:75-77, 99-101; 'sixteen-stretch' at :14). So `offerAppeared` is recorded as soon as the screen opens with the product loaded, even if the price is below the fold and the rider never scrolls to it. §K's STOP text says \"the offer itself rendered with a price in front of them\" (PLAN-STAGE1.md:532). This over-count pushes toward STOP. No doc in the repo mentions it. This comes from reading the code. It was not measured, and on a macOS window the card may fit on screen.",
+    "fix": "Scope the heading and the summary to the defect: 'the not-yet-loaded-price defect biases toward STOP BUILDING'. Add one line: 'The ledger's net bias is not established. offerAppeared fires on screen appearance, not on the offer card becoming visible (RoadView.swift:40-57), so a counter can show offerAppeared > 0 when the price was never on screen.' Leave the fix for P1-11 to decide."
+  },
+  {
+    "id": "R3",
+    "severity": "MINOR",
+    "location": "STAGE2-DECISION-PACK.md:133 and :135-163 (§4 A′)",
+    "claim": "\"In a world with no known positive, the decision rule is §K's existing text, unchanged.\" The pack then quotes only PLAN-STAGE1.md:526-554 as that text.",
+    "evidence": "The quote is byte-identical to PLAN-STAGE1.md:526-554 with the `> ` prefixes stripped (diff empty). As a block it is complete: 525 is the blank line that ends the 2026-08-31 CORRECTED box, and 555 is blank before '**Refund ceiling' at 556. But §K's governing rule also includes dated boxes inside §K (heading at :364) that change these bullets. PLAN-STAGE1.md:782-785: \"Counters on walk devices are not 'returned counters' … reads as STOP BUILDING / UNINTERPRETABLE, never as STOP\". :883-884: participant devices. :808-810: item 10 supersedes \"at day 90\" in the 526 heading. :675-680: \"this project does not trust an instrument that has not fired\". §1.1 cites the first three, but §4, the section the owner fills in, does not.",
+    "fix": "Under the quote, add: 'As amended within §K by PLAN-STAGE1.md:782-785 and 883-884 (what counts as a returned counter) and 808-810 (the schedule). The day-0 paragraph at 675-680 is the written basis for reading STOP as needing the known positive.' Cite 675-680 in the third A′ bullet (:168)."
+  },
+  {
+    "id": "R4",
+    "severity": "MINOR",
+    "location": "STAGE2-DECISION-PACK.md:247 (§7, the Kyōto-arrival line)",
+    "claim": "The Kyōto-arrival line, \"an informational 'the road continues' for a rider who has arrived\" (PLAN-STAGE1.md:74-76), is parked as a later option.",
+    "evidence": "Lines 74-76 do say that, but the next box withdraws the deferral and ships the arrival-moment entrance. PLAN-STAGE1.md:80: \"The deferral above is withdrawn\". :92-94: the menu route strip, \"live only at or past Kyōto … It now marks arrival\". :106-107: \"the first draft said 'the road continues west', which is solicitation wearing a state's clothes, and was rejected on that basis.\" PLAN-V1.37.md:240 makes the same omission.",
+    "fix": "Cite :78-107. Say that the arrival-moment entrance already shipped as the menu strip, and that the 'road continues west' wording was rejected as solicitation. Add the item to §9's list of what is wrong in PLAN-V1.37 (P1-9b)."
+  },
+  {
+    "id": "R5",
+    "severity": "MINOR",
+    "location": "STAGE2-DECISION-PACK.md:62 (§1.2) and :74 (row 1 label 'closest: E2')",
+    "claim": "The agent's reading is that E2 is closest to fork option 1 (keep the whole app free; sell a Supporter Pack).",
+    "evidence": "PLAN-V1.37.md:271, E2's own row: \"Low. An add-on only, never instead of E3.\" Option 1 is 'Keep the whole app free' (PLAN-V2-PRODUCT.md:409). An add-on to E3's gated tier is not option 1, and option 1 plus E3 is 'a bit of each' (PLAN-V2-PRODUCT.md:418-419). The reading is labelled, but it does not mention this conflict.",
+    "fix": "Quote :271's \"An add-on only, never instead of E3\" next to the reading. Say that as PLAN-V1.37 defines it, E2 is not option 1 on its own, so row 1 holds a supporter pack in place of E3 and has no E-item."
+  },
+  {
+    "id": "R6",
+    "severity": "NOTE",
+    "location": "STAGE2-DECISION-PACK.md:189",
+    "claim": "\"one with `offerAppeared == 0` there reads as STOP BUILDING (`:550`) … it can turn a counter that should read STOP into one that reads STOP BUILDING\"",
+    "evidence": "PLAN-STAGE1.md:550: \"no returned counter (or every one showing `offerAppeared == 0` in `kyoto`)\". The branch is a property of the whole set of counters, not of one counter. STOP needs only one counter with > 0 (:531).",
+    "fix": "'… and STOP BUILDING when every returned counter shows 0 there (:550). The defect can flip the branch only if it zeroes the kyoto offerAppeared of every returned counter.' The direction argument still holds."
+  },
+  {
+    "id": "R7",
+    "severity": "NOTE",
+    "location": "STAGE2-DECISION-PACK.md:182 (§5 point 3)",
+    "claim": "\"The ledger records `.offerAppeared` only when `offerLoaded` is true; otherwise it records `.offerUnavailable`.\"",
+    "evidence": "UnlockOfferLedger.swift:223-226: `suppressed ? .suppressed : entitled ? .alreadyOwned : offerLoaded ? .offerAppeared : .offerUnavailable`. The suppressed and entitled cases come first.",
+    "fix": "'… only when it is not suppressed, the device is not entitled, and `offerLoaded` is true.'"
+  },
+  {
+    "id": "R8",
+    "severity": "NOTE",
+    "location": "STAGE2-DECISION-PACK.md:185 (§5 point 6)",
+    "claim": "\"(`git log -S recordOfferAppeared`, `e74970b`; no later commit touches the line)\"",
+    "evidence": "Unscoped, `git log -S recordOfferAppeared` returns bfc6936 (this pack), bc5ea2a (2026-10-27, docs) and e74970b. Only `-- Sources` gives e74970b alone. The `offerLoaded:` argument (AppModel.swift:2625) dates from c30972b, 2026-08-30 17:54 +0900, which is the same day and before day 0, so the conclusion holds.",
+    "fix": "Write `git log -S recordOfferAppeared -- Sources` and name c30972b for AppModel.swift:2625."
+  },
+  {
+    "id": "R9",
+    "severity": "NOTE",
+    "location": "STAGE2-DECISION-PACK.md:222 (§6.2)",
+    "claim": "\"read from the bundled corpus on 2026-10-27 (`docs/DESIGN-E3-SAMPLER.md:25`)\"",
+    "evidence": "DESIGN-E3-SAMPLER.md:25 says \"Counts are read today\". The date 2026-10-27 is at :3 (\"*Design document, 2026-10-27 (JST)…\").",
+    "fix": "Cite `:3, 25`."
+  },
+  {
+    "id": "R10",
+    "severity": "NOTE",
+    "location": "STAGE2-DECISION-PACK.md:104 (§3.2 row 2)",
+    "claim": "\"the zero row at N₂ = max(⌈3/c*⌉, 200) and ≥ 60 days, with the pipeline proven\" cited to PLAN-V1.37.md:203, 268, 294, 362",
+    "evidence": "PLAN-V1.37.md:362 has the N₂ formula and the 60 days. 'Pipeline proven' is at :366 (\"ZERO: … pipeline proven\") and :369.",
+    "fix": "Add :366."
+  },
+  {
+    "id": "R11",
+    "severity": "NOTE",
+    "location": "STAGE2-DECISION-PACK.md:185",
+    "claim": "\"The fix is P1-11, in v1.38, after the window (`docs/PLAN-V1.37.md:242`)\"",
+    "evidence": "PLAN-V1.37.md:242 defines P1-11 but does not say 'after the window'. The timing is in §D's heading at :220 (\"v1.38 … (after the N = 200 record, under every branch)\") and at :56.",
+    "fix": "Cite `:220, 242`."
+  },
+  {
+    "id": "R12",
+    "severity": "NOTE",
+    "location": "STAGE2-DECISION-PACK.md:76 (row 3, STOP cell)",
+    "claim": "For E6 / F1: \"A second SKU (`docs/PLAN-WINDOW.md:269`)\"",
+    "evidence": "PLAN-WINDOW.md:269 is the 'A second SKU' row. The row that names F1 is :270: \"~~Pro, or §F1 'bring your own Japanese'~~ PARTLY SUPERSEDED … Stage 3\".",
+    "fix": "Cite :269-270 and note that row's 'PARTLY SUPERSEDED' status."
+  },
+  {
+    "id": "R13",
+    "severity": "NOTE",
+    "location": "STAGE2-DECISION-PACK.md:95 (§3.1, STOP BUILDING row)",
+    "claim": "\"The next release's job is instrumentation and placement; in PLAN-V1.37 that is v1.38's P1-11 … and P1-12\"",
+    "evidence": "PLAN-V1.37.md:222: \"Every item is 'instrumentation and placement' or a defect fix, so it is legitimate under GO, STOP and STOP BUILDING.\" v1.38 also carries P1-1, P1-10, P1-13 and P1-15 (:231, 241, 244, 246). Naming two items is an agent selection, and it is not labelled as one.",
+    "fix": "'in PLAN-V1.37 that is v1.38 as a whole (:222), whose instrument items are P1-11 and P1-12 (:242-243).'"
+  }
+]

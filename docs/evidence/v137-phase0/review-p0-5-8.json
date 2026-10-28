@@ -1,0 +1,199 @@
+{
+ "target": "docs-p0-5-8 @ 1e31e5d",
+ "reviewer": "adversarial, read-only",
+ "date": "2026-10-28 JST",
+ "findings": [
+  {
+   "id": "W2-1",
+   "severity": "SERIOUS",
+   "location": "docs/PLAN-WINDOW2.md:151-152, :288-290, :345-347",
+   "claim": "ZERO and BELOW-FLOOR can both fire in one window. The 'close' choice fixed BELOW-FLOOR firing before GO-2 was possible, but left ZERO on the zero row. The zero row can come before the close.",
+   "evidence": "Zero row = first reading with n >= N2 and >= 60 report days, so it can fire as early as D0'+59. Close = later(zero row, D0'+73). If n >= 200 by D0'+59..72 (r >= 200/60 = 3.4 a day, about +30% on 2.596, which the P1-13 and E5 co-interventions aim at), take 0 purchases at the zero row (ZERO holds) and then 1 purchase before D0'+73. At the close, '>= 1 net purchase since D0' and not GO-2' holds too (BELOW-FLOOR). Neither table gives precedence. Once the owner writes consequences, two of them would bind at once. ZERO has the same 'read before GO-2 is possible' problem the author's own note at :152 fixes for BELOW-FLOOR.",
+   "fix": "Evaluate every branch once, at the close. Either define ZERO as '0 net purchases since D0' through the close, with n >= N2 and >= 60 days', or say the zero row cannot fire before D0'+73. Then state that the four conditions are mutually exclusive and exhaustive. This is mechanics, so the agent may write it."
+  },
+  {
+   "id": "W2-2",
+   "severity": "MINOR",
+   "location": "docs/PLAN-WINDOW2.md:152, :277, :333, :386; PLAN-V1.37.md:363",
+   "claim": "When GO-2 is read is inconsistent. The date tables call D0'+73 'GO-2's first possible reading', but the branch tables test GO-2 only 'at the close'. That moves GO-2's reading to the zero row (D0'+77 at ¥10, D0'+103 at the ¥68 anchor). The 'agent's choice' label at :152 discusses only BELOW-FLOOR.",
+   "evidence": "§H: 'The earliest it can fire is about day 74'. Here a GO-2 that holds at D0'+73 is not read until the close, up to 30 days later.",
+   "fix": "Say whether GO-2 is read when it first holds or only at the close. Label that as a deviation from §H:363/:367, and list it in the report as a PLAN-V1.37 finding."
+  },
+  {
+   "id": "W2-3",
+   "severity": "MINOR",
+   "location": "docs/PLAN-WINDOW2.md:345, :351-353; docs/DRAFTS-STAGE1-RECORDS.md:567-570",
+   "claim": "'GO-2 on E3's proceeds alone' is a policy choice, not a mechanic. It decides what counts toward the owner's own ¥50 floor, so it decides when the owner's future GO-2 consequence fires.",
+   "evidence": "The floor is the owner's app-level input, '¥50 CNY/month makes it worth doing' (PLAN-STAGE1.md:145-146; :177 'recorded as the Stage 3 floor'). §H:363 says 'net CNY-equivalent proceeds' and names no SKU; only ZERO names 'the treatment SKU' (:368). The author admits 'Whether the floor should count both SKUs together is the owner's to say', but still writes E3-only into the condition, and the copy-ready A-1 item 5 has no slot for it.",
+   "fix": "Write the GO-2 condition with `<E3 alone / E3 + road>` marked _(owner, C-2(e) / A-1 item 5)_. Always print both sums. Add the slot to the A-1 item 5 copy in DRAFTS §9."
+  },
+  {
+   "id": "W2-4",
+   "severity": "MINOR",
+   "location": "docs/PLAN-WINDOW2.md:317-322",
+   "claim": "The extra E3 pipeline requirement says 'an availability record covering the road's territories'. That binds a later owner choice: which territories E3 is sold in. A narrower availability would make every zero UNINTERPRETABLE, even where E3 was buyable.",
+   "evidence": "The road is in 175 territories (PLAN-V1.37.md:132). E3's availability is an ASC write made after C-2's box (PLAN-V1.37.md:121, :268). Checking the record is a measurement-validity check (fine). Prescribing its coverage is not.",
+   "fix": "Read the availability set, don't prescribe it: 'approved, with an availability record; n and purchases are printed for the territories in it, and the zero is read on those'. Keep the double ASC GET (at D0' and at the zero row)."
+  },
+  {
+   "id": "W2-5",
+   "severity": "MINOR",
+   "location": "docs/PLAN-WINDOW2.md:135-137, :141-142",
+   "claim": "The fixed r is mechanics, but its direction is not stated, and it runs the non-conservative way. The file states the direction of every other choice.",
+   "evidence": "c* = (50/net)/(30r). If Window 2's traffic rises above Stage 1's r (the co-interventions P1-13 and E5 are meant to do that), the true c* falls and ⌈3/c*⌉ rises. A fixed Stage 1 r then gives a smaller N2, so the zero row fires on fewer installs than ruling out the floor conversion needs. :142 claims 'more installs before a zero is read' only for the CHN-net choice.",
+   "fix": "State the direction. Or pre-register N2 = max over {registered r, observed Window 2 r at the zero row}. That is still mechanical and lets no reader pick."
+  },
+  {
+   "id": "W2-6",
+   "severity": "MINOR",
+   "location": "docs/PLAN-WINDOW2.md:244-247, :359-360; PLAN-V1.37.md:372",
+   "claim": "The 'watched' cell blanks the purchase-review and lost-access guardrails. §H lists both as 'Guardrails kept'. Read with §4 ('a reading against it decides nothing'), the file can be taken to suspend the standing red line.",
+   "evidence": "PLAN-V2-PRODUCT.md:384-386: 'No existing install loses anything, ever'. That is an owner rule in force regardless of Window 2. §H:372 calls both items 'kept', not drafted consequences.",
+   "fix": "Keep the cell blank for what the reading means for Window 2's work. Add one line saying the red line, and any stop-and-fix it requires, binds independently of this file."
+  },
+  {
+   "id": "W2-7",
+   "severity": "MINOR",
+   "location": "docs/PLAN-WINDOW2.md:5-8, :253, :298",
+   "claim": "'Exactly one variant is committed' does not cover the plan's own late-box path. A-1 written after v1.38's --submit means S is already committed, and v1.39 still needs E.",
+   "evidence": "v1.38 is submitted about 11-30..12-04. A box after about 12-07 moves v1.39 to 2027-01-05..15 (PLAN-V1.37.md:384-385). §3 assumes A-1 is written 'at C-2'.",
+   "fix": "Add the mechanics: on that path E is committed as its own dated section before v1.39's --submit. Whether S's window ends there is the 'owner box mid-window' cell, which stays blank."
+  },
+  {
+   "id": "W2-8",
+   "severity": "MINOR",
+   "location": "docs/PLAN-WINDOW2.md:216-232, :363",
+   "claim": "On rebase this is stale. main's e884cf6 (2026-10-28 10:14 JST, after the branch point 892ef68) fixed both acquisition_funnel.py defects, and the cited lines moved.",
+   "evidence": "git show e884cf6: latest_per_date; --until default None; EMPTY WINDOW exit 4; PARTIAL; live calibration 90 = 90 over 09-21..10-25. The funnel doc gained a 2026-10-28 section: Apple's earliest download instance is now processed 09-23, which also confirms the rolling ~5-week retention behind the 28-day pull. acquisition_funnel.py:102 and :83-95 no longer hold the defects.",
+   "fix": "Rebase on main. Rewrite 1.9 as 'fixed in e884cf6, calibrated 90 = 90', give the options (--since/--until; quote no PARTIAL or EMPTY WINDOW window), and drop §4's 'keeps its two defects'."
+  },
+  {
+   "id": "W2-9",
+   "severity": "MINOR",
+   "location": "docs/PLAN-WINDOW2.md:224-225",
+   "claim": "'184 first-time downloads against a census of 122' compares the wrong census.",
+   "evidence": "v137-funnel-post-day0.md:72-80: '184 ... against a census of 122 for the whole window and 94 for the part these files cover'. The check is 184 = 4 + 2 × 90, against 94. 122 includes 28 downloads on dates the files do not hold. Number differs.",
+   "fix": "'184 against a census of 94 for the same dates (184 = 4 + 2 × 90)'."
+  },
+  {
+   "id": "W2-10",
+   "severity": "MINOR",
+   "location": "docs/PLAN-WINDOW2.md:151, :153, :386; PLAN-V1.37.md:362-363",
+   "claim": "The file mixes day-numbering conventions, and the 60-day off-by-one is unlabelled.",
+   "evidence": "Stage 1 counts 'day N' as D0+N (2026-09-09 + 90 = 2026-12-08 'day 90'; + 180 = 2027-03-08 'day 180'). The file uses D0'+180 for the backstop, as Stage 1 does. But it reads '≥ 60 days since day 0′' as 60 report days (D0'+59) and 'about day 74' as the 74th report day (D0'+73). By Stage 1's convention '60 days since day 0′' is D0'+60.",
+   "fix": "State one convention. Label 'newest day ≥ D0'+59' as the agent's choice under the delegation, or change it to D0'+60."
+  },
+  {
+   "id": "D8-1",
+   "severity": "MINOR",
+   "location": "docs/DRAFTS-STAGE1-RECORDS.md:404",
+   "claim": "The N = 200 timing was copied from PLAN-V1.37:171, not re-derived. With the cached Pacific 10-26, it is one day late.",
+   "evidence": "Offline pass (the repo's own our_rows and classify_row, cache only): Pacific 10-26 has 0 first-time downloads, so N = 122 over 48 days. From 10-26 at 2.596 a day, k = ⌈78 / 2.596⌉ = 31, giving Pacific 11-26. The cross-check rates 2.69 and 2.70 give 11-24. So Pacific 11-24..26, read JST 11-26..28 (PST, D+2), not 11-23..25 / 11-25..27.",
+   "fix": "Re-derive from the newest cached day and say which day it is."
+  },
+  {
+   "id": "D9-1",
+   "severity": "MINOR",
+   "location": "docs/DRAFTS-STAGE1-RECORDS.md:588-589",
+   "claim": "A-2's verbatim quote of PLAN-STAGE1.md:390-391 is taken out of context. In that box, 'it' is the denominator choice. The copy presents it as §K's general rule about deciding after a checkpoint, inside the owner's own box.",
+   "evidence": "PLAN-STAGE1.md:386-392 is about fixing the denominator ('fixing the denominator *now, before reading any number*'). PLAN-V1.37's paraphrase has the same stretch, but the verbatim 'it' makes it visible.",
+   "fix": "Quote it with its subject ('…deciding [the denominator] after seeing a checkpoint'), or cite it as the reason the 2026-09-09 box gives, not as a general §K rule. List it in the report as an Appendix A item."
+  },
+  {
+   "id": "N-1",
+   "severity": "NOTE",
+   "location": "docs/DRAFTS-STAGE1-RECORDS.md:491-500; docs/PLAN-WINDOW2.md:369-375",
+   "claim": "Rule 5 is inconsistent and incomplete.",
+   "evidence": "DRAFTS says the 2026-10-28 tallies ran 'through Pacific 10-26'; WINDOW2 §5 says its figures run through 10-25. Rule 5 also omits PLAN-V1.37 §A's evidence-lens parse of the cached reports (PLAN-V1.37.md:140), this review's own offline tally of 2026-10-28 (cache through 10-26), and e884cf6's census run.",
+   "fix": "Make the two dates agree and add the three items."
+  },
+  {
+   "id": "N-2",
+   "severity": "NOTE",
+   "location": "docs/PLAN-WINDOW2.md:59-60, :388",
+   "claim": "The DST boundary is imprecise. PDT starts at 02:00 on 2027-03-14, so 07:00 PT on 03-14 is PDT (23:00 JST the same day), not PST.",
+   "evidence": "zoneinfo: 2027-03-14T07:00 America/Los_Angeles is UTC−7 (23:00 JST on 03-14). 2026-11-01T07:00 is UTC−8 (00:00 JST on 11-02). Both dates are Sundays (checked).",
+   "fix": "'PST from 02:00 on 11-01 to 02:00 on 03-14'. Harmless under 'plan for JST D+2'."
+  },
+  {
+   "id": "N-3",
+   "severity": "NOTE",
+   "location": "docs/PLAN-WINDOW2.md:154",
+   "claim": "The refunds row drops §H's 'under the existing ceiling' without saying so.",
+   "evidence": "PLAN-V1.37.md:364. Dropping it is probably right, because the ceiling is a Stage 1 rule with a consequence attached, but the omission is not stated.",
+   "fix": "Say it was left out on purpose and why."
+  },
+  {
+   "id": "N-4",
+   "severity": "NOTE",
+   "location": "docs/PLAN-WINDOW2.md:153, :288-291",
+   "claim": "The branch conditions say 'at the zero row'. When the backstop fires instead (for example at the ¥128 anchor, N2 = 504 at about day 194, PLAN-V1.37.md:330), the file never says the backstop counts as the zero row for ZERO / BELOW-FLOOR.",
+   "evidence": "1.6 says only 'As the zero row'.",
+   "fix": "'At the zero row or the backstop'."
+  },
+  {
+   "id": "N-5",
+   "severity": "NOTE",
+   "location": "docs/PLAN-WINDOW2.md:104-106, :141-142",
+   "claim": "'CHN net is the highest, so N2 is the larger' is shown only against JP and US. The ECB list has no VND, TWD, AED or SAR, and VN is the cohort's 4th territory (v137-funnel §3). Whether its Currency of Proceeds is one the ECB lacks was not checked.",
+   "evidence": "ECB daily file (2026-10-27) lists 29 currencies. Those four are not among them.",
+   "fix": "At commit, list the proceeds currencies actually seen and which of them have no factor."
+  },
+  {
+   "id": "N-6",
+   "severity": "NOTE",
+   "location": "docs/PLAN-WINDOW2.md:158; docs/DRAFTS-STAGE1-RECORDS.md:554, :576, :599",
+   "claim": "Two citations are imprecise.",
+   "evidence": "sales_report.py:516-518 (cell_tally docstring) supports 'no link from refund to sale' only loosely; :438-440 (the classify_row docstring) says it. 'zero still means *do not build Pro*' starts on PLAN-STAGE1.md:175, not :176.",
+   "fix": "Cite :438-440 and :175-176."
+  },
+  {
+   "id": "N-7",
+   "severity": "NOTE",
+   "location": "PLAN-V1.37.md:150, :151, :243",
+   "claim": "Some PLAN-V1.37 line cites are stale, and the author's report did not list them (docs-common asks for that).",
+   "evidence": "acf8ae5 added lines to FIRM_RELEASE_DATES_PT. '403-404, 486-504' are now 405-407 and 489-507. '536-541' (P1-12(d)) now points at the control-fixture header. WINDOW2 itself uses the right lines.",
+   "fix": "List them in the report."
+  },
+  {
+   "id": "N-8",
+   "severity": "NOTE",
+   "location": "docs/DRAFTS-STAGE1-RECORDS.md:399",
+   "claim": "Precondition 1 assumes v1.37 is released before the N = 200 reading.",
+   "evidence": "PLAN-V1.37.md:381: if v1.37 is not submitted by 11-14, it is held until after the record.",
+   "fix": "'If v1.37 is on sale by then…'."
+  },
+  {
+   "id": "N-9",
+   "severity": "NOTE",
+   "location": "docs/DRAFTS-STAGE1-RECORDS.md:561-563",
+   "claim": "2b (cutting GO's repeat-rate run short) exists only inside A-1. Under GO without E3 there is no box to write it in.",
+   "evidence": "PLAN-V1.37.md:56, :98 make cutting the run short a C-2 option in its own right.",
+   "fix": "Say so in the notes under the box."
+  },
+  {
+   "id": "N-10",
+   "severity": "NOTE",
+   "location": "docs/PLAN-WINDOW2.md:51",
+   "claim": "'First Pacific report day on which both platforms are live' is ambiguous for a release late in the Pacific day.",
+   "evidence": "v1.36 went live at 15:40-16:00 PDT, and its FIRM date is that day (sales_report.py:272-274).",
+   "fix": "Say D0' is the FIRM date of the later platform (a partial day), as FIRM_RELEASE_DATES_PT does."
+  },
+  {
+   "id": "N-11",
+   "severity": "NOTE",
+   "location": "docs/PLAN-WINDOW2.md and docs/DRAFTS-STAGE1-RECORDS.md §8-§9 (diff 892ef68..1e31e5d)",
+   "claim": "No personal data was found, and no other app's rows.",
+   "evidence": "Scanned the diff for @, 8+ digit numbers, vendor, device models, /Users/, phone prefixes, transcript ids and other apps' ids. The only hit is the public product id com.jasonye.nihongoride.scenery.lifetime, already in PLAN-V1.37.md:131. Only aggregate counts appear.",
+   "fix": "None."
+  },
+  {
+   "id": "N-12",
+   "severity": "NOTE",
+   "location": "docs/PLAN-WINDOW2.md and docs/DRAFTS-STAGE1-RECORDS.md §8-§9",
+   "claim": "Consequence cells: every one is _(owner, …)_ (§2 five rows, §3 five rows, the 1.6 refunds row, the 1.10 watched line). No §H draft consequence was copied. The A-1 'as drafted in PLAN-V1.37 §H' option is an owner box, not a leak. §3's ZERO-unproven cell carries PLAN-V1.37:461's 'indistinguishable' sentence: a measurement statement, not a consequence.",
+   "evidence": "Grepped for next work / Window 3 / distribution / E4 / E2 / stop-and-fix / cannot reach / qualif. The only hit outside the table headers is :247's pointer to Stage 1's stop-and-fix (see W2-6).",
+   "fix": "None beyond W2-1, W2-3, W2-4 and W2-6."
+  }
+ ]
+}
