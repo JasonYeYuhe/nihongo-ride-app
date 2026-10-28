@@ -384,3 +384,236 @@
 
 这个观察在这里只是报告给你。本分支的任何文字都**没有**用它 —— 既没有用来论证"v1.31/v1.32 不需要这些检查",
 也没有用来把这句话扩展到后续版本。那句话保持逐字不变;怎么读它,由你决定。
+
+---
+
+## 8. N = 200 记录 —— 草稿(数字留空,到当天填;分支行留给你)
+
+写于 2026-10-28(JST),对应 `docs/PLAN-V1.37.md` P0-8(`:209`)和 C-2 卡(`:98`)。本文件里原来**没有** N = 200 的草稿,这一节是新加的。
+
+**它和前七节不一样的地方。** 前七节是你的 §K / §L 记录草稿,只有你能放。这一份是**检查点记录**,按 C-2 卡的默认,到时由代理照 N = 35、N = 100 的先例提交进 `docs/measurements/stage1-checkpoints.md`(只写数字,`:98`)。它**不进 §K,也不进 `docs/PLAN-STAGE1.md`**。分支由你读(`stage1-checkpoints.md:16-17` 规则 3;`PLAN-V1.34.md:1087`),这份记录里不替你写。
+
+**形状**完全照 N = 100 那一条(`docs/measurements/stage1-checkpoints.md:183-290`):标题 → 规则 4 → 读数原文 → 规则 5 → 规则 7 → 规则 2 和 3。多出来的只有最后一行"分支",留空给你。
+
+**跑之前(都做完才跑):**
+1. **v1.37 的上架日已经进了 `FIRM_RELEASE_DATES_PT`**(P0-2 的批准日杂事,`docs/PLAN-V1.37.md:202`)。少了它,`--checkpoint` 会以 "release registry incomplete" 扣住上界(`scripts/sales_report.py:1372-1378`)。v1.37 的 build 是 macOS 62 / iOS 63(`docs/STATE-2026-10-27.md:73`)。
+2. **规则 4**:窗口里每一个走查安装、每一个参与者安装都已登记进 `docs/measurements/stage1-known-positives.json`。最小走查也有安装(Mac 和 iPhone,`docs/PLAN-V1.37.md:101`)。没登记的安装工具看不见(`docs/PLAN-STAGE1.md:778-781`)。
+3. 命令和 N = 100 一样:`python3 scripts/sales_report.py --checkpoint`。**不加** `--no-cache`、`--since`(它会拒绝,`scripts/sales_report.py:1666-1673`)。输出存在仓库外,记下 md5。
+4. 同一个 JST 日跑 `python3 scripts/review_watch.py`,原文贴进来(规则 7,`stage1-checkpoints.md:26-29`)。
+5. 不手算任何上界(规则 2),不评分支(规则 3)。
+6. 什么时候:工具第一次对 N = 200 打印 `REACHED` 的那次读数。按 2.596/天投影,太平洋报表日约 11-23..25,日本时间约 11-25..27 读到(`docs/PLAN-V1.37.md:171`);每多一个登记的走查安装约晚 0.4 天。
+
+**要填的空,当天从工具输出里抄,不从这里抄:** 日期、窗口、所有计数、暴露日和其他日列表(会多出 2026-10-26、10-27 和 v1.37 的上架日及其后一天)、退出码、md5。
+
+````markdown
+### N = 200 — the reading of <YYYY-MM-DD> (JST)
+
+**Rule 4: confirmed before the reading.** <one of the two below>
+
+<(i) No walk happened.> The agent made this finding before running, under the owner's delegation
+(*"你想办法自己做掉 你全权负责 没办法再找我"*, 2026-10-07; renewed *"你继续做到收尾吧"*, 2026-10-26). It is the
+agent's finding, not the owner's confirmation. The window is Pacific 2026-09-09 .. <YYYY-MM-DD>. Finding: **no walk
+install and no registered-session install.**
+* `stage1-known-positives.json` has <0> entries, and no session was ever registered (`docs/sessions/` holds only its
+  README).
+* The walk has not started: <the owner has never said "开始走查", and no walk snapshot was written after <date>>.
+* On this Mac: `stage1_walk.py preflight` on <YYYY-MM-DD> <finds no `/Applications/Nihongo Ride.app`, and
+  `NihongoRide.entitlement.v1` absent>; LaunchServices has <0> records of the bundle under `/Applications`.
+* The reading below shows <0> purchases, so the walk never reached its purchase step.
+* **Limits, as in the N = 35 and N = 100 records:** a download never opened, devices on other accounts, a family
+  member's devices, and the owner's iPhone after 2026-09-15 cannot be seen. No device was queried. The margin is
+  <N − 200> units (N = <N> against 200).
+
+<(ii) A walk happened.> <"Owner confirmed <YYYY-MM-DD>: …" verbatim, or the agent's finding under the delegation,
+labelled as such.> Every walk install in Pacific 2026-09-09 .. <YYYY-MM-DD> is registered: <entry ids>. <The margin
+is <N − 200> units.>
+
+**The reading, verbatim.** `python3 scripts/sales_report.py --checkpoint`, run <YYYY-MM-DD> (JST), newest report day
+Pacific <YYYY-MM-DD>. Kept outside the repo at `<work dir>/checkpoint-<YYYY-MM-DD>.txt`, md5 `<…>`. The last line is
+the shell's capture of the exit code. <There were no adjusted purchases, so there is no territory line. — or delete
+this sentence if the tool printed one.>
+
+```
+<replace this whole block with the tool's output, verbatim. Check it against this skeleton:>
+checkpoint — PLAN-STAGE1 §K, day 0 = 2026-09-09
+  registry docs/measurements/stage1-known-positives.json · schema 1 · <n> entries
+  decisions: exclude_walk_first_downloads_from_N=true · exclude_owner_refund_from_refund_ceiling=true
+    (exclude_owner_refund_from_refund_ceiling is echoed, never applied: nothing here evaluates the day-180 refund ceiling)
+window 2026-06-06 .. <YYYY-MM-DD>  (<n> days)
+  report states: data=<n>
+calibration (the full default window — every check --calibrate runs):
+  positive control · updates  release-day <…>/d vs other <…>/d = <…>x
+  positive control · downloads release-day <…>/d vs other <…>/d = <…>x
+  OK — the instrument responds to known-positive events.
+second release-day control (PLAN-STAGE1 §K "DECIDED 2026-09-17" item 11 — gates the bound only; --calibrate does not run it):
+  exposure days (<n>): <…>
+  other days (<n>): <…>
+  updates (F7)                  exposure <…>/d vs other <…>/d = <…>x
+  first-time downloads (F1/1F)  exposure <…>/d vs other <…>/d = <…>x
+    other-day first-time downloads <…>/d before 2026-09-09 over <n> day(s), <…>/d from 2026-09-09 over <n> day(s)
+  OK — check A: updates elevated on exposure days · check B: update ratio <…>x > first-time download ratio <…>x
+cohort since day 0: 2026-09-09 .. <YYYY-MM-DD>  (<n> days · report states: data=<n>)
+  2026-09-08 first-time downloads (F1/1F): 0 — N is the same whether day 0 is 09-08 or 09-09
+  FIRST-TIME DOWNLOADS  raw <n> (macOS <n> · iOS <n>)
+    registered walk first_download: <none in the cohort window | n entries · n unit(s) · SUBTRACTED (decision true)>
+  N = <n> (macOS <n> · iOS <n>)  first-time downloads F1+1F since 2026-09-09
+  PURCHASES  raw gross <n> (macOS <n> · iOS <n>) · refunded <n> · net <n>
+    registered, always subtracted (§K: "exclude it from the cohort"): purchase <n> · refund <n>
+  ADJUSTED PURCHASES  gross <n> (macOS <n> · iOS <n>) · refunded <n> · net <n>
+  registry entries: <none | one line per entry>
+pre-registered checkpoints (§K, quoted):
+  REACHED      N = 35   record, falsifies nothing
+  REACHED      N = 100  first checkpoint that can falsify §D's 8.2%
+  <not reached | REACHED>  2026-12-08 (day 90)  interim record, no decision attached — a dated waypoint regardless of N
+  REACHED      N = 200, or 2027-03-08 (day 180), whichever comes first  the go / iterate / stop decision
+  not reached  2027-03-08 (day 180)  refunds
+  (read at N = <n>, with <YYYY-MM-DD> the newest report day read)
+<the tail is one of these, exactly as printed:>
+<(A′, no matched known positive)>
+BOUND WITHHELD:
+  - no matched day-0 known-positive purchase: the registry holds no kind=purchase entry with status=matched in the cohort window — §K: "this project does not trust an instrument that has not fired"
+<(and, if adjusted net purchases > 0)>  (and the zero-purchase bound would not apply anyway: adjusted net purchases = <n>)
+exit=5
+<(matched known positive, zero purchases)>
+BOUND (rule of three, 95%) — zero adjusted net purchases in N = <n> first-time downloads (F1+1F) since 2026-09-09, <which>:
+  per-install conversion ≥ 3/<n> = <…>% is ruled out
+  against the ceiling denominator N + 114 = <n>: ≥ 3/<n> = <…>%
+exit=0
+<(matched known positive, purchases > 0)>
+ZERO-PURCHASE BOUND DOES NOT APPLY: adjusted net purchases = <n> since 2026-09-09
+exit=0
+```
+
+<Only if N is within a release day's installs of 200:> The 2026-10-26 box asks for this split: “Near a threshold,
+split the cohort at v1.36's `FIRM_RELEASE_DATES_PT` entries” (`docs/PLAN-STAGE1.md:1059-1060`). <`--checkpoint
+--daily` output, verbatim, and <the same for v1.37's box, if it asks>.>
+
+**Rule 5: what this reading shares data with.** Its cache contains every report day of:
+* the N = 35 record (2026-09-25 JST) and its re-runs, and the N = 100 record (2026-10-26 JST);
+* the agent readings of 2026-09-29 (N = 50), 2026-10-03 (N = 59) and 2026-10-07 (N = 68);
+* the cache-only re-runs and row scans of the 2026-10-07 investigation (through 10-01);
+* the calibration and release-day controls computed on those days;
+* the P0-7 census runs of 2026-10-27 (`sales_report.py --since 2026-09-20 --until 2026-10-25`,
+  `docs/measurements/v137-funnel-post-day0.md:118-127`);
+* the offline cache tallies of 2026-10-28 made for `docs/PLAN-WINDOW2.md` §5 (through Pacific 10-26);
+* <every later reading, run or tally, by date>.
+None of them was blind to it. <What was decided before this reading, and that nothing in it depends on this reading.>
+
+**Rule 7: `review_watch.py`, the same JST day, verbatim.** <one sentence per review since day 0 a person read against
+§K's “negatively”.>
+
+```
+<review_watch output, verbatim, including its exit code and the shell's exit line>
+```
+
+**Rules 2 and 3.** <one of:>
+<(bound withheld)> No bound is computed, because the tool withholds for the <one> reason<s> quoted above. With no matched
+known positive, N = 200 is a record of N only (`docs/PLAN-V1.34.md:1126-1128`).
+<(bound printed)> The bound is quoted as the tool printed it, without a caveat (rule 2).
+No branch is evaluated here (rule 3).
+
+**Branch** (C-2(a)): read by the owner against §K's text (`docs/PLAN-STAGE1.md:526-554`), not by this file.
+_(owner — blank on silence. If the owner reads it, the owner's words are quoted here verbatim with their date, or this
+line points to where the owner wrote them.)_
+````
+
+**这份草稿里我拿不准的一处。** 规则 3 说分支 "not in this file"(`stage1-checkpoints.md:16-17`),C-2 卡又说代理 "leaves the
+branch line for the owner"(`PLAN-V1.37.md:98`)。上面那一行两边都守:它不评分支,只给你留一个位置,你不写就是空的。要不要这一行、
+放在这里还是放进你自己的 §K 框,由你定。
+
+---
+
+## 9. 附录 A 的 owner 框 —— 可直接复制的版本
+
+写于 2026-10-28(JST)。底本是 `docs/PLAN-V1.37.md` 附录 A(`:556-605`)。**`PLAN-V1.37.md` 没有改动**;下面每一处和底本不同的地方都标了出来,
+理由写在框后面。逐条核对了每一句引文在 `892ef68` 是否还这么写。
+
+**本节的引号约定**(比本文件开头的约定宽一点):粘贴块里弯引号 “…” 括起来的,都是逐字引用其后标注的那个文件那一行,
+连 `*` / `**` 强调符号也照抄;不再只限于 `PLAN-STAGE1.md`。`<尖括号>` 是必须由你替换的空位。
+
+**什么时候用哪一个**
+* **A-1**:N = 200 读数之后,你选 E3(C-2(b))。放进 `docs/PLAN-STAGE1.md` §K,只由你放。
+* **A-2**:你在 N = 200 之前说"B"(C-0)。同上,只由你放。
+* **A-3**:走查记录,就是本文件的 §1 / §1b / §2 / §3 / §4,原样不动。
+* 你不回:三个都不写,§K 现有文字照原样管(`PLAN-STAGE1.md:526-554`,第 10 条在 `:808-810`)。
+* 不选 E3、但想写 Window 2 的后果(C-2(e)):不需要 §K 框,直接把你的话填进 `docs/PLAN-WINDOW2.md` §2 那几格,带日期。
+* C-2(f)("P1-12 等一个已知阳性")不是 §K 框,一句话说给代理即可(`PLAN-V1.37.md:243`)。
+
+### A-1:N = 200 读数之后,你选 E3
+
+```markdown
+> ### 📌 DECIDED <YYYY-MM-DD> (JST) by the owner, AFTER reading the N = 200 record: E3 and its price
+>
+> Written by the owner, or drafted by the agent and confirmed in the owner's words: "<verbatim>". Nothing above is
+> reworded. No threshold, branch, denominator or exclusion moves.
+>
+> 1. The Stage 1 window ended by its own rule at the N = 200 reading of <YYYY-MM-DD>. Its branch, read by the owner,
+>    was <GO / STOP / STOP BUILDING (UNINTERPRETABLE)>.
+> 2. *(only if the branch is STOP or STOP BUILDING)* The owner overrides, for exactly one good, a one-time depth
+>    unlock (PLAN-V1.37 §E, E3) with every existing install grandfathered: §K's “instrumentation and
+>    placement, not price and not Pro” (`PLAN-STAGE1.md:551-552`); “zero still means *do not build Pro*”
+>    (`PLAN-STAGE1.md:176`); “near-zero over the window **kills H2 as well as H1** — do not build Pro”
+>    (`PLAN-V2-PRODUCT.md:547`); “**Nobody tips** → the constraint is distribution or desire, not checkout. Do not
+>    build Pro.” (`PLAN-V2-PRODUCT.md:236`); §J “Not in this plan”, item “**Building Pro before Stage 1 reports** — the
+>    whole point of the staging” (`PLAN-V2-PRODUCT.md:633, 639`); and PLAN-WINDOW §G “What must not be built”, row
+>    “**A second SKU**” (`PLAN-WINDOW.md:265-269`), whose separate precondition, the counter split, v1.38's P1-11
+>    meets. This is a decision made after seeing the reading, and is recorded as such.
+> 2b. *(only if the branch is GO, and only if wanted)* GO's “Run to day 90 anyway for the repeat rate.”
+>    (`PLAN-STAGE1.md:528-529`) is cut short on <YYYY-MM-DD>, so v1.38's offer-changing items may be released before
+>    Pacific 2026-12-09.
+> 3. E3's price: CNY <owner's figure> (base territory CHN, manual price), effective the day the release carrying it is
+>    live. The road west's price: <unchanged at CNY 10.00 / owner's figure>.
+> 4. *(optional)* E3's boundary: <candidate 1 / candidate 2 / owner's words>.
+> 5. Window 2 is pre-registered in `docs/PLAN-WINDOW2.md` (variant E) before that release's `--submit`. Its branch
+>    consequences, in the owner's words: <GO-2 → … / BELOW-FLOOR → … / ZERO → … / ZERO, pipeline unproven → … /
+>    owner box mid-window → … / refunds at D₀′+180 → … / a purchase review or a lost-access report → …, or "as drafted
+>    in PLAN-V1.37 §H" for the rows §H drafts>.
+```
+
+**和底本不同的地方,以及为什么:**
+1. **引文改成逐字。** 底本第 2 条的几句是转述或拼接:
+   * "not price and not Pro" (§K) —— 原文是 “instrumentation and placement, not price and not Pro”(`PLAN-STAGE1.md:551-552`),补全并标了行号。
+   * "zero still means do not build Pro" (`:174-176`) —— 原文 `:176` 带强调:“zero still means *do not build Pro*”。
+   * "Nobody tips → … Do not build Pro" —— 原文在 `PLAN-V2-PRODUCT.md:236` 一行里,照抄全句。
+   * "Not in this plan: … Building Pro before Stage 1 reports" (`:639`) —— "Not in this plan" 是 `:633` 的小节标题,不是句子的一部分;改成标题 + 条目两段引文。
+2. **加了 2b(底本没有)。** §0 和 §I 都说 GO 之下 v1.38 的改价页部分不早于太平洋 12-09 上线,"unless the owner writes in the C-2 box that the repeat-rate run is cut short"(`PLAN-V1.37.md:56`、`:384`),C-2(b) 也列了它(`:98`),但底本 A-1 没有地方写这一句。不需要就删掉 2b。
+3. **第 5 条列全了 `PLAN-WINDOW2.md` 变体 E 的每一个空格。** 底本只列 ZERO / BELOW-FLOOR / GO-2 三个;`PLAN-WINDOW2.md` 还留了 "ZERO, pipeline unproven"、"owner box mid-window"、day-180 退款、被盯的评论和丢失权限报告。§H 只给其中一部分起草了后果(`PLAN-V1.37.md:365-372`),所以 "as drafted in PLAN-V1.37 §H" 只能用于 §H 写过的那几行。
+4. 第 5 条注明了"variant E"。
+
+### A-2:N = 200 之前,你选 B
+
+```markdown
+> ### 📌 ENDED EARLY <YYYY-MM-DD> (JST) by the owner's decision, after the N = 35 and N = 100 readings had been read
+>
+> This is a decision made after seeing data, recorded as such. §K says of deciding after a checkpoint: “What is NOT
+> available any more is deciding it after seeing a checkpoint” (`PLAN-STAGE1.md:390-391`).
+> The final Stage 1 record is the N = 100 reading of 2026-10-26: N = 122, 0 purchases, BOUND WITHHELD, for the one
+> reason that no matched known-positive purchase exists (`docs/measurements/stage1-checkpoints.md:228-246`). No bound
+> is quoted, and the zero is UNINTERPRETABLE. If a known positive is matched later, 3/122 = 2.46% may be quoted as
+> arithmetic, never as a registered reading.
+> Nothing above is reworded. Window 2 begins with the first release that changes the offer, under a pre-registration
+> committed before its `--submit`. E3's price is the owner's, recorded before that release.
+>
+> The owner also overrides, for exactly one good, a one-time depth unlock (PLAN-V1.37 §E, E3) with every existing
+> install grandfathered, the written rules that are not §K branches and still bind when the window ends at
+> N = 122 with 0 purchases: “zero still means *do not build Pro*” (`PLAN-STAGE1.md:176`); “near-zero over the
+> window **kills H2 as well as H1** — do not build Pro” (`PLAN-V2-PRODUCT.md:547`); “**Nobody tips** → the
+> constraint is distribution or desire, not checkout. Do not build Pro.” (`PLAN-V2-PRODUCT.md:236`); §J “Not in this
+> plan”, item “**Building Pro before Stage 1 reports** — the whole point of the staging” (`PLAN-V2-PRODUCT.md:633,
+> 639`); and PLAN-WINDOW §G “What must not be built”, row “**A second SKU**” (`PLAN-WINDOW.md:265-269`). This too is
+> a decision made after seeing data.
+```
+
+**和底本不同的地方:** 只有引文改成逐字(同 A-1 第 1 点),并给 "§K forbids deciding 'after seeing a checkpoint'" 补上原句和行号
+(`PLAN-STAGE1.md:390-391`),给 N = 100 读数补上出处(`stage1-checkpoints.md:228-246`)。3/122 = 2.459…%,写作 2.46%,和底本一致。
+**它只在 N = 200 读数之前有效**:标题写的是"after the N = 35 and N = 100 readings";N = 200 之后就不是 B 了,而是 A-1。
+
+### A-3:走查记录
+
+原样不动:本文件 §1 / §1b(走了,代理填数字)、§2 和 §4(决定不走,只由你贴或用你的原话确认)、§3(§L 结果)。
+最小走查下,Mac 上第 1 道检查的放弃,由你在选 (b) 时记在 §4 下;第 2、3 道要么在退款之前补走,要么由你记在 §4 下。代理一条都不记
+(`PLAN-V1.37.md:605`)。
+
+**核对时发现、但这里没改的一处:** §1、§3、§4 的粘贴块写死了 "App Store 1.36 (61)" / "1.36 (62)"(本文件 `:35`、`:139-141`、
+`:149-151`、`:173-174`)。走查在"批准日杂事之后正在上架的那个版本"上做(`PLAN-V1.37.md:97`),11-15 那天可能已经是 1.37
+(macOS 62 / iOS 63)。P0-1 的杂事包括 DRAFTS,P0-2 的杂事清单没有列它(`PLAN-V1.37.md:202`)。到时按实际版本改那几个数字。
