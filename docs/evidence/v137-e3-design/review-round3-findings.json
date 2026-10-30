@@ -1,0 +1,154 @@
+{
+ "review": "E3 design red-line review, round 3 (read-only)",
+ "target": "docs/DESIGN-E3-SAMPLER.md @ v137-release 25a472e",
+ "date": "2026-10-30",
+ "counts": {
+  "BLOCKER": 0,
+  "SERIOUS": 1,
+  "MINOR": 4,
+  "NIT": 5
+ },
+ "ready_for_gated_code": "after r3-S1 and r3-M1 are folded into §5.5/§9 (both are spec edits, no v1.37 change)",
+ "checked_clean": [
+  "Every design claim about the shipped v1.37 marker's behaviour holds at 25a472e (see r3-N5).",
+  "No production code removes a defaults key or a support file of the user's (removeItem/removePersistentDomain only in capture, UI-test isolation and CloudKit state files).",
+  "Clock change: no row reads a date; an unverified AppTransaction on a skewed clock is 'unavailable' → S, never N.",
+  "Downgrade/upgrade: the grant is its own key and file; older builds write only their own keys; the marker is write-once.",
+  "Backup restore, Migration Assistant, offload: marker and both grant copies travel with the container → row 1/2.",
+  "iCloud sync: no access state is a CloudKit record type; synced N3 content is kept and not ridden.",
+  "Threshold: B1/S1/MINOR-1/5/7 fixes hold; T only rises; each platform's gated build ≥ max(T_build).",
+  "No price or price placeholder in the document."
+ ],
+ "findings": [
+  {
+   "id": "r3-S1",
+   "severity": "SERIOUS",
+   "section": "§5.5 rows 10-14; §5.9 item 4; §9.1",
+   "claim": "An existing install whose marker reads .unreadable has no offline or account-independent route to a grant. The design admits the gap, says the gated build 'should' close it 'before E3 ships', and then leaves it out of the truth table and the test list, so code built from §5.5/§9.1 ships it. Path: a pre-E3 rider (v1.37 or later, real data on disk) whose marker bytes are corrupt or not Data → Cohort.unreadable → rows 10-14 → rule 3 only. Signed in to a non-legacy App Store account (a JP or work account; Media & Purchases can differ from the iCloud account that syncs their data) → row 11 N on every online launch. The marker is write-once, so it never heals. The same install with NO marker would get row 4 G from its prior data. That makes this an existing install treated as new, and grandfathering that depends on the network, which PLAN-V1.37 §K forbids.",
+   "evidence": [
+    "docs/DESIGN-E3-SAMPLER.md:363 '4. .unreadable → Cohort.unreadable ... The gated build should carry this launch's PD into the unreadable case, or add a row for it, before E3 ships.'",
+    "docs/DESIGN-E3-SAMPLER.md:290-294 rows 10-14: 'marker unreadable, or another platform's, or no marker step ran' → only rule 3 (production below → G; not below → N; unavailable → S)",
+    "docs/DESIGN-E3-SAMPLER.md:498-508 §9.1 lists no test for unreadable marker + PD true",
+    "Sources/SettingsKit/InstallCohort.swift:263-274 '...That is WORSE than having no marker at all ... Closing the gap is E3's: let .unreadable carry the prior data the gated build computes, or give \"unreadable and this launch's prior data true\" its own row.'",
+    "Sources/SettingsKit/InstallCohort.swift:312-314 (.present/.unreadable write nothing, so the unreadable state is permanent)",
+    "docs/PLAN-V1.37.md:438 (§K) 'Grandfathering that depends on the network ...' is listed as not done"
+   ],
+   "fix": "Decide it in the table, not in prose. Split Cohort.unreadable into .unreadable(priorDataPresent:), for real unreadable bytes or notData, carrying the broad PD this launch computed, and .notRecorded, for the isolation nil case and another platform's marker. Add a row above row 10: 'marker unreadable, this launch's PD true → G priorDataAtFirstMarker'. It is the same evidence row 4 already accepts. Add a §9.1 test ('corrupt marker bytes + settings blob present, AppTransaction production not-below → G') and a §9.2 mutation (drop the row → red). Keep isolation (nil) unable to grant or write."
+  },
+  {
+   "id": "r3-M1",
+   "severity": "MINOR",
+   "section": "§9.1, §9.2, §11 item 10 vs §5.9 items 1 and 3",
+   "claim": "Round 2 replaced the re-read of this launch's own marker write with a PD that the gated build computes and keeps (NIT-4). §9.1, §9.2 and §11 still specify the removed re-read. A test or implementation written from §9 rebuilds the failure path round 2 removed: 'write did not happen (Running nil, encode nil) → PD false → rows 5-9'. For a pre-E3 rider who skipped 1.37/1.38 this gives S offline and N online under a non-legacy account, where §5.9 gives row 4 G. With Running nil the write never happens, so the N repeats on every launch.",
+   "evidence": [
+    "docs/DESIGN-E3-SAMPLER.md:504 '**The marker read** (§5.9): pre-launch .absent plus this launch's marker with PD true → row 4 G; .absent with no readable write → rows 5–9'",
+    "docs/DESIGN-E3-SAMPLER.md:521 mutation 'Drop the row-4 read of this launch's own marker | row 4'",
+    "docs/DESIGN-E3-SAMPLER.md:598 '10. The v1.37 marker drops PD on .absent ... E3 reads PD from this launch's own write instead (§5.9).'",
+    "docs/DESIGN-E3-SAMPLER.md:360-362 §5.9 items 1 and 3: the gated build computes PD into a local before the marker call; '.absent → Cohort.absent(priorDataPresent: <the kept local>) ... Round 1 re-read this launch's write instead ... That workaround is gone'",
+    "Sources/SettingsKit/InstallCohort.swift:308-309 (running nil → write nil), :210-214 (encoded() nil → no write)"
+   ],
+   "fix": "Rewrite §9.1's 'marker read' bullet as '.absent + kept PD true → row 4 G, including when this launch wrote no marker (Running nil / encode nil)'. Replace the §9.2 mutation with 'derive row 4's PD from the key after the write instead of the kept local → red when the write is suppressed'. Correct §11 item 10."
+  },
+  {
+   "id": "r3-M2",
+   "severity": "MINOR",
+   "section": "§5.10 (grace transition copy), §5.6 last bullet, §9.3 store-split scan",
+   "claim": "The design asks for the grace-ended line to show 'exactly once' and 'after a session that was in grace'. Both facts span processes, so they must be persisted. Yet §5.6 says a source scan pins that 'no other E3 key is written', and §9.3 pins 'the grant key appears in one write and no remove', while §5.7's repair of a missing copy is a second write site. As written, the tests forbid the feature the design requires. An implementer forced to choose is likely to bend the scan, the one guard against a stored negative state (S-new-1), or to persist something that later feeds the access decision.",
+   "evidence": [
+    "docs/DESIGN-E3-SAMPLER.md:390 'The first time the depth card shows after a session that was in grace, it says so ... A test pins that the line shows exactly once.'",
+    "docs/DESIGN-E3-SAMPLER.md:322 'So nothing is written on N. The only persisted access state is the grant (§5.7) ... A source scan pins that no other E3 key is written (§9).'",
+    "docs/DESIGN-E3-SAMPLER.md:551 'the grant key appears in one write and no remove'",
+    "docs/DESIGN-E3-SAMPLER.md:337 '**On every alreadyGranted launch, a missing copy is recreated** from the surviving bytes'"
+   ],
+   "fix": "Name one display-only key, for example NihongoRide.depthGraceNotice.v1, that holds 'a grace session happened' and 'notice shown'. Have the scan allow exactly that key by name and assert that DepthGrandfather and depthIsOpen never read it. Restate §9.3 as one grant-writing function, called from grant(_) and from the copy repair, with no remove."
+  },
+  {
+   "id": "r3-M3",
+   "severity": "MINOR",
+   "section": "§5.3, §5.10, §11 'Not verified today'",
+   "claim": "The design says the meaning of originalAppVersion on a universal purchase's second platform is unmeasured and cannot be learned in the sandbox, so it relies on the shape heuristic alone. StoreKit now exposes AppTransaction.originalPlatform ('The platform on which the customer originally purchased the app'; iOS 18.4 / macOS 15.4). With it the app can know which platform's numbering the value uses, instead of inferring that from the value's shape. It would also let the owner decide Q3-adjacent cases on evidence, such as a legacy iPhone account's first Mac install, rather than accepting them as N. The deployment targets are macOS 14 / iOS 17, so shape stays the fallback.",
+   "evidence": [
+    "https://developer.apple.com/tutorials/data/documentation/storekit/apptransaction/originalplatform.json (read 2026-10-30): abstract 'The platform on which the customer originally purchased the app.'; introducedAt iOS 18.4, macOS 15.4",
+    "docs/DESIGN-E3-SAMPLER.md:383 'Whether that first install reads a pre-E3 originalAppVersion is unmeasured and cannot be tested in the sandbox'",
+    "docs/DESIGN-E3-SAMPLER.md:601 'originalAppVersion on a universal purchase's second platform (§5.10). §5.3 makes either answer safe.'",
+    "project.yml:20-22 deploymentTarget macOS 14.0, iOS 17.0"
+   ],
+   "fix": "Add to AppTransactionReading an optional originalPlatform, read where available. Classify by platform when present (macOS → version vs T_version; other → build vs max(T_build)) and by shape otherwise. If platform and shape disagree, return unavailable (S), never N. Add table tests. Record in §10 the owner question this opens: grant a legacy account's first install on its other platform when originalPlatform proves a pre-E3 purchase. Default: §E's rules as written."
+  },
+  {
+   "id": "r3-M4",
+   "severity": "MINOR",
+   "section": "§7.4 App Review notes; §5.1 sandbox bullet",
+   "claim": "App Review risk the design reduces to instructions. The reviewer only sees the IAP on a sampler. Any review device or Mac that ran a reviewed 1.37 or 1.38 build already has a marker below T, so it gets row 2 G: the menu has no lock and Settings has no row. The macOS app has been reviewed 37 times under this bundle id, and a sandboxed container survives deletion. 'Use a new macOS user account' is a request, not a mechanism. The likely outcome is a 2.1 'could not locate the In-App Purchase' rejection of the first build that carries the new IAP, on a release whose IAP must be reviewed with the binary.",
+   "evidence": [
+    "docs/DESIGN-E3-SAMPLER.md:459 'If this device had an earlier version of Nihongo Ride installed, every level is already open and the purchase is not shown ... On a Mac, deleting the app keeps its data, so use a new macOS user account'",
+    "docs/DESIGN-E3-SAMPLER.md:181 '76 released versions; macOS 37 ...'",
+    "docs/DESIGN-E3-SAMPLER.md:162 'Sandbox (App Review, TestFlight): rule 3 is ignored; only rules 1–2 apply.' (rules 1–2 still grant a reused device)",
+    "project.yml:74 com.apple.security.app-sandbox: true"
+   ],
+   "fix": "Attach a screen recording of the sampler flow (locked level → depth card → purchase sheet → level rides) to the review notes and the IAP review screenshot, and draft the 2.1 reply in advance. Give the owner one explicit option at C-2: a grandfathered install shows a read-only Settings line ('N3–N1 Levels: included with your install'), with no buy and no Restore, so a reviewer on a reused device can see the product exists. That breaks §9.4 V2's byte-identical grandfathered Settings and is the owner's call. Default: notes plus recording only."
+  },
+  {
+   "id": "r3-N1",
+   "severity": "NIT",
+   "section": "§5.5 row 0a; §5.9 item 1; §5.10 last bullet",
+   "claim": "Row 0a pre-empts §5.9 step 1's broader PD. The broad expression differs from v1.37's only when the settings key is nil and a support store exists (a 1.0/1.1 install). That is exactly row 0a's second clause, which runs first and returns S with no marker write. So the stated benefit ('a 1.1 rider who upgrades straight to E3 offline goes to row 4 instead of row 8') never happens on the first gated launch. That launch is S, and launch 2 gets row 4 G once the end-of-init settings save has run. No loss, since S is open, but the rationale is false. 'Support files' in row 0a is also undefined (which files? does the directory supportFileURL creates count?), and the scope of that set decides which legacy installs get S.",
+   "evidence": [
+    "docs/DESIGN-E3-SAMPLER.md:280 row 0a '... or the settings key reads nil while support files exist (§5.10)'",
+    "docs/DESIGN-E3-SAMPLER.md:360 'with v1.37's expression, the gated build would send a 1.1 rider who upgrades straight to E3 offline to row 8 instead of row 4'",
+    "Sources/SettingsKit/InstallCohort.swift:327-342 (1.0/1.1 kept only review.json and history.json; no settings key)",
+    "Sources/NihongoRideApp/AppModel.swift:2894-2895 supportFileURL creates the NihongoRide directory as a side effect"
+   ],
+   "fix": "List row 0a's file set exactly. Then either narrow 0a's settings-nil clause to 'nil AND at least one store load returned .unreadable', so a readable 1.x install reaches row 4 on its first gated launch, or drop step 1's claim and say that the 1.x rider gets one S launch and then row 4. Add the 1.1-rider sequence as a two-launch test."
+  },
+  {
+   "id": "r3-N2",
+   "severity": "NIT",
+   "section": "§9.3 free-set golden vs §2.2",
+   "claim": "'Every id in it resolves in the catalog' conflicts with §2.2's corpus withdrawal rule and with 'never shrinks'. When a free id is withdrawn for every install, that test goes red, and its obvious repair (remove the id from DepthFreeSet) turns the never-shrink test red, or worse, gets made in the same commit as a 'fix'.",
+   "evidence": [
+    "docs/DESIGN-E3-SAMPLER.md:553 'every id in it resolves in the catalog'",
+    "docs/DESIGN-E3-SAMPLER.md:83 'if the corpus withdraws an entry for every install ... it is withdrawn for samplers too'",
+    "docs/DESIGN-E3-SAMPLER.md:80 'every id ever in the set still is'",
+    "Sources/VocabKit/VocabStore.swift:174-176 (withdrawn words are a real, recurring case)"
+   ],
+   "fix": "Make the test 'every id resolves in the catalog OR is a recorded corpus withdrawal'. Withdrawn ids stay in DepthFreeSet."
+  },
+  {
+   "id": "r3-N3",
+   "severity": "NIT",
+   "section": "§7.1 entrance 1; §10",
+   "claim": "§7.1 reads PLAN-V1.37 §K's 'A 0 km entrance (P1-9), or any entrance to a purchase that shows nothing on purchase' as banning only P1-9, which lets a 0 km entrance in. That interpretation of an owner-governed §K line is not labelled as the agent's reading, and §K itself says agent-authored meaning is not added.",
+   "evidence": [
+    "docs/DESIGN-E3-SAMPLER.md:431 'It is at 0 km, which is allowed for this one because the purchase opens something on the next tap'",
+    "docs/PLAN-V1.37.md §K: 'A 0 km entrance (P1-9), or any entrance to a purchase that shows nothing on purchase.'; 'Any agent-authored §K box that adds meaning'"
+   ],
+   "fix": "Label it '(agent's reading, 2026-10-07 delegation)' and add it to §10 as a question for C-2 with a default."
+  },
+  {
+   "id": "r3-N4",
+   "severity": "NIT",
+   "section": "§7.3/§7.4 (IAP setup)",
+   "claim": "Nothing states that the depth IAP is never promoted. A promoted IAP on the product page could be bought by a grandfathered rider for content they already have free. It would also arrive as a PurchaseIntent that nothing handles, which PLAN-V1.37 §K bans without handling and tests.",
+   "evidence": [
+    "docs/DESIGN-E3-SAMPLER.md (grep 'promot|PurchaseIntent': no match)",
+    "docs/PLAN-V1.37.md §K 'A Promoted IAP without PurchaseIntent.intents handling and tests.'"
+   ],
+   "fix": "State 'not promoted' in §7.4, and have the release script read back that the IAP has no promotedPurchase before submit."
+  },
+  {
+   "id": "r3-N5",
+   "severity": "NIT",
+   "section": "§5.9, §9.2, §5.1/§5.3, §1",
+   "claim": "Citations about the shipped marker point at v137-marker @ 56a2ebc/8b06f79 line numbers. At the merged release HEAD 25a472e these have all moved. Every BEHAVIOURAL claim the design makes about the marker holds in the shipped code: .absent carries no PD; recordLaunch writes only on .absent and returns the pre-launch observation; strict schema-1 decoder; per-platform firstSeenBuild(isBefore:on:) nil across platforms; encoded() nil → no write; PD = settings key OR odometer not missing, computed before the settings save; nil on isolated launches; golden markerJSON137 (mac 62) / markerJSON137iOS (iOS 63). Only the line numbers and some 'today' numbers are stale.",
+   "evidence": [
+    "docs/DESIGN-E3-SAMPLER.md:355-357 cites InstallCohort.swift:225-254, :308-316, :278-289 and AppModel.swift:420-428, 625-636 → at 25a472e: Observation 243-281, decide 305-316, recordLaunch 352-359, Marker init 166-172; AppModel installCohortAtLaunch :424, marker call :620-648",
+    "docs/DESIGN-E3-SAMPLER.md:209, :304, :377-378 cite :134-138, :193-196, :198-205, tests :273, :294-305 → now Running.init 141-146, firstSeenBuild(isBefore:on:) 202-205, encoded() 210-214, writtenBytesReadBack :353, noLaunchBeforeFirstUnlock :389",
+    "docs/DESIGN-E3-SAMPLER.md:536 golden strings ':18, 242' → InstallCohortTests.swift:19, :23",
+    "docs/DESIGN-E3-SAMPLER.md:157/:181/:209 'macOS 61 and iOS 62 today', 'history 1…62' → project.yml:136, 275 now 62 / 63",
+    "docs/DESIGN-E3-SAMPLER.md:27-34 dictation 5,935 → 5,928 after P0-2's seven withholdings (PLAN-V1.37 dated corrections, 2026-10-28)"
+   ],
+   "fix": "Re-cite the marker at the release HEAD by symbol name, the way §5.9 already cites the golden strings, and refresh the 'today' numbers, or mark them as of 9c09ab7."
+  }
+ ]
+}
