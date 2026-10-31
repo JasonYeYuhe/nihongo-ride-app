@@ -55,11 +55,13 @@ set -uo pipefail
 #                   This is what CI runs, and it runs THIS script rather than a second copy of
 #                   the gate list — one rule written twice will drift, and this repo has three
 #                   recorded instances of exactly that.
-# --vocab-base REF  what check_vocab_diff.py compares against. CI passes the push's "before" or
-#                   the PR's base. Without it the runner compares against the last shipped
-#                   release, release_numbers.BASELINE_REF — this release's whole corpus change
-#                   plus the working tree — never against HEAD alone, which on a clean tree is a
-#                   comparison with itself (see the vocabulary gate below).
+# --vocab-base REF  what check_vocab_diff.py compares against. CI passes scripts/ci_vocab_base.py's
+#                   base: the newest successful run's head on a push (never older than
+#                   BASELINE_REF), the PR's base on a PR. Without it the runner compares
+#                   against the last shipped release, release_numbers.BASELINE_REF — this
+#                   release's whole corpus change plus the working tree — never against HEAD
+#                   alone, which on a clean tree is a comparison with itself (see the vocabulary
+#                   gate below).
 # --vocab-only      run ONLY the vocabulary gate and exit with its verdict: 0 pass, 1 fail,
 #                   3 vacuous. Not a release check — the floor below does not apply to it. It
 #                   exists so scripts/test_check_vocab_diff.py can drive THIS file's gate end to
@@ -321,7 +323,7 @@ echo
 
 run_swift_test
 
-# The python self-tests — eleven since 2026-10-03: the sales instrument (test_sales_report.py) and
+# The python self-tests — fourteen since v1.37 round 1: the sales instrument (test_sales_report.py) and
 # the Stage 1 walk tool (test_stage1_walk.py) got theirs on 2026-09-16, the build-root helper
 # (test_build_root.py) on 2026-09-17, the review watch (test_review_watch.py, the §K guardrail
 # reader's fixture test — its LIVE read needs the ASC key and is not a gate) on 2026-09-25
@@ -329,7 +331,11 @@ run_swift_test
 # `I'''m`) on 2026-09-29, when its merge reached main, and two that reached main together on
 # 2026-10-03: the orphaned-build-root sweep (test_sweep_build_roots.py) and the review-sheet
 # importer's byte-for-byte write (test_import_review_sheets.py — its --apply reformatted all five
-# n*.json at indent=2). Until v1.32 §D6 these were run by nothing at all.
+# n*.json at indent=2); and in v1.37 CI's vocabulary base (test_ci_vocab_base.py — a cancelled
+# push's corpus change was checked by nothing), the 1.37 submit script's own guards
+# (test_submit_1_37.py — round 1 found nothing ran them but the owner's dry run) and instrument 1b's
+# release predicate (test_check_propagated_exclusions.py — a katakana match of the corrected reading,
+# and n2-b034's 一晩中, v1.37 round 1). Until v1.32 §D6 these were run by nothing at all.
 for t in scripts/test_*.py; do
   run_gate "$(basename "$t")" "" python3 "$t"
 done
@@ -391,8 +397,8 @@ printf '  gates run:   %d\n' "$TOTAL"
 # printed a clean summary. A threshold that the failure mode cannot cross is not a threshold.
 # Adding a gate raises the total and still passes; REMOVING one has to be done in a diff that also
 # moves this number, which is the whole point. (v1.32 pre-submission review.)
-FLOOR=17
-if [ -n "$HEADLESS" ]; then FLOOR=16; fi
+FLOOR=20
+if [ -n "$HEADLESS" ]; then FLOOR=19; fi
 if [ "$TOTAL" -lt "$FLOOR" ]; then
   echo
   echo "  ❌ only $TOTAL gate(s) ran. This script expects at least $FLOOR; a glob that matched nothing"

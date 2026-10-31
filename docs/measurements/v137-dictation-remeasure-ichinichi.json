@@ -1,0 +1,452 @@
+{
+ "measurement": "scripts/check_propagated_exclusions.py",
+ "voice": "com.apple.voice.compact.ja-JP.Kyoko",
+ "evidence": "v137-r1-ichinichi-remeasure",
+ "instrument": "1b: the sentence stays in kanji and exactly one CONTIGUOUS SPAN of tokens is replaced by kana, so word boundaries and accent context are unchanged. A byte-identical render is proof about that span in that sentence; a non-match stays silent.",
+ "calibration": {
+  "rebuildIdentity": "12/12 — string handling only, no linguistic weight",
+  "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+  "negativeControl": "48 decoy substitutions, 0 spurious byte matches"
+ },
+ "release": [
+  "n2-b1180",
+  "n4-b186"
+ ],
+ "keep": [
+  {
+   "id": "n2-g300",
+   "surface": "一日",
+   "corpus": "いちにち",
+   "kyoko": [
+    "ついたち"
+   ]
+  },
+  {
+   "id": "n2-b029",
+   "surface": "一日",
+   "corpus": "いちにち",
+   "kyoko": [
+    "ついたち"
+   ]
+  },
+  {
+   "id": "n2-b1064",
+   "surface": "一日",
+   "corpus": "いちにち",
+   "kyoko": [
+    "ついたち"
+   ]
+  },
+  {
+   "id": "n3-b020",
+   "surface": "十分",
+   "corpus": "じゅっぷん",
+   "kyoko": [
+    "じゅうぶん"
+   ]
+  },
+  {
+   "id": "n4-b151",
+   "surface": "一日",
+   "corpus": "いちにち",
+   "kyoko": [
+    "ついたち"
+   ]
+  },
+  {
+   "id": "n5-b018",
+   "surface": "一日",
+   "corpus": "いちにち",
+   "kyoko": [
+    "ついたち"
+   ]
+  }
+ ],
+ "silent": [
+  "n1-b678",
+  "n2-b034",
+  "n3-g327",
+  "n5-b303"
+ ],
+ "detail": {
+  "n1-b678": {
+   "verdict": "SILENT",
+   "disputed": [
+    "一日"
+   ],
+   "exJPsha1": "430dd219f312",
+   "spans": {
+    "一日 (いちにち)": {
+     "candidates": {
+      "いちじつ": "3ac3dba3907f",
+      "いちにち": "387e8e994403",
+      "ついたち": "0468ff9d719c",
+      "イチジツ": "09c707c48c0e",
+      "イチニチ": "0c104088ee04",
+      "ツイタチ": "113a3f9aca85"
+     },
+     "byteIdentical": []
+    }
+   }
+  },
+  "n2-g300": {
+   "verdict": "KEEP",
+   "disputed": [
+    "一日"
+   ],
+   "exJPsha1": "7c8b657cd94e",
+   "spans": {
+    "一日 (いちにち)": {
+     "candidates": {
+      "いちじつ": "1671e16fe39e",
+      "いちにち": "0b8cfda6de8a",
+      "ついたち": "7c8b657cd94e",
+      "イチジツ": "2ec861ec77e3",
+      "イチニチ": "578a80de80c2",
+      "ツイタチ": "ae7be3e23ecb"
+     },
+     "byteIdentical": [
+      "ついたち"
+     ]
+    }
+   }
+  },
+  "n2-b029": {
+   "verdict": "KEEP",
+   "disputed": [
+    "一日"
+   ],
+   "exJPsha1": "44735db0459c",
+   "spans": {
+    "朝 (あさ)": {
+     "candidates": {
+      "あさ": "44735db0459c",
+      "あした": "a8a32af7c51b",
+      "ちょう": "1d98ecd3c0e0"
+     },
+     "byteIdentical": [
+      "あさ"
+     ]
+    },
+    "一日 (いちにち)": {
+     "candidates": {
+      "いちじつ": "f00466d458e1",
+      "いちにち": "31c04bb5fcb9",
+      "ついたち": "44735db0459c",
+      "イチジツ": "d291ced3a91c",
+      "イチニチ": "c1c092a835a3",
+      "ツイタチ": "f75a13f013c1"
+     },
+     "byteIdentical": [
+      "ついたち"
+     ]
+    }
+   }
+  },
+  "n2-b034": {
+   "verdict": "SILENT",
+   "disputed": [
+    "一",
+    "一晩",
+    "一晩中"
+   ],
+   "exJPsha1": "62bacad6d44d",
+   "spans": {
+    "一 (ひと)": {
+     "candidates": {
+      "いち": "8ccd7c635a36",
+      "いっ": "441afe7899ed",
+      "いつ": "da46d41b818b",
+      "はじめ": "154f843ef096",
+      "ひ": "1dec4057bc70",
+      "ひい": "e45765ac0c70",
+      "ひと": "62bacad6d44d",
+      "びと": "207dfc6cf2ab"
+     },
+     "byteIdentical": [
+      "ひと"
+     ]
+    },
+    "一晩 (ひとばん)": {
+     "candidates": {
+      "いちばん": "b8324c55e011",
+      "ひとばん": "47a072dcedfd",
+      "イチバン": "8ccd7c635a36",
+      "ヒトバン": "62bacad6d44d"
+     },
+     "byteIdentical": [
+      "ヒトバン"
+     ]
+    },
+    "一晩中 (ひとばんじゅう)": {
+     "candidates": {
+      "いちばんじゅう": "aeb4d5a7861b",
+      "いちばんちゅう": "d095faa6c903",
+      "ひとばんじゅう": "edf44b655024",
+      "ひとばんちゅう": "a9028f6e455f",
+      "イチバンジュウ": "45bb8a5cd213",
+      "イチバンチュウ": "e257275dd749",
+      "ヒトバンジュウ": "507a153dc85d",
+      "ヒトバンチュウ": "4e11050ef312"
+     },
+     "byteIdentical": []
+    },
+    "出し (だし)": {
+     "candidates": {
+      "いだし": "9e8831817f11",
+      "だし": "62bacad6d44d"
+     },
+     "byteIdentical": [
+      "だし"
+     ]
+    }
+   }
+  },
+  "n2-b1064": {
+   "verdict": "KEEP",
+   "disputed": [
+    "一日"
+   ],
+   "exJPsha1": "2a07cdfdba98",
+   "spans": {
+    "一日 (いちにち)": {
+     "candidates": {
+      "いちじつ": "8feb1426e324",
+      "いちにち": "021a6147e1c9",
+      "ついたち": "2a07cdfdba98",
+      "イチジツ": "987d74db5eaa",
+      "イチニチ": "dea261175a3f",
+      "ツイタチ": "c71b6e2c2581"
+     },
+     "byteIdentical": [
+      "ついたち"
+     ]
+    }
+   }
+  },
+  "n2-b1180": {
+   "verdict": "RELEASE",
+   "disputed": [
+    "十"
+   ],
+   "exJPsha1": "ea0d473ee1eb",
+   "spans": {
+    "十 (じゅっ)": {
+     "candidates": {
+      "じっ": "92ee45e601a5",
+      "じゅう": "a81447d76b41",
+      "じゅっ": "ea0d473ee1eb",
+      "と": "02c6cfc28147",
+      "とう": "b9c149a8edff"
+     },
+     "byteIdentical": [
+      "じゅっ"
+     ]
+    },
+    "十センチ (じゅっせんち)": {
+     "candidates": {
+      "じっせんち": "92ee45e601a5",
+      "じゅうせんち": "61d5685343f7",
+      "じゅっせんち": "ea0d473ee1eb",
+      "ジッセンチ": "5d8da1699340",
+      "ジュウセンチ": "b232e5267949",
+      "ジュッセンチ": "ea0d473ee1eb"
+     },
+     "byteIdentical": [
+      "じゅっせんち",
+      "ジュッセンチ"
+     ]
+    }
+   }
+  },
+  "n3-g327": {
+   "verdict": "SILENT",
+   "disputed": [
+    "一日中"
+   ],
+   "exJPsha1": "acaf0f5f5cba",
+   "spans": {
+    "一日中 (いちにちじゅう)": {
+     "candidates": {
+      "いちにちじゅう": "0d6eaeac0628",
+      "いちにちちゅう": "5268c48a5540",
+      "イチニチジュウ": "0c97ac6c7ad9",
+      "イチニチチュウ": "0ed18cbfe8ff"
+     },
+     "byteIdentical": []
+    }
+   }
+  },
+  "n3-b020": {
+   "verdict": "KEEP",
+   "disputed": [
+    "十分"
+   ],
+   "exJPsha1": "cf14d6d9a386",
+   "spans": {
+    "十分 (じゅっぷん)": {
+     "candidates": {
+      "じっぷん": "3e90312ef691",
+      "じゅうふん": "5be07b5ffb06",
+      "じゅうぶん": "cf14d6d9a386",
+      "じゅっぷん": "bcf49e9b8a92"
+     },
+     "byteIdentical": [
+      "じゅうぶん"
+     ]
+    },
+    "歩き (あるき)": {
+     "candidates": {
+      "ありき": "de0edd5fd2cf",
+      "あるき": "cf14d6d9a386"
+     },
+     "byteIdentical": [
+      "あるき"
+     ]
+    }
+   }
+  },
+  "n4-b151": {
+   "verdict": "KEEP",
+   "disputed": [
+    "一日"
+   ],
+   "exJPsha1": "1114e07b9ae8",
+   "spans": {
+    "一日 (いちにち)": {
+     "candidates": {
+      "いちじつ": "67d3a2730d3d",
+      "いちにち": "0097985992ea",
+      "ついたち": "1114e07b9ae8",
+      "イチジツ": "96719b7a322e",
+      "イチニチ": "350a1f1aca45",
+      "ツイタチ": "516a22e2435e"
+     },
+     "byteIdentical": [
+      "ついたち"
+     ]
+    }
+   }
+  },
+  "n4-b186": {
+   "verdict": "RELEASE",
+   "disputed": [
+    "一",
+    "一晩"
+   ],
+   "exJPsha1": "99166a2ef017",
+   "spans": {
+    "古い (ふるい)": {
+     "candidates": {
+      "ふりい": "011b7c9718d0",
+      "ふるい": "99166a2ef017"
+     },
+     "byteIdentical": [
+      "ふるい"
+     ]
+    },
+    "一 (ひと)": {
+     "candidates": {
+      "いち": "fe7b3d7f101b",
+      "いっ": "9c70e30b0c7b",
+      "いつ": "8d156e3bc592",
+      "はじめ": "400fa11a875a",
+      "ひ": "4aed1f8e6394",
+      "ひい": "d5d0017fcb87",
+      "ひと": "99166a2ef017",
+      "びと": "56855038016d"
+     },
+     "byteIdentical": [
+      "ひと"
+     ]
+    },
+    "一晩 (ひとばん)": {
+     "candidates": {
+      "いちばん": "fe7b3d7f101b",
+      "ひとばん": "99166a2ef017",
+      "イチバン": "fe7b3d7f101b",
+      "ヒトバン": "99166a2ef017"
+     },
+     "byteIdentical": [
+      "ひとばん",
+      "ヒトバン"
+     ]
+    },
+    "泊まり (とまり)": {
+     "candidates": {
+      "とまり": "99166a2ef017",
+      "どまり": "b66d6accf3ae"
+     },
+     "byteIdentical": [
+      "とまり"
+     ]
+    }
+   }
+  },
+  "n5-b018": {
+   "verdict": "KEEP",
+   "disputed": [
+    "一日"
+   ],
+   "exJPsha1": "f1cbcc3923fb",
+   "spans": {
+    "一日 (いちにち)": {
+     "candidates": {
+      "いちじつ": "5daea8411246",
+      "いちにち": "86292d865895",
+      "ついたち": "f1cbcc3923fb",
+      "イチジツ": "edd58cf29605",
+      "イチニチ": "e28df8df835b",
+      "ツイタチ": "b1dab42b352b"
+     },
+     "byteIdentical": [
+      "ついたち"
+     ]
+    }
+   }
+  },
+  "n5-b303": {
+   "verdict": "SILENT",
+   "disputed": [
+    "四"
+   ],
+   "exJPsha1": "568ffecd7b54",
+   "spans": {
+    "四 (し)": {
+     "candidates": {
+      "し": "0cf08b57b8e0",
+      "しい": "1d59a2fad92e",
+      "よ": "cc24e879fb84",
+      "よう": "5980945e0440",
+      "よっ": "ef125b3f935b",
+      "よん": "78407885e13a"
+     },
+     "byteIdentical": []
+    },
+    "一日 (ついたち)": {
+     "candidates": {
+      "いちじつ": "0ce366b5acdb",
+      "いちにち": "71417e78f51c",
+      "ついたち": "568ffecd7b54",
+      "イチジツ": "0ea3c4ebe12a",
+      "イチニチ": "7b99c878395e",
+      "ツイタチ": "c3093f53eea3"
+     },
+     "byteIdentical": [
+      "ついたち"
+     ]
+    },
+    "行き (いき)": {
+     "candidates": {
+      "いき": "568ffecd7b54",
+      "ゆき": "8bd7e4c3119a"
+     },
+     "byteIdentical": [
+      "いき"
+     ]
+    }
+   }
+  }
+ },
+ "spec": "docs/measurements/v137-dictation-remeasure-ichinichi-spec.json"
+}

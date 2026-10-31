@@ -43,7 +43,7 @@ noise. But instrument 1 produces something better than synthetic decoys: 494 sen
 PROVEN to match and 27 PROVEN to differ, i.e. real labelled data. Measured against those:
 
     recall           27/27  = 100%   (every proven mismatch was flagged)
-    false positives   0/494 =   0%   (not the 4.7% the decoys predicted)
+    false positives   0/494 withdrawn (PLAN-V1.25 §A: own = dtw(x, x) there, so arithmetic, not measurement)
 
 Random kana turn out to be a harder test than real alternative readings. Calibrating on
 the wrong population would have made a working instrument look broken — the same shape of

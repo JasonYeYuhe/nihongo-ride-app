@@ -40,16 +40,65 @@ Three ways, and `--calibrate` runs all of them:
   * **Rebuild identity.** Concatenating a sentence's tokens must reproduce its audio
     exactly. This one proves only that the string handling is faithful — it carries no
     linguistic weight, and is not counted as calibration on its own.
+
+The decoys come in hiragana AND katakana (v1.37 round 1), because a candidate may be either. They
+calibrate RENDERING only: a katakana decoy text never renders byte-identical to the sentence by
+accident. They are compared with the sentence's audio directly, never through verdict(), so they say
+nothing about the comparison below; the known-KEEP control does (v1.37 round 2):
+
+  * **Known KEEP through verdict().** Sentences 1b has proven misread (KNOWN_KEEP: n3-b020 十分 =
+    じゅうぶん, n5-b018 and four v1.37 sentences 一日 = ついたち) must come out KEEP when their plans
+    are put through verdict() with this file's own disputed set. A normaliser that turned a wrong
+    spelling into the corpus reading (a range typo in to_hira, a fold of じ/ぢ) would make one
+    RELEASE, and the positive control cannot see that: it fails only on a KEEP.
+
+KATAKANA CANDIDATES (v1.37). A span spelled in katakana can render differently from the same
+reading in hiragana, and for n5-b105 (二十センチ) and n4-b104 (五十ページ) only the katakana
+spelling of the corpus reading is byte-identical to the sentence. A candidate is a spelling, the
+corpus reading is a reading, so verdict() compares them after katakana -> hiragana. Until v1.37
+round 1 it compared strings, which reported ニジュッセンチ as a DISAGREEMENT with にじゅっせんち —
+the corpus reading in the other script — and the v1.37 re-measure needed a scratch-only patch to
+say RELEASE. The patch is this file now. Katakana decoys show a katakana render never matches by
+accident; the known-KEEP control shows the comparison never turns a proven misreading into agreement.
+
+A DISPUTED TOKEN INSIDE A LEXEME IS DISPUTED AS THE LEXEME (v1.37 round 1). n2-b034's complaint
+names 一 alone ("一 いち -> ひと"), and its correction changed 一晩中 as a whole (いちばんちゅう ->
+ひとばんじゅう, 中 included). Confirming 一 = ひと said nothing about 中, and this file printed
+RELEASE while every spelling of 一晩中 was silent. So every lexicalised compound in the sentence
+that contains a disputed surface (check_counter_readings.LEXICALISED and ABSORBERS: 一晩中, 一晩,
+三日, 四人 …) is disputed too, and must be confirmed as a span. It only ever adds a surface to
+confirm, so it can turn a RELEASE into SILENT and never the reverse.
+
+RE-MEASURING A CHOSEN SET (`--spec`). The mismatch record's evidence classes are what a bare run
+measures. A re-measure of pool sentences (which are in no class) or of a release's corrections is
+described by a small JSON spec instead of a scratch copy of this file:
+
+    {"evidence": "<class name for the record>",
+     "rows":  {"<id>": "<heardInstead>" | null, …},   # null keeps the record's own complaint
+     "extra": {"<span surface>": ["<reading>", …], …}} # added to EXTRA for this run
+
+    DICTATION_WAV_CACHE=<cache> ./.venv-jp/bin/python scripts/check_propagated_exclusions.py \
+        --spec docs/measurements/v137-dictation-remeasure-spec.json --calibrate --json <out>
 """
 import argparse, json, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import check_dictation_readings as C
+from check_counter_readings import ABSORBERS, LEXICALISED
 
 REPO = Path(__file__).resolve().parent.parent
 MAX_SPAN = 3
-DECOYS = ["ぷりんてぃん", "ぬめりこ"]      # not readings of anything
+# Not readings of anything, in both scripts. A katakana candidate is rendered as katakana, so the
+# katakana decoys show that a katakana render never matches the sentence by accident (v1.37 round 1).
+# They are compared with the audio directly and do not exercise verdict()'s katakana -> hiragana
+# comparison; KNOWN_KEEP does (v1.37 round 2).
+DECOYS = ["ぷりんてぃん", "ぬめりこ", "プリンティン", "ヌメリコ"]
+# Sentences instrument 1b has PROVEN misread against their corpus reading, each re-measured since: n3-b020
+# (十分 = じゅうぶん, v1.36 and v1.37), n5-b018 (一日 = ついたち, v1.29 and v1.37) and the four v1.37
+# second-batch sentences (一日 = ついたち against the corrected いちにち). --calibrate puts each through
+# verdict() with its recorded complaint and requires KEEP.
+KNOWN_KEEP = ("n3-b020", "n5-b018", "n2-g300", "n2-b029", "n2-b1064", "n4-b151")
 
 # Readings a lexeme takes that SudachiPy's per-token lookup does not offer for the span.
 EXTRA = {
@@ -77,6 +126,91 @@ def complaint_parts(heard):
     the annotation; a complaint itself never contains one.
     """
     return (heard or "").split(" (", 1)[0].split()
+
+
+# Lexical items with their own reading that contain a shorter surface: a complaint about the
+# shorter one is a complaint about them too (see the module docstring, n2-b034).
+LEXEMES = tuple(sorted(set(LEXICALISED) | set(ABSORBERS), key=len, reverse=True))
+
+
+def disputed_surfaces(heard, sentence, fallback=()):
+    """Surfaces that must be CONFIRMED before a sentence may be released.
+
+    `heard` is the row's heardInstead. A per-row complaint ("一 いち -> ひと") names its surface;
+    a row without one (the `propagated` class says only "same word proven misread in another
+    sentence") falls back to `fallback`, every word proven misread anywhere. Then every lexeme in
+    `sentence` that contains a disputed surface is added: n2-b034 confirmed 一 = ひと and was
+    released by this predicate while its corrected 一晩中 was never confirmed (v1.37 round 1).
+    """
+    parts = complaint_parts(heard)
+    if len(parts) >= 3 and parts[1] != "->" and "->" in parts:
+        disputed = {parts[0]}                    # this row's own complaint
+    else:
+        disputed = set(fallback)
+    return disputed | {lex for lex in LEXEMES if lex in sentence
+                       and any(w in lex and w != lex for w in disputed)}
+
+
+def proven_surfaces(mism_rows):
+    """Every surface a 'proven' row names: the fallback for a row with no complaint of its own."""
+    out = set()
+    for r in mism_rows:
+        if not r["evidence"].startswith("proven"):
+            continue
+        parts = complaint_parts(r["heardInstead"])
+        if len(parts) >= 3 and parts[1] != "->":
+            out.add(parts[0])
+    return out
+
+
+def make_disputed_for(mism_rows, corpus_rows):
+    """The disputed_for main() uses: row id -> the surfaces that must be CONFIRMED before that sentence
+    may be released, from its record row and its sentence (so the lexeme widening reaches every real
+    run; v1.37 round 2 found a disputed_for that dropped the sentence would have passed every test)."""
+    by_id = {r["id"]: r for r in mism_rows}
+    exjp = {r["id"]: r["exJP"] for r in corpus_rows}
+    fallback = proven_surfaces(mism_rows)
+
+    def disputed_for(row_id):
+        return disputed_surfaces(by_id.get(row_id, {}).get("heardInstead"), exjp.get(row_id, ""), fallback)
+    return disputed_for
+
+
+def complaint_candidates(heard):
+    """{surface: {the two readings}} a complaint names, added to that span's candidates; {} for none.
+
+    `parts[1] != "->"` matters: on a three-part complaint ("かみ -> がみ") parts[1] IS the arrow, and
+    injecting it would put the literal string "->" into the candidate readings. No row has that shape
+    today; the guard is here so none ever silently does."""
+    parts = complaint_parts(heard)
+    if len(parts) >= 4 and "->" in parts and parts[1] != "->":
+        return {parts[0]: {parts[1], parts[-1]}}
+    return {}
+
+
+def apply_spec(mism, spec, corpus_rows):
+    """The mismatch record's rows with `spec` laid over them (see `--spec`), and the ids to measure.
+
+    A spec row whose id the record already holds keeps everything but its evidence class and, when
+    the spec gives one, its heardInstead; an id the record does not hold (a pool sentence) is added
+    from the corpus. An id in neither, or a null complaint for an id with no record of its own,
+    raises: a re-measure must say what it measures."""
+    cls = spec["evidence"]
+    by = {r["id"]: dict(r) for r in mism["excluded"]}
+    corpus = {r["id"]: r for r in corpus_rows}
+    for rid, heard in spec["rows"].items():
+        if rid in by:
+            by[rid]["evidence"] = cls
+            if heard is not None:
+                by[rid]["heardInstead"] = heard
+        elif heard is None:
+            raise ValueError(f"{rid}: no record of its own, so the spec must give its complaint")
+        elif rid not in corpus:
+            raise ValueError(f"{rid}: not in the mismatch record and no buildable corpus row")
+        else:
+            by[rid] = {"id": rid, "exJP": corpus[rid]["exJP"], "exKana": corpus[rid]["exKana"],
+                       "heardInstead": heard, "evidence": cls}
+    return {**mism, "excluded": list(by.values())}, set(spec["rows"])
 
 
 def has_kanji(s):
@@ -143,6 +277,10 @@ def verdict(row, plan, disputed):
     on 彼 = かれ while 何 -- the entire reason it was withheld -- was never confirmed. That
     is this project's oldest defect in a new place: the evidence that released the sentence
     and the reason it was withheld were different predicates, agreeing only by inspection.
+
+    A matched candidate is a SPELLING, compared with the corpus reading after katakana ->
+    hiragana: a byte-identical render of ニジュッセンチ proves the corpus's にじゅっせんち as much
+    as a hiragana one would (v1.37 round 1; n5-b105, n4-b104).
     """
     target = C.sha(C.clip(row["exJP"]))
     # `sha` returns None for a clip that is missing or torn. Comparing two of those gives
@@ -158,7 +296,7 @@ def verdict(row, plan, disputed):
                    if (h := C.sha(C.clip(txt))) is not None and h == target]
         if not matched:
             continue
-        if corpus in matched:
+        if C.to_hira(corpus) in {C.to_hira(k) for k in matched}:
             agrees.append((surf, corpus))
             covered |= {w for w in disputed if w in surf}
         else:
@@ -173,6 +311,22 @@ def verdict(row, plan, disputed):
     return "SILENT", []
 
 
+def span_detail(row, plan, disputed, v):
+    """What the record carries for one sentence: its verdict, the disputed surfaces, the exJP audio's
+    sha1 and, for each span covering a disputed surface or matching the sentence, every candidate's
+    sha1 (12 hex) with the matched ones marked."""
+    sh = lambda txt: (C.sha(C.clip(txt)) or "MISSING")[:12]
+    target = C.sha(C.clip(row["exJP"]))
+    spans = {}
+    for (i, L, surf, corpus), cands in plan.items():
+        hashes = {k: sh(txt) for k, txt in cands.items()}
+        matched = [k for k, txt in cands.items() if target is not None and C.sha(C.clip(txt)) == target]
+        if matched or any(w in surf for w in disputed):
+            spans[f"{surf} ({corpus})"] = {"candidates": hashes, "byteIdentical": matched}
+    return {"verdict": v, "disputed": sorted(disputed), "exJPsha1": (target or "MISSING")[:12],
+            "spans": spans}
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--calibrate", action="store_true")
@@ -180,6 +334,9 @@ def main():
                     help="which evidence class to inspect. The default class was retired by "
                          "v1.28 §A, so a bare run now reports FINISHED; re-point it to "
                          "re-measure, or to attack the 910 'nearest' exclusions.")
+    ap.add_argument("--spec", help="a JSON re-measure spec (module docstring): the rows to measure, "
+                                   "laid over the mismatch record, and readings added to EXTRA. "
+                                   "Overrides --evidence.")
     ap.add_argument("--json")
     args = ap.parse_args()
 
@@ -196,7 +353,17 @@ def main():
 
     mism = json.loads((REPO / "docs/measurements/dictation-reading-mismatches.json")
                       .read_text(encoding="utf-8"))
-    want = {r["id"] for r in mism["excluded"] if r["evidence"] == args.evidence}
+    every = C.build_rows()
+    record_rows = mism["excluded"]           # the record as committed, before any --spec overlay
+    spec = None
+    if args.spec:
+        spec = json.loads(Path(args.spec).read_text(encoding="utf-8"))
+        mism, want = apply_spec(mism, spec, every)
+        args.evidence = spec["evidence"]
+        for surf, readings in spec.get("extra", {}).items():
+            EXTRA[surf] = list(dict.fromkeys(EXTRA.get(surf, []) + list(readings)))
+    else:
+        want = {r["id"] for r in mism["excluded"] if r["evidence"] == args.evidence}
     # The surface that got EACH sentence withheld, per sentence.
     #
     # **Per row, not one global set, and that distinction is worth more than it looks.** The
@@ -208,26 +375,8 @@ def main():
     # aiming a correct predicate at a different population. A predicate that is right for one
     # population and silently vacuous on another is this project's oldest shape wearing a
     # population instead of a call site.
-    global_proven = set()
-    for r in mism["excluded"]:
-        if not r["evidence"].startswith("proven"):
-            continue
-        parts = complaint_parts(r["heardInstead"])
-        if len(parts) >= 3 and parts[1] != "->":
-            global_proven.add(parts[0])
-
-    def disputed_for(row_id):
-        """Surfaces that must be CONFIRMED before this sentence may be released."""
-        rec = by_id.get(row_id, {})
-        parts = complaint_parts(rec.get("heardInstead"))
-        if len(parts) >= 3 and parts[1] != "->" and "->" in parts:
-            return {parts[0]}                    # this row's own complaint
-        # No per-row complaint (the `propagated` class says only "same word proven misread in
-        # another sentence"), so fall back to every word proven misread anywhere.
-        return set(global_proven)
-
+    disputed_for = make_disputed_for(mism["excluded"], every)
     by_id = {r["id"]: r for r in mism["excluded"]}
-    every = C.build_rows()
     rows = [r for r in every if r["id"] in want]
     # A withheld id with no buildable row is a REAL condition, not a glitch: build_rows only
     # yields sentences with exJP + exKana + exTokens, and a withheld sentence may have lost one.
@@ -301,31 +450,47 @@ def main():
         if spurious:
             print(f"    CALIBRATION-FAIL: byte identity is not proof — {spurious[:4]}")
             rc = 4
+
+        # 4. known KEEP through verdict() — the comparison's own negative control (v1.37 round 2).
+        # Read with the record as committed, not a --spec overlay, so a spec cannot re-point a control.
+        keep_rows = [r for r in every if r["id"] in KNOWN_KEEP]
+        record_by_id = {r["id"]: r for r in record_rows}
+        keep_disputed = make_disputed_for(record_rows, every)
+        keep_plans, _ = analyse(keep_rows, readings_of, decoys=False, complaint={
+            r["id"]: c for r in keep_rows
+            if (c := complaint_candidates(record_by_id.get(r["id"], {}).get("heardInstead")))})
+        not_keep = [(r["id"], v) for r in keep_rows
+                    if (v := verdict(r, keep_plans[r["id"]], keep_disputed(r["id"]))[0]) != "KEEP"]
+        not_keep += [(i, "not buildable") for i in KNOWN_KEEP if i not in {r["id"] for r in keep_rows}]
+        print(f"  known KEEP: {len(keep_rows) - sum(1 for _, v in not_keep if v != 'not buildable')} of "
+              f"{len(KNOWN_KEEP)} sentences proven misread stay KEEP through verdict()")
+        if not_keep:
+            print(f"    CALIBRATION-FAIL: the comparison releases a proven misreading — {not_keep}")
+            rc = 4
         if rc:
             print("\nInstrument not trustworthy. No verdict below may be used.")
             return rc
-        print("  OK — decoys never match, and 1b agrees with instrument 1 at scale.\n")
+        print("  OK — decoys never match, 1b agrees with instrument 1 at scale, and no known KEEP is "
+              "released.\n")
         calibration = {
             "rebuildIdentity": f"{rebuild_ok}/{len(rows)} — string handling only, no linguistic weight",
             "positiveControl": (f"instrument 1 proved {len(sample)} sentences say their corpus "
                                 f"reading; 1b contradicts {len(disagreed)}"),
             "negativeControl": (f"{decoy_count} decoy substitutions, {len(spurious)} spurious "
                                 f"byte matches"),
+            "knownKeep": (f"{len(KNOWN_KEEP)} sentences proven misread ({', '.join(KNOWN_KEEP)}) stay "
+                          f"KEEP through verdict()"),
         }
 
-    complaint = {}
-    for r in rows:
-        parts = complaint_parts(by_id.get(r["id"], {}).get("heardInstead"))
-        # `parts[1] != "->"` matters: on a three-part complaint ("かみ -> がみ") parts[1] IS the
-        # arrow, and injecting it would put the literal string "->" into the candidate readings.
-        # No row has that shape today; the guard is here so none ever silently does.
-        if len(parts) >= 4 and "->" in parts and parts[1] != "->":
-            complaint[r["id"]] = {parts[0]: {parts[1], parts[-1]}}
+    complaint = {r["id"]: c for r in rows
+                 if (c := complaint_candidates(by_id.get(r["id"], {}).get("heardInstead")))}
     plans, _ = analyse(rows, readings_of, decoys=False, complaint=complaint)
     out = {"release": [], "keep": [], "silent": []}
+    details = {}
     print("VERDICTS")
     for r in rows:
         v, detail = verdict(r, plans[r["id"]], disputed_for(r["id"]))
+        details[r["id"]] = span_detail(r, plans[r["id"]], disputed_for(r["id"]), v)
         if v == "RELEASE":
             out["release"].append(r["id"])
             note = "says the corpus reading"
@@ -361,25 +526,38 @@ def main():
             # Measured from the renderer's own stderr when this run rendered anything; a run
             # served entirely from cache cannot observe it and says so rather than guessing.
             "voice": C.RESOLVED_VOICE or "not observed — every clip served from cache this run",
-            "question": ("The 15 exclusions whose evidence was 'propagated' were never measured. "
-                         "They were excluded because a word in them was proven misread IN A "
-                         "DIFFERENT SENTENCE, under the comment 'a voice does not change its mind "
-                         "between sentences'. This measures each of them directly."),
+            "evidence": args.evidence,
             "instrument": ("1b: the sentence stays in kanji and exactly one CONTIGUOUS SPAN of "
                            "tokens is replaced by kana, so word boundaries and accent context are "
                            "unchanged. A byte-identical render is proof about that span in that "
                            "sentence; a non-match stays silent."),
             "calibration": calibration,
-            "instrument1Recall": ("3 of 15 — the carried-forward plan's claim that 'instrument 1 "
-                                  "can decide each directly' is measured FALSE. Rendering the "
-                                  "whole reading as kana changes prosody, so byte identity goes "
-                                  "silent even where the reading is right."),
-            "theCommentIsFalse": ("畑 is read はたけ in n1-b432 and ばたけ in n1-b1000 — same word, "
-                                  "same voice, two sentences, two readings, both proven by byte "
-                                  "identity. The assumption that justified propagating 15 verdicts "
-                                  "is disproven by the data those verdicts were derived from."),
             **out,
+            # Per sentence: the exJP audio's sha1 (12 hex), and for every span covering a disputed
+            # surface (or that matched) each candidate's sha1, so a verdict can be read, not trusted.
+            "detail": details,
         }
+        if spec is not None:
+            record["spec"] = args.spec
+        elif args.evidence == "propagated":
+            # The prose of the run this file was written for (v1.28). It describes that class only,
+            # so a run on any other class does not carry it (v1.37 round 1: a re-measure record
+            # that said "the 15 exclusions whose evidence was 'propagated'" would be false).
+            record.update({
+                "question": ("The 15 exclusions whose evidence was 'propagated' were never measured. "
+                             "They were excluded because a word in them was proven misread IN A "
+                             "DIFFERENT SENTENCE, under the comment 'a voice does not change its "
+                             "mind between sentences'. This measures each of them directly."),
+                "instrument1Recall": ("3 of 15 — the carried-forward plan's claim that 'instrument 1 "
+                                      "can decide each directly' is measured FALSE. Rendering the "
+                                      "whole reading as kana changes prosody, so byte identity goes "
+                                      "silent even where the reading is right."),
+                "theCommentIsFalse": ("畑 is read はたけ in n1-b432 and ばたけ in n1-b1000 — same word, "
+                                      "same voice, two sentences, two readings, both proven by byte "
+                                      "identity. The assumption that justified propagating 15 "
+                                      "verdicts is disproven by the data those verdicts were "
+                                      "derived from."),
+            })
         Path(args.json).write_text(json.dumps(record, ensure_ascii=False, indent=1) + "\n",
                                    encoding="utf-8")
         print(f"wrote {args.json}")

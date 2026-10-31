@@ -1,0 +1,250 @@
+{
+ "measurement": "scripts/check_propagated_exclusions.py --evidence v137-corrected-remeasure --calibrate --json <scratch> (instrument 1b), run once on a scratch copy (outside the repo) of the two instrument scripts, the CORRECTED corpus (these 12 corrections applied) and the mismatch record: the 5 pool sentences added as one-row-each evidence rows '<span> <shipped> -> <corrected>', the other 9 re-pointed to that class with their own complaint, and EXTRA given each span's readings in hiragana and katakana and the numeral tokens'. One scratch-only change to verdict(): a matched candidate is compared with the corpus reading after katakana -> hiragana (see n5-b105). The committed files were not edited to measure. Per-span hashes from a driver over the same audio cache. Phase 1 ran the same instrument on the shipped tokens (corpus-proposals.json); every exJP audio hash is the same in both runs.",
+ "date": "2026-10-27",
+ "voice": "com.apple.voice.compact.ja-JP.Kyoko",
+ "question": "v1.37 corrects 12 number + counter readings. Five are IN the dictation pool (n2-b277, n5-b105, n4-b104, n2-b511, n1-b1418). Dictation speaks exJP and grades against exKana, so a corrected pool sentence may stay only if the voice is proven to say the corrected reading.",
+ "calibration": {
+  "rebuildIdentity": "14/14 — string handling only, no linguistic weight",
+  "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+  "negativeControl": "28 decoy substitutions, 0 spurious byte matches"
+ },
+ "verdicts": {
+  "n2-b277": {
+   "verdict": "RELEASE",
+   "detail": "exJP audio 5792f71c3229. 六十キロ: ろくじっきろ d6093fdbcc52, ろくじゅうきろ 9d655808a640, ろくじゅっきろ 5792f71c3229 = exJP, ロクジッキロ a713b70af1aa, ロクジュウキロ 01bb5784f91e, ロクジュッキロ 0ec76673d660. Other spans byte-identical: 車 くるま; 走っ はしっ"
+  },
+  "n5-b105": {
+   "verdict": "RELEASE",
+   "detail": "exJP audio af059c1cf51b. 二十センチ: にじっせんち 6e55571a50ad, にじゅうせんち 12e3f5004fd8, にじゅっせんち c503e58a173e, ニジッセンチ 6e55571a50ad, ニジュウセンチ 8afbf07d57a0, ニジュッセンチ af059c1cf51b = exJP. Other spans byte-identical: 箱 はこ",
+   "note": "RELEASE with the scratch harness's one change to verdict(): a matched candidate is compared with the corpus reading after katakana -> hiragana. The span that matched is the katakana spelling of the corrected reading; the hiragana spelling is not byte-identical. Unpatched, verdict() compares strings and reports this as KEEP ('says ニジュッセンチ' / 'ゴジュッページ'), which is the corrected reading in the other script, not a disagreement."
+  },
+  "n4-b104": {
+   "verdict": "RELEASE",
+   "detail": "exJP audio 5756f0e6b1f0. 五十ページ: ごじっぺーじ ae1c4f403054, ごじゅうぺーじ 859edf91361b, ごじゅっぺーじ 328ebe6e10b7, ゴジッページ 998f94c6e3a8, ゴジュウページ 5d0a4acbd8c6, ゴジュッページ 5756f0e6b1f0 = exJP. Other spans byte-identical: 開い ひらい",
+   "note": "RELEASE with the scratch harness's one change to verdict(): a matched candidate is compared with the corpus reading after katakana -> hiragana. The span that matched is the katakana spelling of the corrected reading; the hiragana spelling is not byte-identical. Unpatched, verdict() compares strings and reports this as KEEP ('says ニジュッセンチ' / 'ゴジュッページ'), which is the corrected reading in the other script, not a disagreement."
+  },
+  "n2-b511": {
+   "verdict": "SILENT",
+   "detail": "exJP audio 952e701a78aa. 一週間: いちしゅうかん 42a6b5a4ef7b, いっしゅうかん fa8b3d27e6f9, イチシュウカン 81c21b13e97e, イッシュウカン da63e044bf3d"
+  },
+  "n1-b1418": {
+   "verdict": "SILENT",
+   "detail": "exJP audio 942ea4f5d646. 第一章: だいいちしょう 4eced8735a9f, だいいっしょう a92bead22829, ダイイチショウ 26b478f5bb26, ダイイッショウ fe55fbe4cad3 | 一章: いちしょう a3aa8dcc51e0, いっしょう b2b663b6a746, かずあき fe8d14e11b3b, かずふみ 0a5e43555e5f. Other spans byte-identical: 章 しょう"
+  },
+  "n3-b310": {
+   "verdict": "SILENT",
+   "detail": "exJP audio 295931f7d95a. 一週間: いちしゅうかん 2ebb0fcc5d3f, いっしゅうかん 9d7097c3c556, イチシュウカン 28ac90bb7db6, イッシュウカン 309af9068dd4"
+  },
+  "n4-g189": {
+   "verdict": "SILENT",
+   "detail": "exJP audio 161f983de2f2. 一週間: いちしゅうかん 5c98c3bc973c, いっしゅうかん 23043722a637, イチシュウカン 00864fffe0fd, イッシュウカン cd28ce867fd0 | 一週間分: いちしゅうかんぶん 5c98c3bc973c, いっしゅうかんぶん 23043722a637. Other spans byte-identical: 買い かい"
+  },
+  "n2-g285": {
+   "verdict": "SILENT",
+   "detail": "exJP audio 26d1c173c82a. 一等: いちとう b471d1ff134a, いっとう f5fc12e9c6f2, イチトウ d930462289ad, イットウ 1066416b8ce1"
+  },
+  "n4-b186": {
+   "verdict": "RELEASE",
+   "detail": "exJP audio 99166a2ef017. 一晩: いちばん fe7b3d7f101b, ひとばん 99166a2ef017 = exJP, イチバン fe7b3d7f101b, ヒトバン 99166a2ef017 = exJP. Other spans byte-identical: 古い ふるい; 一 ひと; 泊まり とまり",
+   "note": "Measured RELEASE; NOT released in v1.37 (decision 3): a release candidate for a later release."
+  },
+  "n2-b034": {
+   "verdict": "SILENT",
+   "instrumentVerdict": "RELEASE",
+   "detail": "exJP audio 62bacad6d44d. 一晩中: いちばんじゅう aeb4d5a7861b, いちばんちゅう d095faa6c903, ひとばんじゅう edf44b655024, ひとばんちゅう a9028f6e455f, イチバンジュウ 45bb8a5cd213, イチバンチュウ e257275dd749, ヒトバンジュウ 507a153dc85d, ヒトバンチュウ 4e11050ef312. Other spans byte-identical: 一 ひと; 一晩 ヒトバン; 出し だし",
+   "note": "The instrument printed RELEASE because this row's complaint ('一 いち -> ひと') names 一 alone, so 一 is the only disputed word its verdict checks, and 一 ひと is confirmed. The correction also moved 中 ちゅう -> じゅう, and every spelling of the 一晩中 span is silent. Recorded as SILENT so no check that reads this record (check_counter_readings (m1) reads 'verdict') can let it into the pool on a 一-only confirmation (decision 3)."
+  },
+  "n2-b1180": {
+   "verdict": "RELEASE",
+   "detail": "exJP audio ea0d473ee1eb. 十センチ: じっせんち 92ee45e601a5, じゅうせんち 61d5685343f7, じゅっせんち ea0d473ee1eb = exJP, ジッセンチ 5d8da1699340, ジュウセンチ b232e5267949, ジュッセンチ ea0d473ee1eb = exJP. Other spans byte-identical: 十 じゅっ",
+   "note": "Measured RELEASE; NOT released in v1.37 (decision 3): a release candidate for a later release."
+  },
+  "n3-k061": {
+   "verdict": "SILENT",
+   "detail": "exJP audio 73502547d72d. 十パーセント: じっぱーせんと d6af2e8c1697, じゅうぱーせんと 0c624b024c58, じゅっぱーせんと eb1033fcc8ab, ジッパーセント f2e24e44c3af, ジュウパーセント 58c6df78b346, ジュッパーセント 7a3adcbe7a7a"
+  },
+  "n3-b020": {
+   "verdict": "KEEP",
+   "detail": "exJP audio cf14d6d9a386. 十分: じっぷん 3e90312ef691, じゅうふん 5be07b5ffb06, じゅうぶん cf14d6d9a386 = exJP, じゅっぷん bcf49e9b8a92. Other spans byte-identical: 歩き あるき",
+   "note": "Control: the voice is proven to say じゅうぶん against the corpus じゅっぷん (v1.36), reproduced (cf14d6d9a386)."
+  },
+  "n5-g010": {
+   "verdict": "SILENT",
+   "detail": "exJP audio d483452c97de. 十ページ: じっぺーじ 56930adc9973, じゅうぺーじ 7ac297563b4c, じゅっぺーじ eed5351fef77, ジッページ f284a2ac9715, ジュウページ 1a024489b6d3, ジュッページ 12da9c16fa0b",
+   "note": "Not corrected (decision 2); measured on its shipped tokens for information."
+  },
+  "n1-b678": {
+   "verdict": "SILENT",
+   "batch": 2,
+   "detail": "exJP audio 430dd219f312. 一日 (いちにち): いちじつ 3ac3dba3907f, いちにち 387e8e994403, ついたち 0468ff9d719c, イチジツ 09c707c48c0e, イチニチ 0c104088ee04, ツイタチ 113a3f9aca85",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
+  },
+  "n2-g300": {
+   "verdict": "KEEP",
+   "batch": 2,
+   "detail": "exJP audio 7c8b657cd94e. 一日 (いちにち): いちじつ 1671e16fe39e, いちにち 0b8cfda6de8a, ついたち 7c8b657cd94e = exJP, イチジツ 2ec861ec77e3, イチニチ 578a80de80c2, ツイタチ ae7be3e23ecb",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
+  },
+  "n2-b029": {
+   "verdict": "KEEP",
+   "batch": 2,
+   "detail": "exJP audio 44735db0459c. 一日 (いちにち): いちじつ f00466d458e1, いちにち 31c04bb5fcb9, ついたち 44735db0459c = exJP, イチジツ d291ced3a91c, イチニチ c1c092a835a3, ツイタチ f75a13f013c1. Other spans byte-identical: 朝 (あさ) あさ",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
+  },
+  "n2-b1064": {
+   "verdict": "KEEP",
+   "batch": 2,
+   "detail": "exJP audio 2a07cdfdba98. 一日 (いちにち): いちじつ 8feb1426e324, いちにち 021a6147e1c9, ついたち 2a07cdfdba98 = exJP, イチジツ 987d74db5eaa, イチニチ dea261175a3f, ツイタチ c71b6e2c2581",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
+  },
+  "n4-b151": {
+   "verdict": "KEEP",
+   "batch": 2,
+   "detail": "exJP audio 1114e07b9ae8. 一日 (いちにち): いちじつ 67d3a2730d3d, いちにち 0097985992ea, ついたち 1114e07b9ae8 = exJP, イチジツ 96719b7a322e, イチニチ 350a1f1aca45, ツイタチ 516a22e2435e",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
+  },
+  "n3-g327": {
+   "verdict": "SILENT",
+   "batch": 2,
+   "detail": "exJP audio acaf0f5f5cba. 一日中 (いちにちじゅう): いちにちじゅう 0d6eaeac0628, いちにちちゅう 5268c48a5540, イチニチジュウ 0c97ac6c7ad9, イチニチチュウ 0ed18cbfe8ff",
+   "note": "Second batch (v1.37 round 1), measured on the corrected tokens: docs/measurements/v137-dictation-remeasure-ichinichi.json"
+  }
+ },
+ "leads": {
+  "note": "Uncalibrated log-mel DTW of the exJP audio against each span substitution (lower is nearer). Leads, not verdicts: on n2-b034 the lead ranks いちばんちゅう nearest (0.0223) although 1b proves 一 = ひと, a measured miss on a known answer.",
+  "n2-b511": {
+   "exJPsamples": 83757,
+   "spans": {
+    "一週間 いちしゅうかん": {
+     "dtw": 0.0231,
+     "samples": 85805
+    },
+    "一週間 いっしゅうかん": {
+     "dtw": 0.0489,
+     "samples": 81453
+    },
+    "一週間 イチシュウカン": {
+     "dtw": 0.0243,
+     "samples": 82477
+    },
+    "一週間 イッシュウカン": {
+     "dtw": 0.0168,
+     "samples": 83245
+    }
+   }
+  },
+  "n1-b1418": {
+   "exJPsamples": 99901,
+   "spans": {
+    "第一章 だいいちしょう": {
+     "dtw": 0.016,
+     "samples": 99895
+    },
+    "第一章 だいいっしょう": {
+     "dtw": 0.0327,
+     "samples": 100409
+    },
+    "第一章 ダイイチショウ": {
+     "dtw": 0.0255,
+     "samples": 97569
+    },
+    "第一章 ダイイッショウ": {
+     "dtw": 0.0308,
+     "samples": 101181
+    },
+    "一章 いちしょう": {
+     "dtw": 0.0167,
+     "samples": 99644
+    },
+    "一章 いっしょう": {
+     "dtw": 0.0338,
+     "samples": 100412
+    },
+    "一章 かずあき": {
+     "dtw": 0.0481,
+     "samples": 99132
+    },
+    "一章 かずふみ": {
+     "dtw": 0.0615,
+     "samples": 99900
+    }
+   }
+  },
+  "n2-b034": {
+   "exJPsamples": 97798,
+   "spans": {
+    "一晩中 いちばんじゅう": {
+     "dtw": 0.0286,
+     "samples": 95238
+    },
+    "一晩中 いちばんちゅう": {
+     "dtw": 0.0223,
+     "samples": 98054
+    },
+    "一晩中 ひとばんじゅう": {
+     "dtw": 0.034,
+     "samples": 98566
+    },
+    "一晩中 ひとばんちゅう": {
+     "dtw": 0.041,
+     "samples": 101894
+    },
+    "一晩中 イチバンジュウ": {
+     "dtw": 0.0434,
+     "samples": 98310
+    },
+    "一晩中 イチバンチュウ": {
+     "dtw": 0.0439,
+     "samples": 99334
+    },
+    "一晩中 ヒトバンジュウ": {
+     "dtw": 0.0355,
+     "samples": 98566
+    },
+    "一晩中 ヒトバンチュウ": {
+     "dtw": 0.0347,
+     "samples": 99334
+    }
+   }
+  }
+ },
+ "decision": {
+  "by": "decided 2026-10-27 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2)",
+  "pool": "5,935 -> 5,933: n2-b277, n5-b105, n4-b104 stay (RELEASE on the corrected tokens); n2-b511 and n1-b1418 withheld (SILENT).",
+  "releaseCandidates": "n4-b186, n2-b1180 (measured RELEASE, not released in v1.37).",
+  "never": "n2-b034 on a re-run that re-tests only 一."
+ },
+ "dictationPool": {
+  "before": 5935,
+  "afterFirstBatch": 5933,
+  "after": 5928
+ },
+ "reproduction": {
+  "by": "v1.37 round 1 (corpus-2, corpus-3): the committed instrument, no scratch copy",
+  "command": "DICTATION_WAV_CACHE=<the 2026-10-27 audio cache> ./.venv-jp/bin/python scripts/check_propagated_exclusions.py --spec docs/measurements/v137-dictation-remeasure-spec.json --calibrate --json docs/measurements/v137-dictation-remeasure-reproduced.json",
+  "record": "docs/measurements/v137-dictation-remeasure-reproduced.json",
+  "result": "Every verdict above is reproduced, with the same hashes: n5-b105 and n4-b104 RELEASE on the katakana spelling of the corrected reading (af059c1cf51b, 5756f0e6b1f0), now that verdict() compares a candidate with the corpus reading after katakana -> hiragana; n2-b277, n4-b186 and n2-b1180 RELEASE; n3-b020 KEEP; the other seven SILENT. n2-b034 is SILENT from the instrument itself now, not only in this record: a disputed token inside a lexicalised compound disputes the compound, so 一晩中 must be confirmed and is silent in all eight spellings. Calibration: 14/14 rebuild identity, 0 contradictions of instrument 1 in 39, 0 spurious byte matches in 56 decoys (hiragana and katakana)."
+ },
+ "secondBatch": {
+  "record": "docs/measurements/v137-dictation-remeasure-ichinichi.json",
+  "spec": "docs/measurements/v137-dictation-remeasure-ichinichi-spec.json",
+  "command": "DICTATION_WAV_CACHE=<the 2026-10-27 audio cache> ./.venv-jp/bin/python scripts/check_propagated_exclusions.py --spec docs/measurements/v137-dictation-remeasure-ichinichi-spec.json --calibrate --json docs/measurements/v137-dictation-remeasure-ichinichi.json",
+  "calibration": {
+   "rebuildIdentity": "12/12 — string handling only, no linguistic weight",
+   "positiveControl": "instrument 1 proved 39 sentences say their corpus reading; 1b contradicts 0",
+   "negativeControl": "48 decoy substitutions, 0 spurious byte matches"
+  },
+  "controls": {
+   "n5-b018": "KEEP",
+   "n3-b020": "KEEP",
+   "n2-b1180": "RELEASE",
+   "n4-b186": "RELEASE",
+   "n2-b034": "SILENT",
+   "n5-b303": "SILENT"
+  },
+  "decision": {
+   "by": "decided 2026-10-28 by the orchestrator under the owner's 2026-10-07 delegation (PLAN-V1.37 §C P0-2)",
+   "pool": "5,933 -> 5,928: n2-g300, n2-b029, n2-b1064 and n4-b151 withheld (KEEP: the voice says ついたち against the corrected いちにち); n1-b678 withheld (SILENT); n3-g327 stays withheld (SILENT)."
+  }
+ }
+}

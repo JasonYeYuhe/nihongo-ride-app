@@ -1097,6 +1097,92 @@ struct ExampleSentenceTests {
         }
     }
 
+    /// v1.37's 18 reading corrections and its dictation decisions (PLAN-V1.37 §C P0-2), held by a gate
+    /// that runs. The expected exKana and token readings are written out here by hand, not read from
+    /// the manifest or from anything that produced the corpus; the manifest is only held to the same
+    /// 18 ids. First batch (12): three corrected pool sentences stay in dictation because instrument 1b
+    /// proves the voice says the corrected reading; the two whose voice is unproven are withheld, and
+    /// every corrected sentence that was already withheld stays withheld (n4-b186 and n2-b1180 are
+    /// release candidates, n2-b034 is not one). Second batch (6, round 1): 一日 ついたち corrected to
+    /// いちにち in five pool sentences, all five withheld — four because 1b proves the voice says
+    /// ついたち (the n3-b020 precedent), n1-b678 because 1b is silent (n5-g022) — and n3-g327's 一日中
+    /// corrected to いちにちじゅう, still withheld. Seven withholdings in all. A later release that changes
+    /// one of these changes this test with it.
+    @Test("v1.37's 18 corrections still hold, and its dictation decisions stay as made")
+    func v137CorrectionsHold() throws {
+        let repo = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let expected: [(id: String, kana: String, tokens: [[String]])] = [
+            ("n2-b277", "このくるまはじそくろくじゅっきろであんぜんにはしっている", [["六十", "ろくじゅっ"], ["キロ", "きろ"]]),
+            ("n5-b105", "このはこはたてがにじゅっせんちあります", [["二十", "にじゅっ"], ["センチ", "せんち"]]),
+            ("n4-b104", "ほんのごじゅっぺーじをひらいてください", [["五十", "ごじゅっ"], ["ページ", "ぺーじ"]]),
+            ("n2-b511", "しんにゅうしゃいんたちがいっしゅうかんのけんしゅうをうけた", [["一", "いっ"], ["週間", "しゅうかん"]]),
+            ("n1-b1418", "だいいっしょうではこのけんきゅうのぜんたいぞうをがいせつしている", [["一", "いっ"], ["章", "しょう"]]),
+            ("n3-b310", "らいげつしごとでとうきょうにいっしゅうかんたいざいする", [["一", "いっ"], ["週間", "しゅうかん"]]),
+            ("n4-g189", "すーぱーでいっしゅうかんぶんのしょくりょうをかいました", [["一", "いっ"], ["週間", "しゅうかん"]]),
+            ("n2-g285", "しょうてんがいのくじびきでいっとうがあたりました", [["一", "いっ"], ["等", "とう"]]),
+            ("n4-b186", "きょうとのふるいりょかんにひとばんとまりました", [["一", "ひと"], ["晩", "ばん"]]),
+            ("n2-b034", "ははおやはひとばんじゅうねつをだしたいもうとのかんびょうをした",
+             [["一", "ひと"], ["晩", "ばん"], ["中", "じゅう"]]),
+            ("n2-b1180", "ちょっけいじゅっせんちのえんをえがいてください", [["十", "じゅっ"], ["センチ", "せんち"]]),
+            ("n3-k061", "じゅっぱーせんとわりびきだ", [["十", "じゅっ"], ["パーセント", "ぱーせんと"]]),
+            // The second batch (v1.37 round 1).
+            ("n1-b678", "このほんをよむのにまるまるいちにちかかった", [["丸々", "まるまる"], ["一日", "いちにち"], ["かかっ", "かかっ"]]),
+            ("n2-g300", "このとけいはいちにちにすうびょうのごさがしょうじる", [["は", "は"], ["一日", "いちにち"], ["に", "に"]]),
+            ("n2-b029", "あさのじょぎんぐはいちにちのかつりょくをあたえてくれる", [["は", "は"], ["一日", "いちにち"], ["の", "の"]]),
+            ("n2-b1064", "せめんとがかんぜんにかたまるまでいちにちかかる", [["まで", "まで"], ["一日", "いちにち"], ["かかる", "かかる"]]),
+            ("n4-b151", "いちにちでこのほんをぜんぶよむのはむりだ", [["一日", "いちにち"], ["で", "で"]]),
+            ("n3-g327", "きょうはいちにちじゅうがいしゅつしていました", [["一", "いち"], ["日", "にち"], ["中", "じゅう"]]),
+        ]
+        struct Row: Decodable { let id: String; let disposition: String }
+        struct Manifest: Decodable { let entries: [Row] }
+        let manifest = try JSONDecoder().decode(Manifest.self, from: try Data(contentsOf:
+            repo.appendingPathComponent("docs/measurements/v137-reading-manifest.json")))
+        let declared = Set(manifest.entries.filter { $0.disposition == "corrected" }.map(\.id))
+        #expect(declared == Set(expected.map(\.id)), Comment(rawValue:
+            "the v1.37 manifest declares \(declared.sorted()) corrected; this test pins \(expected.map(\.id).sorted())"))
+
+        let byID = Dictionary(VocabStore.shared.entries.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        var problems: [String] = []
+        for want in expected {
+            guard let entry = byID[want.id] else { problems.append("\(want.id): not in the corpus"); continue }
+            if entry.exampleKana != want.kana {
+                problems.append("\(want.id): teaches \(entry.exampleKana ?? "nil"), the correction is \(want.kana)")
+            }
+            // The corrected tokens, consecutive and in order: a token moved alone is caught here even
+            // when exKana still reads right.
+            let tokens = entry.exampleTokens ?? []
+            let run = want.tokens.count
+            let found = tokens.count >= run && (0...(tokens.count - run)).contains { start in
+                Array(tokens[start..<(start + run)]) == want.tokens
+            }
+            if !found { problems.append("\(want.id): no run \(want.tokens) in \(tokens)") }
+        }
+        #expect(problems.isEmpty, Comment(rawValue: problems.joined(separator: "\n")))
+
+        let resJSON = try #require(try JSONSerialization.jsonObject(with: try Data(contentsOf:
+            repo.appendingPathComponent("Sources/VocabKit/Resources/dictation-exclusions.json"))) as? [String: Any])
+        let withheld = Set((try #require(resJSON["excluded"] as? [[String: Any]])).compactMap { $0["id"] as? String })
+        // Corrected in v1.37 with the voice unproven (1b silent): withheld, the n5-g022 precedent.
+        for id in ["n1-b1418", "n2-b511", "n1-b678"] {
+            #expect(withheld.contains(id), "\(id) was corrected without proof of what the voice says, and must be withheld from dictation")
+        }
+        // Corrected in v1.37's second batch with the voice proven to say ついたち against the corrected
+        // いちにち: withheld, the n3-b020 precedent.
+        for id in ["n2-g300", "n2-b029", "n2-b1064", "n4-b151"] {
+            #expect(withheld.contains(id), "\(id): the voice is proven to say ついたち against its corrected いちにち, so it must be withheld from dictation")
+        }
+        // Withheld before v1.37 and still withheld: n4-b186 and n2-b1180 wait for a release decision,
+        // n2-b034's 中 じゅう is unmeasured, n5-g010 was not corrected.
+        for id in ["n2-b034", "n2-b1180", "n2-g285", "n3-b310", "n3-k061", "n4-b186", "n4-g189", "n5-g010", "n3-g327"] {
+            #expect(withheld.contains(id), "\(id) stays withheld from dictation in v1.37")
+        }
+        // Corrected and kept in the pool: 1b proves the voice says the corrected reading.
+        for id in ["n2-b277", "n4-b104", "n5-b105"] {
+            #expect(!withheld.contains(id), "\(id) stays in the dictation pool: the voice is proven to say its corrected reading")
+        }
+    }
+
     @Test("every dictation exclusion's evidence still matches the sentence it describes")
     func exclusionEvidenceIsCurrent() throws {
         struct Record: Decodable { let id: String; let exKana: String? }

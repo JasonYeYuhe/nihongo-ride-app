@@ -1,0 +1,564 @@
+#!/usr/bin/env python3
+"""Create the 1.37 App Store versions, set What's New and the review notes, attach the builds,
+and submit both platforms for review.
+
+Configuration only. The machinery is `scripts/asc_release.py`, held to `submit_1_30.py` by
+`scripts/test_asc_release.py`; this file's own guards are held by `scripts/test_submit_1_37.py`.
+Every previous `submit_<version>.py` is left as it was, except that 54470d0 redacted the App Review
+phone number in all 27 of them (`submit_1_5` … `submit_1_30`) — they are the record of what was
+actually sent, less that one field.
+
+WHAT 1.37 IS
+------------
+`docs/PLAN-V1.37.md` §C P0-2 and P0-12 (the open-surface release; submitted only after 1.36 is live
+on both platforms, PLAN-V1.37 §I). That precondition is met, and this script does not check it:
+1.36 went on sale on both platforms on 2026-10-26 PT (iOS 22:40:52Z, macOS 23:00:45Z, the store's
+`currentVersionReleaseDate`; recorded in acf8ae5). A later release reusing this file as a template
+must check it again, because `--platform=ios|macos` lets one platform move alone.
+
+  * Corpus: `correctedThisRelease` (18) example sentences whose number + counter reading, or the word
+    built on it, was wrong, in two batches of one manifest, `docs/measurements/v137-reading-manifest.json`,
+    each upheld 2-of-2 by independent refuters. Batch 1 (12): 六十キロ ろくじゅっきろ, 一週間
+    いっしゅうかん, 第一章 だいいっしょう, 一晩 ひとばん, …; `n5-g010` 十ページ is NOT among them (1 of 2;
+    recorded, not corrected). Batch 2 (6, the manifest's `secondBatch`): 一日 ついたち -> いちにち in five
+    sentences where it means a day, not the 1st, and n3-g327's 一日中 中 ちゅう -> じゅう. Every swap keeps
+    the kana count (ついたち and いちにち are both four), so no sentence rides a different distance.
+  * Dictation: seven corrected sentences leave the pool (5,935 -> 5,928, `release_numbers`), for one of
+    two measured reasons (`WITHHELD_REASONS`, held to the instrument-1b records): four because the
+    voice is proven to say the old reading ついたち, three because 1b is silent on the corrected span.
+    Three corrected sentences stay in it, 1b proving the voice says the corrected reading.
+  * The install-cohort marker (P0-12): `NihongoRide.installCohort.v1`, written once at launch if
+    absent, in local `UserDefaults` only. Nothing uses it in 1.37 (each launch reads it only to keep
+    it write-once) and a rider sees nothing, so What's New does not mention it; the review notes
+    state it, because it is a new on-device record.
+  * Tests only, nothing a rider sees: a removed word's Remove button is pinned to never speak its id
+    (it already did not, since 1.36), and CI's corpus check diffs against the newest successful run.
+    Neither is claimed in What's New.
+
+WHAT IS DELIBERATELY NOT IN IT
+------------------------------
+**No change to the purchase, its code, its screen or its placements**: `RouteStore`, `RoadView`,
+`SettingsView`, `MenuView`, `AboutView`, `OnboardingView`, `Theme` (in `NihongoRideApp.swift`, so the
+whole file is frozen, the App struct with it), `ScaledFont`, `EntitlementKit` and
+`xcode/NihongoRide.storekit` are byte-identical to 1.35's build commit `fdb2b5f`. `FROZEN_PATHS` below
+names them as paths, and this script refuses to run while any of them is missing at `fdb2b5f` or at
+HEAD, differs from `fdb2b5f` in the working tree, or has an untracked file under it. The tree checked
+is the one this script runs from, a proxy for the commit the archive was built from.
+
+`FROZEN_PATHS` covers those files and nothing else. The purchase call, Restore, the entitlement load
+and the `RouteStore` construction also live in `Sources/NihongoRideApp/AppModel.swift`, which is NOT
+frozen and does change in 1.37 (the install-cohort marker). Its purchase and entitlement code was
+checked by hand on `2cf6161`: `git diff fdb2b5f 2cf6161 -- AppModel.swift` is 39 added lines, all of
+them the marker (`installCohortAtLaunch` and the block that records it), and none of them touches a
+purchase, entitlement, StoreKit, restore or RouteStore line. An AppModel edit after `2cf6161` is NOT
+caught by this script; re-read that diff before sending. The headless
+renders of the Road, the in-app-purchase review screen and the menu are compared before
+submission, PLAN-V1.37 §J V2. The offer, its price, its placement and its presentation are frozen
+for the pre-registered observation window (`PLAN-WINDOW` constraint 1).
+
+**No description, keyword, title, subtitle or screenshot change** (`PLAN-WINDOW` constraint 4). The
+marker is local and never synced or sent, so `Data Not Collected` is unchanged; the privacy page's
+local-storage sentence for it is the owner's push (PLAN-V1.37 P0-6), not this script's.
+
+Three phases, and an offline check:
+  python3 scripts/submit_1_37.py                              # guards + preflight; no ASC call
+  python3 scripts/submit_1_37.py --dry-run  --platform=both   # print the copy; GETs only
+  python3 scripts/submit_1_37.py --metadata --platform=both   # versions + What's New + notes
+  python3 scripts/submit_1_37.py --submit   --platform=both   # attach builds
+
+NOTE: --metadata cannot run while a previous version is WAITING_FOR_REVIEW or IN_REVIEW.
+"""
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from asc_release import Release, main          # noqa: E402
+from release_numbers import BASELINE_REF, CORPUS_MANIFEST, REPO, RESOURCES, numbers   # noqa: E402
+
+LEVELS = ("n1", "n2", "n3", "n4", "n5")
+
+# The frozen list as paths (PLAN-V1.37 §J; PLAN-WINDOW constraint 1). `Theme` is not a file: it is
+# `enum Theme` in NihongoRideApp.swift, so that file is named, and the freeze covers all of it.
+FROZEN_REF = "fdb2b5f"      # 1.35's build commit
+FROZEN_PATHS = [
+    "Sources/NihongoRideApp/RouteStore.swift",
+    "Sources/NihongoRideApp/RoadView.swift",
+    "Sources/NihongoRideApp/SettingsView.swift",
+    "Sources/NihongoRideApp/MenuView.swift",
+    "Sources/NihongoRideApp/AboutView.swift",
+    "Sources/NihongoRideApp/OnboardingView.swift",
+    "Sources/NihongoRideApp/NihongoRideApp.swift",
+    "Sources/NihongoRideApp/ScaledFont.swift",
+    "Sources/EntitlementKit",
+    "xcode/NihongoRide.storekit",
+]
+
+
+def _git(repo, *args):
+    return subprocess.run(["git", *args], cwd=repo, capture_output=True, text=True)
+
+
+def frozen_problems(repo, ref=FROZEN_REF, paths=FROZEN_PATHS):
+    """Why the frozen list is not byte-identical to `ref` in this working tree, or [].
+
+    Each path must exist at `ref` and at HEAD first: `git diff` over a path that exists nowhere
+    prints nothing, which is how the review's own check of `Theme.swift` came out empty.
+    """
+    problems = []
+    for path in paths:
+        for at in (ref, "HEAD"):
+            if _git(repo, "cat-file", "-e", f"{at}:{path}").returncode != 0:
+                problems.append(f"{path} does not exist at {at}, so a diff over it proves nothing")
+    if problems:
+        return problems
+    diff = _git(repo, "diff", "--quiet", ref, "--", *paths)
+    if diff.returncode == 1:
+        changed = _git(repo, "diff", "--name-only", ref, "--", *paths).stdout.splitlines()
+        problems.append(f"differs from {ref}: {', '.join(changed)}")
+    elif diff.returncode != 0:
+        problems.append(f"git diff {ref} failed ({diff.returncode}): {diff.stderr.strip()}")
+    untracked = _git(repo, "ls-files", "--others", "--exclude-standard", "--", *paths
+                     ).stdout.splitlines()
+    if untracked:
+        problems.append(f"untracked under the frozen list (built into the app all the same): "
+                        f"{', '.join(untracked)}")
+    return problems
+
+VERSION = "1.37"
+TARGETS = [
+    {"name": "macOS", "platform": "MAC_OS", "build_num": "62"},
+    {"name": "iOS",   "platform": "IOS",    "build_num": "63"},
+]
+
+# Measured, never typed.
+N = numbers()
+FIXED = N["correctedThisRelease"]
+WITHHELD = N["withheldThisRelease"]
+
+# The manifest this copy is written against. `release_numbers.CORPUS_MANIFEST` is what FIXED counts;
+# if it moves to another release's manifest, this copy is about a different set of corrections.
+MANIFEST = "docs/measurements/v137-reading-manifest.json"
+
+# The entries the corpus sentences below are written against: all 18 corrections the v1.37 manifest
+# declares, in two batches (12 + 6, the second being the manifest's `secondBatch`; PLAN-V1.37 §C P0-2). `n5-g010` is in the manifest's `recordedNotCorrected`, not its
+# entries, and must stay out of this list. When a correction joins or leaves the manifest, this list
+# and the sentences change together.
+NAMED_IDS = [
+    # batch 1
+    "n1-b1418",
+    "n2-b034", "n2-b1180", "n2-b277", "n2-b511", "n2-g285",
+    "n3-b310", "n3-k061",
+    "n4-b104", "n4-b186", "n4-g189",
+    "n5-b105",
+    # batch 2 (the manifest's secondBatch)
+    "n1-b678", "n2-b029", "n2-b1064", "n2-g300", "n3-g327", "n4-b151",
+]
+# The examples the sentences quote, and the kana each entry must now teach for the quote to be true.
+# The review notes quote the first NOTES_EXAMPLES of them, so 一日 is second.
+EXAMPLES = {
+    "n2-b277": ("六十キロ", "ろくじゅっきろ"),
+    "n2-b1064": ("一日", "いちにち"),          # セメントが完全に固まるまで一日かかる (a day, not the 1st)
+    "n2-b511": ("一週間", "いっしゅうかん"),
+    "n1-b1418": ("第一章", "だいいっしょう"),
+    "n4-b186": ("一晩", "ひとばん"),
+}
+# The seven corrected sentences that leave the dictation pool in 1.37, and the only change to the pool
+# against what is on sale (`release_numbers.BASELINE_REF`, 1.36's build commit). "7 of these
+# sentences" in the copy is true only while every newly withheld id is one of NAMED_IDS and nothing
+# returned to the pool.
+WITHHELD_IDS = ["n1-b1418", "n1-b678", "n2-b029", "n2-b1064", "n2-b511", "n2-g300", "n4-b151"]
+# Why each one left, which is what the copy's reason sentence says: either the voice is proven to say
+# the OLD reading (1b KEEP, the voice byte-identical to the pre-correction span), or 1b is silent on the
+# corrected span (SILENT). `withheld_reason_problems` holds both lists to the 1b records.
+WITHHELD_REASONS = {
+    "says the old reading": ["n2-b029", "n2-b1064", "n2-g300", "n4-b151"],
+    "not confirmed": ["n1-b1418", "n1-b678", "n2-b511"],
+}
+# The instrument-1b records: every v1.37 verdict, and the second batch's KEEP rows with what the voice said.
+VERDICTS_RECORD = "docs/measurements/v137-dictation-remeasure.json"
+KEEP_RECORD = "docs/measurements/v137-dictation-remeasure-ichinichi.json"
+
+
+def _token_reading(tokens, word):
+    """The joined readings of the run of consecutive tokens whose surfaces spell `word`, or None."""
+    tokens = tokens or []
+    for start in range(len(tokens)):
+        surface, reading = "", ""
+        for tok_surface, tok_reading in tokens[start:]:
+            surface += tok_surface
+            reading += tok_reading
+            if surface == word:
+                return reading
+            if not word.startswith(surface):
+                break
+    return None
+
+
+def corrected_of(manifest_entry):
+    """(exKana, [[surface, reading], ...]) parsed from a manifest entry's `corrected` string, which
+    reads 'exJP … / exKana <kana> / exTokens [s, r] [s, r]'. (None, []) when it names no exKana."""
+    text = manifest_entry.get("corrected") or ""
+    kana = re.search(r"exKana (\S+)", text)
+    tokens = text.split("exTokens", 1)[1] if "exTokens" in text else ""
+    run = [[s, r] for s, r in re.findall(r"\[([^\[\],]+), ([^\[\],]+)\]", tokens)]
+    return (kana.group(1) if kana else None), run
+
+
+def _has_run(tokens, run):
+    tokens = [list(t) for t in (tokens or [])]
+    return any(tokens[i:i + len(run)] == run for i in range(len(tokens) - len(run) + 1))
+
+
+def corpus_copy_problems(manifest_entries, entries_by_id, baseline_by_id, fixed, withheld_ids,
+                         released_ids, manifest_counts):
+    """Why the corpus sentences below would be false, or [] when they are true.
+
+    The guard checks which entries the manifest declares, not how many (1.36's whole-release review,
+    round 1): with the count alone, the manifest naming different entries, or the corpus reverted
+    while the manifest still declared them, both passed. 1.37 adds two things 1.36 did not check: a
+    quoted word must be spelled by the sentence's own tokens with the quoted kana (a substring of
+    exKana alone can be met by the wrong span), and the dictation sentence's count is held to which
+    ids left the pool, not only how many.
+
+    And, from 1.37's round-1 review: "Corrected 12" is about all twelve, not the four the copy
+    quotes. Every manifest entry must be `disposition: corrected`, and every field its `rewrite`
+    names (exKana at least) must differ from `baseline_by_id`, the corpus at BASELINE_REF. Without
+    that, any of the eight unquoted corrections could be reverted and this guard still passed.
+    """
+    problems = []
+    manifest_ids = [e["id"] for e in manifest_entries]
+    for e in manifest_entries:
+        if e.get("disposition") != "corrected":
+            problems.append(f"{e['id']}'s manifest disposition is {e.get('disposition')!r}, not "
+                            "'corrected', so it is not one of the corrections the copy counts")
+    for e in manifest_entries:
+        if e["id"] not in NAMED_IDS:
+            continue
+        now, before = entries_by_id.get(e["id"]), baseline_by_id.get(e["id"])
+        if now is None or before is None:
+            problems.append(f"{e['id']} is missing from the corpus "
+                            f"{'on this tree' if now is None else 'at ' + BASELINE_REF}")
+            continue
+        for field in sorted(set(e.get("rewrite") or []) | {"exKana"}):
+            if now.get(field) == before.get(field):
+                problems.append(f"{e['id']}'s {field} is the same as at {BASELINE_REF}, so it is "
+                                "not corrected on this tree")
+        # "Differs from 1.36" is not "is the correction": a partial revert (n2-b034 with only its 中
+        # back to ちゅう) or a third reading still differs. So the tree must also equal what the
+        # manifest says the correction IS: its `corrected` exKana, and its token run.
+        want_kana, want_run = corrected_of(e)
+        if want_kana is None:
+            problems.append(f"{e['id']}'s manifest `corrected` names no exKana, so the correction "
+                            "cannot be checked")
+        elif now.get("exKana") != want_kana:
+            problems.append(f"{e['id']}'s exKana is {now.get('exKana')!r}, not the manifest's corrected "
+                            f"{want_kana!r}")
+        if want_run and not _has_run(now.get("exTokens"), want_run):
+            problems.append(f"{e['id']}'s tokens do not contain the manifest's corrected run "
+                            f"{want_run}")
+    if sorted(manifest_ids) != sorted(NAMED_IDS):
+        problems.append(f"the v1.37 manifest declares {sorted(manifest_ids)}; What's New is written "
+                        f"against {sorted(NAMED_IDS)}")
+    if fixed != len(NAMED_IDS):
+        problems.append(f"correctedThisRelease is {fixed}; What's New is written against "
+                        f"{len(NAMED_IDS)} correction(s)")
+    for entry_id, (word, kana) in EXAMPLES.items():
+        entry = entries_by_id.get(entry_id) or {}
+        if entry_id not in NAMED_IDS:
+            problems.append(f"{entry_id} is quoted but is not one of the corrections NAMED_IDS holds")
+        if word not in (entry.get("exJP") or ""):
+            problems.append(f"{entry_id}'s exJP is {entry.get('exJP')!r}, which does not contain {word}")
+        if kana not in (entry.get("exKana") or ""):
+            problems.append(f"{entry_id}'s exKana is {entry.get('exKana')!r}, which does not "
+                            f"teach {word} as {kana}")
+        got = _token_reading(entry.get("exTokens"), word)
+        if got != kana:
+            problems.append(f"{entry_id}'s tokens read {word} as {got!r}, not {kana}")
+    if sorted(withheld_ids) != sorted(WITHHELD_IDS):
+        problems.append(f"the ids newly withheld from dictation since {BASELINE_REF} are "
+                        f"{sorted(withheld_ids)}; the copy is written against {sorted(WITHHELD_IDS)}")
+    if not set(WITHHELD_IDS) <= set(NAMED_IDS):
+        problems.append(f"WITHHELD_IDS {WITHHELD_IDS} are not all corrections, but the copy calls them "
+                        "'of these sentences'")
+    if released_ids:
+        problems.append(f"{sorted(released_ids)} returned to the dictation pool since {BASELINE_REF}; "
+                        "the copy says only that sentences left it")
+    if manifest_counts.get("withheldFromDictation") != len(WITHHELD_IDS):
+        problems.append(f"the manifest's withheldFromDictation is "
+                        f"{manifest_counts.get('withheldFromDictation')!r}, not {len(WITHHELD_IDS)}")
+    return problems
+
+
+def withheld_reason_problems(verdicts, keep_rows, entries_by_id, baseline_by_id):
+    """Why the reason sentence would be false for a withheld id, or [].
+
+    `verdicts` is {id: {"verdict": ...}} (VERDICTS_RECORD); `keep_rows` the KEEP_RECORD's `keep` list.
+    """
+    problems = []
+    listed = [i for ids in WITHHELD_REASONS.values() for i in ids]
+    if sorted(listed) != sorted(WITHHELD_IDS) or len(set(listed)) != len(listed):
+        problems.append(f"WITHHELD_REASONS covers {sorted(listed)}, not each of WITHHELD_IDS "
+                        f"{sorted(WITHHELD_IDS)} exactly once")
+    keep_by_id = {row["id"]: row for row in keep_rows}
+    for entry_id in WITHHELD_REASONS["not confirmed"]:
+        got = (verdicts.get(entry_id) or {}).get("verdict")
+        if got != "SILENT":
+            problems.append(f"{entry_id} is withheld as 'not confirmed', but 1b's verdict is {got!r}, "
+                            "not SILENT")
+    for entry_id in WITHHELD_REASONS["says the old reading"]:
+        got = (verdicts.get(entry_id) or {}).get("verdict")
+        row = keep_by_id.get(entry_id)
+        if got != "KEEP" or row is None:
+            problems.append(f"{entry_id} is withheld as 'says the old reading', but 1b's verdict is "
+                            f"{got!r} and {KEEP_RECORD} has {'no' if row is None else 'a'} KEEP row")
+            continue
+        old = _token_reading((baseline_by_id.get(entry_id) or {}).get("exTokens"), row["surface"])
+        new = _token_reading((entries_by_id.get(entry_id) or {}).get("exTokens"), row["surface"])
+        if old not in row["kyoko"] or new in row["kyoko"] or new != row["corpus"]:
+            problems.append(f"{entry_id}: the voice says {row['kyoko']} for {row['surface']}; the old "
+                            f"reading was {old!r} and the corrected one is {new!r} — 'says the old "
+                            "reading' is not what 1b measured")
+    return problems
+
+
+def _manifest():
+    if CORPUS_MANIFEST != MANIFEST:
+        sys.exit(f"error: release_numbers.CORPUS_MANIFEST is {CORPUS_MANIFEST!r}; this copy is written "
+                 f"against {MANIFEST!r}, so FIXED would count a different release's corrections")
+    return json.loads((REPO / MANIFEST).read_text(encoding="utf-8"))
+
+
+def _entries_by_id():
+    out = {}
+    for level in LEVELS:
+        for entry in json.loads((RESOURCES / f"{level}.json").read_text(encoding="utf-8")):
+            out[entry["id"]] = entry
+    return out
+
+
+def _baseline_entries_by_id():
+    """The corpus as it was at BASELINE_REF, 1.36's build commit."""
+    out = {}
+    for level in LEVELS:
+        text = subprocess.run(
+            ["git", "show", f"{BASELINE_REF}:Sources/VocabKit/Resources/{level}.json"],
+            cwd=REPO, capture_output=True, text=True, check=True).stdout
+        for entry in json.loads(text):
+            out[entry["id"]] = entry
+    return out
+
+
+def _excluded(text):
+    return {row["id"] for row in json.loads(text)["excluded"]}
+
+
+def _pool_moves():
+    """(newly withheld ids, newly released ids): this tree's dictation exclusions against BASELINE_REF."""
+    now = _excluded((RESOURCES / "dictation-exclusions.json").read_text(encoding="utf-8"))
+    before = _excluded(subprocess.run(
+        ["git", "show", f"{BASELINE_REF}:Sources/VocabKit/Resources/dictation-exclusions.json"],
+        cwd=REPO, capture_output=True, text=True, check=True).stdout)
+    return now - before, before - now
+
+
+_manifest_data = _manifest()
+_withheld_ids, _released_ids = _pool_moves()
+_entries, _baseline = _entries_by_id(), _baseline_entries_by_id()
+_problems = corpus_copy_problems(_manifest_data["entries"], _entries, _baseline,
+                                 FIXED, _withheld_ids, _released_ids,
+                                 _manifest_data.get("counts") or {})
+_problems += withheld_reason_problems(
+    json.loads((REPO / VERDICTS_RECORD).read_text(encoding="utf-8"))["verdicts"],
+    json.loads((REPO / KEEP_RECORD).read_text(encoding="utf-8"))["keep"], _entries, _baseline)
+if WITHHELD != len(WITHHELD_IDS):
+    _problems.append(f"withheldThisRelease is {WITHHELD}; the copy is written against "
+                     f"{len(WITHHELD_IDS)} sentence(s) leaving dictation")
+if _problems:
+    sys.exit("error: the corpus sentences in What's New and the review notes are not true of this "
+             "tree:\n  " + "\n  ".join(_problems) + "\nRewrite them (and NAMED_IDS / EXAMPLES / "
+             "WITHHELD_IDS) before sending.")
+
+# What's New — no star glyph (preflight enforces it). Same voice as every release since v1.27:
+# report what changed, never solicit. Each sentence is checked against the code and the manifest
+# before this is sent (PLAN-V1.37 §J V7); the check table is kept with the release work, outside the
+# repository. Mode names are the menu capsule's (`GameMode.shortLabel`, "the one place a learner
+# reads it"): "Sentence" / 例句 and "Listen" / 听写. ("Dictation" is on the start button, Word Lists
+# and the Ride Log, but no capsule says it; test_submit_1_37 holds the copy to shortLabel.)
+WHATS_NEW = {
+    "en-US": (
+        f"• Corrected {FIXED} example sentences where a number, its counter or the word they form was "
+        "read wrong: for example, 六十キロ is now read ろくじゅっきろ, 一日 いちにち where it means a day "
+        "rather than the 1st, 一週間 いっしゅうかん, 第一章 だいいっしょう, and 一晩 ひとばん.\n"
+        f"• Of these, {WITHHELD} sentences are no longer used in Listen mode, because the voice says "
+        "the old reading or could not be confirmed to say the corrected one. You can still type them "
+        "in Sentence mode."
+    ),
+    "zh-Hans": (
+        f"• 更正了 {FIXED} 条例句中数字、量词或由它们构成的词的读法,例如「六十キロ」现在读作 ろくじゅっきろ,"
+        "「一日」读作 いちにち(指一天,而非一号),「一週間」读作 いっしゅうかん,"
+        "「第一章」读作 だいいっしょう,「一晩」读作 ひとばん。\n"
+        f"• 其中 {WITHHELD} 条例句不再用于听写,因为语音读的是旧读法,或无法确认它读出的是更正后的读法;"
+        "它们仍可在「例句」模式中练习。"
+    ),
+    # The app's interface is English or Chinese only, so a Japanese rider sees the English labels;
+    # the Japanese copy quotes them in 「」 where it names a mode.
+    "ja": (
+        f"• 数字・助数詞やそれを含む語の読みを誤っていた例文 {FIXED} 件を訂正しました(例:"
+        "「六十キロ」ろくじゅっきろ、日付ではない「一日」いちにち、「一週間」いっしゅうかん、"
+        "「第一章」だいいっしょう、「一晩」ひとばん)。\n"
+        f"• そのうち {WITHHELD} 件は、音声が訂正前の読みで読み上げるか、訂正後の読みで読み上げることを"
+        "確認できなかったため、「Listen」モード(聞き取り)では出題されなくなりました。"
+        "「Sentence」モードでは引き続き入力できます。"
+    ),
+}
+
+# The quotes in the copy are the EXAMPLES the guard holds to the corpus, each word next to its own
+# kana in the form that locale's sentence uses: every example in every locale's What's New, and the
+# first three in the review notes. Checking only that the word and the kana each appear somewhere
+# passed a copy edit that swapped two readings.
+QUOTE_FORMS = {
+    "en-US": ("{word} is now read {kana}", "{word} {kana}"),
+    "zh-Hans": ("「{word}」现在读作 {kana}", "「{word}」读作 {kana}"),
+    "ja": ("「{word}」{kana}",),
+}
+NOTES_QUOTE_FORMS = ("{word} is now read {kana}", "{word} {kana}")
+NOTES_EXAMPLES = 3
+# The copy's only quoted words that are NOT corpus examples: mode labels (GameMode.shortLabel).
+OTHER_QUOTES = {"zh-Hans": {"例句"}, "ja": {"Listen", "Sentence"}}
+_JAPANESE = re.compile(r"[\u3040-\u30ff\u3400-\u9fff]")
+_KANA = re.compile(r"[\u3040-\u30ff]")
+
+
+def _unlisted(text, pattern):
+    """What `pattern` still finds in `text` once every EXAMPLES word and kana is taken out."""
+    for word, kana in sorted(EXAMPLES.values(), key=lambda p: -len(p[0])):
+        text = text.replace(word, " ").replace(kana, " ")
+    return sorted(set(m for m in re.findall(pattern.pattern + "+", text)))
+
+
+def _paired(text, word, kana, forms):
+    return any(form.format(word=word, kana=kana) in text for form in forms)
+
+
+def quote_problems(whats_new, review_notes):
+    """Each quoted word next to its own kana, per locale and in the notes, or []."""
+    problems = []
+    for loc, text in whats_new.items():
+        forms = QUOTE_FORMS.get(loc)
+        if not forms:
+            problems.append(f"{loc}: no QUOTE_FORMS for this locale, so its quotes are unchecked")
+            continue
+        for word, kana in EXAMPLES.values():
+            if not _paired(text, word, kana, forms):
+                problems.append(f"What's New {loc}: {word} is not quoted next to {kana}")
+    for word, kana in list(EXAMPLES.values())[:NOTES_EXAMPLES]:
+        if not _paired(review_notes, word, kana, NOTES_QUOTE_FORMS):
+            problems.append(f"review notes: {word} is not quoted next to {kana}")
+    # The other direction: the copy quotes NOTHING that EXAMPLES does not hold to the corpus. An
+    # added 十ページ じゅっぺーじ (n5-g010, recorded and not corrected) would otherwise pass every check
+    # above. en and the notes may hold no other Japanese at all; zh no other kana; zh and ja no other
+    # 「」 quote than an EXAMPLES word or a mode label.
+    words = {w for w, _ in EXAMPLES.values()}
+    for loc, text in whats_new.items():
+        stray = []
+        if loc == "en-US":
+            stray = _unlisted(text, _JAPANESE)
+        elif loc == "zh-Hans":
+            stray = _unlisted(text, _KANA)
+        if loc in ("zh-Hans", "ja"):
+            stray += [q for q in re.findall(r"「([^」]*)」", text)
+                      if q not in words and q not in OTHER_QUOTES.get(loc, set())]
+        if stray:
+            problems.append(f"What's New {loc} quotes {stray}, which is not an EXAMPLES word or kana")
+    stray = _unlisted(review_notes, _JAPANESE)
+    if stray:
+        problems.append(f"review notes quote {stray}, which is not an EXAMPLES word or kana")
+    return problems
+
+
+# No description edit — see the module docstring.
+DESCRIPTION_EDITS = {}
+
+REVIEW_NOTES = (
+    "Nihongo Ride is a typing-practice app for learners of Japanese. It requires no account or "
+    "login with the developer, and the developer collects no data.\n\n"
+    "VERSION 1.37 ADDS NO IN-APP PURCHASE AND DOES NOT CHANGE THE EXISTING ONE: its product, "
+    "price, content, screen, placements and purchase code are unchanged from 1.36. The existing "
+    "non-consumable com.jasonye.nihongoride.scenery.lifetime is approved and live, in the same two "
+    "placements (Settings > \"The Road\", plus the menu's route strip once lifetime distance passes "
+    "Kyoto). Restore Purchases is on the same screen and is always present. There is no modal, no "
+    "badge, and nothing about the purchase on the post-ride results screen.\n\n"
+    "WHAT IS NEW.\n"
+    f"1) Content: {FIXED} example sentences were corrected where a number, its counter or the word "
+    "they form was read wrong (for example 六十キロ is now read ろくじゅっきろ, 一日 いちにち where it "
+    "means a day rather than the 1st, 一週間 いっしゅうかん). "
+    f"{WITHHELD} of them are no longer offered in dictation practice, because the on-device voice "
+    f"says the old reading ({len(WITHHELD_REASONS['says the old reading'])}) or could not be "
+    f"confirmed to say the corrected reading ({len(WITHHELD_REASONS['not confirmed'])}) "
+    f"({N['dictationPoolBefore']:,} dictation sentences before, {N['dictationPool']:,} now). They "
+    "remain in sentence practice.\n"
+    "2) No visible change: the first time this version launches, the app stores on the device the "
+    "version and build that launched, the platform, and whether the app's own saved data already "
+    "existed. It is written once and never changed, and nothing in this version uses it. It is not "
+    "part of iCloud sync, and the app never sends it anywhere.\n\n"
+    "Data handling: the developer still collects no data. There is no analytics SDK, no advertising, "
+    "and no developer-operated server in this app. Optional iCloud sync uses the user's own private "
+    "CloudKit database, which the developer cannot read, and the app is fully usable with it "
+    "switched off. Dictation uses the on-device system Japanese text-to-speech voice "
+    "(AVSpeechSynthesizer, ja-JP) and reports itself unavailable, with an explanation, when no "
+    "Japanese voice is installed.\n\n"
+    "No keywords, URLs, description text or screenshots changed in this version."
+)
+
+_unquoted = quote_problems(WHATS_NEW, REVIEW_NOTES)
+if _unquoted:
+    sys.exit("error: the copy does not quote what EXAMPLES holds to the corpus:\n  "
+             + "\n  ".join(_unquoted))
+
+# --- Both platforms move together, as 1.36 did ------------------------------------------------
+#
+# `--platform` stays REQUIRED. The failure it prevents is silent-looking: run it with a target
+# that cannot move and that half dies partway through, after the other half has been written.
+PLATFORM_ARG = {"ios": ("IOS",), "macos": ("MAC_OS",), "both": ("IOS", "MAC_OS")}
+
+
+def _targets_for(argv):
+    flags = [a for a in argv[1:] if a.startswith("--platform=")]
+    if not flags:
+        sys.exit("error: --platform=ios|macos|both is required. The two platforms have shipped "
+                 "apart before and a default here is how the wrong one moves.")
+    if len(flags) > 1:
+        sys.exit(f"error: --platform given {len(flags)} times: {flags}")
+    want = flags[0].split("=", 1)[1]
+    if want not in PLATFORM_ARG:
+        sys.exit(f"error: --platform={want} — expected one of {sorted(PLATFORM_ARG)}")
+    keep = PLATFORM_ARG[want]
+    return [t for t in TARGETS if t["platform"] in keep]
+
+
+if __name__ == "__main__":
+    _frozen = frozen_problems(REPO)
+    if _frozen:
+        sys.exit(f"error: the frozen list is not byte-identical to {FROZEN_REF} (PLAN-WINDOW "
+                 "constraint 1; the review notes tell Apple the purchase code is unchanged):\n  "
+                 + "\n  ".join(_frozen))
+    if not any(a in ("--metadata", "--submit", "--dry-run") for a in sys.argv[1:]):
+        # No mode: the offline check. Every guard above has run; preflight runs over both targets;
+        # nothing reaches App Store Connect.
+        Release(version=VERSION, targets=TARGETS, whats_new=WHATS_NEW,
+                description_edits=DESCRIPTION_EDITS, review_notes=REVIEW_NOTES, iap=None,
+                numbers=N).preflight()
+        print("offline check only: the corpus, quote and frozen-list guards and preflight passed; "
+              "nothing was sent.\nModes: --dry-run | --metadata | --submit, with "
+              "--platform=ios|macos|both.")
+        sys.exit(2)
+    _targets = _targets_for(sys.argv)
+    print("==> review notes: one set — 1.37 changes the purchase a customer sees on neither platform")
+    main(Release(version=VERSION, targets=_targets, whats_new=WHATS_NEW,
+                 description_edits=DESCRIPTION_EDITS, review_notes=REVIEW_NOTES,
+                 iap=None,
+                 numbers=N),
+         doc=__doc__)

@@ -1,0 +1,69 @@
+{
+ "what": "The input of v1.37's second-batch dictation re-measure (round 1, corpus-1): instrument 1b on the five dictation-pool sentences that taught 一日 as ついたち where exEN is a duration, run on the CORRECTED corpus (いちにち). The complaint '一日 ついたち -> いちにち' makes both readings candidates, and EXTRA adds いちじつ and every spelling in katakana. Same-run controls with a known answer: n5-b018 (一日 proven ついたち by v1.29 1b against the corpus いちにち), n3-b020 (十分 proven じゅうぶん), n2-b1180 (十センチ proven じゅっせんち), n4-b186 (一晩 proven ひとばん), n2-b034 (SILENT on 一晩中); n5-b303 (the date 四月一日) and n3-g327 (一日中, corrected to いちにちじゅう) for information; and the decoys. The same spec on the shipped tokens (before the correction) gave RELEASE on ついたち for n2-g300, n2-b029, n2-b1064 and n4-b151: corpus-proposals-ichinichi.json.",
+ "evidence": "v137-r1-ichinichi-remeasure",
+ "rows": {
+  "n1-b678": "一日 ついたち -> いちにち",
+  "n2-g300": "一日 ついたち -> いちにち",
+  "n2-b029": "一日 ついたち -> いちにち",
+  "n2-b1064": "一日 ついたち -> いちにち",
+  "n4-b151": "一日 ついたち -> いちにち",
+  "n3-g327": "一日中 いちにちちゅう -> いちにちじゅう",
+  "n5-b018": null,
+  "n5-b303": null,
+  "n3-b020": null,
+  "n2-b1180": null,
+  "n4-b186": null,
+  "n2-b034": null
+ },
+ "extra": {
+  "十センチ": [
+   "じゅっせんち",
+   "じっせんち",
+   "じゅうせんち",
+   "ジュッセンチ",
+   "ジッセンチ",
+   "ジュウセンチ"
+  ],
+  "十": [
+   "じゅっ",
+   "じっ",
+   "じゅう"
+  ],
+  "一晩": [
+   "ひとばん",
+   "いちばん",
+   "ヒトバン",
+   "イチバン"
+  ],
+  "一晩中": [
+   "ひとばんじゅう",
+   "ひとばんちゅう",
+   "いちばんちゅう",
+   "いちばんじゅう",
+   "ヒトバンジュウ",
+   "ヒトバンチュウ",
+   "イチバンチュウ",
+   "イチバンジュウ"
+  ],
+  "十分": [
+   "じゅっぷん",
+   "じっぷん",
+   "じゅうぶん",
+   "じゅうふん"
+  ],
+  "一日": [
+   "いちにち",
+   "ついたち",
+   "いちじつ",
+   "イチニチ",
+   "ツイタチ",
+   "イチジツ"
+  ],
+  "一日中": [
+   "いちにちじゅう",
+   "いちにちちゅう",
+   "イチニチジュウ",
+   "イチニチチュウ"
+  ]
+ }
+}
