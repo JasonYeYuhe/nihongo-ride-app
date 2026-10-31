@@ -1059,6 +1059,117 @@ fired. *An agent cannot do this step and must not try.*
 > **How to read a checkpoint against it.** `3/N` does not move. Near a threshold, split the cohort at
 > v1.36's `FIRM_RELEASE_DATES_PT` entries.
 
+> ### 📌 REGISTERED 2026-10-31 (JST) under constraint 3, before v1.37 is submitted — eighteen example sentences' number + counter readings corrected in two batches (seven of them leave the dictation pool), and a local install-cohort marker no rider sees
+>
+> `PLAN-WINDOW` constraint 3: *"A feature that substantially changes how far people ride changes
+> exposure-per-install… Second-order and tolerable — **register it, do not avoid it.**"* This is that
+> registration for v1.37 (`PLAN-V1.37` §C P0-2 and P0-12), written before `--submit`. It registers product
+> changes; it adds no §K rule. v1.37's scope was fixed on 2026-10-27 (`PLAN-V1.37`) and grew under review on
+> 2026-10-28 (the second batch below; `PLAN-V1.37`'s dated corrections), both after the N = 100 reading and
+> before the N = 200 reading. The sentences come from v1.36's review record (`PLAN-V1.36` §H, "Recorded for
+> v1.37, not corrected") and from v1.37's own review; no checkpoint figure chose which sentences were
+> corrected or withheld.
+>
+> **What changed.**
+> 1. **Batch 1: twelve example sentences** now teach the standard number + counter reading, per
+>    `docs/measurements/v137-reading-manifest.json` (grammar and 2-of-2 refuters; exKana and one token each,
+>    `n2-b034` two): 六十キロ ろくじゅっきろ (`n2-b277`); 二十センチ にじゅっせんち (`n5-b105`); 五十ページ
+>    ごじゅっぺーじ (`n4-b104`); 十センチ じゅっせんち (`n2-b1180`); 十パーセント じゅっぱーせんと (`n3-k061`);
+>    一週間 いっしゅうかん (`n2-b511`, `n3-b310`, `n4-g189`); 第一章 だいいっしょう (`n1-b1418`); 一等 いっとう
+>    (`n2-g285`); 一晩 ひとばん (`n4-b186`); 一晩中 ひとばんじゅう (`n2-b034`). `n5-g010` 十ページ was upheld
+>    by one refuter and refuted by the other, so it is not corrected (`recordedNotCorrected`).
+> 2. **Batch 2: six more sentences** (the manifest's `secondBatch`, found by v1.37's review round 1, each
+>    upheld 2 of 2). In five, 一日 was taught as ついたち ('the 1st of the month') where the sentence means a
+>    day's duration, and now reads いちにち: `n1-b678` 丸々一日かかった, `n2-g300` 一日に数秒, `n2-b029`
+>    一日の活力, `n2-b1064` 一日かかる, `n4-b151` 一日で. In `n3-g327` 一日中, 中 ちゅう becomes じゅう
+>    (いちにちじゅう). All six were the same in the corpora 1.35 and 1.36 shipped (`fdb2b5f`, `24684c2`). Three more
+>    一日 rows went to the same refuters and stay as they are (`recordedNoChange`: `n1-b1368`'s headword
+>    いちじつ, `n5-b018`, `n5-b303`).
+> 3. **The dictation pool shrinks by 7, from 5,935 to 5,928** (`release_numbers`: withheldThisRelease 7,
+>    releasedThisRelease 0). By level: N1 2,121 → 2,119, N2 1,513 → 1,509, N4 555 → 554; N3 1,228 and N5 518
+>    unchanged. Dictation speaks the unchanged Japanese and grades what a rider types against the sentence's
+>    kana, so a corrected sentence stays only where the voice is proven to say the corrected reading. Ten of
+>    the eighteen were in the pool:
+>    * four leave because instrument 1b proves the voice says the old ついたち (`n2-g300`, `n2-b029`,
+>      `n2-b1064`, `n4-b151`; v1.36's `n3-b020` precedent);
+>    * three leave because 1b is silent on the corrected span (`n2-b511`, `n1-b1418`, `n1-b678`; v1.35's
+>      `n5-g022` precedent);
+>    * three stay, and are now graded as 1b proves the voice says them (`n2-b277`, `n5-b105`, `n4-b104`).
+>    The other eight were withheld before and stay withheld; `n4-b186` and `n2-b1180` are release candidates
+>    for a later release, not released here. The rule that the pool must not shrink was set aside for these
+>    seven by the orchestrator under the owner's 2026-10-07 delegation (2026-10-27 for `n2-b511` and
+>    `n1-b1418`, 2026-10-28 for the five 一日 sentences; the manifest's `decisions`). A rider sees "Due
+>    dictation · N available" and a list's "Dictation · N available" fall by one for each of these sentences
+>    they hold. No level's pool reaches 0.
+>    The stumble chip after a stumbled sentence links a token to its card by reading, so links move with
+>    the corrected readings. Nine are lost: the 一 of `n1-b1418`, `n2-g285`, `n2-b034`, `n2-b511`, `n3-b310`,
+>    `n4-g189` and `n4-b186` no longer links to `n5-g001` 一 いち, and the 十 of `n2-b1180` and `n3-k061` no
+>    longer links to `n5-g010` 十 じゅう. Five move to the right card: the 一日 of `n1-b678`, `n2-g300`,
+>    `n2-b029`, `n2-b1064` and `n4-b151` linked to `n5-b303` 一日 ついたち 'first day of the month' and now
+>    links to `n5-b018` 一日 いちにち 'one day; all day'. The 中 of `n2-b034` and `n3-g327` and the 六十 / 五十 /
+>    二十 tokens linked to no card before or after. No changed token is a sentence's taught word.
+> 4. **The install-cohort marker** (P0-12; `InstallCohort.swift`, `AppModel.swift`). The first launch of 1.37
+>    or later writes one local `UserDefaults` key, `NihongoRide.installCohort.v1`, once: the schema, the first
+>    version and per-platform build seen (1.37, 62 on macOS / 63 on iOS), the platform, and whether the app's
+>    own saved data (settings or odometer) already existed. A present or unreadable value is never written
+>    over. A launch that touches nothing of the user's neither reads nor writes it. It is not part of iCloud
+>    sync, is never sent, and nothing in 1.37 reads it. Nothing a rider sees; it changes neither what a
+>    device is offered nor which devices arrive. The review notes describe it to App Review. The developer
+>    still collects no data, so the privacy label stays Data Not Collected.
+> 5. **Version 1.37**, macOS build 62 / iOS build 63 (widgets equal to their hosts). About's version line
+>    reads 1.37 and the store shows an update. No other build setting moves.
+> 6. **The listing** is unchanged except What's New, in en-US, zh-Hans and ja (`submit_1_37.py`:
+>    `DESCRIPTION_EDITS` empty, no in-app purchase change). Description, keywords, title, subtitle, URLs,
+>    screenshots, prices and the in-app purchase are as 1.36 left them.
+> 7. Nothing a rider sees: a test pinning that a removed word's Remove button speaks no id (and a two-line
+>    comment in `ListsView.swift`), CI's vocabulary base and checkout token, the gate floor, the guards in
+>    `submit_1_37.py` and `asc_release.py`, and the App Review contact read from outside the repository.
+>
+> The offer screen, the Settings road card, the menu route strip, prices, About's counter text and the
+> store metadata other than What's New are unchanged. The frozen list (`scripts/submit_1_37.py`
+> `FROZEN_PATHS`) is byte-identical to `fdb2b5f`: `RouteStore`, `RoadView`, `SettingsView`, `MenuView`,
+> `AboutView`, `OnboardingView`, `NihongoRideApp.swift` (where `Theme` lives), `ScaledFont`, `EntitlementKit`
+> and `xcode/NihongoRide.storekit`. `AppModel.swift`, which holds the purchase call and is not on the list,
+> differs from `fdb2b5f` only by the marker's 39 added lines. The V2 renders of `25a472e` (24 screens, en and
+> zh) are pixel-identical to 1.36's.
+>
+> **Expected effect.**
+> * The corrections: every one swaps kana one for one (いち → いっ, じゅう → じゅっ, いち → ひと, ちゅう →
+>   じゅう, ついたち → いちにち), so each sentence keeps its exKana length and rides the same distance
+>   (`GameSession.swift:825`, 10 m per kana of the sentence's exKana): batch 1 `n2-b277` 280 m, `n5-b105`
+>   190, `n4-b104` 190, `n2-b1180` 230, `n3-k061` 130, `n2-b511` 290, `n3-b310` 270, `n4-g189` 270,
+>   `n1-b1418` 320, `n2-g285` 240, `n4-b186` 230, `n2-b034` 310; batch 2 `n1-b678` 210, `n2-g300` 250,
+>   `n2-b029` 270, `n2-b1064` 230, `n4-b151` 200, `n3-g327` 220. The score base and time baseline
+>   (`GameSession.swift:847`, `:842`) use the same count, so neither moves. In Sentence mode a rider who
+>   types the standard reading is no longer refused, and the furigana shows it. Neutral.
+> * Dictation: 7 of 5,935 pool sentences withheld (5,928 remain): N1 2, N2 4, N4 1. Each level's mean
+>   sentence length moves by under 0.02 kana. Neutral.
+> * The chip links: neutral; slightly better for the five 一日 sentences, whose chip now stars the card the
+>   sentence means.
+> * The marker and the version: neutral.
+> * Cadence: v1.37 is submitted on 2026-10-31 (JST), 4 days after 1.36 (submitted 2026-10-27 JST, 15:01Z on
+>   10-26; on sale 2026-10-26 PT on both platforms) and 5 days after 1.36's release date, against 27 days
+>   between 1.35's and 1.36's submissions. **This departs from `PLAN-V1.37` §I's 11-09..13 JST target, on the
+>   owner's word.** On 2026-10-30 the owner chose "Upload now, submit 11-09". On 2026-10-31 the owner wrote
+>   "不用等11-09 做完你决定没问题就可以直接上传" (no need to wait for 11-09; submit once the agent judges it
+>   ready). The 11-09 date was a cadence choice, not a precondition. 1.36 was live on both platforms, and every
+>   check §I and §J ask for had passed by 10-30: gates 20/0, the placement suite clean, V2 identical, two review
+>   rounds, Gemini 3.8 Flash PASS on the final diff (the owner waived Gemini 4). Since day 0 the window holds six
+>   firm release dates; 1.37 adds a seventh, or a seventh and an eighth if its platforms go on sale on
+>   different Pacific days, as 1.35's did. Release days raise first-time downloads (1.18x–1.58x: first-time
+>   downloads on exposure days against other days in the two second release-day controls, 1.58x in the
+>   2026-09-25 reading and 1.18x in the 2026-10-26 N = 100 reading; `docs/measurements/stage1-checkpoints.md`),
+>   and the shorter gap raises the weekly release rate. A fraction of one day's installs either way. Unlike
+>   v1.36, v1.37's release day and the update wave after it fall **inside the N = 200 reading**, now projected
+>   for Pacific 11-24..26 (`docs/STATE-2026-10-27.md`). Submitting about nine days earlier than the target puts
+>   more of the reading's days after 1.37's release, and its update wave further from the reading's end. That
+>   touches clause two, and this is its registration. No other release day enters that reading: no release is
+>   made between 1.37's submission and the N = 200 record (`PLAN-V1.37` §I). 1.37's Pacific release date is
+>   added to `FIRM_RELEASE_DATES_PT` on approval day, before the N = 200 `--checkpoint` (P0-2).
+>
+> **How to read a checkpoint against it.** `3/N` does not move. Near a threshold, split the cohort at
+> 1.37's FIRM date (its `FIRM_RELEASE_DATES_PT` entry or entries).
+
 ## §L The three manual gates
 
 These cannot be automated on this machine and are therefore **not tested until somebody walks
